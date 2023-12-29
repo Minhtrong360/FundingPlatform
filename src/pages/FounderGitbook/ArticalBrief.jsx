@@ -1,7 +1,6 @@
 import { ExportOutlined } from "@ant-design/icons";
 
 export default function ArticleBrief({ result }) {
-  console.log("result", result);
   const handleExportClick = () => {
     // Mở result.url trong một cửa sổ mới
     window.open(result.url, "_blank");

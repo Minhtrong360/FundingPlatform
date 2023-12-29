@@ -131,7 +131,7 @@ const Login = () => {
                       </label>
                       <a
                         className="text-sm text-blue-600 hover:underline"
-                        href="http://localhost:3000/forgot-password"
+                        onClick={() => navigate("/forgot-password")}
                       >
                         Forgot password?
                       </a>

@@ -19,7 +19,7 @@ async function summarizeKeyInformation(text, query) {
         },
         {
           role: "user",
-          content: `Find only information with statistics, numbers, figures most relevant to ${query} that can be found in: ${text}. Show results in max 5 bullet points.`,
+          content: `Find only information with statistics, numbers, figures most relevant to ${query} that can be found in: ${text}. Show results in max 5 bullet points and numbering order list them.`,
         },
       ],
     });
@@ -54,11 +54,12 @@ async function fetchNewsAndSummarize(query) {
       const text = article.description; // Use 'content' if it's more complete
 
       const extractedInfo = await summarizeKeyInformation(text, query);
+      const lines = extractedInfo.split("\n");
 
       // Add the extracted information to the results array
       resultsArray.push({
         title: article.title,
-        extractedInfo: extractedInfo,
+        extractedInfo: lines,
         url: article.url,
       });
     }
@@ -106,7 +107,6 @@ function MarketDataAI() {
         >
           Market data AI
         </h3>
-
         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
           Search info from TechCrunch, Forbes, WSJ...
         </p>

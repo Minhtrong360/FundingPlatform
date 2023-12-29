@@ -17,9 +17,14 @@ export default function ArticleBrief({ result }) {
             >
               {result.title}
             </h3>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-              {result.extractedInfo}
-            </p>
+            {result.extractedInfo.map((item, index) => (
+              <p
+                key={index}
+                className="text-sm text-gray-500 dark:text-gray-400"
+              >
+                {item}
+              </p>
+            ))}
           </div>
         </div>
 

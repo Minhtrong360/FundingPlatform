@@ -1,30 +1,115 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import axios from "axios";
+import OpenAI from "openai";
+import ArticleBrief from "./FounderGitbook/ArticalBrief";
+
+const openai = new OpenAI({
+  apiKey: process.env.REACT_APP_openaiApiKey,
+  dangerouslyAllowBrowser: true,
+});
+
+async function summarizeKeyInformation(text, query) {
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "system",
+          content: "You are a system",
+        },
+        {
+          role: "user",
+          content: `Find only information with statistics, numbers, figures most relevant to ${query} that can be found in: ${text}. Show results in max 5 bullet points.`,
+        },
+      ],
+    });
+
+    return response.choices[0].message.content;
+  } catch (error) {
+    console.log(`An error occurred: ${error}`);
+    return "Error in summarizing information";
+  }
+}
+
+async function fetchNewsAndSummarize(query) {
+  const url = "https://newsapi.org/v2/everything";
+  const params = {
+    q: query,
+    searchIn: "content",
+    language: "en",
+    from: "2023-12-25",
+    to: "2023-01-25",
+    sortBy: "relevancy",
+    apiKey: process.env.REACT_APP_newsApiKey,
+  };
+
+  const resultsArray = []; // Initialize an empty array to store results
+
+  try {
+    const response = await axios.get(url, { params });
+
+    const articles = response.data.articles.slice(0, 5);
+
+    for (const article of articles) {
+      const text = article.description; // Use 'content' if it's more complete
+
+      const extractedInfo = await summarizeKeyInformation(text, query);
+
+      // Add the extracted information to the results array
+      resultsArray.push({
+        title: article.title,
+        extractedInfo: extractedInfo,
+        url: article.url,
+      });
+    }
+
+    return resultsArray; // Return the array of results
+  } catch (error) {
+    console.error(`Failed to retrieve data. Error: ${error}`);
+    return resultsArray; // Return an empty array in case of an error
+  }
+}
 
 function MarketDataAI() {
-  const [email, setEmail] = useState('Electric vehicle market size');
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+  const [search, setSearch] = useState("Electric vehicle market size");
+  const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
   };
 
-  const handleSearch = () => {
-    // Add your search logic here
-    console.log('Searching for:', email);
-    // You can replace the console.log with your actual search functionality
+  const handleSearch = async () => {
+    setIsLoading(true);
+
+    try {
+      const results = await fetchNewsAndSummarize(search);
+
+      setResults(results);
+    } catch (error) {
+      console.log("Error:", error);
+    } finally {
+      setIsLoading(false); // This will be executed regardless of success or error
+    }
   };
 
-  const handleCloseModal = () => {
-    setIsOpen(false);
+  const handleCancel = () => {
+    setResults([]);
+    setSearch("");
   };
 
   return (
     <div className="flex items-start justify-center  px-4 pt-4  text-center sm:block sm:p-0">
-     
-
       <div className="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-900 sm:my-8 sm:w-full sm:max-w-sm sm:p-6 sm:align-middle">
-        <h3 className="text-lg font-medium leading-6 text-gray-800 capitalize dark:text-white" id="modal-title">Market data AI</h3>
-        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Search info from TechCrunch, Forbes, WSJ...</p>
+        <h3
+          className="text-lg font-medium leading-6 text-gray-800 capitalize dark:text-white"
+          id="modal-title"
+        >
+          Market data AI
+        </h3>
+
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+          Search info from TechCrunch, Forbes, WSJ...
+        </p>
 
         <form className="mt-4">
           <label className="block mt-3" htmlFor="email">
@@ -33,8 +118,8 @@ function MarketDataAI() {
               name="email"
               id="email"
               placeholder="Keywords"
-              value={email}
-              onChange={handleEmailChange}
+              value={search}
+              onChange={handleSearchChange}
               className="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300"
             />
           </label>
@@ -42,7 +127,8 @@ function MarketDataAI() {
           <div className="mt-4 sm:flex sm:items-center sm:-mx-2">
             <button
               type="button"
-              onClick={handleCloseModal}
+              onClick={handleCancel}
+              disabled={isLoading ? true : false}
               className="w-full px-4 py-2 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md sm:w-1/2 sm:mx-2 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40"
             >
               Cancel
@@ -51,13 +137,23 @@ function MarketDataAI() {
             <button
               type="button"
               onClick={handleSearch}
-              className="w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+              disabled={isLoading ? true : false}
+              className={`w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform ${
+                isLoading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-500"
+              } rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40`}
             >
               Search
             </button>
           </div>
         </form>
       </div>
+      {results.length > 0 && (
+        <div>
+          {results.map((result, index) => (
+            <ArticleBrief key={index} result={result} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -4,10 +4,6 @@ import { supabase } from "../../supabase";
 import AddProject from "./AddProject";
 import { useNavigate } from "react-router-dom";
 
-function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
 function formatDate(inputDateString) {
   const dateObject = new Date(inputDateString);
   const day = dateObject.getDate();
@@ -17,7 +13,7 @@ function formatDate(inputDateString) {
   return formattedDate;
 }
 
-function ProjectList({ projects, handleClickProjectId }) {
+function ProjectList({ projects }) {
   const { user } = useAuth();
   const [editingProjectId, setEditingProjectId] = useState(null);
   const [editedProjectName, setEditedProjectName] = useState("");

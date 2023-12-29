@@ -19,7 +19,7 @@ const pricingPlans = [
   },
   {
     title: "Team",
-    price: 0.15,
+    price: 0.75,
     description: "Everything you need for a growing business",
     features: ["5 users", "Plan features", "Product support"],
     isPopular: false,

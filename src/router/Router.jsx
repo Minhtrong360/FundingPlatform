@@ -12,6 +12,7 @@ import NewsComponent from "../pages/test";
 import ChatBotTest from "../pages/FounderGitbook/chatbottest";
 import Founder from "../pages/FounderGitbook/Founder";
 import NotFoundPage from "../pages/NotFoundPage";
+import PaymentSuccess from "../pages/PaymentSuccess";
 
 function Router() {
   return (
@@ -29,6 +30,7 @@ function Router() {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/update-password" element={<UpdatePassword />} />
       <Route path="/content" element={<NewsComponent />} />
+      <Route path="/success" element={<PaymentSuccess />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

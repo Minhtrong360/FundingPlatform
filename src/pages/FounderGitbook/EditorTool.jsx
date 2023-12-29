@@ -4,11 +4,13 @@ import { BlockNoteView, useBlockNote } from "@blocknote/react";
 import "@blocknote/core/style.css";
 import { supabase } from "../../supabase";
 import { useParams } from "react-router-dom";
+import { CheckOutlined } from "@ant-design/icons";
 
 export default function App() {
   const [blocks, setBlocks] = useState([]);
   const [editorError, setEditorError] = useState("");
-  const [isLoading, setIsLoading] = useState(true); // Thêm trạng thái isLoading
+  const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
+  const [isSaved, setIsSaved] = useState(false);
   const params = useParams();
 
   useEffect(() => {
@@ -61,19 +63,37 @@ export default function App() {
   const handleSave = async () => {
     try {
       if (params) {
-        // Kiểm tra xem project có tồn tại không
+        // Set isLoading to true to disable the button and show loading indicator
+        setIsLoading(true);
+
         const { data, error } = await supabase
           .from("projects")
           .update({ markdown: blocks })
           .match({ id: params.id });
+
         if (error) {
           setEditorError(error);
         } else {
           setBlocks(data);
+
+          // Set isSaved to true after a successful save
+          setIsSaved(true);
+
+          // Reset isLoading to false and enable the button
+          setIsLoading(false);
+
+          // Reset isSaved to false after 1 second
+          setTimeout(() => {
+            setIsSaved(false);
+          }, 1000);
         }
       }
     } catch (error) {
       setEditorError(error);
+
+      // Reset isLoading and isSaved to false in case of an error
+      setIsLoading(false);
+      setIsSaved(false);
     }
   };
 
@@ -90,8 +110,19 @@ export default function App() {
         <button
           className={`flex justify-center mt-28 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
           onClick={handleSave}
+          disabled={isLoading} // Disable the button when isLoading is true
         >
-          Save
+          {isLoading ? ( // Show loading indicator when isLoading is true
+            <div className="flex items-center">
+              <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-900 mr-2"></div>
+              Saving...
+            </div>
+          ) : isSaved ? ( // Show green checkmark when isSaved is true
+            <CheckOutlined style={{ fontSize: "24px" }} />
+          ) : (
+            // Show "Save" text when isLoading is false and isSaved is false
+            "Save"
+          )}
         </button>
       </div>
     </div>

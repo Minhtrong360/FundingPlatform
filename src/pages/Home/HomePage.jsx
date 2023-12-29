@@ -1,103 +1,13 @@
 import "@blocknote/core/style.css";
 import "react-datepicker/dist/react-datepicker.css";
-import { PostHogProvider } from "posthog-js/react";
 
 import { useEffect, useState } from "react";
 import Footer from "./Footer";
-import { useNavigate } from "react-router-dom";
+
 import Header from "./Header";
 import PricingSection from "./Pricing";
-
-const NavbarItem = ({ href, children, isActive, onClick }) => (
-  <li>
-    <a
-      href={href}
-      className={`hover:cursor-pointer block py-2 px-3 rounded md:p-0 ${
-        isActive
-          ? "text-white bg-blue-600 rounded md:bg-transparent md:text-blue-700 md:dark:text-blue-500"
-          : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-      }`}
-      aria-current={isActive ? "page" : undefined}
-      onClick={onClick}
-    >
-      {children}
-    </a>
-  </li>
-);
-
-const NavbarButton = ({ children, onClick, className }) => (
-  <button
-    type="button"
-    onClick={onClick}
-    className={`text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-600 dark:focus:ring-blue-800 ${className}`}
-  >
-    {children}
-  </button>
-);
-
-const NavBar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
-
-  return (
-    <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600 z-1">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <span className="self-center text-3xl font-semibold whitespace-nowrap dark:text-white">
-            BeeKrowd
-          </span>
-        </a>
-        <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-          <NavbarButton onClick={() => navigate("/login")}>
-            Get started
-          </NavbarButton>
-          <button
-            data-collapse-toggle="navbar-sticky"
-            type="button"
-            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-controls="navbar-sticky"
-            aria-expanded={isOpen}
-          >
-            <span className="sr-only">Open main menu</span>
-            <svg
-              className="w-5 h-5"
-              aria-hidden="true"
-              fill="none"
-              viewBox="0 0 17 14"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M1 1h15M1 7h15M1 13h15"
-              />
-            </svg>
-          </button>
-        </div>
-        <div
-          className={`items-center justify-between hidden w-full md:flex md:w-auto md:order-1 ${
-            isOpen ? "block" : "hidden"
-          }`}
-          id="navbar-sticky"
-        >
-          <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-            <NavbarItem href="#" isActive>
-              Home
-            </NavbarItem>
-            <NavbarItem onClick={() => navigate("/founder")}>
-              For Founder
-            </NavbarItem>
-            <NavbarItem href="#">Services</NavbarItem>
-            <NavbarItem href="#">Contact</NavbarItem>
-          </ul>
-        </div>
-      </div>
-    </nav>
-  );
-};
+import { supabase } from "../../supabase";
+import { useAuth } from "../../context/AuthContext";
 
 const HeroSection = () => {
   return (
@@ -175,57 +85,6 @@ const HeroSection = () => {
     </div>
   );
 };
-
-function Stats() {
-  return (
-    <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto mt-24 flex justify-center items-center">
-      <div className="grid items-center lg:grid-cols-12 gap-6 lg:gap-12">
-        <div className="lg:col-span-4">
-          <div className="lg:pe-6 xl:pe-12">
-            <p className="text-6xl font-bold leading-10 text-blue-600">
-              92%
-              <span className="ms-1 inline-flex items-center gap-x-1 bg-gray-200 font-medium text-gray-800 text-xs leading-4 rounded-full py-0.5 px-2 dark:bg-gray-800 dark:text-gray-300">
-                <svg
-                  className="flex-shrink-0 w-4 h-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01-.622-.636zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708z" />
-                </svg>
-                +7% this month
-              </span>
-            </p>
-            <p className="mt-2 sm:mt-3 text-gray-500">
-              of U.S. adults have bought from businesses using Space
-            </p>
-          </div>
-        </div>
-
-        <div className="lg:col-span-8 relative lg:before:absolute lg:before:top-0 lg:before:-start-12 lg:before:w-px lg:before:h-full lg:before:bg-gray-200 lg:before:dark:bg-gray-700">
-          <div className="grid gap-6 grid-cols-2 md:grid-cols-4 lg:grid-cols-3 sm:gap-8">
-            <div>
-              <p className="text-3xl font-semibold text-blue-600">99.95%</p>
-              <p className="mt-1 text-gray-500">in fulfilling orders</p>
-            </div>
-
-            <div>
-              <p className="text-3xl font-semibold text-blue-600">2,000+</p>
-              <p className="mt-1 text-gray-500">partner with Preline</p>
-            </div>
-
-            <div>
-              <p className="text-3xl font-semibold text-blue-600">85%</p>
-              <p className="mt-1 text-gray-500">this year alone</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function Features() {
   return (
@@ -672,15 +531,42 @@ const FAQ = () => {
 // create a function that returns all the components
 
 const HomePage = () => {
-  const options = {
-    api_host: process.env.REACT_APP_PUBLIC_POSTHOG_HOST,
-  };
+  const { user } = useAuth();
+  // Khởi tạo trạng thái currentUser với giá trị ban đầu là null
+  const [currentUser, setCurrentUser] = useState(null);
+
+  // Sử dụng useEffect để lấy thông tin người dùng khi trang được tải
+  useEffect(() => {
+    // Import Supabase client và thiết lập nó
+
+    const fetchProjects = async () => {
+      try {
+        console.log("user.id", user.id);
+
+        let { data: users, error } = await supabase
+          .from("users")
+          .select("*")
+
+          // Filters
+          .eq("id", user.id);
+
+        if (error) {
+          console.log("error", error);
+          throw error;
+        }
+
+        setCurrentUser(users[0]);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
+
+    if (user) {
+      fetchProjects();
+    }
+  }, [user]);
 
   return (
-    // <PostHogProvider
-    //   apiKey={process.env.REACT_APP_PUBLIC_POSTHOG_KEY}
-    //   options={options}
-    // >
     <>
       <Header />
       <HeroSection />
@@ -689,10 +575,10 @@ const HomePage = () => {
       <ProfileCard />
       <HeroCard />
       <PricingSection />
+
       <FAQ />
       <Footer />
     </>
-    // </PostHogProvider>
   );
 };
 export default HomePage;

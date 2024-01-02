@@ -18,6 +18,7 @@ function ProjectList({ projects }) {
   const [editingProjectId, setEditingProjectId] = useState(null);
   const [editedProjectName, setEditedProjectName] = useState("");
   const [updatedProjects, setUpdatedProjects] = useState([]);
+  const [editedProjectStatus, setEditedProjectStatus] = useState(true); // Thêm state cho trường status
   const navigate = useNavigate();
   const handleProjectClick = (project) => {
     // Gọi hàm handleClickProjectId để truyền projectId lên thành phần cha
@@ -31,14 +32,15 @@ function ProjectList({ projects }) {
   const handleEditClick = (project) => {
     setEditingProjectId(project.id);
     setEditedProjectName(project.name);
+    setEditedProjectStatus(project.status); // Thiết lập giá trị ban đầu cho trường status
   };
 
   const handleSaveClick = async (project) => {
     try {
       // Gửi yêu cầu cập nhật tên dự án đến Supabase
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("projects")
-        .update({ name: editedProjectName })
+        .update({ name: editedProjectName, status: editedProjectStatus })
         .eq("id", project.id);
 
       if (error) {
@@ -52,6 +54,7 @@ function ProjectList({ projects }) {
         if (updatedProjectIndex !== -1) {
           const updatedProject = { ...updatedProjects[updatedProjectIndex] };
           updatedProject.name = editedProjectName;
+          updatedProject.status = editedProjectStatus;
           const updatedProjectsCopy = [...updatedProjects];
           updatedProjectsCopy[updatedProjectIndex] = updatedProject;
           setUpdatedProjects(updatedProjectsCopy);
@@ -93,6 +96,21 @@ function ProjectList({ projects }) {
       console.error("Error deleting project:", error);
       // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }
+  };
+
+  useEffect(() => {
+    // Sắp xếp danh sách các dự án theo thời gian tạo mới nhất đến cũ nhất
+    const sortedProjects = [...projects].sort((a, b) => {
+      const dateA = new Date(a.created_at);
+      const dateB = new Date(b.created_at);
+      return dateB - dateA;
+    });
+
+    setUpdatedProjects(sortedProjects);
+  }, [projects]);
+
+  const handleStatusToggle = () => {
+    setEditedProjectStatus((prevStatus) => !prevStatus); // Chuyển đổi giữa Public và Private
   };
 
   return (
@@ -151,7 +169,7 @@ function ProjectList({ projects }) {
                         scope="col"
                         className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
                       >
-                        Purchase
+                        Status
                       </th>
                       <th
                         scope="col"
@@ -200,14 +218,38 @@ function ProjectList({ projects }) {
                           {formatDate(project.created_at)}
                         </td>
                         {/* <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">{project.status}</td> */}
-                        <td className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap">
+                        <td className=" py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap">
                           <div className="flex items-center gap-x-2">
                             {user.email}
                           </div>
                         </td>
-                        <td className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap">
-                          Free
+
+                        <td
+                          className={`px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap ${
+                            editingProjectId !== project.id ? "" : "hidden"
+                          }`}
+                        >
+                          {project.status ? "Public" : "Private"}
                         </td>
+                        <td
+                          className={`px-4 py-4 text-sm whitespace-nowrap ${
+                            editingProjectId === project.id ? "" : "hidden"
+                          }`}
+                        >
+                          <div className="flex items-center gap-x-2">
+                            <button
+                              onClick={handleStatusToggle}
+                              className={`${
+                                editedProjectStatus
+                                  ? "bg-green-500"
+                                  : "bg-red-500"
+                              } text-white px-2 py-1 rounded-md hover:bg-opacity-80 transition-all`}
+                            >
+                              {editedProjectStatus ? "Public" : "Private"}
+                            </button>
+                          </div>
+                        </td>
+
                         <td className="px-4 py-4 text-sm whitespace-nowrap">
                           <div className="flex items-center gap-x-6">
                             {editingProjectId === project.id ? (

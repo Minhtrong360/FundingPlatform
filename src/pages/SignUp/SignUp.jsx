@@ -4,6 +4,7 @@ import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
 
 const HeroSignUp = () => {
+  const [rememberMe, setRememberMe] = useState(false);
   const auth = useAuth();
   const navigate = useNavigate();
   const signInWitGG = async (e) => {
@@ -107,7 +108,7 @@ const HeroSignUp = () => {
                       <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                         Already have an account?
                         <a
-                          className="text-blue-600 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                          className="ml-1 text-blue-600 decoration-2 hover:underline hover:cursor-pointer font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                           onClick={() => navigate("/login")}
                         >
                           Sign in here
@@ -186,18 +187,18 @@ const HeroSignUp = () => {
 
                       {/* Checkbox and Terms */}
                       <div className="mt-5 flex items-center">
-                        <div className="flex">
+                        <div className="flex items-center">
                           <input
                             id="remember-me"
                             name="remember-me"
                             type="checkbox"
-                            className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 pointer-events-none focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
+                            className="shrink-0 border-gray-200 rounded text-blue-600 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
+                            checked={rememberMe}
+                            onChange={(e) => setRememberMe(e.target.checked)}
                           />
-                        </div>
-                        <div className="ms-3">
                           <label
                             htmlFor="remember-me"
-                            className="text-sm dark:text-white"
+                            className="ml-3 text-sm dark:text-white"
                           >
                             I accept the{" "}
                             <a
@@ -208,6 +209,8 @@ const HeroSignUp = () => {
                             </a>
                           </label>
                         </div>
+
+                        <div className="ms-3"></div>
                       </div>
 
                       {/* Submit Button */}

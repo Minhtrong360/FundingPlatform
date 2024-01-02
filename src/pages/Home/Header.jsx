@@ -109,7 +109,7 @@ const Navbar = () => {
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <a
             onClick={(e) => handleClickHome(e)}
-            className="font-semibold text-4xl text-blue-600 flex items-center space-x-3 rtl:space-x-reverse hover:cursor-pointer"
+            className="font-semibold text-2xl text-blue-600 flex items-center space-x-3 rtl:space-x-reverse hover:cursor-pointer"
           >
             BeeKrowd
           </a>

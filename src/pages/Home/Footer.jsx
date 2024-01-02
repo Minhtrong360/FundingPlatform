@@ -13,7 +13,7 @@ function Footer() {
       <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-5 text-center">
         <div>
           <a
-            className="font-semibold text-4xl text-blue-600 flex items-center space-x-3 rtl:space-x-reverse hover:cursor-pointer"
+            className="font-semibold text-2xl text-blue-600 flex items-center space-x-3 rtl:space-x-reverse hover:cursor-pointer"
             href="#"
             aria-label="Brand"
           >
@@ -52,7 +52,7 @@ function Footer() {
             href="#"
           >
             <GoogleOutlined
-              style={{ color: "rgb(0, 116, 212)", fontSize: "24px" }}
+              style={{ color: "rgb(37, 99, 235)", fontSize: "24px" }}
             />
           </a>
           <a
@@ -60,7 +60,7 @@ function Footer() {
             href="#"
           >
             <FacebookOutlined
-              style={{ color: "rgb(0, 116, 212)", fontSize: "24px" }}
+              style={{ color: "rgb(37, 99, 235)", fontSize: "24px" }}
             />
           </a>
           <a
@@ -68,7 +68,7 @@ function Footer() {
             href="#"
           >
             <TwitterOutlined
-              style={{ color: "rgb(0, 116, 212)", fontSize: "24px" }}
+              style={{ color: "rgb(37, 99, 235)", fontSize: "24px" }}
             />
           </a>
           <a
@@ -76,7 +76,7 @@ function Footer() {
             href="#"
           >
             <LinkedinOutlined
-              style={{ color: "rgb(0, 116, 212)", fontSize: "24px" }}
+              style={{ color: "rgb(37, 99, 235)", fontSize: "24px" }}
             />
           </a>
         </div>

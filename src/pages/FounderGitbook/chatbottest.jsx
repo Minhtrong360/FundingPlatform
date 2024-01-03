@@ -5,10 +5,22 @@ import "@blocknote/core/style.css";
 
 import "./custom-ant-design.css";
 // import export icon from antd
-
+import { YoutubeOutlined } from "@ant-design/icons";
 import MarketDataAI from "../marketDataAI";
 import SideBar from "../DashBoard/SideBar";
-import EditorTool from "../FounderGitbook/EditorTool";
+import {
+  defaultBlockSchema,
+  defaultBlockSpecs,
+  defaultProps,
+} from "@blocknote/core";
+import {
+  BlockNoteView,
+  useBlockNote,
+  createReactBlockSpec,
+  ReactSlashMenuItem,
+  getDefaultReactSlashMenuItems,
+} from "@blocknote/react";
+// import EditorTool from "../FounderGitbook/EditorTool";
 
 const VideoComponent = ({ videoUrl }) => {
   return (
@@ -538,132 +550,132 @@ function StatBadge() {
   );
 }
 
-// function EditorTool() {
-//   // Create the YouTube Link block
-//   const YouTubeLinkBlock = createReactBlockSpec(
-//     {
-//       type: "youtubeLink",
-//       propSchema: {
-//         ...defaultProps,
-//         videoId: {
-//           default: "",
-//         },
-//       },
-//       content: "none",
-//     },
-//     {
-//       render: ({ block }) => {
-//         return (
-//           <div>
-//             {block.props.videoId && (
-//               <iframe
-//                 width="560"
-//                 height="315"
-//                 src={`https://www.youtube.com/embed/${block.props.videoId}`}
-//                 title="YouTube video player"
-//                 frameBorder="0"
-//                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-//                 allowFullScreen
-//               ></iframe>
-//             )}
-//           </div>
-//         );
-//       },
-//       toExternalHTML: ({ block }) => {
-//         // Generate the HTML code for the YouTube video player
-//         if (block.props.videoId) {
-//           return `<div><iframe width="560" height="315" src="https://www.youtube.com/embed/${block.props.videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
-//         }
-//         return "";
-//       },
-//       parse: (element) => {
-//         // Parse the video ID from the HTML code if available
-//         const iframe = element.querySelector("iframe");
-//         if (iframe) {
-//           const src = iframe.getAttribute("src");
-//           const videoIdMatch = src.match(/embed\/([^?]+)/);
-//           if (videoIdMatch) {
-//             return {
-//               videoId: videoIdMatch[1],
-//             };
-//           }
-//         }
-//       },
-//     }
-//   );
+function EditorTool() {
+  // Create the YouTube Link block
+  const YouTubeLinkBlock = createReactBlockSpec(
+    {
+      type: "youtubeLink",
+      propSchema: {
+        ...defaultProps,
+        videoId: {
+          default: "",
+        },
+      },
+      content: "none",
+    },
+    {
+      render: ({ block }) => {
+        return (
+          <div>
+            {block.props.videoId && (
+              <iframe
+                width="560"
+                height="315"
+                src={`https://www.youtube.com/embed/${block.props.videoId}`}
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            )}
+          </div>
+        );
+      },
+      toExternalHTML: ({ block }) => {
+        // Generate the HTML code for the YouTube video player
+        if (block.props.videoId) {
+          return `<div><iframe width="560" height="315" src="https://www.youtube.com/embed/${block.props.videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+        }
+        return "";
+      },
+      parse: (element) => {
+        // Parse the video ID from the HTML code if available
+        const iframe = element.querySelector("iframe");
+        if (iframe) {
+          const src = iframe.getAttribute("src");
+          const videoIdMatch = src.match(/embed\/([^?]+)/);
+          if (videoIdMatch) {
+            return {
+              videoId: videoIdMatch[1],
+            };
+          }
+        }
+      },
+    }
+  );
 
-//   // Our block schema, which contains the configs for blocks that we want our
-//   // editor to use.
-//   const blockSchema = {
-//     // Adds all default blocks.
-//     ...defaultBlockSchema,
-//     // Adds the YouTube Link block.
-//     youtubeLink: YouTubeLinkBlock.config,
-//   };
+  // Our block schema, which contains the configs for blocks that we want our
+  // editor to use.
+  const blockSchema = {
+    // Adds all default blocks.
+    ...defaultBlockSchema,
+    // Adds the YouTube Link block.
+    youtubeLink: YouTubeLinkBlock.config,
+  };
 
-//   // Our block specs, which contain the configs and implementations for blocks
-//   // that we want our editor to use.
-//   const blockSpecs = {
-//     // Adds all default blocks.
-//     ...defaultBlockSpecs,
-//     // Adds the YouTube Link block.
-//     youtubeLink: YouTubeLinkBlock,
-//   };
+  // Our block specs, which contain the configs and implementations for blocks
+  // that we want our editor to use.
+  const blockSpecs = {
+    // Adds all default blocks.
+    ...defaultBlockSpecs,
+    // Adds the YouTube Link block.
+    youtubeLink: YouTubeLinkBlock,
+  };
 
-//   // Creates a slash menu item for inserting a YouTube Link block.
-//   const insertYouTubeLink: ReactSlashMenuItem<typeof blockSchema> = {
-//     name: "Insert YouTube Link",
-//     execute: (editor) => {
-//       const videoUrl = prompt("Enter YouTube video URL"); // Prompt the user for the video URL
+  // Creates a slash menu item for inserting a YouTube Link block.
+  const insertYouTubeLink: ReactSlashMenuItem<typeof blockSchema> = {
+    name: "YouTube",
+    execute: (editor) => {
+      const videoUrl = prompt("Enter YouTube video URL"); // Prompt the user for the video URL
 
-//       if (videoUrl) {
-//         // Parse the video ID from the URL using a regular expression
-//         const videoIdMatch = videoUrl.match(
-//           /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?feature=player_embedded&v=|watch\?feature=player_embedded&v=|watch\?v=|watch\?v=))([^&?\s]+)/
-//         );
+      if (videoUrl) {
+        // Parse the video ID from the URL using a regular expression
+        const videoIdMatch = videoUrl.match(
+          /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?feature=player_embedded&v=|watch\?feature=player_embedded&v=|watch\?v=|watch\?v=))([^&?\s]+)/
+        );
 
-//         const videoId = videoIdMatch ? videoIdMatch[1] : null;
+        const videoId = videoIdMatch ? videoIdMatch[1] : null;
 
-//         if (videoId) {
-//           // Insert the YouTube Link block with the extracted video ID
-//           editor.insertBlocks(
-//             [
-//               {
-//                 type: "youtubeLink",
-//                 props: {
-//                   videoId: videoId,
-//                 },
-//               },
-//             ],
-//             editor.getTextCursorPosition().block,
-//             "after"
-//           );
-//         } else {
-//           alert("Invalid YouTube video URL. Please provide a valid URL.");
-//         }
-//       }
-//     },
-//     aliases: ["youtube", "video", "link"],
-//     group: "Other",
-//     icon: <YouTubeIcon />, // Assuming you have a video icon component
-//   };
+        if (videoId) {
+          // Insert the YouTube Link block with the extracted video ID
+          editor.insertBlocks(
+            [
+              {
+                type: "youtubeLink",
+                props: {
+                  videoId: videoId,
+                },
+              },
+            ],
+            editor.getTextCursorPosition().block,
+            "after"
+          );
+        } else {
+          alert("Invalid YouTube video URL. Please provide a valid URL.");
+        }
+      }
+    },
+    aliases: ["youtube", "video", "link"],
+    group: "Other",
+    icon: <YoutubeOutlined />, // Assuming you have a video icon component
+  };
 
-//   // Creates a new editor instance.
-//   const editor = useBlockNote({
-//     // Tells BlockNote which blocks to use.
-//     blockSpecs: blockSpecs,
-//     slashMenuItems: [
-//       ...getDefaultReactSlashMenuItems(blockSchema),
-//       insertYouTubeLink,
-//     ],
-//   });
+  // Creates a new editor instance.
+  const editor = useBlockNote({
+    // Tells BlockNote which blocks to use.
+    blockSpecs: blockSpecs,
+    slashMenuItems: [
+      ...getDefaultReactSlashMenuItems(blockSchema),
+      insertYouTubeLink,
+    ],
+  });
 
-//   // Renders the editor instance using a React component.
+  // Renders the editor instance using a React component.
 
-//   return (
-//     <BlockNoteView editor={editor} theme={"light"} style={{ width: "80%" }} />
-//   );
-// }
+  return (
+    <BlockNoteView editor={editor} theme={"light"} style={{ width: "80%" }} />
+  );
+}
 
 // CategorizedLinks component
 // function BadgeList() {
@@ -702,7 +714,7 @@ function Header() {
           Santa Pocket
         </h1>
       </div>
-      <div className="video-container flex justify-center">
+      <div className="video-container flex justify-center ">
         <iframe
           width="560"
           height="315"
@@ -910,16 +922,16 @@ const ChatBotTest = () => {
           <SideBar />
         </div>
         <div className="flex flex-col items-stretch w-[82%] max-md:w-full max-md:ml-0 mt-10">
-          <YoutubeAndForm />
-          <Stats />
+          {/* <YoutubeAndForm /> */}
+          {/* <Stats /> */}
           <div class="flex justify-center max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
             {/* <EditorTool /> */}
             <EditorTool />
           </div>
         </div>
-        <div className="flex flex-col  w-[25%] max-md:w-full max-md:ml-0 mr-4">
+        {/* <div className="flex flex-col  w-[25%] max-md:w-full max-md:ml-0 mr-4">
           <MarketDataAI />
-        </div>
+        </div> */}
       </div>
     </div>
   );

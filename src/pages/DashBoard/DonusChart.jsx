@@ -29,7 +29,7 @@ if ($chart) {
 return chart;
 }
 
-const DonutChart = () => {
+const DonutChart = ({ DonusSeries, Labels }) => {
     useEffect(() => {
       (function () {
         buildChart('#hs-donut-chart', () => ({
@@ -49,8 +49,8 @@ const DonutChart = () => {
               },
             },
           },
-          series: [36, 23,11, 30],
-          labels: ['Tailwind CSS', 'Preline UI','MUI' ,'Others'],
+          series: DonusSeries,
+          labels: Labels,
           legend: {
             show: false,
           },

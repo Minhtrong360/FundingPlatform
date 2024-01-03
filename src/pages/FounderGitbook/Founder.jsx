@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-import chatbot from "./chatbot.png";
-
 import "@blocknote/core/style.css";
-import ChatgptClone from "../ChatGPT/chatgpt";
 
-import EditorTool from "../FounderGitbook/EditorTool";
 import ProjectList from "./ProjectList";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";

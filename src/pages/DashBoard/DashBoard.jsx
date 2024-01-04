@@ -8,23 +8,7 @@ import { CreditCardOutlined } from "@ant-design/icons";
 import SideBar from "./SideBar";
 import ChartForm from "./DataInputTable";
 
-// ChartData.js
-// export const seriesData = [
-//   {
-//     name: "Income",
-//     data: [18000, 51000, 60000],
-//   },
-//   {
-//     name: "Outcome",
-//     data: [27000, 38000, 60000],
-//   },
-// ];
 
-// export const categoriesData = [
-//   "Jan 2023",
-//   "Feb 2023",
-//   "Mat 2023",
-// ];
 
 export const DonusSeries01 = [36, 23, 11, 30];
 export const labels = ["Startup", "VCs", "Investor", "Others"];

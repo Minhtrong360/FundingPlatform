@@ -209,7 +209,7 @@ function ChartForm() {
       <Chart
         options={chartOptions}
         series={chartSeries}
-        type="pie"
+        type="area"
         height={300}
       />
 

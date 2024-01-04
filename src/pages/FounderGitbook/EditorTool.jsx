@@ -35,17 +35,19 @@ const YouTubeLinkBlock = createReactBlockSpec(
   {
     render: ({ block }) => {
       return (
-        <div>
+        <div className=" flex justify-center relative w-full" style={{ paddingBottom: '56.25%' }}>
           {block.props.videoId && (
+            
             <iframe
-              width="560"
-              height="315"
+            class="absolute top-0 left-0 w-full h-full"
+              
               src={`https://www.youtube.com/embed/${block.props.videoId}`}
               title="YouTube video player"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
+           
           )}
         </div>
       );
@@ -141,7 +143,7 @@ export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [youtubeLink, setYoutubeLink] = useState(""); // State to store YouTube link
   const insertYouTubeLink = {
-    name: "Insert YouTube Link",
+    name: "Youtube",
     execute: (editor) => {
       openModal(); // Open the Modal
     },
@@ -263,6 +265,7 @@ export default function App() {
           editor={editor}
           theme={"light"}
           style={{ width: "80%" }}
+          // className="sm:w-full"
         />
       )}
 

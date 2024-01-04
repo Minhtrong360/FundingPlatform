@@ -14,6 +14,8 @@ import PaymentSuccess from "../pages/PaymentSuccess";
 
 import CompanyInfo from "../pages/FounderGitbook/companyInfo";
 import DetailPage from "../pages/FounderGitbook/DetailPage";
+
+import Trial from "../pages/DashBoard/trial";
 function Router() {
   return (
     <Routes>
@@ -33,6 +35,8 @@ function Router() {
       <Route path="/success" element={<PaymentSuccess />} />
       <Route path="*" element={<NotFoundPage />} />
       <Route path="/companyinput" element={<CompanyInfo />} />
+
+      <Route path="/trials" element={<Trial />} />
     </Routes>
   );
 }

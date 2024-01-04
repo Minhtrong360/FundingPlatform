@@ -13,7 +13,7 @@ import {
 import { CreditCardOutlined } from "@ant-design/icons";
 import apiService from "../../app/apiService";
 import { gapi } from "gapi-script";
-import LineChartForm from "../DashBoard/chartTest";
+
 
 const NavbarItem = ({ href, children, isActive, onClick }) => (
   <li>
@@ -1582,7 +1582,7 @@ const FundraisingRecords = () => {
           </div>
 
           <Table />
-          <LineChartForm />
+          
         </div>
       </div>
     </div>

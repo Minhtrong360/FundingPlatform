@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import HomePage from "../pages/Home/HomePage";
-import FounderGitbook from "../pages/FounderGitbook/FounderGitbook";
 
 import FundraisingRecords from "../pages/FundraisingRecords/FundraisingRecords";
 import Dashboard from "../pages/DashBoard/DashBoard";
@@ -8,12 +7,13 @@ import SignUp from "../pages/SignUp/SignUp";
 import Login from "../pages/Login/Login";
 import ForgotPassword from "../pages/SignUp/ForgotPassword";
 import UpdatePassword from "../pages/SignUp/UpdatePassword";
-import NewsComponent from "../pages/test";
+
 import ChatBotTest from "../pages/FounderGitbook/chatbottest";
 import Founder from "../pages/FounderGitbook/Founder";
 import NotFoundPage from "../pages/NotFoundPage";
 import PaymentSuccess from "../pages/PaymentSuccess";
-
+import PageLayout from "../pages/DashBoard/layout";
+import CompanyInfo from "../pages/FounderGitbook/companyInfo";
 function Router() {
   return (
     <Routes>
@@ -29,9 +29,10 @@ function Router() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/update-password" element={<UpdatePassword />} />
-      <Route path="/content" element={<NewsComponent />} />
+      {/* <Route path="/content" element={<ChatBotTest />} /> */}
       <Route path="/success" element={<PaymentSuccess />} />
       <Route path="*" element={<NotFoundPage />} />
+      <Route path="/companyinput" element={<CompanyInfo />} />
     </Routes>
   );
 }

@@ -9,7 +9,7 @@ const ImageDropdown = () => {
 
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-
+  console.log("user", user);
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -74,9 +74,11 @@ const ImageDropdown = () => {
         )}
 
         <span className="text-gray-600 font-medium truncate max-w-[7.5rem] dark:text-gray-400">
-          {user?.user_metadata?.full_name
-            ? user?.user_metadata?.full_name
-            : user.email}
+          {user?.user_metadata?.email
+            ? user?.user_metadata?.email
+            : user?.email
+            ? user?.email
+            : ""}
         </span>
         <svg
           className={`hs-dropdown-open:${isOpen ? "rotate-180" : ""} w-4 h-4`}

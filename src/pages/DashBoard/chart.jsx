@@ -327,8 +327,10 @@ function buildChart(id, shared, light, dark) {
 
 
 const Chart = ({ incomeData, outcomeData, xAxisCategories }) => {
+  console.log("1")
   useEffect(() => {
     const loadScript = () => {
+      console.log("2")
       const script = document.createElement("script");
       script.src = "https://preline.co/assets/js/hs-apexcharts-helpers.js";
       script.async = true;
@@ -340,6 +342,7 @@ const Chart = ({ incomeData, outcomeData, xAxisCategories }) => {
           buildChart(
             "#hs-multiple-area-charts",
             (mode) => ({
+              colors: ["#1C64F2", "#16BDCA", "#FDBA8C", "#E74694"],
               chart: {
                 height: 300,
                 type: "area",
@@ -415,7 +418,7 @@ const Chart = ({ incomeData, outcomeData, xAxisCategories }) => {
 
                     if (t) {
                       const newT = t.split(" ");
-                      t = `${newT[0]} ${newT[1].slice(0, 3)}`;
+                      t = `${newT[0]} ${newT[1]?.slice(0, 3)}`;
                     }
 
                     return t;
@@ -476,7 +479,7 @@ const Chart = ({ incomeData, outcomeData, xAxisCategories }) => {
                         fontWeight: 400,
                       },
                       offsetX: -2,
-                      formatter: (title) => title.slice(0, 3),
+                      formatter: (title) => title?.slice(0, 3),
                     },
                     yaxis: {
                       labels: {
@@ -525,6 +528,7 @@ const Chart = ({ incomeData, outcomeData, xAxisCategories }) => {
     };
 
     loadScript();
+    console.log("3")
   }, [incomeData, outcomeData, xAxisCategories]);
 
   return (

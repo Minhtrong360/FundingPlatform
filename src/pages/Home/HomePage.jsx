@@ -11,7 +11,7 @@ import { useAuth } from "../../context/AuthContext";
 
 const HeroSection = () => {
   return (
-    <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 z-0">
+    <div className="max-w-[85rem] mx-auto mt-24 px-4 sm:px-6 lg:px-8 z-0">
       <div className="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
         <div>
           <h1 className="block text-3xl font-bold text-gray-800 sm:text-4xl lg:text-6xl lg:leading-tight dark:text-white">
@@ -541,7 +541,7 @@ const HomePage = () => {
 
     const fetchProjects = async () => {
       try {
-        console.log("user.id", user.id);
+        console.log("user", user);
 
         let { data: users, error } = await supabase
           .from("users")

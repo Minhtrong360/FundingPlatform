@@ -7,6 +7,8 @@ import ApexCharts from 'apexcharts'
 // import sale, growth, user icon from antd
 import { UserOutlined, RiseOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import { CreditCardOutlined } from '@ant-design/icons'
+import { gapi } from 'gapi-script';
+import LineChartForm from "../DashBoard/chartTest";
 
 const NavbarItem = ({ href, children, isActive, onClick }) => (
     <li>
@@ -1131,6 +1133,7 @@ const BarChart1 = () => {
   useEffect(() => {
     (function () {
       buildChart('#hs-multiple-bar-charts', (mode) => ({
+        colors: ["#1C64F2", "#16BDCA", "#FDBA8C", "#E74694"],
         chart: {
           type: 'bar',
           height: 300,
@@ -1141,19 +1144,20 @@ const BarChart1 = () => {
             enabled: true
           }
         },
+       
         series: [
           {
             name: 'Income',
-            data: [23000, 44000, 55000, 57000, 56000, 61000, 58000, 63000, 60000, 66000, 34000, 78000]
+            data: [23000, 44000, 55000, 57000, 56000]
           }, {
             name: 'Outcome',
-            data: [17000, 76000, 85000, 101000, 98000, 87000, 105000, 91000, 114000, 94000, 67000, 66000]
+            data: [17000, 76000, 85000, 101000, 98000]
           }
         ],
         plotOptions: {
           bar: {
             horizontal: false,
-            columnWidth: '16px',
+            columnWidth: '60%',
             borderRadius: 0
           }
         },
@@ -1175,13 +1179,7 @@ const BarChart1 = () => {
             'March',
             'April',
             'May',
-            'June',
-            'July',
-            'August',
-            'September',
-            'October',
-            'November',
-            'December'
+           
           ],
           axisBorder: {
             show: false
@@ -1437,6 +1435,12 @@ return (
 );
 }
 
+
+
+
+
+
+
  
 const FundraisingRecords = () => {
 
@@ -1465,6 +1469,8 @@ const FundraisingRecords = () => {
             </div>
 
             <Table />
+            <LineChartForm/>
+       
             </div>
             </div>
         </div>

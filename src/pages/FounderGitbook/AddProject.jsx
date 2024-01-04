@@ -4,14 +4,17 @@ import { supabase } from "../../supabase";
 
 const Modal = ({ isOpen, onClose }) => {
   const [projectName, setProjectName] = useState("SpaceX");
+  const [isPublic, setIsPublic] = useState(true); // Thêm trạng thái cho lựa chọn Public/Private
   const { user } = useAuth();
+
   const handleCreate = async () => {
     try {
       // Tạo một dự án mới và lưu vào Supabase
-      const { data, error } = await supabase.from("projects").insert([
+      const { error } = await supabase.from("projects").insert([
         {
           name: projectName,
           user_id: user.id,
+          status: isPublic, // Thêm giá trị is_public
         },
       ]);
 
@@ -20,7 +23,7 @@ const Modal = ({ isOpen, onClose }) => {
         // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
       } else {
         // Tạo dự án thành công, đóng modal sau khi tạo
-        console.log("Project created:", projectName);
+
         onClose();
         window.location.reload();
       }
@@ -52,6 +55,35 @@ const Modal = ({ isOpen, onClose }) => {
               className="block w-full px-4 py-3 text-sm text-gray-700 border rounded-md"
             />
           </label>
+
+          <div className="mt-4">
+            <label className="block text-sm text-gray-700">Project Type:</label>
+            <div className="mt-2">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="projectType"
+                  value="public"
+                  checked={isPublic}
+                  onChange={() => setIsPublic(true)}
+                  className="form-radio text-blue-600 h-5 w-5"
+                />
+                <span className="ml-2 text-gray-700">Public</span>
+              </label>
+              <label className="inline-flex items-center ml-6">
+                <input
+                  type="radio"
+                  name="projectType"
+                  value="private"
+                  checked={!isPublic}
+                  onChange={() => setIsPublic(false)}
+                  className="form-radio text-red-600 h-5 w-5"
+                />
+                <span className="ml-2 text-gray-700">Private</span>
+              </label>
+            </div>
+          </div>
+
           <div className="mt-4 flex items-center gap-10">
             <button
               type="button"

@@ -35,7 +35,7 @@ const HeroSection = () => {
               className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               href="#"
             >
-              Contact sales team
+              See demo
             </a>
           </div>
           <div className="mt-6 lg:mt-10 grid grid-cols-2 gap-x-5">
@@ -97,8 +97,7 @@ function Features() {
           A data-centric platform for all
         </h3>
         <p className="mt-1 text-gray-600 dark:text-gray-400">
-          See how game-changing companies are making the most of every
-          engagement with Preline.
+        Empowering Data-Driven Decisions: Unleash the Potential of Your Data with Our Comprehensive Platform.
         </p>
       </div>
 
@@ -132,7 +131,7 @@ function Features() {
             />
             <div>
               <h5 className="text-sm text-gray-800 dark:text-gray-200">
-                By Lauren Waller
+                By Mr. Hung, Founder & CEO BOS.
               </h5>
             </div>
           </div>
@@ -167,7 +166,7 @@ function Features() {
             />
             <div>
               <h5 className="text-sm text-gray-800 dark:text-gray-200">
-                By Aaron Larsson
+                By Mr. Don, Angel Investor
               </h5>
             </div>
           </div>
@@ -202,7 +201,7 @@ function Features() {
             />
             <div>
               <h5 className="text-sm text-gray-800 dark:text-gray-200">
-                By Lauren Waller
+                By Lauren Waller, VC
               </h5>
             </div>
           </div>
@@ -295,7 +294,7 @@ const Search = () => {
                     name="hs-search-article-1"
                     id="hs-search-article-1"
                     className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
-                    placeholder="Search article"
+                    placeholder="Search company"
                   />
                 </div>
                 <div className="flex-[0_0_auto]">
@@ -392,7 +391,7 @@ const HeroCard = () => {
               className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               href="#"
             >
-              Contact sales team
+              See demo
             </a>
           </div>
           <div className="mt-6 lg:mt-10 grid grid-cols-2 gap-x-5">

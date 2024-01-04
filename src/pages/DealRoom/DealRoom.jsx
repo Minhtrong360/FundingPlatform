@@ -112,7 +112,7 @@ const Search = () => {
                     name="hs-search-article-1"
                     id="hs-search-article-1"
                     className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
-                    placeholder="Search article"
+                    placeholder="Search company"
                   />
                 </div>
                 <div className="flex-[0_0_auto]">

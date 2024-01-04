@@ -8,22 +8,22 @@ import Login from "../pages/Login/Login";
 import ForgotPassword from "../pages/SignUp/ForgotPassword";
 import UpdatePassword from "../pages/SignUp/UpdatePassword";
 
-import ChatBotTest from "../pages/FounderGitbook/DetailPage";
 import Founder from "../pages/FounderGitbook/Founder";
 import NotFoundPage from "../pages/NotFoundPage";
 import PaymentSuccess from "../pages/PaymentSuccess";
-import PageLayout from "../pages/DashBoard/layout";
+
 import CompanyInfo from "../pages/FounderGitbook/companyInfo";
+import DetailPage from "../pages/FounderGitbook/DetailPage";
 function Router() {
   return (
     <Routes>
       <Route index element={<HomePage />} />
 
       <Route path="/founder" element={<Founder />} />
-      <Route path="/founder/:id" element={<ChatBotTest />} />
+      <Route path="/founder/:id" element={<DetailPage />} />
       {/* <Route path="/dashboard" element={<DashBoardPage />} /> */}
       {/* <Route path="/project" element={<ProjectPage />} /> */}
-      <Route path="/Fundraising" element={<FundraisingRecords />} />
+      <Route path="/fundraising" element={<FundraisingRecords />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/dashboard" element={<Dashboard />} />

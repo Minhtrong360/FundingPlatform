@@ -6,9 +6,7 @@ import DonusChart1 from "./DonusChart01";
 import ApexCharts from "apexcharts";
 import { CreditCardOutlined } from "@ant-design/icons";
 import SideBar from "./SideBar";
-import ChartForm from "./DataInputTable"
-
-
+import ChartForm from "./DataInputTable";
 
 // ChartData.js
 // export const seriesData = [
@@ -28,9 +26,8 @@ import ChartForm from "./DataInputTable"
 //   "Mat 2023",
 // ];
 
-export const DonusSeries01 = [36, 23,11, 30];
-export const labels = ['Startup', 'VCs','Investor' ,'Others'];
-
+export const DonusSeries01 = [36, 23, 11, 30];
+export const labels = ["Startup", "VCs", "Investor", "Others"];
 
 const Dashboard = () => {
   // const [chartData, setChartData] = useState(null);
@@ -135,18 +132,18 @@ const Dashboard = () => {
     <div className="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
       <aside
         id="sidebar"
-        class="fixed top-0 left-0 z-20 flex flex-col flex-shrink-0 hidden w-64 h-full  font-normal duration-75 lg:flex transition-width"
+        className="fixed top-0 left-0 z-20 flex flex-col flex-shrink-0 hidden w-64 h-full  font-normal duration-75 lg:flex transition-width"
         aria-label="Sidebar"
       >
         <SideBar />
       </aside>
       <div
-        class="fixed inset-0 z-10 hidden bg-gray-900/50 dark:bg-gray-900/90"
+        className="fixed inset-0 z-10 hidden bg-gray-900/50 dark:bg-gray-900/90"
         id="sidebarBackdrop"
       ></div>
       <div
         id="main-content"
-        class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900"
+        className="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900"
       >
         <main>
           <div className="px-4 pt-6">
@@ -1007,7 +1004,7 @@ const Dashboard = () => {
                     </span>
                   </div>
                 </div>
-              
+
                 <DonutChart DonusSeries={DonusSeries01} Labels={labels} />
                 {/* <!-- Card Footer --> */}
                 <div className="flex items-center justify-between pt-4 lg:justify-evenly sm:pt-6">

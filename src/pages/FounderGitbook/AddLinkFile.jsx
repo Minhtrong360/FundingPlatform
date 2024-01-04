@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 const Modal = ({
   isOpen,
@@ -22,7 +23,11 @@ const Modal = ({
       return;
     }
     // Tạo một đối tượng mới và gọi handleAddLinks để thêm vào danh sách projectLinks
-    const newLink = { name: fileName, link: link, status: isPublic };
+    const newLink = {
+      name: fileName,
+      link: link,
+      status: isPublic,
+    };
     handleAddLinks(newLink);
     setLink("https://drive.google.com/file/d/0By_3Hl5Rv7fAb3FZMGZJS01"); // Đặt lại giá trị của link sau khi thêm
     setFileName("File 1"); // Đặt lại giá trị của fileName sau khi thêm
@@ -128,6 +133,7 @@ export default function AddLinkFile({
   if (isLoading) {
     return <div>Loading...</div>; // Hiển thị màn hình "isLoading" khi dữ liệu đang được tải
   }
+
   return (
     <div className="App">
       <button

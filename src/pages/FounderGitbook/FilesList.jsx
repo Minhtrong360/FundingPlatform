@@ -6,6 +6,7 @@ import AddLinkFile from "./AddLinkFile";
 import { useParams } from "react-router-dom";
 
 import InvitedUser from "../../components/InvitedUser";
+import apiService from "../../app/apiService";
 
 function FilesList() {
   const { id } = useParams();
@@ -79,6 +80,7 @@ function FilesList() {
   }, [id]);
 
   const handleAddLinks = async (newLink) => {
+    newLink.owner_email = user.email;
     try {
       // Tạo một dự án mới và lưu vào Supabase
       const { error } = await supabase.from("files").insert([
@@ -86,6 +88,7 @@ function FilesList() {
           name: newLink.name,
           link: newLink.link,
           user_id: user.id,
+          owner_email: user.email,
           status: newLink.status,
           project_id: id,
         },
@@ -168,6 +171,8 @@ function FilesList() {
   };
 
   const handleLinkClick = (link) => {
+    console.log("userID", user.id);
+    console.log("link.user_id", link.user_id);
     // Sử dụng hàm calculateCanClick để kiểm tra điều kiện
     if (calculateCanClick(link)) {
       // Nếu canClick là true, mở tab mới với đường dẫn từ link.link
@@ -175,16 +180,33 @@ function FilesList() {
     }
   };
 
+  const handleSendRequest = async (link) => {
+    console.log("link", link);
+    try {
+      const response = await apiService.post("/request", {
+        user_email: user.email,
+        file_name: link.name,
+        owner_email: link.owner_email,
+        project_name: currentProject.name,
+      });
+      if (response) {
+        console.log("OK");
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   return (
     <main className="w-full">
-      <div className="flex justify-end mr-5 mt-10 mb-5 items-end">
-        <AddLinkFile
-          isLoading={isLoading}
-          currentProject={currentProject}
-          handleAddLinks={handleAddLinks}
-        />
-      </div>
       <section className="container px-4 mx-auto">
+        <div className="flex justify-end my-5 items-end">
+          <AddLinkFile
+            isLoading={isLoading}
+            currentProject={currentProject}
+            handleAddLinks={handleAddLinks}
+          />
+        </div>
         <div className="flex flex-col">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
@@ -265,6 +287,12 @@ function FilesList() {
                         </td>
                         <td
                           className={`hover:cursor-pointer px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap`}
+                          style={{
+                            maxWidth: "150px", // Set the maximum width here
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
                         >
                           {link.name}
                         </td>
@@ -282,12 +310,24 @@ function FilesList() {
                               ? "pointer"
                               : "not-allowed",
                             color: calculateCanClick(link) ? "blue" : "black",
+                            maxWidth: "10rem", // Set the maximum width here
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
                           }}
                         >
                           {link.link}
                         </td>
-                        <td className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap max-w-[12rem]">
-                          {user.email}
+                        <td
+                          className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap"
+                          style={{
+                            maxWidth: "10rem", // Set the maximum width here
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {link.owner_email}
                         </td>
                         <td className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap">
                           {link.status ? "Public" : "Private"}
@@ -305,10 +345,17 @@ function FilesList() {
                           </div>
                         </td>
                         <td className="px-4 py-4 text-sm whitespace-nowrap">
-                          {calculateCanClick(link) ? (
+                          {link.status ? (
                             ""
-                          ) : link.user_id !== user.id ? (
-                            "Required Allowment"
+                          ) : link.user_id !== user.id &&
+                            !link.invited_user?.includes(user.id) ? (
+                            <button
+                              className={`text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-600 dark:focus:ring-blue-800 `}
+                              onClick={() => handleSendRequest(link)}
+                            >
+                              {" "}
+                              Send Request{" "}
+                            </button>
                           ) : (
                             <InvitedUser fileId={link.id} />
                           )}

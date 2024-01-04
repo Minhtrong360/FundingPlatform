@@ -1,53 +1,162 @@
-import React, { useEffect, useState } from "react";
-import ReactPlayer from "react-player";
+import React, { useEffect, useRef, useState } from "react";
 
 import "@blocknote/core/style.css";
 
 import "./custom-ant-design.css";
-// import export icon from antd
-import { YoutubeOutlined } from "@ant-design/icons";
-import MarketDataAI from "../marketDataAI";
-import SideBar from "../DashBoard/SideBar";
+
 import EditorTool from "./EditorTool";
-import { Progress } from "antd";
+
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import FilesList from "./FilesList";
 
-const HeroSection = ({
-  title,
-  description,
-  button1Text,
-  button2Text,
-  imageUrl,
-}) => {
+function useAutoResizeTextarea(initialValue) {
+  const [value, setValue] = useState(initialValue);
+  const textareaRef = useRef(null);
+
+  useEffect(() => {
+    const adjustHeight = () => {
+      const textarea = textareaRef.current;
+      if (textarea) {
+        textarea.style.height = "inherit";
+        textarea.style.height = `${textarea.scrollHeight}px`;
+      }
+    };
+
+    adjustHeight();
+    // Adjust height whenever the value changes
+  }, [value]);
+
+  const handleChange = (e) => {
+    setValue(e.target.value);
+  };
+
+  return { value, setValue, handleChange, textareaRef };
+}
+
+const HeroSection = ({ imageUrl }) => {
+  const [title, setTitle] = useState("BeeKrowd");
+  const [isEditing, setIsEditing] = useState(false);
+  const [description, setDescription] = useState(
+    "Fintech company the href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value."
+  );
+  const [buttonTexts, setButtonTexts] = useState([
+    "Get started",
+    "Contact sales team",
+  ]);
+  const addNewButton = () => {
+    setButtonTexts([...buttonTexts, "New feature"]);
+  };
+
+  const toggleEdit = () => {
+    setIsEditing(!isEditing);
+  };
+  // Handlers for the input changes
+  const handleTitleChange = (e) => setTitle(e.target.value);
+
+  const handleButtonTextChange = (index, e) => {
+    const newButtonTexts = [...buttonTexts];
+    newButtonTexts[index] = e.target.value;
+    setButtonTexts(newButtonTexts);
+  };
+
+  // Function to toggle edit mode
+  const handleDescriptionChange = (e) => setDescription(e.target.value);
+  const adjustHeight = (e) => {
+    e.target.style.height = "inherit"; // Reset the height
+    e.target.style.height = `${e.target.scrollHeight}px`; // Set the height to scroll height
+  };
   return (
     <div className="max-w-[85rem] mx-auto mt-24 px-4 sm:px-6 lg:px-8 z-0">
       <div className="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
-        <div>
-          <h1 className="block text-3xl font-bold text-gray-800 sm:text-4xl lg:text-6xl lg:leading-tight dark:text-white">
-            {title}
-          </h1>
-          <p className="mt-3 text-lg text-gray-800 dark:text-gray-400">
-            {description}
-          </p>
+        <div className="container mx-auto p-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center">
+            {isEditing ? (
+              <textarea
+                className="text-3xl font-bold text-gray-800 sm:text-4xl lg:text-6xl  dark:text-white"
+                style={{
+                  outline: "none",
+                  borderWidth: "0",
+                  resize: "none",
+                  overflow: "hidden ",
+                  border: "none", // Remove border
+                  boxShadow: "none", // Remove box shadow to avoid any focus indication
+                  lineHeight: "0.7",
+                }}
+                value={title}
+                onChange={(e) => {
+                  handleTitleChange(e);
+                  adjustHeight(e);
+                }}
+                onInput={adjustHeight}
+                onFocus={(e) => (e.target.style.border = "none")}
+                onBlur={(e) => (e.target.style.border = "none")}
+              />
+            ) : (
+              <h1 className="text-3xl font-bold text-gray-800 sm:text-4xl lg:text-6xl lg:leading-tight dark:text-white">
+                {title}
+              </h1>
+            )}
+            <button
+              onClick={toggleEdit}
+              className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50"
+            >
+              {isEditing ? "Save" : "Edit"}
+            </button>
+          </div>
+          {isEditing ? (
+            <textarea
+              className="mt-3 text-lg text-gray-800 dark:text-gray-400 bg-transparent w-full"
+              style={{
+                outline: "none",
+                borderWidth: "0",
+                resize: "none",
+                overflow: "hidden",
+                minHeight: "6em", // Minimum height to show placeholder text or single line
+                border: "none", // Remove border
+                boxShadow: "none", // Remove box shadow to avoid any focus indication
+              }}
+              value={description}
+              onChange={(e) => {
+                handleDescriptionChange(e);
+                adjustHeight(e);
+              }}
+              onInput={adjustHeight}
+              onFocus={(e) => (e.target.style.border = "none")}
+              onBlur={(e) => (e.target.style.border = "none")}
+            />
+          ) : (
+            <p className="mt-3 text-lg text-gray-800 dark:text-gray-400">
+              {description}
+            </p>
+          )}
 
           <div className="mt-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 w-full">
-            <a className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
-              {button1Text}
-              {/* Replace with actual SVG */}
-              <span>→</span>
-            </a>
-            <a className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
-              {button2Text}
-            </a>
-            <a className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
-              {button2Text}
-            </a>
-            <a className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
-              {button2Text}
-            </a>
+            {buttonTexts.map((text, index) =>
+              isEditing ? (
+                <input
+                  key={index}
+                  type="text"
+                  className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                  value={text}
+                  onChange={(e) => handleButtonTextChange(index, e)}
+                />
+              ) : (
+                <a
+                  key={index}
+                  className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                >
+                  {text}
+                </a>
+              )
+            )}
+            <button
+              onClick={addNewButton}
+              className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50"
+            >
+              +
+            </button>
           </div>
         </div>
 
@@ -64,63 +173,8 @@ const HeroSection = ({
   );
 };
 
-const VideoComponent = ({ videoUrl }) => {
-  return (
-    <div className="w-[100%] h-[100%]">
-      <ReactPlayer
-        url={videoUrl}
-        controls={true} // Display video controls
-        width="100%" // Set the width of the player
-        height="100%" // Set the height of the player
-      />
-    </div>
-  );
-};
-
-function ProgressBar({ progress }) {
-  // Calculate the width based on the progress value
-  const width = `${progress}%`;
-
-  return (
-    <div
-      className="flex w-full h-4 bg-gray-200 rounded-full overflow-hidden dark:bg-gray-700"
-      role="progressbar"
-      aria-valuenow={progress}
-      aria-valuemin="0"
-      aria-valuemax="100"
-    >
-      <div
-        className="flex flex-col justify-center rounded-full overflow-hidden bg-blue-600 text-xs text-white text-center whitespace-nowrap dark:bg-blue-500 transition duration-500"
-        style={{ width }}
-      >
-        {progress}%
-      </div>
-    </div>
-  );
-}
-
-function InputField({ name, value, onChange, label }) {
-  return (
-    <div className="mb-4">
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
-        {label}
-      </label>
-      <input
-        type="text"
-        name={name}
-        id={name}
-        value={value}
-        onChange={onChange}
-        className="mt-1 p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-      />
-    </div>
-  );
-}
-
 const DetailPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  console.log("sizebarr", isSidebarOpen);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -144,9 +198,6 @@ const DetailPage = () => {
           console.error(error);
           // Xử lý lỗi khi không thể lấy dự án
         } else {
-          console.log("user Id", user.id);
-          console.log("data.user_id", data.user_id);
-
           // Kiểm tra quyền truy cập của người dùng
           if (
             data.status === false &&
@@ -177,7 +228,6 @@ const DetailPage = () => {
     <div
       style={{ height: "600px" }}
       className="p-5 bg-white dark:bg-gray-900 antialiased !p-0"
-      onClick={toggleSidebar}
     >
       <div id="exampleWrapper" className="">
         <button
@@ -212,7 +262,10 @@ const DetailPage = () => {
           aria-label="Sidebar"
           aria-hidden={!isSidebarOpen}
         >
-          <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+          <div
+            className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800"
+            onClick={toggleSidebar}
+          >
             <ul className="space-y-2 font-medium">
               <li>
                 <a
@@ -237,17 +290,11 @@ const DetailPage = () => {
           </div>
         </aside>
 
-        <div className="p-4 sm:ml-64" onClick={toggleSidebar}>
+        <div className="p-4 sm:ml-64">
           <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
-            <HeroSection
-              title="BeeKrowd"
-              description="Fintech company the href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value."
-              button1Text="Get started"
-              button2Text="Contact sales team"
-              imageUrl="https://images.unsplash.com/photo-1633671475485-754e12f39817?q=80&w=700&h=800&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            />
+            <HeroSection imageUrl="https://images.unsplash.com/photo-1633671475485-754e12f39817?q=80&w=700&h=800&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
 
-            <div class="flex justify-center max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+            <div className="flex justify-center max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
               <EditorTool />
             </div>
             <FilesList />

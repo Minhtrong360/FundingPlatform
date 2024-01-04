@@ -5,7 +5,7 @@ import "@blocknote/core/style.css";
 
 import "./custom-ant-design.css";
 // import export icon from antd
-
+import { YoutubeOutlined } from "@ant-design/icons";
 import MarketDataAI from "../marketDataAI";
 import SideBar from "../DashBoard/SideBar";
 import EditorTool from "../FounderGitbook/EditorTool";
@@ -15,230 +15,117 @@ import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import FilesList from "./FilesList";
 
-// function Header() {
-//   return (
-//     <div>
-//       <p className="inline-block text-md font-medium bg-clip-text bg-gradient-to-l from-blue-600 to-violet-500 text-transparent dark:from-blue-400 dark:to-violet-400">
-//         BeeKrowd: A featured profile for 2024
-//       </p>
-//       <div className="mt-4 md:mb-12 max-w-2xl">
-//         <h1 className="mb-4 font-semibold text-gray-800 text-4xl lg:text-5xl dark:text-gray-200">
-//           Santa Pocket
-//         </h1>
-//       </div>
-//       <div className="video-container flex justify-center">
-//         <iframe
-//           width="560"
-//           height="315"
-//           src="https://www.youtube.com/embed/GP5jXj0O4OM"
-//           title="YouTube video player"
-//           frameBorder="0"
-//           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-//           allowFullScreen
-//         ></iframe>
-//       </div>
-//     </div>
-//   );
-// }
+const HeroSection = ({
+  title,
+  description,
+  button1Text,
+  button2Text,
+  imageUrl,
+}) => {
+  return (
+    <div className="max-w-[85rem] mx-auto mt-24 px-4 sm:px-6 lg:px-8 z-0">
+      <div className="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
+        <div>
+          <h1 className="block text-3xl font-bold text-gray-800 sm:text-4xl lg:text-6xl lg:leading-tight dark:text-white">
+            {title}
+          </h1>
+          <p className="mt-3 text-lg text-gray-800 dark:text-gray-400">
+            {description}
+          </p>
 
-// function SignupForm() {
-//   const [percentage, setPercentage] = useState(0);
-//   const [totalPercentage, setTotalPercentage] = useState(0);
+          <div className="mt-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 w-full">
+            <a className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              {button1Text}
+              {/* Replace with actual SVG */}
+              <span>→</span>
+            </a>
+            <a className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              {button2Text}
+            </a>
+            <a className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              {button2Text}
+            </a>
+            <a className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              {button2Text}
+            </a>
+          </div>
+        </div>
 
-//   // Hàm để cập nhật phần trăm cho mỗi trường và tổng phần trăm
-//   const updatePercentage = (value) => {
-//     const newTotalPercentage = totalPercentage + value;
-//     setTotalPercentage(newTotalPercentage);
-//     setPercentage(newTotalPercentage / 6); // Chia đều thành 6 trường
-//   };
+        <div className="relative ms-4">
+          <img
+            className="w-full rounded-md"
+            src={imageUrl}
+            alt="Image Description"
+          />
+          <div className="absolute inset-0 -z-[1] bg-gradient-to-tr from-gray-200 via-white/0 to-white/0 w-full h-full rounded-md mt-4 -mb-4 me-4 -ms-4 lg:mt-6 lg:-mb-6 lg:me-6 lg:-ms-6 dark:from-slate-800 dark:via-slate-900/0 dark:to-slate-900/0"></div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-//   return (
-//     <form>
-//       <div className="lg:max-w-lg lg:mx-auto lg:me-0 ms-auto">
-//         <div className="p-4 sm:p-7 flex flex-col bg-white rounded-lg shadow-lg dark:bg-slate-900">
-//           <div className="text-center">
-//             <h1 className="block text-2xl font-bold text-gray-800 dark:text-white">
-//               Fundraising info
-//             </h1>
-//             <Progress percent={percentage} />
-//           </div>
-//           <div className="mt-5">
-//             <div className="grid grid-cols-2 gap-4 ">
-//               {/* Input fields go here */}
-//               <div>
-//                 <div className="relative">
-//                   <input
-//                     type="text"
-//                     id="hs-hero-signup-form-floating-input-first-name"
-//                     className="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600 focus:pt-6 focus:pb-2 [&amp;:not(:placeholder-shown)]:pt-6 [&amp;:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2"
-//                     placeholder="John"
-//                     onBlur={() => updatePercentage(1)}
-//                   />
-//                   <label
-//                     htmlFor="hs-hero-signup-form-floating-input-first-name"
-//                     className="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none peer-focus:text-xs peer-focus:-translate-y-1.5 peer-focus:text-gray-500 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:-translate-y-1.5 peer-[:not(:placeholder-shown)]:text-gray-500"
-//                   >
-//                     Target amount
-//                   </label>
-//                 </div>
-//               </div>
-//               <div>
-//                 <div className="relative">
-//                   <input
-//                     type="text"
-//                     id="hs-hero-signup-form-floating-input-last-name"
-//                     className="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600 focus:pt-6 focus:pb-2 [&amp;:not(:placeholder-shown)]:pt-6 [&amp;:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2"
-//                     placeholder="Doe"
-//                   />
-//                   <label
-//                     htmlFor="hs-hero-signup-form-floating-input-last-name"
-//                     className="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none peer-focus:text-xs peer-focus:-translate-y-1.5 peer-focus:text-gray-500 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:-translate-y-1.5 peer-[:not(:placeholder-shown)]:text-gray-500"
-//                   >
-//                     Valuation
-//                   </label>
-//                 </div>
-//               </div>
-//               <div>
-//                 <div className="relative">
-//                   <input
-//                     type="email"
-//                     id="hs-hero-signup-form-floating-input-email"
-//                     className="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600 focus:pt-6 focus:pb-2 [&amp;:not(:placeholder-shown)]:pt-6 [&amp;:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2"
-//                     placeholder="you@email.com"
-//                   />
-//                   <label
-//                     htmlFor="hs-hero-signup-form-floating-input-email"
-//                     className="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none peer-focus:text-xs peer-focus:-translate-y-1.5 peer-focus:text-gray-500 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:-translate-y-1.5 peer-[:not(:placeholder-shown)]:text-gray-500"
-//                   >
-//                     Min ticket
-//                   </label>
-//                 </div>
-//               </div>
-//               <div>
-//                 <div className="relative">
-//                   <input
-//                     type="text"
-//                     id="hs-hero-signup-form-floating-input-company-name"
-//                     className="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600 focus:pt-6 focus:pb-2 [&amp;:not(:placeholder-shown)]:pt-6 [&amp;:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2"
-//                     placeholder="Preline"
-//                   />
-//                   <label
-//                     htmlFor="hs-hero-signup-form-floating-input-company-name"
-//                     className="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none peer-focus:text-xs peer-focus:-translate-y-1.5 peer-focus:text-gray-500 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:-translate-y-1.5 peer-[:not(:placeholder-shown)]:text-gray-500"
-//                   >
-//                     % Equity
-//                   </label>
-//                 </div>
-//               </div>
-//               <div>
-//                 <div className="relative">
-//                   <input
-//                     type="text"
-//                     id="hs-hero-signup-form-floating-input-first-name"
-//                     className="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600 focus:pt-6 focus:pb-2 [&amp;:not(:placeholder-shown)]:pt-6 [&amp;:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2"
-//                     placeholder="John"
-//                   />
-//                   <label
-//                     htmlFor="hs-hero-signup-form-floating-input-first-name"
-//                     className="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none peer-focus:text-xs peer-focus:-translate-y-1.5 peer-focus:text-gray-500 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:-translate-y-1.5 peer-[:not(:placeholder-shown)]:text-gray-500"
-//                   >
-//                     Valuation
-//                   </label>
-//                 </div>
-//               </div>
-//               <div>
-//                 <div className="relative">
-//                   <input
-//                     type="text"
-//                     id="hs-hero-signup-form-floating-input-first-name"
-//                     className="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600 focus:pt-6 focus:pb-2 [&amp;:not(:placeholder-shown)]:pt-6 [&amp;:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2"
-//                     placeholder="John"
-//                   />
-//                   <label
-//                     htmlFor="hs-hero-signup-form-floating-input-first-name"
-//                     className="absolute top-0 start-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent dark:text-white peer-disabled:opacity-50 peer-disabled:pointer-events-none peer-focus:text-xs peer-focus:-translate-y-1.5 peer-focus:text-gray-500 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:-translate-y-1.5 peer-[:not(:placeholder-shown)]:text-gray-500"
-//                   >
-//                     Offering type
-//                   </label>
-//                 </div>
-//               </div>
-//             </div>
+const VideoComponent = ({ videoUrl }) => {
+  return (
+    <div className="w-[100%] h-[100%]">
+      <ReactPlayer
+        url={videoUrl}
+        controls={true} // Display video controls
+        width="100%" // Set the width of the player
+        height="100%" // Set the height of the player
+      />
+    </div>
+  );
+};
 
-//             <div className="mt-5"></div>
-//           </div>
-//         </div>
-//       </div>
-//     </form>
-//   );
-// }
+function ProgressBar({ progress }) {
+  // Calculate the width based on the progress value
+  const width = `${progress}%`;
 
-// function YoutubeAndForm() {
-//   return (
-//     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-//       <div className=" grid items-end md:grid-cols-2 gap-8 lg:gap-12">
-//         <div>
-//           <Header />
-//         </div>
-//         <div>
-//           <SignupForm />
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
+  return (
+    <div
+      className="flex w-full h-4 bg-gray-200 rounded-full overflow-hidden dark:bg-gray-700"
+      role="progressbar"
+      aria-valuenow={progress}
+      aria-valuemin="0"
+      aria-valuemax="100"
+    >
+      <div
+        className="flex flex-col justify-center rounded-full overflow-hidden bg-blue-600 text-xs text-white text-center whitespace-nowrap dark:bg-blue-500 transition duration-500"
+        style={{ width }}
+      >
+        {progress}%
+      </div>
+    </div>
+  );
+}
 
-// function Stats() {
-//   return (
-//     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-//       <div className="grid items-center lg:grid-cols-12 gap-6 lg:gap-12">
-//         <div className="lg:col-span-4">
-//           <div className="lg:pe-6 xl:pe-12">
-//             <p className="text-6xl font-bold leading-10 text-blue-600">
-//               92%
-//               <span className="ms-1 inline-flex items-center gap-x-1 bg-gray-200 font-medium text-gray-800 text-xs leading-4 rounded-full py-0.5 px-2 dark:bg-gray-800 dark:text-gray-300">
-//                 <svg
-//                   className="flex-shrink-0 w-4 h-4"
-//                   xmlns="http://www.w3.org/2000/svg"
-//                   width="16"
-//                   height="16"
-//                   fill="currentColor"
-//                   viewBox="0 0 16 16"
-//                 >
-//                   <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01-.622-.636zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708z" />
-//                 </svg>
-//                 +7% this month
-//               </span>
-//             </p>
-//             <p className="mt-2 sm:mt-3 text-gray-500">
-//               of U.S. adults have bought from businesses using Space
-//             </p>
-//           </div>
-//         </div>
-
-//         <div className="lg:col-span-8 relative lg:before:absolute lg:before:top-0 lg:before:-start-12 lg:before:w-px lg:before:h-full lg:before:bg-gray-200 lg:before:dark:bg-gray-700">
-//           <div className="grid gap-6 grid-cols-2 md:grid-cols-4 lg:grid-cols-3 sm:gap-8">
-//             <div>
-//               <p className="text-3xl font-semibold text-blue-600">99.95%</p>
-//               <p className="mt-1 text-gray-500">in fulfilling orders</p>
-//             </div>
-
-//             <div>
-//               <p className="text-3xl font-semibold text-blue-600">2,000+</p>
-//               <p className="mt-1 text-gray-500">partner with Preline</p>
-//             </div>
-
-//             <div>
-//               <p className="text-3xl font-semibold text-blue-600">85%</p>
-//               <p className="mt-1 text-gray-500">this year alone</p>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
+function InputField({ name, value, onChange, label }) {
+  return (
+    <div className="mb-4">
+      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+        {label}
+      </label>
+      <input
+        type="text"
+        name={name}
+        id={name}
+        value={value}
+        onChange={onChange}
+        className="mt-1 p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+      />
+    </div>
+  );
+}
 
 const ChatBotTest = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  console.log("sizebarr", isSidebarOpen);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   const { id } = useParams();
   const { user } = useAuth();
   const [viewError, setViewError] = useState(false);
@@ -287,25 +174,87 @@ const ChatBotTest = () => {
   }
 
   return (
-    <div className="shadow-sm bg-white pb-12">
-      <div className="gap-5 flex max-md:flex-col max-md:items-stretch max-md:gap-0">
-        <div className="flex flex-col  w-[18%] max-md:w-full max-md:ml-0 mr-4">
-          <SideBar />
-        </div>
-        <div className="flex flex-col w-[82%] max-md:w-full max-md:ml-0 mt-10 mr-20">
-          {/* <YoutubeAndForm />
-          <Stats /> */}
+    <div
+      style={{ height: "600px" }}
+      className="p-5 bg-white dark:bg-gray-900 antialiased !p-0"
+      onClick={toggleSidebar}
+    >
+      <div id="exampleWrapper" className="">
+        <button
+          data-drawer-target="default-sidebar"
+          data-drawer-toggle="default-sidebar"
+          aria-controls="default-sidebar"
+          type="button"
+          className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+          onClick={toggleSidebar}
+        >
+          <span className="sr-only">Open sidebar</span>
+          <svg
+            className="w-6 h-6"
+            aria-hidden="true"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clipRule="evenodd"
+              fillRule="evenodd"
+              d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
+            ></path>
+          </svg>
+        </button>
 
-          {/* <EditorTool /> */}
-          <EditorTool />
-          <FilesList />
+        <aside
+          id="default-sidebar"
+          className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${
+            isSidebarOpen ? "" : "-translate-x-full sm:translate-x-0"
+          }`}
+          aria-label="Sidebar"
+          aria-hidden={!isSidebarOpen}
+        >
+          <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+            <ul className="space-y-2 font-medium">
+              <li>
+                <a
+                  href="#"
+                  className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                >
+                  <svg
+                    className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 22 21"
+                  >
+                    <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"></path>
+                    <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"></path>
+                  </svg>
+                  <span className="ms-3">Dashboard</span>
+                </a>
+              </li>
+              {/* Add more list items as needed */}
+            </ul>
+          </div>
+        </aside>
+
+        <div className="p-4 sm:ml-64" onClick={toggleSidebar}>
+          <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+            <HeroSection
+              title="BeeKrowd"
+              description="Fintech company the href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value."
+              button1Text="Get started"
+              button2Text="Contact sales team"
+              imageUrl="https://images.unsplash.com/photo-1633671475485-754e12f39817?q=80&w=700&h=800&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            />
+
+            <div class="flex justify-center max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+              <EditorTool />
+            </div>
+            <FilesList />
+          </div>
         </div>
-        {/* <div className="flex flex-col  w-[25%] max-md:w-full max-md:ml-0 mr-4">
-          <MarketDataAI />
-        </div> */}
       </div>
     </div>
   );
 };
-
 export default ChatBotTest;

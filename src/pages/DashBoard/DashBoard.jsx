@@ -1,12 +1,44 @@
 import React from "react";
 import Chart from "./chart";
 import DonutChart from "./DonusChart";
-
+import { useState } from "react";
 import DonusChart1 from "./DonusChart01";
 import ApexCharts from "apexcharts";
 import { CreditCardOutlined } from "@ant-design/icons";
 import SideBar from "./SideBar";
+import ChartForm from "./DataInputTable"
+
+
+
+// ChartData.js
+// export const seriesData = [
+//   {
+//     name: "Income",
+//     data: [18000, 51000, 60000],
+//   },
+//   {
+//     name: "Outcome",
+//     data: [27000, 38000, 60000],
+//   },
+// ];
+
+// export const categoriesData = [
+//   "Jan 2023",
+//   "Feb 2023",
+//   "Mat 2023",
+// ];
+
+export const DonusSeries01 = [36, 23,11, 30];
+export const labels = ['Startup', 'VCs','Investor' ,'Others'];
+
+
 const Dashboard = () => {
+  // const [chartData, setChartData] = useState(null);
+
+  // const handleDataSubmit = (data) => {
+  //   setChartData(data);
+  // };
+
   if (document.getElementById("traffic-by-device")) {
     const chart = new ApexCharts(
       document.getElementById("traffic-by-device"),
@@ -103,7 +135,7 @@ const Dashboard = () => {
     <div className="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
       <aside
         id="sidebar"
-        class="fixed top-0 left-0 z-20 flex flex-col flex-shrink-0 hidden w-64 h-full pt-16 font-normal duration-75 lg:flex transition-width"
+        class="fixed top-0 left-0 z-20 flex flex-col flex-shrink-0 hidden w-64 h-full  font-normal duration-75 lg:flex transition-width"
         aria-label="Sidebar"
       >
         <SideBar />
@@ -146,7 +178,10 @@ const Dashboard = () => {
                     </svg>
                   </div>
                 </div>
-                <Chart />
+                {/* <DataInputTable onSubmit={handleDataSubmit} />
+                {chartData && <Chart series={chartData.series} categories={chartData.categories} />} */}
+                {/* <Chart series={seriesData} categories={categoriesData} /> */}
+                <ChartForm />
                 {/* Card Footer --> */}
                 <div className="flex items-center justify-between pt-3 mt-4 border-t border-gray-200 sm:pt-6 dark:border-gray-700">
                   <div>
@@ -972,7 +1007,8 @@ const Dashboard = () => {
                     </span>
                   </div>
                 </div>
-                <DonutChart />
+              
+                <DonutChart DonusSeries={DonusSeries01} Labels={labels} />
                 {/* <!-- Card Footer --> */}
                 <div className="flex items-center justify-between pt-4 lg:justify-evenly sm:pt-6">
                   <div>

@@ -12,7 +12,8 @@ import ChatBotTest from "../pages/FounderGitbook/chatbottest";
 import Founder from "../pages/FounderGitbook/Founder";
 import NotFoundPage from "../pages/NotFoundPage";
 import PaymentSuccess from "../pages/PaymentSuccess";
-
+import PageLayout from "../pages/DashBoard/layout";
+import CompanyInfo from "../pages/FounderGitbook/companyInfo";
 function Router() {
   return (
     <Routes>
@@ -31,6 +32,7 @@ function Router() {
       {/* <Route path="/content" element={<ChatBotTest />} /> */}
       <Route path="/success" element={<PaymentSuccess />} />
       <Route path="*" element={<NotFoundPage />} />
+      <Route path="/companyinput" element={<CompanyInfo />} />
     </Routes>
   );
 }

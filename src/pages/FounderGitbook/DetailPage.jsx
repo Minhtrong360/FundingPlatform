@@ -296,9 +296,8 @@ const DetailPage = () => {
 
             <div className="flex justify-center max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
               <EditorTool />
-
-              <FilesList />
             </div>
+            <FilesList />
           </div>
         </div>
       </div>

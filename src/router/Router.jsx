@@ -8,7 +8,7 @@ import Login from "../pages/Login/Login";
 import ForgotPassword from "../pages/SignUp/ForgotPassword";
 import UpdatePassword from "../pages/SignUp/UpdatePassword";
 
-import ChatBotTest from "../pages/FounderGitbook/chatbottest";
+import ChatBotTest from "../pages/FounderGitbook/DetailPage";
 import Founder from "../pages/FounderGitbook/Founder";
 import NotFoundPage from "../pages/NotFoundPage";
 import PaymentSuccess from "../pages/PaymentSuccess";

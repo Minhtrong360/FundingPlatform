@@ -8,7 +8,7 @@ import "./custom-ant-design.css";
 import { YoutubeOutlined } from "@ant-design/icons";
 import MarketDataAI from "../marketDataAI";
 import SideBar from "../DashBoard/SideBar";
-import EditorTool from "../FounderGitbook/EditorTool";
+import EditorTool from "./EditorTool";
 import { Progress } from "antd";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -117,7 +117,7 @@ function InputField({ name, value, onChange, label }) {
   );
 }
 
-const ChatBotTest = () => {
+const DetailPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   console.log("sizebarr", isSidebarOpen);
@@ -257,4 +257,4 @@ const ChatBotTest = () => {
     </div>
   );
 };
-export default ChatBotTest;
+export default DetailPage;

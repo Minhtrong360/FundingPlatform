@@ -282,6 +282,10 @@ function FilesList() {
                               ? "pointer"
                               : "not-allowed",
                             color: calculateCanClick(link) ? "blue" : "black",
+                            maxWidth: "150px", // Set the maximum width here
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
                           }}
                         >
                           {link.link}

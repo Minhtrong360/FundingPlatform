@@ -64,63 +64,12 @@ const HeroSection = ({
   );
 };
 
-const VideoComponent = ({ videoUrl }) => {
-  return (
-    <div className="w-[100%] h-[100%]">
-      <ReactPlayer
-        url={videoUrl}
-        controls={true} // Display video controls
-        width="100%" // Set the width of the player
-        height="100%" // Set the height of the player
-      />
-    </div>
-  );
-};
 
-function ProgressBar({ progress }) {
-  // Calculate the width based on the progress value
-  const width = `${progress}%`;
-
-  return (
-    <div
-      className="flex w-full h-4 bg-gray-200 rounded-full overflow-hidden dark:bg-gray-700"
-      role="progressbar"
-      aria-valuenow={progress}
-      aria-valuemin="0"
-      aria-valuemax="100"
-    >
-      <div
-        className="flex flex-col justify-center rounded-full overflow-hidden bg-blue-600 text-xs text-white text-center whitespace-nowrap dark:bg-blue-500 transition duration-500"
-        style={{ width }}
-      >
-        {progress}%
-      </div>
-    </div>
-  );
-}
-
-function InputField({ name, value, onChange, label }) {
-  return (
-    <div className="mb-4">
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
-        {label}
-      </label>
-      <input
-        type="text"
-        name={name}
-        id={name}
-        value={value}
-        onChange={onChange}
-        className="mt-1 p-2 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-      />
-    </div>
-  );
-}
 
 const DetailPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  console.log("sizebarr", isSidebarOpen);
+ 
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -247,9 +196,9 @@ const DetailPage = () => {
               imageUrl="https://images.unsplash.com/photo-1633671475485-754e12f39817?q=80&w=700&h=800&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             />
 
-            <div class="flex justify-center max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+        
               <EditorTool />
-            </div>
+           
             <FilesList />
           </div>
         </div>

@@ -8,7 +8,7 @@ import {
 } from "@blocknote/react";
 import "@blocknote/core/style.css";
 import { supabase } from "../../supabase";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { CheckOutlined } from "@ant-design/icons";
 import {
   defaultBlockSchema,
@@ -251,7 +251,7 @@ export default function EditorTool() {
       }
     }
   };
-
+  const navigate = useNavigate();
   return (
     <div className="flex-grow justify-center max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
       {isLoading ? ( // Hiển thị thông báo tải dữ liệu khi isLoading là true
@@ -321,18 +321,22 @@ export default function EditorTool() {
           onCancel={closeModal}
         />
       )}
-      <div className="flex flex-col items-center justify-center">
+      <div style={{ position: "fixed", top: "20px", right: "1.2em" }}>
         <button
-          className={`flex justify-center mt-28 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+          className={`flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
           onClick={handleSave}
-          disabled={isLoading} // Disable the button when isLoading is true
+          disabled={isLoading}
         >
-          {isLoading ? ( // Show loading indicator when isLoading is true
-            <Spinner />
-          ) : (
-            // Show "Save" text when isLoading is false and isSaved is false
-            "Save"
-          )}
+          {isLoading ? <Spinner /> : "Save"}
+        </button>
+      </div>
+      <div style={{ position: "fixed", top: "20px", right: "6em" }}>
+        <button
+          className={`flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+          onClick={() => navigate(`/company/${params.id}`)}
+          disabled={isLoading}
+        >
+          {isLoading ? <Spinner /> : "Company Setting"}
         </button>
       </div>
     </div>

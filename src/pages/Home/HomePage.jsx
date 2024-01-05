@@ -11,7 +11,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <div className="max-w-[85rem] mx-auto mt-24 px-4 sm:px-6 lg:px-8 z-0">
       <div className="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
@@ -34,8 +34,10 @@ const HeroSection = () => {
               <span>→</span>
             </a>
             <a
-              className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-              onClick={()=> navigate(`/founder/${"eecb5b9d-75eb-48a6-8c77-f3325a53db5b"}`)}
+              className="hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              onClick={() =>
+                navigate(`/founder/${"eecb5b9d-75eb-48a6-8c77-f3325a53db5b"}`)
+              }
             >
               See demo
             </a>
@@ -99,7 +101,8 @@ function Features() {
           A data-centric platform for all
         </h3>
         <p className="mt-1 text-gray-600 dark:text-gray-400">
-        Empowering Data-Driven Decisions: Unleash the Potential of Your Data with Our Comprehensive Platform.
+          Empowering Data-Driven Decisions: Unleash the Potential of Your Data
+          with Our Comprehensive Platform.
         </p>
       </div>
 

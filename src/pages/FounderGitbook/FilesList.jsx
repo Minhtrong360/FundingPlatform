@@ -205,7 +205,7 @@ function FilesList() {
   return (
     <main className="w-full">
       <section className="container px-4 mx-auto">
-        <div className="flex justify-end my-5 items-end">
+        <div className="flex justify-start my-5 items-start">
           <AddLinkFile
             isLoading={isLoading}
             currentProject={currentProject}
@@ -321,7 +321,7 @@ function FilesList() {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          {link.link}
+                          {link.status ? link.link : "***********"}
                         </td>
                         <td
                           className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap"

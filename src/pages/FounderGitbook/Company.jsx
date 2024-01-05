@@ -13,15 +13,18 @@ function CompanyInfo() {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    companyName: "",
-    country: "",
-    targetAmount: "",
-    typeOffering: "land", // Mặc định là "land"
-    minTicketSize: "",
+    companyName: "Tesla",
+    country: "US",
+    targetAmount: 100000,
+    typeOffering: "Investment", // Mặc định là "land"
+    minTicketSize: 10000,
     noTicket: "",
-    offer: "",
-    companyDescription: "",
+    offer: "10% equity",
+    url: "https://images.unsplash.com/photo-1633671475485-754e12f39817?q=80&w=700&h=800&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    companyDescription:
+      "Tesla, Inc., founded in 2003 by Elon Musk and others, is an American company specializing in electric vehicles, battery energy storage, and solar products. Known for its high-performance electric cars like the Model S and Model 3, Tesla aims to advance sustainable transportation and energy. The company also operates a global network of superchargers and is a leader in renewable energy technologies.",
     rememberMe: false,
+    user_email: "",
   });
 
   useEffect(() => {
@@ -31,15 +34,30 @@ function CompanyInfo() {
       // Tìm dự án với project_id tương ứng
       supabase
         .from("company")
-        .select("id")
+        .select("*") // Lấy tất cả các trường từ bảng company
         .eq("project_id", params.id)
         .then(({ data, error }) => {
           if (error) {
-            console.error("Error fetching data from Supabase:", error);
+            console.log("Error fetching data from Supabase:", error);
           } else {
             if (data && data.length > 0) {
               // Nếu có dự án tồn tại, điều hướng đến trang "founder/:id"
-              navigate(`/founder/${params.id}`);
+              const companyData = data[0]; // Lấy dữ liệu của công ty đầu tiên (nếu có)
+
+              setFormData({
+                ...formData, // Giữ lại các giá trị hiện tại của formData
+                companyName: companyData.name,
+                country: companyData.country,
+                targetAmount: companyData.target_amount,
+                typeOffering: companyData.offer_type,
+                minTicketSize: companyData.ticket_size,
+                noTicket: companyData.no_ticket,
+                offer: companyData.offer,
+                url: companyData.url,
+                companyDescription: companyData.description,
+                user_email: companyData.user_email,
+              });
+              console.log("setFormData", setFormData);
               setIsLoading(false);
             } else {
               // Nếu không có dự án tồn tại, ở lại trang để tạo
@@ -53,6 +71,8 @@ function CompanyInfo() {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
+    console.log("name", name);
+    console.log("value", value);
     setFormData({
       ...formData,
       [name]: type === "checkbox" ? checked : value,
@@ -83,30 +103,75 @@ function CompanyInfo() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    // Kiểm tra xem tất cả các trường đã được điền đầy đủ và checkbox đã được chọn
-    try {
-      // Tạo một đối tượng chứa dữ liệu để lưu vào bảng "company" trên Supabase
-      const { data, error } = await supabase.from("company").upsert([
-        {
-          name: formData.companyName,
-          country: formData.country,
-          target_amount: formData.targetAmount,
-          offer_type: formData.typeOffering,
-          ticket_size: formData.minTicketSize,
-          no_ticket: formData.noTicket,
-          offer: formData.offer,
-          description: formData.companyDescription,
-          user_id: user.id,
-          user_email: user.email,
-        },
-      ]);
 
-      if (error) {
-        console.log("Error saving data to Supabase:", error);
+    try {
+      // Kiểm tra xem công ty đã tồn tại trong Supabase chưa bằng cách truy vấn theo project_id
+      const { data: existingCompany, error: existingCompanyError } =
+        await supabase.from("company").select("*").eq("project_id", params.id);
+
+      if (existingCompanyError) {
+        console.log(
+          "Error checking for existing company:",
+          existingCompanyError
+        );
       } else {
-        console.log("Data saved successfully:", data);
-        setIsLoading(false);
-        navigate(`/founder/${params.id}`);
+        // Nếu công ty đã tồn tại, cập nhật thông tin
+        if (existingCompany && existingCompany.length > 0) {
+          const existingCompanyId = existingCompany[0].id;
+
+          const { data, error } = await supabase.from("company").upsert([
+            {
+              id: existingCompanyId, // Sử dụng id của công ty đã tồn tại để thực hiện cập nhật
+              name: formData.companyName,
+              country: formData.country,
+              target_amount: formData.targetAmount,
+              offer_type: formData.typeOffering,
+              ticket_size: formData.minTicketSize,
+              no_ticket: formData.noTicket,
+              offer: formData.offer,
+              url: formData.url,
+              description: formData.companyDescription,
+              user_id: user.id,
+              user_email: user.email,
+              project_id: params.id,
+            },
+          ]);
+
+          if (error) {
+            console.log("Error updating data to Supabase:", error);
+          } else {
+            console.log("Data updated successfully:", data);
+            setIsLoading(false);
+            navigate(`/founder/${params.id}`);
+          }
+        } else {
+          // Nếu công ty chưa tồn tại, thêm mới thông tin công ty
+
+          const { data, error } = await supabase.from("company").upsert([
+            {
+              name: formData.companyName,
+              country: formData.country,
+              target_amount: formData.targetAmount,
+              offer_type: formData.typeOffering,
+              ticket_size: formData.minTicketSize,
+              no_ticket: formData.noTicket,
+              offer: formData.offer,
+              url: formData.url,
+              description: formData.companyDescription,
+              user_id: user.id,
+              user_email: user.email,
+              project_id: params.id,
+            },
+          ]);
+
+          if (error) {
+            console.log("Error saving data to Supabase:", error);
+          } else {
+            console.log("Data saved successfully:", data);
+            setIsLoading(false);
+            navigate(`/founder/${params.id}`);
+          }
+        }
       }
     } catch (error) {
       console.log("An error occurred:", error);
@@ -114,7 +179,7 @@ function CompanyInfo() {
     }
   };
 
-  const typeOfferingOptions = ["Land", "Invest", "MSA", "Convertible"];
+  const typeOfferingOptions = ["Lending", "Investment", "M&A", "Convertible"];
   console.log("formData", formData);
   return (
     <>
@@ -205,6 +270,14 @@ function CompanyInfo() {
                     onChange={handleInputChange}
                     type="text"
                     required
+                  />
+                  <InputField
+                    label="Profile image url (>700*800 recommended)"
+                    id="url"
+                    name="url"
+                    value={formData.url}
+                    onChange={handleInputChange}
+                    type="text"
                   />
 
                   <TextAreaField

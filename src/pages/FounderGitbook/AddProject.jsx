@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 
@@ -107,13 +107,53 @@ const Modal = ({ isOpen, onClose }) => {
 };
 
 export default function AddProject({ updateProjects }) {
+  const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  useEffect(() => {
+    // Import Supabase client và thiết lập nó
+
+    const fetchProjects = async () => {
+      try {
+        console.log("user", user);
+
+        let { data: users, error } = await supabase
+          .from("users")
+          .select("*")
+
+          // Filters
+          .eq("id", user.id);
+
+        if (error) {
+          console.log("error", error);
+          throw error;
+        }
+
+        setCurrentUser(users[0]);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
+
+    if (user) {
+      fetchProjects();
+    }
+  }, [user]);
+  console.log("currentUser", currentUser);
+  const isButtonDisabled =
+    currentUser &&
+    (currentUser.plan === null || currentUser.plan === undefined);
 
   return (
     <div className="App">
       <button
-        className={`text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-600 dark:focus:ring-blue-800 `}
-        onClick={() => setIsModalOpen(true)}
+        className={`text-white bg-blue-600 ${
+          isButtonDisabled
+            ? "cursor-not-allowed opacity-50 bg-gray-600" // Thêm lớp CSS khi nút bị vô hiệu hóa
+            : "hover:bg-blue-800"
+        } focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:focus:ring-blue-800`}
+        onClick={() => !isButtonDisabled && setIsModalOpen(true)} // Chỉ kích hoạt khi không bị vô hiệu hóa
+        disabled={isButtonDisabled}
       >
         Add new
       </button>

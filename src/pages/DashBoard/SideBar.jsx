@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-
-
 // function SideBar() {
 //   return (
 //     <aside className="flex flex-col md:flex-row h-screen px-5 py-8 overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700">
@@ -44,8 +42,6 @@ import { useNavigate } from "react-router-dom";
 //     </aside>
 //   );
 // }
-
-
 
 // const SideBar = () => {
 //   return (
@@ -106,7 +102,6 @@ import { useNavigate } from "react-router-dom";
 //   );
 // };
 
-
 function SideBar() {
   return (
     <aside
@@ -139,8 +134,5 @@ function SideBar() {
     </aside>
   );
 }
-
-
-
 
 export default SideBar;

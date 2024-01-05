@@ -6,29 +6,15 @@ const pricingPlans = [
   {
     title: "Free",
     price: 0,
-    description: "We want to give forever free services for our beloved users",
-    features: ["1 user", "Plan features", "Product support"],
+    description: "Free forever",
+    features: ["1 user", "Demo profile", "Editable template"],
     isPopular: false,
   },
   {
-    title: "Startup",
-    price: 0.5,
-    description: "All the basics for starting a new business",
-    features: ["2 users", "Plan features", "Product support"],
-    isPopular: false,
-  },
-  {
-    title: "Team",
-    price: 0.75,
-    description: "Everything you need for a growing business",
-    features: ["5 users", "Plan features", "Product support"],
-    isPopular: false,
-  },
-  {
-    title: "Enterprise",
-    price: 1,
-    description: "Advanced features for scaling your business",
-    features: ["10 users", "Plan features", "Product support"],
+    title: "Pro",
+    price: 42,
+    description: "Good for a new business",
+    features: ["1 users", "Profile sharing", "Profile analytics"],
     isPopular: false,
   },
 ];
@@ -42,7 +28,7 @@ const PricingCard = ({
   onClick,
 }) => (
   <div
-    className={`flex flex-col border rounded-xl p-8 text-center shadow-xl ${
+    className={` flex flex-col border rounded-xl p-8 text-center shadow-xl ${
       isPopular ? "border-2 border-blue-600" : "border-gray-200"
     } ${
       isPopular ? "dark:border-blue-700" : "dark:border-gray-700"

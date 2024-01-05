@@ -5,10 +5,9 @@ import { useState } from "react";
 import DonusChart1 from "./DonusChart01";
 import ApexCharts from "apexcharts";
 import { CreditCardOutlined } from "@ant-design/icons";
-import SideBar from "./SideBar";
+
 import ChartForm from "./DataInputTable";
-
-
+import SideBar from "../../components/SideBar";
 
 export const DonusSeries01 = [36, 23, 11, 30];
 export const labels = ["Startup", "VCs", "Investor", "Others"];

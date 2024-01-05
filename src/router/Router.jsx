@@ -12,10 +12,11 @@ import Founder from "../pages/FounderGitbook/Founder";
 import NotFoundPage from "../pages/NotFoundPage";
 import PaymentSuccess from "../pages/PaymentSuccess";
 
-import CompanyInfo from "../pages/FounderGitbook/CompanyInfo";
 import DetailPage from "../pages/FounderGitbook/DetailPage";
 
 import Trial from "../pages/DashBoard/trial";
+import CompanyInfo from "../pages/FounderGitbook/Company";
+
 function Router() {
   return (
     <Routes>

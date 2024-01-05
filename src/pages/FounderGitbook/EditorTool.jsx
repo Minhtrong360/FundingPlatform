@@ -35,19 +35,19 @@ const YouTubeLinkBlock = createReactBlockSpec(
   {
     render: ({ block }) => {
       return (
-        <div className=" flex justify-center relative w-full" style={{ paddingBottom: '56.25%' }}>
+        <div
+          className=" flex justify-center relative w-full"
+          style={{ paddingBottom: "56.25%" }}
+        >
           {block.props.videoId && (
-            
             <iframe
-            class="absolute top-0 left-0 w-full h-full"
-              
+              className="absolute top-0 left-0 w-full h-full"
               src={`https://www.youtube.com/embed/${block.props.videoId}`}
               title="YouTube video player"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
-           
           )}
         </div>
       );
@@ -93,7 +93,7 @@ const blockSpecs = {
   youtubeLink: YouTubeLinkBlock,
 };
 
-export default function App() {
+export default function EditorTool() {
   const [blocks, setBlocks] = useState([]);
   const [editorError, setEditorError] = useState("");
   const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
@@ -253,7 +253,7 @@ export default function App() {
   };
 
   return (
-    <div class="flex-grow justify-center max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+    <div className="flex-grow justify-center max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
       {isLoading ? ( // Hiển thị thông báo tải dữ liệu khi isLoading là true
         <div
           className="animate-spin inline-block w-8 h-8 border-[3px] border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500"

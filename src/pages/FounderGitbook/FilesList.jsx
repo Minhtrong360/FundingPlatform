@@ -83,34 +83,39 @@ function FilesList() {
     newLink.owner_email = user.email;
     try {
       // Tạo một dự án mới và lưu vào Supabase
-      const { error } = await supabase.from("files").insert([
-        {
-          name: newLink.name,
-          link: newLink.link,
-          user_id: user.id,
-          owner_email: user.email,
-          status: newLink.status,
-          project_id: id,
-        },
-      ]);
+      if (currentProject.user_id === user.id) {
+        const { error } = await supabase.from("files").insert([
+          {
+            name: newLink.name,
+            link: newLink.link,
+            user_id: user.id,
+            owner_email: user.email,
+            status: newLink.status,
+            project_id: id,
+          },
+        ]);
 
-      if (error) {
-        console.log("Error creating files:", error);
-        // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
-      } else {
-        // Check if the link with the same name already exists
-        const linkWithSameNameExists = projectLinks.some(
-          (existingLink) => existingLink.name === newLink.name
-        );
+        if (error) {
+          console.log("Error creating files:", error);
+          // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
+        } else {
+          // Check if the link with the same name already exists
+          const linkWithSameNameExists = projectLinks.some(
+            (existingLink) => existingLink.name === newLink.name
+          );
 
-        if (linkWithSameNameExists) {
-          alert("A link with the same name already exists.");
-          return;
+          if (linkWithSameNameExists) {
+            alert("A link with the same name already exists.");
+            return;
+          }
+
+          // Create a new link object and add it to the projectLinks array
+
+          setProjectLinks([...projectLinks, newLink]);
         }
-
-        // Create a new link object and add it to the projectLinks array
-
-        setProjectLinks([...projectLinks, newLink]);
+      } else {
+        alert("You are not the owner of project");
+        return;
       }
     } catch (error) {
       console.log("Error creating files:", error);

@@ -1,299 +1,245 @@
-// function CompanyInfo() {
-//     return (
-//       <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-//         <div className="max-w-xl mx-auto">
-//           <div className="text-center">
-//             <h1 className="text-3xl font-bold text-gray-800 sm:text-4xl dark:text-white">
-//               Company Info
-//             </h1>
-//             <p className="mt-1 text-gray-600 dark:text-gray-400">
-//               This will be an amazing journey.
-//             </p>
-//           </div>
-
-//           <div className="mt-12">
-//             {/* Form */}
-//             <form>
-//               <div className="grid gap-4 lg:gap-6">
-//                 {/* Grid */}
-//                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-//                   <div>
-//                     <label htmlFor="hs-firstname-hire-us-2" className="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Company name</label>
-//                     <input type="text" name="hs-firstname-hire-us-2" id="hs-firstname-hire-us-2" className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" />
-//                   </div>
-
-//                   <div>
-//                     <label htmlFor="hs-lastname-hire-us-2" className="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Country</label>
-//                     <input type="text" name="hs-lastname-hire-us-2" id="hs-lastname-hire-us-2" className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600" />
-//                   </div>
-//                 </div>
-//                 {/* End Grid */}
-
-//                 <div>
-//                   <label htmlFor="hs-work-email-hire-us-2" className="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Website</label>
-//                   <input type="email" name="hs-work-email-hire-us-2" id="hs-work-email-hire-us-2" autoComplete="email" className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600" />
-//                 </div>
-
-//                 {/* Grid */}
-//                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-//                   <div>
-//                     <label htmlFor="hs-company-hire-us-2" className="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Business Sector</label>
-//                     <input type="text" name="hs-company-hire-us-2" id="hs-company-hire-us-2" className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600" />
-//                   </div>
-
-//                   <div>
-//                     <label htmlFor="hs-company-website-hire-us-2" className="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Profile Image</label>
-//                     <input type="text" name="hs-company-website-hire-us-2" id="hs-company-website-hire-us-2" className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600" />
-//                   </div>
-//                 </div>
-//                 {/* End Grid */}
-
-//                 <div>
-//                   <label htmlFor="hs-about-hire-us-2" className="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Company description</label>
-//                   <textarea id="hs-about-hire-us-2" name="hs-about-hire-us-2" rows="4" className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"></textarea>
-//                 </div>
-//               </div>
-//               {/* End Grid */}
-
-//               {/* Checkbox */}
-//               <div className="mt-3 flex">
-//                 <div className="flex">
-//                   <input id="remember-me" name="remember-me" type="checkbox" className="shrink-0 mt-1.5 border-gray-200 rounded text-blue-600 pointer-events-none focus:ring-blue-500 dark-bg-gray-800 dark-border-gray-700 dark-checked-bg-blue-500 dark-checked-border-blue-500 dark-focus-ring-offset-gray-800" />
-//                 </div>
-//                 <div className="ms-3">
-//                   <label htmlFor="remember-me" className="text-sm text-gray-600 dark-text-gray-400">By submitting this form I have read and acknowledged our Terms and Policies </label>
-//                 </div>
-//               </div>
-//               {/* End Checkbox */}
-
-//               <div className="mt-6 grid">
-//                 <button type="submit" className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600">Submit</button>
-//               </div>
-
-//             </form>
-//             {/* End Form */}
-//           </div>
-//         </div>
-//       </div>
-//     );
-//   }
+import { useEffect, useState } from "react";
+import CheckboxField from "../../components/CheckBoxField";
+import InputField from "../../components/InputField";
+import SelectField from "../../components/SelectField";
+import TextAreaField from "../../components/TextAreaField";
+import { supabase } from "../../supabase";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate, useParams } from "react-router-dom";
 
 function CompanyInfo() {
+  const navigate = useNavigate();
+  const params = useParams();
+  const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    companyName: "",
+    country: "",
+    targetAmount: "",
+    typeOffering: "land", // Mặc định là "land"
+    minTicketSize: "",
+    noTicket: "",
+    offer: "",
+    companyDescription: "",
+    rememberMe: false,
+  });
+
+  useEffect(() => {
+    // Hàm này chạy khi id thay đổi
+    if (params.id) {
+      setIsLoading(true); // Bắt đầu hiển thị trạng thái loading
+      // Tìm dự án với project_id tương ứng
+      supabase
+        .from("company")
+        .select("id")
+        .eq("project_id", params.id)
+        .then(({ data, error }) => {
+          if (error) {
+            console.error("Error fetching data from Supabase:", error);
+          } else {
+            if (data && data.length > 0) {
+              // Nếu có dự án tồn tại, điều hướng đến trang "founder/:id"
+              navigate(`/founder/${params.id}`);
+              setIsLoading(false);
+            } else {
+              // Nếu không có dự án tồn tại, ở lại trang để tạo
+              console.log("Project not found, stay on create page");
+              setIsLoading(false);
+            }
+          }
+        });
+    }
+  }, [params.id]);
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
+
+  useEffect(() => {
+    const calculateNoTicket = () => {
+      const targetAmount = parseInt(formData.targetAmount);
+      const minTicketSize = parseInt(formData.minTicketSize);
+
+      if (
+        !isNaN(targetAmount) &&
+        !isNaN(minTicketSize) &&
+        minTicketSize !== 0
+      ) {
+        const noTicket = Math.floor(targetAmount / minTicketSize);
+        return noTicket;
+      }
+      return 0;
+    };
+    setFormData({
+      ...formData,
+      noTicket: calculateNoTicket(),
+    });
+  }, [formData.targetAmount, formData.minTicketSize]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    // Kiểm tra xem tất cả các trường đã được điền đầy đủ và checkbox đã được chọn
+    try {
+      // Tạo một đối tượng chứa dữ liệu để lưu vào bảng "company" trên Supabase
+      const { data, error } = await supabase.from("company").upsert([
+        {
+          name: formData.companyName,
+          country: formData.country,
+          target_amount: formData.targetAmount,
+          offer_type: formData.typeOffering,
+          ticket_size: formData.minTicketSize,
+          no_ticket: formData.noTicket,
+          offer: formData.offer,
+          description: formData.companyDescription,
+          user_id: user.id,
+          user_email: user.email,
+        },
+      ]);
+
+      if (error) {
+        console.log("Error saving data to Supabase:", error);
+      } else {
+        console.log("Data saved successfully:", data);
+        setIsLoading(false);
+        navigate(`/founder/${params.id}`);
+      }
+    } catch (error) {
+      console.log("An error occurred:", error);
+      setIsLoading(false);
+    }
+  };
+
+  const typeOfferingOptions = ["Land", "Invest", "MSA", "Convertible"];
+  console.log("formData", formData);
   return (
-    <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-      <div className="max-w-xl mx-auto">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-800 sm:text-4xl dark:text-white">
-            Company Info
-          </h1>
-          <p className="mt-1 text-gray-600 dark:text-gray-400">
-            This will be an amazing journey.
-          </p>
+    <>
+      {isLoading ? (
+        <div className="flex justify-center text-center">Loading...</div>
+      ) : (
+        <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+          <div className="max-w-xl mx-auto">
+            <div className="text-center">
+              <h1 className="text-3xl font-bold text-gray-800 sm:text-4xl dark:text-white">
+                Company Info
+              </h1>
+              <p className="mt-1 text-gray-600 dark:text-gray-400">
+                This will be an amazing journey.
+              </p>
+            </div>
+
+            <div className="mt-12">
+              <form onSubmit={handleSubmit}>
+                <div className="grid gap-4 lg:gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                    <InputField
+                      label="Company name"
+                      id="company-name"
+                      name="companyName"
+                      value={formData.companyName}
+                      onChange={handleInputChange}
+                      type="text"
+                      required
+                    />
+                    <InputField
+                      label="Country"
+                      id="country"
+                      name="country"
+                      value={formData.country}
+                      onChange={handleInputChange}
+                      type="text"
+                      required
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                    <InputField
+                      label="Target amount"
+                      id="target-amount"
+                      name="targetAmount"
+                      value={formData.targetAmount}
+                      onChange={handleInputChange}
+                      type="number"
+                      required
+                    />
+                    <SelectField
+                      label="Type offering"
+                      id="type-offering"
+                      name="typeOffering"
+                      options={typeOfferingOptions}
+                      value={formData.typeOffering}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                    <InputField
+                      label="Min ticket size"
+                      id="min-ticket-size"
+                      name="minTicketSize"
+                      value={formData.minTicketSize}
+                      onChange={handleInputChange}
+                      type="number"
+                      required
+                    />
+                    <InputField
+                      label="No. ticket"
+                      id="no-ticket"
+                      name="noTicket"
+                      value={formData.noTicket}
+                      type="number"
+                      readOnly // Đặt readOnly để ngăn người dùng chỉnh sửa trường này thủ công
+                    />
+                  </div>
+
+                  <InputField
+                    label="Offer"
+                    id="offer"
+                    name="offer"
+                    value={formData.offer}
+                    onChange={handleInputChange}
+                    type="text"
+                    required
+                  />
+
+                  <TextAreaField
+                    label="Company description"
+                    id="company-description"
+                    name="companyDescription"
+                    value={formData.companyDescription}
+                    onChange={handleInputChange}
+                    required
+                  />
+
+                  <CheckboxField
+                    label="By submitting this form I have read and acknowledged our Terms and Policies"
+                    id="remember-me"
+                    name="rememberMe"
+                    checked={formData.rememberMe}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+
+                <div className="mt-6 grid">
+                  <button
+                    type="submit"
+                    className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
-
-        <div className="mt-12">
-          {/* Form */}
-          <form>
-            <div className="grid gap-4 lg:gap-6">
-              {/* Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                <div>
-                  <label
-                    htmlFor="company-name"
-                    className="block mb-2 text-sm text-gray-700 font-medium dark:text-white"
-                  >
-                    Company name
-                  </label>
-                  <input
-                    type="text"
-                    name="company-name"
-                    id="company-name"
-                    className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="country"
-                    className="block mb-2 text-sm text-gray-700 font-medium dark:text-white"
-                  >
-                    Country
-                  </label>
-                  <input
-                    type="text"
-                    name="country"
-                    id="country"
-                    className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                  />
-                </div>
-              </div>
-              {/* End Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                <div>
-                  <label
-                    htmlFor="Business-sector"
-                    className="block mb-2 text-sm text-gray-700 font-medium dark:text-white"
-                  >
-                    Business sector
-                  </label>
-                  <input
-                    type="text"
-                    name="Business-sector"
-                    id="Business-sector"
-                    className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="Website"
-                    className="block mb-2 text-sm text-gray-700 font-medium dark:text-white"
-                  >
-                    Website
-                  </label>
-                  <input
-                    type="text"
-                    name="Website"
-                    id="Website"
-                    className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                  />
-                </div>
-              </div>
-              {/* Additional Fields */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                <div>
-                  <label
-                    htmlFor="target-amount"
-                    className="block mb-2 text-sm text-gray-700 font-medium dark:text-white"
-                  >
-                    Target amount
-                  </label>
-                  <input
-                    type="text"
-                    name="target-amount"
-                    id="target-amount"
-                    className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="type-offering"
-                    className="block mb-2 text-sm text-gray-700 font-medium dark:text-white"
-                  >
-                    Type offering
-                  </label>
-                  <input
-                    type="text"
-                    name="type-offering"
-                    id="type-offering"
-                    className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                <div>
-                  <label
-                    htmlFor="min-ticket-size"
-                    className="block mb-2 text-sm text-gray-700 font-medium dark:text-white"
-                  >
-                    Min ticket size
-                  </label>
-                  <input
-                    type="text"
-                    name="min-ticket-size"
-                    id="min-ticket-size"
-                    className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="no-ticket"
-                    className="block mb-2 text-sm text-gray-700 font-medium dark:text-white"
-                  >
-                    No. ticket
-                  </label>
-                  <input
-                    type="text"
-                    name="no-ticket"
-                    id="no-ticket"
-                    className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="profile-image-url"
-                  className="block mb-2 text-sm text-gray-700 font-medium dark:text-white"
-                >
-                  Profile image URL
-                </label>
-                <input
-                  type="text"
-                  name="profile-image-url"
-                  id="profile-image-url"
-                  className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                />
-              </div>
-              {/* End Additional Fields */}
-
-              {/* Company Description */}
-              <div>
-                <label
-                  htmlFor="company-description"
-                  className="block mb-2 text-sm text-gray-700 font-medium dark:text-white"
-                >
-                  Company description
-                </label>
-                <textarea
-                  id="company-description"
-                  name="company-description"
-                  rows="4"
-                  className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                ></textarea>
-              </div>
-              {/* End Company Description */}
-            </div>
-            {/* End Grid */}
-
-            {/* Checkbox */}
-            <div className="mt-3 flex">
-              <div className="flex">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="shrink-0 mt-1.5 border-gray-200 rounded text-blue-600 pointer-events-none focus:ring-blue-500 dark-bg-gray-800 dark-border-gray-700 dark-checked-bg-blue-500 dark-checked-border-blue-500 dark-focus-ring-offset-gray-800"
-                />
-              </div>
-              <div className="ms-3">
-                <label
-                  htmlFor="remember-me"
-                  className="text-sm text-gray-600 dark-text-gray-400"
-                >
-                  By submitting this form I have read and acknowledged our Terms
-                  and Policies{" "}
-                </label>
-              </div>
-            </div>
-            {/* End Checkbox */}
-
-            <div className="mt-6 grid">
-              <button
-                type="submit"
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
-              >
-                Submit
-              </button>
-            </div>
-          </form>
-          {/* End Form */}
-        </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }
 

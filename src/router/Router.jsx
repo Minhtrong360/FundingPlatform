@@ -12,7 +12,7 @@ import Founder from "../pages/FounderGitbook/Founder";
 import NotFoundPage from "../pages/NotFoundPage";
 import PaymentSuccess from "../pages/PaymentSuccess";
 
-import CompanyInfo from "../pages/FounderGitbook/companyInfo";
+import CompanyInfo from "../pages/FounderGitbook/CompanyInfo";
 import DetailPage from "../pages/FounderGitbook/DetailPage";
 
 import Trial from "../pages/DashBoard/trial";
@@ -34,7 +34,7 @@ function Router() {
       {/* <Route path="/content" element={<ChatBotTest />} /> */}
       <Route path="/success" element={<PaymentSuccess />} />
       <Route path="*" element={<NotFoundPage />} />
-      <Route path="/companyinput" element={<CompanyInfo />} />
+      <Route path="/company/:id" element={<CompanyInfo />} />
 
       <Route path="/trials" element={<Trial />} />
     </Routes>

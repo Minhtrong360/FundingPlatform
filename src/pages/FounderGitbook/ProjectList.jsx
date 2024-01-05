@@ -22,7 +22,7 @@ function ProjectList({ projects }) {
   const navigate = useNavigate();
   const handleProjectClick = (project) => {
     // Gọi hàm handleClickProjectId để truyền projectId lên thành phần cha
-    navigate(`/founder/${project.id}`);
+    navigate(`/company/${project.id}`);
   };
 
   useEffect(() => {

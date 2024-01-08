@@ -14,8 +14,9 @@ import PaymentSuccess from "../pages/PaymentSuccess";
 
 import DetailPage from "../pages/FounderGitbook/DetailPage";
 
-import Trial from "../pages/DashBoard/trial";
 import CompanyInfo from "../pages/FounderGitbook/Company";
+
+import Trial from "../pages/DashBoard/trial";
 
 function Router() {
   return (
@@ -23,7 +24,9 @@ function Router() {
       <Route index element={<HomePage />} />
 
       <Route path="/founder" element={<Founder />} />
+
       <Route path="/founder/:id" element={<DetailPage />} />
+
       {/* <Route path="/dashboard" element={<DashBoardPage />} /> */}
       {/* <Route path="/project" element={<ProjectPage />} /> */}
       <Route path="/fundraising" element={<FundraisingRecords />} />

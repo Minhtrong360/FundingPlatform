@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 
 const ImageCropper = ({ imageUrl }) => {
   const [croppedImageUrl, setCroppedImageUrl] = useState("");
-  console.log("imageUrl", imageUrl);
 
   useEffect(() => {
     if (imageUrl) {
@@ -54,7 +53,7 @@ const ImageCropper = ({ imageUrl }) => {
       setCroppedImageUrl(canvas.toDataURL("image/jpeg"));
     };
   };
-  console.log("croppedImageUrl", croppedImageUrl);
+
   return (
     <div>
       <img src={croppedImageUrl} alt="Cropped" />

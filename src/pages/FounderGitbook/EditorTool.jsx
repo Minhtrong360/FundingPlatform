@@ -9,11 +9,12 @@ import {
 import "@blocknote/core/style.css";
 import { supabase } from "../../supabase";
 import { useNavigate, useParams } from "react-router-dom";
-import { CheckOutlined } from "@ant-design/icons";
+
 import {
   defaultBlockSchema,
   defaultBlockSpecs,
   defaultProps,
+  uploadToTmpFilesDotOrg_DEV_ONLY,
 } from "@blocknote/core";
 import { YoutubeOutlined } from "@ant-design/icons";
 import { useAuth } from "../../context/AuthContext";
@@ -96,6 +97,7 @@ const blockSpecs = {
 export default function EditorTool() {
   const [blocks, setBlocks] = useState([]);
   const [editorError, setEditorError] = useState("");
+  const [currentProject, setCurrentProject] = useState("");
   const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
 
   const params = useParams();
@@ -109,10 +111,10 @@ export default function EditorTool() {
           // Kiểm tra xem project có tồn tại không
           const { data, error } = await supabase
             .from("projects")
-            .select("markdown")
+            .select("*")
             .match({ id: params.id })
             .single();
-
+          setCurrentProject(data);
           if (error) {
             setEditorError(error);
           } else {
@@ -164,6 +166,7 @@ export default function EditorTool() {
 
   const editor = useBlockNote({
     blockSpecs: blockSpecs,
+    uploadFile: uploadToTmpFilesDotOrg_DEV_ONLY,
     slashMenuItems: [
       ...getDefaultReactSlashMenuItems(blockSchema),
       insertYouTubeLink,
@@ -321,24 +324,37 @@ export default function EditorTool() {
           onCancel={closeModal}
         />
       )}
-      <div style={{ position: "fixed", top: "20px", right: "1.2em" }}>
-        <button
-          className={`flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
-          onClick={handleSave}
-          disabled={isLoading}
-        >
-          {isLoading ? <Spinner /> : "Save"}
-        </button>
-      </div>
-      <div style={{ position: "fixed", top: "20px", right: "6em" }}>
-        <button
-          className={`flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
-          onClick={() => navigate(`/company/${params.id}`)}
-          disabled={isLoading}
-        >
-          {isLoading ? <Spinner /> : "Company Setting"}
-        </button>
-      </div>
+      {user.id === currentProject.user_id && (
+        <>
+          <div style={{ position: "fixed", top: "20px", right: "1.2em" }}>
+            <button
+              className={`flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+              onClick={handleSave}
+              disabled={isLoading}
+            >
+              {isLoading ? <Spinner /> : "Save"}
+            </button>
+          </div>
+          <div style={{ position: "fixed", top: "20px", right: "6em" }}>
+            <button
+              className={`flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+              onClick={() => navigate(`/company/${params.id}`)}
+              disabled={isLoading}
+            >
+              {isLoading ? <Spinner /> : "Company Setting"}
+            </button>
+          </div>{" "}
+          <div style={{ position: "fixed", top: "20px", right: "16em" }}>
+            <button
+              className={`flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+              onClick={() => navigate(`/trials`)}
+              disabled={isLoading}
+            >
+              {isLoading ? <Spinner /> : "Draw chart"}
+            </button>
+          </div>{" "}
+        </>
+      )}
     </div>
   );
 }

@@ -121,7 +121,7 @@ const DetailPage = () => {
           // Kiểm tra quyền truy cập của người dùng
           if (
             data.status === false &&
-            data.user_id !== user.id &&
+            data.user_id !== user?.id &&
             !data.invited_user?.includes(user.id)
           ) {
             // Kiểm tra xem dự án có trạng thái false, không thuộc về người dùng và không được mời tham gia
@@ -134,7 +134,7 @@ const DetailPage = () => {
           }
         }
       });
-  }, [id, user.id]);
+  }, [id]);
 
   useEffect(() => {
     // Lấy dự án từ Supabase
@@ -152,9 +152,7 @@ const DetailPage = () => {
           setCompany(data);
         }
       });
-  }, [id, user.id]);
-
-  console.log("company", company);
+  }, [id]);
 
   if (isLoading) {
     return <div>Loading...</div>; // Hiển thị màn hình "isLoading" khi dữ liệu đang được tải

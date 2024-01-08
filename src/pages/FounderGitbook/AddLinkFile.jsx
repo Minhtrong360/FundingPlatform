@@ -88,7 +88,7 @@ const Modal = ({
                   value="private"
                   checked={!isPublic}
                   onChange={() => setIsPublic(false)}
-                  className="form-radio text-red-600 h-5 w-5"
+                  className="form-radio text-blue-600 h-5 w-5"
                 />
                 <span className="ml-2 text-gray-700">Private</span>
               </label>

@@ -14,7 +14,6 @@ import {
   defaultBlockSchema,
   defaultBlockSpecs,
   defaultProps,
-  uploadToTmpFilesDotOrg_DEV_ONLY,
 } from "@blocknote/core";
 import { YoutubeOutlined } from "@ant-design/icons";
 import { useAuth } from "../../context/AuthContext";
@@ -162,11 +161,36 @@ export default function EditorTool() {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  // Hàm để upload file lên database riêng của bạn
+  async function uploadToCustomDatabase(file) {
+    try {
+      // Tạo tên file độc đáo để tránh xung đột
+      const uniqueFileName = `profile_images/${Date.now()}-${file.name}`;
+
+      // Upload file lên Supabase Storage
+      let { error, data } = await supabase.storage
+        .from("beekrowd_storage")
+        .upload(uniqueFileName, file);
+
+      if (error) {
+        throw error;
+      }
+
+      // Trả về URL của file
+      console.log("data", data);
+      return `${process.env.REACT_APP_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
+    } catch (error) {
+      console.error("Lỗi khi upload file:", error.message);
+      // Xử lý lỗi tại đây
+    }
+  }
+
   // Creates a new editor instance.
 
   const editor = useBlockNote({
     blockSpecs: blockSpecs,
-    uploadFile: uploadToTmpFilesDotOrg_DEV_ONLY,
+    uploadFile: uploadToCustomDatabase,
     slashMenuItems: [
       ...getDefaultReactSlashMenuItems(blockSchema),
       insertYouTubeLink,

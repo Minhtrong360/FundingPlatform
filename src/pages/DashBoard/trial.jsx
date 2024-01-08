@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import ReactApexChart from "react-apexcharts";
+import { useNavigate } from "react-router-dom";
 
 const InputField = ({ value, onChange }) => (
   <input
@@ -75,9 +76,13 @@ const FormColumn = ({ children }) => (
 );
 
 const Trial = () => {
+  const navigate = useNavigate(); // Use the useNavigate hook
   const [chartType, setChartType] = useState("bar");
   const handleChartTypeChange = (e) => {
     setChartType(e.target.value);
+  };
+  const handleBack = () => {
+    navigate(-1); // Navigate back
   };
 
   return (
@@ -109,6 +114,15 @@ const Trial = () => {
           <AreaChartForm />
         )}
       </div>
+      {/* <div className={`flex justify-center`}> */}
+      <button
+        type="button"
+        className={`flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+        onClick={handleBack}
+      >
+        Back to project
+      </button>
+      {/* </div> */}
     </form>
   );
 };
@@ -365,6 +379,7 @@ const AreaChartForm = () => {
                 onChange={(e) => handleSeriesNameChange(e, index)}
               />
             </label>
+
             <label>
               Series data {index + 1}{" "}
               <InputField
@@ -376,7 +391,6 @@ const AreaChartForm = () => {
         ))}
         <AreaChart xCategories={categories} series={seriesPairs} />
       </div>
-      <button>Back to project</button>
     </>
   );
 };

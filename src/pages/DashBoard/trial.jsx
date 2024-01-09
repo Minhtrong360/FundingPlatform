@@ -72,7 +72,9 @@ const AreaChart = ({ xCategories, seriesData, series }) => (
 );
 
 const FormColumn = ({ children }) => (
-  <div className="grid grid-cols-2 gap-4 mt-4">{children}</div>
+  <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-4 mt-4">
+    {children}
+  </div>
 );
 
 const Trial = () => {

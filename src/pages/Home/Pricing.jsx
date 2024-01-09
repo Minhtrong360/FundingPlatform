@@ -81,7 +81,7 @@ const PricingCard = ({
 
 const makePayment = async (plan, userId) => {
   const stripe = await loadStripe(process.env.REACT_APP_PUBLISHABLE_KEY);
-
+  console.log("apiService", apiService);
   const response = await apiService.post("stripe/create-checkout-session", {
     plan,
     userId,

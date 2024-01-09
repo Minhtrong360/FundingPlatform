@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 // import LoginGoogle from './LoginGoogle';  // Update the path accordingly
 
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import AlertMsg from "../../components/AlertMsg";
+import { toast } from "react-toastify";
 
 function GoogleLoginButton() {
   const { login, loginWithGG } = useAuth();
@@ -38,9 +40,11 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+
   const { login } = useAuth();
   const [errorMsg, setErrorMsg] = useState("");
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
 
   const handleSignIn = async (event) => {
     event.preventDefault();
@@ -57,9 +61,11 @@ const Login = () => {
       const { user, session, error } = await login(email, password);
 
       if (error) {
+        toast.error(error.message);
         setErrorMsg(error.message);
       } else {
-        navigate("/");
+        const redirectTo = location?.state?.from?.pathname || "/";
+        navigate(redirectTo);
       }
     } catch (error) {
       console.log("HandleSignIn error:", error.message);
@@ -71,6 +77,7 @@ const Login = () => {
 
   return (
     <div className="dark:bg-slate-900 bg-gray-100 flex h-screen items-center py-16">
+      <AlertMsg />
       <main className="w-full max-w-md mx-auto p-6">
         <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
           <div className="p-4 sm:p-7">

@@ -17,15 +17,30 @@ import DetailPage from "../pages/FounderGitbook/DetailPage";
 import CompanyInfo from "../pages/FounderGitbook/Company";
 
 import Trial from "../pages/DashBoard/trial";
+import AuthRequire from "./AuthRequired";
 
 function Router() {
   return (
     <Routes>
       <Route index element={<HomePage />} />
 
-      <Route path="/founder" element={<Founder />} />
+      <Route
+        path="/founder"
+        element={
+          <AuthRequire>
+            <Founder />
+          </AuthRequire>
+        }
+      />
 
-      <Route path="/founder/:id" element={<DetailPage />} />
+      <Route
+        path="/founder/:id"
+        element={
+          <AuthRequire>
+            <DetailPage />
+          </AuthRequire>
+        }
+      />
 
       {/* <Route path="/dashboard" element={<DashBoardPage />} /> */}
       {/* <Route path="/project" element={<ProjectPage />} /> */}

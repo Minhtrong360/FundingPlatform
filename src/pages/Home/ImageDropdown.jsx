@@ -9,7 +9,7 @@ const ImageDropdown = () => {
 
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  console.log("user", user);
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };

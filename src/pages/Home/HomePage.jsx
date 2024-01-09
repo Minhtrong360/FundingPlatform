@@ -561,8 +561,6 @@ const HomePage = () => {
 
     const fetchProjects = async () => {
       try {
-        console.log("user", user);
-
         let { data: users, error } = await supabase
           .from("users")
           .select("*")

@@ -71,8 +71,7 @@ function CompanyInfo() {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    console.log("name", name);
-    console.log("value", value);
+
     setFormData({
       ...formData,
       [name]: type === "checkbox" ? checked : value,
@@ -180,7 +179,7 @@ function CompanyInfo() {
   };
 
   const typeOfferingOptions = ["Lending", "Investment", "M&A", "Convertible"];
-  console.log("formData", formData);
+
   return (
     <>
       {isLoading ? (

@@ -1,61 +1,79 @@
 import React, { useEffect } from "react";
 import ApexCharts from "apexcharts";
-import _ from 'lodash';
+import _ from "lodash";
 
 function buildTooltip(props, options) {
   const {
     title,
     mode,
-    valuePrefix = '$',
+    valuePrefix = "$",
     isValueDivided = true,
-    valuePostfix = '',
+    valuePostfix = "",
     hasTextLabel = false,
     invertGroup = false,
-    labelDivider = '',
-    wrapperClasses = 'ms-0.5 mb-2 bg-white border border-gray-200 text-gray-800 rounded-lg shadow-md dark:bg-neutral-800 dark:border-neutral-700',
-    wrapperExtClasses = '',
-    seriesClasses = 'text-[12px]',
-    seriesExtClasses = '',
-    titleClasses = 'font-semibold !text-sm !bg-white !border-gray-200 text-gray-800 rounded-t-lg dark:!bg-neutral-800 dark:!border-neutral-700 dark:text-neutral-200',
-    titleExtClasses = '',
-    markerClasses = '!w-2.5 !h-2.5 !me-1.5',
-    markerExtClasses = '!rounded-sm',
-    valueClasses = '!font-medium text-gray-500 !ms-auto dark:text-neutral-400',
-    valueExtClasses = '',
-    labelClasses = 'text-gray-500 dark:text-neutral-400',
-    labelExtClasses = ''
+    labelDivider = "",
+    wrapperClasses = "ms-0.5 mb-2 bg-white border border-gray-200 text-gray-800 rounded-lg shadow-md dark:bg-neutral-800 dark:border-neutral-700",
+    wrapperExtClasses = "",
+    seriesClasses = "text-[12px]",
+    seriesExtClasses = "",
+    titleClasses = "font-semibold !text-sm !bg-white !border-gray-200 text-gray-800 rounded-t-lg dark:!bg-neutral-800 dark:!border-neutral-700 dark:text-neutral-200",
+    titleExtClasses = "",
+    markerClasses = "!w-2.5 !h-2.5 !me-1.5",
+    markerExtClasses = "!rounded-sm",
+    valueClasses = "!font-medium text-gray-500 !ms-auto dark:text-neutral-400",
+    valueExtClasses = "",
+    labelClasses = "text-gray-500 dark:text-neutral-400",
+    labelExtClasses = "",
   } = options;
   const { dataPointIndex } = props;
   const { colors } = props.ctx.opts;
   const series = props.ctx.opts.series;
-  let seriesGroups = '';
+  let seriesGroups = "";
 
   series.forEach((single, i) => {
-    const val = props.series[i][dataPointIndex] || (typeof series[i].data[dataPointIndex] !== 'object' ? series[i].data[dataPointIndex] : props.series[i][dataPointIndex]);
+    const val =
+      props.series[i][dataPointIndex] ||
+      (typeof series[i].data[dataPointIndex] !== "object"
+        ? series[i].data[dataPointIndex]
+        : props.series[i][dataPointIndex]);
     const label = series[i].name;
-    const groupData = invertGroup ? {
-      left: `${hasTextLabel ? label : ''}${labelDivider}`,
-      right: `${valuePrefix}${val >= 1000 && isValueDivided ? `${val / 1000}k` : val}${valuePostfix}`
-    } : {
-      left: `${valuePrefix}${val >= 1000 && isValueDivided ? `${val / 1000}k` : val}${valuePostfix}`,
-      right: `${hasTextLabel ? label : ''}${labelDivider}`
-    }
+    const groupData = invertGroup
+      ? {
+          left: `${hasTextLabel ? label : ""}${labelDivider}`,
+          right: `${valuePrefix}${
+            val >= 1000 && isValueDivided ? `${val / 1000}k` : val
+          }${valuePostfix}`,
+        }
+      : {
+          left: `${valuePrefix}${
+            val >= 1000 && isValueDivided ? `${val / 1000}k` : val
+          }${valuePostfix}`,
+          right: `${hasTextLabel ? label : ""}${labelDivider}`,
+        };
     const labelMarkup = `<span class="apexcharts-tooltip-text-y-label ${labelClasses} ${labelExtClasses}">${groupData.left}</span>`;
 
-    seriesGroups += `<div class="apexcharts-tooltip-series-group !flex ${hasTextLabel ? '!justify-between' : ''} order-${i + 1} ${seriesClasses} ${seriesExtClasses}">
+    seriesGroups += `<div class="apexcharts-tooltip-series-group !flex ${
+      hasTextLabel ? "!justify-between" : ""
+    } order-${i + 1} ${seriesClasses} ${seriesExtClasses}">
       <span class="flex items-center">
-        <span class="apexcharts-tooltip-marker ${markerClasses} ${markerExtClasses}" style="background: ${colors[i]}"></span>
+        <span class="apexcharts-tooltip-marker ${markerClasses} ${markerExtClasses}" style="background: ${
+      colors[i]
+    }"></span>
         <div class="apexcharts-tooltip-text">
           <div class="apexcharts-tooltip-y-group !py-0.5">
-            <span class="apexcharts-tooltip-text-y-value ${valueClasses} ${valueExtClasses}">${groupData.right}</span>
+            <span class="apexcharts-tooltip-text-y-value ${valueClasses} ${valueExtClasses}">${
+      groupData.right
+    }</span>
           </div>
         </div>
       </span>
       ${labelMarkup}
-    </div>`
+    </div>`;
   });
 
-  return `<div class="${mode === 'dark' ? 'dark ' : ''}${wrapperClasses} ${wrapperExtClasses}">
+  return `<div class="${
+    mode === "dark" ? "dark " : ""
+  }${wrapperClasses} ${wrapperExtClasses}">
     <div class="apexcharts-tooltip-title ${titleClasses} ${titleExtClasses}">${title}</div>
     ${seriesGroups}
   </div>`;
@@ -69,19 +87,26 @@ function buildChart(id, shared, light, dark) {
   const tabpanel = $chart.closest('[role="tabpanel"]');
   let modeFromBodyClass = null;
 
-  Array.from(document.querySelector('html').classList).forEach((cl) => {
-    if (['dark', 'light', 'default'].includes(cl)) modeFromBodyClass = cl;
+  Array.from(document.querySelector("html").classList).forEach((cl) => {
+    if (["dark", "light", "default"].includes(cl)) modeFromBodyClass = cl;
   });
 
-  const optionsFn = (mode = modeFromBodyClass || localStorage.getItem('hs_theme')) => _.merge(shared(mode), mode === 'dark' ? dark : light);
+  const optionsFn = (
+    mode = modeFromBodyClass || localStorage.getItem("hs_theme")
+  ) => _.merge(shared(mode), mode === "dark" ? dark : light);
 
   if ($chart) {
     chart = new ApexCharts($chart, optionsFn());
     chart.render();
 
-    window.addEventListener('on-hs-appearance-change', (evt) => chart.updateOptions(optionsFn(evt.detail)));
+    window.addEventListener("on-hs-appearance-change", (evt) =>
+      chart.updateOptions(optionsFn(evt.detail))
+    );
 
-    if (tabpanel) tabpanel.addEventListener('on-hs-appearance-change', (evt) => chart.updateOptions(optionsFn(evt.detail)));
+    if (tabpanel)
+      tabpanel.addEventListener("on-hs-appearance-change", (evt) =>
+        chart.updateOptions(optionsFn(evt.detail))
+      );
   }
 
   return chart;
@@ -323,14 +348,11 @@ function buildChart(id, shared, light, dark) {
 //   );
 // };
 
-
-
-
 const Chart = ({ incomeData, outcomeData, xAxisCategories }) => {
-  console.log("1")
+  console.log("1");
   useEffect(() => {
     const loadScript = () => {
-      console.log("2")
+      console.log("2");
       const script = document.createElement("script");
       script.src = "https://preline.co/assets/js/hs-apexcharts-helpers.js";
       script.async = true;
@@ -528,7 +550,7 @@ const Chart = ({ incomeData, outcomeData, xAxisCategories }) => {
     };
 
     loadScript();
-    console.log("3")
+    console.log("3");
   }, [incomeData, outcomeData, xAxisCategories]);
 
   return (
@@ -552,10 +574,4 @@ const Chart = ({ incomeData, outcomeData, xAxisCategories }) => {
   );
 };
 
-
-
-
-
 export default Chart;
-
-

@@ -1,43 +1,52 @@
-import React, { useEffect } from 'react';
-import ApexCharts from 'apexcharts';
-import _ from 'lodash';
+import React, { useEffect } from "react";
+import ApexCharts from "apexcharts";
+import _ from "lodash";
 
 function buildChart(id, shared, light, dark) {
-const $chart = document.querySelector(id);
-let chart = null;
+  const $chart = document.querySelector(id);
+  let chart = null;
 
-if (!$chart) return false;
+  if (!$chart) return false;
 
-const tabpanel = $chart.closest('[role="tabpanel"]');
-let modeFromBodyClass = null;
+  const tabpanel = $chart.closest('[role="tabpanel"]');
+  let modeFromBodyClass = null;
 
-Array.from(document.querySelector('html').classList).forEach((cl) => {
-    if (['dark', 'light', 'default'].includes(cl)) modeFromBodyClass = cl;
-});
+  Array.from(document.querySelector("html").classList).forEach((cl) => {
+    if (["dark", "light", "default"].includes(cl)) modeFromBodyClass = cl;
+  });
 
-const optionsFn = (mode = modeFromBodyClass || localStorage.getItem('hs_theme')) => _.merge(shared(mode), mode === 'dark' ? dark : light);
+  const optionsFn = (
+    mode = modeFromBodyClass || localStorage.getItem("hs_theme")
+  ) => _.merge(shared(mode), mode === "dark" ? dark : light);
 
-if ($chart) {
+  if ($chart) {
     chart = new ApexCharts($chart, optionsFn());
     chart.render();
 
-    window.addEventListener('on-hs-appearance-change', (evt) => chart.updateOptions(optionsFn(evt.detail)));
+    window.addEventListener("on-hs-appearance-change", (evt) =>
+      chart.updateOptions(optionsFn(evt.detail))
+    );
 
-    if (tabpanel) tabpanel.addEventListener('on-hs-appearance-change', (evt) => chart.updateOptions(optionsFn(evt.detail)));
-}
+    if (tabpanel)
+      tabpanel.addEventListener("on-hs-appearance-change", (evt) =>
+        chart.updateOptions(optionsFn(evt.detail))
+      );
+  }
 
-return chart;
+  return chart;
 }
 
 const DonutChart = () => {
-    useEffect(() => {
-      (function () {
-        buildChart('#hs-donut-chart1', () => ({
+  useEffect(() => {
+    (function () {
+      buildChart(
+        "#hs-donut-chart1",
+        () => ({
           colors: ["#1C64F2", "#16BDCA", "#FDBA8C", "#E74694"],
           chart: {
             height: 300,
             width: 300,
-            type: 'donut',
+            type: "donut",
             zoom: {
               enabled: false,
             },
@@ -45,12 +54,12 @@ const DonutChart = () => {
           plotOptions: {
             pie: {
               donut: {
-                size: '76%',
+                size: "76%",
               },
             },
           },
-          series: [36, 23,11, 30],
-          labels: ['Tailwind CSS', 'Preline UI','MUI' ,'Others'],
+          series: [36, 23, 11, 30],
+          labels: ["Tailwind CSS", "Preline UI", "MUI", "Others"],
           legend: {
             show: false,
           },
@@ -73,31 +82,32 @@ const DonutChart = () => {
           states: {
             hover: {
               filter: {
-                type: 'none',
+                type: "none",
               },
             },
           },
-        }), {
-          colors: ['#3b82f6', '#22d3ee', '#e5e7eb'],
+        }),
+        {
+          colors: ["#3b82f6", "#22d3ee", "#e5e7eb"],
           stroke: {
-            colors: ['rgb(255, 255, 255)'],
+            colors: ["rgb(255, 255, 255)"],
           },
-        }, {
-          colors: ['#e5e7eb', '#3b82f6', '#22d3ee'],
+        },
+        {
+          colors: ["#e5e7eb", "#3b82f6", "#22d3ee"],
           stroke: {
-            colors: ['rgb(38, 38, 38)'],
+            colors: ["rgb(38, 38, 38)"],
           },
-        });
-      })();
-    }, []);
-  
-    return (
-      <div className="flex flex-col justify-center items-center">
-        <div
-          id="hs-donut-chart1"></div>
-      
-      </div>
-    );
-  };
+        }
+      );
+    })();
+  }, []);
+
+  return (
+    <div className="flex flex-col justify-center items-center">
+      <div id="hs-donut-chart1"></div>
+    </div>
+  );
+};
 
 export default DonutChart;

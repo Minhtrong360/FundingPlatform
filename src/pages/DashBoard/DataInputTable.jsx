@@ -29,7 +29,7 @@
 //   const handleSave = () => {
 //     // Logic to save the states goes here
 //     // You can send the data to a server, update a global state, etc.
- 
+
 //     console.log("Saving Series Name:", seriesName01);
 //     console.log("Saving Series Data:", seriesData01);
 //     console.log("Saving Series Name:", seriesName02);
@@ -47,11 +47,11 @@
 //       <ChartInput inputName="Series Data 1" type="text"  placeholder="Ex: 18000, 51000, 60000" value={seriesData01} onChange={(e) => setSeriesData1(e.target.value)} />
 //       <ChartInput inputName="Series Name 2" type="text"  placeholder="Ex: Outcome" value={seriesName02} onChange={(e) => setSeriesName2(e.target.value)} />
 //       <ChartInput inputName="Series Data 2" type="text"  placeholder="Ex: 27000, 38000, 60000" value={seriesData02} onChange={(e) => setSeriesData2(e.target.value)} />
-//       <ChartInput inputName="X-axis value" type="text" placeholder="Ex:  January 2023,  January 2023" value={categoryData} onChange={(e) => setCategoryData(e.target.value)} />
-      
+//       <ChartInput inputName="X-axis va lue" type="text" placeholder="Ex:  January 2023,  January 2023" value={categoryData} onChange={(e) => setCategoryData(e.target.value)} />
+
 //       {/* Buttons for adding series and categories */}
 //       <button onClick={handleSave} className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-//         Save 
+//         Save
 //       </button>
 //     </div>
 //     </div>
@@ -59,7 +59,6 @@
 // }
 
 // export default ChartForm;
-
 
 // import React, { useState } from 'react';
 // import  Chart  from "react-apexcharts";
@@ -115,19 +114,16 @@
 //     });
 //   };
 
-  
 //   return (
 //     <div>
-//       <Chart 
-       
+//       <Chart
+
 //        type="area"
 //         height={300}
-    
-        
-      
-//         // incomeData={chartData.incomeData} 
-//         // outcomeData={chartData.outcomeData} 
-//         // xAxisCategories={chartData.xAxisCategories} 
+
+//         // incomeData={chartData.incomeData}
+//         // outcomeData={chartData.outcomeData}
+//         // xAxisCategories={chartData.xAxisCategories}
 //       /><Chart/>
 //       <div>
 //         <ChartInput inputName="Series Name 1" type="text" placeholder="Ex: Income" value={seriesName01} onChange={(e) => setSeriesName1(e.target.value)} />
@@ -135,9 +131,9 @@
 //         <ChartInput inputName="Series Name 2" type="text" placeholder="Ex: Outcome" value={seriesName02} onChange={(e) => setSeriesName2(e.target.value)} />
 //         <ChartInput inputName="Series Data 2" type="text" placeholder="Ex: 27000, 38000, 60000" value={seriesData02} onChange={(e) => setSeriesData2(e.target.value)} />
 //         <ChartInput inputName="X-axis value" type="text" placeholder="Ex: January 2023, February 2023" value={categoryData} onChange={(e) => setCategoryData(e.target.value)} />
-        
+
 //         <button onClick={handleSave} className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-//           Save 
+//           Save
 //         </button>
 //       </div>
 //     </div>
@@ -146,13 +142,16 @@
 
 // export default ChartForm;
 
-import React, { useState } from 'react';
-import Chart from 'react-apexcharts';
+import React, { useState } from "react";
+import Chart from "react-apexcharts";
 
 function ChartInput({ inputName, type, placeholder, value, onChange }) {
   return (
     <div>
-      <label htmlFor={inputName} className="block text-sm text-gray-500 dark:text-gray-300">
+      <label
+        htmlFor={inputName}
+        className="block text-sm text-gray-500 dark:text-gray-300"
+      >
         {inputName}
       </label>
       <input
@@ -168,39 +167,39 @@ function ChartInput({ inputName, type, placeholder, value, onChange }) {
 }
 
 function ChartForm() {
-  const [seriesName01, setSeriesName1] = useState('');
-  const [seriesData01, setSeriesData1] = useState('');
-  const [seriesName02, setSeriesName2] = useState('');
-  const [seriesData02, setSeriesData2] = useState('');
-  const [categoryData, setCategoryData] = useState('');
+  const [seriesName01, setSeriesName1] = useState("");
+  const [seriesData01, setSeriesData1] = useState("");
+  const [seriesName02, setSeriesName2] = useState("");
+  const [seriesData02, setSeriesData2] = useState("");
+  const [categoryData, setCategoryData] = useState("");
 
   const [chartOptions, setChartOptions] = useState({
     chart: {
-      type: 'bar',
+      type: "bar",
       height: 300,
     },
     xaxis: {
-      categories: []
-    }
+      categories: [],
+    },
   });
 
   const [chartSeries, setChartSeries] = useState([]);
 
   const convertToNumberArray = (dataString) => {
-    return dataString.split(',').map(Number);
+    return dataString.split(",").map(Number);
   };
 
   const handleSave = () => {
-    const categories = categoryData.split(',');
+    const categories = categoryData.split(",");
 
     setChartOptions({
       ...chartOptions,
-      xaxis: { ...chartOptions.xaxis, categories: categories }
+      xaxis: { ...chartOptions.xaxis, categories: categories },
     });
 
     setChartSeries([
       { name: seriesName01, data: convertToNumberArray(seriesData01) },
-      { name: seriesName02, data: convertToNumberArray(seriesData02) }
+      { name: seriesName02, data: convertToNumberArray(seriesData02) },
     ]);
   };
 
@@ -214,14 +213,47 @@ function ChartForm() {
       />
 
       <div>
-        <ChartInput inputName="Series Name 1" type="text" placeholder="Ex: Income" value={seriesName01} onChange={(e) => setSeriesName1(e.target.value)} />
-        <ChartInput inputName="Series Data 1" type="text" placeholder="Ex: 18000, 51000, 60000" value={seriesData01} onChange={(e) => setSeriesData1(e.target.value)} />
-        <ChartInput inputName="Series Name 2" type="text" placeholder="Ex: Outcome" value={seriesName02} onChange={(e) => setSeriesName2(e.target.value)} />
-        <ChartInput inputName="Series Data 2" type="text" placeholder="Ex: 27000, 38000, 60000" value={seriesData02} onChange={(e) => setSeriesData2(e.target.value)} />
-        <ChartInput inputName="X-axis value" type="text" placeholder="Ex: January 2023, February 2023" value={categoryData} onChange={(e) => setCategoryData(e.target.value)} />
-        
-        <button onClick={handleSave} className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          Save 
+        <ChartInput
+          inputName="Series Name 1"
+          type="text"
+          placeholder="Ex: Income"
+          value={seriesName01}
+          onChange={(e) => setSeriesName1(e.target.value)}
+        />
+        <ChartInput
+          inputName="Series Data 1"
+          type="text"
+          placeholder="Ex: 18000, 51000, 60000"
+          value={seriesData01}
+          onChange={(e) => setSeriesData1(e.target.value)}
+        />
+        <ChartInput
+          inputName="Series Name 2"
+          type="text"
+          placeholder="Ex: Outcome"
+          value={seriesName02}
+          onChange={(e) => setSeriesName2(e.target.value)}
+        />
+        <ChartInput
+          inputName="Series Data 2"
+          type="text"
+          placeholder="Ex: 27000, 38000, 60000"
+          value={seriesData02}
+          onChange={(e) => setSeriesData2(e.target.value)}
+        />
+        <ChartInput
+          inputName="X-axis value"
+          type="text"
+          placeholder="Ex: January 2023, February 2023"
+          value={categoryData}
+          onChange={(e) => setCategoryData(e.target.value)}
+        />
+
+        <button
+          onClick={handleSave}
+          className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Save
         </button>
       </div>
     </div>
@@ -229,5 +261,3 @@ function ChartForm() {
 }
 
 export default ChartForm;
-
-

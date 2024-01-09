@@ -11,6 +11,13 @@ const pricingPlans = [
     isPopular: false,
   },
   {
+    title: "Semi-Pro",
+    price: 0.5,
+    description: "Good for a new business",
+    features: ["1 users", "Profile sharing", "Profile analytics"],
+    isPopular: false,
+  },
+  {
     title: "Pro",
     price: 42,
     description: "Good for a new business",

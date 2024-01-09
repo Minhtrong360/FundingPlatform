@@ -258,12 +258,13 @@ const Card = ({ title, description, imageUrl, buttonText, buttonLink }) => (
   </div>
 );
 
-
 // VideoCard Component
 const VideoCard = ({ title, videoUrl }) => (
   <div className="space-y-8 xl:space-y-10 mt-2 mb-2">
-    <h2 className="text-xl font-semibold tracking-tighter sm:text-2xl xl:text-3xl">{title}</h2>
-    <video 
+    <h2 className="text-xl font-semibold tracking-tighter sm:text-2xl xl:text-3xl">
+      {title}
+    </h2>
+    <video
       className="aspect-video w-full overflow-hidden rounded-md"
       controls
       autoPlay // Use autoPlay with a capital "P" for auto-play
@@ -281,39 +282,33 @@ const VideoCard = ({ title, videoUrl }) => (
 const FeatureVideo = () => (
   <section className="py-12 md:py-24 lg:py-32">
     <div className="container mx-auto grid gap-8 px-4 md:px-6 lg:grid-cols-3 lg:gap-8">
-      <VideoCard 
-        title="Notion-like editor" 
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Free%20Text%20Editor.mp4?t=2024-01-09T03%3A56%3A58.939Z" 
+      <VideoCard
+        title="Notion-like editor"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Free%20Text%20Editor.mp4?t=2024-01-09T03%3A56%3A58.939Z"
       />
-      <VideoCard 
-        title="Beautiful images" 
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20image.mp4?t=2024-01-09T03%3A59%3A20.082Z" 
+      <VideoCard
+        title="Beautiful images"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20image.mp4?t=2024-01-09T03%3A59%3A20.082Z"
       />
-      <VideoCard 
-        title="YouTube videos" 
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20YouTube.mp4?t=2024-01-09T04%3A00%3A02.715Z" 
+      <VideoCard
+        title="YouTube videos"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20YouTube.mp4?t=2024-01-09T04%3A00%3A02.715Z"
       />
-      <VideoCard 
-        title="Beautiful charts" 
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20Charts.mp4?t=2024-01-09T04%3A00%3A11.615Z" 
+      <VideoCard
+        title="Beautiful charts"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20Charts.mp4?t=2024-01-09T04%3A00%3A11.615Z"
       />
-      <VideoCard 
-        title="Your own Dataroom" 
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Dataroom.mp4?t=2024-01-09T04%3A00%3A24.809Z" 
+      <VideoCard
+        title="Your own Dataroom"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Dataroom.mp4?t=2024-01-09T04%3A00%3A24.809Z"
       />
-      <VideoCard 
-        title="Fundraising info settings" 
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Fundraising%20info%20settings.mp4?t=2024-01-09T04%3A00%3A39.975Z" 
+      <VideoCard
+        title="Fundraising info settings"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Fundraising%20info%20settings.mp4?t=2024-01-09T04%3A00%3A39.975Z"
       />
     </div>
   </section>
 );
-  
-
-
-
-
-
 
 const ProfileCard = () => {
   return (

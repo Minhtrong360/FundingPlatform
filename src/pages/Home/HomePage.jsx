@@ -1,7 +1,8 @@
 import "@blocknote/core/style.css";
 import "react-datepicker/dist/react-datepicker.css";
+import YouTube from "react-youtube";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Footer from "./Footer";
 
 import Header from "./Header";
@@ -260,80 +261,48 @@ const Card = ({ title, description, imageUrl, buttonText, buttonLink }) => (
 );
 
 const VideoCard = ({ title, videoUrl }) => {
-  const videoRef = useRef(null);
-  const [played, setPlayed] = useState(false);
-
-  useEffect(() => {
-    const video = videoRef.current;
-
-    const playVideoOnInteraction = () => {
-      if (video && !played) {
-        video.play();
-        setPlayed(true);
-      }
-    };
-
-    if (!played) {
-      window.addEventListener("touchstart", playVideoOnInteraction);
-    }
-
-    return () => {
-      window.removeEventListener("touchstart", playVideoOnInteraction);
-    };
-  }, [played]);
-
-  useEffect(() => {
-    videoRef.current.defaultMuted = true;
-  });
-
   return (
     <div className="space-y-8 xl:space-y-10 mt-2 mb-2">
-      <h2 className="text-xl text-white font-semibold tracking-tighter sm:text-2xl xl:text-3xl">
+      <h2 className="text-xl text-red-600 font-semibold tracking-tighter sm:text-2xl xl:text-3xl">
         {title}
       </h2>
-      <video
-        ref={videoRef}
-        className="aspect-video w-full overflow-hidden rounded-md"
-        autoPlay
-        loop
-        muted
-        controlsList={false}
-        controls={false}
-        playsInline
-      >
-        <source src={videoUrl} type="video/webm" />
-        Your browser does not support the video tag.
-      </video>
+      <div className="aspect-video w-full overflow-hidden rounded-md">
+        <img
+          src={videoUrl}
+          alt={title}
+          className="w-full h-full object-cover"
+        />
+      </div>
     </div>
   );
 };
 
 const FeatureVideo = () => (
   <section className="py-12 md:py-24 lg:py-32">
-    <div className="container mx-auto grid gap-8 px-4 md:px-6 lg:grid-cols-3 lg:gap-8 bg-gray-900">
+    <div className="container mx-auto grid gap-8 px-4 md:px-6 lg:grid-cols-3 lg:gap-8 bg-gray-900 pb-8">
       <VideoCard
         title="Notion-like editor"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Free%20Text%20Editor.webm?t=2024-01-11T08%3A42%3A36.323Z"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Free%20Text%20Editor.gif?t=2024-01-11T09%3A51%3A11.171Z"
       />
       <VideoCard
         title="Beautiful images"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20image.webm?t=2024-01-11T08%3A40%3A11.744Z"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Add%20image.gif?t=2024-01-11T09%3A51%3A03.516Z"
       />
       <VideoCard
         title="YouTube videos"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20YouTube.webm?t=2024-01-11T08%3A40%3A48.814Z"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Add%20YouTube.gif?t=2024-01-11T09%3A50%3A59.130Z"
       />
       <VideoCard
         title="Insightful charts"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20Charts.webm?t=2024-01-11T08%3A40%3A57.534Z"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Add%20Charts.gif?t=2024-01-11T09%3A50%3A51.692Z"
       />
       <VideoCard
         title="Your own Dataroom"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Dataroom.webm?t=2024-01-11T08%3A39%3A22.995Z"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Dataroom.gif?t=2024-01-11T09%3A51%3A07.573Z"
       />
       <VideoCard
         title="Fundraising info settings"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Fundraising%20info%20settings.webm?t=2024-01-11T08%3A40%3A33.065Z"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Fundraising%20info%20settings.gif?t=2024-01-11T09%3A51%3A14.151Z"
       />
     </div>
   </section>

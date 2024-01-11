@@ -281,7 +281,7 @@ export default function EditorTool() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex-grow justify-center max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+    <div className="flex-grow items-center justify-center max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
       {isLoading ? ( // Hiển thị thông báo tải dữ liệu khi isLoading là true
         <div
           className="animate-spin inline-block w-8 h-8 border-[3px] border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500"
@@ -292,8 +292,8 @@ export default function EditorTool() {
         <BlockNoteView
           editor={editor}
           theme={"light"}
-          style={{ width: "80%" }}
-          // className="sm:w-full"
+          // style={{ width: "80%" }}
+          className="w-full lg:w-9/12"
         />
       )}
 

@@ -2,12 +2,9 @@ import { DashboardOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function SideBar({ id }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+function SideBar({ id, toggleSidebar, isSidebarOpen }) {
   const navigate = useNavigate();
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+
   return (
     <div>
       <button
@@ -41,6 +38,7 @@ function SideBar({ id }) {
         }`}
         aria-label="Sidebar"
         aria-hidden={!isSidebarOpen}
+        onClick={toggleSidebar}
       >
         <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
           <ul className="space-y-2 font-medium">

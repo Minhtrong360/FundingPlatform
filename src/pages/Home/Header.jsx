@@ -35,19 +35,29 @@ const Navbar = () => {
   const handleFinancialProductClick = () => {
     // Lấy đối tượng ref của phần tử "Financial Product" từ Home component
     const financialProductRef = document.getElementById("platform"); // Đặt ID tương ứng với ref của bạn
-
+    setIsOpen(!isOpen);
     if (financialProductRef) {
       // Sử dụng `scrollIntoView()` để cuộn đến phần tử "Financial Product"
-      financialProductRef.scrollIntoView({ behavior: "smooth" });
+      const elementRect = financialProductRef.getBoundingClientRect();
+      const bodyRect = document.body.getBoundingClientRect();
+      const offsetTop = elementRect.top - bodyRect.top;
+      window.scrollTo({
+        top: offsetTop - (window.innerHeight - elementRect.height) / 20,
+        behavior: "smooth",
+      });
     }
   };
   const handleProductFeaturesClick = () => {
     // Lấy đối tượng ref của phần tử "Financial Product" từ Home component
     const financialProductRef = document.getElementById("profiles"); // Đặt ID tương ứng với ref của bạn
-
+    setIsOpen(!isOpen);
     if (financialProductRef) {
       // Sử dụng `scrollIntoView()` để cuộn đến phần tử "Financial Product"
-      financialProductRef.scrollIntoView({
+      const elementRect = financialProductRef.getBoundingClientRect();
+      const bodyRect = document.body.getBoundingClientRect();
+      const offsetTop = elementRect.top - bodyRect.top;
+      window.scrollTo({
+        top: offsetTop - (window.innerHeight - elementRect.height) / 20,
         behavior: "smooth",
       });
     }
@@ -56,20 +66,32 @@ const Navbar = () => {
   const handlePricingClick = () => {
     // Lấy đối tượng ref của phần tử "Financial Product" từ Home component
     const financialProductRef = document.getElementById("pricing"); // Đặt ID tương ứng với ref của bạn
-
+    setIsOpen(!isOpen);
     if (financialProductRef) {
       // Sử dụng `scrollIntoView()` để cuộn đến phần tử "Financial Product"
-      financialProductRef.scrollIntoView({ behavior: "smooth" });
+      const elementRect = financialProductRef.getBoundingClientRect();
+      const bodyRect = document.body.getBoundingClientRect();
+      const offsetTop = elementRect.top - bodyRect.top;
+      window.scrollTo({
+        top: offsetTop - (window.innerHeight - elementRect.height) / 20,
+        behavior: "smooth",
+      });
     }
   };
 
   const handleFAQClick = () => {
     // Lấy đối tượng ref của phần tử "Financial Product" từ Home component
     const financialProductRef = document.getElementById("FAQ"); // Đặt ID tương ứng với ref của bạn
-
+    setIsOpen(!isOpen);
     if (financialProductRef) {
       // Sử dụng `scrollIntoView()` để cuộn đến phần tử "Financial Product"
-      financialProductRef.scrollIntoView({ behavior: "smooth" });
+      const elementRect = financialProductRef.getBoundingClientRect();
+      const bodyRect = document.body.getBoundingClientRect();
+      const offsetTop = elementRect.top - bodyRect.top;
+      window.scrollTo({
+        top: offsetTop - (window.innerHeight - elementRect.height) / 20,
+        behavior: "smooth",
+      });
     }
   };
   const handleClickHome = (e) => {

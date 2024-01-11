@@ -12,6 +12,7 @@ import { supabase } from "../../supabase";
 import FilesList from "./FilesList";
 import SideBar from "../../components/SideBar";
 import ResizeImage from "../../components/ResizeImage";
+import Spinner from "../../components/Spiner";
 
 function formatNumber(value) {
   // Kiểm tra xem value có phải là một chuỗi không
@@ -155,7 +156,11 @@ const DetailPage = () => {
   }, [id]);
 
   if (isLoading) {
-    return <div>Loading...</div>; // Hiển thị màn hình "isLoading" khi dữ liệu đang được tải
+    return (
+      <div className="flex justify-center items-center top-1/2 left-1/2">
+        <Spinner />
+      </div>
+    ); // Hiển thị màn hình "isLoading" khi dữ liệu đang được tải
   }
 
   if (viewError) {
@@ -169,7 +174,11 @@ const DetailPage = () => {
       onClick={toggleSidebar}
     >
       <div id="exampleWrapper" className="">
-        <SideBar id={id} />
+        <SideBar
+          id={id}
+          isSidebarOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+        />
 
         <div className="p-4 sm:ml-64" onClick={toggleSidebar}>
           <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
@@ -183,8 +192,9 @@ const DetailPage = () => {
               button5Text={company.offer_type}
               imageUrl={company.url}
             />
-
-            <EditorTool />
+            <div className="flex justify-center">
+              <EditorTool />
+            </div>
 
             <FilesList />
           </div>

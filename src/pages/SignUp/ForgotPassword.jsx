@@ -81,7 +81,7 @@ const ForgotPassword = () => {
                 Remember your password?
                 <a
                   onClick={() => navigate("/login")}
-                  className="ml-1 text-blue-600 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                  className="ml-1 text-blue-600 decoration-2 hover:underline hover:cursor-pointer font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                 >
                   Sign in here
                 </a>

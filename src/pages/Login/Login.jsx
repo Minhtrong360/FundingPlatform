@@ -137,7 +137,7 @@ const Login = () => {
                         Password
                       </label>
                       <a
-                        className="text-sm text-blue-600 hover:underline"
+                        className="text-sm text-blue-600 hover:underline hover:cursor-pointer"
                         onClick={() => navigate("/forgot-password")}
                       >
                         Forgot password?

@@ -77,6 +77,7 @@ const HeroSection = () => {
               className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               href="#"
               variants={buttonVariants}
+              onClick={() => navigate(`/login`)}
             >
               Get started
               <span>→</span>
@@ -430,6 +431,7 @@ const Search = () => {
 };
 
 const HeroCard = () => {
+  const navigate = useNavigate();
   return (
     <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 mt-28">
       <div className="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
@@ -456,6 +458,7 @@ const HeroCard = () => {
             <a
               className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               href="#"
+              onClick={() => navigate(`/login`)}
             >
               Get started
               <span>→</span>

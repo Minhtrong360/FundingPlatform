@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { supabase } from "../supabase";
+import { toast } from "react-toastify";
+import AlertMsg from "../components/AlertMsg";
 
 const Modal = ({ isOpen, onClose, fileId }) => {
   const [email, setEmail] = useState("vidu@gmail.com");
@@ -20,47 +22,31 @@ const Modal = ({ isOpen, onClose, fileId }) => {
         // Lấy danh sách "invited_user" hiện tại từ file
         const currentInvitedUsers = fileData.invited_user || [];
 
-        // Truy vấn để tìm người dùng có email tương tự trong bảng "users"
-        const { data: userData, error: userError } = await supabase
-          .from("users")
-          .select("id")
-          .eq("email", email)
-          .single();
+        // Thêm email người dùng mới vào danh sách "invited_user"
+        currentInvitedUsers.push(email);
 
-        if (userError) {
-          console.log("Error fetching user data:", userError);
+        // Tiến hành cập nhật trường "invited_user" của bảng "files" với danh sách mới
+        const { error: updateError } = await supabase
+          .from("files")
+          .update({ invited_user: currentInvitedUsers })
+          .eq("id", fileId);
+
+        if (updateError) {
+          console.log("Error updating file data:", updateError);
           // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
-        } else if (userData) {
-          // Lấy ID của người dùng được tìm thấy
-          const userId = userData.id;
-
-          // Thêm ID của người dùng mới vào danh sách "invited_user"
-          currentInvitedUsers.push(userId);
-
-          // Tiến hành cập nhật trường "invited_user" của bảng "files" với danh sách mới
-          const { error: updateError } = await supabase
-            .from("files")
-            .update({ invited_user: currentInvitedUsers })
-            .eq("id", fileId);
-
-          if (updateError) {
-            console.log("Error updating file data:", updateError);
-            // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
-          } else {
-            console.log(`Successfully invited user with email ${email}`);
-            onClose();
-            // Xử lý khi mời thành công (ví dụ: hiển thị thông báo cho người dùng)
-          }
         } else {
-          console.log("User with email not found.");
-          // Xử lý trường hợp không tìm thấy người dùng với email tương tự
+          console.log(`Successfully invited user with email: ${email}`);
+          onClose();
+          // Xử lý khi mời thành công (ví dụ: hiển thị thông báo cho người dùng)
         }
       } else {
         console.log("File with ID not found.");
+        toast.error("File with ID not found.");
         // Xử lý trường hợp không tìm thấy file với ID cụ thể
       }
     } catch (error) {
       console.log("Error inviting user:", error);
+      toast.error(error.message);
       // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }
   };
@@ -71,6 +57,7 @@ const Modal = ({ isOpen, onClose, fileId }) => {
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
+      <AlertMsg />
       <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
         <p className="mt-2 text-xl text-gray-500 ">
           Invite a user to see this file!

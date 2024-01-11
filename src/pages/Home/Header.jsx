@@ -43,11 +43,13 @@ const Navbar = () => {
   };
   const handleProductFeaturesClick = () => {
     // Lấy đối tượng ref của phần tử "Financial Product" từ Home component
-    const financialProductRef = document.getElementById("platform"); // Đặt ID tương ứng với ref của bạn
+    const financialProductRef = document.getElementById("profiles"); // Đặt ID tương ứng với ref của bạn
 
     if (financialProductRef) {
       // Sử dụng `scrollIntoView()` để cuộn đến phần tử "Financial Product"
-      financialProductRef.scrollIntoView({ behavior: "smooth" });
+      financialProductRef.scrollIntoView({
+        behavior: "smooth",
+      });
     }
   };
 
@@ -97,6 +99,10 @@ const Navbar = () => {
   }, [screenWidth]);
 
   const location = useLocation();
+
+  const handleBurgerBtn = () => {
+    setIsOpen(!isOpen);
+  };
 
   useEffect(() => {
     const loginPart = location.pathname.split("/").pop();
@@ -173,6 +179,7 @@ const Navbar = () => {
               className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
               aria-controls="navbar-sticky"
               aria-expanded={isOpen}
+              onClick={handleBurgerBtn}
             >
               <span className="sr-only">Open main menu</span>
               <svg

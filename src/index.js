@@ -4,16 +4,21 @@ import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import Router from "./router/Router.jsx";
+import { Elements } from "@stripe/react-stripe-js";
 import AuthProvider from "./context/AuthContext.jsx";
+import { loadStripe } from "@stripe/stripe-js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+const stripePromise = loadStripe(process.env.REACT_APP_PUBLISHABLE_KEY);
 root.render(
   <AuthProvider>
-    <BrowserRouter>
-      {/* <ThemeProvider> */}
-      <Router />
-      {/* </ThemeProvider> */}
-    </BrowserRouter>
+    <Elements stripe={stripePromise}>
+      <BrowserRouter>
+        {/* <ThemeProvider> */}
+        <Router />
+        {/* </ThemeProvider> */}
+      </BrowserRouter>
+    </Elements>
   </AuthProvider>
 );
 

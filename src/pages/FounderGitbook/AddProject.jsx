@@ -115,8 +115,6 @@ export default function AddProject({ updateProjects }) {
 
     const fetchProjects = async () => {
       try {
-        console.log("user", user);
-
         let { data: users, error } = await supabase
           .from("users")
           .select("*")
@@ -139,7 +137,7 @@ export default function AddProject({ updateProjects }) {
       fetchProjects();
     }
   }, [user]);
-  console.log("currentUser", currentUser);
+
   const isButtonDisabled =
     currentUser &&
     (currentUser.plan === null || currentUser.plan === undefined);

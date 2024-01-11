@@ -310,30 +310,30 @@ const VideoCard = ({ title, videoUrl }) => {
 
 const FeatureVideo = () => (
   <section className="py-12 md:py-24 lg:py-32">
-    <div className="container mx-auto grid gap-8 px-4 md:px-6 lg:grid-cols-3 lg:gap-8 bg-gray-900 pb-6">
+    <div className="container mx-auto grid gap-8 px-4 md:px-6 lg:grid-cols-3 lg:gap-8">
       <VideoCard
         title="Notion-like editor"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Free%20Text%20Editor.mp4?t=2024-01-09T03%3A56%3A58.939Z"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Free%20Text%20Editor.webm?t=2024-01-11T08%3A42%3A36.323Z"
       />
       <VideoCard
         title="Beautiful images"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20image.mp4?t=2024-01-09T03%3A59%3A20.082Z"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20image.webm?t=2024-01-11T08%3A40%3A11.744Z"
       />
       <VideoCard
         title="YouTube videos"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20YouTube.mp4?t=2024-01-09T04%3A00%3A02.715Z"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20YouTube.webm?t=2024-01-11T08%3A40%3A48.814Z"
       />
       <VideoCard
         title="Insightful charts"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20Charts.mp4?t=2024-01-09T04%3A00%3A11.615Z"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20Charts.webm?t=2024-01-11T08%3A40%3A57.534Z"
       />
       <VideoCard
         title="Your own Dataroom"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Dataroom.mp4?t=2024-01-09T04%3A00%3A24.809Z"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Dataroom.webm?t=2024-01-11T08%3A39%3A22.995Z"
       />
       <VideoCard
         title="Fundraising info settings"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Fundraising%20info%20settings.mp4?t=2024-01-09T04%3A00%3A39.975Z"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Fundraising%20info%20settings.webm?t=2024-01-11T08%3A40%3A33.065Z"
       />
     </div>
   </section>

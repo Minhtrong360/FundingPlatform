@@ -2,9 +2,13 @@ import { useNavigate } from "react-router";
 import { useState } from "react";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
+import { toast } from "react-toastify";
+import SpinnerBtn from "../../components/SpinnerBtn";
+import AlertMsg from "../../components/AlertMsg";
 
 const HeroSignUp = () => {
   const [rememberMe, setRememberMe] = useState(false);
+
   const auth = useAuth();
   const navigate = useNavigate();
   const signInWitGG = async (e) => {
@@ -16,15 +20,45 @@ const HeroSignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [resetLink, setResetLink] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    supabase.auth.signUp({ email, password });
-    setResetLink(true);
+    setIsLoading(true); // Đặt isLoading thành true để bật trạng thái loading
+    // Kiểm tra email đã tồn tại trong Supabase
+    if (!rememberMe) {
+      // Nếu rememberMe không được chọn, hiển thị thông báo lỗi bằng toast.error
+      toast.error("Please accept the Terms and Conditions");
+    } else {
+      const { data, error } = await supabase
+        .from("users")
+        .select("email")
+        .eq("email", email);
+
+      if (error) {
+        console.error("Error checking email:", error);
+      } else if (data && data.length > 0) {
+        // Nếu email đã tồn tại, hiển thị thông báo lỗi bằng toast.error
+        toast.error("Email is already existed");
+      } else {
+        // Nếu email không tồn tại, thực hiện đăng ký
+
+        try {
+          await supabase.auth.signUp({ email, password });
+          setResetLink(true);
+        } catch (error) {
+          console.error("Error signing up:", error);
+          toast.error(error.message);
+          // Xử lý lỗi đăng ký tại đây nếu cần
+        }
+      }
+    }
+    setIsLoading(false); // Đặt isLoading thành false sau khi hoàn thành đăng ký
   };
 
   return (
     <div className="relative bg-gradient-to-bl from-blue-100 via-transparent dark:from-blue-950 dark:via-transparent">
+      <AlertMsg />
       {resetLink ? (
         <div className="block text-2xl font-bold text-gray-800 dark:text-white text-center">
           Email sent successfully. Check your inbox for the confirm
@@ -219,7 +253,7 @@ const HeroSignUp = () => {
                           type="submit"
                           className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                         >
-                          Get started
+                          {isLoading ? <SpinnerBtn /> : "Get started"}
                         </button>
                       </div>
                     </div>

@@ -1,7 +1,7 @@
 import "@blocknote/core/style.css";
 import "react-datepicker/dist/react-datepicker.css";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Footer from "./Footer";
 
 import Header from "./Header";
@@ -260,28 +260,49 @@ const Card = ({ title, description, imageUrl, buttonText, buttonLink }) => (
 );
 
 
-// VideoCard Component
-const VideoCard = ({ title, videoUrl }) => (
-  <div className="space-y-8 xl:space-y-10 mt-2 mb-2">
-    <h2 className="text-xl text-red-600 font-semibold tracking-tighter sm:text-2xl xl:text-3xl">{title}</h2>
-    <video 
-      className="aspect-video w-full overflow-hidden rounded-md"
-      controls
-      autoPlay // Use autoPlay with a capital "P" for auto-play
-      loop // Add loop attribute here
-      muted
-      controlsList = {false}
-      controls = {false}
-      
-    >
-      <source src={videoUrl} type="video/webm" />
-      Your browser does not support the video tag.
-    </video>
-  </div>
-);
+const VideoCard = ({ title, videoUrl }) => {
+  const videoRef = useRef(null);
+  const [played, setPlayed] = useState(false);
 
-// FeatureVideo Component
-// FeatureVideo Component
+  useEffect(() => {
+    const video = videoRef.current;
+
+    const playVideoOnInteraction = () => {
+      if (video && !played) {
+        video.play();
+        setPlayed(true);
+      }
+    };
+
+    if (!played) {
+      window.addEventListener('touchstart', playVideoOnInteraction);
+    }
+
+    return () => {
+      window.removeEventListener('touchstart', playVideoOnInteraction);
+    };
+  }, [played]);
+
+  return (
+    <div className="space-y-8 xl:space-y-10 mt-2 mb-2">
+      <h2 className="text-xl text-red-600 font-semibold tracking-tighter sm:text-2xl xl:text-3xl">{title}</h2>
+      <video
+        ref={videoRef}
+        className="aspect-video w-full overflow-hidden rounded-md"
+        controls
+        autoPlay
+        loop
+        muted
+        controlsList = {false}
+        controls = {false}
+      >
+        <source src={videoUrl} type="video/webm" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  );
+};
+
 const FeatureVideo = () => (
   <section className="py-12 md:py-24 lg:py-32">
     <div className="container mx-auto grid gap-8 px-4 md:px-6 lg:grid-cols-3 lg:gap-8">
@@ -312,8 +333,6 @@ const FeatureVideo = () => (
     </div>
   </section>
 );
-  
-
 
 
 

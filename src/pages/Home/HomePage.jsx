@@ -301,7 +301,7 @@ const VideoCard = ({ title, videoUrl }) => {
         controls={false}
         playsInline
       >
-        <source src={videoUrl} type="video/WebM/MP4" />
+        <source src={videoUrl} type="video/webm" />
         Your browser does not support the video tag.
       </video>
     </div>
@@ -310,7 +310,7 @@ const VideoCard = ({ title, videoUrl }) => {
 
 const FeatureVideo = () => (
   <section className="py-12 md:py-24 lg:py-32">
-    <div className="container mx-auto grid gap-8 px-4 md:px-6 lg:grid-cols-3 lg:gap-8">
+    <div className="container mx-auto grid gap-8 px-4 md:px-6 lg:grid-cols-3 lg:gap-8 bg-gray-900">
       <VideoCard
         title="Notion-like editor"
         videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Free%20Text%20Editor.webm?t=2024-01-11T08%3A42%3A36.323Z"

@@ -301,7 +301,7 @@ const VideoCard = ({ title, videoUrl }) => {
         controls={false}
         playsInline
       >
-        <source src={videoUrl} type="video/webm" />
+        <source src={videoUrl} type="video/WebM/MP4" />
         Your browser does not support the video tag.
       </video>
     </div>

@@ -17,8 +17,9 @@ import {
 } from "@blocknote/core";
 import { YoutubeOutlined } from "@ant-design/icons";
 import { useAuth } from "../../context/AuthContext";
-import Spinner from "../../components/Spiner";
+
 import ErrorMessage from "../../components/ErrorMessage";
+import SpinnerBtn from "../../components/SpinnerBtn";
 
 // Create the YouTube Link block
 const YouTubeLinkBlock = createReactBlockSpec(
@@ -357,7 +358,7 @@ export default function EditorTool() {
               onClick={handleSave}
               disabled={isLoading}
             >
-              {isLoading ? <Spinner /> : "Save"}
+              {isLoading ? <SpinnerBtn /> : "Save"}
             </button>
           </div>
           <div style={{ position: "fixed", top: "20px", right: "6em" }}>
@@ -366,7 +367,7 @@ export default function EditorTool() {
               onClick={() => navigate(`/company/${params.id}`)}
               disabled={isLoading}
             >
-              {isLoading ? <Spinner /> : "Company Setting"}
+              {isLoading ? <SpinnerBtn /> : "Company Setting"}
             </button>
           </div>{" "}
           <div style={{ position: "fixed", top: "20px", right: "16em" }}>
@@ -375,7 +376,7 @@ export default function EditorTool() {
               onClick={() => navigate(`/trials`)}
               disabled={isLoading}
             >
-              {isLoading ? <Spinner /> : "Draw chart"}
+              {isLoading ? <SpinnerBtn /> : "Draw chart"}
             </button>
           </div>{" "}
         </>

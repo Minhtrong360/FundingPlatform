@@ -1,7 +1,7 @@
 import "@blocknote/core/style.css";
 import "react-datepicker/dist/react-datepicker.css";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Footer from "./Footer";
 
 import Header from "./Header";
@@ -259,30 +259,54 @@ const Card = ({ title, description, imageUrl, buttonText, buttonLink }) => (
   </div>
 );
 
-// VideoCard Component
-const VideoCard = ({ title, videoUrl }) => (
-  <div className="space-y-8 xl:space-y-10 mt-2 mb-2">
-    <h2 className="text-xl font-semibold tracking-tighter sm:text-2xl xl:text-3xl">
-      {title}
-    </h2>
-    <video
-      className="aspect-video w-full overflow-hidden rounded-md"
-      controls
-      autoPlay // Use autoPlay with a capital "P" for auto-play
-      loop // Add loop attribute here
-      muted
-    >
-      <source src={videoUrl} type="video/webm" />
-      Your browser does not support the video tag.
-    </video>
-  </div>
-);
+const VideoCard = ({ title, videoUrl }) => {
+  const videoRef = useRef(null);
+  const [played, setPlayed] = useState(false);
 
-// FeatureVideo Component
-// FeatureVideo Component
+  useEffect(() => {
+    const video = videoRef.current;
+
+    const playVideoOnInteraction = () => {
+      if (video && !played) {
+        video.play();
+        setPlayed(true);
+      }
+    };
+
+    if (!played) {
+      window.addEventListener("touchstart", playVideoOnInteraction);
+    }
+
+    return () => {
+      window.removeEventListener("touchstart", playVideoOnInteraction);
+    };
+  }, [played]);
+
+  return (
+    <div className="space-y-8 xl:space-y-10 mt-2 mb-2">
+      <h2 className="text-xl text-white font-semibold tracking-tighter sm:text-2xl xl:text-3xl">
+        {title}
+      </h2>
+      <video
+        ref={videoRef}
+        className="aspect-video w-full overflow-hidden rounded-md"
+        controls
+        autoPlay
+        loop
+        muted
+        controlsList={false}
+        controls={false}
+      >
+        <source src={videoUrl} type="video/webm" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  );
+};
+
 const FeatureVideo = () => (
   <section className="py-12 md:py-24 lg:py-32">
-    <div className="container mx-auto grid gap-8 px-4 md:px-6 lg:grid-cols-3 lg:gap-8">
+    <div className="container mx-auto grid gap-8 px-4 md:px-6 lg:grid-cols-3 lg:gap-8 bg-gray-900 pb-6">
       <VideoCard
         title="Notion-like editor"
         videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Free%20Text%20Editor.mp4?t=2024-01-09T03%3A56%3A58.939Z"
@@ -296,7 +320,7 @@ const FeatureVideo = () => (
         videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20YouTube.mp4?t=2024-01-09T04%3A00%3A02.715Z"
       />
       <VideoCard
-        title="Beautiful charts"
+        title="Insightful charts"
         videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20Charts.mp4?t=2024-01-09T04%3A00%3A11.615Z"
       />
       <VideoCard
@@ -507,24 +531,24 @@ const FAQ = () => {
 
   const faqData = [
     {
-      question: "Can I cancel at anytime?",
+      question: "What is BeeKrowd service all about?",
       answer:
-        "Yes, you can cancel anytime no questions are asked while you cancel but we would highly appreciate if you will give us some feedback.",
+        "Our platform is designed to help individuals, organizations, and causes build business and fundraising profiles effectively and efficiently. We provide a platform and tools to facilitate fundraising campaigns for various needs..",
     },
     {
-      question: "My team has credits. How do we use them?",
+      question: "How does this work?",
       answer:
-        "Once your team signs up for a subscription plan. This is where we sit down, grab a cup of coffee and dial in the details.",
+        "To get started, create a business profile or fundraising campaign by providing details about your cause, goals, and objectives. Share your campaign with your network, supporters, and on social media platforms..",
     },
     {
-      question: "What is fundraising profile as a service?",
+      question: "What can I do on BeeKrowd?",
       answer:
-        "Once your team signs up for a subscription plan. This is where we sit down, grab a cup of coffee and dial in the details.",
+        "You can create a business profile or fundraising profile in various forms of investment, such as equity investment, lending, mergers and acquisitions, and convertibles. We support both individual and nonprofit efforts to create investment profiles in almost all fields, including healthcare, education, finance, manufacturing, logistics, technology, AI, and more.",
     },
     {
-      question: "How much should I pay for the service?",
+      question: "Is my personal information and data secure??",
       answer:
-        "Once your team signs up for a subscription plan. This is where we sit down, grab a cup of coffee and dial in the details.",
+        "We take data security seriously. Our platform uses state-of-the-art encryption to protect your personal information.",
     },
   ];
 
@@ -649,7 +673,11 @@ const HomePage = () => {
       <ProfileCard />
       <HeroCard />
       <PricingSection />
-
+      <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
+      <stripe-pricing-table
+        pricing-table-id="prctbl_1OWuTLCmykWRrER6AJxjrHVr"
+        publishable-key="pk_live_nWgRIQWT6jZW6s0V2vVn8BSP00FcljoMdz"
+      ></stripe-pricing-table>
       <FAQ />
       <Footer />
     </>

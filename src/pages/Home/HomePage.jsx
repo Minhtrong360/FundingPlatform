@@ -282,6 +282,10 @@ const VideoCard = ({ title, videoUrl }) => {
     };
   }, [played]);
 
+  useEffect(() => {
+    videoRef.current.defaultMuted = true;
+  });
+
   return (
     <div className="space-y-8 xl:space-y-10 mt-2 mb-2">
       <h2 className="text-xl text-white font-semibold tracking-tighter sm:text-2xl xl:text-3xl">
@@ -290,12 +294,12 @@ const VideoCard = ({ title, videoUrl }) => {
       <video
         ref={videoRef}
         className="aspect-video w-full overflow-hidden rounded-md"
-        controls
         autoPlay
         loop
         muted
         controlsList={false}
         controls={false}
+        playsInline
       >
         <source src={videoUrl} type="video/webm" />
         Your browser does not support the video tag.
@@ -673,11 +677,6 @@ const HomePage = () => {
       <ProfileCard />
       <HeroCard />
       <PricingSection />
-      <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
-      <stripe-pricing-table
-        pricing-table-id="prctbl_1OWuTLCmykWRrER6AJxjrHVr"
-        publishable-key="pk_live_nWgRIQWT6jZW6s0V2vVn8BSP00FcljoMdz"
-      ></stripe-pricing-table>
       <FAQ />
       <Footer />
     </>

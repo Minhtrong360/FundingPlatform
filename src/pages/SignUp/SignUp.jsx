@@ -179,6 +179,7 @@ const HeroSignUp = () => {
                             placeholder="Doe"
                             value={fullName}
                             onChange={(e) => setFullName(e.target.value)}
+                            required
                           />
                         </div>
 
@@ -197,6 +198,7 @@ const HeroSignUp = () => {
                             placeholder="you@email.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            required
                           />
                         </div>
 
@@ -215,6 +217,7 @@ const HeroSignUp = () => {
                             placeholder="********"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            required
                           />
                         </div>
                       </div>
@@ -229,6 +232,7 @@ const HeroSignUp = () => {
                             className="shrink-0 border-gray-200 rounded text-blue-600 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
                             checked={rememberMe}
                             onChange={(e) => setRememberMe(e.target.checked)}
+                            required
                           />
                           <label
                             htmlFor="remember-me"

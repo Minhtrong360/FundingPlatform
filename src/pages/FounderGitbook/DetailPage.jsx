@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import "@blocknote/core/style.css";
 
@@ -153,19 +153,11 @@ const DetailPage = () => {
   }
 
   return (
-    <div
-      style={{ height: "600px" }}
-      className="p-5 bg-white dark:bg-gray-900 antialiased !p-0"
-      onClick={toggleSidebar}
-    >
-      <div id="exampleWrapper" className="">
-        <SideBar
-          id={id}
-          isSidebarOpen={isSidebarOpen}
-          toggleSidebar={toggleSidebar}
-        />
+    <div className=" bg-white dark:bg-gray-900 antialiased !p-0">
+      <div id="exampleWrapper">
+        <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
-        <div className="p-4 sm:ml-64" onClick={toggleSidebar}>
+        <div className="p-4 sm:ml-64" onClick={() => setIsSidebarOpen(false)}>
           <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
             <HeroSection
               title={company.name}

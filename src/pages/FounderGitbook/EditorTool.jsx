@@ -293,7 +293,7 @@ export default function EditorTool() {
           editor={editor}
           theme={"light"}
           style={{ width: "80%" }}
-          // className="sm:w-full"
+          // className="text-sm sm:text-xs md:text-sm lg:text-base xl:text-lg"
         />
       )}
 

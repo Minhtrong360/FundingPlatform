@@ -646,7 +646,7 @@ const HomePage = () => {
       <ProfileCard />
       <HeroCard />
       <PricingSection />
-
+      
       <FAQ />
       <Footer />
     </>

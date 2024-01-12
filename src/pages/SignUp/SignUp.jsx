@@ -5,6 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 import SpinnerBtn from "../../components/SpinnerBtn";
 import AlertMsg from "../../components/AlertMsg";
+import AnnouncePage from "../../components/AnnouncePage";
 
 const HeroSignUp = () => {
   const [rememberMe, setRememberMe] = useState(false);
@@ -60,18 +61,11 @@ const HeroSignUp = () => {
     <div className="relative bg-gradient-to-bl from-blue-100 via-transparent dark:from-blue-950 dark:via-transparent">
       <AlertMsg />
       {resetLink ? (
-        <div className="block text-2xl font-bold text-gray-800 dark:text-white text-center">
-          Email sent successfully. Check your inbox for the confirm
-          <a
-            href="https://mail.google.com/mail/u/0/#inbox"
-            target="_blank" // Đặt giá trị của target thành "_blank"
-            rel="noopener noreferrer" // Đề phòng các vấn đề bảo mật
-            className="text-blue-600 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-          >
-            {` link`}
-          </a>
-          .
-        </div>
+        <AnnouncePage
+          title="Congratulations!"
+          announce="You have signed up to Beekrowd."
+          describe="Email sent successfully. Check your inbox to confirm."
+        />
       ) : (
         <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
           {/* Grid */}

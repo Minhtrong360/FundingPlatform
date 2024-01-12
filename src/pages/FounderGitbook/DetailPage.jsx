@@ -96,6 +96,7 @@ const DetailPage = () => {
   const [viewError, setViewError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [company, setCompany] = useState([]);
+
   useEffect(() => {
     // Lấy dự án từ Supabase
     supabase
@@ -129,6 +130,24 @@ const DetailPage = () => {
         }
       });
   }, [id, user.id]);
+
+  useEffect(() => {
+    // Lấy dự án từ Supabase
+    supabase
+      .from("company")
+      .select("*")
+      .eq("project_id", id)
+      .single()
+      .then(({ data, error }) => {
+        setIsLoading(false); // Đánh dấu rằng dữ liệu đã được tải xong
+        if (error) {
+          console.log(error);
+          // Xử lý lỗi khi không thể lấy dự án
+        } else {
+          setCompany(data);
+        }
+      });
+  }, [id]);
 
   if (isLoading) {
     return (

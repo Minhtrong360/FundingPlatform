@@ -6,7 +6,7 @@ const HeroCard = () => {
   return (
     <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 mt-28">
       <div className="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
-        <div className="relative ms-4 flex justify-center items-center">
+        <div className="relative  flex justify-center items-center">
           <Card
             title="BOSGAURUS"
             description="Bosgaurus Coffee is actively involved in transforming how Vietnamese coffee is perceived worldwide. This effort reflects the broader growth of the coffee scene in Vietnam."

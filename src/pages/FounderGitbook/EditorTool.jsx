@@ -367,7 +367,7 @@ export default function EditorTool() {
               onClick={() => navigate(`/company/${params.id}`)}
               disabled={isLoading}
             >
-              {isLoading ? <SpinnerBtn /> : "Company Setting"}
+              {isLoading ? <SpinnerBtn /> : "Company Settings"}
             </button>
           </div>{" "}
           <div style={{ position: "fixed", top: "20px", right: "16em" }}>

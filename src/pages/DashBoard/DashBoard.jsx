@@ -13,116 +13,111 @@ export const DonusSeries01 = [36, 23, 11, 30];
 export const labels = ["Startup", "VCs", "Investor", "Others"];
 
 const Dashboard = () => {
-  
-
-  if (document.getElementById("traffic-by-device")) {
-    const chart = new ApexCharts(
-      document.getElementById("traffic-by-device"),
-      getTrafficChannelsChartOptions()
-    );
-    chart.render();
-
-    // init again when toggling dark mode
-    document.addEventListener("dark-mode", function () {
-      chart.updateOptions(getTrafficChannelsChartOptions());
-    });
-  }
-
-  const getTrafficChannelsChartOptions = () => {
-    let trafficChannelsChartColors = {};
-
-    if (document.documentElement.classList.contains("dark")) {
-      trafficChannelsChartColors = {
-        strokeColor: "#1f2937",
-      };
-    } else {
-      trafficChannelsChartColors = {
-        strokeColor: "#ffffff",
-      };
-    }
-
-    return {
-      series: [70, 5, 25],
-      labels: ["Desktop", "Tablet", "Phone"],
-      colors: ["#16BDCA", "#FDBA8C", "#1A56DB"],
-      chart: {
-        type: "donut",
-        height: 400,
-        fontFamily: "Inter, sans-serif",
-        toolbar: {
-          show: false,
-        },
-      },
-      responsive: [
-        {
-          breakpoint: 430,
-          options: {
-            chart: {
-              height: 300,
-            },
-          },
-        },
-      ],
-      stroke: {
-        colors: [trafficChannelsChartColors.strokeColor],
-      },
-      states: {
-        hover: {
-          filter: {
-            type: "darken",
-            value: 0.9,
-          },
-        },
-      },
-      tooltip: {
-        shared: true,
-        followCursor: false,
-        fillSeriesColor: false,
-        inverseOrder: true,
-        style: {
-          fontSize: "14px",
-          fontFamily: "Inter, sans-serif",
-        },
-        x: {
-          show: true,
-          formatter: function (_, { seriesIndex, w }) {
-            const label = w.config.labels[seriesIndex];
-            return label;
-          },
-        },
-        y: {
-          formatter: function (value) {
-            return value + "%";
-          },
-        },
-      },
-      grid: {
-        show: false,
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      legend: {
-        show: false,
-      },
-    };
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
   };
+
+  // if (document.getElementById("traffic-by-device")) {
+  //   const chart = new ApexCharts(
+  //     document.getElementById("traffic-by-device"),
+  //     getTrafficChannelsChartOptions()
+  //   );
+  //   chart.render();
+
+  //   // init again when toggling dark mode
+  //   document.addEventListener("dark-mode", function () {
+  //     chart.updateOptions(getTrafficChannelsChartOptions());
+  //   });
+  // }
+
+  // const getTrafficChannelsChartOptions = () => {
+  //   let trafficChannelsChartColors = {};
+
+  //   if (document.documentElement.classList.contains("dark")) {
+  //     trafficChannelsChartColors = {
+  //       strokeColor: "#1f2937",
+  //     };
+  //   } else {
+  //     trafficChannelsChartColors = {
+  //       strokeColor: "#ffffff",
+  //     };
+  //   }
+
+  //   return {
+  //     series: [70, 5, 25],
+  //     labels: ["Desktop", "Tablet", "Phone"],
+  //     colors: ["#16BDCA", "#FDBA8C", "#1A56DB"],
+  //     chart: {
+  //       type: "donut",
+  //       height: 400,
+  //       fontFamily: "Inter, sans-serif",
+  //       toolbar: {
+  //         show: false,
+  //       },
+  //     },
+  //     responsive: [
+  //       {
+  //         breakpoint: 430,
+  //         options: {
+  //           chart: {
+  //             height: 300,
+  //           },
+  //         },
+  //       },
+  //     ],
+  //     stroke: {
+  //       colors: [trafficChannelsChartColors.strokeColor],
+  //     },
+  //     states: {
+  //       hover: {
+  //         filter: {
+  //           type: "darken",
+  //           value: 0.9,
+  //         },
+  //       },
+  //     },
+  //     tooltip: {
+  //       shared: true,
+  //       followCursor: false,
+  //       fillSeriesColor: false,
+  //       inverseOrder: true,
+  //       style: {
+  //         fontSize: "14px",
+  //         fontFamily: "Inter, sans-serif",
+  //       },
+  //       x: {
+  //         show: true,
+  //         formatter: function (_, { seriesIndex, w }) {
+  //           const label = w.config.labels[seriesIndex];
+  //           return label;
+  //         },
+  //       },
+  //       y: {
+  //         formatter: function (value) {
+  //           return value + "%";
+  //         },
+  //       },
+  //     },
+  //     grid: {
+  //       show: false,
+  //     },
+  //     dataLabels: {
+  //       enabled: false,
+  //     },
+  //     legend: {
+  //       show: false,
+  //     },
+  //   };
+  // };
   return (
-    <div className="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
-      <aside
-        id="sidebar"
-        className="fixed top-0 left-0 z-20 flex flex-col flex-shrink-0 hidden w-64 h-full  font-normal duration-75 lg:flex transition-width"
-        aria-label="Sidebar"
-      >
-        <SideBar />
-      </aside>
-      <div
-        className="fixed inset-0 z-10 hidden bg-gray-900/50 dark:bg-gray-900/90"
-        id="sidebarBackdrop"
-      ></div>
+    <div className="flex flex-col overflow-hidden bg-gray-50 dark:bg-gray-900">
+      <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+
       <div
         id="main-content"
         className="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900"
+        onClick={() => setIsSidebarOpen(false)}
       >
         <main>
           <div className="px-4 pt-6">

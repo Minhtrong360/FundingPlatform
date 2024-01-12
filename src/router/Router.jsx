@@ -42,18 +42,30 @@ function Router() {
         }
       />
 
-      {/* <Route path="/dashboard" element={<DashBoardPage />} /> */}
-      {/* <Route path="/project" element={<ProjectPage />} /> */}
       <Route path="/fundraising" element={<FundraisingRecords />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
-      <Route path="/dashboard" element={<Dashboard />} />
+      <Route
+        path="/dashboard"
+        element={
+          <AuthRequire>
+            <Dashboard />
+          </AuthRequire>
+        }
+      />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/update-password" element={<UpdatePassword />} />
       {/* <Route path="/content" element={<ChatBotTest />} /> */}
       <Route path="/success" element={<PaymentSuccess />} />
       <Route path="*" element={<NotFoundPage />} />
-      <Route path="/company/:id" element={<CompanyInfo />} />
+      <Route
+        path="/company/:id"
+        element={
+          <AuthRequire>
+            <CompanyInfo />
+          </AuthRequire>
+        }
+      />
 
       <Route path="/trials" element={<Trial />} />
     </Routes>

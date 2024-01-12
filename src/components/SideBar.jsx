@@ -2,7 +2,7 @@ import { DashboardOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function SideBar({ id, toggleSidebar, isSidebarOpen }) {
+function SideBar({ toggleSidebar, isSidebarOpen }) {
   const navigate = useNavigate();
 
   return (

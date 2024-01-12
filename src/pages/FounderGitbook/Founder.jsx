@@ -10,6 +10,10 @@ import SideBar from "../../components/SideBar";
 const FounderGitbook = () => {
   const { user } = useAuth();
   const [projects, setProjects] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   useEffect(() => {
     // Import Supabase client và thiết lập nó
@@ -41,9 +45,15 @@ const FounderGitbook = () => {
     <div className="mx-8 shadow-sm bg-white pb-12">
       <div className="gap-5 flex max-md:flex-col max-md:items-stretch max-md:gap-0">
         <div className="flex flex-col items-stretch w-[18%] max-md:w-full max-md:ml-0">
-          <SideBar />
+          <SideBar
+            isSidebarOpen={isSidebarOpen}
+            toggleSidebar={toggleSidebar}
+          />
         </div>
-        <div className="flex flex-col items-stretch w-[82%] max-md:w-full max-md:ml-0 mt-10">
+        <div
+          className="flex flex-col items-stretch w-[82%] max-md:w-full max-md:ml-0 mt-10"
+          onClick={() => setIsSidebarOpen(false)}
+        >
           <ProjectList projects={projects} />
         </div>
       </div>

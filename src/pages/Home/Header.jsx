@@ -232,8 +232,14 @@ const Navbar = () => {
                 <NavbarItem href="#" isActive>
                   Home
                 </NavbarItem>
-                <NavbarItem onClick={handleFinancialProductClick}>
-                  Platform
+                <NavbarItem
+                  onClick={() =>
+                    navigate(
+                      `/founder/${"eecb5b9d-75eb-48a6-8c77-f3325a53db5b"}`
+                    )
+                  }
+                >
+                  Demo
                 </NavbarItem>
                 <NavbarItem onClick={handleProductFeaturesClick}>
                   Profiles

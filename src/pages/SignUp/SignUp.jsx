@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 import SpinnerBtn from "../../components/SpinnerBtn";
 import AlertMsg from "../../components/AlertMsg";
-
+import { GoogleOutlined } from '@ant-design/icons';
 const HeroSignUp = () => {
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -78,56 +78,21 @@ const HeroSignUp = () => {
           <div className="grid items-center md:grid-cols-2 gap-8 lg:gap-12">
             {/* Left Column */}
             <div>
-              <p className="inline-block text-sm font-medium bg-clip-text bg-gradient-to-l from-blue-600 to-violet-500 text-transparent dark:from-blue-400 dark:to-violet-400">
-                Preline: A vision for 2024
-              </p>
+             
 
               <div className="mt-4 md:mb-12 max-w-2xl">
                 <h1 className="mb-4 font-semibold text-gray-800 text-4xl lg:text-5xl dark:text-gray-200">
-                  Fully customizable rules to match your unique needs
+                Building exceptional Fundraising profile with 
+                <span class="text-blue-600"> BeeKrowd</span>
                 </h1>
                 <p className="text-gray-600 dark:text-gray-400">
-                  We provide you with a test account that can be set up in
-                  seconds. Our main focus is getting responses to you as soon as
-                  we can.
+                We're here to provide you with the insights, strategies, and tools you need to craft a compelling and effective fundraising profile.
+
+
                 </p>
               </div>
 
-              <blockquote className="hidden md:block relative max-w-sm">
-                <div
-                  className="absolute top-0 start-0 transform -translate-x-6 -translate-y-8 h-16 w-16 text-gray-200 dark:text-gray-800"
-                  aria-hidden="true"
-                >
-                  🇻🇳
-                </div>
-
-                <div className="relative z-10">
-                  <p className="text-xl italic text-gray-800 dark:text-white">
-                    Amazing people to work with. Very fast and professional
-                    partner.
-                  </p>
-                </div>
-
-                <footer className="mt-3">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      <img
-                        className="h-8 w-8 rounded-full"
-                        src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-                        alt=""
-                      />
-                    </div>
-                    <div className="grow ms-4">
-                      <div className="font-semibold text-gray-800 dark:text-gray-200">
-                        Josh Grazioso
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        Director Payments & Risk | Airbnb
-                      </div>
-                    </div>
-                  </div>
-                </footer>
-              </blockquote>
+              
             </div>
 
             {/* Right Column */}
@@ -155,8 +120,9 @@ const HeroSignUp = () => {
                         onClick={(e) => signInWitGG(e)}
                         type="button"
                         className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                      >
-                        🇻🇳 Sign up with Google
+                     >
+                        <GoogleOutlined />
+                         Sign up with Google
                       </button>
 
                       <div className="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-200 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-200 after:ms-6 dark:text-gray-500 dark:before:border-gray-700 dark:after:border-gray-700">
@@ -179,6 +145,7 @@ const HeroSignUp = () => {
                             placeholder="Doe"
                             value={fullName}
                             onChange={(e) => setFullName(e.target.value)}
+                            required
                           />
                         </div>
 
@@ -197,6 +164,7 @@ const HeroSignUp = () => {
                             placeholder="you@email.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            required
                           />
                         </div>
 
@@ -215,6 +183,7 @@ const HeroSignUp = () => {
                             placeholder="********"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            required
                           />
                         </div>
                       </div>
@@ -229,6 +198,7 @@ const HeroSignUp = () => {
                             className="shrink-0 border-gray-200 rounded text-blue-600 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
                             checked={rememberMe}
                             onChange={(e) => setRememberMe(e.target.checked)}
+                            required
                           />
                           <label
                             htmlFor="remember-me"

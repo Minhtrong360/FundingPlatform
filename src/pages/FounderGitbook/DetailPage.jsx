@@ -37,21 +37,6 @@ const HeroSection = ({
   button5Text,
   imageUrl,
 }) => {
-  const [crop, setCrop] = useState({ aspect: 700 / 800 });
-
-  const handleImageLoaded = (image) => {
-    // Thiết lập kích thước cắt mặc định khi hình ảnh được tải
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
-    const newCrop = {
-      width: 700 / scaleX,
-      height: 800 / scaleY,
-      x: 0,
-      y: 0,
-    };
-    setCrop(newCrop);
-  };
-
   return (
     <div className="max-w-[85rem] mx-auto mt-24 px-4 sm:px-6 lg:px-8 z-0">
       <div className="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">

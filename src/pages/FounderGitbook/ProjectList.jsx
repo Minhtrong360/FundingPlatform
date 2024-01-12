@@ -153,12 +153,6 @@ function ProjectList({ projects }) {
                         Date
                       </th>
 
-                      {/* <th
-                        scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
-                      >
-                        Status
-                      </th> */}
                       <th
                         scope="col"
                         className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
@@ -188,7 +182,12 @@ function ProjectList({ projects }) {
                               type="checkbox"
                               className="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700"
                             />
-                            <span>#{index + 1}</span>
+                            <span
+                              className="hover:cursor-pointer"
+                              onClick={() => handleProjectClick(project)}
+                            >
+                              #{index + 1}
+                            </span>
                           </div>
                         </td>
                         <td
@@ -204,7 +203,7 @@ function ProjectList({ projects }) {
                         <td
                           className={`${
                             editingProjectId === project.id ? "" : "hidden"
-                          } px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap`}
+                          } `}
                         >
                           <input
                             type="text"
@@ -212,22 +211,31 @@ function ProjectList({ projects }) {
                             onChange={(e) =>
                               setEditedProjectName(e.target.value)
                             }
+                            className="border-0 px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap focus:outline-none focus:ring-0"
                           />
                         </td>
-                        <td className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap">
+
+                        <td
+                          className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap hover:cursor-pointer"
+                          onClick={() => handleProjectClick(project)}
+                        >
                           {formatDate(project.created_at)}
                         </td>
                         {/* <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">{project.status}</td> */}
-                        <td className=" py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap">
+                        <td
+                          className=" py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap hover:cursor-pointer"
+                          onClick={() => handleProjectClick(project)}
+                        >
                           <div className="flex items-center gap-x-2">
                             {user.email}
                           </div>
                         </td>
 
                         <td
-                          className={`px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap ${
+                          className={`hover:cursor-pointer px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap ${
                             editingProjectId !== project.id ? "" : "hidden"
                           }`}
+                          onClick={() => handleProjectClick(project)}
                         >
                           {project.status ? "Public" : "Private"}
                         </td>
@@ -241,8 +249,8 @@ function ProjectList({ projects }) {
                               onClick={handleStatusToggle}
                               className={`${
                                 editedProjectStatus
-                                  ? "bg-green-500"
-                                  : "bg-red-500"
+                                  ? "bg-blue-600"
+                                  : "bg-red-600"
                               } text-white px-2 py-1 rounded-md hover:bg-opacity-80 transition-all`}
                             >
                               {editedProjectStatus ? "Public" : "Private"}

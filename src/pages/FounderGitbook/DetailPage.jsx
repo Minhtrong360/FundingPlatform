@@ -18,6 +18,7 @@ import SideBar from "../../components/SideBar";
 import ResizeImage from "../../components/ResizeImage";
 import Spinner from "../../components/Spiner";
 
+
 function formatNumber(value) {
   // Kiểm tra xem value có phải là một chuỗi không
   if (typeof value !== "string") {
@@ -95,7 +96,7 @@ const DetailPage = () => {
   const { user } = useAuth();
   const [viewError, setViewError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [company, setCompany] = useState([]);
   useEffect(() => {
     // Lấy dự án từ Supabase
     supabase
@@ -141,6 +142,7 @@ const DetailPage = () => {
   if (viewError) {
     return <div>You are not allowed to see it</div>;
   }
+  
 
   return (
     <div

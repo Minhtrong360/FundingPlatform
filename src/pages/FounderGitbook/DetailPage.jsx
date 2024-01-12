@@ -3,9 +3,12 @@ import React, { useEffect, useState } from "react";
 import "@blocknote/core/style.css";
 
 import "./custom-ant-design.css";
-
+// import export icon from antd
+import { YoutubeOutlined } from "@ant-design/icons";
+import MarketDataAI from "../marketDataAI";
+// import SideBar from "../DashBoard/SideBar";
 import EditorTool from "./EditorTool";
-
+import { Progress } from "antd";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
@@ -13,6 +16,7 @@ import FilesList from "./FilesList";
 import SideBar from "../../components/SideBar";
 import ResizeImage from "../../components/ResizeImage";
 import Spinner from "../../components/Spiner";
+
 
 function formatNumber(value) {
   // Kiểm tra xem value có phải là một chuỗi không
@@ -32,9 +36,6 @@ const HeroSection = ({
   description,
   button1Text,
   button2Text,
-  button3Text,
-  button4Text,
-  button5Text,
   imageUrl,
 }) => {
   return (
@@ -49,28 +50,29 @@ const HeroSection = ({
           </p>
 
           <div className="mt-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 w-full">
-            <a className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-400 text-gray-800 hover:bg-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
-              Target: ${formatNumber(button1Text)}
+            <a className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              {button1Text}
               {/* Replace with actual SVG */}
-              {/* <span>→</span> */}
+              <span>→</span>
             </a>
-            <a className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-green-400 hover:bg-green-500 text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
-              No. ticket: {formatNumber(button2Text)}
+            <a className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              {button2Text}
             </a>
-            <a className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-yellow-400 hover:bg-yellow-500 text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
-              Min ticket size: {button3Text}
+            <a className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              {button2Text}
             </a>
-            <a className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-purple-400 hover:bg-purple-500 text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
-              Offer: {button4Text}
-            </a>
-            <a className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-pink-400 hover:bg-pink-500 text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
-              Type: {button5Text}
+            <a className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              {button2Text}
             </a>
           </div>
         </div>
 
         <div className="relative ms-4">
-          <ResizeImage imageUrl={imageUrl} />
+          <img
+            className="w-full rounded-md"
+            src={imageUrl}
+            alt="Image Description"
+          />
           <div className="absolute inset-0 -z-[1] bg-gradient-to-tr from-gray-200 via-white/0 to-white/0 w-full h-full rounded-md mt-4 -mb-4 me-4 -ms-4 lg:mt-6 lg:-mb-6 lg:me-6 lg:-ms-6 dark:from-slate-800 dark:via-slate-900/0 dark:to-slate-900/0"></div>
         </div>
       </div>
@@ -78,9 +80,12 @@ const HeroSection = ({
   );
 };
 
+
+
 const DetailPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [company, setCompany] = useState([]);
+
+ 
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -90,7 +95,7 @@ const DetailPage = () => {
   const { user } = useAuth();
   const [viewError, setViewError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [company, setCompany] = useState([]);
   useEffect(() => {
     // Lấy dự án từ Supabase
     supabase
@@ -101,9 +106,12 @@ const DetailPage = () => {
       .then(({ data, error }) => {
         setIsLoading(false); // Đánh dấu rằng dữ liệu đã được tải xong
         if (error) {
-          console.log(error);
+          console.error(error);
           // Xử lý lỗi khi không thể lấy dự án
         } else {
+          console.log("user Id", user.id);
+          console.log("data.user_id", data.user_id);
+
           // Kiểm tra quyền truy cập của người dùng
           if (
             data.status === false &&
@@ -120,25 +128,7 @@ const DetailPage = () => {
           }
         }
       });
-  }, [id]);
-
-  useEffect(() => {
-    // Lấy dự án từ Supabase
-    supabase
-      .from("company")
-      .select("*")
-      .eq("project_id", id)
-      .single()
-      .then(({ data, error }) => {
-        setIsLoading(false); // Đánh dấu rằng dữ liệu đã được tải xong
-        if (error) {
-          console.log(error);
-          // Xử lý lỗi khi không thể lấy dự án
-        } else {
-          setCompany(data);
-        }
-      });
-  }, [id]);
+  }, [id, user.id]);
 
   if (isLoading) {
     return (
@@ -151,6 +141,7 @@ const DetailPage = () => {
   if (viewError) {
     return <div>You are not allowed to see it</div>;
   }
+  
 
   return (
     <div className=" bg-white dark:bg-gray-900 antialiased !p-0">

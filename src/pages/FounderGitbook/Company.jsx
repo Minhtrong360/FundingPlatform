@@ -287,15 +287,6 @@ function CompanyInfo() {
                     onChange={handleInputChange}
                     required
                   />
-
-                  <CheckboxField
-                    label="By submitting this form I have read and acknowledged our Terms and Policies"
-                    id="remember-me"
-                    name="rememberMe"
-                    checked={formData.rememberMe}
-                    onChange={handleInputChange}
-                    required
-                  />
                 </div>
 
                 <div className="mt-6 grid">

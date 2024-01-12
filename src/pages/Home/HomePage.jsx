@@ -3,7 +3,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import { useEffect, useState, useRef } from "react";
 import Footer from "./Footer";
-
+import YouTube from "react-youtube";
 import Header from "./Header";
 import PricingSection from "./Pricing";
 import { supabase } from "../../supabase";
@@ -259,81 +259,69 @@ const Card = ({ title, description, imageUrl, buttonText, buttonLink }) => (
   </div>
 );
 
-
 const VideoCard = ({ title, videoUrl }) => {
-  const videoRef = useRef(null);
   const [played, setPlayed] = useState(false);
 
   useEffect(() => {
-    const video = videoRef.current;
+    // Ensure autoplay with muted sound
+    setPlayed(true);
+  }, []);
 
-    const playVideoOnInteraction = () => {
-      if (video && !played) {
-        video.play();
-        setPlayed(true);
-      }
-    };
+  const extractYouTubeVideoId = (url) => {
+    const match = url.match(/[?&]v=([^?&]+)/);
+    return match && match[1];
+  };
 
-    if (!played) {
-      window.addEventListener('touchstart', playVideoOnInteraction);
-    }
-
-    return () => {
-      window.removeEventListener('touchstart', playVideoOnInteraction);
-    };
-  }, [played]);
+  const videoId = extractYouTubeVideoId(videoUrl);
 
   return (
     <div className="space-y-8 xl:space-y-10 mt-2 mb-2">
-      <h2 className="text-xl text-red-600 font-semibold tracking-tighter sm:text-2xl xl:text-3xl">{title}</h2>
-      <video
-        ref={videoRef}
-        className="aspect-video w-full overflow-hidden rounded-md"
-        controls
-        autoPlay
-        loop
-        muted
-        controlsList = {false}
-        controls = {false}
-      >
-        <source src={videoUrl} type="video/webm" />
-        Your browser does not support the video tag.
-      </video>
+      <h2 className="text-xl text-red-600 font-semibold tracking-tighter sm:text-2xl xl:text-3xl">
+        {title}
+      </h2>
+      <div className="aspect-video w-full overflow-hidden rounded-md">
+        <YouTube
+          videoId={videoId}
+          autoplay
+          muted
+          loop
+          controls={false} // Remove controls
+        />
+      </div>
     </div>
   );
 };
 
 const FeatureVideo = () => (
   <section className="py-12 md:py-24 lg:py-32">
-    <div className="container mx-auto grid gap-8 px-4 md:px-6 lg:grid-cols-3 lg:gap-8">
-      <VideoCard 
-        title="Notion-like editor" 
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Free%20Text%20Editor.mp4?t=2024-01-09T03%3A56%3A58.939Z" 
+    <div className="container mx-auto grid gap-8 px-4 md:px-6 lg:grid-cols-3 lg:gap-8 bg-gray-900 pb-8">
+      <VideoCard
+        title="Notion-like editor"
+        videoUrl="https://www.youtube.com/watch?v=EuF-TxZZYmc"
       />
-      <VideoCard 
-        title="Beautiful images" 
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20image.mp4?t=2024-01-09T03%3A59%3A20.082Z" 
+      <VideoCard
+        title="Beautiful images"
+        videoUrl="https://www.youtube.com/watch?v=seKMqiTuQ8Y"
       />
-      <VideoCard 
-        title="YouTube videos" 
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20YouTube.mp4?t=2024-01-09T04%3A00%3A02.715Z" 
+      <VideoCard
+        title="YouTube videos"
+        videoUrl="https://www.youtube.com/watch?v=tWVsQk3EQ6I"
       />
-      <VideoCard 
-        title="Insightful charts" 
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20Charts.mp4?t=2024-01-09T04%3A00%3A11.615Z" 
+      <VideoCard
+        title="Insightful charts"
+        videoUrl="https://www.youtube.com/watch?v=o_TRp1rX7GQ"
       />
-      <VideoCard 
-        title="Your own Dataroom" 
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Dataroom.mp4?t=2024-01-09T04%3A00%3A24.809Z" 
+      <VideoCard
+        title="Your own Dataroom"
+        videoUrl="https://www.youtube.com/watch?v=0uCNO8dUOKc"
       />
-      <VideoCard 
-        title="Fundraising info settings" 
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Fundraising%20info%20settings.mp4?t=2024-01-09T04%3A00%3A39.975Z" 
+      <VideoCard
+        title="Fundraising info settings"
+        videoUrl="https://www.youtube.com/watch?v=v6GYm8hzUXo"
       />
     </div>
   </section>
 );
-
 
 
 
@@ -676,10 +664,6 @@ const HomePage = () => {
       <ProfileCard />
       <HeroCard />
       <PricingSection />
-      <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
-<stripe-pricing-table pricing-table-id="prctbl_1OWuTLCmykWRrER6AJxjrHVr"
-publishable-key="pk_live_nWgRIQWT6jZW6s0V2vVn8BSP00FcljoMdz">
-</stripe-pricing-table>
       <FAQ />
       <Footer />
     </>

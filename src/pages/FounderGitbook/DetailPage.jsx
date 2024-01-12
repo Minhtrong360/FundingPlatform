@@ -7,7 +7,7 @@ import "./custom-ant-design.css";
 // import export icon from antd
 import { YoutubeOutlined } from "@ant-design/icons";
 import MarketDataAI from "../marketDataAI";
-import SideBar from "../DashBoard/SideBar";
+// import SideBar from "../DashBoard/SideBar";
 import EditorTool from "./EditorTool";
 import { Progress } from "antd";
 import { useParams } from "react-router-dom";

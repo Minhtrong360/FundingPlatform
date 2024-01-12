@@ -1,6 +1,6 @@
 import "@blocknote/core/style.css";
 import "react-datepicker/dist/react-datepicker.css";
-import YouTube from "react-youtube";
+
 
 import { useEffect, useRef, useState } from "react";
 import Footer from "./Footer";
@@ -646,7 +646,6 @@ const HomePage = () => {
       <ProfileCard />
       <HeroCard />
       <PricingSection />
-
       <FAQ />
       <Footer />
     </>

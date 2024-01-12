@@ -18,7 +18,7 @@ import CompanyInfo from "../pages/FounderGitbook/Company";
 
 import Trial from "../pages/DashBoard/trial";
 import AuthRequire from "./AuthRequired";
-import UserProfile from "../pages/UserProfile/UserProfile";
+import UserPage from "../pages/UserProfile/UserPage";
 
 function Router() {
   return (
@@ -38,7 +38,7 @@ function Router() {
         path="/user-info"
         element={
           <AuthRequire>
-            <UserProfile />
+            <UserPage />
           </AuthRequire>
         }
       />

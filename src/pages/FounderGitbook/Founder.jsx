@@ -42,19 +42,14 @@ const FounderGitbook = () => {
   }, [user]);
 
   return (
-    <div className="mx-8 shadow-sm bg-white pb-12">
-      <div className="gap-5 flex max-md:flex-col max-md:items-stretch max-md:gap-0">
-        <div className="flex flex-col items-stretch w-[18%] max-md:w-full max-md:ml-0">
-          <SideBar
-            isSidebarOpen={isSidebarOpen}
-            toggleSidebar={toggleSidebar}
-          />
-        </div>
-        <div
-          className="flex flex-col items-stretch w-[82%] max-md:w-full max-md:ml-0 mt-10"
-          onClick={() => setIsSidebarOpen(false)}
-        >
-          <ProjectList projects={projects} />
+    <div className=" bg-white dark:bg-gray-900 antialiased !p-0">
+      <div id="exampleWrapper">
+        <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+
+        <div className="p-4 sm:ml-64" onClick={() => setIsSidebarOpen(false)}>
+          <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+            <ProjectList projects={projects} />
+          </div>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { DashboardOutlined } from "@ant-design/icons";
+import { DashboardOutlined, UserOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -48,6 +48,15 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
                 onClick={() => navigate("/")}
               >
                 BeeKrowd
+              </a>
+            </li>
+            <li>
+              <a
+                onClick={() => navigate("/user-info")}
+                className=" hover:cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              >
+                <UserOutlined />
+                <span className="ms-3">User Settings</span>
               </a>
             </li>
             <li>

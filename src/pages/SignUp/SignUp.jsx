@@ -5,7 +5,9 @@ import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 import SpinnerBtn from "../../components/SpinnerBtn";
 import AlertMsg from "../../components/AlertMsg";
-import { GoogleOutlined } from '@ant-design/icons';
+import AnnouncePage from "../../components/AnnouncePage";
+import { GoogleOutlined } from "@ant-design/icons";
+
 const HeroSignUp = () => {
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -60,39 +62,28 @@ const HeroSignUp = () => {
     <div className="relative bg-gradient-to-bl from-blue-100 via-transparent dark:from-blue-950 dark:via-transparent">
       <AlertMsg />
       {resetLink ? (
-        <div className="block text-2xl font-bold text-gray-800 dark:text-white text-center">
-          Email sent successfully. Check your inbox for the confirm
-          <a
-            href="https://mail.google.com/mail/u/0/#inbox"
-            target="_blank" // Đặt giá trị của target thành "_blank"
-            rel="noopener noreferrer" // Đề phòng các vấn đề bảo mật
-            className="text-blue-600 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-          >
-            {` link`}
-          </a>
-          .
-        </div>
+        <AnnouncePage
+          title="Congratulations!"
+          announce="You have signed up to Beekrowd."
+          describe="Email sent successfully. Check your inbox to confirm."
+        />
       ) : (
         <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
           {/* Grid */}
           <div className="grid items-center md:grid-cols-2 gap-8 lg:gap-12">
             {/* Left Column */}
             <div>
-             
-
               <div className="mt-4 md:mb-12 max-w-2xl">
                 <h1 className="mb-4 font-semibold text-gray-800 text-4xl lg:text-5xl dark:text-gray-200">
-                Building exceptional Fundraising profile with 
-                <span class="text-blue-600"> BeeKrowd</span>
+                  Building exceptional Fundraising profile with
+                  <span class="text-blue-600"> BeeKrowd</span>
                 </h1>
                 <p className="text-gray-600 dark:text-gray-400">
-                We're here to provide you with the insights, strategies, and tools you need to craft a compelling and effective fundraising profile.
-
-
+                  We're here to provide you with the insights, strategies, and
+                  tools you need to craft a compelling and effective fundraising
+                  profile.
                 </p>
               </div>
-
-              
             </div>
 
             {/* Right Column */}
@@ -120,9 +111,9 @@ const HeroSignUp = () => {
                         onClick={(e) => signInWitGG(e)}
                         type="button"
                         className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                     >
+                      >
                         <GoogleOutlined />
-                         Sign up with Google
+                        Sign up with Google
                       </button>
 
                       <div className="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-200 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-200 after:ms-6 dark:text-gray-500 dark:before:border-gray-700 dark:after:border-gray-700">

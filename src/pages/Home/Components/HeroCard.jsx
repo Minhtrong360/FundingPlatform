@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import Card from "./Card";
-
+import { Tooltip } from 'antd';
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 const HeroCard = () => {
   const navigate = useNavigate();
   return (
@@ -37,11 +38,14 @@ const HeroCard = () => {
             <a
               className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               onClick={() =>
-                navigate(`/founder/${"eecb5b9d-75eb-48a6-8c77-f3325a53db5b"}`)
+                navigate(`/founder/${"3ec3f142-f33c-4977-befd-30d4ce2b764d"}`)
               }
             >
               See demo
             </a>
+            <Tooltip title="prompt text">
+            <HelpOutlineOutlinedIcon />
+            </Tooltip>
           </div>
           <div className="mt-6 lg:mt-10 grid grid-cols-2 gap-x-5">
             <div className="py-5">

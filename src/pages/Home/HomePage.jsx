@@ -1,7 +1,8 @@
 import "@blocknote/core/style.css";
 import "react-datepicker/dist/react-datepicker.css";
+import YouTube from "react-youtube";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Footer from "./Footer";
 
 import Header from "./Header";
@@ -77,6 +78,7 @@ const HeroSection = () => {
               className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               href="#"
               variants={buttonVariants}
+              onClick={() => navigate(`/login`)}
             >
               Get started
               <span>→</span>
@@ -258,53 +260,49 @@ const Card = ({ title, description, imageUrl, buttonText, buttonLink }) => (
   </div>
 );
 
-// VideoCard Component
-const VideoCard = ({ title, videoUrl }) => (
-  <div className="space-y-8 xl:space-y-10 mt-2 mb-2">
-    <h2 className="text-xl font-semibold tracking-tighter sm:text-2xl xl:text-3xl">
-      {title}
-    </h2>
-    <video
-      className="aspect-video w-full overflow-hidden rounded-md"
-      controls
-      autoPlay // Use autoPlay with a capital "P" for auto-play
-      loop // Add loop attribute here
-      muted
-    >
-      <source src={videoUrl} type="video/webm" />
-      Your browser does not support the video tag.
-    </video>
-  </div>
-);
+const VideoCard = ({ title, videoUrl }) => {
+  return (
+    <div className="space-y-8 xl:space-y-10 mt-2 mb-2">
+      <h2 className="text-xl text-red-600 font-semibold tracking-tighter sm:text-2xl xl:text-3xl">
+        {title}
+      </h2>
+      <div className="aspect-video w-full overflow-hidden rounded-md">
+        <img
+          src={videoUrl}
+          alt={title}
+          className="w-full h-full object-cover"
+        />
+      </div>
+    </div>
+  );
+};
 
-// FeatureVideo Component
-// FeatureVideo Component
 const FeatureVideo = () => (
   <section className="py-12 md:py-24 lg:py-32">
-    <div className="container mx-auto grid gap-8 px-4 md:px-6 lg:grid-cols-3 lg:gap-8">
+    <div className="container mx-auto grid gap-8 px-4 md:px-6 lg:grid-cols-3 lg:gap-8 bg-gray-900 pb-8">
       <VideoCard
         title="Notion-like editor"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Free%20Text%20Editor.mp4?t=2024-01-09T03%3A56%3A58.939Z"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Free%20Text%20Editor.gif?t=2024-01-11T09%3A51%3A11.171Z"
       />
       <VideoCard
         title="Beautiful images"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20image.mp4?t=2024-01-09T03%3A59%3A20.082Z"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Add%20image.gif?t=2024-01-11T09%3A51%3A03.516Z"
       />
       <VideoCard
         title="YouTube videos"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20YouTube.mp4?t=2024-01-09T04%3A00%3A02.715Z"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Add%20YouTube.gif?t=2024-01-11T09%3A50%3A59.130Z"
       />
       <VideoCard
-        title="Beautiful charts"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Add%20Charts.mp4?t=2024-01-09T04%3A00%3A11.615Z"
+        title="Insightful charts"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Add%20Charts.gif?t=2024-01-11T09%3A50%3A51.692Z"
       />
       <VideoCard
         title="Your own Dataroom"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Dataroom.mp4?t=2024-01-09T04%3A00%3A24.809Z"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Dataroom.gif?t=2024-01-11T09%3A51%3A07.573Z"
       />
       <VideoCard
         title="Fundraising info settings"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_videos/Fundraising%20info%20settings.mp4?t=2024-01-09T04%3A00%3A39.975Z"
+        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Fundraising%20info%20settings.gif?t=2024-01-11T09%3A51%3A14.151Z"
       />
     </div>
   </section>
@@ -430,6 +428,7 @@ const Search = () => {
 };
 
 const HeroCard = () => {
+  const navigate = useNavigate();
   return (
     <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 mt-28">
       <div className="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
@@ -456,6 +455,7 @@ const HeroCard = () => {
             <a
               className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               href="#"
+              onClick={() => navigate(`/login`)}
             >
               Get started
               <span>→</span>
@@ -504,24 +504,24 @@ const FAQ = () => {
 
   const faqData = [
     {
-      question: "Can I cancel at anytime?",
+      question: "What is BeeKrowd service all about?",
       answer:
-        "Yes, you can cancel anytime no questions are asked while you cancel but we would highly appreciate if you will give us some feedback.",
+        "Our platform is designed to help individuals, organizations, and causes build business and fundraising profiles effectively and efficiently. We provide a platform and tools to facilitate fundraising campaigns for various needs..",
     },
     {
-      question: "My team has credits. How do we use them?",
+      question: "How does this work?",
       answer:
-        "Once your team signs up for a subscription plan. This is where we sit down, grab a cup of coffee and dial in the details.",
+        "To get started, create a business profile or fundraising campaign by providing details about your cause, goals, and objectives. Share your campaign with your network, supporters, and on social media platforms..",
     },
     {
-      question: "What is fundraising profile as a service?",
+      question: "What can I do on BeeKrowd?",
       answer:
-        "Once your team signs up for a subscription plan. This is where we sit down, grab a cup of coffee and dial in the details.",
+        "You can create a business profile or fundraising profile in various forms of investment, such as equity investment, lending, mergers and acquisitions, and convertibles. We support both individual and nonprofit efforts to create investment profiles in almost all fields, including healthcare, education, finance, manufacturing, logistics, technology, AI, and more.",
     },
     {
-      question: "How much should I pay for the service?",
+      question: "Is my personal information and data secure??",
       answer:
-        "Once your team signs up for a subscription plan. This is where we sit down, grab a cup of coffee and dial in the details.",
+        "We take data security seriously. Our platform uses state-of-the-art encryption to protect your personal information.",
     },
   ];
 
@@ -646,7 +646,7 @@ const HomePage = () => {
       <ProfileCard />
       <HeroCard />
       <PricingSection />
-      
+
       <FAQ />
       <Footer />
     </>

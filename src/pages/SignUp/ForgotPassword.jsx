@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { supabase } from "../../supabase";
+import Spinner from "../../components/Spiner";
+import SpinerBtn from "../../components/SpinnerBtn";
 
 const InputField = ({ label, type, name, value, onChange }) => {
   return (
@@ -37,6 +39,7 @@ const SubmitButton = ({ text }) => {
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [resetLink, setResetLink] = useState(false); // State để lưu đường liên kết
+  const [isLoading, setIsLoading] = useState(false); // State để lưu trạng thái isLoading
   const navigate = useNavigate();
 
   const handleEmailChange = (event) => {
@@ -45,13 +48,19 @@ const ForgotPassword = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Implement password reset logic here
-    let { data, error } = await supabase.auth.resetPasswordForEmail(email);
-    if (error) {
-      throw error;
-    } else {
-      // Gửi thành công, cập nhật đường liên kết
-      setResetLink(true);
+    setIsLoading(true); // Bắt đầu loading
+
+    try {
+      // Implement password reset logic here
+      let { data, error } = await supabase.auth.resetPasswordForEmail(email);
+      if (error) {
+        throw error;
+      } else {
+        // Gửi thành công, cập nhật đường liên kết
+        setResetLink(true);
+      }
+    } finally {
+      setIsLoading(false); // Kết thúc loading dù có lỗi hay không
     }
   };
 
@@ -81,7 +90,7 @@ const ForgotPassword = () => {
                 Remember your password?
                 <a
                   onClick={() => navigate("/login")}
-                  className="ml-1 text-blue-600 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                  className="ml-1 text-blue-600 decoration-2 hover:underline hover:cursor-pointer font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                 >
                   Sign in here
                 </a>
@@ -96,7 +105,10 @@ const ForgotPassword = () => {
                   value={email}
                   onChange={handleEmailChange}
                 />
-                <SubmitButton text="Reset password" />
+                <SubmitButton
+                  text={isLoading ? <SpinerBtn /> : "Reset password"}
+                  disabled={isLoading}
+                />
               </div>
             </form>
           </div>

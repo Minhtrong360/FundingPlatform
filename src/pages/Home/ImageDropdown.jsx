@@ -73,7 +73,7 @@ const ImageDropdown = () => {
           <AccountCircleIcon />
         )}
 
-        <span className="text-gray-600 font-medium truncate max-w-[7.5rem] dark:text-gray-400">
+        <span className="text-gray-600 font-medium truncate sm:max-w-[7.5rem] max-w-[4rem] dark:text-gray-400">
           {user?.user_metadata?.email
             ? user?.user_metadata?.email
             : user?.email

@@ -12,29 +12,70 @@ import Founder from "../pages/FounderGitbook/Founder";
 import NotFoundPage from "../pages/NotFoundPage";
 import PaymentSuccess from "../pages/PaymentSuccess";
 
-import CompanyInfo from "../pages/FounderGitbook/companyInfo";
 import DetailPage from "../pages/FounderGitbook/DetailPage";
 
+import CompanyInfo from "../pages/FounderGitbook/Company";
+
 import Trial from "../pages/DashBoard/trial";
+import AuthRequire from "./AuthRequired";
+import UserPage from "../pages/UserProfile/UserPage";
+
 function Router() {
   return (
     <Routes>
       <Route index element={<HomePage />} />
 
-      <Route path="/founder" element={<Founder />} />
-      <Route path="/founder/:id" element={<DetailPage />} />
-      {/* <Route path="/dashboard" element={<DashBoardPage />} /> */}
-      {/* <Route path="/project" element={<ProjectPage />} /> */}
+      <Route
+        path="/founder"
+        element={
+          <AuthRequire>
+            <Founder />
+          </AuthRequire>
+        }
+      />
+
+      <Route
+        path="/user-info"
+        element={
+          <AuthRequire>
+            <UserPage />
+          </AuthRequire>
+        }
+      />
+
+      <Route
+        path="/founder/:id"
+        element={
+          <AuthRequire>
+            <DetailPage />
+          </AuthRequire>
+        }
+      />
+
       <Route path="/fundraising" element={<FundraisingRecords />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
-      <Route path="/dashboard" element={<Dashboard />} />
+      <Route
+        path="/dashboard"
+        element={
+          <AuthRequire>
+            <Dashboard />
+          </AuthRequire>
+        }
+      />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/update-password" element={<UpdatePassword />} />
       {/* <Route path="/content" element={<ChatBotTest />} /> */}
       <Route path="/success" element={<PaymentSuccess />} />
       <Route path="*" element={<NotFoundPage />} />
-      <Route path="/companyinput" element={<CompanyInfo />} />
+      <Route
+        path="/company/:id"
+        element={
+          <AuthRequire>
+            <CompanyInfo />
+          </AuthRequire>
+        }
+      />
 
       <Route path="/trials" element={<Trial />} />
     </Routes>

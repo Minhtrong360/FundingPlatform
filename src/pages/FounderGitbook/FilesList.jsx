@@ -23,7 +23,7 @@ function FilesList() {
     }
 
     // Nếu link.invited_user chứa user.id thì canClick = true
-    if (link.invited_user && link.invited_user.includes(user.id)) {
+    if (link.invited_user && link.invited_user.includes(user.email)) {
       return true;
     }
 
@@ -83,34 +83,39 @@ function FilesList() {
     newLink.owner_email = user.email;
     try {
       // Tạo một dự án mới và lưu vào Supabase
-      const { error } = await supabase.from("files").insert([
-        {
-          name: newLink.name,
-          link: newLink.link,
-          user_id: user.id,
-          owner_email: user.email,
-          status: newLink.status,
-          project_id: id,
-        },
-      ]);
+      if (currentProject.user_id === user.id) {
+        const { error } = await supabase.from("files").insert([
+          {
+            name: newLink.name,
+            link: newLink.link,
+            user_id: user.id,
+            owner_email: user.email,
+            status: newLink.status,
+            project_id: id,
+          },
+        ]);
 
-      if (error) {
-        console.log("Error creating files:", error);
-        // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
-      } else {
-        // Check if the link with the same name already exists
-        const linkWithSameNameExists = projectLinks.some(
-          (existingLink) => existingLink.name === newLink.name
-        );
+        if (error) {
+          console.log("Error creating files:", error);
+          // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
+        } else {
+          // Check if the link with the same name already exists
+          const linkWithSameNameExists = projectLinks.some(
+            (existingLink) => existingLink.name === newLink.name
+          );
 
-        if (linkWithSameNameExists) {
-          alert("A link with the same name already exists.");
-          return;
+          if (linkWithSameNameExists) {
+            alert("A link with the same name already exists.");
+            return;
+          }
+
+          // Create a new link object and add it to the projectLinks array
+
+          setProjectLinks([...projectLinks, newLink]);
         }
-
-        // Create a new link object and add it to the projectLinks array
-
-        setProjectLinks([...projectLinks, newLink]);
+      } else {
+        alert("You are not the owner of project");
+        return;
       }
     } catch (error) {
       console.log("Error creating files:", error);
@@ -171,8 +176,6 @@ function FilesList() {
   };
 
   const handleLinkClick = (link) => {
-    console.log("userID", user.id);
-    console.log("link.user_id", link.user_id);
     // Sử dụng hàm calculateCanClick để kiểm tra điều kiện
     if (calculateCanClick(link)) {
       // Nếu canClick là true, mở tab mới với đường dẫn từ link.link
@@ -181,7 +184,6 @@ function FilesList() {
   };
 
   const handleSendRequest = async (link) => {
-    console.log("link", link);
     try {
       const response = await apiService.post("/request", {
         user_email: user.email,
@@ -200,7 +202,7 @@ function FilesList() {
   return (
     <main className="w-full">
       <section className="container px-4 mx-auto">
-        <div className="flex justify-end my-5 items-end">
+        <div className="flex justify-start my-5 items-start">
           <AddLinkFile
             isLoading={isLoading}
             currentProject={currentProject}
@@ -316,7 +318,7 @@ function FilesList() {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          {link.link}
+                          {link.status ? link.link : "***********"}
                         </td>
                         <td
                           className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap"
@@ -348,7 +350,7 @@ function FilesList() {
                           {link.status ? (
                             ""
                           ) : link.user_id !== user.id &&
-                            !link.invited_user?.includes(user.id) ? (
+                            !link.invited_user?.includes(user.email) ? (
                             <button
                               className={`text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-600 dark:focus:ring-blue-800 `}
                               onClick={() => handleSendRequest(link)}

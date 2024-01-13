@@ -1,8 +1,7 @@
 import axios from "axios";
 
 const apiService = axios.create({
-  // baseURL: "https://beekrowdbe.onrender.com/",
-  baseURL: "http://localhost:5000/",
+  baseURL: process.env.REACT_APP_BE_URL,
 });
 
 apiService.interceptors.request.use(

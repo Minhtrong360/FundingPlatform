@@ -14,7 +14,7 @@ const PaymentSuccess = () => {
               Payment successful
             </h1>
             <p className="mt-4 text-gray-500 dark:text-gray-400">
-              Thanks for purchasing our services. Have a nice journey ahead.
+              Thanks for purchasing our services. Have a nice journey ahead!
             </p>
 
             <div className="flex items-center mt-6 gap-x-3">

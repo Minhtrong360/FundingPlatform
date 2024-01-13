@@ -35,14 +35,14 @@ const Modal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
+    <div className="fixed inset-0 z-50 overflow-auto backdrop-contrast-50 flex">
       <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
         <h3 className="text-lg font-medium leading-6 text-gray-800 capitalize">
           Project Name: {currentProject.name}
         </h3>
         <p className="mt-2 text-sm text-gray-500 ">
           {" "}
-          Please add public links relative to your project.{" "}
+          Please add public file link.{" "}
         </p>
         <form className="mt-4">
           <label className="block mt-3">
@@ -88,7 +88,7 @@ const Modal = ({
                   value="private"
                   checked={!isPublic}
                   onChange={() => setIsPublic(false)}
-                  className="form-radio text-red-600 h-5 w-5"
+                  className="form-radio text-blue-600 h-5 w-5"
                 />
                 <span className="ml-2 text-gray-700">Private</span>
               </label>
@@ -122,6 +122,7 @@ export default function AddLinkFile({
   currentProject,
   handleAddLinks,
 }) {
+  const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [link, setLink] = useState(
@@ -136,12 +137,15 @@ export default function AddLinkFile({
 
   return (
     <div className="App">
-      <button
-        className={`text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-600 dark:focus:ring-blue-800 `}
-        onClick={() => setIsModalOpen(true)}
-      >
-        Add new links
-      </button>
+      {user.id === currentProject.user_id && (
+        <button
+          className={`text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-600 dark:focus:ring-blue-800 `}
+          onClick={() => setIsModalOpen(true)}
+        >
+          Add file
+        </button>
+      )}
+
       <Modal
         isOpen={isModalOpen}
         currentProject={currentProject}

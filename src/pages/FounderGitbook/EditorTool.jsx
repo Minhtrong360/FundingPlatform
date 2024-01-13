@@ -8,8 +8,8 @@ import {
 } from "@blocknote/react";
 import "@blocknote/core/style.css";
 import { supabase } from "../../supabase";
-import { useParams } from "react-router-dom";
-import { CheckOutlined } from "@ant-design/icons";
+import { useNavigate, useParams } from "react-router-dom";
+
 import {
   defaultBlockSchema,
   defaultBlockSpecs,
@@ -17,8 +17,9 @@ import {
 } from "@blocknote/core";
 import { YoutubeOutlined } from "@ant-design/icons";
 import { useAuth } from "../../context/AuthContext";
-import Spinner from "../../components/Spiner";
+
 import ErrorMessage from "../../components/ErrorMessage";
+import SpinnerBtn from "../../components/SpinnerBtn";
 
 // Create the YouTube Link block
 const YouTubeLinkBlock = createReactBlockSpec(
@@ -35,19 +36,19 @@ const YouTubeLinkBlock = createReactBlockSpec(
   {
     render: ({ block }) => {
       return (
-        <div className=" flex justify-center relative w-full" style={{ paddingBottom: '56.25%' }}>
+        <div
+          className=" flex justify-center relative w-full"
+          style={{ paddingBottom: "56.25%" }}
+        >
           {block.props.videoId && (
-            
             <iframe
-            class="absolute top-0 left-0 w-full h-full"
-              
+              className="absolute top-0 left-0 w-full h-full"
               src={`https://www.youtube.com/embed/${block.props.videoId}`}
               title="YouTube video player"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
-           
           )}
         </div>
       );
@@ -93,9 +94,10 @@ const blockSpecs = {
   youtubeLink: YouTubeLinkBlock,
 };
 
-export default function App() {
+export default function EditorTool() {
   const [blocks, setBlocks] = useState([]);
   const [editorError, setEditorError] = useState("");
+  const [currentProject, setCurrentProject] = useState("");
   const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
 
   const params = useParams();
@@ -109,10 +111,10 @@ export default function App() {
           // Kiểm tra xem project có tồn tại không
           const { data, error } = await supabase
             .from("projects")
-            .select("markdown")
+            .select("*")
             .match({ id: params.id })
             .single();
-
+          setCurrentProject(data);
           if (error) {
             setEditorError(error);
           } else {
@@ -160,10 +162,36 @@ export default function App() {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  // Hàm để upload file lên database riêng của bạn
+  async function uploadToCustomDatabase(file) {
+    try {
+      // Tạo tên file độc đáo để tránh xung đột
+      const uniqueFileName = `profile_images/${Date.now()}-${file.name}`;
+
+      // Upload file lên Supabase Storage
+      let { error, data } = await supabase.storage
+        .from("beekrowd_storage")
+        .upload(uniqueFileName, file);
+
+      if (error) {
+        throw error;
+      }
+
+      // Trả về URL của file
+      console.log("data", data);
+      return `${process.env.REACT_APP_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
+    } catch (error) {
+      console.error("Lỗi khi upload file:", error.message);
+      // Xử lý lỗi tại đây
+    }
+  }
+
   // Creates a new editor instance.
 
   const editor = useBlockNote({
     blockSpecs: blockSpecs,
+    uploadFile: uploadToCustomDatabase,
     slashMenuItems: [
       ...getDefaultReactSlashMenuItems(blockSchema),
       insertYouTubeLink,
@@ -251,9 +279,10 @@ export default function App() {
       }
     }
   };
+  const navigate = useNavigate();
 
   return (
-    <div class="flex-grow justify-center max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+    <div className="flex-grow items-center justify-center max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
       {isLoading ? ( // Hiển thị thông báo tải dữ liệu khi isLoading là true
         <div
           className="animate-spin inline-block w-8 h-8 border-[3px] border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500"
@@ -264,8 +293,8 @@ export default function App() {
         <BlockNoteView
           editor={editor}
           theme={"light"}
-          style={{ width: "80%" }}
-          // className="sm:w-full"
+          // style={{ width: "80%" }}
+          className="w-full lg:w-9/12"
         />
       )}
 
@@ -321,20 +350,37 @@ export default function App() {
           onCancel={closeModal}
         />
       )}
-      <div className="flex flex-col items-center justify-center">
-        <button
-          className={`flex justify-center mt-28 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
-          onClick={handleSave}
-          disabled={isLoading} // Disable the button when isLoading is true
-        >
-          {isLoading ? ( // Show loading indicator when isLoading is true
-            <Spinner />
-          ) : (
-            // Show "Save" text when isLoading is false and isSaved is false
-            "Save"
-          )}
-        </button>
-      </div>
+      {user.id === currentProject.user_id && (
+        <>
+          <div style={{ position: "fixed", top: "20px", right: "1.2em" }}>
+            <button
+              className={`flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+              onClick={handleSave}
+              disabled={isLoading}
+            >
+              {isLoading ? <SpinnerBtn /> : "Save"}
+            </button>
+          </div>
+          <div style={{ position: "fixed", top: "20px", right: "6em" }}>
+            <button
+              className={`flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+              onClick={() => navigate(`/company/${params.id}`)}
+              disabled={isLoading}
+            >
+              {isLoading ? <SpinnerBtn /> : "Company Settings"}
+            </button>
+          </div>{" "}
+          <div style={{ position: "fixed", top: "20px", right: "16em" }}>
+            <button
+              className={`flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+              onClick={() => navigate(`/trials`)}
+              disabled={isLoading}
+            >
+              {isLoading ? <SpinnerBtn /> : "Draw chart"}
+            </button>
+          </div>{" "}
+        </>
+      )}
     </div>
   );
 }

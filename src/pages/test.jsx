@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 const NewsComponent = () => {
   const [articles, setArticles] = useState([]);
@@ -11,9 +11,11 @@ const NewsComponent = () => {
       setError(null);
 
       try {
-        const response = await fetch('https://newsapi.org/v2/everything?q=Tesla%20Cybertruck%20price&from=2023-12-25&to=2023-12-01&sortBy=relevancy&apiKey=735ebe2d42854133bf54ea63129634a9');
+        const response = await fetch(
+          "https://newsapi.org/v2/everything?q=Tesla%20Cybertruck%20price&from=2023-12-25&to=2023-12-01&sortBy=relevancy&apiKey=735ebe2d42854133bf54ea63129634a9"
+        );
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
 
         const data = await response.json();
@@ -35,7 +37,7 @@ const NewsComponent = () => {
     <div>
       {articles.map((article, index) => (
         <div key={index}>
-          <h3 className='font-medium'>{article.title}</h3>
+          <h3 className="font-medium">{article.title}</h3>
           <p>{article.description}</p>
           <p>{article.content}</p>
           <p>{article.url}</p>

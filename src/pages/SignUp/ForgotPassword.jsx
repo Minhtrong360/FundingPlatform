@@ -1,6 +1,9 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { supabase } from "../../supabase";
+import Spinner from "../../components/Spiner";
+import SpinerBtn from "../../components/SpinnerBtn";
+import AnnouncePage from "../../components/AnnouncePage";
 
 const InputField = ({ label, type, name, value, onChange }) => {
   return (
@@ -37,6 +40,7 @@ const SubmitButton = ({ text }) => {
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [resetLink, setResetLink] = useState(false); // State để lưu đường liên kết
+  const [isLoading, setIsLoading] = useState(false); // State để lưu trạng thái isLoading
   const navigate = useNavigate();
 
   const handleEmailChange = (event) => {
@@ -45,64 +49,68 @@ const ForgotPassword = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Implement password reset logic here
-    let { data, error } = await supabase.auth.resetPasswordForEmail(email);
-    if (error) {
-      throw error;
-    } else {
-      // Gửi thành công, cập nhật đường liên kết
-      setResetLink(true);
+    setIsLoading(true); // Bắt đầu loading
+
+    try {
+      // Implement password reset logic here
+      let { data, error } = await supabase.auth.resetPasswordForEmail(email);
+      if (error) {
+        throw error;
+      } else {
+        // Gửi thành công, cập nhật đường liên kết
+        setResetLink(true);
+      }
+    } finally {
+      setIsLoading(false); // Kết thúc loading dù có lỗi hay không
     }
   };
 
   return (
-    <main className="w-full max-w-md mx-auto p-6">
+    <>
       {resetLink ? (
-        <div className="block text-2xl font-bold text-gray-800 dark:text-white text-center">
-          Email sent successfully. Check your inbox for the reset{" "}
-          <a
-            href="https://mail.google.com/mail/u/0/#inbox"
-            target="_blank" // Đặt giá trị của target thành "_blank"
-            rel="noopener noreferrer" // Đề phòng các vấn đề bảo mật
-            className="text-blue-600 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-          >
-            link
-          </a>
-          .
-        </div>
+        <AnnouncePage
+          title="Congratulations!"
+          announce="Your password has been reset."
+          describe="Email sent successfully. Check your inbox to confirm."
+        />
       ) : (
-        <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
-          <div className="p-4 sm:p-7">
-            <div className="text-center">
-              <h1 className="block text-2xl font-bold text-gray-800 dark:text-white">
-                Forgot password?
-              </h1>
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                Remember your password?
-                <a
-                  onClick={() => navigate("/login")}
-                  className="ml-1 text-blue-600 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                >
-                  Sign in here
-                </a>
-              </p>
-            </div>
-            <form onSubmit={handleSubmit} className="mt-5">
-              <div className="grid gap-y-4">
-                <InputField
-                  label="Email address"
-                  type="email"
-                  name="email"
-                  value={email}
-                  onChange={handleEmailChange}
-                />
-                <SubmitButton text="Reset password" />
+        <main className="w-full max-w-md mx-auto p-6">
+          <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <div className="p-4 sm:p-7">
+              <div className="text-center">
+                <h1 className="block text-2xl font-bold text-gray-800 dark:text-white">
+                  Forgot password?
+                </h1>
+                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                  Remember your password?
+                  <a
+                    onClick={() => navigate("/login")}
+                    className="ml-1 text-blue-600 decoration-2 hover:underline hover:cursor-pointer font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                  >
+                    Sign in here
+                  </a>
+                </p>
               </div>
-            </form>
+              <form onSubmit={handleSubmit} className="mt-5">
+                <div className="grid gap-y-4">
+                  <InputField
+                    label="Email address"
+                    type="email"
+                    name="email"
+                    value={email}
+                    onChange={handleEmailChange}
+                  />
+                  <SubmitButton
+                    text={isLoading ? <SpinerBtn /> : "Reset password"}
+                    disabled={isLoading}
+                  />
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
+        </main>
       )}
-    </main>
+    </>
   );
 };
 

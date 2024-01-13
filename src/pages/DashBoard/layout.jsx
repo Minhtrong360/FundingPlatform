@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const PageLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  console.log("sizebarr",isSidebarOpen)
+  console.log("sizebarr", isSidebarOpen);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
- 
-
   return (
-    <div style={{ height: '600px' }} className="p-5 bg-white dark:bg-gray-900 antialiased !p-0"  onClick={toggleSidebar}>
+    <div
+      style={{ height: "600px" }}
+      className="p-5 bg-white dark:bg-gray-900 antialiased !p-0"
+      onClick={toggleSidebar}
+    >
       <div id="exampleWrapper" className="">
         <button
           data-drawer-target="default-sidebar"
@@ -41,7 +43,7 @@ const PageLayout = () => {
         <aside
           id="default-sidebar"
           className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${
-            isSidebarOpen ? '' : '-translate-x-full sm:translate-x-0'
+            isSidebarOpen ? "" : "-translate-x-full sm:translate-x-0"
           }`}
           aria-label="Sidebar"
           aria-hidden={!isSidebarOpen}

@@ -1,47 +1,46 @@
 import React, { useState } from "react";
-// import LoginGoogle from './LoginGoogle';  // Update the path accordingly
-
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import AlertMsg from "../../components/AlertMsg";
+import { toast } from "react-toastify";
 
-function GoogleLoginButton() {
-  const { login, loginWithGG } = useAuth();
-  const navigate = useNavigate();
-  const [showLogin, setShowLogin] = useState(false);
+import SpinnerBtn from "../../components/SpinnerBtn";
 
-  const handleButtonClick = () => {
-    setShowLogin(true);
-  };
+function GoogleLoginButton({ setIsLoading }) {
+  const { loginWithGG } = useAuth();
 
-  const signInWitGG = async (e) => {
-    console.log("signInWitGG");
-    e.preventDefault();
-    await loginWithGG();
+  const signInWithGG = async () => {
+    setIsLoading(true); // Bắt đầu loading
+
+    try {
+      await loginWithGG();
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setIsLoading(false); // Kết thúc loading
+    }
   };
 
   return (
-    <div>
-      <button
-        className="w-full py-3 px-4 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-600 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-        type="button"
-        onClick={(e) => signInWitGG(e)}
-      >
-        {" "}
-        Sign in Google{" "}
-      </button>
-    </div>
+    <button
+      className="w-full py-3 px-4 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-600 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+      type="button"
+      onClick={signInWithGG}
+    >
+      Sign in Google
+    </button>
   );
 }
 
 const Login = () => {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const { login } = useAuth();
   const [errorMsg, setErrorMsg] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const location = useLocation();
+  const navigate = useNavigate();
   const handleSignIn = async (event) => {
     event.preventDefault();
 
@@ -57,9 +56,11 @@ const Login = () => {
       const { user, session, error } = await login(email, password);
 
       if (error) {
+        toast.error(error.message);
         setErrorMsg(error.message);
       } else {
-        navigate("/");
+        const redirectTo = location?.state?.from?.pathname || "/";
+        navigate(redirectTo);
       }
     } catch (error) {
       console.log("HandleSignIn error:", error.message);
@@ -71,6 +72,7 @@ const Login = () => {
 
   return (
     <div className="dark:bg-slate-900 bg-gray-100 flex h-screen items-center py-16">
+      <AlertMsg />
       <main className="w-full max-w-md mx-auto p-6">
         <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
           <div className="p-4 sm:p-7">
@@ -90,17 +92,12 @@ const Login = () => {
             </div>
 
             <div className="mt-5">
-              {/* <button type="button" className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800">
-                G
-                Sign in with Google
-              </button> */}
-              <GoogleLoginButton />
+              <GoogleLoginButton setIsLoading={setLoading} />
 
               <div className="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-1 before:border-t before:border-gray-200 before:mr-6 after:flex-1 after:border-t after:border-gray-200 after:ml-6 dark:before:border-gray-600 dark:after:border-gray-600">
                 Or
               </div>
 
-              {/* Form */}
               <form onSubmit={handleSignIn}>
                 <div className="grid gap-y-4">
                   <div>
@@ -130,7 +127,7 @@ const Login = () => {
                         Password
                       </label>
                       <a
-                        className="text-sm text-blue-600 hover:underline"
+                        className="text-sm text-blue-600 hover:underline hover:cursor-pointer"
                         onClick={() => navigate("/forgot-password")}
                       >
                         Forgot password?
@@ -163,16 +160,17 @@ const Login = () => {
                       Remember me
                     </label>
                   </div>
-                  {errorMsg && <div className="text-red-700">{errorMsg}</div>}
+
                   <button
                     type="submit"
                     className="w-full py-3 px-4 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-600 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                    disabled={loading} // Vô hiệu hóa nút khi đang loading
                   >
-                    Sign in
+                    {loading ? <SpinnerBtn /> : "Sign in"}{" "}
+                    {/* Hiển thị "Signing in..." khi loading */}
                   </button>
                 </div>
               </form>
-              {/* End Form */}
             </div>
           </div>
         </div>

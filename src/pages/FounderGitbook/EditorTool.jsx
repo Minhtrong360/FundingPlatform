@@ -247,6 +247,101 @@ export default function EditorTool() {
       setIsLoading(false);
     }
   };
+  const handleCompanySettings = async () => {
+    try {
+      if (params) {
+        // Set isLoading to true to disable the button and show loading indicator
+        setIsLoading(true);
+
+        const { data: projectData } = await supabase
+          .from("projects")
+          .select("*")
+          .match({ id: params.id })
+          .single();
+
+        if (projectData && projectData.user_id === user.id) {
+          // Only allow save if project.user_id matches user.id
+
+          const { data, error } = await supabase
+            .from("projects")
+            .update({ markdown: blocks })
+            .match({ id: params.id });
+          setEditorError("");
+          if (error) {
+            setEditorError(error);
+          } else {
+            setBlocks(data);
+
+            // Set isSaved to true after a successful save
+
+            // Reset isLoading to false and enable the button
+            setIsLoading(false);
+
+            // Reset isSaved to false after 1 second
+          }
+        } else {
+          // Handle the case where project.user_id doesn't match user.id
+          setEditorError("You do not have permission to save this project.");
+          openModal();
+          setIsLoading(false);
+        }
+      }
+    } catch (error) {
+      setEditorError(error);
+
+      // Reset isLoading and isSaved to false in case of an error
+      setIsLoading(false);
+    }
+    navigate(`/company/${params.id}`);
+  };
+
+  const handleDrawChart = async () => {
+    try {
+      if (params) {
+        // Set isLoading to true to disable the button and show loading indicator
+        setIsLoading(true);
+
+        const { data: projectData } = await supabase
+          .from("projects")
+          .select("*")
+          .match({ id: params.id })
+          .single();
+
+        if (projectData && projectData.user_id === user.id) {
+          // Only allow save if project.user_id matches user.id
+
+          const { data, error } = await supabase
+            .from("projects")
+            .update({ markdown: blocks })
+            .match({ id: params.id });
+          setEditorError("");
+          if (error) {
+            setEditorError(error);
+          } else {
+            setBlocks(data);
+
+            // Set isSaved to true after a successful save
+
+            // Reset isLoading to false and enable the button
+            setIsLoading(false);
+
+            // Reset isSaved to false after 1 second
+          }
+        } else {
+          // Handle the case where project.user_id doesn't match user.id
+          setEditorError("You do not have permission to save this project.");
+          openModal();
+          setIsLoading(false);
+        }
+      }
+    } catch (error) {
+      setEditorError(error);
+
+      // Reset isLoading and isSaved to false in case of an error
+      setIsLoading(false);
+    }
+    navigate(`/trials`);
+  };
 
   // Function to handle inserting YouTube Link block
   const handleInsertYouTubeLink = () => {
@@ -364,16 +459,16 @@ export default function EditorTool() {
           <div style={{ position: "fixed", top: "20px", right: "6em" }}>
             <button
               className={`flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
-              onClick={() => navigate(`/company/${params.id}`)}
+              onClick={handleCompanySettings}
               disabled={isLoading}
             >
               {isLoading ? <SpinnerBtn /> : "Company Settings"}
             </button>
           </div>{" "}
-          <div style={{ position: "fixed", top: "20px", right: "16em" }}>
+          <div style={{ position: "fixed", top: "20px", right: "16.5em" }}>
             <button
               className={`flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
-              onClick={() => navigate(`/trials`)}
+              onClick={handleDrawChart}
               disabled={isLoading}
             >
               {isLoading ? <SpinnerBtn /> : "Draw chart"}

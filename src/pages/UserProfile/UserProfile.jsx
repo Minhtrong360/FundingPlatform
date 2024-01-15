@@ -9,7 +9,7 @@ import InputField from "../../components/InputField";
 function UserInfoSettings() {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [expiredDate, setExpiredDate] = useState();
+  const [expiredDate, setExpiredDate] = useState("");
   const [userData, setUserData] = useState({
     full_name: "",
     email: "",
@@ -37,8 +37,10 @@ function UserInfoSettings() {
         // Cập nhật state userData với thông tin người dùng đã lấy được
         if (data) {
           setUserData(data);
-          const subscribeDate = new Date(data.subscribe * 1000);
-          setExpiredDate(subscribeDate.toISOString().split("T")[0]);
+          if (data.subscribe) {
+            const subscribeDate = new Date(data.subscribe * 1000);
+            setExpiredDate(subscribeDate.toISOString().split("T")[0]);
+          }
         }
       } catch (error) {
         toast.error(error);

@@ -80,9 +80,9 @@ const NavBar = () => {
             <NavbarItem href="#"isActive>
               Home
             </NavbarItem>
-            <NavbarItem href="#>About</NavbarItem>
-            <NavbarItem href="#>Services</NavbarItem>
-            <NavbarItem href="#>Contact</NavbarItem>
+            <NavbarItem href="#">About</NavbarItem>
+            <NavbarItem href="#">Services</NavbarItem>
+            <NavbarItem href="#">Contact</NavbarItem>
           </ul>
         </div>
       </div>
@@ -117,13 +117,8 @@ const Search = () => {
                 </div>
                 <div className="flex-[0_0_auto]">
                   <a
-<<<<<<< HEAD
-                    className="w-[46px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                    href="#"
-=======
                     className="w-[46px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                     href="#"
->>>>>>> 6de1f4e9523d3b968bb56bf960172760d11aa054
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

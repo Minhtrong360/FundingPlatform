@@ -18,8 +18,9 @@ import CompanyInfo from "../pages/FounderGitbook/Company";
 
 import Trial from "../pages/DashBoard/trial";
 import AuthRequire from "./AuthRequired";
-import UserPage from "../pages/UserProfile/UserPage";
 
+import TermsAndConditions from "../pages/DashBoard/term";
+import UserPage from "../pages/UserProfile/UserPage";
 function Router() {
   return (
     <Routes>
@@ -28,7 +29,7 @@ function Router() {
       <Route
         path="/founder"
         element={
-          <AuthRequire>
+          <AuthRequire message="You need to login to do this!">
             <Founder />
           </AuthRequire>
         }
@@ -37,7 +38,7 @@ function Router() {
       <Route
         path="/user-info"
         element={
-          <AuthRequire>
+          <AuthRequire message="You need to login to do this!">
             <UserPage />
           </AuthRequire>
         }
@@ -46,7 +47,7 @@ function Router() {
       <Route
         path="/founder/:id"
         element={
-          <AuthRequire>
+          <AuthRequire message="You need to login to do this!">
             <DetailPage />
           </AuthRequire>
         }
@@ -55,14 +56,14 @@ function Router() {
       <Route path="/fundraising" element={<FundraisingRecords />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
-      <Route
+      {/* <Route
         path="/dashboard"
         element={
-          <AuthRequire>
+          <AuthRequire message="You need to login to do this!">
             <Dashboard />
           </AuthRequire>
         }
-      />
+      /> */}
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/update-password" element={<UpdatePassword />} />
       {/* <Route path="/content" element={<ChatBotTest />} /> */}
@@ -71,13 +72,14 @@ function Router() {
       <Route
         path="/company/:id"
         element={
-          <AuthRequire>
+          <AuthRequire message="You need to login to do this!">
             <CompanyInfo />
           </AuthRequire>
         }
       />
 
       <Route path="/trials" element={<Trial />} />
+      <Route path="/terms" element={<TermsAndConditions />} />
     </Routes>
   );
 }

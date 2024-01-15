@@ -79,21 +79,21 @@ const Navbar = () => {
     }
   };
 
-  const handleFAQClick = () => {
-    // Lấy đối tượng ref của phần tử "Financial Product" từ Home component
-    const financialProductRef = document.getElementById("FAQ"); // Đặt ID tương ứng với ref của bạn
-    setIsOpen(!isOpen);
-    if (financialProductRef) {
-      // Sử dụng `scrollIntoView()` để cuộn đến phần tử "Financial Product"
-      const elementRect = financialProductRef.getBoundingClientRect();
-      const bodyRect = document.body.getBoundingClientRect();
-      const offsetTop = elementRect.top - bodyRect.top;
-      window.scrollTo({
-        top: offsetTop - (window.innerHeight - elementRect.height) / 20,
-        behavior: "smooth",
-      });
-    }
-  };
+  // const handleFAQClick = () => {
+  //   // Lấy đối tượng ref của phần tử "Financial Product" từ Home component
+  //   const financialProductRef = document.getElementById("FAQ"); // Đặt ID tương ứng với ref của bạn
+  //   setIsOpen(!isOpen);
+  //   if (financialProductRef) {
+  //     // Sử dụng `scrollIntoView()` để cuộn đến phần tử "Financial Product"
+  //     const elementRect = financialProductRef.getBoundingClientRect();
+  //     const bodyRect = document.body.getBoundingClientRect();
+  //     const offsetTop = elementRect.top - bodyRect.top;
+  //     window.scrollTo({
+  //       top: offsetTop - (window.innerHeight - elementRect.height) / 20,
+  //       behavior: "smooth",
+  //     });
+  //   }
+  // };
   const handleClickHome = (e) => {
     e.preventDefault();
     navigate("/");
@@ -245,7 +245,9 @@ const Navbar = () => {
                   Profiles
                 </NavbarItem>
                 <NavbarItem onClick={handlePricingClick}>Pricing</NavbarItem>
-                <NavbarItem onClick={handleFAQClick}>FAQs</NavbarItem>
+                <NavbarItem href="https://beekrowd.canny.io/beekrowd-feeback">
+                  Feed Back
+                </NavbarItem>
               </ul>
             </div>
           ) : (

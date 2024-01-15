@@ -65,7 +65,7 @@ function Footer() {
           </a>
           <a
             className="w-8 h-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-            href="#"
+            href="https://twitter.com/BeeKrowd"
           >
             <TwitterOutlined
               style={{ color: "rgb(37, 99, 235)", fontSize: "24px" }}
@@ -73,7 +73,7 @@ function Footer() {
           </a>
           <a
             className="w-8 h-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-            href="#"
+            href="https://www.linkedin.com/company/beekrowd/"
           >
             <LinkedinOutlined
               style={{ color: "rgb(37, 99, 235)", fontSize: "24px" }}

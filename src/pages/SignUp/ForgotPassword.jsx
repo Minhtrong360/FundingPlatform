@@ -66,10 +66,10 @@ const ForgotPassword = () => {
         throw error;
       } else {
         // Email tồn tại, thực hiện reset password logic
-        const resetResult = await supabase.auth.resetPasswordForEmail(email);
+        const { error } = await supabase.auth.resetPasswordForEmail(email);
 
-        if (resetResult.error) {
-          throw resetResult.error;
+        if (error) {
+          throw error;
         } else {
           // Gửi thành công, cập nhật đường liên kết
           setResetLink(true);

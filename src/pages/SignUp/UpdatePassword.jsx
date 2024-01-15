@@ -56,10 +56,8 @@ const UpdatePassword = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    setIsLoading(true); // Bắt đầu loading
     if (newPassword === confirmPassword) {
-      setIsLoading(true); // Bắt đầu loading
-
       try {
         const { error } = await supabase.auth.updateUser({
           password: newPassword,
@@ -82,6 +80,7 @@ const UpdatePassword = () => {
     } else {
       toast.error("Passwords do not match.");
     }
+    setIsLoading(false);
   };
 
   return (

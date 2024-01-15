@@ -70,7 +70,7 @@ const ForgotPassword = () => {
       {resetLink ? (
         <AnnouncePage
           title="Congratulations!"
-          announce="Your password has been reset."
+          announce="Email for reset password have been sent."
           describe="Email sent successfully. Check your inbox to confirm."
         />
       ) : (
@@ -91,6 +91,7 @@ const ForgotPassword = () => {
                   </a>
                 </p>
               </div>
+              
               <form onSubmit={handleSubmit} className="mt-5">
                 <div className="grid gap-y-4">
                   <InputField
@@ -107,7 +108,9 @@ const ForgotPassword = () => {
                 </div>
               </form>
             </div>
+            
           </div>
+          
         </main>
       )}
     </>

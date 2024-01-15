@@ -115,7 +115,7 @@ function ProjectList({ projects }) {
 
   return (
     <main className="w-full">
-      <div className="flex justify-end mr-5 mt-10 mb-5 items-end">
+      <div className="flex justify-end mr-5 mb-5 items-end">
         <AddProject />
       </div>
       <section className="container px-4 mx-auto">

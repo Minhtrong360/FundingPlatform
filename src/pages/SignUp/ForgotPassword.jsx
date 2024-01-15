@@ -76,7 +76,8 @@ const ForgotPassword = () => {
         }
       }
     } catch (error) {
-      toast.error("Email does not exist.");
+      toast.error(error.message);
+      console.log("error", error);
     } finally {
       setIsLoading(false); // Kết thúc loading dù có lỗi hay không
     }

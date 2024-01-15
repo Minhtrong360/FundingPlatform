@@ -48,6 +48,7 @@ function ProjectList({ projects }) {
 
         setCurrentUser(users[0]);
       } catch (error) {
+        toast.error(error.message);
         console.error("Error fetching projects:", error);
       }
     };
@@ -106,6 +107,7 @@ function ProjectList({ projects }) {
         setEditingProjectId(null);
       }
     } catch (error) {
+      toast.error(error.message);
       console.error("Error updating project name:", error);
       // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }
@@ -137,6 +139,7 @@ function ProjectList({ projects }) {
         setUpdatedProjects(updatedProjectsCopy);
       }
     } catch (error) {
+      toast.error(error.message);
       console.error("Error deleting project:", error);
       // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }

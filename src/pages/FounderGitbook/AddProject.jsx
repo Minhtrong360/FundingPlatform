@@ -188,7 +188,6 @@ export default function AddProject({ updatedProjects }) {
   console.log("isPricingOpen", isPricingOpen);
   return (
     <div className="App">
-      <AlertMsg />
       <button
         className={`text-white bg-blue-600 ${
           isButtonDisabled ? "opacity-50 bg-gray-600" : "hover:bg-blue-800"

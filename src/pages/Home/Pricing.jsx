@@ -72,7 +72,7 @@ const PricingSection = () => {
 
         setPricingPlans(pricingData); // Get only the first 20 articles
       } catch (error) {
-        toast.error(error);
+        toast.error(error.message);
         console.log("error", error);
       } finally {
         setIsLoading(false);

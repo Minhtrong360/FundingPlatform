@@ -16,6 +16,7 @@ import Search from "./Components/Search";
 import ProfileCard from "./Components/ProfileCard";
 import HeroCard from "./Components/HeroCard";
 import FAQ from "./Components/FAQ";
+import { toast } from "react-toastify";
 
 // create a function that returns all the components
 
@@ -44,6 +45,7 @@ const HomePage = () => {
 
         setCurrentUser(users[0]);
       } catch (error) {
+        toast.error(error.message);
         console.error("Error fetching projects:", error);
       }
     };

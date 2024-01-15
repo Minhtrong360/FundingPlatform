@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { supabase } from "../supabase";
 import { toast } from "react-toastify";
-import AlertMsg from "../components/AlertMsg";
+
 import apiService from "../app/apiService";
 
 const Modal = ({ isOpen, onClose, fileId }) => {
@@ -48,8 +48,10 @@ const Modal = ({ isOpen, onClose, fileId }) => {
 
         if (updateError) {
           console.log("Error updating file data:", updateError);
+          toast.error(updateError);
           // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
         } else {
+          toast.success("Invited successfully!");
           console.log(`Successfully invited user with email: ${email}`);
           onClose();
           // Xử lý khi mời thành công (ví dụ: hiển thị thông báo cho người dùng)
@@ -72,7 +74,6 @@ const Modal = ({ isOpen, onClose, fileId }) => {
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-      <AlertMsg />
       <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
         <p className="mt-2 text-xl text-gray-500 ">
           Invite a user to see this file!

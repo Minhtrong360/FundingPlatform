@@ -64,7 +64,7 @@ const Login = () => {
       }
     } catch (error) {
       console.log("HandleSignIn error:", error.message);
-      setErrorMsg("An unexpected error occurred");
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }

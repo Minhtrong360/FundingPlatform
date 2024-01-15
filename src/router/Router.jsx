@@ -29,7 +29,7 @@ function Router() {
       <Route
         path="/founder"
         element={
-          <AuthRequire message="You need to login to do this!">
+          <AuthRequire message="Sign in required!">
             <Founder />
           </AuthRequire>
         }
@@ -38,7 +38,7 @@ function Router() {
       <Route
         path="/user-info"
         element={
-          <AuthRequire message="You need to login to do this!">
+          <AuthRequire message="Sign in required!">
             <UserPage />
           </AuthRequire>
         }
@@ -47,7 +47,7 @@ function Router() {
       <Route
         path="/founder/:id"
         element={
-          <AuthRequire message="You need to login to do this!">
+          <AuthRequire message="Sign in required!">
             <DetailPage />
           </AuthRequire>
         }
@@ -59,7 +59,7 @@ function Router() {
       {/* <Route
         path="/dashboard"
         element={
-          <AuthRequire message="You need to login to do this!">
+          <AuthRequire message="Sign in required!">
             <Dashboard />
           </AuthRequire>
         }
@@ -72,7 +72,7 @@ function Router() {
       <Route
         path="/company/:id"
         element={
-          <AuthRequire message="You need to login to do this!">
+          <AuthRequire message="Sign in required!">
             <CompanyInfo />
           </AuthRequire>
         }

@@ -20,6 +20,7 @@ import { useAuth } from "../../context/AuthContext";
 
 import ErrorMessage from "../../components/ErrorMessage";
 import SpinnerBtn from "../../components/SpinnerBtn";
+import { toast } from "react-toastify";
 
 // Create the YouTube Link block
 const YouTubeLinkBlock = createReactBlockSpec(
@@ -130,6 +131,7 @@ export default function EditorTool() {
         setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu
       } catch (error) {
         setEditorError(error);
+        toast.error(error.message);
         setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu (có lỗi)
       }
     }
@@ -183,6 +185,7 @@ export default function EditorTool() {
       return `${process.env.REACT_APP_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
     } catch (error) {
       console.error("Lỗi khi upload file:", error.message);
+      toast.error(error.message);
       // Xử lý lỗi tại đây
     }
   }
@@ -243,7 +246,7 @@ export default function EditorTool() {
       }
     } catch (error) {
       setEditorError(error);
-
+      toast.error(error.message);
       // Reset isLoading and isSaved to false in case of an error
       setIsLoading(false);
     }
@@ -289,7 +292,7 @@ export default function EditorTool() {
       }
     } catch (error) {
       setEditorError(error);
-
+      toast.error(error.message);
       // Reset isLoading and isSaved to false in case of an error
       setIsLoading(false);
     }
@@ -337,7 +340,7 @@ export default function EditorTool() {
       }
     } catch (error) {
       setEditorError(error);
-
+      toast.error(error.message);
       // Reset isLoading and isSaved to false in case of an error
       setIsLoading(false);
     }

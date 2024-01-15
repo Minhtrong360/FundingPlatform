@@ -47,7 +47,7 @@ function UserInfoSettings() {
           }
         }
       } catch (error) {
-        toast.error(error);
+        toast.error(error.message);
         console.error("Error fetching user data:", error);
       }
     }
@@ -88,7 +88,7 @@ function UserInfoSettings() {
 
       toast.success("Updated successfully!");
     } catch (error) {
-      toast.error(error);
+      toast.error(error.message);
       console.error("Error updating user data:", error);
     }
     setIsLoading(false);

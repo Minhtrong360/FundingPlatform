@@ -6,6 +6,7 @@ import TextAreaField from "../../components/TextAreaField";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
+import countries from "../../components/Country";
 
 function CompanyInfo() {
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ function CompanyInfo() {
                 companyDescription: companyData.description,
                 user_email: companyData.user_email,
               });
-              console.log("setFormData", setFormData);
+
               setIsLoading(false);
             } else {
               // Nếu không có dự án tồn tại, ở lại trang để tạo
@@ -180,6 +181,8 @@ function CompanyInfo() {
 
   const typeOfferingOptions = ["Lending", "Investment", "M&A", "Convertible"];
 
+  console.log("countries", countries);
+
   return (
     <>
       {isLoading ? (
@@ -209,14 +212,14 @@ function CompanyInfo() {
                       type="text"
                       required
                     />
-                    <InputField
+                    <SelectField
                       label="Country"
                       id="country"
                       name="country"
                       value={formData.country}
                       onChange={handleInputChange}
-                      type="text"
                       required
+                      options={countries} // Thay thế bằng danh sách các tùy chọn bạn muốn
                     />
                   </div>
 

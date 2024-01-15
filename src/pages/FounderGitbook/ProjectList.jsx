@@ -3,6 +3,8 @@ import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import AddProject from "./AddProject";
 import { useNavigate } from "react-router-dom";
+import AlertMsg from "../../components/AlertMsg";
+import InvitedUserProject from "../../components/InvitedUserProject";
 
 function formatDate(inputDateString) {
   const dateObject = new Date(inputDateString);
@@ -115,6 +117,7 @@ function ProjectList({ projects }) {
 
   return (
     <main className="w-full">
+      <AlertMsg />
       <div className="flex justify-end mr-5 mb-5 items-end">
         <AddProject />
       </div>
@@ -170,6 +173,12 @@ function ProjectList({ projects }) {
                         className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
                       >
                         Action
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
+                      >
+                        Invite
                       </th>
                     </tr>
                   </thead>
@@ -290,6 +299,13 @@ function ProjectList({ projects }) {
                               Delete
                             </button>
                           </div>
+                        </td>
+                        <td className="px-4 py-4 text-sm whitespace-nowrap">
+                          {project.status ? (
+                            ""
+                          ) : (
+                            <InvitedUserProject projectId={project.id} />
+                          )}
                         </td>
                       </tr>
                     ))}

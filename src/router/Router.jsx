@@ -21,6 +21,8 @@ import AuthRequire from "./AuthRequired";
 
 import TermsAndConditions from "../pages/DashBoard/term";
 import UserPage from "../pages/UserProfile/UserPage";
+import Newdb from "../pages/DashBoard/NewDashboard";
+import LinkedInLoginComponent from "../pages/Login/linkedin";
 function Router() {
   return (
     <Routes>
@@ -77,7 +79,9 @@ function Router() {
           </AuthRequire>
         }
       />
-
+       <Route path="/linkedin" element={<LinkedInLoginComponent />} />
+      <Route path="/newdb" element={<Newdb />} />
+      <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/trials" element={<Trial />} />
       <Route path="/terms" element={<TermsAndConditions />} />
     </Routes>

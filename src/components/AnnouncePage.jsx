@@ -32,6 +32,7 @@ const AnnouncePage = ({ title, announce, describe, highlightedWord }) => {
             </button>
           </div>
         </div>
+     
       </div>
     </section>
   );

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { supabase } from "../supabase";
 import { toast } from "react-toastify";
-import AlertMsg from "../components/AlertMsg";
+
+import apiService from "../app/apiService";
 
 const Modal = ({ isOpen, onClose, fileId }) => {
   const [email, setEmail] = useState("vidu@gmail.com");
@@ -11,7 +12,7 @@ const Modal = ({ isOpen, onClose, fileId }) => {
       // Truy vấn để tìm file có id = fileId trong bảng "files"
       const { data: fileData, error: fileError } = await supabase
         .from("files")
-        .select("invited_user")
+        .select("*")
         .eq("id", fileId)
         .single();
 
@@ -23,7 +24,21 @@ const Modal = ({ isOpen, onClose, fileId }) => {
         const currentInvitedUsers = fileData.invited_user || [];
 
         // Thêm email người dùng mới vào danh sách "invited_user"
+
+        if (currentInvitedUsers.includes(email)) {
+          toast.warning(`User with email ${email} is already invited.`);
+          return; // Ngắt nếu đã tồn tại
+        }
+
         currentInvitedUsers.push(email);
+
+        // Gửi email mời
+        await apiService.post("/invite/file", {
+          target_email: email,
+          file_name: fileData.name,
+          owner_email: fileData.owner_email,
+          project_id: fileData.project_id,
+        });
 
         // Tiến hành cập nhật trường "invited_user" của bảng "files" với danh sách mới
         const { error: updateError } = await supabase
@@ -33,8 +48,10 @@ const Modal = ({ isOpen, onClose, fileId }) => {
 
         if (updateError) {
           console.log("Error updating file data:", updateError);
+          toast.error(updateError);
           // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
         } else {
+          toast.success("Invited successfully!");
           console.log(`Successfully invited user with email: ${email}`);
           onClose();
           // Xử lý khi mời thành công (ví dụ: hiển thị thông báo cho người dùng)
@@ -57,7 +74,6 @@ const Modal = ({ isOpen, onClose, fileId }) => {
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-      <AlertMsg />
       <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
         <p className="mt-2 text-xl text-gray-500 ">
           Invite a user to see this file!

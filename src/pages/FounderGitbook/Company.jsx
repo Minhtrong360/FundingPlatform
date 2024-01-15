@@ -7,6 +7,8 @@ import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
 import countries from "../../components/Country";
+import AlertMsg from "../../components/AlertMsg";
+import { toast } from "react-toastify";
 
 function CompanyInfo() {
   const navigate = useNavigate();
@@ -139,6 +141,7 @@ function CompanyInfo() {
 
           if (error) {
             console.log("Error updating data to Supabase:", error);
+            throw error;
           } else {
             console.log("Data updated successfully:", data);
             setIsLoading(false);
@@ -175,6 +178,7 @@ function CompanyInfo() {
       }
     } catch (error) {
       console.log("An error occurred:", error);
+      toast.error(error.message);
       setIsLoading(false);
     }
   };
@@ -189,6 +193,7 @@ function CompanyInfo() {
         <div className="flex justify-center text-center">Loading...</div>
       ) : (
         <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+          <AlertMsg />
           <div className="max-w-xl mx-auto">
             <div className="text-center">
               <h1 className="text-3xl font-bold text-gray-800 sm:text-4xl dark:text-white">

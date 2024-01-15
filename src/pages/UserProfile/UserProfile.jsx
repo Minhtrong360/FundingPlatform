@@ -40,10 +40,14 @@ function UserInfoSettings() {
           if (data.subscribe) {
             const subscribeDate = new Date(data.subscribe * 1000);
             setExpiredDate(subscribeDate.toISOString().split("T")[0]);
+          } else if (user.created_at) {
+            // Kiểm tra nếu có user.created_at
+            const createdDate = new Date(user.created_at);
+            setExpiredDate(createdDate.toISOString().split("T")[0]);
           }
         }
       } catch (error) {
-        toast.error(error);
+        toast.error(error.message);
         console.error("Error fetching user data:", error);
       }
     }
@@ -84,7 +88,7 @@ function UserInfoSettings() {
 
       toast.success("Updated successfully!");
     } catch (error) {
-      toast.error(error);
+      toast.error(error.message);
       console.error("Error updating user data:", error);
     }
     setIsLoading(false);

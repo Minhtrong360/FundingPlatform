@@ -10,6 +10,7 @@ import ProjectList from "./ProjectList";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
 import Sidebar from "./SideBar";
+import { toast } from "react-toastify";
 
 const FounderGitbook = () => {
   const { user } = useAuth();
@@ -33,6 +34,7 @@ const FounderGitbook = () => {
         setProjects(projects);
       } catch (error) {
         console.error("Error fetching projects:", error);
+        toast.error(error.message);
       }
     };
 

@@ -20,6 +20,7 @@ import { useAuth } from "../../context/AuthContext";
 
 import ErrorMessage from "../../components/ErrorMessage";
 import SpinnerBtn from "../../components/SpinnerBtn";
+import { toast } from "react-toastify";
 
 // Create the YouTube Link block
 const YouTubeLinkBlock = createReactBlockSpec(
@@ -130,6 +131,7 @@ export default function EditorTool() {
         setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu
       } catch (error) {
         setEditorError(error);
+        toast.error(error.message);
         setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu (có lỗi)
       }
     }
@@ -183,6 +185,7 @@ export default function EditorTool() {
       return `${process.env.REACT_APP_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
     } catch (error) {
       console.error("Lỗi khi upload file:", error.message);
+      toast.error(error.message);
       // Xử lý lỗi tại đây
     }
   }
@@ -220,6 +223,7 @@ export default function EditorTool() {
             .from("projects")
             .update({ markdown: blocks })
             .match({ id: params.id });
+
           setEditorError("");
           if (error) {
             setEditorError(error);
@@ -242,7 +246,7 @@ export default function EditorTool() {
       }
     } catch (error) {
       setEditorError(error);
-
+      toast.error(error.message);
       // Reset isLoading and isSaved to false in case of an error
       setIsLoading(false);
     }
@@ -288,7 +292,7 @@ export default function EditorTool() {
       }
     } catch (error) {
       setEditorError(error);
-
+      toast.error(error.message);
       // Reset isLoading and isSaved to false in case of an error
       setIsLoading(false);
     }
@@ -336,7 +340,7 @@ export default function EditorTool() {
       }
     } catch (error) {
       setEditorError(error);
-
+      toast.error(error.message);
       // Reset isLoading and isSaved to false in case of an error
       setIsLoading(false);
     }
@@ -376,6 +380,14 @@ export default function EditorTool() {
   };
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [isModalOpen]);
+
   return (
     <div className="flex-grow items-center justify-center max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
       {isLoading ? ( // Hiển thị thông báo tải dữ liệu khi isLoading là true
@@ -399,12 +411,17 @@ export default function EditorTool() {
         contentLabel="YouTube Link Modal"
         style={{
           overlay: {
-            backgroundColor: "none", // Để ẩn background overlay
+            backgroundColor: "rgba(0, 0, 0, 0.5)", // Màu nền overlay
+            position: "fixed", // Để nền overlay cố định
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 9999, // Chỉ số z để đảm bảo nó hiển thị trên cùng
           },
           content: {
             border: "none", // Để ẩn border của nội dung Modal
             background: "none", // Để ẩn background của nội dung Modal
-
             margin: "auto", // Để căn giữa
           },
         }}

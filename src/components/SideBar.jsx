@@ -1,9 +1,8 @@
-import { DashboardOutlined, UserOutlined } from "@ant-design/icons";
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import SpaceDashboardOutlinedIcon from '@mui/icons-material/SpaceDashboardOutlined';
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import FolderCopyOutlinedIcon from '@mui/icons-material/FolderCopyOutlined';
+
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import FolderCopyOutlinedIcon from "@mui/icons-material/FolderCopyOutlined";
 
 function SideBar({ toggleSidebar, isSidebarOpen }) {
   const navigate = useNavigate();
@@ -76,7 +75,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
                 onClick={() => navigate("/founder")}
                 className="hover:cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
-                <FolderCopyOutlinedIcon/>
+                <FolderCopyOutlinedIcon />
                 <span className="ms-3">Projects</span>
               </a>
             </li>

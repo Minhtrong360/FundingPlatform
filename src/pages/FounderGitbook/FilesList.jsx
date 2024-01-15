@@ -5,8 +5,9 @@ import { supabase } from "../../supabase";
 import AddLinkFile from "./AddLinkFile";
 import { useParams } from "react-router-dom";
 
-import InvitedUser from "../../components/InvitedUser";
+import InvitedUserFile from "../../components/InvitedUserFile";
 import apiService from "../../app/apiService";
+import { toast } from "react-toastify";
 
 function FilesList() {
   const { id } = useParams();
@@ -53,6 +54,7 @@ function FilesList() {
         setProjectLinks(files);
       } catch (error) {
         console.error("Error fetching projects:", error);
+        toast.error(error.message);
       }
     };
 
@@ -119,6 +121,7 @@ function FilesList() {
       }
     } catch (error) {
       console.log("Error creating files:", error);
+      toast.error(error.message);
       // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }
   };
@@ -171,6 +174,7 @@ function FilesList() {
       }
     } catch (error) {
       console.error("Error deleting project:", error);
+      toast.error(error.message);
       // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }
   };
@@ -185,7 +189,7 @@ function FilesList() {
 
   const handleSendRequest = async (link) => {
     try {
-      const response = await apiService.post("/request", {
+      const response = await apiService.post("/request/file", {
         user_email: user.email,
         file_name: link.name,
         owner_email: link.owner_email,
@@ -196,6 +200,7 @@ function FilesList() {
       }
     } catch (error) {
       console.log("error", error);
+      toast.error(error.message);
     }
   };
 
@@ -359,7 +364,7 @@ function FilesList() {
                               Send Request{" "}
                             </button>
                           ) : (
-                            <InvitedUser fileId={link.id} />
+                            <InvitedUserFile fileId={link.id} />
                           )}
                         </td>
                       </tr>

@@ -1,9 +1,11 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { supabase } from "../../supabase";
-import Spinner from "../../components/Spiner";
-import SpinerBtn from "../../components/SpinnerBtn";
+
+import SpinnerBtn from "../../components/SpinnerBtn";
 import AnnouncePage from "../../components/AnnouncePage";
+import AlertMsg from "../../components/AlertMsg";
+import { toast } from "react-toastify";
 
 const InputField = ({ label, type, name, value, onChange }) => {
   return (
@@ -52,14 +54,30 @@ const ForgotPassword = () => {
     setIsLoading(true); // Bắt đầu loading
 
     try {
-      // Implement password reset logic here
-      let { data, error } = await supabase.auth.resetPasswordForEmail(email);
+      // Kiểm tra xem email có tồn tại trong Supabase hay không
+      const { data: users, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("email", email)
+        .single(); // Sử dụng .single() để chỉ lấy một kết quả duy nhất
+
       if (error) {
+        console.log("không có user");
         throw error;
       } else {
-        // Gửi thành công, cập nhật đường liên kết
-        setResetLink(true);
+        // Email tồn tại, thực hiện reset password logic
+        const { error } = await supabase.auth.resetPasswordForEmail(email);
+
+        if (error) {
+          throw error;
+        } else {
+          // Gửi thành công, cập nhật đường liên kết
+          setResetLink(true);
+        }
       }
+    } catch (error) {
+      toast.error(error.message);
+      console.log("error", error);
     } finally {
       setIsLoading(false); // Kết thúc loading dù có lỗi hay không
     }
@@ -67,6 +85,7 @@ const ForgotPassword = () => {
 
   return (
     <>
+      <AlertMsg />
       {resetLink ? (
         <AnnouncePage
           title="Congratulations!"
@@ -91,7 +110,7 @@ const ForgotPassword = () => {
                   </a>
                 </p>
               </div>
-              
+
               <form onSubmit={handleSubmit} className="mt-5">
                 <div className="grid gap-y-4">
                   <InputField
@@ -102,15 +121,13 @@ const ForgotPassword = () => {
                     onChange={handleEmailChange}
                   />
                   <SubmitButton
-                    text={isLoading ? <SpinerBtn /> : "Reset password"}
+                    text={isLoading ? <SpinnerBtn /> : "Reset password"}
                     disabled={isLoading}
                   />
                 </div>
               </form>
             </div>
-            
           </div>
-          
         </main>
       )}
     </>

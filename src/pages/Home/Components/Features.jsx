@@ -1,3 +1,4 @@
+
 function Features() {
   return (
     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
@@ -39,11 +40,12 @@ function Features() {
           <div className="mt-auto flex items-center gap-x-3">
             <img
               className="w-8 h-8 rounded-full"
-              src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
+              src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8cG9ydHJhaXR8ZW58MHx8MHx8fDA%3D"
+              
               alt="Image Description"
-            />
+            /> 
             <div>
-              <h5 className="text-sm text-gray-800 dark:text-gray-200">
+              <h5 className="text-sm text-gray-800  dark:text-gray-200">
                 By Mr. Hung, Founder & CEO BOS.
               </h5>
             </div>

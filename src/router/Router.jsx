@@ -18,7 +18,7 @@ import CompanyInfo from "../pages/FounderGitbook/Company";
 
 import Trial from "../pages/DashBoard/trial";
 import AuthRequire from "./AuthRequired";
-import UserProfile from "../pages/UserProfile/UserProfile";
+
 import TermsAndConditions from "../pages/DashBoard/term";
 import UserPage from "../pages/UserProfile/UserPage";
 function Router() {

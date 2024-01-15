@@ -1,11 +1,13 @@
-import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useAuth } from "../../context/AuthContext";
 import apiService from "../../app/apiService";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
+import SpinnerBtn from "../../components/SpinnerBtn";
+import AlertMsg from "../../components/AlertMsg";
+import { toast } from "react-toastify";
 
-const PricingCard = ({ plan, onClick }) => {
+const PricingCard = ({ plan, onClick, isLoading }) => {
   return (
     <div
       className={` flex flex-col border rounded-xl p-8 text-center shadow-xl   group hover:scale-105  hover:border-blue-700 transition-transform duration-300 ease-in-out`}
@@ -45,7 +47,7 @@ const PricingCard = ({ plan, onClick }) => {
         onClick={onClick}
         className="mt-5 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:hover:bg-blue-900 dark:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
       >
-        Sign up
+        {isLoading ? <SpinnerBtn /> : "Sign up"}
       </button>
     </div>
   );
@@ -55,13 +57,12 @@ const PricingSection = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+
   const [pricingPlans, setPricingPlans] = useState([]);
 
   useEffect(() => {
     const fetchPricing = async () => {
       setIsLoading(true);
-      setError(null);
 
       try {
         const response = await apiService.get("stripe");
@@ -71,7 +72,7 @@ const PricingSection = () => {
 
         setPricingPlans(pricingData); // Get only the first 20 articles
       } catch (error) {
-        setError(error.message);
+        toast.error(error);
         console.log("error", error);
       } finally {
         setIsLoading(false);
@@ -101,15 +102,17 @@ const PricingSection = () => {
       });
 
       if (result.error) {
-        console.log(result.error);
+        throw result.error;
       }
     } catch (error) {
+      toast.error(error.message);
       console.error(error);
     }
   };
 
   return (
     <div className="max-w-[85rem] mx-auto px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mt-28">
+      <AlertMsg />
       <div className="text-center mb-10 lg:mb-14">
         <h2
           className="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white  hover:cursor-pointer"
@@ -124,6 +127,7 @@ const PricingSection = () => {
       <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-32 lg:items-center">
         {pricingPlans?.map((plan, index) => (
           <PricingCard
+            isLoading={isLoading}
             key={index}
             plan={plan}
             onClick={() => {

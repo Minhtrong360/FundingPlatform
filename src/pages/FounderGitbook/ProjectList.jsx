@@ -5,6 +5,7 @@ import AddProject from "./AddProject";
 import { useNavigate } from "react-router-dom";
 import AlertMsg from "../../components/AlertMsg";
 import InvitedUserProject from "../../components/InvitedUserProject";
+import { toast } from "react-toastify";
 
 function formatDate(inputDateString) {
   const dateObject = new Date(inputDateString);
@@ -17,6 +18,7 @@ function formatDate(inputDateString) {
 
 function ProjectList({ projects }) {
   const { user } = useAuth();
+  const [currentUser, setCurrentUser] = useState(null);
   const [editingProjectId, setEditingProjectId] = useState(null);
   const [editedProjectName, setEditedProjectName] = useState("");
   const [updatedProjects, setUpdatedProjects] = useState([]);
@@ -26,6 +28,34 @@ function ProjectList({ projects }) {
     // Gọi hàm handleClickProjectId để truyền projectId lên thành phần cha
     navigate(`/company/${project.id}`);
   };
+
+  useEffect(() => {
+    // Import Supabase client và thiết lập nó
+
+    const fetchCurrentUser = async () => {
+      try {
+        let { data: users, error } = await supabase
+          .from("users")
+          .select("*")
+
+          // Filters
+          .eq("id", user.id);
+
+        if (error) {
+          console.log("error", error);
+          throw error;
+        }
+
+        setCurrentUser(users[0]);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
+
+    if (user) {
+      fetchCurrentUser();
+    }
+  }, [user]);
 
   useEffect(() => {
     setUpdatedProjects(projects);
@@ -39,6 +69,18 @@ function ProjectList({ projects }) {
 
   const handleSaveClick = async (project) => {
     try {
+      if (
+        (currentUser.plan === "Free" ||
+          currentUser.plan === null ||
+          currentUser.plan === undefined) &&
+        !editedProjectStatus
+      ) {
+        toast.warning(
+          "You need to upgrade your plan to create a private project"
+        );
+
+        return; // Ngăn chặn tiếp tục thực hiện
+      }
       // Gửi yêu cầu cập nhật tên dự án đến Supabase
       const { error } = await supabase
         .from("projects")
@@ -119,7 +161,7 @@ function ProjectList({ projects }) {
     <main className="w-full">
       <AlertMsg />
       <div className="flex justify-end mr-5 mb-5 items-end">
-        <AddProject />
+        <AddProject updatedProjects={updatedProjects} />
       </div>
       <section className="container px-4 mx-auto">
         <div className="flex flex-col">

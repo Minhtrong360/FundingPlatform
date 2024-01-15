@@ -1,14 +1,30 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
+import PricingSection from "../Home/Pricing";
+import ReactModal from "react-modal";
+import { toast } from "react-toastify";
+import AlertMsg from "../../components/AlertMsg";
 
-const Modal = ({ isOpen, onClose }) => {
+const Modal = ({ isOpen, onClose, currentUser, setIsPricingOpen }) => {
   const [projectName, setProjectName] = useState("SpaceX");
   const [isPublic, setIsPublic] = useState(true); // Thêm trạng thái cho lựa chọn Public/Private
   const { user } = useAuth();
 
   const handleCreate = async () => {
     try {
+      if (
+        (currentUser.plan === "Free" ||
+          currentUser.plan === null ||
+          currentUser.plan === undefined) &&
+        !isPublic
+      ) {
+        setIsPricingOpen(true);
+        toast.warning(
+          "You need to upgrade your plan to create a private project"
+        );
+        return; // Ngăn chặn tiếp tục thực hiện
+      }
       // Tạo một dự án mới và lưu vào Supabase
       const { error } = await supabase.from("projects").insert([
         {
@@ -106,14 +122,17 @@ const Modal = ({ isOpen, onClose }) => {
   );
 };
 
-export default function AddProject({ updateProjects }) {
+export default function AddProject({ updatedProjects }) {
   const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPricingOpen, setIsPricingOpen] = useState(false); // State để kiểm soát modal Pricing
   const [currentUser, setCurrentUser] = useState(null);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
   useEffect(() => {
     // Import Supabase client và thiết lập nó
 
-    const fetchProjects = async () => {
+    const fetchCurrentUser = async () => {
       try {
         let { data: users, error } = await supabase
           .from("users")
@@ -134,28 +153,92 @@ export default function AddProject({ updateProjects }) {
     };
 
     if (user) {
-      fetchProjects();
+      fetchCurrentUser();
     }
   }, [user]);
 
-  const isButtonDisabled =
-    currentUser &&
-    (currentUser.plan === null || currentUser.plan === undefined);
+  useEffect(() => {
+    if (currentUser) {
+      if (
+        updatedProjects &&
+        updatedProjects.length >= 1 &&
+        (currentUser.plan === "Free" ||
+          currentUser.plan === null ||
+          currentUser.plan === undefined)
+      ) {
+        setIsButtonDisabled(true);
+      } else {
+        setIsButtonDisabled(false);
+      }
+    }
+  }, [currentUser, updatedProjects]);
 
+  const handleClick = () => {
+    if (!isButtonDisabled) {
+      setIsModalOpen(true);
+    } else {
+      setIsPricingOpen(true);
+    }
+  };
+
+  const closeModalPricing = () => {
+    setIsPricingOpen(false);
+  };
+  console.log("isButtonDisabled", isButtonDisabled);
+  console.log("isPricingOpen", isPricingOpen);
   return (
     <div className="App">
+      <AlertMsg />
       <button
         className={`text-white bg-blue-600 ${
-          isButtonDisabled
-            ? "cursor-not-allowed opacity-50 bg-gray-600" // Thêm lớp CSS khi nút bị vô hiệu hóa
-            : "hover:bg-blue-800"
+          isButtonDisabled ? "opacity-50 bg-gray-600" : "hover:bg-blue-800"
         } focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:focus:ring-blue-800`}
-        onClick={() => !isButtonDisabled && setIsModalOpen(true)} // Chỉ kích hoạt khi không bị vô hiệu hóa
-        disabled={isButtonDisabled}
+        onClick={handleClick}
       >
         Add new
       </button>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        currentUser={currentUser}
+        setIsPricingOpen={setIsPricingOpen}
+      />
+
+      <ReactModal
+        isOpen={isPricingOpen}
+        onRequestClose={closeModalPricing}
+        contentLabel="YouTube Link Modal"
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)", // Màu nền overlay
+            position: "fixed", // Để nền overlay cố định
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 9998, // Chỉ số z để đảm bảo nó hiển thị trên cùng
+          },
+          content: {
+            border: "none", // Để ẩn border của nội dung Modal
+            background: "none", // Để ẩn background của nội dung Modal
+            // margin: "auto", // Để căn giữa
+          },
+        }}
+      >
+        <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
+          <div className="relative p-8 bg-white w-full  m-auto flex-col flex rounded-lg">
+            <PricingSection />
+            <div className="mt-4 flex items-center gap-10">
+              <button
+                className="max-w-md px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+                onClick={closeModalPricing}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </ReactModal>
     </div>
   );
 }

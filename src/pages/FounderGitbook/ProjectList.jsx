@@ -343,11 +343,15 @@ function ProjectList({ projects }) {
                           </div>
                         </td>
                         <td className="px-4 py-4 text-sm whitespace-nowrap">
-                          {project.status ? (
-                            ""
-                          ) : (
-                            <InvitedUserProject projectId={project.id} />
-                          )}
+                          {
+                            project.status ? (
+                              "" // Nếu project.status = true, không hiển thị gì
+                            ) : project.user_id === user.id ? (
+                              <InvitedUserProject projectId={project.id} /> // Nếu project.status = false và project.user_id = user.id, hiển thị InvitedUserProject component
+                            ) : (
+                              ""
+                            ) // Ngược lại, không hiển thị gì
+                          }
                         </td>
                       </tr>
                     ))}

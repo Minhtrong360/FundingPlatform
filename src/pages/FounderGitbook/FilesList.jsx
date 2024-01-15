@@ -5,7 +5,7 @@ import { supabase } from "../../supabase";
 import AddLinkFile from "./AddLinkFile";
 import { useParams } from "react-router-dom";
 
-import InvitedUser from "../../components/InvitedUser";
+import InvitedUserFile from "../../components/InvitedUserFile";
 import apiService from "../../app/apiService";
 
 function FilesList() {
@@ -185,7 +185,7 @@ function FilesList() {
 
   const handleSendRequest = async (link) => {
     try {
-      const response = await apiService.post("/request", {
+      const response = await apiService.post("/request/file", {
         user_email: user.email,
         file_name: link.name,
         owner_email: link.owner_email,
@@ -359,7 +359,7 @@ function FilesList() {
                               Send Request{" "}
                             </button>
                           ) : (
-                            <InvitedUser fileId={link.id} />
+                            <InvitedUserFile fileId={link.id} />
                           )}
                         </td>
                       </tr>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { supabase } from "../supabase";
 import { toast } from "react-toastify";
 import AlertMsg from "../components/AlertMsg";
+import apiService from "../app/apiService";
 
 const Modal = ({ isOpen, onClose, fileId }) => {
   const [email, setEmail] = useState("vidu@gmail.com");
@@ -11,7 +12,7 @@ const Modal = ({ isOpen, onClose, fileId }) => {
       // Truy vấn để tìm file có id = fileId trong bảng "files"
       const { data: fileData, error: fileError } = await supabase
         .from("files")
-        .select("invited_user")
+        .select("*")
         .eq("id", fileId)
         .single();
 
@@ -23,7 +24,21 @@ const Modal = ({ isOpen, onClose, fileId }) => {
         const currentInvitedUsers = fileData.invited_user || [];
 
         // Thêm email người dùng mới vào danh sách "invited_user"
+
+        if (currentInvitedUsers.includes(email)) {
+          toast.warning(`User with email ${email} is already invited.`);
+          return; // Ngắt nếu đã tồn tại
+        }
+
         currentInvitedUsers.push(email);
+
+        // Gửi email mời
+        await apiService.post("/invite/file", {
+          target_email: email,
+          file_name: fileData.name,
+          owner_email: fileData.owner_email,
+          project_id: fileData.project_id,
+        });
 
         // Tiến hành cập nhật trường "invited_user" của bảng "files" với danh sách mới
         const { error: updateError } = await supabase

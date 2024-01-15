@@ -19,7 +19,7 @@ const HeroCard = () => {
         <div>
           <h1 className="block text-3xl font-bold text-gray-800 sm:text-4xl lg:text-6xl lg:leading-tight dark:text-white">
             BOS. roasted a fruitful campaign with{" "}
-            <span className="text-blue-600"> $170k raised.</span>
+            <span className="text-blue-600"> $170K raised.</span>
           </h1>
           <p className="mt-3 text-lg text-gray-800 dark:text-gray-400">
             Distinctively, Bosgaurus Coffee is one of the few specialty coffee
@@ -43,9 +43,7 @@ const HeroCard = () => {
             >
               See demo
             </a>
-            <Tooltip title="prompt text">
-            <HelpOutlineOutlinedIcon />
-            </Tooltip>
+           
           </div>
           <div className="mt-6 lg:mt-10 grid grid-cols-2 gap-x-5">
             <div className="py-5">

@@ -53,7 +53,7 @@ const ForgotPassword = () => {
 
     try {
       // Implement password reset logic here
-      let { data, error } = await supabase.auth.resetPasswordForEmail(email);
+      let { error } = await supabase.auth.resetPasswordForEmail(email);
       if (error) {
         throw error;
       } else {
@@ -91,7 +91,7 @@ const ForgotPassword = () => {
                   </a>
                 </p>
               </div>
-              
+
               <form onSubmit={handleSubmit} className="mt-5">
                 <div className="grid gap-y-4">
                   <InputField
@@ -108,9 +108,7 @@ const ForgotPassword = () => {
                 </div>
               </form>
             </div>
-            
           </div>
-          
         </main>
       )}
     </>

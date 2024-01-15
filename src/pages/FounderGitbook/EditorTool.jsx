@@ -220,6 +220,7 @@ export default function EditorTool() {
             .from("projects")
             .update({ markdown: blocks })
             .match({ id: params.id });
+
           setEditorError("");
           if (error) {
             setEditorError(error);
@@ -376,6 +377,14 @@ export default function EditorTool() {
   };
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [isModalOpen]);
+
   return (
     <div className="flex-grow items-center justify-center max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
       {isLoading ? ( // Hiển thị thông báo tải dữ liệu khi isLoading là true
@@ -399,12 +408,17 @@ export default function EditorTool() {
         contentLabel="YouTube Link Modal"
         style={{
           overlay: {
-            backgroundColor: "none", // Để ẩn background overlay
+            backgroundColor: "rgba(0, 0, 0, 0.5)", // Màu nền overlay
+            position: "fixed", // Để nền overlay cố định
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 9999, // Chỉ số z để đảm bảo nó hiển thị trên cùng
           },
           content: {
             border: "none", // Để ẩn border của nội dung Modal
             background: "none", // Để ẩn background của nội dung Modal
-
             margin: "auto", // Để căn giữa
           },
         }}

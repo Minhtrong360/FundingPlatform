@@ -59,7 +59,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
                 <span className="ms-3">User Settings</span>
               </a>
             </li>
-            <li>
+            {/* <li>
               <a
                 onClick={() => navigate("/dashboard")}
                 className=" hover:cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -67,7 +67,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
                 <DashboardOutlined />
                 <span className="ms-3">Dashboard</span>
               </a>
-            </li>
+            </li> */}
             <li>
               <a
                 onClick={() => navigate("/founder")}

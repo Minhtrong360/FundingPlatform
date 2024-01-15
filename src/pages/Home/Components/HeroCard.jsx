@@ -1,12 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import Card from "./Card";
-
+import { Tooltip } from 'antd';
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 const HeroCard = () => {
   const navigate = useNavigate();
   return (
     <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 mt-28">
       <div className="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
-        <div className="relative ms-4 flex justify-center items-center">
+        <div className="relative  flex justify-center items-center">
           <Card
             title="BOSGAURUS"
             description="Bosgaurus Coffee is actively involved in transforming how Vietnamese coffee is perceived worldwide. This effort reflects the broader growth of the coffee scene in Vietnam."
@@ -42,6 +43,9 @@ const HeroCard = () => {
             >
               See demo
             </a>
+            <Tooltip title="prompt text">
+            <HelpOutlineOutlinedIcon />
+            </Tooltip>
           </div>
           <div className="mt-6 lg:mt-10 grid grid-cols-2 gap-x-5">
             <div className="py-5">

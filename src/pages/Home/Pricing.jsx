@@ -6,6 +6,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import SpinnerBtn from "../../components/SpinnerBtn";
 import AlertMsg from "../../components/AlertMsg";
 import { toast } from "react-toastify";
+import { stripeAPI } from "../../stripe/stripeAPI";
 
 const PricingCard = ({ plan, onClick, isLoading }) => {
   return (
@@ -86,17 +87,24 @@ const PricingSection = () => {
     const stripe = await loadStripe(process.env.REACT_APP_PUBLISHABLE_KEY);
     try {
       // Khi xử lý form submit
-
+      const customer = await stripeAPI.customers.create({
+        email: user.email, // Địa chỉ email của khách hàng
+      });
+      console.log("customer", customer);
       const checkoutSessionResponse = await apiService.post(
         "stripe/create-checkout-session",
-        {
-          plan,
-          userId,
-        }
+        { customerId: customer.id, plan, userId }
       );
 
       const session = checkoutSessionResponse.data.data.session;
+      // console.log("session", session);
 
+      // const result = await stripe.redirectToCheckout({
+      //   sessionId: session.id,
+      // });
+      // if (result.error) {
+      //   throw result.error;
+      // }
       window.location.href = session.url;
     } catch (error) {
       toast.error(error.message);

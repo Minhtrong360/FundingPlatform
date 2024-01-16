@@ -70,7 +70,7 @@ const PricingSection = () => {
 
         pricingData.sort((a, b) => a.price.unit_amount - b.price.unit_amount);
 
-        setPricingPlans(pricingData); // Get only the first 20 articles
+        setPricingPlans(pricingData);
       } catch (error) {
         toast.error(error.message);
         console.log("error", error);
@@ -97,18 +97,22 @@ const PricingSection = () => {
 
       const session = checkoutSessionResponse.data.data;
 
-      const result = await stripe.redirectToCheckout({
-        sessionId: session.id,
-      });
+      console.log("session", session);
+      window.location.href = session.url;
+      // const result = await stripe.redirectToCheckout({
+      //   sessionId: session.id,
+      // });
 
-      if (result.error) {
-        throw result.error;
-      }
+      // if (result.error) {
+      //   throw result.error;
+      // }
     } catch (error) {
       toast.error(error.message);
       console.error(error);
     }
   };
+
+  console.log("pricing", pricingPlans);
 
   return (
     <div className="max-w-[85rem] mx-auto px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mt-28">

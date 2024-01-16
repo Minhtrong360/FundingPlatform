@@ -245,8 +245,8 @@ const Navbar = () => {
                   Profiles
                 </NavbarItem>
                 <NavbarItem onClick={handlePricingClick}>Pricing</NavbarItem>
-                <NavbarItem href="https://beekrowd.canny.io/beekrowd-feeback">
-                  Feed Back
+                <NavbarItem href="https://beekrowd.canny.io/beekrowd-feedback">
+                  Feedback
                 </NavbarItem>
               </ul>
             </div>

@@ -70,7 +70,7 @@ const PricingSection = () => {
 
         pricingData.sort((a, b) => a.price.unit_amount - b.price.unit_amount);
 
-        setPricingPlans(pricingData); // Get only the first 20 articles
+        setPricingPlans(pricingData);
       } catch (error) {
         toast.error(error.message);
         console.log("error", error);
@@ -95,15 +95,9 @@ const PricingSection = () => {
         }
       );
 
-      const session = checkoutSessionResponse.data.data;
+      const session = checkoutSessionResponse.data.data.session;
 
-      const result = await stripe.redirectToCheckout({
-        sessionId: session.id,
-      });
-
-      if (result.error) {
-        throw result.error;
-      }
+      window.location.href = session.url;
     } catch (error) {
       toast.error(error.message);
       console.error(error);

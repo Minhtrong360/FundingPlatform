@@ -18,6 +18,8 @@ import HeroCard from "./Components/HeroCard";
 import FAQ from "./Components/FAQ";
 import { toast } from "react-toastify";
 
+
+
 // create a function that returns all the components
 
 const HomePage = () => {
@@ -65,6 +67,7 @@ const HomePage = () => {
       <ProfileCard />
       <HeroCard />
       <PricingSection />
+      
       <FAQ />
       <Footer />
     </>

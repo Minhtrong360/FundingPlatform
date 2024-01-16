@@ -1,9 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import Card from "./Card";
-import { Tooltip } from 'antd';
-import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
+import { Tooltip } from "antd";
+import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+import { useAuth } from "../../../context/AuthContext";
 const HeroCard = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
+  const handleClick = () => {
+    if (!user) {
+      navigate("/login");
+    } else {
+      navigate("/founder");
+    }
+  };
   return (
     <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 mt-28">
       <div className="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
@@ -30,9 +39,9 @@ const HeroCard = () => {
             <a
               className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               href="#"
-              onClick={() => navigate(`/login`)}
+              onClick={handleClick}
             >
-              Get started
+              {user ? "Create project" : "Get started"}
               <span>→</span>
             </a>
             <a
@@ -43,7 +52,6 @@ const HeroCard = () => {
             >
               See demo
             </a>
-           
           </div>
           <div className="mt-6 lg:mt-10 grid grid-cols-2 gap-x-5">
             <div className="py-5">

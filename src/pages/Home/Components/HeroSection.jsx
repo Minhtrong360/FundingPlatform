@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
 const HeroSection = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const containerVariants = {
@@ -26,6 +28,14 @@ const HeroSection = () => {
       y: 0,
       transition: { delay: 1, duration: 1.5, ease: "easeOut" },
     },
+  };
+
+  const handleClick = () => {
+    if (!user) {
+      navigate("/login");
+    } else {
+      navigate("/founder");
+    }
   };
 
   return (
@@ -67,9 +77,9 @@ const HeroSection = () => {
               className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               href="#"
               variants={buttonVariants}
-              onClick={() => navigate(`/login`)}
+              onClick={handleClick}
             >
-              Get started
+              {user ? "Create project" : "Get started"}
               <span>→</span>
             </motion.a>
             <motion.a

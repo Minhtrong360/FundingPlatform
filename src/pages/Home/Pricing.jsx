@@ -95,24 +95,14 @@ const PricingSection = () => {
         }
       );
 
-      const session = checkoutSessionResponse.data.data;
+      const session = checkoutSessionResponse.data.data.session;
 
-      console.log("session", session);
       window.location.href = session.url;
-      // const result = await stripe.redirectToCheckout({
-      //   sessionId: session.id,
-      // });
-
-      // if (result.error) {
-      //   throw result.error;
-      // }
     } catch (error) {
       toast.error(error.message);
       console.error(error);
     }
   };
-
-  console.log("pricing", pricingPlans);
 
   return (
     <div className="max-w-[85rem] mx-auto px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mt-28">

@@ -5,3 +5,9 @@
 .bn-default-styles p {
   font-size: 20px !important;
 }
+
+/* Your custom CSS for the marquee animation */
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}

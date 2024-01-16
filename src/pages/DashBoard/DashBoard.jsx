@@ -113,10 +113,11 @@ const Dashboard = () => {
   return (
     <div className="flex flex-col overflow-hidden bg-gray-50 dark:bg-gray-900">
       <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-
+     
+      {/* <div className="p-4 sm:ml-64"  */}
       <div
         id="main-content"
-        className="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900"
+        className="sm:ml-64 p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700"
         onClick={() => setIsSidebarOpen(false)}
       >
         <main>
@@ -1359,6 +1360,7 @@ const Dashboard = () => {
         </main>
       </div>
     </div>
+    
   );
 };
 

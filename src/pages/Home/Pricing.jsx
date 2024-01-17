@@ -112,6 +112,7 @@ const PricingSection = () => {
 
   const makePayment = async (plan, userId) => {
     const stripe = await loadStripe(process.env.REACT_APP_PUBLISHABLE_KEY);
+    setIsLoading(true);
     try {
       // Khi xử lý form submit
       const customer = await stripeAPI.customers.create({
@@ -133,6 +134,7 @@ const PricingSection = () => {
       toast.error(error.message);
       console.error(error);
     }
+    setIsLoading(false);
   };
 
   return (

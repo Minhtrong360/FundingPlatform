@@ -6,6 +6,8 @@ import AlertMsg from "../../components/AlertMsg";
 import SpinnerBtn from "../../components/SpinnerBtn";
 import InputField from "../../components/InputField";
 
+import apiService from "../../app/apiService";
+
 function UserInfoSettings() {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -23,6 +25,7 @@ function UserInfoSettings() {
     // Tạo một async function để lấy thông tin người dùng từ Supabase
     async function fetchUserData() {
       try {
+        setIsLoading(true);
         // Thực hiện truy vấn để lấy thông tin người dùng theo id (điều này cần được thay đổi dựa trên cấu trúc dữ liệu của bạn trong Supabase)
         const { data, error } = await supabase
           .from("users")
@@ -37,7 +40,7 @@ function UserInfoSettings() {
         // Cập nhật state userData với thông tin người dùng đã lấy được
         if (data) {
           setUserData(data);
-          if (data.subscribe) {
+          if (data.subscribe && data.subscription_status === "active") {
             const subscribeDate = new Date(data.subscribe * 1000);
             setExpiredDate(subscribeDate.toISOString().split("T")[0]);
           } else if (user.created_at) {
@@ -50,6 +53,7 @@ function UserInfoSettings() {
         toast.error(error.message);
         console.error("Error fetching user data:", error);
       }
+      setIsLoading(false);
     }
 
     // Gọi hàm fetchUserData khi component được mount
@@ -90,6 +94,28 @@ function UserInfoSettings() {
     } catch (error) {
       toast.error(error.message);
       console.error("Error updating user data:", error);
+    }
+    setIsLoading(false);
+  };
+
+  const handleBilling = async (plan, userId) => {
+    try {
+      setIsLoading(true);
+      // Khi xử lý form submit
+
+      const checkoutSessionResponse = await apiService.post(
+        "stripe/create-portal-session",
+        { customerId: userData.customer_id }
+      );
+
+      const session = checkoutSessionResponse.data.data.session;
+
+      // const userEmail = encodeURIComponent(user.email); // Encode email để đảm bảo nó an toàn trong URL
+      // const updatedURL = `${session.url}?prefilled_email=${userEmail}`;
+
+      window.location.href = session.url;
+    } catch (error) {
+      toast.error("User does not subscribe");
     }
     setIsLoading(false);
   };
@@ -140,7 +166,11 @@ function UserInfoSettings() {
                     label="Plan"
                     id="plan"
                     name="plan"
-                    value={userData.plan}
+                    value={
+                      userData.plan && userData.subscription_status === "active"
+                        ? userData.plan
+                        : "Free"
+                    }
                     // onChange={handleInputChange}
                     type="text"
                     disabled
@@ -202,12 +232,19 @@ function UserInfoSettings() {
               </div>
             </div>
 
-            <div className="mt-6 grid">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6 mt-6">
               <button
                 type="submit"
                 className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
               >
                 {isLoading ? <SpinnerBtn /> : "Save"}
+              </button>
+              <button
+                type="button"
+                onClick={handleBilling}
+                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
+              >
+                {isLoading ? <SpinnerBtn /> : "Billing Portal"}
               </button>
             </div>
           </form>

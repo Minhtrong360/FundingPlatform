@@ -12,7 +12,7 @@ import { supabase } from "../../supabase";
 import FilesList from "./FilesList";
 import SideBar from "../../components/SideBar";
 import ResizeImage from "../../components/ResizeImage";
-import Spinner from "../../components/Spiner";
+import Spinner from "../../components/Spinner";
 import { Tooltip } from "antd";
 import AlertMsg from "../../components/AlertMsg";
 function formatNumber(value) {

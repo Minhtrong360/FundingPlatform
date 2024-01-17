@@ -185,8 +185,6 @@ function CompanyInfo() {
 
   const typeOfferingOptions = ["Lending", "Investment", "M&A", "Convertible"];
 
-  console.log("countries", countries);
-
   return (
     <>
       {isLoading ? (

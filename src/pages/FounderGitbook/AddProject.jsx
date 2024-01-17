@@ -17,7 +17,8 @@ const Modal = ({ isOpen, onClose, currentUser, setIsPricingOpen }) => {
         (currentUser.plan === "Free" ||
           currentUser.plan === null ||
           currentUser.plan === undefined) &&
-        !isPublic
+        !isPublic &&
+        currentUser.subscription_status !== "active"
       ) {
         setIsPricingOpen(true);
         toast.warning(
@@ -164,7 +165,8 @@ export default function AddProject({ updatedProjects }) {
         updatedProjects.length >= 1 &&
         (currentUser.plan === "Free" ||
           currentUser.plan === null ||
-          currentUser.plan === undefined)
+          currentUser.plan === undefined) &&
+        currentUser.subscription_status !== "active"
       ) {
         setIsButtonDisabled(true);
       } else {

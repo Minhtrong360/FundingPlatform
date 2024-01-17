@@ -74,7 +74,8 @@ function ProjectList({ projects }) {
         (currentUser.plan === "Free" ||
           currentUser.plan === null ||
           currentUser.plan === undefined) &&
-        !editedProjectStatus
+        !editedProjectStatus &&
+        currentUser.subscription_status !== "active"
       ) {
         toast.warning(
           "You need to upgrade your plan to create a private project"

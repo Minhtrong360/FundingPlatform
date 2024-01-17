@@ -1,5 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { supabase } from "../../supabase";
+import { toast } from "react-toastify";
+import PricingSection from "../Home/Pricing";
+import ReactModal from "react-modal";
 
 const Modal = ({
   isOpen,
@@ -12,6 +16,8 @@ const Modal = ({
   setFileName,
   isPublic,
   setIsPublic,
+  currentUser,
+  setIsPricingOpen,
 }) => {
   if (!isOpen) {
     return null;
@@ -22,12 +28,24 @@ const Modal = ({
       alert("Please enter a valid link and file name.");
       return;
     }
+    if (
+      (currentUser.plan === "Free" ||
+        currentUser.plan === null ||
+        currentUser.plan === undefined) &&
+      !isPublic &&
+      currentUser.subscription_status !== "active"
+    ) {
+      setIsPricingOpen(true);
+      toast.warning("You need to upgrade your plan to upload a private file");
+      return; // Ngăn chặn tiếp tục thực hiện
+    }
     // Tạo một đối tượng mới và gọi handleAddLinks để thêm vào danh sách projectLinks
     const newLink = {
       name: fileName,
       link: link,
       status: isPublic,
     };
+    console.log("isPublic", isPublic);
     handleAddLinks(newLink);
     setLink("https://drive.google.com/file/d/0By_3Hl5Rv7fAb3FZMGZJS01"); // Đặt lại giá trị của link sau khi thêm
     setFileName("File 1"); // Đặt lại giá trị của fileName sau khi thêm
@@ -124,7 +142,35 @@ export default function AddLinkFile({
 }) {
   const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isPricingOpen, setIsPricingOpen] = useState(false); // State để kiểm soát modal Pricing
+  useEffect(() => {
+    // Import Supabase client và thiết lập nó
 
+    const fetchCurrentUser = async () => {
+      try {
+        let { data: users, error } = await supabase
+          .from("users")
+          .select("*")
+
+          // Filters
+          .eq("id", user.id);
+
+        if (error) {
+          console.log("error", error);
+          throw error;
+        }
+
+        setCurrentUser(users[0]);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
+
+    if (user) {
+      fetchCurrentUser();
+    }
+  }, [user]);
   const [link, setLink] = useState(
     "https://drive.google.com/file/d/0By_3Hl5Rv7fAb3FZMGZJS01"
   );
@@ -134,6 +180,9 @@ export default function AddLinkFile({
   if (isLoading) {
     return <div>Loading...</div>; // Hiển thị màn hình "isLoading" khi dữ liệu đang được tải
   }
+  const closeModalPricing = () => {
+    setIsPricingOpen(false);
+  };
 
   return (
     <div className="App">
@@ -157,7 +206,44 @@ export default function AddLinkFile({
         isPublic={isPublic}
         setIsPublic={setIsPublic}
         onClose={() => setIsModalOpen(false)}
+        currentUser={currentUser}
+        setIsPricingOpen={setIsPricingOpen}
       />
+      <ReactModal
+        isOpen={isPricingOpen}
+        onRequestClose={closeModalPricing}
+        contentLabel="YouTube Link Modal"
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)", // Màu nền overlay
+            position: "fixed", // Để nền overlay cố định
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 9998, // Chỉ số z để đảm bảo nó hiển thị trên cùng
+          },
+          content: {
+            border: "none", // Để ẩn border của nội dung Modal
+            background: "none", // Để ẩn background của nội dung Modal
+            // margin: "auto", // Để căn giữa
+          },
+        }}
+      >
+        <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
+          <div className="relative p-8 bg-white w-full  m-auto flex-col flex rounded-lg">
+            <PricingSection />
+            <div className="mt-4 flex items-center gap-10">
+              <button
+                className="max-w-md px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+                onClick={closeModalPricing}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </ReactModal>
     </div>
   );
 }

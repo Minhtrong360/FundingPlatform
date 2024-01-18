@@ -206,7 +206,7 @@ function FilesList() {
   };
 
   return (
-    <main className="w-full">
+    <main className="w-full ml-2">
       <section className="container px-4 mx-auto">
         <div className="flex justify-start my-5 items-start">
           <AddLinkFile

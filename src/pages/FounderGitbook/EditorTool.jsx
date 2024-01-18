@@ -389,7 +389,7 @@ export default function EditorTool() {
   }, [isModalOpen]);
 
   return (
-    <div className="flex-grow items-center justify-center max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+    <div className="flex-grow items-center justify-center max-w-[85rem] py-10 ">
       {isLoading ? ( // Hiển thị thông báo tải dữ liệu khi isLoading là true
         <div
           className="animate-spin inline-block w-8 h-8 border-[3px] border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500"
@@ -400,7 +400,6 @@ export default function EditorTool() {
         <BlockNoteView
           editor={editor}
           theme={"light"}
-          // style={{ width: "80%" }}
           className="w-full lg:w-9/12"
         />
       )}
@@ -465,7 +464,7 @@ export default function EditorTool() {
       {user.id === currentProject.user_id && (
         <>
           <button
-            className={`fixed top-[20px] right-[1.2em] flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+            className={`fixed top-[16px] right-[1.2em] flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
             onClick={handleSave}
             disabled={isLoading}
           >
@@ -473,19 +472,19 @@ export default function EditorTool() {
           </button>
 
           <button
-            className={`fixed md:top-[20px] md:right-[6.8em] top-[70px] right-[1.2em]   flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+            className={`fixed top-[16px] right-[6.7em]   flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
             onClick={handleDrawChart}
             disabled={isLoading}
           >
-            {isLoading ? <SpinnerBtn /> : "Draw chart"}
+            {isLoading ? <SpinnerBtn /> : "Chart"}
           </button>
 
           <button
-            className={`fixed md:top-[20px] md:right-[15.5em] top-[120px] right-[1.2em] flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+            className={`fixed top-[16px] right-[12.5em]  flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
             onClick={handleCompanySettings}
             disabled={isLoading}
           >
-            {isLoading ? <SpinnerBtn /> : "Company Settings"}
+            {isLoading ? <SpinnerBtn /> : "Settings"}
           </button>
         </>
       )}

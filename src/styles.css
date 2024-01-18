@@ -1,6 +1,6 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 .bn-default-styles p {
   font-size: 20px !important;
@@ -8,6 +8,20 @@
 
 /* Your custom CSS for the marquee animation */
 @keyframes marquee {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.bn-editor {
+  outline: none;
+  padding-inline: 20px !important;
+
+  /* Define a set of colors to be used throughout the app for consistency
+  see https://atlassian.design/foundations/color for more info */
+  --N800: #172b4d; /* Dark neutral used for tooltips and text on light background */
+  --N40: #dfe1e6; /* Light neutral used for subtle borders and text on dark background */
 }

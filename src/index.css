@@ -16,10 +16,19 @@ code {
 
 /* Your custom CSS for the marquee animation */
 @keyframes marquee {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
 }
 
 .marquee-animation {
   animation: marquee 20s linear infinite;
+}
+
+.bn-editor {
+  outline: none;
+  padding-inline: 20px !important;
 }

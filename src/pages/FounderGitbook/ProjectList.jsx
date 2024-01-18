@@ -191,7 +191,7 @@ function ProjectList({ projects }) {
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="w-[150px] px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
                       >
                         Name
                       </th>
@@ -245,31 +245,26 @@ function ProjectList({ projects }) {
                             </span>
                           </div>
                         </td>
-                        <td
-                          onClick={() => handleProjectClick(project)}
-                          className={`${
-                            editingProjectId === project.id
-                              ? "hidden"
-                              : "hover:cursor-pointer"
-                          } px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap`}
-                        >
-                          {project.name}
+                        <td className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap">
+                          <div
+                            className={`w-[150px] flex items-center ${
+                              editingProjectId === project.id ? "hidden" : ""
+                            } hover:cursor-pointer`}
+                            onClick={() => handleProjectClick(project)}
+                          >
+                            {project.name}
+                          </div>
+                          {editingProjectId === project.id && (
+                            <input
+                              type="text"
+                              value={editedProjectName}
+                              onChange={(e) =>
+                                setEditedProjectName(e.target.value)
+                              }
+                              className="w-[150px] border-0 p-0 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap focus:outline-none focus:ring-0 "
+                            />
+                          )}
                         </td>
-                        <td
-                          className={`${
-                            editingProjectId === project.id ? "" : "hidden"
-                          } `}
-                        >
-                          <input
-                            type="text"
-                            value={editedProjectName}
-                            onChange={(e) =>
-                              setEditedProjectName(e.target.value)
-                            }
-                            className="border-0 px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap focus:outline-none focus:ring-0"
-                          />
-                        </td>
-
                         <td
                           className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap hover:cursor-pointer"
                           onClick={() => handleProjectClick(project)}
@@ -278,35 +273,39 @@ function ProjectList({ projects }) {
                         </td>
                         {/* <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">{project.status}</td> */}
                         <td
-                          className=" py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap hover:cursor-pointer"
+                          className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap hover:cursor-pointer"
                           onClick={() => handleProjectClick(project)}
                         >
-                          <div className="flex items-center gap-x-2">
-                            {project.user_email}
-                          </div>
+                          {project.user_email}
                         </td>
 
                         <td
                           className={`hover:cursor-pointer px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap ${
                             editingProjectId !== project.id ? "" : "hidden"
                           }`}
-                          onClick={() => handleProjectClick(project)}
                         >
-                          {project.status ? "Public" : "Private"}
+                          <button
+                            onClick={() => handleProjectClick(project)}
+                            className={`w-[5em] ${
+                              project.status ? "bg-blue-600" : "bg-red-600"
+                            } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-600 dark:focus:ring-blue-800`}
+                          >
+                            {project.status ? "Public" : "Private"}
+                          </button>
                         </td>
                         <td
                           className={`px-4 py-4 text-sm whitespace-nowrap ${
                             editingProjectId === project.id ? "" : "hidden"
                           }`}
                         >
-                          <div className="flex items-center gap-x-2">
+                          <div className="flex items-center gap-x-6">
                             <button
                               onClick={handleStatusToggle}
-                              className={`${
+                              className={`w-[5em] ${
                                 editedProjectStatus
                                   ? "bg-blue-600"
                                   : "bg-red-600"
-                              } text-white px-2 py-1 rounded-md hover:bg-opacity-80 transition-all`}
+                              } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-600 dark:focus:ring-blue-800`}
                             >
                               {editedProjectStatus ? "Public" : "Private"}
                             </button>
@@ -318,44 +317,44 @@ function ProjectList({ projects }) {
                             {editingProjectId === project.id ? (
                               <>
                                 <button
-                                  className="text-blue-500 transition-colors duration-200 dark:hover:text-indigo-500 dark:text-gray-300 hover:text-indigo-500 focus:outline-none"
+                                  className={`w-[5em] text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-600 dark:focus:ring-blue-800 `}
                                   onClick={() => handleSaveClick(project)}
                                 >
                                   Save
                                 </button>
                                 <button
-                                  className="text-red-500 transition-colors duration-200 hover:text-indigo-500 focus:outline-none"
+                                  className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-600 dark:focus:ring-blue-800 `}
                                   onClick={() => setEditingProjectId(null)}
                                 >
                                   Cancel
                                 </button>
                               </>
                             ) : (
-                              <button
-                                className="text-blue-500 transition-colors duration-200 dark:hover:text-indigo-500 dark:text-gray-300 hover:text-indigo-500 focus:outline-none"
-                                onClick={() => handleEditClick(project)}
-                              >
-                                Edit
-                              </button>
+                              <>
+                                <button
+                                  className={`w-[5em] text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-600 dark:focus:ring-blue-800 `}
+                                  onClick={() => handleEditClick(project)}
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-600 dark:focus:ring-blue-800 `}
+                                  onClick={() => handleDelete(project.id)}
+                                >
+                                  Delete
+                                </button>
+                              </>
                             )}
-                            <button
-                              className="text-red-500 transition-colors duration-200 hover:text-indigo-500 focus:outline-none"
-                              onClick={() => handleDelete(project.id)}
-                            >
-                              Delete
-                            </button>
                           </div>
                         </td>
                         <td className="px-4 py-4 text-sm whitespace-nowrap">
-                          {
-                            project.status ? (
-                              "" // Nếu project.status = true, không hiển thị gì
-                            ) : project.user_id === user.id ? (
-                              <InvitedUserProject projectId={project.id} /> // Nếu project.status = false và project.user_id = user.id, hiển thị InvitedUserProject component
-                            ) : (
-                              ""
-                            ) // Ngược lại, không hiển thị gì
-                          }
+                          {project.status ? (
+                            "" // Nếu project.status = true, không hiển thị gì
+                          ) : project.user_id === user.id ? (
+                            <InvitedUserProject projectId={project.id} /> // Nếu project.status = false và project.user_id = user.id, hiển thị InvitedUserProject component
+                          ) : (
+                            ""
+                          )}
                         </td>
                       </tr>
                     ))}

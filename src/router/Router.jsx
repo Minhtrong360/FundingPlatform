@@ -23,6 +23,8 @@ import TermsAndConditions from "../pages/DashBoard/term";
 import UserPage from "../pages/UserProfile/UserPage";
 import Newdb from "../pages/DashBoard/NewDashboard";
 import LinkedInLoginComponent from "../pages/Login/linkedin";
+import Financials from "../pages/Financials";
+import NewsComponent from "../pages/test";
 function Router() {
   return (
     <Routes>
@@ -84,6 +86,8 @@ function Router() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/trials" element={<Trial />} />
       <Route path="/terms" element={<TermsAndConditions />} />
+      <Route path="/financials" element={<Financials />} />
+      <Route path="/test" element={<NewsComponent />} />
     </Routes>
   );
 }

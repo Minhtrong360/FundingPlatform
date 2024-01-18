@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import HomePage from "../pages/Home/HomePage";
 
 import FundraisingRecords from "../pages/FundraisingRecords/FundraisingRecords";
-import Dashboard from "../pages/DashBoard/DashBoard";
+
 import SignUp from "../pages/SignUp/SignUp";
 import Login from "../pages/Login/Login";
 import ForgotPassword from "../pages/SignUp/ForgotPassword";
@@ -25,6 +25,7 @@ import Newdb from "../pages/DashBoard/NewDashboard";
 import LinkedInLoginComponent from "../pages/Login/linkedin";
 import Financials from "../pages/Financials";
 import NewsComponent from "../pages/test";
+import DashBoardPage from "../pages/DashBoard/DashBoardPage";
 function Router() {
   return (
     <Routes>
@@ -60,14 +61,14 @@ function Router() {
       <Route path="/fundraising" element={<FundraisingRecords />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
-      {/* <Route
+      <Route
         path="/dashboard"
         element={
           <AuthRequire message="Sign in required!">
-            <Dashboard />
+            <DashBoardPage />
           </AuthRequire>
         }
-      /> */}
+      />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/update-password" element={<UpdatePassword />} />
       {/* <Route path="/content" element={<ChatBotTest />} /> */}
@@ -81,9 +82,9 @@ function Router() {
           </AuthRequire>
         }
       />
-       <Route path="/linkedin" element={<LinkedInLoginComponent />} />
+      <Route path="/linkedin" element={<LinkedInLoginComponent />} />
       <Route path="/newdb" element={<Newdb />} />
-      <Route path="/dashboard" element={<Dashboard />} />
+
       <Route path="/trials" element={<Trial />} />
       <Route path="/terms" element={<TermsAndConditions />} />
       <Route path="/financials" element={<Financials />} />

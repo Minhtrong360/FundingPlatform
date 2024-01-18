@@ -464,33 +464,29 @@ export default function EditorTool() {
       )}
       {user.id === currentProject.user_id && (
         <>
-          <div style={{ position: "fixed", top: "20px", right: "1.2em" }}>
-            <button
-              className={`flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
-              onClick={handleSave}
-              disabled={isLoading}
-            >
-              {isLoading ? <SpinnerBtn /> : "Save"}
-            </button>
-          </div>
-          <div style={{ position: "fixed", top: "20px", right: "6em" }}>
-            <button
-              className={`flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
-              onClick={handleCompanySettings}
-              disabled={isLoading}
-            >
-              {isLoading ? <SpinnerBtn /> : "Company Settings"}
-            </button>
-          </div>{" "}
-          <div style={{ position: "fixed", top: "20px", right: "16.5em" }}>
-            <button
-              className={`flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
-              onClick={handleDrawChart}
-              disabled={isLoading}
-            >
-              {isLoading ? <SpinnerBtn /> : "Draw chart"}
-            </button>
-          </div>{" "}
+          <button
+            className={`fixed top-[20px] right-[1.2em] flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+            onClick={handleSave}
+            disabled={isLoading}
+          >
+            {isLoading ? <SpinnerBtn /> : "Save"}
+          </button>
+
+          <button
+            className={`fixed md:top-[20px] md:right-[6.8em] top-[70px] right-[1.2em]   flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+            onClick={handleDrawChart}
+            disabled={isLoading}
+          >
+            {isLoading ? <SpinnerBtn /> : "Draw chart"}
+          </button>
+
+          <button
+            className={`fixed md:top-[20px] md:right-[15.5em] top-[120px] right-[1.2em] flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+            onClick={handleCompanySettings}
+            disabled={isLoading}
+          >
+            {isLoading ? <SpinnerBtn /> : "Company Settings"}
+          </button>
         </>
       )}
     </div>

@@ -66,7 +66,7 @@ const HeroSignUp = () => {
           title="Congratulations!"
           announce="You have signed up to BeeKrowd."
           describe="Email sent successfully. Check your inbox to confirm."
-          highlightedWord ='BeeKrowd'
+          highlightedWord="BeeKrowd"
         />
       ) : (
         <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
@@ -197,13 +197,17 @@ const HeroSignUp = () => {
                             className="ml-3 text-sm dark:text-white"
                           >
                             I accept the{" "}
-                            <a
-                              className="text-blue-600 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                              onClick={() => navigate("/terms")}
-                              target="_blank"
+                            <button
+                              className="text-blue-600 decoration-2 hover:underline hover:cursor-pointer font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                              onClick={() =>
+                                window.open(
+                                  "https://www.beekrowd.com/terms",
+                                  "_blank"
+                                )
+                              }
                             >
                               Terms and Conditions
-                            </a>
+                            </button>
                           </label>
                         </div>
 

@@ -282,7 +282,7 @@ function ProjectList({ projects }) {
                           onClick={() => handleProjectClick(project)}
                         >
                           <div className="flex items-center gap-x-2">
-                            {user.email}
+                            {project.user_email}
                           </div>
                         </td>
 

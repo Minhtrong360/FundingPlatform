@@ -186,8 +186,7 @@ export default function AddProject({ updatedProjects }) {
   const closeModalPricing = () => {
     setIsPricingOpen(false);
   };
-  console.log("isButtonDisabled", isButtonDisabled);
-  console.log("isPricingOpen", isPricingOpen);
+
   return (
     <div className="App">
       <button

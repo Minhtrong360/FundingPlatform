@@ -1,19 +1,23 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../supabase";
+import SpinnerBtn from "../components/SpinnerBtn";
 
 const AuthContext = createContext({});
 
 export const useAuth = () => useContext(AuthContext);
 
-const login = async (email, password) => {
+const login = async (email, password, setLoading) => {
   try {
+    setLoading(true);
     const { user, session, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
+    setLoading(false);
     return { user, session, error };
   } catch (error) {
+    setLoading(false);
     console.log("Login error:", error.message);
     throw error;
   }
@@ -21,10 +25,21 @@ const login = async (email, password) => {
 
 const signOut = () => supabase.auth.signOut();
 
-const loginWithGG = async () =>
-  await supabase.auth.signInWithOAuth({
-    provider: "google",
-  });
+const loginWithGG = async (setLoading) => {
+  try {
+    setLoading(true);
+    const { user, session, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+    });
+
+    setLoading(false);
+    return { user, session, error };
+  } catch (error) {
+    setLoading(false);
+    console.log("Google login error:", error.message);
+    throw error;
+  }
+};
 
 const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(false);
@@ -62,12 +77,12 @@ const AuthProvider = ({ children }) => {
       value={{
         auth,
         user,
-        login,
+        login: (email, password) => login(email, password, setLoading),
         signOut,
-        loginWithGG,
+        loginWithGG: () => loginWithGG(setLoading),
       }}
     >
-      {!loading && children}
+      {loading ? <SpinnerBtn /> : children}
     </AuthContext.Provider>
   );
 };

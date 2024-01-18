@@ -6,12 +6,11 @@ import SpinnerBtn from "../../components/SpinnerBtn";
 
 import AlertMsg from "../../components/AlertMsg";
 import { toast } from "react-toastify";
-import { loadStripe } from "@stripe/stripe-js";
 import { stripeAPI } from "../../stripe/stripeAPI";
 
 const PricingCard = ({ plan, isLoading, onClick }) => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
+  // const { user } = useAuth();
+  // const navigate = useNavigate();
   return (
     <>
       <div
@@ -22,6 +21,10 @@ const PricingCard = ({ plan, isLoading, onClick }) => {
         </h4>
         <span className="mt-5 font-bold text-5xl text-gray-800 dark:text-gray-200">
           ${plan.price?.unit_amount / 100}
+          <br />
+          <span className="font-medium text-3xl">
+            /{plan.price?.recurring?.interval}
+          </span>
         </span>
         <p className="mt-2 text-sm text-gray-500">{plan.description}</p>
         <ul className="mt-7 space-y-2.5 text-sm">
@@ -111,7 +114,6 @@ const PricingSection = () => {
   }, []);
 
   const makePayment = async (plan, userId) => {
-    const stripe = await loadStripe(process.env.REACT_APP_PUBLISHABLE_KEY);
     setIsLoading(true);
     try {
       // Khi xử lý form submit
@@ -129,7 +131,7 @@ const PricingSection = () => {
       const userEmail = encodeURIComponent(user.email); // Encode email để đảm bảo nó an toàn trong URL
       const updatedURL = `${session.url}?prefilled_email=${userEmail}`;
 
-      window.location.href = updatedURL;
+      window.open(updatedURL, "_blank");
     } catch (error) {
       toast.error(error.message);
       console.error(error);

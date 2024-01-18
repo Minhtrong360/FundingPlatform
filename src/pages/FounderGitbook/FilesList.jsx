@@ -168,6 +168,7 @@ function FilesList() {
             setProjectLinks(updatedLinks);
           }
         } else {
+          toast.error("User does not have permission to delete this file.");
           console.log("User does not have permission to delete this file.");
           // Xử lý trường hợp người dùng không có quyền xóa (ví dụ: hiển thị thông báo lỗi cho người dùng)
         }

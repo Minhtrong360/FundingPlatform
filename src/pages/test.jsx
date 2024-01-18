@@ -1,20 +1,25 @@
-import React, { useState, useEffect } from "react";
-import { Button } from "../components/ui/Button"
-import { Input } from "../components/ui/Input"
+import React from "react";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
 
+import {
+  SelectValue,
+  SelectTrigger,
+  SelectItem,
+  SelectContent,
+  Select,
+} from "../components/ui/Select";
 
-
-import { SelectValue, SelectTrigger, SelectItem, SelectContent, Select } from "../components/ui/Select"
-
-
-
- function NewsComponent() {
+function NewsComponent() {
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md font-inter">
       <h1 className="text-xl font-semibold mb-6">General Settings</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="start-date">
+          <label
+            className="block text-sm font-medium mb-1"
+            htmlFor="start-date"
+          >
             Start Date
           </label>
           <div className="flex gap-2">
@@ -50,7 +55,10 @@ import { SelectValue, SelectTrigger, SelectItem, SelectContent, Select } from ".
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="forecast-range">
+          <label
+            className="block text-sm font-medium mb-1"
+            htmlFor="forecast-range"
+          >
             Forecast Range (# of Years)
           </label>
           <Select>
@@ -65,7 +73,10 @@ import { SelectValue, SelectTrigger, SelectItem, SelectContent, Select } from ".
           </Select>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="starting-cash">
+          <label
+            className="block text-sm font-medium mb-1"
+            htmlFor="starting-cash"
+          >
             Starting Cash Balance
           </label>
           <div className="flex items-center">
@@ -73,7 +84,10 @@ import { SelectValue, SelectTrigger, SelectItem, SelectContent, Select } from ".
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="income-tax">
+          <label
+            className="block text-sm font-medium mb-1"
+            htmlFor="income-tax"
+          >
             Income Tax
           </label>
           <div className="flex items-center">
@@ -96,7 +110,10 @@ import { SelectValue, SelectTrigger, SelectItem, SelectContent, Select } from ".
           </Select>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="payroll-tax">
+          <label
+            className="block text-sm font-medium mb-1"
+            htmlFor="payroll-tax"
+          >
             Payroll Tax
           </label>
           <div className="flex items-center">
@@ -136,10 +153,12 @@ import { SelectValue, SelectTrigger, SelectItem, SelectContent, Select } from ".
         </div>
       </div>
       <div className="mt-6 flex justify-end">
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white">Update Project</Button>
+        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+          Update Project
+        </Button>
       </div>
     </div>
-  )
+  );
 }
 
 export default NewsComponent;

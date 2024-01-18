@@ -54,41 +54,41 @@ const HeroSection = ({
               title={`Target: ${formatNumber(button1Text)}`}
               color={"geekblue"}
             >
-              <a className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-400 text-gray-800 hover:bg-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-400 text-gray-800 hover:bg-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                 <p className="truncate">
                   {" "}
                   Target: ${formatNumber(button1Text)}{" "}
                 </p>
-              </a>
+              </div>
             </Tooltip>
             <Tooltip
               title={` No. ticket: ${formatNumber(button2Text)}`}
               color={"geekblue"}
             >
-              <a className=" overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-green-400 hover:bg-green-500 text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              <div className=" overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-green-400 hover:bg-green-500 text-gray-800 shadow-sm  disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                 <p className="truncate">
                   {" "}
                   No. ticket: {formatNumber(button2Text)}{" "}
                 </p>
-              </a>
+              </div>
             </Tooltip>
             <Tooltip
               title={`Min ticket size: ${button3Text}`}
               color={"geekblue"}
             >
-              <a className=" overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-yellow-400 hover:bg-yellow-500 text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              <div className=" overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-yellow-400 hover:bg-yellow-500 text-gray-800 shadow-sm  disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                 <p className="truncate"> Min ticket size: {button3Text} </p>
-              </a>
+              </div>
             </Tooltip>
             <Tooltip title={` Offer: ${button4Text}`} color={"geekblue"}>
-              <a className=" overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-purple-400 hover:bg-purple-500 text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              <div className=" overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-purple-400 hover:bg-purple-500 text-gray-800 shadow-sm  disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                 <p className="truncate"> Offer: {button4Text} </p>
-              </a>
+              </div>
             </Tooltip>
             <Tooltip title={`Type: ${button5Text}`} color={"geekblue"}>
-              <a className="  overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-pink-400 hover:bg-pink-500 text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              <div className="  overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-pink-400 hover:bg-pink-500 text-gray-800 shadow-sm  disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                 <p className="truncate"> Type: {button5Text} </p>
-              </a>
+              </div>
             </Tooltip>
           </div>
         </div>
@@ -144,7 +144,7 @@ const DetailPage = () => {
           }
         }
       });
-  }, [id]);
+  }, [id, user.email, user.id]);
 
   useEffect(() => {
     // Lấy dự án từ Supabase

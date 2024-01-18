@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+// import SpaceDashboardOutlinedIcon from "@mui/icons-material/SpaceDashboardOutlined";
 import FolderCopyOutlinedIcon from "@mui/icons-material/FolderCopyOutlined";
 
 function SideBar({ toggleSidebar, isSidebarOpen }) {
@@ -45,39 +46,39 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
         <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
           <ul className="space-y-2 font-medium">
             <li>
-              <a
-                className="p-2 hover:cursor-pointer font-semibold text-2xl text-blue-600 flex items-center space-x-3 rtl:space-x-reverse hover:cursor-pointer"
+              <button
+                className="p-2  font-semibold text-2xl text-blue-600 flex items-center space-x-3 rtl:space-x-reverse hover:cursor-pointer"
                 onClick={() => navigate("/")}
               >
                 BeeKrowd
-              </a>
+              </button>
             </li>
             <li>
-              <a
+              <button
                 onClick={() => navigate("/user-info")}
                 className=" hover:cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <AccountCircleOutlinedIcon />
                 <span className="ms-3">User Settings</span>
-              </a>
+              </button>
             </li>
             {/* <li>
-              <a
+              <button
                 onClick={() => navigate("/dashboard")}
                 className=" hover:cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <SpaceDashboardOutlinedIcon />
                 <span className="ms-3">Dashboard</span>
-              </a>
+              </button>
             </li> */}
             <li>
-              <a
+              <button
                 onClick={() => navigate("/founder")}
                 className="hover:cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <FolderCopyOutlinedIcon />
                 <span className="ms-3">Projects</span>
-              </a>
+              </button>
             </li>
 
             {/* Add more list items as needed */}

@@ -80,7 +80,7 @@ const FounderGitbook = () => {
               <img
                 src={chatbot}
                 alt=""
-                className="hover:cursor-pointer chatbot-icon fixed bottom-4 right-4 hover:cursor-pointer w-14 h-14"
+                className="chatbot-icon fixed bottom-4 right-4 hover:cursor-pointer w-14 h-14"
                 onClick={handleChatbotClick}
               ></img>
             </div>

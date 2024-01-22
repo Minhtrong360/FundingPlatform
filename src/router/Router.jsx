@@ -87,8 +87,8 @@ function Router() {
 
       <Route path="/trials" element={<Trial />} />
       <Route path="/terms" element={<TermsAndConditions />} />
-      <Route path="/financials" element={<Financials />} />
-      <Route path="/financial" element={<NewsComponent />} />
+      {/* <Route path="/financials" element={<Financials />} /> */}
+      <Route path="/financials" element={<NewsComponent />} />
     </Routes>
   );
 }

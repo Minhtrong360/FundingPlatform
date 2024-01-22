@@ -1,21 +1,15 @@
 import React, { useState, useEffect } from "react";
 
 const ImageCropper = ({ imageUrl }) => {
-  const [croppedImageUrl, setCroppedImageUrl] = useState("");
+  const [scaledImageUrl, setScaledImageUrl] = useState("");
 
   useEffect(() => {
     if (imageUrl) {
-      cropImage(imageUrl);
+      scaleImage(imageUrl);
     }
   }, [imageUrl]);
 
-  useEffect(() => {
-    if (imageUrl) {
-      cropImage(imageUrl);
-    }
-  }, [imageUrl]);
-
-  const cropImage = (src) => {
+  const scaleImage = (src) => {
     const image = new Image();
     image.crossOrigin = "anonymous"; // Đảm bảo cho phép CORS
     image.src = src;
@@ -25,38 +19,39 @@ const ImageCropper = ({ imageUrl }) => {
       canvas.height = 800;
       const ctx = canvas.getContext("2d");
 
-      // Tính toán vị trí cắt và kích thước
-      const scaleX = image.naturalWidth / image.width;
-      const scaleY = image.naturalHeight / image.height;
-      const cropWidth = Math.min(image.naturalWidth, 700 * scaleX);
-      const cropHeight = Math.min(image.naturalHeight, 800 * scaleY);
-      const startX = (image.naturalWidth - cropWidth) / 2;
-      const startY = (image.naturalHeight - cropHeight) / 2;
-
       // Điền nền trắng
       ctx.fillStyle = "#FFFFFF";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Vẽ hình ảnh đã cắt
+      // Tính toán tỷ lệ thu nhỏ hoặc phóng to
+      const scaleX = canvas.width / image.width;
+      const scaleY = canvas.height / image.height;
+      const scale = Math.min(scaleX, scaleY);
+
+      // Tính toán vị trí để căn giữa ảnh
+      const offsetX = (canvas.width - image.width * scale) / 2;
+      const offsetY = (canvas.height - image.height * scale) / 2;
+
+      // Áp dụng biến đổi để zoom in hoặc zoom out ảnh
       ctx.drawImage(
         image,
-        startX,
-        startY,
-        cropWidth,
-        cropHeight,
-        (700 - cropWidth / scaleX) / 2,
-        (800 - cropHeight / scaleY) / 2,
-        cropWidth / scaleX,
-        cropHeight / scaleY
+        offsetX,
+        offsetY,
+        image.width * scale,
+        image.height * scale
       );
 
-      setCroppedImageUrl(canvas.toDataURL("image/jpeg"));
+      setScaledImageUrl(canvas.toDataURL("image/jpeg"));
     };
   };
 
   return (
     <div>
-      <img src={croppedImageUrl} alt="Cropped" />
+      <img
+        src={scaledImageUrl}
+        alt="Zoomed"
+        style={{ width: "100%", height: "100%" }}
+      />
     </div>
   );
 };

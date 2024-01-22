@@ -251,6 +251,7 @@ export default function EditorTool() {
       setIsLoading(false);
     }
   };
+
   const handleCompanySettings = async () => {
     try {
       if (params) {

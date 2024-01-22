@@ -9,6 +9,11 @@ const Modal = ({ isOpen, onClose, fileId }) => {
 
   const handleInvite = async () => {
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
       // Truy vấn để tìm file có id = fileId trong bảng "files"
       const { data: fileData, error: fileError } = await supabase
         .from("files")

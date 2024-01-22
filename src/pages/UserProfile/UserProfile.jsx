@@ -7,6 +7,7 @@ import SpinnerBtn from "../../components/SpinnerBtn";
 import InputField from "../../components/InputField";
 
 import apiService from "../../app/apiService";
+import LoadingButtonClick from "../../components/LoadingButtonClick";
 
 function UserInfoSettings() {
   const { user } = useAuth();
@@ -25,6 +26,11 @@ function UserInfoSettings() {
     // Tạo một async function để lấy thông tin người dùng từ Supabase
     async function fetchUserData() {
       try {
+        if (!navigator.onLine) {
+          // Không có kết nối Internet
+          toast.error("No internet access.");
+          return;
+        }
         setIsLoading(true);
         // Thực hiện truy vấn để lấy thông tin người dùng theo id (điều này cần được thay đổi dựa trên cấu trúc dữ liệu của bạn trong Supabase)
         const { data, error } = await supabase
@@ -72,6 +78,11 @@ function UserInfoSettings() {
     e.preventDefault();
     setIsLoading(true); // Bắt đầu xử lý, đặt isLoading thành true
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
       // Thực hiện cập nhật thông tin người dùng vào cơ sở dữ liệu Supabase
       const { error } = await supabase
         .from("users")
@@ -100,6 +111,11 @@ function UserInfoSettings() {
 
   const handleBilling = async (plan, userId) => {
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
       setIsLoading(true);
       // Khi xử lý form submit
 
@@ -231,20 +247,20 @@ function UserInfoSettings() {
                 ></textarea>
               </div>
             </div>
-
+            <LoadingButtonClick isLoading={isLoading} />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6 mt-6">
               <button
                 type="submit"
                 className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
               >
-                {isLoading ? <SpinnerBtn /> : "Save"}
+                Save
               </button>
               <button
                 type="button"
                 onClick={handleBilling}
                 className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
               >
-                {isLoading ? <SpinnerBtn /> : "Billing Portal"}
+                Billing Portal
               </button>
             </div>
           </form>

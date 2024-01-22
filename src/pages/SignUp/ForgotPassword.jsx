@@ -6,6 +6,8 @@ import SpinnerBtn from "../../components/SpinnerBtn";
 import AnnouncePage from "../../components/AnnouncePage";
 import AlertMsg from "../../components/AlertMsg";
 import { toast } from "react-toastify";
+import Spinner from "../../components/Spinner";
+import LoadingButtonClick from "../../components/LoadingButtonClick";
 
 const InputField = ({ label, type, name, value, onChange }) => {
   return (
@@ -54,6 +56,11 @@ const ForgotPassword = () => {
     setIsLoading(true); // Bắt đầu loading
 
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
       // Kiểm tra xem email có tồn tại trong Supabase hay không
       const { data: users, error } = await supabase
         .from("users")
@@ -85,6 +92,7 @@ const ForgotPassword = () => {
 
   return (
     <>
+      <LoadingButtonClick isLoading={isLoading} />
       <AlertMsg />
       {resetLink ? (
         <AnnouncePage
@@ -120,10 +128,7 @@ const ForgotPassword = () => {
                     value={email}
                     onChange={handleEmailChange}
                   />
-                  <SubmitButton
-                    text={isLoading ? <SpinnerBtn /> : "Reset password"}
-                    disabled={isLoading}
-                  />
+                  <SubmitButton text="Reset password" disabled={isLoading} />
                 </div>
               </form>
             </div>

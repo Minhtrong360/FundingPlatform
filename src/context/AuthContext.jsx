@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../supabase";
 import SpinnerBtn from "../components/SpinnerBtn";
+import { toast } from "react-toastify";
+import AlertMsg from "../components/AlertMsg";
 
 const AuthContext = createContext({});
 
@@ -8,6 +10,11 @@ export const useAuth = () => useContext(AuthContext);
 
 const login = async (email, password, setLoading) => {
   try {
+    if (!navigator.onLine) {
+      // Không có kết nối Internet
+      toast.error("No internet access.");
+      return;
+    }
     setLoading(true);
     const { user, session, error } = await supabase.auth.signInWithPassword({
       email,
@@ -27,6 +34,11 @@ const signOut = () => supabase.auth.signOut();
 
 const loginWithGG = async (setLoading) => {
   try {
+    if (!navigator.onLine) {
+      // Không có kết nối Internet
+      toast.error("No internet access.");
+      return;
+    }
     setLoading(true);
     const { user, session, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -82,6 +94,7 @@ const AuthProvider = ({ children }) => {
         loginWithGG: () => loginWithGG(setLoading),
       }}
     >
+      <AlertMsg />
       {loading ? <SpinnerBtn /> : children}
     </AuthContext.Provider>
   );

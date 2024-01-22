@@ -7,8 +7,11 @@ import SpinnerBtn from "../../components/SpinnerBtn";
 import AlertMsg from "../../components/AlertMsg";
 import { toast } from "react-toastify";
 import { stripeAPI } from "../../stripe/stripeAPI";
+import Modal from "react-modal";
+import Spinner from "../../components/Spinner";
+import LoadingButtonClick from "../../components/LoadingButtonClick";
 
-const PricingCard = ({ plan, isLoading, onClick }) => {
+const PricingCard = ({ plan, onClick }) => {
   // const { user } = useAuth();
   // const navigate = useNavigate();
   return (
@@ -78,7 +81,7 @@ const PricingCard = ({ plan, isLoading, onClick }) => {
           onClick={onClick}
           className="mt-5 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:hover:bg-blue-900 dark:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
         >
-          {isLoading ? <SpinnerBtn /> : "Sign up"}
+          Sign up
         </button>
       </div>
     </>
@@ -96,6 +99,11 @@ const PricingSection = () => {
       setIsLoading(true);
 
       try {
+        if (!navigator.onLine) {
+          // Không có kết nối Internet
+          toast.error("No internet access.");
+          return;
+        }
         const response = await apiService.get("stripe");
         const pricingData = response.data.data.products;
 
@@ -116,6 +124,11 @@ const PricingSection = () => {
   const makePayment = async (plan, userId) => {
     setIsLoading(true);
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
       // Khi xử lý form submit
       const customer = await stripeAPI.customers.create({
         email: user.email, // Địa chỉ email của khách hàng
@@ -142,6 +155,7 @@ const PricingSection = () => {
   return (
     <div className="max-w-[85rem] mx-auto px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mt-28">
       <AlertMsg />
+      <LoadingButtonClick isLoading={isLoading} />
       <div className="text-center mb-10 lg:mb-14">
         <h2
           className="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white  hover:cursor-pointer"

@@ -13,6 +13,11 @@ const Modal = ({ isOpen, onClose, currentUser, setIsPricingOpen }) => {
 
   const handleCreate = async () => {
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
       if (
         (currentUser.plan === "Free" ||
           currentUser.plan === null ||
@@ -135,6 +140,11 @@ export default function AddProject({ updatedProjects }) {
 
     const fetchCurrentUser = async () => {
       try {
+        if (!navigator.onLine) {
+          // Không có kết nối Internet
+          toast.error("No internet access.");
+          return;
+        }
         let { data: users, error } = await supabase
           .from("users")
           .select("*")

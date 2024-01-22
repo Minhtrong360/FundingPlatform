@@ -1,8 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-
-
 const AnnouncePage = ({ title, announce, describe, highlightedWord }) => {
   const navigate = useNavigate();
   const [firstPart, middlePart, lastPart] = announce.split(highlightedWord);
@@ -32,7 +30,6 @@ const AnnouncePage = ({ title, announce, describe, highlightedWord }) => {
             </button>
           </div>
         </div>
-     
       </div>
     </section>
   );

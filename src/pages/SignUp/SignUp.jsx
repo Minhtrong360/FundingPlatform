@@ -7,6 +7,7 @@ import SpinnerBtn from "../../components/SpinnerBtn";
 import AlertMsg from "../../components/AlertMsg";
 import AnnouncePage from "../../components/AnnouncePage";
 import { GoogleOutlined } from "@ant-design/icons";
+import LoadingButtonClick from "../../components/LoadingButtonClick";
 
 const HeroSignUp = () => {
   const [rememberMe, setRememberMe] = useState(false);
@@ -46,6 +47,11 @@ const HeroSignUp = () => {
         // Nếu email không tồn tại, thực hiện đăng ký
 
         try {
+          if (!navigator.onLine) {
+            // Không có kết nối Internet
+            toast.error("No internet access.");
+            return;
+          }
           await supabase.auth.signUp({ email, password });
           setResetLink(true);
         } catch (error) {
@@ -179,7 +185,7 @@ const HeroSignUp = () => {
                           />
                         </div>
                       </div>
-
+                      <LoadingButtonClick isLoading={isLoading} />
                       {/* Checkbox and Terms */}
                       <div className="mt-5 flex items-center">
                         <div className="flex items-center">
@@ -220,7 +226,7 @@ const HeroSignUp = () => {
                           type="submit"
                           className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                         >
-                          {isLoading ? <SpinnerBtn /> : "Get started"}
+                          Get started
                         </button>
                       </div>
                     </div>

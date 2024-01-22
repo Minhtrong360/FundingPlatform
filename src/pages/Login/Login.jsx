@@ -7,32 +7,6 @@ import { toast } from "react-toastify";
 import SpinnerBtn from "../../components/SpinnerBtn";
 import { GoogleOutlined } from "@ant-design/icons";
 
-// function GoogleLoginButton({ setIsLoading }) {
-//   const { loginWithGG } = useAuth();
-
-//   const signInWithGG = async () => {
-//     setIsLoading(true); // Bắt đầu loading
-
-//     try {
-//       await loginWithGG();
-//     } catch (error) {
-//       toast.error(error.message);
-//     } finally {
-//       setIsLoading(false); // Kết thúc loading
-//     }
-//   };
-
-//   return (
-//     <button
-//       className="w-full py-3 px-4 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-600 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-//       type="button"
-//       onClick={signInWithGG}
-//     >
-//       Sign in Google
-//     </button>
-//   );
-// }
-
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -47,6 +21,11 @@ const Login = () => {
     event.preventDefault();
 
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
       setLoading(true);
 
       const { error } = await login(email, password);

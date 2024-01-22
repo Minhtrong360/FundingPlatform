@@ -15,6 +15,8 @@ import ResizeImage from "../../components/ResizeImage";
 import Spinner from "../../components/Spinner";
 import { Tooltip } from "antd";
 import AlertMsg from "../../components/AlertMsg";
+import AnnouncePage from "../../components/AnnouncePage";
+import { toast } from "react-toastify";
 function formatNumber(value) {
   // Kiểm tra xem value có phải là một chuỗi không
   if (typeof value !== "string") {
@@ -125,7 +127,8 @@ const DetailPage = () => {
       .then(({ data, error }) => {
         setIsLoading(false); // Đánh dấu rằng dữ liệu đã được tải xong
         if (error) {
-          console.log(error);
+          console.log("error", error);
+          toast.error(error.message);
           // Xử lý lỗi khi không thể lấy dự án
         } else {
           // Kiểm tra quyền truy cập của người dùng
@@ -156,7 +159,8 @@ const DetailPage = () => {
       .then(({ data, error }) => {
         setIsLoading(false); // Đánh dấu rằng dữ liệu đã được tải xong
         if (error) {
-          console.log(error);
+          console.log("error", error);
+          toast.error(error.message);
           // Xử lý lỗi khi không thể lấy dự án
         } else {
           setCompany(data);
@@ -165,15 +169,17 @@ const DetailPage = () => {
   }, [id]);
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center top-1/2 left-1/2">
-        <Spinner />
-      </div>
-    ); // Hiển thị màn hình "isLoading" khi dữ liệu đang được tải
+    return <Spinner />; // Hiển thị màn hình "isLoading" khi dữ liệu đang được tải
   }
 
   if (viewError) {
-    return <div>You are not allowed to see it</div>;
+    return (
+      <AnnouncePage
+        title="Permission Required"
+        announce="This is a private project."
+        describe="This is a private project and you must be invited to access and see it."
+      />
+    );
   }
 
   return (

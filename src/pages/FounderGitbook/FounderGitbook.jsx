@@ -22,6 +22,11 @@ const FounderGitbook = () => {
 
     const fetchProjects = async () => {
       try {
+        if (!navigator.onLine) {
+          // Không có kết nối Internet
+          toast.error("No internet access.");
+          return;
+        }
         let { data: projects, error } = await supabase
           .from("projects")
           .select("*");

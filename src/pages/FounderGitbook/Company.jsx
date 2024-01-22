@@ -9,6 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import countries from "../../components/Country";
 import AlertMsg from "../../components/AlertMsg";
 import { toast } from "react-toastify";
+import Spinner from "../../components/Spinner";
 
 function CompanyInfo() {
   const navigate = useNavigate();
@@ -107,6 +108,11 @@ function CompanyInfo() {
     setIsLoading(true);
 
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
       // Kiểm tra xem công ty đã tồn tại trong Supabase chưa bằng cách truy vấn theo project_id
       const { data: existingCompany, error: existingCompanyError } =
         await supabase.from("company").select("*").eq("project_id", params.id);
@@ -188,7 +194,7 @@ function CompanyInfo() {
   return (
     <>
       {isLoading ? (
-        <div className="flex justify-center text-center">Loading...</div>
+        <Spinner />
       ) : (
         <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
           <AlertMsg />

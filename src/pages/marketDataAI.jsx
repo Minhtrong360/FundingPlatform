@@ -10,6 +10,11 @@ const openai = new OpenAI({
 
 async function summarizeKeyInformation(text, query) {
   try {
+    if (!navigator.onLine) {
+      // Không có kết nối Internet
+      toast.error("No internet access.");
+      return;
+    }
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
@@ -46,6 +51,11 @@ async function fetchNewsAndSummarize(query) {
   const resultsArray = []; // Initialize an empty array to store results
 
   try {
+    if (!navigator.onLine) {
+      // Không có kết nối Internet
+      toast.error("No internet access.");
+      return;
+    }
     const response = await axios.get(url, { params });
 
     const articles = response.data.articles.slice(0, 5);
@@ -83,6 +93,11 @@ function MarketDataAI() {
     setIsLoading(true);
 
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
       const results = await fetchNewsAndSummarize(search);
 
       setResults(results);

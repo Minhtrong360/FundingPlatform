@@ -18,9 +18,9 @@ import {
 import { YoutubeOutlined } from "@ant-design/icons";
 import { useAuth } from "../../context/AuthContext";
 
-import ErrorMessage from "../../components/ErrorMessage";
-import SpinnerBtn from "../../components/SpinnerBtn";
 import { toast } from "react-toastify";
+import Spinner from "../../components/Spinner";
+import LoadingButtonClick from "../../components/LoadingButtonClick";
 
 // Create the YouTube Link block
 const YouTubeLinkBlock = createReactBlockSpec(
@@ -97,7 +97,7 @@ const blockSpecs = {
 
 export default function EditorTool() {
   const [blocks, setBlocks] = useState([]);
-  const [editorError, setEditorError] = useState("");
+
   const [currentProject, setCurrentProject] = useState("");
   const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
 
@@ -108,6 +108,11 @@ export default function EditorTool() {
     // Hàm để lấy dữ liệu Markdown từ cơ sở dữ liệu
     async function fetchMarkdown() {
       try {
+        if (!navigator.onLine) {
+          // Không có kết nối Internet
+          toast.error("No internet access.");
+          return;
+        }
         if (params) {
           // Kiểm tra xem project có tồn tại không
           const { data, error } = await supabase
@@ -117,7 +122,7 @@ export default function EditorTool() {
             .single();
           setCurrentProject(data);
           if (error) {
-            setEditorError(error);
+            toast.error(error.message);
           } else {
             // Nếu có dữ liệu Markdown trong cơ sở dữ liệu, cập nhật giá trị của markdown
             if (data && data.markdown) {
@@ -130,8 +135,8 @@ export default function EditorTool() {
         }
         setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu
       } catch (error) {
-        setEditorError(error);
         toast.error(error.message);
+
         setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu (có lỗi)
       }
     }
@@ -145,7 +150,7 @@ export default function EditorTool() {
   }, [params]);
   // State to control Modal visibility
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [youtubeLink, setYoutubeLink] = useState(""); // State to store YouTube link
+  const [youtubeLink, setYoutubeLink] = useState("Add wanted youtube url"); // State to store YouTube link
   const insertYouTubeLink = {
     name: "Youtube",
     execute: (editor) => {
@@ -168,6 +173,11 @@ export default function EditorTool() {
   // Hàm để upload file lên database riêng của bạn
   async function uploadToCustomDatabase(file) {
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
       // Tạo tên file độc đáo để tránh xung đột
       const uniqueFileName = `profile_images/${Date.now()}-${file.name}`;
 
@@ -181,10 +191,9 @@ export default function EditorTool() {
       }
 
       // Trả về URL của file
-      console.log("data", data);
+
       return `${process.env.REACT_APP_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
     } catch (error) {
-      console.error("Lỗi khi upload file:", error.message);
       toast.error(error.message);
       // Xử lý lỗi tại đây
     }
@@ -206,8 +215,13 @@ export default function EditorTool() {
 
   const handleSave = async () => {
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
+
       if (params) {
-        // Set isLoading to true to disable the button and show loading indicator
         setIsLoading(true);
 
         const { data: projectData } = await supabase
@@ -217,43 +231,41 @@ export default function EditorTool() {
           .single();
 
         if (projectData && projectData.user_id === user.id) {
-          // Only allow save if project.user_id matches user.id
-
-          const { data, error } = await supabase
+          const { error } = await supabase
             .from("projects")
             .update({ markdown: blocks })
             .match({ id: params.id });
 
-          setEditorError("");
           if (error) {
-            setEditorError(error);
+            toast.error(error.message);
           } else {
-            setBlocks(data);
-
-            // Set isSaved to true after a successful save
-
-            // Reset isLoading to false and enable the button
             setIsLoading(false);
-
             // Reset isSaved to false after 1 second
           }
         } else {
-          // Handle the case where project.user_id doesn't match user.id
-          setEditorError("You do not have permission to save this project.");
-          openModal();
+          toast.error("You do not have permission to save this project.");
           setIsLoading(false);
         }
       }
     } catch (error) {
-      setEditorError(error);
-      toast.error(error.message);
-      // Reset isLoading and isSaved to false in case of an error
+      // Xử lý lỗi mạng
+      if (!navigator.onLine) {
+        toast.error("No internet access.");
+      } else {
+        toast.error(error.message);
+      }
       setIsLoading(false);
     }
   };
 
   const handleCompanySettings = async () => {
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
+
       if (params) {
         // Set isLoading to true to disable the button and show loading indicator
         setIsLoading(true);
@@ -271,12 +283,10 @@ export default function EditorTool() {
             .from("projects")
             .update({ markdown: blocks })
             .match({ id: params.id });
-          setEditorError("");
-          if (error) {
-            setEditorError(error);
-          } else {
-            setBlocks(data);
 
+          if (error) {
+            toast.error(error.message);
+          } else {
             // Set isSaved to true after a successful save
 
             // Reset isLoading to false and enable the button
@@ -286,15 +296,17 @@ export default function EditorTool() {
           }
         } else {
           // Handle the case where project.user_id doesn't match user.id
-          setEditorError("You do not have permission to save this project.");
-          openModal();
+          toast.error("You do not have permission to save this project.");
+
           setIsLoading(false);
         }
       }
     } catch (error) {
-      setEditorError(error);
-      toast.error(error.message);
-      // Reset isLoading and isSaved to false in case of an error
+      if (!navigator.onLine) {
+        toast.error("No internet access.");
+      } else {
+        toast.error(error.message);
+      }
       setIsLoading(false);
     }
     navigate(`/company/${params.id}`);
@@ -302,6 +314,12 @@ export default function EditorTool() {
 
   const handleDrawChart = async () => {
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
+
       if (params) {
         // Set isLoading to true to disable the button and show loading indicator
         setIsLoading(true);
@@ -319,12 +337,10 @@ export default function EditorTool() {
             .from("projects")
             .update({ markdown: blocks })
             .match({ id: params.id });
-          setEditorError("");
-          if (error) {
-            setEditorError(error);
-          } else {
-            setBlocks(data);
 
+          if (error) {
+            toast.error(error.message);
+          } else {
             // Set isSaved to true after a successful save
 
             // Reset isLoading to false and enable the button
@@ -334,15 +350,17 @@ export default function EditorTool() {
           }
         } else {
           // Handle the case where project.user_id doesn't match user.id
-          setEditorError("You do not have permission to save this project.");
-          openModal();
+          toast.error("You do not have permission to save this project.");
+
           setIsLoading(false);
         }
       }
     } catch (error) {
-      setEditorError(error);
-      toast.error(error.message);
-      // Reset isLoading and isSaved to false in case of an error
+      if (!navigator.onLine) {
+        toast.error("No internet access.");
+      } else {
+        toast.error(error.message);
+      }
       setIsLoading(false);
     }
     navigate(`/trials`);
@@ -350,8 +368,6 @@ export default function EditorTool() {
 
   // Function to handle inserting YouTube Link block
   const handleInsertYouTubeLink = () => {
-    closeModal(); // Close the Modal
-
     if (youtubeLink.trim() !== "") {
       // Parse the video ID from the YouTube link using a regular expression
       const videoIdMatch = youtubeLink.match(
@@ -374,36 +390,21 @@ export default function EditorTool() {
           editor.getTextCursorPosition().block,
           "after"
         );
+        closeModal(); // Close the Modal
       } else {
         alert("Invalid YouTube video URL. Please provide a valid URL.");
       }
     }
   };
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-  }, [isModalOpen]);
-
+  console.log("isLoading", isLoading);
   return (
     <div className="flex-grow items-center justify-center max-w-[85rem] py-10 ">
-      {isLoading ? ( // Hiển thị thông báo tải dữ liệu khi isLoading là true
-        <div
-          className="animate-spin inline-block w-8 h-8 border-[3px] border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500"
-          role="status"
-          aria-label="loading"
-        ></div>
-      ) : (
-        <BlockNoteView
-          editor={editor}
-          theme={"light"}
-          className="w-full lg:w-9/12"
-        />
-      )}
+      <BlockNoteView
+        editor={editor}
+        theme={"light"}
+        className="w-full lg:w-9/12"
+      />
 
       <Modal
         isOpen={isModalOpen}
@@ -454,14 +455,7 @@ export default function EditorTool() {
           </div>
         </div>
       </Modal>
-      {editorError && (
-        <ErrorMessage
-          message={editorError}
-          isModalOpen={isModalOpen}
-          closeModal={closeModal}
-          onCancel={closeModal}
-        />
-      )}
+      <LoadingButtonClick isLoading={isLoading} />
       {user.id === currentProject.user_id && (
         <>
           <button
@@ -469,7 +463,7 @@ export default function EditorTool() {
             onClick={handleSave}
             disabled={isLoading}
           >
-            {isLoading ? <SpinnerBtn /> : "Save"}
+            Save
           </button>
 
           <button
@@ -477,7 +471,7 @@ export default function EditorTool() {
             onClick={handleDrawChart}
             disabled={isLoading}
           >
-            {isLoading ? <SpinnerBtn /> : "Chart"}
+            Chart
           </button>
 
           <button
@@ -485,7 +479,7 @@ export default function EditorTool() {
             onClick={handleCompanySettings}
             disabled={isLoading}
           >
-            {isLoading ? <SpinnerBtn /> : "Settings"}
+            Settings
           </button>
         </>
       )}

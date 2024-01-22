@@ -4,6 +4,7 @@ import { supabase } from "../../supabase";
 import { toast } from "react-toastify";
 import PricingSection from "../Home/Pricing";
 import ReactModal from "react-modal";
+import Spinner from "../../components/Spinner";
 
 const Modal = ({
   isOpen,
@@ -149,6 +150,11 @@ export default function AddLinkFile({
 
     const fetchCurrentUser = async () => {
       try {
+        if (!navigator.onLine) {
+          // Không có kết nối Internet
+          toast.error("No internet access.");
+          return;
+        }
         let { data: users, error } = await supabase
           .from("users")
           .select("*")
@@ -179,7 +185,7 @@ export default function AddLinkFile({
   const [isPublic, setIsPublic] = useState(true); // Thêm trạng thái cho lựa chọn Public/Private
 
   if (isLoading) {
-    return <div>Loading...</div>; // Hiển thị màn hình "isLoading" khi dữ liệu đang được tải
+    return <Spinner />; // Hiển thị màn hình "isLoading" khi dữ liệu đang được tải
   }
   const closeModalPricing = () => {
     setIsPricingOpen(false);

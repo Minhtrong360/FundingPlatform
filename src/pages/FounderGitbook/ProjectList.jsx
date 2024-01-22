@@ -34,6 +34,11 @@ function ProjectList({ projects }) {
 
     const fetchCurrentUser = async () => {
       try {
+        if (!navigator.onLine) {
+          // Không có kết nối Internet
+          toast.error("No internet access.");
+          return;
+        }
         let { data: users, error } = await supabase
           .from("users")
           .select("*")
@@ -70,6 +75,11 @@ function ProjectList({ projects }) {
 
   const handleSaveClick = async (project) => {
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
       if (
         (currentUser.plan === "Free" ||
           currentUser.plan === null ||
@@ -122,6 +132,11 @@ function ProjectList({ projects }) {
       return; // Không thực hiện xóa nếu người dùng không xác nhận
     }
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
       // Gửi yêu cầu xóa dự án ra khỏi Supabase bằng cách sử dụng phương thức `delete`
       console.log("projectId", projectId);
       const { error } = await supabase

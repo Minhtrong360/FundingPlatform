@@ -41,6 +41,11 @@ function FilesList() {
 
     const fetchFiles = async () => {
       try {
+        if (!navigator.onLine) {
+          // Không có kết nối Internet
+          toast.error("No internet access.");
+          return;
+        }
         let { data: files, error } = await supabase
           .from("files")
           .select("*")
@@ -84,6 +89,11 @@ function FilesList() {
   const handleAddLinks = async (newLink) => {
     newLink.owner_email = user.email;
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
       // Tạo một dự án mới và lưu vào Supabase
       if (currentProject.user_id === user.id) {
         const { error } = await supabase.from("files").insert([
@@ -135,6 +145,11 @@ function FilesList() {
     }
 
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
       // Trước khi xóa, hãy truy vấn để kiểm tra user_id
       const { data: fileData, error: fileError } = await supabase
         .from("files")
@@ -190,6 +205,11 @@ function FilesList() {
 
   const handleSendRequest = async (link) => {
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
       const response = await apiService.post("/request/file", {
         user_email: user.email,
         file_name: link.name,

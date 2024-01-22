@@ -42,7 +42,7 @@ const ImageDropdown = () => {
   };
 
   const handleClickFinancial = (e) => {
-    navigate("/financial");
+    navigate("/financials");
     handleClickOutside(e);
     setIsOpen(false);
   };

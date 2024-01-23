@@ -13,6 +13,7 @@ import Search from "./Components/Search";
 import ProfileCard from "./Components/ProfileCard";
 import HeroCard from "./Components/HeroCard";
 import FAQ from "./Components/FAQ";
+import NewProjectPosts from "./Components/NewProjectPosts";
 
 // create a function that returns all the components
 
@@ -67,6 +68,7 @@ const HomePage = () => {
       <FeatureGIFs />
       <Search />
       <ProfileCard />
+      <NewProjectPosts />
       <HeroCard />
       <PricingSection />
 

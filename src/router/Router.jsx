@@ -14,8 +14,6 @@ import PaymentSuccess from "../pages/PaymentSuccess";
 
 import DetailPage from "../pages/FounderGitbook/DetailPage";
 
-import CompanyInfo from "../pages/FounderGitbook/Company";
-
 import Trial from "../pages/DashBoard/trial";
 import AuthRequire from "./AuthRequired";
 
@@ -23,9 +21,10 @@ import TermsAndConditions from "../pages/DashBoard/term";
 import UserPage from "../pages/UserProfile/UserPage";
 import Newdb from "../pages/DashBoard/NewDashboard";
 import LinkedInLoginComponent from "../pages/Login/linkedin";
-import Financials from "../pages/Financials";
+
 import NewsComponent from "../pages/test";
 import DashBoardPage from "../pages/DashBoard/DashBoardPage";
+import CompanySetting from "../pages/FounderGitbook/CompanySetting";
 function Router() {
   return (
     <Routes>
@@ -78,7 +77,7 @@ function Router() {
         path="/company/:id"
         element={
           <AuthRequire message="Sign in required!">
-            <CompanyInfo />
+            <CompanySetting />
           </AuthRequire>
         }
       />

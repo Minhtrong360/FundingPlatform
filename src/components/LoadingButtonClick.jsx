@@ -6,13 +6,11 @@ function LoadingButtonClick({ isLoading }) {
   useEffect(() => {
     if (isLoading) {
       document.body.style.overflow = "hidden";
-      console.log("Ok 1", isLoading);
     } else {
       document.body.style.overflow = "unset";
-      console.log("Ok 2", isLoading);
     }
   }, [isLoading]);
-
+  console.log("isLoading", isLoading);
   return (
     <>
       <Modal

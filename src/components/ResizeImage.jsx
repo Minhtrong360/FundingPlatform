@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const ImageCropper = ({ imageUrl }) => {
+const ImageCropper = ({ className, imageUrl, width, height, onClick }) => {
   const [scaledImageUrl, setScaledImageUrl] = useState("");
 
   useEffect(() => {
@@ -15,8 +15,8 @@ const ImageCropper = ({ imageUrl }) => {
     image.src = src;
     image.onload = () => {
       const canvas = document.createElement("canvas");
-      canvas.width = 700;
-      canvas.height = 800;
+      canvas.width = width;
+      canvas.height = height;
       const ctx = canvas.getContext("2d");
 
       // Điền nền trắng
@@ -48,6 +48,8 @@ const ImageCropper = ({ imageUrl }) => {
   return (
     <div>
       <img
+        onClick={onClick}
+        className={className}
         src={scaledImageUrl}
         alt="Zoomed"
         style={{ width: "100%", height: "100%" }}

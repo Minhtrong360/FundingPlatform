@@ -448,7 +448,7 @@ export default function EditorTool() {
         contentLabel="YouTube Link Modal"
         style={{
           overlay: {
-            backgroundColor: "rgba(0, 0, 0, 0.5)", // Màu nền overlay
+            backgroundColor: "gray", // Màu nền overlay
             position: "fixed", // Để nền overlay cố định
             top: 0,
             left: 0,

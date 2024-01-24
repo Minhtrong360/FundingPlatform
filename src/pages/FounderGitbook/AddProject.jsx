@@ -207,12 +207,34 @@ export default function AddProject({ updatedProjects }) {
       >
         Add new
       </button>
-      <Modal
+      <ReactModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        currentUser={currentUser}
-        setIsPricingOpen={setIsPricingOpen}
-      />
+        onRequestClose={() => setIsModalOpen(false)}
+        contentLabel="YouTube Link Modal"
+        style={{
+          overlay: {
+            backgroundColor: "gray", // Màu nền overlay
+            position: "fixed", // Để nền overlay cố định
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 9998, // Chỉ số z để đảm bảo nó hiển thị trên cùng
+          },
+          content: {
+            border: "none", // Để ẩn border của nội dung Modal
+            background: "none", // Để ẩn background của nội dung Modal
+            // margin: "auto", // Để căn giữa
+          },
+        }}
+      >
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          currentUser={currentUser}
+          setIsPricingOpen={setIsPricingOpen}
+        />
+      </ReactModal>
 
       <ReactModal
         isOpen={isPricingOpen}
@@ -220,7 +242,7 @@ export default function AddProject({ updatedProjects }) {
         contentLabel="YouTube Link Modal"
         style={{
           overlay: {
-            backgroundColor: "rgba(0, 0, 0, 0.5)", // Màu nền overlay
+            backgroundColor: "gray", // Màu nền overlay
             position: "fixed", // Để nền overlay cố định
             top: 0,
             left: 0,

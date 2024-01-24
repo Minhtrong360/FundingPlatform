@@ -4,11 +4,14 @@ import TextAreaField from "../../components/TextAreaField";
 
 import countries from "../../components/Country";
 import AlertMsg from "../../components/AlertMsg";
+import industries from "../../components/Industries";
+import MultiSelectField from "../../components/MultiSelectField";
 
 function Company({
   handleSubmit,
   formData,
   handleInputChange,
+  handleIndustryChange,
   typeOfferingOptions,
 }) {
   return (
@@ -90,6 +93,16 @@ function Company({
                   />
                 </div>
 
+                <MultiSelectField
+                  label="Industry"
+                  id="industry"
+                  name="industry"
+                  OPTIONS={industries}
+                  selectedItems={formData.industry}
+                  setSelectedItems={handleIndustryChange}
+                  required
+                />
+
                 <InputField
                   label="Offer"
                   id="offer"
@@ -113,6 +126,15 @@ function Company({
                   id="card_url"
                   name="card_url"
                   value={formData.card_url}
+                  onChange={handleInputChange}
+                  type="text"
+                  required
+                />
+                <InputField
+                  label="Website"
+                  id="website"
+                  name="website"
+                  value={formData.website}
                   onChange={handleInputChange}
                   type="text"
                   required

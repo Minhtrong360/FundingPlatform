@@ -46,7 +46,7 @@ const Modal = ({
       link: link,
       status: isPublic,
     };
-    console.log("isPublic", isPublic);
+
     handleAddLinks(newLink);
     setLink("https://drive.google.com/file/d/0By_3Hl5Rv7fAb3FZMGZJS01"); // Đặt lại giá trị của link sau khi thêm
     setFileName("File 1"); // Đặt lại giá trị của fileName sau khi thêm
@@ -54,7 +54,7 @@ const Modal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-auto backdrop-contrast-50 flex">
+    <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
       <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
         <h3 className="text-lg font-medium leading-6 text-gray-800 capitalize">
           Project Name: {currentProject.name}
@@ -201,28 +201,13 @@ export default function AddLinkFile({
           Add file
         </button>
       )}
-
-      <Modal
-        isOpen={isModalOpen}
-        currentProject={currentProject}
-        handleAddLinks={handleAddLinks} // Truyền hàm handleAddLinks
-        link={link}
-        setLink={setLink}
-        fileName={fileName}
-        setFileName={setFileName}
-        isPublic={isPublic}
-        setIsPublic={setIsPublic}
-        onClose={() => setIsModalOpen(false)}
-        currentUser={currentUser}
-        setIsPricingOpen={setIsPricingOpen}
-      />
       <ReactModal
-        isOpen={isPricingOpen}
-        onRequestClose={closeModalPricing}
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
         contentLabel="YouTube Link Modal"
         style={{
           overlay: {
-            backgroundColor: "rgba(0, 0, 0, 0.5)", // Màu nền overlay
+            backgroundColor: "gray", // Màu nền overlay
             position: "fixed", // Để nền overlay cố định
             top: 0,
             left: 0,
@@ -234,6 +219,38 @@ export default function AddLinkFile({
             border: "none", // Để ẩn border của nội dung Modal
             background: "none", // Để ẩn background của nội dung Modal
             // margin: "auto", // Để căn giữa
+          },
+        }}
+      >
+        <Modal
+          isOpen={isModalOpen}
+          currentProject={currentProject}
+          handleAddLinks={handleAddLinks} // Truyền hàm handleAddLinks
+          link={link}
+          setLink={setLink}
+          fileName={fileName}
+          setFileName={setFileName}
+          isPublic={isPublic}
+          setIsPublic={setIsPublic}
+          onClose={() => setIsModalOpen(false)}
+          currentUser={currentUser}
+          setIsPricingOpen={setIsPricingOpen}
+        />
+      </ReactModal>
+
+      <ReactModal
+        isOpen={isPricingOpen}
+        onRequestClose={closeModalPricing}
+        contentLabel="YouTube Link Modal"
+        style={{
+          overlay: {
+            backgroundColor: "gray", // Màu nền overlay
+            position: "fixed", // Để nền overlay cố định
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 9998, // Chỉ số z để đảm bảo nó hiển thị trên cùng
           },
         }}
       >

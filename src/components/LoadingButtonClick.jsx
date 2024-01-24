@@ -10,7 +10,7 @@ function LoadingButtonClick({ isLoading }) {
       document.body.style.overflow = "unset";
     }
   }, [isLoading]);
-  console.log("isLoading", isLoading);
+
   return (
     <>
       <Modal

@@ -66,8 +66,8 @@ const HomePage = () => {
       <HeroSection />
       <Features />
       <FeatureGIFs />
-      <Search />
-      <ProfileCard />
+      {/* <Search /> */}
+      {/* <ProfileCard /> */}
       <NewProjectPosts />
       <HeroCard />
       <PricingSection />

@@ -15,6 +15,7 @@ function formatNumber(value) {
 }
 
 const HeroSection = ({
+  formData,
   title,
   description,
   button1Text,
@@ -76,6 +77,24 @@ const HeroSection = ({
                 <p className="truncate"> Type: {button5Text} </p>
               </div>
             </Tooltip>
+            <Tooltip title={`Website: ${formData?.website}`} color={"geekblue"}>
+              <div className="  overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-amber-400 hover:bg-pink-500 text-gray-800 shadow-sm  disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+                <p className="truncate"> Website: {formData?.website} </p>
+              </div>
+            </Tooltip>
+          </div>
+          <div className="mt-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 w-full">
+            {formData?.industry?.map((industry, index) => (
+              <Tooltip
+                key={index}
+                title={`Industry: ${industry}`}
+                color={"geekblue"}
+              >
+                <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-orange-400 text-gray-800 hover:bg-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+                  <p className="truncate">{industry}</p>
+                </div>
+              </Tooltip>
+            ))}
           </div>
         </div>
 

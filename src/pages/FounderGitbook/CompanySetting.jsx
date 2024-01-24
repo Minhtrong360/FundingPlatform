@@ -10,6 +10,7 @@ import { useAuth } from "../../context/AuthContext";
 import Card from "../Home/Components/Card";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import AlertMsg from "../../components/AlertMsg";
+import industries from "../../components/Industries";
 
 function CompanySetting() {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ function CompanySetting() {
   const [formData, setFormData] = useState({
     companyName: "Tesla",
     country: "US",
+    industry: ["Advertising and Marketing"],
     targetAmount: 100000,
     typeOffering: "Investment", // Mặc định là "land"
     minTicketSize: 10000,
@@ -28,6 +30,8 @@ function CompanySetting() {
     offer: "10% equity",
     project_url:
       "https://images.unsplash.com/photo-1633671475485-754e12f39817?q=80&w=700&h=800&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    website: "https://www.beekrowd.com",
+
     card_url:
       "https://media.baodautu.vn/Images/chicuong/2021/03/16/startup.jpg",
     companyDescription:
@@ -57,6 +61,10 @@ function CompanySetting() {
                 ...formData, // Giữ lại các giá trị hiện tại của formData
                 companyName: companyData.name,
                 country: companyData.country,
+                industry:
+                  companyData.industry.length > 0
+                    ? companyData.industry
+                    : formData.industry,
                 targetAmount: companyData.target_amount,
                 typeOffering: companyData.offer_type,
                 minTicketSize: companyData.ticket_size,
@@ -68,6 +76,7 @@ function CompanySetting() {
                 card_url: companyData.card_url
                   ? companyData.card_url
                   : formData.card_url,
+                website: companyData.website,
                 companyDescription: companyData.description,
                 user_email: companyData.user_email,
               });
@@ -121,6 +130,17 @@ function CompanySetting() {
       if (!navigator.onLine) {
         // Không có kết nối Internet
         toast.error("No internet access.");
+        setIsLoading(false);
+        return;
+      }
+      if (
+        formData.industry === null ||
+        formData.industry === undefined ||
+        formData.industry.length === 0
+      ) {
+        // Không có kết nối Internet
+        toast.error("Please choose industry before submitting.");
+        setIsLoading(false);
         return;
       }
       // Kiểm tra xem công ty đã tồn tại trong Supabase chưa bằng cách truy vấn theo project_id
@@ -142,6 +162,7 @@ function CompanySetting() {
               id: existingCompanyId, // Sử dụng id của công ty đã tồn tại để thực hiện cập nhật
               name: formData.companyName,
               country: formData.country,
+              industry: formData.industry,
               target_amount: formData.targetAmount,
               offer_type: formData.typeOffering,
               ticket_size: formData.minTicketSize,
@@ -149,6 +170,7 @@ function CompanySetting() {
               offer: formData.offer,
               project_url: formData.project_url,
               card_url: formData.card_url,
+              website: formData.website,
               description: formData.companyDescription,
               user_id: user.id,
               user_email: user.email,
@@ -171,6 +193,7 @@ function CompanySetting() {
             {
               name: formData.companyName,
               country: formData.country,
+              industry: formData.industry,
               target_amount: formData.targetAmount,
               offer_type: formData.typeOffering,
               ticket_size: formData.minTicketSize,
@@ -178,6 +201,7 @@ function CompanySetting() {
               offer: formData.offer,
               project_url: formData.project_url,
               card_url: formData.card_url,
+              website: formData.website,
               description: formData.companyDescription,
               user_id: user.id,
               user_email: user.email,
@@ -235,6 +259,14 @@ function CompanySetting() {
       });
   }, [id, user.email, user.id]);
 
+  const handleIndustryChange = (selectedItems) => {
+    setFormData({
+      ...formData,
+      industry: selectedItems,
+    });
+  };
+
+  console.log("formData", formData);
   if (viewError) {
     return (
       <AnnouncePage
@@ -259,13 +291,16 @@ function CompanySetting() {
           formData={formData}
           handleInputChange={handleInputChange}
           typeOfferingOptions={typeOfferingOptions}
+          handleIndustryChange={handleIndustryChange}
         />
+        <AlertMsg />
       </div>
       <div className="flex-1 lg:col-span-2">
         {" "}
         {/* Sử dụng lg:col-span-2 để các div còn lại chiếm 2/3 */}
         <div className="flex flex-col">
           <HeroSection
+            formData={formData}
             title={formData.companyName}
             description={formData.companyDescription}
             button1Text={formData.targetAmount}
@@ -275,7 +310,10 @@ function CompanySetting() {
             button5Text={formData.typeOffering}
             imageUrl={formData.project_url}
           />
-          <div className="mt-24 px-4 sm:px-6 lg:px-8 z-0">
+
+          <hr className="mt-16 border-dashed border-gray-400" />
+
+          <div className="mt-11 px-4 sm:px-6 lg:px-8 z-0">
             <Card
               title={formData.companyName}
               description={formData.companyDescription}

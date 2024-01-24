@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import InvitedUserFile from "../../components/InvitedUserFile";
 import apiService from "../../app/apiService";
 import { toast } from "react-toastify";
+import LoadingButtonClick from "../../components/LoadingButtonClick";
 
 function FilesList() {
   const { id } = useParams();
@@ -210,6 +211,7 @@ function FilesList() {
         toast.error("No internet access.");
         return;
       }
+      setIsLoading(true);
       const response = await apiService.post("/request/file", {
         user_email: user.email,
         file_name: link.name,
@@ -223,10 +225,12 @@ function FilesList() {
       console.log("error", error);
       toast.error(error.message);
     }
+    setIsLoading(false);
   };
 
   return (
     <main className="w-full ml-2">
+      <LoadingButtonClick isLoading={isLoading} />
       <section className="container px-4 mx-auto">
         <div className="flex justify-start my-5 items-start">
           <AddLinkFile
@@ -381,8 +385,7 @@ function FilesList() {
                               className={`text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-600 dark:focus:ring-blue-800 `}
                               onClick={() => handleSendRequest(link)}
                             >
-                              {" "}
-                              Send Request{" "}
+                              Send Request
                             </button>
                           ) : (
                             <InvitedUserFile fileId={link.id} />

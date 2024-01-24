@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 
 import apiService from "../app/apiService";
 import { useAuth } from "../context/AuthContext";
+import ReactModal from "react-modal";
 
 const Modal = ({ isOpen, onClose, projectId }) => {
   const [email, setEmail] = useState("vidu@gmail.com");
@@ -131,11 +132,33 @@ export default function InvitedUserProject({ projectId }) {
       >
         Invite
       </button>
-      <Modal
+      <ReactModal
         isOpen={isModalOpen}
-        projectId={projectId}
-        onClose={() => setIsModalOpen(false)}
-      />
+        onRequestClose={() => setIsModalOpen(false)}
+        contentLabel="YouTube Link Modal"
+        style={{
+          overlay: {
+            backgroundColor: "gray", // Màu nền overlay
+            position: "fixed", // Để nền overlay cố định
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 9998, // Chỉ số z để đảm bảo nó hiển thị trên cùng
+          },
+          content: {
+            border: "none", // Để ẩn border của nội dung Modal
+            background: "none", // Để ẩn background của nội dung Modal
+            // margin: "auto", // Để căn giữa
+          },
+        }}
+      >
+        <Modal
+          isOpen={isModalOpen}
+          projectId={projectId}
+          onClose={() => setIsModalOpen(false)}
+        />
+      </ReactModal>
     </div>
   );
 }

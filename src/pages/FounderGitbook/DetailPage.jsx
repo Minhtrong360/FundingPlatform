@@ -18,6 +18,7 @@ import AlertMsg from "../../components/AlertMsg";
 import AnnouncePage from "../../components/AnnouncePage";
 import { toast } from "react-toastify";
 import HeroSection from "./HeroSection";
+import LoadingButtonClick from "../../components/LoadingButtonClick";
 
 const DetailPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -83,10 +84,6 @@ const DetailPage = () => {
       });
   }, [id]);
 
-  if (isLoading) {
-    return <Spinner />; // Hiển thị màn hình "isLoading" khi dữ liệu đang được tải
-  }
-
   if (viewError) {
     return (
       <AnnouncePage
@@ -100,6 +97,7 @@ const DetailPage = () => {
   return (
     <div className=" bg-white dark:bg-gray-900 antialiased !p-0">
       <AlertMsg />
+      {<LoadingButtonClick isLoading={isLoading} />}
       <div id="exampleWrapper">
         <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
@@ -109,6 +107,7 @@ const DetailPage = () => {
         >
           <div className="p-0 sm:p-4 border-0 border-gray-200 border-dashed sm:border-2 rounded-lg dark:border-gray-700">
             <HeroSection
+              formData={company}
               title={company.name}
               description={company.description}
               button1Text={company.target_amount}

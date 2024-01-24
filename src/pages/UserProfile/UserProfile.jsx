@@ -129,7 +129,7 @@ function UserInfoSettings() {
       // const userEmail = encodeURIComponent(user.email); // Encode email để đảm bảo nó an toàn trong URL
       // const updatedURL = `${session.url}?prefilled_email=${userEmail}`;
 
-      window.location.href = session.url;
+      window.open(session.url, "_blank");
     } catch (error) {
       toast.error("User does not subscribe");
     }

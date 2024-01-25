@@ -245,6 +245,7 @@ const Navbar = () => {
                   Profiles
                 </NavbarItem>
                 <NavbarItem onClick={handlePricingClick}>Pricing</NavbarItem>
+                <NavbarItem onClick={() => navigate("/news")}>News</NavbarItem>
                 <NavbarItem
                   href="https://beekrowd.canny.io/beekrowd-feedback"
                   target="_blank"

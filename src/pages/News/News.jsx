@@ -1,73 +1,77 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
-import { toast } from "react-toastify";
+
 import AlertMsg from "../../components/AlertMsg";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
+import Header from "../Home/Header";
 
 function BlogPost({ articles }) {
   return (
-    <section className="bg-white dark:bg-gray-900">
-      <div className="container px-6 py-10 mx-auto">
-        <h1 className="text-2xl font-semibold text-gray-800 capitalize lg:text-3xl dark:text-white">
-          From the blog
-        </h1>
+    <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto mt-28">
+      <Header />
+      <section className="bg-white dark:bg-gray-900">
+        <div className="container px-6 py-10 mx-auto">
+          <h1 className="text-2xl font-semibold text-gray-800 capitalize lg:text-3xl dark:text-white">
+            From the blog
+          </h1>
 
-        {articles.map((article, index) => (
-          <div key={index} className="mt-8 lg:-mx-6 lg:flex lg:items-center">
-            <img
-              className="object-cover  w-full lg:mx-6 lg:w-1/2 rounded-xl h-72 lg:h-96"
-              src={article.image_link}
-              alt=""
-            />
+          {articles.map((article, index) => (
+            <div key={index} className="mt-8 lg:-mx-6 lg:flex lg:items-center">
+              <img
+                className="object-cover  w-full lg:mx-6 lg:w-1/2 rounded-xl h-[22rem] "
+                src={article.image_link}
+                alt=""
+              />
 
-            <div className="mt-6 lg:w-1/2 lg:mt-0 lg:mx-6">
-              <p className="text-sm text-blue-500 uppercase">category</p>
+              <div className="mt-6 lg:w-1/2 lg:mt-0 lg:mx-6">
+                <p className="text-sm text-blue-500 uppercase">category</p>
 
-              <a
-                href={article.link}
-                className="block mt-4 text-2xl font-semibold text-gray-800 hover:underline dark:text-white"
-              >
-                {article.title}
-              </a>
+                <a
+                  href={article.link}
+                  className="block mt-4 text-2xl font-semibold text-gray-800 hover:underline dark:text-white"
+                >
+                  {article.title}
+                </a>
 
-              <p className="mt-3 text-sm text-gray-500 dark:text-gray-300 md:text-sm line-clamp-5">
-                {article.abstract}
-              </p>
+                <p className="mt-3 text-sm text-gray-500 dark:text-gray-300 md:text-sm line-clamp-5">
+                  {article.abstract}
+                </p>
 
-              <a
-                href={article.link}
-                className="inline-block mt-2 text-blue-500 underline hover:text-blue-400"
-              >
-                Read more
-              </a>
+                <a
+                  href={article.link}
+                  className="inline-block mt-2 text-blue-500 underline hover:text-blue-400"
+                >
+                  Read more
+                </a>
 
-              <div className="flex items-center mt-6">
-                <img
-                  className="object-cover object-center w-10 h-10 rounded-full"
-                  src="https://images.unsplash.com/photo-1531590878845-12627191e687?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80"
-                  alt="Author"
-                />
+                <div className="flex items-center mt-6">
+                  <img
+                    className="object-cover object-center w-10 h-10 rounded-full"
+                    src="https://images.unsplash.com/photo-1531590878845-12627191e687?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80"
+                    alt="Author"
+                  />
 
-                <div className="mx-4">
-                  {article.authors.map((author, index) => (
-                    <h1
-                      key={index}
-                      className="text-sm text-gray-700 dark:text-gray-200"
-                    >
-                      {author}
-                    </h1>
-                  ))}
+                  <div className="mx-4">
+                    {article.authors.map((author, index) => (
+                      <h1
+                        key={index}
+                        className="text-sm text-gray-700 dark:text-gray-200"
+                      >
+                        {author}
+                      </h1>
+                    ))}
 
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Author
-                  </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Author
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
-    </section>
+          ))}
+        </div>
+      </section>
+    </div>
   );
 }
 

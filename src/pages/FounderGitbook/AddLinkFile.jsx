@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import PricingSection from "../Home/Pricing";
 import ReactModal from "react-modal";
 import Spinner from "../../components/Spinner";
+import { Tooltip } from "antd";
 
 const Modal = ({
   isOpen,
@@ -19,6 +20,7 @@ const Modal = ({
   setIsPublic,
   currentUser,
   setIsPricingOpen,
+  isPrivateDisabled,
 }) => {
   if (!isOpen) {
     return null;
@@ -29,17 +31,7 @@ const Modal = ({
       alert("Please enter a valid link and file name.");
       return;
     }
-    if (
-      (currentUser.plan === "Free" ||
-        currentUser.plan === null ||
-        currentUser.plan === undefined) &&
-      !isPublic &&
-      currentUser.subscription_status !== "active"
-    ) {
-      setIsPricingOpen(true);
-      toast.warning("You need to upgrade your plan to upload a private file");
-      return; // Ngăn chặn tiếp tục thực hiện
-    }
+
     // Tạo một đối tượng mới và gọi handleAddLinks để thêm vào danh sách projectLinks
     const newLink = {
       name: fileName,
@@ -100,17 +92,47 @@ const Modal = ({
                 />
                 <span className="ml-2 text-gray-700">Public</span>
               </label>
-              <label className="inline-flex items-center ml-6">
-                <input
-                  type="radio"
-                  name="projectType"
-                  value="private"
-                  checked={!isPublic}
-                  onChange={() => setIsPublic(false)}
-                  className="form-radio text-blue-600 h-5 w-5"
-                />
-                <span className="ml-2 text-gray-700">Private</span>
-              </label>
+              {isPrivateDisabled ? (
+                <Tooltip
+                  title={`You need to upgrade your plan to upload a private file`}
+                  color="gray"
+                  zIndex={20000}
+                >
+                  <label className="inline-flex items-center ml-6">
+                    <input
+                      type="radio"
+                      name="projectType"
+                      value="private"
+                      disabled={isPrivateDisabled}
+                      className={`form-radio h-5 w-5 ${
+                        isPrivateDisabled
+                          ? "border-gray-300"
+                          : "border-gray-600"
+                      }`}
+                    />
+                    <span className="ml-2 text-gray-300">Private</span>
+                  </label>
+                </Tooltip>
+              ) : (
+                <>
+                  <label className="inline-flex items-center ml-6">
+                    <input
+                      type="radio"
+                      name="projectType"
+                      value="private"
+                      checked={!isPublic}
+                      onChange={() => setIsPublic(false)}
+                      disabled={isPrivateDisabled}
+                      className={`form-radio h-5 w-5 ${
+                        isPrivateDisabled
+                          ? "border-gray-300"
+                          : "border-gray-600"
+                      }`}
+                    />
+                    <span className="ml-2 text-gray-700">Private</span>
+                  </label>
+                </>
+              )}
             </div>
           </div>
 
@@ -140,6 +162,7 @@ export default function AddLinkFile({
   isLoading,
   currentProject,
   handleAddLinks,
+  isPrivateDisabled,
 }) {
   const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -204,7 +227,7 @@ export default function AddLinkFile({
       <ReactModal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
-        contentLabel="YouTube Link Modal"
+        ariaHideApp={false}
         style={{
           overlay: {
             backgroundColor: "gray", // Màu nền overlay
@@ -235,13 +258,14 @@ export default function AddLinkFile({
           onClose={() => setIsModalOpen(false)}
           currentUser={currentUser}
           setIsPricingOpen={setIsPricingOpen}
+          isPrivateDisabled={isPrivateDisabled}
         />
       </ReactModal>
 
       <ReactModal
         isOpen={isPricingOpen}
         onRequestClose={closeModalPricing}
-        contentLabel="YouTube Link Modal"
+        ariaHideApp={false}
         style={{
           overlay: {
             backgroundColor: "gray", // Màu nền overlay

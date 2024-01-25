@@ -132,7 +132,7 @@ export default function InvitedUser({ fileId }) {
       <ReactModal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
-        contentLabel="YouTube Link Modal"
+        ariaHideApp={false}
         style={{
           overlay: {
             backgroundColor: "gray", // Màu nền overlay

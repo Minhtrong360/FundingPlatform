@@ -16,6 +16,8 @@ function FilesList() {
   const [projectLinks, setProjectLinks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentProject, setCurrentProject] = useState();
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isPrivateDisabled, setIsPrivateDisabled] = useState(false); // New state for disabling private option
 
   // Tạo một hàm để tính giá trị canClick cho từng dòng trong bảng
   const calculateCanClick = (link) => {
@@ -228,6 +230,55 @@ function FilesList() {
     setIsLoading(false);
   };
 
+  useEffect(() => {
+    // Import Supabase client và thiết lập nó
+
+    const fetchCurrentUser = async () => {
+      try {
+        if (!navigator.onLine) {
+          // Không có kết nối Internet
+          toast.error("No internet access.");
+          return;
+        }
+        let { data: users, error } = await supabase
+          .from("users")
+          .select("*")
+
+          // Filters
+          .eq("id", user.id);
+
+        if (error) {
+          console.log("error", error);
+          throw error;
+        }
+
+        setCurrentUser(users[0]);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
+
+    if (user) {
+      fetchCurrentUser();
+    }
+  }, [user]);
+
+  useEffect(() => {
+    // Check if the user doesn't meet the conditions to create a private project
+    if (
+      (currentUser?.plan === "Free" ||
+        currentUser?.plan === null ||
+        currentUser?.plan === undefined) &&
+      currentUser?.subscription_status !== "active"
+    ) {
+      setIsPrivateDisabled(true);
+    } else {
+      setIsPrivateDisabled(false);
+    }
+  }, [currentUser]);
+
+  console.log("currentUser", currentUser);
+
   return (
     <main className="w-full ml-2">
       <LoadingButtonClick isLoading={isLoading} />
@@ -237,6 +288,7 @@ function FilesList() {
             isLoading={isLoading}
             currentProject={currentProject}
             handleAddLinks={handleAddLinks}
+            isPrivateDisabled={isPrivateDisabled}
           />
         </div>
         <div className="flex flex-col">

@@ -3,22 +3,13 @@ import Modal from "react-modal";
 import Spinner from "./Spinner";
 
 function LoadingButtonClick({ isLoading }) {
-  useEffect(() => {
-    if (isLoading) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-  }, [isLoading]);
-
   return (
     <>
       <Modal
         isOpen={isLoading}
-        contentLabel="YouTube Link Modal"
         style={{
           overlay: {
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            backgroundColor: "rgba(0, 0, 0, 0.2)",
             position: "fixed",
             top: 0,
             left: 0,
@@ -33,7 +24,7 @@ function LoadingButtonClick({ isLoading }) {
           },
         }}
       >
-        <Spinner />
+        <Spinner isLoading={isLoading} />
       </Modal>
     </>
   );

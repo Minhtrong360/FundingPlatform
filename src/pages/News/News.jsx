@@ -3,6 +3,7 @@ import { supabase } from "../../supabase";
 
 import AlertMsg from "../../components/AlertMsg";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
+
 import Header from "../Home/Header";
 
 function BlogPost({ articles }) {
@@ -16,15 +17,20 @@ function BlogPost({ articles }) {
           </h1>
 
           {articles.map((article, index) => (
-            <div key={index} className="mt-8 lg:-mx-6 lg:flex lg:items-center">
+            <div key={index} className="my-28 lg:-mx-6 lg:flex lg:items-center">
               <img
-                className="object-cover  w-full lg:mx-6 lg:w-1/2 rounded-xl h-[22rem] "
+                className="object-cover  w-[34rem] lg:mx-6 rounded-xl h-[20rem]"
                 src={article.image_link}
                 alt=""
               />
+              {/* <ResizeImage
+                imageUrl={article.image_link}
+                width={566}
+                height={352}
+              /> */}
 
               <div className="mt-6 lg:w-1/2 lg:mt-0 lg:mx-6">
-                <p className="text-sm text-blue-500 uppercase">category</p>
+                <p className="text-sm text-blue-500 uppercase">Fundraising</p>
 
                 <a
                   href={article.link}
@@ -49,7 +55,7 @@ function BlogPost({ articles }) {
                 <div className="flex items-center mt-6">
                   <img
                     className="object-cover object-center w-10 h-10 rounded-full"
-                    src="https://images.unsplash.com/photo-1531590878845-12627191e687?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80"
+                    src="https://w0.peakpx.com/wallpaper/432/249/HD-wallpaper-sprout-beauty-enviroment-natural-plant-seed-tree-thumbnail.jpg"
                     alt="Author"
                   />
 
@@ -128,7 +134,7 @@ function News() {
       <AlertMsg />
       <LoadingButtonClick isLoading={isLoading} />
       {/* Pagination controls */}
-      <div className="mt-4 flex justify-center mb-28">
+      <div className="mb-20 flex justify-center">
         <button
           onClick={() => setPage(page - 1)}
           disabled={page === 1}

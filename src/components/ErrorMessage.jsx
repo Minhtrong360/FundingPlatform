@@ -6,7 +6,6 @@ function ErrorMessage({ isModalOpen, closeModal, message, onCancel }) {
     <Modal
       isOpen={isModalOpen}
       onRequestClose={closeModal}
-      contentLabel="YouTube Link Modal"
       style={{
         overlay: {
           backgroundColor: "none", // Để ẩn background overlay

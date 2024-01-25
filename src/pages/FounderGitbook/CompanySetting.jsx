@@ -22,7 +22,7 @@ function CompanySetting() {
   const [formData, setFormData] = useState({
     companyName: "Tesla",
     country: "US",
-    industry: ["Advertising and Marketing"],
+    industry: ["Technology"],
     targetAmount: 100000,
     typeOffering: "Investment", // Mặc định là "land"
     minTicketSize: 10000,

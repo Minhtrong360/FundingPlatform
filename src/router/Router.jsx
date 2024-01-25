@@ -26,6 +26,7 @@ import NewsComponent from "../pages/test";
 import DashBoardPage from "../pages/DashBoard/DashBoardPage";
 import CompanySetting from "../pages/FounderGitbook/CompanySetting";
 import News from "../pages/News/News";
+import LoadingButtonClick from "../components/LoadingButtonClick";
 function Router() {
   return (
     <Routes>
@@ -90,6 +91,10 @@ function Router() {
       {/* <Route path="/financials" element={<Financials />} /> */}
       <Route path="/financials" element={<NewsComponent />} />
       <Route path="/news" element={<News />} />
+      <Route
+        path="/loading"
+        element={<LoadingButtonClick isLoading={true} />}
+      />
     </Routes>
   );
 }

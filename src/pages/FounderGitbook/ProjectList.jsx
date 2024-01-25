@@ -64,7 +64,12 @@ function ProjectList({ projects }) {
   }, [user]);
 
   useEffect(() => {
-    setUpdatedProjects(projects);
+    const sortedProjects = [...projects].sort((a, b) => {
+      const dateA = new Date(a.created_at);
+      const dateB = new Date(b.created_at);
+      return dateB - dateA;
+    });
+    setUpdatedProjects(sortedProjects);
   }, [projects]);
 
   const handleEditClick = (project) => {
@@ -138,7 +143,7 @@ function ProjectList({ projects }) {
         return;
       }
       // Gửi yêu cầu xóa dự án ra khỏi Supabase bằng cách sử dụng phương thức `delete`
-      console.log("projectId", projectId);
+
       const { error } = await supabase
         .from("projects")
         .delete()
@@ -161,17 +166,6 @@ function ProjectList({ projects }) {
     }
   };
 
-  useEffect(() => {
-    // Sắp xếp danh sách các dự án theo thời gian tạo mới nhất đến cũ nhất
-    const sortedProjects = [...projects].sort((a, b) => {
-      const dateA = new Date(a.created_at);
-      const dateB = new Date(b.created_at);
-      return dateB - dateA;
-    });
-
-    setUpdatedProjects(sortedProjects);
-  }, [projects]);
-
   const handleStatusToggle = () => {
     setEditedProjectStatus((prevStatus) => !prevStatus); // Chuyển đổi giữa Public và Private
   };
@@ -180,7 +174,10 @@ function ProjectList({ projects }) {
     <main className="w-full">
       <AlertMsg />
       <div className="flex justify-end mr-5 mb-5 items-end">
-        <AddProject updatedProjects={updatedProjects} />
+        <AddProject
+          updatedProjects={updatedProjects}
+          setUpdatedProjects={setUpdatedProjects}
+        />
       </div>
       <section className="container px-4 mx-auto">
         <div className="flex flex-col">
@@ -245,7 +242,7 @@ function ProjectList({ projects }) {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
                     {updatedProjects.map((project, index) => (
-                      <tr key={project.id}>
+                      <tr key={index}>
                         <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
                           <div className="inline-flex items-center gap-x-3">
                             <input

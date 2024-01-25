@@ -16,19 +16,19 @@ const Card = ({
 
   return (
     <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 hover:border-transparent hover:shadow-lg transition-all duration-300">
-      {/* <ResizeImage
-        className="rounded-t-lg"
+      <ResizeImage
+        className="rounded-t-lg max-h-96"
         imageUrl={imageUrl}
-        width={900}
+        width={683}
         height={384}
         onClick={() => navigate(`/founder/${project_id}`)}
-      /> */}
-      <img
-        className="rounded-t-lg max-h-96"
+      />
+      {/* <img
+        className="rounded-t-lg max-h-96 "
         src={imageUrl}
         alt=""
         onClick={() => navigate(`/founder/${project_id}`)}
-      />
+      /> */}
       <div className="p-5">
         <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           {title}

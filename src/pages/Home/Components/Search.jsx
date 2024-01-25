@@ -14,11 +14,6 @@ import { MenuItem } from "@mui/base/MenuItem";
 const Search = ({ onSearch, onIndustryChange }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIndustry, setSelectedIndustry] = useState("");
-  const [isIndustryDropdownOpen, setIsIndustryDropdownOpen] = useState(false);
-
-  const toggleIndustryDropdown = () => {
-    setIsIndustryDropdownOpen(!isIndustryDropdownOpen);
-  };
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -31,7 +26,7 @@ const Search = ({ onSearch, onIndustryChange }) => {
 
   const handleIndustryClick = (industry) => {
     setSelectedIndustry(industry);
-    setIsIndustryDropdownOpen(false);
+
     onIndustryChange(industry);
   };
 
@@ -102,36 +97,36 @@ const Search = ({ onSearch, onIndustryChange }) => {
               <AccountBalanceOutlinedIcon fontSize="small" />
             </button>
             <button
-              onClick={() => handleIndustryClick("Information Technology")}
+              onClick={() => handleIndustryClick("Fintech")}
               className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
-                selectedIndustry === "Information Technology"
+                selectedIndustry === "Fintech"
                   ? "bg-blue-500 text-white"
                   : "bg-white text-gray-800 hover:bg-gray-50"
               } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
             >
-              Information Technology
+              Fintech
               <DesktopWindowsOutlinedIcon fontSize="small" />
             </button>
             <button
-              onClick={() => handleIndustryClick("Education")}
+              onClick={() => handleIndustryClick("Edtech")}
               className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
-                selectedIndustry === "Education"
+                selectedIndustry === "Edtech"
                   ? "bg-blue-500 text-white"
                   : "bg-white text-gray-800 hover:bg-gray-50"
               } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
             >
-              Education
+              Edtech
               <SchoolOutlinedIcon fontSize="small" />
             </button>
             <button
-              onClick={() => handleIndustryClick("Biotechnology")}
+              onClick={() => handleIndustryClick("Biotech")}
               className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
-                selectedIndustry === "Biotechnology"
+                selectedIndustry === "Biotech"
                   ? "bg-blue-500 text-white"
                   : "bg-white text-gray-800 hover:bg-gray-50"
               } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
             >
-              Biotechnology
+              Biotech
               <BiotechOutlinedIcon fontSize="small" />
             </button>
             <Dropdown>

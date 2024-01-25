@@ -33,7 +33,7 @@ function CompanySetting() {
     website: "https://www.beekrowd.com",
 
     card_url:
-      "https://media.baodautu.vn/Images/chicuong/2021/03/16/startup.jpg",
+      "https://images.unsplash.com/photo-1633164106121-fd129dfb9f4d?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     companyDescription:
       "Tesla, Inc., founded in 2003 by Elon Musk and others, is an American company specializing in electric vehicles, battery energy storage, and solar products. Known for its high-performance electric cars like the Model S and Model 3, Tesla aims to advance sustainable transportation and energy. The company also operates a global network of superchargers and is a leader in renewable energy technologies.",
     rememberMe: false,

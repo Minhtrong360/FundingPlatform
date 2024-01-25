@@ -36,7 +36,8 @@ const Modal = ({ isOpen, onClose, currentUser, setIsPricingOpen }) => {
         {
           name: projectName,
           user_id: user.id,
-          status: isPublic, // Thêm giá trị is_public
+          status: isPublic,
+          user_email: user.email, // Thêm giá trị is_public
         },
       ]);
 

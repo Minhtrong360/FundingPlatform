@@ -210,7 +210,7 @@ export default function EditorTool() {
     ],
     onEditorContentChange: function (editor) {
       setBlocks(editor.topLevelBlocks);
-      setIsSaved(false); // Đánh dấu là chưa lưu khi có sự thay đổi
+      // setIsSaved(false); // Đánh dấu là chưa lưu khi có sự thay đổi
     },
   });
 
@@ -399,27 +399,27 @@ export default function EditorTool() {
   };
   const navigate = useNavigate();
 
-  const [isSaved, setIsSaved] = useState(true);
+  // const [isSaved, setIsSaved] = useState(true);
   const [showConfirmation, setShowConfirmation] = useState(false);
 
-  useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      if (!isSaved) {
-        e.preventDefault();
-        if (showConfirmation) {
-          e.returnValue =
-            "Dữ liệu chưa được lưu. Bạn có muốn lưu nó trước khi rời khỏi trang?";
-          setShowConfirmation(true); // Đóng thông báo khi chuyển trang
-        }
-      }
-    };
+  // useEffect(() => {
+  //   const handleBeforeUnload = (e) => {
+  //     if (!isSaved) {
+  //       e.preventDefault();
+  //       if (showConfirmation) {
+  //         e.returnValue =
+  //           "Dữ liệu chưa được lưu. Bạn có muốn lưu nó trước khi rời khỏi trang?";
+  //         setShowConfirmation(true); // Đóng thông báo khi chuyển trang
+  //       }
+  //     }
+  //   };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
 
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [isSaved, showConfirmation]);
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //   };
+  // }, [isSaved, showConfirmation]);
 
   return (
     <div className="flex-grow items-center justify-center max-w-[85rem] py-10 ">

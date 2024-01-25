@@ -9,8 +9,7 @@ import PricingSection from "./Pricing";
 import HeroSection from "./Components/HeroSection";
 import Features from "./Components/Features";
 import FeatureGIFs from "./Components/FeatureGIFs";
-import Search from "./Components/Search";
-import ProfileCard from "./Components/ProfileCard";
+
 import HeroCard from "./Components/HeroCard";
 import FAQ from "./Components/FAQ";
 import NewProjectPosts from "./Components/NewProjectPosts";

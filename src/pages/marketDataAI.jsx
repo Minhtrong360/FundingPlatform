@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import OpenAI from "openai";
 import ArticleBrief from "./FounderGitbook/ArticalBrief";
+import { toast } from "react-toastify";
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_openaiApiKey,
@@ -154,7 +155,7 @@ function MarketDataAI() {
               onClick={handleSearch}
               disabled={isLoading ? true : false}
               className={`w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform ${
-                isLoading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-500"
+                isLoading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
               } rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40`}
             >
               Search

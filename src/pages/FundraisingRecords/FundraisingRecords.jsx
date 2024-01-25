@@ -14,7 +14,6 @@ import { CreditCardOutlined } from "@ant-design/icons";
 import apiService from "../../app/apiService";
 import { gapi } from "gapi-script";
 
-
 const NavbarItem = ({ href, children, isActive, onClick }) => (
   <li>
     <a
@@ -36,7 +35,7 @@ const NavbarButton = ({ children, onClick, className }) => (
   <button
     type="button"
     onClick={onClick}
-    className={`text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-600 dark:focus:ring-blue-800 ${className}`}
+    className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 ${className}`}
   >
     {children}
   </button>
@@ -366,7 +365,7 @@ function Card({ icon, title, metric, description, badgeText }) {
   return (
     <div className="text-left w-full h-full bg-white shadow-lg rounded-lg p-5 dark:bg-slate-900">
       <div className="flex items-center gap-x-4 mb-3">
-        <div className="inline-flex justify-center items-center w-[40px] h-[40px] rounded-full bg-blue-100 dark:bg-blue-800">
+        <div className="inline-flex justify-center items-center w-[40px] h-[40px] rounded-full bg-blue-600 dark:bg-blue-700">
           {icon}
         </div>
         <div className="flex-shrink-0">
@@ -387,7 +386,7 @@ function Card({ icon, title, metric, description, badgeText }) {
 // Badge component (same as provided in the original code)
 function Badge({ text }) {
   return (
-    <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-blue-100 text-gray-500 dark:bg-white/[.05] dark:text-white mt-4">
+    <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-blue-600 text-gray-500 dark:bg-white/[.05] dark:text-white mt-4">
       {text}
     </span>
   );
@@ -1582,7 +1581,6 @@ const FundraisingRecords = () => {
           </div>
 
           <Table />
-          
         </div>
       </div>
     </div>

@@ -118,7 +118,7 @@ const Modal = ({ isOpen, onClose, currentUser, setIsPricingOpen }) => {
             <button
               type="button"
               onClick={handleCreate}
-              className="w-full px-4 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-500"
+              className="w-full px-4 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
             >
               Create
             </button>
@@ -202,7 +202,7 @@ export default function AddProject({ updatedProjects }) {
     <div className="App">
       <button
         className={`text-white bg-blue-600 ${
-          isButtonDisabled ? "opacity-50 bg-gray-600" : "hover:bg-blue-800"
+          isButtonDisabled ? "opacity-50 bg-gray-600" : "hover:bg-blue-700800"
         } focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:focus:ring-blue-800`}
         onClick={handleClick}
       >

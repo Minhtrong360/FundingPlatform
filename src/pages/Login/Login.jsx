@@ -156,7 +156,7 @@ const Login = () => {
 
                   <button
                     type="submit"
-                    className="w-full py-3 px-4 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-600 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                    className="w-full py-3 px-4 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                     disabled={loading} // Vô hiệu hóa nút khi đang loading
                   >
                     {loading ? <SpinnerBtn /> : "Sign in"}{" "}

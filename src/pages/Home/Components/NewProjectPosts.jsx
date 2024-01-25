@@ -108,7 +108,7 @@ const NewProjectPosts = () => {
             </div>
             <div className="mt-10 flex justify-center">
               <button
-                className="px-4 py-2 mx-2 bg-blue-500 text-white rounded-md"
+                className="px-4 py-2 mx-2 bg-blue-600 text-white rounded-md"
                 onClick={() => handlePageChange(page - 1)}
                 disabled={page === 1}
               >
@@ -118,7 +118,7 @@ const NewProjectPosts = () => {
                 Page {page} of {totalPages}
               </span>
               <button
-                className="px-4 py-2 mx-2 bg-blue-500 text-white rounded-md"
+                className="px-4 py-2 mx-2 bg-blue-600 text-white rounded-md"
                 onClick={() => handlePageChange(page + 1)}
                 disabled={page === totalPages}
               >

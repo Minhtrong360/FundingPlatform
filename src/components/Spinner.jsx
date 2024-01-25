@@ -1,19 +1,16 @@
 export default function Spinner() {
   return (
     <div
-      className="flex items-center justify-center h-screen fixed top-auto left-1/2"
+      className="fixed top-0 left-0 w-full h-full flex items-center justify-center"
       style={{
-        overlay: {
-          backgroundColor: "rgba(0, 0, 0, 0.5)", // Màu nền overlay
-          position: "fixed", // Để nền overlay cố định
-          zIndex: 9998, // Chỉ số z để đảm bảo nó hiển thị trên cùng
-        },
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        zIndex: 9998,
       }}
     >
-      <div className="animate-spin h-12 w-12 text-blue-300">
+      <div className="animate-spin h-12 w-12 text-blue-600">
         <LoaderIcon className="h-full w-full" />
       </div>
-      <p className="ml-4 text-lg font-inter text-blue-300 dark:text-blue-400">
+      <p className="ml-4 text-lg font-inter text-blue-600 dark:text-blue-400">
         Loading...
       </p>
     </div>

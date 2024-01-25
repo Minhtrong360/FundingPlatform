@@ -40,6 +40,8 @@ function BlogPost({ articles }) {
                 <a
                   href={article.link}
                   className="inline-block mt-2 text-blue-500 underline hover:text-blue-400"
+                  target="_blank"
+                  rel="noreferrer"
                 >
                   Read more
                 </a>
@@ -130,7 +132,7 @@ function News() {
         <button
           onClick={() => setPage(page - 1)}
           disabled={page === 1}
-          className="px-4 py-2 mx-2 text-blue-500 bg-white border border-blue-500 rounded-md hover:bg-blue-500 hover:text-white"
+          className="px-4 py-2 mx-2 text-blue-500 bg-white border border-blue-500 rounded-md hover:bg-blue-700 hover:text-white"
         >
           Previous Page
         </button>
@@ -140,7 +142,7 @@ function News() {
         <button
           onClick={() => setPage(page + 1)}
           disabled={page === totalPages}
-          className="px-4 py-2 mx-2 text-blue-500 bg-white border border-blue-500 rounded-md hover:bg-blue-500 hover:text-white"
+          className="px-4 py-2 mx-2 text-blue-500 bg-white border border-blue-500 rounded-md hover:bg-blue-700 hover:text-white"
         >
           Next Page
         </button>

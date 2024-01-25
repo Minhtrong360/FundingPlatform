@@ -57,7 +57,7 @@ const Search = ({ onSearch, onIndustryChange }) => {
                 <div className="flex-[0_0_auto]">
                   <button
                     type="submit"
-                    className="w-[46px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                    className="w-[46px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -78,7 +78,7 @@ const Search = ({ onSearch, onIndustryChange }) => {
               onClick={() => handleIndustryClick("")}
               className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
                 !selectedIndustry
-                  ? "bg-blue-500 text-white"
+                  ? "bg-blue-600 text-white"
                   : "bg-white text-gray-800 hover:bg-gray-50"
               } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
             >
@@ -89,7 +89,7 @@ const Search = ({ onSearch, onIndustryChange }) => {
               onClick={() => handleIndustryClick("Finance and Banking")}
               className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
                 selectedIndustry === "Finance and Banking"
-                  ? "bg-blue-500 text-white"
+                  ? "bg-blue-600 text-white"
                   : "bg-white text-gray-800 hover:bg-gray-50"
               } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
             >
@@ -100,7 +100,7 @@ const Search = ({ onSearch, onIndustryChange }) => {
               onClick={() => handleIndustryClick("Fintech")}
               className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
                 selectedIndustry === "Fintech"
-                  ? "bg-blue-500 text-white"
+                  ? "bg-blue-600 text-white"
                   : "bg-white text-gray-800 hover:bg-gray-50"
               } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
             >
@@ -111,7 +111,7 @@ const Search = ({ onSearch, onIndustryChange }) => {
               onClick={() => handleIndustryClick("Edtech")}
               className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
                 selectedIndustry === "Edtech"
-                  ? "bg-blue-500 text-white"
+                  ? "bg-blue-600 text-white"
                   : "bg-white text-gray-800 hover:bg-gray-50"
               } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
             >
@@ -122,7 +122,7 @@ const Search = ({ onSearch, onIndustryChange }) => {
               onClick={() => handleIndustryClick("Biotech")}
               className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
                 selectedIndustry === "Biotech"
-                  ? "bg-blue-500 text-white"
+                  ? "bg-blue-600 text-white"
                   : "bg-white text-gray-800 hover:bg-gray-50"
               } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
             >
@@ -140,7 +140,7 @@ const Search = ({ onSearch, onIndustryChange }) => {
                   <MenuItem
                     className={`mx-2 my-2 px-4 py-4 border rounded-2xl hover:cursor-pointer ${
                       selectedIndustry === industry
-                        ? "bg-blue-500 text-white"
+                        ? "bg-blue-600 text-white"
                         : "bg-white text-gray-800 hover:bg-gray-50"
                     }`}
                     key={index}

@@ -71,7 +71,7 @@ const PricingCard = ({ plan, onClick }) => {
           ) : (
             <button
               onClick={() => navigate("/login")}
-              className="w-full sm:w-auto px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-600 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-500 dark:bg-blue-600"
+              className="w-full sm:w-auto px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-600 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-700 dark:bg-blue-600"
             >
               Login required
             </button>
@@ -79,7 +79,7 @@ const PricingCard = ({ plan, onClick }) => {
         </div> */}
         <button
           onClick={onClick}
-          className="mt-5 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:hover:bg-blue-900 dark:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+          className="mt-5 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700800 disabled:opacity-50 disabled:pointer-events-none dark:hover:bg-blue-700900 dark:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
         >
           Sign up
         </button>

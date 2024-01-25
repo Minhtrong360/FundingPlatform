@@ -625,7 +625,7 @@ const Alpha = () => {
             </div>
           ))}
           <button
-            className="bg-blue-500 text-white py-2 px-4 rounded"
+            className="bg-blue-600 text-white py-2 px-4 rounded"
             onClick={addNewCustomerInput}
           >
             Add New
@@ -731,7 +731,7 @@ const Alpha = () => {
             </div>
           ))}
           <button
-            className="bg-blue-500 text-white py-2 px-4 rounded"
+            className="bg-blue-600 text-white py-2 px-4 rounded"
             onClick={addNewChannelInput}
           >
             Add New
@@ -800,7 +800,7 @@ const Alpha = () => {
             </div>
           ))}
           <button
-            className="bg-blue-500 text-white py-2 px-4 rounded"
+            className="bg-blue-600 text-white py-2 px-4 rounded"
             onClick={addNewCostInput}
           >
             Add New
@@ -900,7 +900,7 @@ const Alpha = () => {
             </div>
           ))}
           <button
-            className="bg-blue-500 text-white py-2 px-4 rounded"
+            className="bg-blue-600 text-white py-2 px-4 rounded"
             onClick={addNewPersonnelInput}
           >
             Add New
@@ -1000,7 +1000,7 @@ const Alpha = () => {
             </div>
           ))}
           <button
-            className="bg-blue-500 text-white py-2 px-4 rounded"
+            className="bg-blue-600 text-white py-2 px-4 rounded"
             onClick={addNewInvestmentInput}
           >
             Add New
@@ -1073,7 +1073,7 @@ const Alpha = () => {
             </div>
           ))}
           <button
-            className="bg-blue-500 text-white py-2 px-4 rounded"
+            className="bg-blue-600 text-white py-2 px-4 rounded"
             onClick={addNewLoanInput}
           >
             Add New

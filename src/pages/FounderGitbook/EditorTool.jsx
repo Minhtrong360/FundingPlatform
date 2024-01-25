@@ -482,7 +482,7 @@ export default function EditorTool() {
                 Cancel
               </button>
               <button
-                className="w-full px-4 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-500"
+                className="w-full px-4 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
                 onClick={handleInsertYouTubeLink}
               >
                 Insert

@@ -331,7 +331,7 @@ function FilesList() {
                         <td
                           className={`${
                             calculateCanClick(link)
-                              ? "hover:cursor-pointer hover:bg-blue-100"
+                              ? "hover:cursor-pointer hover:bg-blue-700100"
                               : ""
                           } px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap`}
                           onClick={() =>
@@ -382,7 +382,7 @@ function FilesList() {
                           ) : link.user_id !== user.id &&
                             !link.invited_user?.includes(user.email) ? (
                             <button
-                              className={`text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-600 dark:focus:ring-blue-800 `}
+                              className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 `}
                               onClick={() => handleSendRequest(link)}
                             >
                               Send Request

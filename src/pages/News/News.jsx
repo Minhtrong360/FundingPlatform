@@ -13,13 +13,16 @@ function BlogPost({ articles }) {
       <section className="bg-white dark:bg-gray-900">
         <div className="container px-6 py-10 mx-auto">
           <h1 className="text-2xl font-semibold text-gray-800 capitalize lg:text-3xl dark:text-white">
-            From the blog
+            Just Raised
           </h1>
 
           {articles.map((article, index) => (
-            <div key={index} className="my-28 lg:-mx-6 lg:flex lg:items-center">
+            <div
+              key={index}
+              className="py-10 px-5 my-28 lg:-mx-6 lg:flex lg:items-center bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 hover:border-transparent hover:shadow-lg transition-all duration-300"
+            >
               <img
-                className="object-cover  w-[34rem] lg:mx-6 rounded-xl h-[20rem]"
+                className="mx-auto  w-[34rem] lg:mx-6 rounded-xl h-[20rem]"
                 src={article.image_link}
                 alt=""
               />
@@ -34,7 +37,7 @@ function BlogPost({ articles }) {
 
                 <a
                   href={article.link}
-                  className="block mt-4 text-2xl font-semibold text-gray-800 hover:underline dark:text-white"
+                  className="block mt-4 text-3xl font-semibold text-gray-800 hover:underline dark:text-white"
                 >
                   {article.title}
                 </a>

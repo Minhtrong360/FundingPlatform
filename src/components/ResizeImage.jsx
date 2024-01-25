@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 
 const ImageCropper = ({ className, imageUrl, width, height, onClick }) => {
-  const [scaledImageUrl, setScaledImageUrl] = useState("");
+  const [croppedImageUrl, setCroppedImageUrl] = useState("");
 
   useEffect(() => {
     if (imageUrl) {
-      scaleImage(imageUrl);
+      cropImage(imageUrl);
     }
   }, [imageUrl]);
 
-  const scaleImage = (src) => {
+  const cropImage = (src) => {
     const image = new Image();
     image.crossOrigin = "anonymous"; // Đảm bảo cho phép CORS
     image.src = src;
@@ -19,29 +19,42 @@ const ImageCropper = ({ className, imageUrl, width, height, onClick }) => {
       canvas.height = height;
       const ctx = canvas.getContext("2d");
 
-      // Điền nền trắng
-      ctx.fillStyle = "#FFFFFF";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
       // Tính toán tỷ lệ thu nhỏ hoặc phóng to
       const scaleX = canvas.width / image.width;
       const scaleY = canvas.height / image.height;
       const scale = Math.min(scaleX, scaleY);
 
-      // Tính toán vị trí để căn giữa ảnh
-      const offsetX = (canvas.width - image.width * scale) / 2;
-      const offsetY = (canvas.height - image.height * scale) / 2;
+      // Tính toán kích thước mới của ảnh sau khi thu nhỏ
+      const newWidth = image.width * scale;
+      const newHeight = image.height * scale;
 
-      // Áp dụng biến đổi để zoom in hoặc zoom out ảnh
-      ctx.drawImage(
-        image,
+      // Tính toán vị trí để căn giữa ảnh
+      const offsetX = (canvas.width - newWidth) / 2;
+      const offsetY = (canvas.height - newHeight) / 2;
+
+      // Áp dụng biến đổi để thu nhỏ ảnh
+      ctx.drawImage(image, offsetX, offsetY, newWidth, newHeight);
+
+      // Tạo một canvas mới để cắt ảnh
+      const croppedCanvas = document.createElement("canvas");
+      croppedCanvas.width = width;
+      croppedCanvas.height = height;
+      const croppedCtx = croppedCanvas.getContext("2d");
+
+      // Cắt ảnh từ canvas gốc
+      croppedCtx.drawImage(
+        canvas,
         offsetX,
         offsetY,
-        image.width * scale,
-        image.height * scale
+        newWidth,
+        newHeight,
+        0,
+        0,
+        width,
+        height
       );
 
-      setScaledImageUrl(canvas.toDataURL("image/jpeg"));
+      setCroppedImageUrl(croppedCanvas.toDataURL("image/jpeg"));
     };
   };
 
@@ -50,8 +63,8 @@ const ImageCropper = ({ className, imageUrl, width, height, onClick }) => {
       <img
         onClick={onClick}
         className={className}
-        src={scaledImageUrl}
-        alt="Zoomed"
+        src={croppedImageUrl}
+        alt="Cropped"
         style={{ width: "100%", height: "100%" }}
       />
     </div>

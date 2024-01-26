@@ -22,6 +22,11 @@ const FounderGitbook = () => {
 
     const fetchProjects = async () => {
       try {
+        if (!navigator.onLine) {
+          // Không có kết nối Internet
+          toast.error("No internet access.");
+          return;
+        }
         let { data: projects, error } = await supabase
           .from("projects")
           .select("*");
@@ -80,7 +85,7 @@ const FounderGitbook = () => {
               <img
                 src={chatbot}
                 alt=""
-                className="hover:cursor-pointer chatbot-icon fixed bottom-4 right-4 hover:cursor-pointer w-14 h-14"
+                className="chatbot-icon fixed bottom-4 right-4 hover:cursor-pointer w-14 h-14"
                 onClick={handleChatbotClick}
               ></img>
             </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Input, Select, Table, Button } from "antd";
 import ReactApexChart from "react-apexcharts";
-import { EditOutlined } from '@ant-design/icons';
+import { EditOutlined } from "@ant-design/icons";
 const { Option } = Select;
 
 // const CompoundInterestCalculator = () => {
@@ -147,24 +147,24 @@ const { Option } = Select;
 //     const [initialCustomer, setInitialCustomer] = useState(100);
 //     const [growthRate, setGrowthRate] = useState(0.05);
 //     const [numOfYears, setNumOfYears] = useState(3);
-  
+
 //     const handleInitialCustomerChange = (value) => {
 //       setInitialCustomer(value);
 //     };
-  
+
 //     const handleGrowthRateChange = (value) => {
 //       setGrowthRate(value);
 //     };
-  
+
 //     const handleNumOfYearsChange = (value) => {
 //       setNumOfYears(value);
 //     };
-  
+
 //     const calculateCustomerGrowth = () => {
 //       const months = numOfYears === 3 ? 36 : 60;
 //       const data = [];
 //       let currentCustomer = initialCustomer;
-  
+
 //       for (let i = 0; i < months; i++) {
 //         data.push({
 //           Month: i + 1,
@@ -172,10 +172,10 @@ const { Option } = Select;
 //         });
 //         currentCustomer *= 1 + growthRate;
 //       }
-  
+
 //       return data;
 //     };
-  
+
 //     const columns = [
 //       {
 //         title: 'Month',
@@ -188,13 +188,13 @@ const { Option } = Select;
 //         key: `Month${data.Month}`,
 //       })),
 //     ];
-  
+
 //     const dataSource = [calculateCustomerGrowth()[0]]; // We only show one row of data
-  
+
 //     calculateCustomerGrowth().forEach((data, index) => {
 //       dataSource[0][`Month${data.Month}`] = data.Customers;
 //     });
-  
+
 //     const options = {
 //       chart: {
 //         id: 'customer-growth-chart',
@@ -203,14 +203,14 @@ const { Option } = Select;
 //         categories: calculateCustomerGrowth().map((data) => data.Month),
 //       },
 //     };
-  
+
 //     const series = [
 //       {
 //         name: 'Customers',
 //         data: calculateCustomerGrowth().map((data) => data.Customers),
 //       },
 //     ];
-  
+
 //     return (
 //       <div>
 //         <div className="mb-4">
@@ -245,113 +245,121 @@ const { Option } = Select;
 //       </div>
 //     );
 //   };
-  
-const CustomerGrowthComponent = ({ customersPerMonth, percentChangePerMonth }) => {
-    const [initialCustomer, setInitialCustomer] = useState(100);
-    const [growthRate, setGrowthRate] = useState(0.05);
-    const [numOfYears, setNumOfYears] = useState(3);
-  
-    const handleInitialCustomerChange = (value) => {
-      setInitialCustomer(value);
-    };
-  
-    const handleGrowthRateChange = (value) => {
-      setGrowthRate(value);
-    };
-  
-    const handleNumOfYearsChange = (value) => {
-      setNumOfYears(value);
-    };
-  
-    useEffect(() => {
-      setInitialCustomer(customersPerMonth * 12 * numOfYears);
-    }, [customersPerMonth, percentChangePerMonth, numOfYears]);
-  
-    const calculateCustomerGrowth = () => {
-      const months = numOfYears === 3 ? 36 : 60;
-      const data = [];
-      let currentCustomer = initialCustomer;
-  
-      for (let i = 0; i < months; i++) {
-        data.push({
-          Month: i + 1,
-          Customers: currentCustomer.toFixed(2),
-        });
-        currentCustomer *= 1 + growthRate;
-      }
-  
-      return data;
-    };
-  
-    const columns = [
-      {
-        title: 'Month',
-        dataIndex: 'Month',
-        key: 'Month',
-      },
-      ...calculateCustomerGrowth().map((data) => ({
-        title: `Month ${data.Month}`,
-        dataIndex: `Month${data.Month}`,
-        key: `Month${data.Month}`,
-      })),
-    ];
-  
-    const dataSource = [calculateCustomerGrowth()[0]];
-  
-    calculateCustomerGrowth().forEach((data, index) => {
-      dataSource[0][`Month${data.Month}`] = data.Customers;
-    });
-  
-    const options = {
-      chart: {
-        id: 'customer-growth-chart',
-      },
-      xaxis: {
-        categories: calculateCustomerGrowth().map((data) => data.Month),
-      },
-    };
-  
-    const series = [
-      {
-        name: 'Customers',
-        data: calculateCustomerGrowth().map((data) => data.Customers),
-      },
-    ];
-  
-    return (
-      <div>
-        <div className="mb-4">
-          <label className="mr-2">Initial Customer:</label>
-          <Input
-            type="number"
-            value={initialCustomer}
-            onChange={(e) => handleInitialCustomerChange(Number(e.target.value))}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="mr-2">Growth Rate (%):</label>
-          <Input
-            type="number"
-            value={growthRate * 100}
-            onChange={(e) => handleGrowthRateChange(e.target.value / 100)}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="mr-2">Choose Option:</label>
-          <Select defaultValue={numOfYears} onChange={handleNumOfYearsChange}>
-            <Option value={3}>3 Years</Option>
-            <Option value={5}>5 Years</Option>
-          </Select>
-        </div>
-        <div className="mb-4">
-          <Table dataSource={dataSource} columns={columns} pagination={false} />
-        </div>
-        <div>
-          <ReactApexChart options={options} series={series} type="area" height={350} />
-        </div>
-      </div>
-    );
+
+const CustomerGrowthComponent = ({
+  customersPerMonth,
+  percentChangePerMonth,
+}) => {
+  const [initialCustomer, setInitialCustomer] = useState(100);
+  const [growthRate, setGrowthRate] = useState(0.05);
+  const [numOfYears, setNumOfYears] = useState(3);
+
+  const handleInitialCustomerChange = (value) => {
+    setInitialCustomer(value);
   };
+
+  const handleGrowthRateChange = (value) => {
+    setGrowthRate(value);
+  };
+
+  const handleNumOfYearsChange = (value) => {
+    setNumOfYears(value);
+  };
+
+  useEffect(() => {
+    setInitialCustomer(customersPerMonth * 12 * numOfYears);
+  }, [customersPerMonth, percentChangePerMonth, numOfYears]);
+
+  const calculateCustomerGrowth = () => {
+    const months = numOfYears === 3 ? 36 : 60;
+    const data = [];
+    let currentCustomer = initialCustomer;
+
+    for (let i = 0; i < months; i++) {
+      data.push({
+        Month: i + 1,
+        Customers: currentCustomer.toFixed(2),
+      });
+      currentCustomer *= 1 + growthRate;
+    }
+
+    return data;
+  };
+
+  const columns = [
+    {
+      title: "Month",
+      dataIndex: "Month",
+      key: "Month",
+    },
+    ...calculateCustomerGrowth().map((data) => ({
+      title: `Month ${data.Month}`,
+      dataIndex: `Month${data.Month}`,
+      key: `Month${data.Month}`,
+    })),
+  ];
+
+  const dataSource = [calculateCustomerGrowth()[0]];
+
+  calculateCustomerGrowth().forEach((data, index) => {
+    dataSource[0][`Month${data.Month}`] = data.Customers;
+  });
+
+  const options = {
+    chart: {
+      id: "customer-growth-chart",
+    },
+    xaxis: {
+      categories: calculateCustomerGrowth().map((data) => data.Month),
+    },
+  };
+
+  const series = [
+    {
+      name: "Customers",
+      data: calculateCustomerGrowth().map((data) => data.Customers),
+    },
+  ];
+
+  return (
+    <div>
+      <div className="mb-4">
+        <label className="mr-2">Initial Customer:</label>
+        <Input
+          type="number"
+          value={initialCustomer}
+          onChange={(e) => handleInitialCustomerChange(Number(e.target.value))}
+        />
+      </div>
+      <div className="mb-4">
+        <label className="mr-2">Growth Rate (%):</label>
+        <Input
+          type="number"
+          value={growthRate * 100}
+          onChange={(e) => handleGrowthRateChange(e.target.value / 100)}
+        />
+      </div>
+      <div className="mb-4">
+        <label className="mr-2">Choose Option:</label>
+        <Select defaultValue={numOfYears} onChange={handleNumOfYearsChange}>
+          <Option value={3}>3 Years</Option>
+          <Option value={5}>5 Years</Option>
+        </Select>
+      </div>
+      <div className="mb-4">
+        <Table dataSource={dataSource} columns={columns} pagination={false} />
+      </div>
+      <div>
+        <ReactApexChart
+          options={options}
+          series={series}
+          type="area"
+          height={350}
+        />
+      </div>
+    </div>
+  );
+};
 
 function GeneralForm() {
   return (
@@ -478,55 +486,62 @@ function GeneralForm() {
   );
 }
 
-
-function CustomerInput({ customersPerMonth, percentChangePerMonth, onCustomersPerMonthChange, onPercentChangePerMonthChange }) {
-    return (
-      <div className="max-w-md mx-auto">
-        <section className="mb-8">
-          <h2 className="text-lg font-semibold mb-4" id="assumptions-heading">
-            Assumptions
-          </h2>
-          <div className="bg-white rounded-md shadow p-6">
-            {/* ... (Assumptions section remains the same) */}
+function CustomerInput({
+  customersPerMonth,
+  percentChangePerMonth,
+  onCustomersPerMonthChange,
+  onPercentChangePerMonthChange,
+}) {
+  return (
+    <div className="max-w-md mx-auto">
+      <section className="mb-8">
+        <h2 className="text-lg font-semibold mb-4" id="assumptions-heading">
+          Assumptions
+        </h2>
+        <div className="bg-white rounded-md shadow p-6">
+          {/* ... (Assumptions section remains the same) */}
+        </div>
+      </section>
+      <section className="mb-8">
+        <h2
+          className="text-lg font-semibold mb-4 flex items-center"
+          id="customers-heading"
+        >
+          <EditOutlined className="mr-2" />
+          Customers
+        </h2>
+        <div className="bg-white rounded-md shadow p-6">
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className="font-medium">Begin Projection</span>
+            <Input className="col-start-2" placeholder="Sep 2022 - 1" />
           </div>
-        </section>
-        <section className="mb-8">
-          <h2 className="text-lg font-semibold mb-4 flex items-center" id="customers-heading">
-            <EditOutlined className="mr-2" />
-            Customers
-          </h2>
-          <div className="bg-white rounded-md shadow p-6">
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <span className="font-medium">Begin Projection</span>
-              <Input className="col-start-2" placeholder="Sep 2022 - 1" />
-            </div>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <span className="font-medium">End Projection</span>
-              <Input className="col-start-2" placeholder="Aug 2025 - 36" />
-            </div>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <span className="font-medium">Customers per Month</span>
-              <Input
-                className="col-start-2"
-                placeholder="950"
-                value={customersPerMonth}
-                onChange={(e) => onCustomersPerMonthChange(e.target.value)}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <span className="font-medium">% Change per Month</span>
-              <Input
-                className="col-start-2"
-                placeholder="5.00 %"
-                value={percentChangePerMonth}
-                onChange={(e) => onPercentChangePerMonthChange(e.target.value)}
-              />
-            </div>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className="font-medium">End Projection</span>
+            <Input className="col-start-2" placeholder="Aug 2025 - 36" />
           </div>
-        </section>
-      </div>
-    );
-  }
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className="font-medium">Customers per Month</span>
+            <Input
+              className="col-start-2"
+              placeholder="950"
+              value={customersPerMonth}
+              onChange={(e) => onCustomersPerMonthChange(e.target.value)}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <span className="font-medium">% Change per Month</span>
+            <Input
+              className="col-start-2"
+              placeholder="5.00 %"
+              value={percentChangePerMonth}
+              onChange={(e) => onPercentChangePerMonthChange(e.target.value)}
+            />
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
 
 // function CustomerInput() {
 //   return (
@@ -581,11 +596,11 @@ function CustomerInput({ customersPerMonth, percentChangePerMonth, onCustomersPe
 const Financials = () => {
   return (
     <div className="bg-white rounded-lg p-6">
-  <GeneralForm/> 
-  <CustomerInput/>
-  <CustomerGrowthComponent />
-  </div>
-  )
+      <GeneralForm />
+      <CustomerInput />
+      <CustomerGrowthComponent />
+    </div>
+  );
 };
 
 export default Financials;

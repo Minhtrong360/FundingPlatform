@@ -1,4 +1,3 @@
-
 function Features() {
   return (
     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
@@ -41,9 +40,8 @@ function Features() {
             <img
               className="w-8 h-8 rounded-full"
               src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDEwfHx8ZW58MHx8fHx8"
-              
               alt="Image Description"
-            /> 
+            />
             <div>
               <h5 className="text-sm text-gray-800  dark:text-gray-200">
                 By Mr. Hung, Founder & CEO BOS.

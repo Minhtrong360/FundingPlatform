@@ -5,59 +5,33 @@ import AlertMsg from "../../components/AlertMsg";
 import { toast } from "react-toastify";
 
 import SpinnerBtn from "../../components/SpinnerBtn";
-
-function GoogleLoginButton({ setIsLoading }) {
-  const { loginWithGG } = useAuth();
-
-  const signInWithGG = async () => {
-    setIsLoading(true); // Bắt đầu loading
-
-    try {
-      await loginWithGG();
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setIsLoading(false); // Kết thúc loading
-    }
-  };
-
-  return (
-    <button
-      className="w-full py-3 px-4 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-600 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-      type="button"
-      onClick={signInWithGG}
-    >
-      Sign in Google
-    </button>
-  );
-}
+import { GoogleOutlined } from "@ant-design/icons";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const { login } = useAuth();
-  const [errorMsg, setErrorMsg] = useState("");
+
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+
   const handleSignIn = async (event) => {
     event.preventDefault();
 
     try {
-      setErrorMsg("");
-      setLoading(true);
-
-      if (!email || !password) {
-        setErrorMsg("Please fill in the fields");
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
         return;
       }
+      setLoading(true);
 
-      const { user, session, error } = await login(email, password);
+      const { error } = await login(email, password);
 
       if (error) {
         toast.error(error.message);
-        setErrorMsg(error.message);
       } else {
         const redirectTo = location?.state?.from?.pathname || "/";
         navigate(redirectTo);
@@ -68,6 +42,12 @@ const Login = () => {
     } finally {
       setLoading(false);
     }
+  };
+  const { loginWithGG } = useAuth();
+
+  const signInWitGG = async (e) => {
+    e.preventDefault();
+    await loginWithGG();
   };
 
   return (
@@ -82,17 +62,30 @@ const Login = () => {
               </h1>
               <p className=" mt-2 text-sm text-gray-600 dark:text-gray-400">
                 Don't have an account yet?
-                <a
+                <button
                   className="ml-1 text-blue-600 hover:underline hover:cursor-pointer"
                   onClick={() => navigate("/signup")}
                 >
                   Sign up here
-                </a>
+                </button>
               </p>
             </div>
 
             <div className="mt-5">
-              <GoogleLoginButton setIsLoading={setLoading} />
+              <button
+                onClick={(e) => signInWitGG(e)}
+                type="button"
+                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              >
+                {loading ? (
+                  <SpinnerBtn />
+                ) : (
+                  <>
+                    <GoogleOutlined />
+                    Sign up with Google
+                  </>
+                )}
+              </button>
 
               <div className="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-1 before:border-t before:border-gray-200 before:mr-6 after:flex-1 after:border-t after:border-gray-200 after:ml-6 dark:before:border-gray-600 dark:after:border-gray-600">
                 Or
@@ -126,12 +119,12 @@ const Login = () => {
                       >
                         Password
                       </label>
-                      <a
+                      <button
                         className="text-sm text-blue-600 hover:underline hover:cursor-pointer"
                         onClick={() => navigate("/forgot-password")}
                       >
                         Forgot password?
-                      </a>
+                      </button>
                     </div>
                     <input
                       type="password"
@@ -163,7 +156,7 @@ const Login = () => {
 
                   <button
                     type="submit"
-                    className="w-full py-3 px-4 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-600 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                    className="w-full py-3 px-4 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                     disabled={loading} // Vô hiệu hóa nút khi đang loading
                   >
                     {loading ? <SpinnerBtn /> : "Sign in"}{" "}

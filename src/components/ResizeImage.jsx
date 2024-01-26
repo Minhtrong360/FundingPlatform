@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-const ImageCropper = ({ imageUrl }) => {
+const ImageCropper = ({ className, imageUrl, width, height, onClick }) => {
   const [croppedImageUrl, setCroppedImageUrl] = useState("");
-
-  useEffect(() => {
-    if (imageUrl) {
-      cropImage(imageUrl);
-    }
-  }, [imageUrl]);
 
   useEffect(() => {
     if (imageUrl) {
@@ -21,42 +15,58 @@ const ImageCropper = ({ imageUrl }) => {
     image.src = src;
     image.onload = () => {
       const canvas = document.createElement("canvas");
-      canvas.width = 700;
-      canvas.height = 800;
+      canvas.width = width;
+      canvas.height = height;
       const ctx = canvas.getContext("2d");
 
-      // Tính toán vị trí cắt và kích thước
-      const scaleX = image.naturalWidth / image.width;
-      const scaleY = image.naturalHeight / image.height;
-      const cropWidth = Math.min(image.naturalWidth, 700 * scaleX);
-      const cropHeight = Math.min(image.naturalHeight, 800 * scaleY);
-      const startX = (image.naturalWidth - cropWidth) / 2;
-      const startY = (image.naturalHeight - cropHeight) / 2;
+      // Tính toán tỷ lệ thu nhỏ hoặc phóng to
+      const scaleX = canvas.width / image.width;
+      const scaleY = canvas.height / image.height;
+      const scale = Math.min(scaleX, scaleY);
 
-      // Điền nền trắng
-      ctx.fillStyle = "#FFFFFF";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Tính toán kích thước mới của ảnh sau khi thu nhỏ
+      const newWidth = image.width * scale;
+      const newHeight = image.height * scale;
 
-      // Vẽ hình ảnh đã cắt
-      ctx.drawImage(
-        image,
-        startX,
-        startY,
-        cropWidth,
-        cropHeight,
-        (700 - cropWidth / scaleX) / 2,
-        (800 - cropHeight / scaleY) / 2,
-        cropWidth / scaleX,
-        cropHeight / scaleY
+      // Tính toán vị trí để căn giữa ảnh
+      const offsetX = (canvas.width - newWidth) / 2;
+      const offsetY = (canvas.height - newHeight) / 2;
+
+      // Áp dụng biến đổi để thu nhỏ ảnh
+      ctx.drawImage(image, offsetX, offsetY, newWidth, newHeight);
+
+      // Tạo một canvas mới để cắt ảnh
+      const croppedCanvas = document.createElement("canvas");
+      croppedCanvas.width = width;
+      croppedCanvas.height = height;
+      const croppedCtx = croppedCanvas.getContext("2d");
+
+      // Cắt ảnh từ canvas gốc
+      croppedCtx.drawImage(
+        canvas,
+        offsetX,
+        offsetY,
+        newWidth,
+        newHeight,
+        0,
+        0,
+        width,
+        height
       );
 
-      setCroppedImageUrl(canvas.toDataURL("image/jpeg"));
+      setCroppedImageUrl(croppedCanvas.toDataURL("image/jpeg"));
     };
   };
 
   return (
     <div>
-      <img src={croppedImageUrl} alt="Cropped" />
+      <img
+        onClick={onClick}
+        className={className}
+        src={croppedImageUrl}
+        alt="Cropped"
+        style={{ width: "100%", height: "100%" }}
+      />
     </div>
   );
 };

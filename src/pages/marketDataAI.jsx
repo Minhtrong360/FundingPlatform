@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import OpenAI from "openai";
 import ArticleBrief from "./FounderGitbook/ArticalBrief";
+import { toast } from "react-toastify";
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_openaiApiKey,
@@ -10,6 +11,11 @@ const openai = new OpenAI({
 
 async function summarizeKeyInformation(text, query) {
   try {
+    if (!navigator.onLine) {
+      // Không có kết nối Internet
+      toast.error("No internet access.");
+      return;
+    }
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
@@ -46,6 +52,11 @@ async function fetchNewsAndSummarize(query) {
   const resultsArray = []; // Initialize an empty array to store results
 
   try {
+    if (!navigator.onLine) {
+      // Không có kết nối Internet
+      toast.error("No internet access.");
+      return;
+    }
     const response = await axios.get(url, { params });
 
     const articles = response.data.articles.slice(0, 5);
@@ -83,6 +94,11 @@ function MarketDataAI() {
     setIsLoading(true);
 
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
       const results = await fetchNewsAndSummarize(search);
 
       setResults(results);
@@ -139,7 +155,7 @@ function MarketDataAI() {
               onClick={handleSearch}
               disabled={isLoading ? true : false}
               className={`w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform ${
-                isLoading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-500"
+                isLoading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
               } rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40`}
             >
               Search

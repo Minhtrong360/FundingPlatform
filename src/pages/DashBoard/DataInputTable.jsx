@@ -50,7 +50,7 @@
 //       <ChartInput inputName="X-axis va lue" type="text" placeholder="Ex:  January 2023,  January 2023" value={categoryData} onChange={(e) => setCategoryData(e.target.value)} />
 
 //       {/* Buttons for adding series and categories */}
-//       <button onClick={handleSave} className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+//       <button onClick={handleSave} className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
 //         Save
 //       </button>
 //     </div>
@@ -132,7 +132,7 @@
 //         <ChartInput inputName="Series Data 2" type="text" placeholder="Ex: 27000, 38000, 60000" value={seriesData02} onChange={(e) => setSeriesData2(e.target.value)} />
 //         <ChartInput inputName="X-axis value" type="text" placeholder="Ex: January 2023, February 2023" value={categoryData} onChange={(e) => setCategoryData(e.target.value)} />
 
-//         <button onClick={handleSave} className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+//         <button onClick={handleSave} className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
 //           Save
 //         </button>
 //       </div>
@@ -251,7 +251,7 @@ function ChartForm() {
 
         <button
           onClick={handleSave}
-          className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
           Save
         </button>

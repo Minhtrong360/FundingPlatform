@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 
 import apiService from "../app/apiService";
 import { useAuth } from "../context/AuthContext";
+import ReactModal from "react-modal";
 
 const Modal = ({ isOpen, onClose, projectId }) => {
   const [email, setEmail] = useState("vidu@gmail.com");
@@ -11,6 +12,11 @@ const Modal = ({ isOpen, onClose, projectId }) => {
 
   const handleInvite = async () => {
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
       // Truy vấn để tìm file có id = fileId trong bảng "files"
       const { data: projectData, error: fileError } = await supabase
         .from("projects")
@@ -104,7 +110,7 @@ const Modal = ({ isOpen, onClose, projectId }) => {
             <button
               type="button"
               onClick={handleInvite}
-              className="w-full px-4 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-500"
+              className="w-full px-4 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
             >
               Invite
             </button>
@@ -121,16 +127,38 @@ export default function InvitedUserProject({ projectId }) {
   return (
     <div className="App">
       <button
-        className={`text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-600 dark:focus:ring-blue-800 `}
+        className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 `}
         onClick={() => setIsModalOpen(true)}
       >
         Invite
       </button>
-      <Modal
+      <ReactModal
         isOpen={isModalOpen}
-        projectId={projectId}
-        onClose={() => setIsModalOpen(false)}
-      />
+        onRequestClose={() => setIsModalOpen(false)}
+        ariaHideApp={false}
+        style={{
+          overlay: {
+            backgroundColor: "gray", // Màu nền overlay
+            position: "fixed", // Để nền overlay cố định
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 9998, // Chỉ số z để đảm bảo nó hiển thị trên cùng
+          },
+          content: {
+            border: "none", // Để ẩn border của nội dung Modal
+            background: "none", // Để ẩn background của nội dung Modal
+            // margin: "auto", // Để căn giữa
+          },
+        }}
+      >
+        <Modal
+          isOpen={isModalOpen}
+          projectId={projectId}
+          onClose={() => setIsModalOpen(false)}
+        />
+      </ReactModal>
     </div>
   );
 }

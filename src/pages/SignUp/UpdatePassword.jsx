@@ -5,6 +5,7 @@ import AlertMsg from "../../components/AlertMsg";
 import { toast } from "react-toastify";
 
 import SpinnerBtn from "../../components/SpinnerBtn";
+import LoadingButtonClick from "../../components/LoadingButtonClick";
 
 const InputField = ({ label, type, name, value, onChange }) => {
   return (
@@ -33,7 +34,7 @@ const SubmitButton = ({ text, onClick, isLoading }) => {
       disabled={isLoading}
       className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
     >
-      {isLoading ? <SpinnerBtn /> : text}
+      {text}
     </button>
   );
 };
@@ -59,6 +60,11 @@ const UpdatePassword = () => {
     setIsLoading(true); // Bắt đầu loading
     if (newPassword === confirmPassword) {
       try {
+        if (!navigator.onLine) {
+          // Không có kết nối Internet
+          toast.error("No internet access.");
+          return;
+        }
         const { error } = await supabase.auth.updateUser({
           password: newPassword,
         });
@@ -108,11 +114,8 @@ const UpdatePassword = () => {
                 value={confirmPassword}
                 onChange={handleConfirmPasswordChange}
               />
-              <SubmitButton
-                onClick={handleSubmit}
-                text="Save"
-                isLoading={isLoading}
-              />
+              <LoadingButtonClick isLoading={isLoading} />
+              <SubmitButton onClick={handleSubmit} text="Save" />
             </div>
           </form>
         </div>

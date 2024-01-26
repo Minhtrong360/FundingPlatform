@@ -13,7 +13,10 @@ const InputField = ({ value, onChange }) => (
 
 const BarChart = ({ xCategories, seriesData, series }) => (
   <ReactApexChart
-    options={{ chart: { id: "bar-chart", toolbar: { show: true} }, xaxis: { categories: xCategories }}}
+    options={{
+      chart: { id: "bar-chart", toolbar: { show: true } },
+      xaxis: { categories: xCategories },
+    }}
     series={series.map((seriesPair, index) => ({
       name: seriesPair.name,
       data: seriesPair.data,
@@ -25,7 +28,10 @@ const BarChart = ({ xCategories, seriesData, series }) => (
 
 const PieChart = ({ labels, seriesData }) => (
   <ReactApexChart
-    options={{ chart: { id: "pie-chart" ,toolbar: { show: true} }, labels: labels }}
+    options={{
+      chart: { id: "pie-chart", toolbar: { show: true } },
+      labels: labels,
+    }}
     series={seriesData}
     type="pie"
     height={350}
@@ -34,7 +40,10 @@ const PieChart = ({ labels, seriesData }) => (
 
 const DonutChart = ({ labels, seriesData }) => (
   <ReactApexChart
-    options={{ chart: { id: "donut-chart",toolbar: { show: true} }, labels: labels }}
+    options={{
+      chart: { id: "donut-chart", toolbar: { show: true } },
+      labels: labels,
+    }}
     series={seriesData}
     type="donut"
     height={350}
@@ -44,7 +53,7 @@ const DonutChart = ({ labels, seriesData }) => (
 const LineChart = ({ xCategories, seriesData, series }) => (
   <ReactApexChart
     options={{
-      chart: { id: "line-chart" ,toolbar: { show: true}},
+      chart: { id: "line-chart", toolbar: { show: true } },
       xaxis: { categories: xCategories },
     }}
     series={series.map((seriesPair, index) => ({
@@ -59,7 +68,7 @@ const LineChart = ({ xCategories, seriesData, series }) => (
 const AreaChart = ({ xCategories, seriesData, series }) => (
   <ReactApexChart
     options={{
-      chart: { id: "area-chart" ,toolbar: { show: true}},
+      chart: { id: "area-chart", toolbar: { show: true } },
       xaxis: { categories: xCategories },
     }}
     series={series.map((seriesPair, index) => ({

@@ -5,45 +5,70 @@ import PricingSection from "../Home/Pricing";
 import ReactModal from "react-modal";
 import { toast } from "react-toastify";
 import AlertMsg from "../../components/AlertMsg";
+import { Tooltip } from "antd";
 
-const Modal = ({ isOpen, onClose, currentUser, setIsPricingOpen }) => {
+const Modal = ({
+  isOpen,
+  onClose,
+  currentUser,
+  setIsPricingOpen,
+  updatedProjects,
+  setUpdatedProjects,
+}) => {
   const [projectName, setProjectName] = useState("SpaceX");
-  const [isPublic, setIsPublic] = useState(true); // Thêm trạng thái cho lựa chọn Public/Private
+  const [privateProject, setPrivateProject] = useState(false); // Use a flag to indicate private project
+  const [isPrivateDisabled, setIsPrivateDisabled] = useState(false); // New state for disabling private option
   const { user } = useAuth();
+
+  useEffect(() => {
+    // Check if the user doesn't meet the conditions to create a private project
+    if (
+      (currentUser.plan === "Free" ||
+        currentUser.plan === null ||
+        currentUser.plan === undefined) &&
+      currentUser.subscription_status !== "active"
+    ) {
+      setIsPrivateDisabled(true);
+    } else {
+      setIsPrivateDisabled(false);
+    }
+  }, [currentUser]);
 
   const handleCreate = async () => {
     try {
-      if (
-        (currentUser.plan === "Free" ||
-          currentUser.plan === null ||
-          currentUser.plan === undefined) &&
-        !isPublic
-      ) {
+      // Check if it's a private project and the user doesn't meet the conditions
+      if (privateProject && isPrivateDisabled) {
         setIsPricingOpen(true);
         toast.warning(
           "You need to upgrade your plan to create a private project"
         );
-        return; // Ngăn chặn tiếp tục thực hiện
+        return;
       }
       // Tạo một dự án mới và lưu vào Supabase
-      const { error } = await supabase.from("projects").insert([
-        {
-          name: projectName,
-          user_id: user.id,
-          status: isPublic, // Thêm giá trị is_public
-        },
-      ]);
+      const { data, error } = await supabase
+        .from("projects")
+        .insert([
+          {
+            name: projectName,
+            user_id: user.id,
+            status: !privateProject, // Invert the status for public/private
+            user_email: user.email, // Thêm giá trị is_public
+          },
+        ])
+        .select();
 
       if (error) {
+        toast.error(error.message);
         console.error("Error creating project:", error);
         // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
       } else {
         // Tạo dự án thành công, đóng modal sau khi tạo
 
         onClose();
-        window.location.reload();
+        setUpdatedProjects([data[0], ...updatedProjects]);
       }
     } catch (error) {
+      toast.error(error.message);
       console.error("Error creating project:", error);
       // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }
@@ -55,6 +80,7 @@ const Modal = ({ isOpen, onClose, currentUser, setIsPricingOpen }) => {
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
+      <AlertMsg />
       <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
         <h3 className="text-lg font-medium leading-6 text-gray-800 capitalize">
           Project Name
@@ -80,23 +106,56 @@ const Modal = ({ isOpen, onClose, currentUser, setIsPricingOpen }) => {
                   type="radio"
                   name="projectType"
                   value="public"
-                  checked={isPublic}
-                  onChange={() => setIsPublic(true)}
+                  checked={!privateProject} // Check if it's not a private project
+                  onChange={() => setPrivateProject(false)} // Disable private when switching to public
                   className="form-radio text-blue-600 h-5 w-5"
                 />
                 <span className="ml-2 text-gray-700">Public</span>
               </label>
-              <label className="inline-flex items-center ml-6">
-                <input
-                  type="radio"
-                  name="projectType"
-                  value="private"
-                  checked={!isPublic}
-                  onChange={() => setIsPublic(false)}
-                  className="form-radio text-blue-600 h-5 w-5"
-                />
-                <span className="ml-2 text-gray-700">Private</span>
-              </label>
+
+              {isPrivateDisabled ? (
+                <Tooltip
+                  title={`You need to upgrade your plan to create a private project`}
+                  color="gray"
+                  zIndex={20000}
+                >
+                  <label className="inline-flex items-center ml-6">
+                    <input
+                      type="radio"
+                      name="projectType"
+                      value="private"
+                      checked={privateProject}
+                      onChange={() => setPrivateProject(true)}
+                      disabled={isPrivateDisabled}
+                      className={`form-radio h-5 w-5 ${
+                        isPrivateDisabled
+                          ? "border-gray-300"
+                          : "border-gray-600"
+                      }`}
+                    />
+                    <span className="ml-2 text-gray-300">Private</span>
+                  </label>
+                </Tooltip>
+              ) : (
+                <>
+                  <label className="inline-flex items-center ml-6">
+                    <input
+                      type="radio"
+                      name="projectType"
+                      value="private"
+                      checked={privateProject}
+                      onChange={() => setPrivateProject(true)}
+                      disabled={isPrivateDisabled}
+                      className={`form-radio h-5 w-5 ${
+                        isPrivateDisabled
+                          ? "border-gray-300"
+                          : "border-gray-600"
+                      }`}
+                    />
+                    <span className="ml-2 text-gray-700">Private</span>
+                  </label>
+                </>
+              )}
             </div>
           </div>
 
@@ -111,7 +170,7 @@ const Modal = ({ isOpen, onClose, currentUser, setIsPricingOpen }) => {
             <button
               type="button"
               onClick={handleCreate}
-              className="w-full px-4 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-500"
+              className="w-full px-4 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
             >
               Create
             </button>
@@ -122,7 +181,7 @@ const Modal = ({ isOpen, onClose, currentUser, setIsPricingOpen }) => {
   );
 };
 
-export default function AddProject({ updatedProjects }) {
+export default function AddProject({ updatedProjects, setUpdatedProjects }) {
   const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPricingOpen, setIsPricingOpen] = useState(false); // State để kiểm soát modal Pricing
@@ -134,6 +193,11 @@ export default function AddProject({ updatedProjects }) {
 
     const fetchCurrentUser = async () => {
       try {
+        if (!navigator.onLine) {
+          // Không có kết nối Internet
+          toast.error("No internet access.");
+          return;
+        }
         let { data: users, error } = await supabase
           .from("users")
           .select("*")
@@ -164,7 +228,8 @@ export default function AddProject({ updatedProjects }) {
         updatedProjects.length >= 1 &&
         (currentUser.plan === "Free" ||
           currentUser.plan === null ||
-          currentUser.plan === undefined)
+          currentUser.plan === undefined) &&
+        currentUser.subscription_status !== "active"
       ) {
         setIsButtonDisabled(true);
       } else {
@@ -184,32 +249,70 @@ export default function AddProject({ updatedProjects }) {
   const closeModalPricing = () => {
     setIsPricingOpen(false);
   };
-  console.log("isButtonDisabled", isButtonDisabled);
-  console.log("isPricingOpen", isPricingOpen);
+
   return (
     <div className="App">
-      <button
-        className={`text-white bg-blue-600 ${
-          isButtonDisabled ? "opacity-50 bg-gray-600" : "hover:bg-blue-800"
-        } focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:focus:ring-blue-800`}
-        onClick={handleClick}
-      >
-        Add new
-      </button>
-      <Modal
+      {isButtonDisabled ? (
+        <Tooltip
+          title={`You need to upgrade your plan to create more projects. 'Click' to update your plan!`}
+          color="gray"
+          zIndex={20000}
+        >
+          <button
+            className={`text-white opacity-50 bg-gray-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:focus:ring-blue-800`}
+            onClick={handleClick}
+          >
+            Add new
+          </button>
+        </Tooltip>
+      ) : (
+        <>
+          <button
+            className={`text-white bg-blue-600 "hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:focus:ring-blue-800`}
+            onClick={handleClick}
+          >
+            Add new
+          </button>
+        </>
+      )}
+      <ReactModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        currentUser={currentUser}
-        setIsPricingOpen={setIsPricingOpen}
-      />
+        onRequestClose={() => setIsModalOpen(false)}
+        ariaHideApp={false}
+        style={{
+          overlay: {
+            backgroundColor: "gray", // Màu nền overlay
+            position: "fixed", // Để nền overlay cố định
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 9998, // Chỉ số z để đảm bảo nó hiển thị trên cùng
+          },
+          content: {
+            border: "none", // Để ẩn border của nội dung Modal
+            background: "none", // Để ẩn background của nội dung Modal
+            // margin: "auto", // Để căn giữa
+          },
+        }}
+      >
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          currentUser={currentUser}
+          setIsPricingOpen={setIsPricingOpen}
+          updatedProjects={updatedProjects}
+          setUpdatedProjects={setUpdatedProjects}
+        />
+      </ReactModal>
 
       <ReactModal
         isOpen={isPricingOpen}
         onRequestClose={closeModalPricing}
-        contentLabel="YouTube Link Modal"
+        ariaHideApp={false}
         style={{
           overlay: {
-            backgroundColor: "rgba(0, 0, 0, 0.5)", // Màu nền overlay
+            backgroundColor: "gray", // Màu nền overlay
             position: "fixed", // Để nền overlay cố định
             top: 0,
             left: 0,

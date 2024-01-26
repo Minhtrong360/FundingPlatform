@@ -1,7 +1,7 @@
 const GIFsCard = ({ title, videoUrl }) => {
   return (
-    <div className="space-y-8 xl:space-y-10 mt-2 mb-2">
-      <h2 className="text-xl text-white font-semibold tracking-tighter sm:text-2xl xl:text-3xl">
+    <div className="space-y-8 xl:space-y-10 mt-6 mb-2">
+      <h2 className="pl-5 text-xl text-white font-semibold tracking-tighter sm:text-2xl xl:text-3xl">
         {title}
       </h2>
       <div className="aspect-video w-full overflow-hidden rounded-md">
@@ -16,8 +16,8 @@ const GIFsCard = ({ title, videoUrl }) => {
 };
 
 const FeatureGIFs = () => (
-  <section className="py-12 md:py-24 lg:py-32">
-    <div className="container mx-auto grid gap-8 px-4 md:px-6 lg:grid-cols-3 lg:gap-8 bg-black pb-8">
+  <section className="w-screen bg-black">
+    <div className="container mx-auto grid  px-4 md:px-6 lg:grid-cols-3  pb-8">
       <GIFsCard
         title="Notion-like editor"
         videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Free%20Text%20Editor.gif?t=2024-01-11T09%3A51%3A11.171Z"

@@ -13,7 +13,7 @@ const NavbarButton = ({ children, onClick, className }) => {
     <button
       type="button"
       onClick={onClick}
-      className={`text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-600 dark:focus:ring-blue-800 ${className}`}
+      className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 ${className}`}
     >
       {children}
     </button>
@@ -22,7 +22,7 @@ const NavbarButton = ({ children, onClick, className }) => {
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isHidden, setIsHidden] = useState(false);
+  // const [isHidden, setIsHidden] = useState(false);
   const { user } = useAuth();
   const [loginPart, setLoginPart] = useState("");
   const navigate = useNavigate();
@@ -32,21 +32,21 @@ const Navbar = () => {
     navigate("/login"); // Show the LoginPage component when the button is clicked
   };
 
-  const handleFinancialProductClick = () => {
-    // Lấy đối tượng ref của phần tử "Financial Product" từ Home component
-    const financialProductRef = document.getElementById("platform"); // Đặt ID tương ứng với ref của bạn
-    setIsOpen(!isOpen);
-    if (financialProductRef) {
-      // Sử dụng `scrollIntoView()` để cuộn đến phần tử "Financial Product"
-      const elementRect = financialProductRef.getBoundingClientRect();
-      const bodyRect = document.body.getBoundingClientRect();
-      const offsetTop = elementRect.top - bodyRect.top;
-      window.scrollTo({
-        top: offsetTop - (window.innerHeight - elementRect.height) / 20,
-        behavior: "smooth",
-      });
-    }
-  };
+  // const handleFinancialProductClick = () => {
+  //   // Lấy đối tượng ref của phần tử "Financial Product" từ Home component
+  //   const financialProductRef = document.getElementById("platform"); // Đặt ID tương ứng với ref của bạn
+  //   setIsOpen(!isOpen);
+  //   if (financialProductRef) {
+  //     // Sử dụng `scrollIntoView()` để cuộn đến phần tử "Financial Product"
+  //     const elementRect = financialProductRef.getBoundingClientRect();
+  //     const bodyRect = document.body.getBoundingClientRect();
+  //     const offsetTop = elementRect.top - bodyRect.top;
+  //     window.scrollTo({
+  //       top: offsetTop - (window.innerHeight - elementRect.height) / 20,
+  //       behavior: "smooth",
+  //     });
+  //   }
+  // };
   const handleProductFeaturesClick = () => {
     // Lấy đối tượng ref của phần tử "Financial Product" từ Home component
     const financialProductRef = document.getElementById("profiles"); // Đặt ID tương ứng với ref của bạn
@@ -111,9 +111,9 @@ const Navbar = () => {
   useEffect(() => {
     // Gắn hàm xử lý sự kiện vào sự kiện thay đổi kích thước màn hình
     window.addEventListener("resize", updateScreenWidth);
-    if (screenWidth <= 1100) {
-      setIsHidden(true);
-    } else setIsHidden(false);
+    // if (screenWidth <= 1100) {
+    //   setIsHidden(true);
+    // } else setIsHidden(false);
     // Loại bỏ hàm xử lý sự kiện khi component unmount
     return () => {
       window.removeEventListener("resize", updateScreenWidth);
@@ -135,12 +135,12 @@ const Navbar = () => {
     <>
       <nav className="fixed bg-white dark:bg-gray-900 w-full z-50  top-0 start-0 border-b border-gray-200 dark:border-gray-600">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 ">
-          <a
+          <button
             onClick={(e) => handleClickHome(e)}
             className="font-semibold text-2xl text-blue-600 flex items-center space-x-3 rtl:space-x-reverse hover:cursor-pointer"
           >
             BeeKrowd
-          </a>
+          </button>
           <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
             {/* {isHidden || loginPart === "" ? (
               <form>
@@ -245,7 +245,11 @@ const Navbar = () => {
                   Profiles
                 </NavbarItem>
                 <NavbarItem onClick={handlePricingClick}>Pricing</NavbarItem>
-                <NavbarItem href="https://beekrowd.canny.io/beekrowd-feedback">
+                <NavbarItem onClick={() => navigate("/news")}>News</NavbarItem>
+                <NavbarItem
+                  href="https://beekrowd.canny.io/beekrowd-feedback"
+                  target="_blank"
+                >
                   Feedback
                 </NavbarItem>
               </ul>

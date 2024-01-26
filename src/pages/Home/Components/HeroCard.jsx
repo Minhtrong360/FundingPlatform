@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Card from "./Card";
-import { Tooltip } from "antd";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+
 import { useAuth } from "../../../context/AuthContext";
 const HeroCard = () => {
   const { user } = useAuth();
@@ -36,22 +35,21 @@ const HeroCard = () => {
             traditional Vietnamese ca phe sua da.
           </p>
           <div className="mt-7 grid gap-3 w-full sm:inline-flex">
-            <a
-              className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-              href="#"
+            <button
+              className=" py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               onClick={handleClick}
             >
               {user ? "Create project" : "Get started"}
               <span>→</span>
-            </a>
-            <a
+            </button>
+            <button
               className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
               onClick={() =>
                 navigate(`/founder/${"3ec3f142-f33c-4977-befd-30d4ce2b764d"}`)
               }
             >
               See demo
-            </a>
+            </button>
           </div>
           <div className="mt-6 lg:mt-10 grid grid-cols-2 gap-x-5">
             <div className="py-5">

@@ -34,6 +34,11 @@ function ProjectList({ projects }) {
 
     const fetchCurrentUser = async () => {
       try {
+        if (!navigator.onLine) {
+          // Không có kết nối Internet
+          toast.error("No internet access.");
+          return;
+        }
         let { data: users, error } = await supabase
           .from("users")
           .select("*")
@@ -59,7 +64,12 @@ function ProjectList({ projects }) {
   }, [user]);
 
   useEffect(() => {
-    setUpdatedProjects(projects);
+    const sortedProjects = [...projects].sort((a, b) => {
+      const dateA = new Date(a.created_at);
+      const dateB = new Date(b.created_at);
+      return dateB - dateA;
+    });
+    setUpdatedProjects(sortedProjects);
   }, [projects]);
 
   const handleEditClick = (project) => {
@@ -70,11 +80,17 @@ function ProjectList({ projects }) {
 
   const handleSaveClick = async (project) => {
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
       if (
         (currentUser.plan === "Free" ||
           currentUser.plan === null ||
           currentUser.plan === undefined) &&
-        !editedProjectStatus
+        !editedProjectStatus &&
+        currentUser.subscription_status !== "active"
       ) {
         toast.warning(
           "You need to upgrade your plan to create a private project"
@@ -121,8 +137,13 @@ function ProjectList({ projects }) {
       return; // Không thực hiện xóa nếu người dùng không xác nhận
     }
     try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        toast.error("No internet access.");
+        return;
+      }
       // Gửi yêu cầu xóa dự án ra khỏi Supabase bằng cách sử dụng phương thức `delete`
-      console.log("projectId", projectId);
+
       const { error } = await supabase
         .from("projects")
         .delete()
@@ -145,17 +166,6 @@ function ProjectList({ projects }) {
     }
   };
 
-  useEffect(() => {
-    // Sắp xếp danh sách các dự án theo thời gian tạo mới nhất đến cũ nhất
-    const sortedProjects = [...projects].sort((a, b) => {
-      const dateA = new Date(a.created_at);
-      const dateB = new Date(b.created_at);
-      return dateB - dateA;
-    });
-
-    setUpdatedProjects(sortedProjects);
-  }, [projects]);
-
   const handleStatusToggle = () => {
     setEditedProjectStatus((prevStatus) => !prevStatus); // Chuyển đổi giữa Public và Private
   };
@@ -164,7 +174,10 @@ function ProjectList({ projects }) {
     <main className="w-full">
       <AlertMsg />
       <div className="flex justify-end mr-5 mb-5 items-end">
-        <AddProject updatedProjects={updatedProjects} />
+        <AddProject
+          updatedProjects={updatedProjects}
+          setUpdatedProjects={setUpdatedProjects}
+        />
       </div>
       <section className="container px-4 mx-auto">
         <div className="flex flex-col">
@@ -172,11 +185,11 @@ function ProjectList({ projects }) {
             <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
               <div className="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                  <thead className="bg-gray-50 dark:bg-gray-800">
+                  <thead className="bg-gray-50 dark:bg-gray-800 ">
                     <tr>
                       <th
                         scope="col"
-                        className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="py-3.5 px-4 text-sm font-bold text-left rtl:text-right text-black-500 dark:text-gray-400"
                       >
                         <div className="flex items-center gap-x-3">
                           <input
@@ -190,38 +203,38 @@ function ProjectList({ projects }) {
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="w-[150px] px-4 py-3.5 text-sm font-bold text-left rtl:text-right text-black-500 dark:text-gray-400"
                       >
                         Name
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-bold text-left rtl:text-right text-black-500 dark:text-gray-400"
                       >
                         Date
                       </th>
 
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-bold text-left rtl:text-right text-black-500 dark:text-gray-400"
                       >
                         Customer
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-bold text-left rtl:text-right text-black-500 dark:text-gray-400"
                       >
                         Status
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-bold text-left rtl:text-right text-black-500 dark:text-gray-400"
                       >
                         Action
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-bold text-left rtl:text-right text-black-500 dark:text-gray-400"
                       >
                         Invite
                       </th>
@@ -229,7 +242,7 @@ function ProjectList({ projects }) {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
                     {updatedProjects.map((project, index) => (
-                      <tr key={project.id}>
+                      <tr key={index}>
                         <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
                           <div className="inline-flex items-center gap-x-3">
                             <input
@@ -244,31 +257,26 @@ function ProjectList({ projects }) {
                             </span>
                           </div>
                         </td>
-                        <td
-                          onClick={() => handleProjectClick(project)}
-                          className={`${
-                            editingProjectId === project.id
-                              ? "hidden"
-                              : "hover:cursor-pointer"
-                          } px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap`}
-                        >
-                          {project.name}
+                        <td className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap">
+                          <div
+                            className={`w-[150px] flex items-center ${
+                              editingProjectId === project.id ? "hidden" : ""
+                            } hover:cursor-pointer`}
+                            onClick={() => handleProjectClick(project)}
+                          >
+                            {project.name}
+                          </div>
+                          {editingProjectId === project.id && (
+                            <input
+                              type="text"
+                              value={editedProjectName}
+                              onChange={(e) =>
+                                setEditedProjectName(e.target.value)
+                              }
+                              className="w-[150px] border-0 p-0 text-sm text-red-500 dark:text-gray-300 whitespace-nowrap focus:outline-none focus:ring-0 "
+                            />
+                          )}
                         </td>
-                        <td
-                          className={`${
-                            editingProjectId === project.id ? "" : "hidden"
-                          } `}
-                        >
-                          <input
-                            type="text"
-                            value={editedProjectName}
-                            onChange={(e) =>
-                              setEditedProjectName(e.target.value)
-                            }
-                            className="border-0 px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap focus:outline-none focus:ring-0"
-                          />
-                        </td>
-
                         <td
                           className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap hover:cursor-pointer"
                           onClick={() => handleProjectClick(project)}
@@ -277,35 +285,39 @@ function ProjectList({ projects }) {
                         </td>
                         {/* <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">{project.status}</td> */}
                         <td
-                          className=" py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap hover:cursor-pointer"
+                          className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap hover:cursor-pointer"
                           onClick={() => handleProjectClick(project)}
                         >
-                          <div className="flex items-center gap-x-2">
-                            {user.email}
-                          </div>
+                          {project.user_email}
                         </td>
 
                         <td
                           className={`hover:cursor-pointer px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap ${
                             editingProjectId !== project.id ? "" : "hidden"
                           }`}
-                          onClick={() => handleProjectClick(project)}
                         >
-                          {project.status ? "Public" : "Private"}
+                          <button
+                            onClick={() => handleProjectClick(project)}
+                            className={`w-[5em] ${
+                              project.status ? "bg-blue-600" : "bg-red-600"
+                            } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+                          >
+                            {project.status ? "Public" : "Private"}
+                          </button>
                         </td>
                         <td
                           className={`px-4 py-4 text-sm whitespace-nowrap ${
                             editingProjectId === project.id ? "" : "hidden"
                           }`}
                         >
-                          <div className="flex items-center gap-x-2">
+                          <div className="flex items-center gap-x-6">
                             <button
                               onClick={handleStatusToggle}
-                              className={`${
+                              className={`w-[5em] ${
                                 editedProjectStatus
                                   ? "bg-blue-600"
                                   : "bg-red-600"
-                              } text-white px-2 py-1 rounded-md hover:bg-opacity-80 transition-all`}
+                              } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
                             >
                               {editedProjectStatus ? "Public" : "Private"}
                             </button>
@@ -317,44 +329,44 @@ function ProjectList({ projects }) {
                             {editingProjectId === project.id ? (
                               <>
                                 <button
-                                  className="text-blue-500 transition-colors duration-200 dark:hover:text-indigo-500 dark:text-gray-300 hover:text-indigo-500 focus:outline-none"
+                                  className={`w-[5em] text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 `}
                                   onClick={() => handleSaveClick(project)}
                                 >
                                   Save
                                 </button>
                                 <button
-                                  className="text-red-500 transition-colors duration-200 hover:text-indigo-500 focus:outline-none"
+                                  className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 `}
                                   onClick={() => setEditingProjectId(null)}
                                 >
                                   Cancel
                                 </button>
                               </>
                             ) : (
-                              <button
-                                className="text-blue-500 transition-colors duration-200 dark:hover:text-indigo-500 dark:text-gray-300 hover:text-indigo-500 focus:outline-none"
-                                onClick={() => handleEditClick(project)}
-                              >
-                                Edit
-                              </button>
+                              <>
+                                <button
+                                  className={`w-[5em] text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 `}
+                                  onClick={() => handleEditClick(project)}
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 `}
+                                  onClick={() => handleDelete(project.id)}
+                                >
+                                  Delete
+                                </button>
+                              </>
                             )}
-                            <button
-                              className="text-red-500 transition-colors duration-200 hover:text-indigo-500 focus:outline-none"
-                              onClick={() => handleDelete(project.id)}
-                            >
-                              Delete
-                            </button>
                           </div>
                         </td>
                         <td className="px-4 py-4 text-sm whitespace-nowrap">
-                          {
-                            project.status ? (
-                              "" // Nếu project.status = true, không hiển thị gì
-                            ) : project.user_id === user.id ? (
-                              <InvitedUserProject projectId={project.id} /> // Nếu project.status = false và project.user_id = user.id, hiển thị InvitedUserProject component
-                            ) : (
-                              ""
-                            ) // Ngược lại, không hiển thị gì
-                          }
+                          {project.status ? (
+                            "" // Nếu project.status = true, không hiển thị gì
+                          ) : project.user_id === user.id ? (
+                            <InvitedUserProject projectId={project.id} /> // Nếu project.status = false và project.user_id = user.id, hiển thị InvitedUserProject component
+                          ) : (
+                            ""
+                          )}
                         </td>
                       </tr>
                     ))}

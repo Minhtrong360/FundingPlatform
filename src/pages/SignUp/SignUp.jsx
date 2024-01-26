@@ -7,6 +7,7 @@ import SpinnerBtn from "../../components/SpinnerBtn";
 import AlertMsg from "../../components/AlertMsg";
 import AnnouncePage from "../../components/AnnouncePage";
 import { GoogleOutlined } from "@ant-design/icons";
+import LoadingButtonClick from "../../components/LoadingButtonClick";
 
 const HeroSignUp = () => {
   const [rememberMe, setRememberMe] = useState(false);
@@ -46,6 +47,11 @@ const HeroSignUp = () => {
         // Nếu email không tồn tại, thực hiện đăng ký
 
         try {
+          if (!navigator.onLine) {
+            // Không có kết nối Internet
+            toast.error("No internet access.");
+            return;
+          }
           await supabase.auth.signUp({ email, password });
           setResetLink(true);
         } catch (error) {
@@ -66,7 +72,7 @@ const HeroSignUp = () => {
           title="Congratulations!"
           announce="You have signed up to BeeKrowd."
           describe="Email sent successfully. Check your inbox to confirm."
-          highlightedWord ='BeeKrowd'
+          highlightedWord="BeeKrowd"
         />
       ) : (
         <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
@@ -179,7 +185,7 @@ const HeroSignUp = () => {
                           />
                         </div>
                       </div>
-
+                      <LoadingButtonClick isLoading={isLoading} />
                       {/* Checkbox and Terms */}
                       <div className="mt-5 flex items-center">
                         <div className="flex items-center">
@@ -197,13 +203,17 @@ const HeroSignUp = () => {
                             className="ml-3 text-sm dark:text-white"
                           >
                             I accept the{" "}
-                            <a
-                              className="text-blue-600 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                              onClick={() => navigate("/terms")}
-                              target="_blank"
+                            <button
+                              className="text-blue-600 decoration-2 hover:underline hover:cursor-pointer font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                              onClick={() =>
+                                window.open(
+                                  "https://www.beekrowd.com/terms",
+                                  "_blank"
+                                )
+                              }
                             >
                               Terms and Conditions
-                            </a>
+                            </button>
                           </label>
                         </div>
 
@@ -216,7 +226,7 @@ const HeroSignUp = () => {
                           type="submit"
                           className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                         >
-                          {isLoading ? <SpinnerBtn /> : "Get started"}
+                          Get started
                         </button>
                       </div>
                     </div>

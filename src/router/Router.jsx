@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import HomePage from "../pages/Home/HomePage";
 
 import FundraisingRecords from "../pages/FundraisingRecords/FundraisingRecords";
-import Dashboard from "../pages/DashBoard/DashBoard";
+
 import SignUp from "../pages/SignUp/SignUp";
 import Login from "../pages/Login/Login";
 import ForgotPassword from "../pages/SignUp/ForgotPassword";
@@ -14,8 +14,6 @@ import PaymentSuccess from "../pages/PaymentSuccess";
 
 import DetailPage from "../pages/FounderGitbook/DetailPage";
 
-import CompanyInfo from "../pages/FounderGitbook/Company";
-
 import Trial from "../pages/DashBoard/trial";
 import AuthRequire from "./AuthRequired";
 
@@ -23,8 +21,12 @@ import TermsAndConditions from "../pages/DashBoard/term";
 import UserPage from "../pages/UserProfile/UserPage";
 import Newdb from "../pages/DashBoard/NewDashboard";
 import LinkedInLoginComponent from "../pages/Login/linkedin";
-import Financials from "../pages/Financials";
+
 import NewsComponent from "../pages/test";
+import DashBoardPage from "../pages/DashBoard/DashBoardPage";
+import CompanySetting from "../pages/FounderGitbook/CompanySetting";
+import News from "../pages/News/News";
+import LoadingButtonClick from "../components/LoadingButtonClick";
 function Router() {
   return (
     <Routes>
@@ -60,14 +62,14 @@ function Router() {
       <Route path="/fundraising" element={<FundraisingRecords />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
-      {/* <Route
+      <Route
         path="/dashboard"
         element={
           <AuthRequire message="Sign in required!">
-            <Dashboard />
+            <DashBoardPage />
           </AuthRequire>
         }
-      /> */}
+      />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/update-password" element={<UpdatePassword />} />
       {/* <Route path="/content" element={<ChatBotTest />} /> */}
@@ -77,17 +79,22 @@ function Router() {
         path="/company/:id"
         element={
           <AuthRequire message="Sign in required!">
-            <CompanyInfo />
+            <CompanySetting />
           </AuthRequire>
         }
       />
-       <Route path="/linkedin" element={<LinkedInLoginComponent />} />
+      <Route path="/linkedin" element={<LinkedInLoginComponent />} />
       <Route path="/newdb" element={<Newdb />} />
-      <Route path="/dashboard" element={<Dashboard />} />
+
       <Route path="/trials" element={<Trial />} />
       <Route path="/terms" element={<TermsAndConditions />} />
-      <Route path="/financials" element={<Financials />} />
-      <Route path="/test" element={<NewsComponent />} />
+      {/* <Route path="/financials" element={<Financials />} /> */}
+      <Route path="/financials" element={<NewsComponent />} />
+      <Route path="/news" element={<News />} />
+      <Route
+        path="/loading"
+        element={<LoadingButtonClick isLoading={true} />}
+      />
     </Routes>
   );
 }

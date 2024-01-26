@@ -11,17 +11,32 @@ import { MenuButton } from "@mui/base/MenuButton";
 import { Menu } from "@mui/base/Menu";
 import { MenuItem } from "@mui/base/MenuItem";
 
-const Search = ({ onSearch, onIndustryChange }) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedIndustry, setSelectedIndustry] = useState("");
-
+const Search = ({
+  onSearch,
+  onIndustryChange,
+  companies,
+  searchTerm,
+  setSearchTerm,
+  selectedIndustry,
+  setSelectedIndustry,
+}) => {
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (value.length > 0) {
+      const filteredSuggestions = companies.filter((company) =>
+        company.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setSuggestions(filteredSuggestions);
+    } else {
+      setSuggestions([]);
+    }
   };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     onSearch(searchTerm);
+    setSuggestions([]);
   };
 
   const handleIndustryClick = (industry) => {
@@ -29,6 +44,17 @@ const Search = ({ onSearch, onIndustryChange }) => {
 
     onIndustryChange(industry);
   };
+
+  const [suggestions, setSuggestions] = useState([]);
+
+  const handleSuggestionClick = (name) => {
+    console.log("click");
+    setSearchTerm(name);
+    setSuggestions([]);
+    onSearch(name); // Optional: Trigger the search when a suggestion is clicked
+  };
+
+  console.log("suggestions", suggestions);
 
   return (
     <div className="relative overflow-hidden">
@@ -51,7 +77,7 @@ const Search = ({ onSearch, onIndustryChange }) => {
                     className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
                     placeholder="Search profiles"
                     value={searchTerm}
-                    onChange={handleSearchChange}
+                    onChange={handleSearchChange} // Thêm sự kiện onChange này
                   />
                 </div>
                 <div className="flex-[0_0_auto]">
@@ -72,6 +98,19 @@ const Search = ({ onSearch, onIndustryChange }) => {
                 </div>
               </div>
             </form>
+            {suggestions.length > 0 && (
+              <ul className=" mt-2 top-full left-0 right-0 z-50 bg-white border border-gray-200 rounded-md shadow-lg max-h-96 overflow-y-auto">
+                {suggestions.map((company, index) => (
+                  <li
+                    key={index}
+                    className="text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleSuggestionClick(company.name)}
+                  >
+                    {company.name}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div className="mt-2 sm:mt-4">
             <button

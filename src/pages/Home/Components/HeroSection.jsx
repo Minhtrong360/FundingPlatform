@@ -40,7 +40,7 @@ const HeroSection = () => {
 
   return (
     <motion.div
-      className="max-w-[85rem] mx-auto mt-24 px-4 sm:px-6 lg:px-8 z-0"
+      className="max-w-[85rem] mx-auto mt-32 px-4 sm:px-6 lg:px-8 z-0"
       initial="hidden"
       animate="visible"
       variants={containerVariants}

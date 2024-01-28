@@ -8,39 +8,14 @@ import {
 } from "../components/ui/Select";
 import { Input } from "../components/ui/Input";
 import { Table } from "antd";
-import Chart from "react-apexcharts";
 
 const Alpha = () => {
   const [selectedDuration, setSelectedDuration] = useState("3 years");
-
-  const [tableData, setTableData] = useState([
-    {
-      month: "",
-      customers: "",
-      revenue: "",
-      txFee: "",
-      netRevenue: "",
-      cogs: "", // Add COGS to the data
-      grossProfit: "", // Add Gross Profit to the data
-      "Cost value": "", // Add Cost value column with conditions
-      "Salary Expense": "", // Add Salary Expense to the data
-      depreciation: "",
-      accumulatedDepreciation: "",
-      bookValue: "",
-      loanAmount: "",
-      principalPayment: "",
-
-      interestPayment: "",
-      loanBalance: "",
-    },
-  ]);
-  const [chartData, setChartData] = useState([]);
-  const [revenueChartData, setRevenueChartData] = useState([]);
-
-  // ... other similar states for different sections ...
+  const columns = 5;
   const [customerInputs, setCustomerInputs] = useState([
     { channelName: "Online", customersPerMonth: 100, growthPerMonth: 10 },
   ]);
+  const [customerResult, setCustomerResult] = useState([]);
 
   const addNewCustomerInput = () => {
     setCustomerInputs([
@@ -60,6 +35,32 @@ const Alpha = () => {
     newInputs[index][field] = value;
     setCustomerInputs(newInputs);
   };
+
+  useEffect(() => {
+    // Calculate customerResult based on customerInputs
+    const calculateCustomerResult = (inputs) => {
+      return inputs.map((input) => {
+        const { customersPerMonth, growthPerMonth } = input;
+        const result = {};
+
+        for (let month = 1; month <= 5; month++) {
+          result[month] =
+            customersPerMonth * (1 + growthPerMonth / 100) ** month;
+        }
+
+        return {
+          channelName: input.channelName,
+          result,
+        };
+      });
+    };
+
+    // Set customerResult based on customerInputs
+    setCustomerResult(calculateCustomerResult(customerInputs));
+  }, [customerInputs]);
+
+  // console.log("customerInputs", customerInputs);
+  // console.log("customerResult", customerResult);
 
   const [channelInputs, setChannelInputs] = useState([
     {
@@ -89,6 +90,45 @@ const Alpha = () => {
     newInputs[index][field] = value;
     setChannelInputs(newInputs);
   };
+
+  // Calculate revenueResult based on channelInputs and customerResult
+  // Calculate revenueResult based on channelInputs and customerResult
+  const calculateRevenueResult = () => {
+    const result = {};
+
+    customerResult.forEach((customer) => {
+      const channelName = customer.channelName;
+      const customerResultData = customer.result;
+
+      if (
+        channelInputs.find((input) => input.selectedChannel === channelName)
+      ) {
+        const channelInput = channelInputs.find(
+          (input) => input.selectedChannel === channelName
+        );
+        const { price, multiples } = channelInput;
+
+        const revenueResult = {};
+        for (let month = 1; month <= 5; month++) {
+          revenueResult[month] = price * multiples * customerResultData[month];
+        }
+
+        result[channelName] = revenueResult;
+      }
+    });
+
+    return result;
+  };
+
+  const [revenueResult, setRevenueResult] = useState(calculateRevenueResult());
+
+  useEffect(() => {
+    // Recalculate revenueResult when channelInputs or customerResult change
+    setRevenueResult(calculateRevenueResult());
+  }, [channelInputs, customerResult]);
+
+  console.log("channelInputs", channelInputs);
+  console.log("revenueResult", revenueResult);
 
   const [costInputs, setCostInputs] = useState([
     {
@@ -227,312 +267,6 @@ const Alpha = () => {
     const newInputs = [...loanInputs];
     newInputs.splice(index, 1);
     setLoanInputs(newInputs);
-  };
-
-  useEffect(() => {
-    const calculateTableData = () => {
-      const months = selectedDuration === "3 years" ? 36 : 60;
-      let data = [];
-
-      for (let i = 1; i <= months; i++) {
-        let monthData = {
-          month: i.toString(),
-          customers: 0,
-          revenue: 0,
-          txFee: 0,
-          netRevenue: 0,
-          cogs: 0,
-          grossProfit: 0,
-          "Cost value": 0,
-          "Salary Expense": 0,
-          depreciation: 0,
-          accumulatedDepreciation: 0,
-          bookValue: 0,
-          loanAmount: 0,
-          principalPayment: 0,
-          interestPayment: 0,
-          loanBalance: 0,
-        };
-
-        // Calculate values for each customer channel
-        customerInputs.forEach((customer) => {
-          let currentCustomers =
-            customer.customersPerMonth *
-            Math.pow(1 + customer.growthPerMonth / 100, i - 1);
-          let channel = channelInputs.find(
-            (channel) => channel.selectedChannel === customer.channelName
-          );
-          if (channel) {
-            let revenue = currentCustomers * channel.price * channel.multiples;
-            let txFee = (revenue * channel.txFeePercentage) / 100;
-            let cogs = (revenue * channel.cogsPercentage) / 100;
-            let netRevenue = revenue - txFee;
-            let grossProfit = netRevenue - cogs;
-
-            monthData.customers += currentCustomers;
-            monthData.revenue += revenue;
-            monthData.txFee += txFee;
-            monthData.netRevenue += netRevenue;
-            monthData.cogs += cogs;
-            monthData.grossProfit += grossProfit;
-          }
-        });
-
-        // Calculate values for costs
-        costInputs.forEach((cost) => {
-          if (i >= cost.beginMonth && i <= cost.endMonth) {
-            monthData["Cost value"] += cost.costValue;
-          }
-        });
-
-        // Calculate values for personnel
-        personnelInputs.forEach((personnel) => {
-          if (i >= personnel.jobBeginMonth && i <= personnel.jobEndMonth) {
-            monthData["Salary Expense"] +=
-              personnel.salaryPerMonth * personnel.numberOfHires;
-          }
-        });
-
-        // Calculation for investmentInputs
-        investmentInputs.forEach((investment) => {
-          if (i === investment.purchaseMonth) {
-            monthData.depreciation =
-              (investment.assetCost - investment.residualValue) /
-              investment.usefulLifetime;
-            monthData.accumulatedDepreciation += monthData.depreciation;
-            monthData.bookValue =
-              investment.assetCost - monthData.accumulatedDepreciation;
-          } else if (
-            i > investment.purchaseMonth &&
-            i <= investment.purchaseMonth + investment.usefulLifetime
-          ) {
-            monthData.depreciation =
-              (investment.assetCost - investment.residualValue) /
-              investment.usefulLifetime;
-            monthData.accumulatedDepreciation += monthData.depreciation;
-            monthData.bookValue -= monthData.depreciation;
-          }
-        });
-
-        // Calculation for loanInputs
-        loanInputs.forEach((loan) => {
-          if (
-            i >= parseInt(loan.loanBeginMonth) &&
-            i < parseInt(loan.loanBeginMonth) + parseInt(loan.loanLength)
-          ) {
-            monthData.loanAmount = parseInt(loan.loanAmount);
-            let monthlyInterestRate = parseFloat(loan.interestRate) / 100 / 12;
-            let monthlyPrincipal =
-              monthData.loanAmount / parseInt(loan.loanLength);
-            monthData.interestPayment =
-              monthData.loanAmount * monthlyInterestRate;
-            monthData.principalPayment = monthlyPrincipal;
-            monthData.loanBalance =
-              monthData.loanAmount -
-              monthlyPrincipal * (i - parseInt(loan.loanBeginMonth) + 1);
-          }
-        });
-
-        // Add the month data to the table data array
-        data.push(monthData);
-      }
-
-      setTableData(data);
-    };
-
-    calculateTableData();
-  }, [
-    customerInputs,
-    channelInputs,
-    investmentInputs,
-    loanInputs,
-    selectedDuration,
-    personnelInputs,
-    costInputs,
-  ]);
-
-  useEffect(() => {
-    const chartData = tableData.map((item) => item.customers);
-    setChartData(chartData);
-  }, [tableData]);
-  console.log("tableData", tableData);
-
-  const dataSource = [
-    {
-      key: "customers",
-      month: "Customer",
-      ...tableData.reduce((acc, data) => {
-        acc[data.month] = data.customers;
-        return acc;
-      }, {}),
-    },
-    {
-      key: "revenue",
-      month: "Revenue",
-      ...tableData.reduce((acc, data) => {
-        acc[data.month] = data.revenue;
-        return acc;
-      }, {}),
-    },
-    {
-      key: "txFee",
-      month: "Tx fee",
-      ...tableData.reduce((acc, data) => {
-        acc[data.month] = data.txFee;
-        return acc;
-      }, {}),
-    },
-    {
-      key: "cogs", // Add COGS row
-      month: "COGS",
-      ...tableData.reduce((acc, data) => {
-        acc[data.month] = data.cogs;
-        return acc;
-      }, {}),
-    },
-    {
-      key: "grossProfit", // Add Gross Profit row
-      month: "Gross Profit",
-      ...tableData.reduce((acc, data) => {
-        acc[data.month] = data.grossProfit;
-        return acc;
-      }, {}),
-    },
-    {
-      key: "CostValue", // Add Cost value row
-      month: "Cost value",
-      ...tableData.reduce((acc, data) => {
-        acc[data.month] = data["Cost value"];
-        return acc;
-      }, {}),
-    },
-    {
-      key: "salaryExpense", // Add Salary Expense row
-      month: "Salary Expense",
-      ...tableData.reduce((acc, data) => {
-        acc[data.month] = data["Salary Expense"];
-        return acc;
-      }, {}),
-    },
-    // {
-    //   key: "assetCost",
-    //   month: "Asset Cost",
-    //   ...tableData.reduce((acc, data) => {
-    //     // Display the asset cost only in the purchase month
-    //     acc[data.month] =
-    //       data.month === parseInt(purchaseMonth)
-    //         ? parseFloat(assetCost).toFixed(2)
-    //         : "-";
-    //     return acc;
-    //   }, {}),
-    // },
-    {
-      key: "depreciation",
-      month: "Depreciation",
-      ...tableData.reduce((acc, data) => {
-        acc[data.month] = data.depreciation;
-        return acc;
-      }, {}),
-    },
-    {
-      key: "accumulatedDepreciation",
-      month: "Accumulated Depreciation",
-      ...tableData.reduce((acc, data) => {
-        acc[data.month] = data.accumulatedDepreciation;
-        return acc;
-      }, {}),
-    },
-    // {
-    //   key: "bookValue",
-    //   month: "Book Value",
-    //   ...tableData.reduce((acc, data) => {
-    //     // Display the book value only from the purchase month to the end of useful life
-    //     if (
-    //       data.month >= parseInt(purchaseMonth) &&
-    //       data.month < parseInt(purchaseMonth) + parseFloat(usefulLifetime)
-    //     ) {
-    //       acc[data.month] = data.bookValue;
-    //     } else {
-    //       acc[data.month] = "-";
-    //     }
-    //     return acc;
-    //   }, {}),
-    // },
-    {
-      key: "loanAmount",
-      month: "Loan Amount",
-      ...tableData.reduce((acc, data) => {
-        acc[data.month] = data.loanAmount;
-        return acc;
-      }, {}),
-    },
-    {
-      key: "interestPayment",
-      month: "Interest Payment",
-      ...tableData.reduce((acc, data) => {
-        acc[data.month] = data.interestPayment;
-        return acc;
-      }, {}),
-    },
-    {
-      key: "principalPayment",
-      month: "Principal Payment",
-      ...tableData.reduce((acc, data) => {
-        acc[data.month] = data.principalPayment;
-        return acc;
-      }, {}),
-    },
-    {
-      key: "loanBalance",
-      month: "Loan Balance",
-      ...tableData.reduce((acc, data) => {
-        acc[data.month] = data.loanBalance;
-        return acc;
-      }, {}),
-    },
-  ];
-
-  const columns = [
-    {
-      title: "Month",
-      dataIndex: "month",
-      key: "month",
-    },
-    ...tableData.map((data) => ({
-      title: `${data.month}`,
-      dataIndex: data.month,
-      key: `month_${data.month}`,
-    })),
-  ];
-
-  const filteredColumns = columns.filter((col) => col.key !== "revenue");
-
-  const chartOptions = {
-    chart: {
-      type: "area",
-    },
-    xaxis: {
-      categories: tableData.map((item) => item.month),
-    },
-    yaxis: {
-      title: {
-        text: "Customers",
-      },
-    },
-  };
-
-  const revenueChartOptions = {
-    chart: {
-      type: "line",
-    },
-    xaxis: {
-      categories: tableData.map((item) => item.month),
-    },
-    yaxis: {
-      title: {
-        text: "Revenue",
-      },
-    },
   };
 
   return (
@@ -1080,51 +814,6 @@ const Alpha = () => {
           </button>
         </section>
       </div>
-      <h2
-        className="text-lg font-semibold mb-4 flex items-center mt-16"
-        id="chart-heading"
-      >
-        Table
-      </h2>
-      <div className="w-full overflow-auto mx-auto">
-        <Table
-          dataSource={dataSource}
-          columns={filteredColumns}
-          pagination={false}
-        />
-      </div>
-
-      {/* <h2
-        className="text-lg font-semibold mb-4 flex items-center mt-16"
-        id="chart-heading"
-      >
-        Customer Chart
-      </h2>
-
-      <div className="w-full mx-auto">
-        <Chart
-          options={chartOptions}
-          series={[{ name: "Customers", data: chartData }]}
-          type="bar"
-          height={300}
-        />
-      </div>
-
-      <h2
-        className="text-lg font-semibold mb-4 flex items-center mt-16"
-        id="chart-heading"
-      >
-        Revenue Chart
-      </h2>
-
-      <div className="w-full mx-auto">
-        <Chart
-          options={revenueChartOptions}
-          series={[{ name: "Revenue", data: revenueChartData }]}
-          type="area"
-          height={300}
-        />
-      </div> */}
     </div>
   );
 };

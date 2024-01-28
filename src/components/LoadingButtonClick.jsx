@@ -9,7 +9,7 @@ function LoadingButtonClick({ isLoading }) {
         isOpen={isLoading}
         style={{
           overlay: {
-            backgroundColor: "rgba(0, 0, 0, 0.2)",
+            backgroundColor: "none",
             position: "fixed",
             top: 0,
             left: 0,

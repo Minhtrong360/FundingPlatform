@@ -77,7 +77,7 @@ const PricingCard = ({ plan, onClick }) => {
         <button
           onClick={onClick}
           className={`mt-5 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-white hover:bg-blue-700 disabled:opacity-0.5 disabled:pointer-events-none ${
-            plan.price?.unit_amount / 100 === 0 ? "bg-gray-600" : "bg-blue-600"
+            plan.price?.unit_amount / 100 === 0 ? "bg-gray-400" : "bg-blue-600"
           } dark:hover:bg-blue-700900 dark:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}
           disabled={plan.price?.unit_amount / 100 === 0}
         >

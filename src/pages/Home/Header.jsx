@@ -131,9 +131,44 @@ const Navbar = () => {
     setLoginPart(loginPart);
   }, [location]); // Phụ thuộc vào location
 
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  const controlNavbar = () => {
+    if (typeof window !== "undefined") {
+      // Check if the current screen size is less than the large breakpoint
+      if (window.innerWidth < 1024) {
+        // Tailwind's 'lg' breakpoint
+        if (window.scrollY > lastScrollY) {
+          setIsVisible(false);
+        } else {
+          setIsVisible(true);
+        }
+      } else {
+        setIsVisible(true); // Always show the navbar on large screens and above
+      }
+      setLastScrollY(window.scrollY);
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.addEventListener("scroll", controlNavbar);
+
+      // Cleanup function
+      return () => {
+        window.removeEventListener("scroll", controlNavbar);
+      };
+    }
+  }, [lastScrollY]);
+
   return (
     <>
-      <nav className="fixed bg-white dark:bg-gray-900 w-full z-50  top-0 start-0 border-b border-gray-200 dark:border-gray-600">
+      <nav
+        className={`fixed bg-white dark:bg-gray-900 w-full z-50 top-0 start-0 border-b border-gray-200 dark:border-gray-600 transition-transform duration-100 ease-in-out ${
+          !isVisible ? "-translate-y-full" : "translate-y-0"
+        }`}
+      >
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 sm:py-4 py-2">
           <button
             onClick={(e) => handleClickHome(e)}

@@ -54,8 +54,6 @@ const Search = ({
     onSearch(name); // Optional: Trigger the search when a suggestion is clicked
   };
 
-  console.log("suggestions", suggestions);
-
   return (
     <div className="relative overflow-hidden">
       <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-2 mt-24">

@@ -3,7 +3,6 @@ import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 import AlertMsg from "../../components/AlertMsg";
-import SpinnerBtn from "../../components/SpinnerBtn";
 import InputField from "../../components/InputField";
 
 import apiService from "../../app/apiService";
@@ -64,7 +63,7 @@ function UserInfoSettings() {
 
     // Gọi hàm fetchUserData khi component được mount
     fetchUserData();
-  }, [user.id]); // Sử dụng user.id làm phần tử phụ thuộc để useEffect được gọi lại khi user.id thay đổi
+  }, [user.id, user.created_at]); // Sử dụng user.id làm phần tử phụ thuộc để useEffect được gọi lại khi user.id thay đổi
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

@@ -5,40 +5,40 @@ import { useState } from "react";
 import DonusChart1 from "./DonusChart01";
 import ApexCharts from "apexcharts";
 import { CreditCardOutlined } from "@ant-design/icons";
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import ChartForm from "./DataInputTable";
 import SideBar from "../../components/SideBar";
-import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
+import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 
-import { Space, Table, Tag } from 'antd';
+import { Space, Table, Tag } from "antd";
 
 const columns = [
   {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
+    title: "Name",
+    dataIndex: "name",
+    key: "name",
     render: (text) => <a>{text}</a>,
   },
   {
-    title: 'Age',
-    dataIndex: 'age',
-    key: 'age',
+    title: "Age",
+    dataIndex: "age",
+    key: "age",
   },
   {
-    title: 'Address',
-    dataIndex: 'address',
-    key: 'address',
+    title: "Address",
+    dataIndex: "address",
+    key: "address",
   },
   {
-    title: 'Tags',
-    key: 'tags',
-    dataIndex: 'tags',
+    title: "Tags",
+    key: "tags",
+    dataIndex: "tags",
     render: (_, { tags }) => (
       <>
         {tags.map((tag) => {
-          let color = tag.length > 5 ? 'geekblue' : 'green';
-          if (tag === 'loser') {
-            color = 'volcano';
+          let color = tag.length > 5 ? "geekblue" : "green";
+          if (tag === "loser") {
+            color = "volcano";
           }
           return (
             <Tag color={color} key={tag}>
@@ -50,8 +50,8 @@ const columns = [
     ),
   },
   {
-    title: 'Action',
-    key: 'action',
+    title: "Action",
+    key: "action",
     render: (_, record) => (
       <Space size="middle">
         <a>Invite {record.name}</a>
@@ -63,28 +63,27 @@ const columns = [
 
 const data = [
   {
-    key: '1',
-    name: 'John Brown',
+    key: "1",
+    name: "John Brown",
     age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer'],
+    address: "New York No. 1 Lake Park",
+    tags: ["nice", "developer"],
   },
   {
-    key: '2',
-    name: 'Jim Green',
+    key: "2",
+    name: "Jim Green",
     age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser'],
+    address: "London No. 1 Lake Park",
+    tags: ["loser"],
   },
   {
-    key: '3',
-    name: 'Joe Black',
+    key: "3",
+    name: "Joe Black",
     age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
+    address: "Sydney No. 1 Lake Park",
+    tags: ["cool", "teacher"],
   },
 ];
-
 
 const Newdb = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -92,12 +91,10 @@ const Newdb = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-
   return (
     <div className="flex flex-col overflow-hidden bg-gray-50 dark:bg-gray-900">
       <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-     
-     
+
       <div
         id="main-content"
         className="sm:ml-64 p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700"
@@ -105,25 +102,22 @@ const Newdb = () => {
       >
         <main>
           <div className="px-4 pt-6">
-          <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800 mb-4">
+            <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800 mb-4">
               {/* Card header --> */}
               <div className="items-center justify-between lg:flex">
                 <div className="mb-4 lg:mb-0">
-                  <h3 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">
+                  <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
                     Transactions
                   </h3>
                   <span className="text-base font-normal text-gray-500 dark:text-gray-400">
                     This is a list of latest transactions
                   </span>
                 </div>
-                <div className="items-center sm:flex">
-                  
-                
-                </div>
+                <div className="items-center sm:flex"></div>
               </div>
-               {/*Test Table --> */}
-               <Table columns={columns} dataSource={data} />
-             
+              {/*Test Table --> */}
+              <Table columns={columns} dataSource={data} />
+
               {/* Card Footer --> */}
               <div className="flex items-center justify-between pt-3 sm:pt-6">
                 <div className="flex-shrink-0">
@@ -155,7 +149,7 @@ const Newdb = () => {
               <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex-shrink-0">
-                    <span className="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white">
+                    <span className="text-xl font-semibold leading-none text-gray-900 sm:text-2xl dark:text-white">
                       $45,385
                     </span>
                     <h3 className="text-base font-light text-gray-500 dark:text-gray-400">
@@ -188,9 +182,7 @@ const Newdb = () => {
                       data-dropdown-toggle="weekly-sales-dropdown"
                     >
                       Last 7 days{" "}
-                     
                     </button>
-                   
                   </div>
                   <div className="flex-shrink-0">
                     <a
@@ -198,7 +190,6 @@ const Newdb = () => {
                       className="inline-flex items-center p-2 text-xs font-medium uppercase rounded-lg text-primary-700 sm:text-sm hover:bg-gray-100 dark:text-primary-500 dark:hover:bg-gray-700"
                     >
                       Sales Report
-                     
                     </a>
                   </div>
                 </div>
@@ -213,7 +204,6 @@ const Newdb = () => {
                     data-popover-placement="bottom-end"
                     type="button"
                   >
-                  
                     <span className="sr-only">Show information</span>
                   </button>
                 </h3>
@@ -303,9 +293,7 @@ const Newdb = () => {
                 <div
                   id="fullWidthTabContent"
                   className="border-t border-gray-200 dark:border-gray-600"
-                >
-                
-                </div>
+                ></div>
                 {/* Card Footer --> */}
                 <div className="flex items-center justify-between pt-3 mt-5 border-t border-gray-200 sm:pt-6 dark:border-gray-700">
                   <div>
@@ -329,7 +317,7 @@ const Newdb = () => {
                           Sep 16, 2021 - Sep 22, 2021
                         </p>
                       </div>
-                      
+
                       <div className="py-1" role="none">
                         <a
                           href="#"
@@ -356,7 +344,6 @@ const Newdb = () => {
         </main>
       </div>
     </div>
-    
   );
 };
 

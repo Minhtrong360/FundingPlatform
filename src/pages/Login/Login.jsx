@@ -57,7 +57,7 @@ const Login = () => {
         <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
           <div className="p-4 sm:p-7">
             <div className="text-center">
-              <h1 className="block text-2xl font-bold text-gray-800 dark:text-white">
+              <h1 className="block text-2xl font-semibold text-gray-800 dark:text-white">
                 Sign in
               </h1>
               <p className=" mt-2 text-sm text-gray-600 dark:text-gray-400">

@@ -90,7 +90,7 @@ function BadgeList() {
 }
 
 const SectionTitle = ({ text }) => (
-  <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">{text}</h2>
+  <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">{text}</h2>
 );
 
 const SectionDescription = ({ text }) => (

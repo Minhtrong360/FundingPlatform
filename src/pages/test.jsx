@@ -7,7 +7,7 @@ import {
   SelectItem,
 } from "../components/ui/Select";
 import { Input } from "../components/ui/Input";
-import { Table } from "antd";
+import Table from "../pages/FinalcialComponents/Table";
 
 const Alpha = () => {
   const [selectedDuration, setSelectedDuration] = useState("3 years");
@@ -15,7 +15,6 @@ const Alpha = () => {
   const [customerInputs, setCustomerInputs] = useState([
     { channelName: "Online", customersPerMonth: 100, growthPerMonth: 10 },
   ]);
-  const [customerResult, setCustomerResult] = useState([]);
 
   const addNewCustomerInput = () => {
     setCustomerInputs([
@@ -36,31 +35,36 @@ const Alpha = () => {
     setCustomerInputs(newInputs);
   };
 
+  const calculateCustomerResult = () => {
+    const customerResult = customerInputs.map((input) => {
+      const { channelName, customersPerMonth, growthPerMonth } = input;
+      const result = {};
+
+      let currentCustomers = customersPerMonth;
+
+      for (let month = 1; month <= 5; month++) {
+        result[month] = Math.round(currentCustomers);
+
+        currentCustomers *= 1 + parseFloat(growthPerMonth) / 100;
+      }
+
+      return { channelName, result };
+    });
+
+    return customerResult;
+  };
+
+  const [customerResult, setCustomerResult] = useState(
+    calculateCustomerResult()
+  );
+
   useEffect(() => {
-    // Calculate customerResult based on customerInputs
-    const calculateCustomerResult = (inputs) => {
-      return inputs.map((input) => {
-        const { customersPerMonth, growthPerMonth } = input;
-        const result = {};
-
-        for (let month = 1; month <= 5; month++) {
-          result[month] =
-            customersPerMonth * (1 + growthPerMonth / 100) ** month;
-        }
-
-        return {
-          channelName: input.channelName,
-          result,
-        };
-      });
-    };
-
-    // Set customerResult based on customerInputs
-    setCustomerResult(calculateCustomerResult(customerInputs));
+    // Recalculate revenueResult when channelInputs or customerResult change
+    setCustomerResult(calculateCustomerResult());
   }, [customerInputs]);
 
   // console.log("customerInputs", customerInputs);
-  // console.log("customerResult", customerResult);
+  console.log("customerResult", customerResult);
 
   const [channelInputs, setChannelInputs] = useState([
     {
@@ -92,30 +96,54 @@ const Alpha = () => {
   };
 
   // Calculate revenueResult based on channelInputs and customerResult
-  // Calculate revenueResult based on channelInputs and customerResult
   const calculateRevenueResult = () => {
-    const result = {};
+    const result = customerResult
+      .map((customer) => {
+        const { channelName, result: customerResultData } = customer;
 
-    customerResult.forEach((customer) => {
-      const channelName = customer.channelName;
-      const customerResultData = customer.result;
+        if (
+          channelInputs.find((input) => input.selectedChannel === channelName)
+        ) {
+          const channelInput = channelInputs.find(
+            (input) => input.selectedChannel === channelName
+          );
+          const { price, multiples, txFeePercentage, cogsPercentage } =
+            channelInput;
 
-      if (
-        channelInputs.find((input) => input.selectedChannel === channelName)
-      ) {
-        const channelInput = channelInputs.find(
-          (input) => input.selectedChannel === channelName
-        );
-        const { price, multiples } = channelInput;
+          const revenueResult = {};
+          const txFeeResult = {};
+          const cogsResult = {};
+          const netRevenueResult = {};
+          const grossProfitResult = {};
 
-        const revenueResult = {};
-        for (let month = 1; month <= 5; month++) {
-          revenueResult[month] = price * multiples * customerResultData[month];
+          for (let month = 1; month <= 5; month++) {
+            const currentCustomers = customerResultData[month];
+            const revenue = currentCustomers * price * multiples;
+            const txFeePercentageFloat = parseFloat(txFeePercentage) / 100;
+            const cogsPercentageFloat = parseFloat(cogsPercentage) / 100;
+            const txFee = revenue * txFeePercentageFloat;
+            const cogs = revenue * cogsPercentageFloat;
+            const netRevenue = revenue - txFee;
+            const grossProfit = netRevenue - cogs;
+
+            revenueResult[month] = Math.round(revenue);
+            txFeeResult[month] = Math.round(txFee);
+            cogsResult[month] = Math.round(cogs);
+            netRevenueResult[month] = Math.round(netRevenue);
+            grossProfitResult[month] = Math.round(grossProfit);
+          }
+
+          return {
+            revenueName: channelName,
+            revenueResult,
+            txFeeResult,
+            cogsResult,
+            netRevenueResult,
+            grossProfitResult,
+          };
         }
-
-        result[channelName] = revenueResult;
-      }
-    });
+      })
+      .filter(Boolean);
 
     return result;
   };
@@ -127,7 +155,6 @@ const Alpha = () => {
     setRevenueResult(calculateRevenueResult());
   }, [channelInputs, customerResult]);
 
-  console.log("channelInputs", channelInputs);
   console.log("revenueResult", revenueResult);
 
   const [costInputs, setCostInputs] = useState([
@@ -161,6 +188,32 @@ const Alpha = () => {
     newInputs.splice(index, 1);
     setCostInputs(newInputs);
   };
+
+  const calculateCostsResult = () => {
+    const costsResult = costInputs.map((input) => {
+      const { costName, costValue, beginMonth, endMonth } = input;
+
+      const costResult = {};
+
+      for (let month = 1; month <= 5; month++) {
+        costResult[month] =
+          month >= beginMonth && month <= endMonth
+            ? parseFloat(costValue) // Use CostValueFloat if needed
+            : 0;
+      }
+
+      return { costName, result: costResult };
+    });
+
+    return costsResult;
+  };
+
+  const [costsResult, setCostsResult] = useState(calculateCostsResult());
+
+  useEffect(() => {
+    setCostsResult(calculateCostsResult());
+  }, [costInputs]);
+  console.log("costsResult", costsResult);
 
   const [personnelInputs, setPersonnelInputs] = useState([
     {
@@ -196,6 +249,40 @@ const Alpha = () => {
     newInputs.splice(index, 1);
     setPersonnelInputs(newInputs);
   };
+
+  const calculatePersonnelResult = () => {
+    const personnelResult = personnelInputs.map((input) => {
+      const {
+        jobTitle,
+        salaryPerMonth,
+        numberOfHires,
+        jobBeginMonth,
+        jobEndMonth,
+      } = input;
+
+      const personnelResultData = {};
+
+      for (let month = 1; month <= 5; month++) {
+        personnelResultData[month] =
+          month >= jobBeginMonth && month <= jobEndMonth
+            ? parseFloat(salaryPerMonth) * parseFloat(numberOfHires)
+            : 0;
+      }
+
+      return { jobTitle, result: personnelResultData };
+    });
+
+    return personnelResult;
+  };
+
+  const [personnelResult, setPersonnelResult] = useState(
+    calculatePersonnelResult()
+  );
+
+  useEffect(() => {
+    setPersonnelResult(calculatePersonnelResult());
+  }, [personnelInputs]);
+  console.log("personnelResult", personnelResult);
 
   const [investmentInputs, setInvestmentInputs] = useState([
     {
@@ -234,8 +321,67 @@ const Alpha = () => {
     setInvestmentInputs(newInputs);
   };
 
+  const calculateInvestmentResult = () => {
+    const investmentResult = investmentInputs.map((input) => {
+      const {
+        purchaseName,
+        assetCost,
+        purchaseMonth,
+        residualValue,
+        usefulLifetime,
+      } = input;
+
+      const bookValueData = {};
+      const depreciationData = {};
+      const accumulatedDepreciationData = {};
+
+      let accumulatedDepreciation = 0;
+      let bookValue = parseFloat(assetCost);
+
+      for (let month = 1; month <= 5; month++) {
+        let depreciation = 0;
+
+        if (
+          month >= parseInt(purchaseMonth) &&
+          month < parseInt(purchaseMonth) + parseFloat(usefulLifetime)
+        ) {
+          depreciation =
+            parseFloat(assetCost - residualValue) / parseFloat(usefulLifetime);
+          accumulatedDepreciation += depreciation;
+        }
+
+        if (month >= parseInt(purchaseMonth)) {
+          bookValue = parseFloat(assetCost) - accumulatedDepreciation;
+        }
+
+        bookValueData[month] = bookValue;
+        depreciationData[month] = depreciation;
+        accumulatedDepreciationData[month] = accumulatedDepreciation;
+      }
+
+      return {
+        purchaseName,
+        bookValue: bookValueData,
+        depreciation: depreciationData,
+        accumulatedDepreciation: accumulatedDepreciationData,
+      };
+    });
+
+    return investmentResult;
+  };
+
+  const [investmentResult, setInvestmentResult] = useState(
+    calculateInvestmentResult()
+  );
+
+  useEffect(() => {
+    setInvestmentResult(calculateInvestmentResult());
+  }, [investmentInputs]);
+  console.log("investmentResult", investmentResult);
+
   const [loanInputs, setLoanInputs] = useState([
     {
+      loanName: "",
       loanAmount: 500,
       interestRate: 10,
       loanBeginMonth: 1,
@@ -254,6 +400,7 @@ const Alpha = () => {
     setLoanInputs([
       ...loanInputs,
       {
+        loanName: "",
         loanAmount: "0",
         interestRate: "0",
         loanBeginMonth: "",
@@ -268,6 +415,69 @@ const Alpha = () => {
     newInputs.splice(index, 1);
     setLoanInputs(newInputs);
   };
+
+  const calculateLoanResult = () => {
+    const loanResult = loanInputs.map((input) => {
+      const { loanName, loanAmount, interestRate, loanBeginMonth, loanLength } =
+        input;
+
+      let principalPayment = 0;
+      let interestPayment = 0;
+      let loanBalanceDisplay = 0;
+
+      const loanAmountData = {};
+      const principalPaymentData = {};
+      const interestPaymentData = {};
+      const loanBalanceData = {};
+
+      let remainingLoanBalance = parseFloat(loanAmount);
+
+      for (let month = 1; month <= 5; month++) {
+        if (month === parseInt(loanBeginMonth)) {
+          loanAmountData[month] = parseFloat(loanAmount).toFixed(0);
+        } else {
+          loanAmountData[month] = 0;
+        }
+
+        if (
+          month >= parseInt(loanBeginMonth) &&
+          month < parseInt(loanBeginMonth) + parseInt(loanLength)
+        ) {
+          principalPayment = parseFloat(loanAmount) / parseInt(loanLength);
+          interestPayment =
+            remainingLoanBalance * (parseFloat(interestRate) / 100 / 12);
+          remainingLoanBalance -= principalPayment;
+
+          loanBalanceDisplay = remainingLoanBalance.toFixed(0);
+        } else {
+          principalPayment = 0;
+          interestPayment = 0;
+          loanBalanceDisplay = 0;
+        }
+
+        principalPaymentData[month] = principalPayment.toFixed(0);
+        interestPaymentData[month] = interestPayment.toFixed(0);
+        loanBalanceData[month] = loanBalanceDisplay;
+      }
+
+      return {
+        loanName,
+        loanAmount: loanAmountData,
+        principalPayment: principalPaymentData,
+        interestPayment: interestPaymentData,
+        loanBalance: loanBalanceData,
+      };
+    });
+
+    return loanResult;
+  };
+
+  const [loanResult, setLoanResult] = useState(calculateLoanResult());
+
+  useEffect(() => {
+    setLoanResult(calculateLoanResult());
+  }, [loanInputs]);
+  console.log("loanResult", loanResult);
 
   return (
     <div className="mx-auto" style={{ width: "80%" }}>
@@ -814,6 +1024,13 @@ const Alpha = () => {
           </button>
         </section>
       </div>
+      <Table
+        customerResult={customerResult}
+        revenueResult={revenueResult}
+        personnelResult={personnelResult}
+        investmentResult={investmentResult}
+        loanResult={loanResult}
+      />
     </div>
   );
 };

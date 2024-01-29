@@ -374,7 +374,7 @@ function Card({ icon, title, metric, description, badgeText }) {
           </h3>
         </div>
       </div>
-      <h3 className="text-3xl font-bold text-black-600 dark:text-gray-400">
+      <h3 className="text-3xl font-semibold text-black-600 dark:text-gray-400">
         {metric}
       </h3>
       <p className="text-gray-600 dark:text-gray-400 mt-3">{description}</p>
@@ -1564,7 +1564,7 @@ const FundraisingRecords = () => {
           <Sidebar />
         </div>
         <div className="flex flex-col items-stretch w-[82%] max-md:w-full max-md:ml-0 mt-10 justify-left">
-          <h2 className="ml-5 text-left text-2xl font-bold md:text-4xl md:leading-tight dark:text-white text-black-500">
+          <h2 className="ml-5 text-left text-2xl font-semibold md:text-4xl md:leading-tight dark:text-white text-black-500">
             Fundraising Records
           </h2>
           <StatBadge ggData={ggData[0]} />

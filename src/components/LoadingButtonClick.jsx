@@ -3,6 +3,13 @@ import Modal from "react-modal";
 import Spinner from "./Spinner";
 
 function LoadingButtonClick({ isLoading }) {
+  useEffect(() => {
+    if (isLoading) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [isLoading]);
   return (
     <>
       <Modal

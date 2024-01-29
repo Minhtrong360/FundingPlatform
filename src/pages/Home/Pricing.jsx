@@ -22,7 +22,7 @@ const PricingCard = ({ plan, onClick }) => {
         <h4 className="font-medium text-lg text-gray-800 dark:text-gray-200">
           {plan?.name}
         </h4>
-        <span className="mt-5 font-bold text-5xl text-gray-800 dark:text-gray-200">
+        <span className="mt-5 font-semibold text-5xl text-gray-800 dark:text-gray-200">
           ${plan.price?.unit_amount / 100}
           <br />
           <span className="font-medium text-3xl">
@@ -158,7 +158,7 @@ const PricingSection = () => {
       <LoadingButtonClick isLoading={isLoading} />
       <div className="text-center mb-10 lg:mb-14">
         <h2
-          className="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white  hover:cursor-pointer"
+          className="text-2xl font-semibold md:text-4xl md:leading-tight dark:text-white  hover:cursor-pointer"
           id="pricing"
         >
           Pricing

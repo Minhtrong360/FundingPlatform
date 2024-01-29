@@ -37,7 +37,7 @@ const FAQ = () => {
           <div className="max-w-xs">
             <h2
               id="FAQ"
-              className="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white"
+              className="text-2xl font-semibold md:text-4xl md:leading-tight dark:text-white"
             >
               Frequently
               <br />

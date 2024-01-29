@@ -99,7 +99,7 @@ const NewProjectPosts = () => {
       <LoadingButtonClick isLoading={isLoading} />
       <>
         {filteredCompanies.length === 0 ? (
-          <div className="mt-24 text-center text-4xl font-bold text-gray-800 dark:text-gray-200">
+          <div className="mt-24 text-center text-4xl font-semibold text-gray-800 dark:text-gray-200">
             No result
           </div>
         ) : (

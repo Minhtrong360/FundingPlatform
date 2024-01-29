@@ -17,7 +17,7 @@ const Dashboard = () => {
           {/* Card header --> */}
           <div className="items-center justify-between lg:flex">
             <div className="mb-4 lg:mb-0">
-              <h3 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">
+              <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
                 Transactions
               </h3>
               <span className="text-base font-normal text-gray-500 dark:text-gray-400">
@@ -313,7 +313,7 @@ const Dashboard = () => {
           <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
             <div className="flex items-center justify-between mb-4">
               <div className="flex-shrink-0">
-                <span className="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white">
+                <span className="text-xl font-semibold leading-none text-gray-900 sm:text-2xl dark:text-white">
                   $45,385
                 </span>
                 <h3 className="text-base font-light text-gray-500 dark:text-gray-400">

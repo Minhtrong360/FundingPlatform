@@ -4,7 +4,7 @@ function Features() {
       <div className="max-w-2xl mx-auto text-center mb-10 lg:mb-14">
         <h3
           id="platform"
-          className="text-4xl font-bold md:text-4xl md:leading-tight dark:text-white"
+          className="text-4xl font-semibold md:text-4xl md:leading-tight dark:text-white"
         >
           A data-centric platform for all
         </h3>

@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import AlertMsg from "../components/AlertMsg";
 import ReactGA from "react-ga4";
 
-const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID; // Thay thế với Measurement ID của bạn
+const GA_MEASUREMENT_ID = process.env.REACT_APP_GA_MEASUREMENT_ID; // Thay thế với Measurement ID của bạn
 
 ReactGA.initialize(GA_MEASUREMENT_ID);
 

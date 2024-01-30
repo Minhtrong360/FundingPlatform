@@ -1,5 +1,5 @@
 import ResizeImage from "../../components/ResizeImage";
-import { Tooltip } from "antd";
+import { Tag, Tooltip } from "antd";
 
 function formatNumber(value) {
   // Kiểm tra xem value có phải là một chuỗi không
@@ -29,19 +29,17 @@ const HeroSection = ({
     <div className="max-w-[85rem] mx-auto mt-24 px-4 sm:px-6 lg:px-8 z-0">
       <div className="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
         <div>
-          <h1 className="block text-3xl font-semibold text-gray-800 sm:text-4xl lg:text-6xl lg:leading-tight dark:text-white">
+          <h1 className="block text-3xl font-semibold  sm:text-4xl lg:text-6xl lg:leading-tight dark:text-white">
             {title}
           </h1>
-          <p className="mt-3 text-lg text-gray-800 dark:text-gray-400">
-            {description}
-          </p>
+          <p className="mt-3 text-lg  dark:text-gray-400">{description}</p>
 
           <div className="mt-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 w-full">
             <Tooltip
               title={`Target: ${formatNumber(button1Text)}`}
               color={"geekblue"}
             >
-              <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-gray-800 hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-lg border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                 <p className="truncate">
                   {" "}
                   Target: ${formatNumber(button1Text)}{" "}
@@ -52,7 +50,7 @@ const HeroSection = ({
               title={` No. ticket: ${formatNumber(button2Text)}`}
               color={"geekblue"}
             >
-              <div className=" overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-green-400 hover:bg-green-500 text-gray-800 shadow-sm  disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-lg border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                 <p className="truncate">
                   {" "}
                   No. ticket: {formatNumber(button2Text)}{" "}
@@ -63,22 +61,22 @@ const HeroSection = ({
               title={`Min ticket size: ${button3Text}`}
               color={"geekblue"}
             >
-              <div className=" overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-yellow-400 hover:bg-yellow-500 text-gray-800 shadow-sm  disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-lg border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                 <p className="truncate"> Min ticket size: {button3Text} </p>
               </div>
             </Tooltip>
             <Tooltip title={` Offer: ${button4Text}`} color={"geekblue"}>
-              <div className=" overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-purple-400 hover:bg-purple-500 text-gray-800 shadow-sm  disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-lg border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                 <p className="truncate"> Offer: {button4Text} </p>
               </div>
             </Tooltip>
             <Tooltip title={`Type: ${button5Text}`} color={"geekblue"}>
-              <div className="  overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-pink-400 hover:bg-pink-500 text-gray-800 shadow-sm  disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-lg border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                 <p className="truncate"> Type: {button5Text} </p>
               </div>
             </Tooltip>
             <Tooltip title={`Website: ${formData?.website}`} color={"geekblue"}>
-              <div className="  overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-amber-400 hover:bg-pink-500 text-gray-800 shadow-sm  disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+              <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-lg border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                 <p className="truncate"> Website: {formData?.website} </p>
               </div>
             </Tooltip>
@@ -90,7 +88,7 @@ const HeroSection = ({
                 title={`Industry: ${industry}`}
                 color={"geekblue"}
               >
-                <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-orange-400 text-gray-800 hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
+                <div className="truncate overflow-hidden  py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md font-semibold rounded-full border border-transparent bg-orange-400   disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                   <p className="truncate">{industry}</p>
                 </div>
               </Tooltip>

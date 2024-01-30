@@ -28,7 +28,6 @@ const login = async (email, password, setLoading) => {
 
     setLoading(false);
 
-    ReactGA.set({ userId: user.id });
     return { user, session, error };
   } catch (error) {
     setLoading(false);
@@ -52,7 +51,7 @@ const loginWithGG = async (setLoading) => {
     });
 
     setLoading(false);
-    ReactGA.set({ userId: user.id });
+
     return { user, session, error };
   } catch (error) {
     setLoading(false);
@@ -73,9 +72,11 @@ const AuthProvider = ({ children }) => {
       const { user: currentUser } = data;
       setUser(currentUser ?? null);
       setAuth(currentUser ? true : false);
+      ReactGA.set({ userId: currentUser.id });
       setLoading(false);
     };
     getUser();
+
     const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "PASSWORD_RECOVERY") {
         setAuth(false);

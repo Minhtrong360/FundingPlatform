@@ -73,6 +73,7 @@ const AuthProvider = ({ children }) => {
       setUser(currentUser ?? null);
       setAuth(currentUser ? true : false);
       ReactGA.set({ user_pseudo_id: currentUser.id });
+      ReactGA.set({ client_id: currentUser.id });
       setLoading(false);
     };
     getUser();

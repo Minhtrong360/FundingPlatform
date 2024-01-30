@@ -3,6 +3,11 @@ import { supabase } from "../supabase";
 import SpinnerBtn from "../components/SpinnerBtn";
 import { toast } from "react-toastify";
 import AlertMsg from "../components/AlertMsg";
+import ReactGA from "react-ga4";
+
+const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID; // Thay thế với Measurement ID của bạn
+
+ReactGA.initialize(GA_MEASUREMENT_ID);
 
 const AuthContext = createContext({});
 
@@ -22,6 +27,8 @@ const login = async (email, password, setLoading) => {
     });
 
     setLoading(false);
+
+    ReactGA.set({ userId: user.id });
     return { user, session, error };
   } catch (error) {
     setLoading(false);
@@ -45,6 +52,7 @@ const loginWithGG = async (setLoading) => {
     });
 
     setLoading(false);
+    ReactGA.set({ userId: user.id });
     return { user, session, error };
   } catch (error) {
     setLoading(false);

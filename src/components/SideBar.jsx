@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-// import SpaceDashboardOutlinedIcon from "@mui/icons-material/SpaceDashboardOutlined";
+import SpaceDashboardOutlinedIcon from "@mui/icons-material/SpaceDashboardOutlined";
 import FolderCopyOutlinedIcon from "@mui/icons-material/FolderCopyOutlined";
 import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
 function SideBar({ toggleSidebar, isSidebarOpen }) {
@@ -62,7 +62,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
                 <span className="ms-3">User Settings</span>
               </button>
             </li>
-            {/* <li>
+            <li>
               <button
                 onClick={() => navigate("/dashboard")}
                 className=" hover:cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -70,7 +70,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
                 <SpaceDashboardOutlinedIcon />
                 <span className="ms-3">Dashboard</span>
               </button>
-            </li> */}
+            </li>
             <li>
               <button
                 onClick={() => navigate("/founder")}

@@ -89,7 +89,8 @@ const DetailPage = () => {
       <AnnouncePage
         title="Permission Required"
         announce="This is a private project."
-        describe="This is a private project and you must be invited to access and see it."
+        describe="This is a private project and you must be invited to access and see it. You can send a request and wait for the owner to accept."
+        sendRequest={true}
       />
     );
   }

@@ -123,6 +123,28 @@ const Search = ({
               <AllInclusiveOutlinedIcon fontSize="small" />
             </button>
             <button
+              onClick={() => handleIndustryClick("Biotech")}
+              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
+                selectedIndustry === "Biotech"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-800 hover:bg-gray-50"
+              } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
+            >
+              Biotech
+              <BiotechOutlinedIcon fontSize="small" />
+            </button>
+            <button
+              onClick={() => handleIndustryClick("Edtech")}
+              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
+                selectedIndustry === "Edtech"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-800 hover:bg-gray-50"
+              } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
+            >
+              Edtech
+              <SchoolOutlinedIcon fontSize="small" />
+            </button>
+            <button
               onClick={() => handleIndustryClick("Finance and Banking")}
               className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
                 selectedIndustry === "Finance and Banking"
@@ -144,28 +166,7 @@ const Search = ({
               Fintech
               <DesktopWindowsOutlinedIcon fontSize="small" />
             </button>
-            <button
-              onClick={() => handleIndustryClick("Edtech")}
-              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
-                selectedIndustry === "Edtech"
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-800 hover:bg-gray-50"
-              } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
-            >
-              Edtech
-              <SchoolOutlinedIcon fontSize="small" />
-            </button>
-            <button
-              onClick={() => handleIndustryClick("Biotech")}
-              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
-                selectedIndustry === "Biotech"
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-800 hover:bg-gray-50"
-              } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
-            >
-              Biotech
-              <BiotechOutlinedIcon fontSize="small" />
-            </button>
+
             <Dropdown>
               <MenuButton
                 className={` m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border shadow-sm  disabled:opacity-50 hover:cursor-pointer`}

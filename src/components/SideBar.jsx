@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import SpaceDashboardOutlinedIcon from "@mui/icons-material/SpaceDashboardOutlined";
 import FolderCopyOutlinedIcon from "@mui/icons-material/FolderCopyOutlined";
@@ -50,7 +50,8 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
                 className="p-2  font-semibold text-2xl text-blue-600 flex items-center space-x-3 rtl:space-x-reverse hover:cursor-pointer"
                 onClick={() => navigate("/")}
               >
-                BeeKrowd
+                <HomeOutlinedIcon />
+                <span>BeeKrowd</span>
               </button>
             </li>
             <li>
@@ -73,20 +74,20 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             </li>
             <li>
               <button
-                onClick={() => navigate("/founder")}
-                className="hover:cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              >
-                <FolderCopyOutlinedIcon />
-                <span className="ms-3">Projects</span>
-              </button>
-            </li>
-            <li>
-              <button
                 onClick={() => navigate("/financials")}
                 className="hover:cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <CalculateOutlinedIcon />
                 <span className="ms-3">Financials</span>
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => navigate("/founder")}
+                className="hover:cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              >
+                <FolderCopyOutlinedIcon />
+                <span className="ms-3">Projects</span>
               </button>
             </li>
 

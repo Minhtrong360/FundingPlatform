@@ -130,7 +130,8 @@ function UserInfoSettings() {
 
       window.open(session.url, "_blank");
     } catch (error) {
-      toast.error("User does not subscribe");
+      console.log("error", error);
+      toast.error("user does not subscribe.");
     }
     setIsLoading(false);
   };

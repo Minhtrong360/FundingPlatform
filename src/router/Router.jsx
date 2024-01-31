@@ -22,11 +22,11 @@ import UserPage from "../pages/UserProfile/UserPage";
 import Newdb from "../pages/DashBoard/NewDashboard";
 import LinkedInLoginComponent from "../pages/Login/linkedin";
 
-import NewsComponent from "../pages/test";
 import DashBoardPage from "../pages/DashBoard/DashBoardPage";
 import CompanySetting from "../pages/FounderGitbook/CompanySetting";
 import News from "../pages/News/News";
 import LoadingButtonClick from "../components/LoadingButtonClick";
+import FinalcialPage from "../pages/FinalcialPage/FinalcialPage";
 function Router() {
   return (
     <Routes>
@@ -89,7 +89,7 @@ function Router() {
       <Route path="/trials" element={<Trial />} />
       <Route path="/terms" element={<TermsAndConditions />} />
       {/* <Route path="/financials" element={<Financials />} /> */}
-      <Route path="/financials" element={<NewsComponent />} />
+      <Route path="/financials" element={<FinalcialPage />} />
       <Route path="/news" element={<News />} />
       <Route
         path="/loading"

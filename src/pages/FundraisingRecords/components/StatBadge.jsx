@@ -23,11 +23,11 @@ const columns = [
     dataIndex: "eventCount",
     key: "eventCount",
   },
-  {
-    title: "New Users",
-    dataIndex: "newUsers",
-    key: "newUsers",
-  },
+  // {
+  //   title: "New Users",
+  //   dataIndex: "newUsers",
+  //   key: "newUsers",
+  // },
   {
     title: "User Engagement Duration (ms)",
     dataIndex: "userEngagementDuration",
@@ -43,11 +43,11 @@ const columns = [
     dataIndex: "screenPageViews",
     key: "screenPageViews",
   },
-  {
-    title: "Conversions",
-    dataIndex: "conversions",
-    key: "conversions",
-  },
+  // {
+  //   title: "Conversions",
+  //   dataIndex: "conversions",
+  //   key: "conversions",
+  // },
   // {
   //   title: "Screen Page Views Per Session",
   //   dataIndex: "screenPageViewsPerSession",
@@ -67,7 +67,7 @@ const columns = [
 
 const StatBadge = ({ ggData }) => {
   const [projectData, setProjectData] = useState([]);
-
+  console.log("ggData", ggData);
   useEffect(() => {
     const fetchProjects = async () => {
       const projectIds = ggData.map((item) => item.id);
@@ -97,12 +97,19 @@ const StatBadge = ({ ggData }) => {
       "Unknown",
     ...item.data,
   }));
+
   console.log("data", data);
+  const getRowClassName = (record, index) => {
+    // Apply the 'text-md' Tailwind CSS class to all rows
+    return "text-md";
+  };
+
   return (
     <Table
       columns={columns}
       dataSource={data}
-      className="max-w-[85rem] overflow-auto"
+      rowClassName={getRowClassName}
+      className="max-w-[85rem] overflow-auto pb-5"
     />
   );
 };

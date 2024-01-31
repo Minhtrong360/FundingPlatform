@@ -135,17 +135,17 @@ const Navbar = () => {
 
   const controlNavbar = () => {
     if (typeof window !== "undefined") {
-      // Check if the current screen size is less than the large breakpoint
-      if (window.innerWidth < 1024) {
-        // Tailwind's 'lg' breakpoint
-        if (window.scrollY > lastScrollY) {
-          setIsVisible(false);
-        } else {
-          setIsVisible(true);
-        }
+      if (window.scrollY > lastScrollY) {
+        setIsVisible(false);
       } else {
-        setIsVisible(true); // Always show the navbar on large screens and above
+        setIsVisible(true);
       }
+
+      // Check if the user has scrolled to the top of the page
+      if (window.scrollY === 0) {
+        setIsVisible(true);
+      }
+
       setLastScrollY(window.scrollY);
     }
   };

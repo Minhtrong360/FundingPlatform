@@ -1,5 +1,5 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import SpaceDashboardOutlinedIcon from "@mui/icons-material/SpaceDashboardOutlined";
@@ -7,6 +7,17 @@ import FolderCopyOutlinedIcon from "@mui/icons-material/FolderCopyOutlined";
 import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
 function SideBar({ toggleSidebar, isSidebarOpen }) {
   const navigate = useNavigate();
+
+  const [selectedItem, setSelectedItem] = useState(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    setSelectedItem(location.pathname);
+  }, [location]);
+
+  const handleItemClick = (route) => {
+    navigate(route);
+  };
 
   return (
     <div>
@@ -56,8 +67,12 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             </li>
             <li>
               <button
-                onClick={() => navigate("/user-info")}
-                className=" hover:cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                onClick={() => handleItemClick("/user-info")}
+                className={` w-full hover:cursor-pointer flex items-center p-2 rounded-lg group ${
+                  selectedItem === "/user-info"
+                    ? "bg-gray-200 "
+                    : "text-gray-900 dark:text-white"
+                }`}
               >
                 <AccountCircleOutlinedIcon />
                 <span className="ms-3">User Settings</span>
@@ -65,8 +80,12 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             </li>
             <li>
               <button
-                onClick={() => navigate("/dashboard")}
-                className=" hover:cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                onClick={() => handleItemClick("/dashboard")}
+                className={`w-full hover:cursor-pointer flex items-center p-2 rounded-lg group ${
+                  selectedItem === "/dashboard"
+                    ? "bg-gray-200 "
+                    : "text-gray-900 dark:text-white"
+                }`}
               >
                 <SpaceDashboardOutlinedIcon />
                 <span className="ms-3">Dashboard</span>
@@ -74,8 +93,12 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             </li>
             <li>
               <button
-                onClick={() => navigate("/financials")}
-                className="hover:cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                onClick={() => handleItemClick("/financials")}
+                className={`w-full hover:cursor-pointer flex items-center p-2 rounded-lg group ${
+                  selectedItem === "/financials"
+                    ? "bg-gray-200 "
+                    : "text-gray-900 dark:text-white"
+                }`}
               >
                 <CalculateOutlinedIcon />
                 <span className="ms-3">Financials</span>
@@ -83,8 +106,12 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             </li>
             <li>
               <button
-                onClick={() => navigate("/founder")}
-                className="hover:cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                onClick={() => handleItemClick("/founder")}
+                className={`w-full hover:cursor-pointer flex items-center p-2 rounded-lg group ${
+                  selectedItem === "/founder"
+                    ? "bg-gray-200 "
+                    : "text-gray-900 dark:text-white"
+                }`}
               >
                 <FolderCopyOutlinedIcon />
                 <span className="ms-3">Projects</span>

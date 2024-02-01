@@ -1168,7 +1168,7 @@ const FinancialForm = () => {
         // Update existing record
         const { data, error: updateError } = await supabase
           .from("finance")
-          .update({ inputData })
+          .update({ name: financeName, inputData })
           .eq("id", existingData[0].id)
           .select();
         console.log("Updated", data);
@@ -1181,7 +1181,7 @@ const FinancialForm = () => {
         // Insert new record
         const { error: insertError } = await supabase
           .from("finance")
-          .insert([{ user_id: userId, inputData }]);
+          .insert([{ user_id: userId, name: financeName, inputData }]);
         if (insertError) {
           toast.error(insertError.message);
         } else {
@@ -1218,7 +1218,7 @@ const FinancialForm = () => {
     <div>
       <LoadingButtonClick isLoading={isLoading} />
       <div className="flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4">
+        <div className="w-full lg:w-1/3 p-4 border-e-2">
           <DurationSelect
             financeName={financeName}
             setFinanceName={setFinanceName}
@@ -1230,7 +1230,7 @@ const FinancialForm = () => {
       </div>
       <hr className="border border-dashed my-8" />
       <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4">
+        <div className="w-full lg:w-1/3 p-4 border-e-2">
           <CustomerSection
             customerInputs={customerInputs}
             addNewCustomerInput={addNewCustomerInput}
@@ -1263,7 +1263,7 @@ const FinancialForm = () => {
       </div>
       <hr className="border border-dashed my-8" />
       <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4">
+        <div className="w-full lg:w-1/3 p-4 border-e-2 border-e-2">
           <SalesSection
             channelInputs={channelInputs}
             channelNames={channelNames}
@@ -1272,7 +1272,8 @@ const FinancialForm = () => {
             handleChannelInputChange={handleChannelInputChange}
           />
         </div>
-        <div className="w-full lg:w-2/3 p-4">
+
+        <div className="w-full lg:w-2/3 p-4 relative">
           <h3 className="text-lg font-semibold my-8">
             {" "}
             Revenue Data by Channel and Product
@@ -1292,9 +1293,10 @@ const FinancialForm = () => {
           />
         </div>
       </div>
+
       <hr className="border border-dashed my-8" />
       <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4">
+        <div className="w-full lg:w-1/3 p-4 border-e-2">
           <CostSection
             costInputs={costInputs}
             addNewCostInput={addNewCostInput}
@@ -1320,7 +1322,7 @@ const FinancialForm = () => {
       </div>
       <hr className="border border-dashed my-8" />
       <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4">
+        <div className="w-full lg:w-1/3 p-4 border-e-2">
           <PersonnelSection
             personnelInputs={personnelInputs}
             addNewPersonnelInput={addNewPersonnelInput}
@@ -1346,7 +1348,7 @@ const FinancialForm = () => {
       </div>
       <hr className="border border-dashed my-8" />
       <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4">
+        <div className="w-full lg:w-1/3 p-4 border-e-2">
           <InvestmentSection
             investmentInputs={investmentInputs}
             setInvestmentInputs={setInvestmentInputs}
@@ -1373,7 +1375,7 @@ const FinancialForm = () => {
       </div>
       <hr className="border border-dashed my-8" />
       <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4">
+        <div className="w-full lg:w-1/3 p-4 border-e-2">
           <LoanSection
             loanInputs={loanInputs}
             addNewLoanInput={addNewLoanInput}

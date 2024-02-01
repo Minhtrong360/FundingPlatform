@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import AlertMsg from "./AlertMsg";
+
 import apiService from "../app/apiService";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../supabase";
@@ -16,7 +16,7 @@ const AnnouncePage = ({
 }) => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [firstPart, middlePart, lastPart] = announce.split(highlightedWord);
+  const [firstPart, lastPart] = announce.split(highlightedWord);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
   const [currentProject, setCurrentProject] = useState();

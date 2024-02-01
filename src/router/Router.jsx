@@ -1,8 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import HomePage from "../pages/Home/HomePage";
 
-import FundraisingRecords from "../pages/FundraisingRecords/FundraisingRecords";
-
 import SignUp from "../pages/SignUp/SignUp";
 import Login from "../pages/Login/Login";
 import ForgotPassword from "../pages/SignUp/ForgotPassword";
@@ -19,7 +17,7 @@ import AuthRequire from "./AuthRequired";
 
 import TermsAndConditions from "../pages/DashBoard/term";
 import UserPage from "../pages/UserProfile/UserPage";
-import Newdb from "../pages/DashBoard/NewDashboard";
+
 import LinkedInLoginComponent from "../pages/Login/linkedin";
 
 import DashBoardPage from "../pages/DashBoard/DashBoardPage";
@@ -85,7 +83,6 @@ function Router() {
         }
       />
       <Route path="/linkedin" element={<LinkedInLoginComponent />} />
-      <Route path="/newdb" element={<Newdb />} />
 
       <Route path="/trials" element={<Trial />} />
       <Route path="/terms" element={<TermsAndConditions />} />

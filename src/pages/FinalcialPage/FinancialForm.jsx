@@ -1151,10 +1151,9 @@ const FinancialForm = () => {
     });
   }, [user.id]);
 
-  const saveOrUpdateFinanceData = async (userId, inputData) => {
+  const saveOrUpdateFinanceData = async (userId, financeName, inputData) => {
     setIsLoading(true);
 
-    console.log("inputData", inputData);
     try {
       const { data: existingData, error: selectError } = await supabase
         .from("finance")
@@ -1164,21 +1163,28 @@ const FinancialForm = () => {
       if (selectError) throw selectError;
 
       if (existingData.length > 0) {
-        console.log("existingData", existingData);
-        // Update existing record
-        const { data, error: updateError } = await supabase
-          .from("finance")
-          .update({ name: financeName, inputData })
-          .eq("id", existingData[0].id)
-          .select();
-        console.log("Updated", data);
-        if (updateError) {
-          toast.error(updateError.message);
+        const financeRecord = existingData[0];
+
+        // Kiểm tra nếu tác giả của dữ liệu tài chính trùng với userId
+        if (financeRecord.user_id === userId) {
+          console.log("existingData", existingData);
+          // Cập nhật bản ghi hiện có
+          const { data, error: updateError } = await supabase
+            .from("finance")
+            .update({ name: financeName, inputData })
+            .eq("id", financeRecord.id)
+            .select();
+          console.log("Updated", data);
+          if (updateError) {
+            toast.error(updateError.message);
+          } else {
+            toast.success("Updated successfully.");
+          }
         } else {
-          toast.success("Updated successfully.");
+          toast.error("Bạn không có quyền cập nhật bản ghi này.");
         }
       } else {
-        // Insert new record
+        // Thêm bản ghi mới
         const { error: insertError } = await supabase
           .from("finance")
           .insert([{ user_id: userId, name: financeName, inputData }]);

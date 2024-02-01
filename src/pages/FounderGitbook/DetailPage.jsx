@@ -11,9 +11,6 @@ import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import FilesList from "./FilesList";
 import SideBar from "../../components/SideBar";
-
-import Spinner from "../../components/Spinner";
-
 import AlertMsg from "../../components/AlertMsg";
 import AnnouncePage from "../../components/AnnouncePage";
 import { toast } from "react-toastify";

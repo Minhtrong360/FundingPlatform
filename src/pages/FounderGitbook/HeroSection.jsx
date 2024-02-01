@@ -1,5 +1,5 @@
 import ResizeImage from "../../components/ResizeImage";
-import { Tag, Tooltip } from "antd";
+import { Tooltip } from "antd";
 
 function formatNumber(value) {
   // Kiểm tra xem value có phải là một chuỗi không

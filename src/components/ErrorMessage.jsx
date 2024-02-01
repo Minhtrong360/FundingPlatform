@@ -4,6 +4,7 @@ import Modal from "react-modal";
 function ErrorMessage({ isModalOpen, closeModal, message, onCancel }) {
   return (
     <Modal
+      ariaHideApp={false}
       isOpen={isModalOpen}
       onRequestClose={closeModal}
       style={{

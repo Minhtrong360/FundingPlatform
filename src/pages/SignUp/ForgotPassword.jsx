@@ -63,8 +63,7 @@ const ForgotPassword = () => {
       const { error } = await supabase
         .from("users")
         .select("*")
-        .eq("email", email)
-        .single(); // Sử dụng .single() để chỉ lấy một kết quả duy nhất
+        .eq("email", email);
 
       if (error) {
         console.log("không có user");

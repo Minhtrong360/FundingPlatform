@@ -13,6 +13,7 @@ function LoadingButtonClick({ isLoading }) {
   return (
     <>
       <Modal
+        ariaHideApp={false}
         isOpen={isLoading}
         style={{
           overlay: {

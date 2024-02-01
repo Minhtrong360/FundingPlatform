@@ -69,7 +69,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
               <button
                 onClick={() => handleItemClick("/user-info")}
                 className={` w-full hover:cursor-pointer flex items-center p-2 rounded-lg group ${
-                  selectedItem === "/user-info"
+                  selectedItem.includes("/user-info")
                     ? "bg-gray-200 "
                     : "text-gray-900 dark:text-white"
                 }`}
@@ -82,7 +82,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
               <button
                 onClick={() => handleItemClick("/dashboard")}
                 className={`w-full hover:cursor-pointer flex items-center p-2 rounded-lg group ${
-                  selectedItem === "/dashboard"
+                  selectedItem.includes("/dashboard")
                     ? "bg-gray-200 "
                     : "text-gray-900 dark:text-white"
                 }`}
@@ -95,7 +95,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
               <button
                 onClick={() => handleItemClick("/financials")}
                 className={`w-full hover:cursor-pointer flex items-center p-2 rounded-lg group ${
-                  selectedItem === "/financials"
+                  selectedItem.includes("/financials")
                     ? "bg-gray-200 "
                     : "text-gray-900 dark:text-white"
                 }`}
@@ -108,7 +108,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
               <button
                 onClick={() => handleItemClick("/founder")}
                 className={`w-full hover:cursor-pointer flex items-center p-2 rounded-lg group ${
-                  selectedItem === "/founder"
+                  selectedItem.includes("/founder")
                     ? "bg-gray-200 "
                     : "text-gray-900 dark:text-white"
                 }`}

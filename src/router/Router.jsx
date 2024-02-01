@@ -26,7 +26,8 @@ import DashBoardPage from "../pages/DashBoard/DashBoardPage";
 import CompanySetting from "../pages/FounderGitbook/CompanySetting";
 import News from "../pages/News/News";
 import LoadingButtonClick from "../components/LoadingButtonClick";
-import FinalcialPage from "../pages/FinalcialPage/FinalcialPage";
+import FinancialPage from "../pages/FinalcialPage/FinancialPage";
+
 function Router() {
   return (
     <Routes>
@@ -59,7 +60,7 @@ function Router() {
         }
       />
 
-      <Route path="/fundraising" element={<FundraisingRecords />} />
+      {/* <Route path="/fundraising" element={<FundraisingRecords />} />   */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
       <Route
@@ -88,8 +89,8 @@ function Router() {
 
       <Route path="/trials" element={<Trial />} />
       <Route path="/terms" element={<TermsAndConditions />} />
-      {/* <Route path="/financials" element={<Financials />} /> */}
-      <Route path="/financials" element={<FinalcialPage />} />
+
+      <Route path="/financials" element={<FinancialPage />} />
       <Route path="/news" element={<News />} />
       <Route
         path="/loading"

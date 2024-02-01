@@ -1,754 +1,24 @@
 import React, { useState, useEffect } from "react";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "../../components/ui/Select";
-import { Input } from "../../components/ui/Input";
+
 import { Table } from "antd";
 import Chart from "react-apexcharts";
+import DurationSelect from "./Components/DurationSelect";
+import CustomerSection from "./Components/CustomerSection";
+import SalesSection from "./Components/SalesSection";
+import CostSection from "./Components/CostSection";
+import PersonnelSection from "./Components/PersonnelSection";
+import InvestmentSection from "./Components/InvestmentSection";
+import LoanSection from "./Components/LoanSection";
+import { useAuth } from "../../context/AuthContext";
+import { supabase } from "../../supabase";
 
-const DurationSelect = ({ selectedDuration, setSelectedDuration }) => {
-  return (
-    <section aria-labelledby="duration-heading" className="mb-8">
-      <h2
-        className="text-lg font-semibold mb-4 flex items-center"
-        id="duration-heading"
-      >
-        Duration
-      </h2>
-      <div className="bg-white rounded-md shadow p-6">
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className="font-medium">Duration</span>
-          <Select onValueChange={(value) => setSelectedDuration(value)}>
-            <SelectTrigger id="start-date-year">
-              <SelectValue placeholder={selectedDuration} />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              <SelectItem value="3 years">3 years</SelectItem>
-              <SelectItem value="5 years">5 years</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-    </section>
-  );
-};
+import LoadingButtonClick from "../../components/LoadingButtonClick";
+import { toast } from "react-toastify";
 
-const CustomerSection = ({
-  customerInputs,
-  addNewCustomerInput,
-  removeCustomerInput,
-  handleInputChange,
-}) => {
-  const handleAddNewCustomer = () => {
-    const newCustomerInput = {
-      customersPerMonth: 0,
-      growthPerMonth: 0,
-      channelName: "",
-    };
-    addNewCustomerInput(newCustomerInput);
-  };
-
-  return (
-    <section aria-labelledby="customers-heading" className="mb-8">
-      <h2
-        className="text-lg font-semibold mb-4 flex items-center mt-16"
-        id="customers-heading"
-      >
-        Customer
-      </h2>
-
-      {customerInputs.map((input, index) => (
-        <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Channel Name:</span>
-            <Input
-              className="col-start-2"
-              value={input.channelName}
-              onChange={(e) =>
-                handleInputChange(index, "channelName", e.target.value)
-              }
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Customers Per Month:</span>
-            <Input
-              className="col-start-2"
-              value={input.customersPerMonth}
-              onChange={(e) =>
-                handleInputChange(index, "customersPerMonth", e.target.value)
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Growth Per Month:</span>
-            <Input
-              className="col-start-2"
-              value={input.growthPerMonth}
-              onChange={(e) =>
-                handleInputChange(index, "growthPerMonth", e.target.value)
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Begin Month:</span>
-            <Input
-              className="col-start-2"
-              type="number"
-              min="1"
-              value={input.beginMonth}
-              onChange={(e) =>
-                handleInputChange(index, "beginMonth", e.target.value)
-              }
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">End Month:</span>
-            <Input
-              className="col-start-2"
-              type="number"
-              min="1"
-              value={input.endMonth}
-              onChange={(e) =>
-                handleInputChange(index, "endMonth", e.target.value)
-              }
-            />
-          </div>
-          <div className="flex justify-end items-center">
-            <button
-              className="bg-red-500 text-white py-2 px-4 rounded"
-              onClick={() => removeCustomerInput(index)}
-            >
-              Remove
-            </button>
-          </div>
-        </div>
-      ))}
-
-      <button
-        className="bg-blue-600 text-white py-2 px-4 rounded"
-        onClick={handleAddNewCustomer}
-      >
-        Add New
-      </button>
-    </section>
-  );
-};
-
-const SalesSection = ({
-  channelInputs,
-  channelNames,
-  addNewChannelInput,
-  removeChannelInput,
-  handleChannelInputChange,
-}) => {
-  const handleAddNewChannelInput = () => {
-    const newChannelInput = {
-      productName: "", // New field for product name
-      price: 0,
-      multiples: 0,
-      txFeePercentage: 0,
-      cogsPercentage: 0,
-      selectedChannel: "",
-    };
-    addNewChannelInput(newChannelInput);
-  };
-
-  return (
-    <section aria-labelledby="sales-heading" className="mb-8">
-      <h2
-        className="text-lg font-semibold mb-4 flex items-center mt-16"
-        id="sales-heading"
-      >
-        Sales Section
-      </h2>
-
-      {channelInputs.map((input, index) => (
-        <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Product Name:</span>
-            <Input
-              className="col-start-2"
-              value={input.productName}
-              onChange={(e) =>
-                handleChannelInputChange(index, "productName", e.target.value)
-              }
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Price:</span>
-            <Input
-              className="col-start-2"
-              value={input.price}
-              onChange={(e) =>
-                handleChannelInputChange(index, "price", e.target.value)
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Multiples:</span>
-            <Input
-              className="col-start-2"
-              value={input.multiples}
-              onChange={(e) =>
-                handleChannelInputChange(index, "multiples", e.target.value)
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Tx Fee (%):</span>
-            <Input
-              className="col-start-2"
-              value={input.txFeePercentage}
-              onChange={(e) =>
-                handleChannelInputChange(
-                  index,
-                  "txFeePercentage",
-                  e.target.value
-                )
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">COGS (%):</span>
-            <Input
-              className="col-start-2"
-              value={input.cogsPercentage}
-              onChange={(e) =>
-                handleChannelInputChange(
-                  index,
-                  "cogsPercentage",
-                  e.target.value
-                )
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Sales Channel:</span>
-            <Select
-              onValueChange={(value) =>
-                handleChannelInputChange(index, "selectedChannel", value)
-              }
-              value={
-                input.selectedChannel !== null ? input.selectedChannel : ""
-              }
-            >
-              <SelectTrigger id={`select-channel-${index}`}>
-                <SelectValue placeholder="Select Channel" />
-              </SelectTrigger>
-              <SelectContent position="popper">
-                {channelNames.map((channelName, channelIndex) => (
-                  <SelectItem key={channelIndex} value={channelName}>
-                    {channelName}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Channel Allocation (%):</span>
-            <Input
-              className="col-start-2"
-              type="number"
-              min="0"
-              max="100"
-              value={input.channelAllocation * 100} // Convert to percentage for display
-              onChange={(e) =>
-                handleChannelInputChange(
-                  index,
-                  "channelAllocation",
-                  e.target.value / 100
-                )
-              } // Convert back to fraction
-            />
-          </div>
-          <div className="flex justify-end items-center">
-            <button
-              className="bg-red-500 text-white py-2 px-4 rounded"
-              onClick={() => removeChannelInput(index)}
-            >
-              Remove
-            </button>
-          </div>
-        </div>
-      ))}
-
-      <button
-        className="bg-blue-500 text-white py-2 px-4 rounded"
-        onClick={handleAddNewChannelInput}
-      >
-        Add New
-      </button>
-    </section>
-  );
-};
-
-const CostSection = ({
-  costInputs,
-  addNewCostInput,
-  removeCostInput,
-  handleCostInputChange,
-}) => {
-  const handleAddNewCost = () => {
-    const newCostInput = {
-      costName: "",
-      costValue: 0,
-      growthPercentage: 0,
-      beginMonth: 1,
-      endMonth: 12,
-    };
-    addNewCostInput(newCostInput);
-  };
-
-  return (
-    <section aria-labelledby="costs-heading" className="mb-8">
-      <h2
-        className="text-lg font-semibold mb-4 flex items-center mt-16"
-        id="costs-heading"
-      >
-        Costs
-      </h2>
-
-      {costInputs.map((input, index) => (
-        <div key={index} className="bg-white rounded-md shadow p-6 mb-4 ">
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Cost Name:</span>
-            <Input
-              className="col-start-2"
-              value={input.costName}
-              onChange={(e) =>
-                handleCostInputChange(index, "costName", e.target.value)
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Cost Value:</span>
-            <Input
-              className="col-start-2"
-              type="number"
-              value={input.costValue}
-              onChange={(e) =>
-                handleCostInputChange(
-                  index,
-                  "costValue",
-                  parseFloat(e.target.value)
-                )
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Growth Percentage:</span>
-            <Input
-              className="col-start-2"
-              type="number"
-              value={input.growthPercentage}
-              onChange={(e) =>
-                handleCostInputChange(
-                  index,
-                  "growthPercentage",
-                  parseFloat(e.target.value)
-                )
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Begin Month:</span>
-            <Input
-              className="col-start-2"
-              type="number"
-              min="1"
-              max="12"
-              value={input.beginMonth}
-              onChange={(e) =>
-                handleCostInputChange(
-                  index,
-                  "beginMonth",
-                  parseInt(e.target.value, 10)
-                )
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">End Month:</span>
-            <Input
-              className="col-start-2"
-              type="number"
-              min="1"
-              max="12"
-              value={input.endMonth}
-              onChange={(e) =>
-                handleCostInputChange(
-                  index,
-                  "endMonth",
-                  parseInt(e.target.value, 10)
-                )
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Cost Type:</span>
-            <Select
-              onValueChange={(value) =>
-                handleCostInputChange(index, "costType", value)
-              }
-              value={input.costType}
-            >
-              <SelectTrigger id={`select-costType-${index}`}>
-                <SelectValue placeholder="Select Cost Type" />
-              </SelectTrigger>
-              <SelectContent position="popper">
-                <SelectItem value="Operating Cost">Operating Cost</SelectItem>
-                <SelectItem value="SG & A">SG & A</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex justify-end items-center">
-            <button
-              className="bg-red-500 text-white py-2 px-4 rounded"
-              onClick={() => removeCostInput(index)}
-            >
-              Remove
-            </button>
-          </div>
-        </div>
-      ))}
-
-      <button
-        className="bg-blue-600 text-white py-2 px-4 rounded"
-        onClick={handleAddNewCost}
-      >
-        Add New
-      </button>
-    </section>
-  );
-};
-
-const PersonnelSection = ({
-  personnelInputs,
-  addNewPersonnelInput,
-  removePersonnelInput,
-  handlePersonnelInputChange,
-}) => {
-  return (
-    <section aria-labelledby="personnel-heading" className="mb-8">
-      <h2
-        className="text-lg font-semibold mb-4 flex items-center mt-16"
-        id="personnel-heading"
-      >
-        Personnel
-      </h2>
-      {personnelInputs.map((input, index) => (
-        <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Job Title</span>
-            <Input
-              className="col-start-2"
-              placeholder="Enter Job Title"
-              value={input.jobTitle}
-              onChange={(e) =>
-                handlePersonnelInputChange(index, "jobTitle", e.target.value)
-              }
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Salary/month</span>
-            <Input
-              className="col-start-2"
-              placeholder="Enter Salary per Month"
-              value={input.salaryPerMonth}
-              onChange={(e) =>
-                handlePersonnelInputChange(
-                  index,
-                  "salaryPerMonth",
-                  e.target.value
-                )
-              }
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">No. of hires</span>
-            <Input
-              className="col-start-2"
-              placeholder="Enter Number of Hires"
-              value={input.numberOfHires}
-              onChange={(e) =>
-                handlePersonnelInputChange(
-                  index,
-                  "numberOfHires",
-                  e.target.value
-                )
-              }
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Job begin month</span>
-            <Input
-              className="col-start-2"
-              placeholder="Enter Job Begin Month"
-              value={input.jobBeginMonth}
-              onChange={(e) =>
-                handlePersonnelInputChange(
-                  index,
-                  "jobBeginMonth",
-                  e.target.value
-                )
-              }
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Job ending month</span>
-            <Input
-              className="col-start-2"
-              placeholder="Enter Job Ending Month"
-              value={input.jobEndMonth}
-              onChange={(e) =>
-                handlePersonnelInputChange(index, "jobEndMonth", e.target.value)
-              }
-            />
-          </div>
-          <div className="flex justify-end items-center">
-            <button
-              className="bg-red-500 text-white py-2 px-4 rounded"
-              onClick={() => removePersonnelInput(index)}
-            >
-              Remove
-            </button>
-          </div>
-        </div>
-      ))}
-      <button
-        className="bg-blue-500 text-white py-2 px-4 rounded"
-        onClick={addNewPersonnelInput}
-      >
-        Add New
-      </button>
-    </section>
-  );
-};
-
-const InvestmentSection = ({
-  investmentInputs,
-  setInvestmentInputs, // Add this line
-  addNewInvestmentInput,
-  removeInvestmentInput,
-  handleInvestmentInputChange,
-}) => {
-  return (
-    <section aria-labelledby="investment-heading" className="mb-8">
-      <h2
-        className="text-lg font-semibold mb-4 flex items-center mt-16"
-        id="investment-heading"
-      >
-        Investment
-      </h2>
-      {investmentInputs.map((input, index) => (
-        <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Name of Purchase</span>
-            <Input
-              className="col-start-2"
-              value={input.purchaseName}
-              onChange={(e) => {
-                const newInputs = [...investmentInputs];
-                newInputs[index].purchaseName = e.target.value;
-                setInvestmentInputs(newInputs);
-              }}
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Asset Cost</span>
-            <Input
-              className="col-start-2"
-              value={input.assetCost}
-              onChange={(e) => {
-                const newInputs = [...investmentInputs];
-                newInputs[index].assetCost = e.target.value;
-                setInvestmentInputs(newInputs);
-              }}
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Quantity:</span>
-            <Input
-              className="col-start-2"
-              type="number"
-              min="1"
-              value={input.quantity}
-              onChange={(e) =>
-                handleInvestmentInputChange(index, "quantity", e.target.value)
-              }
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Purchase Month</span>
-            <Input
-              className="col-start-2"
-              value={input.purchaseMonth}
-              onChange={(e) => {
-                const newInputs = [...investmentInputs];
-                newInputs[index].purchaseMonth = e.target.value;
-                setInvestmentInputs(newInputs);
-              }}
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Residual Value</span>
-            <Input
-              className="col-start-2"
-              value={input.residualValue}
-              onChange={(e) => {
-                const newInputs = [...investmentInputs];
-                newInputs[index].residualValue = e.target.value;
-                setInvestmentInputs(newInputs);
-              }}
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Useful Lifetime (Months)</span>
-            <Input
-              className="col-start-2"
-              value={input.usefulLifetime}
-              onChange={(e) => {
-                const newInputs = [...investmentInputs];
-                newInputs[index].usefulLifetime = e.target.value;
-                setInvestmentInputs(newInputs);
-              }}
-            />
-          </div>
-          <div className="flex justify-end items-center">
-            <button
-              className="bg-red-500 text-white py-2 px-4 rounded"
-              onClick={() => removeInvestmentInput(index)}
-            >
-              Remove
-            </button>
-          </div>
-        </div>
-      ))}
-      <button
-        className="bg-blue-500 text-white py-2 px-4 rounded"
-        onClick={addNewInvestmentInput}
-      >
-        Add New
-      </button>
-    </section>
-  );
-};
-
-const LoanSection = ({
-  loanInputs,
-  addNewLoanInput,
-  removeLoanInput,
-  handleLoanInputChange,
-}) => {
-  return (
-    <section aria-labelledby="loan-heading" className="mb-8">
-      <h2
-        className="text-lg font-semibold mb-4 flex items-center mt-16"
-        id="loan-heading"
-      >
-        Loan
-      </h2>
-
-      {loanInputs.map((input, index) => (
-        <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Loan Name:</span>
-            <input
-              className="border p-2 rounded"
-              value={input.loanName}
-              onChange={(e) =>
-                handleLoanInputChange(index, "loanName", e.target.value)
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Loan Amount:</span>
-            <input
-              type="number"
-              className="border p-2 rounded"
-              value={input.loanAmount}
-              onChange={(e) =>
-                handleLoanInputChange(index, "loanAmount", e.target.value)
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Interest Rate (%):</span>
-            <input
-              type="number"
-              className="border p-2 rounded"
-              value={input.interestRate}
-              onChange={(e) =>
-                handleLoanInputChange(index, "interestRate", e.target.value)
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Month Loan Begins:</span>
-            <input
-              type="number"
-              className="border p-2 rounded"
-              value={input.loanBeginMonth}
-              onChange={(e) =>
-                handleLoanInputChange(index, "loanBeginMonth", e.target.value)
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Month Loan Ends:</span>
-            <input
-              type="number"
-              className="border p-2 rounded"
-              value={input.loanEndMonth}
-              onChange={(e) =>
-                handleLoanInputChange(index, "loanEndMonth", e.target.value)
-              }
-            />
-          </div>
-          <div className="flex justify-end items-center">
-            <button
-              className="bg-red-500 text-white py-2 px-4 rounded"
-              onClick={() => removeLoanInput(index)}
-            >
-              Remove
-            </button>
-          </div>
-        </div>
-      ))}
-
-      <button
-        className="bg-blue-500 text-white py-2 px-4 rounded"
-        onClick={addNewLoanInput}
-      >
-        Add New
-      </button>
-    </section>
-  );
-};
-
-const FinalcialPage = () => {
+const FinancialForm = () => {
   //DurationSection
+  const [financeName, setFinanceName] = useState("");
+
   const [selectedDuration, setSelectedDuration] = useState("3 years");
 
   //CustomerSection
@@ -1465,7 +735,6 @@ const FinalcialPage = () => {
   const transformCostDataForTable = () => {
     const transformedData = {};
     const calculatedCostData = calculateCostData();
-    console.log("calculatedCostData", calculatedCostData);
     calculatedCostData.forEach((costItem) => {
       const rowKey = `${costItem.costType} - ${costItem.costName}`;
       costItem.monthlyCosts.forEach((monthData) => {
@@ -1844,20 +1113,124 @@ const FinalcialPage = () => {
     setLoanChart((prevState) => ({ ...prevState, series: seriesData }));
   }, [loanInputs]);
 
+  // Lưu vào DB
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { user } = useAuth();
+  const loadData = async (userId) => {
+    setIsLoading(true);
+    const { data, error } = await supabase
+      .from("finance")
+      .select("inputData")
+      .eq("user_id", userId);
+    if (error) {
+      toast.error(error.message);
+      console.error("Error fetching data", error);
+      return null;
+    }
+    setIsLoading(false);
+    return data.length > 0 ? JSON.parse(data[0]?.inputData) : null;
+  };
+
+  useEffect(() => {
+    // Assuming `user` is your user object
+    const userId = user.id;
+    loadData(userId).then((inputData) => {
+      if (inputData) {
+        // Set your state here
+        setFinanceName(inputData.financeName);
+        setSelectedDuration(inputData.selectedDuration);
+        setCustomerInputs(inputData.customerInputs);
+        setChannelInputs(inputData.channelInputs);
+        setCostInputs(inputData.costInputs);
+        setPersonnelInputs(inputData.personnelInputs);
+        setInvestmentInputs(inputData.investmentInputs);
+        setLoanInputs(inputData.loanInputs);
+      }
+    });
+  }, [user.id]);
+
+  const saveOrUpdateFinanceData = async (userId, inputData) => {
+    setIsLoading(true);
+
+    console.log("inputData", inputData);
+    try {
+      const { data: existingData, error: selectError } = await supabase
+        .from("finance")
+        .select("*")
+        .eq("user_id", userId);
+
+      if (selectError) throw selectError;
+
+      if (existingData.length > 0) {
+        console.log("existingData", existingData);
+        // Update existing record
+        const { data, error: updateError } = await supabase
+          .from("finance")
+          .update({ inputData })
+          .eq("id", existingData[0].id)
+          .select();
+        console.log("Updated", data);
+        if (updateError) {
+          toast.error(updateError.message);
+        } else {
+          toast.success("Updated successfully.");
+        }
+      } else {
+        // Insert new record
+        const { error: insertError } = await supabase
+          .from("finance")
+          .insert([{ user_id: userId, inputData }]);
+        if (insertError) {
+          toast.error(insertError.message);
+        } else {
+          toast.success("Inserted successfully.");
+        }
+      }
+    } catch (error) {
+      toast.error(error.message);
+      console.error("Error in saveOrUpdateFinanceData", error);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmit = async () => {
+    const financeData = {
+      financeName,
+      selectedDuration,
+      customerInputs,
+      channelInputs,
+      costInputs,
+      personnelInputs,
+      investmentInputs,
+      loanInputs,
+    };
+
+    await saveOrUpdateFinanceData(user.id, financeData);
+
+    // Handle post-save actions
+  };
+
   return (
     <div>
-      <div className="w-full h-full flex flex-col md:flex-row">
-        <div className="w-full md:w-1/3 p-4">
+      <LoadingButtonClick isLoading={isLoading} />
+      <div className="flex flex-col lg:flex-row">
+        <div className="w-full lg:w-1/3 p-4">
           <DurationSelect
+            financeName={financeName}
+            setFinanceName={setFinanceName}
             selectedDuration={selectedDuration}
             setSelectedDuration={setSelectedDuration}
           />
         </div>
-        <div className="w-full md:w-2/3 p-4"></div>
+        <div className="w-full lg:w-2/3 p-4"></div>
       </div>
-
-      <div className="w-full h-full flex flex-col md:flex-row">
-        <div className="w-full md:w-1/3 p-4">
+      <hr className="border border-dashed my-8" />
+      <div className="w-full h-full flex flex-col lg:flex-row">
+        <div className="w-full lg:w-1/3 p-4">
           <CustomerSection
             customerInputs={customerInputs}
             addNewCustomerInput={addNewCustomerInput}
@@ -1865,17 +1238,19 @@ const FinalcialPage = () => {
             handleInputChange={handleInputChange}
           />
         </div>
-        <div className="w-full md:w-2/3 p-4 ">
-          <h3 className="text-lg font-semibold mb-4">
+
+        <div className="w-full lg:w-2/3 p-4 ">
+          <h3 className="text-lg font-semibold my-8">
             Customer Growth Data by Channel
           </h3>
           <Table
-            className="overflow-auto mb-4"
+            className="overflow-auto mb-4 border-2"
             dataSource={tableData}
             columns={columns}
             pagination={false}
           />
-          <h3 className="text-lg font-semibold">
+          <h3 className="text-lg font-semibold my-8">
+            {" "}
             Customer Growth Data by Channel
           </h3>
           <Chart
@@ -1886,9 +1261,9 @@ const FinalcialPage = () => {
           />
         </div>
       </div>
-
-      <div className="w-full h-full flex flex-col md:flex-row">
-        <div className="w-full md:w-1/3 p-4">
+      <hr className="border border-dashed my-8" />
+      <div className="w-full h-full flex flex-col lg:flex-row">
+        <div className="w-full lg:w-1/3 p-4">
           <SalesSection
             channelInputs={channelInputs}
             channelNames={channelNames}
@@ -1897,12 +1272,13 @@ const FinalcialPage = () => {
             handleChannelInputChange={handleChannelInputChange}
           />
         </div>
-        <div className="w-full md:w-2/3 p-4">
-          <h3 className="text-lg font-semibold mb-4">
+        <div className="w-full lg:w-2/3 p-4">
+          <h3 className="text-lg font-semibold my-8">
+            {" "}
             Revenue Data by Channel and Product
           </h3>
           <Table
-            className="overflow-auto mb-4"
+            className="overflow-auto mb-4 border-2"
             dataSource={revenueTableData}
             columns={revenueColumns}
             pagination={false}
@@ -1916,9 +1292,9 @@ const FinalcialPage = () => {
           />
         </div>
       </div>
-
-      <div className="w-full h-full flex flex-col md:flex-row">
-        <div className="w-full md:w-1/3 p-4">
+      <hr className="border border-dashed my-8" />
+      <div className="w-full h-full flex flex-col lg:flex-row">
+        <div className="w-full lg:w-1/3 p-4">
           <CostSection
             costInputs={costInputs}
             addNewCostInput={addNewCostInput}
@@ -1926,10 +1302,10 @@ const FinalcialPage = () => {
             handleCostInputChange={handleCostInputChange}
           />
         </div>
-        <div className="w-full md:w-2/3 p-4">
+        <div className="w-full lg:w-2/3 p-4">
           <h3 className="text-lg font-semibold mb-4">Cost Data</h3>
           <Table
-            className="overflow-auto mb-4"
+            className="overflow-auto mb-4 border-2"
             dataSource={costTableData}
             columns={costColumns}
             pagination={false}
@@ -1942,9 +1318,9 @@ const FinalcialPage = () => {
           />
         </div>
       </div>
-
-      <div className="w-full h-full flex flex-col md:flex-row">
-        <div className="w-full md:w-1/3 p-4">
+      <hr className="border border-dashed my-8" />
+      <div className="w-full h-full flex flex-col lg:flex-row">
+        <div className="w-full lg:w-1/3 p-4">
           <PersonnelSection
             personnelInputs={personnelInputs}
             addNewPersonnelInput={addNewPersonnelInput}
@@ -1952,10 +1328,10 @@ const FinalcialPage = () => {
             handlePersonnelInputChange={handlePersonnelInputChange}
           />
         </div>
-        <div className="w-full md:w-2/3 p-4">
+        <div className="w-full lg:w-2/3 p-4">
           <h3 className="text-lg font-semibold mb-4">Personnel Cost Data</h3>
           <Table
-            className="overflow-auto mb-4"
+            className="overflow-auto mb-4 border-2"
             dataSource={personnelCostTableData}
             columns={personnelCostColumns}
             pagination={false}
@@ -1968,9 +1344,9 @@ const FinalcialPage = () => {
           />
         </div>
       </div>
-
-      <div className="w-full h-full flex flex-col md:flex-row">
-        <div className="w-full md:w-1/3 p-4">
+      <hr className="border border-dashed my-8" />
+      <div className="w-full h-full flex flex-col lg:flex-row">
+        <div className="w-full lg:w-1/3 p-4">
           <InvestmentSection
             investmentInputs={investmentInputs}
             setInvestmentInputs={setInvestmentInputs}
@@ -1979,10 +1355,10 @@ const FinalcialPage = () => {
             handleInvestmentInputChange={handleInvestmentInputChange}
           />
         </div>
-        <div className="w-full md:w-2/3 p-4">
+        <div className="w-full lg:w-2/3 p-4">
           <h3 className="text-lg font-semibold mb-4">Investment Data</h3>
           <Table
-            className="overflow-auto mb-4"
+            className="overflow-auto mb-4 border-2"
             dataSource={transformInvestmentDataForTable()}
             columns={investmentColumns}
             pagination={false}
@@ -1995,9 +1371,9 @@ const FinalcialPage = () => {
           />
         </div>
       </div>
-
-      <div className="w-full h-full flex flex-col md:flex-row">
-        <div className="w-full md:w-1/3 p-4">
+      <hr className="border border-dashed my-8" />
+      <div className="w-full h-full flex flex-col lg:flex-row">
+        <div className="w-full lg:w-1/3 p-4">
           <LoanSection
             loanInputs={loanInputs}
             addNewLoanInput={addNewLoanInput}
@@ -2005,10 +1381,10 @@ const FinalcialPage = () => {
             handleLoanInputChange={handleLoanInputChange}
           />
         </div>
-        <div className="w-full md:w-2/3 p-4">
+        <div className="w-full lg:w-2/3 p-4">
           <h3 className="text-lg font-semibold mb-4">Loan Data</h3>
           <Table
-            className="overflow-auto mb-4"
+            className="overflow-auto mb-4 border-2"
             dataSource={transformLoanDataForTable()}
             columns={loanColumns}
             pagination={false}
@@ -2021,8 +1397,17 @@ const FinalcialPage = () => {
           />
         </div>
       </div>
+
+      <button
+        className="fixed bottom-8 left-30 bg-blue-600 text-white py-2 px-4 rounded disabled:bg-gray-500"
+        type="button"
+        onClick={handleSubmit}
+        disabled={isLoading}
+      >
+        Save
+      </button>
     </div>
   );
 };
 
-export default FinalcialPage;
+export default FinancialForm;

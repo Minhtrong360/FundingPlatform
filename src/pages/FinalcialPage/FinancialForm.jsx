@@ -254,7 +254,7 @@ const FinancialForm = () => {
           (_, i) => `Month ${i + 1}`
         ),
       },
-   
+
       yaxis: {
         labels: {
           formatter: function (val) {
@@ -281,7 +281,7 @@ const FinancialForm = () => {
           (_, i) => `Month ${i + 1}`
         ),
       },
-     
+
       yaxis: {
         labels: {
           formatter: function (val) {
@@ -307,7 +307,7 @@ const FinancialForm = () => {
           (_, i) => `Month ${i + 1}`
         ),
       },
-     
+
       yaxis: {
         labels: {
           formatter: function (val) {
@@ -333,7 +333,7 @@ const FinancialForm = () => {
           (_, i) => `Month ${i + 1}`
         ),
       },
- 
+
       yaxis: {
         labels: {
           formatter: function (val) {
@@ -359,7 +359,7 @@ const FinancialForm = () => {
           (_, i) => `Month ${i + 1}`
         ),
       },
-      
+
       yaxis: {
         labels: {
           formatter: function (val) {
@@ -398,21 +398,23 @@ const FinancialForm = () => {
 
   useEffect(() => {
     // Assuming `user` is your user object
-    const userId = user.id;
-    loadData(userId).then((inputData) => {
-      if (inputData) {
-        // Set your state here
-        setFinanceName(inputData.financeName);
-        setSelectedDuration(inputData.selectedDuration);
-        setCustomerInputs(inputData.customerInputs);
-        setChannelInputs(inputData.channelInputs);
-        setCostInputs(inputData.costInputs);
-        setPersonnelInputs(inputData.personnelInputs);
-        setInvestmentInputs(inputData.investmentInputs);
-        setLoanInputs(inputData.loanInputs);
-      }
-    });
-  }, [user.id]);
+    const userId = user?.id;
+    if (userId) {
+      loadData(userId).then((inputData) => {
+        if (inputData) {
+          // Set your state here
+          setFinanceName(inputData.financeName);
+          setSelectedDuration(inputData.selectedDuration);
+          setCustomerInputs(inputData.customerInputs);
+          setChannelInputs(inputData.channelInputs);
+          setCostInputs(inputData.costInputs);
+          setPersonnelInputs(inputData.personnelInputs);
+          setInvestmentInputs(inputData.investmentInputs);
+          setLoanInputs(inputData.loanInputs);
+        }
+      });
+    }
+  }, [user?.id]);
 
   const saveOrUpdateFinanceData = async (userId, inputData) => {
     setIsLoading(true);
@@ -435,7 +437,7 @@ const FinancialForm = () => {
           const { error: updateError } = await supabase
             .from("finance")
             .update({ name: financeName, inputData })
-            .eq("id", financeRecord.id)
+            .eq("id", financeRecord?.id)
             .select();
 
           if (updateError) {
@@ -483,7 +485,7 @@ const FinancialForm = () => {
       loanInputs,
     };
 
-    await saveOrUpdateFinanceData(user.id, financeData);
+    await saveOrUpdateFinanceData(user?.id, financeData);
 
     // Handle post-save actions
   };
@@ -577,8 +579,8 @@ const FinancialForm = () => {
             columns={revenueColumns}
             pagination={false}
           />
-           <h3 className="text-lg font-semibold mb-4">
-          Gross Profit Data by Channel and Product
+          <h3 className="text-lg font-semibold mb-4">
+            Gross Profit Data by Channel and Product
           </h3>
           <Chart
             options={revenueChart.options}
@@ -706,14 +708,16 @@ const FinancialForm = () => {
         </div>
       </div>
 
-      <button
-        className="fixed bottom-8 left-30 bg-blue-600 text-white py-2 px-4 rounded disabled:bg-gray-500"
-        type="button"
-        onClick={handleSubmit}
-        disabled={isLoading}
-      >
-        Save
-      </button>
+      {user?.id && (
+        <button
+          className="fixed bottom-8 left-30 bg-blue-600 text-white py-2 px-4 rounded disabled:bg-gray-500"
+          type="button"
+          onClick={handleSubmit}
+          disabled={isLoading}
+        >
+          Save
+        </button>
+      )}
     </div>
   );
 };

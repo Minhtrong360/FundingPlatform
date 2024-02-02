@@ -254,7 +254,7 @@ const FinancialForm = () => {
           (_, i) => `Month ${i + 1}`
         ),
       },
-      title: { text: "Revenue Data by Channel and Product", align: "left" },
+   
       yaxis: {
         labels: {
           formatter: function (val) {
@@ -281,7 +281,7 @@ const FinancialForm = () => {
           (_, i) => `Month ${i + 1}`
         ),
       },
-      title: { text: "Cost Data", align: "left" },
+     
       yaxis: {
         labels: {
           formatter: function (val) {
@@ -307,7 +307,7 @@ const FinancialForm = () => {
           (_, i) => `Month ${i + 1}`
         ),
       },
-      title: { text: "Personnel Cost Data", align: "left" },
+     
       yaxis: {
         labels: {
           formatter: function (val) {
@@ -333,7 +333,7 @@ const FinancialForm = () => {
           (_, i) => `Month ${i + 1}`
         ),
       },
-      title: { text: "Investment Data", align: "left" },
+ 
       yaxis: {
         labels: {
           formatter: function (val) {
@@ -359,7 +359,7 @@ const FinancialForm = () => {
           (_, i) => `Month ${i + 1}`
         ),
       },
-      title: { text: "Loan Data", align: "left" },
+      
       yaxis: {
         labels: {
           formatter: function (val) {
@@ -577,7 +577,9 @@ const FinancialForm = () => {
             columns={revenueColumns}
             pagination={false}
           />
-
+           <h3 className="text-lg font-semibold mb-4">
+          Gross Profit Data by Channel and Product
+          </h3>
           <Chart
             options={revenueChart.options}
             series={revenueChart.series}
@@ -608,6 +610,7 @@ const FinancialForm = () => {
             columns={costColumns}
             pagination={false}
           />
+          <h3 className="text-lg font-semibold mb-4">Cost Chart</h3>
           <Chart
             options={costChart.options}
             series={costChart.series}
@@ -637,6 +640,7 @@ const FinancialForm = () => {
             columns={personnelCostColumns}
             pagination={false}
           />
+          <h3 className="text-lg font-semibold mb-4">Personnel Cost Chart</h3>
           <Chart
             options={personnelChart.options}
             series={personnelChart.series}
@@ -664,6 +668,7 @@ const FinancialForm = () => {
             columns={investmentColumns}
             pagination={false}
           />
+          <h3 className="text-lg font-semibold mb-4">Investment Chart</h3>
           <Chart
             options={investmentChart.options}
             series={investmentChart.series}
@@ -691,6 +696,7 @@ const FinancialForm = () => {
             columns={loanColumns}
             pagination={false}
           />
+          <h3 className="text-lg font-semibold mb-4">Loan Chart</h3>
           <Chart
             options={loanChart.options}
             series={loanChart.series}

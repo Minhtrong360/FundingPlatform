@@ -37,7 +37,7 @@ const FAQ = () => {
           <div className="max-w-xs">
             <h2
               id="FAQ"
-              className="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white"
+              className="text-2xl font-semibold md:text-4xl md:leading-tight dark:text-white"
             >
               Frequently
               <br />
@@ -59,7 +59,7 @@ const FAQ = () => {
                 key={index}
               >
                 <button
-                  className="hs-accordion-toggle group pb-3 inline-flex items-center justify-between gap-x-3 w-full md:text-lg font-semibold text-start text-gray-800 rounded-lg transition hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                  className="mt-3 hs-accordion-toggle group pb-3 inline-flex items-center justify-between gap-x-3 w-full md:text-lg font-semibold text-start text-gray-800 rounded-lg transition hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                   aria-controls={`hs-basic-with-title-and-arrow-stretched-collapse-${index}`}
                   onClick={() => toggleAccordion(index)}
                 >

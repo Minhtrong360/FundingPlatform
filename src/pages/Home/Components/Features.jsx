@@ -1,10 +1,10 @@
 function Features() {
   return (
-    <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+    <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto mt-24">
       <div className="max-w-2xl mx-auto text-center mb-10 lg:mb-14">
         <h3
           id="platform"
-          className="text-4xl font-bold md:text-4xl md:leading-tight dark:text-white"
+          className="text-4xl font-semibold md:text-4xl md:leading-tight dark:text-white"
         >
           A data-centric platform for all
         </h3>
@@ -23,7 +23,7 @@ function Features() {
             <img
               className="w-full object-cover rounded-xl"
               src="https://images.unsplash.com/photo-1692606932040-c7788965e217?q=80&h=2360&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt="Image Description"
+              alt=" Description"
             />
           </div>
           <div className="my-6">
@@ -40,7 +40,7 @@ function Features() {
             <img
               className="w-8 h-8 rounded-full"
               src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDEwfHx8ZW58MHx8fHx8"
-              alt="Image Description"
+              alt="Description"
             />
             <div>
               <h5 className="text-sm text-gray-800  dark:text-gray-200">
@@ -58,7 +58,7 @@ function Features() {
             <img
               className="w-full object-cover rounded-xl"
               src="https://images.unsplash.com/photo-1692607038301-07f744323ede?q=80&h=2360&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt="Image Description"
+              alt="Description"
             />
           </div>
           <div className="my-6">
@@ -93,7 +93,7 @@ function Features() {
             <img
               className="w-full object-cover rounded-xl"
               src="https://images.unsplash.com/photo-1692606866812-843adbc73e18?q=80&h=2360&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt="Image Description"
+              alt="Description"
             />
           </div>
           <div className="my-6">

@@ -30,7 +30,7 @@ const Card = ({
         onClick={() => navigate(`/founder/${project_id}`)}
       /> */}
       <div className="p-5">
-        <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+        <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
           {title}
         </h5>
 

@@ -91,7 +91,7 @@ const Search = () => {
     <div className="relative overflow-hidden">
       <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-2">
         <div className="text-center">
-          <h3 className="text-3xl sm:text-5xl font-bold text-gray-800 dark:text-gray-200 mt-28">
+          <h3 className="text-3xl sm:text-5xl font-semibold text-gray-800 dark:text-gray-200 mt-28">
             <span className="text-blue-600">Signature </span> Deal Room
           </h3>
           <div className="mt-7 sm:mt-12 mx-auto max-w-xl relative">
@@ -224,7 +224,7 @@ const Card = ({ title, description, imageUrl, buttonText, buttonLink }) => (
     </a>
     <div className="p-5">
       <a href={buttonLink}>
-        <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+        <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
           {title}
         </h5>
       </a>
@@ -276,7 +276,7 @@ const cardData = [
 const Card3x = (props) => (
   <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
     <div className="max-w-2xl mx-auto text-center mb-10 lg:mb-14">
-      <h2 className="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">
+      <h2 className="text-2xl font-semibold md:text-4xl md:leading-tight dark:text-white">
         {/* Insights */}
         {props.title}
       </h2>

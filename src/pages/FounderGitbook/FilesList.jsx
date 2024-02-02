@@ -9,6 +9,7 @@ import InvitedUserFile from "../../components/InvitedUserFile";
 import apiService from "../../app/apiService";
 import { toast } from "react-toastify";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
+import { Tooltip } from "antd";
 
 function FilesList() {
   const { id } = useParams();
@@ -277,8 +278,6 @@ function FilesList() {
     }
   }, [currentUser]);
 
-  console.log("currentUser", currentUser);
-
   return (
     <main className="w-full ml-2">
       <LoadingButtonClick isLoading={isLoading} />
@@ -378,7 +377,13 @@ function FilesList() {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          {link.name}
+                          <Tooltip
+                            title={link.name}
+                            color="geekblue"
+                            zIndex={20000}
+                          >
+                            {link.name}
+                          </Tooltip>
                         </td>
                         <td
                           className={`${
@@ -400,7 +405,7 @@ function FilesList() {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          {link.status ? link.link : "***********"}
+                          {calculateCanClick(link) ? link.link : "***********"}
                         </td>
                         <td
                           className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap"
@@ -411,7 +416,13 @@ function FilesList() {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          {link.owner_email}
+                          <Tooltip
+                            title={link.owner_email}
+                            color="geekblue"
+                            zIndex={20000}
+                          >
+                            {link.owner_email}
+                          </Tooltip>
                         </td>
                         <td className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap">
                           {link.status ? "Public" : "Private"}

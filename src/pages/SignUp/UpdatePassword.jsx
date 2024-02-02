@@ -4,7 +4,6 @@ import { useNavigate } from "react-router";
 import AlertMsg from "../../components/AlertMsg";
 import { toast } from "react-toastify";
 
-import SpinnerBtn from "../../components/SpinnerBtn";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 
 const InputField = ({ label, type, name, value, onChange }) => {
@@ -95,7 +94,7 @@ const UpdatePassword = () => {
       <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
         <div className="p-4 sm:p-7">
           <form onSubmit={handleSubmit} className="mt-5">
-            <h1 className="text-center mb-4 block text-2xl font-bold text-gray-800 dark:text-white">
+            <h1 className="text-center mb-4 block text-2xl font-semibold text-gray-800 dark:text-white">
               Update Password
             </h1>
 

@@ -19,7 +19,7 @@ import { YoutubeOutlined } from "@ant-design/icons";
 import { useAuth } from "../../context/AuthContext";
 
 import { toast } from "react-toastify";
-import Spinner from "../../components/Spinner";
+
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 
 // Create the YouTube Link block
@@ -280,7 +280,7 @@ export default function EditorTool() {
         if (projectData && projectData.user_id === user.id) {
           // Only allow save if project.user_id matches user.id
 
-          const { data, error } = await supabase
+          const { error } = await supabase
             .from("projects")
             .update({ markdown: blocks })
             .match({ id: params.id });
@@ -334,7 +334,7 @@ export default function EditorTool() {
         if (projectData && projectData.user_id === user.id) {
           // Only allow save if project.user_id matches user.id
 
-          const { data, error } = await supabase
+          const { error } = await supabase
             .from("projects")
             .update({ markdown: blocks })
             .match({ id: params.id });
@@ -399,10 +399,8 @@ export default function EditorTool() {
   };
   const navigate = useNavigate();
 
-  // const [isSaved, setIsSaved] = useState(true);
   const [showConfirmation, setShowConfirmation] = useState(false);
 
-  // useEffect(() => {
   //   const handleBeforeUnload = (e) => {
   //     if (!isSaved) {
   //       e.preventDefault();
@@ -424,6 +422,7 @@ export default function EditorTool() {
   return (
     <div className="flex-grow items-center justify-center max-w-[85rem] py-10 ">
       <Modal
+        ariaHideApp={false}
         isOpen={showConfirmation}
         onRequestClose={() => setShowConfirmation(false)}
         contentLabel="Confirmation Modal"
@@ -443,6 +442,7 @@ export default function EditorTool() {
       />
 
       <Modal
+        ariaHideApp={false}
         isOpen={isModalOpen}
         onRequestClose={closeModal}
         contentLabel="YouTube Link Modal"

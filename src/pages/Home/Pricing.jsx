@@ -2,13 +2,10 @@ import { useAuth } from "../../context/AuthContext";
 import apiService from "../../app/apiService";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import SpinnerBtn from "../../components/SpinnerBtn";
 
 import AlertMsg from "../../components/AlertMsg";
 import { toast } from "react-toastify";
 import { stripeAPI } from "../../stripe/stripeAPI";
-import Modal from "react-modal";
-import Spinner from "../../components/Spinner";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 
 const PricingCard = ({ plan, onClick }) => {
@@ -22,7 +19,7 @@ const PricingCard = ({ plan, onClick }) => {
         <h4 className="font-medium text-lg text-gray-800 dark:text-gray-200">
           {plan?.name}
         </h4>
-        <span className="mt-5 font-bold text-5xl text-gray-800 dark:text-gray-200">
+        <span className="mt-5 font-semibold text-5xl text-gray-800 dark:text-gray-200">
           ${plan.price?.unit_amount / 100}
           <br />
           <span className="font-medium text-3xl">
@@ -79,9 +76,12 @@ const PricingCard = ({ plan, onClick }) => {
         </div> */}
         <button
           onClick={onClick}
-          className="mt-5 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700800 disabled:opacity-50 disabled:pointer-events-none dark:hover:bg-blue-700900 dark:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+          className={`mt-5 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-white hover:bg-blue-700 disabled:opacity-0.5 disabled:pointer-events-none ${
+            plan.price?.unit_amount / 100 === 0 ? "bg-gray-400" : "bg-blue-600"
+          } dark:hover:bg-blue-700900 dark:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}
+          disabled={plan.price?.unit_amount / 100 === 0}
         >
-          Sign up
+          {plan.price?.unit_amount / 100 === 0 ? "Free" : "Subscribe"}
         </button>
       </div>
     </>
@@ -158,7 +158,7 @@ const PricingSection = () => {
       <LoadingButtonClick isLoading={isLoading} />
       <div className="text-center mb-10 lg:mb-14">
         <h2
-          className="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white  hover:cursor-pointer"
+          className="text-2xl font-semibold md:text-4xl md:leading-tight dark:text-white  hover:cursor-pointer"
           id="pricing"
         >
           Pricing

@@ -3,13 +3,21 @@ import Modal from "react-modal";
 import Spinner from "./Spinner";
 
 function LoadingButtonClick({ isLoading }) {
+  useEffect(() => {
+    if (isLoading) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [isLoading]);
   return (
     <>
       <Modal
+        ariaHideApp={false}
         isOpen={isLoading}
         style={{
           overlay: {
-            backgroundColor: "rgba(0, 0, 0, 0.2)",
+            backgroundColor: "none",
             position: "fixed",
             top: 0,
             left: 0,

@@ -1,11 +1,111 @@
+import { useEffect } from "react";
 import { Input } from "../../../components/ui/Input";
 
 const PersonnelSection = ({
   personnelInputs,
-  addNewPersonnelInput,
-  removePersonnelInput,
-  handlePersonnelInputChange,
+  setPersonnelInputs,
+  numberOfMonth,
+  setPersonnelCostData,
+  personnelCostData,
+  setPersonnelCostTableData,
+  setPersonnelChart,
 }) => {
+  const addNewPersonnelInput = () => {
+    setPersonnelInputs([
+      ...personnelInputs,
+      {
+        jobTitle: "",
+        salaryPerMonth: 0,
+        numberOfHires: 0,
+        jobBeginMonth: 1,
+        jobEndMonth: 8,
+      },
+    ]);
+  };
+
+  // Function to remove a personnel input
+  const removePersonnelInput = (index) => {
+    const newInputs = [...personnelInputs];
+    newInputs.splice(index, 1);
+    setPersonnelInputs(newInputs);
+  };
+
+  // Function to update a personnel input
+  const handlePersonnelInputChange = (index, field, value) => {
+    const newInputs = [...personnelInputs];
+    newInputs[index][field] = value;
+    if (field === "beginMonth" || field === "endMonth") {
+      const beginMonth = parseFloat(newInputs[index].beginMonth);
+      const endMonth = parseFloat(newInputs[index].endMonth);
+
+      if (field === "beginMonth" && beginMonth > endMonth) {
+        newInputs[index].endMonth = value;
+      } else if (field === "endMonth" && endMonth < beginMonth) {
+        newInputs[index].beginMonth = value;
+      }
+    }
+    setPersonnelInputs(newInputs);
+  };
+
+  const calculatePersonnelCostData = () => {
+    let allPersonnelCosts = [];
+    personnelInputs.forEach((personnelInput) => {
+      let monthlyCosts = [];
+      // Determine the number of months based on the selected duration
+
+      for (let month = 1; month <= numberOfMonth; month++) {
+        if (
+          month >= personnelInput.jobBeginMonth &&
+          month <= personnelInput.jobEndMonth
+        ) {
+          const monthlyCost =
+            parseFloat(personnelInput.salaryPerMonth) *
+            parseFloat(personnelInput.numberOfHires);
+          monthlyCosts.push({ month: month, cost: monthlyCost });
+        } else {
+          monthlyCosts.push({ month: month, cost: 0 });
+        }
+      }
+      allPersonnelCosts.push({
+        jobTitle: personnelInput.jobTitle,
+        monthlyCosts,
+      });
+    });
+    return allPersonnelCosts;
+  };
+
+  useEffect(() => {
+    const calculatedData = calculatePersonnelCostData();
+    setPersonnelCostData(calculatedData);
+  }, [personnelInputs]);
+
+  const transformPersonnelCostDataForTable = () => {
+    const transformedData = personnelCostData.map((item) => {
+      const rowData = { key: item.jobTitle, jobTitle: item.jobTitle };
+      item.monthlyCosts.forEach((monthData) => {
+        rowData[`month${monthData.month}`] = monthData.cost.toFixed(2); // Adjust formatting as needed
+      });
+      return rowData;
+    });
+    return transformedData;
+  };
+
+  useEffect(() => {
+    const tableData = transformPersonnelCostDataForTable();
+    setPersonnelCostTableData(tableData);
+  }, [personnelCostData]);
+
+  useEffect(() => {
+    const seriesData = personnelCostData.map((personnel) => {
+      return {
+        name: personnel.jobTitle,
+        data: personnel.monthlyCosts.map((month) => month.cost),
+      };
+    });
+
+    setPersonnelChart((prevState) => ({ ...prevState, series: seriesData }));
+  }, [personnelCostData]);
+
   return (
     <section aria-labelledby="personnel-heading" className="mb-8">
       <h2

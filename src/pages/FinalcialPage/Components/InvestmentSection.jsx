@@ -1,12 +1,175 @@
+import { useEffect } from "react";
 import { Input } from "../../../components/ui/Input";
 
 const InvestmentSection = ({
   investmentInputs,
   setInvestmentInputs, // Add this line
-  addNewInvestmentInput,
-  removeInvestmentInput,
-  handleInvestmentInputChange,
+  numberOfMonths,
+  setInvestmentTableData,
+  setInvestmentChart,
 }) => {
+  const addNewInvestmentInput = () => {
+    setInvestmentInputs([
+      ...investmentInputs,
+      {
+        purchaseName: "",
+        assetCost: "0",
+        purchaseMonth: "2",
+        residualValue: "10",
+        usefulLifetime: "5",
+      },
+    ]);
+  };
+
+  const removeInvestmentInput = (index) => {
+    const newInputs = [...investmentInputs];
+    newInputs.splice(index, 1);
+    setInvestmentInputs(newInputs);
+  };
+
+  // Function to update an investment input
+  const handleInvestmentInputChange = (index, field, value) => {
+    const newInputs = [...investmentInputs];
+    newInputs[index][field] = value;
+    if (field === "beginMonth" || field === "endMonth") {
+      const beginMonth = parseFloat(newInputs[index].beginMonth);
+      const endMonth = parseFloat(newInputs[index].endMonth);
+
+      if (field === "beginMonth" && beginMonth > endMonth) {
+        newInputs[index].endMonth = value;
+      } else if (field === "endMonth" && endMonth < beginMonth) {
+        newInputs[index].beginMonth = value;
+      }
+    }
+    setInvestmentInputs(newInputs);
+  };
+
+  const calculateInvestmentData = () => {
+    return investmentInputs.map((investment) => {
+      const quantity = parseInt(investment.quantity, 10) || 1; // Ensuring there is a default value of 1
+
+      const assetCost = parseFloat(investment.assetCost) * quantity;
+
+      const residualValue = parseFloat(investment.residualValue) * quantity;
+      const usefulLifetime = parseFloat(investment.usefulLifetime);
+      const purchaseMonth = parseInt(investment.purchaseMonth, 10);
+
+      const depreciationPerMonth = (assetCost - residualValue) / usefulLifetime;
+      const depreciationArray = new Array(numberOfMonths).fill(0);
+
+      // Calculate depreciation and accumulated depreciation
+      for (let i = 0; i < numberOfMonths; i++) {
+        if (i >= purchaseMonth - 1 && i < purchaseMonth - 1 + usefulLifetime) {
+          depreciationArray[i] = depreciationPerMonth;
+        }
+      }
+
+      const accumulatedDepreciation = depreciationArray.reduce(
+        (acc, val, index) => {
+          acc[index] = (acc[index - 1] || 0) + val;
+          return acc;
+        },
+        []
+      );
+
+      // Calculate asset value and book value
+      const assetValue = new Array(numberOfMonths).fill(0);
+      const bookValue = new Array(numberOfMonths).fill(0);
+      for (let i = 0; i < numberOfMonths; i++) {
+        if (i >= purchaseMonth - 1 && i < purchaseMonth - 1 + usefulLifetime) {
+          assetValue[i] = assetCost;
+
+          bookValue[i] = assetValue[i] - accumulatedDepreciation[i];
+        }
+      }
+
+      return {
+        assetValue,
+        depreciationArray,
+        accumulatedDepreciation,
+        bookValue,
+      };
+    });
+  };
+
+  const transformInvestmentDataForTable = () => {
+    const investmentTableData = [];
+
+    calculateInvestmentData().forEach((investment, investmentIndex) => {
+      const purchaseName =
+        investmentInputs[investmentIndex].purchaseName ||
+        `Investment ${investmentIndex + 1}`;
+      const assetCostRow = {
+        key: `${purchaseName} - Asset Cost`,
+        type: `${purchaseName}`,
+      };
+      const depreciationRow = {
+        key: `${purchaseName} - Depreciation`,
+        type: "Depreciation",
+      };
+      const accumulatedDepreciationRow = {
+        key: `${purchaseName} - Accumulated Depreciation`,
+        type: "Accumulated Depreciation",
+      };
+      const bookValueRow = {
+        key: `${purchaseName} - Book Value`,
+        type: "Book Value",
+      };
+
+      const purchaseMonth = parseInt(
+        investmentInputs[investmentIndex].purchaseMonth,
+        10
+      );
+      const usefulLife = parseInt(
+        investmentInputs[investmentIndex].usefulLifetime,
+        10
+      );
+      const endMonth = purchaseMonth + usefulLife - 1;
+      const assetCost =
+        parseFloat(investmentInputs[investmentIndex].assetCost) *
+        parseInt(investmentInputs[investmentIndex].quantity, 10);
+
+      for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
+        if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
+          assetCostRow[`month${monthIndex + 1}`] = assetCost.toFixed(2); // Using Asset Cost
+          depreciationRow[`month${monthIndex + 1}`] =
+            investment.depreciationArray[monthIndex].toFixed(2);
+          accumulatedDepreciationRow[`month${monthIndex + 1}`] =
+            investment.accumulatedDepreciation[monthIndex].toFixed(2);
+          bookValueRow[`month${monthIndex + 1}`] = (
+            assetCost - investment.accumulatedDepreciation[monthIndex]
+          ).toFixed(2);
+        } else {
+          assetCostRow[`month${monthIndex + 1}`] = "0.00";
+          depreciationRow[`month${monthIndex + 1}`] = "0.00";
+          accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0.00";
+          bookValueRow[`month${monthIndex + 1}`] = "0.00";
+        }
+      }
+
+      investmentTableData.push(
+        assetCostRow,
+        depreciationRow,
+        accumulatedDepreciationRow,
+        bookValueRow
+      );
+    });
+
+    return investmentTableData;
+  };
+
+  useEffect(() => {
+    setInvestmentTableData(transformInvestmentDataForTable());
+  }, [investmentInputs, numberOfMonths]);
+
+  useEffect(() => {
+    const seriesData = calculateInvestmentData().map((investment) => {
+      return { name: investment.purchaseName, data: investment.assetValue };
+    });
+
+    setInvestmentChart((prevState) => ({ ...prevState, series: seriesData }));
+  }, [investmentInputs, numberOfMonths]);
+
   return (
     <section aria-labelledby="investment-heading" className="mb-8">
       <h2

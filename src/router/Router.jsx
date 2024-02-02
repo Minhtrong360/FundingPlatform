@@ -25,6 +25,7 @@ import CompanySetting from "../pages/FounderGitbook/CompanySetting";
 import News from "../pages/News/News";
 import LoadingButtonClick from "../components/LoadingButtonClick";
 import FinancialPage from "../pages/FinalcialPage/FinancialPage";
+import FinancialList from "../pages/FinalcialPage/FinancialList";
 
 function Router() {
   return (
@@ -88,6 +89,7 @@ function Router() {
       <Route path="/terms" element={<TermsAndConditions />} />
 
       <Route path="/financials" element={<FinancialPage />} />
+      <Route path="/financialList" element={<FinancialList />} />
       <Route path="/news" element={<News />} />
       <Route
         path="/loading"

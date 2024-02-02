@@ -8,7 +8,7 @@ import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
 function SideBar({ toggleSidebar, isSidebarOpen }) {
   const navigate = useNavigate();
 
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState([]);
   const location = useLocation();
 
   useEffect(() => {
@@ -18,6 +18,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
   const handleItemClick = (route) => {
     navigate(route);
   };
+  console.log("selectedItem", selectedItem);
 
   return (
     <div>
@@ -69,7 +70,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
               <button
                 onClick={() => handleItemClick("/user-info")}
                 className={` w-full hover:cursor-pointer flex items-center p-2 rounded-lg group ${
-                  selectedItem.includes("/user-info")
+                  selectedItem?.includes("/user-info")
                     ? "bg-gray-200 "
                     : "text-gray-900 dark:text-white"
                 }`}
@@ -82,7 +83,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
               <button
                 onClick={() => handleItemClick("/dashboard")}
                 className={`w-full hover:cursor-pointer flex items-center p-2 rounded-lg group ${
-                  selectedItem.includes("/dashboard")
+                  selectedItem?.includes("/dashboard")
                     ? "bg-gray-200 "
                     : "text-gray-900 dark:text-white"
                 }`}
@@ -95,7 +96,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
               <button
                 onClick={() => handleItemClick("/financials")}
                 className={`w-full hover:cursor-pointer flex items-center p-2 rounded-lg group ${
-                  selectedItem.includes("/financials")
+                  selectedItem?.includes("/financials")
                     ? "bg-gray-200 "
                     : "text-gray-900 dark:text-white"
                 }`}

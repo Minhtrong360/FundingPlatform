@@ -6,23 +6,112 @@ import {
   SelectItem,
 } from "../../../components/ui/Select";
 import { Input } from "../../../components/ui/Input";
+import { useEffect } from "react";
 
 const CostSection = ({
   costInputs,
-  addNewCostInput,
-  removeCostInput,
-  handleCostInputChange,
+  setCostInputs,
+  setCostData,
+  numberOfMonths,
+  setCostTableData,
+  costData,
+  setCostChart,
 }) => {
   const handleAddNewCost = () => {
-    const newCostInput = {
-      costName: "",
-      costValue: 0,
-      growthPercentage: 0,
-      beginMonth: 1,
-      endMonth: 12,
-    };
-    addNewCostInput(newCostInput);
+    setCostInputs([
+      ...costInputs,
+      {
+        costName: "",
+        costValue: 0,
+        growthPercentage: 0,
+        beginMonth: 1,
+        endMonth: 12,
+      },
+    ]);
   };
+
+  const removeCostInput = (index) => {
+    const newInputs = [...costInputs];
+    newInputs.splice(index, 1);
+    setCostInputs(newInputs);
+  };
+
+  const handleCostInputChange = (index, field, value) => {
+    const newInputs = [...costInputs];
+
+    newInputs[index][field] = value;
+
+    if (field === "beginMonth" || field === "endMonth") {
+      const beginMonth = parseFloat(newInputs[index].beginMonth);
+      const endMonth = parseFloat(newInputs[index].endMonth);
+
+      if (field === "beginMonth" && beginMonth > endMonth) {
+        newInputs[index].endMonth = value;
+      } else if (field === "endMonth" && endMonth < beginMonth) {
+        newInputs[index].beginMonth = value;
+      }
+    }
+
+    setCostInputs(newInputs);
+  };
+
+  const calculateCostData = () => {
+    let allCosts = [];
+    costInputs.forEach((costInput) => {
+      let monthlyCosts = [];
+      let currentCost = parseFloat(costInput.costValue);
+      for (let month = 1; month <= numberOfMonths; month++) {
+        if (month >= costInput.beginMonth && month <= costInput.endMonth) {
+          monthlyCosts.push({ month: month, cost: currentCost });
+          currentCost *= 1 + parseFloat(costInput.growthPercentage) / 100;
+        } else {
+          monthlyCosts.push({ month: month, cost: 0 });
+        }
+      }
+      allCosts.push({
+        costName: costInput.costName,
+        monthlyCosts,
+        costType: costInput.costType,
+      });
+    });
+    return allCosts;
+  };
+
+  const transformCostDataForTable = () => {
+    const transformedData = {};
+    const calculatedCostData = calculateCostData();
+    calculatedCostData.forEach((costItem) => {
+      const rowKey = `${costItem.costType} - ${costItem.costName}`;
+      costItem.monthlyCosts.forEach((monthData) => {
+        if (!transformedData[rowKey]) {
+          transformedData[rowKey] = { key: rowKey, costName: rowKey };
+        }
+        transformedData[rowKey][`month${monthData.month}`] = parseFloat(
+          monthData.cost
+        ).toFixed(2);
+      });
+    });
+
+    return Object.values(transformedData);
+  };
+
+  useEffect(() => {
+    const calculatedData = calculateCostData();
+
+    setCostData(calculatedData);
+    setCostTableData(transformCostDataForTable());
+  }, [costInputs, numberOfMonths]);
+
+  useEffect(() => {
+    const seriesData = costData.map((item) => {
+      return {
+        name: item.costName,
+        data: item.monthlyCosts.map((cost) => cost.cost),
+      };
+    });
+
+    setCostChart((prevState) => ({ ...prevState, series: seriesData }));
+  }, [costData, numberOfMonths]);
 
   return (
     <section aria-labelledby="costs-heading" className="mb-8">

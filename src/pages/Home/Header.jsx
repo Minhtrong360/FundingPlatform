@@ -134,20 +134,22 @@ const Navbar = () => {
   const [lastScrollY, setLastScrollY] = useState(0);
 
   const controlNavbar = () => {
-    if (typeof window !== "undefined") {
-      if (window.scrollY > lastScrollY) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
+    if (screenWidth < 768) {
+      if (typeof window !== "undefined") {
+        if (window.scrollY > lastScrollY) {
+          setIsVisible(false);
+        } else {
+          setIsVisible(true);
+        }
 
-      // Check if the user has scrolled to the top of the page
-      if (window.scrollY === 0) {
-        setIsVisible(true);
-      }
+        // Check if the user has scrolled to the top of the page
+        if (window.scrollY === 0) {
+          setIsVisible(true);
+        }
 
-      setLastScrollY(window.scrollY);
-    }
+        setLastScrollY(window.scrollY);
+      }
+    } else setIsVisible(true);
   };
 
   useEffect(() => {
@@ -227,14 +229,8 @@ const Navbar = () => {
                 <NavbarItem href="#" isActive>
                   Home
                 </NavbarItem>
-                <NavbarItem
-                  onClick={() =>
-                    navigate(
-                      `/founder/${"3ec3f142-f33c-4977-befd-30d4ce2b764d"}`
-                    )
-                  }
-                >
-                  Demo
+                <NavbarItem onClick={() => navigate(`/financials`)}>
+                  Finance
                 </NavbarItem>
                 <NavbarItem onClick={handleProductFeaturesClick}>
                   Profiles

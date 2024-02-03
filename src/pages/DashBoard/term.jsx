@@ -52,22 +52,22 @@ const termsContent = [
 
 const TermSection = ({ title, content }) => {
   return (
-    <div className="border-2 border-gray-100 rounded-lg dark:border-gray-700">
+    <div className="border-2 border-gray-100 rounded-lg darkBorderGray">
       <div className="flex items-center justify-between w-full p-8">
-        <h1 className="font-semibold text-gray-700 dark:text-white">{title}</h1>
+        <h1 className="font-semibold text-gray-700 darkTextWhite">{title}</h1>
         <span className="text-gray-400 bg-gray-200 rounded-full"></span>
       </div>
-      <hr className="border-gray-200 dark:border-gray-700" />
-      <p className="p-8 text-sm text-gray-500 dark:text-gray-300">{content}</p>
+      <hr className="border-gray-200 darkBorderGray" />
+      <p className="p-8 text-sm text-gray-500 darkTextGray">{content}</p>
     </div>
   );
 };
 
 const TermsAndConditions = () => {
   return (
-    <section className="bg-white dark:bg-gray-900">
+    <section className="bg-white darkBg">
       <div className="container max-w-4xl px-6 py-10 mx-auto">
-        <h1 className="text-2xl font-semibold text-center text-gray-800 lg:text-3xl dark:text-white">
+        <h1 className="text-2xl font-semibold text-center text-gray-800 lg:text-3xl darkTextWhite">
           Terms and Conditions for BeeKrowd
         </h1>
         <div className="mt-12 space-y-8">

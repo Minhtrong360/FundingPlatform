@@ -21,25 +21,25 @@ function Footer() {
           </a>
         </div>
         <ul className="text-center">
-          <li className="inline-block relative pe-8 last:pe-0 last-of-type:before:hidden before:absolute before:top-1/2 before:end-3 before:-translate-y-1/2 before:content-['/'] before:text-gray-300 dark:before:text-gray-600">
+          <li className="inline-block relative pe-8 last:pe-0 last-of-type:before:hidden before:absolute before:top-1/2 before:end-3 before:-translate-y-1/2 before:content-['/'] before:text-gray-300 darkBeforeTextGray">
             <a
-              className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 dark:text-gray-500 dark:hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
               href="#"
             >
               About
             </a>
           </li>
-          <li className="inline-block relative pe-8 last:pe-0 last-of-type:before:hidden before:absolute before:top-1/2 before:end-3 before:-translate-y-1/2 before:content-['/'] before:text-gray-300 dark:before:text-gray-600">
+          <li className="inline-block relative pe-8 last:pe-0 last-of-type:before:hidden before:absolute before:top-1/2 before:end-3 before:-translate-y-1/2 before:content-['/'] before:text-gray-300 darkBeforeTextGray">
             <a
-              className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 dark:text-gray-500 dark:hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
               href="#"
             >
               Services
             </a>
           </li>
-          <li className="inline-block relative pe-8 last:pe-0 last-of-type:before:hidden before:absolute before:top-1/2 before:end-3 before:-translate-y-1/2 before:content-['/'] before:text-gray-300 dark:before:text-gray-600">
+          <li className="inline-block relative pe-8 last:pe-0 last-of-type:before:hidden before:absolute before:top-1/2 before:end-3 before:-translate-y-1/2 before:content-['/'] before:text-gray-300 darkBeforeTextGray">
             <a
-              className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 dark:text-gray-500 dark:hover:text-gray-200 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
               href="#"
             >
               Blog
@@ -48,7 +48,7 @@ function Footer() {
         </ul>
         <div className="md:text-end space-x-2">
           <a
-            className="w-8 h-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+            className="w-8 h-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkTextGray darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
             href="#"
           >
             <GoogleOutlined
@@ -56,7 +56,7 @@ function Footer() {
             />
           </a>
           <a
-            className="w-8 h-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+            className="w-8 h-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkTextGray darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
             href="#"
           >
             <FacebookOutlined
@@ -64,7 +64,7 @@ function Footer() {
             />
           </a>
           <a
-            className="w-8 h-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+            className="w-8 h-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkTextGray darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
             href="https://twitter.com/BeeKrowd"
           >
             <TwitterOutlined
@@ -72,7 +72,7 @@ function Footer() {
             />
           </a>
           <a
-            className="w-8 h-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+            className="w-8 h-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkTextGray darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
             href="https://www.linkedin.com/company/beekrowd/"
           >
             <LinkedinOutlined

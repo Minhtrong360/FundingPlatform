@@ -25,25 +25,25 @@ const HeroCard = () => {
           />
         </div>
         <div>
-          <h1 className="block text-3xl font-semibold text-gray-800 sm:text-4xl lg:text-6xl lg:leading-tight dark:text-white">
+          <h1 className="block text-3xl font-semibold text-gray-800 sm:text-4xl lg:text-6xl lg:leading-tight darkTextWhite">
             BOS. roasted a fruitful campaign with{" "}
             <span className="text-blue-600"> $170K raised.</span>
           </h1>
-          <p className="mt-3 text-lg text-gray-800 dark:text-gray-400">
+          <p className="mt-3 text-lg text-gray-800 darkTextGray">
             Distinctively, Bosgaurus Coffee is one of the few specialty coffee
             stores in Ho Chi Minh City that uses Arabica beans for their
             traditional Vietnamese ca phe sua da.
           </p>
           <div className="mt-7 grid gap-3 w-full sm:inline-flex">
             <button
-              className=" py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              className=" py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
               onClick={handleClick}
             >
               {user ? "Create project" : "Get started"}
               <span>→</span>
             </button>
             <button
-              className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
               onClick={() =>
                 navigate(`/founder/${"3ec3f142-f33c-4977-befd-30d4ce2b764d"}`)
               }
@@ -60,7 +60,7 @@ const HeroCard = () => {
                 <span>★</span>
                 <span>★</span>
               </div>
-              <p className="mt-3 text-sm text-gray-800 dark:text-gray-200">
+              <p className="mt-3 text-sm text-gray-800 darkTextGray">
                 <span className="font-semibold">4.6</span> /5 - from 12k reviews
               </p>
             </div>
@@ -72,7 +72,7 @@ const HeroCard = () => {
                 <span>★</span>
                 <span>★</span>
               </div>
-              <p className="mt-3 text-sm text-gray-800 dark:text-gray-200">
+              <p className="mt-3 text-sm text-gray-800 darkTextGray">
                 <span className="font-semibold">4.8</span> /5 - from 5k reviews
               </p>
             </div>

@@ -10,9 +10,9 @@ function BlogPost({ articles }) {
   return (
     <div className="max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto mt-28">
       <Header />
-      <section className="bg-white dark:bg-gray-900">
+      <section className="bg-white darkBg">
         <div className="container sm:px-6 py-10 mx-auto">
-          <h1 className="text-2xl font-semibold text-gray-800 capitalize lg:text-3xl dark:text-white">
+          <h1 className="text-2xl font-semibold text-gray-800 capitalize lg:text-3xl darkTextWhite">
             Just Raised
           </h1>
 
@@ -38,12 +38,12 @@ function BlogPost({ articles }) {
 
                   <a
                     href={article.link}
-                    className="block mt-4 text-3xl font-semibold text-gray-800 hover:underline dark:text-white"
+                    className="block mt-4 text-3xl font-semibold text-gray-800 hover:underline darkTextWhite"
                   >
                     {article.title}
                   </a>
 
-                  <p className="mt-3 text-sm text-gray-500 dark:text-gray-300 md:text-sm line-clamp-5">
+                  <p className="mt-3 text-sm text-gray-500 darkTextGray md:text-sm line-clamp-5">
                     {article.abstract}
                   </p>
 
@@ -67,13 +67,13 @@ function BlogPost({ articles }) {
                       {article.authors.map((author, index) => (
                         <h1
                           key={index}
-                          className="text-sm text-gray-700 dark:text-gray-200"
+                          className="text-sm text-gray-700 darkTextGray"
                         >
                           {author}
                         </h1>
                       ))}
 
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <p className="text-sm text-gray-500 darkTextGray">
                         Author
                       </p>
                     </div>

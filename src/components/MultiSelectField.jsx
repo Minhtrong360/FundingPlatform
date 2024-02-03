@@ -14,7 +14,7 @@ const MultiSelectField = ({
     <div aria-required>
       <label
         htmlFor={id}
-        className="block mb-2 text-sm text-gray-700 font-medium dark:text-white"
+        className="block mb-2 text-sm text-gray-700 font-medium darkTextWhite"
       >
         {label}
       </label>

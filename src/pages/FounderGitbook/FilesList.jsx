@@ -293,18 +293,18 @@ function FilesList() {
         <div className="flex flex-col">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-              <div className="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
-                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                  <thead className="bg-gray-50 dark:bg-gray-800">
+              <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
+                <table className="min-w-full divide-y divide-gray-200 darkDivideGray">
+                  <thead className="bg-gray-50 darkBgBlue">
                     <tr>
                       <th
                         scope="col"
-                        className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
                       >
                         <div className="flex items-center gap-x-3">
                           <input
                             type="checkbox"
-                            className="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700"
+                            className="text-blue-500 border-gray-300 rounded darkBg darkRingOffsetGray darkBorderGray"
                           />
                           <button className="flex items-center gap-x-2">
                             <span>NO.</span>
@@ -313,63 +313,63 @@ function FilesList() {
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
                       >
                         File name
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
                       >
                         File link
                       </th>
 
                       {/* <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
                       >
                         Status
                       </th> */}
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
                       >
                         Owner
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
                       >
                         Status
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
                       >
                         Action
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
                       >
                         Invite
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
+                  <tbody className="bg-white divide-y divide-gray-200 darkDivideGray darkBg">
                     {projectLinks?.map((link, index) => (
                       <tr key={index}>
-                        <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
+                        <td className="px-4 py-4 text-sm font-medium text-gray-700 darkTextGray whitespace-nowrap">
                           <div className="inline-flex items-center gap-x-3">
                             <input
                               type="checkbox"
-                              className="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700"
+                              className="text-blue-500 border-gray-300 rounded darkBg darkRingOffsetGray darkBorderGray"
                             />
                             <span>#{index + 1}</span>
                           </div>
                         </td>
                         <td
-                          className={`hover:cursor-pointer px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap`}
+                          className={`hover:cursor-pointer px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap`}
                           style={{
                             maxWidth: "150px", // Set the maximum width here
                             overflow: "hidden",
@@ -390,7 +390,7 @@ function FilesList() {
                             calculateCanClick(link)
                               ? "hover:cursor-pointer hover:bg-blue-700100"
                               : ""
-                          } px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap`}
+                          } px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap`}
                           onClick={() =>
                             calculateCanClick(link) && handleLinkClick(link)
                           }
@@ -408,7 +408,7 @@ function FilesList() {
                           {calculateCanClick(link) ? link.link : "***********"}
                         </td>
                         <td
-                          className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap"
+                          className="px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap"
                           style={{
                             maxWidth: "10rem", // Set the maximum width here
                             overflow: "hidden",
@@ -424,7 +424,7 @@ function FilesList() {
                             {link.owner_email}
                           </Tooltip>
                         </td>
-                        <td className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap">
+                        <td className="px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap">
                           {link.status ? "Public" : "Private"}
                         </td>
                         {/* <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">{project.status}</td> */}
@@ -445,7 +445,7 @@ function FilesList() {
                           ) : link.user_id !== user.id &&
                             !link.invited_user?.includes(user.email) ? (
                             <button
-                              className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 `}
+                              className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus `}
                               onClick={() => handleSendRequest(link)}
                             >
                               Send Request

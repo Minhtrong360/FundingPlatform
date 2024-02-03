@@ -13,7 +13,7 @@ const NavbarButton = ({ children, onClick, className }) => {
     <button
       type="button"
       onClick={onClick}
-      className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 ${className}`}
+      className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus ${className}`}
     >
       {children}
     </button>
@@ -166,7 +166,7 @@ const Navbar = () => {
   return (
     <>
       <nav
-        className={`fixed bg-white dark:bg-gray-900 w-full z-50 top-0 start-0 border-b border-gray-200 dark:border-gray-600 transition-transform duration-100 ease-in-out ${
+        className={`fixed bg-white darkBg w-full z-50 top-0 start-0 border-b border-gray-200 darkBorderGray transition-transform duration-100 ease-in-out ${
           !isVisible ? "-translate-y-full" : "translate-y-0"
         }`}
       >
@@ -195,7 +195,7 @@ const Navbar = () => {
             <button
               data-collapse-toggle="navbar-sticky"
               type="button"
-              className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+              className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 darkTextGray darkHoverBgBlue darkFocus"
               aria-controls="navbar-sticky"
               aria-expanded={isOpen}
               onClick={handleBurgerBtn}
@@ -225,7 +225,7 @@ const Navbar = () => {
               }`}
               id="navbar-sticky"
             >
-              <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-4 lg:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+              <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-4 lg:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white darkBgBlue md:darkBg darkBorderGray">
                 <NavbarItem href="#" isActive>
                   Home
                 </NavbarItem>

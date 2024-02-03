@@ -76,7 +76,7 @@ const FundraisingRecords = () => {
     <div className="shadow-sm bg-white">
       <LoadingButtonClick isLoading={isLoading} />
       <div className="flex flex-col gap-5 max-md:flex-col max-md:items-stretch max-md:gap-0">
-        <h2 className="ml-5 text-left text-2xl font-semibold md:text-4xl md:leading-tight dark:text-white text-black-500 my-12">
+        <h2 className="ml-5 text-left text-2xl font-semibold md:text-4xl md:leading-tight darkTextWhite text-black-500 my-12">
           Dashboard Records
         </h2>
         <div className="items-stretch max-md:w-full max-md:ml-0 justify-left mx-auto">

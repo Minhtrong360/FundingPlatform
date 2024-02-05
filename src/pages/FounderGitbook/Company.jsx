@@ -20,10 +20,10 @@ function Company({
         <AlertMsg />
         <div className="max-w-xl mx-auto">
           <div className="text-center">
-            <h1 className="text-3xl font-semibold text-gray-800 sm:text-4xl dark:text-white">
+            <h1 className="text-3xl font-semibold text-gray-800 sm:text-4xl darkTextWhite">
               Company Info
             </h1>
-            <p className="mt-1 text-gray-600 dark:text-gray-400">
+            <p className="mt-1 text-gray-600 darkTextGray">
               This will be an amazing journey.
             </p>
           </div>

@@ -93,7 +93,7 @@ const DetailPage = () => {
   }
 
   return (
-    <div className=" bg-white dark:bg-gray-900 antialiased !p-0">
+    <div className=" bg-white darkBg antialiased !p-0">
       <AlertMsg />
       {<LoadingButtonClick isLoading={isLoading} />}
       <div id="exampleWrapper">
@@ -103,7 +103,7 @@ const DetailPage = () => {
           className="p-0 sm:p-4 sm:ml-64"
           onClick={() => setIsSidebarOpen(false)}
         >
-          <div className="p-0 sm:p-4 border-0 border-gray-200 border-dashed sm:border-2 rounded-lg dark:border-gray-700">
+          <div className="p-0 sm:p-4 border-0 border-gray-200 border-dashed sm:border-2 rounded-lg darkBorderGray">
             <HeroSection
               formData={company}
               title={company.name}

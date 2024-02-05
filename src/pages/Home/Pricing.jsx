@@ -16,10 +16,10 @@ const PricingCard = ({ plan, onClick }) => {
       <div
         className={` flex flex-col border rounded-xl p-8 text-center shadow-xl   group hover:scale-105  hover:border-blue-700 transition-transform duration-300 ease-in-out`}
       >
-        <h4 className="font-medium text-lg text-gray-800 dark:text-gray-200">
+        <h4 className="font-medium text-lg text-gray-800 darkTextGray">
           {plan?.name}
         </h4>
-        <span className="mt-5 font-semibold text-5xl text-gray-800 dark:text-gray-200">
+        <span className="mt-5 font-semibold text-5xl text-gray-800 darkTextGray">
           ${plan.price?.unit_amount / 100}
           <br />
           <span className="font-medium text-3xl">
@@ -35,7 +35,7 @@ const PricingCard = ({ plan, onClick }) => {
             >
               {/* SVG Check Icon */}
               <svg
-                className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 dark:text-blue-500"
+                className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -48,9 +48,7 @@ const PricingCard = ({ plan, onClick }) => {
               >
                 <polyline points="20 6 9 17 4 12" />
               </svg>
-              <span className="text-gray-800 dark:text-gray-400">
-                {feature.name}
-              </span>
+              <span className="text-gray-800 darkTextGray">{feature.name}</span>
             </li>
           ))}
         </ul>
@@ -68,7 +66,7 @@ const PricingCard = ({ plan, onClick }) => {
           ) : (
             <button
               onClick={() => navigate("/login")}
-              className="w-full sm:w-auto px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-600 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-700 dark:bg-blue-600"
+              className="w-full sm:w-auto px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-600 rounded-lg hover:bg-blue-700 darkHoverBgBlue darkBgBlue"
             >
               Login required
             </button>
@@ -78,7 +76,7 @@ const PricingCard = ({ plan, onClick }) => {
           onClick={onClick}
           className={`mt-5 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-white hover:bg-blue-700 disabled:opacity-0.5 disabled:pointer-events-none ${
             plan.price?.unit_amount / 100 === 0 ? "bg-gray-400" : "bg-blue-600"
-          } dark:hover:bg-blue-700900 dark:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}
+          } darkHoverBgBlue900 darkTextBlue darkFocusOutlineNone darkFocusRing-1 darkFocus`}
           disabled={plan.price?.unit_amount / 100 === 0}
         >
           {plan.price?.unit_amount / 100 === 0 ? "Free" : "Subscribe"}
@@ -158,12 +156,12 @@ const PricingSection = () => {
       <LoadingButtonClick isLoading={isLoading} />
       <div className="text-center mb-10 lg:mb-14">
         <h2
-          className="text-2xl font-semibold md:text-4xl md:leading-tight dark:text-white  hover:cursor-pointer"
+          className="text-2xl font-semibold md:text-4xl md:leading-tight darkTextWhite  hover:cursor-pointer"
           id="pricing"
         >
           Pricing
         </h2>
-        <p className="text-gray-600 mt-1 dark:text-gray-400">
+        <p className="text-gray-600 mt-1 darkTextGray">
           Whatever your status, our offers evolve according to your needs.
         </p>
       </div>

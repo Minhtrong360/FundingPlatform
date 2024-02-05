@@ -64,7 +64,7 @@ const HeroSignUp = () => {
   };
 
   return (
-    <div className="relative bg-gradient-to-bl from-blue-100 via-transparent dark:from-blue-950 dark:via-transparent">
+    <div className="relative bg-gradient-to-bl from-blue-100 via-transparent darkFromBlueViaTransparent">
       <AlertMsg />
       {resetLink ? (
         <AnnouncePage
@@ -80,11 +80,11 @@ const HeroSignUp = () => {
             {/* Left Column */}
             <div>
               <div className="mt-4 md:mb-12 max-w-2xl">
-                <h1 className="mb-4 font-semibold text-gray-800 text-4xl lg:text-5xl dark:text-gray-200">
+                <h1 className="mb-4 font-semibold text-gray-800 text-4xl lg:text-5xl darkTextGray">
                   Building exceptional Fundraising profile with
                   <span class="text-blue-600"> BeeKrowd</span>
                 </h1>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-gray-600 darkTextGray">
                   We're here to provide you with the insights, strategies, and
                   tools you need to craft a compelling and effective fundraising
                   profile.
@@ -96,15 +96,15 @@ const HeroSignUp = () => {
             <div>
               <form onSubmit={handleSubmit}>
                 <div className="lg:max-w-lg lg:mx-auto lg:me-0 ms-auto">
-                  <div className="p-4 sm:p-7 flex flex-col bg-white rounded-2xl shadow-lg dark:bg-slate-900">
+                  <div className="p-4 sm:p-7 flex flex-col bg-white rounded-2xl shadow-lg darkBgBlue">
                     <div className="text-center">
-                      <h1 className="block text-2xl font-semibold text-gray-800 dark:text-white">
+                      <h1 className="block text-2xl font-semibold text-gray-800 darkTextWhite">
                         Start your free trial
                       </h1>
-                      <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                      <p className="mt-2 text-sm text-gray-600 darkTextGray">
                         Already have an account?
                         <button
-                          className="ml-1 text-blue-600 decoration-2 hover:underline hover:cursor-pointer font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                          className="ml-1 text-blue-600 decoration-2 hover:underline hover:cursor-pointer font-medium darkFocusOutlineNone darkFocusRing-1 darkFocus"
                           onClick={() => navigate("/login")}
                         >
                           Sign in here
@@ -116,13 +116,13 @@ const HeroSignUp = () => {
                       <button
                         onClick={(e) => signInWitGG(e)}
                         type="button"
-                        className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                        className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
                       >
                         <GoogleOutlined />
                         Sign up with Google
                       </button>
 
-                      <div className="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-200 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-200 after:ms-6 dark:text-gray-500 dark:before:border-gray-700 dark:after:border-gray-700">
+                      <div className="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-200 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-200 after:ms-6 darkTextGray darkBeforeBorderGray darkAfterBoderGray">
                         Or
                       </div>
 
@@ -131,14 +131,14 @@ const HeroSignUp = () => {
                         <div className="relative col-span-full">
                           <label
                             htmlFor="email"
-                            className="block text-sm mb-2 dark:text-white"
+                            className="block text-sm mb-2 darkTextWhite"
                           >
                             Your full name
                           </label>
                           <input
                             type="text"
                             id="fullName"
-                            className="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+                            className="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
                             placeholder="Doe"
                             value={fullName}
                             onChange={(e) => setFullName(e.target.value)}
@@ -150,14 +150,14 @@ const HeroSignUp = () => {
                         <div className="relative col-span-full">
                           <label
                             htmlFor="email"
-                            className="block text-sm mb-2 dark:text-white"
+                            className="block text-sm mb-2 darkTextWhite"
                           >
                             Email
                           </label>
                           <input
                             type="email"
                             id="email"
-                            className="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+                            className="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
                             placeholder="you@email.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -169,14 +169,14 @@ const HeroSignUp = () => {
                         <div className="relative col-span-full">
                           <label
                             htmlFor="email"
-                            className="block text-sm mb-2 dark:text-white"
+                            className="block text-sm mb-2 darkTextWhite"
                           >
                             New password
                           </label>
                           <input
                             type="password"
                             id="password"
-                            className="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+                            className="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
                             placeholder="********"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -192,18 +192,18 @@ const HeroSignUp = () => {
                             id="remember-me"
                             name="remember-me"
                             type="checkbox"
-                            className="shrink-0 border-gray-200 rounded text-blue-600 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
+                            className="shrink-0 border-gray-200 rounded text-blue-600 focus:ring-blue-500 darkBgBlue darkBorderGray"
                             checked={rememberMe}
                             onChange={(e) => setRememberMe(e.target.checked)}
                             required
                           />
                           <label
                             htmlFor="remember-me"
-                            className="ml-3 text-sm dark:text-white"
+                            className="ml-3 text-sm darkTextWhite"
                           >
                             I accept the{" "}
                             <button
-                              className="text-blue-600 decoration-2 hover:underline hover:cursor-pointer font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                              className="text-blue-600 decoration-2 hover:underline hover:cursor-pointer font-medium darkFocusOutlineNone darkFocusRing-1 darkFocus"
                               onClick={() =>
                                 window.open(
                                   "https://www.beekrowd.com/terms",
@@ -223,7 +223,7 @@ const HeroSignUp = () => {
                       <div className="mt-5">
                         <button
                           type="submit"
-                          className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                          className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
                         >
                           Get started
                         </button>

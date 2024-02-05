@@ -141,10 +141,10 @@ function UserInfoSettings() {
       <AlertMsg />
       <div className="max-w-xl mx-auto">
         <div className="text-center">
-          <h1 className="text-3xl font-semibold text-gray-800 sm:text-4xl dark:text-white">
+          <h1 className="text-3xl font-semibold text-gray-800 sm:text-4xl darkTextWhite">
             User info settings
           </h1>
-          <p className="mt-1 text-gray-600 dark:text-gray-400">
+          <p className="mt-1 text-gray-600 darkTextGray">
             Tell us your basic information.
           </p>
         </div>
@@ -233,7 +233,7 @@ function UserInfoSettings() {
               <div>
                 <label
                   htmlFor="hs-about-hire-us-2"
-                  className="block mb-2 text-sm text-gray-700 font-medium dark:text-white"
+                  className="block mb-2 text-sm text-gray-700 font-medium darkTextWhite"
                 >
                   Details
                 </label>

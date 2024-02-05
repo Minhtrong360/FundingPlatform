@@ -60,19 +60,19 @@ const Search = ({
         <div className="text-center">
           <h3
             id="profiles"
-            className="text-3xl sm:text-5xl font-semibold text-gray-800 dark:text-gray-200"
+            className="text-3xl sm:text-5xl font-semibold text-gray-800 darkTextGray"
           >
             New fundraising profiles
           </h3>
           <div className="mt-7 sm:mt-12 mx-auto max-w-xl relative">
             <form onSubmit={handleSearchSubmit}>
-              <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100 dark:bg-slate-900 dark:border-gray-700 dark:shadow-gray-900/[.2]">
+              <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100 darkBgBlue darkBorderGray darkShadowGray">
                 <div className="flex-[1_0_0%]">
                   <input
                     type="text"
                     name="hs-search-article-1"
                     id="hs-search-article-1"
-                    className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
+                    className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
                     placeholder="Search profiles"
                     value={searchTerm}
                     onChange={handleSearchChange} // Thêm sự kiện onChange này
@@ -81,7 +81,7 @@ const Search = ({
                 <div className="flex-[0_0_auto]">
                   <button
                     type="submit"
-                    className="w-[46px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                    className="w-[46px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

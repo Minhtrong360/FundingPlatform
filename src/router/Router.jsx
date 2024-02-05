@@ -91,7 +91,7 @@ function Router() {
       <Route path="/terms" element={<TermsAndConditions />} />
 
       <Route path="/financials" element={<FinancialPage />} />
-      <Route path="/financialList" element={<FinancialList />} />
+      {/* <Route path="/financialList" element={<FinancialList />} /> */}
       <Route path="/news" element={<News />} />
       <Route path="/X" element={<X />} />
       <Route path="/Y" element={<Y />} />

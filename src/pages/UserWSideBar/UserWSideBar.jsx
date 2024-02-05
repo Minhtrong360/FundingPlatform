@@ -5,11 +5,11 @@ function FileUpload() {
     <div className="flex items-center justify-center w-full">
       <label
         htmlFor="dropzone-file"
-        className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+        className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 darkHoverBgBlue darkBgBlue hover:bg-gray-100  darkHoverBgBlue"
       >
         <div className="flex flex-col items-center justify-center pt-5 pb-6">
           <svg
-            className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+            className="w-8 h-8 mb-4 text-gray-500 darkTextGray"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -23,11 +23,11 @@ function FileUpload() {
               d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
             ></path>
           </svg>
-          <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mb-2 text-sm text-gray-500 darkTextGray">
             <span className="font-semibold">Click to upload</span> or drag and
             drop
           </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-gray-500 darkTextGray">
             SVG, PNG, JPG or GIF (MAX. 800x400px)
           </p>
         </div>
@@ -39,7 +39,7 @@ function FileUpload() {
 
 function Badge({ text }) {
   return (
-    <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-50 text-gray-500 dark:bg-white/[.05] dark:text-white">
+    <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-50 text-gray-500 darkTextWhite">
       {text}
     </span>
   );
@@ -90,17 +90,17 @@ function BadgeList() {
 }
 
 const SectionTitle = ({ text }) => (
-  <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">{text}</h2>
+  <h2 className="text-xl font-semibold text-gray-800 darkTextGray">{text}</h2>
 );
 
 const SectionDescription = ({ text }) => (
-  <p className="text-sm text-gray-600 dark:text-gray-400">{text}</p>
+  <p className="text-sm text-gray-600 darkTextGray">{text}</p>
 );
 
 const ProfilePhoto = ({ src, alt, buttonText }) => (
   <div className="flex items-center gap-5">
     <img
-      className="inline-block h-16 w-16 rounded-full ring-2 ring-white dark:ring-gray-800"
+      className="inline-block h-16 w-16 rounded-full ring-2 ring-white darkRingGray"
       src={src}
       alt={alt}
     />
@@ -108,7 +108,7 @@ const ProfilePhoto = ({ src, alt, buttonText }) => (
       <div>
         <button
           type="button"
-          className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+          className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
         >
           {buttonText}
         </button>
@@ -119,13 +119,13 @@ const ProfilePhoto = ({ src, alt, buttonText }) => (
 
 const LabelWithTooltip = ({ label, tooltipText }) => (
   <div className="inline-block">
-    <label className="inline-block text-sm text-gray-800 mt-2.5 dark:text-gray-200">
+    <label className="inline-block text-sm text-gray-800 mt-2.5 darkTextGray">
       {label}
     </label>
     <div className="hs-tooltip inline-block">
       <button type="button" className="hs-tooltip-toggle ms-1"></button>
       <span
-        className="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 transition-opacity inline-block absolute invisible w-40 text-center z-10 py-1 px-2 bg-gray-900 text-xs font-medium text-white rounded shadow-sm dark:bg-slate-700"
+        className="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 transition-opacity inline-block absolute invisible w-40 text-center z-10 py-1 px-2 bg-gray-900 text-xs font-medium text-white rounded shadow-sm darkBgBlue"
         role="tooltip"
       >
         {tooltipText}
@@ -138,13 +138,13 @@ const TextInput = ({ id, type, placeholder }) => (
   <input
     id={id}
     type={type}
-    className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+    className="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextGray darkFocus"
     placeholder={placeholder}
   />
 );
 
 const SelectInput = () => (
-  <select className="py-2 px-3 pe-9 block w-full sm:w-auto border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600">
+  <select className="py-2 px-3 pe-9 block w-full sm:w-auto border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextGray darkFocus">
     <option selected>Mobile</option>
     <option>Home</option>
     <option>Work</option>
@@ -155,16 +155,16 @@ const SelectInput = () => (
 const RadioButton = ({ id, label, isChecked }) => (
   <label
     htmlFor={id}
-    className="flex py-2 px-3 block w-full border border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+    className="flex py-2 px-3 block w-full border border-gray-200 shadow-sm -mt-px -ms-px first:rounded-t-lg last:rounded-b-lg sm:first:rounded-s-lg sm:mt-0 sm:first:ms-0 sm:first:rounded-se-none sm:last:rounded-es-none sm:last:rounded-e-lg text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextGray darkFocus"
   >
     <input
       type="radio"
       name="af-account-gender-checkbox"
-      className="shrink-0 mt-0.5 border-gray-300 rounded-full text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-500 dark:checked:bg-blue-600 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
+      className="shrink-0 mt-0.5 border-gray-300 rounded-full text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkCheckedBgBlue darkCheckedBorderBlue darkFocusRingOffset"
       id={id}
       checked={isChecked}
     />
-    <span className="text-sm text-gray-500 ms-3 dark:text-gray-400">
+    <span className="text-sm text-gray-500 ms-3 darkTextGray">
       {label}
     </span>
   </label>
@@ -173,7 +173,7 @@ const RadioButton = ({ id, label, isChecked }) => (
 const TextAreaInput = () => (
   <textarea
     id="af-account-bio"
-    className="py-2 px-3 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+    className="py-2 px-3 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextGray darkFocus"
     rows="6"
     placeholder="Type your message..."
   ></textarea>
@@ -181,7 +181,7 @@ const TextAreaInput = () => (
 
 const UserProfileForm = () => (
   <div className="max-w-4xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-    <div className="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-slate-900">
+    <div className="bg-white rounded-xl shadow p-4 sm:p-7 darkBgBlue">
       <div class="mb-8">
         <SectionTitle text="Profile" />
         <SectionDescription text="Manage your name, password and account settings." />
@@ -266,7 +266,7 @@ const UserProfileForm = () => (
 
             <p className="mt-3">
               <a
-                className="inline-flex items-center gap-x-1 text-sm text-blue-600 decoration-2 hover:underline font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                className="inline-flex items-center gap-x-1 text-sm text-blue-600 decoration-2 hover:underline font-medium darkFocusOutlineNone darkFocusRing-1 darkFocus"
                 href="../docs/index.html"
               >
                 <svg
@@ -342,13 +342,13 @@ const UserProfileForm = () => (
         <div className="mt-5 flex justify-end gap-x-2">
           <button
             type="button"
-            className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+            className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
           >
             Cancel
           </button>
           <button
             type="button"
-            className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+            className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
           >
             Save changes
           </button>
@@ -368,11 +368,14 @@ function Sidebar() {
   return (
     <div
       id="docs-sidebar"
-      className="hs-overlay hs-overlay-open:translate-x-0 -translate-x-full transition-all duration-300 transform hidden fixed top-0 start-0 bottom-0 z-[60] w-64 bg-white border-e border-gray-200 pt-7 pb-10 overflow-y-auto lg:block lg:translate-x-0 lg:end-auto lg:bottom-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-slate-700 dark:[&::-webkit-scrollbar-thumb]:bg-slate-500 dark:bg-gray-800 dark:border-gray-700"
+      className="hs-overlay hs-overlay-open:translate-x-0 -translate-x-full transition-all duration-300 transform hidden fixed top-0 start-0 bottom-0 z-[60] w-64 bg-white border-e border-gray-200 pt-7 pb-10 overflow-y-auto lg:block lg:translate-x-0 lg:end-auto lg:bottom-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 
+      darkBgBlue darkBorderGray"
     >
+            {/* dark:[&::-webkit-scrollbar-track]:bg-slate-700 dark:[&::-webkit-scrollbar-thumb]:bg-slate-500  */}
+
       <div className="px-6">
         <a
-          className="flex-none text-xl font-semibold dark:text-white"
+          className="flex-none text-xl font-semibold darkTextWhite"
           href="#"
           aria-label="Brand"
         >
@@ -387,7 +390,7 @@ function Sidebar() {
           {/* Menu Items */}
           <li>
             <a
-              className="flex items-center gap-x-3.5 py-2 px-2.5 bg-gray-100 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              className="flex items-center gap-x-3.5 py-2 px-2.5 bg-gray-100 text-sm text-slate-700 rounded-lg hover:bg-gray-100 darkBg darkTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
               href="#"
             >
               <svg
@@ -417,7 +420,7 @@ function Sidebar() {
                 usersAccordionOpen
                   ? "hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent"
                   : ""
-              } w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}
+              } w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 darkBgBlue darkHoverBgBlue darkTextGray darkHoverTextWhite `}
               onClick={toggleUsersAccordion}
             >
               <svg
@@ -444,7 +447,7 @@ function Sidebar() {
                   usersAccordionOpen
                     ? "hs-accordion-active:block"
                     : "hs-accordion-active:hidden"
-                } ms-auto hidden w-4 h-4 text-gray-600 group-hover:text-gray-500 dark:text-gray-400`}
+                } ms-auto hidden w-4 h-4 text-gray-600 group-hover:text-gray-500 darkTextGray`}
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -462,7 +465,7 @@ function Sidebar() {
                   usersAccordionOpen
                     ? "hs-accordion-active:hidden"
                     : "hs-accordion-active:block"
-                } ms-auto block w-4 h-4 text-gray-600 group-hover:text-gray-500 dark:text-gray-400`}
+                } ms-auto block w-4 h-4 text-gray-600 group-hover:text-gray-500 darkTextGray`}
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -493,11 +496,11 @@ function Sidebar() {
                 <li className="hs-accordion" id="users-accordion-sub-1">
                   <button
                     type="button"
-                    className="hs-accordion-toggle hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                    className="hs-accordion-toggle hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 darkBgBlue darkHoverBgBlue darkTextGray darkHoverTextWhite "
                   >
                     Sub Menu 1{/* Accordion Icons */}
                     <svg
-                      className="hs-accordion-active:block ms-auto hidden w-4 h-4 text-gray-600 group-hover:text-gray-500 dark:text-gray-400"
+                      className="hs-accordion-active:block ms-auto hidden w-4 h-4 text-gray-600 group-hover:text-gray-500 darkTextGray"
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
                       height="24"
@@ -511,7 +514,7 @@ function Sidebar() {
                       <path d="m18 15-6-6-6 6" />
                     </svg>
                     <svg
-                      className="hs-accordion-active:hidden ms-auto block w-4 h-4 text-gray-600 group-hover:text-gray-500 dark:text-gray-400"
+                      className="hs-accordion-active:hidden ms-auto block w-4 h-4 text-gray-600 group-hover:text-gray-500 darkTextGray"
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
                       height="24"
@@ -534,7 +537,7 @@ function Sidebar() {
                     <ul className="ps-3 pt-2">
                       <li>
                         <a
-                          className="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                          className="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 darkBgBlue darkHoverBgBlue darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
                           href="#"
                         >
                           Sub-Menu Item 1
@@ -542,7 +545,7 @@ function Sidebar() {
                       </li>
                       <li>
                         <a
-                          className="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                          className="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 darkBgBlue darkHoverBgBlue darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
                           href="#"
                         >
                           Sub-Menu Item 2
@@ -564,7 +567,7 @@ function Sidebar() {
       </nav>
       <div className="px-6">
         <a
-          className="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+          className="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 darkHoverBgBlue darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
           href="#"
         >
           <svg
@@ -587,7 +590,7 @@ function Sidebar() {
       </div>
       <div className="px-6">
         <a
-          className="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+          className="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 darkHoverBgBlue darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
           href="#"
         >
           <svg

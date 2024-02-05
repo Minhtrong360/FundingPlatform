@@ -3,7 +3,7 @@ export default function InputField({ label, id, ...rest }) {
     <div>
       <label
         htmlFor={id}
-        className="block mb-2 text-sm text-gray-700 font-medium dark:text-white"
+        className="block mb-2 text-sm text-gray-700 font-medium darkTextWhite"
       >
         {label}
       </label>

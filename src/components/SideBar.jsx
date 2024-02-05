@@ -27,7 +27,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
         data-drawer-toggle="default-sidebar"
         aria-controls="default-sidebar"
         type="button"
-        className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+        className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 darkTextGray darkHoverBgBlue darkFocus"
         onClick={toggleSidebar}
       >
         <span className="sr-only">Open sidebar</span>
@@ -55,7 +55,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
         aria-hidden={!isSidebarOpen}
         onClick={toggleSidebar}
       >
-        <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+        <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 darkBgBlue">
           <ul className="space-y-2 font-medium">
             <li>
               <button
@@ -72,7 +72,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
                 className={` w-full hover:cursor-pointer flex items-center p-2 rounded-lg group ${
                   selectedItem?.includes("/user-info")
                     ? "bg-gray-200 "
-                    : "text-gray-900 dark:text-white"
+                    : "text-gray-900 darkTextWhite"
                 }`}
               >
                 <AccountCircleOutlinedIcon />
@@ -85,7 +85,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
                 className={`w-full hover:cursor-pointer flex items-center p-2 rounded-lg group ${
                   selectedItem?.includes("/dashboard")
                     ? "bg-gray-200 "
-                    : "text-gray-900 dark:text-white"
+                    : "text-gray-900 darkTextWhite"
                 }`}
               >
                 <SpaceDashboardOutlinedIcon />
@@ -98,7 +98,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
                 className={`w-full hover:cursor-pointer flex items-center p-2 rounded-lg group ${
                   selectedItem?.includes("/financials")
                     ? "bg-gray-200 "
-                    : "text-gray-900 dark:text-white"
+                    : "text-gray-900 darkTextWhite"
                 }`}
               >
                 <CalculateOutlinedIcon />
@@ -111,7 +111,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
                 className={`w-full hover:cursor-pointer flex items-center p-2 rounded-lg group ${
                   selectedItem.includes("/founder")
                     ? "bg-gray-200 "
-                    : "text-gray-900 dark:text-white"
+                    : "text-gray-900 darkTextWhite"
                 }`}
               >
                 <FolderCopyOutlinedIcon />

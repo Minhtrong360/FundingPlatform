@@ -189,7 +189,7 @@ function ProjectList({ projects }) {
                     <tr>
                       <th
                         scope="col"
-                        className="py-3.5 px-4 text-sm font-bold text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="py-3.5 px-4 text-sm font-semibold text-left rtl:text-right text-black-500 dark:text-gray-400"
                       >
                         <div className="flex items-center gap-x-3">
                           <input
@@ -203,38 +203,38 @@ function ProjectList({ projects }) {
                       </th>
                       <th
                         scope="col"
-                        className="w-[150px] px-4 py-3.5 text-sm font-bold text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="w-[150px] px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 dark:text-gray-400"
                       >
                         Name
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-bold text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 dark:text-gray-400"
                       >
                         Date
                       </th>
 
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-bold text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 dark:text-gray-400"
                       >
                         Customer
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-bold text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 dark:text-gray-400"
                       >
                         Status
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-bold text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 dark:text-gray-400"
                       >
                         Action
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-bold text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 dark:text-gray-400"
                       >
                         Invite
                       </th>

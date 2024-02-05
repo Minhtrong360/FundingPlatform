@@ -30,11 +30,11 @@ const ImageDropdown = () => {
     handleClickOutside(e);
     setIsOpen(false);
   };
-  // const handleClickDashBoard = (e) => {
-  //   navigate("/dashboard");
-  //   handleClickOutside(e);
-  //   setIsOpen(false);
-  // };
+  const handleClickDashBoard = (e) => {
+    navigate("/dashboard");
+    handleClickOutside(e);
+    setIsOpen(false);
+  };
   const handleClickProject = (e) => {
     navigate("/founder");
     handleClickOutside(e);
@@ -114,26 +114,28 @@ const ImageDropdown = () => {
           >
             User Info
           </button>
-          {/* <butto
-          style={{ minWidth: "100%" }}n
+          <button
+            style={{ minWidth: "100%" }}
+            n
             className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
             onClick={(e) => handleClickDashBoard(e)}
           >
             Dashboard
-          </button> */}
-          <button
-            style={{ minWidth: "100%" }}
-            className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
-            onClick={(e) => handleClickProject(e)}
-          >
-            Projects
           </button>
+
           <button
             style={{ minWidth: "100%" }}
             className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
             onClick={(e) => handleClickFinancial(e)}
           >
             Financials
+          </button>
+          <button
+            style={{ minWidth: "100%" }}
+            className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:focus:bg-gray-700"
+            onClick={(e) => handleClickProject(e)}
+          >
+            Projects
           </button>
           <hr />
           <button

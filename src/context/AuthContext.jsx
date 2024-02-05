@@ -3,6 +3,11 @@ import { supabase } from "../supabase";
 import SpinnerBtn from "../components/SpinnerBtn";
 import { toast } from "react-toastify";
 import AlertMsg from "../components/AlertMsg";
+import ReactGA from "react-ga4";
+
+const GA_MEASUREMENT_ID = process.env.REACT_APP_GA_MEASUREMENT_ID; // Thay thế với Measurement ID của bạn
+
+ReactGA.initialize(GA_MEASUREMENT_ID);
 
 const AuthContext = createContext({});
 
@@ -22,6 +27,7 @@ const login = async (email, password, setLoading) => {
     });
 
     setLoading(false);
+
     return { user, session, error };
   } catch (error) {
     setLoading(false);
@@ -45,6 +51,7 @@ const loginWithGG = async (setLoading) => {
     });
 
     setLoading(false);
+
     return { user, session, error };
   } catch (error) {
     setLoading(false);
@@ -65,9 +72,12 @@ const AuthProvider = ({ children }) => {
       const { user: currentUser } = data;
       setUser(currentUser ?? null);
       setAuth(currentUser ? true : false);
+      ReactGA.set({ user_pseudo_id: currentUser?.id ? currentUser?.id : "" });
+      ReactGA.set({ client_id: currentUser?.id ? currentUser?.id : "" });
       setLoading(false);
     };
     getUser();
+
     const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "PASSWORD_RECOVERY") {
         setAuth(false);

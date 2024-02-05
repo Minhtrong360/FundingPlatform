@@ -8,10 +8,10 @@ import Header from "../Home/Header";
 
 function BlogPost({ articles }) {
   return (
-    <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto mt-28">
+    <div className="max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto mt-28">
       <Header />
       <section className="bg-white dark:bg-gray-900">
-        <div className="container px-6 py-10 mx-auto">
+        <div className="container sm:px-6 py-10 mx-auto">
           <h1 className="text-2xl font-semibold text-gray-800 capitalize lg:text-3xl dark:text-white">
             Just Raised
           </h1>
@@ -19,62 +19,64 @@ function BlogPost({ articles }) {
           {articles.map((article, index) => (
             <div
               key={index}
-              className="py-10 px-5 my-28 lg:-mx-6 lg:flex lg:items-center bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 hover:border-transparent hover:shadow-lg transition-all duration-300"
+              className="my-28 border border-gray-200 rounded-lg shadow hover:border-transparent hover:shadow-lg transition-all duration-300 "
             >
-              <img
-                className="mx-auto  w-[34rem] lg:mx-6 rounded-xl h-[20rem]"
-                src={article.image_link}
-                alt=""
-              />
-              {/* <ResizeImage
+              <div className="lg:-mx-6 lg:flex lg:items-center px-4 py-4 ">
+                <img
+                  className="object-cover mx-auto w-[34rem] lg:mx-6 rounded-xl h-[20rem]"
+                  src={article.image_link}
+                  alt=""
+                />
+                {/* <ResizeImage
                 imageUrl={article.image_link}
                 width={566}
                 height={352}
               /> */}
 
-              <div className="mt-6 lg:w-1/2 lg:mt-0 lg:mx-6">
-                <p className="text-sm text-blue-500 uppercase">Fundraising</p>
+                <div className="mt-6 lg:w-1/2 lg:mt-0 lg:mx-6">
+                  <p className="text-sm text-blue-500 uppercase">Fundraising</p>
 
-                <a
-                  href={article.link}
-                  className="block mt-4 text-3xl font-semibold text-gray-800 hover:underline dark:text-white"
-                >
-                  {article.title}
-                </a>
+                  <a
+                    href={article.link}
+                    className="block mt-4 text-3xl font-semibold text-gray-800 hover:underline dark:text-white"
+                  >
+                    {article.title}
+                  </a>
 
-                <p className="mt-3 text-sm text-gray-500 dark:text-gray-300 md:text-sm line-clamp-5">
-                  {article.abstract}
-                </p>
+                  <p className="mt-3 text-sm text-gray-500 dark:text-gray-300 md:text-sm line-clamp-5">
+                    {article.abstract}
+                  </p>
 
-                <a
-                  href={article.link}
-                  className="inline-block mt-2 text-blue-500 underline hover:text-blue-400"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Read more
-                </a>
+                  <a
+                    href={article.link}
+                    className="inline-block mt-2 text-blue-500 underline hover:text-blue-400"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Read more
+                  </a>
 
-                <div className="flex items-center mt-6">
-                  <img
-                    className="object-cover object-center w-10 h-10 rounded-full"
-                    src="https://w0.peakpx.com/wallpaper/432/249/HD-wallpaper-sprout-beauty-enviroment-natural-plant-seed-tree-thumbnail.jpg"
-                    alt="Author"
-                  />
+                  <div className="flex items-center mt-6">
+                    <img
+                      className="object-cover object-center w-10 h-10 rounded-full"
+                      src="https://w0.peakpx.com/wallpaper/432/249/HD-wallpaper-sprout-beauty-enviroment-natural-plant-seed-tree-thumbnail.jpg"
+                      alt="Author"
+                    />
 
-                  <div className="mx-4">
-                    {article.authors.map((author, index) => (
-                      <h1
-                        key={index}
-                        className="text-sm text-gray-700 dark:text-gray-200"
-                      >
-                        {author}
-                      </h1>
-                    ))}
+                    <div className="mx-4">
+                      {article.authors.map((author, index) => (
+                        <h1
+                          key={index}
+                          className="text-sm text-gray-700 dark:text-gray-200"
+                        >
+                          {author}
+                        </h1>
+                      ))}
 
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Author
-                    </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Author
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -88,9 +90,7 @@ function BlogPost({ articles }) {
 
 function News() {
   const [articles, setArticles] = useState([]);
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10); // Number of articles per page
-  const [totalPages, setTotalPages] = useState(0);
+  const [visibleArticles, setVisibleArticles] = useState(10); // Số lượng bài viết ban đầu hiển thị
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -105,57 +105,47 @@ function News() {
 
         if (error) {
           console.error("Error fetching articles from Supabase:", error);
-          // Handle error here, e.g., display an error message
+          // Xử lý lỗi ở đây, ví dụ: hiển thị thông báo lỗi
           return;
         }
 
-        // Calculate total pages
-        const calculatedTotalPages = Math.ceil(articles.length / perPage);
-        setTotalPages(calculatedTotalPages);
-
-        // Get articles for the current page
-        const startIndex = (page - 1) * perPage;
-        const endIndex = startIndex + perPage;
-        const currentArticles = articles.slice(startIndex, endIndex);
-
-        setArticles(currentArticles);
+        setArticles(articles);
       } catch (error) {
         console.error("An error occurred:", error);
-        // Handle the error, e.g., show a toast or a friendly message
+        // Xử lý lỗi, ví dụ: hiển thị một thông báo hoặc thông báo lỗi thân thiện
       } finally {
         setIsLoading(false);
       }
     }
 
     fetchArticles();
-  }, [page, perPage]);
-  console.log("articles", articles);
+  }, []);
+
+  // Sự kiện cuộn
+  useEffect(() => {
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } =
+        document.documentElement;
+      const atBottom = scrollTop + clientHeight >= scrollHeight;
+
+      if (atBottom) {
+        // Nếu người dùng cuộn đến cuối trang, tăng số lượng bài viết hiển thị thêm (ví dụ, thêm 5)
+        setVisibleArticles((prevVisible) => prevVisible + 5);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <>
-      <BlogPost articles={articles} />
+      <BlogPost articles={articles.slice(0, visibleArticles)} />
       <AlertMsg />
       <LoadingButtonClick isLoading={isLoading} />
-      {/* Pagination controls */}
-      <div className="mb-20 flex justify-center">
-        <button
-          onClick={() => setPage(page - 1)}
-          disabled={page === 1}
-          className="px-4 py-2 mx-2 text-blue-500 bg-white border border-blue-500 rounded-md hover:bg-blue-700 hover:text-white"
-        >
-          Previous Page
-        </button>
-        <span className="px-4 py-2 mx-2 bg-gray-200 text-gray-800 rounded-md">
-          Page {page} of {totalPages}
-        </span>
-        <button
-          onClick={() => setPage(page + 1)}
-          disabled={page === totalPages}
-          className="px-4 py-2 mx-2 text-blue-500 bg-white border border-blue-500 rounded-md hover:bg-blue-700 hover:text-white"
-        >
-          Next Page
-        </button>
-      </div>
     </>
   );
 }

@@ -8,6 +8,7 @@ import LoadingButtonClick from "../../../components/LoadingButtonClick";
 
 const NewProjectPosts = () => {
   const [companies, setCompanies] = useState([]);
+  const [filteredCompanies, setFilteredCompanies] = useState([]);
   const [page, setPage] = useState(1);
   const itemsPerPage = 6;
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,12 +16,11 @@ const NewProjectPosts = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
+  // First useEffect - Fetch all companies
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
         setIsLoading(true);
-
-        // Truy vấn danh sách companies và sắp xếp theo thời gian tạo mới nhất
         let { data, error } = await supabase
           .from("company")
           .select("*")
@@ -28,44 +28,48 @@ const NewProjectPosts = () => {
 
         if (error) {
           toast.error(error.message);
-          console.error("Lỗi khi truy vấn dữ liệu từ Supabase:", error);
+          console.error("Error fetching data from Supabase:", error);
         } else {
-          // Lọc danh sách công ty dựa trên giá trị tìm kiếm
-          if (searchTerm) {
-            data = data.filter((company) =>
-              company?.name?.toLowerCase().includes(searchTerm?.toLowerCase())
-            );
-          }
-          if (selectedIndustry) {
-            data = data.filter((company) =>
-              company?.industry?.some(
-                (industry) =>
-                  industry.toLowerCase() === selectedIndustry.toLowerCase()
-              )
-            );
-          }
-
-          // Tính toán tổng số trang
-          const calculatedTotalPages = Math.ceil(data.length / itemsPerPage);
-          setTotalPages(calculatedTotalPages);
-
-          // Lấy danh sách công ty cho trang hiện tại
-          const startIndex = (page - 1) * itemsPerPage;
-          const endIndex = startIndex + itemsPerPage;
-          const currentPageCompanies = data.slice(startIndex, endIndex);
-
-          setCompanies(currentPageCompanies);
+          setCompanies(data);
         }
       } catch (error) {
-        console.error("Lỗi khi truy vấn dữ liệu từ Supabase:", error);
+        console.error("Error fetching data from Supabase:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    // Gọi hàm fetchCompanies để lấy danh sách companies
     fetchCompanies();
-  }, [page, searchTerm, selectedIndustry]);
+  }, []); // Empty dependency array to run only on mount
+
+  // Second useEffect - Filter and paginate companies
+  useEffect(() => {
+    let data = companies;
+
+    if (searchTerm) {
+      data = data.filter((company) =>
+        company?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (selectedIndustry) {
+      data = data.filter((company) =>
+        company?.industry?.some(
+          (industry) =>
+            industry.toLowerCase() === selectedIndustry.toLowerCase()
+        )
+      );
+    }
+
+    // Calculate total pages
+    const calculatedTotalPages = Math.ceil(data.length / itemsPerPage);
+    setTotalPages(calculatedTotalPages);
+
+    // Paginate companies
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    setFilteredCompanies(data.slice(startIndex, endIndex));
+  }, [companies, page, searchTerm, selectedIndustry]);
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
@@ -83,17 +87,25 @@ const NewProjectPosts = () => {
 
   return (
     <div className="max-w-[85rem] px-4 py-2 sm:px-6 lg:px-8 lg:py-2 mx-auto">
-      <Search onSearch={handleSearch} onIndustryChange={handleIndustryChange} />
+      <Search
+        onSearch={handleSearch}
+        onIndustryChange={handleIndustryChange}
+        companies={companies}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        selectedIndustry={selectedIndustry}
+        setSelectedIndustry={setSelectedIndustry}
+      />
       <LoadingButtonClick isLoading={isLoading} />
       <>
-        {companies.length === 0 ? (
-          <div className="mt-24 text-center text-4xl font-bold text-gray-800 dark:text-gray-200">
+        {filteredCompanies.length === 0 ? (
+          <div className="mt-24 text-center text-4xl font-semibold text-gray-800 dark:text-gray-200">
             No result
           </div>
         ) : (
           <>
             <div className="mt-24 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 transition-all duration-600 ease-out transform translate-x-0">
-              {companies.map((company) => (
+              {filteredCompanies.map((company) => (
                 <div key={company.id} className="flex justify-center">
                   <Card
                     key={company.id}

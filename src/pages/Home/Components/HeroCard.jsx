@@ -25,7 +25,7 @@ const HeroCard = () => {
           />
         </div>
         <div>
-          <h1 className="block text-3xl font-bold text-gray-800 sm:text-4xl lg:text-6xl lg:leading-tight dark:text-white">
+          <h1 className="block text-3xl font-semibold text-gray-800 sm:text-4xl lg:text-6xl lg:leading-tight dark:text-white">
             BOS. roasted a fruitful campaign with{" "}
             <span className="text-blue-600"> $170K raised.</span>
           </h1>
@@ -61,7 +61,7 @@ const HeroCard = () => {
                 <span>★</span>
               </div>
               <p className="mt-3 text-sm text-gray-800 dark:text-gray-200">
-                <span className="font-bold">4.6</span> /5 - from 12k reviews
+                <span className="font-semibold">4.6</span> /5 - from 12k reviews
               </p>
             </div>
             <div className="py-5">
@@ -73,7 +73,7 @@ const HeroCard = () => {
                 <span>★</span>
               </div>
               <p className="mt-3 text-sm text-gray-800 dark:text-gray-200">
-                <span className="font-bold">4.8</span> /5 - from 5k reviews
+                <span className="font-semibold">4.8</span> /5 - from 5k reviews
               </p>
             </div>
           </div>

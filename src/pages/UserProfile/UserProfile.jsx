@@ -3,7 +3,6 @@ import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 import AlertMsg from "../../components/AlertMsg";
-import SpinnerBtn from "../../components/SpinnerBtn";
 import InputField from "../../components/InputField";
 
 import apiService from "../../app/apiService";
@@ -64,7 +63,7 @@ function UserInfoSettings() {
 
     // Gọi hàm fetchUserData khi component được mount
     fetchUserData();
-  }, [user.id]); // Sử dụng user.id làm phần tử phụ thuộc để useEffect được gọi lại khi user.id thay đổi
+  }, [user.id, user.created_at]); // Sử dụng user.id làm phần tử phụ thuộc để useEffect được gọi lại khi user.id thay đổi
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -131,7 +130,8 @@ function UserInfoSettings() {
 
       window.open(session.url, "_blank");
     } catch (error) {
-      toast.error("User does not subscribe");
+      console.log("error", error);
+      toast.error("user does not subscribe.");
     }
     setIsLoading(false);
   };
@@ -141,7 +141,7 @@ function UserInfoSettings() {
       <AlertMsg />
       <div className="max-w-xl mx-auto">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-800 sm:text-4xl dark:text-white">
+          <h1 className="text-3xl font-semibold text-gray-800 sm:text-4xl dark:text-white">
             User info settings
           </h1>
           <p className="mt-1 text-gray-600 dark:text-gray-400">

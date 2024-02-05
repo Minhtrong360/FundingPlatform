@@ -10,7 +10,6 @@ import { useAuth } from "../../context/AuthContext";
 import Card from "../Home/Components/Card";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import AlertMsg from "../../components/AlertMsg";
-import industries from "../../components/Industries";
 
 function CompanySetting() {
   const navigate = useNavigate();
@@ -189,7 +188,7 @@ function CompanySetting() {
         } else {
           // Nếu công ty chưa tồn tại, thêm mới thông tin công ty
 
-          const { data, error } = await supabase.from("company").upsert([
+          const { error } = await supabase.from("company").upsert([
             {
               name: formData.companyName,
               country: formData.country,
@@ -212,7 +211,6 @@ function CompanySetting() {
           if (error) {
             console.log("Error saving data to Supabase:", error);
           } else {
-            console.log("Data saved successfully:", data);
             setIsLoading(false);
             navigate(`/founder/${params.id}`);
           }

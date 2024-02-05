@@ -1,12 +1,24 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-// import SpaceDashboardOutlinedIcon from "@mui/icons-material/SpaceDashboardOutlined";
+import SpaceDashboardOutlinedIcon from "@mui/icons-material/SpaceDashboardOutlined";
 import FolderCopyOutlinedIcon from "@mui/icons-material/FolderCopyOutlined";
 import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
 function SideBar({ toggleSidebar, isSidebarOpen }) {
   const navigate = useNavigate();
+
+  const [selectedItem, setSelectedItem] = useState([]);
+  const location = useLocation();
+
+  useEffect(() => {
+    setSelectedItem(location.pathname);
+  }, [location]);
+
+  const handleItemClick = (route) => {
+    navigate(route);
+  };
+  console.log("selectedItem", selectedItem);
 
   return (
     <div>
@@ -50,43 +62,60 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
                 className="p-2  font-semibold text-2xl text-blue-600 flex items-center space-x-3 rtl:space-x-reverse hover:cursor-pointer"
                 onClick={() => navigate("/")}
               >
-                BeeKrowd
+                <HomeOutlinedIcon />
+                <span>BeeKrowd</span>
               </button>
             </li>
             <li>
               <button
-                onClick={() => navigate("/user-info")}
-                className=" hover:cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                onClick={() => handleItemClick("/user-info")}
+                className={` w-full hover:cursor-pointer flex items-center p-2 rounded-lg group ${
+                  selectedItem?.includes("/user-info")
+                    ? "bg-gray-200 "
+                    : "text-gray-900 dark:text-white"
+                }`}
               >
                 <AccountCircleOutlinedIcon />
                 <span className="ms-3">User Settings</span>
               </button>
             </li>
-            {/* <li>
+            <li>
               <button
-                onClick={() => navigate("/dashboard")}
-                className=" hover:cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                onClick={() => handleItemClick("/dashboard")}
+                className={`w-full hover:cursor-pointer flex items-center p-2 rounded-lg group ${
+                  selectedItem?.includes("/dashboard")
+                    ? "bg-gray-200 "
+                    : "text-gray-900 dark:text-white"
+                }`}
               >
                 <SpaceDashboardOutlinedIcon />
                 <span className="ms-3">Dashboard</span>
               </button>
-            </li> */}
+            </li>
             <li>
               <button
-                onClick={() => navigate("/founder")}
-                className="hover:cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                onClick={() => handleItemClick("/financials")}
+                className={`w-full hover:cursor-pointer flex items-center p-2 rounded-lg group ${
+                  selectedItem?.includes("/financials")
+                    ? "bg-gray-200 "
+                    : "text-gray-900 dark:text-white"
+                }`}
               >
-                <FolderCopyOutlinedIcon />
-                <span className="ms-3">Projects</span>
+                <CalculateOutlinedIcon />
+                <span className="ms-3">Financials</span>
               </button>
             </li>
             <li>
               <button
-                onClick={() => navigate("/financials")}
-                className="hover:cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                onClick={() => handleItemClick("/founder")}
+                className={`w-full hover:cursor-pointer flex items-center p-2 rounded-lg group ${
+                  selectedItem.includes("/founder")
+                    ? "bg-gray-200 "
+                    : "text-gray-900 dark:text-white"
+                }`}
               >
-                <CalculateOutlinedIcon />
-                <span className="ms-3">Financials</span>
+                <FolderCopyOutlinedIcon />
+                <span className="ms-3">Projects</span>
               </button>
             </li>
 

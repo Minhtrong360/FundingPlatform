@@ -24,7 +24,7 @@ function LinkedInLoginComponent() {
   };
 
   const handleFailure = (error) => {
-    setError(error.errorMessage);
+    setError(error.message);
   };
 
   const getAccessToken = async (code) => {

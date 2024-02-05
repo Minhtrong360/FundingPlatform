@@ -1,12 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { supabase } from "../../supabase";
 
-import SpinnerBtn from "../../components/SpinnerBtn";
 import AnnouncePage from "../../components/AnnouncePage";
 import AlertMsg from "../../components/AlertMsg";
 import { toast } from "react-toastify";
-import Spinner from "../../components/Spinner";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 
 const InputField = ({ label, type, name, value, onChange }) => {
@@ -62,11 +60,10 @@ const ForgotPassword = () => {
         return;
       }
       // Kiểm tra xem email có tồn tại trong Supabase hay không
-      const { data: users, error } = await supabase
+      const { error } = await supabase
         .from("users")
         .select("*")
-        .eq("email", email)
-        .single(); // Sử dụng .single() để chỉ lấy một kết quả duy nhất
+        .eq("email", email);
 
       if (error) {
         console.log("không có user");
@@ -105,17 +102,17 @@ const ForgotPassword = () => {
           <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <div className="p-4 sm:p-7">
               <div className="text-center">
-                <h1 className="block text-2xl font-bold text-gray-800 dark:text-white">
+                <h1 className="block text-2xl font-semibold text-gray-800 dark:text-white">
                   Forgot password?
                 </h1>
                 <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                   Remember your password?
-                  <a
+                  <button
                     onClick={() => navigate("/login")}
                     className="ml-1 text-blue-600 decoration-2 hover:underline hover:cursor-pointer font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                   >
                     Sign in here
-                  </a>
+                  </button>
                 </p>
               </div>
 

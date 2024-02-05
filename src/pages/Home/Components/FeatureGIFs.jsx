@@ -16,33 +16,31 @@ const GIFsCard = ({ title, videoUrl }) => {
 };
 
 const FeatureGIFs = () => (
-  <section className="w-screen bg-black">
-    <div className="container mx-auto grid  px-4 md:px-6 lg:grid-cols-3  pb-8">
-      <GIFsCard
-        title="Notion-like editor"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Free%20Text%20Editor.gif?t=2024-01-11T09%3A51%3A11.171Z"
-      />
-      <GIFsCard
-        title="Beautiful images"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Add%20image.gif?t=2024-01-11T09%3A51%3A03.516Z"
-      />
-      <GIFsCard
-        title="YouTube videos"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Add%20YouTube.gif?t=2024-01-11T09%3A50%3A59.130Z"
-      />
-      <GIFsCard
-        title="Insightful charts"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Add%20Charts.gif?t=2024-01-11T09%3A50%3A51.692Z"
-      />
-      <GIFsCard
-        title="Your own Dataroom"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Dataroom.gif?t=2024-01-11T09%3A51%3A07.573Z"
-      />
-      <GIFsCard
-        title="Fundraising info settings"
-        videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Fundraising%20info%20settings.gif?t=2024-01-11T09%3A51%3A14.151Z"
-      />
-    </div>
+  <section className="bg-black mx-auto grid  px-4 md:px-6 lg:grid-cols-3  pb-8">
+    <GIFsCard
+      title="Notion-like editor"
+      videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Free%20Text%20Editor.gif?t=2024-01-11T09%3A51%3A11.171Z"
+    />
+    <GIFsCard
+      title="Beautiful images"
+      videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Add%20image.gif?t=2024-01-11T09%3A51%3A03.516Z"
+    />
+    <GIFsCard
+      title="YouTube videos"
+      videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Add%20YouTube.gif?t=2024-01-11T09%3A50%3A59.130Z"
+    />
+    <GIFsCard
+      title="Insightful charts"
+      videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Add%20Charts.gif?t=2024-01-11T09%3A50%3A51.692Z"
+    />
+    <GIFsCard
+      title="Your own Dataroom"
+      videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Dataroom.gif?t=2024-01-11T09%3A51%3A07.573Z"
+    />
+    <GIFsCard
+      title="Fundraising info settings"
+      videoUrl="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_gifs/Fundraising%20info%20settings.gif?t=2024-01-11T09%3A51%3A14.151Z"
+    />
   </section>
 );
 

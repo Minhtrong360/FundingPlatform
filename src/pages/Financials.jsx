@@ -80,7 +80,7 @@ const { Option } = Select;
 
 //   return (
 //     <div className="p-4">
-//       <h1 className="text-2xl text-blue-600 font-bold mb-4">
+//       <h1 className="text-2xl text-blue-600 font-semibold mb-4">
 //         Compound Interest Calculator
 //       </h1>
 //       <Form form={form} onFinish={onFinish} layout="inline">

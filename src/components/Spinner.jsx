@@ -13,9 +13,6 @@ export default function Spinner({ isLoading }) {
       <div className="animate-spin h-12 w-12 text-blue-600">
         <LoaderIcon className="h-full w-full" />
       </div>
-      <p className="ml-4 text-lg font-inter text-blue-600 dark:text-blue-400">
-        Loading...
-      </p>
     </div>
   );
 }

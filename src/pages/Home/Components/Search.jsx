@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
 import DesktopWindowsOutlinedIcon from "@mui/icons-material/DesktopWindowsOutlined";
 import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
@@ -11,17 +11,32 @@ import { MenuButton } from "@mui/base/MenuButton";
 import { Menu } from "@mui/base/Menu";
 import { MenuItem } from "@mui/base/MenuItem";
 
-const Search = ({ onSearch, onIndustryChange }) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedIndustry, setSelectedIndustry] = useState("");
-
+const Search = ({
+  onSearch,
+  onIndustryChange,
+  companies,
+  searchTerm,
+  setSearchTerm,
+  selectedIndustry,
+  setSelectedIndustry,
+}) => {
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (value.length > 0) {
+      const filteredSuggestions = companies.filter((company) =>
+        company.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setSuggestions(filteredSuggestions);
+    } else {
+      setSuggestions([]);
+    }
   };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     onSearch(searchTerm);
+    setSuggestions([]);
   };
 
   const handleIndustryClick = (industry) => {
@@ -30,13 +45,22 @@ const Search = ({ onSearch, onIndustryChange }) => {
     onIndustryChange(industry);
   };
 
+  const [suggestions, setSuggestions] = useState([]);
+
+  const handleSuggestionClick = (name) => {
+    console.log("click");
+    setSearchTerm(name);
+    setSuggestions([]);
+    onSearch(name); // Optional: Trigger the search when a suggestion is clicked
+  };
+
   return (
     <div className="relative overflow-hidden">
-      <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-2">
+      <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-2 mt-24">
         <div className="text-center">
           <h3
             id="profiles"
-            className="text-3xl sm:text-5xl font-bold text-gray-800 dark:text-gray-200"
+            className="text-3xl sm:text-5xl font-semibold text-gray-800 dark:text-gray-200"
           >
             New fundraising profiles
           </h3>
@@ -51,7 +75,7 @@ const Search = ({ onSearch, onIndustryChange }) => {
                     className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
                     placeholder="Search profiles"
                     value={searchTerm}
-                    onChange={handleSearchChange}
+                    onChange={handleSearchChange} // Thêm sự kiện onChange này
                   />
                 </div>
                 <div className="flex-[0_0_auto]">
@@ -72,6 +96,19 @@ const Search = ({ onSearch, onIndustryChange }) => {
                 </div>
               </div>
             </form>
+            {suggestions.length > 0 && (
+              <ul className=" mt-2 top-full left-0 right-0 z-50 bg-white border border-gray-200 rounded-md shadow-lg max-h-96 overflow-y-auto">
+                {suggestions.map((company, index) => (
+                  <li
+                    key={index}
+                    className="text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleSuggestionClick(company.name)}
+                  >
+                    {company.name}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div className="mt-2 sm:mt-4">
             <button
@@ -84,6 +121,28 @@ const Search = ({ onSearch, onIndustryChange }) => {
             >
               All
               <AllInclusiveOutlinedIcon fontSize="small" />
+            </button>
+            <button
+              onClick={() => handleIndustryClick("Biotech")}
+              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
+                selectedIndustry === "Biotech"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-800 hover:bg-gray-50"
+              } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
+            >
+              Biotech
+              <BiotechOutlinedIcon fontSize="small" />
+            </button>
+            <button
+              onClick={() => handleIndustryClick("Edtech")}
+              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
+                selectedIndustry === "Edtech"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-800 hover:bg-gray-50"
+              } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
+            >
+              Edtech
+              <SchoolOutlinedIcon fontSize="small" />
             </button>
             <button
               onClick={() => handleIndustryClick("Finance and Banking")}
@@ -107,28 +166,7 @@ const Search = ({ onSearch, onIndustryChange }) => {
               Fintech
               <DesktopWindowsOutlinedIcon fontSize="small" />
             </button>
-            <button
-              onClick={() => handleIndustryClick("Edtech")}
-              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
-                selectedIndustry === "Edtech"
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-800 hover:bg-gray-50"
-              } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
-            >
-              Edtech
-              <SchoolOutlinedIcon fontSize="small" />
-            </button>
-            <button
-              onClick={() => handleIndustryClick("Biotech")}
-              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
-                selectedIndustry === "Biotech"
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-800 hover:bg-gray-50"
-              } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
-            >
-              Biotech
-              <BiotechOutlinedIcon fontSize="small" />
-            </button>
+
             <Dropdown>
               <MenuButton
                 className={` m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border shadow-sm  disabled:opacity-50 hover:cursor-pointer`}

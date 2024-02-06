@@ -37,20 +37,20 @@ const FAQ = () => {
           <div className="max-w-xs">
             <h2
               id="FAQ"
-              className="text-2xl font-semibold md:text-4xl md:leading-tight dark:text-white"
+              className="text-2xl font-semibold md:text-4xl md:leading-tight darkTextWhite"
             >
               Frequently
               <br />
               asked questions
             </h2>
-            <p className="mt-1 hidden md:block text-gray-600 dark:text-gray-400">
+            <p className="mt-1 hidden md:block text-gray-600 darkTextGray">
               Answers to the most frequently asked questions.
             </p>
           </div>
         </div>
 
         <div className="md:col-span-3">
-          <div className="hs-accordion-group divide-y divide-gray-200 dark:divide-gray-700">
+          <div className="hs-accordion-group divide-y divide-gray-200 darkDivideGray">
             {faqData.map((item, index) => (
               <div
                 className={`hs-accordion pb-3 ${
@@ -59,7 +59,7 @@ const FAQ = () => {
                 key={index}
               >
                 <button
-                  className="mt-3 hs-accordion-toggle group pb-3 inline-flex items-center justify-between gap-x-3 w-full md:text-lg font-semibold text-start text-gray-800 rounded-lg transition hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                  className="mt-3 hs-accordion-toggle group pb-3 inline-flex items-center justify-between gap-x-3 w-full md:text-lg font-semibold text-start text-gray-800 rounded-lg transition hover:text-gray-500 darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
                   aria-controls={`hs-basic-with-title-and-arrow-stretched-collapse-${index}`}
                   onClick={() => toggleAccordion(index)}
                 >
@@ -67,7 +67,7 @@ const FAQ = () => {
                   <svg
                     className={`hs-accordion-icon transform ${
                       index === activeAccordion ? "rotate-180" : "rotate-0"
-                    } flex-shrink-0 w-5 h-5 text-gray-600 group-hover:text-gray-500 dark:text-gray-400 transition-transform`}
+                    } flex-shrink-0 w-5 h-5 text-gray-600 group-hover:text-gray-500 darkTextGray transition-transform`}
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="none"
@@ -86,7 +86,7 @@ const FAQ = () => {
                   }`}
                   aria-labelledby={`hs-basic-with-title-and-arrow-stretched-heading-${index}`}
                 >
-                  <p className="text-gray-600 dark:text-gray-400 py-3">
+                  <p className="text-gray-600 darkTextGray py-3">
                     {item.answer}
                   </p>
                 </div>

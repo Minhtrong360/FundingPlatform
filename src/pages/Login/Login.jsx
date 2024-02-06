@@ -51,16 +51,16 @@ const Login = () => {
   };
 
   return (
-    <div className="dark:bg-slate-900 bg-gray-100 flex h-screen items-center py-16">
+    <div className="darkBgBlue bg-gray-100 flex h-screen items-center py-16">
       <AlertMsg />
       <main className="w-full max-w-md mx-auto p-6">
-        <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
+        <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm darkBgBlue darkBorderGray">
           <div className="p-4 sm:p-7">
             <div className="text-center">
-              <h1 className="block text-2xl font-semibold text-gray-800 dark:text-white">
+              <h1 className="block text-2xl font-semibold text-gray-800 darkTextWhite">
                 Sign in
               </h1>
-              <p className=" mt-2 text-sm text-gray-600 dark:text-gray-400">
+              <p className=" mt-2 text-sm text-gray-600 darkTextGray">
                 Don't have an account yet?
                 <button
                   className="ml-1 text-blue-600 hover:underline hover:cursor-pointer"
@@ -75,7 +75,7 @@ const Login = () => {
               <button
                 onClick={(e) => signInWitGG(e)}
                 type="button"
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
               >
                 {loading ? (
                   <SpinnerBtn />
@@ -87,7 +87,7 @@ const Login = () => {
                 )}
               </button>
 
-              <div className="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-1 before:border-t before:border-gray-200 before:mr-6 after:flex-1 after:border-t after:border-gray-200 after:ml-6 dark:before:border-gray-600 dark:after:border-gray-600">
+              <div className="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-1 before:border-t before:border-gray-200 before:mr-6 after:flex-1 after:border-t after:border-gray-200 after:ml-6 darkBeforeBorderGray darkAfterBorderGray">
                 Or
               </div>
 
@@ -96,7 +96,7 @@ const Login = () => {
                   <div>
                     <label
                       htmlFor="email"
-                      className="block text-sm mb-2 dark:text-white"
+                      className="block text-sm mb-2 darkTextWhite"
                     >
                       Email address
                     </label>
@@ -104,7 +104,7 @@ const Login = () => {
                       type="email"
                       id="email"
                       name="email"
-                      className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+                      className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm darkBgBlue darkBorderGray darkTextGray"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -115,7 +115,7 @@ const Login = () => {
                     <div className="flex justify-between items-center">
                       <label
                         htmlFor="password"
-                        className="block text-sm mb-2 dark:text-white"
+                        className="block text-sm mb-2 darkTextWhite"
                       >
                         Password
                       </label>
@@ -131,7 +131,7 @@ const Login = () => {
                       type="password"
                       id="password"
                       name="password"
-                      className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+                      className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm darkBgBlue darkBorderGray darkTextGray"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
@@ -143,13 +143,13 @@ const Login = () => {
                       id="remember-me"
                       name="remember-me"
                       type="checkbox"
-                      className="shrink-0 border-gray-200 rounded text-blue-600 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
+                      className="shrink-0 border-gray-200 rounded text-blue-600 focus:ring-blue-500 darkBgBlue darkBorderGray"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
                     />
                     <label
                       htmlFor="remember-me"
-                      className="ml-3 text-sm dark:text-white"
+                      className="ml-3 text-sm darkTextWhite"
                     >
                       Remember me
                     </label>
@@ -157,7 +157,7 @@ const Login = () => {
 
                   <button
                     type="submit"
-                    className="w-full py-3 px-4 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                    className="w-full py-3 px-4 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 darkFocusOutlineNone darkFocusRing-1 darkFocus"
                     disabled={loading} // Vô hiệu hóa nút khi đang loading
                   >
                     {loading ? <SpinnerBtn /> : "Sign in"}{" "}

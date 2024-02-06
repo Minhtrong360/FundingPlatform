@@ -10,7 +10,7 @@ import LoadingButtonClick from "../../components/LoadingButtonClick";
 const InputField = ({ label, type, name, value, onChange }) => {
   return (
     <div>
-      <label htmlFor={name} className="block text-sm mb-2 dark:text-white">
+      <label htmlFor={name} className="block text-sm mb-2 darkTextWhite">
         {label}
       </label>
       <input
@@ -19,7 +19,7 @@ const InputField = ({ label, type, name, value, onChange }) => {
         name={name}
         value={value}
         onChange={onChange}
-        className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+        className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextGray darkFocus"
         required
         aria-describedby={`${name}-error`}
       />
@@ -32,7 +32,7 @@ const SubmitButton = ({ text }) => {
   return (
     <button
       type="submit"
-      className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+      className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
     >
       {text}
     </button>
@@ -99,17 +99,17 @@ const ForgotPassword = () => {
         />
       ) : (
         <main className="w-full max-w-md mx-auto p-6">
-          <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
+          <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm darkBgBlue darkBorderGray">
             <div className="p-4 sm:p-7">
               <div className="text-center">
-                <h1 className="block text-2xl font-semibold text-gray-800 dark:text-white">
+                <h1 className="block text-2xl font-semibold text-gray-800 darkTextWhite">
                   Forgot password?
                 </h1>
-                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                <p className="mt-2 text-sm text-gray-600 darkTextGray">
                   Remember your password?
                   <button
                     onClick={() => navigate("/login")}
-                    className="ml-1 text-blue-600 decoration-2 hover:underline hover:cursor-pointer font-medium dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                    className="ml-1 text-blue-600 decoration-2 hover:underline hover:cursor-pointer font-medium darkFocusOutlineNone darkFocusRing-1 darkFocus"
                   >
                     Sign in here
                   </button>

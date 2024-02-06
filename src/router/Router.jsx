@@ -28,7 +28,7 @@ import X from "../pages/test01";
 import Y from "../pages/test02";
 import FinancialPage from "../pages/FinalcialPage/FinancialPage";
 import FinancialList from "../pages/FinalcialPage/FinancialList";
-
+import Z from "../pages/test03";
 function Router() {
   return (
     <Routes>
@@ -94,7 +94,8 @@ function Router() {
       {/* <Route path="/financialList" element={<FinancialList />} /> */}
       <Route path="/news" element={<News />} />
       <Route path="/X" element={<X />} />
-      <Route path="/Y" element={<Y/>} />
+      <Route path="/Y" element={<Y />} />
+      <Route path="/Z" element={<Z />} />
       <Route
         path="/loading"
         element={<LoadingButtonClick isLoading={true} />}

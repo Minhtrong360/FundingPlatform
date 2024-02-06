@@ -8,8 +8,8 @@ const NavbarItem = ({ href, children, isActive }) => (
       href={href}
       className={`block py-2 px-3 rounded md:p-0 ${
         isActive
-          ? "text-white bg-blue-600 rounded md:bg-transparent md:text-blue-700 md:dark:text-blue-500"
-          : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+          ? "text-white bg-blue-600 rounded md:bg-transparent md:text-blue-700 md:darkTextBlue"
+          : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 darkTextWhite darkHoverBgBlue darkHoverTextWhite md:darkHoverBgBlue"
       }`}
       aria-current={isActive ? "page" : undefined}
     >
@@ -22,7 +22,7 @@ const NavbarButton = ({ children, onClick, className }) => (
   <button
     type="button"
     onClick={onClick}
-    className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 ${className}`}
+    className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus ${className}`}
   >
     {children}
   </button>
@@ -32,10 +32,10 @@ const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
+    <nav className="bg-white darkBg fixed w-full z-20 top-0 start-0 border-b border-gray-200 darkBorderGray">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="#" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <span className="self-center text-3xl font-semibold whitespace-nowrap dark:text-white">
+          <span className="self-center text-3xl font-semibold whitespace-nowrap darkTextWhite">
             BeeKrowd
           </span>
         </a>
@@ -44,7 +44,7 @@ const NavBar = () => {
           <button
             data-collapse-toggle="navbar-sticky"
             type="button"
-            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 darkTextGray darkHoverBgBlue darkFocus"
             onClick={() => setIsOpen(!isOpen)}
             aria-controls="navbar-sticky"
             aria-expanded={isOpen}
@@ -73,7 +73,7 @@ const NavBar = () => {
           }`}
           id="navbar-sticky"
         >
-          <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+          <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white darkBgBlue md:darkBg darkBorderGray">
             <NavbarItem href="#" isActive>
               Home
             </NavbarItem>
@@ -91,16 +91,16 @@ const Search = () => {
     <div className="relative overflow-hidden">
       <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-2">
         <div className="text-center">
-          <h3 className="text-3xl sm:text-5xl font-semibold text-gray-800 dark:text-gray-200 mt-28">
+          <h3 className="text-3xl sm:text-5xl font-semibold text-gray-800 darkTextGray mt-28">
             <span className="text-blue-600">Signature </span> Deal Room
           </h3>
           <div className="mt-7 sm:mt-12 mx-auto max-w-xl relative">
             <form>
-              <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100 dark:bg-slate-900 dark:border-gray-700 dark:shadow-gray-900/[.2]">
+              <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100 darkBgBlue darkBorderGray darkShadowGray">
                 <div className="flex-[1_0_0%]">
                   <label
                     htmlFor="hs-search-article-1"
-                    className="block text-sm text-gray-700 font-medium dark:text-white"
+                    className="block text-sm text-gray-700 font-medium darkTextWhite"
                   >
                     <span className="sr-only">Search article</span>
                   </label>
@@ -108,13 +108,13 @@ const Search = () => {
                     type="email"
                     name="hs-search-article-1"
                     id="hs-search-article-1"
-                    className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-transparent dark:text-gray-400 dark:focus:ring-gray-600"
+                    className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
                     placeholder="Search company"
                   />
                 </div>
                 <div className="flex-[0_0_auto]">
                   <a
-                    className="w-[46px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                    className="w-[46px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
                     href="#"
                   >
                     <svg
@@ -179,7 +179,7 @@ const Search = () => {
           </div>
           <div className="mt-2 sm:mt-4">
             <a
-              className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
               href="#"
             >
               <svg
@@ -195,7 +195,7 @@ const Search = () => {
               Business
             </a>
             <a
-              className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
               href="#"
             >
               <svg
@@ -218,22 +218,22 @@ const Search = () => {
 };
 
 const Card = ({ title, description, imageUrl, buttonText, buttonLink }) => (
-  <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+  <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow darkBgBlue darkBorderGray">
     <a href={buttonLink}>
       <img className="rounded-t-lg" src={imageUrl} alt={title} />
     </a>
     <div className="p-5">
       <a href={buttonLink}>
-        <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
+        <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 darkTextWhite">
           {title}
         </h5>
       </a>
-      <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+      <p className="mb-3 font-normal text-gray-700 darkTextGray">
         {description}
       </p>
       <a
         href={buttonLink}
-        className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mt-8"
+        className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkHoverBgBlue darkFocus mt-8"
       >
         {buttonText}
         <span className="w-3.5 h-3.5 ml-2">🇻🇳</span>
@@ -276,11 +276,11 @@ const cardData = [
 const Card3x = (props) => (
   <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
     <div className="max-w-2xl mx-auto text-center mb-10 lg:mb-14">
-      <h2 className="text-2xl font-semibold md:text-4xl md:leading-tight dark:text-white">
+      <h2 className="text-2xl font-semibold md:text-4xl md:leading-tight darkTextWhite">
         {/* Insights */}
         {props.title}
       </h2>
-      <p className="mt-1 text-gray-600 dark:text-gray-400">
+      <p className="mt-1 text-gray-600 darkTextGray">
         {/* Stay in the know with insights from industry experts. */}
         {props.description}
       </p>

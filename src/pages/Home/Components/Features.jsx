@@ -4,11 +4,11 @@ function Features() {
       <div className="max-w-2xl mx-auto text-center mb-10 lg:mb-14">
         <h3
           id="platform"
-          className="text-4xl font-semibold md:text-4xl md:leading-tight dark:text-white"
+          className="text-4xl font-semibold md:text-4xl md:leading-tight darkTextWhite"
         >
           A data-centric platform for all
         </h3>
-        <p className="mt-1 text-gray-600 dark:text-gray-400">
+        <p className="mt-1 text-gray-600 darkTextGray">
           Empowering Data-Driven Decisions: Unleash the Potential of Your Data
           with Our Comprehensive Platform.
         </p>
@@ -16,7 +16,7 @@ function Features() {
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <a
-          className="group flex flex-col h-full border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-5 dark:border-gray-700 dark:hover:border-transparent dark:hover:shadow-black/[.4] dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+          className="group flex flex-col h-full border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-5 "
           href="#"
         >
           <div className="aspect-w-16 aspect-h-11">
@@ -27,10 +27,10 @@ function Features() {
             />
           </div>
           <div className="my-6">
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-300 dark:group-hover:text-white">
+            <h3 className="text-xl font-semibold text-gray-800 darkTextGray darkGroupHoverText">
               Startup Founder
             </h3>
-            <p className="mt-5 text-gray-600 dark:text-gray-400">
+            <p className="mt-5 text-gray-600 darkTextGray">
               To present compelling evidence of market demand, growth potential,
               and a clear path to profitability, making their proposition more
               attractive.
@@ -43,7 +43,7 @@ function Features() {
               alt="Description"
             />
             <div>
-              <h5 className="text-sm text-gray-800  dark:text-gray-200">
+              <h5 className="text-sm text-gray-800  darkTextGray">
                 By Mr. Hung, Founder & CEO BOS.
               </h5>
             </div>
@@ -51,7 +51,7 @@ function Features() {
         </a>
 
         <a
-          className="group flex flex-col h-full border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-5 dark:border-gray-700 dark:hover:border-transparent dark:hover:shadow-black/[.4] dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+          className="group flex flex-col h-full border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-5 "
           href="#"
         >
           <div className="aspect-w-16 aspect-h-11">
@@ -62,10 +62,10 @@ function Features() {
             />
           </div>
           <div className="my-6">
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-300 dark:group-hover:text-white">
+            <h3 className="text-xl font-semibold text-gray-800 darkTextGray darkGroupHoverText">
               Angel Investor
             </h3>
-            <p className="mt-5 text-gray-600 dark:text-gray-400">
+            <p className="mt-5 text-gray-600 darkTextGray">
               Data-centric fundraising provides transparency and evidence of
               impact, helping them trust the project or organization they're
               considering.
@@ -78,7 +78,7 @@ function Features() {
               alt=""
             />
             <div>
-              <h5 className="text-sm text-gray-800 dark:text-gray-200">
+              <h5 className="text-sm text-gray-800 darkTextGray">
                 By Mr. Don, Angel Investor
               </h5>
             </div>
@@ -86,7 +86,7 @@ function Features() {
         </a>
 
         <a
-          className="group flex flex-col h-full border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-5 dark:border-gray-700 dark:hover:border-transparent dark:hover:shadow-black/[.4] dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+          className="group flex flex-col h-full border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-5 "
           href="#"
         >
           <div className="aspect-w-16 aspect-h-11">
@@ -97,10 +97,10 @@ function Features() {
             />
           </div>
           <div className="my-6">
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-300 dark:group-hover:text-white">
+            <h3 className="text-xl font-semibold text-gray-800 darkTextGray darkGroupHoverText">
               Venture Capitalist
             </h3>
-            <p className="mt-5 text-gray-600 dark:text-gray-400">
+            <p className="mt-5 text-gray-600 darkTextGray">
               Data helps them monitor the performance of their portfolio
               companies, identify trends, and make strategic decisions to
               maximize returns.
@@ -113,7 +113,7 @@ function Features() {
               alt=""
             />
             <div>
-              <h5 className="text-sm text-gray-800 dark:text-gray-200">
+              <h5 className="text-sm text-gray-800 darkTextGray">
                 By Lauren Waller, VC
               </h5>
             </div>

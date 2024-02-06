@@ -183,18 +183,18 @@ function ProjectList({ projects }) {
         <div className="flex flex-col">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-              <div className="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
-                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                  <thead className="bg-gray-50 dark:bg-gray-800 ">
+              <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
+                <table className="min-w-full divide-y divide-gray-200 darkDivideGray">
+                  <thead className="bg-gray-50 darkBgBlue ">
                     <tr>
                       <th
                         scope="col"
-                        className="py-3.5 px-4 text-sm font-semibold text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="py-3.5 px-4 text-sm font-semibold text-left rtl:text-right text-black-500 darkTextGray"
                       >
                         <div className="flex items-center gap-x-3">
                           <input
                             type="checkbox"
-                            className="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700"
+                            className="text-blue-500 border-gray-300 rounded darkBg darkRingOffsetGray darkBorderGray"
                           />
                           <button className="flex items-center gap-x-2">
                             <span>NO.</span>
@@ -203,51 +203,51 @@ function ProjectList({ projects }) {
                       </th>
                       <th
                         scope="col"
-                        className="w-[150px] px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="w-[150px] px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 darkTextGray"
                       >
                         Name
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 darkTextGray"
                       >
                         Date
                       </th>
 
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 darkTextGray"
                       >
                         Customer
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 darkTextGray"
                       >
                         Status
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 darkTextGray"
                       >
                         Action
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 dark:text-gray-400"
+                        className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 darkTextGray"
                       >
                         Invite
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
+                  <tbody className="bg-white divide-y divide-gray-200 darkDivideGray darkBg">
                     {updatedProjects.map((project, index) => (
                       <tr key={index}>
-                        <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
+                        <td className="px-4 py-4 text-sm font-medium text-gray-700 darkTextGray whitespace-nowrap">
                           <div className="inline-flex items-center gap-x-3">
                             <input
                               type="checkbox"
-                              className="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700"
+                              className="text-blue-500 border-gray-300 rounded darkBg darkRingOffsetGray darkBorderGray"
                             />
                             <span
                               className="hover:cursor-pointer"
@@ -257,7 +257,7 @@ function ProjectList({ projects }) {
                             </span>
                           </div>
                         </td>
-                        <td className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap">
+                        <td className="px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap">
                           <div
                             className={`w-[150px] flex items-center ${
                               editingProjectId === project.id ? "hidden" : ""
@@ -273,26 +273,26 @@ function ProjectList({ projects }) {
                               onChange={(e) =>
                                 setEditedProjectName(e.target.value)
                               }
-                              className="w-[150px] border-0 p-0 text-sm text-red-500 dark:text-gray-300 whitespace-nowrap focus:outline-none focus:ring-0 "
+                              className="w-[150px] border-0 p-0 text-sm text-red-500 darkTextGray whitespace-nowrap focus:outline-none focus:ring-0 "
                             />
                           )}
                         </td>
                         <td
-                          className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap hover:cursor-pointer"
+                          className="px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap hover:cursor-pointer"
                           onClick={() => handleProjectClick(project)}
                         >
                           {formatDate(project.created_at)}
                         </td>
                         {/* <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">{project.status}</td> */}
                         <td
-                          className="px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap hover:cursor-pointer"
+                          className="px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap hover:cursor-pointer"
                           onClick={() => handleProjectClick(project)}
                         >
                           {project.user_email}
                         </td>
 
                         <td
-                          className={`hover:cursor-pointer px-4 py-4 text-sm text-black-500 dark:text-gray-300 whitespace-nowrap ${
+                          className={`hover:cursor-pointer px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap ${
                             editingProjectId !== project.id ? "" : "hidden"
                           }`}
                         >
@@ -300,7 +300,7 @@ function ProjectList({ projects }) {
                             onClick={() => handleProjectClick(project)}
                             className={`w-[5em] ${
                               project.status ? "bg-blue-600" : "bg-red-600"
-                            } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+                            } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center darkBgBlue darkHoverBgBlue darkFocus`}
                           >
                             {project.status ? "Public" : "Private"}
                           </button>
@@ -317,7 +317,7 @@ function ProjectList({ projects }) {
                                 editedProjectStatus
                                   ? "bg-blue-600"
                                   : "bg-red-600"
-                              } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+                              } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center darkBgBlue darkHoverBgBlue darkFocus`}
                             >
                               {editedProjectStatus ? "Public" : "Private"}
                             </button>
@@ -329,13 +329,13 @@ function ProjectList({ projects }) {
                             {editingProjectId === project.id ? (
                               <>
                                 <button
-                                  className={`w-[5em] text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 `}
+                                  className={`w-[5em] text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center darkBgBlue darkHoverBgBlue darkFocus `}
                                   onClick={() => handleSaveClick(project)}
                                 >
                                   Save
                                 </button>
                                 <button
-                                  className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 `}
+                                  className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center darkBgBlue darkHoverBgBlue darkFocus `}
                                   onClick={() => setEditingProjectId(null)}
                                 >
                                   Cancel
@@ -344,13 +344,13 @@ function ProjectList({ projects }) {
                             ) : (
                               <>
                                 <button
-                                  className={`w-[5em] text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 `}
+                                  className={`w-[5em] text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center darkBgBlue darkHoverBgBlue darkFocus `}
                                   onClick={() => handleEditClick(project)}
                                 >
                                   Edit
                                 </button>
                                 <button
-                                  className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 `}
+                                  className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center darkBgBlue darkHoverBgBlue darkFocus `}
                                   onClick={() => handleDelete(project.id)}
                                 >
                                   Delete

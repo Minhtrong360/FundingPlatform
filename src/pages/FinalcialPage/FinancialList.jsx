@@ -37,20 +37,20 @@ function FinancialList() {
   const navigate = useNavigate();
   console.log("finance", finances);
   return (
-    <div className=" bg-white dark:bg-gray-900 antialiased !p-0">
+    <div className=" bg-white darkBg antialiased !p-0">
       <AlertMsg />
       <div id="exampleWrapper">
         <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
         <div className="p-4 sm:ml-64" onClick={() => setIsSidebarOpen(false)}>
-          <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
-            <div className="bg-white dark:bg-gray-900 antialiased p-0">
+          <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg darkBorderGray">
+            <div className="bg-white darkBg antialiased p-0">
               {/* Hiển thị danh sách các finance dưới dạng thẻ Card */}
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4 sm:ml-64">
                 {finances.map((finance) => (
                   <div
                     key={finance.id}
-                    className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700"
+                    className="p-4 border-2 border-gray-200 border-dashed rounded-lg darkBorderGray"
                   >
                     <h2 className="text-xl font-semibold">{finance.name}</h2>
                     <p className="text-gray-600">{finance.email}</p>

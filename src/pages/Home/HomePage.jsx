@@ -8,7 +8,7 @@ import PricingSection from "./Pricing";
 
 import HeroSection from "./Components/HeroSection";
 import Features from "./Components/Features";
-import FeatureGIFs from "./Components/FeatureGIFs";
+import FeatureComponent from "./Components/FeatureGIFs";
 
 import HeroCard from "./Components/HeroCard";
 import FAQ from "./Components/FAQ";
@@ -64,7 +64,7 @@ const HomePage = () => {
       <Header />
       <HeroSection />
       <Features />
-      <FeatureGIFs />
+      <FeatureComponent />
       {/* <Search /> */}
       {/* <ProfileCard /> */}
       <NewProjectPosts />

@@ -104,7 +104,7 @@ const AnnouncePage = ({
           <div className="flex flex-col sm:flex-row items-center mt-6 gap-x-3 gap-y-2">
             <button
               onClick={() => navigate("/")}
-              className="w-full sm:w-auto px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-600 rounded-lg hover:bg-blue-700 darkHoverBgBlue darkBgBlue"
+              className="w-full sm:w-auto px-5 py-1 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-600 rounded-lg hover:bg-blue-700 darkHoverBgBlue darkBgBlue"
             >
               Homepage
             </button>
@@ -112,7 +112,7 @@ const AnnouncePage = ({
             {sendRequest && (
               <button
                 onClick={handleSendRequest}
-                className="w-full sm:w-auto px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-600 rounded-lg hover:bg-blue-700 darkHoverBgBlue darkBgBlue"
+                className="w-full sm:w-auto px-5 py-1 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-600 rounded-lg hover:bg-blue-700 darkHoverBgBlue darkBgBlue"
               >
                 Send Request
               </button>

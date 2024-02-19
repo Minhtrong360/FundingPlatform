@@ -228,7 +228,7 @@ const CostSection = ({
 
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-2 px-4 rounded"
+              className="bg-red-500 text-white py-1 px-4 rounded"
               onClick={() => removeCostInput(index)}
             >
               Remove
@@ -238,7 +238,7 @@ const CostSection = ({
       ))}
 
       <button
-        className="bg-blue-600 text-white py-2 px-4 rounded"
+        className="bg-blue-600 text-white py-1 px-4 rounded"
         onClick={handleAddNewCost}
       >
         Add New

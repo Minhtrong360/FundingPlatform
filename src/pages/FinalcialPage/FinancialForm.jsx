@@ -710,7 +710,7 @@ const FinancialForm = () => {
 
       {user?.id && (
         <button
-          className="fixed bottom-8 left-30 bg-blue-600 text-white py-2 px-4 rounded disabled:bg-gray-500"
+          className="fixed bottom-8 left-30 bg-blue-600 text-white py-1 px-4 rounded disabled:bg-gray-500"
           type="button"
           onClick={handleSubmit}
           disabled={isLoading}

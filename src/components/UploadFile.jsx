@@ -13,7 +13,7 @@ const props = {
 
 const UploadFile = () => (
   <Upload
-    // className="flex items-center justify-center w-1/2 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-600 rounded-lg sm:w-auto gap-x-2 hover:bg-blue-700 darkHoverBgBlue darkBgBlue"
+    // className="flex items-center justify-center w-1/2 px-5 py-1 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-600 rounded-lg sm:w-auto gap-x-2 hover:bg-blue-700 darkHoverBgBlue darkBgBlue"
     {...props}
   >
     <Button icon={<UploadOutlined />}>Upload</Button>

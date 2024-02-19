@@ -260,7 +260,7 @@ const InvestmentSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-2 px-4 rounded"
+              className="bg-red-500 text-white py-1 px-4 rounded"
               onClick={() => removeInvestmentInput(index)}
             >
               Remove
@@ -269,7 +269,7 @@ const InvestmentSection = ({
         </div>
       ))}
       <button
-        className="bg-blue-500 text-white py-2 px-4 rounded"
+        className="bg-blue-500 text-white py-1 px-4 rounded"
         onClick={addNewInvestmentInput}
       >
         Add New

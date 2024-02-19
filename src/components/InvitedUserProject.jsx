@@ -8,16 +8,16 @@ import ReactModal from "react-modal";
 
 const Modal = ({ isOpen, onClose, projectId }) => {
   const [email, setEmail] = useState("vidu@gmail.com");
+  const [invited_type, setInvited_type] = useState("View only"); // Thay đổi giá trị state để phản ánh "View only" thay vì "public" và "Collaborate" thay vì "private"
   const { user } = useAuth();
 
   const handleInvite = async () => {
     try {
       if (!navigator.onLine) {
-        // Không có kết nối Internet
         toast.error("No internet access.");
         return;
       }
-      // Truy vấn để tìm file có id = fileId trong bảng "files"
+
       const { data: projectData, error: fileError } = await supabase
         .from("projects")
         .select("*")
@@ -27,52 +27,57 @@ const Modal = ({ isOpen, onClose, projectId }) => {
       if (fileError) {
         console.log("Error fetching project data:", fileError);
         toast.error(fileError);
-        // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
       } else if (projectData) {
-        // Lấy danh sách "invited_user" hiện tại từ file
         const currentInvitedUsers = projectData.invited_user || [];
+        const currentCollabs = projectData.collabs || [];
 
-        if (currentInvitedUsers.includes(email)) {
+        if (
+          currentInvitedUsers.includes(email) ||
+          currentCollabs.includes(email)
+        ) {
           toast.warning(`User with email ${email} is already invited.`);
-          return; // Ngắt nếu đã tồn tại
+          return;
         }
 
-        // Thêm email người dùng mới vào danh sách "invited_user"
-        currentInvitedUsers.push(email);
+        if (invited_type === "View only") {
+          currentInvitedUsers.push(email);
+        } else if (invited_type === "Collaborate") {
+          currentCollabs.push(email);
+        }
 
-        // Gửi email mời
         await apiService.post("/invite/project", {
           target_email: email,
           project_name: projectData.name,
           owner_email: user.email,
           project_id: projectData.id,
+          invited_type: invited_type,
         });
 
-        // Tiến hành cập nhật trường "invited_user" của bảng "files" với danh sách mới
+        const updateData =
+          invited_type === "View only"
+            ? { invited_user: currentInvitedUsers }
+            : { collabs: currentCollabs };
+
         const { error: updateError } = await supabase
           .from("projects")
-          .update({ invited_user: currentInvitedUsers })
+          .update(updateData)
           .eq("id", projectId);
 
         if (updateError) {
           console.log("Error updating file data:", updateError);
           toast.error(updateError);
-          // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
         } else {
           console.log(`Successfully invited user with email: ${email}`);
           toast.success("Invited user successfully");
           onClose();
-          // Xử lý khi mời thành công (ví dụ: hiển thị thông báo cho người dùng)
         }
       } else {
         console.log("File with ID not found.");
         toast.error("File with ID not found.");
-        // Xử lý trường hợp không tìm thấy file với ID cụ thể
       }
     } catch (error) {
       console.log("Error inviting user:", error);
       toast.error(error.message);
-      // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }
   };
 
@@ -99,18 +104,47 @@ const Modal = ({ isOpen, onClose, projectId }) => {
             />
           </label>
 
+          <div className="mt-5">
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                name="invitedType"
+                value="View only"
+                checked={invited_type === "View only"} // Cập nhật giá trị checked dựa trên giá trị state
+                onChange={() => setInvited_type("View only")} // Cập nhật loại dự án khi người dùng thay đổi lựa chọn
+                className="form-radio text-blue-600 h-5 w-5"
+              />
+              <span className="ml-2 text-gray-700 text-base">View only</span>
+            </label>
+
+            <>
+              <label className="inline-flex items-center ml-6">
+                <input
+                  type="radio"
+                  name="invitedType"
+                  value="Collaborate"
+                  checked={invited_type === "Collaborate"} // Cập nhật giá trị checked dựa trên giá trị state
+                  onChange={() => setInvited_type("Collaborate")} // Cập nhật loại dự án khi người dùng thay đổi lựa chọn
+                />
+                <span className="ml-2 text-gray-700 text-base">
+                  Collaborate
+                </span>
+              </label>
+            </>
+          </div>
+
           <div className="mt-4 flex items-center gap-10">
             <button
               type="button"
               onClick={onClose}
-              className="w-full px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+              className="w-full px-4 py-1 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={handleInvite}
-              className="w-full px-4 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
+              className="w-full px-4 py-1 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
             >
               Invite
             </button>
@@ -127,7 +161,7 @@ export default function InvitedUserProject({ projectId }) {
   return (
     <div className="App">
       <button
-        className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+        className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
         onClick={() => setIsModalOpen(true)}
       >
         Invite
@@ -138,18 +172,17 @@ export default function InvitedUserProject({ projectId }) {
         ariaHideApp={false}
         style={{
           overlay: {
-            backgroundColor: "gray", // Màu nền overlay
-            position: "fixed", // Để nền overlay cố định
+            backgroundColor: "gray",
+            position: "fixed",
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
-            zIndex: 9998, // Chỉ số z để đảm bảo nó hiển thị trên cùng
+            zIndex: 9998,
           },
           content: {
-            border: "none", // Để ẩn border của nội dung Modal
-            background: "none", // Để ẩn background của nội dung Modal
-            // margin: "auto", // Để căn giữa
+            border: "none",
+            background: "none",
           },
         }}
       >

@@ -2,7 +2,7 @@ import Card from "./Card";
 
 const ProfileCard = () => {
   return (
-    <div className="max-w-[85rem] px-4 py-2 sm:px-6 lg:px-8 lg:py-2 mx-auto">
+    <div className="max-w-[85rem] px-4 py-1 sm:px-6 lg:px-8 lg:py-1 mx-auto">
       <div className="max-w-2xl mx-auto text-center mb-10 lg:mb-14"></div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <Card

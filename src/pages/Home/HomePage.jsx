@@ -72,7 +72,7 @@ const HomePage = () => {
       <PricingSection />
 
       <FAQ />
-      <Marquee />
+      {/* <Marquee /> */}
       <Footer />
     </>
   );

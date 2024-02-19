@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import AlertMsg from "../../components/AlertMsg";
 import InvitedUserProject from "../../components/InvitedUserProject";
 import { toast } from "react-toastify";
+import ProjectGiven from "../../components/ProjectGiven";
 
 function formatDate(inputDateString) {
   const dateObject = new Date(inputDateString);
@@ -182,7 +183,7 @@ function ProjectList({ projects }) {
       <section className="container px-4 mx-auto">
         <div className="flex flex-col">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+            <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
               <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
                 <table className="min-w-full divide-y divide-gray-200 darkDivideGray">
                   <thead className="bg-gray-50 darkBgBlue ">
@@ -241,7 +242,7 @@ function ProjectList({ projects }) {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200 darkDivideGray darkBg">
-                    {updatedProjects.map((project, index) => (
+                    {updatedProjects?.map((project, index) => (
                       <tr key={index}>
                         <td className="px-4 py-4 text-sm font-medium text-gray-700 darkTextGray whitespace-nowrap">
                           <div className="inline-flex items-center gap-x-3">
@@ -300,7 +301,7 @@ function ProjectList({ projects }) {
                             onClick={() => handleProjectClick(project)}
                             className={`w-[5em] ${
                               project.status ? "bg-blue-600" : "bg-red-600"
-                            } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+                            } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
                           >
                             {project.status ? "Public" : "Private"}
                           </button>
@@ -317,7 +318,7 @@ function ProjectList({ projects }) {
                                 editedProjectStatus
                                   ? "bg-blue-600"
                                   : "bg-red-600"
-                              } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+                              } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
                             >
                               {editedProjectStatus ? "Public" : "Private"}
                             </button>
@@ -325,17 +326,17 @@ function ProjectList({ projects }) {
                         </td>
 
                         <td className="px-4 py-4 text-sm whitespace-nowrap">
-                          <div className="flex items-center gap-x-6">
+                          <div className="flex items-center gap-x-3">
                             {editingProjectId === project.id ? (
                               <>
                                 <button
-                                  className={`w-[5em] text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+                                  className={`w-[5em] text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
                                   onClick={() => handleSaveClick(project)}
                                 >
                                   Save
                                 </button>
                                 <button
-                                  className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+                                  className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
                                   onClick={() => setEditingProjectId(null)}
                                 >
                                   Cancel
@@ -344,19 +345,24 @@ function ProjectList({ projects }) {
                             ) : (
                               <>
                                 <button
-                                  className={`w-[5em] text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+                                  className={`w-[5em] text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
                                   onClick={() => handleEditClick(project)}
                                 >
                                   Edit
                                 </button>
                                 <button
-                                  className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+                                  className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
                                   onClick={() => handleDelete(project.id)}
                                 >
                                   Delete
                                 </button>
                               </>
                             )}
+                            <ProjectGiven
+                              projectId={project.id}
+                              setUpdatedProjects={setUpdatedProjects}
+                              updatedProject={updatedProjects}
+                            />
                           </div>
                         </td>
                         <td className="px-4 py-4 text-sm whitespace-nowrap">

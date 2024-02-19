@@ -47,7 +47,7 @@ function ErrorMessage({ isModalOpen, closeModal, message, onCancel }) {
           <div className="mt-5 sm:flex sm:items-center sm:justify-center">
             <button
               onClick={onCancel}
-              className="w-full px-4 py-2 mt-2 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md sm:mt-0 sm:w-auto sm:mx-2 darkTextGray -gray-700 darkHoverBgBlue hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40"
+              className="w-full px-4 py-1 mt-2 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md sm:mt-0 sm:w-auto sm:mx-2 darkTextGray -gray-700 darkHoverBgBlue hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40"
             >
               Cancel
             </button>

@@ -221,7 +221,7 @@ const CustomerSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-2 px-4 rounded"
+              className="bg-red-500 text-white py-1 px-4 rounded"
               onClick={() => removeCustomerInput(index)}
             >
               Remove
@@ -231,7 +231,7 @@ const CustomerSection = ({
       ))}
 
       <button
-        className="bg-blue-600 text-white py-2 px-4 rounded"
+        className="bg-blue-600 text-white py-1 px-4 rounded"
         onClick={handleAddNewCustomer}
       >
         Add New

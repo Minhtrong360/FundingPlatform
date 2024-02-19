@@ -6,6 +6,9 @@ import { toast } from "react-toastify";
 import Search from "./Search";
 import LoadingButtonClick from "../../../components/LoadingButtonClick";
 
+import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
+import SkipNextIcon from "@mui/icons-material/SkipNext";
+
 const NewProjectPosts = () => {
   const [companies, setCompanies] = useState([]);
   const [filteredCompanies, setFilteredCompanies] = useState([]);
@@ -86,7 +89,7 @@ const NewProjectPosts = () => {
   };
 
   return (
-    <div className="max-w-[85rem] px-4 py-2 sm:px-6 lg:px-8 lg:py-2 mx-auto">
+    <div className="max-w-[85rem] px-4 py-1 sm:px-6 lg:px-8 lg:py-1 mx-auto">
       <Search
         onSearch={handleSearch}
         onIndustryChange={handleIndustryChange}
@@ -120,21 +123,21 @@ const NewProjectPosts = () => {
             </div>
             <div className="mt-10 flex justify-center">
               <button
-                className="px-4 py-2 mx-2 bg-blue-600 text-white rounded-md"
+                className="px-4 py-1 mx-2 bg-blue-600 text-white rounded-md"
                 onClick={() => handlePageChange(page - 1)}
                 disabled={page === 1}
               >
-                Previous
+                <SkipPreviousIcon />
               </button>
-              <span className="px-4 py-2 mx-2 bg-gray-200 text-gray-800 rounded-md">
+              <span className="px-4 py-1 mx-2 bg-gray-200 text-gray-800 rounded-md">
                 Page {page} of {totalPages}
               </span>
               <button
-                className="px-4 py-2 mx-2 bg-blue-600 text-white rounded-md"
+                className="px-4 py-1 mx-2 bg-blue-600 text-white rounded-md"
                 onClick={() => handlePageChange(page + 1)}
                 disabled={page === totalPages}
               >
-                Next
+                <SkipNextIcon />
               </button>
             </div>
           </>

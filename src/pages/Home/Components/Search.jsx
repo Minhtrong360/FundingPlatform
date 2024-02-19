@@ -56,7 +56,7 @@ const Search = ({
 
   return (
     <div className="relative overflow-hidden">
-      <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-2 mt-24">
+      <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-1 mt-24">
         <div className="text-center">
           <h3
             id="profiles"
@@ -72,7 +72,7 @@ const Search = ({
                     type="text"
                     name="hs-search-article-1"
                     id="hs-search-article-1"
-                    className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
+                    className="py-1.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
                     placeholder="Search profiles"
                     value={searchTerm}
                     onChange={handleSearchChange} // Thêm sự kiện onChange này
@@ -101,7 +101,7 @@ const Search = ({
                 {suggestions.map((company, index) => (
                   <li
                     key={index}
-                    className="text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    className="text-left px-4 py-1 hover:bg-gray-100 cursor-pointer"
                     onClick={() => handleSuggestionClick(company.name)}
                   >
                     {company.name}
@@ -173,7 +173,7 @@ const Search = ({
               >
                 More <ArrowDropDownOutlinedIcon />
               </MenuButton>
-              <Menu className="bg-white max-h-60 overflow-y-auto px-2 py-2 z-1000 border">
+              <Menu className="bg-white max-h-60 overflow-y-auto px-2 py-1 z-1000 border">
                 {industries.map((industry, index) => (
                   <MenuItem
                     className={`mx-2 my-2 px-4 py-4 border rounded-2xl hover:cursor-pointer ${

@@ -109,7 +109,7 @@ const ImageDropdown = () => {
         >
           <button
             style={{ minWidth: "100%" }}
-            className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
+            className="hover:cursor-pointer flex items-center gap-x-3.5 py-1 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
             onClick={(e) => handleClickUserInfo(e)}
           >
             User Info
@@ -117,7 +117,7 @@ const ImageDropdown = () => {
           <button
             style={{ minWidth: "100%" }}
             n
-            className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
+            className="hover:cursor-pointer flex items-center gap-x-3.5 py-1 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
             onClick={(e) => handleClickDashBoard(e)}
           >
             Dashboard
@@ -125,14 +125,14 @@ const ImageDropdown = () => {
 
           <button
             style={{ minWidth: "100%" }}
-            className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
+            className="hover:cursor-pointer flex items-center gap-x-3.5 py-1 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
             onClick={(e) => handleClickFinancial(e)}
           >
             Financials
           </button>
           <button
             style={{ minWidth: "100%" }}
-            className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
+            className="hover:cursor-pointer flex items-center gap-x-3.5 py-1 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
             onClick={(e) => handleClickProject(e)}
           >
             Projects
@@ -141,7 +141,7 @@ const ImageDropdown = () => {
           <button
             style={{ minWidth: "100%" }}
             onClick={(e) => handleLogout(e)}
-            className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
+            className="hover:cursor-pointer flex items-center gap-x-3.5 py-1 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
           >
             Log out
           </button>

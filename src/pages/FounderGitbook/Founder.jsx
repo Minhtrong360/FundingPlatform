@@ -62,7 +62,12 @@ const FounderGitbook = () => {
         // Kết hợp các dự án từ hai kết quả truy vấn trên
         const combinedProjects = [...projects1, ...projects2, ...projects3];
 
-        setProjects(combinedProjects);
+        // Sử dụng một set để loại bỏ các dự án trùng lặp
+        const uniqueProjects = Array.from(
+          new Set(combinedProjects.map((project) => project.id))
+        ).map((id) => combinedProjects.find((project) => project.id === id));
+
+        setProjects(uniqueProjects);
       } catch (error) {
         console.error("Error fetching projects:", error);
         toast.error(error.message);

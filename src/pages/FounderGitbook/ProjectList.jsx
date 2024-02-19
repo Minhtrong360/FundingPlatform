@@ -26,10 +26,10 @@ function ProjectList({ projects }) {
   const [editedProjectStatus, setEditedProjectStatus] = useState(true); // Thêm state cho trường status
   const navigate = useNavigate();
   const handleProjectClick = (project) => {
-    if (project.invited_user.includes(user.email)) {
-      navigate(`/founder/${project.id}`);
-    } else {
+    if (project.collabs?.includes(user.email)) {
       navigate(`/company/${project.id}`);
+    } else {
+      navigate(`/founder/${project.id}`);
     }
     // Gọi hàm handleClickProjectId để truyền projectId lên thành phần cha
   };
@@ -376,9 +376,14 @@ function ProjectList({ projects }) {
                                 onClick={() => handleProjectClick(project)}
                                 className={`w-[8em] bg-blue-600  text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
                               >
-                                {project.invited_user.includes(user.email)
+                                {project.invited_user?.includes(user.email) &&
+                                project.collabs?.includes(user.email)
+                                  ? "Collaboration"
+                                  : project.invited_user?.includes(user.email)
                                   ? "View only"
-                                  : "Collaboration"}
+                                  : project.collabs?.includes(user.email)
+                                  ? "Collaboration"
+                                  : "Default Label"}
                               </button>
                             </div>
                           </td>

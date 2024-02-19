@@ -243,7 +243,8 @@ function CompanySetting() {
           if (
             data.status === false &&
             data.user_id !== user?.id &&
-            !data.invited_user?.includes(user.email)
+            !data.invited_user?.includes(user.email) &&
+            !data.collabs?.includes(user.email)
           ) {
             // Kiểm tra xem dự án có trạng thái false, không thuộc về người dùng và không được mời tham gia
             // Hoặc có thể kiểm tra invited_user ở đây
@@ -264,7 +265,6 @@ function CompanySetting() {
     });
   };
 
-  console.log("formData", formData);
   if (viewError) {
     return (
       <AnnouncePage

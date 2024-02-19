@@ -10,6 +10,7 @@ import { Input } from "../components/ui/Input";
 import { Table } from "antd";
 import Chart from "react-apexcharts";
 import { Typography } from "antd";
+import LoadingButtonClick from "../components/LoadingButtonClick";
 
 //JSON
 
@@ -763,6 +764,8 @@ const Z = () => {
   const [investmentSection, setInvestmentSection] = useState({});
   const [loanSection, setLoanSection] = useState({});
 
+  const [isLoading, setIsLoading] = useState(false);
+
   // gemini
 
   const { Text } = Typography;
@@ -778,14 +781,16 @@ const Z = () => {
       ws.onopen = () => {
         console.log("WebSocket connected");
       };
+      console.log("first");
 
       ws.onmessage = (event) => {
         const responseText = event.data;
-
+        console.log("second");
         setMessages((prevMessages) => [
           ...prevMessages,
           { role: "gemini", text: responseText },
         ]);
+
         // Remove backticks from the constant responseText
         const cleanedResponseText = responseText.replace(/json|`/g, "");
         // Set the chatbot response to the latest messag
@@ -793,8 +798,9 @@ const Z = () => {
       };
 
       setWebsocket(ws);
-
+      console.log("third");
       return () => {
+        console.log("fourth");
         ws.close();
       };
     }, []);
@@ -893,9 +899,6 @@ const Z = () => {
     }
   };
 
-  useEffect(() => {
-    console.log("chatbotResponse updated:", chatbotResponse);
-  }, [chatbotResponse]);
   // In the main functional component, update the useEffect
   useEffect(() => {
     // Ensure chatbotResponse is only processed when it's a valid string
@@ -2267,6 +2270,7 @@ const Z = () => {
         </button>
       </div>
     </div> */}
+      <LoadingButtonClick isLoading={isLoading} />
       <div className="w-full h-full flex flex-col md:flex-row">
         <Gemini />
       </div>

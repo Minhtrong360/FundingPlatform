@@ -104,6 +104,8 @@ export default function EditorTool() {
   const params = useParams();
   const { user } = useAuth();
 
+  console.log("currentProject", currentProject);
+
   useEffect(() => {
     // Hàm để lấy dữ liệu Markdown từ cơ sở dữ liệu
     async function fetchMarkdown() {
@@ -231,7 +233,11 @@ export default function EditorTool() {
           .match({ id: params.id })
           .single();
 
-        if (projectData && projectData.user_id === user.id) {
+        if (
+          projectData &&
+          (projectData.user_id === user.id ||
+            projectData.collabs.includes(user.email))
+        ) {
           const { error } = await supabase
             .from("projects")
             .update({ markdown: blocks })
@@ -277,7 +283,11 @@ export default function EditorTool() {
           .match({ id: params.id })
           .single();
 
-        if (projectData && projectData.user_id === user.id) {
+        if (
+          projectData &&
+          (projectData.user_id === user.id ||
+            projectData.collabs.includes(user.email))
+        ) {
           // Only allow save if project.user_id matches user.id
 
           const { error } = await supabase
@@ -331,7 +341,11 @@ export default function EditorTool() {
           .match({ id: params.id })
           .single();
 
-        if (projectData && projectData.user_id === user.id) {
+        if (
+          projectData &&
+          (projectData.user_id === user.id ||
+            projectData.collabs.includes(user.email))
+        ) {
           // Only allow save if project.user_id matches user.id
 
           const { error } = await supabase
@@ -492,19 +506,7 @@ export default function EditorTool() {
       </Modal>
       <LoadingButtonClick isLoading={isLoading} />
       {user.id === currentProject.user_id ||
-      currentProject?.colabs?.includes(user.id) ? (
-        <>
-          <button
-            className={`fixed top-[12px] right-[1.2em] flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-            onClick={handleSave}
-            disabled={isLoading}
-          >
-            Save
-          </button>
-        </>
-      ) : null}
-
-      {user.id === currentProject.user_id && (
+      currentProject?.collabs?.includes(user.email) ? (
         <>
           <button
             className={`fixed top-[12px] right-[6.7em]   flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
@@ -521,8 +523,15 @@ export default function EditorTool() {
           >
             Settings
           </button>
+          <button
+            className={`fixed top-[12px] right-[1.2em] flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+            onClick={handleSave}
+            disabled={isLoading}
+          >
+            Save
+          </button>
         </>
-      )}
+      ) : null}
     </div>
   );
 }

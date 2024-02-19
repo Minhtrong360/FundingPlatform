@@ -48,7 +48,8 @@ const DetailPage = () => {
           if (
             data.status === false &&
             data.user_id !== user?.id &&
-            !data.invited_user?.includes(user.email)
+            !data.invited_user?.includes(user.email) &&
+            !data.collabs?.includes(user.email)
           ) {
             // Kiểm tra xem dự án có trạng thái false, không thuộc về người dùng và không được mời tham gia
             // Hoặc có thể kiểm tra invited_user ở đây
@@ -109,8 +110,8 @@ const DetailPage = () => {
               title={company.name}
               description={company.description}
               button1Text={company.target_amount}
-              button2Text={company.ticket_size}
-              button3Text={company.no_ticket}
+              button2Text={company.no_ticket}
+              button3Text={company.ticket_size}
               button4Text={company.offer}
               button5Text={company.offer_type}
               imageUrl={company.project_url}

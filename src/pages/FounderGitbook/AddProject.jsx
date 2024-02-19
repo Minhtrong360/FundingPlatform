@@ -220,16 +220,24 @@ export default function AddProject({ updatedProjects, setUpdatedProjects }) {
       fetchCurrentUser();
     }
   }, [user]);
-
+  console.log("updatedProjects", updatedProjects);
   useEffect(() => {
-    if (currentUser) {
+    if (currentUser && updatedProjects) {
+      const hasProjectWithCurrentUser = updatedProjects.some(
+        (project) => project.user_id === currentUser.id
+      );
+      const isFreeUser =
+        currentUser.plan === "Free" ||
+        currentUser.plan === null ||
+        currentUser.plan === undefined;
+      const isSubscriptionInactive =
+        currentUser.subscription_status !== "active";
+
       if (
-        updatedProjects &&
-        updatedProjects.length >= 1 &&
-        (currentUser.plan === "Free" ||
-          currentUser.plan === null ||
-          currentUser.plan === undefined) &&
-        currentUser.subscription_status !== "active"
+        hasProjectWithCurrentUser &&
+        updatedProjects.length > 1 &&
+        isFreeUser &&
+        isSubscriptionInactive
       ) {
         setIsButtonDisabled(true);
       } else {

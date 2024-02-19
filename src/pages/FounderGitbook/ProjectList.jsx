@@ -26,8 +26,12 @@ function ProjectList({ projects }) {
   const [editedProjectStatus, setEditedProjectStatus] = useState(true); // Thêm state cho trường status
   const navigate = useNavigate();
   const handleProjectClick = (project) => {
+    if (project.invited_user.includes(user.email)) {
+      navigate(`/founder/${project.id}`);
+    } else {
+      navigate(`/company/${project.id}`);
+    }
     // Gọi hàm handleClickProjectId để truyền projectId lên thành phần cha
-    navigate(`/company/${project.id}`);
   };
 
   useEffect(() => {
@@ -324,7 +328,7 @@ function ProjectList({ projects }) {
                             </button>
                           </div>
                         </td>
-                        {project.user_id === user.id && (
+                        {project.user_id === user.id ? (
                           <td className="px-4 py-4 text-sm whitespace-nowrap">
                             <div className="flex items-center gap-x-3">
                               {editingProjectId === project.id ? (
@@ -363,6 +367,19 @@ function ProjectList({ projects }) {
                                 setUpdatedProjects={setUpdatedProjects}
                                 updatedProject={updatedProjects}
                               />
+                            </div>
+                          </td>
+                        ) : (
+                          <td className="px-4 py-4 text-sm whitespace-nowrap">
+                            <div className="flex items-center gap-x-3">
+                              <button
+                                onClick={() => handleProjectClick(project)}
+                                className={`w-[8em] bg-blue-600  text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+                              >
+                                {project.invited_user.includes(user.email)
+                                  ? "View only"
+                                  : "Collaboration"}
+                              </button>
                             </div>
                           </td>
                         )}

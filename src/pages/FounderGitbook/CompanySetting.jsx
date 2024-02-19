@@ -239,11 +239,11 @@ function CompanySetting() {
           toast.error(error.message);
           // Xử lý lỗi khi không thể lấy dự án
         } else {
+          console.log("data.collabs", data);
           // Kiểm tra quyền truy cập của người dùng
           if (
             data.status === false &&
             data.user_id !== user?.id &&
-            !data.invited_user?.includes(user.email) &&
             !data.collabs?.includes(user.email)
           ) {
             // Kiểm tra xem dự án có trạng thái false, không thuộc về người dùng và không được mời tham gia
@@ -257,6 +257,8 @@ function CompanySetting() {
         }
       });
   }, [id, user.email, user.id]);
+
+  console.log("viewError", viewError);
 
   const handleIndustryChange = (selectedItems) => {
     setFormData({

@@ -23,9 +23,9 @@ const Modal = ({
   useEffect(() => {
     // Check if the user doesn't meet the conditions to create a private project
     if (
-      (currentUser.plan === "Free" ||
-        currentUser.plan === null ||
-        currentUser.plan === undefined) &&
+      currentUser.plan === "Free" ||
+      currentUser.plan === null ||
+      currentUser.plan === undefined ||
       currentUser.subscription_status !== "active"
     ) {
       setIsPrivateDisabled(true);

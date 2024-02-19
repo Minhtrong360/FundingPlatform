@@ -27,53 +27,61 @@ const Modal = ({ isOpen, onClose, projectId }) => {
       if (fileError) {
         console.log("Error fetching project data:", fileError);
         toast.error(fileError);
-      } else if (projectData) {
-        const currentInvitedUsers = projectData.invited_user || [];
-        const currentCollabs = projectData.collabs || [];
+        return;
+      }
 
-        if (
-          currentInvitedUsers.includes(email) ||
-          currentCollabs.includes(email)
-        ) {
-          toast.warning(`User with email ${email} is already invited.`);
-          return;
-        }
-
-        if (invited_type === "View only") {
-          currentInvitedUsers.push(email);
-        } else if (invited_type === "Collaborate") {
-          currentCollabs.push(email);
-        }
-
-        await apiService.post("/invite/project", {
-          target_email: email,
-          project_name: projectData.name,
-          owner_email: user.email,
-          project_id: projectData.id,
-          invited_type: invited_type,
-        });
-
-        const updateData =
-          invited_type === "View only"
-            ? { invited_user: currentInvitedUsers }
-            : { collabs: currentCollabs };
-
-        const { error: updateError } = await supabase
-          .from("projects")
-          .update(updateData)
-          .eq("id", projectId);
-
-        if (updateError) {
-          console.log("Error updating file data:", updateError);
-          toast.error(updateError);
-        } else {
-          console.log(`Successfully invited user with email: ${email}`);
-          toast.success("Invited user successfully");
-          onClose();
-        }
-      } else {
+      if (!projectData) {
         console.log("File with ID not found.");
         toast.error("File with ID not found.");
+        return;
+      }
+
+      const currentInvitedUsers = projectData.invited_user || [];
+      const currentCollabs = projectData.collabs || [];
+
+      if (invited_type === "View only" && currentInvitedUsers.includes(email)) {
+        toast.warning(`User with email ${email} is already invited.`);
+        return;
+      }
+
+      if (invited_type === "Collaborate" && currentCollabs.includes(email)) {
+        toast.warning(
+          `User with email ${email} is already invited as collaborator.`
+        );
+        return;
+      }
+
+      if (invited_type === "View only") {
+        currentInvitedUsers.push(email);
+      } else if (invited_type === "Collaborate") {
+        currentCollabs.push(email);
+      }
+
+      await apiService.post("/invite/project", {
+        target_email: email,
+        project_name: projectData.name,
+        owner_email: user.email,
+        project_id: projectData.id,
+        invited_type: invited_type,
+      });
+
+      const updateData =
+        invited_type === "View only"
+          ? { invited_user: currentInvitedUsers }
+          : { collabs: currentCollabs };
+
+      const { error: updateError } = await supabase
+        .from("projects")
+        .update(updateData)
+        .eq("id", projectId);
+
+      if (updateError) {
+        console.log("Error updating file data:", updateError);
+        toast.error(updateError);
+      } else {
+        console.log(`Successfully invited user with email: ${email}`);
+        toast.success("Invited user successfully");
+        onClose();
       }
     } catch (error) {
       console.log("Error inviting user:", error);

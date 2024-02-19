@@ -49,8 +49,18 @@ const FounderGitbook = () => {
           throw error2;
         }
 
+        let { data: projects3, error: error3 } = await supabase
+          .from("projects")
+          .select("*")
+          .contains("invited_user", [user.email]);
+
+        if (error3) {
+          console.log("error3", error3);
+          throw error3;
+        }
+
         // Kết hợp các dự án từ hai kết quả truy vấn trên
-        const combinedProjects = [...projects1, ...projects2];
+        const combinedProjects = [...projects1, ...projects2, ...projects3];
 
         setProjects(combinedProjects);
       } catch (error) {

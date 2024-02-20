@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const ImageCropper = ({ className, imageUrl, width, height, onClick }) => {
+const ResizeImage = ({ className, imageUrl, width, height, onClick }) => {
   const [scaledImageUrl, setScaledImageUrl] = useState("");
 
   useEffect(() => {
@@ -58,4 +58,4 @@ const ImageCropper = ({ className, imageUrl, width, height, onClick }) => {
   );
 };
 
-export default ImageCropper;
+export default ResizeImage;

@@ -15,7 +15,7 @@ const Card = ({
   }
 
   return (
-    <div className="max-w-sm bg-white border border-gray-500  rounded-lg shadow darkBgBlue darkBorderGray  hover:border-transparent hover:shadow-lg transition-all duration-300">
+    <div className="max-w-sm bg-white border  rounded-lg shadow darkBgBlue darkBorderGray  hover:border-transparent hover:shadow-lg transition-all duration-300">
       <ResizeImage
         className="rounded-t-lg max-h-96"
         imageUrl={imageUrl}

@@ -26,7 +26,7 @@ function ProjectList({ projects }) {
   const [editedProjectStatus, setEditedProjectStatus] = useState(true); // Thêm state cho trường status
   const navigate = useNavigate();
   const handleProjectClick = (project) => {
-    if (project.collabs?.includes(user.email)) {
+    if (project.collabs?.includes(user.email) || project.user_id === user.id) {
       navigate(`/company/${project.id}`);
     } else {
       navigate(`/founder/${project.id}`);

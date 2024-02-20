@@ -110,7 +110,7 @@ function CompanySetting() {
         !isNaN(minTicketSize) &&
         minTicketSize !== 0
       ) {
-        const noTicket = Math.floor(targetAmount / minTicketSize);
+        const noTicket = Math.ceil(targetAmount / minTicketSize);
         return noTicket;
       }
       return 0;

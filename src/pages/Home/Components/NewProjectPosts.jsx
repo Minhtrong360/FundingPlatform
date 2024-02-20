@@ -107,7 +107,7 @@ const NewProjectPosts = () => {
           </div>
         ) : (
           <>
-            <div className="mt-24 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 transition-all duration-600 ease-out transform translate-x-0">
+            <div className="mt-24 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
               {filteredCompanies.map((company) => (
                 <div key={company.id} className="flex justify-center">
                   <Card

@@ -285,7 +285,7 @@ function CompanySetting() {
       <div className="flex-1 lg:col-span-1">
         {" "}
         {/* Sử dụng lg:col-span-1 để Company component chiếm 1/3 */}
-        <CompanyTest
+        <Company
           isLoading={isLoading}
           handleSubmit={handleSubmit}
           formData={formData}

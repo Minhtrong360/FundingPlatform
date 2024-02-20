@@ -277,6 +277,8 @@ function CompanySetting() {
     );
   }
 
+  const canClick = false;
+
   return (
     <div className="grid sm:grid-cols-1 lg:grid-cols-3 gap-6">
       {" "}
@@ -320,6 +322,7 @@ function CompanySetting() {
               imageUrl={formData.card_url}
               buttonText="Read more"
               project_id={id}
+              canClick={canClick}
             />
           </div>
         </div>

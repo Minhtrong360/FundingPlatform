@@ -68,11 +68,7 @@ const HeroSection = () => {
               Financial model
             </motion.span>{" "}
             with{" "}
-            <motion.span
-              className="text-blue-600"
-              variants={textAnimation}
-              animate="visible"
-            >
+            <motion.span variants={textAnimation} animate="visible">
               BeeKrowd
             </motion.span>
           </motion.h1>

@@ -7,7 +7,7 @@ import AlertMsg from "../../components/AlertMsg";
 import industries from "../../components/Industries";
 import MultiSelectField from "../../components/MultiSelectField";
 
-function Company({
+function CompanyTest({
   handleSubmit,
   formData,
   handleInputChange,
@@ -166,4 +166,4 @@ function Company({
   );
 }
 
-export default Company;
+export default CompanyTest;

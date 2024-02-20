@@ -1,24 +1,22 @@
-// ImageCropper.js
-
 import React, { useState } from "react";
 import Cropper from "react-easy-crop";
-import { getCroppedImg } from "./cropImage";
+import getCroppedImg from "./cropImage";
 
 const ImageCropper = ({ getBlob, inputImg }) => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
 
-  /* onCropComplete() will occur each time the user modifies the cropped area, 
-    which isn't ideal. A better implementation would be getting the blob 
-    only when the user hits the submit button, but this works for now  */
-  const onCropComplete = async (_, croppedAreaPixels) => {
+  const onCropComplete = (_, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  };
+
+  const handleSave = async () => {
     const croppedImage = await getCroppedImg(inputImg, croppedAreaPixels);
     getBlob(croppedImage);
   };
 
   return (
-    /* need to have a parent with `position: relative` 
-    to prevent cropper taking up whole page */
     <div className="cropper">
       <Cropper
         image={inputImg}
@@ -29,6 +27,7 @@ const ImageCropper = ({ getBlob, inputImg }) => {
         onCropComplete={onCropComplete}
         onZoomChange={setZoom}
       />
+      <button onClick={handleSave}>Save</button>
     </div>
   );
 };

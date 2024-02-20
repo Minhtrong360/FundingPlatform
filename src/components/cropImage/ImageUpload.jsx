@@ -1,68 +1,83 @@
-import React, { useState } from "react";
-import ImageCropper from "./ImageCropper";
-import { supabase } from "../../supabase";
+import { useState } from "react";
+import ReactCrop from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
 
-const ImageUpload = () => {
-  const [blob, setBlob] = useState(null);
-  const [inputImg, setInputImg] = useState("");
+function App() {
+  const [src, setSrc] = useState(null);
+  const [crop, setCrop] = useState({ aspect: 16 / 9 });
+  const [image, setImage] = useState(null);
+  const [output, setOutput] = useState(null);
 
-  const getBlob = (blob) => {
-    setBlob(blob);
+  console.log("image", image);
+
+  const selectImage = (file) => {
+    setSrc(URL.createObjectURL(file));
   };
 
-  const onInputChange = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
+  const cropImageNow = () => {
+    if (!image || !crop.width || !crop.height) return; // Đảm bảo rằng ảnh và crop valid
 
-    reader.onload = () => {
-      setInputImg(reader.result);
-    };
+    const canvas = document.createElement("canvas");
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
 
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-  };
+    const pixelRatio = window.devicePixelRatio;
+    canvas.width = crop.width * pixelRatio;
+    canvas.height = crop.height * pixelRatio;
 
-  const handleSubmitImage = async (e) => {
-    e.preventDefault();
-    if (!blob) {
-      console.error("No image to upload.");
-      return;
-    }
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.imageSmoothingQuality = "high";
 
-    // Assuming the use of Supabase and a bucket named 'beekrowd_storage'
-    const fileExt = blob.type.split("/")[1];
-    const fileName = `image_${Date.now()}.${fileExt}`;
-    const filePath = `beekrowd_images/${fileName}`;
+    ctx.drawImage(
+      image,
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
 
-    try {
-      const { error } = await supabase.storage
-        .from("beekrowd_storage")
-        .upload(filePath, blob, {
-          cacheControl: "3600",
-          upsert: false,
-          contentType: blob.type,
-        });
-
-      if (error) {
-        throw error;
-      }
-
-      // Handle success scenario (e.g., display a message or redirect the user)
-      console.log("Upload successful");
-    } catch (error) {
-      console.error("Upload error:", error.message);
-      // Handle upload error here
-    }
+    // Converting to base64
+    const base64Image = canvas.toDataURL("image/jpeg");
+    setOutput(base64Image);
   };
 
   return (
-    <form onSubmit={handleSubmitImage}>
-      <input type="file" accept="image/*" onChange={onInputChange} />
-      {inputImg && <ImageCropper getBlob={getBlob} inputImg={inputImg} />}
-      <button type="submit">Submit</button>
-    </form>
+    <div className="App">
+      <center>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            selectImage(e.target.files[0]);
+          }}
+        />
+        <br />
+        <br />
+        <div>
+          {src && (
+            <div>
+              <ReactCrop
+                src={src}
+                onImageLoaded={setImage}
+                crop={crop}
+                onChange={setCrop}
+              />
+              <br />
+              <button onClick={cropImageNow}>Crop</button>
+              <br />
+              <br />
+            </div>
+          )}
+        </div>
+        <div>{output && <img src={output} />}</div>
+      </center>
+    </div>
   );
-};
+}
 
-export default ImageUpload;
+export default App;

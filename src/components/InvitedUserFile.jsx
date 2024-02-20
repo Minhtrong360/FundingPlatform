@@ -5,7 +5,7 @@ import ReactModal from "react-modal";
 import apiService from "../app/apiService";
 
 const Modal = ({ isOpen, onClose, fileId }) => {
-  const [email, setEmail] = useState("vidu@gmail.com");
+  const [email, setEmail] = useState("email@gmail.com");
 
   const handleInvite = async () => {
     try {
@@ -89,7 +89,7 @@ const Modal = ({ isOpen, onClose, fileId }) => {
               type="email"
               required
               name="email"
-              placeholder="vidu@gmail.com"
+              placeholder="email@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="block w-full px-4 py-3 text-sm text-gray-700 border rounded-md"

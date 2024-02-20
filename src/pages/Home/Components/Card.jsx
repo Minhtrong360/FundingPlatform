@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import ResizeImage from "../../../components/ResizeImage";
+import ImageCrop from "../../../components/cropImage/ImageCrop";
 
 const Card = ({
   title,
@@ -21,7 +22,7 @@ const Card = ({
         imageUrl={imageUrl}
         width={683}
         height={384}
-        onClick={() => navigate(`/founder/${project_id}`)}
+        // onClick={() => navigate(`/founder/${project_id}`)}
       />
       {/* <img
         className="rounded-t-lg max-h-96 "
@@ -29,6 +30,7 @@ const Card = ({
         alt=""
         onClick={() => navigate(`/founder/${project_id}`)}
       /> */}
+      {/* <ImageCrop width={680} height={384} initImage={imageUrl} /> */}
       <div className="p-5">
         <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 darkTextWhite">
           {title}
@@ -38,7 +40,7 @@ const Card = ({
           {description}
         </p>
         <button
-          onClick={() => navigate(`/founder/${project_id}`)}
+          // onClick={() => navigate(`/founder/${project_id}`)}
           className="mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkHoverBgBlue darkFocus"
         >
           {buttonText}

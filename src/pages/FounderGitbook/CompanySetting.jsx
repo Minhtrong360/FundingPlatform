@@ -10,6 +10,7 @@ import { useAuth } from "../../context/AuthContext";
 import Card from "../Home/Components/Card";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import AlertMsg from "../../components/AlertMsg";
+import CompanyTest from "./CompanyTest";
 
 function CompanySetting() {
   const navigate = useNavigate();
@@ -284,7 +285,7 @@ function CompanySetting() {
       <div className="flex-1 lg:col-span-1">
         {" "}
         {/* Sử dụng lg:col-span-1 để Company component chiếm 1/3 */}
-        <Company
+        <CompanyTest
           isLoading={isLoading}
           handleSubmit={handleSubmit}
           formData={formData}
@@ -312,7 +313,7 @@ function CompanySetting() {
 
           <hr className="mt-16 border-dashed border-gray-400" />
 
-          <div className="mt-11 px-4 sm:px-6 lg:px-8 z-0">
+          <div className="mt-11 px-4 sm:px-6 lg:px-8">
             <Card
               title={formData.companyName}
               description={formData.companyDescription}

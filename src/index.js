@@ -7,6 +7,7 @@ import Router from "./router/Router.jsx";
 import { Elements } from "@stripe/react-stripe-js";
 import AuthProvider from "./context/AuthContext.jsx";
 import { loadStripe } from "@stripe/stripe-js";
+import ImageCropProvider from "./components/cropImage/ImageDropProvider.jsx";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const stripePromise = loadStripe(process.env.REACT_APP_PUBLISHABLE_KEY);
@@ -15,7 +16,9 @@ root.render(
     <Elements stripe={stripePromise}>
       <BrowserRouter>
         {/* <ThemeProvider> */}
-        <Router />
+        <ImageCropProvider>
+          <Router />
+        </ImageCropProvider>
         {/* </ThemeProvider> */}
       </BrowserRouter>
     </Elements>

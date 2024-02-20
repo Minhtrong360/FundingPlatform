@@ -1,6 +1,5 @@
 import ResizeImage from "../../components/ResizeImage";
 import { Tooltip } from "antd";
-import ImageCrop from "../../components/cropImage/ImageCrop";
 
 function formatNumber(value) {
   // Kiểm tra xem value có phải là một chuỗi không
@@ -98,7 +97,7 @@ const HeroSection = ({
         </div>
 
         <div className="relative">
-          <ImageCrop width={550} height={600} initImage={imageUrl} />
+          <ResizeImage imageUrl={imageUrl} width={700} height={800} />
           <div className="absolute inset-0 -z-[1] bg-gradient-to-tr from-gray-200 via-white/0 to-white/0 w-full h-full rounded-md mt-4 -mb-4 me-4 -ms-4 lg:mt-6 lg:-mb-6 lg:me-6 lg:-ms-6 darkFromSlate"></div>
         </div>
       </div>

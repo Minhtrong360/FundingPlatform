@@ -247,6 +247,7 @@ export default function EditorTool() {
             toast.error(error.message);
           } else {
             setIsLoading(false);
+            toast.success("Saved successfully.");
             // Reset isSaved to false after 1 second
           }
         } else {

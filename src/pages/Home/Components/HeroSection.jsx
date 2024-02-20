@@ -59,6 +59,14 @@ const HeroSection = () => {
             >
               Fundraising profile
             </motion.span>{" "}
+            and{" "}
+            <motion.span
+              className="text-blue-600"
+              variants={textAnimation}
+              animate="visible"
+            >
+              Financial model
+            </motion.span>{" "}
             with{" "}
             <motion.span
               className="text-blue-600"

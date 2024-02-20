@@ -6,7 +6,7 @@ import countries from "../../components/Country";
 import AlertMsg from "../../components/AlertMsg";
 import industries from "../../components/Industries";
 import MultiSelectField from "../../components/MultiSelectField";
-import ImageCropper from "../../components/cropImage/ImageCropper";
+import ImageUpload from "../../components/cropImage/ImageUpload";
 
 function Company({
   handleSubmit,
@@ -150,8 +150,6 @@ function Company({
                   required
                 />
               </div>
-
-              <ImageCropper />
 
               <div className="mt-6 grid">
                 <button

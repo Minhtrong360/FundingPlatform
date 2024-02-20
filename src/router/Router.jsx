@@ -29,6 +29,7 @@ import Y from "../pages/test02";
 import FinancialPage from "../pages/FinalcialPage/FinancialPage";
 import FinancialList from "../pages/FinalcialPage/FinancialList";
 import Z from "../pages/test03";
+import ImageUpload from "../components/cropImage/ImageUpload";
 function Router() {
   return (
     <Routes>
@@ -96,6 +97,7 @@ function Router() {
       <Route path="/X" element={<X />} />
       <Route path="/Y" element={<Y />} />
       <Route path="/Z" element={<Z />} />
+      <Route path="/W" element={<ImageUpload />} />
       <Route
         path="/loading"
         element={<LoadingButtonClick isLoading={true} />}

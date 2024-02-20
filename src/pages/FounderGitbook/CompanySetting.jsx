@@ -239,7 +239,6 @@ function CompanySetting() {
           toast.error(error.message);
           // Xử lý lỗi khi không thể lấy dự án
         } else {
-          console.log("data.collabs", data);
           // Kiểm tra quyền truy cập của người dùng
           if (
             data.status === false &&

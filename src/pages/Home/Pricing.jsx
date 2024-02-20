@@ -14,7 +14,7 @@ const PricingCard = ({ plan, onClick }) => {
   return (
     <>
       <div
-        className={` flex flex-col border border-gray-500 rounded-xl p-8 text-center shadow-xl   group hover:scale-105  hover:border-blue-700 transition-transform duration-300 ease-in-out`}
+        className={` flex flex-col border  rounded-xl p-8 text-center shadow-xl   group hover:scale-105  hover:border-blue-700 transition-transform duration-300 ease-in-out`}
       >
         <h4 className="font-medium text-lg text-gray-800 darkTextGray">
           {plan?.name}

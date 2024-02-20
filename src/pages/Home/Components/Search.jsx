@@ -72,7 +72,7 @@ const Search = ({
                     type="text"
                     name="hs-search-article-1"
                     id="hs-search-article-1"
-                    className="py-1.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
+                    className=" px-4 block w-full h-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
                     placeholder="Search profiles"
                     value={searchTerm}
                     onChange={handleSearchChange} // Thêm sự kiện onChange này
@@ -122,73 +122,19 @@ const Search = ({
               All
               <AllInclusiveOutlinedIcon fontSize="small" />
             </button>
-            <button
-              onClick={() => handleIndustryClick("Biotech")}
-              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
-                selectedIndustry === "Biotech"
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-800 hover:bg-gray-50"
-              } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
-            >
-              Biotech
-              <BiotechOutlinedIcon fontSize="small" />
-            </button>
-            <button
-              onClick={() => handleIndustryClick("Edtech")}
-              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
-                selectedIndustry === "Edtech"
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-800 hover:bg-gray-50"
-              } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
-            >
-              Edtech
-              <SchoolOutlinedIcon fontSize="small" />
-            </button>
-            <button
-              onClick={() => handleIndustryClick("Finance and Banking")}
-              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
-                selectedIndustry === "Finance and Banking"
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-800 hover:bg-gray-50"
-              } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
-            >
-              Finance and Banking
-              <AccountBalanceOutlinedIcon fontSize="small" />
-            </button>
-            <button
-              onClick={() => handleIndustryClick("Fintech")}
-              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
-                selectedIndustry === "Fintech"
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-800 hover:bg-gray-50"
-              } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
-            >
-              Fintech
-              <DesktopWindowsOutlinedIcon fontSize="small" />
-            </button>
 
-            <Dropdown>
-              <MenuButton
-                className={` m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
+            {industries.map((industry, index) => (
+              <button
+                onClick={() => handleIndustryClick(industry)}
+                className={`my-3 mx-4 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
+                  selectedIndustry === industry
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-gray-800 hover:bg-gray-50"
+                } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
               >
-                More <ArrowDropDownOutlinedIcon />
-              </MenuButton>
-              <Menu className="bg-white max-h-60 overflow-y-auto px-2 py-1 z-1000 border">
-                {industries.map((industry, index) => (
-                  <MenuItem
-                    className={`mx-2 my-2 px-4 py-4 border rounded-2xl hover:cursor-pointer ${
-                      selectedIndustry === industry
-                        ? "bg-blue-600 text-white"
-                        : "bg-white text-gray-800 hover:bg-gray-50"
-                    }`}
-                    key={index}
-                    onClick={() => handleIndustryClick(industry)}
-                  >
-                    {industry}
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Dropdown>
+                {industry}
+              </button>
+            ))}
           </div>
         </div>
       </div>

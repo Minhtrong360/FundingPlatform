@@ -1,4 +1,28 @@
+import React from "react";
+
+// Hàm format số với định dạng 100,000
+const formatNumber = (value) => {
+  // Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
+  const stringValue = value.toString().replace(/,/g, "");
+  // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
+  return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 export default function InputField({ label, id, ...rest }) {
+  // Kiểm tra nếu 'name' là 'targetAmount', 'typeOffering' hoặc 'minTicketSize'
+  if (
+    rest.name === "targetAmount" ||
+    rest.name === "noTicket" ||
+    rest.name === "minTicketSize"
+  ) {
+    // Chuyển đổi type thành text
+    rest.type = "text";
+    // Format giá trị nếu có
+    if (rest.value) {
+      rest.value = formatNumber(rest.value);
+    }
+  }
+
   return (
     <div>
       <label

@@ -48,7 +48,6 @@ const Search = ({
   const [suggestions, setSuggestions] = useState([]);
 
   const handleSuggestionClick = (name) => {
-    console.log("click");
     setSearchTerm(name);
     setSuggestions([]);
     onSearch(name); // Optional: Trigger the search when a suggestion is clicked
@@ -125,6 +124,7 @@ const Search = ({
 
             {industries.map((industry, index) => (
               <button
+                key={index}
                 onClick={() => handleIndustryClick(industry)}
                 className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
                   selectedIndustry === industry

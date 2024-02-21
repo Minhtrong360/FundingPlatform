@@ -79,7 +79,7 @@ const HeroSection = () => {
           <div className="mt-7 grid gap-3 w-full sm:inline-flex">
             <motion.a
               className="hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
-              variants={buttonVariants}
+              variants={containerVariants}
               onClick={handleClick}
             >
               {user ? "Create project" : "Get started"}
@@ -90,7 +90,7 @@ const HeroSection = () => {
               onClick={() =>
                 navigate(`/founder/${"3ec3f142-f33c-4977-befd-30d4ce2b764d"}`)
               }
-              variants={buttonVariants}
+              variants={containerVariants}
             >
               See demo
             </motion.a>

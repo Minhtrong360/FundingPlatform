@@ -18,7 +18,7 @@ function CompanySetting() {
   const [viewError, setViewError] = useState("");
   const params = useParams();
   const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
     companyName: "Tesla",
     country: "US",
@@ -84,7 +84,7 @@ function CompanySetting() {
               setIsLoading(false);
             } else {
               // Nếu không có dự án tồn tại, ở lại trang để tạo
-              console.log("Project not found, stay on create page");
+
               setIsLoading(false);
             }
           }
@@ -103,8 +103,14 @@ function CompanySetting() {
 
   useEffect(() => {
     const calculateNoTicket = () => {
-      const targetAmount = parseInt(formData.targetAmount);
-      const minTicketSize = parseInt(formData.minTicketSize);
+      const targetAmount =
+        formData.targetAmount && typeof formData.targetAmount === "string"
+          ? parseInt(formData.targetAmount.replace(/,/g, ""), 10)
+          : formData.targetAmount;
+      const minTicketSize =
+        formData.minTicketSize && typeof formData.minTicketSize === "string"
+          ? parseInt(formData.minTicketSize.replace(/,/g, ""), 10)
+          : formData.minTicketSize;
 
       if (
         !isNaN(targetAmount) &&
@@ -163,10 +169,21 @@ function CompanySetting() {
               name: formData.companyName,
               country: formData.country,
               industry: formData.industry,
-              target_amount: formData.targetAmount,
+              target_amount:
+                formData.targetAmount &&
+                typeof formData.targetAmount === "string"
+                  ? parseInt(formData.targetAmount.replace(/,/g, ""), 10)
+                  : formData.targetAmount,
               offer_type: formData.typeOffering,
-              ticket_size: formData.minTicketSize,
-              no_ticket: formData.noTicket,
+              ticket_size:
+                formData.minTicketSize &&
+                typeof formData.minTicketSize === "string"
+                  ? parseInt(formData.minTicketSize.replace(/,/g, ""), 10)
+                  : formData.minTicketSize,
+              no_ticket:
+                formData.noTicket && typeof formData.noTicket === "string"
+                  ? parseInt(formData.noTicket.replace(/,/g, ""), 10)
+                  : formData.noTicket,
               offer: formData.offer,
               project_url: formData.project_url,
               card_url: formData.card_url,
@@ -194,10 +211,21 @@ function CompanySetting() {
               name: formData.companyName,
               country: formData.country,
               industry: formData.industry,
-              target_amount: formData.targetAmount,
+              target_amount:
+                formData.targetAmount &&
+                typeof formData.targetAmount === "string"
+                  ? parseInt(formData.targetAmount.replace(/,/g, ""), 10)
+                  : formData.targetAmount,
               offer_type: formData.typeOffering,
-              ticket_size: formData.minTicketSize,
-              no_ticket: formData.noTicket,
+              ticket_size:
+                formData.minTicketSize &&
+                typeof formData.minTicketSize === "string"
+                  ? parseInt(formData.minTicketSize.replace(/,/g, ""), 10)
+                  : formData.minTicketSize,
+              no_ticket:
+                formData.noTicket && typeof formData.noTicket === "string"
+                  ? parseInt(formData.noTicket.replace(/,/g, ""), 10)
+                  : formData.noTicket,
               offer: formData.offer,
               project_url: formData.project_url,
               card_url: formData.card_url,
@@ -211,6 +239,7 @@ function CompanySetting() {
 
           if (error) {
             console.log("Error saving data to Supabase:", error);
+            throw error;
           } else {
             setIsLoading(false);
             navigate(`/founder/${params.id}`);
@@ -257,8 +286,6 @@ function CompanySetting() {
         }
       });
   }, [id, user.email, user.id]);
-
-  console.log("viewError", viewError);
 
   const handleIndustryChange = (selectedItems) => {
     setFormData({

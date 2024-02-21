@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
+import video from "../Components/3d-glass-rotating-cube (online-video-cutter.com).mp4";
 
 const HeroSection = () => {
   const { user } = useAuth();
@@ -69,12 +70,13 @@ const HeroSection = () => {
             </motion.span>{" "}
             with{" "}
             <motion.span variants={textAnimation} animate="visible">
-              BeeKrowd
+              AI
             </motion.span>
           </motion.h1>
           <p className="mt-3 text-lg text-gray-800 darkTextGray">
             We're here to provide you with the insights, strategies, and tools
-            you need to craft a compelling and effective fundraising profile.
+            you need to craft an effective fundraising profile and compelling
+            financial model on an AI-powered platform.
           </p>
           <div className="mt-7 grid gap-3 w-full sm:inline-flex">
             <motion.a
@@ -98,9 +100,13 @@ const HeroSection = () => {
         </motion.div>
 
         <motion.div className="relative ms-4" variants={textVariants}>
-          <img
+          <video
             className="w-full rounded-md"
-            src="https://images.unsplash.com/photo-1633671475485-754e12f39817?q=80&w=700&h=800&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            autoPlay
+            loop
+            muted
+            playsInline
+            src={video}
             alt="Description"
           />
           <div className="absolute inset-0 -z-[1] bg-gradient-to-tr from-gray-200 via-white/0 to-white/0 w-full h-full rounded-md mt-4 -mb-4 me-4 -ms-4 lg:mt-6 lg:-mb-6 lg:me-6 lg:-ms-6 darkFromSlate"></div>

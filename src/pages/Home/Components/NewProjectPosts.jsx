@@ -131,31 +131,31 @@ const NewProjectPosts = () => {
             </div>
             <div className="mt-10 flex justify-center">
               <button
-                className="px-4 py-1 mx-2  text-black rounded-md"
+                className="sm:px-4 sm:py-1 sm:mx-2  text-black rounded-md"
                 onClick={goToFirstPage}
                 disabled={page === 1}
               >
                 <SkipPreviousIcon />
               </button>
               <button
-                className="px-4 py-1 mx-2  text-black rounded-md"
+                className="sm:px-4 sm:py-1 sm:mx-2  text-black rounded-md"
                 onClick={() => handlePageChange(page - 1)}
                 disabled={page === 1}
               >
                 <ArrowLeftIcon fontSize="large" />
               </button>
-              <span className="px-4 py-1 mx-2  text-gray-800 rounded-md flex justify-center items-center">
+              <span className=" sm:px-4 sm:py-1 sm:mx-2  text-gray-800 rounded-md inline-flex flex-nowrap justify-center items-center  flex-shrink-0">
                 Page {page} of {totalPages}
               </span>
               <button
-                className="px-4 py-1 mx-2  text-black rounded-md"
+                className="sm:px-4 sm:py-1 sm:mx-2  text-black rounded-md"
                 onClick={() => handlePageChange(page + 1)}
                 disabled={page === totalPages}
               >
                 <ArrowRightIcon fontSize="large" />
               </button>
               <button
-                className="px-4 py-1 mx-2  text-black rounded-md"
+                className="sm:px-4 sm:py-1 sm:mx-2  text-black rounded-md"
                 onClick={goToLastPage}
                 disabled={page === totalPages}
               >

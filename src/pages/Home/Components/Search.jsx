@@ -1,15 +1,7 @@
 import React, { useState } from "react";
-import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
-import DesktopWindowsOutlinedIcon from "@mui/icons-material/DesktopWindowsOutlined";
-import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
-import BiotechOutlinedIcon from "@mui/icons-material/BiotechOutlined";
-import ArrowDropDownOutlinedIcon from "@mui/icons-material/ArrowDropDownOutlined";
+
 import AllInclusiveOutlinedIcon from "@mui/icons-material/AllInclusiveOutlined";
 import industries from "../../../components/Industries";
-import { Dropdown } from "@mui/base/Dropdown";
-import { MenuButton } from "@mui/base/MenuButton";
-import { Menu } from "@mui/base/Menu";
-import { MenuItem } from "@mui/base/MenuItem";
 
 const Search = ({
   onSearch,
@@ -109,7 +101,8 @@ const Search = ({
               </ul>
             )}
           </div>
-          <div className="mt-2 sm:mt-4">
+
+          <div className="mt-2 sm:mt-4 hidden lg:flex flex-wrap justify-center">
             <button
               onClick={() => handleIndustryClick("")}
               className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
@@ -121,7 +114,6 @@ const Search = ({
               All
               <AllInclusiveOutlinedIcon fontSize="small" />
             </button>
-
             {industries.map((industry, index) => (
               <button
                 key={index}
@@ -130,7 +122,33 @@ const Search = ({
                   selectedIndustry === industry
                     ? "bg-blue-600 text-white"
                     : "bg-white text-gray-800 hover:bg-gray-50"
-                } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
+                } shadow-sm hover:cursor-pointer`}
+              >
+                {industry}
+              </button>
+            ))}
+          </div>
+          <div className="mt-4 lg:hidden overflow-x-auto flex flex-nowrap">
+            <button
+              onClick={() => handleIndustryClick("")}
+              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
+                !selectedIndustry
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-800 hover:bg-gray-50"
+              } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
+            >
+              All
+              <AllInclusiveOutlinedIcon fontSize="small" />
+            </button>
+            {industries.map((industry, index) => (
+              <button
+                key={index}
+                onClick={() => handleIndustryClick(industry)}
+                className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
+                  selectedIndustry === industry
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-gray-800 hover:bg-gray-50"
+                } shadow-sm hover:cursor-pointer flex-shrink-0`}
               >
                 {industry}
               </button>

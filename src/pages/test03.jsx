@@ -776,7 +776,7 @@ const Z = () => {
     const [websocket, setWebsocket] = useState(null);
 
     useEffect(() => {
-      const ws = new WebSocket("wss://fastapi-example-l5fo.onrender.com/ws");
+      const ws = new WebSocket("wss://news-fetcher-8k6m.onrender.com/ws");
 
       ws.onopen = () => {
         console.log("WebSocket connected");

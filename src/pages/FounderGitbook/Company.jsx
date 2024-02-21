@@ -122,7 +122,7 @@ function Company({
                   required
                 />
                 <InputField
-                  label="Profile image url (>716*384 recommended)"
+                  label="Company card url (>716*384 recommended)"
                   id="card_url"
                   name="card_url"
                   value={formData.card_url}

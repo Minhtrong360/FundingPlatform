@@ -20,6 +20,8 @@ import LoadingButtonClick from "../../components/LoadingButtonClick";
 const DetailPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [company, setCompany] = useState([]);
+  const [viewError, setViewError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -27,76 +29,71 @@ const DetailPage = () => {
 
   const { id } = useParams();
   const { user } = useAuth();
-  const [viewError, setViewError] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Lấy dự án từ Supabase
-    supabase
-      .from("projects")
-      .select("*")
-      .eq("id", id)
-      .single()
-      .then(({ data, error }) => {
-        setIsLoading(false); // Đánh dấu rằng dữ liệu đã được tải xong
-        if (error) {
-          console.log("error", error);
-          toast.error(error.message);
-          // Xử lý lỗi khi không thể lấy dự án
-        } else {
-          // Kiểm tra quyền truy cập của người dùng
-          if (
-            data.status === false &&
-            data.user_id !== user?.id &&
-            !data.invited_user?.includes(user.email) &&
-            !data.collabs?.includes(user.email)
-          ) {
-            // Kiểm tra xem dự án có trạng thái false, không thuộc về người dùng và không được mời tham gia
-            // Hoặc có thể kiểm tra invited_user ở đây
+    const fetchData = async () => {
+      try {
+        const { data: projectData, error: projectError } = await supabase
+          .from("projects")
+          .select("*")
+          .eq("id", id)
+          .single();
 
-            // Hiển thị thông báo hoặc thực hiện hành động tương ứng
-            setViewError(true);
-          } else {
-            setViewError(false);
+        if (projectError) {
+          throw projectError;
+        }
+
+        if (
+          projectData.status === false &&
+          projectData.user_id !== user?.id &&
+          !projectData.invited_user?.includes(user.email) &&
+          !projectData.collabs?.includes(user.email)
+        ) {
+          setViewError(true);
+          setIsLoading(false); // Người dùng không được phép xem, ngừng hiển thị loading
+        } else {
+          setViewError(false);
+          const { data: companyData, error: companyError } = await supabase
+            .from("company")
+            .select("*")
+            .eq("project_id", id)
+            .single();
+
+          if (companyError) {
+            throw companyError;
           }
-        }
-      });
-  }, [id, user.email, user.id]);
 
-  useEffect(() => {
-    // Lấy dự án từ Supabase
-    supabase
-      .from("company")
-      .select("*")
-      .eq("project_id", id)
-      .single()
-      .then(({ data, error }) => {
-        setIsLoading(false); // Đánh dấu rằng dữ liệu đã được tải xong
-        if (error) {
-          console.log("error", error);
-          toast.error(error.message);
-          // Xử lý lỗi khi không thể lấy dự án
-        } else {
-          setCompany(data);
+          setCompany(companyData);
+          setIsLoading(false); // Dữ liệu đã tải xong, ngừng hiển thị loading
         }
-      });
-  }, [id]);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error(error.message);
+        setIsLoading(false); // Có lỗi xảy ra, ngừng hiển thị loading
+      }
+    };
+
+    fetchData();
+  }, [id, user.email, user.id]);
 
   if (viewError) {
     return (
-      <AnnouncePage
-        title="Permission Required"
-        announce="This is a private project."
-        describe="This is a private project and you must be invited to access and see it. You can send a request and wait for the owner to accept."
-        sendRequest={true}
-      />
+      <div>
+        <LoadingButtonClick isLoading={isLoading} />
+        <AnnouncePage
+          title="Permission Required"
+          announce="This is a private project."
+          describe="This is a private project and you must be invited to access and see it. You can send a request and wait for the owner to accept."
+          sendRequest={true}
+        />
+      </div>
     );
   }
 
   return (
     <div className=" bg-white darkBg antialiased !p-0">
       <AlertMsg />
-      {<LoadingButtonClick isLoading={isLoading} />}
+      <LoadingButtonClick isLoading={isLoading} />
       <div id="exampleWrapper">
         <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 

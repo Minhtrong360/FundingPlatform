@@ -1,4 +1,3 @@
-// NewProjectPosts.js
 import { useEffect, useState } from "react";
 import Card from "./Card";
 import { supabase } from "../../../supabase";
@@ -8,6 +7,8 @@ import LoadingButtonClick from "../../../components/LoadingButtonClick";
 
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
+import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 
 const NewProjectPosts = () => {
   const [companies, setCompanies] = useState([]);
@@ -83,12 +84,17 @@ const NewProjectPosts = () => {
     setPage(1);
   };
   const handleIndustryChange = (industry) => {
-    console.log("handleIndustryChange", industry);
     setSelectedIndustry(industry);
     setPage(1);
   };
 
-  console.log("status", companies);
+  const goToFirstPage = () => {
+    setPage(1);
+  };
+
+  const goToLastPage = () => {
+    setPage(totalPages);
+  };
 
   return (
     <div className="max-w-[85rem] px-4 py-1 sm:px-6 lg:px-8 lg:py-1 mx-auto">
@@ -125,18 +131,32 @@ const NewProjectPosts = () => {
             </div>
             <div className="mt-10 flex justify-center">
               <button
-                className="px-4 py-1 mx-2 bg-blue-600 text-white rounded-md"
-                onClick={() => handlePageChange(page - 1)}
+                className="px-4 py-1 mx-2  text-black rounded-md"
+                onClick={goToFirstPage}
                 disabled={page === 1}
               >
                 <SkipPreviousIcon />
               </button>
-              <span className="px-4 py-1 mx-2 bg-gray-200 text-gray-800 rounded-md">
+              <button
+                className="px-4 py-1 mx-2  text-black rounded-md"
+                onClick={() => handlePageChange(page - 1)}
+                disabled={page === 1}
+              >
+                <ArrowLeftIcon fontSize="large" />
+              </button>
+              <span className="px-4 py-1 mx-2  text-gray-800 rounded-md flex justify-center items-center">
                 Page {page} of {totalPages}
               </span>
               <button
-                className="px-4 py-1 mx-2 bg-blue-600 text-white rounded-md"
+                className="px-4 py-1 mx-2  text-black rounded-md"
                 onClick={() => handlePageChange(page + 1)}
+                disabled={page === totalPages}
+              >
+                <ArrowRightIcon fontSize="large" />
+              </button>
+              <button
+                className="px-4 py-1 mx-2  text-black rounded-md"
+                onClick={goToLastPage}
                 disabled={page === totalPages}
               >
                 <SkipNextIcon />

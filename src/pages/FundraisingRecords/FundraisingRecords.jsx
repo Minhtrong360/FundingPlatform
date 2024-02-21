@@ -79,10 +79,16 @@ const FundraisingRecords = () => {
         <h2 className="ml-5 text-left text-2xl font-semibold md:text-4xl md:leading-tight darkTextWhite text-black-500 my-12">
           Dashboard Records
         </h2>
-        <div className="items-stretch max-md:w-full max-md:ml-0 justify-left mx-auto">
+        <div className="items-stretch max-md:w-full max-md:ml-0 mx-auto">
+          <div className="flex justify-end text-lg font-semibold my-4">
+            Project dashboard
+          </div>
           <StatBadge ggData={ggData} />
         </div>
-        <div className="items-stretch max-md:w-full max-md:ml-0 justify-left mx-auto">
+        <div className="items-stretch max-md:w-full max-md:ml-0  mx-auto">
+          <div className="flex justify-end text-lg font-semibold my-4">
+            Financial dashboard
+          </div>
           <FinanceStatBadge ggData={financeGoogleData} />
         </div>
       </div>

@@ -126,7 +126,7 @@ const Search = ({
             {industries.map((industry, index) => (
               <button
                 onClick={() => handleIndustryClick(industry)}
-                className={`my-3 mx-4 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
+                className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
                   selectedIndustry === industry
                     ? "bg-blue-600 text-white"
                     : "bg-white text-gray-800 hover:bg-gray-50"

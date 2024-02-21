@@ -90,7 +90,7 @@ const Card = ({
               project?.status === true ? "bg-blue-600" : "bg-red-600"
             } mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white  rounded-lg cursor-not-allowed darkBgBlue`}
           >
-            {project?.status === true ? "Public" : "Private"}
+            {project?.status === true ? "Public deal" : "Private deal"}
           </button>
         </div>
       </div>

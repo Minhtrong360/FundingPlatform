@@ -12,7 +12,6 @@ import LoanSection from "./Components/LoanSection";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 
-import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { toast } from "react-toastify";
 
 const FinancialForm = () => {
@@ -378,7 +377,7 @@ const FinancialForm = () => {
 
   // Lưu vào DB
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { user } = useAuth();
   const loadData = async (userId) => {
@@ -492,7 +491,6 @@ const FinancialForm = () => {
 
   return (
     <div>
-      <LoadingButtonClick isLoading={isLoading} />
       <div className="flex flex-col lg:flex-row">
         <div className="w-full lg:w-1/3 p-4 border-e-2">
           <DurationSelect

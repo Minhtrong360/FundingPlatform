@@ -37,10 +37,11 @@ import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { supabase } from "../supabase";
+import ProgressBar from "../components/ProgressBar";
+import AnnouncePage from "../components/AnnouncePage";
 
 function Router() {
   const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState(false); // New isLoading state
 
   const [currentUser, setCurrentUser] = useState(null);
   const [subscribed, setSubscribed] = useState(false);
@@ -48,7 +49,6 @@ function Router() {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        setIsLoading(true); // Set isLoading to true while fetching
         if (!navigator.onLine) {
           toast.error("No internet access.");
           return;
@@ -66,8 +66,6 @@ function Router() {
         setCurrentUser(users[0]);
       } catch (error) {
         console.error("Error fetching projects:", error);
-      } finally {
-        setIsLoading(false); // Set isLoading back to false when fetching completes
       }
     };
 
@@ -152,20 +150,24 @@ function Router() {
 
         <Route
           path="/financials"
-          element={
-            <FinancialPage subscribed={subscribed} isLoading={isLoading} />
-          }
+          element={<FinancialPage subscribed={subscribed} />}
         />
         {/* <Route path="/financialList" element={<FinancialList />} /> */}
         <Route path="/news" element={<News />} />
         <Route path="/X" element={<X />} />
         <Route path="/Y" element={<Y />} />
         <Route path="/Z" element={<Z />} />
-        <Route path="/W" element={<ImageCrop />} />
         <Route
-          path="/loading"
-          element={<LoadingButtonClick isLoading={true} />}
+          path="/W"
+          element={
+            <AnnouncePage
+              title="Subscription Required"
+              announce="Financial model helps you build your business plan and you need to subscribe."
+              describe="This is our special feature that helps startups or new businesses build their business plans. We provide tools with AI to build your BS, IS, FS... Please upgrade your plan to experience this exciting feature"
+            />
+          }
         />
+        <Route path="/loading" element={<ProgressBar isLoading={true} />} />
       </Routes>
     </>
   );

@@ -83,9 +83,6 @@ const FundraisingRecords = () => {
     fetchData();
   }, [user.id]);
 
-  console.log("ggData", ggData);
-  console.log("ggDataByDay", ggDataByDay);
-
   return (
     <div className="shadow-sm bg-white">
       <LoadingButtonClick isLoading={isLoading} />

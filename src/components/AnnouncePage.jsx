@@ -85,19 +85,19 @@ const AnnouncePage = ({
   };
 
   return (
-    <section className="bg-white dark:bg-gray-900">
+    <section className="bg-gray-900">
       <LoadingButtonClick isLoading={isLoading} />
       <div className="container flex items-center min-h-screen px-4 sm:px-6 py-12 mx-auto">
         <div className="w-full">
           <p className="text-3xl sm:text-5xl font-medium text-blue-600 dark:text-blue-400">
             {title}
           </p>
-          <h1 className="mt-3 text-xl sm:text-2xl font-semibold text-gray-800 dark:text-white">
+          <h1 className="mt-3 text-xl sm:text-2xl font-semibold text-white dark:text-white">
             {firstPart}
-            <span className="text-blue-600">{highlightedWord}</span>
+            <span className="text-white">{highlightedWord}</span>
             {lastPart}
           </h1>
-          <p className="mt-4 text-sm sm:text-base text-gray-500 dark:text-gray-400">
+          <p className="mt-4 text-sm sm:text-base text-white dark:text-gray-400">
             {describe}
           </p>
 

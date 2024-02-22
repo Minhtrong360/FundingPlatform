@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import { supabase } from "../../../supabase";
 import Chart from "react-apexcharts";
+import LoadingButtonClick from "../../../components/LoadingButtonClick";
 
 const columns = [
   {
@@ -133,9 +134,10 @@ const StatBadgeByDay = ({ ggData }) => {
       for (const item of ggData) {
         for (const report of item.reports) {
           const id = report.id;
+          const project = projectData.find((project) => project.id === id);
           if (!seriesMap[id]) {
             seriesMap[id] = {
-              name: `Project ${id}`,
+              name: project ? project.name : `Project ${id}`,
               data: [],
             };
           }
@@ -143,17 +145,14 @@ const StatBadgeByDay = ({ ggData }) => {
           const timestamp = new Date(item.date).getTime();
           seriesMap[id].data.push([timestamp, report.data.activeUsers]);
 
-          // Thêm ngày vào danh sách xCategories nếu chưa có
           if (!xCategories.includes(timestamp)) {
             xCategories.push(timestamp);
           }
         }
       }
 
-      // Sắp xếp mảng ngày tháng tăng dần
       xCategories.sort((a, b) => a - b);
 
-      // Cập nhật options với danh sách ngày đã sắp xếp
       setCustomerGrowthChart((prevState) => ({
         ...prevState,
         options: {
@@ -168,7 +167,7 @@ const StatBadgeByDay = ({ ggData }) => {
     };
 
     fetchData();
-  }, [ggData]);
+  }, [ggData, projectData]);
 
   return (
     <div>

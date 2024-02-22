@@ -58,16 +58,16 @@ const columns = [
     dataIndex: "screenPageViewsPerUser",
     key: "screenPageViewsPerUser",
   },
-  {
-    title: "Scrolled Users",
-    dataIndex: "scrolledUsers",
-    key: "scrolledUsers",
-  },
+  // {
+  //   title: "Scrolled Users",
+  //   dataIndex: "scrolledUsers",
+  //   key: "scrolledUsers",
+  // },
 ];
 
 const StatBadge = ({ ggData }) => {
   const [projectData, setProjectData] = useState([]);
-  console.log("ggData", ggData);
+
   useEffect(() => {
     const fetchProjects = async () => {
       const projectIds = ggData.map((item) => item.id);
@@ -98,7 +98,6 @@ const StatBadge = ({ ggData }) => {
     ...item.data,
   }));
 
-  console.log("data", data);
   const getRowClassName = (record, index) => {
     // Apply the 'text-md' Tailwind CSS class to all rows
     return "text-md";

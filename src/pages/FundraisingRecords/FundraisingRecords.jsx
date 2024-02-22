@@ -7,12 +7,15 @@ import { supabase } from "../../supabase";
 import { toast } from "react-toastify";
 import FinanceStatBadge from "./components/FinanceStatBadge";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
+import StatBadgeByDay from "./components/StatBadgeByDay";
 
 const FundraisingRecords = () => {
   const [ggData, setGgData] = useState([]);
   const [financeGoogleData, setFinanceGoogleData] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Loading state
   const { user } = useAuth();
+
+  const [ggDataByDay, setGgDataByDay] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,8 +38,16 @@ const FundraisingRecords = () => {
       const response = await apiService.post("googleAnalytics/runReport", {
         ids,
       });
+      const response2 = await apiService.post(
+        "googleAnalytics/trackUserAndEvent",
+        {
+          ids,
+        }
+      );
       console.log("response", response);
+      console.log("response2", response2);
       setGgData(response.data);
+      setGgDataByDay(response2.data);
       setIsLoading(false); // Set loading state to false once data is fetched
     };
 
@@ -72,6 +83,9 @@ const FundraisingRecords = () => {
     fetchData();
   }, [user.id]);
 
+  console.log("ggData", ggData);
+  console.log("ggDataByDay", ggDataByDay);
+
   return (
     <div className="shadow-sm bg-white">
       <LoadingButtonClick isLoading={isLoading} />
@@ -80,17 +94,23 @@ const FundraisingRecords = () => {
           Dashboard Records
         </h2>
         <div className="items-stretch max-md:w-full max-md:ml-0 mx-auto">
-          <div className="flex justify-end text-lg font-semibold my-4">
+          <div className="flex justify-end text-lg font-semibold my-4 mx-4">
             Project dashboard
           </div>
           <StatBadge ggData={ggData} />
         </div>
-        <div className="items-stretch max-md:w-full max-md:ml-0  mx-auto">
+        <div className="items-stretch max-md:w-full max-md:ml-0 mx-auto">
+          <div className="flex justify-end text-lg font-semibold my-4 mx-4">
+            Tracking by days
+          </div>
+          <StatBadgeByDay ggData={ggDataByDay} />
+        </div>
+        {/* <div className="items-stretch max-md:w-full max-md:ml-0  mx-auto">
           <div className="flex justify-end text-lg font-semibold my-4">
             Financial dashboard
           </div>
           <FinanceStatBadge ggData={financeGoogleData} />
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
-import img from "../Components/3d-glass-rotating-cube (online-video-cutter.com).mp4";
+import img from "../Components/UpscaleVideo.mp4";
 
 const HeroSection = () => {
   const { user } = useAuth();
@@ -14,7 +14,7 @@ const HeroSection = () => {
 
   const textVariants = {
     hidden: { x: -50, opacity: 0 },
-    visible: { x: 0, opacity: 1, transition: { delay: 0.5, duration: 1 } },
+    visible: { x: 0, opacity: 0.9, transition: { delay: 0.5, duration: 1 } },
   };
 
   const buttonVariants = {
@@ -109,7 +109,7 @@ const HeroSection = () => {
             src={img}
             alt="Description"
           />
-          <div className="absolute inset-0 -z-[1] bg-gradient-to-tr from-gray-200 via-white/0 to-white/0 w-full h-full rounded-md mt-4 -mb-4 me-4 -ms-4 lg:mt-6 lg:-mb-6 lg:me-6 lg:-ms-6 darkFromSlate"></div>
+          {/* <div className="absolute inset-0 -z-[1] bg-gradient-to-tr from-gray-200 via-white/0 to-white/0 w-full h-full rounded-md mt-4 -mb-4 me-4 -ms-4 lg:mt-6 lg:-mb-6 lg:me-6 lg:-ms-6 darkFromSlate"></div> */}
         </motion.div>
       </div>
     </motion.div>

@@ -1,6 +1,6 @@
 import Modal from "react-modal";
 import React, { useEffect, useState } from "react";
-import { Flex, Progress } from "antd";
+import { Progress } from "antd";
 
 const ProgressBar = ({ isLoading }) => {
   const [progress, setProgress] = useState(0);

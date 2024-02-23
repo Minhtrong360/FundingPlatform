@@ -774,26 +774,25 @@ const Z = () => {
   const { Text } = Typography;
 
   const Gemini = () => {
-    const [messages, setMessages] = useState([]);
+    // const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState("");
     const [websocket, setWebsocket] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
+    const ws = new WebSocket("wss://news-fetcher-8k6m.onrender.com/ws");
+    // ws.onopen = () => {
+    //   console.log("WebSocket connected");
+    // };
+
     useEffect(() => {
       try {
-        const ws = new WebSocket("wss://news-fetcher-8k6m.onrender.com/ws");
-
-        ws.onopen = () => {
-          console.log("WebSocket connected");
-        };
-
         ws.onmessage = (event) => {
           const responseText = event.data;
 
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            { role: "gemini", text: responseText },
-          ]);
+          // setMessages((prevMessages) => [
+          //   ...prevMessages,
+          //   { role: "gemini", text: responseText },
+          // ]);
           setIsLoading(false);
           // Remove backticks from the constant responseText
           const cleanedResponseText = responseText.replace(/json|`/g, "");
@@ -803,9 +802,9 @@ const Z = () => {
 
         setWebsocket(ws);
 
-        return () => {
-          ws.close();
-        };
+        // return () => {
+        //   ws.close();
+        // };
       } catch (error) {
         console.error("Error establishing WebSocket connection:", error);
       }
@@ -820,10 +819,10 @@ const Z = () => {
         setIsLoading(true);
         if (websocket && inputValue.trim() !== "") {
           const userMessage = `{ "DurationSelect": { "selectedDuration": "5 years", "startingCashBalance": 20000, "status": "active", "industry": "retail", "incomeTax": 25, "payrollTax": 12, "currency": "USD" }, "CustomerSection": { "customerInputs": [ { "customersPerMonth": 500, "growthPerMonth": 5, "channelName": "In-Store", "beginMonth": 1, "endMonth": 60 }, { "customersPerMonth": 200, "growthPerMonth": 10, "channelName": "Online Delivery", "beginMonth": 6, "endMonth": 60 } ] }, "SalesSection": { "channelInputs": [ { "productName": "Coffee", "price": 5, "multiples": 1, "txFeePercentage": 0, "cogsPercentage": 30, "selectedChannel": "In-Store", "channelAllocation": 0.6 }, { "productName": "Pastries", "price": 4, "multiples": 1, "txFeePercentage": 0, "cogsPercentage": 50, "selectedChannel": "In-Store", "channelAllocation": 0.4 }, { "productName": "Coffee Subscription", "price": 20, "multiples": 1, "txFeePercentage": 5, "cogsPercentage": 25, "selectedChannel": "Online Delivery", "channelAllocation": 1 } ], "channelNames": [ "In-Store", "Online Delivery" ] }, "CostSection": { "costInputs": [ { "costName": "Rent", "costValue": 3000, "growthPercentage": 3, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" }, { "costName": "Utilities", "costValue": 500, "growthPercentage": 4, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" } ] }, "PersonnelSection": { "personnelInputs": [ { "jobTitle": "Barista", "salaryPerMonth": 2500, "numberOfHires": 3, "jobBeginMonth": 1, "jobEndMonth": 60 }, { "jobTitle": "Manager", "salaryPerMonth": 4000, "numberOfHires": 1, "jobBeginMonth": 1, "jobEndMonth": 60 } ] }, "InvestmentSection": { "investmentInputs": [ { "purchaseName": "Espresso Machine", "assetCost": 8000, "quantity": 2, "purchaseMonth": 1, "residualValue": 800, "usefulLifetime": 60 }, { "purchaseName": "Furniture", "assetCost": 10000, "quantity": 1, "purchaseMonth": 1, "residualValue": 1000, "usefulLifetime": 60 } ] }, "LoanSection": { "loanInputs": [ { "loanName": "Equipment Loan", "loanAmount": 15000, "interestRate": 4, "loanBeginMonth": 1, "loanEndMonth": 60 } ] } } create a json file like this for a ${inputValue}, return only json file`;
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            { role: "user", text: userMessage },
-          ]);
+          // setMessages((prevMessages) => [
+          //   ...prevMessages,
+          //   { role: "user", text: userMessage },
+          // ]);
           websocket.send(userMessage);
           setInputValue("");
         }
@@ -848,18 +847,6 @@ const Z = () => {
         {/* <LoadingButtonClick isLoading={isLoading} /> */}
         <ProgressBar isLoading={isLoading} />
 
-        <div className="messages-container">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`rounded-md border-2 border-slate-300 hover:border-blue-400 ${
-                message.role === "user" ? "bg-white " : "bg-white"
-              } p-4 mb-2`}
-            >
-              {/* <Text className="text-black">{message.text}</Text> */}
-            </div>
-          ))}
-        </div>
         <div className="input-container p-4">
           <h2 className="text-lg font-semibold mb-4">
             What business do you want to start with?
@@ -925,8 +912,6 @@ const Z = () => {
     // Ensure chatbotResponse is only processed when it's a valid string
     if (!chatbotResponse || chatbotResponse.trim() === "") return;
 
-    console.log("chatbotResponse", chatbotResponse);
-
     try {
       const data = JSON.parse(chatbotResponse);
 
@@ -944,11 +929,14 @@ const Z = () => {
         setInvestmentInputs(data.InvestmentSection.investmentInputs);
       if (data.LoanSection) setLoanInputs(data.LoanSection.loanInputs);
 
-      setChatbotResponse(
-        (prevResponse) => `${prevResponse}\n${data.geminiResponse}`
-      );
+      // setChatbotResponse(
+      //   (prevResponse) => `${prevResponse}\n${data.geminiResponse}`
+      // );
+      // console.log("data", data);
+      // console.log("data.geminiResponse", data.geminiResponse);
+      // console.log("chatbotResponse", chatbotResponse);
     } catch (error) {
-      console.error("Error parsing JSON:", error);
+      console.log("Error parsing JSON:", error);
       // Handle error or notify user here
     }
   }, [chatbotResponse]);
@@ -1638,7 +1626,6 @@ const Z = () => {
       revenueTableData.push(cogsRow);
       revenueTableData.push(netRevenueRow);
       revenueTableData.push(grossProfitRow);
-      console.log(revenueTableData);
     }
   });
 
@@ -1675,7 +1662,7 @@ const Z = () => {
   const transformCostDataForTable = () => {
     const transformedData = {};
     const calculatedCostData = calculateCostData();
-    // console.log("calculatedCostData", calculatedCostData);
+
     calculatedCostData.forEach((costItem) => {
       const rowKey = `${costItem.costType} - ${costItem.costName}`;
       costItem.monthlyCosts.forEach((monthData) => {
@@ -1860,12 +1847,8 @@ const Z = () => {
     series: [],
   });
 
-  console.log("Object.values(transformedData)", transformedData);
-  console.log("customerGrowthData", customerGrowthData);
-
   useEffect(() => {
     const seriesData = customerGrowthData.map((channelData) => {
-      console.log("channelData", channelData);
       return {
         name: channelData[0]?.channelName || "Unknown Channel",
         data: channelData.map((data) => data.customers),

@@ -6,6 +6,7 @@ import countries from "../../components/Country";
 import AlertMsg from "../../components/AlertMsg";
 import industries from "../../components/Industries";
 import MultiSelectField from "../../components/MultiSelectField";
+import ImageUpload from "../../components/cropImage/ImageUpload";
 
 function CompanyTest({
   handleSubmit,
@@ -112,15 +113,7 @@ function CompanyTest({
                   type="text"
                   required
                 />
-                <InputField
-                  label="Profile image url (>700*800 recommended)"
-                  id="project_url"
-                  name="project_url"
-                  value={formData.project_url}
-                  onChange={handleInputChange}
-                  type="text"
-                  required
-                />
+                <ImageUpload />
                 <InputField
                   label="Profile image url (>716*384 recommended)"
                   id="card_url"

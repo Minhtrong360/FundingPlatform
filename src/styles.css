@@ -26,10 +26,10 @@
   --N40: #dfe1e6; /* Light neutral used for subtle borders and text on dark background */
 }
 
-.crop-container {
+/* .crop-container {
   position: relative;
-  width: 236px;
-  height: 236px;
+  width: 296px;
+  height: 366px;
 
   background: linear-gradient(to right, #cbd4e1 8px, transparent 8px) 0 0,
     linear-gradient(to right, #cbd4e1 8px, transparent 8px) 0 100%,
@@ -42,7 +42,7 @@
 
   background-repeat: no-repeat;
   background-size: 70px 70px;
-}
+} */
 .reactEasyCrop_CropArea {
   color: rgba(255, 255, 255, 0.8) !important;
 }

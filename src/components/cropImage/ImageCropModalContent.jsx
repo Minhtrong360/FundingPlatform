@@ -5,7 +5,12 @@ import Cropper from "./Cropper";
 import { RotationSlider, ZoomSlider } from "./Sliders";
 import Button from "./Button";
 
-const ImageCropModalContent = ({ handleDone, handleClose }) => {
+const ImageCropModalContent = ({
+  handleDone,
+  handleClose,
+  cropWidth,
+  cropHeight,
+}) => {
   const { setImage } = useImageCropContext();
 
   const handleFileChange = async ({ target: { files } }) => {
@@ -20,7 +25,7 @@ const ImageCropModalContent = ({ handleDone, handleClose }) => {
       <div className="border border-dashed border-gray-200 p-6 rounded-lg">
         <div className="flex justify-center">
           <div className="crop-container mb-4">
-            <Cropper />
+            <Cropper cropWidth={cropWidth} cropHeight={cropHeight} />
           </div>
         </div>
         <ZoomSlider className="mb-4" />

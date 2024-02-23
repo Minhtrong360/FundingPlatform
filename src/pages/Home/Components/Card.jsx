@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import ResizeImage from "../../../components/ResizeImage";
+
 import ImageCrop from "../../../components/cropImage/ImageCrop";
 import { useEffect, useState } from "react";
 import { supabase } from "../../../supabase";
+import ResizeImage from "../../../components/ResizeImage";
 
 const Card = ({
   title,
@@ -11,6 +12,8 @@ const Card = ({
   buttonText,
   project_id,
   canClick,
+  formData,
+  setFormData,
 }) => {
   const navigate = useNavigate();
   const [project, setProject] = useState(null);
@@ -45,22 +48,21 @@ const Card = ({
 
   return (
     <div className="max-w-sm bg-white border  rounded-lg shadow darkBgBlue darkBorderGray  hover:border-transparent hover:shadow-lg transition-all duration-300">
-      {canClick !== false ? (
-        <ResizeImage
-          className="rounded-t-lg max-h-96"
-          imageUrl={imageUrl}
-          width={683}
-          height={384}
-          onClick={() => navigate(`/founder/${project_id}`)}
+      {canClick === false ? (
+        <ImageCrop
+          initImage={imageUrl}
+          previewWidth={382}
+          previewHeight={215}
+          cropWidth={191}
+          cropHeight={108}
+          name="cardImage"
+          formData={formData}
+          setFormData={setFormData}
         />
       ) : (
-        <ResizeImage
-          className="rounded-t-lg max-h-96"
-          imageUrl={imageUrl}
-          width={683}
-          height={384}
-        />
+        <ResizeImage imageUrl={imageUrl} width={382} height={215} />
       )}
+
       <div className="p-5">
         <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 darkTextWhite">
           {title}

@@ -2,13 +2,11 @@ import { useState } from "react";
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 
-function App() {
+function ImageUpload() {
   const [src, setSrc] = useState(null);
   const [crop, setCrop] = useState({ aspect: 16 / 9 });
   const [image, setImage] = useState(null);
   const [output, setOutput] = useState(null);
-
-  console.log("image", image);
 
   const selectImage = (file) => {
     setSrc(URL.createObjectURL(file));
@@ -47,7 +45,7 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div className="ImageUpload">
       <center>
         <input
           type="file"
@@ -80,4 +78,4 @@ function App() {
   );
 }
 
-export default App;
+export default ImageUpload;

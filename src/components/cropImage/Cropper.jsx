@@ -1,7 +1,7 @@
 import EasyCropper from "react-easy-crop";
 import { useImageCropContext } from "./ImageDropProvider";
 
-const Cropper = () => {
+const Cropper = ({ cropWidth, cropHeight }) => {
   const {
     image,
     zoom,
@@ -19,20 +19,20 @@ const Cropper = () => {
       crop={crop}
       zoom={zoom}
       rotation={rotation}
-      cropShape="round"
-      aspect={1}
+      cropShape="rect"
+      aspect={cropWidth / cropHeight}
       onCropChange={setCrop}
       onCropComplete={onCropComplete}
       onZoomChange={setZoom}
       setRotation={setRotation}
-      showGrid={false}
-      cropSize={{ width: 185, height: 185 }}
+      showGrid={true}
+      cropSize={{ width: cropWidth, height: cropHeight }}
       style={{
         containerStyle: {
-          height: 220,
-          width: 220,
-          top: 8,
-          bottom: 8,
+          width: 270,
+          height: 320,
+          top: 16,
+          bottom: 16,
           left: 8,
           right: 8,
         },

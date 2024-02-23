@@ -23,22 +23,18 @@ import LinkedInLoginComponent from "../pages/Login/linkedin";
 import DashBoardPage from "../pages/DashBoard/DashBoardPage";
 import CompanySetting from "../pages/FounderGitbook/CompanySetting";
 import News from "../pages/News/News";
-import LoadingButtonClick from "../components/LoadingButtonClick";
+
 import X from "../pages/test01";
 import Y from "../pages/test02";
 import FinancialPage from "../pages/FinalcialPage/FinancialPage";
-import FinancialList from "../pages/FinalcialPage/FinancialList";
+
 import Z from "../pages/test03";
 
-import ImageUploader from "../components/cropImage/ImageUpload";
-import ImageCrop from "../components/cropImage/ImageCrop";
-import PermissionRequired from "./PermissionRequired";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { supabase } from "../supabase";
 import ProgressBar from "../components/ProgressBar";
-import AnnouncePage from "../components/AnnouncePage";
 
 function Router() {
   const { user } = useAuth();
@@ -157,16 +153,7 @@ function Router() {
         <Route path="/X" element={<X />} />
         <Route path="/Y" element={<Y />} />
         <Route path="/Z" element={<Z />} />
-        <Route
-          path="/W"
-          element={
-            <AnnouncePage
-              title="Subscription Required"
-              announce="Financial model helps you build your business plan and you need to subscribe."
-              describe="This is our special feature that helps startups or new businesses build their business plans. We provide tools with AI to build your BS, IS, FS... Please upgrade your plan to experience this exciting feature"
-            />
-          }
-        />
+
         <Route path="/loading" element={<ProgressBar isLoading={true} />} />
       </Routes>
     </>

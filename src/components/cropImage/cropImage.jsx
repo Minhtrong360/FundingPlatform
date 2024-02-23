@@ -34,8 +34,10 @@ export function rotateSize(width, height, rotation) {
 }
 
 const getCroppedImg = async (
+  previewWidth,
+  previewHeight,
   imageSrc,
-  pixelCrop = { x: 0, y: 0 },
+  pixelCrop = { x: 0, y: 0, width: 1, height: 1 }, // Sửa đổi để mặc định pixelCrop là toàn bộ ảnh
   rotation = 0,
   flip = { horizontal: false, vertical: false }
 ) => {
@@ -47,48 +49,43 @@ const getCroppedImg = async (
     return null;
   }
 
-  const rotRad = getRadianAngle(rotation);
+  // Tính toán kích thước mới cho vùng crop sao cho tỷ lệ là 7:8
+  const targetWidth = previewWidth;
+  const targetHeight = previewHeight;
+  const targetRatio = targetWidth / targetHeight;
 
-  // calculate bounding box of the rotated image
-  const { width: bBoxWidth, height: bBoxHeight } = rotateSize(
-    image.width,
-    image.height,
-    rotation
+  let newWidth = pixelCrop.width;
+  let newHeight = pixelCrop.height;
+
+  if (pixelCrop.width / pixelCrop.height > targetRatio) {
+    newWidth = pixelCrop.height * targetRatio;
+  } else {
+    newHeight = pixelCrop.width / targetRatio;
+  }
+
+  const newCrop = {
+    x: pixelCrop.x + (pixelCrop.width - newWidth) / 2,
+    y: pixelCrop.y + (pixelCrop.height - newHeight) / 2,
+    width: newWidth,
+    height: newHeight,
+  };
+
+  // Tiến hành crop ảnh với vùng crop mới tính toán được
+  canvas.width = targetWidth;
+  canvas.height = targetHeight;
+  ctx.drawImage(
+    image,
+    newCrop.x,
+    newCrop.y,
+    newCrop.width,
+    newCrop.height,
+    0,
+    0,
+    targetWidth,
+    targetHeight
   );
 
-  // set canvas size to match the bounding box
-  canvas.width = bBoxWidth;
-  canvas.height = bBoxHeight;
-
-  // translate canvas context to a central location to allow rotating and flipping around the center
-  ctx.translate(bBoxWidth / 2, bBoxHeight / 2);
-  ctx.rotate(rotRad);
-  ctx.scale(flip.horizontal ? -1 : 1, flip.vertical ? -1 : 1);
-  ctx.translate(-image.width / 2, -image.height / 2);
-
-  // draw rotated image
-  ctx.drawImage(image, 0, 0);
-
-  // croppedAreaPixels values are bounding box relative
-  // extract the cropped image using these values
-  const data = ctx.getImageData(
-    pixelCrop.x,
-    pixelCrop.y,
-    pixelCrop.width,
-    pixelCrop.height
-  );
-
-  // set canvas width to final desired crop size - this will clear existing context
-  canvas.width = pixelCrop.width;
-  canvas.height = pixelCrop.height;
-
-  // paste generated rotate image at the top left corner
-  ctx.putImageData(data, 0, 0);
-
-  // As Base64 string
-  // return canvas.toDataURL('image/jpeg');
-
-  // As a blob
+  // Return ảnh đã crop
   return new Promise((resolve) => {
     canvas.toBlob((file) => {
       resolve({ file, url: URL.createObjectURL(file) });

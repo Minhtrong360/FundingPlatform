@@ -328,17 +328,21 @@ function CompanySetting() {
         {" "}
         {/* Sử dụng lg:col-span-2 để các div còn lại chiếm 2/3 */}
         <div className="flex flex-col">
-          <HeroSection
-            formData={formData}
-            title={formData.companyName}
-            description={formData.companyDescription}
-            button1Text={formData.targetAmount}
-            button2Text={formData.minTicketSize}
-            button3Text={formData.noTicket}
-            button4Text={formData.offer}
-            button5Text={formData.typeOffering}
-            imageUrl={formData.project_url}
-          />
+          <div>
+            <HeroSection
+              formData={formData}
+              title={formData.companyName}
+              description={formData.companyDescription}
+              button1Text={formData.targetAmount}
+              button2Text={formData.minTicketSize}
+              button3Text={formData.noTicket}
+              button4Text={formData.offer}
+              button5Text={formData.typeOffering}
+              imageUrl={formData.project_url}
+              setFormData={setFormData}
+              canClick={canClick}
+            />
+          </div>
 
           <hr className="mt-16 border-dashed border-gray-400" />
 
@@ -350,6 +354,8 @@ function CompanySetting() {
               buttonText="Read more"
               project_id={id}
               canClick={canClick}
+              formData={formData}
+              setFormData={setFormData}
             />
           </div>
         </div>

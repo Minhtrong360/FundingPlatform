@@ -779,7 +779,8 @@ const Z = () => {
     const [websocket, setWebsocket] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    const ws = new WebSocket("wss://news-fetcher-8k6m.onrender.com/ws");
+    const ws = new WebSocket("wss://fastapi-example-l5fo.onrender.com/ws");
+    
     // ws.onopen = () => {
     //   console.log("WebSocket connected");
     // };
@@ -788,6 +789,8 @@ const Z = () => {
       try {
         ws.onmessage = (event) => {
           const responseText = event.data;
+          console.log("Response from WebSocket:", responseText);
+
 
           // setMessages((prevMessages) => [
           //   ...prevMessages,
@@ -823,6 +826,7 @@ const Z = () => {
           //   ...prevMessages,
           //   { role: "user", text: userMessage },
           // ]);
+          console.log(userMessage)
           websocket.send(userMessage);
           setInputValue("");
         }

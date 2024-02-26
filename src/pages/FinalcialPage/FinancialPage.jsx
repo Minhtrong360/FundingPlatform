@@ -39,7 +39,7 @@ function FinancialPage({ subscribed }) {
 
     // Gọi hàm fetchUserData khi component được mount
     fetchUserData();
-  }, [user?.id, user.created_at]); // Sử dụng user.id làm phần tử phụ thuộc để useEffect được gọi lại khi user.id thay đổi
+  }, [user?.id]); // Sử dụng user.id làm phần tử phụ thuộc để useEffect được gọi lại khi user.id thay đổi
 
   return (
     <div className=" bg-white darkBg antialiased !p-0">

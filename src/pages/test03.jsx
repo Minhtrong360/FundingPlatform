@@ -12,6 +12,9 @@ import Chart from "react-apexcharts";
 import { Typography } from "antd";
 import LoadingButtonClick from "../components/LoadingButtonClick";
 import ProgressBar from "../components/ProgressBar";
+import { toast } from "react-toastify";
+import { supabase } from "../supabase";
+import AlertMsg from "../components/AlertMsg";
 
 //JSON
 
@@ -754,7 +757,7 @@ const LoanSection = ({
   );
 };
 
-const Z = () => {
+const Z = ({ currentUser, setCurrentUser }) => {
   const [selectedDuration, setSelectedDuration] = useState("3 years");
   //DurationSection
   const [chatbotResponse, setChatbotResponse] = useState("");
@@ -766,8 +769,6 @@ const Z = () => {
   const [personnelSection, setPersonnelSection] = useState({});
   const [investmentSection, setInvestmentSection] = useState({});
   const [loanSection, setLoanSection] = useState({});
-
-  const [isLoading, setIsLoading] = useState(false);
 
   // gemini
 
@@ -801,6 +802,7 @@ const Z = () => {
           const cleanedResponseText = responseText.replace(/json|`/g, "");
           // Set the chatbot response to the latest messag
           setChatbotResponse(cleanedResponseText);
+          saveUserData();
         };
 
         setWebsocket(ws);
@@ -817,7 +819,7 @@ const Z = () => {
       setInputValue(e.target.value);
     };
 
-    const handleSendMessage = () => {
+    const handleSendMessage = async () => {
       try {
         setIsLoading(true);
         if (websocket && inputValue.trim() !== "") {
@@ -835,6 +837,33 @@ const Z = () => {
       }
     };
 
+    async function saveUserData() {
+      try {
+        // Thực hiện truy vấn để lấy thông tin người dùng theo id (điều này cần được thay đổi dựa trên cấu trúc dữ liệu của bạn trong Supabase)
+        const currentPrompt = currentUser.financePromptNumber - 1;
+        if (currentPrompt <= 0) {
+          toast.warning("Prompt per hour limited. Let return after an hour.");
+        } else {
+          const { data, error } = await supabase
+            .from("users")
+            .update({ financePromptNumber: currentPrompt })
+            .eq("id", currentUser.id)
+            .select();
+
+          if (error) {
+            throw error;
+          }
+
+          // Cập nhật state userData với thông tin người dùng đã lấy được
+          if (data) {
+            setCurrentUser(data[0]);
+          }
+        }
+      } catch (error) {
+        toast.error(error);
+      }
+    }
+
     const handleExit = () => {
       try {
         if (websocket) {
@@ -850,6 +879,7 @@ const Z = () => {
       <div className="w-1/2 mx-auto ">
         {/* <LoadingButtonClick isLoading={isLoading} /> */}
         <ProgressBar isLoading={isLoading} />
+        <AlertMsg />
 
         <div className="input-container p-4">
           <h2 className="text-lg font-semibold mb-4">

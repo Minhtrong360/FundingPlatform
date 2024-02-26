@@ -22,6 +22,13 @@ const ProgressBar = ({ isLoading }) => {
   }, [loadingInterval]); // Re-run effect when loadingInterval changes
 
   useEffect(() => {
+    // Reset progress to 0 when isLoading becomes true
+    if (isLoading) {
+      setProgress(0);
+    }
+  }, [isLoading]);
+
+  useEffect(() => {
     // Adjust interval based on isLoading status
     setLoadingInterval(isLoading ? 200 : 2000); // Example: 200ms when loading, 2000ms when not loading
   }, [isLoading]);

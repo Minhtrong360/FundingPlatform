@@ -35,6 +35,8 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { supabase } from "../supabase";
 import ProgressBar from "../components/ProgressBar";
+import ImageCrop from "../components/cropImage/ImageCrop";
+import ImageCropper from "../components/ImageCropper";
 
 function Router() {
   const { user } = useAuth();
@@ -153,6 +155,7 @@ function Router() {
         <Route path="/X" element={<X />} />
         <Route path="/Y" element={<Y />} />
         <Route path="/Z" element={<Z />} />
+        <Route path="/W" element={<ImageCropper />} />
 
         <Route path="/loading" element={<ProgressBar isLoading={true} />} />
       </Routes>

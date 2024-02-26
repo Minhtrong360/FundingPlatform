@@ -99,8 +99,16 @@ const HeroSection = ({
           </div>
         </div>
 
-        <div className="relative">
-          {canClick === false ? (
+        <div className="relative ">
+          {/* <div class=" relative  pt-[50%] sm:pt-[70%] rounded-lg overflow-hidden">
+            <img
+              class=" h-full w-full  absolute top-0 start-0 object-cover  transition-transform duration-500 ease-in-out "
+              src={imageUrl}
+              alt="Project Description"
+            />
+          </div> */}
+
+          {/* {canClick === false ? (
             <ImageCrop
               initImage={imageUrl}
               previewWidth={600}
@@ -111,9 +119,15 @@ const HeroSection = ({
               formData={formData}
               setFormData={setFormData}
             />
-          ) : (
-            <ResizeImage imageUrl={imageUrl} width={700} height={800} />
-          )}
+          ) : ( */}
+          <img
+            src={imageUrl}
+            width={700}
+            height={800}
+            className="object-cover"
+            alt=""
+          />
+          {/* )} */}
 
           <div className="absolute inset-0 -z-[1] bg-gradient-to-tr from-gray-200 via-white/0 to-white/0 w-full h-full rounded-md mt-4 -mb-4 me-4 -ms-4 lg:mt-6 lg:-mb-6 lg:me-6 lg:-ms-6 darkFromSlate"></div>
         </div>

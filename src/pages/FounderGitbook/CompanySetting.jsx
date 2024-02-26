@@ -149,6 +149,27 @@ function CompanySetting() {
         setIsLoading(false);
         return;
       }
+
+      // Upload ảnh project_url nếu có
+      let projectUrl = formData.project_url;
+      if (projectUrl && projectUrl.startsWith("data:image")) {
+        const file = dataURItoFile(projectUrl, "img");
+        const uploadedProjectUrl = await uploadImageToSupabase(file);
+        if (uploadedProjectUrl) {
+          projectUrl = uploadedProjectUrl;
+        }
+      }
+
+      // Upload ảnh card_url nếu có
+      let cardUrl = formData.card_url;
+      if (cardUrl && cardUrl.startsWith("data:image")) {
+        const file = dataURItoFile(cardUrl, "card_image.jpg");
+        const uploadedCardUrl = await uploadImageToSupabase(file);
+        if (uploadedCardUrl) {
+          cardUrl = uploadedCardUrl;
+        }
+      }
+
       // Kiểm tra xem công ty đã tồn tại trong Supabase chưa bằng cách truy vấn theo project_id
       const { data: existingCompany, error: existingCompanyError } =
         await supabase.from("company").select("*").eq("project_id", params.id);
@@ -185,8 +206,8 @@ function CompanySetting() {
                   ? parseInt(formData.noTicket.replace(/,/g, ""), 10)
                   : formData.noTicket,
               offer: formData.offer,
-              project_url: formData.project_url,
-              card_url: formData.card_url,
+              project_url: projectUrl,
+              card_url: cardUrl,
               website: formData.website,
               description: formData.companyDescription,
               user_id: user.id,
@@ -227,8 +248,8 @@ function CompanySetting() {
                   ? parseInt(formData.noTicket.replace(/,/g, ""), 10)
                   : formData.noTicket,
               offer: formData.offer,
-              project_url: formData.project_url,
-              card_url: formData.card_url,
+              project_url: projectUrl,
+              card_url: cardUrl,
               website: formData.website,
               description: formData.companyDescription,
               user_id: user.id,
@@ -292,6 +313,45 @@ function CompanySetting() {
       ...formData,
       industry: selectedItems,
     });
+  };
+
+  // Hàm để tải ảnh lên Supabase storage
+  const uploadImageToSupabase = async (file) => {
+    try {
+      const { data, error } = await supabase.storage
+        .from("beekrowd_storage") // Chọn bucket
+        .upload(`beekrowd_images/${file.name}`, file); // Lưu ảnh vào folder beekrowd_images
+
+      if (error) {
+        console.error("Error uploading image to Supabase:", error);
+        return null;
+      }
+
+      // Trả về liên kết ảnh từ Supabase
+      // Lấy URL của ảnh đã lưu
+
+      const imageUrl = `https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/${data.fullPath}`;
+
+      return imageUrl;
+    } catch (error) {
+      console.error("Error uploading image to Supabase:", error);
+      return null;
+    }
+  };
+
+  // Hàm chuyển đổi data URI thành File object
+  // Hàm chuyển đổi data URI thành File object
+  const dataURItoFile = (dataURI, fileNamePrefix) => {
+    const byteString = atob(dataURI.split(",")[1]);
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    const extension = dataURI.split(",")[0].split("/")[1].split(";")[0]; // Lấy phần mở rộng của tệp từ data URI
+    const fileName = `${fileNamePrefix}-${Date.now()}.${extension}`; // Tạo tên tệp duy nhất với ngày giờ hiện tại và phần mở rộng
+    const blob = new Blob([ab], { type: `image/${extension}` });
+    return new File([blob], fileName, { type: `image/${extension}` });
   };
 
   if (viewError) {

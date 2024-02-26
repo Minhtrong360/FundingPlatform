@@ -148,7 +148,11 @@ function Router() {
 
         <Route
           path="/financials"
-          element={<FinancialPage subscribed={subscribed} />}
+          element={
+            <AuthRequire message="Sign in required!">
+              <FinancialPage subscribed={subscribed} />
+            </AuthRequire>
+          }
         />
         {/* <Route path="/financialList" element={<FinancialList />} /> */}
         <Route path="/news" element={<News />} />

@@ -35,8 +35,8 @@ code {
 
 .crop-container {
   position: relative;
-  width: 236px;
-  height: 236px;
+  width: 296px;
+  height: 350px;
 
   background: linear-gradient(to right, #cbd4e1 8px, transparent 8px) 0 0,
     linear-gradient(to right, #cbd4e1 8px, transparent 8px) 0 100%,

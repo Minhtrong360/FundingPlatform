@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import ResizeImage from "../../../components/ResizeImage";
+
 import ImageCrop from "../../../components/cropImage/ImageCrop";
 import { useEffect, useState } from "react";
 import { supabase } from "../../../supabase";
+import ResizeImage from "../../../components/ResizeImage";
 
 const Card = ({
   title,
@@ -11,6 +12,8 @@ const Card = ({
   buttonText,
   project_id,
   canClick,
+  formData,
+  setFormData,
 }) => {
   const navigate = useNavigate();
   const [project, setProject] = useState(null);
@@ -45,22 +48,26 @@ const Card = ({
 
   return (
     <div className="max-w-sm bg-white border  rounded-lg shadow darkBgBlue darkBorderGray  hover:border-transparent hover:shadow-lg transition-all duration-300">
-      {canClick !== false ? (
-        <ResizeImage
-          className="rounded-t-lg max-h-96"
-          imageUrl={imageUrl}
-          width={683}
-          height={384}
-          onClick={() => navigate(`/founder/${project_id}`)}
-        />
-      ) : (
-        <ResizeImage
-          className="rounded-t-lg max-h-96"
-          imageUrl={imageUrl}
-          width={683}
-          height={384}
-        />
-      )}
+      <div class=" relative  pt-[50%] sm:pt-[70%] rounded-lg overflow-hidden">
+        {canClick !== false ? (
+          <img
+            class=" h-full w-full  absolute top-0 start-0 object-cover transition-transform duration-500 ease-in-out "
+            src={imageUrl}
+            alt="Company Description"
+            onClick={() => navigate(`/founder/${project_id}`)}
+          />
+        ) : (
+          <img
+            class=" h-full w-full  absolute top-0 start-0 object-cover transition-transform duration-500 ease-in-out "
+            src={imageUrl}
+            alt="Company Description"
+          />
+        )}
+        {/* <span class="absolute top-0 end-0 rounded-se-xl rounded-es-xl text-xs font-medium bg-green-700 text-white py-1.5 px-3 dark:bg-gray-900">
+          Verified by BeeKrowd
+        </span> */}
+      </div>
+
       <div className="p-5">
         <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 darkTextWhite">
           {title}

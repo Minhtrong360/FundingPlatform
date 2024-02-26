@@ -104,8 +104,6 @@ export default function EditorTool() {
   const params = useParams();
   const { user } = useAuth();
 
-  console.log("currentProject", currentProject);
-
   useEffect(() => {
     // Hàm để lấy dữ liệu Markdown từ cơ sở dữ liệu
     async function fetchMarkdown() {

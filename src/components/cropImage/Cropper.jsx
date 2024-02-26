@@ -19,22 +19,23 @@ const Cropper = () => {
       crop={crop}
       zoom={zoom}
       rotation={rotation}
-      cropShape="round"
-      aspect={1}
+      cropShape="rect"
+      aspect={6 / 7} // Set the aspect ratio to 6/7
       onCropChange={setCrop}
       onCropComplete={onCropComplete}
       onZoomChange={setZoom}
-      setRotation={setRotation}
-      showGrid={false}
-      cropSize={{ width: 185, height: 185 }}
+      onRotationChange={setRotation} // Corrected to onRotationChange for consistency with react-easy-crop API, if applicable
+      showGrid={true}
+      cropSize={{ width: 240, height: 280 }} // Set the crop frame to 240x280
       style={{
         containerStyle: {
-          height: 220,
-          width: 220,
-          top: 8,
-          bottom: 8,
-          left: 8,
-          right: 8,
+          width: "300px", // Set the outer container width to 300
+          height: "350px", // Set the outer container height to 350
+          position: "relative", // Ensure the container is positioned relatively for internal positioning
+        },
+        cropAreaStyle: {
+          width: "240px", // Optional: Style adjustments if needed for the crop area specifically
+          height: "280px",
         },
       }}
     />

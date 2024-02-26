@@ -840,10 +840,16 @@ const Z = ({ currentUser, setCurrentUser }) => {
         if (currentPrompt <= 0) {
           toast.warning("Prompt per hour limited. Let return after an hour.");
         } else {
+          if (currentPrompt === 99) {
+            await supabase
+              .from("users")
+              .update({ financeFirstPrompt: Date.now() })
+              .eq("id", currentUser?.id);
+          }
           const { data, error } = await supabase
             .from("users")
             .update({ financePromptNumber: currentPrompt })
-            .eq("id", currentUser.id)
+            .eq("id", currentUser?.id)
             .select();
 
           if (error) {

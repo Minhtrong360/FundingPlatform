@@ -44,7 +44,7 @@ const Modal = ({ isOpen, onClose, fileId }) => {
           owner_email: fileData.owner_email,
           project_id: fileData.project_id,
         });
-
+        console.log("currentInvitedUsers", currentInvitedUsers);
         // Tiến hành cập nhật trường "invited_user" của bảng "files" với danh sách mới
         const { error: updateError } = await supabase
           .from("files")

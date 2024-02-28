@@ -116,18 +116,25 @@ const NewProjectPosts = () => {
         ) : (
           <>
             <div className="mt-24 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
-              {filteredCompanies.map((company) => (
-                <div key={company.id} className="flex justify-center">
-                  <Card
-                    key={company.id}
-                    title={company.name}
-                    description={company.description}
-                    imageUrl={company.card_url}
-                    buttonText="Read more"
-                    project_id={company.project_id}
-                  />
-                </div>
-              ))}
+              {[...Array(itemsPerPage)].map((_, index) => {
+                const company = filteredCompanies[index];
+                return (
+                  <div key={index} className="flex justify-center">
+                    {company ? (
+                      <Card
+                        key={company.id}
+                        title={company.name}
+                        description={company.description}
+                        imageUrl={company.card_url}
+                        buttonText="Read more"
+                        project_id={company.project_id}
+                      />
+                    ) : (
+                      <div className="w-[30vw] h-[55vh]"></div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
             <div className="mt-10 flex justify-center">
               <button

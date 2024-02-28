@@ -278,6 +278,8 @@ function FilesList() {
     }
   }, [currentUser]);
 
+  console.log("projectLinks", projectLinks);
+
   return (
     <main className="w-full ml-2">
       <LoadingButtonClick isLoading={isLoading} />

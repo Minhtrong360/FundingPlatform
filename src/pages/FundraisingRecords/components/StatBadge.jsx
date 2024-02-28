@@ -65,11 +65,12 @@ const columns = [
   // },
 ];
 
-const StatBadge = ({ ggData }) => {
+const StatBadge = ({ ggData, setIsLoading }) => {
   const [projectData, setProjectData] = useState([]);
 
   useEffect(() => {
     const fetchProjects = async () => {
+      setIsLoading(true);
       const projectIds = ggData.map((item) => item.id);
       const { data: projects, error } = await supabase
         .from("projects")
@@ -82,9 +83,13 @@ const StatBadge = ({ ggData }) => {
       }
 
       setProjectData(projects);
+      setIsLoading(false);
     };
 
-    fetchProjects();
+    if (ggData.length > 0) {
+      console.log("ggData", ggData);
+      fetchProjects();
+    }
   }, [ggData]);
 
   const data = ggData?.map((item, index) => ({

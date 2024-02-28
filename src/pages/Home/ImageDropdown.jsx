@@ -3,12 +3,60 @@ import { useNavigate } from "react-router-dom";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useAuth } from "../../context/AuthContext";
+import { toast } from "react-toastify";
+import { supabase } from "../../supabase";
 
 const ImageDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const [userData, setUserData] = useState({
+    full_name: "",
+    email: "",
+    plan: "",
+    subscribe: "",
+    company: "",
+    company_website: "",
+    detail: "",
+    roll: "Founder",
+    avatar: null,
+  });
+
+  useEffect(() => {
+    // Tạo một async function để lấy thông tin người dùng từ Supabase
+    async function fetchUserData() {
+      try {
+        if (!navigator.onLine) {
+          // Không có kết nối Internet
+          toast.error("No internet access.");
+          return;
+        }
+
+        // Thực hiện truy vấn để lấy thông tin người dùng theo id (điều này cần được thay đổi dựa trên cấu trúc dữ liệu của bạn trong Supabase)
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("id", user.id) // Thay "id" bằng trường id thực tế trong cơ sở dữ liệu của bạn
+          .single(); // Sử dụng .single() để lấy một bản ghi duy nhất
+
+        if (error) {
+          throw error;
+        }
+
+        // Cập nhật state userData với thông tin người dùng đã lấy được
+        if (data) {
+          setUserData(data);
+        }
+      } catch (error) {
+        toast.error(error.message);
+        console.error("Error fetching user data:", error);
+      }
+    }
+
+    // Gọi hàm fetchUserData khi component được mount
+    fetchUserData();
+  }, [user.id]); // Sử dụng user.id làm phần tử phụ thuộc để useEffect được gọi lại khi user.id thay đổi
 
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -61,6 +109,22 @@ const ImageDropdown = () => {
     };
   }, [isOpen]);
 
+  const [notificationCount, setNotificationCount] = useState(0); // State for the notification count
+  const fetchNotifications = () => {
+    // Fetch notifications and set the count
+    // setNotificationCount(fetchedNotifications.length);
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  const handleClickNotifications = (e) => {
+    navigate("/notifications");
+    handleClickOutside(e);
+    setIsOpen(false);
+  };
+
   return (
     <div className="hs-dropdown relative inline-flex z-30">
       <button
@@ -69,22 +133,18 @@ const ImageDropdown = () => {
         className="hs-dropdown-toggle py-1 ps-1 pe-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-full border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
         onClick={toggleDropdown}
       >
-        {user?.user_metadata?.avatar_url ? (
+        {userData.avatar ? (
           <img
             className="w-8 h-auto rounded-full"
-            src={user?.user_metadata?.avatar_url}
-            alt="Maria"
+            src={userData.avatar}
+            alt={userData.email}
           />
         ) : (
-          <AccountCircleIcon />
+          <AccountCircleIcon fontSize="large" />
         )}
 
         <span className="text-gray-600 font-medium truncate sm:max-w-[7.5rem] max-w-[4rem] darkTextGray">
-          {user?.user_metadata?.email
-            ? user?.user_metadata?.email
-            : user?.email
-            ? user?.email
-            : ""}
+          {userData.email ? userData.email : ""}
         </span>
         <svg
           className={`hs-dropdown-open:${isOpen ? "rotate-180" : ""} w-4 h-4`}
@@ -137,6 +197,18 @@ const ImageDropdown = () => {
           >
             Projects
           </button>
+
+          <button
+            style={{ minWidth: "100%" }}
+            className="hover:cursor-pointer flex items-center justify-between gap-x-3.5 py-1 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
+            onClick={(e) => handleClickNotifications(e)}
+          >
+            <span className="flex items-center gap-x-3.5">Notifications</span>
+            <span className="bg-red-600 text-white px-2 py-0.5 rounded-full text-xs">
+              {notificationCount} {/* Display the notification count here */}
+            </span>
+          </button>
+
           <hr />
           <button
             style={{ minWidth: "100%" }}

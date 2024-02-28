@@ -37,6 +37,7 @@ import { supabase } from "../supabase";
 import ProgressBar from "../components/ProgressBar";
 import ImageCrop from "../components/cropImage/ImageCrop";
 import ImageCropper from "../components/ImageCropper";
+import NotificationsPage from "../pages/Notification/Notification";
 
 function Router() {
   const { user } = useAuth();
@@ -113,6 +114,14 @@ function Router() {
           element={
             <AuthRequire message="Sign in required!">
               <DetailPage />
+            </AuthRequire>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <AuthRequire message="Sign in required!">
+              <NotificationsPage />
             </AuthRequire>
           }
         />

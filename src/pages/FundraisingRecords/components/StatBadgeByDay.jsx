@@ -58,11 +58,12 @@ const columns = [
   // },
 ];
 
-const StatBadgeByDay = ({ ggData }) => {
+const StatBadgeByDay = ({ ggData, setIsLoading }) => {
   const [projectData, setProjectData] = useState([]);
 
   useEffect(() => {
     const fetchProjects = async () => {
+      setIsLoading(true);
       const projectIds = ggData.flatMap((item) =>
         item.reports.map((report) => report.id)
       );
@@ -77,9 +78,11 @@ const StatBadgeByDay = ({ ggData }) => {
       }
 
       setProjectData(projects);
+      setIsLoading(false);
     };
-
-    fetchProjects();
+    if (ggData.length > 0) {
+      fetchProjects();
+    }
   }, [ggData]);
 
   const data = ggData.flatMap((item, index) => {

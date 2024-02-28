@@ -20,7 +20,7 @@ const NavbarButton = ({ children, onClick, className }) => {
   );
 };
 
-const Navbar = () => {
+const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   // const [isHidden, setIsHidden] = useState(false);
   const { user } = useAuth();
@@ -254,4 +254,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default Header;

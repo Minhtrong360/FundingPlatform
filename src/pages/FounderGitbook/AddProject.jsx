@@ -220,7 +220,7 @@ export default function AddProject({ updatedProjects, setUpdatedProjects }) {
       fetchCurrentUser();
     }
   }, [user]);
-  console.log("updatedProjects", updatedProjects);
+
   useEffect(() => {
     if (currentUser && updatedProjects) {
       const hasProjectWithCurrentUser = updatedProjects.some(

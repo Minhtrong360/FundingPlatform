@@ -33,6 +33,7 @@ function UserInfoSettings() {
     interested_in: ["Technology"],
     investment_size: ["0-10,000"],
     country: "US",
+    subscription_status: "",
     type: "Individual", // Default value for type
   });
   const handleIndustryChange = (selectedItems) => {
@@ -71,10 +72,10 @@ function UserInfoSettings() {
           setUserData({
             full_name: data.full_name || "",
             email: data.email || "",
-            plan: data.plan || "",
+            plan: data.plan || "Free",
             subscribe: data.subscribe || "",
             company: data.company || "",
-            company_website: data.website || "",
+            company_website: data.company_website || "",
             detail: data.detail || "",
             roll: data.roll || "Founder",
             avatar: data.avatar || null,
@@ -82,6 +83,7 @@ function UserInfoSettings() {
             investment_size: data.investment_size || ["0-10,000"],
             country: data.country || "US",
             type: data.type || "Individual", // Default value for type
+            subscription_status: data.subscription_status || "",
           });
 
           if (data.subscribe && data.subscription_status === "active") {
@@ -259,6 +261,8 @@ function UserInfoSettings() {
       target: { name: "avatar", value: avatarUrl },
     });
   }, [avatarUrl]);
+
+  console.log("userData.plan", userData);
 
   return (
     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">

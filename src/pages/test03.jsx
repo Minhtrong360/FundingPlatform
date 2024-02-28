@@ -954,14 +954,15 @@ const Z = ({ currentUser, setCurrentUser }) => {
   const [investmentSection, setInvestmentSection] = useState({});
   const [loanSection, setLoanSection] = useState({});
 
-  // gemini
+  const [isLoading, setIsLoading] = useState(false);
 
+  // gemini
+  console.log("isLoading", isLoading);
   const { Text } = Typography;
 
   const Gemini = () => {
     // const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
 
     const handleInputChange = (e) => {
       setInputValue(e.target.value);
@@ -989,7 +990,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
         const cleanedResponseText = data.response.replace(/json|`/g, "");
         // Set the chatbot response to the latest messag
         setChatbotResponse(cleanedResponseText);
-        // saveUserData();
+        saveUserData();
         setIsLoading(false);
       } catch (error) {
         console.error("Error sending message:", error);
@@ -1030,16 +1031,12 @@ const Z = ({ currentUser, setCurrentUser }) => {
             setCurrentUser(data[0]);
           }
         }
-      } catch (error) {
-        toast.error(error);
-      }
+      } catch (error) {}
     }
 
     return (
       <div className="w-1/2 mx-auto ">
         {/* <LoadingButtonClick isLoading={isLoading} /> */}
-        <ProgressBar isLoading={isLoading} />
-        <AlertMsg />
 
         <div className="input-container p-4">
           <h2 className="text-lg font-semibold mb-4">
@@ -1050,7 +1047,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
             value={inputValue}
             onChange={handleInputChange}
             rows={3}
-            placeholder="Fertilizer store"
+            placeholder="Candy shop, pizza restaurant, hospital, HR SaaS software... or anything"
           />
           <button
             className={`p-2 m-4 rounded-md bg-blue-600 text-white 
@@ -2597,217 +2594,231 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
   return (
     <div>
+      <AlertMsg />
+      {isLoading ? (
+        <ProgressBar isLoading={isLoading} />
+      ) : (
+        <>
+          <div className="w-full h-full flex flex-col md:flex-row">
+            <Gemini />
+          </div>
+          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
+            <div className="w-full md:w-1/3 p-4 border-r-2">
+              <DurationSelect
+                selectedDuration={selectedDuration}
+                setSelectedDuration={setSelectedDuration}
+              />
+            </div>
+            <div className="w-full md:w-2/3 p-4"></div>
+          </div>
+
+          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
+            <div className="w-full md:w-1/3 p-4 border-r-2">
+              <CustomerSection
+                customerInputs={customerInputs}
+                addNewCustomerInput={addNewCustomerInput}
+                removeCustomerInput={removeCustomerInput}
+                handleInputChange={handleInputChange}
+              />
+            </div>
+            <div className="w-full md:w-2/3 p-4 ">
+              <h3 className="text-lg font-semibold mb-4">
+                Customer Growth Data by Channel
+              </h3>
+              <Table
+                className="overflow-auto mb-4"
+                dataSource={tableData}
+                columns={columns}
+                pagination={false}
+              />
+              <h3 className="text-lg font-semibold">
+                Customer Growth Data by Channel
+              </h3>
+              <Chart
+                options={customerGrowthChart.options}
+                series={customerGrowthChart.series}
+                type="line"
+                height={350}
+              />
+            </div>
+          </div>
+
+          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
+            <div className="w-full md:w-1/3 p-4 border-r-2 border-r-2">
+              <SalesSection
+                channelInputs={channelInputs}
+                channelNames={channelNames}
+                addNewChannelInput={addNewChannelInput}
+                removeChannelInput={removeChannelInput}
+                handleChannelInputChange={handleChannelInputChange}
+              />
+            </div>
+            <div className="w-full md:w-2/3 p-4">
+              <h3 className="text-lg font-semibold mb-4">
+                Revenue Data by Channel and Product
+              </h3>
+              <Table
+                className="overflow-auto mb-4"
+                dataSource={revenueTableData}
+                columns={revenueColumns}
+                pagination={false}
+              />
+              <h3 className="text-lg font-semibold mb-4">
+                Gross Profit Data by Channel and Product
+              </h3>
+              <Chart
+                options={grossProfit.options}
+                series={grossProfit.series}
+                type="line"
+                height={350}
+              />
+            </div>
+          </div>
+
+          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
+            <div className="w-full md:w-1/3 p-4 border-r-2">
+              <CostSection
+                costInputs={costInputs}
+                addNewCostInput={addNewCostInput}
+                removeCostInput={removeCostInput}
+                handleCostInputChange={handleCostInputChange}
+              />
+            </div>
+            <div className="w-full md:w-2/3 p-4">
+              <h3 className="text-lg font-semibold mb-4">Cost Table</h3>
+              <Table
+                className="overflow-auto mb-4"
+                dataSource={costTableData}
+                columns={costColumns}
+                pagination={false}
+              />
+              <h3 className="text-lg font-semibold mb-4">Cost Chart</h3>
+              <Chart
+                options={costChart.options}
+                series={costChart.series}
+                type="bar"
+                height={350}
+              />
+            </div>
+          </div>
+
+          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
+            <div className="w-full md:w-1/3 p-4 border-r-2">
+              <PersonnelSection
+                personnelInputs={personnelInputs}
+                addNewPersonnelInput={addNewPersonnelInput}
+                removePersonnelInput={removePersonnelInput}
+                handlePersonnelInputChange={handlePersonnelInputChange}
+              />
+            </div>
+            <div className="w-full md:w-2/3 p-4">
+              <h3 className="text-lg font-semibold mb-4">
+                Personnel Cost Table
+              </h3>
+              <Table
+                className="overflow-auto mb-4"
+                dataSource={personnelCostTableData}
+                columns={personnelCostColumns}
+                pagination={false}
+              />
+              <h3 className="text-lg font-semibold mb-4">
+                Personnel Cost Chart
+              </h3>
+              <Chart
+                options={personnelChart.options}
+                series={personnelChart.series}
+                type="bar"
+                height={350}
+              />
+            </div>
+          </div>
+
+          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
+            <div className="w-full md:w-1/3 p-4 border-r-2">
+              <InvestmentSection
+                investmentInputs={investmentInputs}
+                setInvestmentInputs={setInvestmentInputs}
+                addNewInvestmentInput={addNewInvestmentInput}
+                removeInvestmentInput={removeInvestmentInput}
+                handleInvestmentInputChange={handleInvestmentInputChange}
+              />
+            </div>
+            <div className="w-full md:w-2/3 p-4">
+              <h3 className="text-lg font-semibold mb-4">Investment Table</h3>
+              <Table
+                className="overflow-auto mb-4"
+                dataSource={transformInvestmentDataForTable()}
+                columns={investmentColumns}
+                pagination={false}
+              />
+              <h3 className="text-lg font-semibold mb-4">Investment Chart</h3>
+              <Chart
+                options={investmentChart.options}
+                series={investmentChart.series}
+                type="area"
+                height={350}
+              />
+            </div>
+          </div>
+
+          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
+            <div className="w-full md:w-1/3 p-4 border-r-2">
+              <LoanSection
+                loanInputs={loanInputs}
+                addNewLoanInput={addNewLoanInput}
+                removeLoanInput={removeLoanInput}
+                handleLoanInputChange={handleLoanInputChange}
+              />
+            </div>
+            <div className="w-full md:w-2/3 p-4">
+              <h3 className="text-lg font-semibold mb-4">Loan Data</h3>
+              <Table
+                className="overflow-auto mb-4"
+                dataSource={transformLoanDataForTable()}
+                columns={loanColumns}
+                pagination={false}
+              />
+              <h3 className="text-lg font-semibold mb-4">Loan Data</h3>
+              <Chart
+                options={loanChart.options}
+                series={loanChart.series}
+                type="line"
+                height={350}
+              />
+            </div>
+          </div>
+          <ProfitAndLossSection
+            revenueData={revenueTableData}
+            costData={costData}
+            personnelCostData={personnelCostData}
+            investmentData={calculateInvestmentData()}
+            loanData={calculateLoanData()}
+            numberOfMonths={numberOfMonths}
+          />
+        </>
+      )}
+
+      {/* The following sections are commented out */}
+
       {/* <div>
-      <div className="json-input-section mb-8">
-        <h2 className="text-lg font-semibold mb-4">Import Data from JSON</h2>
-        <textarea
-          value={jsonInput || ''}
-          onChange={jsonHandleInputChange}
-          className="border p-2 w-full mb-4"
-          placeholder="Paste your JSON here"
-          rows="10"
-        ></textarea>
-        <button
-          className="bg-blue-500 text-white py-1 px-4 rounded"
-          onClick={applyJsonInput}
-        >
-          Apply JSON
-        </button>
-      </div>
-    </div> */}
+        <div className="json-input-section mb-8">
+          <h2 className="text-lg font-semibold mb-4">Import Data from JSON</h2>
+          <textarea
+            value={jsonInput || ''}
+            onChange={jsonHandleInputChange}
+            className="border p-2 w-full mb-4"
+            placeholder="Paste your JSON here"
+            rows="10"
+          ></textarea>
+          <button
+            className="bg-blue-500 text-white py-1 px-4 rounded"
+            onClick={applyJsonInput}
+          >
+            Apply JSON
+          </button>
+        </div>
+      </div> */}
       {/* <LoadingButtonClick isLoading={isLoading} /> */}
-      <div className="w-full h-full flex flex-col md:flex-row">
-        <Gemini />
-      </div>
-      <div className="w-full h-full flex flex-col md:flex-row border-t-2">
-        <div className="w-full md:w-1/3 p-4 border-r-2">
-          <DurationSelect
-            selectedDuration={selectedDuration}
-            setSelectedDuration={setSelectedDuration}
-          />
-        </div>
-        <div className="w-full md:w-2/3 p-4"></div>
-      </div>
-
-      <div className="w-full h-full flex flex-col md:flex-row border-t-2">
-        <div className="w-full md:w-1/3 p-4 border-r-2">
-          <CustomerSection
-            customerInputs={customerInputs}
-            addNewCustomerInput={addNewCustomerInput}
-            removeCustomerInput={removeCustomerInput}
-            handleInputChange={handleInputChange}
-          />
-        </div>
-        <div className="w-full md:w-2/3 p-4 ">
-          <h3 className="text-lg font-semibold mb-4">
-            Customer Growth Data by Channel
-          </h3>
-          <Table
-            className="overflow-auto mb-4"
-            dataSource={tableData}
-            columns={columns}
-            pagination={false}
-          />
-          <h3 className="text-lg font-semibold">
-            Customer Growth Data by Channel
-          </h3>
-          <Chart
-            options={customerGrowthChart.options}
-            series={customerGrowthChart.series}
-            type="line"
-            height={350}
-          />
-        </div>
-      </div>
-
-      <div className="w-full h-full flex flex-col md:flex-row border-t-2">
-        <div className="w-full md:w-1/3 p-4 border-r-2 border-r-2">
-          <SalesSection
-            channelInputs={channelInputs}
-            channelNames={channelNames}
-            addNewChannelInput={addNewChannelInput}
-            removeChannelInput={removeChannelInput}
-            handleChannelInputChange={handleChannelInputChange}
-          />
-        </div>
-        <div className="w-full md:w-2/3 p-4">
-          <h3 className="text-lg font-semibold mb-4">
-            Revenue Data by Channel and Product
-          </h3>
-          <Table
-            className="overflow-auto mb-4"
-            dataSource={revenueTableData}
-            columns={revenueColumns}
-            pagination={false}
-          />
-          <h3 className="text-lg font-semibold mb-4">
-            Gross Profit Data by Channel and Product
-          </h3>
-          <Chart
-            options={grossProfit.options}
-            series={grossProfit.series}
-            type="line"
-            height={350}
-          />
-        </div>
-      </div>
-
-      <div className="w-full h-full flex flex-col md:flex-row border-t-2">
-        <div className="w-full md:w-1/3 p-4 border-r-2">
-          <CostSection
-            costInputs={costInputs}
-            addNewCostInput={addNewCostInput}
-            removeCostInput={removeCostInput}
-            handleCostInputChange={handleCostInputChange}
-          />
-        </div>
-        <div className="w-full md:w-2/3 p-4">
-          <h3 className="text-lg font-semibold mb-4">Cost Table</h3>
-          <Table
-            className="overflow-auto mb-4"
-            dataSource={costTableData}
-            columns={costColumns}
-            pagination={false}
-          />
-          <h3 className="text-lg font-semibold mb-4">Cost Chart</h3>
-          <Chart
-            options={costChart.options}
-            series={costChart.series}
-            type="bar"
-            height={350}
-          />
-        </div>
-      </div>
-
-      <div className="w-full h-full flex flex-col md:flex-row border-t-2">
-        <div className="w-full md:w-1/3 p-4 border-r-2">
-          <PersonnelSection
-            personnelInputs={personnelInputs}
-            addNewPersonnelInput={addNewPersonnelInput}
-            removePersonnelInput={removePersonnelInput}
-            handlePersonnelInputChange={handlePersonnelInputChange}
-          />
-        </div>
-        <div className="w-full md:w-2/3 p-4">
-          <h3 className="text-lg font-semibold mb-4">Personnel Cost Table</h3>
-          <Table
-            className="overflow-auto mb-4"
-            dataSource={personnelCostTableData}
-            columns={personnelCostColumns}
-            pagination={false}
-          />
-          <h3 className="text-lg font-semibold mb-4">Personnel Cost Chart</h3>
-          <Chart
-            options={personnelChart.options}
-            series={personnelChart.series}
-            type="bar"
-            height={350}
-          />
-        </div>
-      </div>
-
-      <div className="w-full h-full flex flex-col md:flex-row border-t-2">
-        <div className="w-full md:w-1/3 p-4 border-r-2">
-          <InvestmentSection
-            investmentInputs={investmentInputs}
-            setInvestmentInputs={setInvestmentInputs}
-            addNewInvestmentInput={addNewInvestmentInput}
-            removeInvestmentInput={removeInvestmentInput}
-            handleInvestmentInputChange={handleInvestmentInputChange}
-          />
-        </div>
-        <div className="w-full md:w-2/3 p-4">
-          <h3 className="text-lg font-semibold mb-4">Investment Table</h3>
-          <Table
-            className="overflow-auto mb-4"
-            dataSource={transformInvestmentDataForTable()}
-            columns={investmentColumns}
-            pagination={false}
-          />
-          <h3 className="text-lg font-semibold mb-4">Investment Chart</h3>
-          <Chart
-            options={investmentChart.options}
-            series={investmentChart.series}
-            type="area"
-            height={350}
-          />
-        </div>
-      </div>
-
-      <div className="w-full h-full flex flex-col md:flex-row border-t-2">
-        <div className="w-full md:w-1/3 p-4 border-r-2">
-          <LoanSection
-            loanInputs={loanInputs}
-            addNewLoanInput={addNewLoanInput}
-            removeLoanInput={removeLoanInput}
-            handleLoanInputChange={handleLoanInputChange}
-          />
-        </div>
-        <div className="w-full md:w-2/3 p-4">
-          <h3 className="text-lg font-semibold mb-4">Loan Data</h3>
-          <Table
-            className="overflow-auto mb-4"
-            dataSource={transformLoanDataForTable()}
-            columns={loanColumns}
-            pagination={false}
-          />
-          <h3 className="text-lg font-semibold mb-4">Loan Data</h3>
-          <Chart
-            options={loanChart.options}
-            series={loanChart.series}
-            type="line"
-            height={350}
-          />
-        </div>
-      </div>
-      <ProfitAndLossSection
-        revenueData={revenueTableData} // Assuming this is the aggregated revenue data
-        costData={costData}
-        personnelCostData={personnelCostData}
-        investmentData={calculateInvestmentData()} // Assuming this function returns the structured investment data needed
-        loanData={calculateLoanData()} // Assuming this function returns the structured loan data needed
-        numberOfMonths={numberOfMonths}
-      />
     </div>
   );
 };

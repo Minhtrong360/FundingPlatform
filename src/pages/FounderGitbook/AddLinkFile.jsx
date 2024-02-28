@@ -40,7 +40,7 @@ const Modal = ({
     };
 
     handleAddLinks(newLink);
-    setLink("https://drive.google.com/file/d/0By_3Hl5Rv7fAb3FZMGZJS01"); // Đặt lại giá trị của link sau khi thêm
+    setLink(""); // Đặt lại giá trị của link sau khi thêm
     setFileName("File 1"); // Đặt lại giá trị của fileName sau khi thêm
     onClose(); // Đóng modal sau khi thêm
   };
@@ -71,7 +71,7 @@ const Modal = ({
             <input
               type="text"
               name="File_link"
-              placeholder="https://drive.google.com/file/d/0By_3Hl5Rv7fAb3FZMGZJS01"
+              placeholder="upload your file's link"
               value={link}
               onChange={(e) => setLink(e.target.value)}
               className="block w-full px-4 py-3 text-sm text-gray-700 border rounded-md"
@@ -201,9 +201,7 @@ export default function AddLinkFile({
     }
   }, [user]);
 
-  const [link, setLink] = useState(
-    "https://drive.google.com/file/d/0By_3Hl5Rv7fAb3FZMGZJS01"
-  );
+  const [link, setLink] = useState();
   const [fileName, setFileName] = useState("File 1");
   const [isPublic, setIsPublic] = useState(true); // Thêm trạng thái cho lựa chọn Public/Private
 
@@ -216,7 +214,8 @@ export default function AddLinkFile({
 
   return (
     <div className="App">
-      {user.id === currentProject.user_id && (
+      {(user.id === currentProject.user_id ||
+        currentProject.collabs.includes(user.email)) && (
         <button
           className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
           onClick={() => setIsModalOpen(true)}

@@ -69,7 +69,10 @@ const Card = ({
       </div>
 
       <div className="p-5">
-        <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 darkTextWhite">
+        <h5
+          className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 darkTextWhite"
+          onClick={() => navigate(`/founder/${project_id}`)}
+        >
           {title}
         </h5>
 
@@ -95,7 +98,8 @@ const Card = ({
           <button
             className={` ${
               project?.status === true ? "bg-blue-600" : "bg-red-600"
-            } mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white  rounded-lg cursor-not-allowed darkBgBlue`}
+            } mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white  rounded-lg  darkBgBlue`}
+            onClick={() => navigate(`/founder/${project_id}`)}
           >
             {project?.status === true ? "Public deal" : "Private deal"}
           </button>

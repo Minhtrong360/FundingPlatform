@@ -117,14 +117,14 @@ function Router() {
             </AuthRequire>
           }
         />
-        <Route
+        {/* <Route
           path="/notifications"
           element={
             <AuthRequire message="Sign in required!">
               <NotificationsPage />
             </AuthRequire>
           }
-        />
+        /> */}
 
         {/* <Route path="/fundraising" element={<FundraisingRecords />} />   */}
         <Route path="/login" element={<Login />} />

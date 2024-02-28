@@ -38,6 +38,8 @@ const DurationSelect = ({
   setStartMonth,
   startYear,
   setStartYear,
+  financeName,
+  setFinanceName,
 }) => {
   const months = [
     "January",
@@ -82,6 +84,14 @@ const DurationSelect = ({
         Duration and Initial Setup
       </h2>
       <div className="bg-white rounded-md shadow p-6">
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <span className="font-medium flex items-center">Financial name:</span>
+          <Input
+            value={financeName}
+            onChange={(e) => setFinanceName(e.target.value)}
+            type="text"
+          />
+        </div>
         <div className="grid grid-cols-2 gap-4 mb-4">
           <span className="font-medium flex items-center">Start Month:</span>
           <Select onValueChange={setStartMonth} value={startMonth}>
@@ -971,6 +981,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     const handleSendMessage = async () => {
       try {
         setIsLoading(true);
+
         const response = await fetch(
           "https://news-fetcher-8k6m.onrender.com/message",
           {
@@ -984,13 +995,18 @@ const Z = ({ currentUser, setCurrentUser }) => {
             }),
           }
         );
+
         const data = await response.json();
 
         //Remove backticks from the constant responseText
         const cleanedResponseText = data.response.replace(/json|`/g, "");
+
         // Set the chatbot response to the latest messag
+
         setChatbotResponse(cleanedResponseText);
+
         saveUserData();
+
         setIsLoading(false);
       } catch (error) {
         console.error("Error sending message:", error);
@@ -1000,7 +1016,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
     async function saveUserData() {
       try {
-        console.log("có chạy");
         // Thực hiện truy vấn để lấy thông tin người dùng theo id (điều này cần được thay đổi dựa trên cấu trúc dữ liệu của bạn trong Supabase)
         const currentPrompt = currentUser.financePromptNumber - 1;
         if (currentPrompt <= 0) {
@@ -1019,8 +1034,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
             .select();
 
           const resetPrompt = await apiService.post("/count/finance");
-
-          console.log("resetPrompt", resetPrompt);
 
           if (error) {
             throw error;
@@ -2626,7 +2639,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 Customer Growth Data by Channel
               </h3>
               <Table
-                className="overflow-auto mb-4"
+                className="overflow-auto mb-4  text-lg"
                 dataSource={tableData}
                 columns={columns}
                 pagination={false}

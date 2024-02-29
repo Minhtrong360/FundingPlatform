@@ -51,7 +51,19 @@ const HeroSignUp = () => {
             toast.error("No internet access.");
             return;
           }
-          await supabase.auth.signUp({ email, password });
+          await supabase.auth.signUp({ email, password, fullName });
+
+          // Nếu không có lỗi, tiến hành cập nhật trường full_name trong bảng users
+          const { error: updateError } = await supabase
+            .from("users")
+            .update({ full_name: fullName })
+            .eq("email", email);
+
+          if (updateError) {
+            // Xử lý lỗi nếu có
+            throw updateError;
+          }
+
           setResetLink(true);
         } catch (error) {
           console.error("Error signing up:", error);

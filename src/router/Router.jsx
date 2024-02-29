@@ -38,6 +38,7 @@ import ProgressBar from "../components/ProgressBar";
 import ImageCrop from "../components/cropImage/ImageCrop";
 import ImageCropper from "../components/ImageCropper";
 import NotificationsPage from "../pages/Notification/Notification";
+import Confirmed from "../pages/SignUp/Confirmed";
 
 function Router() {
   const { user } = useAuth();
@@ -129,6 +130,7 @@ function Router() {
         {/* <Route path="/fundraising" element={<FundraisingRecords />} />   */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/confirmed" element={<Confirmed />} />
         <Route
           path="/dashboard"
           element={

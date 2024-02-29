@@ -5,7 +5,7 @@ import ReactModal from "react-modal";
 import apiService from "../app/apiService";
 
 const Modal = ({ isOpen, onClose, fileId }) => {
-  const [email, setEmail] = useState("vidu@gmail.com");
+  const [email, setEmail] = useState("email@gmail.com");
 
   const handleInvite = async () => {
     try {
@@ -44,7 +44,7 @@ const Modal = ({ isOpen, onClose, fileId }) => {
           owner_email: fileData.owner_email,
           project_id: fileData.project_id,
         });
-
+        console.log("currentInvitedUsers", currentInvitedUsers);
         // Tiến hành cập nhật trường "invited_user" của bảng "files" với danh sách mới
         const { error: updateError } = await supabase
           .from("files")
@@ -89,7 +89,7 @@ const Modal = ({ isOpen, onClose, fileId }) => {
               type="email"
               required
               name="email"
-              placeholder="vidu@gmail.com"
+              placeholder="email@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="block w-full px-4 py-3 text-sm text-gray-700 border rounded-md"
@@ -100,14 +100,14 @@ const Modal = ({ isOpen, onClose, fileId }) => {
             <button
               type="button"
               onClick={onClose}
-              className="w-full px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+              className="w-full px-4 py-1 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={handleInvite}
-              className="w-full px-4 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
+              className="w-full px-4 py-1 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
             >
               Invite
             </button>
@@ -124,7 +124,7 @@ export default function InvitedUser({ fileId }) {
   return (
     <div className="App">
       <button
-        className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+        className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
         onClick={() => setIsModalOpen(true)}
       >
         Invite

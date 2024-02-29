@@ -1,10 +1,14 @@
-// NewProjectPosts.js
 import { useEffect, useState } from "react";
 import Card from "./Card";
 import { supabase } from "../../../supabase";
 import { toast } from "react-toastify";
 import Search from "./Search";
 import LoadingButtonClick from "../../../components/LoadingButtonClick";
+
+import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
+import SkipNextIcon from "@mui/icons-material/SkipNext";
+import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 
 const NewProjectPosts = () => {
   const [companies, setCompanies] = useState([]);
@@ -80,13 +84,20 @@ const NewProjectPosts = () => {
     setPage(1);
   };
   const handleIndustryChange = (industry) => {
-    console.log("handleIndustryChange", industry);
     setSelectedIndustry(industry);
     setPage(1);
   };
 
+  const goToFirstPage = () => {
+    setPage(1);
+  };
+
+  const goToLastPage = () => {
+    setPage(totalPages);
+  };
+
   return (
-    <div className="max-w-[85rem] px-4 py-2 sm:px-6 lg:px-8 lg:py-2 mx-auto">
+    <div className="max-w-[85rem] px-4 py-1 sm:px-6 lg:px-8 lg:py-1 mx-auto">
       <Search
         onSearch={handleSearch}
         onIndustryChange={handleIndustryChange}
@@ -104,37 +115,58 @@ const NewProjectPosts = () => {
           </div>
         ) : (
           <>
-            <div className="mt-24 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 transition-all duration-600 ease-out transform translate-x-0">
-              {filteredCompanies.map((company) => (
-                <div key={company.id} className="flex justify-center">
-                  <Card
-                    key={company.id}
-                    title={company.name}
-                    description={company.description}
-                    imageUrl={company.card_url}
-                    buttonText="Read more"
-                    project_id={company.project_id}
-                  />
-                </div>
-              ))}
+            <div className="mt-24 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
+              {[...Array(itemsPerPage)].map((_, index) => {
+                const company = filteredCompanies[index];
+                return (
+                  <div key={index} className="flex justify-center">
+                    {company ? (
+                      <Card
+                        key={company.id}
+                        title={company.name}
+                        description={company.description}
+                        imageUrl={company.card_url}
+                        buttonText="Read more"
+                        project_id={company.project_id}
+                      />
+                    ) : (
+                      <div className="w-[30vw] h-[55vh]"></div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
             <div className="mt-10 flex justify-center">
               <button
-                className="px-4 py-2 mx-2 bg-blue-600 text-white rounded-md"
+                className="sm:px-4 sm:py-1 sm:mx-2  text-black rounded-md"
+                onClick={goToFirstPage}
+                disabled={page === 1}
+              >
+                <SkipPreviousIcon />
+              </button>
+              <button
+                className="sm:px-4 sm:py-1 sm:mx-2  text-black rounded-md"
                 onClick={() => handlePageChange(page - 1)}
                 disabled={page === 1}
               >
-                Previous
+                <ArrowLeftIcon fontSize="large" />
               </button>
-              <span className="px-4 py-2 mx-2 bg-gray-200 text-gray-800 rounded-md">
+              <span className=" sm:px-4 sm:py-1 sm:mx-2  text-gray-800 rounded-md inline-flex flex-nowrap justify-center items-center  flex-shrink-0">
                 Page {page} of {totalPages}
               </span>
               <button
-                className="px-4 py-2 mx-2 bg-blue-600 text-white rounded-md"
+                className="sm:px-4 sm:py-1 sm:mx-2  text-black rounded-md"
                 onClick={() => handlePageChange(page + 1)}
                 disabled={page === totalPages}
               >
-                Next
+                <ArrowRightIcon fontSize="large" />
+              </button>
+              <button
+                className="sm:px-4 sm:py-1 sm:mx-2  text-black rounded-md"
+                onClick={goToLastPage}
+                disabled={page === totalPages}
+              >
+                <SkipNextIcon />
               </button>
             </div>
           </>

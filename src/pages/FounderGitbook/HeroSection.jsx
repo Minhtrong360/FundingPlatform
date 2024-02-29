@@ -1,5 +1,6 @@
-import ResizeImage from "../../components/ResizeImage";
 import { Tooltip } from "antd";
+import ImageCrop from "../../components/cropImage/ImageCrop";
+import ResizeImage from "../../components/ResizeImage";
 
 function formatNumber(value) {
   // Kiểm tra xem value có phải là một chuỗi không
@@ -24,6 +25,8 @@ const HeroSection = ({
   button4Text,
   button5Text,
   imageUrl,
+  setFormData,
+  canClick,
 }) => {
   return (
     <div className="max-w-[85rem] mx-auto mt-24 px-4 sm:px-6 lg:px-8 z-0">
@@ -96,8 +99,36 @@ const HeroSection = ({
           </div>
         </div>
 
-        <div className="relative">
-          <ResizeImage imageUrl={imageUrl} width={700} height={800} />
+        <div className="relative ">
+          {/* <div class=" relative  pt-[50%] sm:pt-[70%] rounded-lg overflow-hidden">
+            <img
+              class=" h-full w-full  absolute top-0 start-0 object-cover  transition-transform duration-500 ease-in-out "
+              src={imageUrl}
+              alt="Project Description"
+            />
+          </div> */}
+
+          {/* {canClick === false ? (
+            <ImageCrop
+              initImage={imageUrl}
+              previewWidth={600}
+              previewHeight={700}
+              cropWidth={245}
+              cropHeight={280}
+              name="profileImage"
+              formData={formData}
+              setFormData={setFormData}
+            />
+          ) : ( */}
+          <img
+            src={imageUrl}
+            width={700}
+            height={800}
+            className="object-cover"
+            alt=""
+          />
+          {/* )} */}
+
           <div className="absolute inset-0 -z-[1] bg-gradient-to-tr from-gray-200 via-white/0 to-white/0 w-full h-full rounded-md mt-4 -mb-4 me-4 -ms-4 lg:mt-6 lg:-mb-6 lg:me-6 lg:-ms-6 darkFromSlate"></div>
         </div>
       </div>

@@ -6,7 +6,7 @@ const NavbarItem = ({ href, children, isActive }) => (
   <li>
     <a
       href={href}
-      className={`block py-2 px-3 rounded md:p-0 ${
+      className={`block py-1 px-3 rounded md:p-0 ${
         isActive
           ? "text-white bg-blue-600 rounded md:bg-transparent md:text-blue-700 md:darkTextBlue"
           : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 darkTextWhite darkHoverBgBlue darkHoverTextWhite md:darkHoverBgBlue"
@@ -22,7 +22,7 @@ const NavbarButton = ({ children, onClick, className }) => (
   <button
     type="button"
     onClick={onClick}
-    className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus ${className}`}
+    className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus ${className}`}
   >
     {children}
   </button>
@@ -89,7 +89,7 @@ const NavBar = () => {
 const Search = () => {
   return (
     <div className="relative overflow-hidden">
-      <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-2">
+      <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-1">
         <div className="text-center">
           <h3 className="text-3xl sm:text-5xl font-semibold text-gray-800 darkTextGray mt-28">
             <span className="text-blue-600">Signature </span> Deal Room
@@ -108,7 +108,7 @@ const Search = () => {
                     type="email"
                     name="hs-search-article-1"
                     id="hs-search-article-1"
-                    className="py-2.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
+                    className="py-1.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
                     placeholder="Search company"
                   />
                 </div>
@@ -233,7 +233,7 @@ const Card = ({ title, description, imageUrl, buttonText, buttonLink }) => (
       </p>
       <a
         href={buttonLink}
-        className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkHoverBgBlue darkFocus mt-8"
+        className="inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkHoverBgBlue darkFocus mt-8"
       >
         {buttonText}
         <span className="w-3.5 h-3.5 ml-2">🇻🇳</span>

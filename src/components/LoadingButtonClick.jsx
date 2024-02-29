@@ -17,7 +17,7 @@ function LoadingButtonClick({ isLoading }) {
         isOpen={isLoading}
         style={{
           overlay: {
-            backgroundColor: "none",
+            backgroundColor: "white",
             position: "fixed",
             top: 0,
             left: 0,

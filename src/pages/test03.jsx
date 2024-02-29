@@ -9,33 +9,212 @@ import {
 import { Input } from "../components/ui/Input";
 import { Table } from "antd";
 import Chart from "react-apexcharts";
-import {   Typography } from 'antd';
-
+import { Typography } from "antd";
+import LoadingButtonClick from "../components/LoadingButtonClick";
+import ProgressBar from "../components/ProgressBar";
+import { toast } from "react-toastify";
+import { supabase } from "../supabase";
+import AlertMsg from "../components/AlertMsg";
+import apiService from "../app/apiService";
 
 //JSON
 
+const DurationSelect = ({
+  selectedDuration,
+  setSelectedDuration,
+  startingCashBalance,
+  setStartingCashBalance,
+  status,
+  setStatus,
+  industry,
+  setIndustry,
+  incomeTax,
+  setIncomeTax,
+  payrollTax,
+  setPayrollTax,
+  currency,
+  setCurrency,
+  startMonth,
+  setStartMonth,
+  startYear,
+  setStartYear,
+  financeName,
+  setFinanceName,
+}) => {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
+  const currentYear = new Date().getFullYear();
+  const years = Array.from(
+    { length: currentYear - 2019 },
+    (_, index) => 2020 + index
+  );
 
+  const industries = [
+    "Technology",
+    "Healthcare",
+    "Finance",
+    "Retail",
+    "Manufacturing",
+    "Education",
+    "Transportation",
+    "Hospitality",
+    "Real Estate",
+    "Entertainment",
+  ];
 
-const DurationSelect = ({ selectedDuration, setSelectedDuration }) => {
   return (
     <section aria-labelledby="duration-heading" className="mb-8">
       <h2
-        className="text-lg font-semibold mb-4 flex items-center"
+        className="text-2xl font-semibold mb-4 flex items-center"
         id="duration-heading"
       >
-        Duration
+        Duration and Initial Setup
       </h2>
       <div className="bg-white rounded-md shadow p-6">
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className="font-medium">Duration</span>
+          <span className="font-medium flex items-center">Financial name:</span>
+          <Input
+            value={financeName}
+            onChange={(e) => setFinanceName(e.target.value)}
+            type="text"
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <span className="font-medium flex items-center">Start Month:</span>
+          <Select onValueChange={setStartMonth} value={startMonth}>
+            <SelectTrigger
+              id="start-month"
+              className="border-solid border-[1px] border-gray-600"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              {months.map((month, index) => (
+                <SelectItem key={index} value={month}>
+                  {month}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <span className="font-medium flex items-center">Start Year:</span>
+          <Select onValueChange={setStartYear} value={startYear}>
+            <SelectTrigger
+              id="start-year"
+              className="border-solid border-[1px] border-gray-600"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              {years.map((year, index) => (
+                <SelectItem key={index} value={year}>
+                  {year}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <span className="font-medium flex items-center">Duration</span>
           <Select onValueChange={(value) => setSelectedDuration(value)}>
-            <SelectTrigger id="start-date-year">
+            <SelectTrigger
+              id="start-date-year"
+              className="border-solid border-[1px] border-gray-600"
+            >
               <SelectValue placeholder={selectedDuration} />
             </SelectTrigger>
             <SelectContent position="popper">
               <SelectItem value="3 years">3 years</SelectItem>
               <SelectItem value="5 years">5 years</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <span className="font-medium flex items-center">
+            Starting Cash Balance:
+          </span>
+          <Input
+            value={startingCashBalance}
+            onChange={(e) => setStartingCashBalance(e.target.value)}
+            type="number"
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <span className="font-medium flex items-center">Status:</span>
+          <Select onValueChange={(value) => setStatus(value)} value={status}>
+            <SelectTrigger className="border-solid border-[1px] border-gray-600">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="inactive">Inactive</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <span className="font-medium flex items-center">Industry:</span>
+          <Select onValueChange={setIndustry} value={industry}>
+            <SelectTrigger
+              id="industry"
+              className="border-solid border-[1px] border-gray-600"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              {industries.map((industry, index) => (
+                <SelectItem key={index} value={industry}>
+                  {industry}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <span className="font-medium flex items-center">Income Tax (%):</span>
+          <Input
+            type="number"
+            value={incomeTax}
+            onChange={(e) => setIncomeTax(e.target.value)}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <span className="font-medium flex items-center">
+            Payroll Tax (%):
+          </span>
+          <Input
+            type="number"
+            value={payrollTax}
+            onChange={(e) => setPayrollTax(e.target.value)}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <span className="font-medium flex items-center">Currency:</span>
+          <Select
+            onValueChange={(value) => setCurrency(value)}
+            value={currency}
+          >
+            <SelectTrigger className="border-solid border-[1px] border-gray-600">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              <SelectItem value="USD">USD</SelectItem>
+              <SelectItem value="EUR">EUR</SelectItem>
+              <SelectItem value="GBP">GBP</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -52,9 +231,11 @@ const CustomerSection = ({
 }) => {
   const handleAddNewCustomer = () => {
     const newCustomerInput = {
-      customersPerMonth: 0,
-      growthPerMonth: 0,
+      customersPerMonth: 100,
+      growthPerMonth: 10,
       channelName: "",
+      beginMonth: 1,
+      endMonth: 15,
     };
     addNewCustomerInput(newCustomerInput);
   };
@@ -62,7 +243,7 @@ const CustomerSection = ({
   return (
     <section aria-labelledby="customers-heading" className="mb-8">
       <h2
-        className="text-lg font-semibold mb-4 flex items-center mt-16"
+        className="text-2xl font-semibold mb-4 flex items-center"
         id="customers-heading"
       >
         Customer
@@ -127,18 +308,18 @@ const CustomerSection = ({
             />
           </div>
           <div className="flex justify-end items-center">
-          <button
-            className="bg-red-500 text-white py-2 px-4 rounded"
-            onClick={() => removeCustomerInput(index)}
-          >
-            Remove
-          </button>
+            <button
+              className="bg-red-500 text-white py-1 px-4 rounded"
+              onClick={() => removeCustomerInput(index)}
+            >
+              Remove
+            </button>
           </div>
         </div>
       ))}
 
       <button
-        className="bg-blue-600 text-white py-2 px-4 rounded"
+        className="bg-blue-600 text-white py-1 px-4 rounded"
         onClick={handleAddNewCustomer}
       >
         Add New
@@ -169,7 +350,7 @@ const SalesSection = ({
   return (
     <section aria-labelledby="sales-heading" className="mb-8">
       <h2
-        className="text-lg font-semibold mb-4 flex items-center mt-16"
+        className="text-2xl font-semibold mb-4 flex items-center"
         id="sales-heading"
       >
         Sales Section
@@ -249,7 +430,10 @@ const SalesSection = ({
                 input.selectedChannel !== null ? input.selectedChannel : ""
               }
             >
-              <SelectTrigger id={`select-channel-${index}`}>
+              <SelectTrigger
+                id={`select-channel-${index}`}
+                className="border-solid border-[1px] border-gray-600"
+              >
                 <SelectValue placeholder="Select Channel" />
               </SelectTrigger>
               <SelectContent position="popper">
@@ -267,8 +451,8 @@ const SalesSection = ({
             <Input
               className="col-start-2"
               type="number"
-              min="0"
-              max="100"
+              min={0}
+              max={100}
               value={input.channelAllocation * 100} // Convert to percentage for display
               onChange={(e) =>
                 handleChannelInputChange(
@@ -280,18 +464,18 @@ const SalesSection = ({
             />
           </div>
           <div className="flex justify-end items-center">
-          <button
-            className="bg-red-500 text-white py-2 px-4 rounded"
-            onClick={() => removeChannelInput(index)}
-          >
-            Remove
-          </button>
+            <button
+              className="bg-red-500 text-white py-1 px-4 rounded"
+              onClick={() => removeChannelInput(index)}
+            >
+              Remove
+            </button>
           </div>
         </div>
       ))}
 
       <button
-        className="bg-blue-500 text-white py-2 px-4 rounded"
+        className="bg-blue-500 text-white py-1 px-4 rounded"
         onClick={handleAddNewChannelInput}
       >
         Add New
@@ -320,126 +504,127 @@ const CostSection = ({
   return (
     <section aria-labelledby="costs-heading" className="mb-8">
       <h2
-        className="text-lg font-semibold mb-4 flex items-center mt-16"
+        className="text-2xl font-semibold mb-4 flex items-center"
         id="costs-heading"
       >
         Costs
       </h2>
 
-        {costInputs.map((input, index) => (
-          <div key={index} className="bg-white rounded-md shadow p-6 mb-4 ">
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <span className="font-medium">Cost Name:</span>
-              <Input
-                className="col-start-2"
-                value={input.costName}
-                onChange={(e) =>
-                  handleCostInputChange(index, "costName", e.target.value)
-                }
-              />
-            </div>
+      {costInputs.map((input, index) => (
+        <div key={index} className="bg-white rounded-md shadow p-6 mb-4 ">
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className="font-medium">Cost Name:</span>
+            <Input
+              className="col-start-2"
+              value={input.costName}
+              onChange={(e) =>
+                handleCostInputChange(index, "costName", e.target.value)
+              }
+            />
+          </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <span className="font-medium">Cost Value:</span>
-              <Input
-                className="col-start-2"
-                type="number"
-                value={input.costValue}
-                onChange={(e) =>
-                  handleCostInputChange(
-                    index,
-                    "costValue",
-                    parseFloat(e.target.value)
-                  )
-                }
-              />
-            </div>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className="font-medium">Cost Value:</span>
+            <Input
+              className="col-start-2"
+              type="number"
+              value={input.costValue}
+              onChange={(e) =>
+                handleCostInputChange(
+                  index,
+                  "costValue",
+                  parseFloat(e.target.value)
+                )
+              }
+            />
+          </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <span className="font-medium">Growth Percentage:</span>
-              <Input
-                className="col-start-2"
-                type="number"
-                value={input.growthPercentage}
-                onChange={(e) =>
-                  handleCostInputChange(
-                    index,
-                    "growthPercentage",
-                    parseFloat(e.target.value)
-                  )
-                }
-              />
-            </div>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className="font-medium">Growth Percentage:</span>
+            <Input
+              className="col-start-2"
+              type="number"
+              value={input.growthPercentage}
+              onChange={(e) =>
+                handleCostInputChange(
+                  index,
+                  "growthPercentage",
+                  parseFloat(e.target.value)
+                )
+              }
+            />
+          </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <span className="font-medium">Begin Month:</span>
-              <Input
-                className="col-start-2"
-                type="number"
-                min="1"
-                max="12"
-                value={input.beginMonth}
-                onChange={(e) =>
-                  handleCostInputChange(
-                    index,
-                    "beginMonth",
-                    parseInt(e.target.value, 10)
-                  )
-                }
-              />
-            </div>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className="font-medium">Begin Month:</span>
+            <Input
+              className="col-start-2"
+              type="number"
+              min="1"
+              max="12"
+              value={input.beginMonth}
+              onChange={(e) =>
+                handleCostInputChange(
+                  index,
+                  "beginMonth",
+                  parseInt(e.target.value, 10)
+                )
+              }
+            />
+          </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <span className="font-medium">End Month:</span>
-              <Input
-                className="col-start-2"
-                type="number"
-                min="1"
-                max="12"
-                value={input.endMonth}
-                onChange={(e) =>
-                  handleCostInputChange(
-                    index,
-                    "endMonth",
-                    parseInt(e.target.value, 10)
-                  )
-                }
-              />
-            </div>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className="font-medium">End Month:</span>
+            <Input
+              className="col-start-2"
+              type="number"
+              min="1"
+              max="12"
+              value={input.endMonth}
+              onChange={(e) =>
+                handleCostInputChange(
+                  index,
+                  "endMonth",
+                  parseInt(e.target.value, 10)
+                )
+              }
+            />
+          </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <span className="font-medium">Cost Type:</span>
-              <Select
-                onValueChange={(value) =>
-                  handleCostInputChange(index, "costType", value)
-                }
-                value={input.costType}
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className="font-medium">Cost Type:</span>
+            <Select
+              onValueChange={(value) =>
+                handleCostInputChange(index, "costType", value)
+              }
+              value={input.costType}
+            >
+              <SelectTrigger
+                id={`select-costType-${index}`}
+                className="border-solid border-[1px] border-gray-600"
               >
-                <SelectTrigger id={`select-costType-${index}`}>
-                  <SelectValue placeholder="Select Cost Type" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  <SelectItem value="Operating Cost">Operating Cost</SelectItem>
-                  <SelectItem value="SG & A">SG & A</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-          
-            <div className="flex justify-end items-center">
+                <SelectValue placeholder="Select Cost Type" />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectItem value="Operating Cost">Operating Cost</SelectItem>
+                <SelectItem value="SG & A">SG & A</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-2 px-4 rounded"
+              className="bg-red-500 text-white py-1 px-4 rounded"
               onClick={() => removeCostInput(index)}
             >
               Remove
             </button>
           </div>
-          
-          </div>
-        ))}
+        </div>
+      ))}
 
       <button
-        className="bg-blue-600 text-white py-2 px-4 rounded"
+        className="bg-blue-600 text-white py-1 px-4 rounded"
         onClick={handleAddNewCost}
       >
         Add New
@@ -457,7 +642,7 @@ const PersonnelSection = ({
   return (
     <section aria-labelledby="personnel-heading" className="mb-8">
       <h2
-        className="text-lg font-semibold mb-4 flex items-center mt-16"
+        className="text-2xl font-semibold mb-4 flex items-center"
         id="personnel-heading"
       >
         Personnel
@@ -532,17 +717,17 @@ const PersonnelSection = ({
             />
           </div>
           <div className="flex justify-end items-center">
-          <button
-            className="bg-red-500 text-white py-2 px-4 rounded"
-            onClick={() => removePersonnelInput(index)}
-          >
-            Remove
-          </button>
+            <button
+              className="bg-red-500 text-white py-1 px-4 rounded"
+              onClick={() => removePersonnelInput(index)}
+            >
+              Remove
+            </button>
           </div>
         </div>
       ))}
       <button
-        className="bg-blue-500 text-white py-2 px-4 rounded"
+        className="bg-blue-500 text-white py-1 px-4 rounded"
         onClick={addNewPersonnelInput}
       >
         Add New
@@ -551,19 +736,19 @@ const PersonnelSection = ({
   );
 };
 
-
 const InvestmentSection = ({
   investmentInputs,
-  setInvestmentInputs,  // Add this line
+  setInvestmentInputs, // Add this line
   addNewInvestmentInput,
   removeInvestmentInput,
   handleInvestmentInputChange,
 }) => {
- 
-
   return (
     <section aria-labelledby="investment-heading" className="mb-8">
-      <h2 className="text-lg font-semibold mb-4 flex items-center mt-16" id="investment-heading">
+      <h2
+        className="text-2xl font-semibold mb-4 flex items-center"
+        id="investment-heading"
+      >
         Investment
       </h2>
       {investmentInputs.map((input, index) => (
@@ -593,15 +778,17 @@ const InvestmentSection = ({
             />
           </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
-  <span className="font-medium">Quantity:</span>
-  <Input
-    className="col-start-2"
-    type="number"
-    min="1"
-    value={input.quantity}
-    onChange={(e) => handleInvestmentInputChange(index, "quantity", e.target.value)}
-  />
-</div>
+            <span className="font-medium">Quantity:</span>
+            <Input
+              className="col-start-2"
+              type="number"
+              min="1"
+              value={input.quantity}
+              onChange={(e) =>
+                handleInvestmentInputChange(index, "quantity", e.target.value)
+              }
+            />
+          </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className="font-medium">Purchase Month</span>
             <Input
@@ -639,17 +826,17 @@ const InvestmentSection = ({
             />
           </div>
           <div className="flex justify-end items-center">
-          <button
-            className="bg-red-500 text-white py-2 px-4 rounded"
-            onClick={() => removeInvestmentInput(index)}
-          >
-            Remove
-          </button>
+            <button
+              className="bg-red-500 text-white py-1 px-4 rounded"
+              onClick={() => removeInvestmentInput(index)}
+            >
+              Remove
+            </button>
           </div>
         </div>
       ))}
       <button
-        className="bg-blue-500 text-white py-2 px-4 rounded"
+        className="bg-blue-500 text-white py-1 px-4 rounded"
         onClick={addNewInvestmentInput}
       >
         Add New
@@ -666,7 +853,10 @@ const LoanSection = ({
 }) => {
   return (
     <section aria-labelledby="loan-heading" className="mb-8">
-      <h2 className="text-lg font-semibold mb-4 flex items-center mt-16" id="loan-heading">
+      <h2
+        className="text-2xl font-semibold mb-4 flex items-center"
+        id="loan-heading"
+      >
         Loan
       </h2>
 
@@ -674,65 +864,75 @@ const LoanSection = ({
         <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className="font-medium">Loan Name:</span>
-            <input
-              className="border p-2 rounded"
+            <Input
+              className="col-start-2"
               value={input.loanName}
-              onChange={(e) => handleLoanInputChange(index, "loanName", e.target.value)}
+              onChange={(e) =>
+                handleLoanInputChange(index, "loanName", e.target.value)
+              }
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className="font-medium">Loan Amount:</span>
-            <input
+            <Input
               type="number"
-              className="border p-2 rounded"
+              className="col-start-2"
               value={input.loanAmount}
-              onChange={(e) => handleLoanInputChange(index, "loanAmount", e.target.value)}
+              onChange={(e) =>
+                handleLoanInputChange(index, "loanAmount", e.target.value)
+              }
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className="font-medium">Interest Rate (%):</span>
-            <input
+            <Input
               type="number"
-              className="border p-2 rounded"
+              className="col-start-2"
               value={input.interestRate}
-              onChange={(e) => handleLoanInputChange(index, "interestRate", e.target.value)}
+              onChange={(e) =>
+                handleLoanInputChange(index, "interestRate", e.target.value)
+              }
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className="font-medium">Month Loan Begins:</span>
-            <input
+            <Input
               type="number"
-              className="border p-2 rounded"
+              className="col-start-2"
               value={input.loanBeginMonth}
-              onChange={(e) => handleLoanInputChange(index, "loanBeginMonth", e.target.value)}
+              onChange={(e) =>
+                handleLoanInputChange(index, "loanBeginMonth", e.target.value)
+              }
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className="font-medium">Month Loan Ends:</span>
-            <input
+            <Input
               type="number"
-              className="border p-2 rounded"
+              className="col-start-2"
               value={input.loanEndMonth}
-              onChange={(e) => handleLoanInputChange(index, "loanEndMonth", e.target.value)}
+              onChange={(e) =>
+                handleLoanInputChange(index, "loanEndMonth", e.target.value)
+              }
             />
           </div>
           <div className="flex justify-end items-center">
-          <button
-            className="bg-red-500 text-white py-2 px-4 rounded"
-            onClick={() => removeLoanInput(index)}
-          >
-            Remove
-          </button>
+            <button
+              className="bg-red-500 text-white py-1 px-4 rounded"
+              onClick={() => removeLoanInput(index)}
+            >
+              Remove
+            </button>
           </div>
         </div>
       ))}
 
       <button
-        className="bg-blue-500 text-white py-2 px-4 rounded"
+        className="bg-blue-500 text-white py-1 px-4 rounded"
         onClick={addNewLoanInput}
       >
         Add New
@@ -741,12 +941,20 @@ const LoanSection = ({
   );
 };
 
+const Z = ({ currentUser, setCurrentUser }) => {
+  const [selectedDuration, setSelectedDuration] = useState("3 years");
+  const [numberOfMonths, setNumberOfMonths] = useState(0);
 
-
-const Z = () => {
-  const [selectedDuration, setSelectedDuration] = useState('3 years');
+  useEffect(() => {
+    if (selectedDuration === "3 years") {
+      setNumberOfMonths(36);
+    }
+    if (selectedDuration === "5 years") {
+      setNumberOfMonths(60);
+    }
+  }, [selectedDuration]);
   //DurationSection
-  const [chatbotResponse, setChatbotResponse] = useState('');
+  const [chatbotResponse, setChatbotResponse] = useState("");
   const [jsonInput, setJsonInput] = useState(null); // JSON input state
   const [durationSelect, setDurationSelect] = useState({});
   const [customerSection, setCustomerSection] = useState({});
@@ -755,167 +963,228 @@ const Z = () => {
   const [personnelSection, setPersonnelSection] = useState({});
   const [investmentSection, setInvestmentSection] = useState({});
   const [loanSection, setLoanSection] = useState({});
-  
 
-// gemini
+  const [isLoading, setIsLoading] = useState(false);
 
-const { Text } = Typography;
+  // gemini
+  console.log("isLoading", isLoading);
+  const { Text } = Typography;
 
-const Gemini = () => {
-  const [messages, setMessages] = useState([]);
-  const [inputValue, setInputValue] = useState('');
-  const [websocket, setWebsocket] = useState(null);
+  const Gemini = () => {
+    // const [messages, setMessages] = useState([]);
+    const [inputValue, setInputValue] = useState("");
 
+    const handleInputChange = (e) => {
+      setInputValue(e.target.value);
+    };
+
+    const handleSendMessage = async () => {
+      try {
+        setIsLoading(true);
+
+        const response = await fetch(
+          "https://news-fetcher-8k6m.onrender.com/message",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+
+            body: JSON.stringify({
+              user_input: `{ "DurationSelect": { "selectedDuration": "5 years", "startingCashBalance": 20000, "status": "active", "industry": "retail", "incomeTax": 25, "payrollTax": 12, "currency": "USD" }, "CustomerSection": { "customerInputs": [ { "customersPerMonth": 500, "growthPerMonth": 5, "channelName": "In-Store", "beginMonth": 1, "endMonth": 60 }, { "customersPerMonth": 200, "growthPerMonth": 10, "channelName": "Online Delivery", "beginMonth": 6, "endMonth": 60 } ] }, "SalesSection": { "channelInputs": [ { "productName": "Coffee", "price": 5, "multiples": 1, "txFeePercentage": 0, "cogsPercentage": 30, "selectedChannel": "In-Store", "channelAllocation": 0.6 }, { "productName": "Pastries", "price": 4, "multiples": 1, "txFeePercentage": 0, "cogsPercentage": 50, "selectedChannel": "In-Store", "channelAllocation": 0.4 }, { "productName": "Coffee Subscription", "price": 20, "multiples": 1, "txFeePercentage": 5, "cogsPercentage": 25, "selectedChannel": "Online Delivery", "channelAllocation": 1 } ], "channelNames": [ "In-Store", "Online Delivery" ] }, "CostSection": { "costInputs": [ { "costName": "Rent", "costValue": 3000, "growthPercentage": 3, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" }, { "costName": "Utilities", "costValue": 500, "growthPercentage": 4, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" } ] }, "PersonnelSection": { "personnelInputs": [ { "jobTitle": "Barista", "salaryPerMonth": 2500, "numberOfHires": 3, "jobBeginMonth": 1, "jobEndMonth": 60 }, { "jobTitle": "Manager", "salaryPerMonth": 4000, "numberOfHires": 1, "jobBeginMonth": 1, "jobEndMonth": 60 } ] }, "InvestmentSection": { "investmentInputs": [ { "purchaseName": "Espresso Machine", "assetCost": 8000, "quantity": 2, "purchaseMonth": 1, "residualValue": 800, "usefulLifetime": 60 }, { "purchaseName": "Furniture", "assetCost": 10000, "quantity": 1, "purchaseMonth": 1, "residualValue": 1000, "usefulLifetime": 60 } ] }, "LoanSection": { "loanInputs": [ { "loanName": "Equipment Loan", "loanAmount": 15000, "interestRate": 4, "loanBeginMonth": 1, "loanEndMonth": 60 } ] } } create a json file like this for a ${inputValue}, return only json file`,
+            }),
+          }
+        );
+
+        const data = await response.json();
+
+        //Remove backticks from the constant responseText
+        const cleanedResponseText = data.response.replace(/json|`/g, "");
+
+        // Set the chatbot response to the latest messag
+
+        setChatbotResponse(cleanedResponseText);
+
+        saveUserData();
+
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error sending message:", error);
+        setIsLoading(false);
+      }
+    };
+
+    async function saveUserData() {
+      try {
+        // Thực hiện truy vấn để lấy thông tin người dùng theo id (điều này cần được thay đổi dựa trên cấu trúc dữ liệu của bạn trong Supabase)
+        const currentPrompt = currentUser.financePromptNumber - 1;
+        if (currentPrompt <= 0) {
+          toast.warning("Prompt per hour limited. Let return after an hour.");
+        } else {
+          if (currentPrompt === 99) {
+            await supabase
+              .from("users")
+              .update({ financeFirstPrompt: Date.now() })
+              .eq("id", currentUser?.id);
+          }
+          const { data, error } = await supabase
+            .from("users")
+            .update({ financePromptNumber: currentPrompt })
+            .eq("id", currentUser?.id)
+            .select();
+
+          const resetPrompt = await apiService.post("/count/finance");
+
+          if (error) {
+            throw error;
+          }
+
+          // Cập nhật state userData với thông tin người dùng đã lấy được
+          if (data) {
+            setCurrentUser(data[0]);
+          }
+        }
+      } catch (error) {}
+    }
+
+    return (
+      <div className="w-1/2 mx-auto ">
+        {/* <LoadingButtonClick isLoading={isLoading} /> */}
+
+        <div className="input-container p-4">
+          <h2 className="text-lg font-semibold mb-4">
+            What business do you want to start with?
+          </h2>
+          <Input
+            className="p-4 m-4"
+            value={inputValue}
+            onChange={handleInputChange}
+            rows={3}
+            placeholder="Candy shop, pizza restaurant, hospital, HR SaaS software... or anything"
+          />
+          <button
+            className={`p-2 m-4 rounded-md bg-blue-600 text-white 
+            
+            `}
+            onClick={handleSendMessage}
+            // disabled={isLoading}
+            type="button"
+          >
+            Send
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  //////////////////////
+
+  const jsonHandleInputChange = (e) => {
+    setJsonInput(e.target.value);
+  };
+
+  const applyJsonInput = () => {
+    if (!chatbotResponse || !chatbotResponse.trim()) {
+      alert("No JSON data provided. Please paste valid JSON data.");
+      return;
+    }
+
+    try {
+      const parsedData = JSON.parse(chatbotResponse);
+      // Check if parsedData has the property 'DurationSelect'
+      if (parsedData && parsedData.DurationSelect) {
+        setDurationSelect(parsedData.DurationSelect);
+      } else {
+        // Handle cases where DurationSelect is not present or parsedData is not as expected
+        console.error("Parsed data is missing the DurationSelect property.");
+        setDurationSelect({}); // Reset or set to a default state
+        alert("JSON data does not contain the DurationSelect property.");
+      }
+    } catch (error) {
+      console.error("Error parsing JSON: ", error);
+      alert("Invalid JSON format. Please check the data and try again.");
+    }
+  };
+
+  // In the main functional component, update the useEffect
   useEffect(() => {
-    const ws = new WebSocket('wss://fastapi-example-l5fo.onrender.com/ws');
+    // Ensure chatbotResponse is only processed when it's a valid string
+    if (!chatbotResponse || chatbotResponse.trim() === "") return;
 
-    ws.onopen = () => {
-      console.log('WebSocket connected');
-    };
+    try {
+      const data = JSON.parse(chatbotResponse);
 
-    ws.onmessage = (event) => {
-      const responseText = event.data;
+      // For each section, check if the JSON has relevant data and use it to update state
+      // This replaces manual inputs with JSON-provided values
+      if (data.DurationSelect)
+        setSelectedDuration(data.DurationSelect.selectedDuration);
+      if (data.CustomerSection)
+        setCustomerInputs(data.CustomerSection.customerInputs);
+      if (data.SalesSection) setChannelInputs(data.SalesSection.channelInputs);
+      if (data.CostSection) setCostInputs(data.CostSection.costInputs);
+      if (data.PersonnelSection)
+        setPersonnelInputs(data.PersonnelSection.personnelInputs);
+      if (data.InvestmentSection)
+        setInvestmentInputs(data.InvestmentSection.investmentInputs);
+      if (data.LoanSection) setLoanInputs(data.LoanSection.loanInputs);
 
-      setMessages((prevMessages) => [...prevMessages, { role: 'gemini', text: responseText }]);
-      // Remove backticks from the constant responseText
-      const cleanedResponseText = responseText.replace(/json|`/g, '');
-      // Set the chatbot response to the latest messag
-      setChatbotResponse(cleanedResponseText);
-    };
-
-    setWebsocket(ws);
-
-    return () => {
-      ws.close();
-    };
-  }, []);
-
-  const handleInputChange = (e) => {
-    setInputValue(e.target.value);
-  };
-
-  const handleSendMessage = () => {
-    if (websocket && inputValue.trim() !== '') {
-      const userMessage = `{ "DurationSelect": { "selectedDuration": "5 years", "startingCashBalance": 20000, "status": "active", "industry": "retail", "incomeTax": 25, "payrollTax": 12, "currency": "USD" }, "CustomerSection": { "customerInputs": [ { "customersPerMonth": 500, "growthPerMonth": 5, "channelName": "In-Store", "beginMonth": 1, "endMonth": 60 }, { "customersPerMonth": 200, "growthPerMonth": 10, "channelName": "Online Delivery", "beginMonth": 6, "endMonth": 60 } ] }, "SalesSection": { "channelInputs": [ { "productName": "Coffee", "price": 5, "multiples": 1, "txFeePercentage": 0, "cogsPercentage": 30, "selectedChannel": "In-Store", "channelAllocation": 0.6 }, { "productName": "Pastries", "price": 4, "multiples": 1, "txFeePercentage": 0, "cogsPercentage": 50, "selectedChannel": "In-Store", "channelAllocation": 0.4 }, { "productName": "Coffee Subscription", "price": 20, "multiples": 1, "txFeePercentage": 5, "cogsPercentage": 25, "selectedChannel": "Online Delivery", "channelAllocation": 1 } ], "channelNames": [ "In-Store", "Online Delivery" ] }, "CostSection": { "costInputs": [ { "costName": "Rent", "costValue": 3000, "growthPercentage": 3, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" }, { "costName": "Utilities", "costValue": 500, "growthPercentage": 4, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" } ] }, "PersonnelSection": { "personnelInputs": [ { "jobTitle": "Barista", "salaryPerMonth": 2500, "numberOfHires": 3, "jobBeginMonth": 1, "jobEndMonth": 60 }, { "jobTitle": "Manager", "salaryPerMonth": 4000, "numberOfHires": 1, "jobBeginMonth": 1, "jobEndMonth": 60 } ] }, "InvestmentSection": { "investmentInputs": [ { "purchaseName": "Espresso Machine", "assetCost": 8000, "quantity": 2, "purchaseMonth": 1, "residualValue": 800, "usefulLifetime": 60 }, { "purchaseName": "Furniture", "assetCost": 10000, "quantity": 1, "purchaseMonth": 1, "residualValue": 1000, "usefulLifetime": 60 } ] }, "LoanSection": { "loanInputs": [ { "loanName": "Equipment Loan", "loanAmount": 15000, "interestRate": 4, "loanBeginMonth": 1, "loanEndMonth": 60 } ] } } create a json file like this for a ${inputValue}, return only json file`;
-      setMessages((prevMessages) => [...prevMessages, { role: 'user', text: userMessage }]);
-      websocket.send(userMessage);
-      setInputValue('');
+      // setChatbotResponse(
+      //   (prevResponse) => `${prevResponse}\n${data.geminiResponse}`
+      // );
+      // console.log("data", data);
+      // console.log("data.geminiResponse", data.geminiResponse);
+      // console.log("chatbotResponse", chatbotResponse);
+    } catch (error) {
+      console.log("Error parsing JSON:", error);
+      // Handle error or notify user here
     }
-  };
+  }, [chatbotResponse]);
 
-  const handleExit = () => {
-    if (websocket) {
-      websocket.send('exit');
-      websocket.close();
-    }
-  };
-
-  return (
-    <div className="w-1/2 mx-auto ">
-      <div className="messages-container">
-        {messages.map((message, index) => (
-          <div key={index} className={`rounded-md border-2 border-slate-300 hover:border-blue-400 ${message.role === 'user' ? 'bg-white ' : 'bg-white'} p-4 mb-2`}>
-            <Text className="text-black">{message.text}</Text>
-          </div>
-        ))}
-      </div>
-      <div className="input-container p-4">
-        <h2 className="text-lg font-semibold mb-4">What business do you want to start with?</h2>
-        <Input className='p-4 m-4' value={inputValue} onChange={handleInputChange} rows={3} placeholder="Fertilizer store"  />
-        <button  className="p-2 m-4 rounded-md bg-blue-600 text-white" onClick={handleSendMessage}>
-          Send
-        </button>
-        <button  className="p-2 m-4 rounded-md bg-red-600 text-white" onClick={handleExit}>
-          Exit
-        </button>
-      </div>
-    </div>
-  );
-};
-
-
-//////////////////////
-
-const jsonHandleInputChange = (e) => {
-  setJsonInput(e.target.value);
-};
-
-const applyJsonInput = () => {
-  if (!chatbotResponse || !chatbotResponse.trim()) {
-    alert('No JSON data provided. Please paste valid JSON data.');
-    return;
-  }
-
-  try {
-    const parsedData = JSON.parse(chatbotResponse);
-    // Check if parsedData has the property 'DurationSelect'
-    if (parsedData && parsedData.DurationSelect) {
-      setDurationSelect(parsedData.DurationSelect);
-    } else {
-      // Handle cases where DurationSelect is not present or parsedData is not as expected
-      console.error('Parsed data is missing the DurationSelect property.');
-      setDurationSelect({}); // Reset or set to a default state
-      alert('JSON data does not contain the DurationSelect property.');
-    }
-  } catch (error) {
-    console.error('Error parsing JSON: ', error);
-    alert('Invalid JSON format. Please check the data and try again.');
-  }
-};
-
-useEffect(() => {
-  console.log('chatbotResponse updated:', chatbotResponse);
-}, [chatbotResponse]);
-// In the main functional component, update the useEffect
-useEffect(() => {
-  // Ensure chatbotResponse is only processed when it's a valid string
-  if (!chatbotResponse || chatbotResponse.trim() === '') return;
-
-  console.log('chatbotResponse', chatbotResponse);
-
-  try {
-    const data = JSON.parse(chatbotResponse);
-
-
-    // For each section, check if the JSON has relevant data and use it to update state
-    // This replaces manual inputs with JSON-provided values
-    if (data.DurationSelect) setSelectedDuration(data.DurationSelect.selectedDuration);
-    if (data.CustomerSection) setCustomerInputs(data.CustomerSection.customerInputs);
-    if (data.SalesSection) setChannelInputs(data.SalesSection.channelInputs);
-    if (data.CostSection) setCostInputs(data.CostSection.costInputs);
-    if (data.PersonnelSection) setPersonnelInputs(data.PersonnelSection.personnelInputs);
-    if (data.InvestmentSection) setInvestmentInputs(data.InvestmentSection.investmentInputs);
-    if (data.LoanSection) setLoanInputs(data.LoanSection.loanInputs);
-
-    setChatbotResponse((prevResponse) => `${prevResponse}\n${data.geminiResponse}`);
-  
-  } catch (error) {
-    console.error('Error parsing JSON:', error);
-    // Handle error or notify user here
-  }
-}, [chatbotResponse]);
-
- 
   //CustomerSection
   const [customerInputs, setCustomerInputs] = useState([
     {
-      customersPerMonth: 100,
+      customersPerMonth: 300,
       growthPerMonth: 10,
-      channelName: "",
+      channelName: "Online",
       beginMonth: 1,
-      endMonth: 12,
+      endMonth: 36,
+    },
+    {
+      customersPerMonth: 400,
+      growthPerMonth: 10,
+      channelName: "Offline",
+      beginMonth: 1,
+      endMonth: 36,
     },
   ]);
 
   const [channelInputs, setChannelInputs] = useState([
     {
-      productName: "", // New field for product name
-      price: 0,
-      multiples: 0,
-      txFeePercentage: 0,
-      cogsPercentage: 0,
-      selectedChannel: "",
-      channelAllocation: 1,
+      productName: "Coffee", // New field for product name
+      price: 4,
+      multiples: 1,
+      txFeePercentage: 10,
+      cogsPercentage: 30,
+      selectedChannel: "Offline",
+      channelAllocation: 0.4,
+    },
+    {
+      productName: "Cake", // New field for product name
+      price: 8,
+      multiples: 1,
+      txFeePercentage: 5,
+      cogsPercentage: 35,
+      selectedChannel: "Offline",
+      channelAllocation: 0.3,
+    },
+    {
+      productName: "Coffee bag", // New field for product name
+      price: 6,
+      multiples: 1,
+      txFeePercentage: 5,
+      cogsPercentage: 25,
+      selectedChannel: "Online",
+      channelAllocation: 0.6,
     },
   ]);
 
@@ -978,18 +1247,25 @@ useEffect(() => {
   const [netRevenueData, setNetRevenueData] = useState([]);
   const [grossProfitData, setGrossProfitData] = useState([]);
 
-  const calculateCustomerGrowth = (customerInputs, selectedDuration) => {
-    const months = selectedDuration === "3 years" ? 36 : 60;
+  const calculateCustomerGrowth = (customerInputs) => {
     return customerInputs.map((channel) => {
       let customers = [];
       let currentCustomers = parseFloat(channel.customersPerMonth);
-      for (let i = channel.beginMonth; i <= months; i++) {
-        customers.push({
-          month: i,
-          customers: currentCustomers,
-          channelName: channel.channelName,
-        });
-        currentCustomers *= 1 + parseFloat(channel.growthPerMonth) / 100;
+      for (let i = 1; i <= numberOfMonths; i++) {
+        if (i >= channel.beginMonth && i <= channel.endMonth) {
+          customers.push({
+            month: i,
+            customers: currentCustomers,
+            channelName: channel.channelName,
+          });
+          currentCustomers *= 1 + parseFloat(channel.growthPerMonth) / 100;
+        } else {
+          customers.push({
+            month: i,
+            customers: 0,
+            channelName: channel.channelName,
+          });
+        }
       }
       return customers;
     });
@@ -1087,7 +1363,7 @@ useEffect(() => {
     setCogsData(cogsByChannelAndProduct);
     setNetRevenueData(netRevenueByChannelAndProduct);
     setGrossProfitData(grossProfitByChannelAndProduct);
-  }, [customerGrowthData, channelInputs]);
+  }, [customerGrowthData, channelInputs, numberOfMonths]);
 
   useEffect(() => {
     const calculatedData = calculateCustomerGrowth(
@@ -1095,16 +1371,32 @@ useEffect(() => {
       selectedDuration
     );
     setCustomerGrowthData(calculatedData);
-  }, [customerInputs, selectedDuration]);
+  }, [customerInputs, selectedDuration, numberOfMonths]);
 
   // Cost inputs handle
   const [costInputs, setCostInputs] = useState([
     {
-      costName: "",
-      costValue: 0,
+      costName: "Website",
+      costValue: 1000,
       growthPercentage: 0,
       beginMonth: 1,
-      endMonth: 12,
+      endMonth: 6,
+      costType: "Operating Cost",
+    },
+    {
+      costName: "Marketing",
+      costValue: 500,
+      growthPercentage: 0,
+      beginMonth: 1,
+      endMonth: 36,
+      costType: "Operating Cost",
+    },
+    {
+      costName: "Rent",
+      costValue: 1000,
+      growthPercentage: 2,
+      beginMonth: 1,
+      endMonth: 36,
       costType: "Operating Cost",
     },
   ]);
@@ -1130,11 +1422,18 @@ useEffect(() => {
   // State management cho Personnel
   const [personnelInputs, setPersonnelInputs] = useState([
     {
-      jobTitle: "",
-      salaryPerMonth: 0,
-      numberOfHires: 0,
+      jobTitle: "Cashier",
+      salaryPerMonth: 800,
+      numberOfHires: 2,
       jobBeginMonth: 1,
-      jobEndMonth: 8,
+      jobEndMonth: 36,
+    },
+    {
+      jobTitle: "Manager",
+      salaryPerMonth: 2000,
+      numberOfHires: 1,
+      jobBeginMonth: 1,
+      jobEndMonth: 36,
     },
   ]);
 
@@ -1145,9 +1444,9 @@ useEffect(() => {
       {
         jobTitle: "",
         salaryPerMonth: 0,
-        numberOfHires: 0,
+        numberOfHires: 1,
         jobBeginMonth: 1,
-        jobEndMonth: 8,
+        jobEndMonth: 36,
       },
     ]);
   };
@@ -1173,9 +1472,8 @@ useEffect(() => {
     personnelInputs.forEach((personnelInput) => {
       let monthlyCosts = [];
       // Determine the number of months based on the selected duration
-      const totalMonths = selectedDuration === "3 years" ? 36 : 60;
 
-      for (let month = 1; month <= totalMonths; month++) {
+      for (let month = 1; month <= numberOfMonths; month++) {
         if (
           month >= personnelInput.jobBeginMonth &&
           month <= personnelInput.jobEndMonth
@@ -1199,29 +1497,39 @@ useEffect(() => {
   useEffect(() => {
     const calculatedData = calculatePersonnelCostData();
     setPersonnelCostData(calculatedData);
-  }, [personnelInputs]);
-
+  }, [personnelInputs, numberOfMonths]);
 
   //Investment Inputs
   const [investmentInputs, setInvestmentInputs] = useState([
     {
-      purchaseName: "",
-      assetCost: "1000",
+      purchaseName: "Coffee machine",
+      assetCost: 8000,
       quantity: 1,
-      purchaseMonth: "2",
-      residualValue: "10",
-      usefulLifetime: "5",
+      purchaseMonth: 2,
+      residualValue: 10,
+      usefulLifetime: 36,
+    },
+    {
+      purchaseName: "Table",
+      assetCost: 200,
+      quantity: 10,
+      purchaseMonth: 1,
+      residualValue: 10,
+      usefulLifetime: 36,
     },
   ]);
 
   const addNewInvestmentInput = () => {
-    setInvestmentInputs([...investmentInputs, {
-      purchaseName: "",
-      assetCost: "0",
-      purchaseMonth: "2",
-      residualValue: "10",
-      usefulLifetime: "5",
-    }]);
+    setInvestmentInputs([
+      ...investmentInputs,
+      {
+        purchaseName: "",
+        assetCost: 0,
+        purchaseMonth: 0,
+        residualValue: 0,
+        usefulLifetime: 0,
+      },
+    ]);
   };
 
   const removeInvestmentInput = (index) => {
@@ -1229,7 +1537,7 @@ useEffect(() => {
     newInputs.splice(index, 1);
     setInvestmentInputs(newInputs);
   };
-  
+
   // Function to update an investment input
   const handleInvestmentInputChange = (index, field, value) => {
     const newInputs = [...investmentInputs];
@@ -1239,47 +1547,48 @@ useEffect(() => {
 
   const calculateInvestmentData = () => {
     return investmentInputs.map((investment) => {
-      
       const quantity = parseInt(investment.quantity, 10) || 1; // Ensuring there is a default value of 1
-      
+
       const assetCost = parseFloat(investment.assetCost) * quantity;
-      
+
       const residualValue = parseFloat(investment.residualValue) * quantity;
       const usefulLifetime = parseFloat(investment.usefulLifetime);
       const purchaseMonth = parseInt(investment.purchaseMonth, 10);
-  
+
       const depreciationPerMonth = (assetCost - residualValue) / usefulLifetime;
       const depreciationArray = new Array(numberOfMonths).fill(0);
-  
+
       // Calculate depreciation and accumulated depreciation
       for (let i = 0; i < numberOfMonths; i++) {
         if (i >= purchaseMonth - 1 && i < purchaseMonth - 1 + usefulLifetime) {
           depreciationArray[i] = depreciationPerMonth;
         }
       }
-  
-      const accumulatedDepreciation = depreciationArray.reduce((acc, val, index) => {
-        acc[index] = (acc[index - 1] || 0) + val;
-        return acc;
-      }, []);
-  
+
+      const accumulatedDepreciation = depreciationArray.reduce(
+        (acc, val, index) => {
+          acc[index] = (acc[index - 1] || 0) + val;
+          return acc;
+        },
+        []
+      );
+
       // Calculate asset value and book value
       const assetValue = new Array(numberOfMonths).fill(0);
       const bookValue = new Array(numberOfMonths).fill(0);
       for (let i = 0; i < numberOfMonths; i++) {
         if (i >= purchaseMonth - 1 && i < purchaseMonth - 1 + usefulLifetime) {
-   
           assetValue[i] = assetCost;
-     
+
           bookValue[i] = assetValue[i] - accumulatedDepreciation[i];
         }
       }
-  
+
       return {
         assetValue,
         depreciationArray,
         accumulatedDepreciation,
-        bookValue
+        bookValue,
       };
     });
   };
@@ -1288,116 +1597,134 @@ useEffect(() => {
 
   const [loanInputs, setLoanInputs] = useState([
     {
-      loanName: '',
-      loanAmount: '',
-      interestRate: '',
-      loanBeginMonth: '',
-      loanEndMonth: '',
+      loanName: "Banking loan",
+      loanAmount: "150000",
+      interestRate: "6",
+      loanBeginMonth: "1",
+      loanEndMonth: "12",
     },
   ]);
 
-  
   const addNewLoanInput = () => {
     setLoanInputs([
       ...loanInputs,
       {
-        loanName: '',
-        loanAmount: '',
-        interestRate: '',
-        loanBeginMonth: '',
-        loanEndMonth: '',
+        loanName: "",
+        loanAmount: "0",
+        interestRate: "0",
+        loanBeginMonth: "0",
+        loanEndMonth: "0",
       },
     ]);
   };
-  
+
   const removeLoanInput = (index) => {
     const newInputs = [...loanInputs];
     newInputs.splice(index, 1);
     setLoanInputs(newInputs);
   };
-  
+
   const handleLoanInputChange = (index, field, value) => {
     const newInputs = [...loanInputs];
     newInputs[index] = { ...newInputs[index], [field]: value };
     setLoanInputs(newInputs);
   };
-  
+
   const calculateLoanData = () => {
     return loanInputs.map((loan) => {
       const monthlyRate = parseFloat(loan.interestRate) / 100 / 12;
       const loanAmount = parseFloat(loan.loanAmount);
-      const loanDuration = parseInt(loan.loanEndMonth, 10) - parseInt(loan.loanBeginMonth, 10) + 1;
-  
+      const loanDuration =
+        parseInt(loan.loanEndMonth, 10) - parseInt(loan.loanBeginMonth, 10) + 1;
+
       // Calculate monthly payment
-      const monthlyPayment = loanAmount * monthlyRate / (1 - Math.pow(1 + monthlyRate, -loanDuration));
-  
+      const monthlyPayment =
+        (loanAmount * monthlyRate) /
+        (1 - Math.pow(1 + monthlyRate, -loanDuration));
+
       let remainingBalance = loanAmount;
       const loanDataPerMonth = [];
-  
+
       for (let month = 1; month <= loanDuration; month++) {
         const interestForMonth = remainingBalance * monthlyRate;
         const principalForMonth = monthlyPayment - interestForMonth;
         remainingBalance -= principalForMonth;
-  
+
         loanDataPerMonth.push({
           month: month + parseInt(loan.loanBeginMonth, 10) - 1,
           payment: monthlyPayment,
           principal: principalForMonth,
           interest: interestForMonth,
           balance: remainingBalance,
-          loanAmount: loanAmount
+          loanAmount: loanAmount,
         });
       }
-  
+
       return {
         loanName: loan.loanName,
         loanDataPerMonth,
-        
       };
     });
   };
 
   const transformLoanDataForTable = () => {
     const loanTableData = [];
-  
+
     calculateLoanData().forEach((loan, loanIndex) => {
-      const loanName = loanInputs[loanIndex].loanName || `Loan ${loanIndex + 1}`;
-  
-      const loanAmountRow = { key: `${loanName} - Loan Amount`, type: `${loanName} - Loan Amount` };
-      const paymentRow = { key: `${loanName} - Payment`, type: `${loanName} - Payment` };
-      const principalRow = { key: `${loanName} - Principal`, type: `${loanName} - Principal` };
-      const interestRow = { key: `${loanName} - Interest`, type: `${loanName} - Interest` };
-      const balanceRow = { key: `${loanName} - Remaining Balance`, type: `${loanName} - Remaining Balance` };
-  
+      const loanName =
+        loanInputs[loanIndex].loanName || `Loan ${loanIndex + 1}`;
+
+      const loanAmountRow = {
+        key: `${loanName} - Loan Amount`,
+        type: `${loanName} - Loan Amount`,
+      };
+      const paymentRow = {
+        key: `${loanName} - Payment`,
+        type: `${loanName} - Payment`,
+      };
+      const principalRow = {
+        key: `${loanName} - Principal`,
+        type: `${loanName} - Principal`,
+      };
+      const interestRow = {
+        key: `${loanName} - Interest`,
+        type: `${loanName} - Interest`,
+      };
+      const balanceRow = {
+        key: `${loanName} - Remaining Balance`,
+        type: `${loanName} - Remaining Balance`,
+      };
+
       // Initialize all rows with default values
       for (let monthIndex = 1; monthIndex <= numberOfMonths; monthIndex++) {
         const monthKey = `Month ${monthIndex}`;
-        loanAmountRow[monthKey] = '0.00';
-        paymentRow[monthKey] = '0.00';
-        principalRow[monthKey] = '0.00';
-        interestRow[monthKey] = '0.00';
-        balanceRow[monthKey] = '0.00';
+        loanAmountRow[monthKey] = "0.00";
+        paymentRow[monthKey] = "0.00";
+        principalRow[monthKey] = "0.00";
+        interestRow[monthKey] = "0.00";
+        balanceRow[monthKey] = "0.00";
       }
-  
+
       loan.loanDataPerMonth.forEach((monthData) => {
         const monthKey = `Month ${monthData.month}`;
-        loanAmountRow[monthKey] = monthData.loanAmount.toFixed(2);
-        paymentRow[monthKey] = monthData.payment.toFixed(2);
-        principalRow[monthKey] = monthData.principal.toFixed(2);
-        interestRow[monthKey] = monthData.interest.toFixed(2);
-        balanceRow[monthKey] = monthData.balance.toFixed(2);
+        loanAmountRow[monthKey] = monthData.loanAmount?.toFixed(2);
+        paymentRow[monthKey] = monthData.payment?.toFixed(2);
+        principalRow[monthKey] = monthData.principal?.toFixed(2);
+        interestRow[monthKey] = monthData.interest?.toFixed(2);
+        balanceRow[monthKey] = monthData.balance?.toFixed(2);
       });
-  
-      loanTableData.push(loanAmountRow, paymentRow, principalRow, interestRow, balanceRow);
+
+      loanTableData.push(
+        loanAmountRow,
+        paymentRow,
+        principalRow,
+        interestRow,
+        balanceRow
+      );
     });
-  
+
     return loanTableData;
   };
-  
-  
-  
-
-  const numberOfMonths = selectedDuration === "3 years" ? 36 : 60;
 
   // Data Transformation with rounding to 2 decimal places
   const transformedData = {};
@@ -1420,7 +1747,7 @@ useEffect(() => {
         ) {
           transformedData[data.channelName][`month${data.month}`] = parseFloat(
             data.customers
-          ).toFixed(2);
+          )?.toFixed(2);
         } else {
           // Set value to 0 if outside the range
           transformedData[data.channelName][`month${data.month}`] = "0.00";
@@ -1429,7 +1756,6 @@ useEffect(() => {
     });
   });
 
-  
   const tableData = Object.values(transformedData).map((row) => {
     for (let month = 1; month <= numberOfMonths; month++) {
       if (!row.hasOwnProperty(`month${month}`)) {
@@ -1446,8 +1772,9 @@ useEffect(() => {
       dataIndex: "channelName",
       key: "channelName",
     },
+
     ...Array.from({ length: numberOfMonths }, (_, i) => i + 1).map((month) => ({
-      title: `Month ${month}`,
+      title: `Month_${month}`,
       dataIndex: `month${month}`,
       key: `month${month}`,
     })),
@@ -1490,10 +1817,10 @@ useEffect(() => {
 
       channelRevenue.forEach((value, index) => {
         if (index + 1 >= begin && index + 1 <= end) {
-          revenueRow[`month${index + 1}`] = parseFloat(value).toFixed(2);
+          revenueRow[`month${index + 1}`] = parseFloat(value)?.toFixed(2);
           txFeeRow[`month${index + 1}`] = parseFloat(
             channelTxFee[index]
-          ).toFixed(2);
+          )?.toFixed(2);
           cogsRow[`month${index + 1}`] = parseFloat(channelCOGS[index]).toFixed(
             2
           );
@@ -1522,7 +1849,7 @@ useEffect(() => {
         [];
       netRevenueArray.forEach((value, index) => {
         // ...existing code...
-        netRevenueRow[`month${index + 1}`] = parseFloat(value).toFixed(2);
+        netRevenueRow[`month${index + 1}`] = parseFloat(value)?.toFixed(2);
       });
 
       const grossProfitRow = {
@@ -1544,7 +1871,7 @@ useEffect(() => {
         ] || [];
       grossProfitArray.forEach((value, index) => {
         // ...existing code...
-        grossProfitRow[`month${index + 1}`] = parseFloat(value).toFixed(2);
+        grossProfitRow[`month${index + 1}`] = parseFloat(value)?.toFixed(2);
       });
 
       revenueTableData.push(revenueRow);
@@ -1552,7 +1879,6 @@ useEffect(() => {
       revenueTableData.push(cogsRow);
       revenueTableData.push(netRevenueRow);
       revenueTableData.push(grossProfitRow);
-      console.log(revenueTableData)
     }
   });
 
@@ -1584,12 +1910,12 @@ useEffect(() => {
   useEffect(() => {
     const calculatedData = calculateCostData();
     setCostData(calculatedData);
-  }, [costInputs]);
+  }, [costInputs, numberOfMonths]);
 
   const transformCostDataForTable = () => {
     const transformedData = {};
     const calculatedCostData = calculateCostData();
-    // console.log("calculatedCostData", calculatedCostData);
+
     calculatedCostData.forEach((costItem) => {
       const rowKey = `${costItem.costType} - ${costItem.costName}`;
       costItem.monthlyCosts.forEach((monthData) => {
@@ -1598,7 +1924,7 @@ useEffect(() => {
         }
         transformedData[rowKey][`month${monthData.month}`] = parseFloat(
           monthData.cost
-        ).toFixed(2);
+        )?.toFixed(2);
       });
     });
 
@@ -1613,7 +1939,7 @@ useEffect(() => {
     const transformedData = personnelCostData.map((item) => {
       const rowData = { key: item.jobTitle, jobTitle: item.jobTitle };
       item.monthlyCosts.forEach((monthData) => {
-        rowData[`month${monthData.month}`] = monthData.cost.toFixed(2); // Adjust formatting as needed
+        rowData[`month${monthData.month}`] = monthData.cost?.toFixed(2); // Adjust formatting as needed
       });
       return rowData;
     });
@@ -1624,39 +1950,69 @@ useEffect(() => {
 
   const transformInvestmentDataForTable = () => {
     const investmentTableData = [];
-  
+
     calculateInvestmentData().forEach((investment, investmentIndex) => {
-      const purchaseName = investmentInputs[investmentIndex].purchaseName || `Investment ${investmentIndex + 1}`;
-      const assetCostRow = { key: `${purchaseName} - Asset Cost`, type: `${purchaseName}` };
-      const depreciationRow = { key: `${purchaseName} - Depreciation`, type: 'Depreciation' };
-      const accumulatedDepreciationRow = { key: `${purchaseName} - Accumulated Depreciation`, type: 'Accumulated Depreciation' };
-      const bookValueRow = { key: `${purchaseName} - Book Value`, type: 'Book Value' };
-  
-      const purchaseMonth = parseInt(investmentInputs[investmentIndex].purchaseMonth, 10);
-      const usefulLife = parseInt(investmentInputs[investmentIndex].usefulLifetime, 10);
+      const purchaseName =
+        investmentInputs[investmentIndex].purchaseName ||
+        `Investment ${investmentIndex + 1}`;
+      const assetCostRow = {
+        key: `${purchaseName} - Asset Cost`,
+        type: `${purchaseName}`,
+      };
+      const depreciationRow = {
+        key: `${purchaseName} - Depreciation`,
+        type: "Depreciation",
+      };
+      const accumulatedDepreciationRow = {
+        key: `${purchaseName} - Accumulated Depreciation`,
+        type: "Accumulated Depreciation",
+      };
+      const bookValueRow = {
+        key: `${purchaseName} - Book Value`,
+        type: "Book Value",
+      };
+
+      const purchaseMonth = parseInt(
+        investmentInputs[investmentIndex].purchaseMonth,
+        10
+      );
+      const usefulLife = parseInt(
+        investmentInputs[investmentIndex].usefulLifetime,
+        10
+      );
       const endMonth = purchaseMonth + usefulLife - 1;
-      const assetCost = parseFloat(investmentInputs[investmentIndex].assetCost) * parseInt(investmentInputs[investmentIndex].quantity, 10);
-  
+      const assetCost =
+        parseFloat(investmentInputs[investmentIndex].assetCost) *
+        parseInt(investmentInputs[investmentIndex].quantity, 10);
+
       for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
-        if (monthIndex >= (purchaseMonth - 1) && monthIndex < endMonth) {
-          assetCostRow[`month${monthIndex + 1}`] = assetCost.toFixed(2); // Using Asset Cost
-          depreciationRow[`month${monthIndex + 1}`] = investment.depreciationArray[monthIndex].toFixed(2);
-          accumulatedDepreciationRow[`month${monthIndex + 1}`] = investment.accumulatedDepreciation[monthIndex].toFixed(2);
-          bookValueRow[`month${monthIndex + 1}`] = (assetCost - investment.accumulatedDepreciation[monthIndex]).toFixed(2);
+        if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
+          assetCostRow[`month${monthIndex + 1}`] = assetCost?.toFixed(2); // Using Asset Cost
+          depreciationRow[`month${monthIndex + 1}`] =
+            investment.depreciationArray[monthIndex]?.toFixed(2);
+          accumulatedDepreciationRow[`month${monthIndex + 1}`] =
+            investment.accumulatedDepreciation[monthIndex]?.toFixed(2);
+          bookValueRow[`month${monthIndex + 1}`] = (
+            assetCost - investment.accumulatedDepreciation[monthIndex]
+          )?.toFixed(2);
         } else {
-          assetCostRow[`month${monthIndex + 1}`] = '0.00';
-          depreciationRow[`month${monthIndex + 1}`] = '0.00';
-          accumulatedDepreciationRow[`month${monthIndex + 1}`] = '0.00';
-          bookValueRow[`month${monthIndex + 1}`] = '0.00';
+          assetCostRow[`month${monthIndex + 1}`] = "0.00";
+          depreciationRow[`month${monthIndex + 1}`] = "0.00";
+          accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0.00";
+          bookValueRow[`month${monthIndex + 1}`] = "0.00";
         }
       }
-  
-      investmentTableData.push(assetCostRow, depreciationRow, accumulatedDepreciationRow, bookValueRow);
+
+      investmentTableData.push(
+        assetCostRow,
+        depreciationRow,
+        accumulatedDepreciationRow,
+        bookValueRow
+      );
     });
-  
+
     return investmentTableData;
   };
-  
 
   const revenueColumns = [
     {
@@ -1665,7 +2021,7 @@ useEffect(() => {
       key: "channelName",
     },
     ...Array.from({ length: numberOfMonths }, (_, i) => i + 1).map((month) => ({
-      title: `Month ${month}`,
+      title: `Month_${month}`,
       dataIndex: `month${month}`,
       key: `month${month}`,
     })),
@@ -1678,7 +2034,7 @@ useEffect(() => {
       key: "costName",
     },
     ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month ${i + 1}`,
+      title: `Month_${i + 1}`,
       dataIndex: `month${i + 1}`,
       key: `month${i + 1}`,
     })),
@@ -1691,79 +2047,102 @@ useEffect(() => {
       key: "jobTitle",
     },
     ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month ${i + 1}`,
+      title: `Month_${i + 1}`,
       dataIndex: `month${i + 1}`,
       key: `month${i + 1}`,
     })),
   ];
 
   const investmentColumns = [
-    { title: 'Type', dataIndex: 'type', key: 'type' },
+    { title: "Type", dataIndex: "type", key: "type" },
     ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month ${i + 1}`,
+      title: `Month_${i + 1}`,
       dataIndex: `month${i + 1}`,
       key: `month${i + 1}`,
     })),
   ];
 
   const loanColumns = [
-    { title: 'Type', dataIndex: 'type', key: 'type' },
+    { title: "Type", dataIndex: "type", key: "type" },
     ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month ${i + 1}`,
+      title: `Month_${i + 1}`,
       dataIndex: `Month ${i + 1}`,
       key: `Month ${i + 1}`,
     })),
   ];
-  
+
   const [customerGrowthChart, setCustomerGrowthChart] = useState({
     options: {
       chart: {
-        id: 'customer-growth-chart',
-        type: 'line',
-        height: 350
+        id: "customer-growth-chart",
+        type: "line",
+        height: 350,
       },
+
       xaxis: {
-        categories: Array.from({ length: numberOfMonths }, (_, i) => `Month ${i + 1}`)
+        categories: Array.from(
+          { length: numberOfMonths },
+          (_, i) => `Month ${i + 1}`
+        ),
+        title: {
+          text: "Month",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
       },
       yaxis: {
         labels: {
           formatter: function (val) {
-            return Math.floor(val); 
+            return Math.floor(val);
+          },
+        },
+        title: { text: "Number of Customers" },
+        style: {
+          fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+          fontWeight: "600", // Cỡ chữ semibold
+        },
+      },
+      legend: { position: "bottom", horizontalAlign: "right" },
+      fill: { type: "solid" },
+      dataLabels: { enabled: false },
+      stroke: { curve: "smooth" },
+      markers: { size: 1 },
+    },
+    series: [],
+  });
+
+  useEffect(() => {
+    const seriesData = customerGrowthData.map((channelData) => {
+      return {
+        name: channelData[0]?.channelName || "Unknown Channel",
+        data: channelData.map((data) => data.customers),
+      };
+    });
+
+    setCustomerGrowthChart((prevState) => ({
+      ...prevState,
+      series: seriesData,
+    }));
+  }, [customerGrowthData, numberOfMonths]);
+
+  const [grossProfit, setgrossProfit] = useState({
+    options: {
+      chart: { id: "gross-profit-chart", type: "line", height: 350 },
+      xaxis: {
+        categories: Array.from(
+          { length: numberOfMonths },
+          (_, i) => `${i + 1}`
+        ),
+        title: {
+          text: "Month",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
           },
         },
       },
-      legend: { position: 'bottom', horizontalAlign: 'right' },
-      fill: { type: 'solid' },
-      dataLabels: { enabled: false },
-      stroke: { curve: 'straight' },
-      markers: { size: 1 },
-      
-    },
-    series: []
-  });
-
-  console.log("Object.values(transformedData)", transformedData);
-  console.log("customerGrowthData", customerGrowthData);
-
-  useEffect(() => {
-    const seriesData = customerGrowthData.map(channelData => {
-      console.log("channelData", channelData);
-      return {
-        name: channelData[0]?.channelName || 'Unknown Channel',
-        data: channelData.map(data => data.customers)
-      };
-    });
-  
-    setCustomerGrowthChart(prevState => ({
-      ...prevState,
-      series: seriesData
-    }));
-  }, [customerGrowthData]);
-  
-  const [grossProfit, setgrossProfit] = useState({
-    options: {
-      chart: { id: 'gross-profit-chart', type: 'line', height: 350 },
-      xaxis: { categories: Array.from({ length: numberOfMonths }, (_, i) => `Month ${i + 1}`) },
       // title: { text: 'Revenue Data by Channel and Product', align: 'left' },
       yaxis: {
         labels: {
@@ -1771,30 +2150,48 @@ useEffect(() => {
             return Math.floor(val); // Format Y-axis labels as integers
           },
         },
+        title: {
+          text: "Profit ($)",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
       },
-      legend: { position: 'bottom', horizontalAlign: 'right' },
-      fill: { type: 'solid' },
+      legend: { position: "bottom", horizontalAlign: "right" },
+      fill: { type: "solid" },
       dataLabels: { enabled: false },
-      stroke: { curve: 'straight' },
+      stroke: { curve: "smooth" },
       markers: { size: 1 },
-      
     },
-  
-    series: []
+
+    series: [],
   });
-  
+
   useEffect(() => {
     const seriesData = Object.entries(grossProfitData).map(([key, data]) => {
       return { name: key, data };
     });
-  
-    setgrossProfit(prevState => ({ ...prevState, series: seriesData }));
-  }, [grossProfitData]);
-  
+
+    setgrossProfit((prevState) => ({ ...prevState, series: seriesData }));
+  }, [grossProfitData, numberOfMonths]);
+
   const [costChart, setCostChart] = useState({
     options: {
-      chart: { id: 'cost-chart', type: 'bar', height: 350 },
-      xaxis: { categories: Array.from({ length: numberOfMonths }, (_, i) => `Month ${i + 1}`) },
+      chart: { id: "cost-chart", type: "bar", height: 350 },
+      xaxis: {
+        categories: Array.from(
+          { length: numberOfMonths },
+          (_, i) => `${i + 1}`
+        ),
+        title: {
+          text: "Month",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
+      },
       // title: { text: 'Cost Data', align: 'left' },
       yaxis: {
         labels: {
@@ -1802,29 +2199,50 @@ useEffect(() => {
             return Math.floor(val); // Format Y-axis labels as integers
           },
         },
+        title: {
+          text: "Cost ($)",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
       },
-      legend: { position: 'bottom', horizontalAlign: 'right' },
-      fill: { type: 'solid' },
+      legend: { position: "bottom", horizontalAlign: "right" },
+      fill: { type: "solid" },
       dataLabels: { enabled: false },
-      stroke: { curve: 'straight' },
+      stroke: { curve: "smooth" },
       markers: { size: 1 },
-      
     },
-    series: []
+    series: [],
   });
-  
+
   useEffect(() => {
-    const seriesData = costData.map(item => {
-      return { name: item.costName, data: item.monthlyCosts.map(cost => cost.cost) };
+    const seriesData = costData.map((item) => {
+      return {
+        name: item.costName,
+        data: item.monthlyCosts.map((cost) => cost.cost),
+      };
     });
-  
-    setCostChart(prevState => ({ ...prevState, series: seriesData }));
-  }, [costData]);
+
+    setCostChart((prevState) => ({ ...prevState, series: seriesData }));
+  }, [costData, numberOfMonths]);
 
   const [personnelChart, setPersonnelChart] = useState({
     options: {
-      chart: { id: 'personnel-chart', type: 'bar', height: 350 },
-      xaxis: { categories: Array.from({ length: numberOfMonths }, (_, i) => `Month ${i + 1}`) },
+      chart: { id: "personnel-chart", type: "bar", height: 350 },
+      xaxis: {
+        categories: Array.from(
+          { length: numberOfMonths },
+          (_, i) => `${i + 1}`
+        ),
+        title: {
+          text: "Month",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
+      },
       // title: { text: 'Personnel Cost Data', align: 'left' },
       yaxis: {
         labels: {
@@ -1832,29 +2250,50 @@ useEffect(() => {
             return Math.floor(val); // Format Y-axis labels as integers
           },
         },
+        title: {
+          text: "Salary ($)",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
       },
-      legend: { position: 'bottom', horizontalAlign: 'right' },
-      fill: { type: 'solid' },
+      legend: { position: "bottom", horizontalAlign: "right" },
+      fill: { type: "solid" },
       dataLabels: { enabled: false },
-      stroke: { curve: 'straight' },
+      stroke: { curve: "smooth" },
       markers: { size: 1 },
-      
     },
-    series: []
+    series: [],
   });
-  
+
   useEffect(() => {
-    const seriesData = personnelCostData.map(personnel => {
-      return { name: personnel.jobTitle, data: personnel.monthlyCosts.map(month => month.cost) };
+    const seriesData = personnelCostData.map((personnel) => {
+      return {
+        name: personnel.jobTitle,
+        data: personnel.monthlyCosts.map((month) => month.cost),
+      };
     });
-  
-    setPersonnelChart(prevState => ({ ...prevState, series: seriesData }));
-  }, [personnelCostData]);
+
+    setPersonnelChart((prevState) => ({ ...prevState, series: seriesData }));
+  }, [personnelCostData, numberOfMonths]);
 
   const [investmentChart, setInvestmentChart] = useState({
     options: {
-      chart: { id: 'investment-chart', type: 'area', height: 350 },
-      xaxis: { categories: Array.from({ length: numberOfMonths }, (_, i) => `Month ${i + 1}`) },
+      chart: { id: "investment-chart", type: "area", height: 350 },
+      xaxis: {
+        categories: Array.from(
+          { length: numberOfMonths },
+          (_, i) => `${i + 1}`
+        ),
+        title: {
+          text: "Month",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
+      },
       // title: { text: 'Investment Data', align: 'left' },
       yaxis: {
         labels: {
@@ -1862,29 +2301,47 @@ useEffect(() => {
             return Math.floor(val); // Format Y-axis labels as integers
           },
         },
+        title: {
+          text: "Investment ($)",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
       },
-      legend: { position: 'bottom', horizontalAlign: 'right' },
-      fill: { type: 'solid' },
+      legend: { position: "bottom", horizontalAlign: "right" },
+      fill: { type: "solid" },
       dataLabels: { enabled: false },
-      stroke: { curve: 'straight' },
+      stroke: { curve: "smooth" },
       markers: { size: 1 },
-      
     },
-    series: []
+    series: [],
   });
-  
+
   useEffect(() => {
-    const seriesData = calculateInvestmentData().map(investment => {
+    const seriesData = calculateInvestmentData().map((investment) => {
       return { name: investment.purchaseName, data: investment.assetValue };
     });
-  
-    setInvestmentChart(prevState => ({ ...prevState, series: seriesData }));
-  }, [investmentInputs]);
+
+    setInvestmentChart((prevState) => ({ ...prevState, series: seriesData }));
+  }, [investmentInputs, numberOfMonths]);
 
   const [loanChart, setLoanChart] = useState({
     options: {
-      chart: { id: 'loan-chart', type: 'line', height: 350 },
-      xaxis: { categories: Array.from({ length: numberOfMonths }, (_, i) => `Month ${i + 1}`) },
+      chart: { id: "loan-chart", type: "line", height: 350 },
+      xaxis: {
+        categories: Array.from(
+          { length: numberOfMonths },
+          (_, i) => `${i + 1}`
+        ),
+        title: {
+          text: "Month",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
+      },
       // title: { text: 'Loan Data', align: 'left' },
       yaxis: {
         labels: {
@@ -1892,249 +2349,490 @@ useEffect(() => {
             return Math.floor(val); // Format Y-axis labels as integers
           },
         },
+        title: {
+          text: "Payment amount ($)",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
       },
-      legend: { position: 'bottom', horizontalAlign: 'right' },
-      fill: { type: 'solid' },
+      legend: { position: "bottom", horizontalAlign: "right" },
+      fill: { type: "solid" },
       dataLabels: { enabled: false },
-      stroke: { curve: 'straight' },
+      stroke: { curve: "smooth" },
       markers: { size: 1 },
-      
     },
-    series: []
+    series: [],
   });
-  
+
   useEffect(() => {
-    const seriesData = calculateLoanData().map(loan => {
+    const seriesData = calculateLoanData().map((loan) => {
       return {
         name: loan.loanName,
-        data: loan.loanDataPerMonth.map(month => month.payment)
+        data: loan.loanDataPerMonth.map((month) => month.payment),
       };
     });
-  
-    setLoanChart(prevState => ({ ...prevState, series: seriesData }));
-  }, [loanInputs]);
-  
-  
 
+    setLoanChart((prevState) => ({ ...prevState, series: seriesData }));
+  }, [loanInputs, numberOfMonths]);
 
+  const ProfitAndLossSection = ({
+    revenueData,
+    costData,
+    personnelCostData,
+    investmentData,
+    loanData,
+    numberOfMonths,
+  }) => {
+    const calculateProfitAndLoss = () => {
+      let totalRevenue = new Array(numberOfMonths).fill(0);
+      let totalTxfee = new Array(numberOfMonths).fill(0);
+      let totalCOGS = new Array(numberOfMonths).fill(0);
+      let totalCosts = new Array(numberOfMonths).fill(0);
+      let totalPersonnelCosts = new Array(numberOfMonths).fill(0);
+      let totalInvestmentDepreciation = new Array(numberOfMonths).fill(0);
+      let totalLoanPayments = new Array(numberOfMonths).fill(0);
+
+      revenueData.forEach((entry) => {
+        if (!entry.channelName.includes("Revenue")) {
+          Object.keys(entry).forEach((key) => {
+            if (key.startsWith("month")) {
+              const monthIndex = parseInt(key.replace("month", "")) - 1;
+              totalRevenue[monthIndex] += parseFloat(entry[key] || 0);
+            }
+          });
+        }
+      });
+
+      revenueTableData.forEach((entry) => {
+        if (entry.channelName.includes("- Txfee")) {
+          Object.keys(entry).forEach((key) => {
+            if (key.startsWith("month")) {
+              const monthIndex = parseInt(key.replace("month", "")) - 1;
+              totalTxfee[monthIndex] += parseFloat(entry[key] || 0);
+            }
+          });
+        } else if (entry.channelName.includes("- COGS")) {
+          Object.keys(entry).forEach((key) => {
+            if (key.startsWith("month")) {
+              const monthIndex = parseInt(key.replace("month", "")) - 1;
+              totalCOGS[monthIndex] += parseFloat(entry[key] || 0);
+            }
+          });
+        }
+      });
+
+      costData.forEach((cost) => {
+        cost.monthlyCosts.forEach((monthData) => {
+          totalCosts[monthData.month - 1] += monthData.cost;
+        });
+      });
+
+      personnelCostData.forEach((personnel) => {
+        personnel.monthlyCosts.forEach((monthData) => {
+          totalPersonnelCosts[monthData.month - 1] += monthData.cost;
+        });
+      });
+
+      investmentData.forEach((investment) => {
+        investment.depreciationArray.forEach((value, index) => {
+          totalInvestmentDepreciation[index] += value;
+        });
+      });
+
+      loanData.forEach((loan) => {
+        loan.loanDataPerMonth.forEach((monthData) => {
+          totalLoanPayments[monthData.month - 1] += monthData.payment;
+        });
+      });
+
+      let netProfit = totalRevenue.map(
+        (revenue, index) =>
+          revenue -
+          (totalTxfee[index] +
+            totalCOGS[index] +
+            totalCosts[index] +
+            totalPersonnelCosts[index] +
+            totalInvestmentDepreciation[index] +
+            totalLoanPayments[index])
+      );
+
+      return {
+        totalRevenue,
+        totalTxfee,
+        totalCOGS,
+        totalCosts,
+        totalPersonnelCosts,
+        totalInvestmentDepreciation,
+        totalLoanPayments,
+        netProfit,
+      };
+    };
+
+    const {
+      totalRevenue,
+      totalTxfee,
+      totalCOGS,
+      totalCosts,
+      totalPersonnelCosts,
+      totalInvestmentDepreciation,
+      totalLoanPayments,
+      netProfit,
+    } = calculateProfitAndLoss();
+
+    const transposedData = [
+      { key: "Total Revenue", values: totalRevenue },
+      { key: "Total Txfee", values: totalTxfee },
+      { key: "Total COGS", values: totalCOGS },
+      { key: "Total Costs", values: totalCosts },
+      { key: "Total Personnel Costs", values: totalPersonnelCosts },
+      {
+        key: "Total Investment Depreciation",
+        values: totalInvestmentDepreciation,
+      },
+      { key: "Total Loan Payments", values: totalLoanPayments },
+      { key: "Net Profit", values: netProfit },
+    ].map((item, index) => ({
+      metric: item.key,
+      ...item.values.reduce(
+        (acc, value, i) => ({ ...acc, [`Month ${i + 1}`]: value?.toFixed(2) }),
+        {}
+      ),
+    }));
+
+    // Adjust columns for the transposed table
+    const columns = [
+      {
+        title: "Metric",
+        dataIndex: "metric",
+        key: "metric",
+      },
+      ...Array.from({ length: numberOfMonths }, (_, i) => ({
+        title: `Month_${i + 1}`,
+        dataIndex: `Month ${i + 1}`,
+        key: `Month ${i + 1}`,
+      })),
+    ];
+
+    const chartSeries = [
+      {
+        name: "Total Revenue",
+        data: totalRevenue.map((value) => parseFloat(value?.toFixed(2))),
+      },
+      {
+        name: "Total Costs",
+        data: totalCosts.map((value) => parseFloat(value?.toFixed(2))),
+      },
+      {
+        name: "Total Personnel Costs",
+        data: totalPersonnelCosts.map((value) => parseFloat(value?.toFixed(2))),
+      },
+      {
+        name: "Total Investment Depreciation",
+        data: totalInvestmentDepreciation.map((value) =>
+          parseFloat(value?.toFixed(2))
+        ),
+      },
+      {
+        name: "Total Loan Payments",
+        data: totalLoanPayments.map((value) => parseFloat(value?.toFixed(2))),
+      },
+      {
+        name: "Net Profit",
+        data: netProfit.map((value) => parseFloat(value?.toFixed(2))),
+      },
+    ];
+
+    const chartOptions = {
+      chart: { id: "profit-and-loss-chart", type: "line", height: 350 },
+      xaxis: {
+        categories: Array.from(
+          { length: numberOfMonths },
+          (_, i) => `${i + 1}`
+        ),
+        title: {
+          text: "Month",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
+        labels: {
+          rotate: -45,
+          rotateAlways: false,
+          hideOverlappingLabels: true,
+          trim: true,
+          minHeight: 100, // Adjust as needed to ensure labels do not overlap or take up too much space
+          style: {
+            cssClass: "apexcharts-xaxis-label",
+          },
+        },
+      },
+      yaxis: { title: { text: "Amount ($)" } },
+      stroke: { curve: "smooth" },
+      legend: { position: "top" },
+      tooltip: {
+        enabled: true,
+        y: {
+          formatter: (val) => `$${val?.toFixed(2)}`,
+        },
+      },
+    };
+
+    // Transposed table data preparation remains unchanged
+
+    // Table columns definition remains unchanged
+
+    return (
+      <div>
+        <h2 className="text-lg font-semibold mb-4">
+          Profit and Loss Statement
+        </h2>
+        <Table
+          className="overflow-auto mb-4"
+          dataSource={transposedData}
+          columns={columns}
+          pagination={false}
+        />
+        <Chart
+          options={chartOptions}
+          series={chartSeries}
+          type="line"
+          height={350}
+        />
+      </div>
+    );
+  };
 
   return (
-  <div>
-  {/* <div>
-      <div className="json-input-section mb-8">
-        <h2 className="text-lg font-semibold mb-4">Import Data from JSON</h2>
-        <textarea
-          value={jsonInput || ''}
-          onChange={jsonHandleInputChange}
-          className="border p-2 w-full mb-4"
-          placeholder="Paste your JSON here"
-          rows="10"
-        ></textarea>
-        <button
-          className="bg-blue-500 text-white py-2 px-4 rounded"
-          onClick={applyJsonInput}
-        >
-          Apply JSON
-        </button>
-      </div>
-    </div> */}
-  <div className="w-full h-full flex flex-col md:flex-row" >
-    <Gemini />
-  </div>
-  <div className="w-full h-full flex flex-col md:flex-row">
-  <div className="w-full md:w-1/3 p-4">
-  <DurationSelect
-          selectedDuration={selectedDuration}
-          setSelectedDuration={setSelectedDuration}
-        />
-  </div>
-  <div className="w-full md:w-2/3 p-4">
+    <div>
+      <AlertMsg />
+      {isLoading ? (
+        <ProgressBar isLoading={isLoading} />
+      ) : (
+        <>
+          <div className="w-full h-full flex flex-col md:flex-row">
+            <Gemini />
+          </div>
+          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
+            <div className="w-full md:w-1/3 p-4 border-r-2">
+              <DurationSelect
+                selectedDuration={selectedDuration}
+                setSelectedDuration={setSelectedDuration}
+              />
+            </div>
+            <div className="w-full md:w-2/3 p-4"></div>
+          </div>
 
-  </div>
-  </div>
-      
+          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
+            <div className="w-full md:w-1/3 p-4 border-r-2">
+              <CustomerSection
+                customerInputs={customerInputs}
+                addNewCustomerInput={addNewCustomerInput}
+                removeCustomerInput={removeCustomerInput}
+                handleInputChange={handleInputChange}
+              />
+            </div>
+            <div className="w-full md:w-2/3 p-4 ">
+              <h3 className="text-lg font-semibold mb-4">
+                Customer Growth Data by Channel
+              </h3>
+              <Table
+                className="overflow-auto mb-4  text-lg"
+                dataSource={tableData}
+                columns={columns}
+                pagination={false}
+              />
+              <h3 className="text-lg font-semibold">
+                Customer Growth Data by Channel
+              </h3>
+              <Chart
+                options={customerGrowthChart.options}
+                series={customerGrowthChart.series}
+                type="line"
+                height={350}
+              />
+            </div>
+          </div>
 
-  <div className="w-full h-full flex flex-col md:flex-row">
+          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
+            <div className="w-full md:w-1/3 p-4 border-r-2 border-r-2">
+              <SalesSection
+                channelInputs={channelInputs}
+                channelNames={channelNames}
+                addNewChannelInput={addNewChannelInput}
+                removeChannelInput={removeChannelInput}
+                handleChannelInputChange={handleChannelInputChange}
+              />
+            </div>
+            <div className="w-full md:w-2/3 p-4">
+              <h3 className="text-lg font-semibold mb-4">
+                Revenue Data by Channel and Product
+              </h3>
+              <Table
+                className="overflow-auto mb-4"
+                dataSource={revenueTableData}
+                columns={revenueColumns}
+                pagination={false}
+              />
+              <h3 className="text-lg font-semibold mb-4">
+                Gross Profit Data by Channel and Product
+              </h3>
+              <Chart
+                options={grossProfit.options}
+                series={grossProfit.series}
+                type="line"
+                height={350}
+              />
+            </div>
+          </div>
 
+          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
+            <div className="w-full md:w-1/3 p-4 border-r-2">
+              <CostSection
+                costInputs={costInputs}
+                addNewCostInput={addNewCostInput}
+                removeCostInput={removeCostInput}
+                handleCostInputChange={handleCostInputChange}
+              />
+            </div>
+            <div className="w-full md:w-2/3 p-4">
+              <h3 className="text-lg font-semibold mb-4">Cost Table</h3>
+              <Table
+                className="overflow-auto mb-4"
+                dataSource={costTableData}
+                columns={costColumns}
+                pagination={false}
+              />
+              <h3 className="text-lg font-semibold mb-4">Cost Chart</h3>
+              <Chart
+                options={costChart.options}
+                series={costChart.series}
+                type="bar"
+                height={350}
+              />
+            </div>
+          </div>
 
-    <div className="w-full md:w-1/3 p-4">
-    <CustomerSection
-      customerInputs={customerInputs}
-      addNewCustomerInput={addNewCustomerInput}
-      removeCustomerInput={removeCustomerInput}
-      handleInputChange={handleInputChange}
-    />
+          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
+            <div className="w-full md:w-1/3 p-4 border-r-2">
+              <PersonnelSection
+                personnelInputs={personnelInputs}
+                addNewPersonnelInput={addNewPersonnelInput}
+                removePersonnelInput={removePersonnelInput}
+                handlePersonnelInputChange={handlePersonnelInputChange}
+              />
+            </div>
+            <div className="w-full md:w-2/3 p-4">
+              <h3 className="text-lg font-semibold mb-4">
+                Personnel Cost Table
+              </h3>
+              <Table
+                className="overflow-auto mb-4"
+                dataSource={personnelCostTableData}
+                columns={personnelCostColumns}
+                pagination={false}
+              />
+              <h3 className="text-lg font-semibold mb-4">
+                Personnel Cost Chart
+              </h3>
+              <Chart
+                options={personnelChart.options}
+                series={personnelChart.series}
+                type="bar"
+                height={350}
+              />
+            </div>
+          </div>
+
+          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
+            <div className="w-full md:w-1/3 p-4 border-r-2">
+              <InvestmentSection
+                investmentInputs={investmentInputs}
+                setInvestmentInputs={setInvestmentInputs}
+                addNewInvestmentInput={addNewInvestmentInput}
+                removeInvestmentInput={removeInvestmentInput}
+                handleInvestmentInputChange={handleInvestmentInputChange}
+              />
+            </div>
+            <div className="w-full md:w-2/3 p-4">
+              <h3 className="text-lg font-semibold mb-4">Investment Table</h3>
+              <Table
+                className="overflow-auto mb-4"
+                dataSource={transformInvestmentDataForTable()}
+                columns={investmentColumns}
+                pagination={false}
+              />
+              <h3 className="text-lg font-semibold mb-4">Investment Chart</h3>
+              <Chart
+                options={investmentChart.options}
+                series={investmentChart.series}
+                type="area"
+                height={350}
+              />
+            </div>
+          </div>
+
+          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
+            <div className="w-full md:w-1/3 p-4 border-r-2">
+              <LoanSection
+                loanInputs={loanInputs}
+                addNewLoanInput={addNewLoanInput}
+                removeLoanInput={removeLoanInput}
+                handleLoanInputChange={handleLoanInputChange}
+              />
+            </div>
+            <div className="w-full md:w-2/3 p-4">
+              <h3 className="text-lg font-semibold mb-4">Loan Data</h3>
+              <Table
+                className="overflow-auto mb-4"
+                dataSource={transformLoanDataForTable()}
+                columns={loanColumns}
+                pagination={false}
+              />
+              <h3 className="text-lg font-semibold mb-4">Loan Data</h3>
+              <Chart
+                options={loanChart.options}
+                series={loanChart.series}
+                type="line"
+                height={350}
+              />
+            </div>
+          </div>
+          <ProfitAndLossSection
+            revenueData={revenueTableData}
+            costData={costData}
+            personnelCostData={personnelCostData}
+            investmentData={calculateInvestmentData()}
+            loanData={calculateLoanData()}
+            numberOfMonths={numberOfMonths}
+          />
+        </>
+      )}
+
+      {/* The following sections are commented out */}
+
+      {/* <div>
+        <div className="json-input-section mb-8">
+          <h2 className="text-lg font-semibold mb-4">Import Data from JSON</h2>
+          <textarea
+            value={jsonInput || ''}
+            onChange={jsonHandleInputChange}
+            className="border p-2 w-full mb-4"
+            placeholder="Paste your JSON here"
+            rows="10"
+          ></textarea>
+          <button
+            className="bg-blue-500 text-white py-1 px-4 rounded"
+            onClick={applyJsonInput}
+          >
+            Apply JSON
+          </button>
+        </div>
+      </div> */}
+      {/* <LoadingButtonClick isLoading={isLoading} /> */}
     </div>
-    <div className="w-full md:w-2/3 p-4 ">
-      <h3 className="text-lg font-semibold mb-4">
-      Customer Growth Data by Channel
-      </h3>
-      <Table className="overflow-auto mb-4" dataSource={tableData} columns={columns} pagination={false} />
-      <h3 className="text-lg font-semibold">
-      Customer Growth Data by Channel
-      </h3>
-      <Chart
-        options={customerGrowthChart.options}
-        series={customerGrowthChart.series}
-        type="line"
-        height={350}
-            />
-   
-      
-    
-    </div>
-  </div>
-      
-    
-  <div className="w-full h-full flex flex-col md:flex-row">
-  <div className="w-full md:w-1/3 p-4">
-  <SalesSection
-  channelInputs={channelInputs}
-  channelNames={channelNames}
-  addNewChannelInput={addNewChannelInput}
-  removeChannelInput={removeChannelInput}
-  handleChannelInputChange={handleChannelInputChange}
-  />
-  </div>
-  <div className="w-full md:w-2/3 p-4">
-  <h3 className="text-lg font-semibold mb-4">
-  Revenue Data by Channel and Product
-  </h3>
-  <Table
-  className="overflow-auto mb-4"
-  dataSource={revenueTableData}
-  columns={revenueColumns}
-  pagination={false}
-  />
-  <h3 className="text-lg font-semibold mb-4">
-  Gross Profit Data by Channel and Product
-  </h3>
-  <Chart
-  options={grossProfit.options}
-  series={grossProfit.series}
-  type="line"
-  height={350}
-/>
-
-  </div>
-  </div>
-
-      
-  <div className="w-full h-full flex flex-col md:flex-row">
-  <div className="w-full md:w-1/3 p-4">
-  <CostSection
-          costInputs={costInputs}
-          addNewCostInput={addNewCostInput}
-          removeCostInput={removeCostInput}
-          handleCostInputChange={handleCostInputChange}
-        />
-  </div>
-  <div className="w-full md:w-2/3 p-4">
-  <h3 className="text-lg font-semibold mb-4">Cost Table</h3>
-    <Table
-    className="overflow-auto mb-4"
-      dataSource={costTableData}
-      columns={costColumns}
-      pagination={false}
-    />
-    <h3 className="text-lg font-semibold mb-4">Cost Chart</h3>
-    <Chart
-    options={costChart.options}
-    series={costChart.series}
-    type="bar"
-    height={350}
-/>
-
-  </div>
-  </div>
-      
-    
-  <div className="w-full h-full flex flex-col md:flex-row">
-  <div className="w-full md:w-1/3 p-4">
-  <PersonnelSection
-          personnelInputs={personnelInputs}
-          addNewPersonnelInput={addNewPersonnelInput}
-          removePersonnelInput={removePersonnelInput}
-          handlePersonnelInputChange={handlePersonnelInputChange}
-        />
-
-  </div>
-  <div className="w-full md:w-2/3 p-4">
-  <h3 className="text-lg font-semibold mb-4">Personnel Cost Table</h3>
-    <Table
-      className="overflow-auto mb-4"
-      dataSource={personnelCostTableData}
-      columns={personnelCostColumns}
-      pagination={false}
-    />
-    <h3 className="text-lg font-semibold mb-4">Personnel Cost Chart</h3>
-    <Chart
-      options={personnelChart.options}
-      series={personnelChart.series}
-      type="bar"
-      height={350}
-    />
-
-  </div>
-  </div>
-
-     
-  <div className="w-full h-full flex flex-col md:flex-row">
-  <div className="w-full md:w-1/3 p-4">
-  <InvestmentSection
-      investmentInputs={investmentInputs}
-      setInvestmentInputs={setInvestmentInputs} 
-      addNewInvestmentInput={addNewInvestmentInput}
-      removeInvestmentInput={removeInvestmentInput}
-      handleInvestmentInputChange={handleInvestmentInputChange}
-    />
-  </div>
-  <div className="w-full md:w-2/3 p-4">
-  <h3 className="text-lg font-semibold mb-4">Investment Table</h3>
-    <Table
-      className="overflow-auto mb-4"
-      dataSource={transformInvestmentDataForTable()}
-      columns={investmentColumns}
-      pagination={false}
-    />
-    <h3 className="text-lg font-semibold mb-4">Investment Chart</h3>
-    <Chart
-      options={investmentChart.options}
-      series={investmentChart.series}
-      type="area"
-      height={350}
-    />
-
-  </div>
-  </div>
-
-
-  <div className="w-full h-full flex flex-col md:flex-row">
-  <div className="w-full md:w-1/3 p-4">
-  <LoanSection
-    loanInputs={loanInputs}
-    addNewLoanInput={addNewLoanInput}
-    removeLoanInput={removeLoanInput}
-    handleLoanInputChange={handleLoanInputChange}
-  />
-  </div>
-  <div className="w-full md:w-2/3 p-4">
-  <h3 className="text-lg font-semibold mb-4">Loan Data</h3>
-    <Table className="overflow-auto mb-4" dataSource={transformLoanDataForTable()} columns={loanColumns} pagination={false} />
-    <h3 className="text-lg font-semibold mb-4">Loan Data</h3>
-    <Chart
-      options={loanChart.options}
-      series={loanChart.series}
-      type="line"
-      height={350}
-    />
-
-  </div>
-  </div>
-
-
-
-</div>
   );
 };
 

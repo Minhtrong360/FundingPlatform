@@ -23,9 +23,9 @@ const Modal = ({
   useEffect(() => {
     // Check if the user doesn't meet the conditions to create a private project
     if (
-      (currentUser.plan === "Free" ||
-        currentUser.plan === null ||
-        currentUser.plan === undefined) &&
+      currentUser.plan === "Free" ||
+      currentUser.plan === null ||
+      currentUser.plan === undefined ||
       currentUser.subscription_status !== "active"
     ) {
       setIsPrivateDisabled(true);
@@ -163,14 +163,14 @@ const Modal = ({
             <button
               type="button"
               onClick={onClose}
-              className="w-full px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+              className="w-full px-4 py-1 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={handleCreate}
-              className="w-full px-4 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
+              className="w-full px-4 py-1 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
             >
               Create
             </button>
@@ -222,14 +222,22 @@ export default function AddProject({ updatedProjects, setUpdatedProjects }) {
   }, [user]);
 
   useEffect(() => {
-    if (currentUser) {
+    if (currentUser && updatedProjects) {
+      const hasProjectWithCurrentUser = updatedProjects.some(
+        (project) => project.user_id === currentUser.id
+      );
+      const isFreeUser =
+        currentUser.plan === "Free" ||
+        currentUser.plan === null ||
+        currentUser.plan === undefined;
+      const isSubscriptionInactive =
+        currentUser.subscription_status !== "active";
+
       if (
-        updatedProjects &&
-        updatedProjects.length >= 1 &&
-        (currentUser.plan === "Free" ||
-          currentUser.plan === null ||
-          currentUser.plan === undefined) &&
-        currentUser.subscription_status !== "active"
+        hasProjectWithCurrentUser &&
+        updatedProjects.length > 1 &&
+        isFreeUser &&
+        isSubscriptionInactive
       ) {
         setIsButtonDisabled(true);
       } else {
@@ -259,7 +267,7 @@ export default function AddProject({ updatedProjects, setUpdatedProjects }) {
           zIndex={20000}
         >
           <button
-            className={`text-white opacity-50 bg-gray-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center darkBgBlue darkFocus`}
+            className={`text-white opacity-50 bg-gray-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkFocus`}
             onClick={handleClick}
           >
             Add new
@@ -268,7 +276,7 @@ export default function AddProject({ updatedProjects, setUpdatedProjects }) {
       ) : (
         <>
           <button
-            className={`text-white bg-blue-600 "hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center darkBgBlue darkFocus`}
+            className={`text-white bg-blue-600 "hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkFocus`}
             onClick={handleClick}
           >
             Add new
@@ -332,7 +340,7 @@ export default function AddProject({ updatedProjects, setUpdatedProjects }) {
             <PricingSection />
             <div className="mt-4 flex items-center gap-10">
               <button
-                className="max-w-md px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+                className="max-w-md px-4 py-1 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
                 onClick={closeModalPricing}
               >
                 Close

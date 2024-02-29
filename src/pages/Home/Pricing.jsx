@@ -14,15 +14,14 @@ const PricingCard = ({ plan, onClick }) => {
   return (
     <>
       <div
-        className={` flex flex-col border rounded-xl p-8 text-center shadow-xl   group hover:scale-105  hover:border-blue-700 transition-transform duration-300 ease-in-out`}
+        className={` flex flex-col border  rounded-xl p-8 text-center shadow-xl   group hover:scale-105  hover:border-blue-700 transition-transform duration-300 ease-in-out`}
       >
         <h4 className="font-medium text-lg text-gray-800 darkTextGray">
           {plan?.name}
         </h4>
         <span className="mt-5 font-semibold text-5xl text-gray-800 darkTextGray">
           ${plan.price?.unit_amount / 100}
-          <br />
-          <span className="font-medium text-3xl">
+          <span className="font-medium text-lg">
             /{plan.price?.recurring?.interval}
           </span>
         </span>
@@ -54,7 +53,7 @@ const PricingCard = ({ plan, onClick }) => {
         </ul>
         {/* <div
           className={`flex flex-col border rounded-xl text-center shadow-xl group hover:scale-105 hover:border-blue-700 transition-transform duration-300 ease-in-out ${
-            isLoading ? "p-8" : "px-4 py-2"
+            isLoading ? "p-8" : "px-4 py-1"
           }`}
         >
           {user ? ( // Kiểm tra xem user có tồn tại không
@@ -66,7 +65,7 @@ const PricingCard = ({ plan, onClick }) => {
           ) : (
             <button
               onClick={() => navigate("/login")}
-              className="w-full sm:w-auto px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-600 rounded-lg hover:bg-blue-700 darkHoverBgBlue darkBgBlue"
+              className="w-full sm:w-auto px-5 py-1 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-600 rounded-lg hover:bg-blue-700 darkHoverBgBlue darkBgBlue"
             >
               Login required
             </button>

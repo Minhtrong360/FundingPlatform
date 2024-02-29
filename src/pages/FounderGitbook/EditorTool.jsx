@@ -231,7 +231,11 @@ export default function EditorTool() {
           .match({ id: params.id })
           .single();
 
-        if (projectData && projectData.user_id === user.id) {
+        if (
+          projectData &&
+          (projectData.user_id === user.id ||
+            projectData.collabs.includes(user.email))
+        ) {
           const { error } = await supabase
             .from("projects")
             .update({ markdown: blocks })
@@ -241,6 +245,7 @@ export default function EditorTool() {
             toast.error(error.message);
           } else {
             setIsLoading(false);
+            toast.success("Saved successfully.");
             // Reset isSaved to false after 1 second
           }
         } else {
@@ -277,7 +282,11 @@ export default function EditorTool() {
           .match({ id: params.id })
           .single();
 
-        if (projectData && projectData.user_id === user.id) {
+        if (
+          projectData &&
+          (projectData.user_id === user.id ||
+            projectData.collabs.includes(user.email))
+        ) {
           // Only allow save if project.user_id matches user.id
 
           const { error } = await supabase
@@ -331,7 +340,11 @@ export default function EditorTool() {
           .match({ id: params.id })
           .single();
 
-        if (projectData && projectData.user_id === user.id) {
+        if (
+          projectData &&
+          (projectData.user_id === user.id ||
+            projectData.collabs.includes(user.email))
+        ) {
           // Only allow save if project.user_id matches user.id
 
           const { error } = await supabase
@@ -440,7 +453,6 @@ export default function EditorTool() {
         theme={"light"}
         className="w-full lg:w-9/12"
       />
-
       <Modal
         ariaHideApp={false}
         isOpen={isModalOpen}
@@ -476,13 +488,13 @@ export default function EditorTool() {
             />
             <div className="mt-4 flex items-center gap-10">
               <button
-                className="w-full px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+                className="w-full px-4 py-1 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
                 onClick={closeModal}
               >
                 Cancel
               </button>
               <button
-                className="w-full px-4 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
+                className="w-full px-4 py-1 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
                 onClick={handleInsertYouTubeLink}
               >
                 Insert
@@ -492,18 +504,11 @@ export default function EditorTool() {
         </div>
       </Modal>
       <LoadingButtonClick isLoading={isLoading} />
-      {user.id === currentProject.user_id && (
+      {user.id === currentProject.user_id ||
+      currentProject?.collabs?.includes(user.email) ? (
         <>
           <button
-            className={`fixed top-[12px] right-[1.2em] flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-            onClick={handleSave}
-            disabled={isLoading}
-          >
-            Save
-          </button>
-
-          <button
-            className={`fixed top-[12px] right-[6.7em]   flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+            className={`fixed top-[12px] right-[6.7em]   flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
             onClick={handleDrawChart}
             disabled={isLoading}
           >
@@ -511,14 +516,21 @@ export default function EditorTool() {
           </button>
 
           <button
-            className={`fixed top-[12px] right-[12.5em]  flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+            className={`fixed top-[12px] right-[12.5em]  flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
             onClick={handleCompanySettings}
             disabled={isLoading}
           >
             Settings
           </button>
+          <button
+            className={`fixed top-[12px] right-[1.2em] flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+            onClick={handleSave}
+            disabled={isLoading}
+          >
+            Save
+          </button>
         </>
-      )}
+      ) : null}
     </div>
   );
 }

@@ -18,7 +18,6 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
   const handleItemClick = (route) => {
     navigate(route);
   };
-  console.log("selectedItem", selectedItem);
 
   return (
     <div>

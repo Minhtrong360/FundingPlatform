@@ -40,7 +40,7 @@ const Modal = ({
     };
 
     handleAddLinks(newLink);
-    setLink("https://drive.google.com/file/d/0By_3Hl5Rv7fAb3FZMGZJS01"); // Đặt lại giá trị của link sau khi thêm
+    setLink(""); // Đặt lại giá trị của link sau khi thêm
     setFileName("File 1"); // Đặt lại giá trị của fileName sau khi thêm
     onClose(); // Đóng modal sau khi thêm
   };
@@ -71,7 +71,7 @@ const Modal = ({
             <input
               type="text"
               name="File_link"
-              placeholder="https://drive.google.com/file/d/0By_3Hl5Rv7fAb3FZMGZJS01"
+              placeholder="upload your file's link"
               value={link}
               onChange={(e) => setLink(e.target.value)}
               className="block w-full px-4 py-3 text-sm text-gray-700 border rounded-md"
@@ -140,14 +140,14 @@ const Modal = ({
             <button
               type="button"
               onClick={onClose}
-              className="w-full px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+              className="w-full px-4 py-1 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={addLink} // Sử dụng hàm addLink để thêm liên kết
-              className="w-full px-4 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
+              className="w-full px-4 py-1 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
             >
               Add
             </button>
@@ -201,9 +201,7 @@ export default function AddLinkFile({
     }
   }, [user]);
 
-  const [link, setLink] = useState(
-    "https://drive.google.com/file/d/0By_3Hl5Rv7fAb3FZMGZJS01"
-  );
+  const [link, setLink] = useState();
   const [fileName, setFileName] = useState("File 1");
   const [isPublic, setIsPublic] = useState(true); // Thêm trạng thái cho lựa chọn Public/Private
 
@@ -216,9 +214,10 @@ export default function AddLinkFile({
 
   return (
     <div className="App">
-      {user.id === currentProject.user_id && (
+      {(user.id === currentProject.user_id ||
+        currentProject.collabs.includes(user.email)) && (
         <button
-          className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+          className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
           onClick={() => setIsModalOpen(true)}
         >
           Add file
@@ -283,7 +282,7 @@ export default function AddLinkFile({
             <PricingSection />
             <div className="mt-4 flex items-center gap-10">
               <button
-                className="max-w-md px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+                className="max-w-md px-4 py-1 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
                 onClick={closeModalPricing}
               >
                 Close

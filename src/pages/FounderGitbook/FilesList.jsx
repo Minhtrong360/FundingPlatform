@@ -278,6 +278,8 @@ function FilesList() {
     }
   }, [currentUser]);
 
+  console.log("projectLinks", projectLinks);
+
   return (
     <main className="w-full ml-2">
       <LoadingButtonClick isLoading={isLoading} />
@@ -292,7 +294,7 @@ function FilesList() {
         </div>
         <div className="flex flex-col">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+            <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
               <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
                 <table className="min-w-full divide-y divide-gray-200 darkDivideGray">
                   <thead className="bg-gray-50 darkBgBlue">
@@ -440,18 +442,32 @@ function FilesList() {
                           </div>
                         </td>
                         <td className="px-4 py-4 text-sm whitespace-nowrap">
-                          {link.status ? (
+                          {/* {link.status ? (
                             ""
                           ) : link.user_id !== user.id &&
                             !link.invited_user?.includes(user.email) ? (
                             <button
-                              className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+                              className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
                               onClick={() => handleSendRequest(link)}
                             >
                               Send Request
                             </button>
                           ) : (
                             <InvitedUserFile fileId={link.id} />
+                          )} */}
+                          {link.status ? (
+                            ""
+                          ) : link.user_id === user.id ? (
+                            <InvitedUserFile fileId={link.id} />
+                          ) : link.invited_user?.includes(user.email) ? (
+                            ""
+                          ) : (
+                            <button
+                              className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+                              onClick={() => handleSendRequest(link)}
+                            >
+                              Send Request
+                            </button>
                           )}
                         </td>
                       </tr>

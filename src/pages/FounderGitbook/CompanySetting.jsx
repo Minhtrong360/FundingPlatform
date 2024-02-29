@@ -10,6 +10,7 @@ import { useAuth } from "../../context/AuthContext";
 import Card from "../Home/Components/Card";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import AlertMsg from "../../components/AlertMsg";
+import CompanyTest from "./CompanyTest";
 
 function CompanySetting() {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ function CompanySetting() {
   const [viewError, setViewError] = useState("");
   const params = useParams();
   const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
     companyName: "Tesla",
     country: "US",
@@ -83,7 +84,7 @@ function CompanySetting() {
               setIsLoading(false);
             } else {
               // Nếu không có dự án tồn tại, ở lại trang để tạo
-              console.log("Project not found, stay on create page");
+
               setIsLoading(false);
             }
           }
@@ -102,15 +103,21 @@ function CompanySetting() {
 
   useEffect(() => {
     const calculateNoTicket = () => {
-      const targetAmount = parseInt(formData.targetAmount);
-      const minTicketSize = parseInt(formData.minTicketSize);
+      const targetAmount =
+        formData.targetAmount && typeof formData.targetAmount === "string"
+          ? parseInt(formData.targetAmount.replace(/,/g, ""), 10)
+          : formData.targetAmount;
+      const minTicketSize =
+        formData.minTicketSize && typeof formData.minTicketSize === "string"
+          ? parseInt(formData.minTicketSize.replace(/,/g, ""), 10)
+          : formData.minTicketSize;
 
       if (
         !isNaN(targetAmount) &&
         !isNaN(minTicketSize) &&
         minTicketSize !== 0
       ) {
-        const noTicket = Math.floor(targetAmount / minTicketSize);
+        const noTicket = Math.ceil(targetAmount / minTicketSize);
         return noTicket;
       }
       return 0;
@@ -142,6 +149,27 @@ function CompanySetting() {
         setIsLoading(false);
         return;
       }
+
+      // Upload ảnh project_url nếu có
+      let projectUrl = formData.project_url;
+      if (projectUrl && projectUrl.startsWith("data:image")) {
+        const file = dataURItoFile(projectUrl, "img");
+        const uploadedProjectUrl = await uploadImageToSupabase(file);
+        if (uploadedProjectUrl) {
+          projectUrl = uploadedProjectUrl;
+        }
+      }
+
+      // Upload ảnh card_url nếu có
+      let cardUrl = formData.card_url;
+      if (cardUrl && cardUrl.startsWith("data:image")) {
+        const file = dataURItoFile(cardUrl, "card_image.jpg");
+        const uploadedCardUrl = await uploadImageToSupabase(file);
+        if (uploadedCardUrl) {
+          cardUrl = uploadedCardUrl;
+        }
+      }
+
       // Kiểm tra xem công ty đã tồn tại trong Supabase chưa bằng cách truy vấn theo project_id
       const { data: existingCompany, error: existingCompanyError } =
         await supabase.from("company").select("*").eq("project_id", params.id);
@@ -162,13 +190,24 @@ function CompanySetting() {
               name: formData.companyName,
               country: formData.country,
               industry: formData.industry,
-              target_amount: formData.targetAmount,
+              target_amount:
+                formData.targetAmount &&
+                typeof formData.targetAmount === "string"
+                  ? parseInt(formData.targetAmount.replace(/,/g, ""), 10)
+                  : formData.targetAmount,
               offer_type: formData.typeOffering,
-              ticket_size: formData.minTicketSize,
-              no_ticket: formData.noTicket,
+              ticket_size:
+                formData.minTicketSize &&
+                typeof formData.minTicketSize === "string"
+                  ? parseInt(formData.minTicketSize.replace(/,/g, ""), 10)
+                  : formData.minTicketSize,
+              no_ticket:
+                formData.noTicket && typeof formData.noTicket === "string"
+                  ? parseInt(formData.noTicket.replace(/,/g, ""), 10)
+                  : formData.noTicket,
               offer: formData.offer,
-              project_url: formData.project_url,
-              card_url: formData.card_url,
+              project_url: projectUrl,
+              card_url: cardUrl,
               website: formData.website,
               description: formData.companyDescription,
               user_id: user.id,
@@ -193,13 +232,24 @@ function CompanySetting() {
               name: formData.companyName,
               country: formData.country,
               industry: formData.industry,
-              target_amount: formData.targetAmount,
+              target_amount:
+                formData.targetAmount &&
+                typeof formData.targetAmount === "string"
+                  ? parseInt(formData.targetAmount.replace(/,/g, ""), 10)
+                  : formData.targetAmount,
               offer_type: formData.typeOffering,
-              ticket_size: formData.minTicketSize,
-              no_ticket: formData.noTicket,
+              ticket_size:
+                formData.minTicketSize &&
+                typeof formData.minTicketSize === "string"
+                  ? parseInt(formData.minTicketSize.replace(/,/g, ""), 10)
+                  : formData.minTicketSize,
+              no_ticket:
+                formData.noTicket && typeof formData.noTicket === "string"
+                  ? parseInt(formData.noTicket.replace(/,/g, ""), 10)
+                  : formData.noTicket,
               offer: formData.offer,
-              project_url: formData.project_url,
-              card_url: formData.card_url,
+              project_url: projectUrl,
+              card_url: cardUrl,
               website: formData.website,
               description: formData.companyDescription,
               user_id: user.id,
@@ -210,6 +260,7 @@ function CompanySetting() {
 
           if (error) {
             console.log("Error saving data to Supabase:", error);
+            throw error;
           } else {
             setIsLoading(false);
             navigate(`/founder/${params.id}`);
@@ -243,7 +294,7 @@ function CompanySetting() {
           if (
             data.status === false &&
             data.user_id !== user?.id &&
-            !data.invited_user?.includes(user.email)
+            !data.collabs?.includes(user.email)
           ) {
             // Kiểm tra xem dự án có trạng thái false, không thuộc về người dùng và không được mời tham gia
             // Hoặc có thể kiểm tra invited_user ở đây
@@ -264,7 +315,44 @@ function CompanySetting() {
     });
   };
 
-  console.log("formData", formData);
+  // Hàm để tải ảnh lên Supabase storage
+  const uploadImageToSupabase = async (file) => {
+    try {
+      const { data, error } = await supabase.storage
+        .from("beekrowd_storage") // Chọn bucket
+        .upload(`beekrowd_images/${file.name}`, file); // Lưu ảnh vào folder beekrowd_images
+
+      if (error) {
+        console.error("Error uploading image to Supabase:", error);
+        return null;
+      }
+
+      // Trả về liên kết ảnh từ Supabase
+      // Lấy URL của ảnh đã lưu
+
+      const imageUrl = `https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/${data.fullPath}`;
+
+      return imageUrl;
+    } catch (error) {
+      console.error("Error uploading image to Supabase:", error);
+      return null;
+    }
+  };
+
+  // Hàm chuyển đổi data URI thành File object
+  const dataURItoFile = (dataURI, fileNamePrefix) => {
+    const byteString = atob(dataURI.split(",")[1]);
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    const extension = dataURI.split(",")[0].split("/")[1].split(";")[0]; // Lấy phần mở rộng của tệp từ data URI
+    const fileName = `${fileNamePrefix}-${Date.now()}.${extension}`; // Tạo tên tệp duy nhất với ngày giờ hiện tại và phần mở rộng
+    const blob = new Blob([ab], { type: `image/${extension}` });
+    return new File([blob], fileName, { type: `image/${extension}` });
+  };
+
   if (viewError) {
     return (
       <AnnouncePage
@@ -274,6 +362,8 @@ function CompanySetting() {
       />
     );
   }
+
+  const canClick = false;
 
   return (
     <div className="grid sm:grid-cols-1 lg:grid-cols-3 gap-6">
@@ -307,17 +397,22 @@ function CompanySetting() {
             button4Text={formData.offer}
             button5Text={formData.typeOffering}
             imageUrl={formData.project_url}
+            setFormData={setFormData}
+            canClick={canClick}
           />
 
           <hr className="mt-16 border-dashed border-gray-400" />
 
-          <div className="mt-11 px-4 sm:px-6 lg:px-8 z-0">
+          <div className="mt-11 px-4 sm:px-6 lg:px-8">
             <Card
               title={formData.companyName}
               description={formData.companyDescription}
               imageUrl={formData.card_url}
               buttonText="Read more"
               project_id={id}
+              canClick={canClick}
+              formData={formData}
+              setFormData={setFormData}
             />
           </div>
         </div>

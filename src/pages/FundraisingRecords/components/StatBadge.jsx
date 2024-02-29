@@ -58,18 +58,19 @@ const columns = [
     dataIndex: "screenPageViewsPerUser",
     key: "screenPageViewsPerUser",
   },
-  {
-    title: "Scrolled Users",
-    dataIndex: "scrolledUsers",
-    key: "scrolledUsers",
-  },
+  // {
+  //   title: "Scrolled Users",
+  //   dataIndex: "scrolledUsers",
+  //   key: "scrolledUsers",
+  // },
 ];
 
-const StatBadge = ({ ggData }) => {
+const StatBadge = ({ ggData, setIsLoading }) => {
   const [projectData, setProjectData] = useState([]);
-  console.log("ggData", ggData);
+
   useEffect(() => {
     const fetchProjects = async () => {
+      setIsLoading(true);
       const projectIds = ggData.map((item) => item.id);
       const { data: projects, error } = await supabase
         .from("projects")
@@ -82,9 +83,13 @@ const StatBadge = ({ ggData }) => {
       }
 
       setProjectData(projects);
+      setIsLoading(false);
     };
 
-    fetchProjects();
+    if (ggData.length > 0) {
+      console.log("ggData", ggData);
+      fetchProjects();
+    }
   }, [ggData]);
 
   const data = ggData?.map((item, index) => ({
@@ -98,7 +103,6 @@ const StatBadge = ({ ggData }) => {
     ...item.data,
   }));
 
-  console.log("data", data);
   const getRowClassName = (record, index) => {
     // Apply the 'text-md' Tailwind CSS class to all rows
     return "text-md";

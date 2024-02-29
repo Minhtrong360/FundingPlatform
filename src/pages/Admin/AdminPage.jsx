@@ -44,23 +44,29 @@ function AdminPage() {
   useEffect(() => {
     async function fetchProjects() {
       try {
-        const { data, error } = await supabase.from("projects").select("*");
-        if (error) {
-          throw new Error(error.message);
+        const { data: projects, error: projectsError } = await supabase
+          .from("projects")
+          .select("*");
+        const { data: companies, error: companiesError } = await supabase
+          .from("company")
+          .select("*");
+
+        if (projectsError || companiesError) {
+          throw new Error(projectsError || companiesError);
         } else {
-          const filteredProjects = data.filter((project) => {
-            try {
-              const markdownArray = JSON.parse(project.markdown);
-              return markdownArray.length !== 0; // Check if markdown field is not an empty array
-            } catch (error) {
-              console.error("Error parsing markdown:", error.message);
-              return false; // Return false if there's an error parsing markdown
-            }
-          });
+          // Find project ids associated with companies
+          const projectIds = companies.map((company) => company.project_id);
+
+          // Filter projects by whether they have associated companies
+          const filteredProjects = projects.filter((project) =>
+            projectIds.includes(project.id)
+          );
+
           // Sort filtered projects by created_at in descending order (from newest to oldest)
           filteredProjects.sort(
             (a, b) => new Date(b.created_at) - new Date(a.created_at)
           );
+
           setProjects(filteredProjects);
         }
       } catch (error) {
@@ -96,8 +102,6 @@ function AdminPage() {
       );
     }
   };
-
-  console.log("project", projects);
 
   return (
     <main className="w-full my-28">
@@ -144,6 +148,12 @@ function AdminPage() {
                           className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 darkTextGray"
                         >
                           Customer
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 darkTextGray"
+                        >
+                          Required verification
                         </th>
                         <th
                           scope="col"
@@ -196,6 +206,27 @@ function AdminPage() {
                             onClick={() => handleProjectClick(project)}
                           >
                             {project.user_email}
+                          </td>
+
+                          <td
+                            className={`hover:cursor-pointer px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap `}
+                          >
+                            <div
+                              onClick={() => handleProjectClick(project)}
+                              className={`w-[5em] 
+                              ${
+                                project.required
+                                  ? "text-blue-600"
+                                  : " text-black-500"
+                              }
+                               focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+                            >
+                              {project.required && project.verified
+                                ? "Accepted"
+                                : project.required
+                                ? "Waiting..."
+                                : "No required"}
+                            </div>
                           </td>
 
                           <td

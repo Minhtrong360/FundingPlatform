@@ -46,6 +46,8 @@ const Card = ({
     project_id = "3ec3f142-f33c-4977-befd-30d4ce2b764d";
   }
 
+  console.log("project", project);
+
   return (
     <div className="max-w-sm bg-white border  rounded-lg shadow darkBgBlue darkBorderGray  hover:border-transparent hover:shadow-lg transition-all duration-300">
       <div className=" relative  pt-[50%] sm:pt-[70%] rounded-lg overflow-hidden">
@@ -63,9 +65,11 @@ const Card = ({
             alt="Company Description"
           />
         )}
-        {/* <span className="absolute top-0 end-0 rounded-se-xl rounded-es-xl text-xs font-medium bg-green-700 text-white py-1.5 px-3 dark:bg-gray-900">
-          Verified by BeeKrowd
-        </span> */}
+        {project?.verified && (
+          <span className="absolute top-0 end-0 rounded-se-xl rounded-es-xl text-sm font-medium bg-green-700 text-white py-1.5 px-3 dark:bg-gray-900">
+            Verified by BeeKrowd
+          </span>
+        )}
       </div>
 
       <div className="p-5">

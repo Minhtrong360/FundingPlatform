@@ -67,10 +67,8 @@ function FilesList() {
       }
     };
 
-    if (id) {
-      fetchFiles();
-    }
-  }, [id]);
+    fetchFiles();
+  }, []);
 
   useEffect(() => {
     // Lấy dự án từ Supabase
@@ -88,7 +86,7 @@ function FilesList() {
           setCurrentProject(data);
         }
       });
-  }, [id]);
+  }, []);
 
   const handleAddLinks = async (newLink) => {
     newLink.owner_email = user.email;
@@ -259,10 +257,8 @@ function FilesList() {
       }
     };
 
-    if (user) {
-      fetchCurrentUser();
-    }
-  }, [user]);
+    fetchCurrentUser();
+  }, []);
 
   useEffect(() => {
     // Check if the user doesn't meet the conditions to create a private project
@@ -276,9 +272,7 @@ function FilesList() {
     } else {
       setIsPrivateDisabled(false);
     }
-  }, [currentUser]);
-
-  console.log("projectLinks", projectLinks);
+  }, []);
 
   return (
     <main className="w-full ml-2">

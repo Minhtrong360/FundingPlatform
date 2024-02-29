@@ -21,6 +21,8 @@ import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 
 import LoadingButtonClick from "../../components/LoadingButtonClick";
+import { Tooltip } from "antd";
+import ReactModal from "react-modal";
 
 // Create the YouTube Link block
 const YouTubeLinkBlock = createReactBlockSpec(
@@ -142,12 +144,9 @@ export default function EditorTool() {
     }
 
     // Gọi hàm để lấy Markdown khi component được mount
-    if (params) {
-      fetchMarkdown();
-    } else {
-      setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu (không có project)
-    }
-  }, [params]);
+
+    fetchMarkdown();
+  }, []);
   // State to control Modal visibility
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [youtubeLink, setYoutubeLink] = useState("Add wanted youtube url"); // State to store YouTube link
@@ -432,105 +431,225 @@ export default function EditorTool() {
   //   };
   // }, [isSaved, showConfirmation]);
 
-  return (
-    <div className="flex-grow items-center justify-center max-w-[85rem] py-10 ">
-      <Modal
-        ariaHideApp={false}
-        isOpen={showConfirmation}
-        onRequestClose={() => setShowConfirmation(false)}
-        contentLabel="Confirmation Modal"
-      >
-        <div>
-          <p>
-            Dữ liệu chưa được lưu. Bạn có muốn lưu nó trước khi rời khỏi trang?
-          </p>
-          <button onClick={() => handleSave()}>Lưu</button>
-          <button onClick={() => setShowConfirmation(false)}>Không lưu</button>
-        </div>
-      </Modal>
-      <BlockNoteView
-        editor={editor}
-        theme={"light"}
-        className="w-full lg:w-9/12"
-      />
-      <Modal
-        ariaHideApp={false}
-        isOpen={isModalOpen}
-        onRequestClose={closeModal}
-        contentLabel="YouTube Link Modal"
-        style={{
-          overlay: {
-            backgroundColor: "gray", // Màu nền overlay
-            position: "fixed", // Để nền overlay cố định
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 9999, // Chỉ số z để đảm bảo nó hiển thị trên cùng
-          },
-          content: {
-            border: "none", // Để ẩn border của nội dung Modal
-            background: "none", // Để ẩn background của nội dung Modal
-            margin: "auto", // Để căn giữa
-          },
-        }}
-      >
-        <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-          <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
-            <h2 className="text-lg font-medium leading-6 text-gray-800 capitalize">
-              Enter YouTube Video URL
-            </h2>
-            <input
-              className="block w-full px-4 py-3 text-sm text-gray-700 border rounded-md"
-              type="text"
-              value={youtubeLink}
-              onChange={(e) => setYoutubeLink(e.target.value)}
-            />
-            <div className="mt-4 flex items-center gap-10">
-              <button
-                className="w-full px-4 py-1 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
-                onClick={closeModal}
-              >
-                Cancel
-              </button>
-              <button
-                className="w-full px-4 py-1 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
-                onClick={handleInsertYouTubeLink}
-              >
-                Insert
-              </button>
-            </div>
-          </div>
-        </div>
-      </Modal>
-      <LoadingButtonClick isLoading={isLoading} />
-      {user.id === currentProject.user_id ||
-      currentProject?.collabs?.includes(user.email) ? (
-        <>
-          <button
-            className={`fixed top-[12px] right-[6.7em]   flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-            onClick={handleDrawChart}
-            disabled={isLoading}
-          >
-            Chart
-          </button>
+  const handleRequiredVerification = async () => {
+    try {
+      setIsLoading(true);
 
-          <button
-            className={`fixed top-[12px] right-[12.5em]  flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-            onClick={handleCompanySettings}
-            disabled={isLoading}
+      // Tìm tất cả user có trường admin = true
+      const { data: adminUsers, error: adminUsersError } = await supabase
+        .from("users")
+        .select("email")
+        .eq("admin", true);
+
+      const adminEmails = [];
+
+      adminUsers.map((user) => adminEmails.push(user.email));
+
+      if (adminUsersError) {
+        throw adminUsersError;
+      }
+
+      // Cập nhật trường required của dự án và lấy dự án hiện tại
+      const { data, error } = await supabase
+        .from("projects")
+        .update({ required: true })
+        .match({ id: params.id })
+        .select();
+
+      if (error) throw error;
+
+      let updatedInvitedUser = data[0].invited_user || [];
+
+      updatedInvitedUser = [...updatedInvitedUser, ...adminEmails];
+
+      // Thêm danh sách email của user admin vào trường invited_user của dự án
+      const updatedProject = await supabase
+        .from("projects")
+        .update({ invited_user: updatedInvitedUser })
+        .match({ id: params.id })
+        .select();
+
+      setCurrentProject(updatedProject);
+      window.location.reload();
+      setShowConfirmation(false);
+
+      setIsLoading(false);
+    } catch (error) {
+      console.log("error", error);
+      toast.error(error.message);
+    }
+  };
+
+  const handleRequired = async () => {
+    setShowConfirmation(true);
+  };
+
+  return (
+    <>
+      {isLoading ? (
+        <LoadingButtonClick isLoading={isLoading} />
+      ) : (
+        <div className="flex-grow items-center justify-center max-w-[85rem] py-10 ">
+          <ReactModal
+            isOpen={showConfirmation}
+            onRequestClose={() => setShowConfirmation(false)}
+            ariaHideApp={false}
+            style={{
+              overlay: {
+                backgroundColor: "gray", // Màu nền overlay
+                position: "fixed", // Để nền overlay cố định
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                zIndex: 9998, // Chỉ số z để đảm bảo nó hiển thị trên cùng
+              },
+              content: {
+                border: "none", // Để ẩn border của nội dung Modal
+                background: "none", // Để ẩn background của nội dung Modal
+                // margin: "auto", // Để căn giữa
+              },
+            }}
           >
-            Settings
-          </button>
-          <button
-            className={`fixed top-[12px] right-[1.2em] flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-            onClick={handleSave}
-            disabled={isLoading}
+            <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
+              <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
+                <h2 className="mt-2 text-base text-gray-500 ">
+                  {" "}
+                  Our admins need to see all of your project, include your
+                  content, your files,... If you agree, we will start to verify
+                  as soon as possible.
+                </h2>
+
+                <div className="mt-4 flex items-center gap-10">
+                  <button
+                    type="button"
+                    onClick={handleRequiredVerification}
+                    className="w-full px-4 py-1 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
+                  >
+                    Agree and Continue
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmation(false)} // Sử dụng hàm addLink để thêm liên kết
+                    className="w-full px-4 py-1 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+                  >
+                    Disagree
+                  </button>
+                </div>
+              </div>
+            </div>
+          </ReactModal>
+          <BlockNoteView
+            editor={editor}
+            theme={"light"}
+            className="w-full lg:w-9/12"
+          />
+          <Modal
+            ariaHideApp={false}
+            isOpen={isModalOpen}
+            onRequestClose={closeModal}
+            contentLabel="YouTube Link Modal"
+            style={{
+              overlay: {
+                backgroundColor: "gray", // Màu nền overlay
+                position: "fixed", // Để nền overlay cố định
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                zIndex: 9999, // Chỉ số z để đảm bảo nó hiển thị trên cùng
+              },
+              content: {
+                border: "none", // Để ẩn border của nội dung Modal
+                background: "none", // Để ẩn background của nội dung Modal
+                margin: "auto", // Để căn giữa
+              },
+            }}
           >
-            Save
-          </button>
-        </>
-      ) : null}
-    </div>
+            <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
+              <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
+                <h2 className="text-lg font-medium leading-6 text-gray-800 capitalize">
+                  Enter YouTube Video URL
+                </h2>
+                <input
+                  className="block w-full px-4 py-3 text-sm text-gray-700 border rounded-md"
+                  type="text"
+                  value={youtubeLink}
+                  onChange={(e) => setYoutubeLink(e.target.value)}
+                />
+                <div className="mt-4 flex items-center gap-10">
+                  <button
+                    className="w-full px-4 py-1 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+                    onClick={closeModal}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="w-full px-4 py-1 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
+                    onClick={handleInsertYouTubeLink}
+                  >
+                    Insert
+                  </button>
+                </div>
+              </div>
+            </div>
+          </Modal>
+
+          {user.id === currentProject.user_id ||
+          currentProject?.collabs?.includes(user.email) ? (
+            <>
+              <button
+                className={`fixed top-[12px] right-[6.7em]   flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+                onClick={handleDrawChart}
+                disabled={isLoading}
+              >
+                Chart
+              </button>
+
+              <button
+                className={`fixed top-[12px] right-[12.5em]  flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+                onClick={handleCompanySettings}
+                disabled={isLoading}
+              >
+                Settings
+              </button>
+              <button
+                className={`fixed top-[12px] right-[1.2em] flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+                onClick={handleSave}
+                disabled={isLoading}
+              >
+                Save
+              </button>
+
+              <Tooltip
+                title={`Required verification for increasing your trusted. 
+          ${
+            currentProject.required
+              ? "Our admin are verifying your project."
+              : ""
+          }
+          `}
+                color="gray"
+                zIndex={20000}
+              >
+                <button
+                  className={`${
+                    currentProject.required
+                      ? "bg-gray-500 hover:cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700"
+                  } fixed top-[48px] right-[1.2em] flex justify-center text-white bg-blue-600  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+                  onClick={handleRequired}
+                  disabled={currentProject.required}
+                >
+                  {currentProject.required
+                    ? "Waiting for verification"
+                    : "Required verification"}
+                </button>
+              </Tooltip>
+            </>
+          ) : null}
+        </div>
+      )}
+    </>
   );
 }

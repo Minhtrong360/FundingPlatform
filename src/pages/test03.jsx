@@ -2605,6 +2605,24 @@ const Z = ({ currentUser, setCurrentUser }) => {
     );
   };
 
+  const [startingCashBalance, setStartingCashBalance] = useState([]);
+
+  const [status, setStatus] = useState([]);
+
+  const [industry, setIndustry] = useState([]);
+
+  const [incomeTax, setIncomeTax] = useState([]);
+
+  const [payrollTax, setPayrollTax] = useState([]);
+
+  const [currency, setCurrency] = useState([]);
+
+  const [startMonth, setStartMonth] = useState([]);
+
+  const [startYear, setStartYear] = useState([]);
+
+  const [financeName, setFinanceName] = useState([]);
+
   return (
     <div>
       <AlertMsg />
@@ -2620,6 +2638,24 @@ const Z = ({ currentUser, setCurrentUser }) => {
               <DurationSelect
                 selectedDuration={selectedDuration}
                 setSelectedDuration={setSelectedDuration}
+                startingCashBalance={startingCashBalance}
+                setStartingCashBalance={setStartingCashBalance}
+                status={status}
+                setStatus={setStatus}
+                industry={industry}
+                setIndustry={setIndustry}
+                incomeTax={incomeTax}
+                setIncomeTax={setIncomeTax}
+                payrollTax={payrollTax}
+                setPayrollTax={setPayrollTax}
+                currency={currency}
+                setCurrency={setCurrency}
+                startMonth={startMonth}
+                setStartMonth={setStartMonth}
+                startYear={startYear}
+                setStartYear={setStartYear}
+                financeName={financeName}
+                setFinanceName={setFinanceName}
               />
             </div>
             <div className="w-full md:w-2/3 p-4"></div>

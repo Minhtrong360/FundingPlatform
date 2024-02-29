@@ -39,6 +39,7 @@ import ImageCrop from "../components/cropImage/ImageCrop";
 import ImageCropper from "../components/ImageCropper";
 import NotificationsPage from "../pages/Notification/Notification";
 import Confirmed from "../pages/SignUp/Confirmed";
+import AdminPage from "../pages/Admin/AdminPage";
 
 function Router() {
   const { user } = useAuth();
@@ -167,10 +168,11 @@ function Router() {
         />
         {/* <Route path="/financialList" element={<FinancialList />} /> */}
         <Route path="/news" element={<News />} />
-        <Route path="/X" element={<X />} />
+        {/* <Route path="/X" element={<X />} />
         <Route path="/Y" element={<Y />} />
-        <Route path="/Z" element={<Z />} />
-        <Route path="/W" element={<ImageCropper />} />
+        <Route path="/Z" element={<Z />} /> */}
+        {/* <Route path="/W" element={<ImageCropper />} /> */}
+        <Route path="/admin" element={<AdminPage />} />
 
         <Route path="/loading" element={<ProgressBar isLoading={true} />} />
       </Routes>

@@ -28,7 +28,7 @@ function FilesList() {
     }
 
     // Nếu link.invited_user chứa user.id thì canClick = true
-    if (link.invited_user && link.invited_user.includes(user.email)) {
+    if (link?.invited_user && link?.invited_user?.includes(user.email)) {
       return true;
     }
 
@@ -442,24 +442,11 @@ function FilesList() {
                           </div>
                         </td>
                         <td className="px-4 py-4 text-sm whitespace-nowrap">
-                          {/* {link.status ? (
-                            ""
-                          ) : link.user_id !== user.id &&
-                            !link.invited_user?.includes(user.email) ? (
-                            <button
-                              className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
-                              onClick={() => handleSendRequest(link)}
-                            >
-                              Send Request
-                            </button>
-                          ) : (
-                            <InvitedUserFile fileId={link.id} />
-                          )} */}
                           {link.status ? (
                             ""
-                          ) : link.user_id === user.id ? (
+                          ) : link?.user_id === user.id ? (
                             <InvitedUserFile fileId={link.id} />
-                          ) : link.invited_user?.includes(user.email) ? (
+                          ) : link?.invited_user?.includes(user?.email) ? (
                             ""
                           ) : (
                             <button

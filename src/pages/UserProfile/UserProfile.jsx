@@ -13,7 +13,7 @@ import countries from "../../components/Country";
 import MultiSelectField from "../../components/MultiSelectField";
 import SelectField from "../../components/SelectField";
 import AvatarEditor from "react-avatar-editor";
-import { Avatar } from "antd";
+import { Avatar, Tooltip } from "antd";
 import { IconButton } from "@mui/material";
 
 function UserInfoSettings() {
@@ -31,7 +31,7 @@ function UserInfoSettings() {
     roll: "Founder",
     avatar: null,
     interested_in: ["Technology"],
-    investment_size: ["0-10,000"],
+    investment_size: ["$0-$10,000"],
     country: "US",
     subscription_status: "",
     type: "Individual", // Default value for type
@@ -80,7 +80,7 @@ function UserInfoSettings() {
             roll: data.roll || "Founder",
             avatar: data.avatar || null,
             interested_in: data.interested_in || ["Technology"],
-            investment_size: data.investment_size || ["0-10,000"],
+            investment_size: data.investment_size || ["$0-$10,000"],
             country: data.country || "US",
             type: data.type || "Individual", // Default value for type
             subscription_status: data.subscription_status || "",
@@ -416,20 +416,47 @@ function UserInfoSettings() {
               )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                <div>
-                  <InputField
-                    label="Plan"
-                    id="plan"
-                    name="plan"
-                    value={
-                      userData.plan && userData.subscription_status === "active"
-                        ? userData.plan
-                        : "Free"
-                    }
-                    type="text"
-                    disabled
-                  />
-                </div>
+                <Tooltip
+                  title={
+                    <div>
+                      <p className="m-3 text-base">
+                        You can manage your subscription here!
+                      </p>
+                      <button
+                        type="button"
+                        onClick={handleBilling}
+                        className="w-full py-2 px-2 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
+                      >
+                        Billing Portal
+                      </button>
+                    </div>
+                  }
+                  color="gray"
+                  zIndex={20000}
+                >
+                  <div>
+                    <InputField
+                      label="Plan"
+                      id="plan"
+                      name="plan"
+                      value={
+                        userData.plan &&
+                        userData.subscription_status === "active"
+                          ? userData.plan
+                          : "Free"
+                      }
+                      type="text"
+                      disabled
+                    />
+                    <button
+                      type="button"
+                      onClick={handleBilling}
+                      className="hidden w-full py-3 px-4  justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
+                    >
+                      Billing Portal
+                    </button>
+                  </div>
+                </Tooltip>
 
                 <div>
                   <InputField
@@ -485,19 +512,12 @@ function UserInfoSettings() {
               </div>
             </div>
             <LoadingButtonClick isLoading={isLoading} />
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6 mt-6">
+            <div className="grid grid-cols-1  gap-4 lg:gap-6 mt-6">
               <button
                 type="submit"
                 className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
               >
                 Save
-              </button>
-              <button
-                type="button"
-                onClick={handleBilling}
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
-              >
-                Billing Portal
               </button>
             </div>
           </form>

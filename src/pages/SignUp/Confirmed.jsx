@@ -7,7 +7,7 @@ function Confirmed() {
     <AnnouncePage
       title="Congratulations!"
       announce="You have confirmed your email."
-      describe="Confirmed email successfully. Thank you so much. Let start your journey together"
+      describe="Confirmed email successfully. Thank you so much. Let start your journey together."
       highlightedWord="BeeKrowd"
       button={button}
     />

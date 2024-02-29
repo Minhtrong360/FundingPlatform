@@ -35,6 +35,7 @@ function UserInfoSettings() {
     country: "US",
     subscription_status: "",
     type: "Individual", // Default value for type
+    revenueStatusWanted: "Pre-revenue",
   });
   const handleIndustryChange = (selectedItems) => {
     setUserData({
@@ -182,6 +183,7 @@ function UserInfoSettings() {
           investment_size: userData.investment_size,
           country: userData.country,
           type: userData.type,
+          revenueStatusWanted: userData.revenueStatusWanted,
         })
         .eq("id", user.id);
 
@@ -377,6 +379,16 @@ function UserInfoSettings() {
                     onChange={handleInputChange}
                     required
                     options={countries} // Thay thế bằng danh sách các tùy chọn bạn muốn
+                  />
+
+                  <SelectField
+                    label="Which company do you like?"
+                    id="revenueStatusWanted"
+                    name="revenueStatusWanted"
+                    value={userData.revenueStatusWanted}
+                    onChange={handleInputChange}
+                    required
+                    options={["Pre-revenue", "Post-revenue"]} // Thay thế bằng danh sách các tùy chọn bạn muốn
                   />
                   <div>
                     <label

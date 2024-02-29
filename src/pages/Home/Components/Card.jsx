@@ -46,8 +46,6 @@ const Card = ({
     project_id = "3ec3f142-f33c-4977-befd-30d4ce2b764d";
   }
 
-  console.log("project", project);
-
   return (
     <div className="max-w-sm bg-white border  rounded-lg shadow darkBgBlue darkBorderGray  hover:border-transparent hover:shadow-lg transition-all duration-300">
       <div className=" relative  pt-[50%] sm:pt-[70%] rounded-lg overflow-hidden">

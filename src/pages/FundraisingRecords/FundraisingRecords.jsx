@@ -82,8 +82,6 @@ const FundraisingRecords = () => {
   //   fetchData();
   // }, [user.id]);
 
-  console.log("isLoading", isLoading);
-
   return (
     <div className="shadow-sm bg-white">
       <LoadingButtonClick isLoading={isLoading} />

@@ -967,8 +967,64 @@ const Z = ({ currentUser, setCurrentUser }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // gemini
-  console.log("isLoading", isLoading);
+
   const { Text } = Typography;
+
+  const industries = [
+    "Coffee shop",
+    "Pizza restaurant",
+    "HR SaaS (Human Resources Software as a Service)",
+    "Lending fintech (Financial Technology for Lending)",
+    "Food delivery platform",
+    "Ride-sharing service",
+    "E-commerce platform",
+    "Subscription box service",
+    "Social media management tool",
+    "Online tutoring platform",
+    "Health and wellness app",
+    "Home cleaning service",
+    "Co-working space",
+    "Meal kit delivery service",
+    "Pet care app",
+    "Fashion rental platform",
+    "Online marketplace for handmade goods",
+    "Personal finance management tool",
+    "Virtual event platform",
+    "Language learning app",
+    "Electric scooter rental service",
+    "Meal planning app",
+    "Online therapy platform",
+    "Digital marketing agency",
+    "Sustainable fashion brand",
+    "Freelance marketplace",
+    "Smart home technology provider",
+    "Online event ticketing platform",
+    "Plant-based food products company",
+    "Fitness app",
+  ];
+
+  const IndustrySelector = ({ onIndustrySelect }) => {
+    const handleIndustrySelect = (industry) => {
+      onIndustrySelect(industry);
+    };
+
+    return (
+      <div>
+        <h3 className="text-lg font-semibold">Choose an industry:</h3>
+        <div className="flex overflow-x-auto whitespace-nowrap p-4">
+          {industries.map((industry, index) => (
+            <button
+              key={index}
+              className="m-1 py-2 px-3 inline-flex justify-center items-center gap-x-3 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
+              onClick={() => handleIndustrySelect(industry)}
+            >
+              {industry}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   const Gemini = () => {
     // const [messages, setMessages] = useState([]);
@@ -1047,27 +1103,27 @@ const Z = ({ currentUser, setCurrentUser }) => {
       } catch (error) {}
     }
 
-    return (
-      <div className="w-1/2 mx-auto ">
-        {/* <LoadingButtonClick isLoading={isLoading} /> */}
+    const handleIndustrySelect = (industry) => {
+      setInputValue(industry);
+    };
 
+    return (
+      <div className="w-1/2 mx-auto">
         <div className="input-container p-4">
           <h2 className="text-lg font-semibold mb-4">
             What business do you want to start with?
           </h2>
           <Input
             className="p-4 m-4"
-            value={inputValue}
-            onChange={handleInputChange}
             rows={3}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
             placeholder="Candy shop, pizza restaurant, hospital, HR SaaS software... or anything"
           />
+          <IndustrySelector onIndustrySelect={handleIndustrySelect} />
           <button
-            className={`p-2 m-4 rounded-md bg-blue-600 text-white 
-            
-            `}
+            className="p-2 m-4 rounded-md bg-blue-600 text-white"
             onClick={handleSendMessage}
-            // disabled={isLoading}
             type="button"
           >
             Send

@@ -38,6 +38,7 @@ function CompanySetting() {
       "Tesla, Inc., founded in 2003 by Elon Musk and others, is an American company specializing in electric vehicles, battery energy storage, and solar products. Known for its high-performance electric cars like the Model S and Model 3, Tesla aims to advance sustainable transportation and energy. The company also operates a global network of superchargers and is a leader in renewable energy technologies.",
     rememberMe: false,
     user_email: "",
+    revenueStatus: "Pre-revenue",
   });
 
   useEffect(() => {
@@ -79,6 +80,7 @@ function CompanySetting() {
                 website: companyData.website,
                 companyDescription: companyData.description,
                 user_email: companyData.user_email,
+                revenueStatus: companyData.revenueStatus,
               });
 
               setIsLoading(false);
@@ -213,6 +215,7 @@ function CompanySetting() {
               user_id: user.id,
               user_email: user.email,
               project_id: params.id,
+              revenueStatus: formData.revenueStatus,
             },
           ]);
 
@@ -255,6 +258,7 @@ function CompanySetting() {
               user_id: user.id,
               user_email: user.email,
               project_id: params.id,
+              revenueStatus: formData.revenueStatus,
             },
           ]);
 

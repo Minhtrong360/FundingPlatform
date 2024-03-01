@@ -18,6 +18,7 @@ import { IconButton } from "@mui/material";
 
 function UserInfoSettings() {
   const { user } = useAuth();
+
   const [isLoading, setIsLoading] = useState(false);
   const [expiredDate, setExpiredDate] = useState("");
   const [userData, setUserData] = useState({
@@ -36,6 +37,7 @@ function UserInfoSettings() {
     subscription_status: "",
     type: "Individual", // Default value for type
     revenueStatusWanted: "Pre-revenue",
+    notification_count: 0,
   });
   const handleIndustryChange = (selectedItems) => {
     setUserData({
@@ -85,6 +87,8 @@ function UserInfoSettings() {
             country: data.country || "US",
             type: data.type || "Individual", // Default value for type
             subscription_status: data.subscription_status || "",
+            revenueStatusWanted: data.revenueStatusWanted || "Pre-revenue",
+            notification_count: data.notification_count || 0,
           });
 
           if (data.subscribe && data.subscription_status === "active") {
@@ -107,6 +111,7 @@ function UserInfoSettings() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
     setUserData((prevUserData) => ({
       ...prevUserData,
       [name]: value,
@@ -167,6 +172,73 @@ function UserInfoSettings() {
         }
       }
 
+      // Find all companies with revenueStatus matching userData.revenueStatusWanted
+      const { data: companies, error: companyError } = await supabase
+        .from("company")
+        .select("*")
+        .eq("revenueStatus", userData.revenueStatusWanted);
+
+      if (companyError) {
+        throw companyError;
+      }
+
+      // Define conditions for filtering companies
+      const industryCondition = userData.interested_in;
+      const investmentSizeCondition = userData.investment_size.map((size) => {
+        const min = parseInt(
+          size.split("-")[0].replace("$", "").replace(/,/g, "")
+        );
+        const max = parseInt(
+          size.split("-")[1].replace("$", "").replace(/,/g, "")
+        );
+        return { min, max };
+      });
+
+      // Filter companies by industry and investment size
+      const filteredCompanies = companies.filter(
+        (company) =>
+          company.industry.some((industry) =>
+            industryCondition.includes(industry)
+          ) &&
+          investmentSizeCondition.some(
+            (size) =>
+              company.ticket_size >= size.min && company.ticket_size <= size.max
+          )
+      );
+
+      // Check if the user has already been notified about these companies
+      const notifications = await supabase
+        .from("notifications")
+        .select("*")
+        .eq("receivedUser", userData.email);
+
+      const notifiedCompanies = notifications.data.map(
+        (notification) => notification.content
+      );
+
+      // Filter out companies that have already been notified
+      const newCompanies = filteredCompanies.filter(
+        (company) => !notifiedCompanies.includes(company.name)
+      );
+
+      // Prepare notification content with company name and id
+      const notificationContent = newCompanies.map((company) => ({
+        id: company.id,
+        name: company.name,
+        project_id: company.project_id,
+      }));
+
+      // Add new notifications for the user
+      const notificationsToInsert = notificationContent.map((content) => ({
+        receivedUser: userData.email,
+        content: JSON.stringify(content), // Convert content to JSON string
+      }));
+
+      // Insert new notifications into the notifications table
+      await supabase.from("notifications").insert(notificationsToInsert);
+      const currentNotificationCount = userData.notification_count + 1;
+
+      // Update user data in Supabase
       const { error } = await supabase
         .from("users")
         .update({
@@ -184,6 +256,7 @@ function UserInfoSettings() {
           country: userData.country,
           type: userData.type,
           revenueStatusWanted: userData.revenueStatusWanted,
+          notification_count: currentNotificationCount,
         })
         .eq("id", user.id);
 
@@ -263,8 +336,6 @@ function UserInfoSettings() {
       target: { name: "avatar", value: avatarUrl },
     });
   }, [avatarUrl]);
-
-  console.log("userData.plan", userData);
 
   return (
     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">

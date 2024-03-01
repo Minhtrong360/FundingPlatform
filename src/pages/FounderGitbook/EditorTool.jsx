@@ -595,7 +595,7 @@ export default function EditorTool() {
             </div>
           </Modal>
 
-          {user.id === currentProject.user_id ||
+          {user?.id === currentProject?.user_id ||
           currentProject?.collabs?.includes(user.email) ? (
             <>
               <button

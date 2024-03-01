@@ -19,6 +19,7 @@ const ImageDropdown = () => {
     detail: "",
     roll: "Founder",
     avatar: null,
+    notification_count: 0,
   });
 
   useEffect(() => {
@@ -108,16 +109,6 @@ const ImageDropdown = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
-
-  const [notificationCount, setNotificationCount] = useState(0); // State for the notification count
-  const fetchNotifications = () => {
-    // Fetch notifications and set the count
-    // setNotificationCount(fetchedNotifications.length);
-  };
-
-  useEffect(() => {
-    fetchNotifications();
-  }, []);
 
   const handleClickNotifications = (e) => {
     navigate("/notifications");
@@ -211,11 +202,12 @@ const ImageDropdown = () => {
           <button
             style={{ minWidth: "100%" }}
             className="hover:cursor-pointer flex items-center justify-between gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
-            // onClick={(e) => handleClickNotifications(e)}
+            onClick={(e) => handleClickNotifications(e)}
           >
             <span className="flex items-center gap-x-3.5">Notifications</span>
             <span className="bg-red-600 text-white px-2 py-1 rounded-full text-xs">
-              {notificationCount} {/* Display the notification count here */}
+              {userData.notification_count}{" "}
+              {/* Display the notification count here */}
             </span>
           </button>
 

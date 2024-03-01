@@ -64,7 +64,7 @@ const Card = ({
           />
         )}
         {project?.verified && (
-          <span className="absolute top-0 end-0 rounded-se-xl rounded-es-xl text-sm font-medium bg-green-700 text-white py-1.5 px-3 dark:bg-gray-900">
+          <span className="absolute top-0 end-0 rounded-se-xl rounded-es-xl text-sm font-medium bg-green-700 text-white py-1.5 px-3 ">
             Verified by BeeKrowd
           </span>
         )}

@@ -74,7 +74,7 @@ const DetailPage = () => {
     };
 
     fetchData();
-  }, [id, user.email, user.id]);
+  }, [id, user?.email, user?.id]);
 
   if (viewError) {
     return (

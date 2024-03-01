@@ -60,6 +60,29 @@ const loginWithGG = async (setLoading) => {
   }
 };
 
+// arrayComparison.js
+
+// Hàm so sánh hai mảng và trả về các phần tử trùng khớp
+export function compareArrays(array1, array2) {
+  return array1.filter((element) => array2.includes(element));
+}
+
+// Hàm hiển thị kết quả so sánh
+export function displayCommonElements(array1, array2) {
+  const commonElements = compareArrays(array1, array2);
+  console.log("array1", array1);
+  console.log("array2", array2);
+  if (commonElements.length > 0) {
+    console.log("Có sự trùng khớp giữa hai mảng:");
+    console.log("Các phần tử trùng khớp:", commonElements);
+    // Hoặc có thể return kết quả để sử dụng ở nơi gọi hàm
+    return commonElements;
+  } else {
+    console.log("Không có phần tử trùng khớp giữa hai mảng.");
+    return [];
+  }
+}
+
 const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(false);
   const [user, setUser] = useState(null);
@@ -102,6 +125,7 @@ const AuthProvider = ({ children }) => {
         login: (email, password) => login(email, password, setLoading),
         signOut,
         loginWithGG: () => loginWithGG(setLoading),
+        displayCommonElements,
       }}
     >
       <AlertMsg />

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { saveAs } from 'file-saver';
+import * as XLSX from 'xlsx';
 import {
   Select,
   SelectTrigger,
@@ -38,8 +40,8 @@ const DurationSelect = ({
   setStartMonth,
   startYear,
   setStartYear,
-  financeName,
-  setFinanceName,
+  financialProjectName,
+  setFinancialProjectName,
 }) => {
   const months = [
     "January",
@@ -85,10 +87,10 @@ const DurationSelect = ({
       </h2>
       <div className="bg-white rounded-md shadow p-6">
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className="font-medium flex items-center">Financial name:</span>
+          <span className="font-medium flex items-center">Business name:</span>
           <Input
-            value={financeName}
-            onChange={(e) => setFinanceName(e.target.value)}
+            value={financialProjectName}
+            onChange={(e) => setFinancialProjectName(e.target.value)}
             type="text"
           />
         </div>
@@ -340,7 +342,7 @@ const SalesSection = ({
       productName: "", // New field for product name
       price: 0,
       multiples: 0,
-      txFeePercentage: 0,
+      deductionPercentage: 0,
       cogsPercentage: 0,
       selectedChannel: "",
     };
@@ -391,14 +393,14 @@ const SalesSection = ({
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Tx Fee (%):</span>
+            <span className="font-medium">Rev. Deductions (%):</span>
             <Input
               className="col-start-2"
-              value={input.txFeePercentage}
+              value={input.deductionPercentage}
               onChange={(e) =>
                 handleChannelInputChange(
                   index,
-                  "txFeePercentage",
+                  "deductionPercentage",
                   e.target.value
                 )
               }
@@ -991,7 +993,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
             },
 
             body: JSON.stringify({
-              user_input: `{ "DurationSelect": { "selectedDuration": "5 years", "startingCashBalance": 20000, "status": "active", "industry": "retail", "incomeTax": 25, "payrollTax": 12, "currency": "USD" }, "CustomerSection": { "customerInputs": [ { "customersPerMonth": 500, "growthPerMonth": 5, "channelName": "In-Store", "beginMonth": 1, "endMonth": 60 }, { "customersPerMonth": 200, "growthPerMonth": 10, "channelName": "Online Delivery", "beginMonth": 6, "endMonth": 60 } ] }, "SalesSection": { "channelInputs": [ { "productName": "Coffee", "price": 5, "multiples": 1, "txFeePercentage": 0, "cogsPercentage": 30, "selectedChannel": "In-Store", "channelAllocation": 0.6 }, { "productName": "Pastries", "price": 4, "multiples": 1, "txFeePercentage": 0, "cogsPercentage": 50, "selectedChannel": "In-Store", "channelAllocation": 0.4 }, { "productName": "Coffee Subscription", "price": 20, "multiples": 1, "txFeePercentage": 5, "cogsPercentage": 25, "selectedChannel": "Online Delivery", "channelAllocation": 1 } ], "channelNames": [ "In-Store", "Online Delivery" ] }, "CostSection": { "costInputs": [ { "costName": "Rent", "costValue": 3000, "growthPercentage": 3, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" }, { "costName": "Utilities", "costValue": 500, "growthPercentage": 4, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" } ] }, "PersonnelSection": { "personnelInputs": [ { "jobTitle": "Barista", "salaryPerMonth": 2500, "numberOfHires": 3, "jobBeginMonth": 1, "jobEndMonth": 60 }, { "jobTitle": "Manager", "salaryPerMonth": 4000, "numberOfHires": 1, "jobBeginMonth": 1, "jobEndMonth": 60 } ] }, "InvestmentSection": { "investmentInputs": [ { "purchaseName": "Espresso Machine", "assetCost": 8000, "quantity": 2, "purchaseMonth": 1, "residualValue": 800, "usefulLifetime": 60 }, { "purchaseName": "Furniture", "assetCost": 10000, "quantity": 1, "purchaseMonth": 1, "residualValue": 1000, "usefulLifetime": 60 } ] }, "LoanSection": { "loanInputs": [ { "loanName": "Equipment Loan", "loanAmount": 15000, "interestRate": 4, "loanBeginMonth": 1, "loanEndMonth": 60 } ] } } create a json file like this for a ${inputValue}, return only json file`,
+              user_input: `{ "DurationSelect": { "selectedDuration": "5 years", "startingCashBalance": 20000, "status": "active", "industry": "retail", "incomeTax": 25, "payrollTax": 12, "currency": "USD" }, "CustomerSection": { "customerInputs": [ { "customersPerMonth": 500, "growthPerMonth": 5, "channelName": "In-Store", "beginMonth": 1, "endMonth": 60 }, { "customersPerMonth": 200, "growthPerMonth": 10, "channelName": "Online Delivery", "beginMonth": 6, "endMonth": 60 } ] }, "SalesSection": { "channelInputs": [ { "productName": "Coffee", "price": 5, "multiples": 1, "deductionPercentage": 0, "cogsPercentage": 30, "selectedChannel": "In-Store", "channelAllocation": 0.6 }, { "productName": "Pastries", "price": 4, "multiples": 1, "deductionPercentage": 0, "cogsPercentage": 50, "selectedChannel": "In-Store", "channelAllocation": 0.4 }, { "productName": "Coffee Subscription", "price": 20, "multiples": 1, "deductionPercentage": 5, "cogsPercentage": 25, "selectedChannel": "Online Delivery", "channelAllocation": 1 } ], "channelNames": [ "In-Store", "Online Delivery" ] }, "CostSection": { "costInputs": [ { "costName": "Rent", "costValue": 3000, "growthPercentage": 3, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" }, { "costName": "Utilities", "costValue": 500, "growthPercentage": 4, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" } ] }, "PersonnelSection": { "personnelInputs": [ { "jobTitle": "Barista", "salaryPerMonth": 2500, "numberOfHires": 3, "jobBeginMonth": 1, "jobEndMonth": 60 }, { "jobTitle": "Manager", "salaryPerMonth": 4000, "numberOfHires": 1, "jobBeginMonth": 1, "jobEndMonth": 60 } ] }, "InvestmentSection": { "investmentInputs": [ { "purchaseName": "Espresso Machine", "assetCost": 8000, "quantity": 2, "purchaseMonth": 1, "residualValue": 800, "usefulLifetime": 60 }, { "purchaseName": "Furniture", "assetCost": 10000, "quantity": 1, "purchaseMonth": 1, "residualValue": 1000, "usefulLifetime": 60 } ] }, "LoanSection": { "loanInputs": [ { "loanName": "Equipment Loan", "loanAmount": 15000, "interestRate": 4, "loanBeginMonth": 1, "loanEndMonth": 60 } ] } } create a json file like this for a ${inputValue}, return only json file`,
             }),
           }
         );
@@ -1163,7 +1165,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       productName: "Coffee", // New field for product name
       price: 4,
       multiples: 1,
-      txFeePercentage: 10,
+      deductionPercentage: 10,
       cogsPercentage: 30,
       selectedChannel: "Offline",
       channelAllocation: 0.4,
@@ -1172,7 +1174,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       productName: "Cake", // New field for product name
       price: 8,
       multiples: 1,
-      txFeePercentage: 5,
+      deductionPercentage: 5,
       cogsPercentage: 35,
       selectedChannel: "Offline",
       channelAllocation: 0.3,
@@ -1181,7 +1183,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       productName: "Coffee bag", // New field for product name
       price: 6,
       multiples: 1,
-      txFeePercentage: 5,
+      deductionPercentage: 5,
       cogsPercentage: 25,
       selectedChannel: "Online",
       channelAllocation: 0.6,
@@ -1224,7 +1226,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
         productName: "",
         price: 0,
         multiples: 0,
-        txFeePercentage: 0,
+        deductionPercentage: 0,
         cogsPercentage: 0,
         selectedChannel: "",
       },
@@ -1278,7 +1280,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     let revenueByChannelAndProduct = {};
 
     // New arrays for txFee and COGS
-    let txFeeByChannelAndProduct = {};
+    let DeductionByChannelAndProduct = {};
     let cogsByChannelAndProduct = {};
     let netRevenueByChannelAndProduct = {};
     let grossProfitByChannelAndProduct = {};
@@ -1314,7 +1316,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
                   // Calculate txFee and COGS
                   txFeeArray[data.month - 1] =
-                    (revenue * parseFloat(channel.txFeePercentage)) / 100;
+                    (revenue * parseFloat(channel.deductionPercentage)) / 100;
                   cogsArray[data.month - 1] =
                     (revenue * parseFloat(channel.cogsPercentage)) / 100;
                 }
@@ -1324,7 +1326,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
         });
 
         revenueByChannelAndProduct[channelProductKey] = revenueArray;
-        txFeeByChannelAndProduct[channelProductKey] = txFeeArray;
+        DeductionByChannelAndProduct[channelProductKey] = txFeeArray;
         cogsByChannelAndProduct[channelProductKey] = cogsArray;
 
         netRevenueArray.forEach((_, i) => {
@@ -1343,7 +1345,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
     return {
       revenueByChannelAndProduct,
-      txFeeByChannelAndProduct,
+      DeductionByChannelAndProduct,
       cogsByChannelAndProduct,
       netRevenueByChannelAndProduct,
       grossProfitByChannelAndProduct,
@@ -1353,13 +1355,13 @@ const Z = ({ currentUser, setCurrentUser }) => {
   useEffect(() => {
     const {
       revenueByChannelAndProduct,
-      txFeeByChannelAndProduct,
+      DeductionByChannelAndProduct,
       cogsByChannelAndProduct,
       netRevenueByChannelAndProduct,
       grossProfitByChannelAndProduct,
     } = calculateChannelRevenue();
     setRevenueData(revenueByChannelAndProduct);
-    setTxFeeData(txFeeByChannelAndProduct);
+    setTxFeeData(DeductionByChannelAndProduct);
     setCogsData(cogsByChannelAndProduct);
     setNetRevenueData(netRevenueByChannelAndProduct);
     setGrossProfitData(grossProfitByChannelAndProduct);
@@ -2075,7 +2077,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     options: {
       chart: {
         id: "customer-growth-chart",
-        type: "line",
+        type: "bar",
         height: 350,
       },
 
@@ -2107,7 +2109,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       legend: { position: "bottom", horizontalAlign: "right" },
       fill: { type: "solid" },
       dataLabels: { enabled: false },
-      stroke: { curve: "smooth" },
+      stroke: { curve: "stepline" },
       markers: { size: 1 },
     },
     series: [],
@@ -2384,10 +2386,11 @@ const Z = ({ currentUser, setCurrentUser }) => {
     investmentData,
     loanData,
     numberOfMonths,
+    incomeTaxRate,
   }) => {
     const calculateProfitAndLoss = () => {
       let totalRevenue = new Array(numberOfMonths).fill(0);
-      let totalTxfee = new Array(numberOfMonths).fill(0);
+      let totalDeductions = new Array(numberOfMonths).fill(0);
       let totalCOGS = new Array(numberOfMonths).fill(0);
       let totalCosts = new Array(numberOfMonths).fill(0);
       let totalPersonnelCosts = new Array(numberOfMonths).fill(0);
@@ -2410,7 +2413,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
           Object.keys(entry).forEach((key) => {
             if (key.startsWith("month")) {
               const monthIndex = parseInt(key.replace("month", "")) - 1;
-              totalTxfee[monthIndex] += parseFloat(entry[key] || 0);
+              totalDeductions[monthIndex] += parseFloat(entry[key] || 0);
             }
           });
         } else if (entry.channelName.includes("- COGS")) {
@@ -2447,52 +2450,88 @@ const Z = ({ currentUser, setCurrentUser }) => {
         });
       });
 
-      let netProfit = totalRevenue.map(
-        (revenue, index) =>
-          revenue -
-          (totalTxfee[index] +
-            totalCOGS[index] +
-            totalCosts[index] +
-            totalPersonnelCosts[index] +
-            totalInvestmentDepreciation[index] +
-            totalLoanPayments[index])
+      // Feb29
+      let netRevenue = totalRevenue.map(
+        (revenue, index) => revenue - totalDeductions[index]
+      ); // Net Revenue calculation
+    
+      let grossProfit = netRevenue.map(
+        (revenue, index) => revenue - totalCOGS[index]
+      ); // Gross Profit calculation
+    
+      let ebitda = grossProfit.map(
+        (profit, index) => profit - (totalCosts[index] + totalPersonnelCosts[index])
+      ); // Adjust EBITDA calculation to use grossProfit
+      
+      let totalInterestPayments = new Array(numberOfMonths).fill(0);
+  loanData.forEach((loan) => {
+    loan.loanDataPerMonth.forEach((monthData) => {
+      totalInterestPayments[monthData.month - 1] += monthData.interest;
+    });
+  });
+
+      // Adjust earningsBeforeTax calculation to use ebitda
+      let earningsBeforeTax = ebitda.map(
+        (profit, index) =>
+          profit - (totalInvestmentDepreciation[index] + totalInterestPayments[index])
       );
+
+      let incomeTax = earningsBeforeTax.map((earnings) =>
+      earnings > 0 ? earnings * (incomeTaxRate / 100) : 0
+    );
+      
+    let netIncome = earningsBeforeTax.map((earnings, index) => earnings - incomeTax[index]);
 
       return {
         totalRevenue,
-        totalTxfee,
-        totalCOGS,
-        totalCosts,
-        totalPersonnelCosts,
-        totalInvestmentDepreciation,
-        totalLoanPayments,
-        netProfit,
+    totalDeductions,
+    netRevenue,
+    totalCOGS,
+    grossProfit, // Include Gross Profit in the returned object
+    totalCosts,
+    totalPersonnelCosts,
+    totalInvestmentDepreciation,
+    totalInterestPayments,
+    ebitda,
+    earningsBeforeTax,
+    incomeTax,
+    netIncome,
       };
     };
 
     const {
       totalRevenue,
-      totalTxfee,
-      totalCOGS,
-      totalCosts,
-      totalPersonnelCosts,
-      totalInvestmentDepreciation,
-      totalLoanPayments,
-      netProfit,
+  totalDeductions,
+  netRevenue,
+  totalCOGS,
+  grossProfit, // Destructure Gross Profit
+  totalCosts,
+  totalPersonnelCosts,
+  totalInvestmentDepreciation,
+  totalInterestPayments,
+  ebitda,
+  earningsBeforeTax,
+  incomeTax,
+  netIncome,
     } = calculateProfitAndLoss();
 
     const transposedData = [
       { key: "Total Revenue", values: totalRevenue },
-      { key: "Total Txfee", values: totalTxfee },
+      { key: "Total Deductions", values: totalDeductions },
+      { key: "Net Revenue", values: netRevenue },
       { key: "Total COGS", values: totalCOGS },
-      { key: "Total Costs", values: totalCosts },
+      { key: "Gross Profit", values: grossProfit },
+      { key: "Total Operating Expenses", values: totalCosts },
       { key: "Total Personnel Costs", values: totalPersonnelCosts },
+      { key: "EBITDA", values: ebitda }, // Add EBITDA row
       {
         key: "Total Investment Depreciation",
         values: totalInvestmentDepreciation,
       },
-      { key: "Total Loan Payments", values: totalLoanPayments },
-      { key: "Net Profit", values: netProfit },
+      { key: "Total Interest Payments", values: totalInterestPayments },
+      { key: "Earnings Before Tax", values: earningsBeforeTax },
+      { key: "Income Tax", values: incomeTax },
+      { key: "Net Income", values: netIncome }, 
     ].map((item, index) => ({
       metric: item.key,
       ...item.values.reduce(
@@ -2535,12 +2574,12 @@ const Z = ({ currentUser, setCurrentUser }) => {
         ),
       },
       {
-        name: "Total Loan Payments",
-        data: totalLoanPayments.map((value) => parseFloat(value?.toFixed(2))),
+        name: "Total Interest Payments",
+    data: totalInterestPayments.map((value) => parseFloat(value?.toFixed(2))),
       },
       {
-        name: "Net Profit",
-        data: netProfit.map((value) => parseFloat(value?.toFixed(2))),
+        name: "Net Income",
+      data: netIncome.map((value) => parseFloat(value.toFixed(2))),
       },
     ];
 
@@ -2605,6 +2644,58 @@ const Z = ({ currentUser, setCurrentUser }) => {
     );
   };
 
+  const [startingCashBalance, setStartingCashBalance] = useState([]);
+
+  const [status, setStatus] = useState([]);
+
+  const [industry, setIndustry] = useState([]);
+
+  const [incomeTax, setIncomeTax] = useState(10);
+
+  const [payrollTax, setPayrollTax] = useState(0);
+
+  const [currency, setCurrency] = useState('USD');
+
+  const [startMonth, setStartMonth] = useState([]);
+
+  const [startYear, setStartYear] = useState(2024);
+
+  const [financialProjectName, setFinancialProjectName] = useState([]);
+
+
+  // Download Excel
+  const downloadExcel = () => {
+    const workBook = XLSX.utils.book_new();
+
+    const convertDataToWorksheet = (data) => {
+      return XLSX.utils.json_to_sheet(data);
+    };
+
+    const addSheetToWorkbook = (sheet, sheetName) => {
+      XLSX.utils.book_append_sheet(workBook, sheet, sheetName);
+    };
+
+    // Example data conversion and sheet addition
+    addSheetToWorkbook(convertDataToWorksheet(transformCostDataForTable()), 'Costs');
+    addSheetToWorkbook(convertDataToWorksheet(transformPersonnelCostDataForTable()), 'Personnel Costs');
+    addSheetToWorkbook(convertDataToWorksheet(transformInvestmentDataForTable()), 'Investments');
+    addSheetToWorkbook(convertDataToWorksheet(transformLoanDataForTable()), 'Loans');
+    //addSheetToWorkbook(convertDataToWorksheet(transposedData), 'Profit and Loss');
+
+    // Write the workbook and trigger download
+    const wbout = XLSX.write(workBook, { bookType: 'xlsx', type: 'binary' });
+
+    function s2ab(s) {
+      const buf = new ArrayBuffer(s.length);
+      const view = new Uint8Array(buf);
+      for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+      return buf;
+    }
+
+    saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'financial-data.xlsx');
+  };
+
+
   return (
     <div>
       <AlertMsg />
@@ -2617,9 +2708,27 @@ const Z = ({ currentUser, setCurrentUser }) => {
           </div>
           <div className="w-full h-full flex flex-col md:flex-row border-t-2">
             <div className="w-full md:w-1/3 p-4 border-r-2">
-              <DurationSelect
+            <DurationSelect
                 selectedDuration={selectedDuration}
                 setSelectedDuration={setSelectedDuration}
+                startingCashBalance={startingCashBalance}
+                setStartingCashBalance={setStartingCashBalance}
+                status={status}
+                setStatus={setStatus}
+                industry={industry}
+                setIndustry={setIndustry}
+                incomeTax={incomeTax}
+                setIncomeTax={setIncomeTax}
+                payrollTax={payrollTax}
+                setPayrollTax={setPayrollTax}
+                currency={currency}
+                setCurrency={setCurrency}
+                startMonth={startMonth}
+                setStartMonth={setStartMonth}
+                startYear={startYear}
+                setStartYear={setStartYear}
+                financialProjectName={financialProjectName}
+                setFinancialProjectName={setFinancialProjectName}
               />
             </div>
             <div className="w-full md:w-2/3 p-4"></div>
@@ -2636,7 +2745,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
             </div>
             <div className="w-full md:w-2/3 p-4 ">
               <h3 className="text-lg font-semibold mb-4">
-                Customer Growth Data by Channel
+                Customer Channel
               </h3>
               <Table
                 className="overflow-auto mb-4  text-lg"
@@ -2645,12 +2754,12 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 pagination={false}
               />
               <h3 className="text-lg font-semibold">
-                Customer Growth Data by Channel
+                Chart
               </h3>
               <Chart
                 options={customerGrowthChart.options}
                 series={customerGrowthChart.series}
-                type="line"
+                type="area"
                 height={350}
               />
             </div>
@@ -2807,9 +2916,15 @@ const Z = ({ currentUser, setCurrentUser }) => {
             investmentData={calculateInvestmentData()}
             loanData={calculateLoanData()}
             numberOfMonths={numberOfMonths}
+            incomeTaxRate={incomeTax}
+
           />
         </>
       )}
+
+<button onClick={downloadExcel} className="download-excel-button">
+        Download Excel
+      </button>
 
       {/* The following sections are commented out */}
 

@@ -58,7 +58,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
           <ul className="space-y-2 font-medium">
             <li>
               <button
-                className="p-2  font-semibold text-2xl text-blue-600 flex items-center space-x-3 rtl:space-x-reverse hover:cursor-pointer"
+                className="p-2  font-semibold text-xl text-blue-600 flex items-center space-x-3 rtl:space-x-reverse hover:cursor-pointer"
                 onClick={() => navigate("/")}
               >
                 <HomeOutlinedIcon />

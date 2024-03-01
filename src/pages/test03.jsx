@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
 import {
   Select,
   SelectTrigger,
@@ -16,6 +18,8 @@ import { toast } from "react-toastify";
 import { supabase } from "../supabase";
 import AlertMsg from "../components/AlertMsg";
 import apiService from "../app/apiService";
+import MetricsFM from "./MetricsFM";
+import Search from "./Home/Components/Search";
 
 //JSON
 
@@ -38,8 +42,8 @@ const DurationSelect = ({
   setStartMonth,
   startYear,
   setStartYear,
-  financeName,
-  setFinanceName,
+  financialProjectName,
+  setFinancialProjectName,
 }) => {
   const months = [
     "January",
@@ -85,15 +89,15 @@ const DurationSelect = ({
       </h2>
       <div className="bg-white rounded-md shadow p-6">
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className="font-medium flex items-center">Financial name:</span>
+          <span className=" flex items-center">Business name:</span>
           <Input
-            value={financeName}
-            onChange={(e) => setFinanceName(e.target.value)}
+            value={financialProjectName}
+            onChange={(e) => setFinancialProjectName(e.target.value)}
             type="text"
           />
         </div>
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className="font-medium flex items-center">Start Month:</span>
+          <span className=" flex items-center">Start Month:</span>
           <Select onValueChange={setStartMonth} value={startMonth}>
             <SelectTrigger
               id="start-month"
@@ -112,7 +116,7 @@ const DurationSelect = ({
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className="font-medium flex items-center">Start Year:</span>
+          <span className=" flex items-center">Start Year:</span>
           <Select onValueChange={setStartYear} value={startYear}>
             <SelectTrigger
               id="start-year"
@@ -130,7 +134,7 @@ const DurationSelect = ({
           </Select>
         </div>
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className="font-medium flex items-center">Duration</span>
+          <span className=" flex items-center">Duration</span>
           <Select onValueChange={(value) => setSelectedDuration(value)}>
             <SelectTrigger
               id="start-date-year"
@@ -145,9 +149,7 @@ const DurationSelect = ({
           </Select>
         </div>
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className="font-medium flex items-center">
-            Starting Cash Balance:
-          </span>
+          <span className=" flex items-center">Starting Cash Balance:</span>
           <Input
             value={startingCashBalance}
             onChange={(e) => setStartingCashBalance(e.target.value)}
@@ -155,7 +157,7 @@ const DurationSelect = ({
           />
         </div>
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className="font-medium flex items-center">Status:</span>
+          <span className=" flex items-center">Status:</span>
           <Select onValueChange={(value) => setStatus(value)} value={status}>
             <SelectTrigger className="border-solid border-[1px] border-gray-600">
               <SelectValue />
@@ -167,7 +169,7 @@ const DurationSelect = ({
           </Select>
         </div>
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className="font-medium flex items-center">Industry:</span>
+          <span className=" flex items-center">Industry:</span>
           <Select onValueChange={setIndustry} value={industry}>
             <SelectTrigger
               id="industry"
@@ -185,7 +187,7 @@ const DurationSelect = ({
           </Select>
         </div>
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className="font-medium flex items-center">Income Tax (%):</span>
+          <span className=" flex items-center">Income Tax (%):</span>
           <Input
             type="number"
             value={incomeTax}
@@ -193,9 +195,7 @@ const DurationSelect = ({
           />
         </div>
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className="font-medium flex items-center">
-            Payroll Tax (%):
-          </span>
+          <span className=" flex items-center">Payroll Tax (%):</span>
           <Input
             type="number"
             value={payrollTax}
@@ -203,7 +203,7 @@ const DurationSelect = ({
           />
         </div>
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className="font-medium flex items-center">Currency:</span>
+          <span className=" flex items-center">Currency:</span>
           <Select
             onValueChange={(value) => setCurrency(value)}
             value={currency}
@@ -252,7 +252,7 @@ const CustomerSection = ({
       {customerInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Customers Per Month:</span>
+            <span className=" flex items-center">Customers Per Month:</span>
             <Input
               className="col-start-2"
               value={input.customersPerMonth}
@@ -263,7 +263,7 @@ const CustomerSection = ({
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Growth Per Month:</span>
+            <span className=" flex items-center">Growth Per Month:</span>
             <Input
               className="col-start-2"
               value={input.growthPerMonth}
@@ -274,7 +274,7 @@ const CustomerSection = ({
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Channel Name:</span>
+            <span className=" flex items-center">Channel Name:</span>
             <Input
               className="col-start-2"
               value={input.channelName}
@@ -284,7 +284,7 @@ const CustomerSection = ({
             />
           </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Begin Month:</span>
+            <span className=" flex items-center">Begin Month:</span>
             <Input
               className="col-start-2"
               type="number"
@@ -296,7 +296,7 @@ const CustomerSection = ({
             />
           </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">End Month:</span>
+            <span className=" flex items-center">End Month:</span>
             <Input
               className="col-start-2"
               type="number"
@@ -309,7 +309,7 @@ const CustomerSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-1 px-4 rounded"
+              className="bg-red-600 text-white py-1 px-4 rounded"
               onClick={() => removeCustomerInput(index)}
             >
               Remove
@@ -340,7 +340,7 @@ const SalesSection = ({
       productName: "", // New field for product name
       price: 0,
       multiples: 0,
-      txFeePercentage: 0,
+      deductionPercentage: 0,
       cogsPercentage: 0,
       selectedChannel: "",
     };
@@ -359,7 +359,7 @@ const SalesSection = ({
       {channelInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Product Name:</span>
+            <span className=" flex items-center">Product Name:</span>
             <Input
               className="col-start-2"
               value={input.productName}
@@ -369,7 +369,7 @@ const SalesSection = ({
             />
           </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Price:</span>
+            <span className=" flex items-center">Price:</span>
             <Input
               className="col-start-2"
               value={input.price}
@@ -380,7 +380,7 @@ const SalesSection = ({
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Multiples:</span>
+            <span className=" flex items-center">Multiples:</span>
             <Input
               className="col-start-2"
               value={input.multiples}
@@ -391,14 +391,14 @@ const SalesSection = ({
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Tx Fee (%):</span>
+            <span className=" flex items-center">Rev. Deductions (%):</span>
             <Input
               className="col-start-2"
-              value={input.txFeePercentage}
+              value={input.deductionPercentage}
               onChange={(e) =>
                 handleChannelInputChange(
                   index,
-                  "txFeePercentage",
+                  "deductionPercentage",
                   e.target.value
                 )
               }
@@ -406,7 +406,7 @@ const SalesSection = ({
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">COGS (%):</span>
+            <span className=" flex items-center">COGS (%):</span>
             <Input
               className="col-start-2"
               value={input.cogsPercentage}
@@ -421,7 +421,7 @@ const SalesSection = ({
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Sales Channel:</span>
+            <span className=" flex items-center">Sales Channel:</span>
             <Select
               onValueChange={(value) =>
                 handleChannelInputChange(index, "selectedChannel", value)
@@ -447,7 +447,7 @@ const SalesSection = ({
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Channel Allocation (%):</span>
+            <span className=" flex items-center">Channel Allocation (%):</span>
             <Input
               className="col-start-2"
               type="number"
@@ -465,7 +465,7 @@ const SalesSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-1 px-4 rounded"
+              className="bg-red-600 text-white py-1 px-4 rounded"
               onClick={() => removeChannelInput(index)}
             >
               Remove
@@ -513,7 +513,7 @@ const CostSection = ({
       {costInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 mb-4 ">
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Cost Name:</span>
+            <span className=" flex items-center">Cost Name:</span>
             <Input
               className="col-start-2"
               value={input.costName}
@@ -524,7 +524,7 @@ const CostSection = ({
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Cost Value:</span>
+            <span className=" flex items-center">Cost Value:</span>
             <Input
               className="col-start-2"
               type="number"
@@ -540,7 +540,7 @@ const CostSection = ({
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Growth Percentage:</span>
+            <span className=" flex items-center">Growth Percentage:</span>
             <Input
               className="col-start-2"
               type="number"
@@ -556,7 +556,7 @@ const CostSection = ({
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Begin Month:</span>
+            <span className=" flex items-center">Begin Month:</span>
             <Input
               className="col-start-2"
               type="number"
@@ -574,7 +574,7 @@ const CostSection = ({
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">End Month:</span>
+            <span className=" flex items-center">End Month:</span>
             <Input
               className="col-start-2"
               type="number"
@@ -592,7 +592,7 @@ const CostSection = ({
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Cost Type:</span>
+            <span className=" flex items-center">Cost Type:</span>
             <Select
               onValueChange={(value) =>
                 handleCostInputChange(index, "costType", value)
@@ -614,7 +614,7 @@ const CostSection = ({
 
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-1 px-4 rounded"
+              className="bg-red-600 text-white py-1 px-4 rounded"
               onClick={() => removeCostInput(index)}
             >
               Remove
@@ -650,7 +650,7 @@ const PersonnelSection = ({
       {personnelInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Job Title</span>
+            <span className=" flex items-center">Job Title</span>
             <Input
               className="col-start-2"
               placeholder="Enter Job Title"
@@ -661,7 +661,7 @@ const PersonnelSection = ({
             />
           </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Salary/month</span>
+            <span className=" flex items-center">Salary/month</span>
             <Input
               className="col-start-2"
               placeholder="Enter Salary per Month"
@@ -676,7 +676,7 @@ const PersonnelSection = ({
             />
           </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">No. of hires</span>
+            <span className=" flex items-center">No. of hires</span>
             <Input
               className="col-start-2"
               placeholder="Enter Number of Hires"
@@ -691,7 +691,7 @@ const PersonnelSection = ({
             />
           </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Job begin month</span>
+            <span className=" flex items-center">Job begin month</span>
             <Input
               className="col-start-2"
               placeholder="Enter Job Begin Month"
@@ -706,7 +706,7 @@ const PersonnelSection = ({
             />
           </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Job ending month</span>
+            <span className=" flex items-center">Job ending month</span>
             <Input
               className="col-start-2"
               placeholder="Enter Job Ending Month"
@@ -718,7 +718,7 @@ const PersonnelSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-1 px-4 rounded"
+              className="bg-red-600 text-white py-1 px-4 rounded"
               onClick={() => removePersonnelInput(index)}
             >
               Remove
@@ -754,7 +754,7 @@ const InvestmentSection = ({
       {investmentInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Name of Purchase</span>
+            <span className=" flex items-center">Name of Purchase</span>
             <Input
               className="col-start-2"
               value={input.purchaseName}
@@ -766,7 +766,7 @@ const InvestmentSection = ({
             />
           </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Asset Cost</span>
+            <span className=" flex items-center">Asset Cost</span>
             <Input
               className="col-start-2"
               value={input.assetCost}
@@ -778,7 +778,7 @@ const InvestmentSection = ({
             />
           </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Quantity:</span>
+            <span className=" flex items-center">Quantity:</span>
             <Input
               className="col-start-2"
               type="number"
@@ -790,7 +790,7 @@ const InvestmentSection = ({
             />
           </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Purchase Month</span>
+            <span className=" flex items-center">Purchase Month</span>
             <Input
               className="col-start-2"
               value={input.purchaseMonth}
@@ -802,7 +802,7 @@ const InvestmentSection = ({
             />
           </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Residual Value</span>
+            <span className=" flex items-center">Residual Value</span>
             <Input
               className="col-start-2"
               value={input.residualValue}
@@ -814,7 +814,7 @@ const InvestmentSection = ({
             />
           </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Useful Lifetime (Months)</span>
+            <span className=" flex items-center">Useful Lifetime (Months)</span>
             <Input
               className="col-start-2"
               value={input.usefulLifetime}
@@ -827,7 +827,7 @@ const InvestmentSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-1 px-4 rounded"
+              className="bg-red-600 text-white py-1 px-4 rounded"
               onClick={() => removeInvestmentInput(index)}
             >
               Remove
@@ -863,7 +863,7 @@ const LoanSection = ({
       {loanInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Loan Name:</span>
+            <span className=" flex items-center">Loan Name:</span>
             <Input
               className="col-start-2"
               value={input.loanName}
@@ -874,7 +874,7 @@ const LoanSection = ({
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Loan Amount:</span>
+            <span className=" flex items-center">Loan Amount:</span>
             <Input
               type="number"
               className="col-start-2"
@@ -886,7 +886,7 @@ const LoanSection = ({
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Interest Rate (%):</span>
+            <span className=" flex items-center">Interest Rate (%):</span>
             <Input
               type="number"
               className="col-start-2"
@@ -898,7 +898,7 @@ const LoanSection = ({
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Month Loan Begins:</span>
+            <span className=" flex items-center">Month Loan Begins:</span>
             <Input
               type="number"
               className="col-start-2"
@@ -910,7 +910,7 @@ const LoanSection = ({
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Month Loan Ends:</span>
+            <span className=" flex items-center">Month Loan Ends:</span>
             <Input
               type="number"
               className="col-start-2"
@@ -922,7 +922,7 @@ const LoanSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-1 px-4 rounded"
+              className="bg-red-600 text-white py-1 px-4 rounded"
               onClick={() => removeLoanInput(index)}
             >
               Remove
@@ -1003,29 +1003,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
     "Fitness app",
   ];
 
-  const IndustrySelector = ({ onIndustrySelect }) => {
-    const handleIndustrySelect = (industry) => {
-      onIndustrySelect(industry);
-    };
-
-    return (
-      <div>
-        <h3 className="text-lg font-semibold">Choose an industry:</h3>
-        <div className="flex overflow-x-auto whitespace-nowrap p-4">
-          {industries.map((industry, index) => (
-            <button
-              key={index}
-              className="m-1 py-2 px-3 inline-flex justify-center items-center gap-x-3 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
-              onClick={() => handleIndustrySelect(industry)}
-            >
-              {industry}
-            </button>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
   const Gemini = () => {
     // const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState("");
@@ -1037,7 +1014,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     const handleSendMessage = async () => {
       try {
         setIsLoading(true);
-
+        console.log("1");
         const response = await fetch(
           "https://news-fetcher-8k6m.onrender.com/message",
           {
@@ -1047,31 +1024,32 @@ const Z = ({ currentUser, setCurrentUser }) => {
             },
 
             body: JSON.stringify({
-              user_input: `{ "DurationSelect": { "selectedDuration": "5 years", "startingCashBalance": 20000, "status": "active", "industry": "retail", "incomeTax": 25, "payrollTax": 12, "currency": "USD" }, "CustomerSection": { "customerInputs": [ { "customersPerMonth": 500, "growthPerMonth": 5, "channelName": "In-Store", "beginMonth": 1, "endMonth": 60 }, { "customersPerMonth": 200, "growthPerMonth": 10, "channelName": "Online Delivery", "beginMonth": 6, "endMonth": 60 } ] }, "SalesSection": { "channelInputs": [ { "productName": "Coffee", "price": 5, "multiples": 1, "txFeePercentage": 0, "cogsPercentage": 30, "selectedChannel": "In-Store", "channelAllocation": 0.6 }, { "productName": "Pastries", "price": 4, "multiples": 1, "txFeePercentage": 0, "cogsPercentage": 50, "selectedChannel": "In-Store", "channelAllocation": 0.4 }, { "productName": "Coffee Subscription", "price": 20, "multiples": 1, "txFeePercentage": 5, "cogsPercentage": 25, "selectedChannel": "Online Delivery", "channelAllocation": 1 } ], "channelNames": [ "In-Store", "Online Delivery" ] }, "CostSection": { "costInputs": [ { "costName": "Rent", "costValue": 3000, "growthPercentage": 3, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" }, { "costName": "Utilities", "costValue": 500, "growthPercentage": 4, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" } ] }, "PersonnelSection": { "personnelInputs": [ { "jobTitle": "Barista", "salaryPerMonth": 2500, "numberOfHires": 3, "jobBeginMonth": 1, "jobEndMonth": 60 }, { "jobTitle": "Manager", "salaryPerMonth": 4000, "numberOfHires": 1, "jobBeginMonth": 1, "jobEndMonth": 60 } ] }, "InvestmentSection": { "investmentInputs": [ { "purchaseName": "Espresso Machine", "assetCost": 8000, "quantity": 2, "purchaseMonth": 1, "residualValue": 800, "usefulLifetime": 60 }, { "purchaseName": "Furniture", "assetCost": 10000, "quantity": 1, "purchaseMonth": 1, "residualValue": 1000, "usefulLifetime": 60 } ] }, "LoanSection": { "loanInputs": [ { "loanName": "Equipment Loan", "loanAmount": 15000, "interestRate": 4, "loanBeginMonth": 1, "loanEndMonth": 60 } ] } } create a json file like this for a ${inputValue}, return only json file`,
+              user_input: `{ "DurationSelect": { "selectedDuration": "5 years", "startingCashBalance": 20000, "status": "active", "industry": "retail", "incomeTax": 25, "payrollTax": 12, "currency": "USD" }, "CustomerSection": { "customerInputs": [ { "customersPerMonth": 500, "growthPerMonth": 5, "channelName": "In-Store", "beginMonth": 1, "endMonth": 60 }, { "customersPerMonth": 200, "growthPerMonth": 10, "channelName": "Online Delivery", "beginMonth": 6, "endMonth": 60 } ] }, "SalesSection": { "channelInputs": [ { "productName": "Coffee", "price": 5, "multiples": 1, "deductionPercentage": 0, "cogsPercentage": 30, "selectedChannel": "In-Store", "channelAllocation": 0.6 }, { "productName": "Pastries", "price": 4, "multiples": 1, "deductionPercentage": 0, "cogsPercentage": 50, "selectedChannel": "In-Store", "channelAllocation": 0.4 }, { "productName": "Coffee Subscription", "price": 20, "multiples": 1, "deductionPercentage": 5, "cogsPercentage": 25, "selectedChannel": "Online Delivery", "channelAllocation": 1 } ], "channelNames": [ "In-Store", "Online Delivery" ] }, "CostSection": { "costInputs": [ { "costName": "Rent", "costValue": 3000, "growthPercentage": 3, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" }, { "costName": "Utilities", "costValue": 500, "growthPercentage": 4, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" } ] }, "PersonnelSection": { "personnelInputs": [ { "jobTitle": "Barista", "salaryPerMonth": 2500, "numberOfHires": 3, "jobBeginMonth": 1, "jobEndMonth": 60 }, { "jobTitle": "Manager", "salaryPerMonth": 4000, "numberOfHires": 1, "jobBeginMonth": 1, "jobEndMonth": 60 } ] }, "InvestmentSection": { "investmentInputs": [ { "purchaseName": "Espresso Machine", "assetCost": 8000, "quantity": 2, "purchaseMonth": 1, "residualValue": 800, "usefulLifetime": 60 }, { "purchaseName": "Furniture", "assetCost": 10000, "quantity": 1, "purchaseMonth": 1, "residualValue": 1000, "usefulLifetime": 60 } ] }, "LoanSection": { "loanInputs": [ { "loanName": "Equipment Loan", "loanAmount": 15000, "interestRate": 4, "loanBeginMonth": 1, "loanEndMonth": 60 } ] } } create a json file like this for a ${inputValue}, return only json file`,
             }),
           }
         );
-
+        console.log("2", response);
         const data = await response.json();
-
+        console.log("3", data);
         //Remove backticks from the constant responseText
         const cleanedResponseText = data.response.replace(/json|`/g, "");
-
+        console.log("4");
         // Set the chatbot response to the latest messag
 
         setChatbotResponse(cleanedResponseText);
-
+        console.log("5");
         saveUserData();
-
+        console.log("6");
         setIsLoading(false);
       } catch (error) {
-        console.error("Error sending message:", error);
+        console.log("Error sending message:", error);
         setIsLoading(false);
       }
     };
 
     async function saveUserData() {
       try {
+        console.log("7");
         // Thực hiện truy vấn để lấy thông tin người dùng theo id (điều này cần được thay đổi dựa trên cấu trúc dữ liệu của bạn trong Supabase)
         const currentPrompt = currentUser.financePromptNumber - 1;
         if (currentPrompt <= 0) {
@@ -1088,9 +1066,9 @@ const Z = ({ currentUser, setCurrentUser }) => {
             .update({ financePromptNumber: currentPrompt })
             .eq("id", currentUser?.id)
             .select();
-
+          console.log("8");
           const resetPrompt = await apiService.post("/count/finance");
-
+          console.log("9");
           if (error) {
             throw error;
           }
@@ -1098,6 +1076,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
           // Cập nhật state userData với thông tin người dùng đã lấy được
           if (data) {
             setCurrentUser(data[0]);
+            console.log("10");
           }
         }
       } catch (error) {}
@@ -1108,26 +1087,63 @@ const Z = ({ currentUser, setCurrentUser }) => {
     };
 
     return (
-      <div className="w-1/2 mx-auto">
+      <div className=" mx-auto w-full">
         <div className="input-container p-4">
-          <h2 className="text-lg font-semibold mb-4">
+          <h2 className="text-3xl sm:text-5xl font-semibold text-gray-800 darkTextGray mb-6">
             What business do you want to start with?
           </h2>
-          <Input
-            className="p-4 m-4"
-            rows={3}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Candy shop, pizza restaurant, hospital, HR SaaS software... or anything"
-          />
-          <IndustrySelector onIndustrySelect={handleIndustrySelect} />
-          <button
+          <form onSubmit={handleSendMessage}>
+            <div className="w-[50%] relative z-10 flex space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100 darkBgBlue darkBorderGray darkShadowGray">
+              <div className="flex-[1_0_0%]">
+                <input
+                  type="text"
+                  name="hs-search-article-1"
+                  id="hs-search-article-1"
+                  className=" px-4 block w-full h-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder="Candy shop, pizza restaurant, hospital, HR SaaS software... or anything"
+                />
+              </div>
+
+              <div className="flex-[0_0_auto]">
+                <button
+                  type="submit"
+                  className="w-[46px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
+                >
+                  {/* <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                  </svg> */}
+                  Build
+                </button>
+              </div>
+            </div>
+          </form>
+          <h3 className="text-2xl font-semibold mt-8">Templates</h3>
+          <div>
+            {industries.map((industry, index) => (
+              <button
+                key={index}
+                onClick={() => handleIndustrySelect(industry)}
+                className={`m-2 py-3 px-4 inline-flex items-center gap-x-2  rounded-lg border shadow-sm hover:cursor-pointer`}
+              >
+                {industry}
+              </button>
+            ))}
+          </div>
+          {/* <button
             className="p-2 m-4 rounded-md bg-blue-600 text-white"
             onClick={handleSendMessage}
             type="button"
           >
             Send
-          </button>
+          </button> */}
         </div>
       </div>
     );
@@ -1219,7 +1235,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       productName: "Coffee", // New field for product name
       price: 4,
       multiples: 1,
-      txFeePercentage: 10,
+      deductionPercentage: 10,
       cogsPercentage: 30,
       selectedChannel: "Offline",
       channelAllocation: 0.4,
@@ -1228,7 +1244,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       productName: "Cake", // New field for product name
       price: 8,
       multiples: 1,
-      txFeePercentage: 5,
+      deductionPercentage: 5,
       cogsPercentage: 35,
       selectedChannel: "Offline",
       channelAllocation: 0.3,
@@ -1237,7 +1253,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       productName: "Coffee bag", // New field for product name
       price: 6,
       multiples: 1,
-      txFeePercentage: 5,
+      deductionPercentage: 5,
       cogsPercentage: 25,
       selectedChannel: "Online",
       channelAllocation: 0.6,
@@ -1280,7 +1296,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
         productName: "",
         price: 0,
         multiples: 0,
-        txFeePercentage: 0,
+        deductionPercentage: 0,
         cogsPercentage: 0,
         selectedChannel: "",
       },
@@ -1334,7 +1350,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     let revenueByChannelAndProduct = {};
 
     // New arrays for txFee and COGS
-    let txFeeByChannelAndProduct = {};
+    let DeductionByChannelAndProduct = {};
     let cogsByChannelAndProduct = {};
     let netRevenueByChannelAndProduct = {};
     let grossProfitByChannelAndProduct = {};
@@ -1370,7 +1386,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
                   // Calculate txFee and COGS
                   txFeeArray[data.month - 1] =
-                    (revenue * parseFloat(channel.txFeePercentage)) / 100;
+                    (revenue * parseFloat(channel.deductionPercentage)) / 100;
                   cogsArray[data.month - 1] =
                     (revenue * parseFloat(channel.cogsPercentage)) / 100;
                 }
@@ -1380,7 +1396,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
         });
 
         revenueByChannelAndProduct[channelProductKey] = revenueArray;
-        txFeeByChannelAndProduct[channelProductKey] = txFeeArray;
+        DeductionByChannelAndProduct[channelProductKey] = txFeeArray;
         cogsByChannelAndProduct[channelProductKey] = cogsArray;
 
         netRevenueArray.forEach((_, i) => {
@@ -1399,7 +1415,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
     return {
       revenueByChannelAndProduct,
-      txFeeByChannelAndProduct,
+      DeductionByChannelAndProduct,
       cogsByChannelAndProduct,
       netRevenueByChannelAndProduct,
       grossProfitByChannelAndProduct,
@@ -1409,13 +1425,13 @@ const Z = ({ currentUser, setCurrentUser }) => {
   useEffect(() => {
     const {
       revenueByChannelAndProduct,
-      txFeeByChannelAndProduct,
+      DeductionByChannelAndProduct,
       cogsByChannelAndProduct,
       netRevenueByChannelAndProduct,
       grossProfitByChannelAndProduct,
     } = calculateChannelRevenue();
     setRevenueData(revenueByChannelAndProduct);
-    setTxFeeData(txFeeByChannelAndProduct);
+    setTxFeeData(DeductionByChannelAndProduct);
     setCogsData(cogsByChannelAndProduct);
     setNetRevenueData(netRevenueByChannelAndProduct);
     setGrossProfitData(grossProfitByChannelAndProduct);
@@ -1824,6 +1840,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
   // Dynamic Column Creation
   const columns = [
     {
+      fixed: "left",
       title: "Channel Name",
       dataIndex: "channelName",
       key: "channelName",
@@ -2072,6 +2089,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
   const revenueColumns = [
     {
+      fixed: "left",
       title: "Channel - Product - Type",
       dataIndex: "channelName",
       key: "channelName",
@@ -2085,6 +2103,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
   const costColumns = [
     {
+      fixed: "left",
       title: "Cost Type - Cost Name",
       dataIndex: "costName",
       key: "costName",
@@ -2098,6 +2117,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
   const personnelCostColumns = [
     {
+      fixed: "left",
       title: "Job Title",
       dataIndex: "jobTitle",
       key: "jobTitle",
@@ -2110,7 +2130,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
   ];
 
   const investmentColumns = [
-    { title: "Type", dataIndex: "type", key: "type" },
+    { fixed: "left", title: "Type", dataIndex: "type", key: "type" },
     ...Array.from({ length: numberOfMonths }, (_, i) => ({
       title: `Month_${i + 1}`,
       dataIndex: `month${i + 1}`,
@@ -2119,7 +2139,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
   ];
 
   const loanColumns = [
-    { title: "Type", dataIndex: "type", key: "type" },
+    { fixed: "left", title: "Type", dataIndex: "type", key: "type" },
     ...Array.from({ length: numberOfMonths }, (_, i) => ({
       title: `Month_${i + 1}`,
       dataIndex: `Month ${i + 1}`,
@@ -2131,7 +2151,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     options: {
       chart: {
         id: "customer-growth-chart",
-        type: "line",
+        type: "bar",
         height: 350,
       },
 
@@ -2163,7 +2183,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       legend: { position: "bottom", horizontalAlign: "right" },
       fill: { type: "solid" },
       dataLabels: { enabled: false },
-      stroke: { curve: "smooth" },
+      stroke: { curve: "stepline" },
       markers: { size: 1 },
     },
     series: [],
@@ -2440,10 +2460,11 @@ const Z = ({ currentUser, setCurrentUser }) => {
     investmentData,
     loanData,
     numberOfMonths,
+    incomeTaxRate,
   }) => {
     const calculateProfitAndLoss = () => {
       let totalRevenue = new Array(numberOfMonths).fill(0);
-      let totalTxfee = new Array(numberOfMonths).fill(0);
+      let totalDeductions = new Array(numberOfMonths).fill(0);
       let totalCOGS = new Array(numberOfMonths).fill(0);
       let totalCosts = new Array(numberOfMonths).fill(0);
       let totalPersonnelCosts = new Array(numberOfMonths).fill(0);
@@ -2466,7 +2487,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
           Object.keys(entry).forEach((key) => {
             if (key.startsWith("month")) {
               const monthIndex = parseInt(key.replace("month", "")) - 1;
-              totalTxfee[monthIndex] += parseFloat(entry[key] || 0);
+              totalDeductions[monthIndex] += parseFloat(entry[key] || 0);
             }
           });
         } else if (entry.channelName.includes("- COGS")) {
@@ -2503,52 +2524,92 @@ const Z = ({ currentUser, setCurrentUser }) => {
         });
       });
 
-      let netProfit = totalRevenue.map(
-        (revenue, index) =>
-          revenue -
-          (totalTxfee[index] +
-            totalCOGS[index] +
-            totalCosts[index] +
-            totalPersonnelCosts[index] +
-            totalInvestmentDepreciation[index] +
-            totalLoanPayments[index])
+      // Feb29
+      let netRevenue = totalRevenue.map(
+        (revenue, index) => revenue - totalDeductions[index]
+      ); // Net Revenue calculation
+
+      let grossProfit = netRevenue.map(
+        (revenue, index) => revenue - totalCOGS[index]
+      ); // Gross Profit calculation
+
+      let ebitda = grossProfit.map(
+        (profit, index) =>
+          profit - (totalCosts[index] + totalPersonnelCosts[index])
+      ); // Adjust EBITDA calculation to use grossProfit
+
+      let totalInterestPayments = new Array(numberOfMonths).fill(0);
+      loanData.forEach((loan) => {
+        loan.loanDataPerMonth.forEach((monthData) => {
+          totalInterestPayments[monthData.month - 1] += monthData.interest;
+        });
+      });
+
+      // Adjust earningsBeforeTax calculation to use ebitda
+      let earningsBeforeTax = ebitda.map(
+        (profit, index) =>
+          profit -
+          (totalInvestmentDepreciation[index] + totalInterestPayments[index])
+      );
+
+      let incomeTax = earningsBeforeTax.map((earnings) =>
+        earnings > 0 ? earnings * (incomeTaxRate / 100) : 0
+      );
+
+      let netIncome = earningsBeforeTax.map(
+        (earnings, index) => earnings - incomeTax[index]
       );
 
       return {
         totalRevenue,
-        totalTxfee,
+        totalDeductions,
+        netRevenue,
         totalCOGS,
+        grossProfit, // Include Gross Profit in the returned object
         totalCosts,
         totalPersonnelCosts,
         totalInvestmentDepreciation,
-        totalLoanPayments,
-        netProfit,
+        totalInterestPayments,
+        ebitda,
+        earningsBeforeTax,
+        incomeTax,
+        netIncome,
       };
     };
 
     const {
       totalRevenue,
-      totalTxfee,
+      totalDeductions,
+      netRevenue,
       totalCOGS,
+      grossProfit, // Destructure Gross Profit
       totalCosts,
       totalPersonnelCosts,
       totalInvestmentDepreciation,
-      totalLoanPayments,
-      netProfit,
+      totalInterestPayments,
+      ebitda,
+      earningsBeforeTax,
+      incomeTax,
+      netIncome,
     } = calculateProfitAndLoss();
 
     const transposedData = [
       { key: "Total Revenue", values: totalRevenue },
-      { key: "Total Txfee", values: totalTxfee },
+      { key: "Total Deductions", values: totalDeductions },
+      { key: "Net Revenue", values: netRevenue },
       { key: "Total COGS", values: totalCOGS },
-      { key: "Total Costs", values: totalCosts },
+      { key: "Gross Profit", values: grossProfit },
+      { key: "Total Operating Expenses", values: totalCosts },
       { key: "Total Personnel Costs", values: totalPersonnelCosts },
+      { key: "EBITDA", values: ebitda }, // Add EBITDA row
       {
         key: "Total Investment Depreciation",
         values: totalInvestmentDepreciation,
       },
-      { key: "Total Loan Payments", values: totalLoanPayments },
-      { key: "Net Profit", values: netProfit },
+      { key: "Total Interest Payments", values: totalInterestPayments },
+      { key: "Earnings Before Tax", values: earningsBeforeTax },
+      { key: "Income Tax", values: incomeTax },
+      { key: "Net Income", values: netIncome },
     ].map((item, index) => ({
       metric: item.key,
       ...item.values.reduce(
@@ -2563,6 +2624,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
         title: "Metric",
         dataIndex: "metric",
         key: "metric",
+        fixed: "left",
       },
       ...Array.from({ length: numberOfMonths }, (_, i) => ({
         title: `Month_${i + 1}`,
@@ -2591,12 +2653,14 @@ const Z = ({ currentUser, setCurrentUser }) => {
         ),
       },
       {
-        name: "Total Loan Payments",
-        data: totalLoanPayments.map((value) => parseFloat(value?.toFixed(2))),
+        name: "Total Interest Payments",
+        data: totalInterestPayments.map((value) =>
+          parseFloat(value?.toFixed(2))
+        ),
       },
       {
-        name: "Net Profit",
-        data: netProfit.map((value) => parseFloat(value?.toFixed(2))),
+        name: "Net Income",
+        data: netIncome.map((value) => parseFloat(value.toFixed(2))),
       },
     ];
 
@@ -2642,7 +2706,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
     return (
       <div>
-        <h2 className="text-lg font-semibold mb-4">
+        <h2 className="text-2xl font-semibold mb-4">
           Profit and Loss Statement
         </h2>
         <Table
@@ -2667,17 +2731,64 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
   const [industry, setIndustry] = useState([]);
 
-  const [incomeTax, setIncomeTax] = useState([]);
+  const [incomeTax, setIncomeTax] = useState(10);
 
-  const [payrollTax, setPayrollTax] = useState([]);
+  const [payrollTax, setPayrollTax] = useState(0);
 
-  const [currency, setCurrency] = useState([]);
+  const [currency, setCurrency] = useState("USD");
 
   const [startMonth, setStartMonth] = useState([]);
 
-  const [startYear, setStartYear] = useState([]);
+  const [startYear, setStartYear] = useState(2024);
 
-  const [financeName, setFinanceName] = useState([]);
+  const [financialProjectName, setFinancialProjectName] = useState([]);
+
+  // Download Excel
+  const downloadExcel = () => {
+    const workBook = XLSX.utils.book_new();
+
+    const convertDataToWorksheet = (data) => {
+      return XLSX.utils.json_to_sheet(data);
+    };
+
+    const addSheetToWorkbook = (sheet, sheetName) => {
+      XLSX.utils.book_append_sheet(workBook, sheet, sheetName);
+    };
+
+    // Example data conversion and sheet addition
+    addSheetToWorkbook(
+      convertDataToWorksheet(transformCostDataForTable()),
+      "Costs"
+    );
+    addSheetToWorkbook(
+      convertDataToWorksheet(transformPersonnelCostDataForTable()),
+      "Personnel Costs"
+    );
+    addSheetToWorkbook(
+      convertDataToWorksheet(transformInvestmentDataForTable()),
+      "Investments"
+    );
+    addSheetToWorkbook(
+      convertDataToWorksheet(transformLoanDataForTable()),
+      "Loans"
+    );
+    //addSheetToWorkbook(convertDataToWorksheet(transposedData), 'Profit and Loss');
+
+    // Write the workbook and trigger download
+    const wbout = XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
+
+    function s2ab(s) {
+      const buf = new ArrayBuffer(s.length);
+      const view = new Uint8Array(buf);
+      for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+      return buf;
+    }
+
+    saveAs(
+      new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
+      "financial-data.xlsx"
+    );
+  };
 
   return (
     <div>
@@ -2686,11 +2797,11 @@ const Z = ({ currentUser, setCurrentUser }) => {
         <ProgressBar isLoading={isLoading} />
       ) : (
         <>
-          <div className="w-full h-full flex flex-col md:flex-row">
+          <div className="w-full h-full flex flex-col lg:flex-row">
             <Gemini />
           </div>
-          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
-            <div className="w-full md:w-1/3 p-4 border-r-2">
+          <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
+            <div className="w-full lg:w-1/3 p-4 border-r-2">
               <DurationSelect
                 selectedDuration={selectedDuration}
                 setSelectedDuration={setSelectedDuration}
@@ -2710,15 +2821,17 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 setStartMonth={setStartMonth}
                 startYear={startYear}
                 setStartYear={setStartYear}
-                financeName={financeName}
-                setFinanceName={setFinanceName}
+                financialProjectName={financialProjectName}
+                setFinancialProjectName={setFinancialProjectName}
               />
             </div>
-            <div className="w-full md:w-2/3 p-4"></div>
+            <div className="w-full lg:w-2/3 p-4">
+              <MetricsFM />
+            </div>
           </div>
 
-          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
-            <div className="w-full md:w-1/3 p-4 border-r-2">
+          <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
+            <div className="w-full lg:w-1/3 p-4 border-r-2">
               <CustomerSection
                 customerInputs={customerInputs}
                 addNewCustomerInput={addNewCustomerInput}
@@ -2726,30 +2839,26 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 handleInputChange={handleInputChange}
               />
             </div>
-            <div className="w-full md:w-2/3 p-4 ">
-              <h3 className="text-lg font-semibold mb-4">
-                Customer Growth Data by Channel
-              </h3>
+            <div className="w-full lg:w-2/3 p-4 ">
+              <h3 className="text-2xl font-semibold ">Customer Table</h3>
               <Table
-                className="overflow-auto mb-4  text-lg"
+                className="overflow-auto my-8"
                 dataSource={tableData}
                 columns={columns}
                 pagination={false}
               />
-              <h3 className="text-lg font-semibold">
-                Customer Growth Data by Channel
-              </h3>
+              <h3 className="text-2xl font-semibold my-8">Customer Chart</h3>
               <Chart
                 options={customerGrowthChart.options}
                 series={customerGrowthChart.series}
-                type="line"
+                type="area"
                 height={350}
               />
             </div>
           </div>
 
-          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
-            <div className="w-full md:w-1/3 p-4 border-r-2 border-r-2">
+          <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
+            <div className="w-full lg:w-1/3 p-4 border-r-2">
               <SalesSection
                 channelInputs={channelInputs}
                 channelNames={channelNames}
@@ -2758,17 +2867,17 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 handleChannelInputChange={handleChannelInputChange}
               />
             </div>
-            <div className="w-full md:w-2/3 p-4">
-              <h3 className="text-lg font-semibold mb-4">
+            <div className="w-full lg:w-2/3 p-4">
+              <h3 className="text-2xl font-semibold mb-4">
                 Revenue Data by Channel and Product
               </h3>
               <Table
-                className="overflow-auto mb-4"
+                className="overflow-auto my-8"
                 dataSource={revenueTableData}
                 columns={revenueColumns}
                 pagination={false}
               />
-              <h3 className="text-lg font-semibold mb-4">
+              <h3 className="text-2xl font-semibold my-8">
                 Gross Profit Data by Channel and Product
               </h3>
               <Chart
@@ -2780,8 +2889,8 @@ const Z = ({ currentUser, setCurrentUser }) => {
             </div>
           </div>
 
-          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
-            <div className="w-full md:w-1/3 p-4 border-r-2">
+          <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
+            <div className="w-full lg:w-1/3 p-4 border-r-2">
               <CostSection
                 costInputs={costInputs}
                 addNewCostInput={addNewCostInput}
@@ -2789,15 +2898,15 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 handleCostInputChange={handleCostInputChange}
               />
             </div>
-            <div className="w-full md:w-2/3 p-4">
-              <h3 className="text-lg font-semibold mb-4">Cost Table</h3>
+            <div className="w-full lg:w-2/3 p-4">
+              <h3 className="text-2xl font-semibold mb-4">Cost Table</h3>
               <Table
-                className="overflow-auto mb-4"
+                className="overflow-auto my-8"
                 dataSource={costTableData}
                 columns={costColumns}
                 pagination={false}
               />
-              <h3 className="text-lg font-semibold mb-4">Cost Chart</h3>
+              <h3 className="text-2xl font-semibold my-8">Cost Chart</h3>
               <Chart
                 options={costChart.options}
                 series={costChart.series}
@@ -2807,8 +2916,8 @@ const Z = ({ currentUser, setCurrentUser }) => {
             </div>
           </div>
 
-          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
-            <div className="w-full md:w-1/3 p-4 border-r-2">
+          <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
+            <div className="w-full lg:w-1/3 p-4 border-r-2">
               <PersonnelSection
                 personnelInputs={personnelInputs}
                 addNewPersonnelInput={addNewPersonnelInput}
@@ -2816,17 +2925,17 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 handlePersonnelInputChange={handlePersonnelInputChange}
               />
             </div>
-            <div className="w-full md:w-2/3 p-4">
-              <h3 className="text-lg font-semibold mb-4">
+            <div className="w-full lg:w-2/3 p-4">
+              <h3 className="text-2xl font-semibold mb-4">
                 Personnel Cost Table
               </h3>
               <Table
-                className="overflow-auto mb-4"
+                className="overflow-auto my-8"
                 dataSource={personnelCostTableData}
                 columns={personnelCostColumns}
                 pagination={false}
               />
-              <h3 className="text-lg font-semibold mb-4">
+              <h3 className="text-2xl font-semibold my-8">
                 Personnel Cost Chart
               </h3>
               <Chart
@@ -2838,8 +2947,8 @@ const Z = ({ currentUser, setCurrentUser }) => {
             </div>
           </div>
 
-          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
-            <div className="w-full md:w-1/3 p-4 border-r-2">
+          <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
+            <div className="w-full lg:w-1/3 p-4 border-r-2">
               <InvestmentSection
                 investmentInputs={investmentInputs}
                 setInvestmentInputs={setInvestmentInputs}
@@ -2848,15 +2957,15 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 handleInvestmentInputChange={handleInvestmentInputChange}
               />
             </div>
-            <div className="w-full md:w-2/3 p-4">
-              <h3 className="text-lg font-semibold mb-4">Investment Table</h3>
+            <div className="w-full lg:w-2/3 p-4">
+              <h3 className="text-2xl font-semibold mb-4">Investment Table</h3>
               <Table
-                className="overflow-auto mb-4"
+                className="overflow-auto my-8"
                 dataSource={transformInvestmentDataForTable()}
                 columns={investmentColumns}
                 pagination={false}
               />
-              <h3 className="text-lg font-semibold mb-4">Investment Chart</h3>
+              <h3 className="text-2xl font-semibold my-8">Investment Chart</h3>
               <Chart
                 options={investmentChart.options}
                 series={investmentChart.series}
@@ -2866,8 +2975,8 @@ const Z = ({ currentUser, setCurrentUser }) => {
             </div>
           </div>
 
-          <div className="w-full h-full flex flex-col md:flex-row border-t-2">
-            <div className="w-full md:w-1/3 p-4 border-r-2">
+          <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
+            <div className="w-full lg:w-1/3 p-4 border-r-2">
               <LoanSection
                 loanInputs={loanInputs}
                 addNewLoanInput={addNewLoanInput}
@@ -2875,15 +2984,15 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 handleLoanInputChange={handleLoanInputChange}
               />
             </div>
-            <div className="w-full md:w-2/3 p-4">
-              <h3 className="text-lg font-semibold mb-4">Loan Data</h3>
+            <div className="w-full lg:w-2/3 p-4">
+              <h3 className="text-2xl font-semibold mb-4">Loan Data</h3>
               <Table
-                className="overflow-auto mb-4"
+                className="overflow-auto my-8"
                 dataSource={transformLoanDataForTable()}
                 columns={loanColumns}
                 pagination={false}
               />
-              <h3 className="text-lg font-semibold mb-4">Loan Data</h3>
+              <h3 className="text-2xl font-semibold my-8">Loan Data</h3>
               <Chart
                 options={loanChart.options}
                 series={loanChart.series}
@@ -2899,15 +3008,20 @@ const Z = ({ currentUser, setCurrentUser }) => {
             investmentData={calculateInvestmentData()}
             loanData={calculateLoanData()}
             numberOfMonths={numberOfMonths}
+            incomeTaxRate={incomeTax}
           />
         </>
       )}
+
+      <button onClick={downloadExcel} className="download-excel-button">
+        Download Excel
+      </button>
 
       {/* The following sections are commented out */}
 
       {/* <div>
         <div className="json-input-section mb-8">
-          <h2 className="text-lg font-semibold mb-4">Import Data from JSON</h2>
+          <h2 className="text-2xl font-semibold mb-4">Import Data from JSON</h2>
           <textarea
             value={jsonInput || ''}
             onChange={jsonHandleInputChange}

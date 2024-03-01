@@ -2825,9 +2825,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 setFinancialProjectName={setFinancialProjectName}
               />
             </div>
-            <div className="w-full lg:w-2/3 p-4">
-              <MetricsFM />
-            </div>
+            <div className="w-full lg:w-2/3 p-4">{/* <MetricsFM /> */}</div>
           </div>
 
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">

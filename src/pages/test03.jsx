@@ -971,36 +971,36 @@ const Z = ({ currentUser, setCurrentUser }) => {
   const { Text } = Typography;
 
   const industries = [
-    "Coffee shop",
-    "Pizza restaurant",
-    "HR SaaS (Human Resources Software as a Service)",
-    "Lending fintech (Financial Technology for Lending)",
-    "Food delivery platform",
-    "Ride-sharing service",
-    "E-commerce platform",
-    "Subscription box service",
-    "Social media management tool",
-    "Online tutoring platform",
-    "Health and wellness app",
-    "Home cleaning service",
-    "Co-working space",
-    "Meal kit delivery service",
-    "Pet care app",
-    "Fashion rental platform",
-    "Online marketplace for handmade goods",
-    "Personal finance management tool",
-    "Virtual event platform",
-    "Language learning app",
-    "Electric scooter rental service",
-    "Meal planning app",
-    "Online therapy platform",
-    "Digital marketing agency",
-    "Sustainable fashion brand",
-    "Freelance marketplace",
-    "Smart home technology provider",
-    "Online event ticketing platform",
-    "Plant-based food products company",
-    "Fitness app",
+    "Coffee shop ☕",
+    "Pizza restaurant 🍕",
+    "HR SaaS (Human Resources Software as a Service) 💼🖥️",
+    "Lending fintech (Financial Technology for Lending) 💸🏦",
+    "Food delivery platform 🚚🍲",
+    "Ride-sharing service 🚗👥",
+    "E-commerce platform 🛒🌐",
+    "Subscription box service 📦🎁",
+    "Social media management tool 📱💡",
+    "Online tutoring platform 🖥️📚",
+    "Health and wellness app 💪🍏",
+    "Home cleaning service 🏠🧹",
+    "Co-working space 🏢👩‍💻",
+    "Meal kit delivery service 📦🥗",
+    "Pet care app 🐶📱",
+    "Fashion rental platform 👗🔄",
+    "Online marketplace for handmade goods 🤲🛍️",
+    "Personal finance management tool 💰📊",
+    "Virtual event platform 🖥️🎤",
+    "Language learning app 📚🌍",
+    "Electric scooter rental service 🛴🔋",
+    "Meal planning app 📝🥘",
+    "Online therapy platform 💬❤️",
+    "Digital marketing agency 💻📈",
+    "Sustainable fashion brand 🌿👚",
+    "Freelance marketplace 💻🤝",
+    "Smart home technology provider 🏠💡",
+    "Online event ticketing platform 🎟️🌐",
+    "Plant-based food products company 🌱🍔",
+    "Fitness app 🏋️‍♀️📱",
   ];
 
   const Gemini = () => {
@@ -1109,7 +1109,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
               <div className="flex-[0_0_auto]">
                 <button
                   type="submit"
-                  className="w-[46px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
+                  className="w-[64px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
                 >
                   {/* <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -1120,7 +1120,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                   >
                     <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
                   </svg> */}
-                  Build
+                  Go 🐶
                 </button>
               </div>
             </div>

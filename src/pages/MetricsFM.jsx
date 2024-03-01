@@ -46,7 +46,7 @@ const MetricsFM = () => {
               </div>
 
               <div className="mt-1 flex items-center gap-x-2">
-                <h3 className="text-xl sm:text-2xl font-medium text-gray-800 dark:text-gray-200">
+                <h3 className="text-xl sm:text-2xl font-medium text-gray-800">
                   {card.number}
                 </h3>
                 <span className="flex items-center gap-x-1 text-green-600">

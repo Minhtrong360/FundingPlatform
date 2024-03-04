@@ -5,8 +5,6 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const NotificationItem = ({ notification }) => {
-  console.log("notification", notification);
-
   const parsedContent = JSON.parse(notification.content);
 
   // Calculate the time passed since createdAt
@@ -15,18 +13,25 @@ const NotificationItem = ({ notification }) => {
     const now = new Date(); // Get current date
     const timeDifference = Math.abs(now - createdDate); // Calculate time difference in milliseconds
     const minutesPassed = Math.floor(timeDifference / (1000 * 60)); // Convert milliseconds to minutes
-    if (minutesPassed < 60) {
-      return `${minutesPassed} phút trước`;
-    } else {
-      const hoursPassed = Math.floor(minutesPassed / 60);
+    const hoursPassed = Math.floor(minutesPassed / 60); // Convert minutes to hours
+    const daysPassed = Math.floor(hoursPassed / 24); // Convert hours to days
+
+    if (daysPassed > 0) {
+      // If more than 24 hours have passed, display the date in dd/mm/yyyy format
+      const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+      return createdDate.toLocaleDateString("en-GB", options);
+    } else if (hoursPassed > 0) {
+      // If less than 24 hours but more than 0 hours have passed, display hours
       return `${hoursPassed} giờ trước`;
+    } else {
+      // If less than an hour has passed, display minutes
+      return `${minutesPassed} phút trước`;
     }
   };
+
   const navigateToFounderPage = (founderId) => {
     window.location.href = `/founder/${founderId}`;
   };
-
-  console.log("notification", notification.content);
 
   return (
     <div className="flex justify-between items-start px-4 py-2 border-b border-gray-200">
@@ -34,14 +39,21 @@ const NotificationItem = ({ notification }) => {
         <p className="text-sm font-semibold text-gray-800">Thông báo</p>
         <p className="text-sm text-gray-600 mt-1">
           Các dự án sau có thể phù hợp với nhu cầu của bạn:
-          <span
-            className="font-semibold hover:cursor-pointer"
-            onClick={() => navigateToFounderPage(parsedContent.project_id)}
-          >
-            {" "}
-            {parsedContent.name}{" "}
-          </span>
         </p>
+
+        {Object.keys(parsedContent).map((key, index) => (
+          <span key={index}>
+            <span
+              className="font-semibold text-sm hover:cursor-pointer"
+              onClick={() =>
+                navigateToFounderPage(parsedContent[key].project_id)
+              }
+            >
+              {parsedContent[key].name}
+            </span>
+            {index < parsedContent.length - 1 && ", "}
+          </span>
+        ))}
       </div>
       <span className="text-xs text-gray-500">{timePassed()}</span>
     </div>
@@ -74,7 +86,11 @@ const NotificationsPage = () => {
       if (error) {
         console.error("Error fetching notifications:", error.message);
       } else {
-        setNotifications(data); // Set notifications state with fetched data
+        const sortedNotifications = [...data].sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        );
+
+        setNotifications(sortedNotifications); // Set notifications state with fetched data
       }
     };
 

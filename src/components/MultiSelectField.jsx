@@ -7,6 +7,7 @@ const MultiSelectField = ({
   OPTIONS,
   selectedItems,
   setSelectedItems,
+  required,
 }) => {
   const filteredOptions = OPTIONS.filter((o) => !selectedItems?.includes(o));
 
@@ -33,7 +34,7 @@ const MultiSelectField = ({
           value: item,
           label: item,
         }))}
-        aria-required
+        aria-required={required || false}
       />
     </div>
   );

@@ -1180,12 +1180,13 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
   // In the main functional component, update the useEffect
   useEffect(() => {
+    console.log("11");
     // Ensure chatbotResponse is only processed when it's a valid string
     if (!chatbotResponse || chatbotResponse.trim() === "") return;
 
     try {
       const data = JSON.parse(chatbotResponse);
-
+      console.log("12", data);
       // For each section, check if the JSON has relevant data and use it to update state
       // This replaces manual inputs with JSON-provided values
       if (data.DurationSelect)
@@ -1199,7 +1200,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       if (data.InvestmentSection)
         setInvestmentInputs(data.InvestmentSection.investmentInputs);
       if (data.LoanSection) setLoanInputs(data.LoanSection.loanInputs);
-
+      console.log("13");
       // setChatbotResponse(
       //   (prevResponse) => `${prevResponse}\n${data.geminiResponse}`
       // );
@@ -1208,6 +1209,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       // console.log("chatbotResponse", chatbotResponse);
     } catch (error) {
       console.log("Error parsing JSON:", error);
+      console.log("13");
       // Handle error or notify user here
     }
   }, [chatbotResponse]);

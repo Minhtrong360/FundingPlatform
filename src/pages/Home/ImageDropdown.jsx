@@ -110,7 +110,16 @@ const ImageDropdown = () => {
     };
   }, [isOpen]);
 
-  const handleClickNotifications = (e) => {
+  const handleClickNotifications = async (e) => {
+    const { error } = await supabase
+      .from("users")
+      .update({ notification_count: 0 })
+      .eq("id", user.id); // Thay "id" bằng trường id thực tế trong cơ sở dữ liệu của bạn
+
+    if (error) {
+      throw error;
+    }
+
     navigate("/notifications");
     handleClickOutside(e);
     setIsOpen(false);
@@ -205,8 +214,8 @@ const ImageDropdown = () => {
             onClick={(e) => handleClickNotifications(e)}
           >
             <span className="flex items-center gap-x-3.5">Notifications</span>
-            <span className="bg-red-600 text-white px-2 py-1 rounded-full text-xs">
-              {userData.notification_count}{" "}
+            <span className="bg-red-600 text-white h-7 w-7 rounded-full text-sm flex items-center justify-center">
+              {userData.notification_count ? userData.notification_count : 0}{" "}
               {/* Display the notification count here */}
             </span>
           </button>

@@ -221,50 +221,55 @@ function UserInfoSettings() {
         (company) => !notifiedCompanies.includes(company.name)
       );
 
-      // Prepare notification content with company name and id
+      // Prepare notification content with array of companies
       const notificationContent = newCompanies.map((company) => ({
         id: company.id,
         name: company.name,
         project_id: company.project_id,
       }));
 
-      // Add new notifications for the user
-      const notificationsToInsert = notificationContent.map((content) => ({
-        receivedUser: userData.email,
-        content: JSON.stringify(content), // Convert content to JSON string
-      }));
+      if (notificationContent.length > 0) {
+        // Add new notifications for the user
+        const notificationsToInsert = [
+          {
+            receivedUser: userData.email,
+            content: JSON.stringify(notificationContent), // Convert content to JSON string
+          },
+        ];
 
-      // Insert new notifications into the notifications table
-      await supabase.from("notifications").insert(notificationsToInsert);
-      const currentNotificationCount = userData.notification_count + 1;
+        // Insert new notifications into the notifications table
+        await supabase.from("notifications").insert(notificationsToInsert);
 
-      // Update user data in Supabase
-      const { error } = await supabase
-        .from("users")
-        .update({
-          full_name: userData.full_name,
-          email: userData.email,
-          plan: userData.plan,
-          subscribe: userData.subscribe,
-          company: userData.company,
-          company_website: userData.company_website,
-          detail: userData.detail,
-          roll: userData.roll,
-          avatar: avatarUrl,
-          interested_in: userData.interested_in,
-          investment_size: userData.investment_size,
-          country: userData.country,
-          type: userData.type,
-          revenueStatusWanted: userData.revenueStatusWanted,
-          notification_count: currentNotificationCount,
-        })
-        .eq("id", user.id);
+        const currentNotificationCount = userData.notification_count + 1;
 
-      if (error) {
-        throw error;
+        // Update user data in Supabase
+        const { error } = await supabase
+          .from("users")
+          .update({
+            full_name: userData.full_name,
+            email: userData.email,
+            plan: userData.plan,
+            subscribe: userData.subscribe,
+            company: userData.company,
+            company_website: userData.company_website,
+            detail: userData.detail,
+            roll: userData.roll,
+            avatar: avatarUrl,
+            interested_in: userData.interested_in,
+            investment_size: userData.investment_size,
+            country: userData.country,
+            type: userData.type,
+            revenueStatusWanted: userData.revenueStatusWanted,
+            notification_count: currentNotificationCount,
+          })
+          .eq("id", user.id);
+
+        if (error) {
+          throw error;
+        }
+
+        toast.success("Updated successfully!");
       }
-
-      toast.success("Updated successfully!");
     } catch (error) {
       toast.error(error.message);
       console.error("Error updating user data:", error);

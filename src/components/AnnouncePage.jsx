@@ -39,14 +39,14 @@ const AnnouncePage = ({
             .single();
 
           if (error) {
-            toast.error(error.message);
+            console.log(error.message);
           } else {
             setCurrentProject(data);
           }
         }
         setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu
       } catch (error) {
-        toast.error(error.message);
+        console.log(error.message);
 
         setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu (có lỗi)
       }

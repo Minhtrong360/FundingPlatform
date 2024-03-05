@@ -25,13 +25,29 @@ function ProjectList({ projects }) {
   const [updatedProjects, setUpdatedProjects] = useState([]);
   const [editedProjectStatus, setEditedProjectStatus] = useState(true); // Thêm state cho trường status
   const navigate = useNavigate();
-  const handleProjectClick = (project) => {
-    if (project.collabs?.includes(user.email) || project.user_id === user.id) {
-      navigate(`/company/${project.id}`);
-    } else {
-      navigate(`/founder/${project.id}`);
+  const handleProjectClick = async (project) => {
+    try {
+      // Truy vấn trong bảng 'company' để kiểm tra project_id có tồn tại hay không
+      const { data: companies, error } = await supabase
+        .from("company")
+        .select("id")
+        .eq("project_id", project.id);
+
+      if (error) {
+        throw error;
+      }
+
+      // Nếu tồn tại trong bảng 'company', điều hướng đến '/founder/${project.id}'
+      if (companies.length > 0) {
+        navigate(`/founder/${project.id}`);
+      } else {
+        // Ngược lại, điều hướng đến '/company/${project.id}'
+        navigate(`/company/${project.id}`);
+      }
+    } catch (error) {
+      console.error("Error checking company:", error.message);
+      // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }
-    // Gọi hàm handleClickProjectId để truyền projectId lên thành phần cha
   };
 
   useEffect(() => {

@@ -1,6 +1,8 @@
 import { Tooltip } from "antd";
 import ImageCrop from "../../components/cropImage/ImageCrop";
 import ResizeImage from "../../components/ResizeImage";
+import { useEffect, useState } from "react";
+import { supabase } from "../../supabase";
 
 function formatNumber(value) {
   // Kiểm tra xem value có phải là một chuỗi không
@@ -28,6 +30,32 @@ const HeroSection = ({
   setFormData,
   canClick,
 }) => {
+  const [project, setProject] = useState(null);
+
+  useEffect(() => {
+    const fetchProject = async () => {
+      if (!formData.id) return;
+
+      try {
+        const { data, error } = await supabase
+          .from("projects")
+          .select("*")
+          .eq("id", formData.project_id)
+          .single();
+
+        if (error) {
+          throw error;
+        }
+
+        setProject(data);
+      } catch (error) {
+        console.log("Error fetching project:", error.message);
+      }
+    };
+
+    fetchProject();
+  }, [formData]);
+
   return (
     <div className="max-w-[85rem] mx-auto mt-24 px-4 sm:px-6 lg:px-8 z-0">
       <div className="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
@@ -128,6 +156,12 @@ const HeroSection = ({
             alt=""
           />
           {/* )} */}
+
+          {project?.verified && (
+            <span className="absolute top-0 right-0 bg-green-600 text-white text-sm font-medium py-1.5 px-3 rounded-bl-lg">
+              Verified by BeeKrowd
+            </span>
+          )}
 
           <div className="absolute inset-0 -z-[1] bg-gradient-to-tr from-gray-200 via-white/0 to-white/0 w-full h-full rounded-md mt-4 -mb-4 me-4 -ms-4 lg:mt-6 lg:-mb-6 lg:me-6 lg:-ms-6 darkFromSlate"></div>
         </div>

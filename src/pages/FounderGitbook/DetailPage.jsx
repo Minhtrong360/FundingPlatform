@@ -103,8 +103,6 @@ const DetailPage = () => {
     );
   }
 
-  console.log("company", company);
-
   return (
     <div className=" bg-white darkBg antialiased !p-0">
       <AlertMsg />

@@ -54,8 +54,6 @@ const Search = ({
     }
   }, [currentTab, companies, searchTerm]);
 
-  console.log("suggestions", suggestions);
-
   return (
     <div className="relative overflow-hidden">
       <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-1 mt-24">

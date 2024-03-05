@@ -12,6 +12,7 @@ import LoadingButtonClick from "../../components/LoadingButtonClick";
 import AlertMsg from "../../components/AlertMsg";
 import CompanyTest from "./CompanyTest";
 import { data } from "jquery";
+import axios from "axios";
 
 function CompanySetting() {
   const navigate = useNavigate();
@@ -152,6 +153,7 @@ function CompanySetting() {
       }
 
       // Upload ảnh project_url nếu có
+
       let projectUrl = formData.project_url;
       if (projectUrl && projectUrl.startsWith("data:image")) {
         const file = dataURItoFile(projectUrl, "img");
@@ -160,17 +162,45 @@ function CompanySetting() {
           projectUrl = uploadedProjectUrl;
         }
       }
-
+      if (
+        projectUrl &&
+        !projectUrl.startsWith("https://dheunoflmddynuaxiksw.supabase.co")
+      ) {
+        if (
+          projectUrl.startsWith("http://") ||
+          projectUrl.startsWith("https://")
+        ) {
+          const uploadedProjectUrl = await uploadImageFromURLToSupabase(
+            projectUrl
+          );
+          if (uploadedProjectUrl) {
+            projectUrl = uploadedProjectUrl;
+          }
+        }
+      }
+      console.log("projectUrl", projectUrl);
       // Upload ảnh card_url nếu có
       let cardUrl = formData.card_url;
       if (cardUrl && cardUrl.startsWith("data:image")) {
         const file = dataURItoFile(cardUrl, "card_image.jpg");
         const uploadedCardUrl = await uploadImageToSupabase(file);
+        console.log("uploadedCardUrl", uploadedCardUrl);
         if (uploadedCardUrl) {
           cardUrl = uploadedCardUrl;
         }
       }
-
+      if (
+        cardUrl &&
+        !cardUrl.startsWith("https://dheunoflmddynuaxiksw.supabase.co")
+      ) {
+        if (cardUrl.startsWith("http://") || cardUrl.startsWith("https://")) {
+          const uploadedcardUrl = await uploadImageFromURLToSupabase(cardUrl);
+          if (uploadedcardUrl) {
+            cardUrl = uploadedcardUrl;
+          }
+        }
+      }
+      console.log("cardUrl", cardUrl);
       // Kiểm tra xem công ty đã tồn tại trong Supabase chưa bằng cách truy vấn theo project_id
       const { data: existingCompany, error: existingCompanyError } =
         await supabase.from("company").select("*").eq("project_id", params.id);
@@ -347,6 +377,46 @@ function CompanySetting() {
     }
   };
 
+  // Function to upload image to Supabase from URL
+  const uploadImageFromURLToSupabase = async (imageUrl) => {
+    try {
+      // Download image from URL
+      const response = await axios.get(imageUrl, {
+        responseType: "arraybuffer",
+      });
+
+      // Create Blob from downloaded image data
+      const blob = new Blob([response.data], {
+        type: response.headers["content-type"],
+      });
+
+      // Get current timestamp
+      const timestamp = Date.now();
+
+      // Create File object from Blob with filename as "img-{timestamp}"
+      const file = new File([blob], `img-${timestamp}`, {
+        type: response.headers["content-type"],
+      });
+
+      // Upload image file to Supabase storage
+      const { data, error } = await supabase.storage
+        .from("beekrowd_storage")
+        .upload(`beekrowd_images/${file.name}`, file);
+
+      if (error) {
+        console.error("Error uploading image to Supabase:", error);
+        return null;
+      }
+
+      // Return Supabase URL of the uploaded image
+      const imageUrlFromSupabase = `https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/${data.fullPath}`;
+      return imageUrlFromSupabase;
+    } catch (error) {
+      console.error("Error uploading image from URL to Supabase:", error);
+      return null;
+    }
+  };
+
   // Hàm chuyển đổi data URI thành File object
   const dataURItoFile = (dataURI, fileNamePrefix) => {
     const byteString = atob(dataURI.split(",")[1]);
@@ -473,7 +543,7 @@ function CompanySetting() {
         }
       } else {
         // If there are no users matching the criteria, display a message
-        toast.warning("No users matching the criteria for notifications.");
+        // toast.warning("No users matching the criteria for notifications.");
       }
     } catch (error) {
       toast.error(error.message);

@@ -124,7 +124,7 @@ export default function EditorTool() {
             .single();
           setCurrentProject(data);
           if (error) {
-            toast.error(error.message);
+            console.log(error.message);
           } else {
             // Nếu có dữ liệu Markdown trong cơ sở dữ liệu, cập nhật giá trị của markdown
             if (data && data.markdown) {
@@ -137,7 +137,7 @@ export default function EditorTool() {
         }
         setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu
       } catch (error) {
-        toast.error(error.message);
+        console.log(error.message);
 
         setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu (có lỗi)
       }

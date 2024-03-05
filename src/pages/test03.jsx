@@ -1090,7 +1090,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       <div className=" mx-auto w-full">
         <div className="input-container p-4">
           <h2 className="text-3xl sm:text-5xl font-semibold text-gray-800 darkTextGray mb-6">
-            What business do you want to start with?
+            Build your financial model with AI
           </h2>
           <form onSubmit={handleSendMessage}>
             <div className="w-[50%] relative z-10 flex space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100 darkBgBlue darkBorderGray darkShadowGray">
@@ -1120,7 +1120,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                   >
                     <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
                   </svg> */}
-                  Go 🐶
+                  OK 🐶
                 </button>
               </div>
             </div>

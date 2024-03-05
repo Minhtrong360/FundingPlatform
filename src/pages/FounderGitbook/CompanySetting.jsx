@@ -225,7 +225,6 @@ function CompanySetting() {
             console.log("Error updating data to Supabase:", error);
             throw error;
           } else {
-            createNotifications({ createdCompany: data[0] });
             setIsLoading(false);
             navigate(`/founder/${params.id}`);
           }
@@ -381,20 +380,20 @@ function CompanySetting() {
       }
 
       // Kiểm tra xem thông báo đã tồn tại hay chưa
-      const notificationExists = existingNotifications.some((notification) => {
-        const content = JSON.parse(notification.content);
-        return content.some(
-          (item) =>
-            item.id === notificationContent.id &&
-            item.name === notificationContent.name &&
-            item.project_id === notificationContent.project_id
-        );
-      });
+      // const notificationExists = existingNotifications.some((notification) => {
+      //   const content = JSON.parse(notification.content);
+      //   return content.some(
+      //     (item) =>
+      //       item.id === notificationContent.id &&
+      //       item.name === notificationContent.name &&
+      //       item.project_id === notificationContent.project_id
+      //   );
+      // });
 
-      if (notificationExists) {
-        console.log("Notification already exists. Skipping insertion.");
-        return; // Không thêm vào bảng notifications nếu thông báo đã tồn tại
-      }
+      // if (notificationExists) {
+      //   console.log("Notification already exists. Skipping insertion.");
+      //   return; // Không thêm vào bảng notifications nếu thông báo đã tồn tại
+      // }
 
       const { data: usersData, error: usersError } = await supabase
         .from("users")

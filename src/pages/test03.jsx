@@ -1126,7 +1126,18 @@ const Z = ({ currentUser, setCurrentUser }) => {
             </div>
           </form>
           <h3 className="text-2xl font-semibold mt-8">Templates</h3>
-          <div>
+          {/* <div>
+            {industries.map((industry, index) => (
+              <button
+                key={index}
+                onClick={() => handleIndustrySelect(industry)}
+                className={`m-2 py-3 px-4 inline-flex items-center gap-x-2  rounded-lg border shadow-sm hover:cursor-pointer`}
+              >
+                {industry}
+              </button>
+            ))}
+          </div> */}
+          <div className="mt-2 sm:mt-4 hidden lg:flex flex-wrap justify-center">
             {industries.map((industry, index) => (
               <button
                 key={index}
@@ -1137,13 +1148,17 @@ const Z = ({ currentUser, setCurrentUser }) => {
               </button>
             ))}
           </div>
-          {/* <button
-            className="p-2 m-4 rounded-md bg-blue-600 text-white"
-            onClick={handleSendMessage}
-            type="button"
-          >
-            Send
-          </button> */}
+          <div className="mt-4 lg:hidden overflow-x-auto flex flex-nowrap">
+            {industries.map((industry, index) => (
+              <button
+                key={index}
+                onClick={() => handleIndustrySelect(industry)}
+                className={`m-2 py-3 px-4 inline-flex items-center gap-x-2  rounded-lg border shadow-sm hover:cursor-pointer`}
+              >
+                {industry}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     );

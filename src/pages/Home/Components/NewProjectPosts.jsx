@@ -12,7 +12,6 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 
 const NewProjectPosts = () => {
   const [companies, setCompanies] = useState([]);
-
   const [page, setPage] = useState(1);
   const itemsPerPage = 6;
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,9 +21,11 @@ const NewProjectPosts = () => {
   const [currentTab, setCurrentTab] = useState("verified");
   const [verifiedPage, setVerifiedPage] = useState(1);
   const [unverifiedPage, setUnverifiedPage] = useState(1);
+  const [allPage, setAllPage] = useState(1);
   const [companiesToRender, setCompaniesToRender] = useState([]);
+  const [verifiedCompanies, setVerifiedCompanies] = useState([]);
+  const [unverifiedCompanies, setUnverifiedCompanies] = useState([]);
 
-  // First useEffect - Fetch all companies
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
@@ -48,13 +49,17 @@ const NewProjectPosts = () => {
     };
 
     fetchCompanies();
-  }, []); // Empty dependency array to run only on mount
+  }, []);
 
   const handlePageChange = (newPage, tab) => {
+    console.log("newPage", newPage);
+    console.log("tab", tab);
     if (tab === "verified") {
       setVerifiedPage(newPage);
     } else if (tab === "unverified") {
       setUnverifiedPage(newPage);
+    } else if (tab === "All") {
+      setAllPage(newPage);
     }
   };
 
@@ -73,23 +78,34 @@ const NewProjectPosts = () => {
       setVerifiedPage(1);
     } else if (currentTab === "unverified") {
       setUnverifiedPage(1);
+    } else if (currentTab === "All") {
+      setAllPage(1);
     }
   };
 
   const goToLastPage = () => {
-    const totalPages =
-      currentTab === "verified"
-        ? Math.ceil(verifiedCompanies.length / itemsPerPage)
-        : Math.ceil(unverifiedCompanies.length / itemsPerPage);
+    let totalPages;
+    let data;
+
+    if (currentTab === "All") {
+      data = companies;
+    } else if (currentTab === "verified") {
+      data = verifiedCompanies;
+    } else if (currentTab === "unverified") {
+      data = unverifiedCompanies;
+    }
+
+    totalPages = Math.ceil(data.length / itemsPerPage);
 
     if (currentTab === "verified") {
       setVerifiedPage(totalPages);
     } else if (currentTab === "unverified") {
       setUnverifiedPage(totalPages);
+    } else if (currentTab === "All") {
+      setAllPage(totalPages);
     }
   };
 
-  // Tạo một hàm async để lấy trạng thái verified từ bảng projects
   const fetchVerifiedStatus = async (companyId) => {
     try {
       const { data, error } = await supabase
@@ -106,26 +122,17 @@ const NewProjectPosts = () => {
       }
     } catch (error) {
       console.log("Error fetching verified status:", error.message);
-
       return null;
     }
   };
 
-  const [verifiedCompanies, setVerifiedCompanies] = useState([]);
-  const [unverifiedCompanies, setUnverifiedCompanies] = useState([]);
-
-  // Tạo một hàm để chia companies thành hai danh sách verified và unverified
   const divideCompaniesByVerifiedStatus = async (companies) => {
     const verifiedCompanies = [];
     const unverifiedCompanies = [];
 
-    // Duyệt qua mỗi công ty
     for (const company of companies) {
-      // Lấy trạng thái verified từ bảng projects
-
       const verifiedStatus = await fetchVerifiedStatus(company.project_id);
 
-      // Chia công ty vào danh sách tương ứng dựa vào trạng thái verified
       if (verifiedStatus) {
         verifiedCompanies.push(company);
       } else {
@@ -136,16 +143,15 @@ const NewProjectPosts = () => {
     return { verifiedCompanies, unverifiedCompanies };
   };
 
-  // Sử dụng hàm divideCompaniesByVerifiedStatus trong useEffect để chia companies
   useEffect(() => {
     const divideCompanies = async () => {
-      setIsLoading(true); // Bắt đầu loading
+      setIsLoading(true);
       try {
         const { verifiedCompanies, unverifiedCompanies } =
           await divideCompaniesByVerifiedStatus(companies);
         setVerifiedCompanies(verifiedCompanies);
         setUnverifiedCompanies(unverifiedCompanies);
-        setIsLoading(false); // Bắt đầu loading
+        setIsLoading(false);
       } catch (error) {
         console.log(
           "Error dividing companies by verified status:",
@@ -156,15 +162,21 @@ const NewProjectPosts = () => {
     };
 
     divideCompanies();
-  }, [companies, searchTerm, selectedIndustry]);
+  }, [companies]);
 
-  const currentPage = currentTab === "verified" ? verifiedPage : unverifiedPage;
+  const currentPage =
+    currentTab === "verified"
+      ? verifiedPage
+      : currentTab === "unverified"
+      ? unverifiedPage
+      : allPage;
 
-  // Second useEffect - Filter and paginate companies
   useEffect(() => {
     let data = [];
     if (currentTab === "verified") {
       data = verifiedCompanies;
+    } else if (currentTab === "All") {
+      data = companies;
     } else {
       data = unverifiedCompanies;
     }
@@ -184,7 +196,6 @@ const NewProjectPosts = () => {
       );
     }
 
-    // Calculate total pages
     const calculatedTotalPages = Math.ceil(data.length / itemsPerPage);
     setTotalPages(calculatedTotalPages);
 
@@ -199,9 +210,6 @@ const NewProjectPosts = () => {
     unverifiedCompanies,
   ]);
 
-  console.log("companyToRender", companiesToRender);
-  console.log("companies", companies);
-
   return (
     <div className="max-w-[85rem] px-4 py-1 sm:px-6 lg:px-8 lg:py-1 mx-auto">
       <Search
@@ -212,9 +220,20 @@ const NewProjectPosts = () => {
         setSearchTerm={setSearchTerm}
         selectedIndustry={selectedIndustry}
         setSelectedIndustry={setSelectedIndustry}
+        currentTab={currentTab}
       />
       <LoadingButtonClick isLoading={isLoading} />
       <div className="mt-10 flex justify-center">
+        <button
+          className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
+            currentTab === "All"
+              ? "bg-blue-600 text-white"
+              : "bg-white text-gray-800 hover:bg-gray-50"
+          } shadow-sm hover:cursor-pointer`}
+          onClick={() => setCurrentTab("All")}
+        >
+          All
+        </button>
         <button
           className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
             currentTab === "verified"
@@ -282,29 +301,19 @@ const NewProjectPosts = () => {
                 <ArrowLeftIcon fontSize="large" />
               </button>
               <span className=" sm:px-4 sm:py-1 sm:mx-2  text-gray-800 rounded-md inline-flex flex-nowrap justify-center items-center  flex-shrink-0">
-                Page {currentPage} of{" "}
-                {Math.ceil(companiesToRender.length / itemsPerPage)}
+                Page {currentPage} of {totalPages}
               </span>
               <button
                 className="sm:px-4 sm:py-1 sm:mx-2  text-black rounded-md"
                 onClick={() => handlePageChange(currentPage + 1, currentTab)}
-                disabled={
-                  currentTab === "verified"
-                    ? currentPage === totalPages
-                    : currentPage === totalPages
-                }
+                disabled={currentPage === totalPages}
               >
                 <ArrowRightIcon fontSize="large" />
               </button>
               <button
                 className="sm:px-4 sm:py-1 sm:mx-2  text-black rounded-md"
                 onClick={goToLastPage}
-                disabled={
-                  currentPage ===
-                  (currentTab === "verified"
-                    ? Math.ceil(verifiedCompanies.length / itemsPerPage)
-                    : Math.ceil(unverifiedCompanies.length / itemsPerPage))
-                }
+                disabled={currentPage === totalPages}
               >
                 <SkipNextIcon />
               </button>

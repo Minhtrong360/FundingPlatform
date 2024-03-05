@@ -42,11 +42,11 @@ function FinancialList() {
       <div id="exampleWrapper">
         <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
-        <div className="p-4 sm:ml-64" onClick={() => setIsSidebarOpen(false)}>
+        <div className="ml-24" onClick={() => setIsSidebarOpen(false)}>
           <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg darkBorderGray">
             <div className="bg-white darkBg antialiased p-0">
               {/* Hiển thị danh sách các finance dưới dạng thẻ Card */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4 sm:ml-64">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 ml-24">
                 {finances.map((finance) => (
                   <div
                     key={finance.id}

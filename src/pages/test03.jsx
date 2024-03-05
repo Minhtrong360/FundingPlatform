@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Tooltip } from 'antd';
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import {
@@ -20,9 +21,12 @@ import AlertMsg from "../components/AlertMsg";
 import apiService from "../app/apiService";
 import MetricsFM from "./MetricsFM";
 import Search from "./Home/Components/Search";
+import { InfoCircleOutlined } from '@ant-design/icons';
+
 
 //JSON
 
+// UI Input of DurationSection
 const DurationSelect = ({
   selectedDuration,
   setSelectedDuration,
@@ -88,16 +92,23 @@ const DurationSelect = ({
         Duration and Initial Setup
       </h2>
       <div className="bg-white rounded-md shadow p-6">
+      <Tooltip title="Enter the name of your business">
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Business name:</span>
+          <span className=" flex items-center">Business name :</span>
+          
           <Input
             value={financialProjectName}
             onChange={(e) => setFinancialProjectName(e.target.value)}
             type="text"
           />
+          
         </div>
+        </Tooltip>
+
+        <Tooltip title="Enter the starting month of the business">
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Start Month:</span>
+        
+          <span className=" flex items-center">Start Month :</span>
           <Select onValueChange={setStartMonth} value={startMonth}>
             <SelectTrigger
               id="start-month"
@@ -114,9 +125,11 @@ const DurationSelect = ({
             </SelectContent>
           </Select>
         </div>
+        </Tooltip>
 
+        <Tooltip title="Enter the starting year of the business">   
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Start Year:</span>
+          <span className=" flex items-center">Start Year :</span>
           <Select onValueChange={setStartYear} value={startYear}>
             <SelectTrigger
               id="start-year"
@@ -133,8 +146,11 @@ const DurationSelect = ({
             </SelectContent>
           </Select>
         </div>
+        </Tooltip> 
+        
+        <Tooltip title="Select the duration 3 years or 5 years">
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Duration</span>
+          <span className=" flex items-center">Duration :</span>
           <Select onValueChange={(value) => setSelectedDuration(value)}>
             <SelectTrigger
               id="start-date-year"
@@ -148,16 +164,23 @@ const DurationSelect = ({
             </SelectContent>
           </Select>
         </div>
+        </Tooltip>
+        
+        <Tooltip title="Enter the starting cash balance, e.g. $10,000">
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Starting Cash Balance:</span>
+          <span className=" flex items-center">Starting Cash Balance :</span>
+          
           <Input
             value={startingCashBalance}
             onChange={(e) => setStartingCashBalance(e.target.value)}
             type="number"
           />
         </div>
+        </Tooltip>
+        
+        <Tooltip title="Select the status of the business, e.g. $10,000">
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Status:</span>
+          <span className=" flex items-center">Status :</span>
           <Select onValueChange={(value) => setStatus(value)} value={status}>
             <SelectTrigger className="border-solid border-[1px] border-gray-600">
               <SelectValue />
@@ -168,8 +191,11 @@ const DurationSelect = ({
             </SelectContent>
           </Select>
         </div>
+        </Tooltip>
+        
+        <Tooltip title="Select the business industry, e.g. Fintech, Edtech">
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Industry:</span>
+          <span className=" flex items-center">Business industry:</span>
           <Select onValueChange={setIndustry} value={industry}>
             <SelectTrigger
               id="industry"
@@ -186,14 +212,20 @@ const DurationSelect = ({
             </SelectContent>
           </Select>
         </div>
+        </Tooltip>
+        
+        <Tooltip title="Input the income tax, e.g. 10">
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Income Tax (%):</span>
+          <span className=" flex items-center">Income Tax(%) :</span>
           <Input
             type="number"
             value={incomeTax}
             onChange={(e) => setIncomeTax(e.target.value)}
           />
         </div>
+        </Tooltip>
+
+        <Tooltip title="Input the payroll tax, e.g. 10">
         <div className="grid grid-cols-2 gap-4 mb-4">
           <span className=" flex items-center">Payroll Tax (%):</span>
           <Input
@@ -202,8 +234,11 @@ const DurationSelect = ({
             onChange={(e) => setPayrollTax(e.target.value)}
           />
         </div>
+        </Tooltip>
+
+        <Tooltip title="Select the currency, e.g. USD">
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Currency:</span>
+          <span className=" flex items-center">Currency :</span>
           <Select
             onValueChange={(value) => setCurrency(value)}
             value={currency}
@@ -218,6 +253,7 @@ const DurationSelect = ({
             </SelectContent>
           </Select>
         </div>
+        </Tooltip>
       </div>
     </section>
   );
@@ -242,17 +278,21 @@ const CustomerSection = ({
 
   return (
     <section aria-labelledby="customers-heading" className="mb-8">
+       <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Here's a list of common customer channels that startups often utilize: Website, Social Media,Email Marketing, Referral Programs, Events and Networking, Direct Sales, Subscription.">
       <h2
         className="text-2xl font-semibold mb-4 flex items-center"
         id="customers-heading"
       >
-        Customer
+       
+        1. Identify your customer <InfoCircleOutlined style={{ marginLeft: '0.5rem' }} />
       </h2>
+      <p>Việc tạo kênh bán là cực kì quan trọng. Bạn phải nghe tui, không xác định được kênh bán là đi bụi</p>
+      </Tooltip>
 
       {customerInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className=" flex items-center">Customers Per Month:</span>
+            <span className=" flex items-center">Customers per month:</span>
             <Input
               className="col-start-2"
               value={input.customersPerMonth}
@@ -389,7 +429,8 @@ const SalesSection = ({
               }
             />
           </div>
-
+          
+          <Tooltip title="Revenue deductions like transaction fees, commission fee... ">
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className=" flex items-center">Rev. Deductions (%):</span>
             <Input
@@ -404,6 +445,7 @@ const SalesSection = ({
               }
             />
           </div>
+          </Tooltip>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className=" flex items-center">COGS (%):</span>
@@ -606,8 +648,8 @@ const CostSection = ({
                 <SelectValue placeholder="Select Cost Type" />
               </SelectTrigger>
               <SelectContent position="popper">
-                <SelectItem value="Operating Cost">Operating Cost</SelectItem>
-                <SelectItem value="SG & A">SG & A</SelectItem>
+                <SelectItem value="Sales, Marketing Cost">Sales, Marketing Cost</SelectItem>
+                <SelectItem value="General Administrative Cost">General Administrative Cost</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -941,6 +983,8 @@ const LoanSection = ({
   );
 };
 
+
+
 const Z = ({ currentUser, setCurrentUser }) => {
   const [selectedDuration, setSelectedDuration] = useState("3 years");
   const [numberOfMonths, setNumberOfMonths] = useState(0);
@@ -953,6 +997,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       setNumberOfMonths(60);
     }
   }, [selectedDuration]);
+  
   //DurationSection
   const [chatbotResponse, setChatbotResponse] = useState("");
   const [jsonInput, setJsonInput] = useState(null); // JSON input state
@@ -1235,7 +1280,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       productName: "Coffee", // New field for product name
       price: 4,
       multiples: 1,
-      deductionPercentage: 10,
+      deductionPercentage: 5,
       cogsPercentage: 30,
       selectedChannel: "Offline",
       channelAllocation: 0.4,
@@ -1244,16 +1289,16 @@ const Z = ({ currentUser, setCurrentUser }) => {
       productName: "Cake", // New field for product name
       price: 8,
       multiples: 1,
-      deductionPercentage: 5,
+      deductionPercentage: 4,
       cogsPercentage: 35,
       selectedChannel: "Offline",
       channelAllocation: 0.3,
     },
     {
-      productName: "Coffee bag", // New field for product name
+      productName: "Coffee Bag", // New field for product name
       price: 6,
       multiples: 1,
-      deductionPercentage: 5,
+      deductionPercentage: 6,
       cogsPercentage: 25,
       selectedChannel: "Online",
       channelAllocation: 0.6,
@@ -1343,13 +1388,13 @@ const Z = ({ currentUser, setCurrentUser }) => {
     });
   };
 
-  const [txFeeData, setTxFeeData] = useState([]);
+  const [revenueDeductionData, setrevenueDeductionData] = useState([]);
   const [cogsData, setCogsData] = useState([]);
 
   const calculateChannelRevenue = () => {
     let revenueByChannelAndProduct = {};
 
-    // New arrays for txFee and COGS
+    // New arrays for revenueDeduction and COGS
     let DeductionByChannelAndProduct = {};
     let cogsByChannelAndProduct = {};
     let netRevenueByChannelAndProduct = {};
@@ -1360,8 +1405,8 @@ const Z = ({ currentUser, setCurrentUser }) => {
         const channelProductKey = `${channel.selectedChannel} - ${channel.productName}`;
         const revenueArray = Array(numberOfMonths).fill(0);
 
-        // Initialize txFee and COGS arrays
-        const txFeeArray = Array(numberOfMonths).fill(0);
+        // Initialize revenueDeduction and COGS arrays
+        const revenueDeductionArray = Array(numberOfMonths).fill(0);
         const cogsArray = Array(numberOfMonths).fill(0);
         const netRevenueArray = Array(numberOfMonths).fill(0);
         const grossProfitArray = Array(numberOfMonths).fill(0);
@@ -1384,8 +1429,8 @@ const Z = ({ currentUser, setCurrentUser }) => {
                     parseFloat(channel.channelAllocation);
                   revenueArray[data.month - 1] = revenue;
 
-                  // Calculate txFee and COGS
-                  txFeeArray[data.month - 1] =
+                  // Calculate revenueDeduction and COGS
+                  revenueDeductionArray[data.month - 1] =
                     (revenue * parseFloat(channel.deductionPercentage)) / 100;
                   cogsArray[data.month - 1] =
                     (revenue * parseFloat(channel.cogsPercentage)) / 100;
@@ -1396,11 +1441,11 @@ const Z = ({ currentUser, setCurrentUser }) => {
         });
 
         revenueByChannelAndProduct[channelProductKey] = revenueArray;
-        DeductionByChannelAndProduct[channelProductKey] = txFeeArray;
+        DeductionByChannelAndProduct[channelProductKey] = revenueDeductionArray;
         cogsByChannelAndProduct[channelProductKey] = cogsArray;
 
         netRevenueArray.forEach((_, i) => {
-          netRevenueArray[i] = revenueArray[i] - txFeeArray[i];
+          netRevenueArray[i] = revenueArray[i] - revenueDeductionArray[i];
         });
         netRevenueByChannelAndProduct[channelProductKey] = netRevenueArray;
 
@@ -1431,7 +1476,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       grossProfitByChannelAndProduct,
     } = calculateChannelRevenue();
     setRevenueData(revenueByChannelAndProduct);
-    setTxFeeData(DeductionByChannelAndProduct);
+    setrevenueDeductionData(DeductionByChannelAndProduct);
     setCogsData(cogsByChannelAndProduct);
     setNetRevenueData(netRevenueByChannelAndProduct);
     setGrossProfitData(grossProfitByChannelAndProduct);
@@ -1453,7 +1498,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       growthPercentage: 0,
       beginMonth: 1,
       endMonth: 6,
-      costType: "Operating Cost",
+      costType: "Sales, Marketing Cost",
     },
     {
       costName: "Marketing",
@@ -1461,7 +1506,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       growthPercentage: 0,
       beginMonth: 1,
       endMonth: 36,
-      costType: "Operating Cost",
+      costType: "Sales, Marketing Cost",
     },
     {
       costName: "Rent",
@@ -1469,7 +1514,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       growthPercentage: 2,
       beginMonth: 1,
       endMonth: 36,
-      costType: "Operating Cost",
+      costType: "General Administrative Cost",
     },
   ]);
 
@@ -1860,8 +1905,8 @@ const Z = ({ currentUser, setCurrentUser }) => {
       const channelRevenue =
         revenueData[channel.selectedChannel + " - " + channel.productName] ||
         [];
-      const channelTxFee =
-        txFeeData[channel.selectedChannel + " - " + channel.productName] || [];
+      const channelrevenueDeduction =
+        revenueDeductionData[channel.selectedChannel + " - " + channel.productName] || [];
       const channelCOGS =
         cogsData[channel.selectedChannel + " - " + channel.productName] || [];
 
@@ -1877,10 +1922,10 @@ const Z = ({ currentUser, setCurrentUser }) => {
         channelName:
           channel.selectedChannel + " - " + channel.productName + " - Revenue",
       };
-      const txFeeRow = {
-        key: channel.selectedChannel + " - " + channel.productName + " - Txfee",
+      const revenueDeductionRow = {
+        key: channel.selectedChannel + " - " + channel.productName + " - revenueDeduction",
         channelName:
-          channel.selectedChannel + " - " + channel.productName + " - Txfee",
+          channel.selectedChannel + " - " + channel.productName + " - revenueDeduction",
       };
       const cogsRow = {
         key: channel.selectedChannel + " - " + channel.productName + " - COGS",
@@ -1891,15 +1936,15 @@ const Z = ({ currentUser, setCurrentUser }) => {
       channelRevenue.forEach((value, index) => {
         if (index + 1 >= begin && index + 1 <= end) {
           revenueRow[`month${index + 1}`] = parseFloat(value)?.toFixed(2);
-          txFeeRow[`month${index + 1}`] = parseFloat(
-            channelTxFee[index]
+          revenueDeductionRow[`month${index + 1}`] = parseFloat(
+            channelrevenueDeduction[index]
           )?.toFixed(2);
           cogsRow[`month${index + 1}`] = parseFloat(channelCOGS[index]).toFixed(
             2
           );
         } else {
           revenueRow[`month${index + 1}`] = "0.00";
-          txFeeRow[`month${index + 1}`] = "0.00";
+          revenueDeductionRow[`month${index + 1}`] = "0.00";
           cogsRow[`month${index + 1}`] = "0.00";
         }
       });
@@ -1948,7 +1993,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       });
 
       revenueTableData.push(revenueRow);
-      revenueTableData.push(txFeeRow);
+      revenueTableData.push(revenueDeductionRow);
       revenueTableData.push(cogsRow);
       revenueTableData.push(netRevenueRow);
       revenueTableData.push(grossProfitRow);
@@ -2090,7 +2135,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
   const revenueColumns = [
     {
       fixed: "left",
-      title: "Channel - Product - Type",
+      title: "Channel_Product_Type",
       dataIndex: "channelName",
       key: "channelName",
     },
@@ -2104,7 +2149,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
   const costColumns = [
     {
       fixed: "left",
-      title: "Cost Type - Cost Name",
+      title: "CostType_CostName",
       dataIndex: "costName",
       key: "costName",
     },
@@ -2483,7 +2528,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       });
 
       revenueTableData.forEach((entry) => {
-        if (entry.channelName.includes("- Txfee")) {
+        if (entry.channelName.includes("- revenueDeduction")) {
           Object.keys(entry).forEach((key) => {
             if (key.startsWith("month")) {
               const monthIndex = parseInt(key.replace("month", "")) - 1;
@@ -2826,7 +2871,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
               />
             </div>
             <div className="w-full lg:w-2/3 p-4">
-              {/* <MetricsFM /> */}
+               <MetricsFM />
             </div>
           </div>  
 

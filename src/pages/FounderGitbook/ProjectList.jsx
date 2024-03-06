@@ -321,7 +321,7 @@ function ProjectList({ projects }) {
                             onClick={() => handleProjectClick(project)}
                             className={`w-[5em] ${
                               project.status ? "bg-blue-600" : "bg-red-600"
-                            } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+                            } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
                           >
                             {project.status ? "Public" : "Private"}
                           </button>
@@ -365,7 +365,7 @@ function ProjectList({ projects }) {
                               ) : (
                                 <>
                                   <button
-                                    className={`w-[5em] text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+                                    className={`w-[5em] text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
                                     onClick={() => handleEditClick(project)}
                                   >
                                     Edit

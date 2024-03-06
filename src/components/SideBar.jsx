@@ -5,6 +5,7 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import SpaceDashboardOutlinedIcon from "@mui/icons-material/SpaceDashboardOutlined";
 import FolderCopyOutlinedIcon from "@mui/icons-material/FolderCopyOutlined";
 import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
+import icons8 from "./icons8-home.gif";
 
 function SideBar({ toggleSidebar, isSidebarOpen }) {
   const navigate = useNavigate();
@@ -77,7 +78,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
           } sidebar-button`}
           onClick={() => handleItemClick("/dashboard")}
         >
-          <SpaceDashboardOutlinedIcon fontSize="large" />
+          <SpaceDashboardOutlinedIcon fontSize="large" className="stroke-1" />
           <span className="sidebar-text">Dashboard</span>
         </button>
         <button

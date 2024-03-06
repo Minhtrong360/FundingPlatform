@@ -4,6 +4,7 @@ import ImageCrop from "../../../components/cropImage/ImageCrop";
 import { useEffect, useState } from "react";
 import { supabase } from "../../../supabase";
 import ResizeImage from "../../../components/ResizeImage";
+import { Flex, Tag } from 'antd';
 
 const Card = ({
   title,
@@ -85,26 +86,26 @@ const Card = ({
           {canClick !== false ? (
             <button
               onClick={() => navigate(`/founder/${project_id}`)}
-              className="mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 darkBgBlue darkHoverBgBlue darkFocus"
+              className="mt-4 inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 darkBgBlue darkHoverBgBlue darkFocus"
             >
               {buttonText}
             </button>
           ) : (
             <button
-              className="mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white bg-blue-600 rounded-lg cursor-not-allowed opacity-50 darkBgBlue"
+              className="mt-4 inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg cursor-not-allowed opacity-50 darkBgBlue"
               disabled
             >
               {buttonText}
             </button>
           )}
-          <button
+          <Tag 
             className={` ${
-              project?.status === true ? "bg-blue-600" : "bg-red-600"
-            } mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white  rounded-lg  darkBgBlue`}
+              project?.status === true ? "bg-green-600" : "bg-yellow-600"
+            } mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white  rounded-3xl`}
             onClick={() => navigate(`/founder/${project_id}`)}
           >
-            {project?.status === true ? "Public deal" : "Private deal"}
-          </button>
+            {project?.status === true ? "Public" : "Private"}
+          </ Tag>
         </div>
       </div>
     </div>

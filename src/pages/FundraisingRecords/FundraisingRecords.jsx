@@ -29,7 +29,7 @@ const FundraisingRecords = () => {
       if (error) {
         toast.error(error.message);
         console.error("Error fetching projects from Supabase:", error.message);
-        setIsLoading(false); // Set loading state to false
+        // setIsLoading(false); // Set loading state to false
         return;
       }
 
@@ -44,44 +44,45 @@ const FundraisingRecords = () => {
           ids,
         }
       );
-      console.log("response", response);
-      console.log("response2", response2);
+
       setGgData(response.data);
       setGgDataByDay(response2.data);
-      setIsLoading(false); // Set loading state to false once data is fetched
+      // setIsLoading(false); // Set loading state to false once data is fetched
     };
 
     fetchData();
   }, [user.id]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true); // Set loading state to true
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setIsLoading(true); // Set loading state to true
 
-      const { data: finance, error } = await supabase
-        .from("finance")
-        .select("id")
-        .eq("user_id", user.id);
+  //     const { data: finance, error } = await supabase
+  //       .from("finance")
+  //       .select("id")
+  //       .eq("user_id", user.id);
 
-      if (error) {
-        toast.error(error.message);
-        console.error("Error fetching finances from Supabase:", error.message);
-        setIsLoading(false); // Set loading state to false
-        return;
-      }
+  //     if (error) {
+  //       toast.error(error.message);
+  //       console.error("Error fetching finances from Supabase:", error.message);
+  //       setIsLoading(false); // Set loading state to false
+  //       return;
+  //     }
 
-      const ids = finance.map((finance) => finance.id);
+  //     const ids = finance.map((finance) => finance.id);
 
-      const response = await apiService.post("googleAnalytics/runReport", {
-        ids,
-      });
-      console.log("response", response);
-      setFinanceGoogleData(response.data);
-      setIsLoading(false); // Set loading state to false once data is fetched
-    };
+  //     const response = await apiService.post("googleAnalytics/runReport", {
+  //       ids,
+  //     });
+  //     console.log("response", response);
+  //     setFinanceGoogleData(response.data);
+  //     setIsLoading(false); // Set loading state to false once data is fetched
+  //   };
 
-    fetchData();
-  }, [user.id]);
+  //   fetchData();
+  // }, [user.id]);
+
+  console.log("isLoading", isLoading);
 
   return (
     <div className="shadow-sm bg-white">
@@ -94,13 +95,13 @@ const FundraisingRecords = () => {
           <div className="flex justify-end text-lg font-semibold my-4 mx-4">
             Project dashboard
           </div>
-          <StatBadge ggData={ggData} />
+          <StatBadge ggData={ggData} setIsLoading={setIsLoading} />
         </div>
         <div className="items-stretch max-md:w-full max-md:ml-0 mx-auto">
           <div className="flex justify-end text-lg font-semibold my-4 mx-4">
             Tracking by days
           </div>
-          <StatBadgeByDay ggData={ggDataByDay} />
+          <StatBadgeByDay ggData={ggDataByDay} setIsLoading={setIsLoading} />
         </div>
         {/* <div className="items-stretch max-md:w-full max-md:ml-0  mx-auto">
           <div className="flex justify-end text-lg font-semibold my-4">

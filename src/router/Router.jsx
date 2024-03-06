@@ -37,6 +37,7 @@ import { supabase } from "../supabase";
 import ProgressBar from "../components/ProgressBar";
 import ImageCrop from "../components/cropImage/ImageCrop";
 import ImageCropper from "../components/ImageCropper";
+import NotificationsPage from "../pages/Notification/Notification";
 
 function Router() {
   const { user } = useAuth();
@@ -116,6 +117,14 @@ function Router() {
             </AuthRequire>
           }
         />
+        {/* <Route
+          path="/notifications"
+          element={
+            <AuthRequire message="Sign in required!">
+              <NotificationsPage />
+            </AuthRequire>
+          }
+        /> */}
 
         {/* <Route path="/fundraising" element={<FundraisingRecords />} />   */}
         <Route path="/login" element={<Login />} />
@@ -148,7 +157,11 @@ function Router() {
 
         <Route
           path="/financials"
-          element={<FinancialPage subscribed={subscribed} />}
+          element={
+            <AuthRequire message="Sign in required!">
+              <FinancialPage subscribed={subscribed} />
+            </AuthRequire>
+          }
         />
         {/* <Route path="/financialList" element={<FinancialList />} /> */}
         <Route path="/news" element={<News />} />

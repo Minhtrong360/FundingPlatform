@@ -48,28 +48,31 @@ const Card = ({
 
   return (
     <div className="max-w-sm bg-white border  rounded-lg shadow darkBgBlue darkBorderGray  hover:border-transparent hover:shadow-lg transition-all duration-300">
-      <div class=" relative  pt-[50%] sm:pt-[70%] rounded-lg overflow-hidden">
+      <div className=" relative  pt-[50%] sm:pt-[70%] rounded-lg overflow-hidden">
         {canClick !== false ? (
           <img
-            class=" h-full w-full  absolute top-0 start-0 object-cover transition-transform duration-500 ease-in-out "
+            className=" h-full w-full  absolute top-0 start-0 object-cover transition-transform duration-500 ease-in-out "
             src={imageUrl}
             alt="Company Description"
             onClick={() => navigate(`/founder/${project_id}`)}
           />
         ) : (
           <img
-            class=" h-full w-full  absolute top-0 start-0 object-cover transition-transform duration-500 ease-in-out "
+            className=" h-full w-full  absolute top-0 start-0 object-cover transition-transform duration-500 ease-in-out "
             src={imageUrl}
             alt="Company Description"
           />
         )}
-        {/* <span class="absolute top-0 end-0 rounded-se-xl rounded-es-xl text-xs font-medium bg-green-700 text-white py-1.5 px-3 dark:bg-gray-900">
+        {/* <span className="absolute top-0 end-0 rounded-se-xl rounded-es-xl text-xs font-medium bg-green-700 text-white py-1.5 px-3 dark:bg-gray-900">
           Verified by BeeKrowd
         </span> */}
       </div>
 
       <div className="p-5">
-        <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 darkTextWhite">
+        <h5
+          className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 darkTextWhite"
+          onClick={() => navigate(`/founder/${project_id}`)}
+        >
           {title}
         </h5>
 
@@ -95,7 +98,8 @@ const Card = ({
           <button
             className={` ${
               project?.status === true ? "bg-blue-600" : "bg-red-600"
-            } mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white  rounded-lg cursor-not-allowed darkBgBlue`}
+            } mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white  rounded-lg  darkBgBlue`}
+            onClick={() => navigate(`/founder/${project_id}`)}
           >
             {project?.status === true ? "Public deal" : "Private deal"}
           </button>

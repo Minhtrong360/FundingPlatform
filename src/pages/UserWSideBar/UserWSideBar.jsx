@@ -182,7 +182,7 @@ const TextAreaInput = () => (
 const UserProfileForm = () => (
   <div className="max-w-4xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
     <div className="bg-white rounded-xl shadow p-4 sm:p-7 darkBgBlue">
-      <div class="mb-8">
+      <div className="mb-8">
         <SectionTitle text="Profile" />
         <SectionDescription text="Manage your name, password and account settings." />
       </div>

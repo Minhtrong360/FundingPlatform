@@ -7,6 +7,14 @@ import InputField from "../../components/InputField";
 
 import apiService from "../../app/apiService";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
+import AvatarUpload from "./AvatarUpload";
+import industries from "../../components/Industries";
+import countries from "../../components/Country";
+import MultiSelectField from "../../components/MultiSelectField";
+import SelectField from "../../components/SelectField";
+import AvatarEditor from "react-avatar-editor";
+import { Avatar } from "antd";
+import { IconButton } from "@mui/material";
 
 function UserInfoSettings() {
   const { user } = useAuth();
@@ -20,36 +28,66 @@ function UserInfoSettings() {
     company: "",
     company_website: "",
     detail: "",
+    roll: "Founder",
+    avatar: null,
+    interested_in: ["Technology"],
+    investment_size: ["0-10,000"],
+    country: "US",
+    type: "Individual", // Default value for type
   });
+  const handleIndustryChange = (selectedItems) => {
+    setUserData({
+      ...userData,
+      interested_in: selectedItems,
+    });
+  };
+
+  const handleInvestmentChange = (selectedItems) => {
+    setUserData({
+      ...userData,
+      investment_size: selectedItems,
+    });
+  };
+
   useEffect(() => {
-    // Tạo một async function để lấy thông tin người dùng từ Supabase
     async function fetchUserData() {
       try {
         if (!navigator.onLine) {
-          // Không có kết nối Internet
           toast.error("No internet access.");
           return;
         }
         setIsLoading(true);
-        // Thực hiện truy vấn để lấy thông tin người dùng theo id (điều này cần được thay đổi dựa trên cấu trúc dữ liệu của bạn trong Supabase)
         const { data, error } = await supabase
           .from("users")
           .select("*")
-          .eq("id", user.id) // Thay "id" bằng trường id thực tế trong cơ sở dữ liệu của bạn
-          .single(); // Sử dụng .single() để lấy một bản ghi duy nhất
+          .eq("id", user.id)
+          .single();
 
         if (error) {
           throw error;
         }
 
-        // Cập nhật state userData với thông tin người dùng đã lấy được
         if (data) {
-          setUserData(data);
+          setUserData({
+            full_name: data.full_name || "",
+            email: data.email || "",
+            plan: data.plan || "",
+            subscribe: data.subscribe || "",
+            company: data.company || "",
+            company_website: data.website || "",
+            detail: data.detail || "",
+            roll: data.roll || "Founder",
+            avatar: data.avatar || null,
+            interested_in: data.interested_in || ["Technology"],
+            investment_size: data.investment_size || ["0-10,000"],
+            country: data.country || "US",
+            type: data.type || "Individual", // Default value for type
+          });
+
           if (data.subscribe && data.subscription_status === "active") {
             const subscribeDate = new Date(data.subscribe * 1000);
             setExpiredDate(subscribeDate.toISOString().split("T")[0]);
           } else if (user.created_at) {
-            // Kiểm tra nếu có user.created_at
             const createdDate = new Date(user.created_at);
             setExpiredDate(createdDate.toISOString().split("T")[0]);
           }
@@ -61,9 +99,8 @@ function UserInfoSettings() {
       setIsLoading(false);
     }
 
-    // Gọi hàm fetchUserData khi component được mount
     fetchUserData();
-  }, [user.id, user.created_at]); // Sử dụng user.id làm phần tử phụ thuộc để useEffect được gọi lại khi user.id thay đổi
+  }, [user.id, user.created_at]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -73,16 +110,60 @@ function UserInfoSettings() {
     }));
   };
 
+  const dataURItoFile = (dataURI, fileNamePrefix) => {
+    const byteString = atob(dataURI.split(",")[1]);
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    const extension = dataURI.split(",")[0].split("/")[1].split(";")[0]; // Lấy phần mở rộng của tệp từ data URI
+    const fileName = `${fileNamePrefix}-${Date.now()}.${extension}`; // Tạo tên tệp duy nhất với ngày giờ hiện tại và phần mở rộng
+    const blob = new Blob([ab], { type: `image/${extension}` });
+    return new File([blob], fileName, { type: `image/${extension}` });
+  };
+
+  const uploadImageToSupabase = async (file) => {
+    try {
+      const { data, error } = await supabase.storage
+        .from("beekrowd_storage") // Chọn bucket
+        .upload(`beekrowd_images/${file.name}`, file); // Lưu ảnh vào folder beekrowd_images
+
+      if (error) {
+        console.error("Error uploading image to Supabase:", error);
+        return null;
+      }
+
+      // Trả về liên kết ảnh từ Supabase
+      // Lấy URL của ảnh đã lưu
+
+      const imageUrl = `https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/${data.fullPath}`;
+
+      return imageUrl;
+    } catch (error) {
+      console.error("Error uploading image to Supabase:", error);
+      return null;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true); // Bắt đầu xử lý, đặt isLoading thành true
+    setIsLoading(true);
     try {
       if (!navigator.onLine) {
-        // Không có kết nối Internet
         toast.error("No internet access.");
         return;
       }
-      // Thực hiện cập nhật thông tin người dùng vào cơ sở dữ liệu Supabase
+
+      let avatarUrl = userData.avatar;
+      if (avatarUrl && avatarUrl.startsWith("data:image")) {
+        const file = dataURItoFile(avatarUrl, "img");
+        const uploadedAvatarUrl = await uploadImageToSupabase(file);
+        if (uploadedAvatarUrl) {
+          avatarUrl = uploadedAvatarUrl;
+        }
+      }
+
       const { error } = await supabase
         .from("users")
         .update({
@@ -93,6 +174,12 @@ function UserInfoSettings() {
           company: userData.company,
           company_website: userData.company_website,
           detail: userData.detail,
+          roll: userData.roll,
+          avatar: avatarUrl,
+          interested_in: userData.interested_in,
+          investment_size: userData.investment_size,
+          country: userData.country,
+          type: userData.type,
         })
         .eq("id", user.id);
 
@@ -106,6 +193,14 @@ function UserInfoSettings() {
       console.error("Error updating user data:", error);
     }
     setIsLoading(false);
+  };
+
+  const handleRollChange = (e) => {
+    const { value } = e.target;
+    setUserData((prevUserData) => ({
+      ...prevUserData,
+      roll: value,
+    }));
   };
 
   const handleBilling = async (plan, userId) => {
@@ -136,6 +231,35 @@ function UserInfoSettings() {
     setIsLoading(false);
   };
 
+  const investment_size = [
+    "$0-$10,000",
+    "$10,000-$50,000",
+    "$50,000-$200,000",
+    "$200,000-$500,000",
+    "Greater than $500,000",
+  ];
+
+  const [avatarUrl, setAvatarUrl] = useState(userData.avatar); // State to store project image URL
+  useEffect(() => {
+    setAvatarUrl(userData.avatar);
+  }, [userData.avatar]);
+  const handleProjectImageUpload = (event) => {
+    const file = event.target.files[0]; // Get the uploaded file
+    // Assuming you're using FileReader to read the uploaded file as data URL
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setAvatarUrl(e.target.result); // Set the project image URL in state
+    };
+    reader.readAsDataURL(file); // Read the uploaded file
+    // Update formData with the project image URL
+  };
+
+  useEffect(() => {
+    handleInputChange({
+      target: { name: "avatar", value: avatarUrl },
+    });
+  }, [avatarUrl]);
+
   return (
     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
       <AlertMsg />
@@ -147,6 +271,32 @@ function UserInfoSettings() {
           <p className="mt-1 text-gray-600 darkTextGray">
             Tell us your basic information.
           </p>
+          <div className="flex flex-col items-center justify-center mt-4">
+            <input
+              type="file"
+              onChange={handleProjectImageUpload}
+              id="upload"
+              accept="image/*"
+              style={{ display: "none" }}
+            />
+            <label htmlFor="upload">
+              <IconButton
+                color="primary"
+                aria-label="upload picture"
+                component="span"
+              >
+                <Avatar
+                  id="avatar"
+                  src={avatarUrl}
+                  style={{
+                    width: "150px",
+                    height: "150px",
+                  }}
+                />
+              </IconButton>
+            </label>
+            <label htmlFor="avatar" />
+          </div>
         </div>
 
         <div className="mt-12">
@@ -171,11 +321,96 @@ function UserInfoSettings() {
                   id="email"
                   name="email"
                   value={userData.email}
-                  // onChange={handleInputChange}
                   type="text"
                   disabled
                 />
               </div>
+              <div>
+                <label
+                  htmlFor="roll"
+                  className="block mb-2 text-sm text-gray-700 font-medium darkTextWhite"
+                >
+                  Role
+                </label>
+                <select
+                  id="roll"
+                  name="roll"
+                  value={userData.roll}
+                  onChange={handleRollChange}
+                  className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus:ring-gray-600"
+                >
+                  <option value="Founder">Founder</option>
+                  <option value="Investor">Investor</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              {userData.roll === "Investor" && (
+                <>
+                  <MultiSelectField
+                    label="Interested in"
+                    id="industry"
+                    name="industry"
+                    OPTIONS={industries}
+                    selectedItems={userData.interested_in}
+                    setSelectedItems={handleIndustryChange}
+                    required
+                  />
+
+                  <MultiSelectField
+                    label="Investment size"
+                    id="investment_size"
+                    name="investment_size"
+                    OPTIONS={investment_size}
+                    selectedItems={userData.investment_size}
+                    setSelectedItems={handleInvestmentChange}
+                    required
+                  />
+                  <SelectField
+                    label="Country"
+                    id="country"
+                    name="country"
+                    value={userData.country}
+                    onChange={handleInputChange}
+                    required
+                    options={countries} // Thay thế bằng danh sách các tùy chọn bạn muốn
+                  />
+                  <div>
+                    <label
+                      htmlFor="type"
+                      className="block mb-2 text-sm text-gray-700 font-medium darkTextWhite"
+                    >
+                      Type
+                    </label>
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="individual"
+                        name="type"
+                        value="Individual"
+                        checked={userData.type === "Individual"}
+                        onChange={handleInputChange}
+                        className="mr-2"
+                      />
+                      <label htmlFor="individual" className="mr-4 text-sm">
+                        Individual
+                      </label>
+                      <input
+                        type="radio"
+                        id="institutional"
+                        name="type"
+                        value="Institutional"
+                        checked={userData.type === "Institutional"}
+                        onChange={handleInputChange}
+                        className="mr-2"
+                      />
+                      <label htmlFor="institutional" className="text-sm">
+                        Institutional
+                      </label>
+                    </div>
+                  </div>
+                </>
+              )}
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
                 <div>
                   <InputField
@@ -187,7 +422,6 @@ function UserInfoSettings() {
                         ? userData.plan
                         : "Free"
                     }
-                    // onChange={handleInputChange}
                     type="text"
                     disabled
                   />
@@ -199,7 +433,6 @@ function UserInfoSettings() {
                     id="subscribe"
                     name="subscribe"
                     value={expiredDate}
-                    // onChange={handleInputChange}
                     type="date"
                     disabled
                   />

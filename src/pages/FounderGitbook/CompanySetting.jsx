@@ -340,7 +340,6 @@ function CompanySetting() {
   };
 
   // Hàm chuyển đổi data URI thành File object
-  // Hàm chuyển đổi data URI thành File object
   const dataURItoFile = (dataURI, fileNamePrefix) => {
     const byteString = atob(dataURI.split(",")[1]);
     const ab = new ArrayBuffer(byteString.length);

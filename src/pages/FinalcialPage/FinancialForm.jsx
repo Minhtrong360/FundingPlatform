@@ -548,231 +548,244 @@ const FinancialForm = () => {
 
   return (
     <div>
-      <div className="flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4 border-e-2">
-          <DurationSelect
-            financeName={financeName}
-            setFinanceName={setFinanceName}
-            selectedDuration={selectedDuration}
-            setSelectedDuration={setSelectedDuration}
-          />
-        </div>
-        <div className="w-full lg:w-2/3 p-4"></div>
-      </div>
-      <hr className="border border-dashed my-8" />
-      <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4 border-e-2">
-          <CustomerSection
-            numberOfMonths={numberOfMonths}
-            selectedDuration={selectedDuration}
-            customerInputs={customerInputs}
-            setCustomerInputs={setCustomerInputs}
-            customerGrowthData={customerGrowthData}
-            setCustomerGrowthData={setCustomerGrowthData}
-            customerGrowthChart={customerGrowthChart}
-            setCustomerGrowthChart={setCustomerGrowthChart}
-            customerTableData={customerTableData}
-            setCustomerTableData={setCustomerTableData}
-          />
-        </div>
+      <AlertMsg />
+      {isLoading ? (
+        <ProgressBar isLoading={isLoading} />
+      ) : (
+        <>
+          {/* Gemini */}
+          <div className="w-full h-full flex flex-col lg:flex-row">
+            <Gemini />
+          </div>
 
-        <div className="w-full lg:w-2/3 p-4 ">
-          <h3 className="text-lg font-semibold my-8">
-            Customer Growth Data by Channel
-          </h3>
-          <Table
-            className="overflow-auto mb-4 border-2"
-            dataSource={customerTableData}
-            columns={customerColumns}
-            pagination={false}
-          />
-          <h3 className="text-lg font-semibold my-8">
-            {" "}
-            Customer Growth Data by Channel
-          </h3>
-          <Chart
-            options={customerGrowthChart.options}
-            series={customerGrowthChart.series}
-            type="line"
-            height={350}
-          />
-        </div>
-      </div>
-      <hr className="border border-dashed my-8" />
-      <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4 border-e-2">
-          <SalesSection
-            channelInputs={channelInputs}
-            channelNames={channelNames}
-            setChannelInputs={setChannelInputs}
-            setRevenueData={setRevenueData}
-            setNetRevenueData={setNetRevenueData}
-            setGrossProfitData={setGrossProfitData}
-            setTxFeeData={setTxFeeData}
-            setCogsData={setCogsData}
-            customerGrowthData={customerGrowthData}
-            numberOfMonths={numberOfMonths}
-            customerInputs={customerInputs}
-            revenueData={revenueData}
-            txFeeData={txFeeData}
-            cogsData={cogsData}
-            netRevenueData={netRevenueData}
-            grossProfitData={grossProfitData}
-            setRevenueTableData={setRevenueTableData}
-            setRevenueChart={setRevenueChart}
-          />
-        </div>
+          {/* DurationSection */}
+          <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
+            <div className="w-full lg:w-1/3 p-4 border-r-2">
+              <DurationSelect
+                selectedDuration={selectedDuration}
+                setSelectedDuration={setSelectedDuration}
+                startingCashBalance={startingCashBalance}
+                setStartingCashBalance={setStartingCashBalance}
+                status={status}
+                setStatus={setStatus}
+                industry={industry}
+                setIndustry={setIndustry}
+                incomeTax={incomeTax}
+                setIncomeTax={setIncomeTax}
+                payrollTax={payrollTax}
+                setPayrollTax={setPayrollTax}
+                currency={currency}
+                setCurrency={setCurrency}
+                startMonth={startMonth}
+                setStartMonth={setStartMonth}
+                startYear={startYear}
+                setStartYear={setStartYear}
+                financialProjectName={financialProjectName}
+                setFinancialProjectName={setFinancialProjectName}
+              />
+            </div>
 
-        <div className="w-full lg:w-2/3 p-4 relative">
-          <h3 className="text-lg font-semibold my-8">
-            {" "}
-            Revenue Data by Channel and Product
-          </h3>
-          <Table
-            className="overflow-auto mb-4 border-2"
-            dataSource={revenueTableData}
-            columns={revenueColumns}
-            pagination={false}
-          />
-          <h3 className="text-lg font-semibold mb-4">
-            Gross Profit Data by Channel and Product
-          </h3>
-          <Chart
-            options={revenueChart.options}
-            series={revenueChart.series}
-            type="line"
-            height={350}
-          />
-        </div>
-      </div>
+            {/* FMMetrics */}
+            <div className="w-full lg:w-2/3 p-4">
+               <MetricsFM />
+            </div>
+          </div>  
 
-      <hr className="border border-dashed my-8" />
-      <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4 border-e-2">
-          <CostSection
-            costInputs={costInputs}
-            setCostInputs={setCostInputs}
-            setCostData={setCostData}
-            numberOfMonths={numberOfMonths}
-            setCostTableData={setCostTableData}
-            setCostChart={setCostChart}
+          {/* CustomerSection */}
+          <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
+            <div className="w-full lg:w-1/3 p-4 border-r-2">
+              <CustomerSection
+                customerInputs={customerInputs}
+                addNewCustomerInput={addNewCustomerInput}
+                removeCustomerInput={removeCustomerInput}
+                handleInputChange={handleInputChange}
+              />
+            </div>
+            <div className="w-full lg:w-2/3 p-4 ">
+              <h3 className="text-2xl font-semibold ">Customer Table</h3>
+              <Table
+                className="overflow-auto my-8"
+                dataSource={customerTableData}
+                columns={customerColumns}
+                pagination={false}
+              />
+              <h3 className="text-2xl font-semibold my-8">Customer Chart</h3>
+              <Chart
+                options={customerGrowthChart.options}
+                series={customerGrowthChart.series}
+                type="area"
+                height={350}
+              />
+            </div>
+          </div>
+
+          {/* RevenueSetion */}
+          <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
+            <div className="w-full lg:w-1/3 p-4 border-r-2">
+              <SalesSection
+                channelInputs={channelInputs}
+                channelNames={channelNames}
+                addNewChannelInput={addNewChannelInput}
+                removeChannelInput={removeChannelInput}
+                handleChannelInputChange={handleChannelInputChange}
+              />
+            </div>
+            <div className="w-full lg:w-2/3 p-4">
+              <h3 className="text-2xl font-semibold mb-4">
+                Revenue Data by Channel and Product
+              </h3>
+              <Table
+                className="overflow-auto my-8"
+                dataSource={revenueTableData}
+                columns={revenueColumns}
+                pagination={false}
+              />
+              <h3 className="text-2xl font-semibold my-8">
+                Gross Profit Data by Channel and Product
+              </h3>
+              <Chart
+                options={grossProfit.options}
+                series={grossProfit.series}
+                type="line"
+                height={350}
+              />
+            </div>
+          </div>  
+
+          {/* CostSection */}
+          <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
+            <div className="w-full lg:w-1/3 p-4 border-r-2">
+              <CostSection
+                costInputs={costInputs}
+                addNewCostInput={addNewCostInput}
+                removeCostInput={removeCostInput}
+                handleCostInputChange={handleCostInputChange}
+              />
+            </div>
+            <div className="w-full lg:w-2/3 p-4">
+              <h3 className="text-2xl font-semibold mb-4">Cost Table</h3>
+              <Table
+                className="overflow-auto my-8"
+                dataSource={costTableData}
+                columns={costColumns}
+                pagination={false}
+              />
+              <h3 className="text-2xl font-semibold my-8">Cost Chart</h3>
+              <Chart
+                options={costChart.options}
+                series={costChart.series}
+                type="bar"
+                height={350}
+              />
+            </div>
+          </div>
+
+          {/* PersonnelSection */}
+          <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
+            <div className="w-full lg:w-1/3 p-4 border-r-2">
+              <PersonnelSection
+                personnelInputs={personnelInputs}
+                addNewPersonnelInput={addNewPersonnelInput}
+                removePersonnelInput={removePersonnelInput}
+                handlePersonnelInputChange={handlePersonnelInputChange}
+              />
+            </div>
+            <div className="w-full lg:w-2/3 p-4">
+              <h3 className="text-2xl font-semibold mb-4">
+                Personnel Cost Table
+              </h3>
+              <Table
+                className="overflow-auto my-8"
+                dataSource={personnelCostTableData}
+                columns={personnelCostColumns}
+                pagination={false}
+              />
+              <h3 className="text-2xl font-semibold my-8">
+                Personnel Cost Chart
+              </h3>
+              <Chart
+                options={personnelChart.options}
+                series={personnelChart.series}
+                type="bar"
+                height={350}
+              />
+            </div>
+          </div>
+
+          {/* InvestmentSection */}
+          <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
+            <div className="w-full lg:w-1/3 p-4 border-r-2">
+              <InvestmentSection
+                investmentInputs={investmentInputs}
+                setInvestmentInputs={setInvestmentInputs}
+                addNewInvestmentInput={addNewInvestmentInput}
+                removeInvestmentInput={removeInvestmentInput}
+                handleInvestmentInputChange={handleInvestmentInputChange}
+              />
+            </div>
+            <div className="w-full lg:w-2/3 p-4">
+              <h3 className="text-2xl font-semibold mb-4">Investment Table</h3>
+              <Table
+                className="overflow-auto my-8"
+                dataSource={transformInvestmentDataForTable()}
+                columns={investmentColumns}
+                pagination={false}
+              />
+              <h3 className="text-2xl font-semibold my-8">Investment Chart</h3>
+              <Chart
+                options={investmentChart.options}
+                series={investmentChart.series}
+                type="area"
+                height={350}
+              />
+            </div>
+          </div>
+
+          {/* LoanSection */}
+          <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
+            <div className="w-full lg:w-1/3 p-4 border-r-2">
+              <LoanSection
+                loanInputs={loanInputs}
+                addNewLoanInput={addNewLoanInput}
+                removeLoanInput={removeLoanInput}
+                handleLoanInputChange={handleLoanInputChange}
+              />
+            </div>
+            <div className="w-full lg:w-2/3 p-4">
+              <h3 className="text-2xl font-semibold mb-4">Loan Data</h3>
+              <Table
+                className="overflow-auto my-8"
+                dataSource={transformLoanDataForTable()}
+                columns={loanColumns}
+                pagination={false}
+              />
+              <h3 className="text-2xl font-semibold my-8">Loan Data</h3>
+              <Chart
+                options={loanChart.options}
+                series={loanChart.series}
+                type="line"
+                height={350}
+              />
+            </div>
+          </div>
+
+          {/* ProfitAndLossSection */}
+          <ProfitAndLossSection
+            revenueData={revenueTableData}
             costData={costData}
-          />
-        </div>
-        <div className="w-full lg:w-2/3 p-4">
-          <h3 className="text-lg font-semibold mb-4">Cost Data</h3>
-          <Table
-            className="overflow-auto mb-4 border-2"
-            dataSource={costTableData}
-            columns={costColumns}
-            pagination={false}
-          />
-          <h3 className="text-lg font-semibold mb-4">Cost Chart</h3>
-          <Chart
-            options={costChart.options}
-            series={costChart.series}
-            type="bar"
-            height={350}
-          />
-        </div>
-      </div>
-      <hr className="border border-dashed my-8" />
-      <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4 border-e-2">
-          <PersonnelSection
-            personnelInputs={personnelInputs}
-            setPersonnelInputs={setPersonnelInputs}
-            setPersonnelCostData={setPersonnelCostData}
-            numberOfMonth={numberOfMonths}
-            setPersonnelCostTableData={setPersonnelCostTableData}
             personnelCostData={personnelCostData}
-            setPersonnelChart={setPersonnelChart}
-          />
-        </div>
-        <div className="w-full lg:w-2/3 p-4">
-          <h3 className="text-lg font-semibold mb-4">Personnel Cost Data</h3>
-          <Table
-            className="overflow-auto mb-4 border-2"
-            dataSource={personnelCostTableData}
-            columns={personnelCostColumns}
-            pagination={false}
-          />
-          <h3 className="text-lg font-semibold mb-4">Personnel Cost Chart</h3>
-          <Chart
-            options={personnelChart.options}
-            series={personnelChart.series}
-            type="bar"
-            height={350}
-          />
-        </div>
-      </div>
-      <hr className="border border-dashed my-8" />
-      <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4 border-e-2">
-          <InvestmentSection
-            investmentInputs={investmentInputs}
-            setInvestmentInputs={setInvestmentInputs}
+            investmentData={calculateInvestmentData()}
+            loanData={calculateLoanData()}
             numberOfMonths={numberOfMonths}
-            setInvestmentTableData={setInvestmentTableData}
-            setInvestmentChart={setInvestmentChart}
+            incomeTaxRate={incomeTax}
           />
-        </div>
-        <div className="w-full lg:w-2/3 p-4">
-          <h3 className="text-lg font-semibold mb-4">Investment Data</h3>
-          <Table
-            className="overflow-auto mb-4 border-2"
-            dataSource={investmentTableData}
-            columns={investmentColumns}
-            pagination={false}
-          />
-          <h3 className="text-lg font-semibold mb-4">Investment Chart</h3>
-          <Chart
-            options={investmentChart.options}
-            series={investmentChart.series}
-            type="area"
-            height={350}
-          />
-        </div>
-      </div>
-      <hr className="border border-dashed my-8" />
-      <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4 border-e-2">
-          <LoanSection
-            loanInputs={loanInputs}
-            setLoanInputs={setLoanInputs}
-            numberOfMonths={numberOfMonths}
-            setLoanTableData={setLoanTableData}
-            setLoanChart={setLoanChart}
-          />
-        </div>
-        <div className="w-full lg:w-2/3 p-4">
-          <h3 className="text-lg font-semibold mb-4">Loan Data</h3>
-          <Table
-            className="overflow-auto mb-4 border-2"
-            dataSource={loanTableData}
-            columns={loanColumns}
-            pagination={false}
-          />
-          <h3 className="text-lg font-semibold mb-4">Loan Chart</h3>
-          <Chart
-            options={loanChart.options}
-            series={loanChart.series}
-            type="line"
-            height={350}
-          />
-        </div>
-      </div>
-
-      {user?.id && (
-        <button
-          className="fixed bottom-8 left-30 bg-blue-600 text-white py-1 px-4 rounded disabled:bg-gray-500"
-          type="button"
-          onClick={handleSubmit}
-          disabled={isLoading}
-        >
-          Save
-        </button>
+        </>
       )}
+
+      <button onClick={downloadExcel} className="download-excel-button">
+        Download Excel
+      </button>
+
     </div>
   );
 };

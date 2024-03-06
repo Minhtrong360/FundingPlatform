@@ -24,240 +24,8 @@ import Search from "./Home/Components/Search";
 import { InfoCircleOutlined } from '@ant-design/icons';
 
 
-//JSON
-
 // Duration UI
-const DurationSelect = ({
-  selectedDuration,
-  setSelectedDuration,
-  startingCashBalance,
-  setStartingCashBalance,
-  status,
-  setStatus,
-  industry,
-  setIndustry,
-  incomeTax,
-  setIncomeTax,
-  payrollTax,
-  setPayrollTax,
-  currency,
-  setCurrency,
-  startMonth,
-  setStartMonth,
-  startYear,
-  setStartYear,
-  financialProjectName,
-  setFinancialProjectName,
-}) => {
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
 
-  const currentYear = new Date().getFullYear();
-  const years = Array.from(
-    { length: currentYear - 2019 },
-    (_, index) => 2020 + index
-  );
-
-  const industries = [
-    "Technology",
-    "Healthcare",
-    "Finance",
-    "Retail",
-    "Manufacturing",
-    "Education",
-    "Transportation",
-    "Hospitality",
-    "Real Estate",
-    "Entertainment",
-  ];
-
-  return (
-    <section aria-labelledby="duration-heading" className="mb-8">
-      <h2
-        className="text-2xl font-semibold mb-4 flex items-center"
-        id="duration-heading"
-      >
-        Duration and Initial Setup
-      </h2>
-      <div className="bg-white rounded-md shadow p-6">
-      <Tooltip title="Enter the name of your business">
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Business name :</span>
-          
-          <Input
-            value={financialProjectName}
-            onChange={(e) => setFinancialProjectName(e.target.value)}
-            type="text"
-          />
-          
-        </div>
-        </Tooltip>
-
-        <Tooltip title="Enter the starting month of the business">
-        <div className="grid grid-cols-2 gap-4 mb-4">
-        
-          <span className=" flex items-center">Start Month :</span>
-          <Select onValueChange={setStartMonth} value={startMonth}>
-            <SelectTrigger
-              id="start-month"
-              className="border-solid border-[1px] border-gray-600"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              {months.map((month, index) => (
-                <SelectItem key={index} value={month}>
-                  {month}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        </Tooltip>
-
-        <Tooltip title="Enter the starting year of the business">   
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Start Year :</span>
-          <Select onValueChange={setStartYear} value={startYear}>
-            <SelectTrigger
-              id="start-year"
-              className="border-solid border-[1px] border-gray-600"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              {years.map((year, index) => (
-                <SelectItem key={index} value={year}>
-                  {year}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        </Tooltip> 
-        
-        <Tooltip title="Select the duration 3 years or 5 years">
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Duration :</span>
-          <Select onValueChange={(value) => setSelectedDuration(value)}>
-            <SelectTrigger
-              id="start-date-year"
-              className="border-solid border-[1px] border-gray-600"
-            >
-              <SelectValue placeholder={selectedDuration} />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              <SelectItem value="3 years">3 years</SelectItem>
-              <SelectItem value="5 years">5 years</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        </Tooltip>
-        
-        <Tooltip title="Enter the starting cash balance, e.g. $10,000">
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Starting Cash Balance :</span>
-          
-          <Input
-            value={startingCashBalance}
-            onChange={(e) => setStartingCashBalance(e.target.value)}
-            type="number"
-          />
-        </div>
-        </Tooltip>
-        
-        <Tooltip title="Select the status of the business, e.g. $10,000">
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Status :</span>
-          <Select onValueChange={(value) => setStatus(value)} value={status}>
-            <SelectTrigger className="border-solid border-[1px] border-gray-600">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="inactive">Inactive</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        </Tooltip>
-        
-        <Tooltip title="Select the business industry, e.g. Fintech, Edtech">
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Business industry:</span>
-          <Select onValueChange={setIndustry} value={industry}>
-            <SelectTrigger
-              id="industry"
-              className="border-solid border-[1px] border-gray-600"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              {industries.map((industry, index) => (
-                <SelectItem key={index} value={industry}>
-                  {industry}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        </Tooltip>
-        
-        <Tooltip title="Input the income tax, e.g. 10">
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Income Tax(%) :</span>
-          <Input
-            type="number"
-            value={incomeTax}
-            onChange={(e) => setIncomeTax(e.target.value)}
-          />
-        </div>
-        </Tooltip>
-
-        <Tooltip title="Input the payroll tax, e.g. 10">
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Payroll Tax (%):</span>
-          <Input
-            type="number"
-            value={payrollTax}
-            onChange={(e) => setPayrollTax(e.target.value)}
-          />
-        </div>
-        </Tooltip>
-
-        <Tooltip title="Select the currency, e.g. USD">
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Currency :</span>
-          <Select
-            onValueChange={(value) => setCurrency(value)}
-            value={currency}
-          >
-            <SelectTrigger className="border-solid border-[1px] border-gray-600">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              <SelectItem value="USD">USD</SelectItem>
-              <SelectItem value="EUR">EUR</SelectItem>
-              <SelectItem value="GBP">GBP</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        </Tooltip>
-      </div>
-    </section>
-  );
-};
 
 // Customer UI
 const CustomerSection = ({
@@ -369,7 +137,7 @@ const CustomerSection = ({
   );
 };
 
-// Sales UI
+// Revenue UI
 const SalesSection = ({
   channelInputs,
   channelNames,
@@ -993,7 +761,16 @@ const LoanSection = ({
 
 const Z = ({ currentUser, setCurrentUser }) => {
 
-  // DurationState
+  //DURATION
+  //DURATION
+  //DURATION
+  //DURATION
+  //DURATION
+  //DURATION
+  //DURATION
+  //DURATION
+  //DURATION
+
   const [selectedDuration, setSelectedDuration] = useState("3 years");
   const [numberOfMonths, setNumberOfMonths] = useState(0);
   
@@ -1018,20 +795,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
   const [startYear, setStartYear] = useState(2024);
   const [financialProjectName, setFinancialProjectName] = useState([]);
 
-
-  // const [jsonInput, setJsonInput] = useState(null); // JSON input state
-  // const [durationSelect, setDurationSelect] = useState({});
-  // const [customerSection, setCustomerSection] = useState({});
-  // const [salesSection, setSalesSection] = useState({});
-  // const [costSection, setCostSection] = useState({});
-  // const [personnelSection, setPersonnelSection] = useState({});
-  // const [investmentSection, setInvestmentSection] = useState({});
-  // const [loanSection, setLoanSection] = useState({});
-
-  
-  // Gemini
-  
-  // const { Text } = Typography;
 
   const industries = [
     "Coffee shop ☕",
@@ -1212,34 +975,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
     );
   };
 
-
-  // const jsonHandleInputChange = (e) => {
-  //   setJsonInput(e.target.value);
-  // };
-
-  // const applyJsonInput = () => {
-  //   if (!chatbotResponse || !chatbotResponse.trim()) {
-  //     alert("No JSON data provided. Please paste valid JSON data.");
-  //     return;
-  //   }
-
-  //   try {
-  //     const parsedData = JSON.parse(chatbotResponse);
-  //     // Check if parsedData has the property 'DurationSelect'
-  //     if (parsedData && parsedData.DurationSelect) {
-  //       setDurationSelect(parsedData.DurationSelect);
-  //     } else {
-  //       // Handle cases where DurationSelect is not present or parsedData is not as expected
-  //       console.error("Parsed data is missing the DurationSelect property.");
-  //       setDurationSelect({}); // Reset or set to a default state
-  //       alert("JSON data does not contain the DurationSelect property.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error parsing JSON: ", error);
-  //     alert("Invalid JSON format. Please check the data and try again.");
-  //   }
-  // };
-
   // Gemini useEffect
   useEffect(() => {
     // Ensure chatbotResponse is only processed when it's a valid string
@@ -1273,6 +1008,19 @@ const Z = ({ currentUser, setCurrentUser }) => {
       // Handle error or notify user here
     }
   }, [chatbotResponse]);
+
+
+  //CUSTOMER
+  //CUSTOMER
+  //CUSTOMER
+  //CUSTOMER
+  //CUSTOMER
+  //CUSTOMER
+  //CUSTOMER
+  //CUSTOMER
+  //CUSTOMER
+  //CUSTOMER
+  //CUSTOMER
 
   //CustomerState
   const [customerInputs, setCustomerInputs] = useState([
@@ -1456,6 +1204,19 @@ const Z = ({ currentUser, setCurrentUser }) => {
     }));
   }, [customerGrowthData, numberOfMonths]);
 
+
+  //REVENUE
+  //REVENUE
+  //REVENUE
+  //REVENUE
+  //REVENUE
+  //REVENUE
+  //REVENUE
+  //REVENUE
+  //REVENUE
+  //REVENUE
+
+  
   //RevenueState
   const [channelInputs, setChannelInputs] = useState([
     {
@@ -1622,7 +1383,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     setGrossProfitData(grossProfitByChannelAndProduct);
   }, [customerGrowthData, channelInputs, numberOfMonths]);
 
-  // RevenueTable
+  //RevenueTable
   const revenueTableData = [];
 
   channelInputs.forEach((channel) => {
@@ -1725,7 +1486,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     }
   });
 
-  // RevenueColumns
+  //RevenueColumns
   const revenueColumns = [
     {
       fixed: "left",
@@ -1790,7 +1551,19 @@ const Z = ({ currentUser, setCurrentUser }) => {
     setgrossProfit((prevState) => ({ ...prevState, series: seriesData }));
   }, [grossProfitData, numberOfMonths]);
   
-  // CostState
+
+  //COSTS
+  //COSTS
+  //COSTS
+  //COSTS
+  //COSTS
+  //COSTS
+  //COSTS
+  //COSTS
+  //COSTS
+
+
+  //CostState
   const [costInputs, setCostInputs] = useState([
     {
       costName: "Website",
@@ -1835,13 +1608,13 @@ const Z = ({ currentUser, setCurrentUser }) => {
     setCostInputs(newInputs);
   };
 
-  // CostUseEffect
+  //CostUseEffect
   useEffect(() => {
     const calculatedData = calculateCostData();
     setCostData(calculatedData);
   }, [costInputs, numberOfMonths]);
 
-  // CostTableData
+  //CostTableData
   const [costData, setCostData] = useState([]);
 
   const calculateCostData = () => {
@@ -1866,7 +1639,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
     return allCosts;
   };
 
-
   const transformCostDataForTable = () => {
     const transformedCustomerTableData = {};
     const calculatedCostData = calculateCostData();
@@ -1888,7 +1660,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
   const costTableData = transformCostDataForTable();
 
-  // CostColumns
+  //CostColumns
   const costColumns = [
     {
       fixed: "left",
@@ -1955,7 +1727,18 @@ const Z = ({ currentUser, setCurrentUser }) => {
     setCostChart((prevState) => ({ ...prevState, series: seriesData }));
   }, [costData, numberOfMonths]);
 
-  // PersonnelState
+
+  //PERSONNEL
+  //PERSONNEL
+  //PERSONNEL
+  //PERSONNEL
+  //PERSONNEL
+  //PERSONNEL
+  //PERSONNEL
+  //PERSONNEL
+  //PERSONNEL
+
+  //PersonnelState
   const [personnelInputs, setPersonnelInputs] = useState([
     {
       jobTitle: "Cashier",
@@ -1973,7 +1756,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     },
   ]);
 
-  // PersonnelFunctions
+  //PersonnelFunctions
   const addNewPersonnelInput = () => {
     setPersonnelInputs([
       ...personnelInputs,
@@ -2028,13 +1811,13 @@ const Z = ({ currentUser, setCurrentUser }) => {
     return allPersonnelCosts;
   };
 
-  // PersonnelUseEffect
+  //PersonnelUseEffect
   useEffect(() => {
     const calculatedData = calculatePersonnelCostData();
     setPersonnelCostData(calculatedData);
   }, [personnelInputs, numberOfMonths]);
 
-  //Personnel cost
+  //PersonnelCostTableData
   const transformPersonnelCostDataForTable = () => {
     const transformedCustomerTableData = personnelCostData.map((item) => {
       const rowData = { key: item.jobTitle, jobTitle: item.jobTitle };
@@ -2115,6 +1898,16 @@ const Z = ({ currentUser, setCurrentUser }) => {
     setPersonnelChart((prevState) => ({ ...prevState, series: seriesData }));
   }, [personnelCostData, numberOfMonths]);
 
+  //INVESTMENTS
+  //INVESTMENTS
+  //INVESTMENTS
+  //INVESTMENTS
+  //INVESTMENTS
+  //INVESTMENTS
+  //INVESTMENTS
+  //INVESTMENTS
+  //INVESTMENTS
+  
   //InvestmentState
   const [investmentInputs, setInvestmentInputs] = useState([
     {
@@ -2335,6 +2128,16 @@ const Z = ({ currentUser, setCurrentUser }) => {
     setInvestmentChart((prevState) => ({ ...prevState, series: seriesData }));
   }, [investmentInputs, numberOfMonths]);
 
+  //LOAN
+  //LOAN
+  //LOAN
+  //LOAN
+  //LOAN
+  //LOAN
+  //LOAN
+  //LOAN
+  //LOAN
+
   //LoanState
   const [loanInputs, setLoanInputs] = useState([
     {
@@ -2530,7 +2333,16 @@ const Z = ({ currentUser, setCurrentUser }) => {
     setLoanChart((prevState) => ({ ...prevState, series: seriesData }));
   }, [loanInputs, numberOfMonths]);
 
-  //ProfitandLossSection
+  //PROFIT_AND_LOSS
+  //PROFIT_AND_LOSS
+  //PROFIT_AND_LOSS
+  //PROFIT_AND_LOSS
+  //PROFIT_AND_LOSS
+  //PROFIT_AND_LOSS
+  //PROFIT_AND_LOSS
+  //PROFIT_AND_LOSS
+  //PROFIT_AND_LOSS
+  
   const ProfitAndLossSection = ({
     revenueData,
     costData,
@@ -2803,7 +2615,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
     );
   };
 
-  
 
   // Download Excel
   const downloadExcel = () => {
@@ -2859,9 +2670,12 @@ const Z = ({ currentUser, setCurrentUser }) => {
         <ProgressBar isLoading={isLoading} />
       ) : (
         <>
+          {/* Gemini */}
           <div className="w-full h-full flex flex-col lg:flex-row">
             <Gemini />
           </div>
+
+          {/* DurationSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
             <div className="w-full lg:w-1/3 p-4 border-r-2">
               <DurationSelect
@@ -2887,11 +2701,14 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 setFinancialProjectName={setFinancialProjectName}
               />
             </div>
+
+            {/* FMMetrics */}
             <div className="w-full lg:w-2/3 p-4">
                <MetricsFM />
             </div>
           </div>  
 
+          {/* CustomerSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
             <div className="w-full lg:w-1/3 p-4 border-r-2">
               <CustomerSection
@@ -2919,6 +2736,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
             </div>
           </div>
 
+          {/* RevenueSetion */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
             <div className="w-full lg:w-1/3 p-4 border-r-2">
               <SalesSection
@@ -2951,6 +2769,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
             </div>
           </div>  
 
+          {/* CostSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
             <div className="w-full lg:w-1/3 p-4 border-r-2">
               <CostSection
@@ -2978,6 +2797,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
             </div>
           </div>
 
+          {/* PersonnelSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
             <div className="w-full lg:w-1/3 p-4 border-r-2">
               <PersonnelSection
@@ -3009,6 +2829,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
             </div>
           </div>
 
+          {/* InvestmentSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
             <div className="w-full lg:w-1/3 p-4 border-r-2">
               <InvestmentSection
@@ -3037,6 +2858,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
             </div>
           </div>
 
+          {/* LoanSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
             <div className="w-full lg:w-1/3 p-4 border-r-2">
               <LoanSection
@@ -3063,6 +2885,8 @@ const Z = ({ currentUser, setCurrentUser }) => {
               />
             </div>
           </div>
+
+          {/* ProfitAndLossSection */}
           <ProfitAndLossSection
             revenueData={revenueTableData}
             costData={costData}
@@ -3079,27 +2903,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
         Download Excel
       </button>
 
-      {/* The following sections are commented out */}
-
-      {/* <div>
-        <div className="json-input-section mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Import Data from JSON</h2>
-          <textarea
-            value={jsonInput || ''}
-            onChange={jsonHandleInputChange}
-            className="border p-2 w-full mb-4"
-            placeholder="Paste your JSON here"
-            rows="10"
-          ></textarea>
-          <button
-            className="bg-blue-500 text-white py-1 px-4 rounded"
-            onClick={applyJsonInput}
-          >
-            Apply JSON
-          </button>
-        </div>
-      </div> */}
-      {/* <LoadingButtonClick isLoading={isLoading} /> */}
     </div>
   );
 };

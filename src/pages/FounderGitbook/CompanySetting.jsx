@@ -11,6 +11,8 @@ import Card from "../Home/Components/Card";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import AlertMsg from "../../components/AlertMsg";
 import CompanyTest from "./CompanyTest";
+import { data } from "jquery";
+import axios from "axios";
 
 function CompanySetting() {
   const navigate = useNavigate();
@@ -19,25 +21,24 @@ function CompanySetting() {
   const params = useParams();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
-  const [formData, setFormData] = useState({
-    companyName: "Tesla",
-    country: "US",
-    industry: ["Technology"],
-    targetAmount: 100000,
-    typeOffering: "Investment", // Mặc định là "land"
-    minTicketSize: 10000,
-    noTicket: "",
-    offer: "10% equity",
-    project_url:
-      "https://images.unsplash.com/photo-1633671475485-754e12f39817?q=80&w=700&h=800&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    website: "https://www.beekrowd.com",
 
-    card_url:
-      "https://images.unsplash.com/photo-1633164106121-fd129dfb9f4d?q=80&w=2832&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    companyDescription:
-      "Tesla, Inc., founded in 2003 by Elon Musk and others, is an American company specializing in electric vehicles, battery energy storage, and solar products. Known for its high-performance electric cars like the Model S and Model 3, Tesla aims to advance sustainable transportation and energy. The company also operates a global network of superchargers and is a leader in renewable energy technologies.",
+  const [formData, setFormData] = useState({
+    companyName: "",
+    country: "",
+    industry: [],
+    targetAmount: 0,
+    typeOffering: "Investment", // Mặc định là "land"
+    minTicketSize: 0,
+    noTicket: "",
+    offer: "",
+    project_url: "",
+    website: "",
+
+    card_url: "",
+    companyDescription: "",
     rememberMe: false,
     user_email: "",
+    revenueStatus: "Pre-revenue",
   });
 
   useEffect(() => {
@@ -79,6 +80,7 @@ function CompanySetting() {
                 website: companyData.website,
                 companyDescription: companyData.description,
                 user_email: companyData.user_email,
+                revenueStatus: companyData.revenueStatus,
               });
 
               setIsLoading(false);
@@ -151,6 +153,7 @@ function CompanySetting() {
       }
 
       // Upload ảnh project_url nếu có
+
       let projectUrl = formData.project_url;
       if (projectUrl && projectUrl.startsWith("data:image")) {
         const file = dataURItoFile(projectUrl, "img");
@@ -159,17 +162,45 @@ function CompanySetting() {
           projectUrl = uploadedProjectUrl;
         }
       }
-
+      if (
+        projectUrl &&
+        !projectUrl.startsWith("https://dheunoflmddynuaxiksw.supabase.co")
+      ) {
+        if (
+          projectUrl.startsWith("http://") ||
+          projectUrl.startsWith("https://")
+        ) {
+          const uploadedProjectUrl = await uploadImageFromURLToSupabase(
+            projectUrl
+          );
+          if (uploadedProjectUrl) {
+            projectUrl = uploadedProjectUrl;
+          }
+        }
+      }
+      console.log("projectUrl", projectUrl);
       // Upload ảnh card_url nếu có
       let cardUrl = formData.card_url;
       if (cardUrl && cardUrl.startsWith("data:image")) {
         const file = dataURItoFile(cardUrl, "card_image.jpg");
         const uploadedCardUrl = await uploadImageToSupabase(file);
+        console.log("uploadedCardUrl", uploadedCardUrl);
         if (uploadedCardUrl) {
           cardUrl = uploadedCardUrl;
         }
       }
-
+      if (
+        cardUrl &&
+        !cardUrl.startsWith("https://dheunoflmddynuaxiksw.supabase.co")
+      ) {
+        if (cardUrl.startsWith("http://") || cardUrl.startsWith("https://")) {
+          const uploadedcardUrl = await uploadImageFromURLToSupabase(cardUrl);
+          if (uploadedcardUrl) {
+            cardUrl = uploadedcardUrl;
+          }
+        }
+      }
+      console.log("cardUrl", cardUrl);
       // Kiểm tra xem công ty đã tồn tại trong Supabase chưa bằng cách truy vấn theo project_id
       const { data: existingCompany, error: existingCompanyError } =
         await supabase.from("company").select("*").eq("project_id", params.id);
@@ -184,94 +215,101 @@ function CompanySetting() {
         if (existingCompany && existingCompany.length > 0) {
           const existingCompanyId = existingCompany[0].id;
 
-          const { data, error } = await supabase.from("company").upsert([
-            {
-              id: existingCompanyId, // Sử dụng id của công ty đã tồn tại để thực hiện cập nhật
-              name: formData.companyName,
-              country: formData.country,
-              industry: formData.industry,
-              target_amount:
-                formData.targetAmount &&
-                typeof formData.targetAmount === "string"
-                  ? parseInt(formData.targetAmount.replace(/,/g, ""), 10)
-                  : formData.targetAmount,
-              offer_type: formData.typeOffering,
-              ticket_size:
-                formData.minTicketSize &&
-                typeof formData.minTicketSize === "string"
-                  ? parseInt(formData.minTicketSize.replace(/,/g, ""), 10)
-                  : formData.minTicketSize,
-              no_ticket:
-                formData.noTicket && typeof formData.noTicket === "string"
-                  ? parseInt(formData.noTicket.replace(/,/g, ""), 10)
-                  : formData.noTicket,
-              offer: formData.offer,
-              project_url: projectUrl,
-              card_url: cardUrl,
-              website: formData.website,
-              description: formData.companyDescription,
-              user_id: user.id,
-              user_email: user.email,
-              project_id: params.id,
-            },
-          ]);
+          const { data, error } = await supabase
+            .from("company")
+            .upsert([
+              {
+                id: existingCompanyId, // Sử dụng id của công ty đã tồn tại để thực hiện cập nhật
+                name: formData.companyName,
+                country: formData.country,
+                industry: formData.industry,
+                target_amount:
+                  formData.targetAmount &&
+                  typeof formData.targetAmount === "string"
+                    ? parseInt(formData.targetAmount.replace(/,/g, ""), 10)
+                    : formData.targetAmount,
+                offer_type: formData.typeOffering,
+                ticket_size:
+                  formData.minTicketSize &&
+                  typeof formData.minTicketSize === "string"
+                    ? parseInt(formData.minTicketSize.replace(/,/g, ""), 10)
+                    : formData.minTicketSize,
+                no_ticket:
+                  formData.noTicket && typeof formData.noTicket === "string"
+                    ? parseInt(formData.noTicket.replace(/,/g, ""), 10)
+                    : formData.noTicket,
+                offer: formData.offer,
+                project_url: projectUrl,
+                card_url: cardUrl,
+                website: formData.website,
+                description: formData.companyDescription,
+                user_id: user.id,
+                user_email: user.email,
+                project_id: params.id,
+                revenueStatus: formData.revenueStatus,
+              },
+            ])
+            .select();
 
           if (error) {
             console.log("Error updating data to Supabase:", error);
             throw error;
           } else {
-            console.log("Data updated successfully:", data);
             setIsLoading(false);
             navigate(`/founder/${params.id}`);
           }
         } else {
           // Nếu công ty chưa tồn tại, thêm mới thông tin công ty
 
-          const { error } = await supabase.from("company").upsert([
-            {
-              name: formData.companyName,
-              country: formData.country,
-              industry: formData.industry,
-              target_amount:
-                formData.targetAmount &&
-                typeof formData.targetAmount === "string"
-                  ? parseInt(formData.targetAmount.replace(/,/g, ""), 10)
-                  : formData.targetAmount,
-              offer_type: formData.typeOffering,
-              ticket_size:
-                formData.minTicketSize &&
-                typeof formData.minTicketSize === "string"
-                  ? parseInt(formData.minTicketSize.replace(/,/g, ""), 10)
-                  : formData.minTicketSize,
-              no_ticket:
-                formData.noTicket && typeof formData.noTicket === "string"
-                  ? parseInt(formData.noTicket.replace(/,/g, ""), 10)
-                  : formData.noTicket,
-              offer: formData.offer,
-              project_url: projectUrl,
-              card_url: cardUrl,
-              website: formData.website,
-              description: formData.companyDescription,
-              user_id: user.id,
-              user_email: user.email,
-              project_id: params.id,
-            },
-          ]);
-
+          const { data, error } = await supabase
+            .from("company")
+            .upsert([
+              {
+                name: formData.companyName,
+                country: formData.country,
+                industry: formData.industry,
+                target_amount:
+                  formData.targetAmount &&
+                  typeof formData.targetAmount === "string"
+                    ? parseInt(formData.targetAmount.replace(/,/g, ""), 10)
+                    : formData.targetAmount,
+                offer_type: formData.typeOffering,
+                ticket_size:
+                  formData.minTicketSize &&
+                  typeof formData.minTicketSize === "string"
+                    ? parseInt(formData.minTicketSize.replace(/,/g, ""), 10)
+                    : formData.minTicketSize,
+                no_ticket:
+                  formData.noTicket && typeof formData.noTicket === "string"
+                    ? parseInt(formData.noTicket.replace(/,/g, ""), 10)
+                    : formData.noTicket,
+                offer: formData.offer,
+                project_url: projectUrl,
+                card_url: cardUrl,
+                website: formData.website,
+                description: formData.companyDescription,
+                user_id: user.id,
+                user_email: user.email,
+                project_id: params.id,
+                revenueStatus: formData.revenueStatus,
+              },
+            ])
+            .select();
           if (error) {
             console.log("Error saving data to Supabase:", error);
             throw error;
           } else {
+            createNotifications({ createdCompany: data[0] });
             setIsLoading(false);
             navigate(`/founder/${params.id}`);
           }
         }
       }
     } catch (error) {
-      console.log("An error occurred:", error);
       toast.error(error.message);
-      setIsLoading(false);
+      console.error("Error updating company data:", error);
     }
+    setIsLoading(false);
   };
 
   const typeOfferingOptions = ["Lending", "Investment", "M&A", "Convertible"];
@@ -339,6 +377,46 @@ function CompanySetting() {
     }
   };
 
+  // Function to upload image to Supabase from URL
+  const uploadImageFromURLToSupabase = async (imageUrl) => {
+    try {
+      // Download image from URL
+      const response = await axios.get(imageUrl, {
+        responseType: "arraybuffer",
+      });
+
+      // Create Blob from downloaded image data
+      const blob = new Blob([response.data], {
+        type: response.headers["content-type"],
+      });
+
+      // Get current timestamp
+      const timestamp = Date.now();
+
+      // Create File object from Blob with filename as "img-{timestamp}"
+      const file = new File([blob], `img-${timestamp}`, {
+        type: response.headers["content-type"],
+      });
+
+      // Upload image file to Supabase storage
+      const { data, error } = await supabase.storage
+        .from("beekrowd_storage")
+        .upload(`beekrowd_images/${file.name}`, file);
+
+      if (error) {
+        console.error("Error uploading image to Supabase:", error);
+        return null;
+      }
+
+      // Return Supabase URL of the uploaded image
+      const imageUrlFromSupabase = `https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/${data.fullPath}`;
+      return imageUrlFromSupabase;
+    } catch (error) {
+      console.error("Error uploading image from URL to Supabase:", error);
+      return null;
+    }
+  };
+
   // Hàm chuyển đổi data URI thành File object
   const dataURItoFile = (dataURI, fileNamePrefix) => {
     const byteString = atob(dataURI.split(",")[1]);
@@ -352,6 +430,126 @@ function CompanySetting() {
     const blob = new Blob([ab], { type: `image/${extension}` });
     return new File([blob], fileName, { type: `image/${extension}` });
   };
+
+  async function createNotifications({ createdCompany }) {
+    try {
+      // Code to create notifications similar to UserInfoSettings
+
+      const notificationContent = {
+        id: createdCompany.id,
+        name: createdCompany.name,
+        project_id: createdCompany.project_id,
+      };
+
+      // Lấy danh sách notifications từ cơ sở dữ liệu
+      const { data: existingNotifications, error: existingError } =
+        await supabase.from("notifications").select("*");
+
+      if (existingError) {
+        throw existingError;
+      }
+
+      // Kiểm tra xem thông báo đã tồn tại hay chưa
+      // const notificationExists = existingNotifications.some((notification) => {
+      //   const content = JSON.parse(notification.content);
+      //   return content.some(
+      //     (item) =>
+      //       item.id === notificationContent.id &&
+      //       item.name === notificationContent.name &&
+      //       item.project_id === notificationContent.project_id
+      //   );
+      // });
+
+      // if (notificationExists) {
+      //   console.log("Notification already exists. Skipping insertion.");
+      //   return; // Không thêm vào bảng notifications nếu thông báo đã tồn tại
+      // }
+
+      const { data: usersData, error: usersError } = await supabase
+        .from("users")
+        .select("*")
+        .neq("id", user.id) // Exclude the current user
+        .eq("revenueStatusWanted", formData.revenueStatus)
+        .eq("roll", "Investor");
+
+      if (usersError) {
+        throw usersError;
+      }
+
+      const filteredUsers = usersData.filter((user) => {
+        // Parse investment sizes from user data
+        const investmentSizeCondition = user.investment_size.map((size) => {
+          const min = parseInt(
+            size.split("-")[0].replace("$", "").replace(/,/g, "")
+          );
+          const max = parseInt(
+            size.split("-")[1].replace("$", "").replace(/,/g, "")
+          );
+          return { min, max };
+        });
+
+        // Check if the user is interested in at least one of the industries of the created company
+        const isInterestedInIndustry = user.interested_in.some((interest) =>
+          createdCompany.industry.includes(interest)
+        );
+
+        // Check if the ticket size of the created company falls within the user's investment size range
+        const isTicketSizeInRange = investmentSizeCondition.some(
+          (size) =>
+            createdCompany.ticket_size >= size.min &&
+            createdCompany.ticket_size <= size.max
+        );
+
+        // Return true if both conditions are met
+        return isInterestedInIndustry && isTicketSizeInRange;
+      });
+
+      if (filteredUsers.length > 0) {
+        const notificationsToInsert = filteredUsers.map((user) => ({
+          receivedUser: user.email,
+          content: JSON.stringify([notificationContent]),
+        }));
+
+        // Insert new notifications into the notifications table
+        const { error: insertError } = await supabase
+          .from("notifications")
+          .insert(notificationsToInsert);
+
+        if (insertError) {
+          console.log("error", insertError);
+          // Xử lý lỗi nếu cần
+        } else {
+          // Tính toán giá trị mới của notification_count
+
+          // Cập nhật notification_count vào bảng users cho mỗi người dùng trong filteredUsers
+          for (const user of filteredUsers) {
+            const updatedNotificationCount = user.notification_count + 1;
+
+            const { error: updateError } = await supabase
+              .from("users")
+              .update({
+                notification_count: updatedNotificationCount,
+              })
+              .eq("id", user.id);
+
+            if (updateError) {
+              console.log(
+                `Error updating notification_count for user ${user.id}:`,
+                updateError
+              );
+              // Xử lý lỗi nếu cần
+            }
+          }
+        }
+      } else {
+        // If there are no users matching the criteria, display a message
+        // toast.warning("No users matching the criteria for notifications.");
+      }
+    } catch (error) {
+      toast.error(error.message);
+      console.log("Error updating company data:", error);
+    }
+  }
 
   if (viewError) {
     return (

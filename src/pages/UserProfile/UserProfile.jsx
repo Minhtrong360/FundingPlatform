@@ -13,11 +13,12 @@ import countries from "../../components/Country";
 import MultiSelectField from "../../components/MultiSelectField";
 import SelectField from "../../components/SelectField";
 import AvatarEditor from "react-avatar-editor";
-import { Avatar } from "antd";
+import { Avatar, Tooltip } from "antd";
 import { IconButton } from "@mui/material";
 
 function UserInfoSettings() {
   const { user } = useAuth();
+
   const [isLoading, setIsLoading] = useState(false);
   const [expiredDate, setExpiredDate] = useState("");
   const [userData, setUserData] = useState({
@@ -31,9 +32,12 @@ function UserInfoSettings() {
     roll: "Founder",
     avatar: null,
     interested_in: ["Technology"],
-    investment_size: ["0-10,000"],
+    investment_size: ["$0-$10,000"],
     country: "US",
+    subscription_status: "",
     type: "Individual", // Default value for type
+    revenueStatusWanted: "Pre-revenue",
+    notification_count: 0,
   });
   const handleIndustryChange = (selectedItems) => {
     setUserData({
@@ -71,17 +75,20 @@ function UserInfoSettings() {
           setUserData({
             full_name: data.full_name || "",
             email: data.email || "",
-            plan: data.plan || "",
+            plan: data.plan || "Free",
             subscribe: data.subscribe || "",
             company: data.company || "",
-            company_website: data.website || "",
+            company_website: data.company_website || "",
             detail: data.detail || "",
             roll: data.roll || "Founder",
             avatar: data.avatar || null,
             interested_in: data.interested_in || ["Technology"],
-            investment_size: data.investment_size || ["0-10,000"],
+            investment_size: data.investment_size || ["$0-$10,000"],
             country: data.country || "US",
             type: data.type || "Individual", // Default value for type
+            subscription_status: data.subscription_status || "",
+            revenueStatusWanted: data.revenueStatusWanted || "Pre-revenue",
+            notification_count: data.notification_count || 0,
           });
 
           if (data.subscribe && data.subscription_status === "active") {
@@ -104,6 +111,7 @@ function UserInfoSettings() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
     setUserData((prevUserData) => ({
       ...prevUserData,
       [name]: value,
@@ -164,30 +172,104 @@ function UserInfoSettings() {
         }
       }
 
-      const { error } = await supabase
-        .from("users")
-        .update({
-          full_name: userData.full_name,
-          email: userData.email,
-          plan: userData.plan,
-          subscribe: userData.subscribe,
-          company: userData.company,
-          company_website: userData.company_website,
-          detail: userData.detail,
-          roll: userData.roll,
-          avatar: avatarUrl,
-          interested_in: userData.interested_in,
-          investment_size: userData.investment_size,
-          country: userData.country,
-          type: userData.type,
-        })
-        .eq("id", user.id);
+      // Find all companies with revenueStatus matching userData.revenueStatusWanted
+      const { data: companies, error: companyError } = await supabase
+        .from("company")
+        .select("*")
+        .eq("revenueStatus", userData.revenueStatusWanted);
 
-      if (error) {
-        throw error;
+      if (companyError) {
+        throw companyError;
       }
 
-      toast.success("Updated successfully!");
+      // Define conditions for filtering companies
+      const industryCondition = userData.interested_in;
+      const investmentSizeCondition = userData.investment_size.map((size) => {
+        const min = parseInt(
+          size.split("-")[0].replace("$", "").replace(/,/g, "")
+        );
+        const max = parseInt(
+          size.split("-")[1].replace("$", "").replace(/,/g, "")
+        );
+        return { min, max };
+      });
+
+      // Filter companies by industry and investment size
+      const filteredCompanies = companies.filter(
+        (company) =>
+          company.industry.some((industry) =>
+            industryCondition.includes(industry)
+          ) &&
+          investmentSizeCondition.some(
+            (size) =>
+              company.ticket_size >= size.min && company.ticket_size <= size.max
+          )
+      );
+
+      // Check if the user has already been notified about these companies
+      const notifications = await supabase
+        .from("notifications")
+        .select("*")
+        .eq("receivedUser", userData.email);
+
+      const notifiedCompanies = notifications.data.map(
+        (notification) => notification.content
+      );
+
+      // Filter out companies that have already been notified
+      const newCompanies = filteredCompanies.filter(
+        (company) => !notifiedCompanies.includes(company.name)
+      );
+
+      // Prepare notification content with array of companies
+      const notificationContent = newCompanies.map((company) => ({
+        id: company.id,
+        name: company.name,
+        project_id: company.project_id,
+      }));
+
+      if (notificationContent.length > 0) {
+        // Add new notifications for the user
+        const notificationsToInsert = [
+          {
+            receivedUser: userData.email,
+            content: JSON.stringify(notificationContent), // Convert content to JSON string
+          },
+        ];
+
+        // Insert new notifications into the notifications table
+        await supabase.from("notifications").insert(notificationsToInsert);
+
+        const currentNotificationCount = userData.notification_count + 1;
+
+        // Update user data in Supabase
+        const { error } = await supabase
+          .from("users")
+          .update({
+            full_name: userData.full_name,
+            email: userData.email,
+            plan: userData.plan,
+            subscribe: userData.subscribe,
+            company: userData.company,
+            company_website: userData.company_website,
+            detail: userData.detail,
+            roll: userData.roll,
+            avatar: avatarUrl,
+            interested_in: userData.interested_in,
+            investment_size: userData.investment_size,
+            country: userData.country,
+            type: userData.type,
+            revenueStatusWanted: userData.revenueStatusWanted,
+            notification_count: currentNotificationCount,
+          })
+          .eq("id", user.id);
+
+        if (error) {
+          throw error;
+        }
+
+        toast.success("Updated successfully!");
+      }
     } catch (error) {
       toast.error(error.message);
       console.error("Error updating user data:", error);
@@ -374,6 +456,16 @@ function UserInfoSettings() {
                     required
                     options={countries} // Thay thế bằng danh sách các tùy chọn bạn muốn
                   />
+
+                  <SelectField
+                    label="Which company do you like?"
+                    id="revenueStatusWanted"
+                    name="revenueStatusWanted"
+                    value={userData.revenueStatusWanted}
+                    onChange={handleInputChange}
+                    required
+                    options={["Pre-revenue", "Post-revenue"]} // Thay thế bằng danh sách các tùy chọn bạn muốn
+                  />
                   <div>
                     <label
                       htmlFor="type"
@@ -412,20 +504,47 @@ function UserInfoSettings() {
               )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                <div>
-                  <InputField
-                    label="Plan"
-                    id="plan"
-                    name="plan"
-                    value={
-                      userData.plan && userData.subscription_status === "active"
-                        ? userData.plan
-                        : "Free"
-                    }
-                    type="text"
-                    disabled
-                  />
-                </div>
+                <Tooltip
+                  title={
+                    <div>
+                      <p className="m-3 text-base">
+                        You can manage your subscription here!
+                      </p>
+                      <button
+                        type="button"
+                        onClick={handleBilling}
+                        className="w-full py-2 px-2 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
+                      >
+                        Billing Portal
+                      </button>
+                    </div>
+                  }
+                  color="gray"
+                  zIndex={20000}
+                >
+                  <div>
+                    <InputField
+                      label="Plan"
+                      id="plan"
+                      name="plan"
+                      value={
+                        userData.plan &&
+                        userData.subscription_status === "active"
+                          ? userData.plan
+                          : "Free"
+                      }
+                      type="text"
+                      disabled
+                    />
+                    <button
+                      type="button"
+                      onClick={handleBilling}
+                      className="hidden w-full py-3 px-4  justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
+                    >
+                      Billing Portal
+                    </button>
+                  </div>
+                </Tooltip>
 
                 <div>
                   <InputField
@@ -481,19 +600,12 @@ function UserInfoSettings() {
               </div>
             </div>
             <LoadingButtonClick isLoading={isLoading} />
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6 mt-6">
+            <div className="grid grid-cols-1  gap-4 lg:gap-6 mt-6">
               <button
                 type="submit"
                 className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
               >
                 Save
-              </button>
-              <button
-                type="button"
-                onClick={handleBilling}
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
-              >
-                Billing Portal
               </button>
             </div>
           </form>

@@ -137,7 +137,15 @@ function Company({
                     readOnly // Đặt readOnly để ngăn người dùng chỉnh sửa trường này thủ công
                   />
                 </div>
-
+                <SelectField
+                  label="Revenue status"
+                  id="revenueStatus"
+                  name="revenueStatus"
+                  value={formData.revenueStatus}
+                  onChange={handleInputChange}
+                  required
+                  options={["Pre-revenue", "Post-revenue"]} // Thay thế bằng danh sách các tùy chọn bạn muốn
+                />
                 <MultiSelectField
                   label="Industry"
                   id="industry"

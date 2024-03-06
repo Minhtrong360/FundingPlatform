@@ -28,7 +28,7 @@ function FilesList() {
     }
 
     // Nếu link.invited_user chứa user.id thì canClick = true
-    if (link.invited_user && link.invited_user.includes(user.email)) {
+    if (link?.invited_user && link?.invited_user?.includes(user.email)) {
       return true;
     }
 
@@ -62,15 +62,12 @@ function FilesList() {
 
         setProjectLinks(files);
       } catch (error) {
-        console.error("Error fetching projects:", error);
-        toast.error(error.message);
+        console.log("Error fetching projects:", error);
       }
     };
 
-    if (id) {
-      fetchFiles();
-    }
-  }, [id]);
+    fetchFiles();
+  }, []);
 
   useEffect(() => {
     // Lấy dự án từ Supabase
@@ -88,7 +85,7 @@ function FilesList() {
           setCurrentProject(data);
         }
       });
-  }, [id]);
+  }, []);
 
   const handleAddLinks = async (newLink) => {
     newLink.owner_email = user.email;
@@ -259,10 +256,8 @@ function FilesList() {
       }
     };
 
-    if (user) {
-      fetchCurrentUser();
-    }
-  }, [user]);
+    fetchCurrentUser();
+  }, []);
 
   useEffect(() => {
     // Check if the user doesn't meet the conditions to create a private project
@@ -276,9 +271,7 @@ function FilesList() {
     } else {
       setIsPrivateDisabled(false);
     }
-  }, [currentUser]);
-
-  console.log("projectLinks", projectLinks);
+  }, []);
 
   return (
     <main className="w-full ml-2">
@@ -434,7 +427,7 @@ function FilesList() {
                         <td className="px-4 py-4 text-sm whitespace-nowrap">
                           <div className="flex items-center gap-x-6">
                             <button
-                              className="text-red-500 transition-colors duration-200 hover:text-indigo-500 focus:outline-none"
+                              className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
                               onClick={() => handleDelete(link.id)}
                             >
                               Delete
@@ -442,28 +435,15 @@ function FilesList() {
                           </div>
                         </td>
                         <td className="px-4 py-4 text-sm whitespace-nowrap">
-                          {/* {link.status ? (
-                            ""
-                          ) : link.user_id !== user.id &&
-                            !link.invited_user?.includes(user.email) ? (
-                            <button
-                              className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
-                              onClick={() => handleSendRequest(link)}
-                            >
-                              Send Request
-                            </button>
-                          ) : (
-                            <InvitedUserFile fileId={link.id} />
-                          )} */}
                           {link.status ? (
                             ""
-                          ) : link.user_id === user.id ? (
+                          ) : link?.user_id === user.id ? (
                             <InvitedUserFile fileId={link.id} />
-                          ) : link.invited_user?.includes(user.email) ? (
+                          ) : link?.invited_user?.includes(user?.email) ? (
                             ""
                           ) : (
                             <button
-                              className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+                              className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
                               onClick={() => handleSendRequest(link)}
                             >
                               Send Request

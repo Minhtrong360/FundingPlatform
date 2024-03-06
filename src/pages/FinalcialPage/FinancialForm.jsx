@@ -35,11 +35,18 @@ const FinancialForm = () => {
   //CustomerSection
   const [customerInputs, setCustomerInputs] = useState([
     {
-      customersPerMonth: 100,
+      customersPerMonth: 300,
       growthPerMonth: 10,
-      channelName: "",
+      channelName: "Online",
       beginMonth: 1,
-      endMonth: numberOfMonths,
+      endMonth: 36,
+    },
+    {
+      customersPerMonth: 400,
+      growthPerMonth: 10,
+      channelName: "Offline",
+      beginMonth: 1,
+      endMonth: 36,
     },
   ]);
 
@@ -59,15 +66,34 @@ const FinancialForm = () => {
   //SalesSection
   const [channelInputs, setChannelInputs] = useState([
     {
-      productName: "", // New field for product name
-      price: 0,
-      multiples: 0,
-      txFeePercentage: 0,
-      cogsPercentage: 0,
-      selectedChannel: "",
-      channelAllocation: 1,
+      productName: "Coffee", // New field for product name
+      price: 4,
+      multiples: 1,
+      txFeePercentage: 10,
+      cogsPercentage: 30,
+      selectedChannel: "Offline",
+      channelAllocation: 0.4,
+    },
+    {
+      productName: "Cake", // New field for product name
+      price: 8,
+      multiples: 1,
+      txFeePercentage: 5,
+      cogsPercentage: 35,
+      selectedChannel: "Offline",
+      channelAllocation: 0.3,
+    },
+    {
+      productName: "Coffee bag", // New field for product name
+      price: 6,
+      multiples: 1,
+      txFeePercentage: 5,
+      cogsPercentage: 25,
+      selectedChannel: "Online",
+      channelAllocation: 0.6,
     },
   ]);
+
   const [revenueData, setRevenueData] = useState([]);
   const [netRevenueData, setNetRevenueData] = useState([]);
   const [grossProfitData, setGrossProfitData] = useState([]);
@@ -79,11 +105,27 @@ const FinancialForm = () => {
   // Cost inputs handle
   const [costInputs, setCostInputs] = useState([
     {
-      costName: "",
-      costValue: 0,
+      costName: "Website",
+      costValue: 1000,
       growthPercentage: 0,
       beginMonth: 1,
-      endMonth: 12,
+      endMonth: 6,
+      costType: "Operating Cost",
+    },
+    {
+      costName: "Marketing",
+      costValue: 500,
+      growthPercentage: 0,
+      beginMonth: 1,
+      endMonth: 36,
+      costType: "Operating Cost",
+    },
+    {
+      costName: "Rent",
+      costValue: 1000,
+      growthPercentage: 2,
+      beginMonth: 1,
+      endMonth: 36,
       costType: "Operating Cost",
     },
   ]);
@@ -93,11 +135,18 @@ const FinancialForm = () => {
   // State management cho Personnel
   const [personnelInputs, setPersonnelInputs] = useState([
     {
-      jobTitle: "",
-      salaryPerMonth: 0,
-      numberOfHires: 0,
+      jobTitle: "Cashier",
+      salaryPerMonth: 800,
+      numberOfHires: 2,
       jobBeginMonth: 1,
-      jobEndMonth: 8,
+      jobEndMonth: 36,
+    },
+    {
+      jobTitle: "Manager",
+      salaryPerMonth: 2000,
+      numberOfHires: 1,
+      jobBeginMonth: 1,
+      jobEndMonth: 36,
     },
   ]);
 
@@ -108,12 +157,20 @@ const FinancialForm = () => {
   //Investment Inputs
   const [investmentInputs, setInvestmentInputs] = useState([
     {
-      purchaseName: "",
-      assetCost: "1000",
+      purchaseName: "Coffee machine",
+      assetCost: 8000,
       quantity: 1,
-      purchaseMonth: "2",
-      residualValue: "10",
-      usefulLifetime: "5",
+      purchaseMonth: 2,
+      residualValue: 10,
+      usefulLifetime: 36,
+    },
+    {
+      purchaseName: "Table",
+      assetCost: 200,
+      quantity: 10,
+      purchaseMonth: 1,
+      residualValue: 10,
+      usefulLifetime: 36,
     },
   ]);
 
@@ -121,11 +178,11 @@ const FinancialForm = () => {
 
   const [loanInputs, setLoanInputs] = useState([
     {
-      loanName: "",
-      loanAmount: "",
-      interestRate: "",
-      loanBeginMonth: "",
-      loanEndMonth: "",
+      loanName: "Banking loan",
+      loanAmount: "150000",
+      interestRate: "6",
+      loanBeginMonth: "1",
+      loanEndMonth: "12",
     },
   ]);
 
@@ -152,7 +209,7 @@ const FinancialForm = () => {
       key: "channelName",
     },
     ...Array.from({ length: numberOfMonths }, (_, i) => i + 1).map((month) => ({
-      title: `Month ${month}`,
+      title: `Month_${month}`,
       dataIndex: `month${month}`,
       key: `month${month}`,
     })),
@@ -165,7 +222,7 @@ const FinancialForm = () => {
       key: "channelName",
     },
     ...Array.from({ length: numberOfMonths }, (_, i) => i + 1).map((month) => ({
-      title: `Month ${month}`,
+      title: `Month_${month}`,
       dataIndex: `month${month}`,
       key: `month${month}`,
     })),
@@ -178,7 +235,7 @@ const FinancialForm = () => {
       key: "costName",
     },
     ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month ${i + 1}`,
+      title: `Month_${i + 1}`,
       dataIndex: `month${i + 1}`,
       key: `month${i + 1}`,
     })),
@@ -191,7 +248,7 @@ const FinancialForm = () => {
       key: "jobTitle",
     },
     ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month ${i + 1}`,
+      title: `Month_${i + 1}`,
       dataIndex: `month${i + 1}`,
       key: `month${i + 1}`,
     })),
@@ -200,7 +257,7 @@ const FinancialForm = () => {
   const investmentColumns = [
     { title: "Type", dataIndex: "type", key: "type" },
     ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month ${i + 1}`,
+      title: `Month_${i + 1}`,
       dataIndex: `month${i + 1}`,
       key: `month${i + 1}`,
     })),
@@ -209,7 +266,7 @@ const FinancialForm = () => {
   const loanColumns = [
     { title: "Type", dataIndex: "type", key: "type" },
     ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month ${i + 1}`,
+      title: `Month_${i + 1}`,
       dataIndex: `Month ${i + 1}`,
       key: `Month ${i + 1}`,
     })),

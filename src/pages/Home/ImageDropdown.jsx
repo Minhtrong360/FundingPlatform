@@ -19,6 +19,7 @@ const ImageDropdown = () => {
     detail: "",
     roll: "Founder",
     avatar: null,
+    notification_count: 0,
   });
 
   useEffect(() => {
@@ -109,17 +110,16 @@ const ImageDropdown = () => {
     };
   }, [isOpen]);
 
-  const [notificationCount, setNotificationCount] = useState(0); // State for the notification count
-  const fetchNotifications = () => {
-    // Fetch notifications and set the count
-    // setNotificationCount(fetchedNotifications.length);
-  };
+  const handleClickNotifications = async (e) => {
+    const { error } = await supabase
+      .from("users")
+      .update({ notification_count: 0 })
+      .eq("id", user.id); // Thay "id" bằng trường id thực tế trong cơ sở dữ liệu của bạn
 
-  useEffect(() => {
-    fetchNotifications();
-  }, []);
+    if (error) {
+      throw error;
+    }
 
-  const handleClickNotifications = (e) => {
     navigate("/notifications");
     handleClickOutside(e);
     setIsOpen(false);
@@ -167,6 +167,16 @@ const ImageDropdown = () => {
           style={{ minWidth: "100%" }}
           className="hs-dropdown-menu transition-[opacity,margin] duration-300 opacity-100  bg-white shadow-md rounded-lg p-2 mt-2 absolute left-0 top-full"
         >
+          {userData.admin && (
+            <button
+              style={{ minWidth: "100%" }}
+              className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
+              onClick={() => navigate("/admin")}
+            >
+              Admin
+            </button>
+          )}
+
           <button
             style={{ minWidth: "100%" }}
             className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
@@ -201,11 +211,12 @@ const ImageDropdown = () => {
           <button
             style={{ minWidth: "100%" }}
             className="hover:cursor-pointer flex items-center justify-between gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
-            // onClick={(e) => handleClickNotifications(e)}
+            onClick={(e) => handleClickNotifications(e)}
           >
             <span className="flex items-center gap-x-3.5">Notifications</span>
-            <span className="bg-red-600 text-white px-2 py-1 rounded-full text-xs">
-              {notificationCount} {/* Display the notification count here */}
+            <span className="bg-red-600 text-white h-7 w-7 rounded-full text-sm flex items-center justify-center">
+              {userData.notification_count ? userData.notification_count : 0}{" "}
+              {/* Display the notification count here */}
             </span>
           </button>
 

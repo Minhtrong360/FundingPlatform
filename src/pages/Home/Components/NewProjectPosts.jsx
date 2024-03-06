@@ -119,7 +119,7 @@ const NewProjectPosts = () => {
               {[...Array(itemsPerPage)].map((_, index) => {
                 const company = filteredCompanies[index];
                 return (
-                  <div key={index} className="flex justify-center">
+                  <div key={index} className="group flex justify-center">
                     {company ? (
                       <Card
                         key={company.id}

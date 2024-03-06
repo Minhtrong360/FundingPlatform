@@ -8,9 +8,9 @@ const CustomerSection = ({
   customerInputs,
   setCustomerInputs,
   numberOfMonths,
+  customerGrowthData,
+  setCustomerGrowthData,
 }) => {
-  const [customerGrowthData, setCustomerGrowthData] = useState([]);
-
   const [customerGrowthChart, setCustomerGrowthChart] = useState({
     options: {
       chart: {

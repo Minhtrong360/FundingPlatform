@@ -172,6 +172,7 @@ function Router() {
         <Route path="/Y" element={<Y />} />
         <Route path="/Z" element={<Z />} /> */}
         {/* <Route path="/W" element={<ImageCropper />} /> */}
+        <Route path="/Z" element={<Z />} />
         <Route path="/admin" element={<AdminPage />} />
 
         <Route path="/loading" element={<ProgressBar isLoading={true} />} />

@@ -1530,6 +1530,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     let grossProfitByChannelAndProduct = {};
 
     channelInputs.forEach((channel) => {
+      console.log("2", channel);
       if (channel.selectedChannel && channel.productName) {
         const channelProductKey = `${channel.selectedChannel} - ${channel.productName}`;
         const revenueArray = Array(numberOfMonths).fill(0);
@@ -1539,7 +1540,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
         const cogsArray = Array(numberOfMonths).fill(0);
         const netRevenueArray = Array(numberOfMonths).fill(0);
         const grossProfitArray = Array(numberOfMonths).fill(0);
-
+        console.log("customerGrowthData", customerGrowthData);
         customerGrowthData.forEach((growthData) => {
           growthData.forEach((data) => {
             if (data.channelName === channel.selectedChannel) {
@@ -1614,9 +1615,10 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
   //RevenueTable
   const revenueTableData = [];
-
+  console.log("channelInputs", channelInputs);
   channelInputs.forEach((channel) => {
     if (channel.selectedChannel && channel.productName) {
+      console.log("revenueData", revenueData);
       const channelRevenue =
         revenueData[channel.selectedChannel + " - " + channel.productName] ||
         [];
@@ -1656,7 +1658,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
         channelName:
           channel.selectedChannel + " - " + channel.productName + " - COGS",
       };
-
+      console.log("channelRevenue", channelRevenue);
       channelRevenue.forEach((value, index) => {
         if (index + 1 >= begin && index + 1 <= end) {
           revenueRow[`month${index + 1}`] = parseFloat(value)?.toFixed(2);
@@ -1715,6 +1717,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
         // ...existing code...
         grossProfitRow[`month${index + 1}`] = parseFloat(value)?.toFixed(2);
       });
+      console.log("revenueRow", revenueRow);
 
       revenueTableData.push(revenueRow);
       revenueTableData.push(revenueDeductionRow);
@@ -1738,6 +1741,8 @@ const Z = ({ currentUser, setCurrentUser }) => {
       key: `month${month}`,
     })),
   ];
+
+  console.log("revenueTableData", revenueTableData);
 
   //RevenueChart
   const [grossProfit, setgrossProfit] = useState({

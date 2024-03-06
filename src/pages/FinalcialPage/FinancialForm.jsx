@@ -121,13 +121,90 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     },
   ]);
   const [channelNames, setChannelNames] = useState([]);
+
   const [revenueData, setRevenueData] = useState([]);
   const [netRevenueData, setNetRevenueData] = useState([]);
   const [grossProfitData, setGrossProfitData] = useState([]);
   const [revenueDeductionData, setrevenueDeductionData] = useState([]);
   const [cogsData, setCogsData] = useState([]);
 
-  const [revenueTableData, setRevenueTableData] = useState([]);
+  let revenueTableData = [];
+  const calculateChannelRevenue = () => {
+    let revenueByChannelAndProduct = {};
+
+    // New arrays for revenueDeduction and COGS
+    let DeductionByChannelAndProduct = {};
+    let cogsByChannelAndProduct = {};
+    let netRevenueByChannelAndProduct = {};
+    let grossProfitByChannelAndProduct = {};
+
+    channelInputs.forEach((channel) => {
+      if (channel.selectedChannel && channel.productName) {
+        const channelProductKey = `${channel.selectedChannel} - ${channel.productName}`;
+        const revenueArray = Array(numberOfMonths).fill(0);
+
+        // Initialize revenueDeduction and COGS arrays
+        const revenueDeductionArray = Array(numberOfMonths).fill(0);
+        const cogsArray = Array(numberOfMonths).fill(0);
+        const netRevenueArray = Array(numberOfMonths).fill(0);
+        const grossProfitArray = Array(numberOfMonths).fill(0);
+
+        customerGrowthData.forEach((growthData) => {
+          growthData.forEach((data) => {
+            if (data.channelName === channel.selectedChannel) {
+              const customerInput = customerInputs.find(
+                (input) => input.channelName === channel.selectedChannel
+              );
+
+              if (customerInput) {
+                const begin = customerInput.beginMonth;
+                const end = customerInput.endMonth;
+
+                if (data.month >= begin && data.month <= end) {
+                  let revenue =
+                    data.customers *
+                    parseFloat(channel.price) *
+                    parseFloat(channel.multiples) *
+                    parseFloat(channel.channelAllocation);
+                  revenueArray[data.month - 1] = revenue;
+
+                  // Calculate revenueDeduction and COGS
+                  revenueDeductionArray[data.month - 1] =
+                    (revenue * parseFloat(channel.deductionPercentage)) / 100;
+                  cogsArray[data.month - 1] =
+                    (revenue * parseFloat(channel.cogsPercentage)) / 100;
+                }
+              }
+            }
+          });
+        });
+
+        revenueByChannelAndProduct[channelProductKey] = revenueArray;
+        DeductionByChannelAndProduct[channelProductKey] = revenueDeductionArray;
+        cogsByChannelAndProduct[channelProductKey] = cogsArray;
+
+        netRevenueArray.forEach((_, i) => {
+          netRevenueArray[i] = revenueArray[i] - revenueDeductionArray[i];
+        });
+        netRevenueByChannelAndProduct[channelProductKey] = netRevenueArray;
+
+        grossProfitArray.forEach((_, i) => {
+          grossProfitArray[i] =
+            netRevenueByChannelAndProduct[channelProductKey][i] -
+            cogsByChannelAndProduct[channelProductKey][i];
+        });
+        grossProfitByChannelAndProduct[channelProductKey] = grossProfitArray;
+      }
+    });
+
+    return {
+      revenueByChannelAndProduct,
+      DeductionByChannelAndProduct,
+      cogsByChannelAndProduct,
+      netRevenueByChannelAndProduct,
+      grossProfitByChannelAndProduct,
+    };
+  };
 
   useEffect(() => {
     // Update channelNames based on current customerInputs
@@ -696,6 +773,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           {/* RevenueSetion */}
           <SalesSection
             channelInputs={channelInputs}
+            channelNames={channelNames}
             setChannelInputs={setChannelInputs}
             revenueData={revenueData}
             revenueDeductionData={revenueDeductionData}
@@ -704,15 +782,14 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             numberOfMonths={numberOfMonths}
             netRevenueData={netRevenueData}
             grossProfitData={grossProfitData}
-            channelNames={channelNames}
-            customerGrowthData={customerGrowthData}
+            calculateChannelRevenue={calculateChannelRevenue}
             setRevenueData={setRevenueData}
             setrevenueDeductionData={setrevenueDeductionData}
             setCogsData={setCogsData}
             setNetRevenueData={setNetRevenueData}
             setGrossProfitData={setGrossProfitData}
+            customerGrowthData={customerGrowthData}
             revenueTableData={revenueTableData}
-            setRevenueTableData={setRevenueTableData}
           />
 
           {/* CostSection */}

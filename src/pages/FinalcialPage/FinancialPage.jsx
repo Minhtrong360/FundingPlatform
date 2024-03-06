@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import AlertMsg from "../../components/AlertMsg";
 import SideBar from "../../components/SideBar";
 
-import Z from "../test03";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import FinancialForm from "./FinancialForm";
@@ -51,8 +50,10 @@ function FinancialPage({ subscribed }) {
         <div className="p-4 ml-24" onClick={() => setIsSidebarOpen(false)}>
           {/* {subscribed ? ( */}
           <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg darkBorderGray">
-            <FinancialForm />
-            {/* <Z currentUser={currentUser} setCurrentUser={setCurrentUser} /> */}
+            <FinancialForm
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+            />
           </div>
           {/* ) : (
             <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg darkBorderGray">

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { saveAs } from "file-saver";
 
-import { Table } from "antd";
-import Chart from "react-apexcharts";
 import DurationSelect from "./Components/DurationSelect";
 import CustomerSection from "./Components/CustomerSection";
 import SalesSection from "./Components/SalesSection";
@@ -13,16 +12,20 @@ import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 
 import { toast } from "react-toastify";
+import AlertMsg from "../../components/AlertMsg";
+import ProgressBar from "../../components/ProgressBar";
+import Gemini from "./Components/Gemini";
+import MetricsFM from "../MetricsFM";
+import ProfitAndLossSection from "./Components/ProfitAndLossSection";
+import * as XLSX from "xlsx";
 
-const FinancialForm = () => {
+const FinancialForm = ({ currentUser, setCurrentUser }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
   //DurationSection
-  const [financeName, setFinanceName] = useState("");
-
   const [selectedDuration, setSelectedDuration] = useState("3 years");
-
-  // const numberOfMonths = selectedDuration === "3 years" ? 36 : 60;
-
   const [numberOfMonths, setNumberOfMonths] = useState(0);
+
   useEffect(() => {
     if (selectedDuration === "3 years") {
       setNumberOfMonths(36);
@@ -32,7 +35,42 @@ const FinancialForm = () => {
     }
   }, [selectedDuration]);
 
-  //CustomerSection
+  const [startingCashBalance, setStartingCashBalance] = useState([]);
+  const [status, setStatus] = useState([]);
+  const [industry, setIndustry] = useState([]);
+  const [incomeTax, setIncomeTax] = useState(10);
+  const [payrollTax, setPayrollTax] = useState(0);
+  const [currency, setCurrency] = useState("USD");
+  const [startMonth, setStartMonth] = useState([]);
+  const [startYear, setStartYear] = useState(2024);
+  const [financialProjectName, setFinancialProjectName] = useState([]);
+
+  // Gemini
+  const [chatbotResponse, setChatbotResponse] = useState("");
+  // Gemini useEffect
+  useEffect(() => {
+    // Ensure chatbotResponse is only processed when it's a valid string
+    if (!chatbotResponse || chatbotResponse.trim() === "") return;
+    try {
+      const data = JSON.parse(chatbotResponse);
+
+      if (data.DurationSelect)
+        setSelectedDuration(data.DurationSelect.selectedDuration);
+      if (data.CustomerSection)
+        setCustomerInputs(data.CustomerSection.customerInputs);
+      if (data.SalesSection) setChannelInputs(data.SalesSection.channelInputs);
+      if (data.CostSection) setCostInputs(data.CostSection.costInputs);
+      if (data.PersonnelSection)
+        setPersonnelInputs(data.PersonnelSection.personnelInputs);
+      if (data.InvestmentSection)
+        setInvestmentInputs(data.InvestmentSection.investmentInputs);
+      if (data.LoanSection) setLoanInputs(data.LoanSection.loanInputs);
+    } catch (error) {
+      console.log("Error parsing JSON:", error);
+    }
+  }, [chatbotResponse]);
+
+  //CustomerState
   const [customerInputs, setCustomerInputs] = useState([
     {
       customersPerMonth: 300,
@@ -51,25 +89,14 @@ const FinancialForm = () => {
   ]);
 
   const [customerGrowthData, setCustomerGrowthData] = useState([]);
-  const [customerTableData, setCustomerTableData] = useState([]);
 
-  const [channelNames, setChannelNames] = useState([]);
-
-  useEffect(() => {
-    // Update channelNames based on current customerInputs
-    const updatedChannelNames = customerInputs
-      .map((input) => input.channelName)
-      .filter((name, index, self) => name && self.indexOf(name) === index);
-    setChannelNames(updatedChannelNames);
-  }, [customerInputs]); // Update channelNames when customerInputs changes
-
-  //SalesSection
+  //RevenueState
   const [channelInputs, setChannelInputs] = useState([
     {
       productName: "Coffee", // New field for product name
       price: 4,
       multiples: 1,
-      txFeePercentage: 10,
+      deductionPercentage: 5,
       cogsPercentage: 30,
       selectedChannel: "Offline",
       channelAllocation: 0.4,
@@ -78,31 +105,39 @@ const FinancialForm = () => {
       productName: "Cake", // New field for product name
       price: 8,
       multiples: 1,
-      txFeePercentage: 5,
+      deductionPercentage: 4,
       cogsPercentage: 35,
       selectedChannel: "Offline",
       channelAllocation: 0.3,
     },
     {
-      productName: "Coffee bag", // New field for product name
+      productName: "Coffee Bag", // New field for product name
       price: 6,
       multiples: 1,
-      txFeePercentage: 5,
+      deductionPercentage: 6,
       cogsPercentage: 25,
       selectedChannel: "Online",
       channelAllocation: 0.6,
     },
   ]);
-
+  const [channelNames, setChannelNames] = useState([]);
   const [revenueData, setRevenueData] = useState([]);
   const [netRevenueData, setNetRevenueData] = useState([]);
   const [grossProfitData, setGrossProfitData] = useState([]);
-
-  const [txFeeData, setTxFeeData] = useState([]);
+  const [revenueDeductionData, setrevenueDeductionData] = useState([]);
   const [cogsData, setCogsData] = useState([]);
+
   const [revenueTableData, setRevenueTableData] = useState([]);
 
-  // Cost inputs handle
+  useEffect(() => {
+    // Update channelNames based on current customerInputs
+    const updatedChannelNames = customerInputs
+      .map((input) => input.channelName)
+      .filter((name, index, self) => name && self.indexOf(name) === index);
+    setChannelNames(updatedChannelNames);
+  }, [customerInputs]);
+
+  //CostState
   const [costInputs, setCostInputs] = useState([
     {
       costName: "Website",
@@ -110,7 +145,7 @@ const FinancialForm = () => {
       growthPercentage: 0,
       beginMonth: 1,
       endMonth: 6,
-      costType: "Operating Cost",
+      costType: "Sales, Marketing Cost",
     },
     {
       costName: "Marketing",
@@ -118,7 +153,7 @@ const FinancialForm = () => {
       growthPercentage: 0,
       beginMonth: 1,
       endMonth: 36,
-      costType: "Operating Cost",
+      costType: "Sales, Marketing Cost",
     },
     {
       costName: "Rent",
@@ -126,13 +161,56 @@ const FinancialForm = () => {
       growthPercentage: 2,
       beginMonth: 1,
       endMonth: 36,
-      costType: "Operating Cost",
+      costType: "General Administrative Cost",
     },
   ]);
 
-  // ...other existing code...
+  const [costData, setCostData] = useState([]);
 
-  // State management cho Personnel
+  const calculateCostData = () => {
+    let allCosts = [];
+    costInputs.forEach((costInput) => {
+      let monthlyCosts = [];
+      let currentCost = parseFloat(costInput.costValue);
+      for (let month = 1; month <= numberOfMonths; month++) {
+        if (month >= costInput.beginMonth && month <= costInput.endMonth) {
+          monthlyCosts.push({ month: month, cost: currentCost });
+          currentCost *= 1 + parseFloat(costInput.growthPercentage) / 100;
+        } else {
+          monthlyCosts.push({ month: month, cost: 0 });
+        }
+      }
+      allCosts.push({
+        costName: costInput.costName,
+        monthlyCosts,
+        costType: costInput.costType,
+      });
+    });
+    return allCosts;
+  };
+
+  const transformCostDataForTable = () => {
+    const transformedCustomerTableData = {};
+    const calculatedCostData = calculateCostData();
+
+    calculatedCostData.forEach((costItem) => {
+      const rowKey = `${costItem.costType} - ${costItem.costName}`;
+      costItem.monthlyCosts.forEach((monthData) => {
+        if (!transformedCustomerTableData[rowKey]) {
+          transformedCustomerTableData[rowKey] = {
+            key: rowKey,
+            costName: rowKey,
+          };
+        }
+        transformedCustomerTableData[rowKey][`month${monthData.month}`] =
+          parseFloat(monthData.cost)?.toFixed(2);
+      });
+    });
+
+    return Object.values(transformedCustomerTableData);
+  };
+
+  //PersonnelState
   const [personnelInputs, setPersonnelInputs] = useState([
     {
       jobTitle: "Cashier",
@@ -149,12 +227,19 @@ const FinancialForm = () => {
       jobEndMonth: 36,
     },
   ]);
-
-  // Function to add a new personnel input
-
   const [personnelCostData, setPersonnelCostData] = useState([]);
+  const transformPersonnelCostDataForTable = () => {
+    const transformedCustomerTableData = personnelCostData.map((item) => {
+      const rowData = { key: item.jobTitle, jobTitle: item.jobTitle };
+      item.monthlyCosts.forEach((monthData) => {
+        rowData[`month${monthData.month}`] = monthData.cost?.toFixed(2); // Adjust formatting as needed
+      });
+      return rowData;
+    });
+    return transformedCustomerTableData;
+  };
 
-  //Investment Inputs
+  //InvestmentState
   const [investmentInputs, setInvestmentInputs] = useState([
     {
       purchaseName: "Coffee machine",
@@ -173,9 +258,120 @@ const FinancialForm = () => {
       usefulLifetime: 36,
     },
   ]);
+  //InvestmentTableData
+  const calculateInvestmentData = () => {
+    return investmentInputs.map((investment) => {
+      const quantity = parseInt(investment.quantity, 10) || 1; // Ensuring there is a default value of 1
 
-  //Loan part
+      const assetCost = parseFloat(investment.assetCost) * quantity;
 
+      const residualValue = parseFloat(investment.residualValue) * quantity;
+      const usefulLifetime = parseFloat(investment.usefulLifetime);
+      const purchaseMonth = parseInt(investment.purchaseMonth, 10);
+
+      const depreciationPerMonth = (assetCost - residualValue) / usefulLifetime;
+      const depreciationArray = new Array(numberOfMonths).fill(0);
+
+      // Calculate depreciation and accumulated depreciation
+      for (let i = 0; i < numberOfMonths; i++) {
+        if (i >= purchaseMonth - 1 && i < purchaseMonth - 1 + usefulLifetime) {
+          depreciationArray[i] = depreciationPerMonth;
+        }
+      }
+
+      const accumulatedDepreciation = depreciationArray.reduce(
+        (acc, val, index) => {
+          acc[index] = (acc[index - 1] || 0) + val;
+          return acc;
+        },
+        []
+      );
+
+      // Calculate asset value and book value
+      const assetValue = new Array(numberOfMonths).fill(0);
+      const bookValue = new Array(numberOfMonths).fill(0);
+      for (let i = 0; i < numberOfMonths; i++) {
+        if (i >= purchaseMonth - 1 && i < purchaseMonth - 1 + usefulLifetime) {
+          assetValue[i] = assetCost;
+
+          bookValue[i] = assetValue[i] - accumulatedDepreciation[i];
+        }
+      }
+
+      return {
+        assetValue,
+        depreciationArray,
+        accumulatedDepreciation,
+        bookValue,
+      };
+    });
+  };
+  const transformInvestmentDataForTable = () => {
+    const investmentTableData = [];
+
+    calculateInvestmentData().forEach((investment, investmentIndex) => {
+      const purchaseName =
+        investmentInputs[investmentIndex].purchaseName ||
+        `Investment ${investmentIndex + 1}`;
+      const assetCostRow = {
+        key: `${purchaseName} - Asset Cost`,
+        type: `${purchaseName}`,
+      };
+      const depreciationRow = {
+        key: `${purchaseName} - Depreciation`,
+        type: "Depreciation",
+      };
+      const accumulatedDepreciationRow = {
+        key: `${purchaseName} - Accumulated Depreciation`,
+        type: "Accumulated Depreciation",
+      };
+      const bookValueRow = {
+        key: `${purchaseName} - Book Value`,
+        type: "Book Value",
+      };
+
+      const purchaseMonth = parseInt(
+        investmentInputs[investmentIndex].purchaseMonth,
+        10
+      );
+      const usefulLife = parseInt(
+        investmentInputs[investmentIndex].usefulLifetime,
+        10
+      );
+      const endMonth = purchaseMonth + usefulLife - 1;
+      const assetCost =
+        parseFloat(investmentInputs[investmentIndex].assetCost) *
+        parseInt(investmentInputs[investmentIndex].quantity, 10);
+
+      for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
+        if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
+          assetCostRow[`month${monthIndex + 1}`] = assetCost?.toFixed(2); // Using Asset Cost
+          depreciationRow[`month${monthIndex + 1}`] =
+            investment.depreciationArray[monthIndex]?.toFixed(2);
+          accumulatedDepreciationRow[`month${monthIndex + 1}`] =
+            investment.accumulatedDepreciation[monthIndex]?.toFixed(2);
+          bookValueRow[`month${monthIndex + 1}`] = (
+            assetCost - investment.accumulatedDepreciation[monthIndex]
+          )?.toFixed(2);
+        } else {
+          assetCostRow[`month${monthIndex + 1}`] = "0.00";
+          depreciationRow[`month${monthIndex + 1}`] = "0.00";
+          accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0.00";
+          bookValueRow[`month${monthIndex + 1}`] = "0.00";
+        }
+      }
+
+      investmentTableData.push(
+        assetCostRow,
+        depreciationRow,
+        accumulatedDepreciationRow,
+        bookValueRow
+      );
+    });
+
+    return investmentTableData;
+  };
+  //LoanState
   const [loanInputs, setLoanInputs] = useState([
     {
       loanName: "Banking loan",
@@ -185,594 +381,397 @@ const FinancialForm = () => {
       loanEndMonth: "12",
     },
   ]);
+  const calculateLoanData = () => {
+    return loanInputs.map((loan) => {
+      const monthlyRate = parseFloat(loan.interestRate) / 100 / 12;
+      const loanAmount = parseFloat(loan.loanAmount);
+      const loanDuration =
+        parseInt(loan.loanEndMonth, 10) - parseInt(loan.loanBeginMonth, 10) + 1;
 
-  const [loanTableData, setLoanTableData] = useState([]);
+      // Calculate monthly payment
+      const monthlyPayment =
+        (loanAmount * monthlyRate) /
+        (1 - Math.pow(1 + monthlyRate, -loanDuration));
 
-  // Costs Calculation
-  const [costData, setCostData] = useState([]);
+      let remainingBalance = loanAmount;
+      const loanDataPerMonth = [];
 
-  // In your render method or return statement
-  const [costTableData, setCostTableData] = useState([]);
+      for (let month = 1; month <= loanDuration; month++) {
+        const interestForMonth = remainingBalance * monthlyRate;
+        const principalForMonth = monthlyPayment - interestForMonth;
+        remainingBalance -= principalForMonth;
 
-  //Personel cost
-  const [personnelCostTableData, setPersonnelCostTableData] = useState([]);
+        loanDataPerMonth.push({
+          month: month + parseInt(loan.loanBeginMonth, 10) - 1,
+          payment: monthlyPayment,
+          principal: principalForMonth,
+          interest: interestForMonth,
+          balance: remainingBalance,
+          loanAmount: loanAmount,
+        });
+      }
 
-  //Investment cost
-  const [investmentTableData, setInvestmentTableData] = useState([]);
+      return {
+        loanName: loan.loanName,
+        loanDataPerMonth,
+      };
+    });
+  };
+  const transformLoanDataForTable = () => {
+    const loanTableData = [];
 
-  // Dynamic Column Creation
+    calculateLoanData().forEach((loan, loanIndex) => {
+      const loanName =
+        loanInputs[loanIndex].loanName || `Loan ${loanIndex + 1}`;
 
-  const customerColumns = [
-    {
-      title: "Channel Name",
-      dataIndex: "channelName",
-      key: "channelName",
-    },
-    ...Array.from({ length: numberOfMonths }, (_, i) => i + 1).map((month) => ({
-      title: `Month_${month}`,
-      dataIndex: `month${month}`,
-      key: `month${month}`,
-    })),
-  ];
+      const loanAmountRow = {
+        key: `${loanName} - Loan Amount`,
+        type: `${loanName} - Loan Amount`,
+      };
+      const paymentRow = {
+        key: `${loanName} - Payment`,
+        type: `${loanName} - Payment`,
+      };
+      const principalRow = {
+        key: `${loanName} - Principal`,
+        type: `${loanName} - Principal`,
+      };
+      const interestRow = {
+        key: `${loanName} - Interest`,
+        type: `${loanName} - Interest`,
+      };
+      const balanceRow = {
+        key: `${loanName} - Remaining Balance`,
+        type: `${loanName} - Remaining Balance`,
+      };
 
-  const revenueColumns = [
-    {
-      title: "Channel - Product - Type",
-      dataIndex: "channelName",
-      key: "channelName",
-    },
-    ...Array.from({ length: numberOfMonths }, (_, i) => i + 1).map((month) => ({
-      title: `Month_${month}`,
-      dataIndex: `month${month}`,
-      key: `month${month}`,
-    })),
-  ];
+      // Initialize all rows with default values
+      for (let monthIndex = 1; monthIndex <= numberOfMonths; monthIndex++) {
+        const monthKey = `Month ${monthIndex}`;
+        loanAmountRow[monthKey] = "0.00";
+        paymentRow[monthKey] = "0.00";
+        principalRow[monthKey] = "0.00";
+        interestRow[monthKey] = "0.00";
+        balanceRow[monthKey] = "0.00";
+      }
 
-  const costColumns = [
-    {
-      title: "Cost Type - Cost Name",
-      dataIndex: "costName",
-      key: "costName",
-    },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `month${i + 1}`,
-      key: `month${i + 1}`,
-    })),
-  ];
+      loan.loanDataPerMonth.forEach((monthData) => {
+        const monthKey = `Month ${monthData.month}`;
+        loanAmountRow[monthKey] = monthData.loanAmount?.toFixed(2);
+        paymentRow[monthKey] = monthData.payment?.toFixed(2);
+        principalRow[monthKey] = monthData.principal?.toFixed(2);
+        interestRow[monthKey] = monthData.interest?.toFixed(2);
+        balanceRow[monthKey] = monthData.balance?.toFixed(2);
+      });
 
-  const personnelCostColumns = [
-    {
-      title: "Job Title",
-      dataIndex: "jobTitle",
-      key: "jobTitle",
-    },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `month${i + 1}`,
-      key: `month${i + 1}`,
-    })),
-  ];
+      loanTableData.push(
+        loanAmountRow,
+        paymentRow,
+        principalRow,
+        interestRow,
+        balanceRow
+      );
+    });
 
-  const investmentColumns = [
-    { title: "Type", dataIndex: "type", key: "type" },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `month${i + 1}`,
-      key: `month${i + 1}`,
-    })),
-  ];
-
-  const loanColumns = [
-    { title: "Type", dataIndex: "type", key: "type" },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `Month ${i + 1}`,
-      key: `Month ${i + 1}`,
-    })),
-  ];
-
-  const [customerGrowthChart, setCustomerGrowthChart] = useState({
-    options: {
-      chart: {
-        id: "customer-growth-chart",
-        type: "line",
-        height: 350,
-      },
-      xaxis: {
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `Month ${i + 1}`
-        ),
-      },
-      yaxis: {
-        labels: {
-          formatter: function (val) {
-            return Math.floor(val);
-          },
-        },
-      },
-      legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
-      dataLabels: { enabled: false },
-      stroke: { curve: "straight" },
-      markers: { size: 1 },
-    },
-    series: [],
-  });
-
-  const [revenueChart, setRevenueChart] = useState({
-    options: {
-      chart: { id: "revenue-chart", type: "line", height: 350 },
-      xaxis: {
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `Month ${i + 1}`
-        ),
-      },
-
-      yaxis: {
-        labels: {
-          formatter: function (val) {
-            return Math.floor(val); // Format Y-axis labels as integers
-          },
-        },
-      },
-      legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
-      dataLabels: { enabled: false },
-      stroke: { curve: "straight" },
-      markers: { size: 1 },
-    },
-
-    series: [],
-  });
-
-  const [costChart, setCostChart] = useState({
-    options: {
-      chart: { id: "cost-chart", type: "bar", height: 350 },
-      xaxis: {
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `Month ${i + 1}`
-        ),
-      },
-
-      yaxis: {
-        labels: {
-          formatter: function (val) {
-            return Math.floor(val); // Format Y-axis labels as integers
-          },
-        },
-      },
-      legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
-      dataLabels: { enabled: false },
-      stroke: { curve: "straight" },
-      markers: { size: 1 },
-    },
-    series: [],
-  });
-
-  const [personnelChart, setPersonnelChart] = useState({
-    options: {
-      chart: { id: "personnel-chart", type: "bar", height: 350 },
-      xaxis: {
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `Month ${i + 1}`
-        ),
-      },
-
-      yaxis: {
-        labels: {
-          formatter: function (val) {
-            return Math.floor(val); // Format Y-axis labels as integers
-          },
-        },
-      },
-      legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
-      dataLabels: { enabled: false },
-      stroke: { curve: "straight" },
-      markers: { size: 1 },
-    },
-    series: [],
-  });
-
-  const [investmentChart, setInvestmentChart] = useState({
-    options: {
-      chart: { id: "investment-chart", type: "area", height: 350 },
-      xaxis: {
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `Month ${i + 1}`
-        ),
-      },
-
-      yaxis: {
-        labels: {
-          formatter: function (val) {
-            return Math.floor(val); // Format Y-axis labels as integers
-          },
-        },
-      },
-      legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
-      dataLabels: { enabled: false },
-      stroke: { curve: "straight" },
-      markers: { size: 1 },
-    },
-    series: [],
-  });
-
-  const [loanChart, setLoanChart] = useState({
-    options: {
-      chart: { id: "loan-chart", type: "line", height: 350 },
-      xaxis: {
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `Month ${i + 1}`
-        ),
-      },
-
-      yaxis: {
-        labels: {
-          formatter: function (val) {
-            return Math.floor(val); // Format Y-axis labels as integers
-          },
-        },
-      },
-      legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
-      dataLabels: { enabled: false },
-      stroke: { curve: "straight" },
-      markers: { size: 1 },
-    },
-    series: [],
-  });
+    return loanTableData;
+  };
 
   // Lưu vào DB
 
-  const [isLoading, setIsLoading] = useState(true);
+  // const { user } = useAuth();
+  // const loadData = async (userId) => {
+  //   setIsLoading(true);
+  //   const { data, error } = await supabase
+  //     .from("finance")
+  //     .select("inputData")
+  //     .eq("user_id", userId);
+  //   if (error) {
+  //     toast.error(error.message);
+  //     console.error("Error fetching data", error);
+  //     return null;
+  //   }
+  //   setIsLoading(false);
+  //   return data.length > 0 ? JSON.parse(data[0]?.inputData) : null;
+  // };
 
-  const { user } = useAuth();
-  const loadData = async (userId) => {
-    setIsLoading(true);
-    const { data, error } = await supabase
-      .from("finance")
-      .select("inputData")
-      .eq("user_id", userId);
-    if (error) {
-      toast.error(error.message);
-      console.error("Error fetching data", error);
-      return null;
-    }
-    setIsLoading(false);
-    return data.length > 0 ? JSON.parse(data[0]?.inputData) : null;
-  };
+  // useEffect(() => {
+  //   // Assuming `user` is your user object
+  //   const userId = user?.id;
+  //   if (userId) {
+  //     loadData(userId).then((inputData) => {
+  //       if (inputData) {
+  //         // Set your state here
+  //         setFinancialProjectName(inputData.financialProjectName);
+  //         setSelectedDuration(inputData.selectedDuration);
+  //         setCustomerInputs(inputData.customerInputs);
+  //         setChannelInputs(inputData.channelInputs);
+  //         setCostInputs(inputData.costInputs);
+  //         setPersonnelInputs(inputData.personnelInputs);
+  //         setInvestmentInputs(inputData.investmentInputs);
+  //         setLoanInputs(inputData.loanInputs);
+  //       }
+  //     });
+  //   }
+  // }, [user?.id]);
 
-  useEffect(() => {
-    // Assuming `user` is your user object
-    const userId = user?.id;
-    if (userId) {
-      loadData(userId).then((inputData) => {
-        if (inputData) {
-          // Set your state here
-          setFinanceName(inputData.financeName);
-          setSelectedDuration(inputData.selectedDuration);
-          setCustomerInputs(inputData.customerInputs);
-          setChannelInputs(inputData.channelInputs);
-          setCostInputs(inputData.costInputs);
-          setPersonnelInputs(inputData.personnelInputs);
-          setInvestmentInputs(inputData.investmentInputs);
-          setLoanInputs(inputData.loanInputs);
-        }
-      });
-    }
-  }, [user?.id]);
+  // const saveOrUpdateFinanceData = async (userId, inputData) => {
+  //   setIsLoading(true);
 
-  const saveOrUpdateFinanceData = async (userId, inputData) => {
-    setIsLoading(true);
+  //   try {
+  //     const { data: existingData, error: selectError } = await supabase
+  //       .from("finance")
+  //       .select("*")
+  //       .eq("user_id", userId);
 
-    try {
-      const { data: existingData, error: selectError } = await supabase
-        .from("finance")
-        .select("*")
-        .eq("user_id", userId);
+  //     if (selectError) throw selectError;
 
-      if (selectError) throw selectError;
+  //     if (existingData.length > 0) {
+  //       const financeRecord = existingData[0];
 
-      if (existingData.length > 0) {
-        const financeRecord = existingData[0];
+  //       // Kiểm tra nếu tác giả của dữ liệu tài chính trùng với userId
+  //       if (financeRecord.user_id === userId) {
+  //         // Cập nhật bản ghi hiện có
 
-        // Kiểm tra nếu tác giả của dữ liệu tài chính trùng với userId
-        if (financeRecord.user_id === userId) {
-          // Cập nhật bản ghi hiện có
+  //         const { error: updateError } = await supabase
+  //           .from("finance")
+  //           .update({ name: financeName, inputData })
+  //           .eq("id", financeRecord?.id)
+  //           .select();
 
-          const { error: updateError } = await supabase
-            .from("finance")
-            .update({ name: financeName, inputData })
-            .eq("id", financeRecord?.id)
-            .select();
+  //         if (updateError) {
+  //           toast.error(updateError.message);
+  //         } else {
+  //           toast.success("Updated successfully.");
+  //         }
+  //       } else {
+  //         toast.error("Bạn không có quyền cập nhật bản ghi này.");
+  //       }
+  //     } else {
+  //       // Thêm bản ghi mới
+  //       const { error: insertError } = await supabase.from("finance").insert([
+  //         {
+  //           user_id: userId,
+  //           name: financeName,
+  //           user_email: user.email,
+  //           inputData,
+  //         },
+  //       ]);
+  //       if (insertError) {
+  //         toast.error(insertError.message);
+  //       } else {
+  //         toast.success("Inserted successfully.");
+  //       }
+  //     }
+  //   } catch (error) {
+  //     toast.error(error.message);
+  //     console.error("Error in saveOrUpdateFinanceData", error);
+  //     return null;
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
-          if (updateError) {
-            toast.error(updateError.message);
-          } else {
-            toast.success("Updated successfully.");
-          }
-        } else {
-          toast.error("Bạn không có quyền cập nhật bản ghi này.");
-        }
-      } else {
-        // Thêm bản ghi mới
-        const { error: insertError } = await supabase.from("finance").insert([
-          {
-            user_id: userId,
-            name: financeName,
-            user_email: user.email,
-            inputData,
-          },
-        ]);
-        if (insertError) {
-          toast.error(insertError.message);
-        } else {
-          toast.success("Inserted successfully.");
-        }
-      }
-    } catch (error) {
-      toast.error(error.message);
-      console.error("Error in saveOrUpdateFinanceData", error);
-      return null;
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const handleSubmit = async () => {
+  //   const financeData = {
+  //     financeName,
+  //     selectedDuration,
+  //     customerInputs,
+  //     channelInputs,
+  //     costInputs,
+  //     personnelInputs,
+  //     investmentInputs,
+  //     loanInputs,
+  //   };
 
-  const handleSubmit = async () => {
-    const financeData = {
-      financeName,
-      selectedDuration,
-      customerInputs,
-      channelInputs,
-      costInputs,
-      personnelInputs,
-      investmentInputs,
-      loanInputs,
+  //   await saveOrUpdateFinanceData(user?.id, financeData);
+
+  //   // Handle post-save actions
+  // };
+
+  // Download Excel
+  const downloadExcel = () => {
+    const workBook = XLSX.utils.book_new();
+
+    const convertDataToWorksheet = (data) => {
+      return XLSX.utils.json_to_sheet(data);
     };
 
-    await saveOrUpdateFinanceData(user?.id, financeData);
+    const addSheetToWorkbook = (sheet, sheetName) => {
+      XLSX.utils.book_append_sheet(workBook, sheet, sheetName);
+    };
 
-    // Handle post-save actions
+    // Example data conversion and sheet addition
+    addSheetToWorkbook(
+      convertDataToWorksheet(transformCostDataForTable()),
+      "Costs"
+    );
+    addSheetToWorkbook(
+      convertDataToWorksheet(transformPersonnelCostDataForTable()),
+      "Personnel Costs"
+    );
+    addSheetToWorkbook(
+      convertDataToWorksheet(transformInvestmentDataForTable()),
+      "Investments"
+    );
+    addSheetToWorkbook(
+      convertDataToWorksheet(transformLoanDataForTable()),
+      "Loans"
+    );
+    //addSheetToWorkbook(convertDataToWorksheet(transposedData), 'Profit and Loss');
+
+    // Write the workbook and trigger download
+    const wbout = XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
+
+    function s2ab(s) {
+      const buf = new ArrayBuffer(s.length);
+      const view = new Uint8Array(buf);
+      for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+      return buf;
+    }
+
+    saveAs(
+      new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
+      "financial-data.xlsx"
+    );
   };
 
   return (
     <div>
-      <div className="flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4 border-e-2">
-          <DurationSelect
-            financeName={financeName}
-            setFinanceName={setFinanceName}
-            selectedDuration={selectedDuration}
-            setSelectedDuration={setSelectedDuration}
-          />
-        </div>
-        <div className="w-full lg:w-2/3 p-4"></div>
-      </div>
-      <hr className="border border-dashed my-8" />
-      <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4 border-e-2">
+      <AlertMsg />
+      {isLoading ? (
+        <ProgressBar isLoading={isLoading} />
+      ) : (
+        <>
+          {/* Gemini */}
+          <div className="w-full h-full flex flex-col lg:flex-row">
+            <Gemini
+              setIsLoading={setIsLoading}
+              setChatbotResponse={setChatbotResponse}
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+            />
+          </div>
+
+          {/* DurationSection */}
+          <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
+            <div className="w-full lg:w-1/3 p-4 border-r-2">
+              <DurationSelect
+                selectedDuration={selectedDuration}
+                setSelectedDuration={setSelectedDuration}
+                startingCashBalance={startingCashBalance}
+                setStartingCashBalance={setStartingCashBalance}
+                status={status}
+                setStatus={setStatus}
+                industry={industry}
+                setIndustry={setIndustry}
+                incomeTax={incomeTax}
+                setIncomeTax={setIncomeTax}
+                payrollTax={payrollTax}
+                setPayrollTax={setPayrollTax}
+                currency={currency}
+                setCurrency={setCurrency}
+                startMonth={startMonth}
+                setStartMonth={setStartMonth}
+                startYear={startYear}
+                setStartYear={setStartYear}
+                financialProjectName={financialProjectName}
+                setFinancialProjectName={setFinancialProjectName}
+              />
+            </div>
+
+            <div className="w-full lg:w-2/3 p-4">
+              <MetricsFM />
+            </div>
+          </div>
+
+          {/* CustomerSection */}
           <CustomerSection
-            numberOfMonths={numberOfMonths}
-            selectedDuration={selectedDuration}
             customerInputs={customerInputs}
             setCustomerInputs={setCustomerInputs}
+            numberOfMonths={numberOfMonths}
             customerGrowthData={customerGrowthData}
             setCustomerGrowthData={setCustomerGrowthData}
-            customerGrowthChart={customerGrowthChart}
-            setCustomerGrowthChart={setCustomerGrowthChart}
-            customerTableData={customerTableData}
-            setCustomerTableData={setCustomerTableData}
           />
-        </div>
 
-        <div className="w-full lg:w-2/3 p-4 ">
-          <h3 className="text-lg font-semibold my-8">
-            Customer Growth Data by Channel
-          </h3>
-          <Table
-            className="overflow-auto mb-4 border-2"
-            dataSource={customerTableData}
-            columns={customerColumns}
-            pagination={false}
-          />
-          <h3 className="text-lg font-semibold my-8">
-            {" "}
-            Customer Growth Data by Channel
-          </h3>
-          <Chart
-            options={customerGrowthChart.options}
-            series={customerGrowthChart.series}
-            type="line"
-            height={350}
-          />
-        </div>
-      </div>
-      <hr className="border border-dashed my-8" />
-      <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4 border-e-2">
+          {/* RevenueSetion */}
           <SalesSection
             channelInputs={channelInputs}
-            channelNames={channelNames}
             setChannelInputs={setChannelInputs}
-            setRevenueData={setRevenueData}
-            setNetRevenueData={setNetRevenueData}
-            setGrossProfitData={setGrossProfitData}
-            setTxFeeData={setTxFeeData}
-            setCogsData={setCogsData}
-            customerGrowthData={customerGrowthData}
-            numberOfMonths={numberOfMonths}
-            customerInputs={customerInputs}
             revenueData={revenueData}
-            txFeeData={txFeeData}
+            revenueDeductionData={revenueDeductionData}
             cogsData={cogsData}
+            customerInputs={customerInputs}
+            numberOfMonths={numberOfMonths}
             netRevenueData={netRevenueData}
             grossProfitData={grossProfitData}
+            channelNames={channelNames}
+            customerGrowthData={customerGrowthData}
+            setRevenueData={setRevenueData}
+            setrevenueDeductionData={setrevenueDeductionData}
+            setCogsData={setCogsData}
+            setNetRevenueData={setNetRevenueData}
+            setGrossProfitData={setGrossProfitData}
+            revenueTableData={revenueTableData}
             setRevenueTableData={setRevenueTableData}
-            setRevenueChart={setRevenueChart}
           />
-        </div>
 
-        <div className="w-full lg:w-2/3 p-4 relative">
-          <h3 className="text-lg font-semibold my-8">
-            {" "}
-            Revenue Data by Channel and Product
-          </h3>
-          <Table
-            className="overflow-auto mb-4 border-2"
-            dataSource={revenueTableData}
-            columns={revenueColumns}
-            pagination={false}
-          />
-          <h3 className="text-lg font-semibold mb-4">
-            Gross Profit Data by Channel and Product
-          </h3>
-          <Chart
-            options={revenueChart.options}
-            series={revenueChart.series}
-            type="line"
-            height={350}
-          />
-        </div>
-      </div>
-
-      <hr className="border border-dashed my-8" />
-      <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4 border-e-2">
+          {/* CostSection */}
           <CostSection
             costInputs={costInputs}
             setCostInputs={setCostInputs}
-            setCostData={setCostData}
             numberOfMonths={numberOfMonths}
-            setCostTableData={setCostTableData}
-            setCostChart={setCostChart}
+            calculateCostData={calculateCostData}
+            transformCostDataForTable={transformCostDataForTable}
             costData={costData}
+            setCostData={setCostData}
           />
-        </div>
-        <div className="w-full lg:w-2/3 p-4">
-          <h3 className="text-lg font-semibold mb-4">Cost Data</h3>
-          <Table
-            className="overflow-auto mb-4 border-2"
-            dataSource={costTableData}
-            columns={costColumns}
-            pagination={false}
-          />
-          <h3 className="text-lg font-semibold mb-4">Cost Chart</h3>
-          <Chart
-            options={costChart.options}
-            series={costChart.series}
-            type="bar"
-            height={350}
-          />
-        </div>
-      </div>
-      <hr className="border border-dashed my-8" />
-      <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4 border-e-2">
+
+          {/* PersonnelSection */}
           <PersonnelSection
             personnelInputs={personnelInputs}
             setPersonnelInputs={setPersonnelInputs}
-            setPersonnelCostData={setPersonnelCostData}
-            numberOfMonth={numberOfMonths}
-            setPersonnelCostTableData={setPersonnelCostTableData}
+            numberOfMonths={numberOfMonths}
             personnelCostData={personnelCostData}
-            setPersonnelChart={setPersonnelChart}
+            setPersonnelCostData={setPersonnelCostData}
+            transformPersonnelCostDataForTable={
+              transformPersonnelCostDataForTable
+            }
           />
-        </div>
-        <div className="w-full lg:w-2/3 p-4">
-          <h3 className="text-lg font-semibold mb-4">Personnel Cost Data</h3>
-          <Table
-            className="overflow-auto mb-4 border-2"
-            dataSource={personnelCostTableData}
-            columns={personnelCostColumns}
-            pagination={false}
-          />
-          <h3 className="text-lg font-semibold mb-4">Personnel Cost Chart</h3>
-          <Chart
-            options={personnelChart.options}
-            series={personnelChart.series}
-            type="bar"
-            height={350}
-          />
-        </div>
-      </div>
-      <hr className="border border-dashed my-8" />
-      <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4 border-e-2">
+
+          {/* InvestmentSection */}
           <InvestmentSection
             investmentInputs={investmentInputs}
             setInvestmentInputs={setInvestmentInputs}
             numberOfMonths={numberOfMonths}
-            setInvestmentTableData={setInvestmentTableData}
-            setInvestmentChart={setInvestmentChart}
+            calculateInvestmentData={calculateInvestmentData}
+            transformInvestmentDataForTable={transformInvestmentDataForTable}
           />
-        </div>
-        <div className="w-full lg:w-2/3 p-4">
-          <h3 className="text-lg font-semibold mb-4">Investment Data</h3>
-          <Table
-            className="overflow-auto mb-4 border-2"
-            dataSource={investmentTableData}
-            columns={investmentColumns}
-            pagination={false}
-          />
-          <h3 className="text-lg font-semibold mb-4">Investment Chart</h3>
-          <Chart
-            options={investmentChart.options}
-            series={investmentChart.series}
-            type="area"
-            height={350}
-          />
-        </div>
-      </div>
-      <hr className="border border-dashed my-8" />
-      <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/3 p-4 border-e-2">
+
+          {/* LoanSection */}
           <LoanSection
             loanInputs={loanInputs}
             setLoanInputs={setLoanInputs}
             numberOfMonths={numberOfMonths}
-            setLoanTableData={setLoanTableData}
-            setLoanChart={setLoanChart}
+            calculateLoanData={calculateLoanData}
+            transformLoanDataForTable={transformLoanDataForTable}
           />
-        </div>
-        <div className="w-full lg:w-2/3 p-4">
-          <h3 className="text-lg font-semibold mb-4">Loan Data</h3>
-          <Table
-            className="overflow-auto mb-4 border-2"
-            dataSource={loanTableData}
-            columns={loanColumns}
-            pagination={false}
-          />
-          <h3 className="text-lg font-semibold mb-4">Loan Chart</h3>
-          <Chart
-            options={loanChart.options}
-            series={loanChart.series}
-            type="line"
-            height={350}
-          />
-        </div>
-      </div>
 
-      {user?.id && (
-        <button
-          className="fixed bottom-8 left-30 bg-blue-600 text-white py-1 px-4 rounded disabled:bg-gray-500"
-          type="button"
-          onClick={handleSubmit}
-          disabled={isLoading}
-        >
-          Save
-        </button>
+          {/* ProfitAndLossSection */}
+          <ProfitAndLossSection
+            revenueData={revenueTableData}
+            costData={costData}
+            personnelCostData={personnelCostData}
+            investmentData={calculateInvestmentData()}
+            loanData={calculateLoanData()}
+            numberOfMonths={numberOfMonths}
+            incomeTaxRate={incomeTax}
+          />
+        </>
       )}
+
+      <button onClick={downloadExcel} className="download-excel-button">
+        Download Excel
+      </button>
     </div>
   );
 };

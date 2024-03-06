@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Tooltip } from "antd";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import {
@@ -20,9 +21,9 @@ import AlertMsg from "../components/AlertMsg";
 import apiService from "../app/apiService";
 import MetricsFM from "./MetricsFM";
 import Search from "./Home/Components/Search";
+import { InfoCircleOutlined } from "@ant-design/icons";
 
-//JSON
-
+// Duration UI
 const DurationSelect = ({
   selectedDuration,
   setSelectedDuration,
@@ -88,141 +89,172 @@ const DurationSelect = ({
         Duration and Initial Setup
       </h2>
       <div className="bg-white rounded-md shadow p-6">
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Business name:</span>
-          <Input
-            value={financialProjectName}
-            onChange={(e) => setFinancialProjectName(e.target.value)}
-            type="text"
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Start Month:</span>
-          <Select onValueChange={setStartMonth} value={startMonth}>
-            <SelectTrigger
-              id="start-month"
-              className="border-solid border-[1px] border-gray-600"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              {months.map((month, index) => (
-                <SelectItem key={index} value={month}>
-                  {month}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        <Tooltip title="Enter the name of your business">
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className=" flex items-center">Business name :</span>
 
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Start Year:</span>
-          <Select onValueChange={setStartYear} value={startYear}>
-            <SelectTrigger
-              id="start-year"
-              className="border-solid border-[1px] border-gray-600"
+            <Input
+              value={financialProjectName}
+              onChange={(e) => setFinancialProjectName(e.target.value)}
+              type="text"
+            />
+          </div>
+        </Tooltip>
+
+        <Tooltip title="Enter the starting month of the business">
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className=" flex items-center">Start Month :</span>
+            <Select onValueChange={setStartMonth} value={startMonth}>
+              <SelectTrigger
+                id="start-month"
+                className="border-solid border-[1px] border-gray-600"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                {months.map((month, index) => (
+                  <SelectItem key={index} value={month}>
+                    {month}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </Tooltip>
+
+        <Tooltip title="Enter the starting year of the business">
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className=" flex items-center">Start Year :</span>
+            <Select onValueChange={setStartYear} value={startYear}>
+              <SelectTrigger
+                id="start-year"
+                className="border-solid border-[1px] border-gray-600"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                {years.map((year, index) => (
+                  <SelectItem key={index} value={year}>
+                    {year}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </Tooltip>
+
+        <Tooltip title="Select the duration 3 years or 5 years">
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className=" flex items-center">Duration :</span>
+            <Select onValueChange={(value) => setSelectedDuration(value)}>
+              <SelectTrigger
+                id="start-date-year"
+                className="border-solid border-[1px] border-gray-600"
+              >
+                <SelectValue placeholder={selectedDuration} />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectItem value="3 years">3 years</SelectItem>
+                <SelectItem value="5 years">5 years</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </Tooltip>
+
+        <Tooltip title="Enter the starting cash balance, e.g. $10,000">
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className=" flex items-center">Starting Cash Balance :</span>
+
+            <Input
+              value={startingCashBalance}
+              onChange={(e) => setStartingCashBalance(e.target.value)}
+              type="number"
+            />
+          </div>
+        </Tooltip>
+
+        <Tooltip title="Select the status of the business, e.g. $10,000">
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className=" flex items-center">Status :</span>
+            <Select onValueChange={(value) => setStatus(value)} value={status}>
+              <SelectTrigger className="border-solid border-[1px] border-gray-600">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </Tooltip>
+
+        <Tooltip title="Select the business industry, e.g. Fintech, Edtech">
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className=" flex items-center">Business industry:</span>
+            <Select onValueChange={setIndustry} value={industry}>
+              <SelectTrigger
+                id="industry"
+                className="border-solid border-[1px] border-gray-600"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                {industries.map((industry, index) => (
+                  <SelectItem key={index} value={industry}>
+                    {industry}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </Tooltip>
+
+        <Tooltip title="Input the income tax, e.g. 10">
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className=" flex items-center">Income Tax(%) :</span>
+            <Input
+              type="number"
+              value={incomeTax}
+              onChange={(e) => setIncomeTax(e.target.value)}
+            />
+          </div>
+        </Tooltip>
+
+        <Tooltip title="Input the payroll tax, e.g. 10">
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className=" flex items-center">Payroll Tax (%):</span>
+            <Input
+              type="number"
+              value={payrollTax}
+              onChange={(e) => setPayrollTax(e.target.value)}
+            />
+          </div>
+        </Tooltip>
+
+        <Tooltip title="Select the currency, e.g. USD">
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className=" flex items-center">Currency :</span>
+            <Select
+              onValueChange={(value) => setCurrency(value)}
+              value={currency}
             >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              {years.map((year, index) => (
-                <SelectItem key={index} value={year}>
-                  {year}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Duration</span>
-          <Select onValueChange={(value) => setSelectedDuration(value)}>
-            <SelectTrigger
-              id="start-date-year"
-              className="border-solid border-[1px] border-gray-600"
-            >
-              <SelectValue placeholder={selectedDuration} />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              <SelectItem value="3 years">3 years</SelectItem>
-              <SelectItem value="5 years">5 years</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Starting Cash Balance:</span>
-          <Input
-            value={startingCashBalance}
-            onChange={(e) => setStartingCashBalance(e.target.value)}
-            type="number"
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Status:</span>
-          <Select onValueChange={(value) => setStatus(value)} value={status}>
-            <SelectTrigger className="border-solid border-[1px] border-gray-600">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="inactive">Inactive</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Industry:</span>
-          <Select onValueChange={setIndustry} value={industry}>
-            <SelectTrigger
-              id="industry"
-              className="border-solid border-[1px] border-gray-600"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              {industries.map((industry, index) => (
-                <SelectItem key={index} value={industry}>
-                  {industry}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Income Tax (%):</span>
-          <Input
-            type="number"
-            value={incomeTax}
-            onChange={(e) => setIncomeTax(e.target.value)}
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Payroll Tax (%):</span>
-          <Input
-            type="number"
-            value={payrollTax}
-            onChange={(e) => setPayrollTax(e.target.value)}
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Currency:</span>
-          <Select
-            onValueChange={(value) => setCurrency(value)}
-            value={currency}
-          >
-            <SelectTrigger className="border-solid border-[1px] border-gray-600">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              <SelectItem value="USD">USD</SelectItem>
-              <SelectItem value="EUR">EUR</SelectItem>
-              <SelectItem value="GBP">GBP</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+              <SelectTrigger className="border-solid border-[1px] border-gray-600">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectItem value="USD">USD</SelectItem>
+                <SelectItem value="EUR">EUR</SelectItem>
+                <SelectItem value="GBP">GBP</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </Tooltip>
       </div>
     </section>
   );
 };
 
+// Customer UI
 const CustomerSection = ({
   customerInputs,
   addNewCustomerInput,
@@ -242,17 +274,24 @@ const CustomerSection = ({
 
   return (
     <section aria-labelledby="customers-heading" className="mb-8">
-      <h2
-        className="text-2xl font-semibold mb-4 flex items-center"
-        id="customers-heading"
-      >
-        Customer
-      </h2>
+      <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Here's a list of common customer channels that startups often utilize: Website, Social Media,Email Marketing, Referral Programs, Events and Networking, Direct Sales, Subscription.">
+        <h2
+          className="text-2xl font-semibold mb-4 flex items-center"
+          id="customers-heading"
+        >
+          1. Identify your customer{" "}
+          <InfoCircleOutlined style={{ marginLeft: "0.5rem" }} />
+        </h2>
+        <p>
+          Việc tạo kênh bán là cực kì quan trọng. Bạn phải nghe tui, không xác
+          định được kênh bán là đi bụi
+        </p>
+      </Tooltip>
 
       {customerInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className=" flex items-center">Customers Per Month:</span>
+            <span className=" flex items-center">Customers per month:</span>
             <Input
               className="col-start-2"
               value={input.customersPerMonth}
@@ -328,6 +367,7 @@ const CustomerSection = ({
   );
 };
 
+// Revenue UI
 const SalesSection = ({
   channelInputs,
   channelNames,
@@ -390,20 +430,22 @@ const SalesSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className=" flex items-center">Rev. Deductions (%):</span>
-            <Input
-              className="col-start-2"
-              value={input.deductionPercentage}
-              onChange={(e) =>
-                handleChannelInputChange(
-                  index,
-                  "deductionPercentage",
-                  e.target.value
-                )
-              }
-            />
-          </div>
+          <Tooltip title="Revenue deductions like transaction fees, commission fee... ">
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <span className=" flex items-center">Rev. Deductions (%):</span>
+              <Input
+                className="col-start-2"
+                value={input.deductionPercentage}
+                onChange={(e) =>
+                  handleChannelInputChange(
+                    index,
+                    "deductionPercentage",
+                    e.target.value
+                  )
+                }
+              />
+            </div>
+          </Tooltip>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className=" flex items-center">COGS (%):</span>
@@ -484,6 +526,7 @@ const SalesSection = ({
   );
 };
 
+// Cost UI
 const CostSection = ({
   costInputs,
   addNewCostInput,
@@ -606,8 +649,12 @@ const CostSection = ({
                 <SelectValue placeholder="Select Cost Type" />
               </SelectTrigger>
               <SelectContent position="popper">
-                <SelectItem value="Operating Cost">Operating Cost</SelectItem>
-                <SelectItem value="SG & A">SG & A</SelectItem>
+                <SelectItem value="Sales, Marketing Cost">
+                  Sales, Marketing Cost
+                </SelectItem>
+                <SelectItem value="General Administrative Cost">
+                  General Administrative Cost
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -633,6 +680,7 @@ const CostSection = ({
   );
 };
 
+// Personnel UI
 const PersonnelSection = ({
   personnelInputs,
   addNewPersonnelInput,
@@ -736,6 +784,7 @@ const PersonnelSection = ({
   );
 };
 
+// Investment UI
 const InvestmentSection = ({
   investmentInputs,
   setInvestmentInputs, // Add this line
@@ -845,6 +894,7 @@ const InvestmentSection = ({
   );
 };
 
+// Loan UI
 const LoanSection = ({
   loanInputs,
   addNewLoanInput,
@@ -942,6 +992,16 @@ const LoanSection = ({
 };
 
 const Z = ({ currentUser, setCurrentUser }) => {
+  //DURATION
+  //DURATION
+  //DURATION
+  //DURATION
+  //DURATION
+  //DURATION
+  //DURATION
+  //DURATION
+  //DURATION
+
   const [selectedDuration, setSelectedDuration] = useState("3 years");
   const [numberOfMonths, setNumberOfMonths] = useState(0);
 
@@ -953,22 +1013,18 @@ const Z = ({ currentUser, setCurrentUser }) => {
       setNumberOfMonths(60);
     }
   }, [selectedDuration]);
-  //DurationSection
+
   const [chatbotResponse, setChatbotResponse] = useState("");
-  const [jsonInput, setJsonInput] = useState(null); // JSON input state
-  const [durationSelect, setDurationSelect] = useState({});
-  const [customerSection, setCustomerSection] = useState({});
-  const [salesSection, setSalesSection] = useState({});
-  const [costSection, setCostSection] = useState({});
-  const [personnelSection, setPersonnelSection] = useState({});
-  const [investmentSection, setInvestmentSection] = useState({});
-  const [loanSection, setLoanSection] = useState({});
-
   const [isLoading, setIsLoading] = useState(false);
-
-  // gemini
-
-  const { Text } = Typography;
+  const [startingCashBalance, setStartingCashBalance] = useState([]);
+  const [status, setStatus] = useState([]);
+  const [industry, setIndustry] = useState([]);
+  const [incomeTax, setIncomeTax] = useState(10);
+  const [payrollTax, setPayrollTax] = useState(0);
+  const [currency, setCurrency] = useState("USD");
+  const [startMonth, setStartMonth] = useState([]);
+  const [startYear, setStartYear] = useState(2024);
+  const [financialProjectName, setFinancialProjectName] = useState([]);
 
   const industries = [
     "Coffee shop ☕",
@@ -1024,7 +1080,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
             },
 
             body: JSON.stringify({
-              user_input: `{ "DurationSelect": { "selectedDuration": "5 years", "startingCashBalance": 20000, "status": "active", "industry": "retail", "incomeTax": 25, "payrollTax": 12, "currency": "USD" }, "CustomerSection": { "customerInputs": [ { "customersPerMonth": 500, "growthPerMonth": 5, "channelName": "In-Store", "beginMonth": 1, "endMonth": 60 }, { "customersPerMonth": 200, "growthPerMonth": 10, "channelName": "Online Delivery", "beginMonth": 6, "endMonth": 60 } ] }, "SalesSection": { "channelInputs": [ { "productName": "Coffee", "price": 5, "multiples": 1, "deductionPercentage": 0, "cogsPercentage": 30, "selectedChannel": "In-Store", "channelAllocation": 0.6 }, { "productName": "Pastries", "price": 4, "multiples": 1, "deductionPercentage": 0, "cogsPercentage": 50, "selectedChannel": "In-Store", "channelAllocation": 0.4 }, { "productName": "Coffee Subscription", "price": 20, "multiples": 1, "deductionPercentage": 5, "cogsPercentage": 25, "selectedChannel": "Online Delivery", "channelAllocation": 1 } ], "channelNames": [ "In-Store", "Online Delivery" ] }, "CostSection": { "costInputs": [ { "costName": "Rent", "costValue": 3000, "growthPercentage": 3, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" }, { "costName": "Utilities", "costValue": 500, "growthPercentage": 4, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" } ] }, "PersonnelSection": { "personnelInputs": [ { "jobTitle": "Barista", "salaryPerMonth": 2500, "numberOfHires": 3, "jobBeginMonth": 1, "jobEndMonth": 60 }, { "jobTitle": "Manager", "salaryPerMonth": 4000, "numberOfHires": 1, "jobBeginMonth": 1, "jobEndMonth": 60 } ] }, "InvestmentSection": { "investmentInputs": [ { "purchaseName": "Espresso Machine", "assetCost": 8000, "quantity": 2, "purchaseMonth": 1, "residualValue": 800, "usefulLifetime": 60 }, { "purchaseName": "Furniture", "assetCost": 10000, "quantity": 1, "purchaseMonth": 1, "residualValue": 1000, "usefulLifetime": 60 } ] }, "LoanSection": { "loanInputs": [ { "loanName": "Equipment Loan", "loanAmount": 15000, "interestRate": 4, "loanBeginMonth": 1, "loanEndMonth": 60 } ] } }. You have been provided with a sample JSON file. Your task is to generate a new JSON file for ${inputValue} based on this template. However, instead of altering the structure or keys of the JSON, your goal is to keep the keys intact and only modify the values. Show only JSON. No explanation.`,
+              user_input: `{ "DurationSelect": { "selectedDuration": "5 years", "startingCashBalance": 20000, "status": "active", "industry": "retail", "incomeTax": 25, "payrollTax": 12, "currency": "USD" }, "CustomerSection": { "customerInputs": [ { "customersPerMonth": 500, "growthPerMonth": 5, "channelName": "In-Store", "beginMonth": 1, "endMonth": 60 }, { "customersPerMonth": 200, "growthPerMonth": 10, "channelName": "Online Delivery", "beginMonth": 6, "endMonth": 60 } ] }, "SalesSection": { "channelInputs": [ { "productName": "Coffee", "price": 5, "multiples": 1, "deductionPercentage": 0, "cogsPercentage": 30, "selectedChannel": "In-Store", "channelAllocation": 0.6 }, { "productName": "Pastries", "price": 4, "multiples": 1, "deductionPercentage": 0, "cogsPercentage": 50, "selectedChannel": "In-Store", "channelAllocation": 0.4 }, { "productName": "Coffee Subscription", "price": 20, "multiples": 1, "deductionPercentage": 5, "cogsPercentage": 25, "selectedChannel": "Online Delivery", "channelAllocation": 1 } ], "channelNames": [ "In-Store", "Online Delivery" ] }, "CostSection": { "costInputs": [ { "costName": "Rent", "costValue": 3000, "growthPercentage": 3, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" }, { "costName": "Utilities", "costValue": 500, "growthPercentage": 4, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" } ] }, "PersonnelSection": { "personnelInputs": [ { "jobTitle": "Barista", "salaryPerMonth": 2500, "numberOfHires": 3, "jobBeginMonth": 1, "jobEndMonth": 60 }, { "jobTitle": "Manager", "salaryPerMonth": 4000, "numberOfHires": 1, "jobBeginMonth": 1, "jobEndMonth": 60 } ] }, "InvestmentSection": { "investmentInputs": [ { "purchaseName": "Espresso Machine", "assetCost": 8000, "quantity": 2, "purchaseMonth": 1, "residualValue": 800, "usefulLifetime": 60 }, { "purchaseName": "Furniture", "assetCost": 10000, "quantity": 1, "purchaseMonth": 1, "residualValue": 1000, "usefulLifetime": 60 } ] }, "LoanSection": { "loanInputs": [ { "loanName": "Equipment Loan", "loanAmount": 15000, "interestRate": 4, "loanBeginMonth": 1, "loanEndMonth": 60 } ] } } create a json file like this for a ${inputValue}, return only json file`,
             }),
           }
         );
@@ -1126,18 +1182,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
             </div>
           </form>
           <h3 className="text-2xl font-semibold mt-8">Templates</h3>
-          {/* <div>
-            {industries.map((industry, index) => (
-              <button
-                key={index}
-                onClick={() => handleIndustrySelect(industry)}
-                className={`m-2 py-3 px-4 inline-flex items-center gap-x-2  rounded-lg border shadow-sm hover:cursor-pointer`}
-              >
-                {industry}
-              </button>
-            ))}
-          </div> */}
-          <div className="mt-2 sm:mt-4 hidden lg:flex flex-wrap justify-center">
+          <div>
             {industries.map((industry, index) => (
               <button
                 key={index}
@@ -1148,60 +1193,26 @@ const Z = ({ currentUser, setCurrentUser }) => {
               </button>
             ))}
           </div>
-          <div className="mt-4 lg:hidden overflow-x-auto flex flex-nowrap">
-            {industries.map((industry, index) => (
-              <button
-                key={index}
-                onClick={() => handleIndustrySelect(industry)}
-                className={`m-2 py-3 px-4 inline-flex items-center gap-x-2  rounded-lg border shadow-sm hover:cursor-pointer`}
-              >
-                {industry}
-              </button>
-            ))}
-          </div>
+          {/* <button
+            className="p-2 m-4 rounded-md bg-blue-600 text-white"
+            onClick={handleSendMessage}
+            type="button"
+          >
+            Send
+          </button> */}
         </div>
       </div>
     );
   };
 
-  //////////////////////
-
-  const jsonHandleInputChange = (e) => {
-    setJsonInput(e.target.value);
-  };
-
-  const applyJsonInput = () => {
-    if (!chatbotResponse || !chatbotResponse.trim()) {
-      alert("No JSON data provided. Please paste valid JSON data.");
-      return;
-    }
-
-    try {
-      const parsedData = JSON.parse(chatbotResponse);
-      // Check if parsedData has the property 'DurationSelect'
-      if (parsedData && parsedData.DurationSelect) {
-        setDurationSelect(parsedData.DurationSelect);
-      } else {
-        // Handle cases where DurationSelect is not present or parsedData is not as expected
-        console.error("Parsed data is missing the DurationSelect property.");
-        setDurationSelect({}); // Reset or set to a default state
-        alert("JSON data does not contain the DurationSelect property.");
-      }
-    } catch (error) {
-      console.error("Error parsing JSON: ", error);
-      alert("Invalid JSON format. Please check the data and try again.");
-    }
-  };
-
-  // In the main functional component, update the useEffect
+  // Gemini useEffect
   useEffect(() => {
-    console.log("11");
     // Ensure chatbotResponse is only processed when it's a valid string
     if (!chatbotResponse || chatbotResponse.trim() === "") return;
 
     try {
       const data = JSON.parse(chatbotResponse);
-      console.log("12", data);
+
       // For each section, check if the JSON has relevant data and use it to update state
       // This replaces manual inputs with JSON-provided values
       if (data.DurationSelect)
@@ -1215,7 +1226,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       if (data.InvestmentSection)
         setInvestmentInputs(data.InvestmentSection.investmentInputs);
       if (data.LoanSection) setLoanInputs(data.LoanSection.loanInputs);
-      console.log("13");
+
       // setChatbotResponse(
       //   (prevResponse) => `${prevResponse}\n${data.geminiResponse}`
       // );
@@ -1224,12 +1235,23 @@ const Z = ({ currentUser, setCurrentUser }) => {
       // console.log("chatbotResponse", chatbotResponse);
     } catch (error) {
       console.log("Error parsing JSON:", error);
-      console.log("13");
       // Handle error or notify user here
     }
   }, [chatbotResponse]);
 
-  //CustomerSection
+  //CUSTOMER
+  //CUSTOMER
+  //CUSTOMER
+  //CUSTOMER
+  //CUSTOMER
+  //CUSTOMER
+  //CUSTOMER
+  //CUSTOMER
+  //CUSTOMER
+  //CUSTOMER
+  //CUSTOMER
+
+  //CustomerState
   const [customerInputs, setCustomerInputs] = useState([
     {
       customersPerMonth: 300,
@@ -1247,46 +1269,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     },
   ]);
 
-  const [channelInputs, setChannelInputs] = useState([
-    {
-      productName: "Coffee", // New field for product name
-      price: 4,
-      multiples: 1,
-      deductionPercentage: 10,
-      cogsPercentage: 30,
-      selectedChannel: "Offline",
-      channelAllocation: 0.4,
-    },
-    {
-      productName: "Cake", // New field for product name
-      price: 8,
-      multiples: 1,
-      deductionPercentage: 5,
-      cogsPercentage: 35,
-      selectedChannel: "Offline",
-      channelAllocation: 0.3,
-    },
-    {
-      productName: "Coffee bag", // New field for product name
-      price: 6,
-      multiples: 1,
-      deductionPercentage: 5,
-      cogsPercentage: 25,
-      selectedChannel: "Online",
-      channelAllocation: 0.6,
-    },
-  ]);
-
-  const [channelNames, setChannelNames] = useState([]);
-
-  useEffect(() => {
-    // Update channelNames based on current customerInputs
-    const updatedChannelNames = customerInputs
-      .map((input) => input.channelName)
-      .filter((name, index, self) => name && self.indexOf(name) === index);
-    setChannelNames(updatedChannelNames);
-  }, [customerInputs]); // Update channelNames when customerInputs changes
-
+  // CustomerFunctions
   const addNewCustomerInput = (input) => {
     setCustomerInputs([...customerInputs, input]);
   };
@@ -1305,7 +1288,206 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
   const [customerGrowthData, setCustomerGrowthData] = useState([]);
 
-  //SalesSection
+  const calculateCustomerGrowth = (customerInputs) => {
+    return customerInputs.map((channel) => {
+      let customers = [];
+      let currentCustomers = parseFloat(channel.customersPerMonth);
+      for (let i = 1; i <= numberOfMonths; i++) {
+        if (i >= channel.beginMonth && i <= channel.endMonth) {
+          customers.push({
+            month: i,
+            customers: currentCustomers,
+            channelName: channel.channelName,
+          });
+          currentCustomers *= 1 + parseFloat(channel.growthPerMonth) / 100;
+        } else {
+          customers.push({
+            month: i,
+            customers: 0,
+            channelName: channel.channelName,
+          });
+        }
+      }
+      return customers;
+    });
+  };
+
+  //CustomerUseEffect
+  useEffect(() => {
+    const calculatedData = calculateCustomerGrowth(
+      customerInputs,
+      selectedDuration
+    );
+    setCustomerGrowthData(calculatedData);
+  }, [customerInputs, selectedDuration, numberOfMonths]);
+
+  // CustomerTableData
+  const transformedCustomerTableData = {};
+  customerGrowthData.forEach((channelData) => {
+    channelData.forEach((data) => {
+      const customerInput = customerInputs.find(
+        (input) => input.channelName === data.channelName
+      );
+      if (customerInput) {
+        if (!transformedCustomerTableData[data.channelName]) {
+          transformedCustomerTableData[data.channelName] = {
+            key: data.channelName,
+            channelName: data.channelName,
+          };
+        }
+        // Check if the month is within the range
+        if (
+          data.month >= customerInput.beginMonth &&
+          data.month <= customerInput.endMonth
+        ) {
+          transformedCustomerTableData[data.channelName][`month${data.month}`] =
+            parseFloat(data.customers)?.toFixed(2);
+        } else {
+          // Set value to 0 if outside the range
+          transformedCustomerTableData[data.channelName][`month${data.month}`] =
+            "0.00";
+        }
+      }
+    });
+  });
+
+  const customerTableData = Object.values(transformedCustomerTableData).map(
+    (row) => {
+      for (let month = 1; month <= numberOfMonths; month++) {
+        if (!row.hasOwnProperty(`month${month}`)) {
+          row[`month${month}`] = "0.00";
+        }
+      }
+      return row;
+    }
+  );
+
+  // CustomerColumns
+  const customerColumns = [
+    {
+      fixed: "left",
+      title: "Channel Name",
+      dataIndex: "channelName",
+      key: "channelName",
+    },
+
+    ...Array.from({ length: numberOfMonths }, (_, i) => i + 1).map((month) => ({
+      title: `Month_${month}`,
+      dataIndex: `month${month}`,
+      key: `month${month}`,
+    })),
+  ];
+
+  //CustomerChart
+  const [customerGrowthChart, setCustomerGrowthChart] = useState({
+    options: {
+      chart: {
+        id: "customer-growth-chart",
+        type: "bar",
+        height: 350,
+      },
+
+      xaxis: {
+        categories: Array.from(
+          { length: numberOfMonths },
+          (_, i) => `Month ${i + 1}`
+        ),
+        title: {
+          text: "Month",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
+      },
+      yaxis: {
+        labels: {
+          formatter: function (val) {
+            return Math.floor(val);
+          },
+        },
+        title: { text: "Number of Customers" },
+        style: {
+          fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+          fontWeight: "600", // Cỡ chữ semibold
+        },
+      },
+      legend: { position: "bottom", horizontalAlign: "right" },
+      fill: { type: "solid" },
+      dataLabels: { enabled: false },
+      stroke: { curve: "stepline" },
+      markers: { size: 1 },
+    },
+    series: [],
+  });
+
+  useEffect(() => {
+    const seriesData = customerGrowthData.map((channelData) => {
+      return {
+        name: channelData[0]?.channelName || "Unknown Channel",
+        data: channelData.map((data) => data.customers),
+      };
+    });
+
+    setCustomerGrowthChart((prevState) => ({
+      ...prevState,
+      series: seriesData,
+    }));
+  }, [customerGrowthData, numberOfMonths]);
+
+  //REVENUE
+  //REVENUE
+  //REVENUE
+  //REVENUE
+  //REVENUE
+  //REVENUE
+  //REVENUE
+  //REVENUE
+  //REVENUE
+  //REVENUE
+
+  //RevenueState
+  const [channelInputs, setChannelInputs] = useState([
+    {
+      productName: "Coffee", // New field for product name
+      price: 4,
+      multiples: 1,
+      deductionPercentage: 5,
+      cogsPercentage: 30,
+      selectedChannel: "Offline",
+      channelAllocation: 0.4,
+    },
+    {
+      productName: "Cake", // New field for product name
+      price: 8,
+      multiples: 1,
+      deductionPercentage: 4,
+      cogsPercentage: 35,
+      selectedChannel: "Offline",
+      channelAllocation: 0.3,
+    },
+    {
+      productName: "Coffee Bag", // New field for product name
+      price: 6,
+      multiples: 1,
+      deductionPercentage: 6,
+      cogsPercentage: 25,
+      selectedChannel: "Online",
+      channelAllocation: 0.6,
+    },
+  ]);
+
+  const [channelNames, setChannelNames] = useState([]);
+
+  useEffect(() => {
+    // Update channelNames based on current customerInputs
+    const updatedChannelNames = customerInputs
+      .map((input) => input.channelName)
+      .filter((name, index, self) => name && self.indexOf(name) === index);
+    setChannelNames(updatedChannelNames);
+  }, [customerInputs]);
+
+  //RevenueFunctions
   const addNewChannelInput = () => {
     setChannelInputs([
       ...channelInputs,
@@ -1335,38 +1517,13 @@ const Z = ({ currentUser, setCurrentUser }) => {
   const [revenueData, setRevenueData] = useState([]);
   const [netRevenueData, setNetRevenueData] = useState([]);
   const [grossProfitData, setGrossProfitData] = useState([]);
-
-  const calculateCustomerGrowth = (customerInputs) => {
-    return customerInputs.map((channel) => {
-      let customers = [];
-      let currentCustomers = parseFloat(channel.customersPerMonth);
-      for (let i = 1; i <= numberOfMonths; i++) {
-        if (i >= channel.beginMonth && i <= channel.endMonth) {
-          customers.push({
-            month: i,
-            customers: currentCustomers,
-            channelName: channel.channelName,
-          });
-          currentCustomers *= 1 + parseFloat(channel.growthPerMonth) / 100;
-        } else {
-          customers.push({
-            month: i,
-            customers: 0,
-            channelName: channel.channelName,
-          });
-        }
-      }
-      return customers;
-    });
-  };
-
-  const [txFeeData, setTxFeeData] = useState([]);
+  const [revenueDeductionData, setrevenueDeductionData] = useState([]);
   const [cogsData, setCogsData] = useState([]);
 
   const calculateChannelRevenue = () => {
     let revenueByChannelAndProduct = {};
 
-    // New arrays for txFee and COGS
+    // New arrays for revenueDeduction and COGS
     let DeductionByChannelAndProduct = {};
     let cogsByChannelAndProduct = {};
     let netRevenueByChannelAndProduct = {};
@@ -1377,8 +1534,8 @@ const Z = ({ currentUser, setCurrentUser }) => {
         const channelProductKey = `${channel.selectedChannel} - ${channel.productName}`;
         const revenueArray = Array(numberOfMonths).fill(0);
 
-        // Initialize txFee and COGS arrays
-        const txFeeArray = Array(numberOfMonths).fill(0);
+        // Initialize revenueDeduction and COGS arrays
+        const revenueDeductionArray = Array(numberOfMonths).fill(0);
         const cogsArray = Array(numberOfMonths).fill(0);
         const netRevenueArray = Array(numberOfMonths).fill(0);
         const grossProfitArray = Array(numberOfMonths).fill(0);
@@ -1401,8 +1558,8 @@ const Z = ({ currentUser, setCurrentUser }) => {
                     parseFloat(channel.channelAllocation);
                   revenueArray[data.month - 1] = revenue;
 
-                  // Calculate txFee and COGS
-                  txFeeArray[data.month - 1] =
+                  // Calculate revenueDeduction and COGS
+                  revenueDeductionArray[data.month - 1] =
                     (revenue * parseFloat(channel.deductionPercentage)) / 100;
                   cogsArray[data.month - 1] =
                     (revenue * parseFloat(channel.cogsPercentage)) / 100;
@@ -1413,11 +1570,11 @@ const Z = ({ currentUser, setCurrentUser }) => {
         });
 
         revenueByChannelAndProduct[channelProductKey] = revenueArray;
-        DeductionByChannelAndProduct[channelProductKey] = txFeeArray;
+        DeductionByChannelAndProduct[channelProductKey] = revenueDeductionArray;
         cogsByChannelAndProduct[channelProductKey] = cogsArray;
 
         netRevenueArray.forEach((_, i) => {
-          netRevenueArray[i] = revenueArray[i] - txFeeArray[i];
+          netRevenueArray[i] = revenueArray[i] - revenueDeductionArray[i];
         });
         netRevenueByChannelAndProduct[channelProductKey] = netRevenueArray;
 
@@ -1439,6 +1596,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     };
   };
 
+  //RevenueUseEffect
   useEffect(() => {
     const {
       revenueByChannelAndProduct,
@@ -1448,21 +1606,200 @@ const Z = ({ currentUser, setCurrentUser }) => {
       grossProfitByChannelAndProduct,
     } = calculateChannelRevenue();
     setRevenueData(revenueByChannelAndProduct);
-    setTxFeeData(DeductionByChannelAndProduct);
+    setrevenueDeductionData(DeductionByChannelAndProduct);
     setCogsData(cogsByChannelAndProduct);
     setNetRevenueData(netRevenueByChannelAndProduct);
     setGrossProfitData(grossProfitByChannelAndProduct);
   }, [customerGrowthData, channelInputs, numberOfMonths]);
 
-  useEffect(() => {
-    const calculatedData = calculateCustomerGrowth(
-      customerInputs,
-      selectedDuration
-    );
-    setCustomerGrowthData(calculatedData);
-  }, [customerInputs, selectedDuration, numberOfMonths]);
+  //RevenueTable
+  const revenueTableData = [];
 
-  // Cost inputs handle
+  channelInputs.forEach((channel) => {
+    if (channel.selectedChannel && channel.productName) {
+      const channelRevenue =
+        revenueData[channel.selectedChannel + " - " + channel.productName] ||
+        [];
+      const channelrevenueDeduction =
+        revenueDeductionData[
+          channel.selectedChannel + " - " + channel.productName
+        ] || [];
+      const channelCOGS =
+        cogsData[channel.selectedChannel + " - " + channel.productName] || [];
+
+      const customerInput = customerInputs.find(
+        (input) => input.channelName === channel.selectedChannel
+      );
+      const begin = customerInput ? customerInput.beginMonth : 1;
+      const end = customerInput ? customerInput.endMonth : numberOfMonths;
+
+      const revenueRow = {
+        key:
+          channel.selectedChannel + " - " + channel.productName + " - Revenue",
+        channelName:
+          channel.selectedChannel + " - " + channel.productName + " - Revenue",
+      };
+      const revenueDeductionRow = {
+        key:
+          channel.selectedChannel +
+          " - " +
+          channel.productName +
+          " - revenueDeduction",
+        channelName:
+          channel.selectedChannel +
+          " - " +
+          channel.productName +
+          " - revenueDeduction",
+      };
+      const cogsRow = {
+        key: channel.selectedChannel + " - " + channel.productName + " - COGS",
+        channelName:
+          channel.selectedChannel + " - " + channel.productName + " - COGS",
+      };
+
+      channelRevenue.forEach((value, index) => {
+        if (index + 1 >= begin && index + 1 <= end) {
+          revenueRow[`month${index + 1}`] = parseFloat(value)?.toFixed(2);
+          revenueDeductionRow[`month${index + 1}`] = parseFloat(
+            channelrevenueDeduction[index]
+          )?.toFixed(2);
+          cogsRow[`month${index + 1}`] = parseFloat(channelCOGS[index]).toFixed(
+            2
+          );
+        } else {
+          revenueRow[`month${index + 1}`] = "0.00";
+          revenueDeductionRow[`month${index + 1}`] = "0.00";
+          cogsRow[`month${index + 1}`] = "0.00";
+        }
+      });
+
+      const netRevenueRow = {
+        key:
+          channel.selectedChannel +
+          " - " +
+          channel.productName +
+          " - Net Revenue",
+        channelName:
+          channel.selectedChannel +
+          " - " +
+          channel.productName +
+          " - Net Revenue",
+      };
+
+      const netRevenueArray =
+        netRevenueData[channel.selectedChannel + " - " + channel.productName] ||
+        [];
+      netRevenueArray.forEach((value, index) => {
+        // ...existing code...
+        netRevenueRow[`month${index + 1}`] = parseFloat(value)?.toFixed(2);
+      });
+
+      const grossProfitRow = {
+        key:
+          channel.selectedChannel +
+          " - " +
+          channel.productName +
+          " - Gross Profit",
+        channelName:
+          channel.selectedChannel +
+          " - " +
+          channel.productName +
+          " - Gross Profit",
+      };
+
+      const grossProfitArray =
+        grossProfitData[
+          channel.selectedChannel + " - " + channel.productName
+        ] || [];
+      grossProfitArray.forEach((value, index) => {
+        // ...existing code...
+        grossProfitRow[`month${index + 1}`] = parseFloat(value)?.toFixed(2);
+      });
+
+      revenueTableData.push(revenueRow);
+      revenueTableData.push(revenueDeductionRow);
+      revenueTableData.push(cogsRow);
+      revenueTableData.push(netRevenueRow);
+      revenueTableData.push(grossProfitRow);
+    }
+  });
+
+  //RevenueColumns
+  const revenueColumns = [
+    {
+      fixed: "left",
+      title: "Channel_Product_Type",
+      dataIndex: "channelName",
+      key: "channelName",
+    },
+    ...Array.from({ length: numberOfMonths }, (_, i) => i + 1).map((month) => ({
+      title: `Month_${month}`,
+      dataIndex: `month${month}`,
+      key: `month${month}`,
+    })),
+  ];
+
+  //RevenueChart
+  const [grossProfit, setgrossProfit] = useState({
+    options: {
+      chart: { id: "gross-profit-chart", type: "line", height: 350 },
+      xaxis: {
+        categories: Array.from(
+          { length: numberOfMonths },
+          (_, i) => `${i + 1}`
+        ),
+        title: {
+          text: "Month",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
+      },
+      // title: { text: 'Revenue Data by Channel and Product', align: 'left' },
+      yaxis: {
+        labels: {
+          formatter: function (val) {
+            return Math.floor(val); // Format Y-axis labels as integers
+          },
+        },
+        title: {
+          text: "Profit ($)",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
+      },
+      legend: { position: "bottom", horizontalAlign: "right" },
+      fill: { type: "solid" },
+      dataLabels: { enabled: false },
+      stroke: { curve: "smooth" },
+      markers: { size: 1 },
+    },
+
+    series: [],
+  });
+
+  useEffect(() => {
+    const seriesData = Object.entries(grossProfitData).map(([key, data]) => {
+      return { name: key, data };
+    });
+
+    setgrossProfit((prevState) => ({ ...prevState, series: seriesData }));
+  }, [grossProfitData, numberOfMonths]);
+
+  //COSTS
+  //COSTS
+  //COSTS
+  //COSTS
+  //COSTS
+  //COSTS
+  //COSTS
+  //COSTS
+  //COSTS
+
+  //CostState
   const [costInputs, setCostInputs] = useState([
     {
       costName: "Website",
@@ -1470,7 +1807,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       growthPercentage: 0,
       beginMonth: 1,
       endMonth: 6,
-      costType: "Operating Cost",
+      costType: "Sales, Marketing Cost",
     },
     {
       costName: "Marketing",
@@ -1478,7 +1815,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       growthPercentage: 0,
       beginMonth: 1,
       endMonth: 36,
-      costType: "Operating Cost",
+      costType: "Sales, Marketing Cost",
     },
     {
       costName: "Rent",
@@ -1486,12 +1823,11 @@ const Z = ({ currentUser, setCurrentUser }) => {
       growthPercentage: 2,
       beginMonth: 1,
       endMonth: 36,
-      costType: "Operating Cost",
+      costType: "General Administrative Cost",
     },
   ]);
 
-  // ...other existing code...
-
+  //CostFunctions
   const addNewCostInput = (input) => {
     setCostInputs([...costInputs, input]);
   };
@@ -1508,7 +1844,138 @@ const Z = ({ currentUser, setCurrentUser }) => {
     setCostInputs(newInputs);
   };
 
-  // State management cho Personnel
+  //CostUseEffect
+  useEffect(() => {
+    const calculatedData = calculateCostData();
+    setCostData(calculatedData);
+  }, [costInputs, numberOfMonths]);
+
+  //CostTableData
+  const [costData, setCostData] = useState([]);
+
+  const calculateCostData = () => {
+    let allCosts = [];
+    costInputs.forEach((costInput) => {
+      let monthlyCosts = [];
+      let currentCost = parseFloat(costInput.costValue);
+      for (let month = 1; month <= numberOfMonths; month++) {
+        if (month >= costInput.beginMonth && month <= costInput.endMonth) {
+          monthlyCosts.push({ month: month, cost: currentCost });
+          currentCost *= 1 + parseFloat(costInput.growthPercentage) / 100;
+        } else {
+          monthlyCosts.push({ month: month, cost: 0 });
+        }
+      }
+      allCosts.push({
+        costName: costInput.costName,
+        monthlyCosts,
+        costType: costInput.costType,
+      });
+    });
+    return allCosts;
+  };
+
+  const transformCostDataForTable = () => {
+    const transformedCustomerTableData = {};
+    const calculatedCostData = calculateCostData();
+
+    calculatedCostData.forEach((costItem) => {
+      const rowKey = `${costItem.costType} - ${costItem.costName}`;
+      costItem.monthlyCosts.forEach((monthData) => {
+        if (!transformedCustomerTableData[rowKey]) {
+          transformedCustomerTableData[rowKey] = {
+            key: rowKey,
+            costName: rowKey,
+          };
+        }
+        transformedCustomerTableData[rowKey][`month${monthData.month}`] =
+          parseFloat(monthData.cost)?.toFixed(2);
+      });
+    });
+
+    return Object.values(transformedCustomerTableData);
+  };
+
+  const costTableData = transformCostDataForTable();
+
+  //CostColumns
+  const costColumns = [
+    {
+      fixed: "left",
+      title: "CostType_CostName",
+      dataIndex: "costName",
+      key: "costName",
+    },
+    ...Array.from({ length: numberOfMonths }, (_, i) => ({
+      title: `Month_${i + 1}`,
+      dataIndex: `month${i + 1}`,
+      key: `month${i + 1}`,
+    })),
+  ];
+
+  //CostChart
+  const [costChart, setCostChart] = useState({
+    options: {
+      chart: { id: "cost-chart", type: "bar", height: 350 },
+      xaxis: {
+        categories: Array.from(
+          { length: numberOfMonths },
+          (_, i) => `${i + 1}`
+        ),
+        title: {
+          text: "Month",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
+      },
+      // title: { text: 'Cost Data', align: 'left' },
+      yaxis: {
+        labels: {
+          formatter: function (val) {
+            return Math.floor(val); // Format Y-axis labels as integers
+          },
+        },
+        title: {
+          text: "Cost ($)",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
+      },
+      legend: { position: "bottom", horizontalAlign: "right" },
+      fill: { type: "solid" },
+      dataLabels: { enabled: false },
+      stroke: { curve: "smooth" },
+      markers: { size: 1 },
+    },
+    series: [],
+  });
+
+  useEffect(() => {
+    const seriesData = costData.map((item) => {
+      return {
+        name: item.costName,
+        data: item.monthlyCosts.map((cost) => cost.cost),
+      };
+    });
+
+    setCostChart((prevState) => ({ ...prevState, series: seriesData }));
+  }, [costData, numberOfMonths]);
+
+  //PERSONNEL
+  //PERSONNEL
+  //PERSONNEL
+  //PERSONNEL
+  //PERSONNEL
+  //PERSONNEL
+  //PERSONNEL
+  //PERSONNEL
+  //PERSONNEL
+
+  //PersonnelState
   const [personnelInputs, setPersonnelInputs] = useState([
     {
       jobTitle: "Cashier",
@@ -1526,7 +1993,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     },
   ]);
 
-  // Function to add a new personnel input
+  //PersonnelFunctions
   const addNewPersonnelInput = () => {
     setPersonnelInputs([
       ...personnelInputs,
@@ -1540,14 +2007,12 @@ const Z = ({ currentUser, setCurrentUser }) => {
     ]);
   };
 
-  // Function to remove a personnel input
   const removePersonnelInput = (index) => {
     const newInputs = [...personnelInputs];
     newInputs.splice(index, 1);
     setPersonnelInputs(newInputs);
   };
 
-  // Function to update a personnel input
   const handlePersonnelInputChange = (index, field, value) => {
     const newInputs = [...personnelInputs];
     newInputs[index][field] = value;
@@ -1583,12 +2048,104 @@ const Z = ({ currentUser, setCurrentUser }) => {
     return allPersonnelCosts;
   };
 
+  //PersonnelUseEffect
   useEffect(() => {
     const calculatedData = calculatePersonnelCostData();
     setPersonnelCostData(calculatedData);
   }, [personnelInputs, numberOfMonths]);
 
-  //Investment Inputs
+  //PersonnelCostTableData
+  const transformPersonnelCostDataForTable = () => {
+    const transformedCustomerTableData = personnelCostData.map((item) => {
+      const rowData = { key: item.jobTitle, jobTitle: item.jobTitle };
+      item.monthlyCosts.forEach((monthData) => {
+        rowData[`month${monthData.month}`] = monthData.cost?.toFixed(2); // Adjust formatting as needed
+      });
+      return rowData;
+    });
+    return transformedCustomerTableData;
+  };
+
+  const personnelCostTableData = transformPersonnelCostDataForTable();
+
+  //PersonnelColumns
+  const personnelCostColumns = [
+    {
+      fixed: "left",
+      title: "Job Title",
+      dataIndex: "jobTitle",
+      key: "jobTitle",
+    },
+    ...Array.from({ length: numberOfMonths }, (_, i) => ({
+      title: `Month_${i + 1}`,
+      dataIndex: `month${i + 1}`,
+      key: `month${i + 1}`,
+    })),
+  ];
+
+  //PersonnelChart
+  const [personnelChart, setPersonnelChart] = useState({
+    options: {
+      chart: { id: "personnel-chart", type: "bar", height: 350 },
+      xaxis: {
+        categories: Array.from(
+          { length: numberOfMonths },
+          (_, i) => `${i + 1}`
+        ),
+        title: {
+          text: "Month",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
+      },
+      // title: { text: 'Personnel Cost Data', align: 'left' },
+      yaxis: {
+        labels: {
+          formatter: function (val) {
+            return Math.floor(val); // Format Y-axis labels as integers
+          },
+        },
+        title: {
+          text: "Salary ($)",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
+      },
+      legend: { position: "bottom", horizontalAlign: "right" },
+      fill: { type: "solid" },
+      dataLabels: { enabled: false },
+      stroke: { curve: "smooth" },
+      markers: { size: 1 },
+    },
+    series: [],
+  });
+
+  useEffect(() => {
+    const seriesData = personnelCostData.map((personnel) => {
+      return {
+        name: personnel.jobTitle,
+        data: personnel.monthlyCosts.map((month) => month.cost),
+      };
+    });
+
+    setPersonnelChart((prevState) => ({ ...prevState, series: seriesData }));
+  }, [personnelCostData, numberOfMonths]);
+
+  //INVESTMENTS
+  //INVESTMENTS
+  //INVESTMENTS
+  //INVESTMENTS
+  //INVESTMENTS
+  //INVESTMENTS
+  //INVESTMENTS
+  //INVESTMENTS
+  //INVESTMENTS
+
+  //InvestmentState
   const [investmentInputs, setInvestmentInputs] = useState([
     {
       purchaseName: "Coffee machine",
@@ -1608,6 +2165,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     },
   ]);
 
+  //InvestmentFunctions
   const addNewInvestmentInput = () => {
     setInvestmentInputs([
       ...investmentInputs,
@@ -1627,7 +2185,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
     setInvestmentInputs(newInputs);
   };
 
-  // Function to update an investment input
   const handleInvestmentInputChange = (index, field, value) => {
     const newInputs = [...investmentInputs];
     newInputs[index][field] = value;
@@ -1682,8 +2239,143 @@ const Z = ({ currentUser, setCurrentUser }) => {
     });
   };
 
-  //Loan part
+  //InvestmentTableData
+  const transformInvestmentDataForTable = () => {
+    const investmentTableData = [];
 
+    calculateInvestmentData().forEach((investment, investmentIndex) => {
+      const purchaseName =
+        investmentInputs[investmentIndex].purchaseName ||
+        `Investment ${investmentIndex + 1}`;
+      const assetCostRow = {
+        key: `${purchaseName} - Asset Cost`,
+        type: `${purchaseName}`,
+      };
+      const depreciationRow = {
+        key: `${purchaseName} - Depreciation`,
+        type: "Depreciation",
+      };
+      const accumulatedDepreciationRow = {
+        key: `${purchaseName} - Accumulated Depreciation`,
+        type: "Accumulated Depreciation",
+      };
+      const bookValueRow = {
+        key: `${purchaseName} - Book Value`,
+        type: "Book Value",
+      };
+
+      const purchaseMonth = parseInt(
+        investmentInputs[investmentIndex].purchaseMonth,
+        10
+      );
+      const usefulLife = parseInt(
+        investmentInputs[investmentIndex].usefulLifetime,
+        10
+      );
+      const endMonth = purchaseMonth + usefulLife - 1;
+      const assetCost =
+        parseFloat(investmentInputs[investmentIndex].assetCost) *
+        parseInt(investmentInputs[investmentIndex].quantity, 10);
+
+      for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
+        if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
+          assetCostRow[`month${monthIndex + 1}`] = assetCost?.toFixed(2); // Using Asset Cost
+          depreciationRow[`month${monthIndex + 1}`] =
+            investment.depreciationArray[monthIndex]?.toFixed(2);
+          accumulatedDepreciationRow[`month${monthIndex + 1}`] =
+            investment.accumulatedDepreciation[monthIndex]?.toFixed(2);
+          bookValueRow[`month${monthIndex + 1}`] = (
+            assetCost - investment.accumulatedDepreciation[monthIndex]
+          )?.toFixed(2);
+        } else {
+          assetCostRow[`month${monthIndex + 1}`] = "0.00";
+          depreciationRow[`month${monthIndex + 1}`] = "0.00";
+          accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0.00";
+          bookValueRow[`month${monthIndex + 1}`] = "0.00";
+        }
+      }
+
+      investmentTableData.push(
+        assetCostRow,
+        depreciationRow,
+        accumulatedDepreciationRow,
+        bookValueRow
+      );
+    });
+
+    return investmentTableData;
+  };
+
+  //InvestmentColumns
+  const investmentColumns = [
+    { fixed: "left", title: "Type", dataIndex: "type", key: "type" },
+    ...Array.from({ length: numberOfMonths }, (_, i) => ({
+      title: `Month_${i + 1}`,
+      dataIndex: `month${i + 1}`,
+      key: `month${i + 1}`,
+    })),
+  ];
+
+  //InvestmentChart
+  const [investmentChart, setInvestmentChart] = useState({
+    options: {
+      chart: { id: "investment-chart", type: "area", height: 350 },
+      xaxis: {
+        categories: Array.from(
+          { length: numberOfMonths },
+          (_, i) => `${i + 1}`
+        ),
+        title: {
+          text: "Month",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
+      },
+      // title: { text: 'Investment Data', align: 'left' },
+      yaxis: {
+        labels: {
+          formatter: function (val) {
+            return Math.floor(val); // Format Y-axis labels as integers
+          },
+        },
+        title: {
+          text: "Investment ($)",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
+      },
+      legend: { position: "bottom", horizontalAlign: "right" },
+      fill: { type: "solid" },
+      dataLabels: { enabled: false },
+      stroke: { curve: "smooth" },
+      markers: { size: 1 },
+    },
+    series: [],
+  });
+
+  useEffect(() => {
+    const seriesData = calculateInvestmentData().map((investment) => {
+      return { name: investment.purchaseName, data: investment.assetValue };
+    });
+
+    setInvestmentChart((prevState) => ({ ...prevState, series: seriesData }));
+  }, [investmentInputs, numberOfMonths]);
+
+  //LOAN
+  //LOAN
+  //LOAN
+  //LOAN
+  //LOAN
+  //LOAN
+  //LOAN
+  //LOAN
+  //LOAN
+
+  //LoanState
   const [loanInputs, setLoanInputs] = useState([
     {
       loanName: "Banking loan",
@@ -1694,6 +2386,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     },
   ]);
 
+  //LoanFunctions
   const addNewLoanInput = () => {
     setLoanInputs([
       ...loanInputs,
@@ -1815,346 +2508,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     return loanTableData;
   };
 
-  // Data Transformation with rounding to 2 decimal places
-  const transformedData = {};
-  customerGrowthData.forEach((channelData) => {
-    channelData.forEach((data) => {
-      const customerInput = customerInputs.find(
-        (input) => input.channelName === data.channelName
-      );
-      if (customerInput) {
-        if (!transformedData[data.channelName]) {
-          transformedData[data.channelName] = {
-            key: data.channelName,
-            channelName: data.channelName,
-          };
-        }
-        // Check if the month is within the range
-        if (
-          data.month >= customerInput.beginMonth &&
-          data.month <= customerInput.endMonth
-        ) {
-          transformedData[data.channelName][`month${data.month}`] = parseFloat(
-            data.customers
-          )?.toFixed(2);
-        } else {
-          // Set value to 0 if outside the range
-          transformedData[data.channelName][`month${data.month}`] = "0.00";
-        }
-      }
-    });
-  });
-
-  const tableData = Object.values(transformedData).map((row) => {
-    for (let month = 1; month <= numberOfMonths; month++) {
-      if (!row.hasOwnProperty(`month${month}`)) {
-        row[`month${month}`] = "0.00";
-      }
-    }
-    return row;
-  });
-
-  // Dynamic Column Creation
-  const columns = [
-    {
-      fixed: "left",
-      title: "Channel Name",
-      dataIndex: "channelName",
-      key: "channelName",
-    },
-
-    ...Array.from({ length: numberOfMonths }, (_, i) => i + 1).map((month) => ({
-      title: `Month_${month}`,
-      dataIndex: `month${month}`,
-      key: `month${month}`,
-    })),
-  ];
-
-  const revenueTableData = [];
-
-  channelInputs.forEach((channel) => {
-    if (channel.selectedChannel && channel.productName) {
-      const channelRevenue =
-        revenueData[channel.selectedChannel + " - " + channel.productName] ||
-        [];
-      const channelTxFee =
-        txFeeData[channel.selectedChannel + " - " + channel.productName] || [];
-      const channelCOGS =
-        cogsData[channel.selectedChannel + " - " + channel.productName] || [];
-
-      const customerInput = customerInputs.find(
-        (input) => input.channelName === channel.selectedChannel
-      );
-      const begin = customerInput ? customerInput.beginMonth : 1;
-      const end = customerInput ? customerInput.endMonth : numberOfMonths;
-
-      const revenueRow = {
-        key:
-          channel.selectedChannel + " - " + channel.productName + " - Revenue",
-        channelName:
-          channel.selectedChannel + " - " + channel.productName + " - Revenue",
-      };
-      const txFeeRow = {
-        key: channel.selectedChannel + " - " + channel.productName + " - Txfee",
-        channelName:
-          channel.selectedChannel + " - " + channel.productName + " - Txfee",
-      };
-      const cogsRow = {
-        key: channel.selectedChannel + " - " + channel.productName + " - COGS",
-        channelName:
-          channel.selectedChannel + " - " + channel.productName + " - COGS",
-      };
-
-      channelRevenue.forEach((value, index) => {
-        if (index + 1 >= begin && index + 1 <= end) {
-          revenueRow[`month${index + 1}`] = parseFloat(value)?.toFixed(2);
-          txFeeRow[`month${index + 1}`] = parseFloat(
-            channelTxFee[index]
-          )?.toFixed(2);
-          cogsRow[`month${index + 1}`] = parseFloat(channelCOGS[index]).toFixed(
-            2
-          );
-        } else {
-          revenueRow[`month${index + 1}`] = "0.00";
-          txFeeRow[`month${index + 1}`] = "0.00";
-          cogsRow[`month${index + 1}`] = "0.00";
-        }
-      });
-
-      const netRevenueRow = {
-        key:
-          channel.selectedChannel +
-          " - " +
-          channel.productName +
-          " - Net Revenue",
-        channelName:
-          channel.selectedChannel +
-          " - " +
-          channel.productName +
-          " - Net Revenue",
-      };
-
-      const netRevenueArray =
-        netRevenueData[channel.selectedChannel + " - " + channel.productName] ||
-        [];
-      netRevenueArray.forEach((value, index) => {
-        // ...existing code...
-        netRevenueRow[`month${index + 1}`] = parseFloat(value)?.toFixed(2);
-      });
-
-      const grossProfitRow = {
-        key:
-          channel.selectedChannel +
-          " - " +
-          channel.productName +
-          " - Gross Profit",
-        channelName:
-          channel.selectedChannel +
-          " - " +
-          channel.productName +
-          " - Gross Profit",
-      };
-
-      const grossProfitArray =
-        grossProfitData[
-          channel.selectedChannel + " - " + channel.productName
-        ] || [];
-      grossProfitArray.forEach((value, index) => {
-        // ...existing code...
-        grossProfitRow[`month${index + 1}`] = parseFloat(value)?.toFixed(2);
-      });
-
-      revenueTableData.push(revenueRow);
-      revenueTableData.push(txFeeRow);
-      revenueTableData.push(cogsRow);
-      revenueTableData.push(netRevenueRow);
-      revenueTableData.push(grossProfitRow);
-    }
-  });
-
-  // Costs Calculation
-  const [costData, setCostData] = useState([]);
-
-  const calculateCostData = () => {
-    let allCosts = [];
-    costInputs.forEach((costInput) => {
-      let monthlyCosts = [];
-      let currentCost = parseFloat(costInput.costValue);
-      for (let month = 1; month <= numberOfMonths; month++) {
-        if (month >= costInput.beginMonth && month <= costInput.endMonth) {
-          monthlyCosts.push({ month: month, cost: currentCost });
-          currentCost *= 1 + parseFloat(costInput.growthPercentage) / 100;
-        } else {
-          monthlyCosts.push({ month: month, cost: 0 });
-        }
-      }
-      allCosts.push({
-        costName: costInput.costName,
-        monthlyCosts,
-        costType: costInput.costType,
-      });
-    });
-    return allCosts;
-  };
-
-  useEffect(() => {
-    const calculatedData = calculateCostData();
-    setCostData(calculatedData);
-  }, [costInputs, numberOfMonths]);
-
-  const transformCostDataForTable = () => {
-    const transformedData = {};
-    const calculatedCostData = calculateCostData();
-
-    calculatedCostData.forEach((costItem) => {
-      const rowKey = `${costItem.costType} - ${costItem.costName}`;
-      costItem.monthlyCosts.forEach((monthData) => {
-        if (!transformedData[rowKey]) {
-          transformedData[rowKey] = { key: rowKey, costName: rowKey };
-        }
-        transformedData[rowKey][`month${monthData.month}`] = parseFloat(
-          monthData.cost
-        )?.toFixed(2);
-      });
-    });
-
-    return Object.values(transformedData);
-  };
-
-  // In your render method or return statement
-  const costTableData = transformCostDataForTable();
-
-  //Personel cost
-  const transformPersonnelCostDataForTable = () => {
-    const transformedData = personnelCostData.map((item) => {
-      const rowData = { key: item.jobTitle, jobTitle: item.jobTitle };
-      item.monthlyCosts.forEach((monthData) => {
-        rowData[`month${monthData.month}`] = monthData.cost?.toFixed(2); // Adjust formatting as needed
-      });
-      return rowData;
-    });
-    return transformedData;
-  };
-
-  const personnelCostTableData = transformPersonnelCostDataForTable();
-
-  const transformInvestmentDataForTable = () => {
-    const investmentTableData = [];
-
-    calculateInvestmentData().forEach((investment, investmentIndex) => {
-      const purchaseName =
-        investmentInputs[investmentIndex].purchaseName ||
-        `Investment ${investmentIndex + 1}`;
-      const assetCostRow = {
-        key: `${purchaseName} - Asset Cost`,
-        type: `${purchaseName}`,
-      };
-      const depreciationRow = {
-        key: `${purchaseName} - Depreciation`,
-        type: "Depreciation",
-      };
-      const accumulatedDepreciationRow = {
-        key: `${purchaseName} - Accumulated Depreciation`,
-        type: "Accumulated Depreciation",
-      };
-      const bookValueRow = {
-        key: `${purchaseName} - Book Value`,
-        type: "Book Value",
-      };
-
-      const purchaseMonth = parseInt(
-        investmentInputs[investmentIndex].purchaseMonth,
-        10
-      );
-      const usefulLife = parseInt(
-        investmentInputs[investmentIndex].usefulLifetime,
-        10
-      );
-      const endMonth = purchaseMonth + usefulLife - 1;
-      const assetCost =
-        parseFloat(investmentInputs[investmentIndex].assetCost) *
-        parseInt(investmentInputs[investmentIndex].quantity, 10);
-
-      for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
-        if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
-          assetCostRow[`month${monthIndex + 1}`] = assetCost?.toFixed(2); // Using Asset Cost
-          depreciationRow[`month${monthIndex + 1}`] =
-            investment.depreciationArray[monthIndex]?.toFixed(2);
-          accumulatedDepreciationRow[`month${monthIndex + 1}`] =
-            investment.accumulatedDepreciation[monthIndex]?.toFixed(2);
-          bookValueRow[`month${monthIndex + 1}`] = (
-            assetCost - investment.accumulatedDepreciation[monthIndex]
-          )?.toFixed(2);
-        } else {
-          assetCostRow[`month${monthIndex + 1}`] = "0.00";
-          depreciationRow[`month${monthIndex + 1}`] = "0.00";
-          accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0.00";
-          bookValueRow[`month${monthIndex + 1}`] = "0.00";
-        }
-      }
-
-      investmentTableData.push(
-        assetCostRow,
-        depreciationRow,
-        accumulatedDepreciationRow,
-        bookValueRow
-      );
-    });
-
-    return investmentTableData;
-  };
-
-  const revenueColumns = [
-    {
-      fixed: "left",
-      title: "Channel - Product - Type",
-      dataIndex: "channelName",
-      key: "channelName",
-    },
-    ...Array.from({ length: numberOfMonths }, (_, i) => i + 1).map((month) => ({
-      title: `Month_${month}`,
-      dataIndex: `month${month}`,
-      key: `month${month}`,
-    })),
-  ];
-
-  const costColumns = [
-    {
-      fixed: "left",
-      title: "Cost Type - Cost Name",
-      dataIndex: "costName",
-      key: "costName",
-    },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `month${i + 1}`,
-      key: `month${i + 1}`,
-    })),
-  ];
-
-  const personnelCostColumns = [
-    {
-      fixed: "left",
-      title: "Job Title",
-      dataIndex: "jobTitle",
-      key: "jobTitle",
-    },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `month${i + 1}`,
-      key: `month${i + 1}`,
-    })),
-  ];
-
-  const investmentColumns = [
-    { fixed: "left", title: "Type", dataIndex: "type", key: "type" },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `month${i + 1}`,
-      key: `month${i + 1}`,
-    })),
-  ];
-
+  //LoanColumns
   const loanColumns = [
     { fixed: "left", title: "Type", dataIndex: "type", key: "type" },
     ...Array.from({ length: numberOfMonths }, (_, i) => ({
@@ -2164,261 +2518,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     })),
   ];
 
-  const [customerGrowthChart, setCustomerGrowthChart] = useState({
-    options: {
-      chart: {
-        id: "customer-growth-chart",
-        type: "bar",
-        height: 350,
-      },
-
-      xaxis: {
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `Month ${i + 1}`
-        ),
-        title: {
-          text: "Month",
-          style: {
-            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-            fontWeight: "600", // Cỡ chữ semibold
-          },
-        },
-      },
-      yaxis: {
-        labels: {
-          formatter: function (val) {
-            return Math.floor(val);
-          },
-        },
-        title: { text: "Number of Customers" },
-        style: {
-          fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-          fontWeight: "600", // Cỡ chữ semibold
-        },
-      },
-      legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
-      dataLabels: { enabled: false },
-      stroke: { curve: "stepline" },
-      markers: { size: 1 },
-    },
-    series: [],
-  });
-
-  useEffect(() => {
-    const seriesData = customerGrowthData.map((channelData) => {
-      return {
-        name: channelData[0]?.channelName || "Unknown Channel",
-        data: channelData.map((data) => data.customers),
-      };
-    });
-
-    setCustomerGrowthChart((prevState) => ({
-      ...prevState,
-      series: seriesData,
-    }));
-  }, [customerGrowthData, numberOfMonths]);
-
-  const [grossProfit, setgrossProfit] = useState({
-    options: {
-      chart: { id: "gross-profit-chart", type: "line", height: 350 },
-      xaxis: {
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `${i + 1}`
-        ),
-        title: {
-          text: "Month",
-          style: {
-            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-            fontWeight: "600", // Cỡ chữ semibold
-          },
-        },
-      },
-      // title: { text: 'Revenue Data by Channel and Product', align: 'left' },
-      yaxis: {
-        labels: {
-          formatter: function (val) {
-            return Math.floor(val); // Format Y-axis labels as integers
-          },
-        },
-        title: {
-          text: "Profit ($)",
-          style: {
-            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-            fontWeight: "600", // Cỡ chữ semibold
-          },
-        },
-      },
-      legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
-      dataLabels: { enabled: false },
-      stroke: { curve: "smooth" },
-      markers: { size: 1 },
-    },
-
-    series: [],
-  });
-
-  useEffect(() => {
-    const seriesData = Object.entries(grossProfitData).map(([key, data]) => {
-      return { name: key, data };
-    });
-
-    setgrossProfit((prevState) => ({ ...prevState, series: seriesData }));
-  }, [grossProfitData, numberOfMonths]);
-
-  const [costChart, setCostChart] = useState({
-    options: {
-      chart: { id: "cost-chart", type: "bar", height: 350 },
-      xaxis: {
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `${i + 1}`
-        ),
-        title: {
-          text: "Month",
-          style: {
-            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-            fontWeight: "600", // Cỡ chữ semibold
-          },
-        },
-      },
-      // title: { text: 'Cost Data', align: 'left' },
-      yaxis: {
-        labels: {
-          formatter: function (val) {
-            return Math.floor(val); // Format Y-axis labels as integers
-          },
-        },
-        title: {
-          text: "Cost ($)",
-          style: {
-            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-            fontWeight: "600", // Cỡ chữ semibold
-          },
-        },
-      },
-      legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
-      dataLabels: { enabled: false },
-      stroke: { curve: "smooth" },
-      markers: { size: 1 },
-    },
-    series: [],
-  });
-
-  useEffect(() => {
-    const seriesData = costData.map((item) => {
-      return {
-        name: item.costName,
-        data: item.monthlyCosts.map((cost) => cost.cost),
-      };
-    });
-
-    setCostChart((prevState) => ({ ...prevState, series: seriesData }));
-  }, [costData, numberOfMonths]);
-
-  const [personnelChart, setPersonnelChart] = useState({
-    options: {
-      chart: { id: "personnel-chart", type: "bar", height: 350 },
-      xaxis: {
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `${i + 1}`
-        ),
-        title: {
-          text: "Month",
-          style: {
-            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-            fontWeight: "600", // Cỡ chữ semibold
-          },
-        },
-      },
-      // title: { text: 'Personnel Cost Data', align: 'left' },
-      yaxis: {
-        labels: {
-          formatter: function (val) {
-            return Math.floor(val); // Format Y-axis labels as integers
-          },
-        },
-        title: {
-          text: "Salary ($)",
-          style: {
-            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-            fontWeight: "600", // Cỡ chữ semibold
-          },
-        },
-      },
-      legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
-      dataLabels: { enabled: false },
-      stroke: { curve: "smooth" },
-      markers: { size: 1 },
-    },
-    series: [],
-  });
-
-  useEffect(() => {
-    const seriesData = personnelCostData.map((personnel) => {
-      return {
-        name: personnel.jobTitle,
-        data: personnel.monthlyCosts.map((month) => month.cost),
-      };
-    });
-
-    setPersonnelChart((prevState) => ({ ...prevState, series: seriesData }));
-  }, [personnelCostData, numberOfMonths]);
-
-  const [investmentChart, setInvestmentChart] = useState({
-    options: {
-      chart: { id: "investment-chart", type: "area", height: 350 },
-      xaxis: {
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `${i + 1}`
-        ),
-        title: {
-          text: "Month",
-          style: {
-            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-            fontWeight: "600", // Cỡ chữ semibold
-          },
-        },
-      },
-      // title: { text: 'Investment Data', align: 'left' },
-      yaxis: {
-        labels: {
-          formatter: function (val) {
-            return Math.floor(val); // Format Y-axis labels as integers
-          },
-        },
-        title: {
-          text: "Investment ($)",
-          style: {
-            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-            fontWeight: "600", // Cỡ chữ semibold
-          },
-        },
-      },
-      legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
-      dataLabels: { enabled: false },
-      stroke: { curve: "smooth" },
-      markers: { size: 1 },
-    },
-    series: [],
-  });
-
-  useEffect(() => {
-    const seriesData = calculateInvestmentData().map((investment) => {
-      return { name: investment.purchaseName, data: investment.assetValue };
-    });
-
-    setInvestmentChart((prevState) => ({ ...prevState, series: seriesData }));
-  }, [investmentInputs, numberOfMonths]);
-
+  //LoanChart
   const [loanChart, setLoanChart] = useState({
     options: {
       chart: { id: "loan-chart", type: "line", height: 350 },
@@ -2470,6 +2570,16 @@ const Z = ({ currentUser, setCurrentUser }) => {
     setLoanChart((prevState) => ({ ...prevState, series: seriesData }));
   }, [loanInputs, numberOfMonths]);
 
+  //PROFIT_AND_LOSS
+  //PROFIT_AND_LOSS
+  //PROFIT_AND_LOSS
+  //PROFIT_AND_LOSS
+  //PROFIT_AND_LOSS
+  //PROFIT_AND_LOSS
+  //PROFIT_AND_LOSS
+  //PROFIT_AND_LOSS
+  //PROFIT_AND_LOSS
+
   const ProfitAndLossSection = ({
     revenueData,
     costData,
@@ -2500,7 +2610,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       });
 
       revenueTableData.forEach((entry) => {
-        if (entry.channelName.includes("- Txfee")) {
+        if (entry.channelName.includes("- revenueDeduction")) {
           Object.keys(entry).forEach((key) => {
             if (key.startsWith("month")) {
               const monthIndex = parseInt(key.replace("month", "")) - 1;
@@ -2742,24 +2852,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
     );
   };
 
-  const [startingCashBalance, setStartingCashBalance] = useState([]);
-
-  const [status, setStatus] = useState([]);
-
-  const [industry, setIndustry] = useState([]);
-
-  const [incomeTax, setIncomeTax] = useState(10);
-
-  const [payrollTax, setPayrollTax] = useState(0);
-
-  const [currency, setCurrency] = useState("USD");
-
-  const [startMonth, setStartMonth] = useState([]);
-
-  const [startYear, setStartYear] = useState(2024);
-
-  const [financialProjectName, setFinancialProjectName] = useState([]);
-
   // Download Excel
   const downloadExcel = () => {
     const workBook = XLSX.utils.book_new();
@@ -2814,9 +2906,12 @@ const Z = ({ currentUser, setCurrentUser }) => {
         <ProgressBar isLoading={isLoading} />
       ) : (
         <>
+          {/* Gemini */}
           <div className="w-full h-full flex flex-col lg:flex-row">
             <Gemini />
           </div>
+
+          {/* DurationSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
             <div className="w-full lg:w-1/3 p-4 border-r-2">
               <DurationSelect
@@ -2842,9 +2937,14 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 setFinancialProjectName={setFinancialProjectName}
               />
             </div>
-            <div className="w-full lg:w-2/3 p-4">{/* <MetricsFM /> */}</div>
+
+            {/* FMMetrics */}
+            <div className="w-full lg:w-2/3 p-4">
+              <MetricsFM />
+            </div>
           </div>
 
+          {/* CustomerSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
             <div className="w-full lg:w-1/3 p-4 border-r-2">
               <CustomerSection
@@ -2858,8 +2958,8 @@ const Z = ({ currentUser, setCurrentUser }) => {
               <h3 className="text-2xl font-semibold ">Customer Table</h3>
               <Table
                 className="overflow-auto my-8"
-                dataSource={tableData}
-                columns={columns}
+                dataSource={customerTableData}
+                columns={customerColumns}
                 pagination={false}
               />
               <h3 className="text-2xl font-semibold my-8">Customer Chart</h3>
@@ -2872,6 +2972,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
             </div>
           </div>
 
+          {/* RevenueSetion */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
             <div className="w-full lg:w-1/3 p-4 border-r-2">
               <SalesSection
@@ -2904,6 +3005,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
             </div>
           </div>
 
+          {/* CostSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
             <div className="w-full lg:w-1/3 p-4 border-r-2">
               <CostSection
@@ -2931,6 +3033,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
             </div>
           </div>
 
+          {/* PersonnelSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
             <div className="w-full lg:w-1/3 p-4 border-r-2">
               <PersonnelSection
@@ -2962,6 +3065,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
             </div>
           </div>
 
+          {/* InvestmentSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
             <div className="w-full lg:w-1/3 p-4 border-r-2">
               <InvestmentSection
@@ -2990,6 +3094,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
             </div>
           </div>
 
+          {/* LoanSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
             <div className="w-full lg:w-1/3 p-4 border-r-2">
               <LoanSection
@@ -3016,6 +3121,8 @@ const Z = ({ currentUser, setCurrentUser }) => {
               />
             </div>
           </div>
+
+          {/* ProfitAndLossSection */}
           <ProfitAndLossSection
             revenueData={revenueTableData}
             costData={costData}
@@ -3031,28 +3138,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
       <button onClick={downloadExcel} className="download-excel-button">
         Download Excel
       </button>
-
-      {/* The following sections are commented out */}
-
-      {/* <div>
-        <div className="json-input-section mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Import Data from JSON</h2>
-          <textarea
-            value={jsonInput || ''}
-            onChange={jsonHandleInputChange}
-            className="border p-2 w-full mb-4"
-            placeholder="Paste your JSON here"
-            rows="10"
-          ></textarea>
-          <button
-            className="bg-blue-500 text-white py-1 px-4 rounded"
-            onClick={applyJsonInput}
-          >
-            Apply JSON
-          </button>
-        </div>
-      </div> */}
-      {/* <LoadingButtonClick isLoading={isLoading} /> */}
     </div>
   );
 };

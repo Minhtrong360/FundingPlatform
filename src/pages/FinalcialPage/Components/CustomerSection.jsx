@@ -3,6 +3,14 @@ import { Input } from "../../../components/ui/Input";
 import { Table, Tooltip } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import Chart from "react-apexcharts";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "../../../components/ui/Select";
+import SelectField from "../../../components/SelectField";
 
 const CustomerSection = ({
   customerInputs,
@@ -10,6 +18,7 @@ const CustomerSection = ({
   numberOfMonths,
   customerGrowthData,
   setCustomerGrowthData,
+  channelNames,
 }) => {
   const [customerGrowthChart, setCustomerGrowthChart] = useState({
     options: {
@@ -53,19 +62,40 @@ const CustomerSection = ({
     series: [],
   });
 
+  const [renderCustomerForm, setRenderCustomerForm] = useState(
+    customerInputs[0].channelName
+  );
+
   const handleAddNewCustomer = (input) => {
-    setCustomerInputs([...customerInputs, input]);
+    setCustomerInputs([
+      ...customerInputs,
+      {
+        customersPerMonth: 100,
+        growthPerMonth: 10,
+        channelName: "New channel",
+        beginMonth: 1,
+        endMonth: 15,
+      },
+    ]);
   };
 
-  const removeCustomerInput = (index) => {
-    const newInputs = [...customerInputs];
-    newInputs.splice(index, 1);
+  const removeCustomerInput = (channelName) => {
+    const newInputs = customerInputs.filter(
+      (input) => input.channelName !== channelName
+    );
     setCustomerInputs(newInputs);
   };
 
-  const handleInputChange = (index, field, value) => {
-    const newInputs = [...customerInputs];
-    newInputs[index][field] = value;
+  const handleInputChange = (channelName, field, value) => {
+    const newInputs = customerInputs.map((input) => {
+      if (input.channelName === channelName) {
+        return {
+          ...input,
+          [field]: value,
+        };
+      }
+      return input;
+    });
     setCustomerInputs(newInputs);
   };
 
@@ -175,6 +205,24 @@ const CustomerSection = ({
     }));
   }, [customerGrowthData, numberOfMonths]);
 
+  const handleChannelInputChange = (value) => {
+    setRenderCustomerForm(value);
+  };
+
+  console.log("channelNames", channelNames);
+  console.log("renderCustomerForm", renderCustomerForm);
+
+  useEffect(() => {
+    if (
+      renderCustomerForm === "New channel" &&
+      !customerInputs.some((input) => input.channelName === "New channel")
+    ) {
+      handleAddNewCustomer();
+    }
+  }, [renderCustomerForm, customerInputs]);
+
+  console.log("customerInputs", customerInputs);
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
       <div className="w-full lg:w-1/3 p-4 border-r-2">
@@ -191,85 +239,114 @@ const CustomerSection = ({
             Creating a customer channel is often considered the very first step in building a financial model for several strategic reasons, especially in the context of new businesses or products. This approach is rooted in the Lean Startup methodology, which emphasizes the importance of understanding and engaging with your market as early as possible.
             </p>
           </Tooltip>
+          <div className="mt-4">
+            <SelectField
+              label="Selected channel name:"
+              value={renderCustomerForm}
+              onChange={(e) => handleChannelInputChange(e.target.value)}
+              required
+              options={[...channelNames, "New channel"]} // Thay thế bằng danh sách các tùy chọn bạn muốn
+            />
+          </div>
 
-          {customerInputs.map((input, index) => (
-            <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">Customers per month:</span>
-                <Input
-                  className="col-start-2"
-                  value={input.customersPerMonth}
-                  onChange={(e) =>
-                    handleInputChange(
-                      index,
-                      "customersPerMonth",
-                      e.target.value
-                    )
-                  }
-                />
-              </div>
+          {customerInputs
+            .filter((input) => input.channelName === renderCustomerForm) // Sử dụng biến renderForm
+            .map((input, index) => (
+              <div
+                key={renderCustomerForm}
+                className="bg-white rounded-md shadow p-6 my-4"
+              >
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">Channel Name:</span>
+                  <Input
+                    className="col-start-2"
+                    value={input.channelName}
+                    onChange={(e) =>
+                      handleInputChange(
+                        renderCustomerForm,
+                        "channelName",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">
+                    Customers per month:
+                  </span>
+                  <Input
+                    className="col-start-2"
+                    value={input.customersPerMonth}
+                    onChange={(e) =>
+                      handleInputChange(
+                        renderCustomerForm,
+                        "customersPerMonth",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">Growth Per Month:</span>
-                <Input
-                  className="col-start-2"
-                  value={input.growthPerMonth}
-                  onChange={(e) =>
-                    handleInputChange(index, "growthPerMonth", e.target.value)
-                  }
-                />
-              </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">Growth Per Month:</span>
+                  <Input
+                    className="col-start-2"
+                    value={input.growthPerMonth}
+                    onChange={(e) =>
+                      handleInputChange(
+                        renderCustomerForm,
+                        "growthPerMonth",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">Channel Name:</span>
-                <Input
-                  className="col-start-2"
-                  value={input.channelName}
-                  onChange={(e) =>
-                    handleInputChange(index, "channelName", e.target.value)
-                  }
-                />
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">Begin Month:</span>
+                  <Input
+                    className="col-start-2"
+                    type="number"
+                    min="1"
+                    value={input.beginMonth}
+                    onChange={(e) =>
+                      handleInputChange(
+                        renderCustomerForm,
+                        "beginMonth",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">End Month:</span>
+                  <Input
+                    className="col-start-2"
+                    type="number"
+                    min="1"
+                    value={input.endMonth}
+                    onChange={(e) =>
+                      handleInputChange(
+                        renderCustomerForm,
+                        "endMonth",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
+                <div className="flex justify-end items-center">
+                  <button
+                    className="bg-red-600 text-white py-1 px-4 rounded"
+                    onClick={() => removeCustomerInput(renderCustomerForm)}
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">Begin Month:</span>
-                <Input
-                  className="col-start-2"
-                  type="number"
-                  min="1"
-                  value={input.beginMonth}
-                  onChange={(e) =>
-                    handleInputChange(index, "beginMonth", e.target.value)
-                  }
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">End Month:</span>
-                <Input
-                  className="col-start-2"
-                  type="number"
-                  min="1"
-                  value={input.endMonth}
-                  onChange={(e) =>
-                    handleInputChange(index, "endMonth", e.target.value)
-                  }
-                />
-              </div>
-              <div className="flex justify-end items-center">
-                <button
-                  className="bg-red-600 text-white py-1 px-4 rounded"
-                  onClick={() => removeCustomerInput(index)}
-                >
-                  Remove
-                </button>
-              </div>
-            </div>
-          ))}
+            ))}
 
-          <button
-            className="bg-blue-600 text-white py-1 px-4 rounded"
-            onClick={handleAddNewCustomer}
-          >
-            Add New
+          <button className="bg-blue-600 text-white py-1 px-4 rounded mt-4">
+            Save
           </button>
         </section>
       </div>

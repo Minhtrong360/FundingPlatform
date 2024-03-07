@@ -32,43 +32,38 @@ const SalesSection = ({
   revenueTableData,
 }) => {
   //RevenueFunctions
+
+  const [renderChannelForm, setRenderChannelForm] = useState(
+    channelInputs[0]?.id
+  );
   const addNewChannelInput = () => {
-    setChannelInputs([
-      ...channelInputs,
-      {
-        productName: "",
-        price: 0,
-        multiples: 0,
-        deductionPercentage: 0,
-        cogsPercentage: 0,
-        selectedChannel: "",
-      },
-    ]);
+    const maxId = Math.max(...channelInputs.map((input) => input?.id));
+    const newId = maxId !== -Infinity ? maxId + 1 : 1;
+    const newChannel = {
+      id: newId,
+      productName: "New channel",
+      price: 0,
+      multiples: 0,
+      deductionPercentage: 0,
+      cogsPercentage: 0,
+      selectedChannel: channelNames[0],
+      channelAllocation: 0,
+    };
+    setChannelInputs([...channelInputs, newChannel]);
+    setRenderChannelForm(newId.toString());
   };
 
-  // const removeChannelInput = (index) => {
-  //   const newInputs = [...channelInputs];
-  //   newInputs.splice(index, 1);
-  //   setChannelInputs(newInputs);
-  // };
-
-  // const handleChannelInputChange = (index, field, value) => {
-  //   const newInputs = [...channelInputs];
-  //   newInputs[index][field] = value;
-  //   setChannelInputs(newInputs);
-  // };
-
-  const removeChannelInput = (reder) => {
-    const newInputs = channelInputs.filter(
-      (input) =>
-        `${input.productName} - ${input.selectedChannel}` !== renderChannelForm
-    );
+  const removeChannelInput = (id) => {
+    console.log("id", id);
+    const newInputs = channelInputs.filter((input) => input?.id != id);
+    console.log("newInputs", newInputs);
     setChannelInputs(newInputs);
+    setRenderChannelForm(newInputs[0]?.id);
   };
 
-  const handleChannelInputChange = (channelName, field, value) => {
-    const newInputs = customerInputs.map((input) => {
-      if (input.channelName === channelName) {
+  const handleChannelInputChange = (id, field, value) => {
+    const newInputs = channelInputs.map((input) => {
+      if (input?.id === id) {
         return {
           ...input,
           [field]: value,
@@ -271,16 +266,9 @@ const SalesSection = ({
     setgrossProfit((prevState) => ({ ...prevState, series: seriesData }));
   }, [grossProfitData, numberOfMonths]);
 
-  const [renderChannelForm, setRenderChannelForm] = useState(
-    `${channelInputs[0].productName} - ${channelInputs[0].selectedChannel}`
-  );
-
-  const handleChannelChange = (value) => {
-    setRenderChannelForm(value);
+  const handleChannelChange = (event) => {
+    setRenderChannelForm(event.target.value);
   };
-
-  console.log("channelInputs", channelInputs);
-  console.log("renderChannelForm", renderChannelForm);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -293,27 +281,34 @@ const SalesSection = ({
             Sales Section
           </h2>
 
-          <div className="my-4">
-            <SelectField
-              label="Selected channel name:"
+          <div>
+            <label
+              htmlFor="selectedChannel"
+              className="block my-4 text-base  darkTextWhite"
+            >
+              Selected product:
+            </label>
+            <select
+              id="selectedChannel"
+              className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
               value={renderChannelForm}
-              onChange={(e) => handleChannelChange(e.target.value)}
-              required
-              options={channelInputs.map(
-                (channel) =>
-                  `${channel.productName} - ${channel.selectedChannel}`
-              )}
-            />
+              onChange={handleChannelChange}
+            >
+              {channelInputs.map((input) => (
+                <option key={input?.id} value={input?.id}>
+                  {`${input.productName} - ${input.selectedChannel}`}
+                </option>
+              ))}
+            </select>
           </div>
 
           {channelInputs
-            .filter(
-              (input) =>
-                `${input.productName} - ${input.selectedChannel}` ===
-                renderChannelForm
-            )
+            .filter((input) => input?.id == renderChannelForm)
             .map((input, index) => (
-              <div key={index} className="bg-white rounded-md shadow p-6 my-4">
+              <div
+                key={input.id}
+                className="bg-white rounded-md shadow p-6 my-4"
+              >
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <span className=" flex items-center">Product Name:</span>
                   <Input
@@ -321,7 +316,7 @@ const SalesSection = ({
                     value={input.productName}
                     onChange={(e) =>
                       handleChannelInputChange(
-                        index,
+                        input.id,
                         "productName",
                         e.target.value
                       )
@@ -334,7 +329,11 @@ const SalesSection = ({
                     className="col-start-2"
                     value={input.price}
                     onChange={(e) =>
-                      handleChannelInputChange(index, "price", e.target.value)
+                      handleChannelInputChange(
+                        input.id,
+                        "price",
+                        e.target.value
+                      )
                     }
                   />
                 </div>
@@ -346,7 +345,7 @@ const SalesSection = ({
                     value={input.multiples}
                     onChange={(e) =>
                       handleChannelInputChange(
-                        index,
+                        input.id,
                         "multiples",
                         e.target.value
                       )
@@ -364,7 +363,7 @@ const SalesSection = ({
                       value={input.deductionPercentage}
                       onChange={(e) =>
                         handleChannelInputChange(
-                          index,
+                          `${input.productName} - ${input.selectedChannel}`,
                           "deductionPercentage",
                           e.target.value
                         )
@@ -380,7 +379,7 @@ const SalesSection = ({
                     value={input.cogsPercentage}
                     onChange={(e) =>
                       handleChannelInputChange(
-                        index,
+                        input.id,
                         "cogsPercentage",
                         e.target.value
                       )
@@ -392,7 +391,11 @@ const SalesSection = ({
                   <span className=" flex items-center">Sales Channel:</span>
                   <Select
                     onValueChange={(value) =>
-                      handleChannelInputChange(index, "selectedChannel", value)
+                      handleChannelInputChange(
+                        input.id,
+                        "selectedChannel",
+                        value
+                      )
                     }
                     value={
                       input.selectedChannel !== null
@@ -428,7 +431,7 @@ const SalesSection = ({
                     value={input.channelAllocation * 100} // Convert to percentage for display
                     onChange={(e) =>
                       handleChannelInputChange(
-                        index,
+                        input.id,
                         "channelAllocation",
                         e.target.value / 100
                       )
@@ -438,7 +441,7 @@ const SalesSection = ({
                 <div className="flex justify-end items-center">
                   <button
                     className="bg-red-600 text-white py-1 px-4 rounded"
-                    onClick={() => removeChannelInput(index)}
+                    onClick={() => removeChannelInput(input.id)}
                   >
                     Remove
                   </button>
@@ -447,10 +450,14 @@ const SalesSection = ({
             ))}
 
           <button
-            className="bg-blue-500 text-white py-1 px-4 rounded"
+            className="bg-blue-600 text-white py-1 px-4 rounded mt-4 mr-4"
             onClick={addNewChannelInput}
           >
-            Add New
+            Add new
+          </button>
+
+          <button className="bg-blue-600 text-white py-1 px-4 rounded mt-4">
+            Save
           </button>
         </section>
       </div>

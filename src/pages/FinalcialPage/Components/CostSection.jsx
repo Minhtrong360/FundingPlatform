@@ -19,19 +19,40 @@ const CostSection = ({
   costData,
   setCostData,
 }) => {
-  const addNewCostInput = (input) => {
-    setCostInputs([...costInputs, input]);
+  const [renderCostForm, setRenderCostForm] = useState(costInputs[0]?.id);
+  const addNewCostInput = () => {
+    const maxId = Math.max(...costInputs.map((input) => input?.id));
+    const newId = maxId !== -Infinity ? maxId + 1 : 1;
+    const newCustomer = {
+      id: newId,
+      costName: "New cost name",
+      costValue: 1000,
+      growthPercentage: 0,
+      beginMonth: 1,
+      endMonth: 6,
+      costType: "Sales, Marketing Cost",
+    };
+    setCostInputs([...costInputs, newCustomer]);
+    setRenderCostForm(newId.toString());
   };
 
-  const removeCostInput = (index) => {
-    const newInputs = [...costInputs];
-    newInputs.splice(index, 1);
+  const removeCostInput = (id) => {
+    const newInputs = costInputs.filter((input) => input?.id != id);
+
     setCostInputs(newInputs);
+    setRenderCostForm(newInputs[0]?.id);
   };
 
-  const handleCostInputChange = (index, field, value) => {
-    const newInputs = [...costInputs];
-    newInputs[index][field] = value;
+  const handleCostInputChange = (id, field, value) => {
+    const newInputs = costInputs.map((input) => {
+      if (input?.id === id) {
+        return {
+          ...input,
+          [field]: value,
+        };
+      }
+      return input;
+    });
     setCostInputs(newInputs);
   };
 
@@ -112,6 +133,10 @@ const CostSection = ({
     setCostChart((prevState) => ({ ...prevState, series: seriesData }));
   }, [costData, numberOfMonths]);
 
+  const handleSelectChange = (event) => {
+    setRenderCostForm(event.target.value);
+  };
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
       <div className="w-full lg:w-1/3 p-4 border-r-2">
@@ -123,128 +148,162 @@ const CostSection = ({
             Costs
           </h2>
 
-          {costInputs.map((input, index) => (
-            <div key={index} className="bg-white rounded-md shadow p-6 mb-4 ">
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">Cost Name:</span>
-                <Input
-                  className="col-start-2"
-                  value={input.costName}
-                  onChange={(e) =>
-                    handleCostInputChange(index, "costName", e.target.value)
-                  }
-                />
-              </div>
+          <div>
+            <label
+              htmlFor="selectedChannel"
+              className="block my-4 text-base  darkTextWhite"
+            >
+              Selected cost name:
+            </label>
+            <select
+              id="selectedChannel"
+              className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+              value={renderCostForm}
+              onChange={handleSelectChange}
+            >
+              {costInputs.map((input) => (
+                <option key={input?.id} value={input?.id}>
+                  {input.costName}
+                </option>
+              ))}
+            </select>
+          </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">Cost Value:</span>
-                <Input
-                  className="col-start-2"
-                  type="number"
-                  value={input.costValue}
-                  onChange={(e) =>
-                    handleCostInputChange(
-                      index,
-                      "costValue",
-                      parseFloat(e.target.value)
-                    )
-                  }
-                />
-              </div>
+          {costInputs
+            .filter((input) => input?.id == renderCostForm) // Sử dụng biến renderForm
+            .map((input) => (
+              <div
+                key={input?.id}
+                className="bg-white rounded-md shadow p-6 my-4 "
+              >
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">Cost Name:</span>
+                  <Input
+                    className="col-start-2"
+                    value={input.costName}
+                    onChange={(e) =>
+                      handleCostInputChange(
+                        input?.id,
+                        "costName",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">Growth Percentage:</span>
-                <Input
-                  className="col-start-2"
-                  type="number"
-                  value={input.growthPercentage}
-                  onChange={(e) =>
-                    handleCostInputChange(
-                      index,
-                      "growthPercentage",
-                      parseFloat(e.target.value)
-                    )
-                  }
-                />
-              </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">Cost Value:</span>
+                  <Input
+                    className="col-start-2"
+                    type="number"
+                    value={input.costValue}
+                    onChange={(e) =>
+                      handleCostInputChange(
+                        input?.id,
+                        "costValue",
+                        parseFloat(e.target.value)
+                      )
+                    }
+                  />
+                </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">Begin Month:</span>
-                <Input
-                  className="col-start-2"
-                  type="number"
-                  min="1"
-                  max="12"
-                  value={input.beginMonth}
-                  onChange={(e) =>
-                    handleCostInputChange(
-                      index,
-                      "beginMonth",
-                      parseInt(e.target.value, 10)
-                    )
-                  }
-                />
-              </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">Growth Percentage:</span>
+                  <Input
+                    className="col-start-2"
+                    type="number"
+                    value={input.growthPercentage}
+                    onChange={(e) =>
+                      handleCostInputChange(
+                        input?.id,
+                        "growthPercentage",
+                        parseFloat(e.target.value)
+                      )
+                    }
+                  />
+                </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">End Month:</span>
-                <Input
-                  className="col-start-2"
-                  type="number"
-                  min="1"
-                  max="12"
-                  value={input.endMonth}
-                  onChange={(e) =>
-                    handleCostInputChange(
-                      index,
-                      "endMonth",
-                      parseInt(e.target.value, 10)
-                    )
-                  }
-                />
-              </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">Begin Month:</span>
+                  <Input
+                    className="col-start-2"
+                    type="number"
+                    min="1"
+                    max="12"
+                    value={input.beginMonth}
+                    onChange={(e) =>
+                      handleCostInputChange(
+                        input?.id,
+                        "beginMonth",
+                        parseInt(e.target.value, 10)
+                      )
+                    }
+                  />
+                </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">Cost Type:</span>
-                <Select
-                  onValueChange={(value) =>
-                    handleCostInputChange(index, "costType", value)
-                  }
-                  value={input.costType}
-                >
-                  <SelectTrigger
-                    id={`select-costType-${index}`}
-                    className="border-solid border-[1px] border-gray-600"
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">End Month:</span>
+                  <Input
+                    className="col-start-2"
+                    type="number"
+                    min="1"
+                    max="12"
+                    value={input.endMonth}
+                    onChange={(e) =>
+                      handleCostInputChange(
+                        input?.id,
+                        "endMonth",
+                        parseInt(e.target.value, 10)
+                      )
+                    }
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">Cost Type:</span>
+                  <Select
+                    onValueChange={(value) =>
+                      handleCostInputChange(input?.id, "costType", value)
+                    }
+                    value={input.costType}
                   >
-                    <SelectValue placeholder="Select Cost Type" />
-                  </SelectTrigger>
-                  <SelectContent position="popper">
-                    <SelectItem value="Sales, Marketing Cost">
-                      Sales, Marketing Cost
-                    </SelectItem>
-                    <SelectItem value="General Administrative Cost">
-                      General Administrative Cost
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                    <SelectTrigger
+                      id={`select-costType-${input?.id}`}
+                      className="border-solid border-[1px] border-gray-600"
+                    >
+                      <SelectValue placeholder="Select Cost Type" />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      <SelectItem value="Sales, Marketing Cost">
+                        Sales, Marketing Cost
+                      </SelectItem>
+                      <SelectItem value="General Administrative Cost">
+                        General Administrative Cost
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              <div className="flex justify-end items-center">
-                <button
-                  className="bg-red-600 text-white py-1 px-4 rounded"
-                  onClick={() => removeCostInput(index)}
-                >
-                  Remove
-                </button>
+                <div className="flex justify-end items-center">
+                  <button
+                    className="bg-red-600 text-white py-1 px-4 rounded"
+                    onClick={() => removeCostInput(input?.id)}
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
 
           <button
-            className="bg-blue-600 text-white py-1 px-4 rounded"
+            className="bg-blue-600 text-white py-1 px-4 rounded mt-4 mr-4"
             onClick={addNewCostInput}
           >
-            Add New
+            Add new
+          </button>
+
+          <button className="bg-blue-600 text-white py-1 px-4 rounded mt-4">
+            Save
           </button>
         </section>
       </div>

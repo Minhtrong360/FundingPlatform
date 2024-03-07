@@ -25,7 +25,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
       id="default-sidebar"
       className={`fixed top-0 left-0 z-50 h-screen transition-all duration-300 ease-in-out transform ${
         isSidebarOpen ? "w-auto" : "w-24 "
-      } group hover:w-64 bg-gray-50 dark:bg-blue-900`}
+      } group hover:w-64 bg-gray-50`}
       aria-label="Sidebar"
     >
       <style>

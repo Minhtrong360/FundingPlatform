@@ -291,6 +291,17 @@ const CustomerSection = ({
       {customerInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
           <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className=" flex items-center">Channel Name:</span>
+            <Input
+              className="col-start-2"
+              value={input.channelName}
+              onChange={(e) =>
+                handleInputChange(index, "channelName", e.target.value)
+              }
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mb-4">
             <span className=" flex items-center">Customers per month:</span>
             <Input
               className="col-start-2"
@@ -312,16 +323,6 @@ const CustomerSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className=" flex items-center">Channel Name:</span>
-            <Input
-              className="col-start-2"
-              value={input.channelName}
-              onChange={(e) =>
-                handleInputChange(index, "channelName", e.target.value)
-              }
-            />
-          </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className=" flex items-center">Begin Month:</span>
             <Input

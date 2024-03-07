@@ -768,6 +768,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             numberOfMonths={numberOfMonths}
             customerGrowthData={customerGrowthData}
             setCustomerGrowthData={setCustomerGrowthData}
+            channelNames={channelNames}
           />
 
           {/* RevenueSetion */}

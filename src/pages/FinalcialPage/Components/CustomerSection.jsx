@@ -188,8 +188,7 @@ const CustomerSection = ({
               <InfoCircleOutlined style={{ marginLeft: "0.5rem" }} />
             </h2>
             <p>
-              Việc tạo kênh bán là cực kì quan trọng. Bạn phải nghe tui, không
-              xác định được kênh bán là đi bụi
+            Creating a customer channel is often considered the very first step in building a financial model for several strategic reasons, especially in the context of new businesses or products. This approach is rooted in the Lean Startup methodology, which emphasizes the importance of understanding and engaging with your market as early as possible.
             </p>
           </Tooltip>
 

@@ -9,6 +9,7 @@ import { Input } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
 import { Table, Tooltip } from "antd";
 import Chart from "react-apexcharts";
+import SelectField from "../../../components/SelectField";
 
 const SalesSection = ({
   channelInputs,
@@ -31,29 +32,45 @@ const SalesSection = ({
   revenueTableData,
 }) => {
   //RevenueFunctions
+
+  const [renderChannelForm, setRenderChannelForm] = useState(
+    channelInputs[0]?.id
+  );
   const addNewChannelInput = () => {
-    setChannelInputs([
-      ...channelInputs,
-      {
-        productName: "",
-        price: 0,
-        multiples: 0,
-        deductionPercentage: 0,
-        cogsPercentage: 0,
-        selectedChannel: "",
-      },
-    ]);
+    const maxId = Math.max(...channelInputs.map((input) => input?.id));
+    const newId = maxId !== -Infinity ? maxId + 1 : 1;
+    const newChannel = {
+      id: newId,
+      productName: "New channel",
+      price: 0,
+      multiples: 0,
+      deductionPercentage: 0,
+      cogsPercentage: 0,
+      selectedChannel: channelNames[0],
+      channelAllocation: 0,
+    };
+    setChannelInputs([...channelInputs, newChannel]);
+    setRenderChannelForm(newId.toString());
   };
 
-  const removeChannelInput = (index) => {
-    const newInputs = [...channelInputs];
-    newInputs.splice(index, 1);
+  const removeChannelInput = (id) => {
+    console.log("id", id);
+    const newInputs = channelInputs.filter((input) => input?.id != id);
+    console.log("newInputs", newInputs);
     setChannelInputs(newInputs);
+    setRenderChannelForm(newInputs[0]?.id);
   };
 
-  const handleChannelInputChange = (index, field, value) => {
-    const newInputs = [...channelInputs];
-    newInputs[index][field] = value;
+  const handleChannelInputChange = (id, field, value) => {
+    const newInputs = channelInputs.map((input) => {
+      if (input?.id === id) {
+        return {
+          ...input,
+          [field]: value,
+        };
+      }
+      return input;
+    });
     setChannelInputs(newInputs);
   };
 
@@ -249,6 +266,10 @@ const SalesSection = ({
     setgrossProfit((prevState) => ({ ...prevState, series: seriesData }));
   }, [grossProfitData, numberOfMonths]);
 
+  const handleChannelChange = (event) => {
+    setRenderChannelForm(event.target.value);
+  };
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
       <div className="w-full lg:w-1/3 p-4 border-r-2">
@@ -260,139 +281,183 @@ const SalesSection = ({
             Sales Section
           </h2>
 
-          {channelInputs.map((input, index) => (
-            <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">Product Name:</span>
-                <Input
-                  className="col-start-2"
-                  value={input.productName}
-                  onChange={(e) =>
-                    handleChannelInputChange(
-                      index,
-                      "productName",
-                      e.target.value
-                    )
-                  }
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">Price:</span>
-                <Input
-                  className="col-start-2"
-                  value={input.price}
-                  onChange={(e) =>
-                    handleChannelInputChange(index, "price", e.target.value)
-                  }
-                />
-              </div>
+          <div>
+            <label
+              htmlFor="selectedChannel"
+              className="block my-4 text-base  darkTextWhite"
+            >
+              Selected product:
+            </label>
+            <select
+              id="selectedChannel"
+              className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+              value={renderChannelForm}
+              onChange={handleChannelChange}
+            >
+              {channelInputs.map((input) => (
+                <option key={input?.id} value={input?.id}>
+                  {`${input.productName} - ${input.selectedChannel}`}
+                </option>
+              ))}
+            </select>
+          </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">Multiples:</span>
-                <Input
-                  className="col-start-2"
-                  value={input.multiples}
-                  onChange={(e) =>
-                    handleChannelInputChange(index, "multiples", e.target.value)
-                  }
-                />
-              </div>
-
-              <Tooltip title="Revenue deductions like transaction fees, commission fee... ">
+          {channelInputs
+            .filter((input) => input?.id == renderChannelForm)
+            .map((input, index) => (
+              <div
+                key={input.id}
+                className="bg-white rounded-md shadow p-6 my-4"
+              >
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">
-                    Rev. Deductions (%):
-                  </span>
+                  <span className=" flex items-center">Product Name:</span>
                   <Input
                     className="col-start-2"
-                    value={input.deductionPercentage}
+                    value={input.productName}
                     onChange={(e) =>
                       handleChannelInputChange(
-                        index,
-                        "deductionPercentage",
+                        input.id,
+                        "productName",
                         e.target.value
                       )
                     }
                   />
                 </div>
-              </Tooltip>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">Price:</span>
+                  <Input
+                    className="col-start-2"
+                    value={input.price}
+                    onChange={(e) =>
+                      handleChannelInputChange(
+                        input.id,
+                        "price",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">COGS (%):</span>
-                <Input
-                  className="col-start-2"
-                  value={input.cogsPercentage}
-                  onChange={(e) =>
-                    handleChannelInputChange(
-                      index,
-                      "cogsPercentage",
-                      e.target.value
-                    )
-                  }
-                />
-              </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">Multiples:</span>
+                  <Input
+                    className="col-start-2"
+                    value={input.multiples}
+                    onChange={(e) =>
+                      handleChannelInputChange(
+                        input.id,
+                        "multiples",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">Sales Channel:</span>
-                <Select
-                  onValueChange={(value) =>
-                    handleChannelInputChange(index, "selectedChannel", value)
-                  }
-                  value={
-                    input.selectedChannel !== null ? input.selectedChannel : ""
-                  }
-                >
-                  <SelectTrigger
-                    id={`select-channel-${index}`}
-                    className="border-solid border-[1px] border-gray-600"
+                <Tooltip title="Revenue deductions like transaction fees, commission fee... ">
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <span className=" flex items-center">
+                      Rev. Deductions (%):
+                    </span>
+                    <Input
+                      className="col-start-2"
+                      value={input.deductionPercentage}
+                      onChange={(e) =>
+                        handleChannelInputChange(
+                          `${input.productName} - ${input.selectedChannel}`,
+                          "deductionPercentage",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+                </Tooltip>
+
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">COGS (%):</span>
+                  <Input
+                    className="col-start-2"
+                    value={input.cogsPercentage}
+                    onChange={(e) =>
+                      handleChannelInputChange(
+                        input.id,
+                        "cogsPercentage",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">Sales Channel:</span>
+                  <Select
+                    onValueChange={(value) =>
+                      handleChannelInputChange(
+                        input.id,
+                        "selectedChannel",
+                        value
+                      )
+                    }
+                    value={
+                      input.selectedChannel !== null
+                        ? input.selectedChannel
+                        : ""
+                    }
                   >
-                    <SelectValue placeholder="Select Channel" />
-                  </SelectTrigger>
-                  <SelectContent position="popper">
-                    {channelNames.map((channelName, channelIndex) => (
-                      <SelectItem key={channelIndex} value={channelName}>
-                        {channelName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+                    <SelectTrigger
+                      id={`select-channel-${index}`}
+                      className="border-solid border-[1px] border-gray-600"
+                    >
+                      <SelectValue placeholder="Select Channel" />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      {channelNames.map((channelName, channelIndex) => (
+                        <SelectItem key={channelIndex} value={channelName}>
+                          {channelName}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">
-                  Channel Allocation (%):
-                </span>
-                <Input
-                  className="col-start-2"
-                  type="number"
-                  min={0}
-                  max={100}
-                  value={input.channelAllocation * 100} // Convert to percentage for display
-                  onChange={(e) =>
-                    handleChannelInputChange(
-                      index,
-                      "channelAllocation",
-                      e.target.value / 100
-                    )
-                  } // Convert back to fraction
-                />
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">
+                    Channel Allocation (%):
+                  </span>
+                  <Input
+                    className="col-start-2"
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={input.channelAllocation * 100} // Convert to percentage for display
+                    onChange={(e) =>
+                      handleChannelInputChange(
+                        input.id,
+                        "channelAllocation",
+                        e.target.value / 100
+                      )
+                    } // Convert back to fraction
+                  />
+                </div>
+                <div className="flex justify-end items-center">
+                  <button
+                    className="bg-red-600 text-white py-1 px-4 rounded"
+                    onClick={() => removeChannelInput(input.id)}
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
-              <div className="flex justify-end items-center">
-                <button
-                  className="bg-red-600 text-white py-1 px-4 rounded"
-                  onClick={() => removeChannelInput(index)}
-                >
-                  Remove
-                </button>
-              </div>
-            </div>
-          ))}
+            ))}
 
           <button
-            className="bg-blue-500 text-white py-1 px-4 rounded"
+            className="bg-blue-600 text-white py-1 px-4 rounded mt-4 mr-4"
             onClick={addNewChannelInput}
           >
-            Add New
+            Add new
+          </button>
+
+          <button className="bg-blue-600 text-white py-1 px-4 rounded mt-4">
+            Save
           </button>
         </section>
       </div>

@@ -73,6 +73,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   //CustomerState
   const [customerInputs, setCustomerInputs] = useState([
     {
+      id: 1,
       customersPerMonth: 300,
       growthPerMonth: 10,
       channelName: "Online",
@@ -80,6 +81,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       endMonth: 36,
     },
     {
+      id: 2,
       customersPerMonth: 400,
       growthPerMonth: 10,
       channelName: "Offline",
@@ -93,6 +95,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   //RevenueState
   const [channelInputs, setChannelInputs] = useState([
     {
+      id: 1,
       productName: "Coffee", // New field for product name
       price: 4,
       multiples: 1,
@@ -102,6 +105,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       channelAllocation: 0.4,
     },
     {
+      id: 2,
       productName: "Cake", // New field for product name
       price: 8,
       multiples: 1,
@@ -111,6 +115,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       channelAllocation: 0.3,
     },
     {
+      id: 3,
       productName: "Coffee Bag", // New field for product name
       price: 6,
       multiples: 1,
@@ -217,6 +222,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   //CostState
   const [costInputs, setCostInputs] = useState([
     {
+      id: 1,
       costName: "Website",
       costValue: 1000,
       growthPercentage: 0,
@@ -225,6 +231,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       costType: "Sales, Marketing Cost",
     },
     {
+      id: 2,
       costName: "Marketing",
       costValue: 500,
       growthPercentage: 0,
@@ -233,6 +240,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       costType: "Sales, Marketing Cost",
     },
     {
+      id: 3,
       costName: "Rent",
       costValue: 1000,
       growthPercentage: 2,
@@ -290,6 +298,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   //PersonnelState
   const [personnelInputs, setPersonnelInputs] = useState([
     {
+      id: 1,
       jobTitle: "Cashier",
       salaryPerMonth: 800,
       numberOfHires: 2,
@@ -297,6 +306,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       jobEndMonth: 36,
     },
     {
+      id: 2,
       jobTitle: "Manager",
       salaryPerMonth: 2000,
       numberOfHires: 1,
@@ -319,6 +329,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   //InvestmentState
   const [investmentInputs, setInvestmentInputs] = useState([
     {
+      id: 1,
       purchaseName: "Coffee machine",
       assetCost: 8000,
       quantity: 1,
@@ -327,6 +338,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       usefulLifetime: 36,
     },
     {
+      id: 2,
       purchaseName: "Table",
       assetCost: 200,
       quantity: 10,
@@ -451,6 +463,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   //LoanState
   const [loanInputs, setLoanInputs] = useState([
     {
+      id: 1,
       loanName: "Banking loan",
       loanAmount: "150000",
       interestRate: "6",
@@ -711,6 +724,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       "financial-data.xlsx"
     );
   };
+
+  console.log("revenueTableData", revenueTableData);
 
   return (
     <div>

@@ -136,7 +136,7 @@ export default function ProjectGiven({
   return (
     <div className="App">
       <button
-        className={`text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+        // className={`text-black  focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-lg text-sm px-4 py-1  darkBgBlue darkHoverBgBlue darkFocus `}
         onClick={() => setIsModalOpen(true)}
       >
         Assign

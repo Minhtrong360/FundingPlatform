@@ -1,28 +1,60 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
+import { Table, Tooltip } from "antd";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import Chart from "react-apexcharts";
 
 const CustomerSection = ({
-  selectedDuration,
   customerInputs,
   setCustomerInputs,
+  numberOfMonths,
   customerGrowthData,
   setCustomerGrowthData,
-  numberOfMonths,
-  setCustomerGrowthChart,
-  customerTableData,
-  setCustomerTableData,
 }) => {
-  const handleAddNewCustomer = () => {
-    setCustomerInputs([
-      ...customerInputs,
-      {
-        customersPerMonth: 100,
-        growthPerMonth: 10,
-        channelName: "",
-        beginMonth: 1,
-        endMonth: numberOfMonths,
+  const [customerGrowthChart, setCustomerGrowthChart] = useState({
+    options: {
+      chart: {
+        id: "customer-growth-chart",
+        type: "bar",
+        height: 350,
       },
-    ]);
+
+      xaxis: {
+        categories: Array.from(
+          { length: numberOfMonths },
+          (_, i) => `Month ${i + 1}`
+        ),
+        title: {
+          text: "Month",
+          style: {
+            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+            fontWeight: "600", // Cỡ chữ semibold
+          },
+        },
+      },
+      yaxis: {
+        labels: {
+          formatter: function (val) {
+            return Math.floor(val);
+          },
+        },
+        title: { text: "Number of Customers" },
+        style: {
+          fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
+          fontWeight: "600", // Cỡ chữ semibold
+        },
+      },
+      legend: { position: "bottom", horizontalAlign: "right" },
+      fill: { type: "solid" },
+      dataLabels: { enabled: false },
+      stroke: { curve: "stepline" },
+      markers: { size: 1 },
+    },
+    series: [],
+  });
+
+  const handleAddNewCustomer = (input) => {
+    setCustomerInputs([...customerInputs, input]);
   };
 
   const removeCustomerInput = (index) => {
@@ -34,18 +66,6 @@ const CustomerSection = ({
   const handleInputChange = (index, field, value) => {
     const newInputs = [...customerInputs];
     newInputs[index][field] = value;
-
-    if (field === "beginMonth" || field === "endMonth") {
-      const beginMonth = parseFloat(newInputs[index].beginMonth);
-      const endMonth = parseFloat(newInputs[index].endMonth);
-
-      if (field === "beginMonth" && beginMonth > endMonth) {
-        newInputs[index].endMonth = value;
-      } else if (field === "endMonth" && endMonth < beginMonth) {
-        newInputs[index].beginMonth = value;
-      }
-    }
-
     setCustomerInputs(newInputs);
   };
 
@@ -73,16 +93,25 @@ const CustomerSection = ({
     });
   };
 
-  const transformedCustomerData = {};
+  //CustomerUseEffect
+  useEffect(() => {
+    const calculatedData = calculateCustomerGrowth(
+      customerInputs,
+      numberOfMonths
+    );
+    setCustomerGrowthData(calculatedData);
+  }, [customerInputs, numberOfMonths]);
+
+  // CustomerTableData
+  const transformedCustomerTableData = {};
   customerGrowthData.forEach((channelData) => {
     channelData.forEach((data) => {
       const customerInput = customerInputs.find(
         (input) => input.channelName === data.channelName
       );
-
       if (customerInput) {
-        if (!transformedCustomerData[data.channelName]) {
-          transformedCustomerData[data.channelName] = {
+        if (!transformedCustomerTableData[data.channelName]) {
+          transformedCustomerTableData[data.channelName] = {
             key: data.channelName,
             channelName: data.channelName,
           };
@@ -92,52 +121,51 @@ const CustomerSection = ({
           data.month >= customerInput.beginMonth &&
           data.month <= customerInput.endMonth
         ) {
-          transformedCustomerData[data.channelName][`month${data.month}`] =
-            parseFloat(data.customers).toFixed(2);
+          transformedCustomerTableData[data.channelName][`month${data.month}`] =
+            parseFloat(data.customers)?.toFixed(2);
         } else {
           // Set value to 0 if outside the range
-          transformedCustomerData[data.channelName][`month${data.month}`] =
+          transformedCustomerTableData[data.channelName][`month${data.month}`] =
             "0.00";
         }
       }
     });
   });
 
-  const tableData = Object.values(transformedCustomerData).map((row) => {
-    for (let month = 1; month <= numberOfMonths; month++) {
-      if (!row.hasOwnProperty(`month${month}`)) {
-        row[`month${month}`] = "0.00";
+  const customerTableData = Object.values(transformedCustomerTableData).map(
+    (row) => {
+      for (let month = 1; month <= numberOfMonths; month++) {
+        if (!row.hasOwnProperty(`month${month}`)) {
+          row[`month${month}`] = "0.00";
+        }
       }
+      return row;
     }
-    return row;
-  });
+  );
+
+  // CustomerColumns
+  const customerColumns = [
+    {
+      fixed: "left",
+      title: "Channel Name",
+      dataIndex: "channelName",
+      key: "channelName",
+    },
+
+    ...Array.from({ length: numberOfMonths }, (_, i) => i + 1).map((month) => ({
+      title: `Month_${month}`,
+      dataIndex: `month${month}`,
+      key: `month${month}`,
+    })),
+  ];
+
+  //CustomerChart
 
   useEffect(() => {
-    setCustomerTableData(tableData);
-  }, [numberOfMonths, customerGrowthData]);
-
-  useEffect(() => {
-    const calculatedData = calculateCustomerGrowth(
-      customerInputs,
-      selectedDuration
-    );
-    setCustomerGrowthData(calculatedData);
-  }, [customerInputs, selectedDuration]);
-
-  useEffect(() => {
-    const seriesData = customerTableData.map((channelData) => {
-      const channelName = channelData.channelName || "Unknown Channel";
-      const data = [];
-
-      // Lặp qua từng tháng (month1 đến month36) và lấy dữ liệu customers tương ứng
-      for (let i = 1; i <= numberOfMonths; i++) {
-        const monthKey = `month${i}`;
-        data.push(parseFloat(channelData[monthKey]) || 0); // Chuyển đổi thành số và mặc định là 0 nếu không có giá trị hợp lệ
-      }
-
+    const seriesData = customerGrowthData.map((channelData) => {
       return {
-        name: channelName,
-        data: data,
+        name: channelData[0]?.channelName || "Unknown Channel",
+        data: channelData.map((data) => data.customers),
       };
     });
 
@@ -145,98 +173,124 @@ const CustomerSection = ({
       ...prevState,
       series: seriesData,
     }));
-  }, [customerTableData]);
+  }, [customerGrowthData, numberOfMonths]);
 
   return (
-    <section aria-labelledby="customers-heading" className="mb-8">
-      <h2
-        className="text-lg font-semibold mb-4 flex items-center mt-16"
-        id="customers-heading"
-      >
-        Customer
-      </h2>
-
-      {customerInputs.map((input, index) => (
-        <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Channel Name:</span>
-            <Input
-              required
-              className="col-start-2"
-              value={input.channelName}
-              onChange={(e) =>
-                handleInputChange(index, "channelName", e.target.value)
-              }
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Customers Per Month:</span>
-            <Input
-              required
-              className="col-start-2"
-              value={input.customersPerMonth}
-              onChange={(e) =>
-                handleInputChange(index, "customersPerMonth", e.target.value)
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Growth Per Month:</span>
-            <Input
-              required
-              className="col-start-2"
-              value={input.growthPerMonth}
-              onChange={(e) =>
-                handleInputChange(index, "growthPerMonth", e.target.value)
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">Begin Month:</span>
-            <Input
-              required
-              className="col-start-2"
-              type="number"
-              min="1"
-              value={input.beginMonth}
-              onChange={(e) =>
-                handleInputChange(index, "beginMonth", e.target.value)
-              }
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className="font-medium">End Month:</span>
-            <Input
-              required
-              className="col-start-2"
-              type="number"
-              min="1"
-              value={input.endMonth}
-              onChange={(e) =>
-                handleInputChange(index, "endMonth", e.target.value)
-              }
-            />
-          </div>
-          <div className="flex justify-end items-center">
-            <button
-              className="bg-red-500 text-white py-1 px-4 rounded"
-              onClick={() => removeCustomerInput(index)}
+    <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
+      <div className="w-full lg:w-1/3 p-4 border-r-2">
+        <section aria-labelledby="customers-heading" className="mb-8">
+          <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Here's a list of common customer channels that startups often utilize: Website, Social Media,Email Marketing, Referral Programs, Events and Networking, Direct Sales, Subscription.">
+            <h2
+              className="text-2xl font-semibold mb-4 flex items-center"
+              id="customers-heading"
             >
-              Remove
-            </button>
-          </div>
-        </div>
-      ))}
+              1. Identify your customer{" "}
+              <InfoCircleOutlined style={{ marginLeft: "0.5rem" }} />
+            </h2>
+            <p>
+              Việc tạo kênh bán là cực kì quan trọng. Bạn phải nghe tui, không
+              xác định được kênh bán là đi bụi
+            </p>
+          </Tooltip>
 
-      <button
-        className="bg-blue-600 text-white py-1 px-4 rounded"
-        onClick={handleAddNewCustomer}
-      >
-        Add New
-      </button>
-    </section>
+          {customerInputs.map((input, index) => (
+            <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <span className=" flex items-center">Customers per month:</span>
+                <Input
+                  className="col-start-2"
+                  value={input.customersPerMonth}
+                  onChange={(e) =>
+                    handleInputChange(
+                      index,
+                      "customersPerMonth",
+                      e.target.value
+                    )
+                  }
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <span className=" flex items-center">Growth Per Month:</span>
+                <Input
+                  className="col-start-2"
+                  value={input.growthPerMonth}
+                  onChange={(e) =>
+                    handleInputChange(index, "growthPerMonth", e.target.value)
+                  }
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <span className=" flex items-center">Channel Name:</span>
+                <Input
+                  className="col-start-2"
+                  value={input.channelName}
+                  onChange={(e) =>
+                    handleInputChange(index, "channelName", e.target.value)
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <span className=" flex items-center">Begin Month:</span>
+                <Input
+                  className="col-start-2"
+                  type="number"
+                  min="1"
+                  value={input.beginMonth}
+                  onChange={(e) =>
+                    handleInputChange(index, "beginMonth", e.target.value)
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <span className=" flex items-center">End Month:</span>
+                <Input
+                  className="col-start-2"
+                  type="number"
+                  min="1"
+                  value={input.endMonth}
+                  onChange={(e) =>
+                    handleInputChange(index, "endMonth", e.target.value)
+                  }
+                />
+              </div>
+              <div className="flex justify-end items-center">
+                <button
+                  className="bg-red-600 text-white py-1 px-4 rounded"
+                  onClick={() => removeCustomerInput(index)}
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          ))}
+
+          <button
+            className="bg-blue-600 text-white py-1 px-4 rounded"
+            onClick={handleAddNewCustomer}
+          >
+            Add New
+          </button>
+        </section>
+      </div>
+      <div className="w-full lg:w-2/3 p-4 ">
+        <h3 className="text-2xl font-semibold ">Customer Table</h3>
+        <Table
+          className="overflow-auto my-8"
+          dataSource={customerTableData}
+          columns={customerColumns}
+          pagination={false}
+        />
+        <h3 className="text-2xl font-semibold my-8">Customer Chart</h3>
+        <Chart
+          options={customerGrowthChart.options}
+          series={customerGrowthChart.series}
+          type="area"
+          height={350}
+        />
+      </div>
+    </div>
   );
 };
 

@@ -13,7 +13,7 @@ import FilesList from "./FilesList";
 import SideBar from "../../components/SideBar";
 import AlertMsg from "../../components/AlertMsg";
 import AnnouncePage from "../../components/AnnouncePage";
-import { toast } from "react-toastify";
+
 import HeroSection from "./HeroSection";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 
@@ -68,7 +68,7 @@ const DetailPage = () => {
         }
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error(error.message);
+
         setIsLoading(false); // Có lỗi xảy ra, ngừng hiển thị loading
       }
     };
@@ -90,6 +90,19 @@ const DetailPage = () => {
     );
   }
 
+  if (company.length === 0 || !company) {
+    return (
+      <div>
+        <LoadingButtonClick isLoading={isLoading} />
+        <AnnouncePage
+          title="Not found"
+          announce="This project may be no longer exist."
+          describe="This project may be deleted by its owner and no longer exist. Please choose another project."
+        />
+      </div>
+    );
+  }
+
   return (
     <div className=" bg-white darkBg antialiased !p-0">
       <AlertMsg />
@@ -97,10 +110,7 @@ const DetailPage = () => {
       <div id="exampleWrapper">
         <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
-        <div
-          className="p-0 sm:p-4 sm:ml-64"
-          onClick={() => setIsSidebarOpen(false)}
-        >
+        <div className="p-4 sm:ml-24" onClick={() => setIsSidebarOpen(false)}>
           <div className="p-0 sm:p-4 border-0 border-gray-200 border-dashed sm:border-2 rounded-lg darkBorderGray">
             <HeroSection
               formData={company}

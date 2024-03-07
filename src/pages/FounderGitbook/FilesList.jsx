@@ -62,8 +62,7 @@ function FilesList() {
 
         setProjectLinks(files);
       } catch (error) {
-        console.error("Error fetching projects:", error);
-        toast.error(error.message);
+        console.log("Error fetching projects:", error);
       }
     };
 
@@ -428,7 +427,7 @@ function FilesList() {
                         <td className="px-4 py-4 text-sm whitespace-nowrap">
                           <div className="flex items-center gap-x-6">
                             <button
-                              className="text-red-500 transition-colors duration-200 hover:text-indigo-500 focus:outline-none"
+                              className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
                               onClick={() => handleDelete(link.id)}
                             >
                               Delete
@@ -444,7 +443,7 @@ function FilesList() {
                             ""
                           ) : (
                             <button
-                              className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+                              className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
                               onClick={() => handleSendRequest(link)}
                             >
                               Send Request

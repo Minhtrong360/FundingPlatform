@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import AllInclusiveOutlinedIcon from "@mui/icons-material/AllInclusiveOutlined";
 import industries from "../../../components/Industries";
@@ -11,6 +11,7 @@ const Search = ({
   setSearchTerm,
   selectedIndustry,
   setSelectedIndustry,
+  currentTab,
 }) => {
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -44,6 +45,14 @@ const Search = ({
     setSuggestions([]);
     onSearch(name); // Optional: Trigger the search when a suggestion is clicked
   };
+
+  useEffect(() => {
+    if (!searchTerm) {
+      setSuggestions([]);
+    } else {
+      setSuggestions(companies);
+    }
+  }, [currentTab, companies, searchTerm]);
 
   return (
     <div className="relative overflow-hidden">

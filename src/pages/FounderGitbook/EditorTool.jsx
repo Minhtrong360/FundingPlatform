@@ -124,7 +124,7 @@ export default function EditorTool() {
             .single();
           setCurrentProject(data);
           if (error) {
-            toast.error(error.message);
+            console.log(error.message);
           } else {
             // Nếu có dữ liệu Markdown trong cơ sở dữ liệu, cập nhật giá trị của markdown
             if (data && data.markdown) {
@@ -137,7 +137,7 @@ export default function EditorTool() {
         }
         setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu
       } catch (error) {
-        toast.error(error.message);
+        console.log(error.message);
 
         setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu (có lỗi)
       }
@@ -637,12 +637,15 @@ export default function EditorTool() {
                     currentProject.required
                       ? "bg-gray-500 hover:cursor-not-allowed"
                       : "bg-blue-600 hover:bg-blue-700"
-                  } fixed top-[48px] right-[1.2em] flex justify-center text-white bg-blue-600  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+                  } ${currentProject.verified ? "bg-green-600" : ""}
+                  fixed top-[48px] right-[1.2em] flex justify-center text-white bg-blue-600  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
                   onClick={handleRequired}
                   disabled={currentProject.required}
                 >
                   {currentProject.required
-                    ? "Waiting for verification"
+                    ? currentProject.verified
+                      ? "Verified"
+                      : "Waiting for verification"
                     : "Required verification"}
                 </button>
               </Tooltip>

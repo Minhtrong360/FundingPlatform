@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Tooltip } from 'antd';
+import { Tooltip } from "antd";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import {
@@ -21,8 +21,7 @@ import AlertMsg from "../components/AlertMsg";
 import apiService from "../app/apiService";
 import MetricsFM from "./MetricsFM";
 import Search from "./Home/Components/Search";
-import { InfoCircleOutlined } from '@ant-design/icons';
-
+import { InfoCircleOutlined } from "@ant-design/icons";
 
 // Duration UI
 const DurationSelect = ({
@@ -277,15 +276,18 @@ const CustomerSection = ({
 
   return (
     <section aria-labelledby="customers-heading" className="mb-8">
-       <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Here's a list of common customer channels that startups often utilize: Website, Social Media,Email Marketing, Referral Programs, Events and Networking, Direct Sales, Subscription.">
-      <h2
-        className="text-2xl font-semibold mb-4 flex items-center"
-        id="customers-heading"
-      >
-       
-        1. Identify your customer <InfoCircleOutlined style={{ marginLeft: '0.5rem' }} />
-      </h2>
-      <p>Việc tạo kênh bán là cực kì quan trọng. Bạn phải nghe tui, không xác định được kênh bán là đi bụi</p>
+      <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Here's a list of common customer channels that startups often utilize: Website, Social Media,Email Marketing, Referral Programs, Events and Networking, Direct Sales, Subscription.">
+        <h2
+          className="text-2xl font-semibold mb-4 flex items-center"
+          id="customers-heading"
+        >
+          1. Identify your customer{" "}
+          <InfoCircleOutlined style={{ marginLeft: "0.5rem" }} />
+        </h2>
+        <p>
+          Việc tạo kênh bán là cực kì quan trọng. Bạn phải nghe tui, không xác
+          định được kênh bán là đi bụi
+        </p>
       </Tooltip>
 
       {customerInputs.map((input, index) => (
@@ -429,22 +431,22 @@ const SalesSection = ({
               }
             />
           </div>
-          
+
           <Tooltip title="Revenue deductions like transaction fees, commission fee... ">
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <span className=" flex items-center">Rev. Deductions (%):</span>
-            <Input
-              className="col-start-2"
-              value={input.deductionPercentage}
-              onChange={(e) =>
-                handleChannelInputChange(
-                  index,
-                  "deductionPercentage",
-                  e.target.value
-                )
-              }
-            />
-          </div>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <span className=" flex items-center">Rev. Deductions (%):</span>
+              <Input
+                className="col-start-2"
+                value={input.deductionPercentage}
+                onChange={(e) =>
+                  handleChannelInputChange(
+                    index,
+                    "deductionPercentage",
+                    e.target.value
+                  )
+                }
+              />
+            </div>
           </Tooltip>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
@@ -649,8 +651,12 @@ const CostSection = ({
                 <SelectValue placeholder="Select Cost Type" />
               </SelectTrigger>
               <SelectContent position="popper">
-                <SelectItem value="Sales, Marketing Cost">Sales, Marketing Cost</SelectItem>
-                <SelectItem value="General Administrative Cost">General Administrative Cost</SelectItem>
+                <SelectItem value="Sales, Marketing Cost">
+                  Sales, Marketing Cost
+                </SelectItem>
+                <SelectItem value="General Administrative Cost">
+                  General Administrative Cost
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -987,10 +993,7 @@ const LoanSection = ({
   );
 };
 
-
-
 const Z = ({ currentUser, setCurrentUser }) => {
-
   //DURATION
   //DURATION
   //DURATION
@@ -1003,7 +1006,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
   const [selectedDuration, setSelectedDuration] = useState("3 years");
   const [numberOfMonths, setNumberOfMonths] = useState(0);
-  
+
   useEffect(() => {
     if (selectedDuration === "3 years") {
       setNumberOfMonths(36);
@@ -1012,7 +1015,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       setNumberOfMonths(60);
     }
   }, [selectedDuration]);
-  
+
   const [chatbotResponse, setChatbotResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [startingCashBalance, setStartingCashBalance] = useState([]);
@@ -1024,7 +1027,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
   const [startMonth, setStartMonth] = useState([]);
   const [startYear, setStartYear] = useState(2024);
   const [financialProjectName, setFinancialProjectName] = useState([]);
-
 
   const industries = [
     "Coffee shop ☕",
@@ -1239,7 +1241,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
     }
   }, [chatbotResponse]);
 
-
   //CUSTOMER
   //CUSTOMER
   //CUSTOMER
@@ -1341,25 +1342,27 @@ const Z = ({ currentUser, setCurrentUser }) => {
           data.month >= customerInput.beginMonth &&
           data.month <= customerInput.endMonth
         ) {
-          transformedCustomerTableData[data.channelName][`month${data.month}`] = parseFloat(
-            data.customers
-          )?.toFixed(2);
+          transformedCustomerTableData[data.channelName][`month${data.month}`] =
+            parseFloat(data.customers)?.toFixed(2);
         } else {
           // Set value to 0 if outside the range
-          transformedCustomerTableData[data.channelName][`month${data.month}`] = "0.00";
+          transformedCustomerTableData[data.channelName][`month${data.month}`] =
+            "0.00";
         }
       }
     });
   });
 
-  const customerTableData = Object.values(transformedCustomerTableData).map((row) => {
-    for (let month = 1; month <= numberOfMonths; month++) {
-      if (!row.hasOwnProperty(`month${month}`)) {
-        row[`month${month}`] = "0.00";
+  const customerTableData = Object.values(transformedCustomerTableData).map(
+    (row) => {
+      for (let month = 1; month <= numberOfMonths; month++) {
+        if (!row.hasOwnProperty(`month${month}`)) {
+          row[`month${month}`] = "0.00";
+        }
       }
+      return row;
     }
-    return row;
-  });
+  );
 
   // CustomerColumns
   const customerColumns = [
@@ -1434,7 +1437,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
     }));
   }, [customerGrowthData, numberOfMonths]);
 
-
   //REVENUE
   //REVENUE
   //REVENUE
@@ -1446,7 +1448,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
   //REVENUE
   //REVENUE
 
-  
   //RevenueState
   const [channelInputs, setChannelInputs] = useState([
     {
@@ -1477,9 +1478,9 @@ const Z = ({ currentUser, setCurrentUser }) => {
       channelAllocation: 0.6,
     },
   ]);
-  
+
   const [channelNames, setChannelNames] = useState([]);
-  
+
   useEffect(() => {
     // Update channelNames based on current customerInputs
     const updatedChannelNames = customerInputs
@@ -1622,7 +1623,9 @@ const Z = ({ currentUser, setCurrentUser }) => {
         revenueData[channel.selectedChannel + " - " + channel.productName] ||
         [];
       const channelrevenueDeduction =
-        revenueDeductionData[channel.selectedChannel + " - " + channel.productName] || [];
+        revenueDeductionData[
+          channel.selectedChannel + " - " + channel.productName
+        ] || [];
       const channelCOGS =
         cogsData[channel.selectedChannel + " - " + channel.productName] || [];
 
@@ -1639,9 +1642,16 @@ const Z = ({ currentUser, setCurrentUser }) => {
           channel.selectedChannel + " - " + channel.productName + " - Revenue",
       };
       const revenueDeductionRow = {
-        key: channel.selectedChannel + " - " + channel.productName + " - revenueDeduction",
+        key:
+          channel.selectedChannel +
+          " - " +
+          channel.productName +
+          " - revenueDeduction",
         channelName:
-          channel.selectedChannel + " - " + channel.productName + " - revenueDeduction",
+          channel.selectedChannel +
+          " - " +
+          channel.productName +
+          " - revenueDeduction",
       };
       const cogsRow = {
         key: channel.selectedChannel + " - " + channel.productName + " - COGS",
@@ -1780,7 +1790,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
     setgrossProfit((prevState) => ({ ...prevState, series: seriesData }));
   }, [grossProfitData, numberOfMonths]);
-  
 
   //COSTS
   //COSTS
@@ -1791,7 +1800,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
   //COSTS
   //COSTS
   //COSTS
-
 
   //CostState
   const [costInputs, setCostInputs] = useState([
@@ -1877,11 +1885,13 @@ const Z = ({ currentUser, setCurrentUser }) => {
       const rowKey = `${costItem.costType} - ${costItem.costName}`;
       costItem.monthlyCosts.forEach((monthData) => {
         if (!transformedCustomerTableData[rowKey]) {
-          transformedCustomerTableData[rowKey] = { key: rowKey, costName: rowKey };
+          transformedCustomerTableData[rowKey] = {
+            key: rowKey,
+            costName: rowKey,
+          };
         }
-        transformedCustomerTableData[rowKey][`month${monthData.month}`] = parseFloat(
-          monthData.cost
-        )?.toFixed(2);
+        transformedCustomerTableData[rowKey][`month${monthData.month}`] =
+          parseFloat(monthData.cost)?.toFixed(2);
       });
     });
 
@@ -1956,7 +1966,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
     setCostChart((prevState) => ({ ...prevState, series: seriesData }));
   }, [costData, numberOfMonths]);
-
 
   //PERSONNEL
   //PERSONNEL
@@ -2137,7 +2146,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
   //INVESTMENTS
   //INVESTMENTS
   //INVESTMENTS
-  
+
   //InvestmentState
   const [investmentInputs, setInvestmentInputs] = useState([
     {
@@ -2177,7 +2186,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     newInputs.splice(index, 1);
     setInvestmentInputs(newInputs);
   };
-  
+
   const handleInvestmentInputChange = (index, field, value) => {
     const newInputs = [...investmentInputs];
     newInputs[index][field] = value;
@@ -2500,7 +2509,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
     return loanTableData;
   };
-  
+
   //LoanColumns
   const loanColumns = [
     { fixed: "left", title: "Type", dataIndex: "type", key: "type" },
@@ -2572,7 +2581,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
   //PROFIT_AND_LOSS
   //PROFIT_AND_LOSS
   //PROFIT_AND_LOSS
-  
+
   const ProfitAndLossSection = ({
     revenueData,
     costData,
@@ -2845,7 +2854,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
     );
   };
 
-
   // Download Excel
   const downloadExcel = () => {
     const workBook = XLSX.utils.book_new();
@@ -2934,9 +2942,9 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
             {/* FMMetrics */}
             <div className="w-full lg:w-2/3 p-4">
-               <MetricsFM />
+              <MetricsFM />
             </div>
-          </div>  
+          </div>
 
           {/* CustomerSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -2997,7 +3005,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 height={350}
               />
             </div>
-          </div>  
+          </div>
 
           {/* CostSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -3132,7 +3140,6 @@ const Z = ({ currentUser, setCurrentUser }) => {
       <button onClick={downloadExcel} className="download-excel-button">
         Download Excel
       </button>
-
     </div>
   );
 };

@@ -137,6 +137,7 @@ const CostSection = ({
     setRenderCostForm(event.target.value);
   };
 
+  console.log("costTableData", costTableData);
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
       <div className="w-full lg:w-1/3 p-4 border-r-2">

@@ -7,6 +7,8 @@ import AlertMsg from "../../components/AlertMsg";
 import InvitedUserProject from "../../components/InvitedUserProject";
 import { toast } from "react-toastify";
 import ProjectGiven from "../../components/ProjectGiven";
+import { Dropdown, Menu, Button } from "antd";
+import { DownOutlined } from "@ant-design/icons";
 
 function formatDate(inputDateString) {
   const dateObject = new Date(inputDateString);
@@ -345,44 +347,112 @@ function ProjectList({ projects }) {
                           </div>
                         </td>
                         {project.user_id === user.id ? (
+                          // <td className="px-4 py-4 text-sm whitespace-nowrap">
+                          //   <div className="flex items-center gap-x-3">
+                          //     {editingProjectId === project.id ? (
+                          //       <>
+                          //         <button
+                          //           className={`w-[5em] text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+                          //           onClick={() => handleSaveClick(project)}
+                          //         >
+                          //           Save
+                          //         </button>
+                          //         <button
+                          //           className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+                          //           onClick={() => setEditingProjectId(null)}
+                          //         >
+                          //           Cancel
+                          //         </button>
+                          //       </>
+                          //     ) : (
+                          //       <>
+                          //         <button
+                          //           className={`w-[5em] text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+                          //           onClick={() => handleEditClick(project)}
+                          //         >
+                          //           Edit
+                          //         </button>
+                          //         <button
+                          //           className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+                          //           onClick={() => handleDelete(project.id)}
+                          //         >
+                          //           Delete
+                          //         </button>
+                          //       </>
+                          //     )}
+                          //     <ProjectGiven
+                          //       projectId={project.id}
+                          //       setUpdatedProjects={setUpdatedProjects}
+                          //       updatedProject={updatedProjects}
+                          //     />
+                          //   </div>
+                          // </td>
                           <td className="px-4 py-4 text-sm whitespace-nowrap">
                             <div className="flex items-center gap-x-3">
-                              {editingProjectId === project.id ? (
-                                <>
-                                  <button
-                                    className={`w-[5em] text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
-                                    onClick={() => handleSaveClick(project)}
-                                  >
-                                    Save
-                                  </button>
-                                  <button
-                                    className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
-                                    onClick={() => setEditingProjectId(null)}
-                                  >
-                                    Cancel
-                                  </button>
-                                </>
-                              ) : (
-                                <>
-                                  <button
-                                    className={`w-[5em] text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
-                                    onClick={() => handleEditClick(project)}
-                                  >
-                                    Edit
-                                  </button>
-                                  <button
-                                    className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
-                                    onClick={() => handleDelete(project.id)}
-                                  >
-                                    Delete
-                                  </button>
-                                </>
-                              )}
-                              <ProjectGiven
-                                projectId={project.id}
-                                setUpdatedProjects={setUpdatedProjects}
-                                updatedProject={updatedProjects}
-                              />
+                              <Dropdown
+                                overlay={
+                                  <Menu>
+                                    {editingProjectId === project.id ? (
+                                      <>
+                                        <Menu.Item key="save">
+                                          <Button
+                                            type="primary"
+                                            onClick={() =>
+                                              handleSaveClick(project)
+                                            }
+                                          >
+                                            Save
+                                          </Button>
+                                        </Menu.Item>
+                                        <Menu.Item key="cancel">
+                                          <Button
+                                            onClick={() =>
+                                              setEditingProjectId(null)
+                                            }
+                                          >
+                                            Cancel
+                                          </Button>
+                                        </Menu.Item>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Menu.Item key="edit">
+                                          <Button
+                                            onClick={() =>
+                                              handleEditClick(project)
+                                            }
+                                          >
+                                            Edit
+                                          </Button>
+                                        </Menu.Item>
+                                        <Menu.Item key="delete">
+                                          <Button
+                                            type="danger"
+                                            onClick={() =>
+                                              handleDelete(project.id)
+                                            }
+                                          >
+                                            Delete
+                                          </Button>
+                                        </Menu.Item>
+                                        <Menu.Item key="assign">
+                                          <ProjectGiven
+                                            projectId={project.id}
+                                            setUpdatedProjects={
+                                              setUpdatedProjects
+                                            }
+                                            updatedProject={updatedProjects}
+                                          />
+                                        </Menu.Item>
+                                      </>
+                                    )}
+                                  </Menu>
+                                }
+                              >
+                                <Button>
+                                  Actions <DownOutlined />
+                                </Button>
+                              </Dropdown>
                             </div>
                           </td>
                         ) : (

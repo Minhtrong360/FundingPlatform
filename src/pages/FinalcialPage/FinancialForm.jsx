@@ -725,6 +725,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     );
   };
 
+  console.log("revenueTableData", revenueTableData);
+
   return (
     <div>
       <AlertMsg />

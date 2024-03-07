@@ -53,12 +53,16 @@ const CustomerSection = ({
     series: [],
   });
 
+  const [tempCustomerInputs, setTempCustomerInputs] = useState(customerInputs);
+  const [tempCustomerGrowthData, setTempCustomerGrowthData] =
+    useState(customerGrowthData);
+
   const [renderCustomerForm, setRenderCustomerForm] = useState(
-    customerInputs[0]?.id
+    tempCustomerInputs[0]?.id
   );
 
   const handleAddNewCustomer = () => {
-    const maxId = Math.max(...customerInputs.map((input) => input?.id));
+    const maxId = Math.max(...tempCustomerInputs.map((input) => input?.id));
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
     const newCustomer = {
       id: newId,
@@ -68,19 +72,19 @@ const CustomerSection = ({
       beginMonth: 1,
       endMonth: 15,
     };
-    setCustomerInputs([...customerInputs, newCustomer]);
+    setTempCustomerInputs([...tempCustomerInputs, newCustomer]);
     setRenderCustomerForm(newId.toString());
   };
 
   const removeCustomerInput = (id) => {
-    const newInputs = customerInputs.filter((input) => input?.id != id);
+    const newInputs = tempCustomerInputs.filter((input) => input?.id != id);
 
-    setCustomerInputs(newInputs);
+    setTempCustomerInputs(newInputs);
     setRenderCustomerForm(newInputs[0]?.id);
   };
 
   const handleInputChange = (id, field, value) => {
-    const newInputs = customerInputs.map((input) => {
+    const newInputs = tempCustomerInputs.map((input) => {
       if (input?.id === id) {
         return {
           ...input,
@@ -89,11 +93,11 @@ const CustomerSection = ({
       }
       return input;
     });
-    setCustomerInputs(newInputs);
+    setTempCustomerInputs(newInputs);
   };
 
-  const calculateCustomerGrowth = (customerInputs) => {
-    return customerInputs.map((channel) => {
+  const calculateCustomerGrowth = (tempCustomerInputs) => {
+    return tempCustomerInputs.map((channel) => {
       let customers = [];
       let currentCustomers = parseFloat(channel.customersPerMonth);
       for (let i = 1; i <= numberOfMonths; i++) {
@@ -125,11 +129,20 @@ const CustomerSection = ({
     setCustomerGrowthData(calculatedData);
   }, [customerInputs, numberOfMonths]);
 
+  //CustomerUseEffect
+  useEffect(() => {
+    const calculatedData = calculateCustomerGrowth(
+      tempCustomerInputs,
+      numberOfMonths
+    );
+    setTempCustomerGrowthData(calculatedData);
+  }, [tempCustomerInputs, numberOfMonths]);
+
   // CustomerTableData
   const transformedCustomerTableData = {};
-  customerGrowthData.forEach((channelData) => {
+  tempCustomerGrowthData.forEach((channelData) => {
     channelData.forEach((data) => {
-      const customerInput = customerInputs.find(
+      const customerInput = tempCustomerInputs.find(
         (input) => input.channelName === data.channelName
       );
       if (customerInput) {
@@ -185,7 +198,7 @@ const CustomerSection = ({
   //CustomerChart
 
   useEffect(() => {
-    const seriesData = customerGrowthData.map((channelData) => {
+    const seriesData = tempCustomerGrowthData.map((channelData) => {
       return {
         name: channelData[0]?.channelName || "Unknown Channel",
         data: channelData.map((data) => data.customers),
@@ -196,10 +209,14 @@ const CustomerSection = ({
       ...prevState,
       series: seriesData,
     }));
-  }, [customerGrowthData, numberOfMonths]);
+  }, [tempCustomerGrowthData, numberOfMonths]);
 
   const handleSelectChange = (event) => {
     setRenderCustomerForm(event.target.value);
+  };
+
+  const handleSave = () => {
+    setCustomerInputs(tempCustomerInputs);
   };
 
   return (
@@ -232,7 +249,7 @@ const CustomerSection = ({
               value={renderCustomerForm}
               onChange={handleSelectChange}
             >
-              {customerInputs.map((input) => (
+              {tempCustomerInputs.map((input) => (
                 <option key={input?.id} value={input?.id}>
                   {input.channelName}
                 </option>
@@ -240,7 +257,7 @@ const CustomerSection = ({
             </select>
           </div>
 
-          {customerInputs
+          {tempCustomerInputs
             .filter((input) => input?.id == renderCustomerForm) // Sử dụng biến renderForm
             .map((input) => (
               <div
@@ -335,7 +352,10 @@ const CustomerSection = ({
             Add new
           </button>
 
-          <button className="bg-blue-600 text-white py-1 px-4 rounded mt-4">
+          <button
+            className="bg-blue-600 text-white py-1 px-4 rounded mt-4"
+            onClick={handleSave}
+          >
             Save
           </button>
         </section>

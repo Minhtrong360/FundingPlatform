@@ -40,7 +40,7 @@ function FinancialPage({ subscribed }) {
     fetchUserData();
   }, [user?.id]); // Sử dụng user.id làm phần tử phụ thuộc để useEffect được gọi lại khi user.id thay đổi
 
-// xxxxxxxxxxxxxx
+// 1
   
   return (
     <div className=" bg-white darkBg antialiased !p-0">

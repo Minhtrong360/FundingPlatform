@@ -40,14 +40,13 @@ function FinancialPage({ subscribed }) {
     fetchUserData();
   }, [user?.id]); // Sử dụng user.id làm phần tử phụ thuộc để useEffect được gọi lại khi user.id thay đổi
 
-// xxxxxxxxxxxxxx
+// 1
   
   return (
     <div className=" bg-white darkBg antialiased !p-0">
       <AlertMsg />
       <div id="exampleWrapper">
         <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-
         <div className="p-4 ml-24" onClick={() => setIsSidebarOpen(false)}>
           {/* {subscribed ? ( */}
           <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg darkBorderGray">

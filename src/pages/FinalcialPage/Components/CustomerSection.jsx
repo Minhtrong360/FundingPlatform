@@ -66,7 +66,7 @@ const CustomerSection = ({
     customerInputs[0].channelName
   );
 
-  const handleAddNewCustomer = (input) => {
+  const handleAddNewCustomer = () => {
     setCustomerInputs([
       ...customerInputs,
       {
@@ -209,9 +209,6 @@ const CustomerSection = ({
     setRenderCustomerForm(value);
   };
 
-  console.log("channelNames", channelNames);
-  console.log("renderCustomerForm", renderCustomerForm);
-
   useEffect(() => {
     if (
       renderCustomerForm === "New channel" &&
@@ -220,8 +217,6 @@ const CustomerSection = ({
       handleAddNewCustomer();
     }
   }, [renderCustomerForm, customerInputs]);
-
-  console.log("customerInputs", customerInputs);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -252,7 +247,7 @@ const CustomerSection = ({
 
           {customerInputs
             .filter((input) => input.channelName === renderCustomerForm) // Sử dụng biến renderForm
-            .map((input, index) => (
+            .map((input) => (
               <div
                 key={renderCustomerForm}
                 className="bg-white rounded-md shadow p-6 my-4"

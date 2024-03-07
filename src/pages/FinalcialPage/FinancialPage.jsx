@@ -45,14 +45,13 @@ function FinancialPage({ subscribed }) {
   
   return (
     <div className=" bg-white darkBg antialiased !p-0">
-       {/* {subscribed ? ( */}
       <AlertMsg />
       <div id="exampleWrapper">
         <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-         {/* {subscribed ? ( */}
         <div className="p-4 ml-24" onClick={() => setIsSidebarOpen(false)}>
           {/* {subscribed ? ( */}
           <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg darkBorderGray">
+<<<<<<< HEAD
 <<<<<<< HEAD
             {/* <FinancialForm
               currentUser={currentUser}
@@ -61,12 +60,17 @@ function FinancialPage({ subscribed }) {
             
 =======
              {/* {subscribed ? ( */}
+=======
+>>>>>>> 218236d2dd6d90f6dc4da0a23d5ab13c793122c5
             <FinancialForm
               currentUser={currentUser}
               setCurrentUser={setCurrentUser}
             />
+<<<<<<< HEAD
              {/* {subscribed ? ( */}
 >>>>>>> 8b11a19043451961e92db66a5e21c1e1bab4dac8
+=======
+>>>>>>> 218236d2dd6d90f6dc4da0a23d5ab13c793122c5
           </div>
           {/* ) : (
             <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg darkBorderGray">

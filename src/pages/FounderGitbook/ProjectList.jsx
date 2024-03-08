@@ -7,9 +7,8 @@ import AlertMsg from "../../components/AlertMsg";
 import InvitedUserProject from "../../components/InvitedUserProject";
 import { toast } from "react-toastify";
 import ProjectGiven from "../../components/ProjectGiven";
-import { Dropdown, Menu, Button } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
-
+import { Dropdown, Menu, Button } from "antd";
+import { DownOutlined } from "@ant-design/icons";
 
 function formatDate(inputDateString) {
   const dateObject = new Date(inputDateString);
@@ -398,13 +397,19 @@ function ProjectList({ projects }) {
                                         <Menu.Item key="save">
                                           <Button
                                             type="primary"
-                                            onClick={() => handleSaveClick(project)}
+                                            onClick={() =>
+                                              handleSaveClick(project)
+                                            }
                                           >
                                             Save
                                           </Button>
                                         </Menu.Item>
                                         <Menu.Item key="cancel">
-                                          <Button onClick={() => setEditingProjectId(null)}>
+                                          <Button
+                                            onClick={() =>
+                                              setEditingProjectId(null)
+                                            }
+                                          >
                                             Cancel
                                           </Button>
                                         </Menu.Item>
@@ -412,22 +417,32 @@ function ProjectList({ projects }) {
                                     ) : (
                                       <>
                                         <Menu.Item key="edit">
-                                          <Button onClick={() => handleEditClick(project)}>Edit</Button>
+                                          <Button
+                                            onClick={() =>
+                                              handleEditClick(project)
+                                            }
+                                          >
+                                            Edit
+                                          </Button>
                                         </Menu.Item>
                                         <Menu.Item key="delete">
                                           <Button
                                             type="danger"
-                                            onClick={() => handleDelete(project.id)}
+                                            onClick={() =>
+                                              handleDelete(project.id)
+                                            }
                                           >
                                             Delete
                                           </Button>
                                         </Menu.Item>
                                         <Menu.Item key="assign">
-                                        <ProjectGiven
-                                          projectId={project.id}
-                                          setUpdatedProjects={setUpdatedProjects}
-                                          updatedProject={updatedProjects}
-                                        />
+                                          <ProjectGiven
+                                            projectId={project.id}
+                                            setUpdatedProjects={
+                                              setUpdatedProjects
+                                            }
+                                            updatedProject={updatedProjects}
+                                          />
                                         </Menu.Item>
                                       </>
                                     )}
@@ -438,10 +453,8 @@ function ProjectList({ projects }) {
                                   Actions <DownOutlined />
                                 </Button>
                               </Dropdown>
-                             
                             </div>
                           </td>
-
                         ) : (
                           <td className="px-4 py-4 text-sm whitespace-nowrap">
                             <div className="flex items-center gap-x-3">

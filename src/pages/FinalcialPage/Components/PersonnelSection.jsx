@@ -12,28 +12,42 @@ const PersonnelSection = ({
   transformPersonnelCostDataForTable,
 }) => {
   //PersonnelFunctions
+
+  const [renderPersonnelForm, setRenderPersonnelForm] = useState(
+    personnelInputs[0]?.id
+  );
   const addNewPersonnelInput = () => {
-    setPersonnelInputs([
-      ...personnelInputs,
-      {
-        jobTitle: "",
-        salaryPerMonth: 0,
-        numberOfHires: 1,
-        jobBeginMonth: 1,
-        jobEndMonth: 36,
-      },
-    ]);
+    const maxId = Math.max(...personnelInputs.map((input) => input?.id));
+    const newId = maxId !== -Infinity ? maxId + 1 : 1;
+    const newPersonnel = {
+      id: newId,
+      jobTitle: "New position",
+      salaryPerMonth: 0,
+      numberOfHires: 1,
+      jobBeginMonth: 1,
+      jobEndMonth: 36,
+    };
+    setPersonnelInputs([...personnelInputs, newPersonnel]);
+    setRenderPersonnelForm(newId.toString());
   };
 
-  const removePersonnelInput = (index) => {
-    const newInputs = [...personnelInputs];
-    newInputs.splice(index, 1);
+  const removePersonnelInput = (id) => {
+    const newInputs = personnelInputs.filter((input) => input?.id != id);
+
     setPersonnelInputs(newInputs);
+    setRenderPersonnelForm(newInputs[0]?.id);
   };
 
-  const handlePersonnelInputChange = (index, field, value) => {
-    const newInputs = [...personnelInputs];
-    newInputs[index][field] = value;
+  const handlePersonnelInputChange = (id, field, value) => {
+    const newInputs = personnelInputs.map((input) => {
+      if (input?.id === id) {
+        return {
+          ...input,
+          [field]: value,
+        };
+      }
+      return input;
+    });
     setPersonnelInputs(newInputs);
   };
 
@@ -141,6 +155,10 @@ const PersonnelSection = ({
     setPersonnelChart((prevState) => ({ ...prevState, series: seriesData }));
   }, [personnelCostData, numberOfMonths]);
 
+  const handleSelectChange = (event) => {
+    setRenderPersonnelForm(event.target.value);
+  };
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
       <div className="w-full lg:w-1/3 p-4 border-r-2">
@@ -151,98 +169,129 @@ const PersonnelSection = ({
           >
             Personnel
           </h2>
-          {personnelInputs.map((input, index) => (
-            <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">Job Title</span>
-                <Input
-                  className="col-start-2"
-                  placeholder="Enter Job Title"
-                  value={input.jobTitle}
-                  onChange={(e) =>
-                    handlePersonnelInputChange(
-                      index,
-                      "jobTitle",
-                      e.target.value
-                    )
-                  }
-                />
+
+          <div>
+            <label
+              htmlFor="selectedChannel"
+              className="block my-4 text-base  darkTextWhite"
+            >
+              Selected position name:
+            </label>
+            <select
+              id="selectedChannel"
+              className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+              value={renderPersonnelForm}
+              onChange={handleSelectChange}
+            >
+              {personnelInputs.map((input) => (
+                <option key={input?.id} value={input?.id}>
+                  {input.jobTitle}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {personnelInputs
+            .filter((input) => input?.id == renderPersonnelForm) // Sử dụng biến renderForm
+            .map((input) => (
+              <div
+                key={input?.id}
+                className="bg-white rounded-md shadow p-6 my-4"
+              >
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">Job Title</span>
+                  <Input
+                    className="col-start-2"
+                    placeholder="Enter Job Title"
+                    value={input.jobTitle}
+                    onChange={(e) =>
+                      handlePersonnelInputChange(
+                        input.id,
+                        "jobTitle",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">Salary/month</span>
+                  <Input
+                    className="col-start-2"
+                    placeholder="Enter Salary per Month"
+                    value={input.salaryPerMonth}
+                    onChange={(e) =>
+                      handlePersonnelInputChange(
+                        input.id,
+                        "salaryPerMonth",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">No. of hires</span>
+                  <Input
+                    className="col-start-2"
+                    placeholder="Enter Number of Hires"
+                    value={input.numberOfHires}
+                    onChange={(e) =>
+                      handlePersonnelInputChange(
+                        input.id,
+                        "numberOfHires",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">Job begin month</span>
+                  <Input
+                    className="col-start-2"
+                    placeholder="Enter Job Begin Month"
+                    value={input.jobBeginMonth}
+                    onChange={(e) =>
+                      handlePersonnelInputChange(
+                        input.id,
+                        "jobBeginMonth",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">Job ending month</span>
+                  <Input
+                    className="col-start-2"
+                    placeholder="Enter Job Ending Month"
+                    value={input.jobEndMonth}
+                    onChange={(e) =>
+                      handlePersonnelInputChange(
+                        input.id,
+                        "jobEndMonth",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
+                <div className="flex justify-end items-center">
+                  <button
+                    className="bg-red-600 text-white py-1 px-4 rounded"
+                    onClick={() => removePersonnelInput(input.id)}
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">Salary/month</span>
-                <Input
-                  className="col-start-2"
-                  placeholder="Enter Salary per Month"
-                  value={input.salaryPerMonth}
-                  onChange={(e) =>
-                    handlePersonnelInputChange(
-                      index,
-                      "salaryPerMonth",
-                      e.target.value
-                    )
-                  }
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">No. of hires</span>
-                <Input
-                  className="col-start-2"
-                  placeholder="Enter Number of Hires"
-                  value={input.numberOfHires}
-                  onChange={(e) =>
-                    handlePersonnelInputChange(
-                      index,
-                      "numberOfHires",
-                      e.target.value
-                    )
-                  }
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">Job begin month</span>
-                <Input
-                  className="col-start-2"
-                  placeholder="Enter Job Begin Month"
-                  value={input.jobBeginMonth}
-                  onChange={(e) =>
-                    handlePersonnelInputChange(
-                      index,
-                      "jobBeginMonth",
-                      e.target.value
-                    )
-                  }
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <span className=" flex items-center">Job ending month</span>
-                <Input
-                  className="col-start-2"
-                  placeholder="Enter Job Ending Month"
-                  value={input.jobEndMonth}
-                  onChange={(e) =>
-                    handlePersonnelInputChange(
-                      index,
-                      "jobEndMonth",
-                      e.target.value
-                    )
-                  }
-                />
-              </div>
-              <div className="flex justify-end items-center">
-                <button
-                  className="bg-red-600 text-white py-1 px-4 rounded"
-                  onClick={() => removePersonnelInput(index)}
-                >
-                  Remove
-                </button>
-              </div>
-            </div>
-          ))}
+            ))}
           <button
-            className="bg-blue-500 text-white py-1 px-4 rounded"
+            className="bg-blue-600 text-white py-1 px-4 rounded mt-4 mr-4"
             onClick={addNewPersonnelInput}
           >
-            Add New
+            Add new
+          </button>
+
+          <button className="bg-blue-600 text-white py-1 px-4 rounded mt-4">
+            Save
           </button>
         </section>
       </div>

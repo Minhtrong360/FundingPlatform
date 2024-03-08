@@ -47,7 +47,6 @@ function FinancialPage({ subscribed }) {
       <AlertMsg />
       <div id="exampleWrapper">
         <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-
         <div className="p-4 ml-24" onClick={() => setIsSidebarOpen(false)}>
           {/* {subscribed ? ( */}
           <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg darkBorderGray">

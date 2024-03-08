@@ -3,14 +3,6 @@ import { Input } from "../../../components/ui/Input";
 import { Table, Tooltip } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import Chart from "react-apexcharts";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "../../../components/ui/Select";
-import SelectField from "../../../components/SelectField";
 
 const CustomerSection = ({
   customerInputs,
@@ -18,7 +10,6 @@ const CustomerSection = ({
   numberOfMonths,
   customerGrowthData,
   setCustomerGrowthData,
-  channelNames,
 }) => {
   const [customerGrowthChart, setCustomerGrowthChart] = useState({
     options: {
@@ -54,7 +45,7 @@ const CustomerSection = ({
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
+      fill: { type: "gradient" },
       dataLabels: { enabled: false },
       stroke: { curve: "stepline" },
       markers: { size: 1 },
@@ -62,33 +53,39 @@ const CustomerSection = ({
     series: [],
   });
 
+  const [tempCustomerInputs, setTempCustomerInputs] = useState(customerInputs);
+  const [tempCustomerGrowthData, setTempCustomerGrowthData] =
+    useState(customerGrowthData);
+
   const [renderCustomerForm, setRenderCustomerForm] = useState(
-    customerInputs[0].channelName
+    tempCustomerInputs[0]?.id
   );
 
-  const handleAddNewCustomer = (input) => {
-    setCustomerInputs([
-      ...customerInputs,
-      {
-        customersPerMonth: 100,
-        growthPerMonth: 10,
-        channelName: "New channel",
-        beginMonth: 1,
-        endMonth: 15,
-      },
-    ]);
+  const handleAddNewCustomer = () => {
+    const maxId = Math.max(...tempCustomerInputs.map((input) => input?.id));
+    const newId = maxId !== -Infinity ? maxId + 1 : 1;
+    const newCustomer = {
+      id: newId,
+      customersPerMonth: 100,
+      growthPerMonth: 10,
+      channelName: "New channel",
+      beginMonth: 1,
+      endMonth: 15,
+    };
+    setTempCustomerInputs([...tempCustomerInputs, newCustomer]);
+    setRenderCustomerForm(newId.toString());
   };
 
-  const removeCustomerInput = (channelName) => {
-    const newInputs = customerInputs.filter(
-      (input) => input.channelName !== channelName
-    );
-    setCustomerInputs(newInputs);
+  const removeCustomerInput = (id) => {
+    const newInputs = tempCustomerInputs.filter((input) => input?.id != id);
+
+    setTempCustomerInputs(newInputs);
+    setRenderCustomerForm(newInputs[0]?.id);
   };
 
-  const handleInputChange = (channelName, field, value) => {
-    const newInputs = customerInputs.map((input) => {
-      if (input.channelName === channelName) {
+  const handleInputChange = (id, field, value) => {
+    const newInputs = tempCustomerInputs.map((input) => {
+      if (input?.id === id) {
         return {
           ...input,
           [field]: value,
@@ -96,11 +93,11 @@ const CustomerSection = ({
       }
       return input;
     });
-    setCustomerInputs(newInputs);
+    setTempCustomerInputs(newInputs);
   };
 
-  const calculateCustomerGrowth = (customerInputs) => {
-    return customerInputs.map((channel) => {
+  const calculateCustomerGrowth = (tempCustomerInputs) => {
+    return tempCustomerInputs.map((channel) => {
       let customers = [];
       let currentCustomers = parseFloat(channel.customersPerMonth);
       for (let i = 1; i <= numberOfMonths; i++) {
@@ -132,11 +129,20 @@ const CustomerSection = ({
     setCustomerGrowthData(calculatedData);
   }, [customerInputs, numberOfMonths]);
 
+  //CustomerUseEffect
+  useEffect(() => {
+    const calculatedData = calculateCustomerGrowth(
+      tempCustomerInputs,
+      numberOfMonths
+    );
+    setTempCustomerGrowthData(calculatedData);
+  }, [tempCustomerInputs, numberOfMonths]);
+
   // CustomerTableData
   const transformedCustomerTableData = {};
-  customerGrowthData.forEach((channelData) => {
+  tempCustomerGrowthData.forEach((channelData) => {
     channelData.forEach((data) => {
-      const customerInput = customerInputs.find(
+      const customerInput = tempCustomerInputs.find(
         (input) => input.channelName === data.channelName
       );
       if (customerInput) {
@@ -192,7 +198,7 @@ const CustomerSection = ({
   //CustomerChart
 
   useEffect(() => {
-    const seriesData = customerGrowthData.map((channelData) => {
+    const seriesData = tempCustomerGrowthData.map((channelData) => {
       return {
         name: channelData[0]?.channelName || "Unknown Channel",
         data: channelData.map((data) => data.customers),
@@ -203,25 +209,15 @@ const CustomerSection = ({
       ...prevState,
       series: seriesData,
     }));
-  }, [customerGrowthData, numberOfMonths]);
+  }, [tempCustomerGrowthData, numberOfMonths]);
 
-  const handleChannelInputChange = (value) => {
-    setRenderCustomerForm(value);
+  const handleSelectChange = (event) => {
+    setRenderCustomerForm(event.target.value);
   };
 
-  console.log("channelNames", channelNames);
-  console.log("renderCustomerForm", renderCustomerForm);
-
-  useEffect(() => {
-    if (
-      renderCustomerForm === "New channel" &&
-      !customerInputs.some((input) => input.channelName === "New channel")
-    ) {
-      handleAddNewCustomer();
-    }
-  }, [renderCustomerForm, customerInputs]);
-
-  console.log("customerInputs", customerInputs);
+  const handleSave = () => {
+    setCustomerInputs(tempCustomerInputs);
+  };
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -240,21 +236,32 @@ const CustomerSection = ({
               xác định được kênh bán là đi bụi
             </p>
           </Tooltip>
-          <div className="mt-4">
-            <SelectField
-              label="Selected channel name:"
+          <div>
+            <label
+              htmlFor="selectedChannel"
+              className="block my-4 text-base  darkTextWhite"
+            >
+              Selected channel name:
+            </label>
+            <select
+              id="selectedChannel"
+              className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
               value={renderCustomerForm}
-              onChange={(e) => handleChannelInputChange(e.target.value)}
-              required
-              options={[...channelNames, "New channel"]} // Thay thế bằng danh sách các tùy chọn bạn muốn
-            />
+              onChange={handleSelectChange}
+            >
+              {tempCustomerInputs.map((input) => (
+                <option key={input?.id} value={input?.id}>
+                  {input.channelName}
+                </option>
+              ))}
+            </select>
           </div>
 
-          {customerInputs
-            .filter((input) => input.channelName === renderCustomerForm) // Sử dụng biến renderForm
-            .map((input, index) => (
+          {tempCustomerInputs
+            .filter((input) => input?.id == renderCustomerForm) // Sử dụng biến renderForm
+            .map((input) => (
               <div
-                key={renderCustomerForm}
+                key={input?.id}
                 className="bg-white rounded-md shadow p-6 my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-4">
@@ -264,7 +271,7 @@ const CustomerSection = ({
                     value={input.channelName}
                     onChange={(e) =>
                       handleInputChange(
-                        renderCustomerForm,
+                        input?.id,
                         "channelName",
                         e.target.value
                       )
@@ -280,7 +287,7 @@ const CustomerSection = ({
                     value={input.customersPerMonth}
                     onChange={(e) =>
                       handleInputChange(
-                        renderCustomerForm,
+                        input?.id,
                         "customersPerMonth",
                         e.target.value
                       )
@@ -295,7 +302,7 @@ const CustomerSection = ({
                     value={input.growthPerMonth}
                     onChange={(e) =>
                       handleInputChange(
-                        renderCustomerForm,
+                        input?.id,
                         "growthPerMonth",
                         e.target.value
                       )
@@ -311,11 +318,7 @@ const CustomerSection = ({
                     min="1"
                     value={input.beginMonth}
                     onChange={(e) =>
-                      handleInputChange(
-                        renderCustomerForm,
-                        "beginMonth",
-                        e.target.value
-                      )
+                      handleInputChange(input?.id, "beginMonth", e.target.value)
                     }
                   />
                 </div>
@@ -327,11 +330,7 @@ const CustomerSection = ({
                     min="1"
                     value={input.endMonth}
                     onChange={(e) =>
-                      handleInputChange(
-                        renderCustomerForm,
-                        "endMonth",
-                        e.target.value
-                      )
+                      handleInputChange(input?.id, "endMonth", e.target.value)
                     }
                   />
                 </div>
@@ -346,7 +345,17 @@ const CustomerSection = ({
               </div>
             ))}
 
-          <button className="bg-blue-600 text-white py-1 px-4 rounded mt-4">
+          <button
+            className="bg-blue-600 text-white py-1 px-4 rounded mt-4 mr-4"
+            onClick={handleAddNewCustomer}
+          >
+            Add new
+          </button>
+
+          <button
+            className="bg-blue-600 text-white py-1 px-4 rounded mt-4"
+            onClick={handleSave}
+          >
             Save
           </button>
         </section>
@@ -358,6 +367,7 @@ const CustomerSection = ({
           dataSource={customerTableData}
           columns={customerColumns}
           pagination={false}
+          
         />
         <h3 className="text-2xl font-semibold my-8">Customer Chart</h3>
         <Chart

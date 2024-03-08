@@ -9,7 +9,6 @@ import { Input } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
 import { Table, Tooltip } from "antd";
 import Chart from "react-apexcharts";
-import SelectField from "../../../components/SelectField";
 
 const SalesSection = ({
   channelInputs,
@@ -22,22 +21,33 @@ const SalesSection = ({
   numberOfMonths,
   netRevenueData,
   grossProfitData,
-  calculateChannelRevenue,
+
   setRevenueData,
-  setrevenueDeductionData,
+  setRevenueDeductionData,
   setCogsData,
   setNetRevenueData,
   setGrossProfitData,
   customerGrowthData,
-  revenueTableData,
+
+  isSaved,
+  setIsSaved,
 }) => {
+  const [tempChannelInputs, setTempChannelInputs] = useState(channelInputs);
+  const [tempRevenueData, setTempRevenueData] = useState(revenueData);
+  const [tempRevenueDeductionData, setTempRevenueDeductionData] =
+    useState(revenueDeductionData);
+  const [tempCogsData, setTempCogsData] = useState(cogsData);
+  const [tempNetRevenueData, setTempNetRevenueData] = useState(netRevenueData);
+  const [tempGrossProfitData, setTempGrossProfitData] =
+    useState(grossProfitData);
+
   //RevenueFunctions
 
   const [renderChannelForm, setRenderChannelForm] = useState(
     channelInputs[0]?.id
   );
   const addNewChannelInput = () => {
-    const maxId = Math.max(...channelInputs.map((input) => input?.id));
+    const maxId = Math.max(...tempChannelInputs.map((input) => input?.id));
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
     const newChannel = {
       id: newId,
@@ -49,20 +59,19 @@ const SalesSection = ({
       selectedChannel: channelNames[0],
       channelAllocation: 0,
     };
-    setChannelInputs([...channelInputs, newChannel]);
+    setTempChannelInputs([...tempChannelInputs, newChannel]);
     setRenderChannelForm(newId.toString());
   };
 
   const removeChannelInput = (id) => {
-    console.log("id", id);
-    const newInputs = channelInputs.filter((input) => input?.id != id);
-    console.log("newInputs", newInputs);
-    setChannelInputs(newInputs);
+    const newInputs = tempChannelInputs.filter((input) => input?.id != id);
+
+    setTempChannelInputs(newInputs);
     setRenderChannelForm(newInputs[0]?.id);
   };
 
   const handleChannelInputChange = (id, field, value) => {
-    const newInputs = channelInputs.map((input) => {
+    const newInputs = tempChannelInputs.map((input) => {
       if (input?.id === id) {
         return {
           ...input,
@@ -71,7 +80,7 @@ const SalesSection = ({
       }
       return input;
     });
-    setChannelInputs(newInputs);
+    setTempChannelInputs(newInputs);
   };
 
   useEffect(() => {
@@ -83,123 +92,173 @@ const SalesSection = ({
       grossProfitByChannelAndProduct,
     } = calculateChannelRevenue();
     setRevenueData(revenueByChannelAndProduct);
-    setrevenueDeductionData(DeductionByChannelAndProduct);
+    setRevenueDeductionData(DeductionByChannelAndProduct);
     setCogsData(cogsByChannelAndProduct);
     setNetRevenueData(netRevenueByChannelAndProduct);
     setGrossProfitData(grossProfitByChannelAndProduct);
   }, [customerGrowthData, channelInputs, numberOfMonths]);
 
+  useEffect(() => {
+    const {
+      revenueByChannelAndProduct,
+      DeductionByChannelAndProduct,
+      cogsByChannelAndProduct,
+      netRevenueByChannelAndProduct,
+      grossProfitByChannelAndProduct,
+    } = calculateChannelRevenue();
+    setTempRevenueData(revenueByChannelAndProduct);
+    setTempRevenueDeductionData(DeductionByChannelAndProduct);
+    setTempCogsData(cogsByChannelAndProduct);
+    setTempNetRevenueData(netRevenueByChannelAndProduct);
+    setTempGrossProfitData(grossProfitByChannelAndProduct);
+  }, [customerGrowthData, tempChannelInputs, numberOfMonths]);
+
   //RevenueTable
 
-  // console.log("channelInputs", channelInputs);
-  channelInputs.forEach((channel) => {
-    if (channel.selectedChannel && channel.productName) {
-      const channelRevenue =
-        revenueData[channel.selectedChannel + " - " + channel.productName] ||
-        [];
-      const channelrevenueDeduction =
-        revenueDeductionData[
-          channel.selectedChannel + " - " + channel.productName
-        ] || [];
-      const channelCOGS =
-        cogsData[channel.selectedChannel + " - " + channel.productName] || [];
+  const calculateChannelRevenue = () => {
+    let revenueByChannelAndProduct = {};
+    let DeductionByChannelAndProduct = {};
+    let cogsByChannelAndProduct = {};
+    let netRevenueByChannelAndProduct = {};
+    let grossProfitByChannelAndProduct = {};
 
-      const customerInput = customerInputs.find(
-        (input) => input.channelName === channel.selectedChannel
-      );
-      const begin = customerInput ? customerInput.beginMonth : 1;
-      const end = customerInput ? customerInput.endMonth : numberOfMonths;
+    tempChannelInputs.forEach((channel) => {
+      if (channel.selectedChannel && channel.productName) {
+        const channelProductKey = `${channel.selectedChannel} - ${channel.productName}`;
+        const revenueArray = Array(numberOfMonths).fill(0);
+        const revenueDeductionArray = Array(numberOfMonths).fill(0);
+        const cogsArray = Array(numberOfMonths).fill(0);
+        const netRevenueArray = Array(numberOfMonths).fill(0);
+        const grossProfitArray = Array(numberOfMonths).fill(0);
 
-      const revenueRow = {
-        key:
-          channel.selectedChannel + " - " + channel.productName + " - Revenue",
-        channelName:
-          channel.selectedChannel + " - " + channel.productName + " - Revenue",
-      };
-      const revenueDeductionRow = {
-        key:
-          channel.selectedChannel +
-          " - " +
-          channel.productName +
-          " - revenueDeduction",
-        channelName:
-          channel.selectedChannel +
-          " - " +
-          channel.productName +
-          " - revenueDeduction",
-      };
-      const cogsRow = {
-        key: channel.selectedChannel + " - " + channel.productName + " - COGS",
-        channelName:
-          channel.selectedChannel + " - " + channel.productName + " - COGS",
-      };
+        // Calculate revenue, revenueDeduction, and COGS
+        customerGrowthData.forEach((growthData) => {
+          growthData.forEach((data) => {
+            if (data.channelName === channel.selectedChannel) {
+              const customerInput = customerInputs.find(
+                (input) => input.channelName === channel.selectedChannel
+              );
+              if (customerInput) {
+                const begin = customerInput.beginMonth;
+                const end = customerInput.endMonth;
 
-      channelRevenue.forEach((value, index) => {
-        if (index + 1 >= begin && index + 1 <= end) {
-          revenueRow[`month${index + 1}`] = parseFloat(value)?.toFixed(2);
-          revenueDeductionRow[`month${index + 1}`] = parseFloat(
-            channelrevenueDeduction[index]
-          )?.toFixed(2);
-          cogsRow[`month${index + 1}`] = parseFloat(channelCOGS[index]).toFixed(
-            2
-          );
-        } else {
-          revenueRow[`month${index + 1}`] = "0.00";
-          revenueDeductionRow[`month${index + 1}`] = "0.00";
-          cogsRow[`month${index + 1}`] = "0.00";
-        }
-      });
+                if (data.month >= begin && data.month <= end) {
+                  let revenue =
+                    data.customers *
+                    parseFloat(channel.price) *
+                    parseFloat(channel.multiples) *
+                    parseFloat(channel.channelAllocation);
+                  revenueArray[data.month - 1] = revenue;
 
-      const netRevenueRow = {
-        key:
-          channel.selectedChannel +
-          " - " +
-          channel.productName +
-          " - Net Revenue",
-        channelName:
-          channel.selectedChannel +
-          " - " +
-          channel.productName +
-          " - Net Revenue",
-      };
+                  revenueDeductionArray[data.month - 1] =
+                    (revenue * parseFloat(channel.deductionPercentage)) / 100;
+                  cogsArray[data.month - 1] =
+                    (revenue * parseFloat(channel.cogsPercentage)) / 100;
+                }
+              }
+            }
+          });
+        });
 
-      const netRevenueArray =
-        netRevenueData[channel.selectedChannel + " - " + channel.productName] ||
-        [];
-      netRevenueArray.forEach((value, index) => {
-        // ...existing code...
-        netRevenueRow[`month${index + 1}`] = parseFloat(value)?.toFixed(2);
-      });
+        // Calculate net revenue and gross profit
+        revenueByChannelAndProduct[channelProductKey] = revenueArray;
+        DeductionByChannelAndProduct[channelProductKey] = revenueDeductionArray;
+        cogsByChannelAndProduct[channelProductKey] = cogsArray;
 
-      const grossProfitRow = {
-        key:
-          channel.selectedChannel +
-          " - " +
-          channel.productName +
-          " - Gross Profit",
-        channelName:
-          channel.selectedChannel +
-          " - " +
-          channel.productName +
-          " - Gross Profit",
-      };
+        netRevenueArray.forEach((_, i) => {
+          netRevenueArray[i] = revenueArray[i] - revenueDeductionArray[i];
+        });
+        netRevenueByChannelAndProduct[channelProductKey] = netRevenueArray;
 
-      const grossProfitArray =
-        grossProfitData[
-          channel.selectedChannel + " - " + channel.productName
-        ] || [];
-      grossProfitArray.forEach((value, index) => {
-        // ...existing code...
-        grossProfitRow[`month${index + 1}`] = parseFloat(value)?.toFixed(2);
-      });
+        grossProfitArray.forEach((_, i) => {
+          grossProfitArray[i] =
+            netRevenueByChannelAndProduct[channelProductKey][i] -
+            cogsByChannelAndProduct[channelProductKey][i];
+        });
+        grossProfitByChannelAndProduct[channelProductKey] = grossProfitArray;
+      }
+    });
 
-      revenueTableData.push(revenueRow);
-      revenueTableData.push(revenueDeductionRow);
-      revenueTableData.push(cogsRow);
-      revenueTableData.push(netRevenueRow);
-      revenueTableData.push(grossProfitRow);
-    }
-  });
+    return {
+      revenueByChannelAndProduct,
+      DeductionByChannelAndProduct,
+      cogsByChannelAndProduct,
+      netRevenueByChannelAndProduct,
+      grossProfitByChannelAndProduct,
+    };
+  };
+
+  const transformRevenueDataForTable = () => {
+    const transformedRevenueTableData = {};
+    const calculatedChannelRevenue = calculateChannelRevenue();
+
+    Object.keys(calculatedChannelRevenue.revenueByChannelAndProduct).forEach(
+      (channelProductKey) => {
+        const revenueRowKey = `${channelProductKey} - Revenue`;
+        const revenueDeductionRowKey = `${channelProductKey} - Revenue Deduction`;
+        const cogsRowKey = `${channelProductKey} - COGS`;
+        const netRevenueRowKey = `${channelProductKey} - Net Revenue`;
+        const grossProfitRowKey = `${channelProductKey} - Gross Profit`;
+
+        transformedRevenueTableData[revenueRowKey] = {
+          key: revenueRowKey,
+          channelName: revenueRowKey,
+        };
+        transformedRevenueTableData[revenueDeductionRowKey] = {
+          key: revenueDeductionRowKey,
+          channelName: revenueDeductionRowKey,
+        };
+        transformedRevenueTableData[cogsRowKey] = {
+          key: cogsRowKey,
+          channelName: cogsRowKey,
+        };
+        transformedRevenueTableData[netRevenueRowKey] = {
+          key: netRevenueRowKey,
+          channelName: netRevenueRowKey,
+        };
+        transformedRevenueTableData[grossProfitRowKey] = {
+          key: grossProfitRowKey,
+          channelName: grossProfitRowKey,
+        };
+
+        calculatedChannelRevenue.revenueByChannelAndProduct[
+          channelProductKey
+        ].forEach((value, index) => {
+          transformedRevenueTableData[revenueRowKey][`month${index + 1}`] =
+            parseFloat(value)?.toFixed(2);
+        });
+        calculatedChannelRevenue.DeductionByChannelAndProduct[
+          channelProductKey
+        ].forEach((value, index) => {
+          transformedRevenueTableData[revenueDeductionRowKey][
+            `month${index + 1}`
+          ] = parseFloat(value)?.toFixed(2);
+        });
+        calculatedChannelRevenue.cogsByChannelAndProduct[
+          channelProductKey
+        ].forEach((value, index) => {
+          transformedRevenueTableData[cogsRowKey][`month${index + 1}`] =
+            parseFloat(value)?.toFixed(2);
+        });
+        calculatedChannelRevenue.netRevenueByChannelAndProduct[
+          channelProductKey
+        ].forEach((value, index) => {
+          transformedRevenueTableData[netRevenueRowKey][`month${index + 1}`] =
+            parseFloat(value)?.toFixed(2);
+        });
+        calculatedChannelRevenue.grossProfitByChannelAndProduct[
+          channelProductKey
+        ].forEach((value, index) => {
+          transformedRevenueTableData[grossProfitRowKey][`month${index + 1}`] =
+            parseFloat(value)?.toFixed(2);
+        });
+      }
+    );
+
+    return Object.values(transformedRevenueTableData);
+  };
+
+  const revenueTableData = transformRevenueDataForTable();
 
   //RevenueColumns
   const revenueColumns = [
@@ -217,7 +276,7 @@ const SalesSection = ({
   ];
 
   //RevenueChart
-  const [grossProfit, setgrossProfit] = useState({
+  const [grossProfit, setGrossProfit] = useState({
     options: {
       chart: { id: "gross-profit-chart", type: "line", height: 350 },
       xaxis: {
@@ -259,16 +318,34 @@ const SalesSection = ({
   });
 
   useEffect(() => {
-    const seriesData = Object.entries(grossProfitData).map(([key, data]) => {
-      return { name: key, data };
-    });
+    const seriesData = Object.entries(tempGrossProfitData).map(
+      ([key, data]) => {
+        return { name: key, data };
+      }
+    );
 
-    setgrossProfit((prevState) => ({ ...prevState, series: seriesData }));
-  }, [grossProfitData, numberOfMonths]);
+    setGrossProfit((prevState) => ({ ...prevState, series: seriesData }));
+  }, [tempGrossProfitData, numberOfMonths]);
 
   const handleChannelChange = (event) => {
     setRenderChannelForm(event.target.value);
   };
+
+  const handleSave = () => {
+    setIsSaved(true);
+  };
+
+  useEffect(() => {
+    if (isSaved) {
+      setChannelInputs(tempChannelInputs);
+      setRevenueData(tempRevenueData);
+      setRevenueDeductionData(tempRevenueDeductionData);
+      setCogsData(tempCogsData);
+      setNetRevenueData(tempNetRevenueData);
+      setGrossProfitData(tempGrossProfitData);
+      setIsSaved(false);
+    }
+  }, [isSaved]);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -294,7 +371,7 @@ const SalesSection = ({
               value={renderChannelForm}
               onChange={handleChannelChange}
             >
-              {channelInputs.map((input) => (
+              {tempChannelInputs.map((input) => (
                 <option key={input?.id} value={input?.id}>
                   {`${input.productName} - ${input.selectedChannel}`}
                 </option>
@@ -302,7 +379,7 @@ const SalesSection = ({
             </select>
           </div>
 
-          {channelInputs
+          {tempChannelInputs
             .filter((input) => input?.id == renderChannelForm)
             .map((input, index) => (
               <div
@@ -456,7 +533,10 @@ const SalesSection = ({
             Add new
           </button>
 
-          <button className="bg-blue-600 text-white py-1 px-4 rounded mt-4">
+          <button
+            className="bg-blue-600 text-white py-1 px-4 rounded mt-4"
+            onClick={handleSave}
+          >
             Save
           </button>
         </section>

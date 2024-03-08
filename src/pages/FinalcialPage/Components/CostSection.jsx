@@ -7,21 +7,25 @@ import {
 } from "../../../components/ui/Select";
 import { Input } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
-import { Table, Tooltip } from "antd";
+import { Table } from "antd";
 import Chart from "react-apexcharts";
 
 const CostSection = ({
   costInputs,
   setCostInputs,
   numberOfMonths,
-  calculateCostData,
-  transformCostDataForTable,
   costData,
   setCostData,
+  isSaved,
+  setIsSaved,
 }) => {
+  const [tempCostInput, setTempCostInput] = useState(costInputs);
+
+  const [tempCostData, setTempCostData] = useState(costData);
+
   const [renderCostForm, setRenderCostForm] = useState(costInputs[0]?.id);
   const addNewCostInput = () => {
-    const maxId = Math.max(...costInputs.map((input) => input?.id));
+    const maxId = Math.max(...tempCostInput.map((input) => input?.id));
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
     const newCustomer = {
       id: newId,
@@ -32,19 +36,19 @@ const CostSection = ({
       endMonth: 6,
       costType: "Sales, Marketing Cost",
     };
-    setCostInputs([...costInputs, newCustomer]);
+    setTempCostInput([...tempCostInput, newCustomer]);
     setRenderCostForm(newId.toString());
   };
 
   const removeCostInput = (id) => {
-    const newInputs = costInputs.filter((input) => input?.id != id);
+    const newInputs = tempCostInput.filter((input) => input?.id != id);
 
-    setCostInputs(newInputs);
+    setTempCostInput(newInputs);
     setRenderCostForm(newInputs[0]?.id);
   };
 
   const handleCostInputChange = (id, field, value) => {
-    const newInputs = costInputs.map((input) => {
+    const newInputs = tempCostInput.map((input) => {
       if (input?.id === id) {
         return {
           ...input,
@@ -53,7 +57,50 @@ const CostSection = ({
       }
       return input;
     });
-    setCostInputs(newInputs);
+    setTempCostInput(newInputs);
+  };
+
+  const calculateCostData = () => {
+    let allCosts = [];
+    tempCostInput.forEach((costInput) => {
+      let monthlyCosts = [];
+      let currentCost = parseFloat(costInput.costValue);
+      for (let month = 1; month <= numberOfMonths; month++) {
+        if (month >= costInput.beginMonth && month <= costInput.endMonth) {
+          monthlyCosts.push({ month: month, cost: currentCost });
+          currentCost *= 1 + parseFloat(costInput.growthPercentage) / 100;
+        } else {
+          monthlyCosts.push({ month: month, cost: 0 });
+        }
+      }
+      allCosts.push({
+        costName: costInput.costName,
+        monthlyCosts,
+        costType: costInput.costType,
+      });
+    });
+    return allCosts;
+  };
+
+  const transformCostDataForTable = () => {
+    const transformedCustomerTableData = {};
+    const calculatedCostData = calculateCostData();
+
+    calculatedCostData.forEach((costItem) => {
+      const rowKey = `${costItem.costType} - ${costItem.costName}`;
+      costItem.monthlyCosts.forEach((monthData) => {
+        if (!transformedCustomerTableData[rowKey]) {
+          transformedCustomerTableData[rowKey] = {
+            key: rowKey,
+            costName: rowKey,
+          };
+        }
+        transformedCustomerTableData[rowKey][`month${monthData.month}`] =
+          parseFloat(monthData.cost)?.toFixed(2);
+      });
+    });
+
+    return Object.values(transformedCustomerTableData);
   };
 
   //CostUseEffect
@@ -61,6 +108,11 @@ const CostSection = ({
     const calculatedData = calculateCostData();
     setCostData(calculatedData);
   }, [costInputs, numberOfMonths]);
+
+  useEffect(() => {
+    const calculatedData = calculateCostData();
+    setTempCostData(calculatedData);
+  }, [tempCostInput, numberOfMonths]);
 
   //CostTableData
 
@@ -123,7 +175,7 @@ const CostSection = ({
   });
 
   useEffect(() => {
-    const seriesData = costData.map((item) => {
+    const seriesData = tempCostData.map((item) => {
       return {
         name: item.costName,
         data: item.monthlyCosts.map((cost) => cost.cost),
@@ -131,13 +183,23 @@ const CostSection = ({
     });
 
     setCostChart((prevState) => ({ ...prevState, series: seriesData }));
-  }, [costData, numberOfMonths]);
+  }, [tempCostData, numberOfMonths]);
 
   const handleSelectChange = (event) => {
     setRenderCostForm(event.target.value);
   };
 
-  console.log("costTableData", costTableData);
+  const handleSave = () => {
+    setIsSaved(true);
+  };
+
+  useEffect(() => {
+    if (isSaved) {
+      setCostInputs(tempCostInput);
+      setIsSaved(false);
+    }
+  }, [isSaved]);
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
       <div className="w-full lg:w-1/3 p-4 border-r-2">
@@ -162,7 +224,7 @@ const CostSection = ({
               value={renderCostForm}
               onChange={handleSelectChange}
             >
-              {costInputs.map((input) => (
+              {tempCostInput.map((input) => (
                 <option key={input?.id} value={input?.id}>
                   {input.costName}
                 </option>
@@ -170,7 +232,7 @@ const CostSection = ({
             </select>
           </div>
 
-          {costInputs
+          {tempCostInput
             .filter((input) => input?.id == renderCostForm) // Sử dụng biến renderForm
             .map((input) => (
               <div
@@ -303,7 +365,10 @@ const CostSection = ({
             Add new
           </button>
 
-          <button className="bg-blue-600 text-white py-1 px-4 rounded mt-4">
+          <button
+            className="bg-blue-600 text-white py-1 px-4 rounded mt-4"
+            onClick={handleSave}
+          >
             Save
           </button>
         </section>

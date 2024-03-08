@@ -10,6 +10,8 @@ const CustomerSection = ({
   numberOfMonths,
   customerGrowthData,
   setCustomerGrowthData,
+  isSaved,
+  setIsSaved,
 }) => {
   const [customerGrowthChart, setCustomerGrowthChart] = useState({
     options: {
@@ -71,6 +73,8 @@ const CustomerSection = ({
       channelName: "New channel",
       beginMonth: 1,
       endMonth: 15,
+      beginCustomer: 0,
+      churnRate: 0,
     };
     setTempCustomerInputs([...tempCustomerInputs, newCustomer]);
     setRenderCustomerForm(newId.toString());
@@ -216,8 +220,15 @@ const CustomerSection = ({
   };
 
   const handleSave = () => {
-    setCustomerInputs(tempCustomerInputs);
+    setIsSaved(true);
   };
+
+  useEffect(() => {
+    if (isSaved) {
+      setCustomerInputs(tempCustomerInputs);
+      setIsSaved(false);
+    }
+  }, [isSaved]);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -232,8 +243,12 @@ const CustomerSection = ({
               <InfoCircleOutlined style={{ marginLeft: "0.5rem" }} />
             </h2>
             <p>
-              Việc tạo kênh bán là cực kì quan trọng. Bạn phải nghe tui, không
-              xác định được kênh bán là đi bụi
+              Creating a customer channel is often considered the very first
+              step in building a financial model for several strategic reasons,
+              especially in the context of new businesses or products. This
+              approach is rooted in the Lean Startup methodology, which
+              emphasizes the importance of understanding and engaging with your
+              market as early as possible.
             </p>
           </Tooltip>
           <div>
@@ -258,7 +273,7 @@ const CustomerSection = ({
           </div>
 
           {tempCustomerInputs
-            .filter((input) => input?.id == renderCustomerForm) // Sử dụng biến renderForm
+            .filter((input) => input?.id == renderCustomerForm)
             .map((input) => (
               <div
                 key={input?.id}
@@ -279,9 +294,35 @@ const CustomerSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">
-                    Customers per month:
-                  </span>
+                  <span className=" flex items-center">Begin Customer:</span>
+                  <Input
+                    className="col-start-2"
+                    type="number"
+                    min="0"
+                    value={input.beginCustomer}
+                    onChange={(e) =>
+                      handleInputChange(
+                        input?.id,
+                        "beginCustomer",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">Churn rate:</span>
+                  <Input
+                    className="col-start-2"
+                    type="number"
+                    min="0"
+                    value={input.churnRate}
+                    onChange={(e) =>
+                      handleInputChange(input?.id, "churnRate", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center">Customer/month:</span>
                   <Input
                     className="col-start-2"
                     value={input.customersPerMonth}
@@ -296,7 +337,7 @@ const CustomerSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Growth Per Month:</span>
+                  <span className=" flex items-center">Growth/month (%):</span>
                   <Input
                     className="col-start-2"
                     value={input.growthPerMonth}

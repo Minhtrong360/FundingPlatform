@@ -4,13 +4,14 @@ import Chart from "react-apexcharts";
 
 const ProfitAndLossSection = ({
   revenueData,
+  revenueDeductionData,
+  cogsData,
   costData,
   personnelCostData,
   investmentData,
   loanData,
   numberOfMonths,
   incomeTaxRate,
-
 }) => {
   const calculateProfitAndLoss = () => {
     let totalRevenue = new Array(numberOfMonths).fill(0);
@@ -21,33 +22,23 @@ const ProfitAndLossSection = ({
     let totalInvestmentDepreciation = new Array(numberOfMonths).fill(0);
     let totalLoanPayments = new Array(numberOfMonths).fill(0);
 
-    revenueData.forEach((entry) => {
-      if (!entry.channelName.includes("Revenue")) {
-        Object.keys(entry).forEach((key) => {
-          if (key.startsWith("month")) {
-            const monthIndex = parseInt(key.replace("month", "")) - 1;
-            totalRevenue[monthIndex] += parseFloat(entry[key] || 0);
-          }
-        });
-      }
+    Object.entries(revenueData).forEach(([channelProductName, monthlyData]) => {
+      monthlyData.forEach((deduction, index) => {
+        totalRevenue[index] += parseFloat(deduction);
+      });
     });
 
-    revenueData.forEach((entry) => {
-      if (entry.channelName.includes("- revenueDeduction")) {
-        Object.keys(entry).forEach((key) => {
-          if (key.startsWith("month")) {
-            const monthIndex = parseInt(key.replace("month", "")) - 1;
-            totalDeductions[monthIndex] += parseFloat(entry[key] || 0);
-          }
-        });
-      } else if (entry.channelName.includes("- COGS")) {
-        Object.keys(entry).forEach((key) => {
-          if (key.startsWith("month")) {
-            const monthIndex = parseInt(key.replace("month", "")) - 1;
-            totalCOGS[monthIndex] += parseFloat(entry[key] || 0);
-          }
+    Object.entries(revenueDeductionData).forEach(
+      ([channelProductName, monthlyData]) => {
+        monthlyData.forEach((deduction, index) => {
+          totalDeductions[index] += parseFloat(deduction);
         });
       }
+    );
+    Object.entries(cogsData).forEach(([channelProductName, monthlyData]) => {
+      monthlyData.forEach((deduction, index) => {
+        totalCOGS[index] += parseFloat(deduction);
+      });
     });
 
     costData.forEach((cost) => {
@@ -142,6 +133,9 @@ const ProfitAndLossSection = ({
     incomeTax,
     netIncome,
   } = calculateProfitAndLoss();
+
+  console.log("totalRevenue", totalRevenue);
+  console.log("totalCosts", totalCosts);
 
   const transposedData = [
     { key: "Total Revenue", values: totalRevenue },

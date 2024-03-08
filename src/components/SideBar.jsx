@@ -23,9 +23,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
   return (
     <aside
       id="default-sidebar"
-      className={`fixed top-0 left-0 z-50 h-screen transition-all duration-300 ease-in-out transform ${
-        isSidebarOpen ? "w-auto" : "w-24 "
-      } group hover:w-64 bg-gray-50 `}
+      className={`fixed top-0 left-0 z-50 h-screen transition-all duration-300 ease-in-out transform w-16 group hover:w-64 bg-gray-50 `}
       aria-label="Sidebar"
     >
       <style>
@@ -58,8 +56,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
           onClick={() => navigate("/")}
         >
           <img
-            width="18"
-            height="18"
+            className="w-5 h-5"
             src="https://img.icons8.com/ios/50/home--v1.png"
             alt="home--v1"
           />
@@ -74,8 +71,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
           onClick={() => handleItemClick("/user-info")}
         >
           <img
-            width="18"
-            height="18"
+            className="w-5 h-5"
             src="https://img.icons8.com/ios/50/user--v1.png"
             alt="user--v1"
           />
@@ -90,8 +86,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
           onClick={() => handleItemClick("/dashboard")}
         >
           <img
-            width="18"
-            height="18"
+            className="w-5 h-5"
             src="https://img.icons8.com/ios/50/control-panel--v2.png"
             alt="control-panel--v2"
           />
@@ -106,8 +101,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
           onClick={() => handleItemClick("/financials")}
         >
           <img
-            width="18"
-            height="18"
+            className="w-5 h-5"
             src="https://img.icons8.com/ios/50/investment.png"
             alt="investment"
           />
@@ -122,8 +116,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
           onClick={() => handleItemClick("/founder")}
         >
           <img
-            width="18"
-            height="18"
+            className="w-5 h-5"
             src="https://img.icons8.com/ios/50/folder-invoices--v1.png"
             alt="folder-invoices--v1"
           />

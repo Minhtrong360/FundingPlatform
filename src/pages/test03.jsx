@@ -103,64 +103,63 @@ const DurationSelect = ({
         </Tooltip>
 
         <Tooltip title="Enter the starting month of the business">
-        <div className="grid grid-cols-2 gap-4 mb-4">
-        
-          <span className=" flex items-center">Start Month :</span>
-          <Select onValueChange={setStartMonth} value={startMonth}>
-            <SelectTrigger
-              id="start-month"
-              className="border-solid border-[1px] border-gray-600"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              {months.map((month, index) => (
-                <SelectItem key={index} value={month}>
-                  {month}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className=" flex items-center">Start Month :</span>
+            <Select onValueChange={setStartMonth} value={startMonth}>
+              <SelectTrigger
+                id="start-month"
+                className="border-solid border-[1px] border-gray-200"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                {months.map((month, index) => (
+                  <SelectItem key={index} value={month}>
+                    {month}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </Tooltip>
 
-        <Tooltip title="Enter the starting year of the business">   
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Start Year :</span>
-          <Select onValueChange={setStartYear} value={startYear}>
-            <SelectTrigger
-              id="start-year"
-              className="border-solid border-[1px] border-gray-600"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              {years.map((year, index) => (
-                <SelectItem key={index} value={year}>
-                  {year}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        </Tooltip> 
-        
+        <Tooltip title="Enter the starting year of the business">
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className=" flex items-center">Start Year :</span>
+            <Select onValueChange={setStartYear} value={startYear}>
+              <SelectTrigger
+                id="start-year"
+                className="border-solid border-[1px] border-gray-200"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                {years.map((year, index) => (
+                  <SelectItem key={index} value={year}>
+                    {year}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </Tooltip>
+
         <Tooltip title="Select the duration 3 years or 5 years">
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Duration :</span>
-          <Select onValueChange={(value) => setSelectedDuration(value)}>
-            <SelectTrigger
-              id="start-date-year"
-              className="border-solid border-[1px] border-gray-600"
-            >
-              <SelectValue placeholder={selectedDuration} />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              <SelectItem value="3 years">3 years</SelectItem>
-              <SelectItem value="5 years">5 years</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className=" flex items-center">Duration :</span>
+            <Select onValueChange={(value) => setSelectedDuration(value)}>
+              <SelectTrigger
+                id="start-date-year"
+                className="border-solid border-[1px] border-gray-200"
+              >
+                <SelectValue placeholder={selectedDuration} />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectItem value="3 years">3 years</SelectItem>
+                <SelectItem value="5 years">5 years</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </Tooltip>
         
         <Tooltip title="Enter the starting cash balance, e.g. $10,000">
@@ -176,39 +175,39 @@ const DurationSelect = ({
         </Tooltip>
         
         <Tooltip title="Select the status of the business, e.g. $10,000">
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Status :</span>
-          <Select onValueChange={(value) => setStatus(value)} value={status}>
-            <SelectTrigger className="border-solid border-[1px] border-gray-600">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="inactive">Inactive</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className=" flex items-center">Status :</span>
+            <Select onValueChange={(value) => setStatus(value)} value={status}>
+              <SelectTrigger className="border-solid border-[1px] border-gray-200">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </Tooltip>
         
         <Tooltip title="Select the business industry, e.g. Fintech, Edtech">
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Business industry:</span>
-          <Select onValueChange={setIndustry} value={industry}>
-            <SelectTrigger
-              id="industry"
-              className="border-solid border-[1px] border-gray-600"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              {industries.map((industry, index) => (
-                <SelectItem key={index} value={industry}>
-                  {industry}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className=" flex items-center">Business industry:</span>
+            <Select onValueChange={setIndustry} value={industry}>
+              <SelectTrigger
+                id="industry"
+                className="border-solid border-[1px] border-gray-200"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                {industries.map((industry, index) => (
+                  <SelectItem key={index} value={industry}>
+                    {industry}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </Tooltip>
         
         <Tooltip title="Input the income tax, e.g. 10">
@@ -234,22 +233,22 @@ const DurationSelect = ({
         </Tooltip>
 
         <Tooltip title="Select the currency, e.g. USD">
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <span className=" flex items-center">Currency :</span>
-          <Select
-            onValueChange={(value) => setCurrency(value)}
-            value={currency}
-          >
-            <SelectTrigger className="border-solid border-[1px] border-gray-600">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent position="popper">
-              <SelectItem value="USD">USD</SelectItem>
-              <SelectItem value="EUR">EUR</SelectItem>
-              <SelectItem value="GBP">GBP</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <span className=" flex items-center">Currency :</span>
+            <Select
+              onValueChange={(value) => setCurrency(value)}
+              value={currency}
+            >
+              <SelectTrigger className="border-solid border-[1px] border-gray-200">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectItem value="USD">USD</SelectItem>
+                <SelectItem value="EUR">EUR</SelectItem>
+                <SelectItem value="GBP">GBP</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </Tooltip>
       </div>
     </section>
@@ -477,7 +476,7 @@ const SalesSection = ({
             >
               <SelectTrigger
                 id={`select-channel-${index}`}
-                className="border-solid border-[1px] border-gray-600"
+                className="border-solid border-[1px] border-gray-200"
               >
                 <SelectValue placeholder="Select Channel" />
               </SelectTrigger>
@@ -647,7 +646,7 @@ const CostSection = ({
             >
               <SelectTrigger
                 id={`select-costType-${index}`}
-                className="border-solid border-[1px] border-gray-600"
+                className="border-solid border-[1px] border-gray-200"
               >
                 <SelectValue placeholder="Select Cost Type" />
               </SelectTrigger>
@@ -2921,7 +2920,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
           {/* DurationSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/3 p-4 border-r-2">
+            <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
               <DurationSelect
                 selectedDuration={selectedDuration}
                 setSelectedDuration={setSelectedDuration}
@@ -2947,14 +2946,14 @@ const Z = ({ currentUser, setCurrentUser }) => {
             </div>
 
             {/* FMMetrics */}
-            <div className="w-full lg:w-2/3 p-4">
+            <div className="w-full lg:w-3/4 p-4">
               <MetricsFM />
             </div>
           </div>
 
           {/* CustomerSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/3 p-4 border-r-2">
+            <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
               <CustomerSection
                 customerInputs={customerInputs}
                 addNewCustomerInput={addNewCustomerInput}
@@ -2962,7 +2961,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 handleInputChange={handleInputChange}
               />
             </div>
-            <div className="w-full lg:w-2/3 p-4 ">
+            <div className="w-full lg:w-3/4 p-4 ">
               <h3 className="text-2xl font-semibold ">Customer Table</h3>
               <Table
                 className="overflow-auto my-8"
@@ -2982,7 +2981,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
           {/* RevenueSetion */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/3 p-4 border-r-2">
+            <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
               <SalesSection
                 channelInputs={channelInputs}
                 channelNames={channelNames}
@@ -2991,7 +2990,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 handleChannelInputChange={handleChannelInputChange}
               />
             </div>
-            <div className="w-full lg:w-2/3 p-4">
+            <div className="w-full lg:w-3/4 p-4">
               <h3 className="text-2xl font-semibold mb-4">
                 Revenue Data by Channel and Product
               </h3>
@@ -3015,7 +3014,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
           {/* CostSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/3 p-4 border-r-2">
+            <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
               <CostSection
                 costInputs={costInputs}
                 addNewCostInput={addNewCostInput}
@@ -3023,7 +3022,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 handleCostInputChange={handleCostInputChange}
               />
             </div>
-            <div className="w-full lg:w-2/3 p-4">
+            <div className="w-full lg:w-3/4 p-4">
               <h3 className="text-2xl font-semibold mb-4">Cost Table</h3>
               <Table
                 className="overflow-auto my-8"
@@ -3043,7 +3042,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
           {/* PersonnelSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/3 p-4 border-r-2">
+            <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
               <PersonnelSection
                 personnelInputs={personnelInputs}
                 addNewPersonnelInput={addNewPersonnelInput}
@@ -3051,7 +3050,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 handlePersonnelInputChange={handlePersonnelInputChange}
               />
             </div>
-            <div className="w-full lg:w-2/3 p-4">
+            <div className="w-full lg:w-3/4 p-4">
               <h3 className="text-2xl font-semibold mb-4">
                 Personnel Cost Table
               </h3>
@@ -3075,7 +3074,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
           {/* InvestmentSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/3 p-4 border-r-2">
+            <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
               <InvestmentSection
                 investmentInputs={investmentInputs}
                 setInvestmentInputs={setInvestmentInputs}
@@ -3084,7 +3083,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 handleInvestmentInputChange={handleInvestmentInputChange}
               />
             </div>
-            <div className="w-full lg:w-2/3 p-4">
+            <div className="w-full lg:w-3/4 p-4">
               <h3 className="text-2xl font-semibold mb-4">Investment Table</h3>
               <Table
                 className="overflow-auto my-8"
@@ -3104,7 +3103,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
           {/* LoanSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/3 p-4 border-r-2">
+            <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
               <LoanSection
                 loanInputs={loanInputs}
                 addNewLoanInput={addNewLoanInput}
@@ -3112,7 +3111,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 handleLoanInputChange={handleLoanInputChange}
               />
             </div>
-            <div className="w-full lg:w-2/3 p-4">
+            <div className="w-full lg:w-3/4 p-4">
               <h3 className="text-2xl font-semibold mb-4">Loan Data</h3>
               <Table
                 className="overflow-auto my-8"

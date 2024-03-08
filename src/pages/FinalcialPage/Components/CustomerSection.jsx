@@ -69,7 +69,7 @@ const CustomerSection = ({
     const newCustomer = {
       id: newId,
       customersPerMonth: 100,
-      growthPerMonth: 10,
+      growthPerMonth: 2,
       channelName: "New channel",
       beginMonth: 1,
       endMonth: 15,

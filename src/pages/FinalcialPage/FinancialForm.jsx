@@ -76,7 +76,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     {
       id: 1,
       customersPerMonth: 300,
-      growthPerMonth: 10,
+      growthPerMonth: 1,
       channelName: "Online",
       beginMonth: 1,
       endMonth: 36,
@@ -86,7 +86,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     {
       id: 2,
       customersPerMonth: 400,
-      growthPerMonth: 10,
+      growthPerMonth: 2,
       channelName: "Offline",
       beginMonth: 1,
       endMonth: 36,

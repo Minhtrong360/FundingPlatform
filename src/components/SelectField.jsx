@@ -3,7 +3,7 @@ export default function SelectField({ label, id, options, ...rest }) {
     <div>
       <label
         htmlFor={id}
-        className="block mb-2 text-sm text-gray-700 font-medium darkTextWhite"
+        className="block mb-2 text-base text-gray-700 darkTextWhite"
       >
         {label}
       </label>

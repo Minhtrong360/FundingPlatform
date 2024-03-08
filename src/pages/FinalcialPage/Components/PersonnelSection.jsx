@@ -196,7 +196,7 @@ const PersonnelSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-      <div className="w-full lg:w-1/3 p-4 sm:border-r-2 border-r-0">
+      <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
         <section aria-labelledby="personnel-heading" className="mb-8">
           <h2
             className="text-2xl font-semibold mb-4 flex items-center"
@@ -234,9 +234,9 @@ const PersonnelSection = ({
                 className="bg-white rounded-md shadow p-6 my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Job Title</span>
+                  <span className=" flex items-center text-sm">Job Title</span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     placeholder="Enter Job Title"
                     value={input.jobTitle}
                     onChange={(e) =>
@@ -249,9 +249,11 @@ const PersonnelSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Salary/month</span>
+                  <span className=" flex items-center text-sm">
+                    Salary/month
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     placeholder="Enter Salary per Month"
                     value={input.salaryPerMonth}
                     onChange={(e) =>
@@ -264,9 +266,11 @@ const PersonnelSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">No. of hires</span>
+                  <span className=" flex items-center text-sm">
+                    No. of hires
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     placeholder="Enter Number of Hires"
                     value={input.numberOfHires}
                     onChange={(e) =>
@@ -279,9 +283,11 @@ const PersonnelSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Job begin month</span>
+                  <span className=" flex items-center text-sm">
+                    Job begin month
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     placeholder="Enter Job Begin Month"
                     value={input.jobBeginMonth}
                     onChange={(e) =>
@@ -294,9 +300,11 @@ const PersonnelSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Job ending month</span>
+                  <span className=" flex items-center text-sm">
+                    Job ending month
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     placeholder="Enter Job Ending Month"
                     value={input.jobEndMonth}
                     onChange={(e) =>
@@ -333,7 +341,7 @@ const PersonnelSection = ({
           </button>
         </section>
       </div>
-      <div className="w-full lg:w-2/3 p-4">
+      <div className="w-full lg:w-3/4 p-4">
         <h3 className="text-2xl font-semibold mb-4">Personnel Cost Table</h3>
         <Table
           className="overflow-auto my-8"

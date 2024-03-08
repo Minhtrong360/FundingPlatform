@@ -232,7 +232,7 @@ const CustomerSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-      <div className="w-full lg:w-1/3 p-4 sm:border-r-2 border-r-0">
+      <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
         <section aria-labelledby="customers-heading" className="mb-8">
           <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Here's a list of common customer channels that startups often utilize: Website, Social Media,Email Marketing, Referral Programs, Events and Networking, Direct Sales, Subscription.">
             <h2
@@ -280,9 +280,11 @@ const CustomerSection = ({
                 className="bg-white rounded-md shadow p-6 my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Channel Name:</span>
+                  <span className=" flex items-center text-sm">
+                    Channel Name:
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     value={input.channelName}
                     onChange={(e) =>
                       handleInputChange(
@@ -294,9 +296,11 @@ const CustomerSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Begin Customer:</span>
+                  <span className=" flex items-center text-sm">
+                    Begin Customer:
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     type="number"
                     min="0"
                     value={input.beginCustomer}
@@ -310,9 +314,11 @@ const CustomerSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Churn rate:</span>
+                  <span className=" flex items-center text-sm">
+                    Churn rate:
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     type="number"
                     min="0"
                     value={input.churnRate}
@@ -322,9 +328,11 @@ const CustomerSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Customer/month:</span>
+                  <span className=" flex items-center text-sm">
+                    Customer/month:
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     value={input.customersPerMonth}
                     onChange={(e) =>
                       handleInputChange(
@@ -337,9 +345,11 @@ const CustomerSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Growth/month (%):</span>
+                  <span className=" flex items-center text-sm">
+                    Growth/month (%):
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     value={input.growthPerMonth}
                     onChange={(e) =>
                       handleInputChange(
@@ -352,9 +362,11 @@ const CustomerSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Begin Month:</span>
+                  <span className=" flex items-center text-sm">
+                    Begin Month:
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     type="number"
                     min="1"
                     value={input.beginMonth}
@@ -364,9 +376,9 @@ const CustomerSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">End Month:</span>
+                  <span className=" flex items-center text-sm">End Month:</span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     type="number"
                     min="1"
                     value={input.endMonth}
@@ -401,7 +413,7 @@ const CustomerSection = ({
           </button>
         </section>
       </div>
-      <div className="w-full lg:w-2/3 p-4 ">
+      <div className="w-full lg:w-3/4 p-4 ">
         <h3 className="text-2xl font-semibold ">Customer Table</h3>
         <Table
           className="overflow-auto my-8"

@@ -259,7 +259,7 @@ const InvestmentSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-      <div className="w-full lg:w-1/3 p-4 sm:border-r-2 border-r-0">
+      <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
         <section aria-labelledby="investment-heading" className="mb-8">
           <h2
             className="text-2xl font-semibold mb-4 flex items-center"
@@ -297,9 +297,11 @@ const InvestmentSection = ({
                 className="bg-white rounded-md shadow p-6 my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Name of Purchase</span>
+                  <span className=" flex items-center text-sm">
+                    Name of Purchase
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     value={input.purchaseName}
                     onChange={(e) =>
                       handleInvestmentInputChange(
@@ -311,9 +313,9 @@ const InvestmentSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Asset Cost</span>
+                  <span className=" flex items-center text-sm">Asset Cost</span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     value={input.assetCost}
                     onChange={(e) =>
                       handleInvestmentInputChange(
@@ -325,9 +327,9 @@ const InvestmentSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Quantity:</span>
+                  <span className=" flex items-center text-sm">Quantity:</span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     type="number"
                     min="1"
                     value={input.quantity}
@@ -341,9 +343,11 @@ const InvestmentSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Purchase Month</span>
+                  <span className=" flex items-center text-sm">
+                    Purchase Month
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     value={input.purchaseMonth}
                     onChange={(e) =>
                       handleInvestmentInputChange(
@@ -355,9 +359,11 @@ const InvestmentSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Residual Value</span>
+                  <span className=" flex items-center text-sm">
+                    Residual Value
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     value={input.residualValue}
                     onChange={(e) =>
                       handleInvestmentInputChange(
@@ -369,11 +375,11 @@ const InvestmentSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">
+                  <span className=" flex items-center text-sm">
                     Useful Lifetime (Months)
                   </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     value={input.usefulLifetime}
                     onChange={(e) =>
                       handleInvestmentInputChange(
@@ -409,7 +415,7 @@ const InvestmentSection = ({
           </button>
         </section>
       </div>
-      <div className="w-full lg:w-2/3 p-4">
+      <div className="w-full lg:w-3/4 p-4">
         <h3 className="text-2xl font-semibold mb-4">Investment Table</h3>
         <Table
           className="overflow-auto my-8"

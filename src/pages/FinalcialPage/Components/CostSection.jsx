@@ -202,7 +202,7 @@ const CostSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-      <div className="w-full lg:w-1/3 p-4 sm:border-r-2 border-r-0">
+      <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
         <section aria-labelledby="costs-heading" className="mb-8">
           <h2
             className="text-2xl font-semibold mb-4 flex items-center"
@@ -240,9 +240,9 @@ const CostSection = ({
                 className="bg-white rounded-md shadow p-6 my-4 "
               >
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Cost Name:</span>
+                  <span className=" flex items-center text-sm">Cost Name:</span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     value={input.costName}
                     onChange={(e) =>
                       handleCostInputChange(
@@ -255,9 +255,11 @@ const CostSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Cost Value:</span>
+                  <span className=" flex items-center text-sm">
+                    Cost Value:
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     type="number"
                     value={input.costValue}
                     onChange={(e) =>
@@ -271,9 +273,11 @@ const CostSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Growth Percentage:</span>
+                  <span className=" flex items-center text-sm">
+                    Growth Percentage:
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     type="number"
                     value={input.growthPercentage}
                     onChange={(e) =>
@@ -287,9 +291,11 @@ const CostSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Begin Month:</span>
+                  <span className=" flex items-center text-sm">
+                    Begin Month:
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     type="number"
                     min="1"
                     max="12"
@@ -305,9 +311,9 @@ const CostSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">End Month:</span>
+                  <span className=" flex items-center text-sm">End Month:</span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     type="number"
                     min="1"
                     max="12"
@@ -323,8 +329,9 @@ const CostSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Cost Type:</span>
+                  <span className=" flex items-center text-sm">Cost Type:</span>
                   <Select
+                    className="border-gray-200"
                     onValueChange={(value) =>
                       handleCostInputChange(input?.id, "costType", value)
                     }
@@ -332,7 +339,7 @@ const CostSection = ({
                   >
                     <SelectTrigger
                       id={`select-costType-${input?.id}`}
-                      className="border-solid border-[1px] border-gray-600"
+                      className="border-solid border-[1px] border-gray-200"
                     >
                       <SelectValue placeholder="Select Cost Type" />
                     </SelectTrigger>
@@ -373,7 +380,7 @@ const CostSection = ({
           </button>
         </section>
       </div>
-      <div className="w-full lg:w-2/3 p-4">
+      <div className="w-full lg:w-3/4 p-4">
         <h3 className="text-2xl font-semibold mb-4">Cost Table</h3>
         <Table
           className="overflow-auto my-8"

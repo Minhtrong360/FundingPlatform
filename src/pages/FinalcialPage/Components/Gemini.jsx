@@ -123,10 +123,10 @@ const Gemini = ({
   return (
     <div className=" mx-auto w-full">
       <div className="input-container p-4">
-        <h2 className="text-3xl sm:text-5xl font-semibold text-gray-800 darkTextGray mb-6">
+        <h2 className="text-3xl sm:text-5xl font-semibold text-gray-800 darkTextGray mb-6 text-center">
           Build your financial model with AI
         </h2>
-        <form onSubmit={handleSendMessage}>
+        <form onSubmit={handleSendMessage} className="flex justify-center">
           <div className="sm:w-[50%] w-[100%] relative z-10 flex space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100 darkBgBlue darkBorderGray darkShadowGray">
             <div className="flex-[1_0_0%]">
               <input
@@ -150,20 +150,20 @@ const Gemini = ({
             </div>
           </div>
         </form>
-        <h3 className="text-2xl font-semibold mt-8">Templates</h3>
+        <h3 className="text-2xl font-semibold mt-8 text-center">Templates</h3>
 
         <div className="mt-2 sm:mt-4 hidden lg:flex flex-wrap justify-center">
           {industries.map((industry, index) => (
             <button
               key={index}
               onClick={() => handleIndustrySelect(industry)}
-              className={`m-2 py-3 px-4 inline-flex items-center gap-x-2  rounded-lg border shadow-sm hover:cursor-pointer`}
+              className={`text-sm m-2 py-3 px-4 inline-flex items-center gap-x-2  rounded-lg border shadow-sm hover:cursor-pointer`}
             >
               {industry}
             </button>
           ))}
         </div>
-        <div className="mt-4 lg:hidden overflow-x-auto flex flex-nowrap">
+        <div className="text-sm mt-4 lg:hidden overflow-x-auto flex flex-nowrap">
           {industries.map((industry, index) => (
             <button
               key={index}

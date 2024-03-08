@@ -234,7 +234,7 @@ const LoanSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-      <div className="w-full lg:w-1/3 p-4 sm:border-r-2 border-r-0">
+      <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
         <section aria-labelledby="loan-heading" className="mb-8">
           <h2
             className="text-lg font-semibold mb-4 flex items-center mt-16"
@@ -272,10 +272,10 @@ const LoanSection = ({
                 className="bg-white rounded-md shadow p-6 my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className="font-medium">Loan Name:</span>
+                  <span className="flex items-center text-sm">Loan Name:</span>
                   <Input
                     required
-                    className="border p-2 rounded"
+                    className="border p-2 rounded border-gray-200"
                     value={input.loanName}
                     onChange={(e) =>
                       handleLoanInputChange(
@@ -288,11 +288,13 @@ const LoanSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className="font-medium">Loan Amount:</span>
+                  <span className="flex items-center text-sm">
+                    Loan Amount:
+                  </span>
                   <Input
                     required
                     type="number"
-                    className="border p-2 rounded"
+                    className="border p-2 rounded border-gray-200"
                     value={input.loanAmount}
                     onChange={(e) =>
                       handleLoanInputChange(
@@ -305,11 +307,13 @@ const LoanSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className="font-medium">Interest Rate (%):</span>
+                  <span className="flex items-center text-sm">
+                    Interest Rate (%):
+                  </span>
                   <Input
                     required
                     type="number"
-                    className="border p-2 rounded"
+                    className="border p-2 rounded border-gray-200"
                     value={input.interestRate}
                     onChange={(e) =>
                       handleLoanInputChange(
@@ -322,11 +326,13 @@ const LoanSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className="font-medium">Month Loan Begins:</span>
+                  <span className="flex items-center text-sm">
+                    Month Loan Begins:
+                  </span>
                   <Input
                     required
                     type="number"
-                    className="border p-2 rounded"
+                    className="border p-2 rounded border-gray-200"
                     value={input.loanBeginMonth}
                     onChange={(e) =>
                       handleLoanInputChange(
@@ -339,11 +345,13 @@ const LoanSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className="font-medium">Month Loan Ends:</span>
+                  <span className="flex items-center text-sm">
+                    Month Loan Ends:
+                  </span>
                   <Input
                     required
                     type="number"
-                    className="border p-2 rounded"
+                    className="border p-2 rounded border-gray-200"
                     value={input.loanEndMonth}
                     onChange={(e) =>
                       handleLoanInputChange(
@@ -380,7 +388,7 @@ const LoanSection = ({
           </button>
         </section>
       </div>
-      <div className="w-full lg:w-2/3 p-4">
+      <div className="w-full lg:w-3/4 p-4">
         <h3 className="text-2xl font-semibold mb-4">Loan Data</h3>
         <Table
           className="overflow-auto my-8"

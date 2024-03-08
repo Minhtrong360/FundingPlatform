@@ -349,7 +349,7 @@ const SalesSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-      <div className="w-full lg:w-1/3 p-4 sm:border-r-2 border-r-0">
+      <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
         <section aria-labelledby="sales-heading" className="mb-8">
           <h2
             className="text-2xl font-semibold mb-4 flex items-center"
@@ -387,9 +387,11 @@ const SalesSection = ({
                 className="bg-white rounded-md shadow p-6 my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Product Name:</span>
+                  <span className=" flex items-center text-sm">
+                    Product Name:
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     value={input.productName}
                     onChange={(e) =>
                       handleChannelInputChange(
@@ -401,9 +403,9 @@ const SalesSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Price:</span>
+                  <span className=" flex items-center text-sm">Price:</span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     value={input.price}
                     onChange={(e) =>
                       handleChannelInputChange(
@@ -416,9 +418,9 @@ const SalesSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Multiples:</span>
+                  <span className=" flex items-center text-sm">Multiples:</span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     value={input.multiples}
                     onChange={(e) =>
                       handleChannelInputChange(
@@ -432,11 +434,11 @@ const SalesSection = ({
 
                 <Tooltip title="Revenue deductions like transaction fees, commission fee... ">
                   <div className="grid grid-cols-2 gap-4 mb-4">
-                    <span className=" flex items-center">
+                    <span className=" flex items-center text-sm">
                       Rev. Deductions (%):
                     </span>
                     <Input
-                      className="col-start-2"
+                      className="col-start-2 border-gray-200"
                       value={input.deductionPercentage}
                       onChange={(e) =>
                         handleChannelInputChange(
@@ -450,9 +452,9 @@ const SalesSection = ({
                 </Tooltip>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">COGS (%):</span>
+                  <span className=" flex items-center text-sm">COGS (%):</span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     value={input.cogsPercentage}
                     onChange={(e) =>
                       handleChannelInputChange(
@@ -465,8 +467,11 @@ const SalesSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Sales Channel:</span>
+                  <span className=" flex items-center text-sm">
+                    Sales Channel:
+                  </span>
                   <Select
+                    className="border-gray-200"
                     onValueChange={(value) =>
                       handleChannelInputChange(
                         input.id,
@@ -482,7 +487,7 @@ const SalesSection = ({
                   >
                     <SelectTrigger
                       id={`select-channel-${index}`}
-                      className="border-solid border-[1px] border-gray-600"
+                      className="border-solid border-[1px] border-gray-200"
                     >
                       <SelectValue placeholder="Select Channel" />
                     </SelectTrigger>
@@ -497,11 +502,11 @@ const SalesSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">
+                  <span className=" flex items-center text-sm">
                     Channel Allocation (%):
                   </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     type="number"
                     min={0}
                     max={100}
@@ -541,7 +546,7 @@ const SalesSection = ({
           </button>
         </section>
       </div>
-      <div className="w-full lg:w-2/3 p-4">
+      <div className="w-full lg:w-3/4 p-4">
         <h3 className="text-2xl font-semibold mb-4">
           Revenue Data by Channel and Product
         </h3>

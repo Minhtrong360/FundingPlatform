@@ -417,7 +417,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
           {/* DurationSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/3 p-4 sm:border-r-2 border-r-0">
+            <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
               <DurationSelect
                 selectedDuration={selectedDuration}
                 setSelectedDuration={setSelectedDuration}
@@ -442,7 +442,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               />
             </div>
 
-            <div className="w-full lg:w-2/3 p-4">
+            <div className="w-full lg:w-3/4 p-4">
               <MetricsFM />
             </div>
           </div>

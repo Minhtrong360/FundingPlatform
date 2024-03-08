@@ -232,7 +232,7 @@ const CustomerSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-      <div className="w-full lg:w-1/3 p-4 border-r-2">
+      <div className="w-full lg:w-1/3 p-4 sm:border-r-2 border-r-0">
         <section aria-labelledby="customers-heading" className="mb-8">
           <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Here's a list of common customer channels that startups often utilize: Website, Social Media,Email Marketing, Referral Programs, Events and Networking, Direct Sales, Subscription.">
             <h2

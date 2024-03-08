@@ -61,7 +61,7 @@ function Company({
 
   return (
     <>
-      <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto border-r-2">
+      <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto sm:border-r-2 border-r-0">
         <AlertMsg />
         <div className="max-w-xl mx-auto">
           <div className="text-center">

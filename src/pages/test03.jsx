@@ -2919,7 +2919,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
           {/* DurationSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/3 p-4 border-r-2">
+            <div className="w-full lg:w-1/3 p-4 sm:border-r-2 border-r-0">
               <DurationSelect
                 selectedDuration={selectedDuration}
                 setSelectedDuration={setSelectedDuration}
@@ -2952,7 +2952,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
           {/* CustomerSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/3 p-4 border-r-2">
+            <div className="w-full lg:w-1/3 p-4 sm:border-r-2 border-r-0">
               <CustomerSection
                 customerInputs={customerInputs}
                 addNewCustomerInput={addNewCustomerInput}
@@ -2980,7 +2980,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
           {/* RevenueSetion */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/3 p-4 border-r-2">
+            <div className="w-full lg:w-1/3 p-4 sm:border-r-2 border-r-0">
               <SalesSection
                 channelInputs={channelInputs}
                 channelNames={channelNames}
@@ -3013,7 +3013,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
           {/* CostSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/3 p-4 border-r-2">
+            <div className="w-full lg:w-1/3 p-4 sm:border-r-2 border-r-0">
               <CostSection
                 costInputs={costInputs}
                 addNewCostInput={addNewCostInput}
@@ -3041,7 +3041,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
           {/* PersonnelSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/3 p-4 border-r-2">
+            <div className="w-full lg:w-1/3 p-4 sm:border-r-2 border-r-0">
               <PersonnelSection
                 personnelInputs={personnelInputs}
                 addNewPersonnelInput={addNewPersonnelInput}
@@ -3073,7 +3073,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
           {/* InvestmentSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/3 p-4 border-r-2">
+            <div className="w-full lg:w-1/3 p-4 sm:border-r-2 border-r-0">
               <InvestmentSection
                 investmentInputs={investmentInputs}
                 setInvestmentInputs={setInvestmentInputs}
@@ -3102,7 +3102,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
           {/* LoanSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/3 p-4 border-r-2">
+            <div className="w-full lg:w-1/3 p-4 sm:border-r-2 border-r-0">
               <LoanSection
                 loanInputs={loanInputs}
                 addNewLoanInput={addNewLoanInput}

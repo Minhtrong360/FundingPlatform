@@ -349,7 +349,7 @@ const SalesSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-      <div className="w-full lg:w-1/3 p-4 border-r-2">
+      <div className="w-full lg:w-1/3 p-4 sm:border-r-2 border-r-0">
         <section aria-labelledby="sales-heading" className="mb-8">
           <h2
             className="text-2xl font-semibold mb-4 flex items-center"

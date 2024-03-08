@@ -22,6 +22,7 @@ import * as XLSX from "xlsx";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   //DurationSection
   const [selectedDuration, setSelectedDuration] = useState("3 years");
@@ -80,6 +81,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       channelName: "Online",
       beginMonth: 1,
       endMonth: 36,
+      beginCustomer: 0,
+      churnRate: 0,
     },
     {
       id: 2,
@@ -88,6 +91,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       channelName: "Offline",
       beginMonth: 1,
       endMonth: 36,
+      beginCustomer: 0,
+      churnRate: 0,
     },
   ]);
 
@@ -131,86 +136,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [revenueData, setRevenueData] = useState([]);
   const [netRevenueData, setNetRevenueData] = useState([]);
   const [grossProfitData, setGrossProfitData] = useState([]);
-  const [revenueDeductionData, setrevenueDeductionData] = useState([]);
+  const [revenueDeductionData, setRevenueDeductionData] = useState([]);
   const [cogsData, setCogsData] = useState([]);
-
-  let revenueTableData = [];
-  const calculateChannelRevenue = () => {
-    let revenueByChannelAndProduct = {};
-
-    // New arrays for revenueDeduction and COGS
-    let DeductionByChannelAndProduct = {};
-    let cogsByChannelAndProduct = {};
-    let netRevenueByChannelAndProduct = {};
-    let grossProfitByChannelAndProduct = {};
-
-    channelInputs.forEach((channel) => {
-      if (channel.selectedChannel && channel.productName) {
-        const channelProductKey = `${channel.selectedChannel} - ${channel.productName}`;
-        const revenueArray = Array(numberOfMonths).fill(0);
-
-        // Initialize revenueDeduction and COGS arrays
-        const revenueDeductionArray = Array(numberOfMonths).fill(0);
-        const cogsArray = Array(numberOfMonths).fill(0);
-        const netRevenueArray = Array(numberOfMonths).fill(0);
-        const grossProfitArray = Array(numberOfMonths).fill(0);
-
-        customerGrowthData.forEach((growthData) => {
-          growthData.forEach((data) => {
-            if (data.channelName === channel.selectedChannel) {
-              const customerInput = customerInputs.find(
-                (input) => input.channelName === channel.selectedChannel
-              );
-
-              if (customerInput) {
-                const begin = customerInput.beginMonth;
-                const end = customerInput.endMonth;
-
-                if (data.month >= begin && data.month <= end) {
-                  let revenue =
-                    data.customers *
-                    parseFloat(channel.price) *
-                    parseFloat(channel.multiples) *
-                    parseFloat(channel.channelAllocation);
-                  revenueArray[data.month - 1] = revenue;
-
-                  // Calculate revenueDeduction and COGS
-                  revenueDeductionArray[data.month - 1] =
-                    (revenue * parseFloat(channel.deductionPercentage)) / 100;
-                  cogsArray[data.month - 1] =
-                    (revenue * parseFloat(channel.cogsPercentage)) / 100;
-                }
-              }
-            }
-          });
-        });
-
-        revenueByChannelAndProduct[channelProductKey] = revenueArray;
-        DeductionByChannelAndProduct[channelProductKey] = revenueDeductionArray;
-        cogsByChannelAndProduct[channelProductKey] = cogsArray;
-
-        netRevenueArray.forEach((_, i) => {
-          netRevenueArray[i] = revenueArray[i] - revenueDeductionArray[i];
-        });
-        netRevenueByChannelAndProduct[channelProductKey] = netRevenueArray;
-
-        grossProfitArray.forEach((_, i) => {
-          grossProfitArray[i] =
-            netRevenueByChannelAndProduct[channelProductKey][i] -
-            cogsByChannelAndProduct[channelProductKey][i];
-        });
-        grossProfitByChannelAndProduct[channelProductKey] = grossProfitArray;
-      }
-    });
-
-    return {
-      revenueByChannelAndProduct,
-      DeductionByChannelAndProduct,
-      cogsByChannelAndProduct,
-      netRevenueByChannelAndProduct,
-      grossProfitByChannelAndProduct,
-    };
-  };
 
   useEffect(() => {
     // Update channelNames based on current customerInputs
@@ -253,49 +180,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
   const [costData, setCostData] = useState([]);
 
-  const calculateCostData = () => {
-    let allCosts = [];
-    costInputs.forEach((costInput) => {
-      let monthlyCosts = [];
-      let currentCost = parseFloat(costInput.costValue);
-      for (let month = 1; month <= numberOfMonths; month++) {
-        if (month >= costInput.beginMonth && month <= costInput.endMonth) {
-          monthlyCosts.push({ month: month, cost: currentCost });
-          currentCost *= 1 + parseFloat(costInput.growthPercentage) / 100;
-        } else {
-          monthlyCosts.push({ month: month, cost: 0 });
-        }
-      }
-      allCosts.push({
-        costName: costInput.costName,
-        monthlyCosts,
-        costType: costInput.costType,
-      });
-    });
-    return allCosts;
-  };
-
-  const transformCostDataForTable = () => {
-    const transformedCustomerTableData = {};
-    const calculatedCostData = calculateCostData();
-
-    calculatedCostData.forEach((costItem) => {
-      const rowKey = `${costItem.costType} - ${costItem.costName}`;
-      costItem.monthlyCosts.forEach((monthData) => {
-        if (!transformedCustomerTableData[rowKey]) {
-          transformedCustomerTableData[rowKey] = {
-            key: rowKey,
-            costName: rowKey,
-          };
-        }
-        transformedCustomerTableData[rowKey][`month${monthData.month}`] =
-          parseFloat(monthData.cost)?.toFixed(2);
-      });
-    });
-
-    return Object.values(transformedCustomerTableData);
-  };
-
   //PersonnelState
   const [personnelInputs, setPersonnelInputs] = useState([
     {
@@ -316,16 +200,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     },
   ]);
   const [personnelCostData, setPersonnelCostData] = useState([]);
-  const transformPersonnelCostDataForTable = () => {
-    const transformedCustomerTableData = personnelCostData.map((item) => {
-      const rowData = { key: item.jobTitle, jobTitle: item.jobTitle };
-      item.monthlyCosts.forEach((monthData) => {
-        rowData[`month${monthData.month}`] = monthData.cost?.toFixed(2); // Adjust formatting as needed
-      });
-      return rowData;
-    });
-    return transformedCustomerTableData;
-  };
 
   //InvestmentState
   const [investmentInputs, setInvestmentInputs] = useState([
@@ -338,6 +212,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       residualValue: 10,
       usefulLifetime: 36,
     },
+
     {
       id: 2,
       purchaseName: "Table",
@@ -348,120 +223,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       usefulLifetime: 36,
     },
   ]);
-  //InvestmentTableData
-  const calculateInvestmentData = () => {
-    return investmentInputs.map((investment) => {
-      const quantity = parseInt(investment.quantity, 10) || 1; // Ensuring there is a default value of 1
+  const [investmentData, setInvestmentData] = useState([]);
 
-      const assetCost = parseFloat(investment.assetCost) * quantity;
-
-      const residualValue = parseFloat(investment.residualValue) * quantity;
-      const usefulLifetime = parseFloat(investment.usefulLifetime);
-      const purchaseMonth = parseInt(investment.purchaseMonth, 10);
-
-      const depreciationPerMonth = (assetCost - residualValue) / usefulLifetime;
-      const depreciationArray = new Array(numberOfMonths).fill(0);
-
-      // Calculate depreciation and accumulated depreciation
-      for (let i = 0; i < numberOfMonths; i++) {
-        if (i >= purchaseMonth - 1 && i < purchaseMonth - 1 + usefulLifetime) {
-          depreciationArray[i] = depreciationPerMonth;
-        }
-      }
-
-      const accumulatedDepreciation = depreciationArray.reduce(
-        (acc, val, index) => {
-          acc[index] = (acc[index - 1] || 0) + val;
-          return acc;
-        },
-        []
-      );
-
-      // Calculate asset value and book value
-      const assetValue = new Array(numberOfMonths).fill(0);
-      const bookValue = new Array(numberOfMonths).fill(0);
-      for (let i = 0; i < numberOfMonths; i++) {
-        if (i >= purchaseMonth - 1 && i < purchaseMonth - 1 + usefulLifetime) {
-          assetValue[i] = assetCost;
-
-          bookValue[i] = assetValue[i] - accumulatedDepreciation[i];
-        }
-      }
-
-      return {
-        assetValue,
-        depreciationArray,
-        accumulatedDepreciation,
-        bookValue,
-      };
-    });
-  };
-  const transformInvestmentDataForTable = () => {
-    const investmentTableData = [];
-
-    calculateInvestmentData().forEach((investment, investmentIndex) => {
-      const purchaseName =
-        investmentInputs[investmentIndex].purchaseName ||
-        `Investment ${investmentIndex + 1}`;
-      const assetCostRow = {
-        key: `${purchaseName} - Asset Cost`,
-        type: `${purchaseName}`,
-      };
-      const depreciationRow = {
-        key: `${purchaseName} - Depreciation`,
-        type: "Depreciation",
-      };
-      const accumulatedDepreciationRow = {
-        key: `${purchaseName} - Accumulated Depreciation`,
-        type: "Accumulated Depreciation",
-      };
-      const bookValueRow = {
-        key: `${purchaseName} - Book Value`,
-        type: "Book Value",
-      };
-
-      const purchaseMonth = parseInt(
-        investmentInputs[investmentIndex].purchaseMonth,
-        10
-      );
-      const usefulLife = parseInt(
-        investmentInputs[investmentIndex].usefulLifetime,
-        10
-      );
-      const endMonth = purchaseMonth + usefulLife - 1;
-      const assetCost =
-        parseFloat(investmentInputs[investmentIndex].assetCost) *
-        parseInt(investmentInputs[investmentIndex].quantity, 10);
-
-      for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
-        if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
-          assetCostRow[`month${monthIndex + 1}`] = assetCost?.toFixed(2); // Using Asset Cost
-          depreciationRow[`month${monthIndex + 1}`] =
-            investment.depreciationArray[monthIndex]?.toFixed(2);
-          accumulatedDepreciationRow[`month${monthIndex + 1}`] =
-            investment.accumulatedDepreciation[monthIndex]?.toFixed(2);
-          bookValueRow[`month${monthIndex + 1}`] = (
-            assetCost - investment.accumulatedDepreciation[monthIndex]
-          )?.toFixed(2);
-        } else {
-          assetCostRow[`month${monthIndex + 1}`] = "0.00";
-          depreciationRow[`month${monthIndex + 1}`] = "0.00";
-          accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0.00";
-          bookValueRow[`month${monthIndex + 1}`] = "0.00";
-        }
-      }
-
-      investmentTableData.push(
-        assetCostRow,
-        depreciationRow,
-        accumulatedDepreciationRow,
-        bookValueRow
-      );
-    });
-
-    return investmentTableData;
-  };
   //LoanState
+
   const [loanInputs, setLoanInputs] = useState([
     {
       id: 1,
@@ -472,100 +237,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       loanEndMonth: "12",
     },
   ]);
-  const calculateLoanData = () => {
-    return loanInputs.map((loan) => {
-      const monthlyRate = parseFloat(loan.interestRate) / 100 / 12;
-      const loanAmount = parseFloat(loan.loanAmount);
-      const loanDuration =
-        parseInt(loan.loanEndMonth, 10) - parseInt(loan.loanBeginMonth, 10) + 1;
 
-      // Calculate monthly payment
-      const monthlyPayment =
-        (loanAmount * monthlyRate) /
-        (1 - Math.pow(1 + monthlyRate, -loanDuration));
-
-      let remainingBalance = loanAmount;
-      const loanDataPerMonth = [];
-
-      for (let month = 1; month <= loanDuration; month++) {
-        const interestForMonth = remainingBalance * monthlyRate;
-        const principalForMonth = monthlyPayment - interestForMonth;
-        remainingBalance -= principalForMonth;
-
-        loanDataPerMonth.push({
-          month: month + parseInt(loan.loanBeginMonth, 10) - 1,
-          payment: monthlyPayment,
-          principal: principalForMonth,
-          interest: interestForMonth,
-          balance: remainingBalance,
-          loanAmount: loanAmount,
-        });
-      }
-
-      return {
-        loanName: loan.loanName,
-        loanDataPerMonth,
-      };
-    });
-  };
-  const transformLoanDataForTable = () => {
-    const loanTableData = [];
-
-    calculateLoanData().forEach((loan, loanIndex) => {
-      const loanName =
-        loanInputs[loanIndex].loanName || `Loan ${loanIndex + 1}`;
-
-      const loanAmountRow = {
-        key: `${loanName} - Loan Amount`,
-        type: `${loanName} - Loan Amount`,
-      };
-      const paymentRow = {
-        key: `${loanName} - Payment`,
-        type: `${loanName} - Payment`,
-      };
-      const principalRow = {
-        key: `${loanName} - Principal`,
-        type: `${loanName} - Principal`,
-      };
-      const interestRow = {
-        key: `${loanName} - Interest`,
-        type: `${loanName} - Interest`,
-      };
-      const balanceRow = {
-        key: `${loanName} - Remaining Balance`,
-        type: `${loanName} - Remaining Balance`,
-      };
-
-      // Initialize all rows with default values
-      for (let monthIndex = 1; monthIndex <= numberOfMonths; monthIndex++) {
-        const monthKey = `Month ${monthIndex}`;
-        loanAmountRow[monthKey] = "0.00";
-        paymentRow[monthKey] = "0.00";
-        principalRow[monthKey] = "0.00";
-        interestRow[monthKey] = "0.00";
-        balanceRow[monthKey] = "0.00";
-      }
-
-      loan.loanDataPerMonth.forEach((monthData) => {
-        const monthKey = `Month ${monthData.month}`;
-        loanAmountRow[monthKey] = monthData.loanAmount?.toFixed(2);
-        paymentRow[monthKey] = monthData.payment?.toFixed(2);
-        principalRow[monthKey] = monthData.principal?.toFixed(2);
-        interestRow[monthKey] = monthData.interest?.toFixed(2);
-        balanceRow[monthKey] = monthData.balance?.toFixed(2);
-      });
-
-      loanTableData.push(
-        loanAmountRow,
-        paymentRow,
-        principalRow,
-        interestRow,
-        balanceRow
-      );
-    });
-
-    return loanTableData;
-  };
+  const [loanData, setLoanData] = useState([]);
 
   // Lưu vào DB
 
@@ -680,53 +353,51 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   // };
 
   // Download Excel
-  const downloadExcel = () => {
-    const workBook = XLSX.utils.book_new();
+  // const downloadExcel = () => {
+  //   const workBook = XLSX.utils.book_new();
 
-    const convertDataToWorksheet = (data) => {
-      return XLSX.utils.json_to_sheet(data);
-    };
+  //   const convertDataToWorksheet = (data) => {
+  //     return XLSX.utils.json_to_sheet(data);
+  //   };
 
-    const addSheetToWorkbook = (sheet, sheetName) => {
-      XLSX.utils.book_append_sheet(workBook, sheet, sheetName);
-    };
+  //   const addSheetToWorkbook = (sheet, sheetName) => {
+  //     XLSX.utils.book_append_sheet(workBook, sheet, sheetName);
+  //   };
 
-    // Example data conversion and sheet addition
-    addSheetToWorkbook(
-      convertDataToWorksheet(transformCostDataForTable()),
-      "Costs"
-    );
-    addSheetToWorkbook(
-      convertDataToWorksheet(transformPersonnelCostDataForTable()),
-      "Personnel Costs"
-    );
-    addSheetToWorkbook(
-      convertDataToWorksheet(transformInvestmentDataForTable()),
-      "Investments"
-    );
-    addSheetToWorkbook(
-      convertDataToWorksheet(transformLoanDataForTable()),
-      "Loans"
-    );
-    //addSheetToWorkbook(convertDataToWorksheet(transposedData), 'Profit and Loss');
+  //   // Example data conversion and sheet addition
+  //   addSheetToWorkbook(
+  //     convertDataToWorksheet(transformCostDataForTable()),
+  //     "Costs"
+  //   );
+  //   addSheetToWorkbook(
+  //     convertDataToWorksheet(transformPersonnelCostDataForTable()),
+  //     "Personnel Costs"
+  //   );
+  //   addSheetToWorkbook(
+  //     convertDataToWorksheet(transformInvestmentDataForTable()),
+  //     "Investments"
+  //   );
+  //   addSheetToWorkbook(
+  //     convertDataToWorksheet(transformLoanDataForTable()),
+  //     "Loans"
+  //   );
+  //   //addSheetToWorkbook(convertDataToWorksheet(transposedData), 'Profit and Loss');
 
-    // Write the workbook and trigger download
-    const wbout = XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
+  //   // Write the workbook and trigger download
+  //   const wbout = XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
 
-    function s2ab(s) {
-      const buf = new ArrayBuffer(s.length);
-      const view = new Uint8Array(buf);
-      for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
-      return buf;
-    }
+  //   function s2ab(s) {
+  //     const buf = new ArrayBuffer(s.length);
+  //     const view = new Uint8Array(buf);
+  //     for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+  //     return buf;
+  //   }
 
-    saveAs(
-      new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
-      "financial-data.xlsx"
-    );
-  };
-
-  console.log("revenueTableData", revenueTableData);
+  //   saveAs(
+  //     new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
+  //     "financial-data.xlsx"
+  //   );
+  // };
 
   return (
     <div>
@@ -786,6 +457,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             customerGrowthData={customerGrowthData}
             setCustomerGrowthData={setCustomerGrowthData}
             channelNames={channelNames}
+            isSaved={isSaved}
+            setIsSaved={setIsSaved}
           />
 
           {/* RevenueSetion */}
@@ -800,14 +473,14 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             numberOfMonths={numberOfMonths}
             netRevenueData={netRevenueData}
             grossProfitData={grossProfitData}
-            calculateChannelRevenue={calculateChannelRevenue}
             setRevenueData={setRevenueData}
-            setrevenueDeductionData={setrevenueDeductionData}
+            setRevenueDeductionData={setRevenueDeductionData}
             setCogsData={setCogsData}
             setNetRevenueData={setNetRevenueData}
             setGrossProfitData={setGrossProfitData}
             customerGrowthData={customerGrowthData}
-            revenueTableData={revenueTableData}
+            isSaved={isSaved}
+            setIsSaved={setIsSaved}
           />
 
           {/* CostSection */}
@@ -815,10 +488,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             costInputs={costInputs}
             setCostInputs={setCostInputs}
             numberOfMonths={numberOfMonths}
-            calculateCostData={calculateCostData}
-            transformCostDataForTable={transformCostDataForTable}
             costData={costData}
             setCostData={setCostData}
+            isSaved={isSaved}
+            setIsSaved={setIsSaved}
           />
 
           {/* PersonnelSection */}
@@ -828,9 +501,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             numberOfMonths={numberOfMonths}
             personnelCostData={personnelCostData}
             setPersonnelCostData={setPersonnelCostData}
-            transformPersonnelCostDataForTable={
-              transformPersonnelCostDataForTable
-            }
+            isSaved={isSaved}
+            setIsSaved={setIsSaved}
           />
 
           {/* InvestmentSection */}
@@ -838,8 +510,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             investmentInputs={investmentInputs}
             setInvestmentInputs={setInvestmentInputs}
             numberOfMonths={numberOfMonths}
-            calculateInvestmentData={calculateInvestmentData}
-            transformInvestmentDataForTable={transformInvestmentDataForTable}
+            investmentData={investmentData}
+            setInvestmentData={setInvestmentData}
+            isSaved={isSaved}
+            setIsSaved={setIsSaved}
           />
 
           {/* LoanSection */}
@@ -847,26 +521,30 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             loanInputs={loanInputs}
             setLoanInputs={setLoanInputs}
             numberOfMonths={numberOfMonths}
-            calculateLoanData={calculateLoanData}
-            transformLoanDataForTable={transformLoanDataForTable}
+            loanData={loanData}
+            setLoanData={setLoanData}
+            isSaved={isSaved}
+            setIsSaved={setIsSaved}
           />
 
           {/* ProfitAndLossSection */}
           <ProfitAndLossSection
-            revenueData={revenueTableData}
+            revenueData={revenueData}
+            revenueDeductionData={revenueDeductionData}
+            cogsData={cogsData}
             costData={costData}
             personnelCostData={personnelCostData}
-            investmentData={calculateInvestmentData()}
-            loanData={calculateLoanData()}
+            investmentData={investmentData}
+            loanData={loanData}
             numberOfMonths={numberOfMonths}
             incomeTaxRate={incomeTax}
           />
         </>
       )}
 
-      <button onClick={downloadExcel} className="download-excel-button">
+      {/* <button onClick={downloadExcel} className="download-excel-button">
         Download Excel
-      </button>
+      </button> */}
     </div>
   );
 };

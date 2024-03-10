@@ -115,7 +115,7 @@ const PersonnelSection = ({
   const personnelCostColumns = [
     {
       fixed: "left",
-      title: "Job Title",
+      title: "Personnel",
       dataIndex: "jobTitle",
       key: "jobTitle",
     },
@@ -210,7 +210,6 @@ const PersonnelSection = ({
               htmlFor="selectedChannel"
               className="block my-4 text-base  darkTextWhite"
             >
-              Selected position name:
             </label>
             <select
               id="selectedChannel"
@@ -231,7 +230,7 @@ const PersonnelSection = ({
             .map((input) => (
               <div
                 key={input?.id}
-                className="bg-white rounded-md shadow p-6 my-4"
+                className="bg-white rounded-md shadow p-6 border my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <span className=" flex items-center text-sm">Job Title</span>
@@ -345,6 +344,7 @@ const PersonnelSection = ({
         <h3 className="text-2xl font-semibold mb-4">Personnel Cost Table</h3>
         <Table
           className="overflow-auto my-8"
+          size="small"
           dataSource={personnelCostTableData}
           columns={personnelCostColumns}
           pagination={false}

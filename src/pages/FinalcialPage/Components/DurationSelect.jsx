@@ -72,7 +72,7 @@ const DurationSelect = ({
       >
         Duration and Initial Setup
       </h2>
-      <div className="bg-white rounded-md shadow p-6">
+      <div className="bg-white rounded-md shadow p-6 border">
         <Tooltip title="Enter the name of your business">
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className=" flex items-center text-sm">Business name :</span>

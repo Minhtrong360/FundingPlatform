@@ -20,7 +20,6 @@ const CustomerSection = ({
         type: "bar",
         height: 350,
       },
-
       xaxis: {
         categories: Array.from(
           { length: numberOfMonths },
@@ -29,8 +28,8 @@ const CustomerSection = ({
         title: {
           text: "Month",
           style: {
-            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-            fontWeight: "600", // Cỡ chữ semibold
+            fontFamily: "Inter, sans-serif",
+            fontWeight: "600",
           },
         },
       },
@@ -42,8 +41,8 @@ const CustomerSection = ({
         },
         title: { text: "Number of Customers" },
         style: {
-          fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-          fontWeight: "600", // Cỡ chữ semibold
+          fontFamily: "Inter, sans-serif",
+          fontWeight: "600",
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
@@ -144,33 +143,35 @@ const CustomerSection = ({
 
   // CustomerTableData
   const transformedCustomerTableData = {};
-  tempCustomerGrowthData.forEach((channelData) => {
-    channelData.forEach((data) => {
-      const customerInput = tempCustomerInputs.find(
-        (input) => input.channelName === data.channelName
-      );
-      if (customerInput) {
-        if (!transformedCustomerTableData[data.channelName]) {
-          transformedCustomerTableData[data.channelName] = {
-            key: data.channelName,
-            channelName: data.channelName,
-          };
-        }
-        // Check if the month is within the range
-        if (
-          data.month >= customerInput.beginMonth &&
-          data.month <= customerInput.endMonth
-        ) {
-          transformedCustomerTableData[data.channelName][`month${data.month}`] =
-            parseFloat(data.customers)?.toFixed(2);
-        } else {
-          // Set value to 0 if outside the range
-          transformedCustomerTableData[data.channelName][`month${data.month}`] =
-            "0.00";
-        }
+tempCustomerGrowthData.forEach((channelData) => {
+  channelData.forEach((data) => {
+    const customerInput = tempCustomerInputs.find(
+      (input) => input.channelName === data.channelName
+    );
+    if (customerInput) {
+      const beginCustomerValue = parseFloat(customerInput.beginCustomer) || 0;
+      if (!transformedCustomerTableData[data.channelName]) {
+        transformedCustomerTableData[data.channelName] = {
+          key: data.channelName,
+          channelName: data.channelName,
+        };
       }
-    });
+      // Check if the month is within the range
+      if (
+        data.month >= customerInput.beginMonth &&
+        data.month <= customerInput.endMonth
+      ) {
+        transformedCustomerTableData[data.channelName][`month${data.month}`] =
+          parseFloat(data.customers)?.toFixed(2);
+      } else {
+        // Set value to 0 if outside the range
+        transformedCustomerTableData[data.channelName][`month${data.month}`] =
+          "0.00";
+      }
+    }
   });
+});
+
 
   const customerTableData = Object.values(transformedCustomerTableData).map(
     (row) => {
@@ -230,25 +231,53 @@ const CustomerSection = ({
     }
   }, [isSaved]);
 
+// Generate ChannelDataTable for each selected channel
+const ChannelDataTables = {};
+tempCustomerInputs.forEach((input) => {
+  const dataTable = {
+    Begin: {
+      channelName: "Begin",
+      ...Array.from({ length: numberOfMonths }, (_, i) => ({
+        [`month${i + 1}`]: i === 0 ? (parseFloat(input.beginCustomer) || 0).toFixed(2) : "0.00",
+      })),
+    },
+    Add: {
+      channelName: "Add",
+      ...customerTableData.find(
+        (data) => data.channelName === input.channelName
+      ),
+    },
+    Churn: {
+      channelName: "Churn",
+      ...Array.from({ length: numberOfMonths }, (_, i) => ({
+        [`month${i + 1}`]: "0.00",
+      })),
+    },
+    End: {
+      channelName: "End",
+      ...Array.from({ length: numberOfMonths }, (_, i) => ({
+        [`month${i + 1}`]: "0.00",
+      })),
+    },
+  };
+  ChannelDataTables[`${input.channelName}DataTable`] = dataTable;
+});
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
       <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
         <section aria-labelledby="customers-heading" className="mb-8">
-          <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Here's a list of common customer channels that startups often utilize: Website, Social Media,Email Marketing, Referral Programs, Events and Networking, Direct Sales, Subscription.">
+          <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Examples:  Online, Offline, Social Media, Email Marketing, Referrals, Direct Sales, Subscription...">
             <h2
               className="text-2xl font-semibold mb-4 flex items-center"
               id="customers-heading"
             >
-              1. Identify your customer{" "}
+              1. Customer channel{" "}
               <InfoCircleOutlined style={{ marginLeft: "0.5rem" }} />
             </h2>
             <p>
               Creating a customer channel is often considered the very first
-              step in building a financial model for several strategic reasons,
-              especially in the context of new businesses or products. This
-              approach is rooted in the Lean Startup methodology, which
-              emphasizes the importance of understanding and engaging with your
-              market as early as possible.
+              step in building a financial model.
             </p>
           </Tooltip>
           <div>
@@ -256,7 +285,6 @@ const CustomerSection = ({
               htmlFor="selectedChannel"
               className="block my-4 text-base  darkTextWhite"
             >
-              Selected channel name:
             </label>
             <select
               id="selectedChannel"
@@ -277,7 +305,7 @@ const CustomerSection = ({
             .map((input) => (
               <div
                 key={input?.id}
-                className="bg-white rounded-md shadow p-6 my-4"
+                className="bg-white rounded-md shadow p-6 border my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <span className=" flex items-center text-sm">
@@ -292,38 +320,6 @@ const CustomerSection = ({
                         "channelName",
                         e.target.value
                       )
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center text-sm">
-                    Begin Customer:
-                  </span>
-                  <Input
-                    className="col-start-2 border-gray-200"
-                    type="number"
-                    min="0"
-                    value={input.beginCustomer}
-                    onChange={(e) =>
-                      handleInputChange(
-                        input?.id,
-                        "beginCustomer",
-                        e.target.value
-                      )
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center text-sm">
-                    Churn rate:
-                  </span>
-                  <Input
-                    className="col-start-2 border-gray-200"
-                    type="number"
-                    min="0"
-                    value={input.churnRate}
-                    onChange={(e) =>
-                      handleInputChange(input?.id, "churnRate", e.target.value)
                     }
                   />
                 </div>
@@ -387,6 +383,34 @@ const CustomerSection = ({
                     }
                   />
                 </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center text-sm">
+                    Begin Customer:
+                  </span>
+                  <Input
+                    className="col-start-2 border-gray-200"
+                    type="number"
+                    min="0"
+                    value={input.beginCustomer}
+                    onChange={(e) =>
+                      handleInputChange(input?.id, "beginCustomer", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center text-sm">
+                    Churn rate (%):
+                  </span>
+                  <Input
+                    className="col-start-2 border-gray-200"
+                    type="number"
+                    min="0"
+                    value={input.churnRate}
+                    onChange={(e) =>
+                      handleInputChange(input?.id, "churnRate", e.target.value)
+                    }
+                  />
+                </div>
                 <div className="flex justify-end items-center">
                   <button
                     className="bg-red-600 text-white py-1 px-4 rounded"
@@ -414,18 +438,39 @@ const CustomerSection = ({
         </section>
       </div>
       <div className="w-full lg:w-3/4 p-4 ">
-        <h3 className="text-2xl font-semibold ">Customer Table</h3>
-        <Table
-          className="overflow-auto my-8"
-          dataSource={customerTableData}
-          columns={customerColumns}
-          pagination={false}
-        />
+        {tempCustomerInputs
+          .filter((input) => input?.id == renderCustomerForm)
+          .map((input) => (
+            <div key={input.id} className="mb-8">
+              <h3 className="text-2xl font-semibold">{input.channelName} Table</h3>
+              <Table
+                className="overflow-auto my-8"
+                size="small"
+                dataSource={customerTableData.filter(
+                  (data) => data.channelName === input.channelName
+                )}
+                columns={customerColumns}
+                pagination={false}
+              />
+              {Object.entries(ChannelDataTables).map(([tableName, dataTable]) => (
+                <div key={tableName}>
+                  <h3 className="text-2xl font-semibold">{tableName}</h3>
+                  <Table
+                    className="overflow-auto my-8"
+                    size="small"
+                    dataSource={Object.values(dataTable)}
+                    columns={customerColumns}
+                    pagination={false}
+                  />
+                </div>
+              ))}
+            </div>
+          ))}
         <h3 className="text-2xl font-semibold my-8">Customer Chart</h3>
         <Chart
           options={customerGrowthChart.options}
           series={customerGrowthChart.series}
-          type="area"
+          type="bar"
           height={350}
         />
       </div>

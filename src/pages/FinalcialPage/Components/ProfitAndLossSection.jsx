@@ -247,7 +247,8 @@ const ProfitAndLossSection = ({
     <div>
       <h2 className="text-2xl font-semibold mb-4">Profit and Loss Statement</h2>
       <Table
-        className="overflow-auto mb-4"
+        className="overflow-auto my-8"
+        size="small"
         dataSource={transposedData}
         columns={columns}
         pagination={false}

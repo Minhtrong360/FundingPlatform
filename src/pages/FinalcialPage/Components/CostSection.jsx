@@ -29,12 +29,12 @@ const CostSection = ({
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
     const newCustomer = {
       id: newId,
-      costName: "New cost name",
+      costName: "",
       costValue: 1000,
       growthPercentage: 0,
       beginMonth: 1,
       endMonth: 6,
-      costType: "Sales, Marketing Cost",
+      costType: "",
     };
     setTempCostInput([...tempCostInput, newCustomer]);
     setRenderCostForm(newId.toString());
@@ -87,11 +87,11 @@ const CostSection = ({
     const calculatedCostData = calculateCostData();
 
     calculatedCostData.forEach((costItem) => {
-      const rowKey = `${costItem.costType} - ${costItem.costName}`;
+      const rowKey = `${costItem.costName}`;
       costItem.monthlyCosts.forEach((monthData) => {
         if (!transformedCustomerTableData[rowKey]) {
           transformedCustomerTableData[rowKey] = {
-            key: rowKey,
+            key: rowKey,  
             costName: rowKey,
           };
         }
@@ -122,7 +122,7 @@ const CostSection = ({
   const costColumns = [
     {
       fixed: "left",
-      title: "CostType_CostName",
+      title: "CostName",
       dataIndex: "costName",
       key: "costName",
     },
@@ -216,7 +216,6 @@ const CostSection = ({
               htmlFor="selectedChannel"
               className="block my-4 text-base  darkTextWhite"
             >
-              Selected cost name:
             </label>
             <select
               id="selectedChannel"
@@ -237,7 +236,7 @@ const CostSection = ({
             .map((input) => (
               <div
                 key={input?.id}
-                className="bg-white rounded-md shadow p-6 my-4 "
+                className="bg-white rounded-md shadow p-6 border my-4 "
               >
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <span className=" flex items-center text-sm">Cost Name:</span>
@@ -345,16 +344,16 @@ const CostSection = ({
                     </SelectTrigger>
                     <SelectContent position="popper">
                       <SelectItem value="Sales, Marketing Cost">
-                        Sales, Marketing Cost
+                        Sales, Marketing
                       </SelectItem>
                       <SelectItem value="General Administrative Cost">
-                        General Administrative Cost
+                        General Administrative
                       </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
-                <div className="flex justify-end items-center">
+                <div className="flex justify-center items-center">
                   <button
                     className="bg-red-600 text-white py-1 px-4 rounded"
                     onClick={() => removeCostInput(input?.id)}
@@ -384,6 +383,7 @@ const CostSection = ({
         <h3 className="text-2xl font-semibold mb-4">Cost Table</h3>
         <Table
           className="overflow-auto my-8"
+          size="small"
           dataSource={costTableData}
           columns={costColumns}
           pagination={false}

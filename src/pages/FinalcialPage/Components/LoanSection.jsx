@@ -269,7 +269,7 @@ const LoanSection = ({
             .map((input) => (
               <div
                 key={input?.id}
-                className="bg-white rounded-md shadow p-6 my-4"
+                className="bg-white rounded-md shadow p-6 border my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <span className="flex items-center text-sm">Loan Name:</span>
@@ -392,6 +392,7 @@ const LoanSection = ({
         <h3 className="text-2xl font-semibold mb-4">Loan Data</h3>
         <Table
           className="overflow-auto my-8"
+          size="small"
           dataSource={transformLoanDataForTable()}
           columns={loanColumns}
           pagination={false}

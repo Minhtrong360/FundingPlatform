@@ -19,7 +19,7 @@ const DurationSelect = ({ selectedDuration, setSelectedDuration }) => {
       >
         Duration
       </h2>
-      <div className="bg-white rounded-md shadow p-6">
+      <div className="bg-white rounded-md shadow p-6 border">
         <div className="grid grid-cols-2 gap-4 mb-4">
           <span className="font-medium">Duration</span>
           <Select onValueChange={(value) => setSelectedDuration(value)}>
@@ -62,7 +62,7 @@ const CustomerSection = ({
       </h2>
 
       {customerInputs.map((input, index) => (
-        <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
+        <div key={index} className="bg-white rounded-md shadow p-6 border mb-4">
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className="font-medium">Customers Per Month:</span>
             <Input
@@ -169,7 +169,7 @@ const SalesSection = ({
       </h2>
 
       {channelInputs.map((input, index) => (
-        <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
+        <div key={index} className="bg-white rounded-md shadow p-6 border mb-4">
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className="font-medium">Product Name:</span>
             <Input
@@ -320,7 +320,7 @@ const CostSection = ({
       </h2>
 
       {costInputs.map((input, index) => (
-        <div key={index} className="bg-white rounded-md shadow p-6 mb-4 ">
+        <div key={index} className="bg-white rounded-md shadow p-6 border mb-4 ">
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className="font-medium">Cost Name:</span>
             <Input
@@ -454,7 +454,7 @@ const PersonnelSection = ({
         Personnel
       </h2>
       {personnelInputs.map((input, index) => (
-        <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
+        <div key={index} className="bg-white rounded-md shadow p-6 border mb-4">
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className="font-medium">Job Title</span>
             <Input
@@ -558,7 +558,7 @@ const InvestmentSection = ({
         Investment
       </h2>
       {investmentInputs.map((input, index) => (
-        <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
+        <div key={index} className="bg-white rounded-md shadow p-6 border mb-4">
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className="font-medium">Name of Purchase</span>
             <Input
@@ -667,7 +667,7 @@ const LoanSection = ({
       </h2>
 
       {loanInputs.map((input, index) => (
-        <div key={index} className="bg-white rounded-md shadow p-6 mb-4">
+        <div key={index} className="bg-white rounded-md shadow p-6 border mb-4">
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className="font-medium">Loan Name:</span>
             <input

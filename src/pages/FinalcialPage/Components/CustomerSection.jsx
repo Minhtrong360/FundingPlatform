@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
-import { Table, Tooltip } from "antd";
+import { Table, Tooltip, message } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import Chart from "react-apexcharts";
 
@@ -222,6 +222,7 @@ tempCustomerGrowthData.forEach((channelData) => {
 
   const handleSave = () => {
     setIsSaved(true);
+    message.success("Data saved successfully!");
   };
 
   useEffect(() => {

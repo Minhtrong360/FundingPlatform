@@ -6,7 +6,7 @@ import {
   SelectContent,
   SelectItem,
 } from "../../../components/ui/Select";
-import { Tooltip } from "antd";
+import { Table, Tooltip, message } from "antd";
 
 const DurationSelect = ({
   selectedDuration,

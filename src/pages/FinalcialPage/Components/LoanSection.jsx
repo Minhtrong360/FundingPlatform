@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
-import { Table, Tooltip } from "antd";
+import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 
 const LoanSection = ({
@@ -90,70 +90,76 @@ const LoanSection = ({
       };
     });
   };
+  
   const transformLoanDataForTable = () => {
     const loanTableData = [];
-
-    calculateLoanData().forEach((loan, loanIndex) => {
-      const loanName =
-        tempLoanInputs[loanIndex].loanName || `Loan ${loanIndex + 1}`;
-
-      const loanAmountRow = {
-        key: `${loanName} - Loan Amount`,
-        type: `${loanName} - Loan Amount`,
-      };
-      const paymentRow = {
-        key: `${loanName} - Payment`,
-        type: `${loanName} - Payment`,
-      };
-      const principalRow = {
-        key: `${loanName} - Principal`,
-        type: `${loanName} - Principal`,
-      };
-      const interestRow = {
-        key: `${loanName} - Interest`,
-        type: `${loanName} - Interest`,
-      };
-      const balanceRow = {
-        key: `${loanName} - Remaining Balance`,
-        type: `${loanName} - Remaining Balance`,
-      };
-
-      // Initialize all rows with default values
-      for (let monthIndex = 1; monthIndex <= numberOfMonths; monthIndex++) {
-        const monthKey = `Month ${monthIndex}`;
-        loanAmountRow[monthKey] = "0.00";
-        paymentRow[monthKey] = "0.00";
-        principalRow[monthKey] = "0.00";
-        interestRow[monthKey] = "0.00";
-        balanceRow[monthKey] = "0.00";
-      }
-
-      loan.loanDataPerMonth.forEach((monthData) => {
-        const monthKey = `Month ${monthData.month}`;
-        loanAmountRow[monthKey] = monthData.loanAmount?.toFixed(2);
-        paymentRow[monthKey] = monthData.payment?.toFixed(2);
-        principalRow[monthKey] = monthData.principal?.toFixed(2);
-        interestRow[monthKey] = monthData.interest?.toFixed(2);
-        balanceRow[monthKey] = monthData.balance?.toFixed(2);
-      });
-
-      loanTableData.push(
-        loanAmountRow,
-        paymentRow,
-        principalRow,
-        interestRow,
-        balanceRow
-      );
+    
+    const selectedLoan = tempLoanInputs.find(input => input.id === parseInt(renderLoanForm));
+    if (!selectedLoan) return loanTableData; // Return empty table data if no loan is selected
+    
+    const loanIndex = tempLoanInputs.findIndex(input => input.id === parseInt(renderLoanForm));
+    const loanData = calculateLoanData()[loanIndex];
+  
+    const loanName = selectedLoan.loanName || `Loan ${loanIndex + 1}`;
+    
+    const loanAmountRow = {
+      key: `Loan Amount`,
+      type: `Loan Amount`,
+    };
+    const paymentRow = {
+      key: `Payment`,
+      type: `Payment`,
+    };
+    const principalRow = {
+      key: `Principal`,
+      type: `Principal`,
+    };
+    const interestRow = {
+      key: `Interest`,
+      type: `Interest`,
+    };
+    const balanceRow = {
+      key: `Remaining Balance`,
+      type: `Remaining Balance`,
+    };
+  
+    // Initialize all rows with default values
+    for (let monthIndex = 1; monthIndex <= numberOfMonths; monthIndex++) {
+      const monthKey = `Month ${monthIndex}`;
+      loanAmountRow[monthKey] = "0.00";
+      paymentRow[monthKey] = "0.00";
+      principalRow[monthKey] = "0.00";
+      interestRow[monthKey] = "0.00";
+      balanceRow[monthKey] = "0.00";
+    }
+  
+    loanData.loanDataPerMonth.forEach((monthData) => {
+      const monthKey = `Month ${monthData.month}`;
+      loanAmountRow[monthKey] = monthData.loanAmount?.toFixed(2);
+      paymentRow[monthKey] = monthData.payment?.toFixed(2);
+      principalRow[monthKey] = monthData.principal?.toFixed(2);
+      interestRow[monthKey] = monthData.interest?.toFixed(2);
+      balanceRow[monthKey] = monthData.balance?.toFixed(2);
     });
-
+  
+    loanTableData.push(
+      loanAmountRow,
+      paymentRow,
+      principalRow,
+      interestRow,
+      balanceRow
+    );
+  
     return loanTableData;
   };
-
+  
   //LoanUseEffect
   useEffect(() => {
     const calculatedData = calculateLoanData();
     setLoanData(calculatedData);
-  }, [loanInputs, numberOfMonths]);
+  }, [loanInputs, numberOfMonths, renderLoanForm]);
+  
+  
 
   //LoanColumns
   const loanColumns = [
@@ -166,56 +172,71 @@ const LoanSection = ({
   ];
 
   //LoanChart
-  const [loanChart, setLoanChart] = useState({
-    options: {
-      chart: { id: "loan-chart", type: "line", height: 350 },
-      xaxis: {
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `${i + 1}`
-        ),
-        title: {
-          text: "Month",
-          style: {
-            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-            fontWeight: "600", // Cỡ chữ semibold
-          },
+const [loanChart, setLoanChart] = useState({
+  options: {
+    chart: { id: "loan-chart", type: "line", height: 350 },
+    xaxis: {
+      categories: Array.from(
+        { length: numberOfMonths },
+        (_, i) => `${i + 1}`
+      ),
+      title: {
+        text: "Month",
+        style: {
+          fontFamily: "Inter, sans-serif",
+          fontWeight: "600",
         },
       },
-      // title: { text: 'Loan Data', align: 'left' },
-      yaxis: {
-        labels: {
-          formatter: function (val) {
-            return Math.floor(val); // Format Y-axis labels as integers
-          },
-        },
-        title: {
-          text: "Payment amount ($)",
-          style: {
-            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-            fontWeight: "600", // Cỡ chữ semibold
-          },
-        },
-      },
-      legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
-      dataLabels: { enabled: false },
-      stroke: { curve: "smooth" },
-      markers: { size: 1 },
     },
-    series: [],
+    yaxis: {
+      labels: {
+        formatter: function (val) {
+          return Math.floor(val);
+        },
+      },
+      title: {
+        text: "Amount ($)",
+        style: {
+          fontFamily: "Inter, sans-serif",
+          fontWeight: "600",
+        },
+      },
+    },
+    legend: { position: "bottom", horizontalAlign: "right" },
+    fill: { type: "solid" },
+    dataLabels: { enabled: false },
+    stroke: { curve: "smooth" },
+    markers: { size: 1 },
+  },
+  series: [],
+});
+
+useEffect(() => {
+  const seriesData = calculateLoanData().flatMap((loan) => {
+    return [
+      {
+        name: `${loan.loanName} - Payment`,
+        data: loan.loanDataPerMonth.map((month) => month.payment),
+      },
+      {
+        name: `${loan.loanName} - Principal`,
+        data: loan.loanDataPerMonth.map((month) => month.principal),
+      },
+      {
+        name: `${loan.loanName} - Interest`,
+        data: loan.loanDataPerMonth.map((month) => month.interest),
+      },
+      {
+        name: `${loan.loanName} - Remaining Balance`,
+        data: loan.loanDataPerMonth.map((month) => month.balance),
+      },
+    ];
   });
 
-  useEffect(() => {
-    const seriesData = calculateLoanData().map((loan) => {
-      return {
-        name: loan.loanName,
-        data: loan.loanDataPerMonth.map((month) => month.payment),
-      };
-    });
+  setLoanChart((prevState) => ({ ...prevState, series: seriesData }));
+}, [tempLoanInputs, numberOfMonths]);
 
-    setLoanChart((prevState) => ({ ...prevState, series: seriesData }));
-  }, [tempLoanInputs, numberOfMonths]);
+
 
   const handleSelectChange = (event) => {
     setRenderLoanForm(event.target.value);
@@ -223,6 +244,7 @@ const LoanSection = ({
 
   const handleSave = () => {
     setIsSaved(true);
+    message.success("Data saved successfully!");
   };
 
   useEffect(() => {
@@ -248,7 +270,6 @@ const LoanSection = ({
               htmlFor="selectedChannel"
               className="block my-4 text-base  darkTextWhite"
             >
-              Selected loan name:
             </label>
             <select
               id="selectedChannel"
@@ -401,7 +422,7 @@ const LoanSection = ({
         <Chart
           options={loanChart.options}
           series={loanChart.series}
-          type="line"
+          type="bar"
           height={350}
         />
       </div>

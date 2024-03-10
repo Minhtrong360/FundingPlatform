@@ -7,7 +7,7 @@ import {
 } from "../../../components/ui/Select";
 import { Input } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
-import { Table } from "antd";
+import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 
 const CostSection = ({
@@ -191,6 +191,7 @@ const CostSection = ({
 
   const handleSave = () => {
     setIsSaved(true);
+    message.success("Data saved successfully!");
   };
 
   useEffect(() => {

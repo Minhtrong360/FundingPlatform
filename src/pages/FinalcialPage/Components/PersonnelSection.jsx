@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
-import { Table, Tooltip } from "antd";
+import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 
 const PersonnelSection = ({
@@ -23,6 +23,10 @@ const PersonnelSection = ({
   const [renderPersonnelForm, setRenderPersonnelForm] = useState(
     personnelInputs[0]?.id
   );
+
+  // Add state for the increase per year
+  const [increasePerYear, setIncreasePerYear] = useState(0);
+
   const addNewPersonnelInput = () => {
     const maxId = Math.max(...tempPersonnelInputs.map((input) => input?.id));
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
@@ -30,6 +34,7 @@ const PersonnelSection = ({
       id: newId,
       jobTitle: "New position",
       salaryPerMonth: 0,
+      increasePerYear: 10,
       numberOfHires: 1,
       jobBeginMonth: 1,
       jobEndMonth: 36,
@@ -62,16 +67,22 @@ const PersonnelSection = ({
     let allPersonnelCosts = [];
     tempPersonnelInputs.forEach((personnelInput) => {
       let monthlyCosts = [];
+      let lastYearSalary = parseFloat(personnelInput.salaryPerMonth);
       // Determine the number of months based on the selected duration
-
       for (let month = 1; month <= numberOfMonths; month++) {
         if (
           month >= personnelInput.jobBeginMonth &&
           month <= personnelInput.jobEndMonth
         ) {
-          const monthlyCost =
-            parseFloat(personnelInput.salaryPerMonth) *
-            parseFloat(personnelInput.numberOfHires);
+          const salaryPerMonth = lastYearSalary;
+          const numberOfHires = parseInt(personnelInput.numberOfHires);
+          const increasePercentage = parseFloat(personnelInput.increasePerYear);
+          let newSalary = salaryPerMonth;
+          if ((month - personnelInput.jobBeginMonth) % 12 === 0 && month !== personnelInput.jobBeginMonth) {
+            newSalary *= 1 + increasePercentage / 100;
+            lastYearSalary = newSalary; // Update last year's salary
+          }
+          const monthlyCost = newSalary * numberOfHires;
           monthlyCosts.push({ month: month, cost: monthlyCost });
         } else {
           monthlyCosts.push({ month: month, cost: 0 });
@@ -84,6 +95,7 @@ const PersonnelSection = ({
     });
     return allPersonnelCosts;
   };
+  
 
   const transformPersonnelCostDataForTable = () => {
     const transformedCustomerTableData = tempPersonnelCostData.map((item) => {
@@ -105,7 +117,7 @@ const PersonnelSection = ({
   useEffect(() => {
     const calculatedData = calculatePersonnelCostData();
     setTempPersonnelCostData(calculatedData);
-  }, [tempPersonnelInputs, numberOfMonths]);
+  }, [tempPersonnelInputs, numberOfMonths, increasePerYear]);
 
   //PersonnelCostTableData
 
@@ -184,6 +196,7 @@ const PersonnelSection = ({
 
   const handleSave = () => {
     setIsSaved(true);
+    message.success("Data saved successfully!");
   };
 
   useEffect(() => {
@@ -259,6 +272,23 @@ const PersonnelSection = ({
                       handlePersonnelInputChange(
                         input.id,
                         "salaryPerMonth",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center text-sm">
+                    Increase per year (%)
+                  </span>
+                  <Input
+                    className="col-start-2 border-gray-200"
+                    placeholder="Enter Increase per Year"
+                    value={input.increasePerYear}
+                    onChange={(e) =>
+                      handlePersonnelInputChange(
+                        input.id,
+                        "increasePerYear",
                         e.target.value
                       )
                     }

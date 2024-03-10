@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
-import { Table, Tooltip } from "antd";
+import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 
 const InvestmentSection = ({
@@ -106,71 +106,59 @@ const InvestmentSection = ({
       };
     });
   };
-  const transformInvestmentDataForTable = () => {
-    const investmentTableData = [];
+ const transformInvestmentDataForTable = () => {
+  const selectedInput = tempInvestmentInputs.find(input => input.id == renderInvestmentForm);
+  if (!selectedInput) return [];
 
-    calculateInvestmentData().forEach((investment, investmentIndex) => {
-      const purchaseName =
-        tempInvestmentInputs[investmentIndex].purchaseName ||
-        `Investment ${investmentIndex + 1}`;
-      const assetCostRow = {
-        key: `${purchaseName} - Asset Cost`,
-        type: `${purchaseName}`,
-      };
-      const depreciationRow = {
-        key: `${purchaseName} - Depreciation`,
-        type: "Depreciation",
-      };
-      const accumulatedDepreciationRow = {
-        key: `${purchaseName} - Accumulated Depreciation`,
-        type: "Accumulated Depreciation",
-      };
-      const bookValueRow = {
-        key: `${purchaseName} - Book Value`,
-        type: "Book Value",
-      };
+  const investmentTableData = [];
 
-      const purchaseMonth = parseInt(
-        tempInvestmentInputs[investmentIndex].purchaseMonth,
-        10
-      );
-      const usefulLife = parseInt(
-        tempInvestmentInputs[investmentIndex].usefulLifetime,
-        10
-      );
-      const endMonth = purchaseMonth + usefulLife - 1;
-      const assetCost =
-        parseFloat(tempInvestmentInputs[investmentIndex].assetCost) *
-        parseInt(tempInvestmentInputs[investmentIndex].quantity, 10);
-
-      for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
-        if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
-          assetCostRow[`month${monthIndex + 1}`] = assetCost?.toFixed(2); // Using Asset Cost
-          depreciationRow[`month${monthIndex + 1}`] =
-            investment.depreciationArray[monthIndex]?.toFixed(2);
-          accumulatedDepreciationRow[`month${monthIndex + 1}`] =
-            investment.accumulatedDepreciation[monthIndex]?.toFixed(2);
-          bookValueRow[`month${monthIndex + 1}`] = (
-            assetCost - investment.accumulatedDepreciation[monthIndex]
-          )?.toFixed(2);
-        } else {
-          assetCostRow[`month${monthIndex + 1}`] = "0.00";
-          depreciationRow[`month${monthIndex + 1}`] = "0.00";
-          accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0.00";
-          bookValueRow[`month${monthIndex + 1}`] = "0.00";
-        }
-      }
-
-      investmentTableData.push(
-        assetCostRow,
-        depreciationRow,
-        accumulatedDepreciationRow,
-        bookValueRow
-      );
-    });
-
-    return investmentTableData;
+  const purchaseName = selectedInput.purchaseName || `Investment ${renderInvestmentForm}`;
+  const assetCostRow = {
+    key: `Asset Cost`,
+    type: `${purchaseName}`,
   };
+  const depreciationRow = {
+    key: `Depreciation`,
+    type: "Depreciation",
+  };
+  const accumulatedDepreciationRow = {
+    key: `Accumulated Depre.`,
+    type: "Accumulated Depre.",
+  };
+  const bookValueRow = {
+    key: `Book Value`,
+    type: "Book Value",
+  };
+
+  const purchaseMonth = parseInt(selectedInput.purchaseMonth, 10);
+  const usefulLife = parseInt(selectedInput.usefulLifetime, 10);
+  const endMonth = purchaseMonth + usefulLife - 1;
+  const assetCost = parseFloat(selectedInput.assetCost) * parseInt(selectedInput.quantity, 10);
+
+  for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
+    if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
+      assetCostRow[`month${monthIndex + 1}`] = assetCost?.toFixed(2); // Using Asset Cost
+      depreciationRow[`month${monthIndex + 1}`] = tempInvestmentData[0]?.depreciationArray[monthIndex]?.toFixed(2);
+      accumulatedDepreciationRow[`month${monthIndex + 1}`] = tempInvestmentData[0]?.accumulatedDepreciation[monthIndex]?.toFixed(2);
+      bookValueRow[`month${monthIndex + 1}`] = (assetCost - tempInvestmentData[0]?.accumulatedDepreciation[monthIndex])?.toFixed(2);
+    } else {
+      assetCostRow[`month${monthIndex + 1}`] = "0.00";
+      depreciationRow[`month${monthIndex + 1}`] = "0.00";
+      accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0.00";
+      bookValueRow[`month${monthIndex + 1}`] = "0.00";
+    }
+  }
+
+  investmentTableData.push(
+    assetCostRow,
+    depreciationRow,
+    accumulatedDepreciationRow,
+    bookValueRow
+  );
+
+  return investmentTableData;
+};
+
 
   //InvestmentUseEffect
   useEffect(() => {
@@ -236,11 +224,12 @@ const InvestmentSection = ({
 
   useEffect(() => {
     const seriesData = tempInvestmentData.map((investment) => {
-      return { name: investment.purchaseName, data: investment.assetValue };
+      return { name: investment.purchaseName, data: investment.bookValue };
     });
-
+  
     setInvestmentChart((prevState) => ({ ...prevState, series: seriesData }));
   }, [tempInvestmentData, numberOfMonths]);
+  
 
   const handleSelectChange = (event) => {
     setRenderInvestmentForm(event.target.value);
@@ -248,6 +237,7 @@ const InvestmentSection = ({
 
   const handleSave = () => {
     setIsSaved(true);
+    message.success("Data saved successfully!");
   };
 
   useEffect(() => {
@@ -273,7 +263,6 @@ const InvestmentSection = ({
               htmlFor="selectedChannel"
               className="block my-4 text-base  darkTextWhite"
             >
-              Selected investment name:
             </label>
             <select
               id="selectedChannel"
@@ -428,7 +417,7 @@ const InvestmentSection = ({
         <Chart
           options={investmentChart.options}
           series={investmentChart.series}
-          type="area"
+          type="bar"
           height={350}
         />
       </div>

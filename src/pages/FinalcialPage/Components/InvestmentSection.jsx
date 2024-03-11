@@ -20,6 +20,9 @@ const InvestmentSection = ({
   const [renderInvestmentForm, setRenderInvestmentForm] = useState(
     investmentInputs[0]?.id
   );
+  
+  const [fundingSource, setFundingSource] = useState("Cash");
+
   //InvestmentFunctions
 
   const addNewInvestmentInput = () => {
@@ -33,6 +36,7 @@ const InvestmentSection = ({
       purchaseMonth: 0,
       residualValue: 0,
       usefulLifetime: 0,
+      fundingSource: "Cash",
     };
     setTempInvestmentInputs([...tempInvestmentInputs, newCustomer]);
     setRenderInvestmentForm(newId.toString());
@@ -56,6 +60,10 @@ const InvestmentSection = ({
       return input;
     });
     setTempInvestmentInputs(newInputs);
+  };
+
+  const handleFundingSourceChange = (value) => {
+    setFundingSource(value);
   };
 
   //InvestmentTableData
@@ -378,6 +386,25 @@ const InvestmentSection = ({
                       )
                     }
                   />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center text-sm">
+                    Funding Source
+                  </span>
+                  <select
+                    className="col-start-2 py-2 px-4 border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                    value={input.fundingSource}
+                    onChange={(e) =>
+                      handleInvestmentInputChange(
+                        input?.id,
+                        "fundingSource",
+                        e.target.value
+                      )
+                    }
+                  >
+                    <option value="Cash">Cash</option>
+                    <option value="Loan">Loan</option>
+                  </select>
                 </div>
                 <div className="flex justify-end items-center">
                   <button

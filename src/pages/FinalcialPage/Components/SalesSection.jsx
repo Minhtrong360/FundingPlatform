@@ -288,42 +288,64 @@ const SalesSection = ({
   ];
 
   //RevenueChart
+// RevenueChart
 const [revenue, setRevenue] = useState({
   options: {
-    chart: { id: "revenue-chart", type: "line", height: 350 },
+    chart: { id: "revenue-chart", type: "bar", height: 350, stacked: true }, // Set type to "bar" and stacked to true
     xaxis: {
       categories: Array.from({ length: numberOfMonths }, (_, i) => `${i + 1}`),
       title: {
         text: "Month",
         style: {
-          fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-          fontWeight: "600", // Cỡ chữ semibold
+          fontFamily: "Inter, sans-serif",
+          fontWeight: "600",
         },
       },
     },
-    // title: { text: 'Revenue Data by Channel and Product', align: 'left' },
     yaxis: {
       labels: {
         formatter: function (val) {
-          return Math.floor(val); // Format Y-axis labels as integers
+          return Math.floor(val);
         },
       },
       title: {
         text: "Amount ($)",
         style: {
-          fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-          fontWeight: "600", // Cỡ chữ semibold
+          fontFamily: "Inter, sans-serif",
+          fontWeight: "600",
         },
       },
     },
     legend: { position: "bottom", horizontalAlign: "right" },
-    fill: { type: "solid" },
     dataLabels: { enabled: false },
-    stroke: { curve: "smooth" },
-    markers: { size: 1 },
+    plotOptions: {
+      bar: { horizontal: false },
+    },
   },
   series: [],
 });
+
+useEffect(() => {
+  const seriesData = Object.entries(tempRevenueData).map(([key, data]) => {
+    return { name: key, data };
+  });
+
+  // Adjust series data for stacked bar chart
+  const stackedSeriesData = Array.from({ length: numberOfMonths }, () => ({}));
+  Object.entries(tempRevenueData).forEach(([key, data]) => {
+    data.forEach((value, index) => {
+      if (stackedSeriesData[index]) {
+        stackedSeriesData[index][key] = parseFloat(value);
+      }
+    });
+  });
+
+  setRevenue((prevState) => ({
+    ...prevState,
+    series: [{ name: 'Revenue', data: stackedSeriesData }],
+  }));
+}, [tempRevenueData, numberOfMonths]);
+
 
 useEffect(() => {
   const seriesData = Object.entries(tempRevenueData).map(([key, data]) => {
@@ -374,6 +396,34 @@ useEffect(() => {
       setIsSaved(false);
     }
   }, [isSaved]);
+
+  const calculateYearlySales = () => {
+    const yearlySales = [];
+    
+    // Check if tempRevenueData is not empty
+    if (Object.keys(tempRevenueData).length === 0) {
+      return yearlySales; // Return empty array if tempRevenueData is empty
+    }
+  
+    // Iterate over the first entry in tempRevenueData to determine the length
+    const firstEntry = tempRevenueData[Object.keys(tempRevenueData)[0]];
+    const numMonths = firstEntry ? firstEntry.length : 0;
+  
+    for (let i = 0; i < numMonths; i += 12) {
+      let sum = 0;
+      Object.values(tempRevenueData).forEach((data) => {
+        for (let j = i; j < i + 12 && j < data.length; j++) {
+          sum += parseFloat(data[j]);
+        }
+      });
+      yearlySales.push(sum);
+    }
+    return yearlySales;
+  };
+  
+
+  const yearlySales = calculateYearlySales();
+
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -624,6 +674,16 @@ useEffect(() => {
           type="bar"
           height={350}
         />
+
+<div className="mt-8">
+  <h3 className="text-2xl font-semibold mb-4">Yearly Sales</h3>
+  <ul>
+    {yearlySales.map((sales, index) => (
+      <li key={index}>Year {index + 1}: ${sales.toFixed(2)}</li>
+    ))}
+  </ul>
+</div>
+
       </div>
     </div>
   );

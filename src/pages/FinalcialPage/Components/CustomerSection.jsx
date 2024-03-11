@@ -54,7 +54,13 @@ const CustomerSection = ({
     series: [],
   });
 
-  const [tempCustomerInputs, setTempCustomerInputs] = useState(customerInputs);
+  const [tempCustomerInputs, setTempCustomerInputs] = useState(
+    customerInputs.map((input) => ({
+      ...input,
+      acquisitionCost: input.acquisitionCost || 0,
+    }))
+  );
+
   const [tempCustomerGrowthData, setTempCustomerGrowthData] =
     useState(customerGrowthData);
 
@@ -74,6 +80,7 @@ const CustomerSection = ({
       endMonth: 15,
       beginCustomer: 0,
       churnRate: 0,
+      acquisitionCost: 0, // Default value for acquisition cost
     };
     setTempCustomerInputs([...tempCustomerInputs, newCustomer]);
     setRenderCustomerForm(newId.toString());
@@ -143,35 +150,37 @@ const CustomerSection = ({
 
   // CustomerTableData
   const transformedCustomerTableData = {};
-tempCustomerGrowthData.forEach((channelData) => {
-  channelData.forEach((data) => {
-    const customerInput = tempCustomerInputs.find(
-      (input) => input.channelName === data.channelName
-    );
-    if (customerInput) {
-      const beginCustomerValue = parseFloat(customerInput.beginCustomer) || 0;
-      if (!transformedCustomerTableData[data.channelName]) {
-        transformedCustomerTableData[data.channelName] = {
-          key: data.channelName,
-          channelName: data.channelName,
-        };
+  tempCustomerGrowthData.forEach((channelData) => {
+    channelData.forEach((data) => {
+      const customerInput = tempCustomerInputs.find(
+        (input) => input.channelName === data.channelName
+      );
+      if (customerInput) {
+        const beginCustomerValue =
+          parseFloat(customerInput.beginCustomer) || 0;
+        if (!transformedCustomerTableData[data.channelName]) {
+          transformedCustomerTableData[data.channelName] = {
+            key: data.channelName,
+            channelName: data.channelName,
+          };
+        }
+        // Check if the month is within the range
+        if (
+          data.month >= customerInput.beginMonth &&
+          data.month <= customerInput.endMonth
+        ) {
+          transformedCustomerTableData[data.channelName][
+            `month${data.month}`
+          ] = parseFloat(data.customers)?.toFixed(2);
+        } else {
+          // Set value to 0 if outside the range
+          transformedCustomerTableData[data.channelName][
+            `month${data.month}`
+          ] = "0.00";
+        }
       }
-      // Check if the month is within the range
-      if (
-        data.month >= customerInput.beginMonth &&
-        data.month <= customerInput.endMonth
-      ) {
-        transformedCustomerTableData[data.channelName][`month${data.month}`] =
-          parseFloat(data.customers)?.toFixed(2);
-      } else {
-        // Set value to 0 if outside the range
-        transformedCustomerTableData[data.channelName][`month${data.month}`] =
-          "0.00";
-      }
-    }
+    });
   });
-});
-
 
   const customerTableData = Object.values(transformedCustomerTableData).map(
     (row) => {
@@ -232,37 +241,60 @@ tempCustomerGrowthData.forEach((channelData) => {
     }
   }, [isSaved]);
 
-// Generate ChannelDataTable for each selected channel
-const ChannelDataTables = {};
-tempCustomerInputs.forEach((input) => {
-  const dataTable = {
-    Begin: {
-      channelName: "Begin",
-      ...Array.from({ length: numberOfMonths }, (_, i) => ({
-        [`month${i + 1}`]: i === 0 ? (parseFloat(input.beginCustomer) || 0).toFixed(2) : "0.00",
-      })),
-    },
-    Add: {
-      channelName: "Add",
-      ...customerTableData.find(
-        (data) => data.channelName === input.channelName
-      ),
-    },
-    Churn: {
-      channelName: "Churn",
-      ...Array.from({ length: numberOfMonths }, (_, i) => ({
-        [`month${i + 1}`]: "0.00",
-      })),
-    },
-    End: {
-      channelName: "End",
-      ...Array.from({ length: numberOfMonths }, (_, i) => ({
-        [`month${i + 1}`]: "0.00",
-      })),
-    },
-  };
-  ChannelDataTables[`${input.channelName}DataTable`] = dataTable;
-});
+  // Generate ChannelDataTable for each selected channel
+  const ChannelDataTables = {};
+  tempCustomerInputs.forEach((input) => {
+    const dataTable = {
+      Begin: {
+        channelName: "Begin",
+        ...Array.from({ length: numberOfMonths }, (_, i) => ({
+          [`month${i + 1}`]: i === 0 ? (parseFloat(input.beginCustomer) || 0).toFixed(2) : "0.00",
+        })),
+      },
+      Add: {
+        channelName: "Add",
+        ...customerTableData.find(
+          (data) => data.channelName === input.channelName
+        ),
+      },
+      Churn: {
+        channelName: "Churn",
+        ...Array.from({ length: numberOfMonths }, (_, i) => ({
+          [`month${i + 1}`]: "0.00",
+        })),
+      },
+      End: {
+        channelName: "End",
+        ...Array.from({ length: numberOfMonths }, (_, i) => ({
+          [`month${i + 1}`]: "0.00",
+        })),
+      },
+    };
+    ChannelDataTables[`${input.channelName}DataTable`] = dataTable;
+  });
+
+  // Calculate monthly average of customers for each year
+const calculateYearlyAverage = (tempCustomerGrowthData, numberOfMonths) => {
+  const yearlyAverages = [];
+  for (let i = 0; i < numberOfMonths; i += 12) {
+    let totalCustomers = 0;
+    for (let j = i; j < i + 12 && j < numberOfMonths; j++) {
+      tempCustomerGrowthData.forEach((channelData) => {
+        totalCustomers += parseFloat(channelData[j]?.customers) || 0;
+      });
+    }
+    const averageCustomers = totalCustomers / 12;
+    yearlyAverages.push(averageCustomers.toFixed(2));
+  }
+  return yearlyAverages;
+};
+
+const [yearlyAverageCustomers, setYearlyAverageCustomers] = useState([]);
+
+useEffect(() => {
+  const averages = calculateYearlyAverage(tempCustomerGrowthData, numberOfMonths);
+  setYearlyAverageCustomers(averages);
+}, [tempCustomerGrowthData, numberOfMonths]);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -412,6 +444,20 @@ tempCustomerInputs.forEach((input) => {
                     }
                   />
                 </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center text-sm">
+                    Acquisition cost:
+                  </span>
+                  <Input
+                    className="col-start-2 border-gray-200"
+                    type="number"
+                    min="0"
+                    value={input.acquisitionCost}
+                    onChange={(e) =>
+                      handleInputChange(input?.id, "acquisitionCost", e.target.value)
+                    }
+                  />
+                </div>
                 <div className="flex justify-end items-center">
                   <button
                     className="bg-red-600 text-white py-1 px-4 rounded"
@@ -474,6 +520,16 @@ tempCustomerInputs.forEach((input) => {
           type="bar"
           height={350}
         />
+
+<h3 className="text-2xl font-semibold my-8">Yearly Average Customers</h3>
+      <div className="flex items-center">
+        {yearlyAverageCustomers.map((average, index) => (
+          <div key={index} className="mr-4">
+            <span className="font-semibold">Year {index + 1}:</span> {average}
+          </div>
+        ))}
+      </div>
+      
       </div>
     </div>
   );

@@ -40,7 +40,6 @@ import ImageCropper from "../components/ImageCropper";
 import NotificationsPage from "../pages/Notification/Notification";
 import Confirmed from "../pages/SignUp/Confirmed";
 import AdminPage from "../pages/Admin/AdminPage";
-import Compose from "../pages/News/Compose";
 
 function Router() {
   const { user } = useAuth();
@@ -175,7 +174,7 @@ function Router() {
         {/* <Route path="/W" element={<ImageCropper />} /> */}
         <Route path="/Z" element={<Z />} />
         <Route path="/admin" element={<AdminPage />} />
-        <Route path="/post" element={<Compose />} />
+
         <Route path="/loading" element={<ProgressBar isLoading={true} />} />
       </Routes>
     </>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
-import { Table, Tooltip } from "antd";
+import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 
 const PersonnelSection = ({
@@ -23,6 +23,10 @@ const PersonnelSection = ({
   const [renderPersonnelForm, setRenderPersonnelForm] = useState(
     personnelInputs[0]?.id
   );
+
+  // Add state for the increase per year
+  const [increasePerYear, setIncreasePerYear] = useState(0);
+
   const addNewPersonnelInput = () => {
     const maxId = Math.max(...tempPersonnelInputs.map((input) => input?.id));
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
@@ -30,6 +34,7 @@ const PersonnelSection = ({
       id: newId,
       jobTitle: "New position",
       salaryPerMonth: 0,
+      increasePerYear: 10,
       numberOfHires: 1,
       jobBeginMonth: 1,
       jobEndMonth: 36,
@@ -62,16 +67,22 @@ const PersonnelSection = ({
     let allPersonnelCosts = [];
     tempPersonnelInputs.forEach((personnelInput) => {
       let monthlyCosts = [];
+      let lastYearSalary = parseFloat(personnelInput.salaryPerMonth);
       // Determine the number of months based on the selected duration
-
       for (let month = 1; month <= numberOfMonths; month++) {
         if (
           month >= personnelInput.jobBeginMonth &&
           month <= personnelInput.jobEndMonth
         ) {
-          const monthlyCost =
-            parseFloat(personnelInput.salaryPerMonth) *
-            parseFloat(personnelInput.numberOfHires);
+          const salaryPerMonth = lastYearSalary;
+          const numberOfHires = parseInt(personnelInput.numberOfHires);
+          const increasePercentage = parseFloat(personnelInput.increasePerYear);
+          let newSalary = salaryPerMonth;
+          if ((month - personnelInput.jobBeginMonth) % 12 === 0 && month !== personnelInput.jobBeginMonth) {
+            newSalary *= 1 + increasePercentage / 100;
+            lastYearSalary = newSalary; // Update last year's salary
+          }
+          const monthlyCost = newSalary * numberOfHires;
           monthlyCosts.push({ month: month, cost: monthlyCost });
         } else {
           monthlyCosts.push({ month: month, cost: 0 });
@@ -84,6 +95,7 @@ const PersonnelSection = ({
     });
     return allPersonnelCosts;
   };
+  
 
   const transformPersonnelCostDataForTable = () => {
     const transformedCustomerTableData = tempPersonnelCostData.map((item) => {
@@ -105,7 +117,7 @@ const PersonnelSection = ({
   useEffect(() => {
     const calculatedData = calculatePersonnelCostData();
     setTempPersonnelCostData(calculatedData);
-  }, [tempPersonnelInputs, numberOfMonths]);
+  }, [tempPersonnelInputs, numberOfMonths, increasePerYear]);
 
   //PersonnelCostTableData
 
@@ -115,7 +127,7 @@ const PersonnelSection = ({
   const personnelCostColumns = [
     {
       fixed: "left",
-      title: "Job Title",
+      title: "Personnel",
       dataIndex: "jobTitle",
       key: "jobTitle",
     },
@@ -184,6 +196,7 @@ const PersonnelSection = ({
 
   const handleSave = () => {
     setIsSaved(true);
+    message.success("Data saved successfully!");
   };
 
   useEffect(() => {
@@ -196,7 +209,7 @@ const PersonnelSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-      <div className="w-full lg:w-1/3 p-4 border-r-2">
+      <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
         <section aria-labelledby="personnel-heading" className="mb-8">
           <h2
             className="text-2xl font-semibold mb-4 flex items-center"
@@ -210,7 +223,6 @@ const PersonnelSection = ({
               htmlFor="selectedChannel"
               className="block my-4 text-base  darkTextWhite"
             >
-              Selected position name:
             </label>
             <select
               id="selectedChannel"
@@ -231,12 +243,12 @@ const PersonnelSection = ({
             .map((input) => (
               <div
                 key={input?.id}
-                className="bg-white rounded-md shadow p-6 my-4"
+                className="bg-white rounded-md shadow p-6 border my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Job Title</span>
+                  <span className=" flex items-center text-sm">Job Title</span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     placeholder="Enter Job Title"
                     value={input.jobTitle}
                     onChange={(e) =>
@@ -249,9 +261,11 @@ const PersonnelSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Salary/month</span>
+                  <span className=" flex items-center text-sm">
+                    Salary/month
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     placeholder="Enter Salary per Month"
                     value={input.salaryPerMonth}
                     onChange={(e) =>
@@ -264,9 +278,28 @@ const PersonnelSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">No. of hires</span>
+                  <span className=" flex items-center text-sm">
+                    Increase per year (%)
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
+                    placeholder="Enter Increase per Year"
+                    value={input.increasePerYear}
+                    onChange={(e) =>
+                      handlePersonnelInputChange(
+                        input.id,
+                        "increasePerYear",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center text-sm">
+                    No. of hires
+                  </span>
+                  <Input
+                    className="col-start-2 border-gray-200"
                     placeholder="Enter Number of Hires"
                     value={input.numberOfHires}
                     onChange={(e) =>
@@ -279,9 +312,11 @@ const PersonnelSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Job begin month</span>
+                  <span className=" flex items-center text-sm">
+                    Job begin month
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     placeholder="Enter Job Begin Month"
                     value={input.jobBeginMonth}
                     onChange={(e) =>
@@ -294,9 +329,11 @@ const PersonnelSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Job ending month</span>
+                  <span className=" flex items-center text-sm">
+                    Job ending month
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     placeholder="Enter Job Ending Month"
                     value={input.jobEndMonth}
                     onChange={(e) =>
@@ -333,10 +370,11 @@ const PersonnelSection = ({
           </button>
         </section>
       </div>
-      <div className="w-full lg:w-2/3 p-4">
+      <div className="w-full lg:w-3/4 p-4">
         <h3 className="text-2xl font-semibold mb-4">Personnel Cost Table</h3>
         <Table
           className="overflow-auto my-8"
+          size="small"
           dataSource={personnelCostTableData}
           columns={personnelCostColumns}
           pagination={false}

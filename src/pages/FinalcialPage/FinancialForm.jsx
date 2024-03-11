@@ -16,7 +16,6 @@ import AlertMsg from "../../components/AlertMsg";
 import ProgressBar from "../../components/ProgressBar";
 import Gemini from "./Components/Gemini";
 import MetricsFM from "../MetricsFM";
-
 import ProfitAndLossSection from "./Components/ProfitAndLossSection";
 import * as XLSX from "xlsx";
 
@@ -77,7 +76,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     {
       id: 1,
       customersPerMonth: 300,
-      growthPerMonth: 10,
+      growthPerMonth: 1,
       channelName: "Online",
       beginMonth: 1,
       endMonth: 36,
@@ -87,7 +86,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     {
       id: 2,
       customersPerMonth: 400,
-      growthPerMonth: 10,
+      growthPerMonth: 2,
       channelName: "Offline",
       beginMonth: 1,
       endMonth: 36,
@@ -418,7 +417,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
           {/* DurationSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/3 p-4 border-r-2">
+            <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
               <DurationSelect
                 selectedDuration={selectedDuration}
                 setSelectedDuration={setSelectedDuration}
@@ -443,9 +442,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               />
             </div>
 
-            <div className="w-full lg:w-2/3 p-4">
+            <div className="w-full lg:w-3/4 p-4">
               <MetricsFM />
-       
             </div>
           </div>
 

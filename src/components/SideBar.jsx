@@ -23,19 +23,19 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
   return (
     <aside
       id="default-sidebar"
-      className={`fixed top-0 left-0 z-50 h-screen transition-all duration-300 ease-in-out transform w-16 group hover:w-64 bg-gray-50 `}
+      className={`fixed top-0 left-0 z-50 h-screen transition-all duration-300 ease-in-out transform w-16 group hover:w-64 bg-gray-50 hidden md:block`}
       aria-label="Sidebar"
     >
       <style>
         {`
-          .text-sm {
+          .sidebar-text {
             max-width: 0;
             overflow: hidden;
             white-space: nowrap;
             transition: max-width 0.5s ease-in-out, opacity 0.5s ease;
             opacity: 0;
           }
-          .group:hover .text-sm {
+          .group:hover .sidebar-text {
             max-width: 300px; /* Adjust as needed */
             opacity: 1;
             margin-left: 8px;
@@ -50,7 +50,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
           }
         `}
       </style>
-      <div className="mt-16 mx-auto flex flex-col items-center h-full px-3 py-4 space-y-2 overflow-y-auto">
+      <div className="mt-16 mx-auto flex flex-col items-start h-full px-3 py-4 space-y-2 overflow-y-auto">
         <button
           className="mt-2  w-full p-2 group flex items-center rounded-lg text-sm  sidebar-button"
           onClick={() => navigate("/")}
@@ -62,7 +62,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             src="https://img.icons8.com/ios/50/home--v1.png"
             alt="home--v1"
           />
-          <span className="text-sm">Home</span>
+          <span className="sidebar-text">Home</span>
         </button>
         <button
           className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-lg text-sm ${
@@ -79,7 +79,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             src="https://img.icons8.com/ios/50/user--v1.png"
             alt="user--v1"
           />
-          <span className="text-sm">User Settings</span>
+          <span className="sidebar-text">User Settings</span>
         </button>
         <button
           className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-lg text-sm ${
@@ -107,7 +107,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             src="https://img.icons8.com/ios/50/investment.png"
             alt="investment"
           />
-          <span className="text-sm">Financials</span>
+          <span className="sidebar-text">Financials</span>
         </button>
         <button
           className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-lg text-sm  ${
@@ -124,7 +124,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             src="https://img.icons8.com/ios/50/folder-invoices--v1.png"
             alt="folder-invoices--v1"
           />
-          <span className="text-sm">Projects</span>
+          <span className="sidebar-text">Projects</span>
         </button>
       </div>
     </aside>

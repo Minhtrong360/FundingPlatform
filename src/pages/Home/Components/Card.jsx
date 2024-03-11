@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "../../../supabase";
+import { Flex, Tag } from 'antd';
 
 const Card = ({
   title,
@@ -49,7 +50,7 @@ const Card = ({
       <div className="relative pt-[50%] sm:pt-[70%] rounded-t-lg overflow-hidden">
         {canClick !== false ? (
           <img
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-in-out"
+            className=" h-full w-full  absolute top-0 start-0 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out "
             src={imageUrl}
             alt="Company Description"
             onClick={() => navigate(`/founder/${project_id}`)}
@@ -85,26 +86,26 @@ const Card = ({
           {canClick !== false ? (
             <button
               onClick={() => navigate(`/founder/${project_id}`)}
-              className="inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              className="mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 darkBgBlue darkHoverBgBlue darkFocus"
             >
               {buttonText}
             </button>
           ) : (
             <button
-              className="inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white bg-blue-600 rounded-lg cursor-not-allowed opacity-50"
+              className="mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white bg-blue-600 rounded-lg cursor-not-allowed opacity-50 darkBgBlue"
               disabled
             >
               {buttonText}
             </button>
           )}
-          <button
+          <Tag 
+            className={` ${
+              project?.status === true ? "bg-green-600 text-white" : "bg-bg-gray-50 border border-gray-200 text-black"
+            } mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center   rounded-3xl`}
             onClick={() => navigate(`/founder/${project_id}`)}
-            className={`inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white rounded-lg ${
-              project?.status === true ? "bg-blue-600" : "bg-red-600"
-            }`}
           >
-            {project?.status === true ? "Public deal" : "Private deal"}
-          </button>
+            {project?.status === true ? "Public" : "Private"}
+          </ Tag>
         </div>
       </div>
     </div>

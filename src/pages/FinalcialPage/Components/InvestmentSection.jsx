@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
-import { Table, Tooltip } from "antd";
+import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 
 const InvestmentSection = ({
@@ -20,6 +20,9 @@ const InvestmentSection = ({
   const [renderInvestmentForm, setRenderInvestmentForm] = useState(
     investmentInputs[0]?.id
   );
+  
+  const [fundingSource, setFundingSource] = useState("Cash");
+
   //InvestmentFunctions
 
   const addNewInvestmentInput = () => {
@@ -33,6 +36,7 @@ const InvestmentSection = ({
       purchaseMonth: 0,
       residualValue: 0,
       usefulLifetime: 0,
+      fundingSource: "Cash",
     };
     setTempInvestmentInputs([...tempInvestmentInputs, newCustomer]);
     setRenderInvestmentForm(newId.toString());
@@ -56,6 +60,10 @@ const InvestmentSection = ({
       return input;
     });
     setTempInvestmentInputs(newInputs);
+  };
+
+  const handleFundingSourceChange = (value) => {
+    setFundingSource(value);
   };
 
   //InvestmentTableData
@@ -106,71 +114,59 @@ const InvestmentSection = ({
       };
     });
   };
-  const transformInvestmentDataForTable = () => {
-    const investmentTableData = [];
+ const transformInvestmentDataForTable = () => {
+  const selectedInput = tempInvestmentInputs.find(input => input.id == renderInvestmentForm);
+  if (!selectedInput) return [];
 
-    calculateInvestmentData().forEach((investment, investmentIndex) => {
-      const purchaseName =
-        tempInvestmentInputs[investmentIndex].purchaseName ||
-        `Investment ${investmentIndex + 1}`;
-      const assetCostRow = {
-        key: `${purchaseName} - Asset Cost`,
-        type: `${purchaseName}`,
-      };
-      const depreciationRow = {
-        key: `${purchaseName} - Depreciation`,
-        type: "Depreciation",
-      };
-      const accumulatedDepreciationRow = {
-        key: `${purchaseName} - Accumulated Depreciation`,
-        type: "Accumulated Depreciation",
-      };
-      const bookValueRow = {
-        key: `${purchaseName} - Book Value`,
-        type: "Book Value",
-      };
+  const investmentTableData = [];
 
-      const purchaseMonth = parseInt(
-        tempInvestmentInputs[investmentIndex].purchaseMonth,
-        10
-      );
-      const usefulLife = parseInt(
-        tempInvestmentInputs[investmentIndex].usefulLifetime,
-        10
-      );
-      const endMonth = purchaseMonth + usefulLife - 1;
-      const assetCost =
-        parseFloat(tempInvestmentInputs[investmentIndex].assetCost) *
-        parseInt(tempInvestmentInputs[investmentIndex].quantity, 10);
-
-      for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
-        if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
-          assetCostRow[`month${monthIndex + 1}`] = assetCost?.toFixed(2); // Using Asset Cost
-          depreciationRow[`month${monthIndex + 1}`] =
-            investment.depreciationArray[monthIndex]?.toFixed(2);
-          accumulatedDepreciationRow[`month${monthIndex + 1}`] =
-            investment.accumulatedDepreciation[monthIndex]?.toFixed(2);
-          bookValueRow[`month${monthIndex + 1}`] = (
-            assetCost - investment.accumulatedDepreciation[monthIndex]
-          )?.toFixed(2);
-        } else {
-          assetCostRow[`month${monthIndex + 1}`] = "0.00";
-          depreciationRow[`month${monthIndex + 1}`] = "0.00";
-          accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0.00";
-          bookValueRow[`month${monthIndex + 1}`] = "0.00";
-        }
-      }
-
-      investmentTableData.push(
-        assetCostRow,
-        depreciationRow,
-        accumulatedDepreciationRow,
-        bookValueRow
-      );
-    });
-
-    return investmentTableData;
+  const purchaseName = selectedInput.purchaseName || `Investment ${renderInvestmentForm}`;
+  const assetCostRow = {
+    key: `Asset Cost`,
+    type: `${purchaseName}`,
   };
+  const depreciationRow = {
+    key: `Depreciation`,
+    type: "Depreciation",
+  };
+  const accumulatedDepreciationRow = {
+    key: `Accumulated Depre.`,
+    type: "Accumulated Depre.",
+  };
+  const bookValueRow = {
+    key: `Book Value`,
+    type: "Book Value",
+  };
+
+  const purchaseMonth = parseInt(selectedInput.purchaseMonth, 10);
+  const usefulLife = parseInt(selectedInput.usefulLifetime, 10);
+  const endMonth = purchaseMonth + usefulLife - 1;
+  const assetCost = parseFloat(selectedInput.assetCost) * parseInt(selectedInput.quantity, 10);
+
+  for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
+    if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
+      assetCostRow[`month${monthIndex + 1}`] = assetCost?.toFixed(2); // Using Asset Cost
+      depreciationRow[`month${monthIndex + 1}`] = tempInvestmentData[0]?.depreciationArray[monthIndex]?.toFixed(2);
+      accumulatedDepreciationRow[`month${monthIndex + 1}`] = tempInvestmentData[0]?.accumulatedDepreciation[monthIndex]?.toFixed(2);
+      bookValueRow[`month${monthIndex + 1}`] = (assetCost - tempInvestmentData[0]?.accumulatedDepreciation[monthIndex])?.toFixed(2);
+    } else {
+      assetCostRow[`month${monthIndex + 1}`] = "0.00";
+      depreciationRow[`month${monthIndex + 1}`] = "0.00";
+      accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0.00";
+      bookValueRow[`month${monthIndex + 1}`] = "0.00";
+    }
+  }
+
+  investmentTableData.push(
+    assetCostRow,
+    depreciationRow,
+    accumulatedDepreciationRow,
+    bookValueRow
+  );
+
+  return investmentTableData;
+};
+
 
   //InvestmentUseEffect
   useEffect(() => {
@@ -226,7 +222,7 @@ const InvestmentSection = ({
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "gradient" },
+      fill: { type: "solid" },
       dataLabels: { enabled: false },
       stroke: { curve: "smooth" },
       markers: { size: 1 },
@@ -236,11 +232,12 @@ const InvestmentSection = ({
 
   useEffect(() => {
     const seriesData = tempInvestmentData.map((investment) => {
-      return { name: investment.purchaseName, data: investment.assetValue };
+      return { name: investment.purchaseName, data: investment.bookValue };
     });
-
+  
     setInvestmentChart((prevState) => ({ ...prevState, series: seriesData }));
   }, [tempInvestmentData, numberOfMonths]);
+  
 
   const handleSelectChange = (event) => {
     setRenderInvestmentForm(event.target.value);
@@ -248,6 +245,7 @@ const InvestmentSection = ({
 
   const handleSave = () => {
     setIsSaved(true);
+    message.success("Data saved successfully!");
   };
 
   useEffect(() => {
@@ -259,7 +257,7 @@ const InvestmentSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-      <div className="w-full lg:w-1/3 p-4 border-r-2">
+      <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
         <section aria-labelledby="investment-heading" className="mb-8">
           <h2
             className="text-2xl font-semibold mb-4 flex items-center"
@@ -273,7 +271,6 @@ const InvestmentSection = ({
               htmlFor="selectedChannel"
               className="block my-4 text-base  darkTextWhite"
             >
-              Selected investment name:
             </label>
             <select
               id="selectedChannel"
@@ -294,12 +291,14 @@ const InvestmentSection = ({
             .map((input) => (
               <div
                 key={input?.id}
-                className="bg-white rounded-md shadow p-6 my-4"
+                className="bg-white rounded-md shadow p-6 border my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Name of Purchase</span>
+                  <span className=" flex items-center text-sm">
+                    Name of Purchase
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     value={input.purchaseName}
                     onChange={(e) =>
                       handleInvestmentInputChange(
@@ -311,9 +310,9 @@ const InvestmentSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Asset Cost</span>
+                  <span className=" flex items-center text-sm">Asset Cost</span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     value={input.assetCost}
                     onChange={(e) =>
                       handleInvestmentInputChange(
@@ -325,9 +324,9 @@ const InvestmentSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Quantity:</span>
+                  <span className=" flex items-center text-sm">Quantity:</span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     type="number"
                     min="1"
                     value={input.quantity}
@@ -341,9 +340,11 @@ const InvestmentSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Purchase Month</span>
+                  <span className=" flex items-center text-sm">
+                    Purchase Month
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     value={input.purchaseMonth}
                     onChange={(e) =>
                       handleInvestmentInputChange(
@@ -355,9 +356,11 @@ const InvestmentSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Residual Value</span>
+                  <span className=" flex items-center text-sm">
+                    Residual Value
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     value={input.residualValue}
                     onChange={(e) =>
                       handleInvestmentInputChange(
@@ -369,11 +372,11 @@ const InvestmentSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">
+                  <span className=" flex items-center text-sm">
                     Useful Lifetime (Months)
                   </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     value={input.usefulLifetime}
                     onChange={(e) =>
                       handleInvestmentInputChange(
@@ -383,6 +386,25 @@ const InvestmentSection = ({
                       )
                     }
                   />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <span className=" flex items-center text-sm">
+                    Funding Source
+                  </span>
+                  <select
+                    className="col-start-2 py-2 px-4 border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                    value={input.fundingSource}
+                    onChange={(e) =>
+                      handleInvestmentInputChange(
+                        input?.id,
+                        "fundingSource",
+                        e.target.value
+                      )
+                    }
+                  >
+                    <option value="Cash">Cash</option>
+                    <option value="Loan">Loan</option>
+                  </select>
                 </div>
                 <div className="flex justify-end items-center">
                   <button
@@ -409,10 +431,11 @@ const InvestmentSection = ({
           </button>
         </section>
       </div>
-      <div className="w-full lg:w-2/3 p-4">
+      <div className="w-full lg:w-3/4 p-4">
         <h3 className="text-2xl font-semibold mb-4">Investment Table</h3>
         <Table
           className="overflow-auto my-8"
+          size="small"
           dataSource={transformInvestmentDataForTable()}
           columns={investmentColumns}
           pagination={false}
@@ -421,7 +444,7 @@ const InvestmentSection = ({
         <Chart
           options={investmentChart.options}
           series={investmentChart.series}
-          type="area"
+          type="bar"
           height={350}
         />
       </div>

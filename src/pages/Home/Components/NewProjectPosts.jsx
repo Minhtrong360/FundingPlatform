@@ -267,14 +267,14 @@ const NewProjectPosts = () => {
                 const company =
                   companiesToRender[(currentPage - 1) * itemsPerPage + index];
                 return (
-                  <div key={index} className="flex justify-center">
+                  <div key={index} className="group flex justify-center">
                     {company ? (
                       <Card
                         key={company.id}
                         title={company.name}
                         description={company.description}
                         imageUrl={company.card_url}
-                        buttonText="Read more"
+                        buttonText="More"
                         project_id={company.project_id}
                       />
                     ) : (

@@ -7,7 +7,7 @@ import {
 } from "../../../components/ui/Select";
 import { Input } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
-import { Table } from "antd";
+import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 
 const CostSection = ({
@@ -29,12 +29,12 @@ const CostSection = ({
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
     const newCustomer = {
       id: newId,
-      costName: "New cost name",
+      costName: "",
       costValue: 1000,
       growthPercentage: 0,
       beginMonth: 1,
       endMonth: 6,
-      costType: "Sales, Marketing Cost",
+      costType: "",
     };
     setTempCostInput([...tempCostInput, newCustomer]);
     setRenderCostForm(newId.toString());
@@ -87,11 +87,11 @@ const CostSection = ({
     const calculatedCostData = calculateCostData();
 
     calculatedCostData.forEach((costItem) => {
-      const rowKey = `${costItem.costType} - ${costItem.costName}`;
+      const rowKey = `${costItem.costName}`;
       costItem.monthlyCosts.forEach((monthData) => {
         if (!transformedCustomerTableData[rowKey]) {
           transformedCustomerTableData[rowKey] = {
-            key: rowKey,
+            key: rowKey,  
             costName: rowKey,
           };
         }
@@ -122,7 +122,7 @@ const CostSection = ({
   const costColumns = [
     {
       fixed: "left",
-      title: "CostType_CostName",
+      title: "CostName",
       dataIndex: "costName",
       key: "costName",
     },
@@ -191,6 +191,7 @@ const CostSection = ({
 
   const handleSave = () => {
     setIsSaved(true);
+    message.success("Data saved successfully!");
   };
 
   useEffect(() => {
@@ -199,10 +200,11 @@ const CostSection = ({
       setIsSaved(false);
     }
   }, [isSaved]);
+  
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-      <div className="w-full lg:w-1/3 p-4 border-r-2">
+      <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
         <section aria-labelledby="costs-heading" className="mb-8">
           <h2
             className="text-2xl font-semibold mb-4 flex items-center"
@@ -216,7 +218,6 @@ const CostSection = ({
               htmlFor="selectedChannel"
               className="block my-4 text-base  darkTextWhite"
             >
-              Selected cost name:
             </label>
             <select
               id="selectedChannel"
@@ -237,12 +238,12 @@ const CostSection = ({
             .map((input) => (
               <div
                 key={input?.id}
-                className="bg-white rounded-md shadow p-6 my-4 "
+                className="bg-white rounded-md shadow p-6 border my-4 "
               >
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Cost Name:</span>
+                  <span className=" flex items-center text-sm">Cost Name:</span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     value={input.costName}
                     onChange={(e) =>
                       handleCostInputChange(
@@ -255,9 +256,11 @@ const CostSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Cost Value:</span>
+                  <span className=" flex items-center text-sm">
+                    Cost Value:
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     type="number"
                     value={input.costValue}
                     onChange={(e) =>
@@ -271,9 +274,11 @@ const CostSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Growth Percentage:</span>
+                  <span className=" flex items-center text-sm">
+                    Growth Percentage:
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     type="number"
                     value={input.growthPercentage}
                     onChange={(e) =>
@@ -287,9 +292,11 @@ const CostSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Begin Month:</span>
+                  <span className=" flex items-center text-sm">
+                    Begin Month:
+                  </span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     type="number"
                     min="1"
                     max="12"
@@ -305,9 +312,9 @@ const CostSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">End Month:</span>
+                  <span className=" flex items-center text-sm">End Month:</span>
                   <Input
-                    className="col-start-2"
+                    className="col-start-2 border-gray-200"
                     type="number"
                     min="1"
                     max="12"
@@ -323,8 +330,9 @@ const CostSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center">Cost Type:</span>
+                  <span className=" flex items-center text-sm">Cost Type:</span>
                   <Select
+                    className="border-gray-200"
                     onValueChange={(value) =>
                       handleCostInputChange(input?.id, "costType", value)
                     }
@@ -332,22 +340,22 @@ const CostSection = ({
                   >
                     <SelectTrigger
                       id={`select-costType-${input?.id}`}
-                      className="border-solid border-[1px] border-gray-600"
+                      className="border-solid border-[1px] border-gray-200"
                     >
                       <SelectValue placeholder="Select Cost Type" />
                     </SelectTrigger>
                     <SelectContent position="popper">
                       <SelectItem value="Sales, Marketing Cost">
-                        Sales, Marketing Cost
+                        Sales, Marketing
                       </SelectItem>
                       <SelectItem value="General Administrative Cost">
-                        General Administrative Cost
+                        General Administrative
                       </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
-                <div className="flex justify-end items-center">
+                <div className="flex justify-center items-center">
                   <button
                     className="bg-red-600 text-white py-1 px-4 rounded"
                     onClick={() => removeCostInput(input?.id)}
@@ -373,10 +381,11 @@ const CostSection = ({
           </button>
         </section>
       </div>
-      <div className="w-full lg:w-2/3 p-4">
+      <div className="w-full lg:w-3/4 p-4">
         <h3 className="text-2xl font-semibold mb-4">Cost Table</h3>
         <Table
           className="overflow-auto my-8"
+          size="small"
           dataSource={costTableData}
           columns={costColumns}
           pagination={false}

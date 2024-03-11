@@ -110,7 +110,10 @@ const DetailPage = () => {
       <div id="exampleWrapper">
         <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
-        <div className="p-4 ml-16" onClick={() => setIsSidebarOpen(false)}>
+        <div
+          className="p-4 sm:ml-16 ml-0"
+          onClick={() => setIsSidebarOpen(false)}
+        >
           <div className="p-0 sm:p-4 border-0 border-gray-200 border-dashed sm:border-2 rounded-lg darkBorderGray">
             <HeroSection
               formData={company}

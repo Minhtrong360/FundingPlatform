@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Tooltip } from "antd";
+import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 
 const ProfitAndLossSection = ({
@@ -139,19 +139,19 @@ const ProfitAndLossSection = ({
 
   const transposedData = [
     { key: "Total Revenue", values: totalRevenue },
-    { key: "Total Deductions", values: totalDeductions },
+    { key: "Deductions", values: totalDeductions },
     { key: "Net Revenue", values: netRevenue },
     { key: "Total COGS", values: totalCOGS },
     { key: "Gross Profit", values: grossProfit },
-    { key: "Total Operating Expenses", values: totalCosts },
-    { key: "Total Personnel Costs", values: totalPersonnelCosts },
+    { key: "Costs", values: totalCosts },
+    { key: "Personnel", values: totalPersonnelCosts },
     { key: "EBITDA", values: ebitda }, // Add EBITDA row
     {
-      key: "Total Investment Depreciation",
+      key: "Depreciation",
       values: totalInvestmentDepreciation,
     },
-    { key: "Total Interest Payments", values: totalInterestPayments },
-    { key: "Earnings Before Tax", values: earningsBeforeTax },
+    { key: "Interest", values: totalInterestPayments },
+    { key: "EBT", values: earningsBeforeTax },
     { key: "Income Tax", values: incomeTax },
     { key: "Net Income", values: netIncome },
   ].map((item, index) => ({
@@ -169,13 +169,40 @@ const ProfitAndLossSection = ({
       dataIndex: "metric",
       key: "metric",
       fixed: "left",
+      onCell: () => ({
+        style: {
+          borderRight: "1px solid #f0f0f0",
+        },
+      }),
     },
     ...Array.from({ length: numberOfMonths }, (_, i) => ({
       title: `Month_${i + 1}`,
       dataIndex: `Month ${i + 1}`,
       key: `Month ${i + 1}`,
+      onCell: () => ({
+        style: {
+          borderRight: "1px solid #f0f0f0",
+        },
+      }),
+      render: (text, record) => {
+        if (record.metric === "Total Revenue" || record.metric === "Gross Profit") {
+          return <span style={{ fontWeight: "bold", fontSize: "16px" }}>{text}</span>;
+        } else if (record.metric === "EBITDA") {
+          return parseFloat(text) > 0 
+            ? <span style={{ color: "green", fontWeight: "bold", fontSize: "16px" }}>{text}</span>
+            : <span style={{ color: "red", fontWeight: "bold", fontSize: "16px" }}>{text}</span>;
+        } else if (record.metric === "Net Income") {
+          return parseFloat(text) > 0
+            ? <span style={{ fontWeight: "bold", fontSize: "16px", color: "green" }}>{text}</span>
+            : <span style={{ fontWeight: "bold", fontSize: "16px", color: "red" }}>{text}</span>;
+        }
+        return text;
+      },
     })),
   ];
+
+
+
 
   const chartSeries = [
     {
@@ -187,17 +214,17 @@ const ProfitAndLossSection = ({
       data: totalCosts.map((value) => parseFloat(value?.toFixed(2))),
     },
     {
-      name: "Total Personnel Costs",
+      name: "Personnel",
       data: totalPersonnelCosts.map((value) => parseFloat(value?.toFixed(2))),
     },
     {
-      name: "Total Investment Depreciation",
+      name: "Depreciation",
       data: totalInvestmentDepreciation.map((value) =>
         parseFloat(value?.toFixed(2))
       ),
     },
     {
-      name: "Total Interest Payments",
+      name: "Interest",
       data: totalInterestPayments.map((value) => parseFloat(value?.toFixed(2))),
     },
     {
@@ -247,7 +274,8 @@ const ProfitAndLossSection = ({
     <div>
       <h2 className="text-2xl font-semibold mb-4">Profit and Loss Statement</h2>
       <Table
-        className="overflow-auto mb-4"
+        className="overflow-auto my-8"
+        size="small"
         dataSource={transposedData}
         columns={columns}
         pagination={false}
@@ -255,7 +283,7 @@ const ProfitAndLossSection = ({
       <Chart
         options={chartOptions}
         series={chartSeries}
-        type="line"
+        type="bar"
         height={350}
       />
     </div>

@@ -498,7 +498,7 @@ function CustomerInput({
         <h2 className="text-lg font-semibold mb-4" id="assumptions-heading">
           Assumptions
         </h2>
-        <div className="bg-white rounded-md shadow p-6">
+        <div className="bg-white rounded-md shadow p-6 border">
           {/* ... (Assumptions section remains the same) */}
         </div>
       </section>
@@ -510,7 +510,7 @@ function CustomerInput({
           <EditOutlined className="mr-2" />
           Customers
         </h2>
-        <div className="bg-white rounded-md shadow p-6">
+        <div className="bg-white rounded-md shadow p-6 border">
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className="font-medium">Begin Projection</span>
             <Input className="col-start-2" placeholder="Sep 2022 - 1" />
@@ -550,7 +550,7 @@ function CustomerInput({
 //         <h2 className="text-lg font-semibold mb-4" id="assumptions-heading">
 //           Assumptions
 //         </h2>
-//         <div className="bg-white rounded-md shadow p-6">
+//         <div className="bg-white rounded-md shadow p-6 border">
 //           <div className="grid grid-cols-2 gap-4 mb-4">
 //             <span className="font-medium">Acquisition Type</span>
 //             <Input className="col-start-2" placeholder="Annual Projection" />
@@ -570,7 +570,7 @@ function CustomerInput({
 //           <EditOutlined className="mr-2" />
 //           Customers
 //         </h2>
-//         <div className="bg-white rounded-md shadow p-6">
+//         <div className="bg-white rounded-md shadow p-6 border">
 //           <div className="grid grid-cols-2 gap-4 mb-4">
 //             <span className="font-medium">Begin Projection</span>
 //             <Input className="col-start-2" placeholder="Sep 2022 - 1" />

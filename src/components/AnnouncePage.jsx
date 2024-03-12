@@ -94,13 +94,13 @@ const AnnouncePage = ({
       <LoadingButtonClick isLoading={isLoading} />
       <div className="container flex items-center min-h-screen px-4 sm:px-6 py-12 mx-auto">
         <div className="w-full">
-          <p className="text-3xl sm:text-5xl font-medium text-blue-600 dark:text-blue-400">
+          <p className="text-3xl sm:text-5xl font-medium text-blue-600 ">
             {title}
           </p>
           <h1
             className={`mt-3 text-xl sm:text-2xl font-semibold ${
               title === "Congratulations!" ? "text-gray-800" : "text-white"
-            }  dark:text-white`}
+            }  `}
           >
             {firstPart}
             <span className="text-white">{highlightedWord}</span>
@@ -109,7 +109,7 @@ const AnnouncePage = ({
           <p
             className={`mt-4 text-sm sm:text-base ${
               title === "Congratulations!" ? "text-gray-800" : "text-white"
-            } dark:text-gray-400`}
+            } `}
           >
             {describe}
           </p>

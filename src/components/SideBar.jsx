@@ -90,7 +90,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
           onClick={() => handleItemClick("/dashboard")}
         >
           <img className="flex items-center justify-center" width="18" height="18" src="https://img.icons8.com/ios/50/performance-macbook.png" alt="performance-macbook"/>
-          <span className="text-sm">Dashboard</span>
+          <span className="sidebar-text">Dashboard</span>
         </button>
         <button
           className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-lg text-sm ${

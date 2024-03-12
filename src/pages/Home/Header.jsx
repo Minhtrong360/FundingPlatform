@@ -230,10 +230,10 @@ const Header = () => {
                   Home
                 </NavbarItem>
                 <NavbarItem onClick={() => navigate(`/financials`)}>
-                  Finance
+                  Financial Model
                 </NavbarItem>
                 <NavbarItem onClick={handleProductFeaturesClick}>
-                  Profiles
+                  Startups
                 </NavbarItem>
                 <NavbarItem onClick={handlePricingClick}>Pricing</NavbarItem>
                 <NavbarItem onClick={() => navigate("/news")}>News</NavbarItem>

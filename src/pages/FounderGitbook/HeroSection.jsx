@@ -3,7 +3,7 @@ import ImageCrop from "../../components/cropImage/ImageCrop";
 import ResizeImage from "../../components/ResizeImage";
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
-
+import { Tag } from 'antd';
 function formatNumber(value) {
   // Kiểm tra xem value có phải là một chuỗi không
   if (typeof value !== "string") {
@@ -65,12 +65,12 @@ const HeroSection = ({
           </h1>
           <p className="mt-3 text-lg  darkTextGray">{description}</p>
 
-          <div className="mt-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 w-full">
+          {/* <div className="mt-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 w-full">
             <Tooltip
               title={`Target: ${formatNumber(button1Text)}`}
               color={"geekblue"}
             >
-              <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-lg border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus">
+              <div className="truncate overflow-hidden py-2 px-2 inline-flex justify-center items-center  text-sm text-white rounded-2xl border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus">
                 <p className="truncate">
                   {" "}
                   Target: ${formatNumber(button1Text)}{" "}
@@ -124,7 +124,47 @@ const HeroSection = ({
                 </div>
               </Tooltip>
             ))}
+          </div> */}
+          
+          <div className=" gap-4 mt-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2">
+            <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
+              <span className="text-sm font-medium text-gray-600">Target:</span>
+              <span className="text-sm font-semibold text-gray-800">${formatNumber(button1Text)}</span>
+            </div>
+            <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
+              <span className="text-sm font-medium text-gray-600">No. tickets:</span>
+              <span className="text-sm font-semibold text-gray-800">{formatNumber(button2Text)}</span>
+            </div>
+            <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
+              <span className="text-sm font-medium text-gray-600">Min ticket size:</span>
+              <span className="text-sm font-semibold text-gray-800"> {button3Text}</span>
+            </div>
+            <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
+              <span className="text-sm font-medium text-gray-600">Offer:</span>
+              <span className="text-sm font-semibold text-gray-800"> {button4Text}</span>
+            </div>
+            <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
+              <span className="text-sm font-medium text-gray-600">Type:</span>
+              <span className="text-sm font-semibold text-gray-800">{button5Text}</span>
+            </div>
+            <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
+              <span className="text-sm font-medium text-gray-600">Website:</span>
+              <a className="text-sm font-semibold text-blue-600 hover:underline" href="#">
+              {formData?.website}
+              </a>
+            </div>
           </div>
+          <div className=" mt-4 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4">
+          {formData?.industry?.map((industry, index) => (
+            <Tag 
+            key={index}
+            title={`Industry: ${industry}`}
+            color={"geekblue"}
+            className="  bg-gray-50 border border-gray-200 text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl ">{industry}</Tag>
+            ))}
+            </div>
+        
+
         </div>
 
         <div className="relative ">
@@ -171,3 +211,4 @@ const HeroSection = ({
 };
 
 export default HeroSection;
+

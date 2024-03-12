@@ -98,6 +98,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [customerGrowthData, setCustomerGrowthData] = useState([]);
 
   //RevenueState
+  const [yearlySales, setYearlySales] = useState()
+
   const [channelInputs, setChannelInputs] = useState([
     {
       id: 1,
@@ -443,7 +445,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             </div>
 
             <div className="w-full lg:w-3/4 p-4">
-              <MetricsFM />
+              <MetricsFM 
+              yearlySales={yearlySales}
+              />
             </div>
           </div>
 
@@ -479,7 +483,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             customerGrowthData={customerGrowthData}
             isSaved={isSaved}
             setIsSaved={setIsSaved}
-          />
+            yearlySales={yearlySales}
+            setYearlySales={setYearlySales}
+            />
 
           {/* CostSection */}
           <CostSection

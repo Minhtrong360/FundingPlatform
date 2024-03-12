@@ -31,6 +31,8 @@ const SalesSection = ({
 
   isSaved,
   setIsSaved,
+  yearlySales,
+  setYearlySales
 }) => {
   const [tempChannelInputs, setTempChannelInputs] = useState(channelInputs);
   const [tempRevenueData, setTempRevenueData] = useState(revenueData);
@@ -404,7 +406,7 @@ useEffect(() => {
     if (Object.keys(tempRevenueData).length === 0) {
       return yearlySales; // Return empty array if tempRevenueData is empty
     }
-  
+    
     // Iterate over the first entry in tempRevenueData to determine the length
     const firstEntry = tempRevenueData[Object.keys(tempRevenueData)[0]];
     const numMonths = firstEntry ? firstEntry.length : 0;
@@ -421,10 +423,13 @@ useEffect(() => {
     return yearlySales;
   };
   
-
-  const yearlySales = calculateYearlySales();
-
-
+const tempYearlySales = calculateYearlySales();
+  useState(() => {
+    setYearlySales(tempYearlySales);
+  }, [ tempRevenueData]);
+  
+  console.log("yearlySales", yearlySales)
+  
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
       <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
@@ -457,7 +462,7 @@ useEffect(() => {
           </div>
 
           {tempChannelInputs
-            .filter((input) => input?.id == renderChannelForm)
+            .filter((input) => input?.id === renderChannelForm)
             .map((input, index) => (
               <div
                 key={input.id}
@@ -675,18 +680,18 @@ useEffect(() => {
           height={350}
         />
 
-<div className="mt-8">
-  <h3 className="text-2xl font-semibold mb-4">Yearly Sales</h3>
-  <ul>
-    {yearlySales.map((sales, index) => (
-      <li key={index}>Year {index + 1}: ${sales.toFixed(2)}</li>
-    ))}
-  </ul>
-</div>
-
-      </div>
+    <div className="mt-8">
+      <h3 className="text-2xl font-semibold mb-4">Yearly Sales</h3>
+      <ul>
+        {yearlySales?.map((sales, index) => (
+          <li key={index}>Year {index + 1}: ${sales.toFixed(2)}</li>
+        ))}
+      </ul>
     </div>
-  );
-};
+
+        </div>
+      </div>
+    );
+  };
 
 export default SalesSection;

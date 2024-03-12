@@ -89,10 +89,11 @@ function UserInfoSettings() {
             subscription_status: data.subscription_status || "",
             revenueStatusWanted: data.revenueStatusWanted || "Pre-revenue",
             notification_count: data.notification_count || 0,
+            subscription_id: data.subscription_id || "",
           });
 
           if (data.subscribe && data.subscription_status === "active") {
-            const subscribeDate = new Date(data.subscribe * 1000);
+            const subscribeDate = new Date(data.subscribe);
             setExpiredDate(subscribeDate.toISOString().split("T")[0]);
           } else if (user.created_at) {
             const createdDate = new Date(user.created_at);
@@ -285,7 +286,7 @@ function UserInfoSettings() {
     }));
   };
 
-  const handleBilling = async (plan, userId) => {
+  const handleBilling = async () => {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
@@ -293,22 +294,18 @@ function UserInfoSettings() {
         return;
       }
       setIsLoading(true);
-      // Khi xử lý form submit
 
-      const checkoutSessionResponse = await apiService.post(
-        "stripe/create-portal-session",
-        { customerId: userData.customer_id }
-      );
+      if (!userData.subscription_id) {
+        throw Error("User does not subscribe.");
+      }
+      const response = await apiService.post("/request/customers", {
+        subscription_id: userData.subscription_id,
+      });
 
-      const session = checkoutSessionResponse.data.data.session;
-
-      // const userEmail = encodeURIComponent(user.email); // Encode email để đảm bảo nó an toàn trong URL
-      // const updatedURL = `${session.url}?prefilled_email=${userEmail}`;
-
-      window.open(session.url, "_blank");
+      window.open(response.data.data.urls.customer_portal, "_blank");
     } catch (error) {
       console.log("error", error);
-      toast.error("user does not subscribe.");
+      toast.warning("User does not subscribe.");
     }
     setIsLoading(false);
   };
@@ -539,7 +536,7 @@ function UserInfoSettings() {
                     <button
                       type="button"
                       onClick={handleBilling}
-                      className="hidden w-full py-3 px-4  justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
+                      className="hidden w-full py-3 px-4 my-2 justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
                     >
                       Billing Portal
                     </button>

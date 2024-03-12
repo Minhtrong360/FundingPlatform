@@ -20,9 +20,6 @@ const InvestmentSection = ({
   const [renderInvestmentForm, setRenderInvestmentForm] = useState(
     investmentInputs[0]?.id
   );
-
-  const [fundingSource, setFundingSource] = useState("Cash");
-
   //InvestmentFunctions
 
   const addNewInvestmentInput = () => {
@@ -36,7 +33,6 @@ const InvestmentSection = ({
       purchaseMonth: 0,
       residualValue: 0,
       usefulLifetime: 0,
-      fundingSource: "Cash",
     };
     setTempInvestmentInputs([...tempInvestmentInputs, newCustomer]);
     setRenderInvestmentForm(newId.toString());
@@ -60,10 +56,6 @@ const InvestmentSection = ({
       return input;
     });
     setTempInvestmentInputs(newInputs);
-  };
-
-  const handleFundingSourceChange = (value) => {
-    setFundingSource(value);
   };
 
   //InvestmentTableData
@@ -114,11 +106,17 @@ const InvestmentSection = ({
       };
     });
   };
+
   const transformInvestmentDataForTable = () => {
     const selectedInput = tempInvestmentInputs.find(
       (input) => input.id == renderInvestmentForm
     );
-    if (!selectedInput) return [];
+    if (!selectedInput || tempInvestmentData.length === 0) return [];
+
+    const selectedInvestmentData = tempInvestmentData.find(
+      (_, index) => tempInvestmentInputs[index].id == renderInvestmentForm
+    );
+    if (!selectedInvestmentData) return [];
 
     const investmentTableData = [];
 
@@ -152,13 +150,13 @@ const InvestmentSection = ({
       if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
         assetCostRow[`month${monthIndex + 1}`] = assetCost?.toFixed(2); // Using Asset Cost
         depreciationRow[`month${monthIndex + 1}`] =
-          tempInvestmentData[0]?.depreciationArray[monthIndex]?.toFixed(2);
+          selectedInvestmentData.depreciationArray[monthIndex]?.toFixed(2);
         accumulatedDepreciationRow[`month${monthIndex + 1}`] =
-          tempInvestmentData[0]?.accumulatedDepreciation[monthIndex]?.toFixed(
+          selectedInvestmentData.accumulatedDepreciation[monthIndex]?.toFixed(
             2
           );
         bookValueRow[`month${monthIndex + 1}`] = (
-          assetCost - tempInvestmentData[0]?.accumulatedDepreciation[monthIndex]
+          assetCost - selectedInvestmentData.accumulatedDepreciation[monthIndex]
         )?.toFixed(2);
       } else {
         assetCostRow[`month${monthIndex + 1}`] = "0.00";
@@ -263,8 +261,6 @@ const InvestmentSection = ({
       setIsSaved(false);
     }
   }, [isSaved]);
-
-  const investmentTableData = transformInvestmentDataForTable();
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -397,25 +393,6 @@ const InvestmentSection = ({
                     }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center text-sm">
-                    Funding Source
-                  </span>
-                  <select
-                    className="col-start-2 py-2 px-4 border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                    value={input.fundingSource}
-                    onChange={(e) =>
-                      handleInvestmentInputChange(
-                        input?.id,
-                        "fundingSource",
-                        e.target.value
-                      )
-                    }
-                  >
-                    <option value="Cash">Cash</option>
-                    <option value="Loan">Loan</option>
-                  </select>
-                </div>
                 <div className="flex justify-end items-center">
                   <button
                     className="bg-red-600 text-white py-1 px-4 rounded"
@@ -446,7 +423,7 @@ const InvestmentSection = ({
         <Table
           className="overflow-auto my-8"
           size="small"
-          dataSource={investmentTableData}
+          dataSource={transformInvestmentDataForTable()}
           columns={investmentColumns}
           pagination={false}
         />

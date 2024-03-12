@@ -18,6 +18,7 @@ import Gemini from "./Components/Gemini";
 import MetricsFM from "../MetricsFM";
 import ProfitAndLossSection from "./Components/ProfitAndLossSection";
 import * as XLSX from "xlsx";
+import BalanceSheetSection from "./Components/BalanceSheetSection";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -185,6 +186,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       id: 1,
       jobTitle: "Cashier",
       salaryPerMonth: 800,
+      increasePerYear: 10,
       numberOfHires: 2,
       jobBeginMonth: 1,
       jobEndMonth: 36,
@@ -193,6 +195,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       id: 2,
       jobTitle: "Manager",
       salaryPerMonth: 2000,
+      increasePerYear: 10,
       numberOfHires: 1,
       jobBeginMonth: 1,
       jobEndMonth: 36,
@@ -537,6 +540,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             numberOfMonths={numberOfMonths}
             incomeTaxRate={incomeTax}
           />
+          <BalanceSheetSection startingCashBalance={startingCashBalance} costData={costData} personnelCostData={personnelCostData}/>
         </>
       )}
 

@@ -12,6 +12,7 @@ const ProfitAndLossSection = ({
   loanData,
   numberOfMonths,
   incomeTaxRate,
+  startingCashBalance,
 }) => {
   const calculateProfitAndLoss = () => {
     let totalRevenue = new Array(numberOfMonths).fill(0);
@@ -65,19 +66,18 @@ const ProfitAndLossSection = ({
       });
     });
 
-    // Feb29
     let netRevenue = totalRevenue.map(
       (revenue, index) => revenue - totalDeductions[index]
-    ); // Net Revenue calculation
+    );
 
     let grossProfit = netRevenue.map(
       (revenue, index) => revenue - totalCOGS[index]
-    ); // Gross Profit calculation
+    );
 
     let ebitda = grossProfit.map(
       (profit, index) =>
         profit - (totalCosts[index] + totalPersonnelCosts[index])
-    ); // Adjust EBITDA calculation to use grossProfit
+    );
 
     let totalInterestPayments = new Array(numberOfMonths).fill(0);
     loanData.forEach((loan) => {
@@ -86,7 +86,6 @@ const ProfitAndLossSection = ({
       });
     });
 
-    // Adjust earningsBeforeTax calculation to use ebitda
     let earningsBeforeTax = ebitda.map(
       (profit, index) =>
         profit -
@@ -106,7 +105,7 @@ const ProfitAndLossSection = ({
       totalDeductions,
       netRevenue,
       totalCOGS,
-      grossProfit, // Include Gross Profit in the returned object
+      grossProfit,
       totalCosts,
       totalPersonnelCosts,
       totalInvestmentDepreciation,
@@ -123,7 +122,7 @@ const ProfitAndLossSection = ({
     totalDeductions,
     netRevenue,
     totalCOGS,
-    grossProfit, // Destructure Gross Profit
+    grossProfit,
     totalCosts,
     totalPersonnelCosts,
     totalInvestmentDepreciation,
@@ -145,11 +144,8 @@ const ProfitAndLossSection = ({
     { key: "Gross Profit", values: grossProfit },
     { key: "Costs", values: totalCosts },
     { key: "Personnel", values: totalPersonnelCosts },
-    { key: "EBITDA", values: ebitda }, // Add EBITDA row
-    {
-      key: "Depreciation",
-      values: totalInvestmentDepreciation,
-    },
+    { key: "EBITDA", values: ebitda },
+    { key: "Depreciation", values: totalInvestmentDepreciation },
     { key: "Interest", values: totalInterestPayments },
     { key: "EBT", values: earningsBeforeTax },
     { key: "Income Tax", values: incomeTax },
@@ -162,7 +158,6 @@ const ProfitAndLossSection = ({
     ),
   }));
 
-  // Adjust columns for the transposed table
   const columns = [
     {
       title: "Metric",
@@ -201,8 +196,47 @@ const ProfitAndLossSection = ({
     })),
   ];
 
-
-
+ const positionDataWithNetIncome = [
+  { key: "Net Income", values: netIncome },
+  { key: "Costs", values: totalCosts },
+  { key: "Depreciation", values: totalInvestmentDepreciation },
+  { key: "Decrease (Increase) in Inventory", values: new Array(numberOfMonths).fill(0) },
+  { key: "Decrease (Increase) in AR", values: new Array(numberOfMonths).fill(0) },
+  { key: "Decrease (Increase) in AP", values: new Array(numberOfMonths).fill(0) },
+  { key: "CF Operations", values: netIncome.map((value, index) => (
+    value + totalInvestmentDepreciation[index] + 0 /* Inventory */ + 0 /* AR */ - 0 /* AP */
+  )) },
+].map((item, index) => ({
+  metric: item.key,
+  ...item.values.reduce(
+    (acc, value, i) => ({ ...acc, [`Month ${i + 1}`]: value?.toFixed(2) }),
+    {}
+  ),
+}));
+  
+  const positionColumns = [
+    {
+      title: "Metric",
+      dataIndex: "metric",
+      key: "metric",
+      fixed: "left",
+      onCell: () => ({
+        style: {
+          borderRight: "1px solid #f0f0f0",
+        },
+      }),
+    },
+    ...Array.from({ length: numberOfMonths }, (_, i) => ({
+      title: `Month_${i + 1}`,
+      dataIndex: `Month ${i + 1}`,
+      key: `Month ${i + 1}`,
+      onCell: () => ({
+        style: {
+          borderRight: "1px solid #f0f0f0",
+        },
+      }),
+    })),
+  ];
 
   const chartSeries = [
     {
@@ -240,8 +274,8 @@ const ProfitAndLossSection = ({
       title: {
         text: "Month",
         style: {
-          fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-          fontWeight: "600", // Cỡ chữ semibold
+          fontFamily: "Inter, sans-serif",
+          fontWeight: "600",
         },
       },
       labels: {
@@ -249,7 +283,7 @@ const ProfitAndLossSection = ({
         rotateAlways: false,
         hideOverlappingLabels: true,
         trim: true,
-        minHeight: 100, // Adjust as needed to ensure labels do not overlap or take up too much space
+        minHeight: 100,
         style: {
           cssClass: "apexcharts-xaxis-label",
         },
@@ -266,10 +300,6 @@ const ProfitAndLossSection = ({
     },
   };
 
-  // Transposed table data preparation remains unchanged
-
-  // Table columns definition remains unchanged
-
   return (
     <div>
       <h2 className="text-2xl font-semibold mb-4">Profit and Loss Statement</h2>
@@ -280,6 +310,14 @@ const ProfitAndLossSection = ({
         columns={columns}
         pagination={false}
       />
+      <h2 className="text-2xl font-semibold mb-4">Position Statement</h2>
+      <Table
+  className="overflow-auto my-8"
+  size="small"
+  dataSource={positionDataWithNetIncome}
+  columns={positionColumns}
+  pagination={false}
+/>
       <Chart
         options={chartOptions}
         series={chartSeries}

@@ -1,10 +1,11 @@
-import React from 'react'
+import React from "react";
 
-function BalanceSheetSection({startingCashBalance, costData, personnelCostData}) {
-    console.log("personnelCostData", personnelCostData)
-  return (
-    <div>BalanceSheetSection</div>
-  )
+function BalanceSheetSection({
+  startingCashBalance,
+  costData,
+  personnelCostData,
+}) {
+  return <div>BalanceSheetSection</div>;
 }
 
-export default BalanceSheetSection
+export default BalanceSheetSection;

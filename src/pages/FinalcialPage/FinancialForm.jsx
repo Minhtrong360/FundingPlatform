@@ -539,6 +539,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             loanData={loanData}
             numberOfMonths={numberOfMonths}
             incomeTaxRate={incomeTax}
+           
           />
           <BalanceSheetSection startingCashBalance={startingCashBalance} costData={costData} personnelCostData={personnelCostData}/>
         </>

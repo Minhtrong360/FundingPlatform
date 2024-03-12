@@ -133,9 +133,6 @@ const ProfitAndLossSection = ({
     netIncome,
   } = calculateProfitAndLoss();
 
-  console.log("totalRevenue", totalRevenue);
-  console.log("totalCosts", totalCosts);
-
   const transposedData = [
     { key: "Total Revenue", values: totalRevenue },
     { key: "Deductions", values: totalDeductions },
@@ -180,40 +177,124 @@ const ProfitAndLossSection = ({
         },
       }),
       render: (text, record) => {
-        if (record.metric === "Total Revenue" || record.metric === "Gross Profit") {
-          return <span style={{ fontWeight: "bold", fontSize: "16px" }}>{text}</span>;
+        if (
+          record.metric === "Total Revenue" ||
+          record.metric === "Gross Profit"
+        ) {
+          return (
+            <span style={{ fontWeight: "bold", fontSize: "16px" }}>{text}</span>
+          );
         } else if (record.metric === "EBITDA") {
-          return parseFloat(text) > 0 
-            ? <span style={{ color: "green", fontWeight: "bold", fontSize: "16px" }}>{text}</span>
-            : <span style={{ color: "red", fontWeight: "bold", fontSize: "16px" }}>{text}</span>;
+          return parseFloat(text) > 0 ? (
+            <span
+              style={{ color: "green", fontWeight: "bold", fontSize: "16px" }}
+            >
+              {text}
+            </span>
+          ) : (
+            <span
+              style={{ color: "red", fontWeight: "bold", fontSize: "16px" }}
+            >
+              {text}
+            </span>
+          );
         } else if (record.metric === "Net Income") {
-          return parseFloat(text) > 0
-            ? <span style={{ fontWeight: "bold", fontSize: "16px", color: "green" }}>{text}</span>
-            : <span style={{ fontWeight: "bold", fontSize: "16px", color: "red" }}>{text}</span>;
+          return parseFloat(text) > 0 ? (
+            <span
+              style={{ fontWeight: "bold", fontSize: "16px", color: "green" }}
+            >
+              {text}
+            </span>
+          ) : (
+            <span
+              style={{ fontWeight: "bold", fontSize: "16px", color: "red" }}
+            >
+              {text}
+            </span>
+          );
         }
         return text;
       },
     })),
   ];
 
- const positionDataWithNetIncome = [
-  { key: "Net Income", values: netIncome },
-  { key: "Costs", values: totalCosts },
-  { key: "Depreciation", values: totalInvestmentDepreciation },
-  { key: "Decrease (Increase) in Inventory", values: new Array(numberOfMonths).fill(0) },
-  { key: "Decrease (Increase) in AR", values: new Array(numberOfMonths).fill(0) },
-  { key: "Decrease (Increase) in AP", values: new Array(numberOfMonths).fill(0) },
-  { key: "CF Operations", values: netIncome.map((value, index) => (
-    value + totalInvestmentDepreciation[index] + 0 /* Inventory */ + 0 /* AR */ - 0 /* AP */
-  )) },
-].map((item, index) => ({
-  metric: item.key,
-  ...item.values.reduce(
-    (acc, value, i) => ({ ...acc, [`Month ${i + 1}`]: value?.toFixed(2) }),
-    {}
-  ),
-}));
-  
+  const totalAssetValue = investmentData[0]?.assetValue?.map((_, index) =>
+    investmentData.reduce((acc, data) => acc + data?.assetValue[index], 0)
+  );
+
+  const totalLoanAmount = loanData[0]?.loanDataPerMonth?.map((_, index) =>
+    loanData.reduce(
+      (acc, loan) => acc + (loan.loanDataPerMonth[index]?.loanAmount || 0),
+      0
+    )
+  );
+
+  const totalPrincipal = loanData[0]?.loanDataPerMonth?.map((_, index) =>
+    loanData.reduce(
+      (acc, loan) => acc + (loan.loanDataPerMonth[index]?.principal || 0),
+      0
+    )
+  );
+
+  const maxLength = Math.max(
+    totalLoanAmount?.length || 0,
+    totalPrincipal?.length || 0,
+    numberOfMonths
+  );
+
+  const fillWithZero = (arr) =>
+    Array.from({ length: maxLength }, (_, i) => arr[i] || 0);
+
+  const filledTotalLoanAmount = fillWithZero(totalLoanAmount);
+  const filledTotalPrincipal = fillWithZero(totalPrincipal);
+
+  const positionDataWithNetIncome = [
+    { key: "Net Income", values: netIncome },
+    { key: "Costs", values: totalCosts },
+    { key: "Depreciation", values: totalInvestmentDepreciation },
+    {
+      key: "Decrease (Increase) in Inventory",
+      values: new Array(numberOfMonths).fill(0),
+    },
+    {
+      key: "Decrease (Increase) in AR",
+      values: new Array(numberOfMonths).fill(0),
+    },
+    {
+      key: "Decrease (Increase) in AP",
+      values: new Array(numberOfMonths).fill(0),
+    },
+    {
+      key: "Total Asset Value",
+      values: totalAssetValue,
+    },
+    {
+      key: "Total Loan Amount",
+      values: filledTotalLoanAmount,
+    },
+    {
+      key: "Total Principal",
+      values: filledTotalPrincipal,
+    },
+    {
+      key: "CF Operations",
+      values: netIncome.map(
+        (value, index) =>
+          value +
+          totalInvestmentDepreciation[index] +
+          0 /* Inventory */ +
+          0 /* AR */ -
+          0 /* AP */
+      ),
+    },
+  ].map((item, index) => ({
+    metric: item.key,
+    ...item.values?.reduce(
+      (acc, value, i) => ({ ...acc, [`Month ${i + 1}`]: value?.toFixed(2) }),
+      {}
+    ),
+  }));
+
   const positionColumns = [
     {
       title: "Metric",
@@ -312,12 +393,12 @@ const ProfitAndLossSection = ({
       />
       <h2 className="text-2xl font-semibold mb-4">Position Statement</h2>
       <Table
-  className="overflow-auto my-8"
-  size="small"
-  dataSource={positionDataWithNetIncome}
-  columns={positionColumns}
-  pagination={false}
-/>
+        className="overflow-auto my-8"
+        size="small"
+        dataSource={positionDataWithNetIncome}
+        columns={positionColumns}
+        pagination={false}
+      />
       <Chart
         options={chartOptions}
         series={chartSeries}

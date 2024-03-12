@@ -40,6 +40,8 @@ import ImageCropper from "../components/ImageCropper";
 import NotificationsPage from "../pages/Notification/Notification";
 import Confirmed from "../pages/SignUp/Confirmed";
 import AdminPage from "../pages/Admin/AdminPage";
+import ProductList from "../lemon/ProductList";
+import PricingSection from "../pages/Home/Components/PricingWithLemon";
 
 function Router() {
   const { user } = useAuth();
@@ -172,7 +174,7 @@ function Router() {
         <Route path="/Y" element={<Y />} />
         <Route path="/Z" element={<Z />} /> */}
         {/* <Route path="/W" element={<ImageCropper />} /> */}
-        <Route path="/Z" element={<Z />} />
+        <Route path="/Z" element={<PricingSection />} />
         <Route path="/admin" element={<AdminPage />} />
 
         <Route path="/loading" element={<ProgressBar isLoading={true} />} />

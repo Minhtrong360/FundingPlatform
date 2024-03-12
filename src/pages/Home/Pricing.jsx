@@ -11,6 +11,7 @@ import LoadingButtonClick from "../../components/LoadingButtonClick";
 const PricingCard = ({ plan, onClick }) => {
   // const { user } = useAuth();
   // const navigate = useNavigate();
+
   return (
     <>
       <div

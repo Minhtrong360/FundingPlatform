@@ -4,8 +4,14 @@ import React from "react";
 import { Card } from "antd";
 
 import Chart from "react-apexcharts";
+import { YoutubeSearchedForTwoTone } from "@mui/icons-material";
 
-function Component() {
+function Component({
+  yearlyAverageCustomers,
+  customerGrowthChart,
+  yearlySales,
+  revenue,
+}) {
   const stackedbarChartData = {
     series: [
       {
@@ -177,32 +183,36 @@ function Component() {
     },
   };
 
+  function sumArray(arr) {
+    return arr.reduce((total, num) => total + Number(num), 0);
+  }
+
   return (
     <div className="flex flex-col">
       <main className="flex flex-1 flex-col gap-4 mt-4 mb-4 md:gap-8 ">
         <div className="grid md:grid-cols-3 gap-6">
           <Card className="flex flex-col">
             <div>
-              <h3>Total Sales</h3>
-              <p>$2389.00</p>
+              <h3>Total User</h3>
+              <p>{Math.round(sumArray(yearlyAverageCustomers))}</p>
             </div>
             <Chart
               type="bar"
-              series={stackedbarChartData.series}
-              options={stackedbarChartData.options}
+              series={customerGrowthChart.series}
+              options={customerGrowthChart.options}
               height={300}
             />
           </Card>
-          <Card>
+          <Card className="flex flex-col">
             <div>
-              <h3>Sessions</h3>
-              <p>345</p>
+              <h3>Total Revenue</h3>
+              <p>{Math.round(sumArray(yearlySales))}</p>
             </div>
             <Chart
-              type="line"
-              series={dotChartData.series}
-              options={dotChartData.options}
-              height={300}
+              options={revenue.options}
+              series={revenue.series}
+              type="bar"
+              height={350}
             />
           </Card>
           <Card className="flex flex-col">
@@ -218,126 +228,165 @@ function Component() {
             />
           </Card>
         </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          <Card className="flex flex-col">
-            <div>
-              <h3>Visitors</h3>
-              <p>3,456</p>
-            </div>
-            <Chart
-              type="line"
-              series={lineChartData.series}
-              options={lineChartData.options}
-              height={300}
-            />
-          </Card>
-          <Card className="flex flex-col">
-            <div>
-              <h3>Page Views</h3>
-              <p>12,345</p>
-            </div>
-            <Chart
-              type="pie"
-              series={labelledpieChartData.series}
-              options={labelledpieChartData.options}
-              height={300}
-            />
-          </Card>
-          <Card>
-            <div>
-              <h3>Visitors</h3>
-              <h1>Top Referrers</h1>
-            </div>
-            <ul>
-              <li>google.com - 3K</li>
-              <li>twitter.com - 1.2K</li>
-              <li>youtube.com - 1.1K</li>
-            </ul>
-          </Card>
-        </div>
       </main>
     </div>
   );
 }
 
-const MetricsFM = () => {
+const MetricsFM = ({
+  yearlyAverageCustomers,
+  yearlySales,
+  customerGrowthChart,
+  revenue,
+}) => {
   // Define data for each card
-  const cardData = [
-    { text: "Total users", number: "72,540", percentage: "1.7%" },
-    { text: "Total revenue", number: "$100,000", percentage: "3.2%" },
-    { text: "Active users", number: "15,000", percentage: "2.1%" },
-    { text: "New users", number: "5,000", percentage: "0.8%" },
-  ];
+  console.log("yearlySales", yearlySales);
 
   return (
     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
       {/* Grid */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {/* Map over cardData array */}
-        {cardData.map((card, index) => (
-          <d
-            iv
-            key={index}
-            className="flex flex-col bg-white border shadow-sm rounded-xl"
-          >
-            <div className="p-4 md:p-5">
-              <div className="flex items-center gap-x-2">
-                <p className="text-xs uppercase tracking-wide text-gray-500">
-                  {card.text}
-                </p>
-                <Tooltip title="The number of daily users">
-                  <svg
-                    className="flex-shrink-0 size-4 text-gray-500"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                    <path d="M12 17h.01" />
-                  </svg>
-                </Tooltip>
-              </div>
 
-              <div className="mt-1 flex items-center gap-x-2">
-                <h3 className="text-sm sm:text-sm font-medium text-gray-800">
-                  {card.number}
-                </h3>
-                <span className="flex items-center gap-x-1 text-green-600">
-                  <svg
-                    className="inline-block size-4 self-center"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
-                    <polyline points="16 7 22 7 22 13" />
-                  </svg>
-                  <span className="inline-block text-sm">
-                    {card.percentage}
-                  </span>
-                </span>
-              </div>
-              <div>Say something</div>
+        <div className="flex flex-col bg-white border shadow-sm rounded-xl">
+          <div className="p-4 md:p-5">
+            <div className="flex items-center gap-x-2">
+              <p className="text-xs uppercase tracking-wide text-gray-500">
+                TOTAL USER (final year)
+              </p>
+              <Tooltip title="The average users of the final year.">
+                <svg
+                  className="flex-shrink-0 size-4 text-gray-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                  <path d="M12 17h.01" />
+                </svg>
+              </Tooltip>
             </div>
-          </d>
-        ))}
+
+            <div className="mt-1 flex items-center gap-x-2">
+              <h3 className="text-sm sm:text-xl font-medium text-gray-800 my-2">
+                {Math.round(
+                  yearlyAverageCustomers[yearlyAverageCustomers.length - 1],
+                  2
+                )}
+              </h3>
+              <span className="flex items-center gap-x-1 text-green-600">
+                <svg
+                  className="inline-block size-4 self-center"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                  <polyline points="16 7 22 7 22 13" />
+                </svg>
+                <Tooltip title="The increase percentage of the final year compared to the first year in the series.">
+                  <span className="inline-block text-sm">
+                    {(
+                      ((yearlyAverageCustomers[
+                        yearlyAverageCustomers.length - 1
+                      ] -
+                        yearlyAverageCustomers[0]) *
+                        100) /
+                      yearlyAverageCustomers[0]
+                    )?.toFixed(2)}
+                    %
+                  </span>
+                </Tooltip>
+              </span>
+            </div>
+            <div>Say something</div>
+          </div>
+        </div>
+
+        <div className="flex flex-col bg-white border shadow-sm rounded-xl">
+          <div className="p-4 md:p-5">
+            <div className="flex items-center gap-x-2">
+              <p className="text-xs uppercase tracking-wide text-gray-500">
+                TOTAL REVENUES (final year)
+              </p>
+              <Tooltip title="The average revenue of the final year.">
+                <svg
+                  className="flex-shrink-0 size-4 text-gray-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                  <path d="M12 17h.01" />
+                </svg>
+              </Tooltip>
+            </div>
+
+            <div className="mt-1 flex items-center gap-x-2">
+              <h3 className="text-sm sm:text-xl font-medium text-gray-800 my-2">
+                ${Math.round(yearlySales[yearlySales.length - 1])}
+              </h3>
+              <span className="flex items-center gap-x-1 text-green-600">
+                <svg
+                  className="inline-block size-4 self-center"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                  <polyline points="16 7 22 7 22 13" />
+                </svg>
+                <Tooltip title="The increase percentage of the final year compared to the first year in the series.">
+                  <span className="inline-block text-sm">
+                    {(
+                      ((yearlySales[yearlySales.length - 1] - yearlySales[0]) *
+                        100) /
+                      yearlySales[0]
+                    )?.toFixed(2)}
+                    %
+                  </span>
+                </Tooltip>
+              </span>
+            </div>
+            <div>Say something</div>
+          </div>
+        </div>
+
         {/* End Map */}
       </div>
       {/* End Grid */}
-      <Component />
+      <Component
+        yearlyAverageCustomers={yearlyAverageCustomers}
+        customerGrowthChart={customerGrowthChart}
+        yearlySales={yearlySales}
+        revenue={revenue}
+      />
     </div>
   );
 };

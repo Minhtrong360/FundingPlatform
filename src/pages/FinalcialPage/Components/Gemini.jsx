@@ -157,7 +157,7 @@ const Gemini = ({
             <button
               key={index}
               onClick={() => handleIndustrySelect(industry)}
-              className={`text-sm m-2 py-3 px-4 inline-flex items-center gap-x-2  rounded-lg border shadow-sm hover:cursor-pointer`}
+              className={`text-sm m-2 py-2 px-2 inline-flex items-center gap-x-2  rounded-2xl border shadow-sm hover:cursor-pointer`}
             >
               {industry}
             </button>

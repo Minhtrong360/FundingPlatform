@@ -274,7 +274,7 @@ const MetricsFM = ({
             </div>
 
             <div className="mt-1 flex items-center gap-x-2">
-              <h3 className="text-sm sm:text-xl font-medium text-gray-800 my-2">
+              <h3 className="text-2xl sm:text-xl font-medium text-gray-800 my-2">
                 {Math.round(
                   yearlyAverageCustomers[yearlyAverageCustomers.length - 1],
                   2
@@ -342,7 +342,7 @@ const MetricsFM = ({
             </div>
 
             <div className="mt-1 flex items-center gap-x-2">
-              <h3 className="text-sm sm:text-xl font-medium text-gray-800 my-2">
+              <h3 className="text-2xl sm:text-xl font-medium text-gray-800 my-2">
                 ${Math.round(yearlySales[yearlySales.length - 1])}
               </h3>
               <span className="flex items-center gap-x-1 text-green-600">

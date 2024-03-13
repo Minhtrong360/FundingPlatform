@@ -314,6 +314,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     },
   ]);
   const [investmentData, setInvestmentData] = useState([]);
+  const [investmentTableData, setInvestmentTableData] = useState([]);
 
   //LoanState
 
@@ -624,6 +625,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             setInvestmentData={setInvestmentData}
             isSaved={isSaved}
             setIsSaved={setIsSaved}
+            investmentTableData={investmentTableData}
+            setInvestmentTableData={setInvestmentTableData}
           />
 
           {/* LoanSection */}
@@ -648,6 +651,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             loanData={loanData}
             numberOfMonths={numberOfMonths}
             incomeTaxRate={incomeTax}
+            investmentTableData={investmentTableData}
           />
           <BalanceSheetSection
             startingCashBalance={startingCashBalance}

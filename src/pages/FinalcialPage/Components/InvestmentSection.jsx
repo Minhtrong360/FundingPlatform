@@ -11,22 +11,19 @@ const InvestmentSection = ({
   setInvestmentData,
   isSaved,
   setIsSaved,
+  setInvestmentTableData
 }) => {
-  const [tempInvestmentInputs, setTempInvestmentInputs] =
-    useState(investmentInputs);
+  const [tempInvestmentInputs, setTempInvestmentInputs] = useState(
+    investmentInputs
+  );
 
-  const [tempInvestmentData, setTempInvestmentData] = useState(investmentData);
+  const [tempInvestmentData, setTempInvestmentData] = useState(
+    investmentData
+  );
 
   const [renderInvestmentForm, setRenderInvestmentForm] = useState(
     investmentInputs[0]?.id
   );
-
-  useEffect(() => {
-    setTempInvestmentInputs(investmentInputs);
-    setRenderInvestmentForm(investmentInputs[0]?.id);
-  }, [investmentInputs]);
-
-  //InvestmentFunctions
 
   const addNewInvestmentInput = () => {
     const maxId = Math.max(...tempInvestmentInputs.map((input) => input?.id));
@@ -64,13 +61,10 @@ const InvestmentSection = ({
     setTempInvestmentInputs(newInputs);
   };
 
-  //InvestmentTableData
   const calculateInvestmentData = () => {
     return tempInvestmentInputs.map((investment) => {
-      const quantity = parseInt(investment.quantity, 10) || 1; // Ensuring there is a default value of 1
-
+      const quantity = parseInt(investment.quantity, 10) || 1;
       const assetCost = parseFloat(investment.assetCost) * quantity;
-
       const residualValue = parseFloat(investment.residualValue) * quantity;
       const usefulLifetime = parseFloat(investment.usefulLifetime);
       const purchaseMonth = parseInt(investment.purchaseMonth, 10);
@@ -78,7 +72,6 @@ const InvestmentSection = ({
       const depreciationPerMonth = (assetCost - residualValue) / usefulLifetime;
       const depreciationArray = new Array(numberOfMonths).fill(0);
 
-      // Calculate depreciation and accumulated depreciation
       for (let i = 0; i < numberOfMonths; i++) {
         if (i >= purchaseMonth - 1 && i < purchaseMonth - 1 + usefulLifetime) {
           depreciationArray[i] = depreciationPerMonth;
@@ -93,13 +86,11 @@ const InvestmentSection = ({
         []
       );
 
-      // Calculate asset value and book value
       const assetValue = new Array(numberOfMonths).fill(0);
       const bookValue = new Array(numberOfMonths).fill(0);
       for (let i = 0; i < numberOfMonths; i++) {
         if (i >= purchaseMonth - 1 && i < purchaseMonth - 1 + usefulLifetime) {
           assetValue[i] = assetCost;
-
           bookValue[i] = assetValue[i] - accumulatedDepreciation[i];
         }
       }
@@ -154,13 +145,11 @@ const InvestmentSection = ({
 
     for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
       if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
-        assetCostRow[`month${monthIndex + 1}`] = assetCost?.toFixed(2); // Using Asset Cost
+        assetCostRow[`month${monthIndex + 1}`] = assetCost?.toFixed(2); 
         depreciationRow[`month${monthIndex + 1}`] =
           selectedInvestmentData.depreciationArray[monthIndex]?.toFixed(2);
         accumulatedDepreciationRow[`month${monthIndex + 1}`] =
-          selectedInvestmentData.accumulatedDepreciation[monthIndex]?.toFixed(
-            2
-          );
+          selectedInvestmentData.accumulatedDepreciation[monthIndex]?.toFixed(2);
         bookValueRow[`month${monthIndex + 1}`] = (
           assetCost - selectedInvestmentData.accumulatedDepreciation[monthIndex]
         )?.toFixed(2);
@@ -179,13 +168,31 @@ const InvestmentSection = ({
       bookValueRow
     );
 
+    const cfInvestmentsSum = Array(numberOfMonths).fill(0);
+    tempInvestmentInputs.forEach((input) => {
+      const purchaseMonth = parseInt(input.purchaseMonth, 10);
+      const assetCost =
+        parseFloat(input.assetCost) * parseInt(input.quantity, 10);
+      cfInvestmentsSum[purchaseMonth - 1] += assetCost;
+    });
+
+    const cfInvestmentsRow = {
+      key: `CF Investments`,
+      type: "CF Investments",
+    };
+    for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
+      cfInvestmentsRow[`month${monthIndex + 1}`] = cfInvestmentsSum[monthIndex]?.toFixed(2);
+    }
+    investmentTableData.push(cfInvestmentsRow);
+
     return investmentTableData;
   };
 
-  //InvestmentUseEffect
   useEffect(() => {
     const calculatedData = calculateInvestmentData();
     setInvestmentData(calculatedData);
+    setInvestmentTableData(tableData);
+
   }, [investmentInputs, numberOfMonths]);
 
   useEffect(() => {
@@ -193,7 +200,6 @@ const InvestmentSection = ({
     setTempInvestmentData(calculatedData);
   }, [tempInvestmentInputs, numberOfMonths]);
 
-  //InvestmentColumns
   const investmentColumns = [
     { fixed: "left", title: "Type", dataIndex: "type", key: "type" },
     ...Array.from({ length: numberOfMonths }, (_, i) => ({
@@ -203,7 +209,6 @@ const InvestmentSection = ({
     })),
   ];
 
-  //InvestmentChart
   const [investmentChart, setInvestmentChart] = useState({
     options: {
       chart: { id: "investment-chart", type: "area", height: 350 },
@@ -215,23 +220,22 @@ const InvestmentSection = ({
         title: {
           text: "Month",
           style: {
-            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-            fontWeight: "600", // Cỡ chữ semibold
+            fontFamily: "Inter, sans-serif",
+            fontWeight: "600",
           },
         },
       },
-      // title: { text: 'Investment Data', align: 'left' },
       yaxis: {
         labels: {
           formatter: function (val) {
-            return Math.floor(val); // Format Y-axis labels as integers
+            return Math.floor(val);
           },
         },
         title: {
           text: "Investment ($)",
           style: {
-            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-            fontWeight: "600", // Cỡ chữ semibold
+            fontFamily: "Inter, sans-serif",
+            fontWeight: "600",
           },
         },
       },
@@ -260,13 +264,17 @@ const InvestmentSection = ({
     setIsSaved(true);
     message.success("Data saved successfully!");
   };
-
+  const tableData = transformInvestmentDataForTable()
   useEffect(() => {
     if (isSaved) {
       setInvestmentInputs(tempInvestmentInputs);
+      
+      setInvestmentTableData(tableData);
       setIsSaved(false);
     }
   }, [isSaved]);
+
+ 
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -299,7 +307,7 @@ const InvestmentSection = ({
           </div>
 
           {tempInvestmentInputs
-            .filter((input) => input?.id == renderInvestmentForm) // Sử dụng biến renderForm
+            .filter((input) => input?.id == renderInvestmentForm)
             .map((input) => (
               <div
                 key={input?.id}

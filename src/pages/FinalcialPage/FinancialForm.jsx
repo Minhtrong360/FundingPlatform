@@ -18,6 +18,7 @@ import Gemini from "./Components/Gemini";
 import MetricsFM from "../MetricsFM";
 import ProfitAndLossSection from "./Components/ProfitAndLossSection";
 import * as XLSX from "xlsx";
+import BalanceSheetSection from "./Components/BalanceSheetSection";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -96,9 +97,50 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   ]);
 
   const [customerGrowthData, setCustomerGrowthData] = useState([]);
+  const [yearlyAverageCustomers, setYearlyAverageCustomers] = useState([]);
+  const [customerGrowthChart, setCustomerGrowthChart] = useState({
+    options: {
+      chart: {
+        id: "customer-growth-chart",
+        type: "bar",
+        height: 350,
+      },
+      xaxis: {
+        categories: Array.from(
+          { length: numberOfMonths },
+          (_, i) => `Month ${i + 1}`
+        ),
+        title: {
+          text: "Month",
+          style: {
+            fontFamily: "Inter, sans-serif",
+            fontWeight: "600",
+          },
+        },
+      },
+      yaxis: {
+        labels: {
+          formatter: function (val) {
+            return Math.floor(val);
+          },
+        },
+        title: { text: "Number of Customers" },
+        style: {
+          fontFamily: "Inter, sans-serif",
+          fontWeight: "600",
+        },
+      },
+      legend: { position: "bottom", horizontalAlign: "right" },
+      fill: { type: "solid" },
+      dataLabels: { enabled: false },
+      stroke: { curve: "stepline" },
+      markers: { size: 1 },
+    },
+    series: [],
+  });
 
   //RevenueState
-  const [yearlySales, setYearlySales] = useState()
+  
 
   const [channelInputs, setChannelInputs] = useState([
     {
@@ -139,6 +181,45 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [grossProfitData, setGrossProfitData] = useState([]);
   const [revenueDeductionData, setRevenueDeductionData] = useState([]);
   const [cogsData, setCogsData] = useState([]);
+  const [yearlySales, setYearlySales] = useState([]);
+  const [revenue, setRevenue] = useState({
+    options: {
+      chart: { id: "revenue-chart", type: "bar", height: 350, stacked: true }, // Set type to "bar" and stacked to true
+      xaxis: {
+        categories: Array.from(
+          { length: numberOfMonths },
+          (_, i) => `${i + 1}`
+        ),
+        title: {
+          text: "Month",
+          style: {
+            fontFamily: "Inter, sans-serif",
+            fontWeight: "600",
+          },
+        },
+      },
+      yaxis: {
+        labels: {
+          formatter: function (val) {
+            return Math.floor(val);
+          },
+        },
+        title: {
+          text: "Amount ($)",
+          style: {
+            fontFamily: "Inter, sans-serif",
+            fontWeight: "600",
+          },
+        },
+      },
+      legend: { position: "bottom", horizontalAlign: "right" },
+      dataLabels: { enabled: false },
+      plotOptions: {
+        bar: { horizontal: false },
+      },
+    },
+    series: [],
+  });
 
   useEffect(() => {
     // Update channelNames based on current customerInputs
@@ -187,6 +268,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       id: 1,
       jobTitle: "Cashier",
       salaryPerMonth: 800,
+      increasePerYear: 10,
       numberOfHires: 2,
       jobBeginMonth: 1,
       jobEndMonth: 36,
@@ -195,6 +277,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       id: 2,
       jobTitle: "Manager",
       salaryPerMonth: 2000,
+      increasePerYear: 10,
       numberOfHires: 1,
       jobBeginMonth: 1,
       jobEndMonth: 36,
@@ -445,8 +528,12 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             </div>
 
             <div className="w-full lg:w-3/4 p-4">
-              <MetricsFM 
-              yearlySales={yearlySales}
+              <MetricsFM
+                yearlyAverageCustomers={yearlyAverageCustomers}
+                customerInputs={customerInputs}
+                yearlySales={yearlySales}
+                customerGrowthChart={customerGrowthChart}
+                revenue={revenue}
               />
             </div>
           </div>
@@ -461,6 +548,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             channelNames={channelNames}
             isSaved={isSaved}
             setIsSaved={setIsSaved}
+            yearlyAverageCustomers={yearlyAverageCustomers}
+            setYearlyAverageCustomers={setYearlyAverageCustomers}
+            customerGrowthChart={customerGrowthChart}
+            setCustomerGrowthChart={setCustomerGrowthChart}
           />
 
           {/* RevenueSetion */}
@@ -485,7 +576,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             setIsSaved={setIsSaved}
             yearlySales={yearlySales}
             setYearlySales={setYearlySales}
-            />
+            revenue={revenue}
+            setRevenue={setRevenue}
+          />
 
           {/* CostSection */}
           <CostSection
@@ -542,6 +635,11 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             loanData={loanData}
             numberOfMonths={numberOfMonths}
             incomeTaxRate={incomeTax}
+          />
+          <BalanceSheetSection
+            startingCashBalance={startingCashBalance}
+            costData={costData}
+            personnelCostData={personnelCostData}
           />
         </>
       )}

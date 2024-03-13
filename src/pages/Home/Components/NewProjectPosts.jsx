@@ -52,8 +52,6 @@ const NewProjectPosts = () => {
   }, []);
 
   const handlePageChange = (newPage, tab) => {
-    console.log("newPage", newPage);
-    console.log("tab", tab);
     if (tab === "verified") {
       setVerifiedPage(newPage);
     } else if (tab === "unverified") {
@@ -227,7 +225,7 @@ const NewProjectPosts = () => {
         <button
           className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
             currentTab === "All"
-              ? "bg-blue-600 text-white"
+              ? "bg-blue-600 text-black"
               : "bg-white text-gray-800 hover:bg-gray-50"
           } shadow-sm hover:cursor-pointer`}
           onClick={() => setCurrentTab("All")}
@@ -237,7 +235,7 @@ const NewProjectPosts = () => {
         <button
           className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
             currentTab === "verified"
-              ? "bg-blue-600 text-white"
+              ? "bg-blue-600 text-black"
               : "bg-white text-gray-800 hover:bg-gray-50"
           } shadow-sm hover:cursor-pointer`}
           onClick={() => setCurrentTab("verified")}
@@ -247,7 +245,7 @@ const NewProjectPosts = () => {
         <button
           className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
             currentTab === "unverified"
-              ? "bg-blue-600 text-white"
+              ? "bg-blue-600 text-black"
               : "bg-white text-gray-800 hover:bg-gray-50"
           } shadow-sm hover:cursor-pointer`}
           onClick={() => setCurrentTab("unverified")}
@@ -286,37 +284,67 @@ const NewProjectPosts = () => {
             </div>
 
             <div className="mt-10 flex justify-center">
-              <button
+              {/* <button
                 className="sm:px-4 sm:py-1 sm:mx-2  text-black rounded-md"
                 onClick={goToFirstPage}
                 disabled={currentPage === 1}
               >
                 <SkipPreviousIcon />
-              </button>
+              </button> */}
               <button
-                className="sm:px-4 sm:py-1 sm:mx-2  text-black rounded-md"
+                className="flex items-center justify-center px-4 py-2 mx-1 text-black capitalize bg-gray-200 rounded-md  rtl:-scale-x-100 "
                 onClick={() => handlePageChange(currentPage - 1, currentTab)}
                 disabled={currentPage === 1}
               >
-                <ArrowLeftIcon fontSize="large" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-5 h-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
               </button>
-              <span className=" sm:px-4 sm:py-1 sm:mx-2  text-gray-800 rounded-md inline-flex flex-nowrap justify-center items-center  flex-shrink-0">
-                Page {currentPage} of {totalPages}
-              </span>
+              <div className="flex flex-wrap items-center">
+                {[...Array(totalPages).keys()].map((pageNumber) => (
+                  <button
+                    key={pageNumber}
+                    className="flex items-center justify-center px-4 py-2 mx-1 text-black capitalize bg-gray-200 rounded-md  rtl:-scale-x-100 "
+                    onClick={() => handlePageChange(pageNumber + 1, currentTab)}
+                  >
+                    {pageNumber + 1}
+                  </button>
+                ))}
+              </div>
               <button
-                className="sm:px-4 sm:py-1 sm:mx-2  text-black rounded-md"
+                className="flex items-center justify-center px-4 py-2 mx-1 text-black capitalize bg-gray-200 rounded-md  rtl:-scale-x-100 "
                 onClick={() => handlePageChange(currentPage + 1, currentTab)}
                 disabled={currentPage === totalPages}
               >
-                <ArrowRightIcon fontSize="large" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-5 h-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
               </button>
-              <button
+              {/* <button
                 className="sm:px-4 sm:py-1 sm:mx-2  text-black rounded-md"
                 onClick={goToLastPage}
                 disabled={currentPage === totalPages}
               >
                 <SkipNextIcon />
-              </button>
+              </button> */}
             </div>
           </>
         )}

@@ -12,48 +12,11 @@ const CustomerSection = ({
   setCustomerGrowthData,
   isSaved,
   setIsSaved,
+  yearlyAverageCustomers,
+  setYearlyAverageCustomers,
+  customerGrowthChart,
+  setCustomerGrowthChart,
 }) => {
-  const [customerGrowthChart, setCustomerGrowthChart] = useState({
-    options: {
-      chart: {
-        id: "customer-growth-chart",
-        type: "bar",
-        height: 350,
-      },
-      xaxis: {
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `Month ${i + 1}`
-        ),
-        title: {
-          text: "Month",
-          style: {
-            fontFamily: "Inter, sans-serif",
-            fontWeight: "600",
-          },
-        },
-      },
-      yaxis: {
-        labels: {
-          formatter: function (val) {
-            return Math.floor(val);
-          },
-        },
-        title: { text: "Number of Customers" },
-        style: {
-          fontFamily: "Inter, sans-serif",
-          fontWeight: "600",
-        },
-      },
-      legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
-      dataLabels: { enabled: false },
-      stroke: { curve: "stepline" },
-      markers: { size: 1 },
-    },
-    series: [],
-  });
-
   const [tempCustomerInputs, setTempCustomerInputs] = useState(
     customerInputs.map((input) => ({
       ...input,
@@ -156,8 +119,7 @@ const CustomerSection = ({
         (input) => input.channelName === data.channelName
       );
       if (customerInput) {
-        const beginCustomerValue =
-          parseFloat(customerInput.beginCustomer) || 0;
+        const beginCustomerValue = parseFloat(customerInput.beginCustomer) || 0;
         if (!transformedCustomerTableData[data.channelName]) {
           transformedCustomerTableData[data.channelName] = {
             key: data.channelName,
@@ -169,14 +131,12 @@ const CustomerSection = ({
           data.month >= customerInput.beginMonth &&
           data.month <= customerInput.endMonth
         ) {
-          transformedCustomerTableData[data.channelName][
-            `month${data.month}`
-          ] = parseFloat(data.customers)?.toFixed(2);
+          transformedCustomerTableData[data.channelName][`month${data.month}`] =
+            parseFloat(data.customers)?.toFixed(2);
         } else {
           // Set value to 0 if outside the range
-          transformedCustomerTableData[data.channelName][
-            `month${data.month}`
-          ] = "0.00";
+          transformedCustomerTableData[data.channelName][`month${data.month}`] =
+            "0.00";
         }
       }
     });
@@ -248,7 +208,10 @@ const CustomerSection = ({
       Begin: {
         channelName: "Begin",
         ...Array.from({ length: numberOfMonths }, (_, i) => ({
-          [`month${i + 1}`]: i === 0 ? (parseFloat(input.beginCustomer) || 0).toFixed(2) : "0.00",
+          [`month${i + 1}`]:
+            i === 0
+              ? (parseFloat(input.beginCustomer) || 0).toFixed(2)
+              : "0.00",
         })),
       },
       Add: {
@@ -274,27 +237,28 @@ const CustomerSection = ({
   });
 
   // Calculate monthly average of customers for each year
-const calculateYearlyAverage = (tempCustomerGrowthData, numberOfMonths) => {
-  const yearlyAverages = [];
-  for (let i = 0; i < numberOfMonths; i += 12) {
-    let totalCustomers = 0;
-    for (let j = i; j < i + 12 && j < numberOfMonths; j++) {
-      tempCustomerGrowthData.forEach((channelData) => {
-        totalCustomers += parseFloat(channelData[j]?.customers) || 0;
-      });
+  const calculateYearlyAverage = (tempCustomerGrowthData, numberOfMonths) => {
+    const yearlyAverages = [];
+    for (let i = 0; i < numberOfMonths; i += 12) {
+      let totalCustomers = 0;
+      for (let j = i; j < i + 12 && j < numberOfMonths; j++) {
+        tempCustomerGrowthData.forEach((channelData) => {
+          totalCustomers += parseFloat(channelData[j]?.customers) || 0;
+        });
+      }
+      const averageCustomers = totalCustomers / 12;
+      yearlyAverages.push(averageCustomers.toFixed(2));
     }
-    const averageCustomers = totalCustomers / 12;
-    yearlyAverages.push(averageCustomers.toFixed(2));
-  }
-  return yearlyAverages;
-};
+    return yearlyAverages;
+  };
 
-const [yearlyAverageCustomers, setYearlyAverageCustomers] = useState([]);
-
-useEffect(() => {
-  const averages = calculateYearlyAverage(tempCustomerGrowthData, numberOfMonths);
-  setYearlyAverageCustomers(averages);
-}, [tempCustomerGrowthData, numberOfMonths]);
+  useEffect(() => {
+    const averages = calculateYearlyAverage(
+      tempCustomerGrowthData,
+      numberOfMonths
+    );
+    setYearlyAverageCustomers(averages);
+  }, [tempCustomerGrowthData, numberOfMonths]);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -317,8 +281,7 @@ useEffect(() => {
             <label
               htmlFor="selectedChannel"
               className="block my-4 text-base  darkTextWhite"
-            >
-            </label>
+            ></label>
             <select
               id="selectedChannel"
               className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
@@ -426,7 +389,11 @@ useEffect(() => {
                     min="0"
                     value={input.beginCustomer}
                     onChange={(e) =>
-                      handleInputChange(input?.id, "beginCustomer", e.target.value)
+                      handleInputChange(
+                        input?.id,
+                        "beginCustomer",
+                        e.target.value
+                      )
                     }
                   />
                 </div>
@@ -454,7 +421,11 @@ useEffect(() => {
                     min="0"
                     value={input.acquisitionCost}
                     onChange={(e) =>
-                      handleInputChange(input?.id, "acquisitionCost", e.target.value)
+                      handleInputChange(
+                        input?.id,
+                        "acquisitionCost",
+                        e.target.value
+                      )
                     }
                   />
                 </div>
@@ -489,7 +460,9 @@ useEffect(() => {
           .filter((input) => input?.id == renderCustomerForm)
           .map((input) => (
             <div key={input.id} className="mb-8">
-              <h3 className="text-2xl font-semibold">{input.channelName} Table</h3>
+              <h3 className="text-2xl font-semibold">
+                {input.channelName} Table
+              </h3>
               <Table
                 className="overflow-auto my-8"
                 size="small"
@@ -499,18 +472,20 @@ useEffect(() => {
                 columns={customerColumns}
                 pagination={false}
               />
-              {Object.entries(ChannelDataTables).map(([tableName, dataTable]) => (
-                <div key={tableName}>
-                  <h3 className="text-2xl font-semibold">{tableName}</h3>
-                  <Table
-                    className="overflow-auto my-8"
-                    size="small"
-                    dataSource={Object.values(dataTable)}
-                    columns={customerColumns}
-                    pagination={false}
-                  />
-                </div>
-              ))}
+              {Object.entries(ChannelDataTables).map(
+                ([tableName, dataTable]) => (
+                  <div key={tableName}>
+                    <h3 className="text-2xl font-semibold">{tableName}</h3>
+                    <Table
+                      className="overflow-auto my-8"
+                      size="small"
+                      dataSource={Object.values(dataTable)}
+                      columns={customerColumns}
+                      pagination={false}
+                    />
+                  </div>
+                )
+              )}
             </div>
           ))}
         <h3 className="text-2xl font-semibold my-8">Customer Chart</h3>
@@ -521,15 +496,16 @@ useEffect(() => {
           height={350}
         />
 
-<h3 className="text-2xl font-semibold my-8">Yearly Average Customers</h3>
-      <div className="flex items-center">
-        {yearlyAverageCustomers.map((average, index) => (
-          <div key={index} className="mr-4">
-            <span className="font-semibold">Year {index + 1}:</span> {average}
-          </div>
-        ))}
-      </div>
-      
+        <h3 className="text-2xl font-semibold my-8">
+          Yearly Average Customers
+        </h3>
+        <div className="flex items-center">
+          {yearlyAverageCustomers.map((average, index) => (
+            <div key={index} className="mr-4">
+              <span className="font-semibold">Year {index + 1}:</span> {average}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

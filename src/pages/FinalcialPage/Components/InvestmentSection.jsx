@@ -20,9 +20,6 @@ const InvestmentSection = ({
   const [renderInvestmentForm, setRenderInvestmentForm] = useState(
     investmentInputs[0]?.id
   );
-  
-  const [fundingSource, setFundingSource] = useState("Cash");
-
   //InvestmentFunctions
 
   const addNewInvestmentInput = () => {
@@ -36,7 +33,6 @@ const InvestmentSection = ({
       purchaseMonth: 0,
       residualValue: 0,
       usefulLifetime: 0,
-      fundingSource: "Cash",
     };
     setTempInvestmentInputs([...tempInvestmentInputs, newCustomer]);
     setRenderInvestmentForm(newId.toString());
@@ -60,10 +56,6 @@ const InvestmentSection = ({
       return input;
     });
     setTempInvestmentInputs(newInputs);
-  };
-
-  const handleFundingSourceChange = (value) => {
-    setFundingSource(value);
   };
 
   //InvestmentTableData
@@ -114,59 +106,75 @@ const InvestmentSection = ({
       };
     });
   };
- const transformInvestmentDataForTable = () => {
-  const selectedInput = tempInvestmentInputs.find(input => input.id == renderInvestmentForm);
-  if (!selectedInput) return [];
 
-  const investmentTableData = [];
+  const transformInvestmentDataForTable = () => {
+    const selectedInput = tempInvestmentInputs.find(
+      (input) => input.id == renderInvestmentForm
+    );
+    if (!selectedInput || tempInvestmentData.length === 0) return [];
 
-  const purchaseName = selectedInput.purchaseName || `Investment ${renderInvestmentForm}`;
-  const assetCostRow = {
-    key: `Asset Cost`,
-    type: `${purchaseName}`,
-  };
-  const depreciationRow = {
-    key: `Depreciation`,
-    type: "Depreciation",
-  };
-  const accumulatedDepreciationRow = {
-    key: `Accumulated Depre.`,
-    type: "Accumulated Depre.",
-  };
-  const bookValueRow = {
-    key: `Book Value`,
-    type: "Book Value",
-  };
+    const selectedInvestmentData = tempInvestmentData.find(
+      (_, index) => tempInvestmentInputs[index].id == renderInvestmentForm
+    );
+    if (!selectedInvestmentData) return [];
 
-  const purchaseMonth = parseInt(selectedInput.purchaseMonth, 10);
-  const usefulLife = parseInt(selectedInput.usefulLifetime, 10);
-  const endMonth = purchaseMonth + usefulLife - 1;
-  const assetCost = parseFloat(selectedInput.assetCost) * parseInt(selectedInput.quantity, 10);
+    const investmentTableData = [];
 
-  for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
-    if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
-      assetCostRow[`month${monthIndex + 1}`] = assetCost?.toFixed(2); // Using Asset Cost
-      depreciationRow[`month${monthIndex + 1}`] = tempInvestmentData[0]?.depreciationArray[monthIndex]?.toFixed(2);
-      accumulatedDepreciationRow[`month${monthIndex + 1}`] = tempInvestmentData[0]?.accumulatedDepreciation[monthIndex]?.toFixed(2);
-      bookValueRow[`month${monthIndex + 1}`] = (assetCost - tempInvestmentData[0]?.accumulatedDepreciation[monthIndex])?.toFixed(2);
-    } else {
-      assetCostRow[`month${monthIndex + 1}`] = "0.00";
-      depreciationRow[`month${monthIndex + 1}`] = "0.00";
-      accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0.00";
-      bookValueRow[`month${monthIndex + 1}`] = "0.00";
+    const purchaseName =
+      selectedInput.purchaseName || `Investment ${renderInvestmentForm}`;
+    const assetCostRow = {
+      key: `Asset Cost`,
+      type: `${purchaseName}`,
+    };
+    const depreciationRow = {
+      key: `Depreciation`,
+      type: "Depreciation",
+    };
+    const accumulatedDepreciationRow = {
+      key: `Accumulated Depre.`,
+      type: "Accumulated Depre.",
+    };
+    const bookValueRow = {
+      key: `Book Value`,
+      type: "Book Value",
+    };
+
+    const purchaseMonth = parseInt(selectedInput.purchaseMonth, 10);
+    const usefulLife = parseInt(selectedInput.usefulLifetime, 10);
+    const endMonth = purchaseMonth + usefulLife - 1;
+    const assetCost =
+      parseFloat(selectedInput.assetCost) *
+      parseInt(selectedInput.quantity, 10);
+
+    for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
+      if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
+        assetCostRow[`month${monthIndex + 1}`] = assetCost?.toFixed(2); // Using Asset Cost
+        depreciationRow[`month${monthIndex + 1}`] =
+          selectedInvestmentData.depreciationArray[monthIndex]?.toFixed(2);
+        accumulatedDepreciationRow[`month${monthIndex + 1}`] =
+          selectedInvestmentData.accumulatedDepreciation[monthIndex]?.toFixed(
+            2
+          );
+        bookValueRow[`month${monthIndex + 1}`] = (
+          assetCost - selectedInvestmentData.accumulatedDepreciation[monthIndex]
+        )?.toFixed(2);
+      } else {
+        assetCostRow[`month${monthIndex + 1}`] = "0.00";
+        depreciationRow[`month${monthIndex + 1}`] = "0.00";
+        accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0.00";
+        bookValueRow[`month${monthIndex + 1}`] = "0.00";
+      }
     }
-  }
 
-  investmentTableData.push(
-    assetCostRow,
-    depreciationRow,
-    accumulatedDepreciationRow,
-    bookValueRow
-  );
+    investmentTableData.push(
+      assetCostRow,
+      depreciationRow,
+      accumulatedDepreciationRow,
+      bookValueRow
+    );
 
-  return investmentTableData;
-};
-
+    return investmentTableData;
+  };
 
   //InvestmentUseEffect
   useEffect(() => {
@@ -234,10 +242,9 @@ const InvestmentSection = ({
     const seriesData = tempInvestmentData.map((investment) => {
       return { name: investment.purchaseName, data: investment.bookValue };
     });
-  
+
     setInvestmentChart((prevState) => ({ ...prevState, series: seriesData }));
   }, [tempInvestmentData, numberOfMonths]);
-  
 
   const handleSelectChange = (event) => {
     setRenderInvestmentForm(event.target.value);
@@ -270,8 +277,7 @@ const InvestmentSection = ({
             <label
               htmlFor="selectedChannel"
               className="block my-4 text-base  darkTextWhite"
-            >
-            </label>
+            ></label>
             <select
               id="selectedChannel"
               className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
@@ -386,25 +392,6 @@ const InvestmentSection = ({
                       )
                     }
                   />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center text-sm">
-                    Funding Source
-                  </span>
-                  <select
-                    className="col-start-2 py-2 px-4 border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                    value={input.fundingSource}
-                    onChange={(e) =>
-                      handleInvestmentInputChange(
-                        input?.id,
-                        "fundingSource",
-                        e.target.value
-                      )
-                    }
-                  >
-                    <option value="Cash">Cash</option>
-                    <option value="Loan">Loan</option>
-                  </select>
                 </div>
                 <div className="flex justify-end items-center">
                   <button

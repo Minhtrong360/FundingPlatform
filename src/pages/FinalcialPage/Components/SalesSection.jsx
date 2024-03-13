@@ -32,7 +32,10 @@ const SalesSection = ({
   isSaved,
   setIsSaved,
   yearlySales,
-  setYearlySales
+  setYearlySales,
+
+  revenue,
+  setRevenue,
 }) => {
   const [tempChannelInputs, setTempChannelInputs] = useState(channelInputs);
   const [tempRevenueData, setTempRevenueData] = useState(revenueData);
@@ -84,8 +87,6 @@ const SalesSection = ({
     });
     setTempChannelInputs(newInputs);
   };
-
-  
 
   useEffect(() => {
     const {
@@ -198,10 +199,15 @@ const SalesSection = ({
 
     Object.keys(calculatedChannelRevenue.revenueByChannelAndProduct).forEach(
       (channelProductKey) => {
-        const [selectedChannel, selectedProduct] = channelProductKey.split(" - ");
+        const [selectedChannel, selectedProduct] =
+          channelProductKey.split(" - ");
         if (
-          selectedChannel === tempChannelInputs.find(input => input.id == renderChannelForm)?.selectedChannel &&
-          selectedProduct === tempChannelInputs.find(input => input.id == renderChannelForm)?.productName
+          selectedChannel ===
+            tempChannelInputs.find((input) => input.id == renderChannelForm)
+              ?.selectedChannel &&
+          selectedProduct ===
+            tempChannelInputs.find((input) => input.id == renderChannelForm)
+              ?.productName
         ) {
           const revenueRowKey = `Revenue`;
           const revenueDeductionRowKey = `Deductions`;
@@ -217,7 +223,7 @@ const SalesSection = ({
             key: revenueDeductionRowKey,
             channelName: revenueDeductionRowKey,
           };
-          
+
           transformedRevenueTableData[netRevenueRowKey] = {
             key: netRevenueRowKey,
             channelName: netRevenueRowKey,
@@ -261,8 +267,9 @@ const SalesSection = ({
           calculatedChannelRevenue.grossProfitByChannelAndProduct[
             channelProductKey
           ].forEach((value, index) => {
-            transformedRevenueTableData[grossProfitRowKey][`month${index + 1}`] =
-              parseFloat(value)?.toFixed(2);
+            transformedRevenueTableData[grossProfitRowKey][
+              `month${index + 1}`
+            ] = parseFloat(value)?.toFixed(2);
           });
         }
       }
@@ -270,7 +277,6 @@ const SalesSection = ({
 
     return Object.values(transformedRevenueTableData);
   };
-
 
   const revenueTableData = transformRevenueDataForTable();
 
@@ -290,90 +296,58 @@ const SalesSection = ({
   ];
 
   //RevenueChart
-// RevenueChart
-const [revenue, setRevenue] = useState({
-  options: {
-    chart: { id: "revenue-chart", type: "bar", height: 350, stacked: true }, // Set type to "bar" and stacked to true
-    xaxis: {
-      categories: Array.from({ length: numberOfMonths }, (_, i) => `${i + 1}`),
-      title: {
-        text: "Month",
-        style: {
-          fontFamily: "Inter, sans-serif",
-          fontWeight: "600",
-        },
-      },
-    },
-    yaxis: {
-      labels: {
-        formatter: function (val) {
-          return Math.floor(val);
-        },
-      },
-      title: {
-        text: "Amount ($)",
-        style: {
-          fontFamily: "Inter, sans-serif",
-          fontWeight: "600",
-        },
-      },
-    },
-    legend: { position: "bottom", horizontalAlign: "right" },
-    dataLabels: { enabled: false },
-    plotOptions: {
-      bar: { horizontal: false },
-    },
-  },
-  series: [],
-});
-
-useEffect(() => {
-  const seriesData = Object.entries(tempRevenueData).map(([key, data]) => {
-    return { name: key, data };
-  });
-
-  // Adjust series data for stacked bar chart
-  const stackedSeriesData = Array.from({ length: numberOfMonths }, () => ({}));
-  Object.entries(tempRevenueData).forEach(([key, data]) => {
-    data.forEach((value, index) => {
-      if (stackedSeriesData[index]) {
-        stackedSeriesData[index][key] = parseFloat(value);
-      }
-    });
-  });
-
-  setRevenue((prevState) => ({
-    ...prevState,
-    series: [{ name: 'Revenue', data: stackedSeriesData }],
-  }));
-}, [tempRevenueData, numberOfMonths]);
-
-
-useEffect(() => {
-  const seriesData = Object.entries(tempRevenueData).map(([key, data]) => {
-    return { name: key, data };
-  });
-
-  // Additional series for COGS and Gross Profit
-  const cogsSeriesData = Object.entries(tempCogsData).map(([key, data]) => {
-    return { name: `COGS - ${key}`, data };
-  });
-
-  const grossProfitSeriesData = Object.entries(tempGrossProfitData).map(([key, data]) => {
-    return { name: `Gross Profit - ${key}`, data };
-  });
-
-  setRevenue((prevState) => ({ ...prevState, series: [...seriesData, ...cogsSeriesData, ...grossProfitSeriesData] }));
-}, [tempRevenueData, tempCogsData, tempGrossProfitData, numberOfMonths]);
-
-
+  // RevenueChart
 
   useEffect(() => {
-    const seriesData = Object.entries(tempRevenueData).map(
+    const seriesData = Object.entries(tempRevenueData).map(([key, data]) => {
+      return { name: key, data };
+    });
+
+    // Adjust series data for stacked bar chart
+    const stackedSeriesData = Array.from(
+      { length: numberOfMonths },
+      () => ({})
+    );
+    Object.entries(tempRevenueData).forEach(([key, data]) => {
+      data.forEach((value, index) => {
+        if (stackedSeriesData[index]) {
+          stackedSeriesData[index][key] = parseFloat(value);
+        }
+      });
+    });
+
+    setRevenue((prevState) => ({
+      ...prevState,
+      series: [{ name: "Revenue", data: stackedSeriesData }],
+    }));
+  }, [tempRevenueData, numberOfMonths]);
+
+  useEffect(() => {
+    const seriesData = Object.entries(tempRevenueData).map(([key, data]) => {
+      return { name: key, data };
+    });
+
+    // Additional series for COGS and Gross Profit
+    const cogsSeriesData = Object.entries(tempCogsData).map(([key, data]) => {
+      return { name: `COGS - ${key}`, data };
+    });
+
+    const grossProfitSeriesData = Object.entries(tempGrossProfitData).map(
       ([key, data]) => {
-        return { name: key, data };
+        return { name: `Gross Profit - ${key}`, data };
       }
     );
+
+    setRevenue((prevState) => ({
+      ...prevState,
+      series: [...seriesData, ...cogsSeriesData, ...grossProfitSeriesData],
+    }));
+  }, [tempRevenueData, tempCogsData, tempGrossProfitData, numberOfMonths]);
+
+  useEffect(() => {
+    const seriesData = Object.entries(tempRevenueData).map(([key, data]) => {
+      return { name: key, data };
+    });
 
     setRevenue((prevState) => ({ ...prevState, series: seriesData }));
   }, [tempRevenueData, numberOfMonths]);
@@ -401,16 +375,16 @@ useEffect(() => {
 
   const calculateYearlySales = () => {
     const yearlySales = [];
-    
+
     // Check if tempRevenueData is not empty
     if (Object.keys(tempRevenueData).length === 0) {
       return yearlySales; // Return empty array if tempRevenueData is empty
     }
-    
+
     // Iterate over the first entry in tempRevenueData to determine the length
     const firstEntry = tempRevenueData[Object.keys(tempRevenueData)[0]];
     const numMonths = firstEntry ? firstEntry.length : 0;
-  
+
     for (let i = 0; i < numMonths; i += 12) {
       let sum = 0;
       Object.values(tempRevenueData).forEach((data) => {
@@ -422,14 +396,12 @@ useEffect(() => {
     }
     return yearlySales;
   };
-  
-const tempYearlySales = calculateYearlySales();
-  useState(() => {
-    setYearlySales(tempYearlySales);
-  }, [ tempRevenueData]);
-  
-  console.log("yearlySales", yearlySales)
-  
+
+  useEffect(() => {
+    const sales = calculateYearlySales();
+    setYearlySales(sales);
+  }, [tempRevenueData]);
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
       <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
@@ -445,8 +417,7 @@ const tempYearlySales = calculateYearlySales();
             <label
               htmlFor="selectedChannel"
               className="block my-4 text-base  darkTextWhite"
-            >
-            </label>
+            ></label>
             <select
               id="selectedChannel"
               className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
@@ -604,35 +575,31 @@ const tempYearlySales = calculateYearlySales();
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-  <span className=" flex items-center text-sm">
-    Days get paid:
-  </span>
-  <Select
-    className="border-gray-200"
-    onValueChange={(value) =>
-      handleChannelInputChange(
-        input.id,
-        "daysGetPaid",
-        value
-      )
-    }
-    value={input.daysGetPaid !== null ? input.daysGetPaid : ""}
-  >
-    <SelectTrigger
-      id={`select-days-get-paid-${index}`}
-      className="border-solid border-[1px] border-gray-200"
-    >
-      <SelectValue placeholder="Select Days" />
-    </SelectTrigger>
-    <SelectContent position="popper">
-      {[0, 15, 30, 45, 60, 75, 90, 105, 120].map((days) => (
-        <SelectItem key={days} value={days}>
-          {days} days
-        </SelectItem>
-      ))}
-    </SelectContent>
-  </Select>
-</div>
+                  <span className=" flex items-center text-sm">
+                    Days get paid:
+                  </span>
+                  <Select
+                    className="border-gray-200"
+                    onValueChange={(value) =>
+                      handleChannelInputChange(input.id, "daysGetPaid", value)
+                    }
+                    value={input.daysGetPaid !== null ? input.daysGetPaid : ""}
+                  >
+                    <SelectTrigger
+                      id={`select-days-get-paid-${index}`}
+                      className="border-solid border-[1px] border-gray-200"
+                    >
+                      <SelectValue placeholder="Select Days" />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      {[0, 15, 30, 45, 60, 75, 90, 105, 120].map((days) => (
+                        <SelectItem key={days} value={days}>
+                          {days} days
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div className="flex justify-end items-center">
                   <button
                     className="bg-red-600 text-white py-1 px-4 rounded"
@@ -660,9 +627,7 @@ const tempYearlySales = calculateYearlySales();
         </section>
       </div>
       <div className="w-full lg:w-3/4 p-4">
-        <h3 className="text-2xl font-semibold mb-4">
-          Revenue by Product
-        </h3>
+        <h3 className="text-2xl font-semibold mb-4">Revenue by Product</h3>
         <Table
           className="overflow-auto my-8"
           size="small"
@@ -670,9 +635,7 @@ const tempYearlySales = calculateYearlySales();
           columns={revenueColumns}
           pagination={false}
         />
-        <h3 className="text-2xl font-semibold my-8">
-          Revenue Chart
-        </h3>
+        <h3 className="text-2xl font-semibold my-8">Revenue Chart</h3>
         <Chart
           options={revenue.options}
           series={revenue.series}
@@ -680,18 +643,19 @@ const tempYearlySales = calculateYearlySales();
           height={350}
         />
 
-    <div className="mt-8">
-      <h3 className="text-2xl font-semibold mb-4">Yearly Sales</h3>
-      <ul>
-        {yearlySales?.map((sales, index) => (
-          <li key={index}>Year {index + 1}: ${sales.toFixed(2)}</li>
-        ))}
-      </ul>
-    </div>
-
+        <div className="mt-8">
+          <h3 className="text-2xl font-semibold mb-4">Yearly Sales</h3>
+          <ul>
+            {yearlySales.map((sales, index) => (
+              <li key={index}>
+                Year {index + 1}: ${sales.toFixed(2)}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
 export default SalesSection;

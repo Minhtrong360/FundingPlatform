@@ -78,7 +78,10 @@ const PersonnelSection = ({
           const numberOfHires = parseInt(personnelInput.numberOfHires);
           const increasePercentage = parseFloat(personnelInput.increasePerYear);
           let newSalary = salaryPerMonth;
-          if ((month - personnelInput.jobBeginMonth) % 12 === 0 && month !== personnelInput.jobBeginMonth) {
+          if (
+            (month - personnelInput.jobBeginMonth) % 12 === 0 &&
+            month !== personnelInput.jobBeginMonth
+          ) {
             newSalary *= 1 + increasePercentage / 100;
             lastYearSalary = newSalary; // Update last year's salary
           }
@@ -95,7 +98,6 @@ const PersonnelSection = ({
     });
     return allPersonnelCosts;
   };
-  
 
   const transformPersonnelCostDataForTable = () => {
     const transformedCustomerTableData = tempPersonnelCostData.map((item) => {
@@ -222,8 +224,7 @@ const PersonnelSection = ({
             <label
               htmlFor="selectedChannel"
               className="block my-4 text-base  darkTextWhite"
-            >
-            </label>
+            ></label>
             <select
               id="selectedChannel"
               className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"

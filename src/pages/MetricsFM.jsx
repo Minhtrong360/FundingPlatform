@@ -12,82 +12,6 @@ function Component({
   yearlySales,
   revenue,
 }) {
-  const stackedbarChartData = {
-    series: [
-      {
-        name: "Product A",
-        data: [44, 55, 41, 67, 22, 43],
-      },
-      {
-        name: "Product B",
-        data: [13, 23, 20, 8, 13, 27],
-      },
-      {
-        name: "Product C",
-        data: [11, 17, 15, 15, 21, 14],
-      },
-      {
-        name: "Product D",
-        data: [21, 7, 25, 13, 22, 8],
-      },
-    ],
-    options: {
-      chart: {
-        type: "bar",
-        height: 350,
-        stacked: true,
-        toolbar: {
-          show: false, // Turn off toolbar
-        },
-      },
-      plotOptions: {
-        bar: {
-          horizontal: false,
-        },
-      },
-      xaxis: {
-        categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-      },
-
-      fill: {
-        opacity: 1,
-      },
-      toolbar: {
-        show: false, // Turn off toolbar
-      },
-    },
-  };
-
-  const dotChartData = {
-    series: [
-      {
-        name: "Sessions",
-        data: [30, 40, 35, 50, 49, 60, 70, 91, 125],
-      },
-    ],
-    options: {
-      chart: {
-        type: "line",
-        height: 350,
-        toolbar: {
-          show: false, // Turn off toolbar
-        },
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      stroke: {
-        curve: "smooth",
-      },
-      xaxis: {
-        categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      },
-      toolbar: {
-        show: false,
-      },
-    },
-  };
-
   const groupedbarChartData = {
     series: [
       {
@@ -123,66 +47,6 @@ function Component({
     },
   };
 
-  const lineChartData = {
-    series: [
-      {
-        name: "Visitors",
-        data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
-      },
-    ],
-    options: {
-      chart: {
-        type: "line",
-        height: 350,
-        toolbar: {
-          show: false, // Turn off toolbar
-        },
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      stroke: {
-        curve: "smooth",
-      },
-      xaxis: {
-        categories: [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-        ],
-      },
-      toolbar: {
-        show: false, // Turn off toolbar
-      },
-    },
-  };
-
-  const labelledpieChartData = {
-    series: [44, 55, 41, 17, 15],
-    options: {
-      chart: {
-        type: "pie",
-        height: 350,
-        toolbar: {
-          show: false, // Turn off toolbar
-        },
-      },
-      labels: ["Label 1", "Label 2", "Label 3", "Label 4", "Label 5"],
-      legend: {
-        position: "top",
-      },
-      toolbar: {
-        show: false, // Turn off toolbar
-      },
-    },
-  };
-
   function sumArray(arr) {
     return arr.reduce((total, num) => total + Number(num), 0);
   }
@@ -212,7 +76,7 @@ function Component({
               options={revenue.options}
               series={revenue.series}
               type="bar"
-              height={350}
+              height={325}
             />
           </Card>
           <Card className="flex flex-col">
@@ -244,7 +108,7 @@ const MetricsFM = ({
   return (
     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
       {/* Grid */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Map over cardData array */}
 
         <div className="flex flex-col bg-white border shadow-sm rounded-xl">
@@ -274,42 +138,44 @@ const MetricsFM = ({
             </div>
 
             <div className="mt-1 flex items-center gap-x-2">
-              <h3 className="text-sm sm:text-xl font-medium text-gray-800 my-2">
-                {Math.round(
-                  yearlyAverageCustomers[yearlyAverageCustomers.length - 1],
-                  2
-                )}
-              </h3>
-              <span className="flex items-center gap-x-1 text-green-600">
-                <svg
-                  className="inline-block size-4 self-center"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
-                  <polyline points="16 7 22 7 22 13" />
-                </svg>
-                <Tooltip title="The increase percentage of the final year compared to the first year in the series.">
-                  <span className="inline-block text-sm">
-                    {(
-                      ((yearlyAverageCustomers[
-                        yearlyAverageCustomers.length - 1
-                      ] -
-                        yearlyAverageCustomers[0]) *
-                        100) /
-                      yearlyAverageCustomers[0]
-                    )?.toFixed(2)}
-                    %
-                  </span>
-                </Tooltip>
-              </span>
+              <div className="flex flex-col xl:flex-row items-center">
+                <h3 className="text-sm sm:text-3xl font-bold text-gray-800 my-2">
+                  {Math.round(
+                    yearlyAverageCustomers[yearlyAverageCustomers.length - 1],
+                    2
+                  )}
+                </h3>
+                <span className="flex items-center gap-x-1 text-green-600 ml-2">
+                  <svg
+                    className="inline-block size-4 self-center"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                    <polyline points="16 7 22 7 22 13" />
+                  </svg>
+                  <Tooltip title="The increase percentage of the final year compared to the first year in the series.">
+                    <span className="inline-block text-sm">
+                      {(
+                        ((yearlyAverageCustomers[
+                          yearlyAverageCustomers.length - 1
+                        ] -
+                          yearlyAverageCustomers[0]) *
+                          100) /
+                        yearlyAverageCustomers[0]
+                      )?.toFixed(2)}
+                      %
+                    </span>
+                  </Tooltip>
+                </span>
+              </div>
             </div>
             <div>Say something</div>
           </div>
@@ -342,36 +208,39 @@ const MetricsFM = ({
             </div>
 
             <div className="mt-1 flex items-center gap-x-2">
-              <h3 className="text-sm sm:text-xl font-medium text-gray-800 my-2">
-                ${Math.round(yearlySales[yearlySales.length - 1])}
-              </h3>
-              <span className="flex items-center gap-x-1 text-green-600">
-                <svg
-                  className="inline-block size-4 self-center"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
-                  <polyline points="16 7 22 7 22 13" />
-                </svg>
-                <Tooltip title="The increase percentage of the final year compared to the first year in the series.">
-                  <span className="inline-block text-sm">
-                    {(
-                      ((yearlySales[yearlySales.length - 1] - yearlySales[0]) *
-                        100) /
-                      yearlySales[0]
-                    )?.toFixed(2)}
-                    %
-                  </span>
-                </Tooltip>
-              </span>
+              <div className="flex flex-col xl:flex-row items-center ">
+                <h3 className="text-sm sm:text-3xl font-bold text-gray-800 my-2">
+                  ${Math.round(yearlySales[yearlySales.length - 1])}
+                </h3>
+                <span className="flex items-center gap-x-1 text-green-600 ml-2">
+                  <svg
+                    className="inline-block size-4 self-center"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                    <polyline points="16 7 22 7 22 13" />
+                  </svg>
+                  <Tooltip title="The increase percentage of the final year compared to the first year in the series.">
+                    <span className="inline-block text-sm">
+                      {(
+                        ((yearlySales[yearlySales.length - 1] -
+                          yearlySales[0]) *
+                          100) /
+                        yearlySales[0]
+                      )?.toFixed(2)}
+                      %
+                    </span>
+                  </Tooltip>
+                </span>
+              </div>
             </div>
             <div>Say something</div>
           </div>

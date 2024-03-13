@@ -382,7 +382,7 @@ const ProfitAndLossSection = ({
   };
 
   return (
-    <div>
+    <div className="border-t-2">
       <h2 className="text-2xl font-semibold mb-4">Profit and Loss Statement</h2>
       <Table
         className="overflow-auto my-8"

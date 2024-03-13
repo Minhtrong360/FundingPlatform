@@ -13,6 +13,8 @@ const ProfitAndLossSection = ({
   numberOfMonths,
   incomeTaxRate,
   startingCashBalance,
+  investmentTableData,
+  loanTableData,
 }) => {
   const calculateProfitAndLoss = () => {
     let totalRevenue = new Array(numberOfMonths).fill(0);
@@ -222,6 +224,11 @@ const ProfitAndLossSection = ({
     investmentData.reduce((acc, data) => acc + data?.assetValue[index], 0)
   );
 
+  const cfInvestmentsSum = investmentTableData.map(
+    (investment) =>
+      investment?.monthlyInvestments?.reduce((acc, curr) => acc + curr, 0) || 0
+  );
+
   const totalLoanAmount = loanData[0]?.loanDataPerMonth?.map((_, index) =>
     loanData.reduce(
       (acc, loan) => acc + (loan.loanDataPerMonth[index]?.loanAmount || 0),
@@ -248,9 +255,29 @@ const ProfitAndLossSection = ({
   const filledTotalLoanAmount = fillWithZero(totalLoanAmount);
   const filledTotalPrincipal = fillWithZero(totalPrincipal);
 
+  const cfInvestments = investmentTableData.find(
+    (item) => item.key === "CF Investments"
+  );
+  const cfInvestmentsArray = [];
+
+  Object.keys(cfInvestments).forEach((key) => {
+    if (key.startsWith("month")) {
+      cfInvestmentsArray.push(parseFloat(cfInvestments[key]));
+    }
+  });
+
+  const cfLoans = loanTableData.find((item) => item.key === "CF Loans");
+  const cfLoanArray = [];
+
+  Object.keys(cfLoans).forEach((key) => {
+    if (key.startsWith("Month ")) {
+      cfLoanArray.push(parseFloat(cfLoans[key]));
+    }
+  });
+
   const positionDataWithNetIncome = [
     { key: "Net Income", values: netIncome },
-    { key: "Costs", values: totalCosts },
+    // { key: "Costs", values: totalCosts },
     { key: "Depreciation", values: totalInvestmentDepreciation },
     {
       key: "Decrease (Increase) in Inventory",
@@ -265,18 +292,6 @@ const ProfitAndLossSection = ({
       values: new Array(numberOfMonths).fill(0),
     },
     {
-      key: "Total Asset Value",
-      values: totalAssetValue,
-    },
-    {
-      key: "Total Loan Amount",
-      values: filledTotalLoanAmount,
-    },
-    {
-      key: "Total Principal",
-      values: filledTotalPrincipal,
-    },
-    {
       key: "CF Operations",
       values: netIncome.map(
         (value, index) =>
@@ -286,6 +301,30 @@ const ProfitAndLossSection = ({
           0 /* AR */ -
           0 /* AP */
       ),
+    },
+    {
+      key: "CF Investments",
+      values: cfInvestmentsArray,
+    },
+    {
+      key: "CF Loans",
+      values: cfLoanArray,
+    },
+    {
+      key: "Total Principal",
+      values: filledTotalPrincipal,
+    },
+    {
+      key: "Increase in Common Stock",
+      values: new Array(numberOfMonths).fill(0), // Placeholder values
+    },
+    {
+      key: "Increase in Preferred Stock",
+      values: new Array(numberOfMonths).fill(0), // Placeholder values
+    },
+    {
+      key: "Increase in Paid in Capital",
+      values: new Array(numberOfMonths).fill(0), // Placeholder values
     },
   ].map((item, index) => ({
     metric: item.key,

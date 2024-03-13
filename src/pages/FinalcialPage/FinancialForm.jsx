@@ -314,6 +314,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     },
   ]);
   const [investmentData, setInvestmentData] = useState([]);
+  const [investmentTableData, setInvestmentTableData] = useState([]);
 
   //LoanState
 
@@ -329,6 +330,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   ]);
 
   const [loanData, setLoanData] = useState([]);
+
+  const [loanTableData, setLoanTableData] = useState([]);
 
   // Lưu vào DB
 
@@ -499,28 +502,33 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
   useEffect(() => {
     setTemIsLoading(true);
-    setTimeout(() => {
-      setActiveTab("customer");
-    }, 500);
-    setTimeout(() => {
-      setActiveTab("sales");
-    }, 1000);
-    setTimeout(() => {
-      setActiveTab("cost");
-    }, 1500);
-    setTimeout(() => {
-      setActiveTab("personnel");
-    }, 2000);
-    setTimeout(() => {
-      setActiveTab("investment");
-    }, 2500);
-    setTimeout(() => {
-      setActiveTab("loan");
-    }, 3000);
-    setTimeout(() => {
-      setActiveTab("overview");
-      setTemIsLoading(false);
-    }, 3500);
+
+    const tabs = [
+      { tab: "customer", delay: 50 },
+      { tab: "sales", delay: 50 },
+      { tab: "cost", delay: 50 },
+      { tab: "personnel", delay: 50 },
+      { tab: "investment", delay: 50 },
+      { tab: "loan", delay: 50 },
+      { tab: "investment", delay: 50 },
+      { tab: "overview", delay: 50 },
+    ];
+
+    let currentIndex = 0;
+
+    const switchTabs = () => {
+      setTimeout(() => {
+        setActiveTab(tabs[currentIndex].tab);
+        currentIndex++;
+        if (currentIndex < tabs.length) {
+          switchTabs();
+        } else {
+          setTemIsLoading(false);
+        }
+      }, tabs[currentIndex].delay);
+    };
+
+    switchTabs();
   }, [chatbotResponse]);
 
   return (
@@ -719,6 +727,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   setInvestmentData={setInvestmentData}
                   isSaved={isSaved}
                   setIsSaved={setIsSaved}
+                  setInvestmentTableData={setInvestmentTableData}
                 />
               )}
               {activeTab === "loan" && (
@@ -730,6 +739,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   setLoanData={setLoanData}
                   isSaved={isSaved}
                   setIsSaved={setIsSaved}
+                  setLoanTableData={setLoanTableData}
                 />
               )}
               {activeTab === "result" && (
@@ -743,6 +753,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   loanData={loanData}
                   numberOfMonths={numberOfMonths}
                   incomeTaxRate={incomeTax}
+                  investmentTableData={investmentTableData}
+                  loanTableData={loanTableData}
                 />
               )}
             </div>

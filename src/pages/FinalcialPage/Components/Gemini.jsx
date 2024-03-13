@@ -215,7 +215,7 @@ const Gemini = ({
                 ]
               }
             }
-             create a json file like this for a ${inputValue}, the ids of each object must be included, numbered increasingly unique, return only json file`,
+            Based on given JSON, return purely a JSON file with appropriate values used for business model of ${inputValue}. All the keys must be included in new JSON with key name unchanged. Values of each key are unique. No explain.`,
           }),
         }
       );

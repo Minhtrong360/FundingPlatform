@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
-import { Table, Tooltip, message } from "antd";
+import { Table, message } from "antd";
 import Chart from "react-apexcharts";
 
 const LoanSection = ({
@@ -11,175 +11,11 @@ const LoanSection = ({
   setLoanData,
   isSaved,
   setIsSaved,
+  setLoanTableData,
 }) => {
   const [tempLoanInputs, setTempLoanInputs] = useState(loanInputs);
-
-  const [tempLoanData, setTempLoanData] = useState(loanData);
-
   const [renderLoanForm, setRenderLoanForm] = useState(loanInputs[0]?.id);
 
-  useEffect(() => {
-    setTempLoanInputs(loanInputs);
-    setRenderLoanForm(loanInputs[0]?.id);
-  }, [loanInputs]);
-
-  //LoanFunctions
-
-  const addNewLoanInput = () => {
-    const maxId = Math.max(...tempLoanInputs.map((input) => input?.id));
-    const newId = maxId !== -Infinity ? maxId + 1 : 1;
-    const newLoan = {
-      id: newId,
-      loanName: "New loan",
-      loanAmount: "0",
-      interestRate: "0",
-      loanBeginMonth: "0",
-      loanEndMonth: "0",
-    };
-    setTempLoanInputs([...tempLoanInputs, newLoan]);
-    setRenderLoanForm(newId.toString());
-  };
-
-  const removeLoanInput = (id) => {
-    const newInputs = tempLoanInputs.filter((input) => input?.id != id);
-
-    setTempLoanInputs(newInputs);
-    setRenderLoanForm(newInputs[0]?.id);
-  };
-
-  const handleLoanInputChange = (id, field, value) => {
-    const newInputs = tempLoanInputs.map((input) => {
-      if (input?.id === id) {
-        return {
-          ...input,
-          [field]: value,
-        };
-      }
-      return input;
-    });
-    setTempLoanInputs(newInputs);
-  };
-
-  const calculateLoanData = () => {
-    return tempLoanInputs.map((loan) => {
-      const monthlyRate = parseFloat(loan.interestRate) / 100 / 12;
-      const loanAmount = parseFloat(loan.loanAmount);
-      const loanDuration =
-        parseInt(loan.loanEndMonth, 10) - parseInt(loan.loanBeginMonth, 10) + 1;
-
-      // Calculate monthly payment
-      const monthlyPayment =
-        (loanAmount * monthlyRate) /
-        (1 - Math.pow(1 + monthlyRate, -loanDuration));
-
-      let remainingBalance = loanAmount;
-      const loanDataPerMonth = [];
-
-      for (let month = 1; month <= loanDuration; month++) {
-        const interestForMonth = remainingBalance * monthlyRate;
-        const principalForMonth = monthlyPayment - interestForMonth;
-        remainingBalance -= principalForMonth;
-
-        loanDataPerMonth.push({
-          month: month + parseInt(loan.loanBeginMonth, 10) - 1,
-          payment: monthlyPayment,
-          principal: principalForMonth,
-          interest: interestForMonth,
-          balance: remainingBalance,
-          loanAmount: loanAmount,
-        });
-      }
-
-      return {
-        loanName: loan.loanName,
-        loanDataPerMonth,
-      };
-    });
-  };
-
-  const transformLoanDataForTable = () => {
-    const loanTableData = [];
-
-    const selectedLoan = tempLoanInputs.find(
-      (input) => input.id === parseInt(renderLoanForm)
-    );
-    if (!selectedLoan) return loanTableData; // Return empty table data if no loan is selected
-
-    const loanIndex = tempLoanInputs.findIndex(
-      (input) => input.id === parseInt(renderLoanForm)
-    );
-    const loanData = calculateLoanData()[loanIndex];
-
-    const loanName = selectedLoan.loanName || `Loan ${loanIndex + 1}`;
-
-    const loanAmountRow = {
-      key: `Loan Amount`,
-      type: `Loan Amount`,
-    };
-    const paymentRow = {
-      key: `Payment`,
-      type: `Payment`,
-    };
-    const principalRow = {
-      key: `Principal`,
-      type: `Principal`,
-    };
-    const interestRow = {
-      key: `Interest`,
-      type: `Interest`,
-    };
-    const balanceRow = {
-      key: `Remaining Balance`,
-      type: `Remaining Balance`,
-    };
-
-    // Initialize all rows with default values
-    for (let monthIndex = 1; monthIndex <= numberOfMonths; monthIndex++) {
-      const monthKey = `Month ${monthIndex}`;
-      loanAmountRow[monthKey] = "0.00";
-      paymentRow[monthKey] = "0.00";
-      principalRow[monthKey] = "0.00";
-      interestRow[monthKey] = "0.00";
-      balanceRow[monthKey] = "0.00";
-    }
-
-    loanData.loanDataPerMonth.forEach((monthData) => {
-      const monthKey = `Month ${monthData.month}`;
-      loanAmountRow[monthKey] = monthData.loanAmount?.toFixed(2);
-      paymentRow[monthKey] = monthData.payment?.toFixed(2);
-      principalRow[monthKey] = monthData.principal?.toFixed(2);
-      interestRow[monthKey] = monthData.interest?.toFixed(2);
-      balanceRow[monthKey] = monthData.balance?.toFixed(2);
-    });
-
-    loanTableData.push(
-      loanAmountRow,
-      paymentRow,
-      principalRow,
-      interestRow,
-      balanceRow
-    );
-
-    return loanTableData;
-  };
-
-  //LoanUseEffect
-  useEffect(() => {
-    const calculatedData = calculateLoanData();
-    setLoanData(calculatedData);
-  }, [loanInputs, numberOfMonths, renderLoanForm]);
-
-  //LoanColumns
-  const loanColumns = [
-    { fixed: "left", title: "Type", dataIndex: "type", key: "type" },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `Month ${i + 1}`,
-      key: `Month ${i + 1}`,
-    })),
-  ];
-
-  //LoanChart
   const [loanChart, setLoanChart] = useState({
     options: {
       chart: { id: "loan-chart", type: "line", height: 350 },
@@ -220,6 +56,179 @@ const LoanSection = ({
   });
 
   useEffect(() => {
+    setTempLoanInputs(loanInputs);
+    setRenderLoanForm(loanInputs[0]?.id);
+  }, [loanInputs]);
+
+  const addNewLoanInput = () => {
+    const maxId = Math.max(...tempLoanInputs.map((input) => input?.id));
+    const newId = maxId !== -Infinity ? maxId + 1 : 1;
+    const newLoan = {
+      id: newId,
+      loanName: "New loan",
+      loanAmount: "0",
+      interestRate: "0",
+      loanBeginMonth: "0",
+      loanEndMonth: "0",
+    };
+    setTempLoanInputs([...tempLoanInputs, newLoan]);
+    setRenderLoanForm(newId.toString());
+  };
+
+  const removeLoanInput = (id) => {
+    const newInputs = tempLoanInputs.filter((input) => input?.id != id);
+    setTempLoanInputs(newInputs);
+    setRenderLoanForm(newInputs[0]?.id);
+  };
+
+  const handleLoanInputChange = (id, field, value) => {
+    const newInputs = tempLoanInputs.map((input) => {
+      if (input?.id === id) {
+        return {
+          ...input,
+          [field]: value,
+        };
+      }
+      return input;
+    });
+    setTempLoanInputs(newInputs);
+  };
+
+  const calculateLoanData = () => {
+    return tempLoanInputs.map((loan) => {
+      const monthlyRate = parseFloat(loan.interestRate) / 100 / 12;
+      const loanAmount = parseFloat(loan.loanAmount);
+      const loanDuration =
+        parseInt(loan.loanEndMonth, 10) - parseInt(loan.loanBeginMonth, 10) + 1;
+
+      const monthlyPayment =
+        (loanAmount * monthlyRate) /
+        (1 - Math.pow(1 + monthlyRate, -loanDuration));
+
+      let remainingBalance = loanAmount;
+      const loanDataPerMonth = [];
+
+      for (let month = 1; month <= loanDuration; month++) {
+        const interestForMonth = remainingBalance * monthlyRate;
+        const principalForMonth = monthlyPayment - interestForMonth;
+        remainingBalance -= principalForMonth;
+
+        loanDataPerMonth.push({
+          month: month + parseInt(loan.loanBeginMonth, 10) - 1,
+          payment: monthlyPayment,
+          principal: principalForMonth,
+          interest: interestForMonth,
+          balance: remainingBalance,
+          loanAmount: loanAmount,
+        });
+      }
+
+      return {
+        loanName: loan.loanName,
+        loanDataPerMonth,
+      };
+    });
+  };
+
+  const transformLoanDataForTable = () => {
+    const loanTableData = [];
+
+    const selectedLoan = tempLoanInputs.find(
+      (input) => input.id === parseInt(renderLoanForm)
+    );
+    if (!selectedLoan) return loanTableData;
+
+    const loanIndex = tempLoanInputs.findIndex(
+      (input) => input.id === parseInt(renderLoanForm)
+    );
+    const loanData = calculateLoanData()[loanIndex];
+
+    const loanName = selectedLoan.loanName || `Loan ${loanIndex + 1}`;
+
+    const loanAmountRow = {
+      key: `Loan Amount`,
+      type: `Loan Amount`,
+    };
+    const paymentRow = {
+      key: `Payment`,
+      type: `Payment`,
+    };
+    const principalRow = {
+      key: `Principal`,
+      type: `Principal`,
+    };
+    const interestRow = {
+      key: `Interest`,
+      type: `Interest`,
+    };
+    const balanceRow = {
+      key: `Remaining Balance`,
+      type: `Remaining Balance`,
+    };
+
+    for (let monthIndex = 1; monthIndex <= numberOfMonths; monthIndex++) {
+      const monthKey = `Month ${monthIndex}`;
+      loanAmountRow[monthKey] = "0.00";
+      paymentRow[monthKey] = "0.00";
+      principalRow[monthKey] = "0.00";
+      interestRow[monthKey] = "0.00";
+      balanceRow[monthKey] = "0.00";
+    }
+
+    loanData.loanDataPerMonth.forEach((monthData) => {
+      const monthKey = `Month ${monthData.month}`;
+      loanAmountRow[monthKey] = monthData.loanAmount?.toFixed(2);
+      paymentRow[monthKey] = monthData.payment?.toFixed(2);
+      principalRow[monthKey] = monthData.principal?.toFixed(2);
+      interestRow[monthKey] = monthData.interest?.toFixed(2);
+      balanceRow[monthKey] = monthData.balance?.toFixed(2);
+    });
+
+    loanTableData.push(
+      loanAmountRow,
+      paymentRow,
+      principalRow,
+      interestRow,
+      balanceRow
+    );
+
+    const cfLoansSum = Array(numberOfMonths).fill(0);
+    tempLoanInputs.forEach((input) => {
+      const beginMonth = parseInt(input.loanBeginMonth, 10);
+      const loanAmount = parseFloat(input.loanAmount);
+
+      cfLoansSum[beginMonth - 1] += loanAmount;
+    });
+
+    const cfLoansRow = {
+      key: `CF Loans`,
+      type: `CF Loans`,
+    };
+    for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
+      cfLoansRow[`Month ${monthIndex + 1}`] =
+        cfLoansSum[monthIndex]?.toFixed(2);
+    }
+    loanTableData.push(cfLoansRow);
+
+    return loanTableData;
+  };
+
+  useEffect(() => {
+    const calculatedData = calculateLoanData();
+    setLoanData(calculatedData);
+    setLoanTableData(tableData);
+  }, [loanInputs, numberOfMonths, renderLoanForm]);
+
+  const loanColumns = [
+    { fixed: "left", title: "Type", dataIndex: "type", key: "type" },
+    ...Array.from({ length: numberOfMonths }, (_, i) => ({
+      title: `Month_${i + 1}`,
+      dataIndex: `Month ${i + 1}`,
+      key: `Month ${i + 1}`,
+    })),
+  ];
+
+  useEffect(() => {
     const seriesData = calculateLoanData().flatMap((loan) => {
       return [
         {
@@ -253,12 +262,19 @@ const LoanSection = ({
     message.success("Data saved successfully!");
   };
 
+  const tableData = transformLoanDataForTable();
+
   useEffect(() => {
     if (isSaved) {
       setLoanInputs(tempLoanInputs);
+      setLoanTableData(tableData);
       setIsSaved(false);
     }
   }, [isSaved]);
+
+  useEffect(() => {
+    setLoanTableData(tableData);
+  }, []);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -291,7 +307,7 @@ const LoanSection = ({
           </div>
 
           {tempLoanInputs
-            .filter((input) => input?.id == renderLoanForm) // Sử dụng biến renderForm
+            .filter((input) => input?.id == renderLoanForm)
             .map((input) => (
               <div
                 key={input?.id}

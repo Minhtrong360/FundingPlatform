@@ -51,13 +51,21 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [chatbotResponse, setChatbotResponse] = useState("");
   // Gemini useEffect
   useEffect(() => {
+    console.log("first");
     // Ensure chatbotResponse is only processed when it's a valid string
     if (!chatbotResponse || chatbotResponse.trim() === "") return;
     try {
       const data = JSON.parse(chatbotResponse);
+      console.log("data", data);
 
       if (data.DurationSelect)
         setSelectedDuration(data.DurationSelect.selectedDuration);
+      setStartingCashBalance(data.DurationSelect.startingCashBalance);
+      setStatus(data.DurationSelect.status);
+      setIndustry(data.DurationSelect.industry);
+      setIncomeTax(data.DurationSelect.incomeTax);
+      setPayrollTax(data.DurationSelect.payrollTax);
+      setCurrency(data.DurationSelect.currency);
       if (data.CustomerSection)
         setCustomerInputs(data.CustomerSection.customerInputs);
       if (data.SalesSection) setChannelInputs(data.SalesSection.channelInputs);
@@ -321,6 +329,13 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   ]);
 
   const [loanData, setLoanData] = useState([]);
+
+  console.log("customerInputs", customerInputs);
+  console.log("channelInputs", channelInputs);
+  console.log("costInputs", costInputs);
+  console.log("personnelInputs", personnelInputs);
+  console.log("investmentInputs", investmentInputs);
+  console.log("loanInputs", loanInputs);
 
   // Lưu vào DB
 

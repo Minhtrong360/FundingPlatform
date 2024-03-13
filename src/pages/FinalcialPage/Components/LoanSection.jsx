@@ -17,6 +17,12 @@ const LoanSection = ({
   const [tempLoanData, setTempLoanData] = useState(loanData);
 
   const [renderLoanForm, setRenderLoanForm] = useState(loanInputs[0]?.id);
+
+  useEffect(() => {
+    setTempLoanInputs(loanInputs);
+    setRenderLoanForm(loanInputs[0]?.id);
+  }, [loanInputs]);
+
   //LoanFunctions
 
   const addNewLoanInput = () => {
@@ -90,18 +96,22 @@ const LoanSection = ({
       };
     });
   };
-  
+
   const transformLoanDataForTable = () => {
     const loanTableData = [];
-    
-    const selectedLoan = tempLoanInputs.find(input => input.id === parseInt(renderLoanForm));
+
+    const selectedLoan = tempLoanInputs.find(
+      (input) => input.id === parseInt(renderLoanForm)
+    );
     if (!selectedLoan) return loanTableData; // Return empty table data if no loan is selected
-    
-    const loanIndex = tempLoanInputs.findIndex(input => input.id === parseInt(renderLoanForm));
+
+    const loanIndex = tempLoanInputs.findIndex(
+      (input) => input.id === parseInt(renderLoanForm)
+    );
     const loanData = calculateLoanData()[loanIndex];
-  
+
     const loanName = selectedLoan.loanName || `Loan ${loanIndex + 1}`;
-    
+
     const loanAmountRow = {
       key: `Loan Amount`,
       type: `Loan Amount`,
@@ -122,7 +132,7 @@ const LoanSection = ({
       key: `Remaining Balance`,
       type: `Remaining Balance`,
     };
-  
+
     // Initialize all rows with default values
     for (let monthIndex = 1; monthIndex <= numberOfMonths; monthIndex++) {
       const monthKey = `Month ${monthIndex}`;
@@ -132,7 +142,7 @@ const LoanSection = ({
       interestRow[monthKey] = "0.00";
       balanceRow[monthKey] = "0.00";
     }
-  
+
     loanData.loanDataPerMonth.forEach((monthData) => {
       const monthKey = `Month ${monthData.month}`;
       loanAmountRow[monthKey] = monthData.loanAmount?.toFixed(2);
@@ -141,7 +151,7 @@ const LoanSection = ({
       interestRow[monthKey] = monthData.interest?.toFixed(2);
       balanceRow[monthKey] = monthData.balance?.toFixed(2);
     });
-  
+
     loanTableData.push(
       loanAmountRow,
       paymentRow,
@@ -149,17 +159,15 @@ const LoanSection = ({
       interestRow,
       balanceRow
     );
-  
+
     return loanTableData;
   };
-  
+
   //LoanUseEffect
   useEffect(() => {
     const calculatedData = calculateLoanData();
     setLoanData(calculatedData);
   }, [loanInputs, numberOfMonths, renderLoanForm]);
-  
-  
 
   //LoanColumns
   const loanColumns = [
@@ -172,71 +180,69 @@ const LoanSection = ({
   ];
 
   //LoanChart
-const [loanChart, setLoanChart] = useState({
-  options: {
-    chart: { id: "loan-chart", type: "line", height: 350 },
-    xaxis: {
-      categories: Array.from(
-        { length: numberOfMonths },
-        (_, i) => `${i + 1}`
-      ),
-      title: {
-        text: "Month",
-        style: {
-          fontFamily: "Inter, sans-serif",
-          fontWeight: "600",
+  const [loanChart, setLoanChart] = useState({
+    options: {
+      chart: { id: "loan-chart", type: "line", height: 350 },
+      xaxis: {
+        categories: Array.from(
+          { length: numberOfMonths },
+          (_, i) => `${i + 1}`
+        ),
+        title: {
+          text: "Month",
+          style: {
+            fontFamily: "Inter, sans-serif",
+            fontWeight: "600",
+          },
         },
       },
+      yaxis: {
+        labels: {
+          formatter: function (val) {
+            return Math.floor(val);
+          },
+        },
+        title: {
+          text: "Amount ($)",
+          style: {
+            fontFamily: "Inter, sans-serif",
+            fontWeight: "600",
+          },
+        },
+      },
+      legend: { position: "bottom", horizontalAlign: "right" },
+      fill: { type: "solid" },
+      dataLabels: { enabled: false },
+      stroke: { curve: "smooth" },
+      markers: { size: 1 },
     },
-    yaxis: {
-      labels: {
-        formatter: function (val) {
-          return Math.floor(val);
-        },
-      },
-      title: {
-        text: "Amount ($)",
-        style: {
-          fontFamily: "Inter, sans-serif",
-          fontWeight: "600",
-        },
-      },
-    },
-    legend: { position: "bottom", horizontalAlign: "right" },
-    fill: { type: "solid" },
-    dataLabels: { enabled: false },
-    stroke: { curve: "smooth" },
-    markers: { size: 1 },
-  },
-  series: [],
-});
-
-useEffect(() => {
-  const seriesData = calculateLoanData().flatMap((loan) => {
-    return [
-      {
-        name: `${loan.loanName} - Payment`,
-        data: loan.loanDataPerMonth.map((month) => month.payment),
-      },
-      {
-        name: `${loan.loanName} - Principal`,
-        data: loan.loanDataPerMonth.map((month) => month.principal),
-      },
-      {
-        name: `${loan.loanName} - Interest`,
-        data: loan.loanDataPerMonth.map((month) => month.interest),
-      },
-      {
-        name: `${loan.loanName} - Remaining Balance`,
-        data: loan.loanDataPerMonth.map((month) => month.balance),
-      },
-    ];
+    series: [],
   });
 
-  setLoanChart((prevState) => ({ ...prevState, series: seriesData }));
-}, [tempLoanInputs, numberOfMonths]);
+  useEffect(() => {
+    const seriesData = calculateLoanData().flatMap((loan) => {
+      return [
+        {
+          name: `${loan.loanName} - Payment`,
+          data: loan.loanDataPerMonth.map((month) => month.payment),
+        },
+        {
+          name: `${loan.loanName} - Principal`,
+          data: loan.loanDataPerMonth.map((month) => month.principal),
+        },
+        {
+          name: `${loan.loanName} - Interest`,
+          data: loan.loanDataPerMonth.map((month) => month.interest),
+        },
+        {
+          name: `${loan.loanName} - Remaining Balance`,
+          data: loan.loanDataPerMonth.map((month) => month.balance),
+        },
+      ];
+    });
 
-
+    setLoanChart((prevState) => ({ ...prevState, series: seriesData }));
+  }, [tempLoanInputs, numberOfMonths]);
 
   const handleSelectChange = (event) => {
     setRenderLoanForm(event.target.value);
@@ -269,8 +275,7 @@ useEffect(() => {
             <label
               htmlFor="selectedChannel"
               className="block my-4 text-base  darkTextWhite"
-            >
-            </label>
+            ></label>
             <select
               id="selectedChannel"
               className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"

@@ -24,6 +24,12 @@ const CostSection = ({
   const [tempCostData, setTempCostData] = useState(costData);
 
   const [renderCostForm, setRenderCostForm] = useState(costInputs[0]?.id);
+
+  useEffect(() => {
+    setTempCostInput(costInputs);
+    setRenderCostForm(costInputs[0]?.id);
+  }, [costInputs]);
+
   const addNewCostInput = () => {
     const maxId = Math.max(...tempCostInput.map((input) => input?.id));
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
@@ -91,7 +97,7 @@ const CostSection = ({
       costItem.monthlyCosts.forEach((monthData) => {
         if (!transformedCustomerTableData[rowKey]) {
           transformedCustomerTableData[rowKey] = {
-            key: rowKey,  
+            key: rowKey,
             costName: rowKey,
           };
         }
@@ -200,7 +206,6 @@ const CostSection = ({
       setIsSaved(false);
     }
   }, [isSaved]);
-  
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -217,8 +222,7 @@ const CostSection = ({
             <label
               htmlFor="selectedChannel"
               className="block my-4 text-base  darkTextWhite"
-            >
-            </label>
+            ></label>
             <select
               id="selectedChannel"
               className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"

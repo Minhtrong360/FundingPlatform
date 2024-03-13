@@ -20,6 +20,12 @@ const InvestmentSection = ({
   const [renderInvestmentForm, setRenderInvestmentForm] = useState(
     investmentInputs[0]?.id
   );
+
+  useEffect(() => {
+    setTempInvestmentInputs(investmentInputs);
+    setRenderInvestmentForm(investmentInputs[0]?.id);
+  }, [investmentInputs]);
+
   //InvestmentFunctions
 
   const addNewInvestmentInput = () => {

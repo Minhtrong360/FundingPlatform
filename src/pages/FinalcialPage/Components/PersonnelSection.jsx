@@ -24,6 +24,11 @@ const PersonnelSection = ({
     personnelInputs[0]?.id
   );
 
+  useEffect(() => {
+    setTempPersonnelInputs(personnelInputs);
+    setRenderPersonnelForm(personnelInputs[0]?.id);
+  }, [personnelInputs]);
+
   // Add state for the increase per year
   const [increasePerYear, setIncreasePerYear] = useState(0);
 

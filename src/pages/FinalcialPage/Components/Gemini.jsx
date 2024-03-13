@@ -58,15 +58,175 @@ const Gemini = ({
           },
 
           body: JSON.stringify({
-            user_input: `{ "DurationSelect": { "selectedDuration": "5 years", "startingCashBalance": 20000, "status": "active", "industry": "retail", "incomeTax": 25, "payrollTax": 12, "currency": "USD" }, "CustomerSection": { "customerInputs": [ { "customersPerMonth": 500, "growthPerMonth": 5, "channelName": "In-Store", "beginMonth": 1, "endMonth": 60 }, { "customersPerMonth": 200, "growthPerMonth": 10, "channelName": "Online Delivery", "beginMonth": 6, "endMonth": 60 } ] }, "SalesSection": { "channelInputs": [ { "productName": "Coffee", "price": 5, "multiples": 1, "deductionPercentage": 0, "cogsPercentage": 30, "selectedChannel": "In-Store", "channelAllocation": 0.6 }, { "productName": "Pastries", "price": 4, "multiples": 1, "deductionPercentage": 0, "cogsPercentage": 50, "selectedChannel": "In-Store", "channelAllocation": 0.4 }, { "productName": "Coffee Subscription", "price": 20, "multiples": 1, "deductionPercentage": 5, "cogsPercentage": 25, "selectedChannel": "Online Delivery", "channelAllocation": 1 } ], "channelNames": [ "In-Store", "Online Delivery" ] }, "CostSection": { "costInputs": [ { "costName": "Rent", "costValue": 3000, "growthPercentage": 3, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" }, { "costName": "Utilities", "costValue": 500, "growthPercentage": 4, "beginMonth": 1, "endMonth": 60, "costType": "Operating Cost" } ] }, "PersonnelSection": { "personnelInputs": [ { "jobTitle": "Barista", "salaryPerMonth": 2500, "numberOfHires": 3, "jobBeginMonth": 1, "jobEndMonth": 60 }, { "jobTitle": "Manager", "salaryPerMonth": 4000, "numberOfHires": 1, "jobBeginMonth": 1, "jobEndMonth": 60 } ] }, "InvestmentSection": { "investmentInputs": [ { "purchaseName": "Espresso Machine", "assetCost": 8000, "quantity": 2, "purchaseMonth": 1, "residualValue": 800, "usefulLifetime": 60 }, { "purchaseName": "Furniture", "assetCost": 10000, "quantity": 1, "purchaseMonth": 1, "residualValue": 1000, "usefulLifetime": 60 } ] }, "LoanSection": { "loanInputs": [ { "loanName": "Equipment Loan", "loanAmount": 15000, "interestRate": 4, "loanBeginMonth": 1, "loanEndMonth": 60 } ] } } create a json file like this for a ${inputValue}, return only json file`,
+            user_input: `{
+              "DurationSelect": {
+                "selectedDuration": "5 years",
+                "startingCashBalance": 20000,
+                "status": "active",
+                "industry": "retail",
+                "incomeTax": 25,
+                "payrollTax": 12,
+                "currency": "USD"
+              },
+              "CustomerSection": {
+                "customerInputs": [
+                  {
+                    "id": 1,
+                    "customersPerMonth": 300,
+                    "growthPerMonth": 1,
+                    "channelName": "Online",
+                    "beginMonth": 1,
+                    "endMonth": 36,
+                    "beginCustomer": 0,
+                    "churnRate": 0
+                  },
+                  {
+                    "id": 2,
+                    "customersPerMonth": 400,
+                    "growthPerMonth": 2,
+                    "channelName": "Offline",
+                    "beginMonth": 1,
+                    "endMonth": 36,
+                    "beginCustomer": 0,
+                    "churnRate": 0
+                  }
+                ]
+              },
+              "SalesSection": {
+                "channelInputs": [
+                  {
+                    "id": 1,
+                    "productName": "Coffee",
+                    "price": 4,
+                    "multiples": 1,
+                    "deductionPercentage": 5,
+                    "cogsPercentage": 30,
+                    "selectedChannel": "Offline",
+                    "channelAllocation": 0.4
+                  },
+                  {
+                    "id": 2,
+                    "productName": "Cake",
+                    "price": 8,
+                    "multiples": 1,
+                    "deductionPercentage": 4,
+                    "cogsPercentage": 35,
+                    "selectedChannel": "Offline",
+                    "channelAllocation": 0.3
+                  },
+                  {
+                    "id": 3,
+                    "productName": "Coffee Bag",
+                    "price": 6,
+                    "multiples": 1,
+                    "deductionPercentage": 6,
+                    "cogsPercentage": 25,
+                    "selectedChannel": "Online",
+                    "channelAllocation": 0.6
+                  }
+                ],
+                "channelNames": ["Online", "Offline"]
+              },
+              "CostSection": {
+                "costInputs": [
+                  {
+                    "id": 1,
+                    "costName": "Website",
+                    "costValue": 1000,
+                    "growthPercentage": 0,
+                    "beginMonth": 1,
+                    "endMonth": 6,
+                    "costType": "Sales, Marketing Cost"
+                  },
+                  {
+                    "id": 2,
+                    "costName": "Marketing",
+                    "costValue": 500,
+                    "growthPercentage": 0,
+                    "beginMonth": 1,
+                    "endMonth": 36,
+                    "costType": "Sales, Marketing Cost"
+                  },
+                  {
+                    "id": 3,
+                    "costName": "Rent",
+                    "costValue": 1000,
+                    "growthPercentage": 2,
+                    "beginMonth": 1,
+                    "endMonth": 36,
+                    "costType": "General Administrative Cost"
+                  }
+                ]
+              },
+              "PersonnelSection": {
+                "personnelInputs": [
+                  {
+                    "id": 1,
+                    "jobTitle": "Cashier",
+                    "salaryPerMonth": 800,
+                    "increasePerYear": 10,
+                    "numberOfHires": 2,
+                    "jobBeginMonth": 1,
+                    "jobEndMonth": 36
+                  },
+                  {
+                    "id": 2,
+                    "jobTitle": "Manager",
+                    "salaryPerMonth": 2000,
+                    "increasePerYear": 10,
+                    "numberOfHires": 1,
+                    "jobBeginMonth": 1,
+                    "jobEndMonth": 36
+                  }
+                ]
+              },
+              "InvestmentSection": {
+                "investmentInputs": [
+                  {
+                    "id": 1,
+                    "purchaseName": "Coffee machine",
+                    "assetCost": 8000,
+                    "quantity": 1,
+                    "purchaseMonth": 2,
+                    "residualValue": 10,
+                    "usefulLifetime": 36
+                  },
+                  {
+                    "id": 2,
+                    "purchaseName": "Table",
+                    "assetCost": 200,
+                    "quantity": 10,
+                    "purchaseMonth": 1,
+                    "residualValue": 10,
+                    "usefulLifetime": 36
+                  }
+                ]
+              },
+              "LoanSection": {
+                "loanInputs": [
+                  {
+                    "id": 1,
+                    "loanName": "Banking loan",
+                    "loanAmount": "15000",
+                    "interestRate": "6",
+                    "loanBeginMonth": "1",
+                    "loanEndMonth": "12"
+                  }
+                ]
+              }
+            }
+             create a json file like this for a ${inputValue}, the ids of each object must be included, numbered increasingly unique, return only json file`,
           }),
         }
       );
       console.log("2", response);
       const data = await response.json();
       console.log("3", data);
+      if (data.error) {
+        throw new Error(data.error);
+      }
       //Remove backticks from the constant responseText
-      const cleanedResponseText = data.response.replace(/json|`/g, "");
+      const cleanedResponseText = data?.response?.replace(/json|`/g, "");
       console.log("4");
       // Set the chatbot response to the latest messag
 

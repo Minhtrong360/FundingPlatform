@@ -46,6 +46,11 @@ const SalesSection = ({
   const [tempGrossProfitData, setTempGrossProfitData] =
     useState(grossProfitData);
 
+  useEffect(() => {
+    setTempChannelInputs(channelInputs);
+    setRenderChannelForm(channelInputs[0]?.id);
+  }, [channelInputs]);
+
   //RevenueFunctions
 
   const [renderChannelForm, setRenderChannelForm] = useState(

@@ -1,3 +1,17 @@
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setSelectedDuration,
+  setStartingCashBalance,
+  setStatus,
+  setIndustry,
+  setIncomeTax,
+  setPayrollTax,
+  setCurrency,
+  setStartMonth,
+  setStartYear,
+  setFinancialProjectName,
+} from "../../../features/DurationSlice";
+import { Tooltip } from "antd";
 import { Input } from "../../../components/ui/Input";
 import {
   Select,
@@ -6,30 +20,24 @@ import {
   SelectContent,
   SelectItem,
 } from "../../../components/ui/Select";
-import { Table, Tooltip, message } from "antd";
 
-const DurationSelect = ({
-  selectedDuration,
-  setSelectedDuration,
-  startingCashBalance,
-  setStartingCashBalance,
-  status,
-  setStatus,
-  industry,
-  setIndustry,
-  incomeTax,
-  setIncomeTax,
-  payrollTax,
-  setPayrollTax,
-  currency,
-  setCurrency,
-  startMonth,
-  setStartMonth,
-  startYear,
-  setStartYear,
-  financialProjectName,
-  setFinancialProjectName,
-}) => {
+const DurationSelect = () => {
+  const dispatch = useDispatch();
+  const {
+    selectedDuration,
+    startingCashBalance,
+    status,
+    industry,
+    incomeTax,
+    payrollTax,
+    currency,
+    startMonth,
+    startYear,
+    financialProjectName,
+  } = useSelector((state) => state.durationSelect);
+
+  console.log("selectedDuration", selectedDuration);
+
   const months = [
     "January",
     "February",
@@ -80,7 +88,9 @@ const DurationSelect = ({
             <Input
               className="border-gray-200"
               value={financialProjectName}
-              onChange={(e) => setFinancialProjectName(e.target.value)}
+              onChange={(e) =>
+                dispatch(setFinancialProjectName(e.target.value))
+              }
               type="text"
             />
           </div>
@@ -131,7 +141,9 @@ const DurationSelect = ({
         <Tooltip title="Select the duration 3 years or 5 years">
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className=" flex items-center text-sm">Duration :</span>
-            <Select onValueChange={(value) => setSelectedDuration(value)}>
+            <Select
+              onValueChange={(value) => dispatch(setSelectedDuration(value))}
+            >
               <SelectTrigger
                 id="start-date-year"
                 className="border-solid border-[1px] border-gray-200"

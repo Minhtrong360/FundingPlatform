@@ -30,14 +30,22 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [numberOfMonths, setNumberOfMonths] = useState(0);
 
   useEffect(() => {
-    if (selectedDuration === "3 years") {
-      setNumberOfMonths(36);
-    }
-    if (selectedDuration === "5 years") {
-      setNumberOfMonths(60);
-    }
-  }, [selectedDuration]);
+    // Chuyển đổi selectedDuration từ dạng "3 years" sang số
+    const extractNumber = (durationString) => {
+      const numberPattern = /\d+/; // Mẫu để trích xuất số từ chuỗi
+      const matches = durationString.match(numberPattern); // Tìm các số trong chuỗi
+      if (matches) {
+        return Number(matches[0]); // Chuyển đổi số thành kiểu số
+      }
+      return 0; // Trả về 0 nếu không tìm thấy số trong chuỗi
+    };
 
+    const years = extractNumber(selectedDuration);
+    const month = years * 12;
+    setNumberOfMonths(month);
+  }, [selectedDuration]);
+  console.log("selectedDuration", selectedDuration);
+  console.log("numberOfMonths", numberOfMonths);
   const [startingCashBalance, setStartingCashBalance] = useState([]);
   const [status, setStatus] = useState([]);
   const [industry, setIndustry] = useState("Technology");
@@ -504,14 +512,14 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     setTemIsLoading(true);
 
     const tabs = [
-      { tab: "customer", delay: 50 },
-      { tab: "sales", delay: 50 },
-      { tab: "cost", delay: 50 },
-      { tab: "personnel", delay: 50 },
-      { tab: "investment", delay: 50 },
-      { tab: "loan", delay: 50 },
-      { tab: "investment", delay: 50 },
-      { tab: "overview", delay: 50 },
+      { tab: "customer", delay: 150 },
+      { tab: "sales", delay: 150 },
+      { tab: "cost", delay: 150 },
+      { tab: "personnel", delay: 150 },
+      { tab: "investment", delay: 150 },
+      { tab: "loan", delay: 150 },
+      { tab: "investment", delay: 150 },
+      { tab: "overview", delay: 150 },
     ];
 
     let currentIndex = 0;
@@ -531,6 +539,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     switchTabs();
   }, [chatbotResponse]);
 
+  console.log("yearlyAverageCustomers", yearlyAverageCustomers);
+
   return (
     <div>
       <AlertMsg />
@@ -547,74 +557,77 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               setCurrentUser={setCurrentUser}
             />
           </div>
-          <div className="my-4">
-            <ul className="py-4 flex justify-center items-center border-t-2">
-              <li
-                className={`cursor-pointer mr-4 ${
-                  activeTab === "overview" ? "border-b-2 border-black" : ""
-                }`}
-                onClick={() => handleTabChange("overview")}
-              >
-                Overview
-              </li>
-              <li
-                className={`cursor-pointer mr-4 ${
-                  activeTab === "customer" ? "border-b-2 border-black" : ""
-                }`}
-                onClick={() => handleTabChange("customer")}
-              >
-                Customer
-              </li>
-              <li
-                className={`cursor-pointer mr-4 ${
-                  activeTab === "sales" ? "border-b-2 border-black" : ""
-                }`}
-                onClick={() => handleTabChange("sales")}
-              >
-                Sales
-              </li>
-              <li
-                className={`cursor-pointer mr-4 ${
-                  activeTab === "cost" ? "border-b-2 border-black" : ""
-                }`}
-                onClick={() => handleTabChange("cost")}
-              >
-                Cost
-              </li>
-              <li
-                className={`cursor-pointer mr-4 ${
-                  activeTab === "personnel" ? "border-b-2 border-black" : ""
-                }`}
-                onClick={() => handleTabChange("personnel")}
-              >
-                Personnel
-              </li>
-              <li
-                className={`cursor-pointer mr-4 ${
-                  activeTab === "investment" ? "border-b-2 border-black" : ""
-                }`}
-                onClick={() => handleTabChange("investment")}
-              >
-                Investment
-              </li>
-              <li
-                className={`cursor-pointer mr-4 ${
-                  activeTab === "loan" ? "border-b-2 border-black" : ""
-                }`}
-                onClick={() => handleTabChange("loan")}
-              >
-                Loan
-              </li>
+          <div className="my-4 ">
+            <div className="overflow-x-auto whitespace-nowrap border-t-2">
+              <ul className="py-4 flex sm:justify-center justify-start items-center">
+                <li
+                  className={`cursor-pointer mr-4 ${
+                    activeTab === "overview" ? "border-b-2 border-black" : ""
+                  }`}
+                  onClick={() => handleTabChange("overview")}
+                >
+                  Overview
+                </li>
+                <li
+                  className={`cursor-pointer mr-4 ${
+                    activeTab === "customer" ? "border-b-2 border-black" : ""
+                  }`}
+                  onClick={() => handleTabChange("customer")}
+                >
+                  Customer
+                </li>
+                <li
+                  className={`cursor-pointer mr-4 ${
+                    activeTab === "sales" ? "border-b-2 border-black" : ""
+                  }`}
+                  onClick={() => handleTabChange("sales")}
+                >
+                  Sales
+                </li>
+                <li
+                  className={`cursor-pointer mr-4 ${
+                    activeTab === "cost" ? "border-b-2 border-black" : ""
+                  }`}
+                  onClick={() => handleTabChange("cost")}
+                >
+                  Cost
+                </li>
+                <li
+                  className={`cursor-pointer mr-4 ${
+                    activeTab === "personnel" ? "border-b-2 border-black" : ""
+                  }`}
+                  onClick={() => handleTabChange("personnel")}
+                >
+                  Personnel
+                </li>
+                <li
+                  className={`cursor-pointer mr-4 ${
+                    activeTab === "investment" ? "border-b-2 border-black" : ""
+                  }`}
+                  onClick={() => handleTabChange("investment")}
+                >
+                  Investment
+                </li>
+                <li
+                  className={`cursor-pointer mr-4 ${
+                    activeTab === "loan" ? "border-b-2 border-black" : ""
+                  }`}
+                  onClick={() => handleTabChange("loan")}
+                >
+                  Loan
+                </li>
 
-              <li
-                className={`cursor-pointer mr-4 ${
-                  activeTab === "result" ? "border-b-2 border-black" : ""
-                }`}
-                onClick={() => handleTabChange("result")}
-              >
-                Result
-              </li>
-            </ul>
+                <li
+                  className={`cursor-pointer mr-4 ${
+                    activeTab === "result" ? "border-b-2 border-black" : ""
+                  }`}
+                  onClick={() => handleTabChange("result")}
+                >
+                  Result
+                </li>
+              </ul>
+            </div>
+
             <div>
               {activeTab === "overview" && (
                 <div className="w-full h-full flex flex-col lg:flex-row border-t-2">

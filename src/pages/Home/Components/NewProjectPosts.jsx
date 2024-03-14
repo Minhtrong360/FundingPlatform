@@ -310,16 +310,47 @@ const NewProjectPosts = () => {
                 </svg>
               </button>
               <div className="flex flex-wrap items-center">
-                {[...Array(totalPages).keys()].map((pageNumber) => (
-                  <button
-                    key={pageNumber}
-                    className="flex items-center justify-center px-4 py-2 mx-1 text-black capitalize bg-gray-200 rounded-md  rtl:-scale-x-100 "
-                    onClick={() => handlePageChange(pageNumber + 1, currentTab)}
-                  >
-                    {pageNumber + 1}
-                  </button>
-                ))}
+                {[...Array(totalPages).keys()].map((pageNumber) => {
+                  if (
+                    totalPages <= 5 ||
+                    pageNumber + 1 === currentPage ||
+                    pageNumber === 0 ||
+                    pageNumber === totalPages - 1 ||
+                    (pageNumber === currentPage - 1 &&
+                      currentPage > 2 &&
+                      currentPage < totalPages - 1) ||
+                    (pageNumber === currentPage - 2 &&
+                      currentPage > 3 &&
+                      currentPage < totalPages - 1) ||
+                    (pageNumber === currentPage && currentPage < totalPages - 2)
+                  ) {
+                    return (
+                      <button
+                        key={pageNumber}
+                        className={`flex items-center justify-center px-4 py-2 mx-1 text-black capitalize rounded-md  rtl:-scale-x-100 ${
+                          pageNumber + 1 === currentPage
+                            ? "bg-blue-600 hover:bg-blue-800"
+                            : "bg-gray-200 hover:bg-gray-400"
+                        }`}
+                        onClick={() =>
+                          handlePageChange(pageNumber + 1, currentTab)
+                        }
+                      >
+                        {pageNumber + 1}
+                      </button>
+                    );
+                  } else if (
+                    (pageNumber === 1 && currentPage > 3) ||
+                    (pageNumber === totalPages - 2 &&
+                      currentPage < totalPages - 2)
+                  ) {
+                    return <span key={pageNumber}>...</span>;
+                  } else {
+                    return null;
+                  }
+                })}
               </div>
+
               <button
                 className="flex items-center justify-center px-4 py-2 mx-1 text-black capitalize bg-gray-200 rounded-md  rtl:-scale-x-100 "
                 onClick={() => handlePageChange(currentPage + 1, currentTab)}

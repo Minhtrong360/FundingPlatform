@@ -50,7 +50,7 @@ const Gemini = ({
       setIsLoading(true);
       console.log("1");
       const response = await fetch(
-        "http://localhost:8000/message",
+        "https://news-fetcher-8k6m.onrender.com/message",
         {
           method: "POST",
           headers: {
@@ -215,15 +215,18 @@ const Gemini = ({
                 ]
               }
             }
-             create a json file like this for a ${inputValue}, the ids of each object must be included, numbered increasingly unique, return only json file`,
+            Based on given JSON, return purely a JSON file with appropriate values used for business model of ${inputValue}. All the keys must be included in new JSON with key name unchanged. Values of each key are unique. No explain.`,
           }),
         }
       );
       console.log("2", response);
       const data = await response.json();
       console.log("3", data);
+      if (data.error) {
+        throw new Error(data.error);
+      }
       //Remove backticks from the constant responseText
-      const cleanedResponseText = data.response.replace(/json|`/g, "");
+      const cleanedResponseText = data?.response?.replace(/json|`/g, "");
       console.log("4");
       // Set the chatbot response to the latest messag
 

@@ -24,6 +24,11 @@ const CustomerSection = ({
     }))
   );
 
+  useEffect(() => {
+    setTempCustomerInputs(customerInputs);
+    setRenderCustomerForm(customerInputs[0]?.id);
+  }, [customerInputs]);
+
   const [tempCustomerGrowthData, setTempCustomerGrowthData] =
     useState(customerGrowthData);
 

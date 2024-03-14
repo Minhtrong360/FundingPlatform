@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
-import { Table, Tooltip, message } from "antd";
+import { Table, message } from "antd";
 import Chart from "react-apexcharts";
 
 const LoanSection = ({
@@ -11,13 +11,54 @@ const LoanSection = ({
   setLoanData,
   isSaved,
   setIsSaved,
+  setLoanTableData,
 }) => {
   const [tempLoanInputs, setTempLoanInputs] = useState(loanInputs);
-
-  const [tempLoanData, setTempLoanData] = useState(loanData);
-
   const [renderLoanForm, setRenderLoanForm] = useState(loanInputs[0]?.id);
-  //LoanFunctions
+
+  const [loanChart, setLoanChart] = useState({
+    options: {
+      chart: { id: "loan-chart", type: "line", height: 350 },
+      xaxis: {
+        categories: Array.from(
+          { length: numberOfMonths },
+          (_, i) => `${i + 1}`
+        ),
+        title: {
+          text: "Month",
+          style: {
+            fontFamily: "Inter, sans-serif",
+            fontWeight: "600",
+          },
+        },
+      },
+      yaxis: {
+        labels: {
+          formatter: function (val) {
+            return Math.floor(val);
+          },
+        },
+        title: {
+          text: "Amount ($)",
+          style: {
+            fontFamily: "Inter, sans-serif",
+            fontWeight: "600",
+          },
+        },
+      },
+      legend: { position: "bottom", horizontalAlign: "right" },
+      fill: { type: "solid" },
+      dataLabels: { enabled: false },
+      stroke: { curve: "smooth" },
+      markers: { size: 1 },
+    },
+    series: [],
+  });
+
+  useEffect(() => {
+    setTempLoanInputs(loanInputs);
+    setRenderLoanForm(loanInputs[0]?.id);
+  }, [loanInputs]);
 
   const addNewLoanInput = () => {
     const maxId = Math.max(...tempLoanInputs.map((input) => input?.id));
@@ -36,7 +77,6 @@ const LoanSection = ({
 
   const removeLoanInput = (id) => {
     const newInputs = tempLoanInputs.filter((input) => input?.id != id);
-
     setTempLoanInputs(newInputs);
     setRenderLoanForm(newInputs[0]?.id);
   };
@@ -61,7 +101,6 @@ const LoanSection = ({
       const loanDuration =
         parseInt(loan.loanEndMonth, 10) - parseInt(loan.loanBeginMonth, 10) + 1;
 
-      // Calculate monthly payment
       const monthlyPayment =
         (loanAmount * monthlyRate) /
         (1 - Math.pow(1 + monthlyRate, -loanDuration));
@@ -90,18 +129,22 @@ const LoanSection = ({
       };
     });
   };
-  
+
   const transformLoanDataForTable = () => {
     const loanTableData = [];
-    
-    const selectedLoan = tempLoanInputs.find(input => input.id === parseInt(renderLoanForm));
-    if (!selectedLoan) return loanTableData; // Return empty table data if no loan is selected
-    
-    const loanIndex = tempLoanInputs.findIndex(input => input.id === parseInt(renderLoanForm));
+
+    const selectedLoan = tempLoanInputs.find(
+      (input) => input.id === parseInt(renderLoanForm)
+    );
+    if (!selectedLoan) return loanTableData;
+
+    const loanIndex = tempLoanInputs.findIndex(
+      (input) => input.id === parseInt(renderLoanForm)
+    );
     const loanData = calculateLoanData()[loanIndex];
-  
+
     const loanName = selectedLoan.loanName || `Loan ${loanIndex + 1}`;
-    
+
     const loanAmountRow = {
       key: `Loan Amount`,
       type: `Loan Amount`,
@@ -122,8 +165,7 @@ const LoanSection = ({
       key: `Remaining Balance`,
       type: `Remaining Balance`,
     };
-  
-    // Initialize all rows with default values
+
     for (let monthIndex = 1; monthIndex <= numberOfMonths; monthIndex++) {
       const monthKey = `Month ${monthIndex}`;
       loanAmountRow[monthKey] = "0.00";
@@ -132,7 +174,7 @@ const LoanSection = ({
       interestRow[monthKey] = "0.00";
       balanceRow[monthKey] = "0.00";
     }
-  
+
     loanData.loanDataPerMonth.forEach((monthData) => {
       const monthKey = `Month ${monthData.month}`;
       loanAmountRow[monthKey] = monthData.loanAmount?.toFixed(2);
@@ -141,7 +183,7 @@ const LoanSection = ({
       interestRow[monthKey] = monthData.interest?.toFixed(2);
       balanceRow[monthKey] = monthData.balance?.toFixed(2);
     });
-  
+
     loanTableData.push(
       loanAmountRow,
       paymentRow,
@@ -149,19 +191,34 @@ const LoanSection = ({
       interestRow,
       balanceRow
     );
-  
+
+    const cfLoansSum = Array(numberOfMonths).fill(0);
+    tempLoanInputs.forEach((input) => {
+      const beginMonth = parseInt(input.loanBeginMonth, 10);
+      const loanAmount = parseFloat(input.loanAmount);
+
+      cfLoansSum[beginMonth - 1] += loanAmount;
+    });
+
+    const cfLoansRow = {
+      key: `CF Loans`,
+      type: `CF Loans`,
+    };
+    for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
+      cfLoansRow[`Month ${monthIndex + 1}`] =
+        cfLoansSum[monthIndex]?.toFixed(2);
+    }
+    loanTableData.push(cfLoansRow);
+
     return loanTableData;
   };
-  
-  //LoanUseEffect
+
   useEffect(() => {
     const calculatedData = calculateLoanData();
     setLoanData(calculatedData);
+    setLoanTableData(tableData);
   }, [loanInputs, numberOfMonths, renderLoanForm]);
-  
-  
 
-  //LoanColumns
   const loanColumns = [
     { fixed: "left", title: "Type", dataIndex: "type", key: "type" },
     ...Array.from({ length: numberOfMonths }, (_, i) => ({
@@ -171,72 +228,30 @@ const LoanSection = ({
     })),
   ];
 
-  //LoanChart
-const [loanChart, setLoanChart] = useState({
-  options: {
-    chart: { id: "loan-chart", type: "line", height: 350 },
-    xaxis: {
-      categories: Array.from(
-        { length: numberOfMonths },
-        (_, i) => `${i + 1}`
-      ),
-      title: {
-        text: "Month",
-        style: {
-          fontFamily: "Inter, sans-serif",
-          fontWeight: "600",
+  useEffect(() => {
+    const seriesData = calculateLoanData().flatMap((loan) => {
+      return [
+        {
+          name: `${loan.loanName} - Payment`,
+          data: loan.loanDataPerMonth.map((month) => month.payment),
         },
-      },
-    },
-    yaxis: {
-      labels: {
-        formatter: function (val) {
-          return Math.floor(val);
+        {
+          name: `${loan.loanName} - Principal`,
+          data: loan.loanDataPerMonth.map((month) => month.principal),
         },
-      },
-      title: {
-        text: "Amount ($)",
-        style: {
-          fontFamily: "Inter, sans-serif",
-          fontWeight: "600",
+        {
+          name: `${loan.loanName} - Interest`,
+          data: loan.loanDataPerMonth.map((month) => month.interest),
         },
-      },
-    },
-    legend: { position: "bottom", horizontalAlign: "right" },
-    fill: { type: "solid" },
-    dataLabels: { enabled: false },
-    stroke: { curve: "smooth" },
-    markers: { size: 1 },
-  },
-  series: [],
-});
+        {
+          name: `${loan.loanName} - Remaining Balance`,
+          data: loan.loanDataPerMonth.map((month) => month.balance),
+        },
+      ];
+    });
 
-useEffect(() => {
-  const seriesData = calculateLoanData().flatMap((loan) => {
-    return [
-      {
-        name: `${loan.loanName} - Payment`,
-        data: loan.loanDataPerMonth.map((month) => month.payment),
-      },
-      {
-        name: `${loan.loanName} - Principal`,
-        data: loan.loanDataPerMonth.map((month) => month.principal),
-      },
-      {
-        name: `${loan.loanName} - Interest`,
-        data: loan.loanDataPerMonth.map((month) => month.interest),
-      },
-      {
-        name: `${loan.loanName} - Remaining Balance`,
-        data: loan.loanDataPerMonth.map((month) => month.balance),
-      },
-    ];
-  });
-
-  setLoanChart((prevState) => ({ ...prevState, series: seriesData }));
-}, [tempLoanInputs, numberOfMonths]);
-
-
+    setLoanChart((prevState) => ({ ...prevState, series: seriesData }));
+  }, [tempLoanInputs, numberOfMonths]);
 
   const handleSelectChange = (event) => {
     setRenderLoanForm(event.target.value);
@@ -247,12 +262,19 @@ useEffect(() => {
     message.success("Data saved successfully!");
   };
 
+  const tableData = transformLoanDataForTable();
+
   useEffect(() => {
     if (isSaved) {
       setLoanInputs(tempLoanInputs);
+      setLoanTableData(tableData);
       setIsSaved(false);
     }
   }, [isSaved]);
+
+  useEffect(() => {
+    setLoanTableData(tableData);
+  }, []);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -269,8 +291,7 @@ useEffect(() => {
             <label
               htmlFor="selectedChannel"
               className="block my-4 text-base  darkTextWhite"
-            >
-            </label>
+            ></label>
             <select
               id="selectedChannel"
               className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
@@ -286,7 +307,7 @@ useEffect(() => {
           </div>
 
           {tempLoanInputs
-            .filter((input) => input?.id == renderLoanForm) // Sử dụng biến renderForm
+            .filter((input) => input?.id == renderLoanForm)
             .map((input) => (
               <div
                 key={input?.id}

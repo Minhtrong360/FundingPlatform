@@ -19,6 +19,7 @@ import MetricsFM from "../MetricsFM";
 import ProfitAndLossSection from "./Components/ProfitAndLossSection";
 import * as XLSX from "xlsx";
 import BalanceSheetSection from "./Components/BalanceSheetSection";
+import LoadingButtonClick from "../../components/LoadingButtonClick";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +40,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
   const [startingCashBalance, setStartingCashBalance] = useState([]);
   const [status, setStatus] = useState([]);
-  const [industry, setIndustry] = useState([]);
+  const [industry, setIndustry] = useState("Technology");
   const [incomeTax, setIncomeTax] = useState(10);
   const [payrollTax, setPayrollTax] = useState(0);
   const [currency, setCurrency] = useState("USD");
@@ -51,6 +52,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [chatbotResponse, setChatbotResponse] = useState("");
   // Gemini useEffect
   useEffect(() => {
+    console.log("first");
     // Ensure chatbotResponse is only processed when it's a valid string
     if (!chatbotResponse || chatbotResponse.trim() === "") return;
     try {
@@ -58,6 +60,12 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
       if (data.DurationSelect)
         setSelectedDuration(data.DurationSelect.selectedDuration);
+      setStartingCashBalance(data.DurationSelect.startingCashBalance);
+      setStatus(data.DurationSelect.status);
+      setIndustry(data.DurationSelect.industry);
+      setIncomeTax(data.DurationSelect.incomeTax);
+      setPayrollTax(data.DurationSelect.payrollTax);
+      setCurrency(data.DurationSelect.currency);
       if (data.CustomerSection)
         setCustomerInputs(data.CustomerSection.customerInputs);
       if (data.SalesSection) setChannelInputs(data.SalesSection.channelInputs);
@@ -308,6 +316,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     },
   ]);
   const [investmentData, setInvestmentData] = useState([]);
+  const [investmentTableData, setInvestmentTableData] = useState([]);
 
   //LoanState
 
@@ -323,6 +332,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   ]);
 
   const [loanData, setLoanData] = useState([]);
+
+  const [loanTableData, setLoanTableData] = useState([]);
 
   // Lưu vào DB
 
@@ -483,6 +494,45 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   //   );
   // };
 
+  const [activeTab, setActiveTab] = useState("overview");
+
+  const handleTabChange = (tabName) => {
+    setActiveTab(tabName);
+  };
+
+  const [temIsLoading, setTemIsLoading] = useState(true);
+
+  useEffect(() => {
+    setTemIsLoading(true);
+
+    const tabs = [
+      { tab: "customer", delay: 50 },
+      { tab: "sales", delay: 50 },
+      { tab: "cost", delay: 50 },
+      { tab: "personnel", delay: 50 },
+      { tab: "investment", delay: 50 },
+      { tab: "loan", delay: 50 },
+      { tab: "investment", delay: 50 },
+      { tab: "overview", delay: 50 },
+    ];
+
+    let currentIndex = 0;
+
+    const switchTabs = () => {
+      setTimeout(() => {
+        setActiveTab(tabs[currentIndex].tab);
+        currentIndex++;
+        if (currentIndex < tabs.length) {
+          switchTabs();
+        } else {
+          setTemIsLoading(false);
+        }
+      }, tabs[currentIndex].delay);
+    };
+
+    switchTabs();
+  }, [chatbotResponse]);
+
   return (
     <div>
       <AlertMsg />
@@ -490,7 +540,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         <ProgressBar isLoading={isLoading} />
       ) : (
         <>
-          {/* Gemini */}
+          <LoadingButtonClick isLoading={temIsLoading} />
           <div className="w-full h-full flex flex-col lg:flex-row">
             <Gemini
               setIsLoading={setIsLoading}
@@ -499,148 +549,218 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               setCurrentUser={setCurrentUser}
             />
           </div>
+          <div className="my-4">
+            <ul className="py-4 flex justify-center items-center border-t-2">
+              <li
+                className={`cursor-pointer mr-4 ${
+                  activeTab === "overview" ? "border-b-2 border-black" : ""
+                }`}
+                onClick={() => handleTabChange("overview")}
+              >
+                Overview
+              </li>
+              <li
+                className={`cursor-pointer mr-4 ${
+                  activeTab === "customer" ? "border-b-2 border-black" : ""
+                }`}
+                onClick={() => handleTabChange("customer")}
+              >
+                Customer
+              </li>
+              <li
+                className={`cursor-pointer mr-4 ${
+                  activeTab === "sales" ? "border-b-2 border-black" : ""
+                }`}
+                onClick={() => handleTabChange("sales")}
+              >
+                Sales
+              </li>
+              <li
+                className={`cursor-pointer mr-4 ${
+                  activeTab === "cost" ? "border-b-2 border-black" : ""
+                }`}
+                onClick={() => handleTabChange("cost")}
+              >
+                Cost
+              </li>
+              <li
+                className={`cursor-pointer mr-4 ${
+                  activeTab === "personnel" ? "border-b-2 border-black" : ""
+                }`}
+                onClick={() => handleTabChange("personnel")}
+              >
+                Personnel
+              </li>
+              <li
+                className={`cursor-pointer mr-4 ${
+                  activeTab === "investment" ? "border-b-2 border-black" : ""
+                }`}
+                onClick={() => handleTabChange("investment")}
+              >
+                Investment
+              </li>
+              <li
+                className={`cursor-pointer mr-4 ${
+                  activeTab === "loan" ? "border-b-2 border-black" : ""
+                }`}
+                onClick={() => handleTabChange("loan")}
+              >
+                Loan
+              </li>
 
-          {/* DurationSection */}
-          <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
-              <DurationSelect
-                selectedDuration={selectedDuration}
-                setSelectedDuration={setSelectedDuration}
-                startingCashBalance={startingCashBalance}
-                setStartingCashBalance={setStartingCashBalance}
-                status={status}
-                setStatus={setStatus}
-                industry={industry}
-                setIndustry={setIndustry}
-                incomeTax={incomeTax}
-                setIncomeTax={setIncomeTax}
-                payrollTax={payrollTax}
-                setPayrollTax={setPayrollTax}
-                currency={currency}
-                setCurrency={setCurrency}
-                startMonth={startMonth}
-                setStartMonth={setStartMonth}
-                startYear={startYear}
-                setStartYear={setStartYear}
-                financialProjectName={financialProjectName}
-                setFinancialProjectName={setFinancialProjectName}
-              />
-            </div>
+              <li
+                className={`cursor-pointer mr-4 ${
+                  activeTab === "result" ? "border-b-2 border-black" : ""
+                }`}
+                onClick={() => handleTabChange("result")}
+              >
+                Result
+              </li>
+            </ul>
+            <div>
+              {activeTab === "overview" && (
+                <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
+                  <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
+                    <DurationSelect
+                      selectedDuration={selectedDuration}
+                      setSelectedDuration={setSelectedDuration}
+                      startingCashBalance={startingCashBalance}
+                      setStartingCashBalance={setStartingCashBalance}
+                      status={status}
+                      setStatus={setStatus}
+                      industry={industry}
+                      setIndustry={setIndustry}
+                      incomeTax={incomeTax}
+                      setIncomeTax={setIncomeTax}
+                      payrollTax={payrollTax}
+                      setPayrollTax={setPayrollTax}
+                      currency={currency}
+                      setCurrency={setCurrency}
+                      startMonth={startMonth}
+                      setStartMonth={setStartMonth}
+                      startYear={startYear}
+                      setStartYear={setStartYear}
+                      financialProjectName={financialProjectName}
+                      setFinancialProjectName={setFinancialProjectName}
+                    />
+                  </div>
 
-            <div className="w-full lg:w-3/4 p-4">
-              <MetricsFM
-                yearlyAverageCustomers={yearlyAverageCustomers}
-                customerInputs={customerInputs}
-                yearlySales={yearlySales}
-                customerGrowthChart={customerGrowthChart}
-                revenue={revenue}
-              />
+                  <div className="w-full lg:w-3/4 p-4">
+                    <MetricsFM
+                      yearlyAverageCustomers={yearlyAverageCustomers}
+                      customerInputs={customerInputs}
+                      yearlySales={yearlySales}
+                      customerGrowthChart={customerGrowthChart}
+                      revenue={revenue}
+                    />
+                  </div>
+                </div>
+              )}
+              {activeTab === "customer" && (
+                <CustomerSection
+                  customerInputs={customerInputs}
+                  setCustomerInputs={setCustomerInputs}
+                  numberOfMonths={numberOfMonths}
+                  customerGrowthData={customerGrowthData}
+                  setCustomerGrowthData={setCustomerGrowthData}
+                  channelNames={channelNames}
+                  isSaved={isSaved}
+                  setIsSaved={setIsSaved}
+                  yearlyAverageCustomers={yearlyAverageCustomers}
+                  setYearlyAverageCustomers={setYearlyAverageCustomers}
+                  customerGrowthChart={customerGrowthChart}
+                  setCustomerGrowthChart={setCustomerGrowthChart}
+                />
+              )}
+              {activeTab === "sales" && (
+                <SalesSection
+                  channelInputs={channelInputs}
+                  channelNames={channelNames}
+                  setChannelInputs={setChannelInputs}
+                  revenueData={revenueData}
+                  revenueDeductionData={revenueDeductionData}
+                  cogsData={cogsData}
+                  customerInputs={customerInputs}
+                  numberOfMonths={numberOfMonths}
+                  netRevenueData={netRevenueData}
+                  grossProfitData={grossProfitData}
+                  setRevenueData={setRevenueData}
+                  setRevenueDeductionData={setRevenueDeductionData}
+                  setCogsData={setCogsData}
+                  setNetRevenueData={setNetRevenueData}
+                  setGrossProfitData={setGrossProfitData}
+                  customerGrowthData={customerGrowthData}
+                  isSaved={isSaved}
+                  setIsSaved={setIsSaved}
+                  yearlySales={yearlySales}
+                  setYearlySales={setYearlySales}
+                  revenue={revenue}
+                  setRevenue={setRevenue}
+                />
+              )}
+              {activeTab === "cost" && (
+                <CostSection
+                  costInputs={costInputs}
+                  setCostInputs={setCostInputs}
+                  numberOfMonths={numberOfMonths}
+                  costData={costData}
+                  setCostData={setCostData}
+                  isSaved={isSaved}
+                  setIsSaved={setIsSaved}
+                />
+              )}
+              {activeTab === "personnel" && (
+                <PersonnelSection
+                  personnelInputs={personnelInputs}
+                  setPersonnelInputs={setPersonnelInputs}
+                  numberOfMonths={numberOfMonths}
+                  personnelCostData={personnelCostData}
+                  setPersonnelCostData={setPersonnelCostData}
+                  isSaved={isSaved}
+                  setIsSaved={setIsSaved}
+                />
+              )}
+              {activeTab === "investment" && (
+                <InvestmentSection
+                  investmentInputs={investmentInputs}
+                  setInvestmentInputs={setInvestmentInputs}
+                  numberOfMonths={numberOfMonths}
+                  investmentData={investmentData}
+                  setInvestmentData={setInvestmentData}
+                  isSaved={isSaved}
+                  setIsSaved={setIsSaved}
+                  setInvestmentTableData={setInvestmentTableData}
+                />
+              )}
+              {activeTab === "loan" && (
+                <LoanSection
+                  loanInputs={loanInputs}
+                  setLoanInputs={setLoanInputs}
+                  numberOfMonths={numberOfMonths}
+                  loanData={loanData}
+                  setLoanData={setLoanData}
+                  isSaved={isSaved}
+                  setIsSaved={setIsSaved}
+                  setLoanTableData={setLoanTableData}
+                />
+              )}
+              {activeTab === "result" && (
+                <ProfitAndLossSection
+                  revenueData={revenueData}
+                  revenueDeductionData={revenueDeductionData}
+                  cogsData={cogsData}
+                  costData={costData}
+                  personnelCostData={personnelCostData}
+                  investmentData={investmentData}
+                  loanData={loanData}
+                  numberOfMonths={numberOfMonths}
+                  incomeTaxRate={incomeTax}
+                  investmentTableData={investmentTableData}
+                  loanTableData={loanTableData}
+                />
+              )}
             </div>
           </div>
-
-          {/* CustomerSection */}
-          <CustomerSection
-            customerInputs={customerInputs}
-            setCustomerInputs={setCustomerInputs}
-            numberOfMonths={numberOfMonths}
-            customerGrowthData={customerGrowthData}
-            setCustomerGrowthData={setCustomerGrowthData}
-            channelNames={channelNames}
-            isSaved={isSaved}
-            setIsSaved={setIsSaved}
-            yearlyAverageCustomers={yearlyAverageCustomers}
-            setYearlyAverageCustomers={setYearlyAverageCustomers}
-            customerGrowthChart={customerGrowthChart}
-            setCustomerGrowthChart={setCustomerGrowthChart}
-          />
-
-          {/* RevenueSetion */}
-          <SalesSection
-            channelInputs={channelInputs}
-            channelNames={channelNames}
-            setChannelInputs={setChannelInputs}
-            revenueData={revenueData}
-            revenueDeductionData={revenueDeductionData}
-            cogsData={cogsData}
-            customerInputs={customerInputs}
-            numberOfMonths={numberOfMonths}
-            netRevenueData={netRevenueData}
-            grossProfitData={grossProfitData}
-            setRevenueData={setRevenueData}
-            setRevenueDeductionData={setRevenueDeductionData}
-            setCogsData={setCogsData}
-            setNetRevenueData={setNetRevenueData}
-            setGrossProfitData={setGrossProfitData}
-            customerGrowthData={customerGrowthData}
-            isSaved={isSaved}
-            setIsSaved={setIsSaved}
-            yearlySales={yearlySales}
-            setYearlySales={setYearlySales}
-            revenue={revenue}
-            setRevenue={setRevenue}
-          />
-
-          {/* CostSection */}
-          <CostSection
-            costInputs={costInputs}
-            setCostInputs={setCostInputs}
-            numberOfMonths={numberOfMonths}
-            costData={costData}
-            setCostData={setCostData}
-            isSaved={isSaved}
-            setIsSaved={setIsSaved}
-          />
-
-          {/* PersonnelSection */}
-          <PersonnelSection
-            personnelInputs={personnelInputs}
-            setPersonnelInputs={setPersonnelInputs}
-            numberOfMonths={numberOfMonths}
-            personnelCostData={personnelCostData}
-            setPersonnelCostData={setPersonnelCostData}
-            isSaved={isSaved}
-            setIsSaved={setIsSaved}
-          />
-
-          {/* InvestmentSection */}
-          <InvestmentSection
-            investmentInputs={investmentInputs}
-            setInvestmentInputs={setInvestmentInputs}
-            numberOfMonths={numberOfMonths}
-            investmentData={investmentData}
-            setInvestmentData={setInvestmentData}
-            isSaved={isSaved}
-            setIsSaved={setIsSaved}
-          />
-
-          {/* LoanSection */}
-          <LoanSection
-            loanInputs={loanInputs}
-            setLoanInputs={setLoanInputs}
-            numberOfMonths={numberOfMonths}
-            loanData={loanData}
-            setLoanData={setLoanData}
-            isSaved={isSaved}
-            setIsSaved={setIsSaved}
-          />
-
-          {/* ProfitAndLossSection */}
-          <ProfitAndLossSection
-            revenueData={revenueData}
-            revenueDeductionData={revenueDeductionData}
-            cogsData={cogsData}
-            costData={costData}
-            personnelCostData={personnelCostData}
-            investmentData={investmentData}
-            loanData={loanData}
-            numberOfMonths={numberOfMonths}
-            incomeTaxRate={incomeTax}
-          />
-          <BalanceSheetSection
-            startingCashBalance={startingCashBalance}
-            costData={costData}
-            personnelCostData={personnelCostData}
-          />
         </>
       )}
 

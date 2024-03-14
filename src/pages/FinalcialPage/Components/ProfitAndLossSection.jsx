@@ -12,11 +12,14 @@
     loanData,
     numberOfMonths,
     incomeTaxRate,
-    startingCashBalance = 0,
+    startingCashBalance,
     investmentTableData,
     loanTableData,
   }) => {
-    
+
+  
+
+
     const calculateProfitAndLoss = () => {
       let totalRevenue = new Array(numberOfMonths).fill(0);
       let totalDeductions = new Array(numberOfMonths).fill(0);
@@ -137,7 +140,7 @@
         totalRemainingBalance,
       };
     };
-    console.log("Starting Cash Balance:", startingCashBalance);
+
 
     const {
       totalRevenue,
@@ -291,6 +294,34 @@
       }
     });
 
+    const calculateCashBalances = (startingCash, netCashChanges) => {
+      const cashBalances = netCashChanges?.reduce((acc, netCashChange, index) => {
+        if (index === 0) {
+          acc.push(parseFloat(startingCash) + netCashChange);
+        } else {
+          acc.push(acc[index - 1] + netCashChange);
+        }
+        return acc;
+      }, []);
+      return cashBalances;
+    };
+    
+    const netCashChanges = netIncome.map((_, index) => {
+      const cfOperations = netIncome[index] + totalInvestmentDepreciation[index] + 0 - 0 - 0; // Placeholder values
+      const increaseCommonStock = 0; // Placeholder value
+      const increasePreferredStock = 0; // Placeholder value
+      const increasePaidInCapital = 0; // Placeholder value
+      const cfInvestment = cfInvestmentsArray[index] || 0;
+      const cfFinancing = netIncome[index] - totalPrincipal[index] + increaseCommonStock + increasePreferredStock + increasePaidInCapital; // Calculate CF Financing directly
+      const netCash = cfOperations - cfInvestment + cfFinancing;
+      return netCash;
+    });
+    
+
+    console.log("startingCashBalance", startingCashBalance)
+    const cashBeginBalances = [startingCashBalance, ...calculateCashBalances(startingCashBalance, netCashChanges)?.slice(0, -1)];
+    const cashEndBalances = calculateCashBalances(startingCashBalance, netCashChanges);
+
     const netCashValues = netIncome.map((_, index) => {
       const cfOperations = netIncome[index] + totalInvestmentDepreciation[index] + 0 - 0 - 0; // Placeholder values
       const increaseCommonStock = 0; // Placeholder value
@@ -301,7 +332,7 @@
       return cfOperations - cfInvestment + cfFinancing;
     });
 
-
+    
 
     const positionDataWithNetIncome = [
       { key: "Net Income", values: netIncome },
@@ -365,47 +396,17 @@
         }),
       },
       {
-        key: "Net +/- in Cash", // Added Net +/- in Cash
-        values: netIncome.map((_, index) => {
-          const cfOperations = netIncome[index] + totalInvestmentDepreciation[index] + 0 - 0 - 0; // Placeholder values
-          const increaseCommonStock = 0; // Placeholder value
-          const increasePreferredStock = 0; // Placeholder value
-          const increasePaidInCapital = 0; // Placeholder value
-          const cfInvestment = cfInvestmentsArray[index] || 0;
-          const cfFinancing = netIncome[index] - totalPrincipal[index] + increaseCommonStock + increasePreferredStock + increasePaidInCapital; // Calculate CF Financing directly
-          const netCash = cfOperations - cfInvestment + cfFinancing;
-          return netCash
-        }),
-      },
-      {
-        key: "Cash Begin", // Added Cash Begin row
-        values: Array.from({ length: numberOfMonths }, (_, i) => (i === 0 ? startingCashBalance : 0)), // Set the value of the first month to startingCashBalance and others to 0
-      },
-
-      
-      {
-        key: "Cash End", // Added Cash End row
-        values: netIncome.map((_, index) => {
-          const cfOperations =
-            netIncome[index] +
-            totalInvestmentDepreciation[index] +
-            0 -
-            0 -
-            0; // Placeholder values
-          const increaseCommonStock = 0; // Placeholder value
-          const increasePreferredStock = 0; // Placeholder value
-          const increasePaidInCapital = 0; // Placeholder value
-          const cfInvestment = cfInvestmentsArray[index] || 0;
-          const cfFinancing =
-            netIncome[index] -
-            totalPrincipal[index] +
-            increaseCommonStock +
-            increasePreferredStock +
-            increasePaidInCapital; // Calculate CF Financing directly
-          const netCash = cfOperations - cfInvestment + cfFinancing;
-          return startingCashBalance + netCash; // Calculate Cash End
-        }),
-      },
+    key: "Net +/- in Cash",
+    values: netCashChanges,
+  },
+  {
+    key: "Cash Begin",
+    values: cashBeginBalances,
+  },
+  {
+    key: "Cash End",
+    values: cashEndBalances,
+  },
       
       {
         key: "Accounts Receivable", // Added Accounts Receivable row
@@ -516,7 +517,7 @@
       },
       {
         name: "Net Income",
-        data: netIncome.map((value) => parseFloat(value.toFixed(2))),
+        data: netIncome.map((value) => parseFloat(value?.toFixed(2))),
       },
     ];
 

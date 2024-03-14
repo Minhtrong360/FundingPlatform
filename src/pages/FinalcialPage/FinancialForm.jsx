@@ -38,7 +38,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     }
   }, [selectedDuration]);
 
-  const [startingCashBalance, setStartingCashBalance] = useState([]);
+  const [startingCashBalance, setStartingCashBalance] = useState(10000);
   const [status, setStatus] = useState([]);
   const [industry, setIndustry] = useState("Technology");
   const [incomeTax, setIncomeTax] = useState(10);
@@ -765,6 +765,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   incomeTaxRate={incomeTax}
                   investmentTableData={investmentTableData}
                   loanTableData={loanTableData}
+                  startingCashBalance={startingCashBalance}
                 />
               )}
             </div>

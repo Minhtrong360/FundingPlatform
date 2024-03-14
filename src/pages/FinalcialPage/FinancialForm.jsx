@@ -322,10 +322,18 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     {
       id: 1,
       loanName: "Banking loan",
-      loanAmount: "150000",
+      loanAmount: "30000",
       interestRate: "6",
       loanBeginMonth: "1",
       loanEndMonth: "12",
+    },
+    {
+      id: 2,
+      loanName: "Startup loan",
+      loanAmount: "20000",
+      interestRate: "3",
+      loanBeginMonth: "6",
+      loanEndMonth: "24",
     },
   ]);
 

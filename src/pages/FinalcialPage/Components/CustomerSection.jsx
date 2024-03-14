@@ -144,6 +144,7 @@ const CustomerSection = ({
             "0.00";
         }
       }
+      console.log(customerInput.beginCustomer)
     });
   });
 
@@ -207,39 +208,7 @@ const CustomerSection = ({
   }, [isSaved]);
 
   // Generate ChannelDataTable for each selected channel
-  const ChannelDataTables = {};
-  tempCustomerInputs.forEach((input) => {
-    const dataTable = {
-      Begin: {
-        channelName: "Begin",
-        ...Array.from({ length: numberOfMonths }, (_, i) => ({
-          [`month${i + 1}`]:
-            i === 0
-              ? (parseFloat(input.beginCustomer) || 0).toFixed(2)
-              : "0.00",
-        })),
-      },
-      Add: {
-        channelName: "Add",
-        ...customerTableData.find(
-          (data) => data.channelName === input.channelName
-        ),
-      },
-      Churn: {
-        channelName: "Churn",
-        ...Array.from({ length: numberOfMonths }, (_, i) => ({
-          [`month${i + 1}`]: "0.00",
-        })),
-      },
-      End: {
-        channelName: "End",
-        ...Array.from({ length: numberOfMonths }, (_, i) => ({
-          [`month${i + 1}`]: "0.00",
-        })),
-      },
-    };
-    ChannelDataTables[`${input.channelName}DataTable`] = dataTable;
-  });
+  
 
   // Calculate monthly average of customers for each year
   const calculateYearlyAverage = (tempCustomerGrowthData, numberOfMonths) => {
@@ -477,20 +446,6 @@ const CustomerSection = ({
                 columns={customerColumns}
                 pagination={false}
               />
-              {Object.entries(ChannelDataTables).map(
-                ([tableName, dataTable]) => (
-                  <div key={tableName}>
-                    <h3 className="text-2xl font-semibold">{tableName}</h3>
-                    <Table
-                      className="overflow-auto my-8"
-                      size="small"
-                      dataSource={Object.values(dataTable)}
-                      columns={customerColumns}
-                      pagination={false}
-                    />
-                  </div>
-                )
-              )}
             </div>
           ))}
         <h3 className="text-2xl font-semibold my-8">Customer Chart</h3>

@@ -20,14 +20,29 @@ import ProfitAndLossSection from "./Components/ProfitAndLossSection";
 import * as XLSX from "xlsx";
 import BalanceSheetSection from "./Components/BalanceSheetSection";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setSelectedDuration,
+  setStartingCashBalance,
+  setStatus,
+  setIndustry,
+  setIncomeTax,
+  setPayrollTax,
+  setCurrency,
+} from "../../features/DurationSlice";
+import { setCustomerInputs } from "../../features/CustomerSlice";
+import { setChannelInputs, setChannelNames } from "../../features/SaleSlice";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
 
   //DurationSection
-  const [selectedDuration, setSelectedDuration] = useState("3 years");
+
   const [numberOfMonths, setNumberOfMonths] = useState(0);
+
+  const { selectedDuration } = useSelector((state) => state.durationSelect);
 
   useEffect(() => {
     // Chuyển đổi selectedDuration từ dạng "3 years" sang số
@@ -44,39 +59,28 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     const month = years * 12;
     setNumberOfMonths(month);
   }, [selectedDuration]);
-  console.log("selectedDuration", selectedDuration);
-  console.log("numberOfMonths", numberOfMonths);
-  const [startingCashBalance, setStartingCashBalance] = useState([]);
-  const [status, setStatus] = useState([]);
-  const [industry, setIndustry] = useState("Technology");
-  const [incomeTax, setIncomeTax] = useState(10);
-  const [payrollTax, setPayrollTax] = useState(0);
-  const [currency, setCurrency] = useState("USD");
-  const [startMonth, setStartMonth] = useState([]);
-  const [startYear, setStartYear] = useState(2024);
-  const [financialProjectName, setFinancialProjectName] = useState([]);
 
   // Gemini
   const [chatbotResponse, setChatbotResponse] = useState("");
   // Gemini useEffect
   useEffect(() => {
-    console.log("first");
     // Ensure chatbotResponse is only processed when it's a valid string
     if (!chatbotResponse || chatbotResponse.trim() === "") return;
     try {
       const data = JSON.parse(chatbotResponse);
 
       if (data.DurationSelect)
-        setSelectedDuration(data.DurationSelect.selectedDuration);
-      setStartingCashBalance(data.DurationSelect.startingCashBalance);
-      setStatus(data.DurationSelect.status);
-      setIndustry(data.DurationSelect.industry);
-      setIncomeTax(data.DurationSelect.incomeTax);
-      setPayrollTax(data.DurationSelect.payrollTax);
-      setCurrency(data.DurationSelect.currency);
+        dispatch(setSelectedDuration(data.DurationSelect.selectedDuration));
+      dispatch(setStartingCashBalance(data.DurationSelect.startingCashBalance));
+      dispatch(setStatus(data.DurationSelect.status));
+      dispatch(setIndustry(data.DurationSelect.industry));
+      dispatch(setIncomeTax(data.DurationSelect.incomeTax));
+      dispatch(setPayrollTax(data.DurationSelect.payrollTax));
+      dispatch(setCurrency(data.DurationSelect.currency));
       if (data.CustomerSection)
-        setCustomerInputs(data.CustomerSection.customerInputs);
-      if (data.SalesSection) setChannelInputs(data.SalesSection.channelInputs);
+        dispatch(setCustomerInputs(data.CustomerSection.customerInputs));
+      if (data.SalesSection)
+        dispatch(setChannelInputs(data.SalesSection.channelInputs));
       if (data.CostSection) setCostInputs(data.CostSection.costInputs);
       if (data.PersonnelSection)
         setPersonnelInputs(data.PersonnelSection.personnelInputs);
@@ -89,31 +93,11 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   }, [chatbotResponse]);
 
   //CustomerState
-  const [customerInputs, setCustomerInputs] = useState([
-    {
-      id: 1,
-      customersPerMonth: 300,
-      growthPerMonth: 1,
-      channelName: "Online",
-      beginMonth: 1,
-      endMonth: 36,
-      beginCustomer: 0,
-      churnRate: 0,
-    },
-    {
-      id: 2,
-      customersPerMonth: 400,
-      growthPerMonth: 2,
-      channelName: "Offline",
-      beginMonth: 1,
-      endMonth: 36,
-      beginCustomer: 0,
-      churnRate: 0,
-    },
-  ]);
 
-  const [customerGrowthData, setCustomerGrowthData] = useState([]);
-  const [yearlyAverageCustomers, setYearlyAverageCustomers] = useState([]);
+  const { yearlyAverageCustomers, customerInputs } = useSelector(
+    (state) => state.customer
+  );
+
   const [customerGrowthChart, setCustomerGrowthChart] = useState({
     options: {
       chart: {
@@ -156,46 +140,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   });
 
   //RevenueState
-  const [channelInputs, setChannelInputs] = useState([
-    {
-      id: 1,
-      productName: "Coffee", // New field for product name
-      price: 4,
-      multiples: 1,
-      deductionPercentage: 5,
-      cogsPercentage: 30,
-      selectedChannel: "Offline",
-      channelAllocation: 0.4,
-    },
-    {
-      id: 2,
-      productName: "Cake", // New field for product name
-      price: 8,
-      multiples: 1,
-      deductionPercentage: 4,
-      cogsPercentage: 35,
-      selectedChannel: "Offline",
-      channelAllocation: 0.3,
-    },
-    {
-      id: 3,
-      productName: "Coffee Bag", // New field for product name
-      price: 6,
-      multiples: 1,
-      deductionPercentage: 6,
-      cogsPercentage: 25,
-      selectedChannel: "Online",
-      channelAllocation: 0.6,
-    },
-  ]);
-  const [channelNames, setChannelNames] = useState([]);
 
-  const [revenueData, setRevenueData] = useState([]);
-  const [netRevenueData, setNetRevenueData] = useState([]);
-  const [grossProfitData, setGrossProfitData] = useState([]);
-  const [revenueDeductionData, setRevenueDeductionData] = useState([]);
-  const [cogsData, setCogsData] = useState([]);
-  const [yearlySales, setYearlySales] = useState([]);
   const [revenue, setRevenue] = useState({
     options: {
       chart: { id: "revenue-chart", type: "bar", height: 350, stacked: true }, // Set type to "bar" and stacked to true
@@ -240,7 +185,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     const updatedChannelNames = customerInputs
       .map((input) => input.channelName)
       .filter((name, index, self) => name && self.indexOf(name) === index);
-    setChannelNames(updatedChannelNames);
+    dispatch(setChannelNames(updatedChannelNames));
   }, [customerInputs]);
 
   //CostState
@@ -539,8 +484,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     switchTabs();
   }, [chatbotResponse]);
 
-  console.log("yearlyAverageCustomers", yearlyAverageCustomers);
-
   return (
     <div>
       <AlertMsg />
@@ -632,35 +575,11 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               {activeTab === "overview" && (
                 <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
                   <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
-                    <DurationSelect
-                      selectedDuration={selectedDuration}
-                      setSelectedDuration={setSelectedDuration}
-                      startingCashBalance={startingCashBalance}
-                      setStartingCashBalance={setStartingCashBalance}
-                      status={status}
-                      setStatus={setStatus}
-                      industry={industry}
-                      setIndustry={setIndustry}
-                      incomeTax={incomeTax}
-                      setIncomeTax={setIncomeTax}
-                      payrollTax={payrollTax}
-                      setPayrollTax={setPayrollTax}
-                      currency={currency}
-                      setCurrency={setCurrency}
-                      startMonth={startMonth}
-                      setStartMonth={setStartMonth}
-                      startYear={startYear}
-                      setStartYear={setStartYear}
-                      financialProjectName={financialProjectName}
-                      setFinancialProjectName={setFinancialProjectName}
-                    />
+                    <DurationSelect />
                   </div>
 
                   <div className="w-full lg:w-3/4 p-4">
                     <MetricsFM
-                      yearlyAverageCustomers={yearlyAverageCustomers}
-                      customerInputs={customerInputs}
-                      yearlySales={yearlySales}
                       customerGrowthChart={customerGrowthChart}
                       revenue={revenue}
                     />
@@ -669,42 +588,18 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               )}
               {activeTab === "customer" && (
                 <CustomerSection
-                  customerInputs={customerInputs}
-                  setCustomerInputs={setCustomerInputs}
                   numberOfMonths={numberOfMonths}
-                  customerGrowthData={customerGrowthData}
-                  setCustomerGrowthData={setCustomerGrowthData}
-                  channelNames={channelNames}
                   isSaved={isSaved}
                   setIsSaved={setIsSaved}
-                  yearlyAverageCustomers={yearlyAverageCustomers}
-                  setYearlyAverageCustomers={setYearlyAverageCustomers}
                   customerGrowthChart={customerGrowthChart}
                   setCustomerGrowthChart={setCustomerGrowthChart}
                 />
               )}
               {activeTab === "sales" && (
                 <SalesSection
-                  channelInputs={channelInputs}
-                  channelNames={channelNames}
-                  setChannelInputs={setChannelInputs}
-                  revenueData={revenueData}
-                  revenueDeductionData={revenueDeductionData}
-                  cogsData={cogsData}
-                  customerInputs={customerInputs}
                   numberOfMonths={numberOfMonths}
-                  netRevenueData={netRevenueData}
-                  grossProfitData={grossProfitData}
-                  setRevenueData={setRevenueData}
-                  setRevenueDeductionData={setRevenueDeductionData}
-                  setCogsData={setCogsData}
-                  setNetRevenueData={setNetRevenueData}
-                  setGrossProfitData={setGrossProfitData}
-                  customerGrowthData={customerGrowthData}
                   isSaved={isSaved}
                   setIsSaved={setIsSaved}
-                  yearlySales={yearlySales}
-                  setYearlySales={setYearlySales}
                   revenue={revenue}
                   setRevenue={setRevenue}
                 />
@@ -757,15 +652,11 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               )}
               {activeTab === "result" && (
                 <ProfitAndLossSection
-                  revenueData={revenueData}
-                  revenueDeductionData={revenueDeductionData}
-                  cogsData={cogsData}
                   costData={costData}
                   personnelCostData={personnelCostData}
                   investmentData={investmentData}
                   loanData={loanData}
                   numberOfMonths={numberOfMonths}
-                  incomeTaxRate={incomeTax}
                   investmentTableData={investmentTableData}
                   loanTableData={loanTableData}
                 />

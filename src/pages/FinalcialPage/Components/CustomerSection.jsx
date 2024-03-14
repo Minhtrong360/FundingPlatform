@@ -3,20 +3,24 @@ import { Input } from "../../../components/ui/Input";
 import { Table, Tooltip, message } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import Chart from "react-apexcharts";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setCustomerInputs,
+  setYearlyAverageCustomers,
+  setCustomerGrowthData,
+} from "../../../features/CustomerSlice";
 
 const CustomerSection = ({
-  customerInputs,
-  setCustomerInputs,
   numberOfMonths,
-  customerGrowthData,
-  setCustomerGrowthData,
   isSaved,
   setIsSaved,
-  yearlyAverageCustomers,
-  setYearlyAverageCustomers,
   customerGrowthChart,
   setCustomerGrowthChart,
 }) => {
+  const dispatch = useDispatch();
+  const { yearlyAverageCustomers, customerInputs, customerGrowthData } =
+    useSelector((state) => state.customer);
+
   const [tempCustomerInputs, setTempCustomerInputs] = useState(
     customerInputs.map((input) => ({
       ...input,
@@ -104,7 +108,7 @@ const CustomerSection = ({
       customerInputs,
       numberOfMonths
     );
-    setCustomerGrowthData(calculatedData);
+    dispatch(setCustomerGrowthData(calculatedData));
   }, [customerInputs, numberOfMonths]);
 
   //CustomerUseEffect
@@ -201,7 +205,7 @@ const CustomerSection = ({
 
   useEffect(() => {
     if (isSaved) {
-      setCustomerInputs(tempCustomerInputs);
+      dispatch(setCustomerInputs(tempCustomerInputs));
       setIsSaved(false);
     }
   }, [isSaved]);
@@ -262,8 +266,8 @@ const CustomerSection = ({
       tempCustomerGrowthData,
       numberOfMonths
     );
-    setYearlyAverageCustomers(averages);
-  }, [tempCustomerGrowthData, numberOfMonths]);
+    dispatch(setYearlyAverageCustomers(averages));
+  }, [tempCustomerGrowthData, numberOfMonths, isSaved]);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">

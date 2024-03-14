@@ -4,6 +4,7 @@ import React from "react";
 import { Card } from "antd";
 
 import Chart from "react-apexcharts";
+import { useSelector } from "react-redux";
 
 function Component({
   yearlyAverageCustomers,
@@ -96,13 +97,10 @@ function Component({
   );
 }
 
-const MetricsFM = ({
-  yearlyAverageCustomers,
-  yearlySales,
-  customerGrowthChart,
-  revenue,
-}) => {
+const MetricsFM = ({ customerGrowthChart, revenue }) => {
   // Define data for each card
+  const { yearlyAverageCustomers } = useSelector((state) => state.customer);
+  const { yearlySales } = useSelector((state) => state.sales);
 
   return (
     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">

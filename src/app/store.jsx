@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import DurationSlice from "../features/DurationSlice";
+import CustomerSlice from "../features/CustomerSlice";
+import SaleSlice from "../features/SaleSlice";
 
 const rootReducer = {
   durationSelect: DurationSlice,
-  customer: 0,
-  revenue: 0,
+  customer: CustomerSlice,
+  sales: SaleSlice,
   cost: 0,
   personnel: 0,
   investment: 0,
@@ -14,7 +16,5 @@ const rootReducer = {
 const store = configureStore({
   reducer: rootReducer,
 });
-
-console.log("rootReducer", rootReducer);
 
 export default store;

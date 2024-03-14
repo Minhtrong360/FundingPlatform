@@ -9,34 +9,42 @@ import { Input } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
 import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
-
-const SalesSection = ({
-  channelInputs,
-  channelNames,
+import { useDispatch, useSelector } from "react-redux";
+import {
   setChannelInputs,
-  revenueData,
-  revenueDeductionData,
-  cogsData,
-  customerInputs,
-  numberOfMonths,
-  netRevenueData,
-  grossProfitData,
-
   setRevenueData,
   setRevenueDeductionData,
   setCogsData,
   setNetRevenueData,
   setGrossProfitData,
-  customerGrowthData,
+  setYearlySales,
+} from "../../../features/SaleSlice";
+
+const SalesSection = ({
+  numberOfMonths,
 
   isSaved,
   setIsSaved,
-  yearlySales,
-  setYearlySales,
 
   revenue,
   setRevenue,
 }) => {
+  const dispatch = useDispatch();
+  const {
+    channelInputs,
+    channelNames,
+    revenueData,
+    revenueDeductionData,
+    cogsData,
+    netRevenueData,
+    grossProfitData,
+
+    yearlySales,
+  } = useSelector((state) => state.sales);
+  const { customerInputs, customerGrowthData } = useSelector(
+    (state) => state.customer
+  );
+
   const [tempChannelInputs, setTempChannelInputs] = useState(channelInputs);
   const [tempRevenueData, setTempRevenueData] = useState(revenueData);
   const [tempRevenueDeductionData, setTempRevenueDeductionData] =
@@ -101,11 +109,13 @@ const SalesSection = ({
       netRevenueByChannelAndProduct,
       grossProfitByChannelAndProduct,
     } = calculateChannelRevenue();
-    setRevenueData(revenueByChannelAndProduct);
-    setRevenueDeductionData(DeductionByChannelAndProduct);
-    setCogsData(cogsByChannelAndProduct);
-    setNetRevenueData(netRevenueByChannelAndProduct);
-    setGrossProfitData(grossProfitByChannelAndProduct);
+    dispatch(setRevenueData(revenueByChannelAndProduct));
+    dispatch(setRevenueDeductionData(DeductionByChannelAndProduct));
+    dispatch(setCogsData(cogsByChannelAndProduct));
+    dispatch(setNetRevenueData(netRevenueByChannelAndProduct));
+    dispatch(setGrossProfitData(grossProfitByChannelAndProduct));
+    const sales = calculateYearlySales();
+    dispatch(setYearlySales(sales));
   }, [customerGrowthData, channelInputs, numberOfMonths]);
 
   useEffect(() => {
@@ -368,12 +378,22 @@ const SalesSection = ({
 
   useEffect(() => {
     if (isSaved) {
-      setChannelInputs(tempChannelInputs);
-      setRevenueData(tempRevenueData);
-      setRevenueDeductionData(tempRevenueDeductionData);
-      setCogsData(tempCogsData);
-      setNetRevenueData(tempNetRevenueData);
-      setGrossProfitData(tempGrossProfitData);
+      dispatch(setChannelInputs(tempChannelInputs));
+
+      dispatch(setRevenueData(tempRevenueData));
+
+      dispatch(setRevenueDeductionData(tempRevenueDeductionData));
+
+      dispatch(setCogsData(tempCogsData));
+
+      dispatch(setNetRevenueData(tempNetRevenueData));
+
+      dispatch(setGrossProfitData(tempGrossProfitData));
+
+      const sales = calculateYearlySales();
+
+      dispatch(setYearlySales(sales));
+
       setIsSaved(false);
     }
   }, [isSaved]);
@@ -404,8 +424,8 @@ const SalesSection = ({
 
   useEffect(() => {
     const sales = calculateYearlySales();
-    setYearlySales(sales);
-  }, [tempRevenueData]);
+    dispatch(setYearlySales(sales));
+  }, [tempRevenueData, numberOfMonths, isSaved]);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">

@@ -36,8 +36,6 @@ const DurationSelect = () => {
     financialProjectName,
   } = useSelector((state) => state.durationSelect);
 
-  console.log("selectedDuration", selectedDuration);
-
   const months = [
     "January",
     "February",

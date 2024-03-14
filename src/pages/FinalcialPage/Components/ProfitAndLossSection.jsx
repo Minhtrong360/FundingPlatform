@@ -1,21 +1,24 @@
 import React from "react";
 import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
+import { useSelector } from "react-redux";
 
 const ProfitAndLossSection = ({
-  revenueData,
-  revenueDeductionData,
-  cogsData,
   costData,
   personnelCostData,
   investmentData,
   loanData,
   numberOfMonths,
-  incomeTaxRate,
+
   startingCashBalance,
   investmentTableData,
   loanTableData,
 }) => {
+  const incomeTaxRate = useSelector((state) => state.durationSelect.incomeTax);
+  const { revenueData, revenueDeductionData, cogsData } = useSelector(
+    (state) => state.sales
+  );
+
   const calculateProfitAndLoss = () => {
     let totalRevenue = new Array(numberOfMonths).fill(0);
     let totalDeductions = new Array(numberOfMonths).fill(0);

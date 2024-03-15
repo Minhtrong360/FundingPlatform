@@ -243,8 +243,7 @@ const CustomerSection = ({
               className="text-2xl font-semibold mb-4 flex items-center"
               id="customers-heading"
             >
-              1. Customer channel{" "}
-              <InfoCircleOutlined style={{ marginLeft: "0.5rem" }} />
+              Customer channel{" "}  
             </h2>
             <p>
               Creating a customer channel is often considered the very first
@@ -456,7 +455,7 @@ const CustomerSection = ({
           height={350}
         />
 
-        <h3 className="text-2xl font-semibold my-8">
+        {/* <h3 className="text-2xl font-semibold my-8">
           Yearly Average Customers
         </h3>
         <div className="flex items-center">
@@ -465,7 +464,7 @@ const CustomerSection = ({
               <span className="font-semibold">Year {index + 1}:</span> {average}
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );

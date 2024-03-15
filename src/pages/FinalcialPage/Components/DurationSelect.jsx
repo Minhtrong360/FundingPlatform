@@ -70,7 +70,7 @@ const DurationSelect = ({
         className="text-2xl font-semibold mb-4 flex items-center"
         id="duration-heading"
       >
-        Duration and Initial Setup
+        General Setup
       </h2>
       <div className="bg-white rounded-md shadow p-6 border">
         <Tooltip title="Enter the name of your business">

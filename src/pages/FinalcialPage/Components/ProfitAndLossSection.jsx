@@ -564,7 +564,7 @@
           columns={columns}
           pagination={false}
         />
-        <h2 className="text-2xl font-semibold mb-4">Balance Sheet</h2>
+        <h2 className="text-2xl font-semibold mb-4">Cash Flow</h2>
         <Table
           className="overflow-auto my-8"
           size="small"

@@ -177,7 +177,7 @@ const MetricsFM = ({
                 </span>
               </div>
             </div>
-            <div>Say something</div>
+            <div>Customer</div>
           </div>
         </div>
 
@@ -242,7 +242,7 @@ const MetricsFM = ({
                 </span>
               </div>
             </div>
-            <div>Say something</div>
+            <div>Revenue</div>
           </div>
         </div>
 

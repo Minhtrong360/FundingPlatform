@@ -648,7 +648,7 @@ const SalesSection = ({
           height={350}
         />
 
-        <div className="mt-8">
+        {/* <div className="mt-8">
           <h3 className="text-2xl font-semibold mb-4">Yearly Sales</h3>
           <ul>
             {yearlySales.map((sales, index) => (
@@ -657,7 +657,7 @@ const SalesSection = ({
               </li>
             ))}
           </ul>
-        </div>
+        </div> */}
       </div>
     </div>
   );

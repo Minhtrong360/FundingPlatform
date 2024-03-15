@@ -5,35 +5,11 @@ import apiService from "../../../app/apiService";
 
 const industries = [
   "Coffee shop ☕",
-  "Pizza restaurant 🍕",
   "HR SaaS 💼🖥️",
   "Lending fintech 💸🏦",
   "Food delivery platform 🚚🍲",
   "Ride-sharing service 🚗👥",
   "E-commerce platform 🛒🌐",
-  "Subscription box service 📦🎁",
-  "Social media management tool 📱💡",
-  "Online tutoring platform 🖥️📚",
-  "Health and wellness app 💪🍏",
-  "Home cleaning service 🏠🧹",
-  "Co-working space 🏢👩‍💻",
-  "Meal kit delivery service 📦🥗",
-  "Pet care app 🐶📱",
-  "Fashion rental platform 👗🔄",
-  "Online marketplace 🤲🛍️",
-  "Personal finance management tool 💰📊",
-  "Virtual event platform 🖥️🎤",
-  "Language learning app 📚🌍",
-  "Electric scooter rental service 🛴🔋",
-  "Meal planning app 📝🥘",
-  "Online therapy platform 💬❤️",
-  "Digital marketing agency 💻📈",
-  "Sustainable fashion brand 🌿👚",
-  "Freelance marketplace 💻🤝",
-  "Smart home technology provider 🏠💡",
-  "Online event ticketing platform 🎟️🌐",
-  "Plant-based food products company 🌱🍔",
-  "Fitness app 🏋️‍♀️📱",
 ];
 
 const Gemini = ({
@@ -305,7 +281,7 @@ const Gemini = ({
                 type="submit"
                 className="w-[64px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
               >
-                OK 🐶
+                Build with AI
               </button>
             </div>
           </div>

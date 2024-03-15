@@ -212,6 +212,34 @@ const LoanSection = ({
     }
     loanTableData.push(cfLoansRow);
 
+    const totalRemainingBalanceRow = {
+      key: `Total Remaining Balance`,
+      type: `Total Remaining Balance`,
+    };
+  
+    for (let monthIndex = 1; monthIndex <= numberOfMonths; monthIndex++) {
+      const monthKey = `Month ${monthIndex}`;
+      const totalBalanceForMonth = tempLoanInputs.reduce((total, input) => {
+        const loanData = calculateLoanData().find(
+          (loan) => loan.loanName === input.loanName
+        );
+        const monthData = loanData?.loanDataPerMonth.find(
+          (data) => data.month === monthIndex
+        );
+        // Add a check for monthData being defined before accessing balance property
+        if (monthData) {
+          total += monthData.balance;
+        }
+        return total;
+      }, 0);
+      totalRemainingBalanceRow[monthKey] = totalBalanceForMonth.toFixed(2);
+    }
+  
+    // Add the total remaining balance row to the table data
+    loanTableData.push(totalRemainingBalanceRow);
+
+
+
     return loanTableData;
   };
 

@@ -323,10 +323,9 @@ const ProfitAndLossSection = ({
   });
 
   const cashBeginBalances = [
-    Number(startingCashBalance),
+    parseFloat(startingCashBalance),
     ...calculateCashBalances(startingCashBalance, netCashChanges)?.slice(0, -1),
   ];
-
   const cashEndBalances = calculateCashBalances(
     startingCashBalance,
     netCashChanges
@@ -339,9 +338,36 @@ const ProfitAndLossSection = ({
       bsTotalDepreciation.push(parseFloat(investmentTableData[7][key]));
     }
   });
+  const bsTotalNetFixedAssets = [];
+
+  Object.keys(investmentTableData[8]).forEach((key) => {
+    if (key.startsWith("month")) {
+      bsTotalNetFixedAssets.push(parseFloat(investmentTableData[8][key]));
+    }
+  });
+
+  const currentAssets = cashEndBalances.map((cashEnd, index) => {
+    const accountsReceivable = 0; // Placeholder value
+    const inventory = 0; // Placeholder value
+    return cashEnd + accountsReceivable + inventory; // Calculate Current Assets
+  });
+  const totalAssets = currentAssets.map(
+    (currentAsset, index) => currentAsset + bsTotalNetFixedAssets[index]
+  );
+
+  console.log("loanData", loanData);
+  console.log("loanTableData", loanTableData);
+
+  const bsTotalRemainingBalance = [];
+
+  Object.keys(loanTableData[6]).forEach((key) => {
+    if (key.startsWith("Month ")) {
+      bsTotalRemainingBalance.push(parseFloat(loanTableData[6][key]));
+    }
+  });
 
   const positionDataWithNetIncome = [
-    { key: "Operating Activities", values: new Array(numberOfMonths).fill(0) }, // Set values to zero },
+    { key: "Operating Activities" },
     { key: "Net Income", values: netIncome },
     { key: "Depreciation", values: totalInvestmentDepreciation },
     {
@@ -367,12 +393,12 @@ const ProfitAndLossSection = ({
           0 /* AP */
       ),
     },
-    { key: "Investing Activities", values: new Array(numberOfMonths).fill(0) },
+    { key: "Investing Activities" },
     {
       key: "CF Investments",
       values: cfInvestmentsArray,
     },
-    // { key: "Financing Activities" },
+    { key: "Financing Activities" },
     {
       key: "CF Loans",
       values: cfLoanArray,
@@ -446,23 +472,33 @@ const ProfitAndLossSection = ({
     },
     {
       key: "Current Assets", // Added Current Assets row
-      values: netIncome.map((_, index) => {
-        const cashEnd = cashEndBalances[index];
-        const accountsReceivable = 0; // Placeholder value
-        const inventory = 0; // Placeholder value
-        return cashEnd + accountsReceivable + inventory; // Calculate Current Assets
-      }),
+      values: currentAssets,
     },
-    { key: "Long term assets", values: new Array(numberOfMonths).fill(0) }, // New row for long term assets
+    { key: "Long term assets (Heading)" },
 
     // insert BS Total investment here
     { key: "Total Investment", values: totalAssetValue }, // New row for total investment
+
+    { key: "Total Accumulated Depreciation", values: bsTotalDepreciation },
+
+    {
+      key: "Net Fixed Assets = Same row in Investment Table",
+      values: bsTotalNetFixedAssets,
+    },
+
+    {
+      key: "Total Assets = Sum of Current Assets and Net Fixed Assets",
+      values: totalAssets,
+    },
 
     {
       key: "Account Payable", // Added Inventory row
       values: new Array(numberOfMonths).fill(0), // Set values to zero
     },
-
+    {
+      key: "Long term liabilities",
+      values: bsTotalRemainingBalance, // New row for long term liabilities
+    },
     {
       key: "Paid in Capital", // Added Inventory row
       values: new Array(numberOfMonths).fill(0), // Set values to zero

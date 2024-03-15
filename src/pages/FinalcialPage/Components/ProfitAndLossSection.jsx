@@ -9,24 +9,16 @@ const ProfitAndLossSection = ({
   investmentData,
   loanData,
   numberOfMonths,
+
   investmentTableData,
   loanTableData,
 }) => {
-  const incomeTaxRate = useSelector((state) => state.durationSelect.incomeTax);
   const { revenueData, revenueDeductionData, cogsData } = useSelector(
     (state) => state.sales
   );
-
-  console.log("revenueData", revenueData);
-  console.log("revenueDeductionData", revenueDeductionData);
-  console.log("cogsData", cogsData);
-  console.log("costData", costData);
-  console.log("personnelCostData", personnelCostData);
-  console.log("investmentData", investmentData);
-  console.log("loanData", loanData);
-
-  console.log("investmentTableData", investmentTableData);
-  console.log("loanTableData", loanTableData);
+  const { incomeTax: incomeTaxRate, startingCashBalance } = useSelector(
+    (state) => state.durationSelect
+  );
 
   const calculateProfitAndLoss = () => {
     let totalRevenue = new Array(numberOfMonths).fill(0);
@@ -114,6 +106,21 @@ const ProfitAndLossSection = ({
       (earnings, index) => earnings - incomeTax[index]
     );
 
+    const totalPrincipal = new Array(numberOfMonths).fill(0);
+    loanData.forEach((loan) => {
+      loan.loanDataPerMonth.forEach((monthData) => {
+        totalPrincipal[monthData.month - 1] += monthData.principal;
+      });
+    });
+
+    const totalRemainingBalance = new Array(numberOfMonths).fill(0);
+    loanData.forEach((loan) => {
+      loan.loanDataPerMonth.forEach((monthData) => {
+        totalRemainingBalance[monthData.month - 1] +=
+          monthData.remainingBalance;
+      });
+    });
+
     return {
       totalRevenue,
       totalDeductions,
@@ -124,10 +131,13 @@ const ProfitAndLossSection = ({
       totalPersonnelCosts,
       totalInvestmentDepreciation,
       totalInterestPayments,
+      totalPrincipal,
       ebitda,
       earningsBeforeTax,
       incomeTax,
       netIncome,
+      startingCashBalance,
+      totalRemainingBalance,
     };
   };
 
@@ -141,10 +151,12 @@ const ProfitAndLossSection = ({
     totalPersonnelCosts,
     totalInvestmentDepreciation,
     totalInterestPayments,
+    totalPrincipal,
     ebitda,
     earningsBeforeTax,
     incomeTax,
     netIncome,
+    remainingBalance,
   } = calculateProfitAndLoss();
 
   const transposedData = [
@@ -248,13 +260,6 @@ const ProfitAndLossSection = ({
     )
   );
 
-  const totalPrincipal = loanData[0]?.loanDataPerMonth?.map((_, index) =>
-    loanData.reduce(
-      (acc, loan) => acc + (loan.loanDataPerMonth[index]?.principal || 0),
-      0
-    )
-  );
-
   const maxLength = Math.max(
     totalLoanAmount?.length || 0,
     totalPrincipal?.length || 0,
@@ -287,9 +292,57 @@ const ProfitAndLossSection = ({
     }
   });
 
+  const calculateCashBalances = (startingCash, netCashChanges) => {
+    const cashBalances = netCashChanges?.reduce((acc, netCashChange, index) => {
+      if (index === 0) {
+        acc.push(parseFloat(startingCash) + netCashChange);
+      } else {
+        acc.push(acc[index - 1] + netCashChange);
+      }
+      return acc;
+    }, []);
+    return cashBalances;
+  };
+
+  const netCashChanges = netIncome.map((_, index) => {
+    const cfOperations =
+      netIncome[index] + totalInvestmentDepreciation[index] + 0 - 0 - 0; // Placeholder values
+    const increaseCommonStock = 0; // Placeholder value
+    const increasePreferredStock = 0; // Placeholder value
+    const increasePaidInCapital = 0; // Placeholder value
+    const cfLoan = cfLoanArray[index] || 0;
+    const cfInvestment = cfInvestmentsArray[index] || 0;
+    const cfFinancing =
+      cfLoan -
+      totalPrincipal[index] +
+      increaseCommonStock +
+      increasePreferredStock +
+      increasePaidInCapital; // Calculate CF Financing directly
+    const netCash = cfOperations - cfInvestment + cfFinancing;
+    return netCash;
+  });
+
+  const cashBeginBalances = [
+    Number(startingCashBalance),
+    ...calculateCashBalances(startingCashBalance, netCashChanges)?.slice(0, -1),
+  ];
+
+  const cashEndBalances = calculateCashBalances(
+    startingCashBalance,
+    netCashChanges
+  );
+
+  const bsTotalDepreciation = [];
+
+  Object.keys(investmentTableData[7]).forEach((key) => {
+    if (key.startsWith("month")) {
+      bsTotalDepreciation.push(parseFloat(investmentTableData[7][key]));
+    }
+  });
+
   const positionDataWithNetIncome = [
+    { key: "Operating Activities", values: new Array(numberOfMonths).fill(0) }, // Set values to zero },
     { key: "Net Income", values: netIncome },
-    // { key: "Costs", values: totalCosts },
     { key: "Depreciation", values: totalInvestmentDepreciation },
     {
       key: "Decrease (Increase) in Inventory",
@@ -314,17 +367,19 @@ const ProfitAndLossSection = ({
           0 /* AP */
       ),
     },
+    { key: "Investing Activities", values: new Array(numberOfMonths).fill(0) },
     {
       key: "CF Investments",
       values: cfInvestmentsArray,
     },
+    // { key: "Financing Activities" },
     {
       key: "CF Loans",
       values: cfLoanArray,
     },
     {
-      key: "Total Principal",
-      values: filledTotalPrincipal,
+      key: "Total Principal", // Updated key to Total Principal
+      values: totalPrincipal, // Updated values with totalPrincipal
     },
     {
       key: "Increase in Common Stock",
@@ -337,6 +392,92 @@ const ProfitAndLossSection = ({
     {
       key: "Increase in Paid in Capital",
       values: new Array(numberOfMonths).fill(0), // Placeholder values
+    },
+    {
+      key: "CF Financing",
+      values: netIncome.map((_, index) => {
+        const cfLoan = cfLoanArray[index] || 0;
+        const increaseCommonStock = 0; // Placeholder value
+        const increasePreferredStock = 0; // Placeholder value
+        const increasePaidInCapital = 0; // Placeholder value
+        return (
+          cfLoan -
+          totalPrincipal[index] +
+          increaseCommonStock +
+          increasePreferredStock +
+          increasePaidInCapital
+        );
+      }),
+    },
+    {
+      key: "Net +/- in Cash",
+      values: netIncome.map((_, index) => {
+        const cfLoan = cfLoanArray[index] || 0;
+        const increaseCommonStock = 0; // Placeholder value
+        const increasePreferredStock = 0; // Placeholder value
+        const increasePaidInCapital = 0; // Placeholder value
+        const cfOperations =
+          netIncome[index] + totalInvestmentDepreciation[index] + 0 - 0 - 0; // Placeholder values
+        const cfInvestment = cfInvestmentsArray[index] || 0;
+        const cfFinancing =
+          cfLoan -
+          totalPrincipal[index] +
+          increaseCommonStock +
+          increasePreferredStock +
+          increasePaidInCapital;
+        return cfOperations - cfInvestment + cfFinancing;
+      }),
+    },
+    {
+      key: "Cash Begin",
+      values: cashBeginBalances,
+    },
+    {
+      key: "Cash End",
+      values: cashEndBalances,
+    },
+    {
+      key: "Accounts Receivable", // Added Accounts Receivable row
+      values: new Array(numberOfMonths).fill(0), // Set values to zero
+    },
+    {
+      key: "Inventory", // Added Inventory row
+      values: new Array(numberOfMonths).fill(0), // Set values to zero
+    },
+    {
+      key: "Current Assets", // Added Current Assets row
+      values: netIncome.map((_, index) => {
+        const cashEnd = cashEndBalances[index];
+        const accountsReceivable = 0; // Placeholder value
+        const inventory = 0; // Placeholder value
+        return cashEnd + accountsReceivable + inventory; // Calculate Current Assets
+      }),
+    },
+    { key: "Long term assets", values: new Array(numberOfMonths).fill(0) }, // New row for long term assets
+
+    // insert BS Total investment here
+    { key: "Total Investment", values: totalAssetValue }, // New row for total investment
+
+    {
+      key: "Account Payable", // Added Inventory row
+      values: new Array(numberOfMonths).fill(0), // Set values to zero
+    },
+
+    {
+      key: "Paid in Capital", // Added Inventory row
+      values: new Array(numberOfMonths).fill(0), // Set values to zero
+    },
+    {
+      key: "Common Stock", // Added Inventory row
+      values: new Array(numberOfMonths).fill(0), // Set values to zero
+    },
+    {
+      key: "Preferred Stock", // Added Inventory row
+      values: new Array(numberOfMonths).fill(0), // Set values to zero
+    },
+    {
+      key: "Retain Earnings", // Added Inventory row
+      values: netIncome,
     },
   ].map((item, index) => ({
     metric: item.key,
@@ -395,7 +536,7 @@ const ProfitAndLossSection = ({
     },
     {
       name: "Net Income",
-      data: netIncome.map((value) => parseFloat(value.toFixed(2))),
+      data: netIncome.map((value) => parseFloat(value?.toFixed(2))),
     },
   ];
 
@@ -442,7 +583,7 @@ const ProfitAndLossSection = ({
         columns={columns}
         pagination={false}
       />
-      <h2 className="text-2xl font-semibold mb-4">Position Statement</h2>
+      <h2 className="text-2xl font-semibold mb-4">Cash Flow</h2>
       <Table
         className="overflow-auto my-8"
         size="small"

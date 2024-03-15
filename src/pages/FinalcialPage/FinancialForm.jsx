@@ -289,17 +289,25 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   ]);
   const [investmentData, setInvestmentData] = useState([]);
   const [investmentTableData, setInvestmentTableData] = useState([]);
-  console.log("investmentTableData", investmentTableData);
+
   //LoanState
 
   const [loanInputs, setLoanInputs] = useState([
     {
       id: 1,
       loanName: "Banking loan",
-      loanAmount: "150000",
+      loanAmount: "30000",
       interestRate: "6",
       loanBeginMonth: "1",
       loanEndMonth: "12",
+    },
+    {
+      id: 2,
+      loanName: "Startup loan",
+      loanAmount: "20000",
+      interestRate: "3",
+      loanBeginMonth: "6",
+      loanEndMonth: "24",
     },
   ]);
 
@@ -330,7 +338,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     const userId = user?.id;
     if (userId) {
       loadData(userId).then((inputData) => {
-        console.log("inputData", inputData);
         if (inputData) {
           // Set your state here
 
@@ -754,6 +761,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   numberOfMonths={numberOfMonths}
                   investmentTableData={investmentTableData}
                   loanTableData={loanTableData}
+                  startingCashBalance={startingCashBalance}
                 />
               )}
             </div>

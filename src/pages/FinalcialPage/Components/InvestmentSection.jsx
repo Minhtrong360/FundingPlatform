@@ -108,18 +108,18 @@ const InvestmentSection = ({
 
   const transformInvestmentDataForTable = () => {
     const investmentTableData = [];
-
+  
     const selectedInput = tempInvestmentInputs.find(
       (input) => input.id == renderInvestmentForm
     );
     if (!selectedInput || tempInvestmentData.length === 0) return [];
-
+  
     const selectedInvestmentData = tempInvestmentData.find(
       (_, index) => tempInvestmentInputs[index].id == renderInvestmentForm
     );
-
+  
     if (!selectedInvestmentData) return [];
-
+  
     const purchaseName =
       selectedInput.purchaseName || `Investment ${renderInvestmentForm}`;
     const assetCostRow = {
@@ -138,14 +138,14 @@ const InvestmentSection = ({
       key: `Book Value`,
       type: "Book Value",
     };
-
+  
     const purchaseMonth = parseInt(selectedInput.purchaseMonth, 10);
     const usefulLife = parseInt(selectedInput.usefulLifetime, 10);
     const endMonth = purchaseMonth + usefulLife - 1;
     const assetCost =
       parseFloat(selectedInput.assetCost) *
       parseInt(selectedInput.quantity, 10);
-
+  
     for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
       if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
         assetCostRow[`month${monthIndex + 1}`] = assetCost?.toFixed(2);
@@ -165,22 +165,33 @@ const InvestmentSection = ({
         bookValueRow[`month${monthIndex + 1}`] = "0.00";
       }
     }
-
+  
     investmentTableData.push(
       assetCostRow,
       depreciationRow,
       accumulatedDepreciationRow,
       bookValueRow
     );
-
+  
     const cfInvestmentsSum = Array(numberOfMonths).fill(0);
+    const depreciationSum = Array(numberOfMonths).fill(0); // Total depreciation for each month
     tempInvestmentInputs.forEach((input) => {
       const purchaseMonth = parseInt(input.purchaseMonth, 10);
       const assetCost =
         parseFloat(input.assetCost) * parseInt(input.quantity, 10);
+      const depreciationArray = calculateDepreciationArray(
+        assetCost,
+        parseFloat(input.residualValue),
+        parseFloat(input.usefulLifetime),
+        purchaseMonth,
+        numberOfMonths
+      );
+      depreciationArray.forEach((depreciation, index) => {
+        depreciationSum[index] += depreciation;
+      });
       cfInvestmentsSum[purchaseMonth - 1] += assetCost;
     });
-
+  
     const cfInvestmentsRow = {
       key: `CF Investments`,
       type: "CF Investments",
@@ -190,9 +201,66 @@ const InvestmentSection = ({
         cfInvestmentsSum[monthIndex]?.toFixed(2);
     }
     investmentTableData.push(cfInvestmentsRow);
+  
+    // Add row for Total Depreciation
+    const totalDepreciationRow = {
+      key: `Total Depreciation`,
+      type: "Total Depreciation",
+    };
+    depreciationSum.forEach((depreciation, index) => {
+      totalDepreciationRow[`month${index + 1}`] = depreciation.toFixed(2);
+    });
+    investmentTableData.push(totalDepreciationRow);
+  
+    // Add row for BS Total investment
+    const bsTotalInvestmentRow = {
+      key: `BS Total investment`,
+      type: "BS Total investment",
+    };
+    for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
+      bsTotalInvestmentRow[`month${monthIndex + 1}`] = cfInvestmentsSum
+        .slice(0, monthIndex + 1)
+        .reduce((acc, curr) => acc + curr, 0)
+        .toFixed(2);
+    }
+    investmentTableData.push(bsTotalInvestmentRow);
 
+    //Add row for BS Total Accumulated Depreciation
+    const bsTotalAccumulatedDepreciationRow = {
+      key: `BS Total Accumulated Depreciation`,
+      type: "BS Total Accumulated Depreciation",
+    };
+    for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
+      bsTotalAccumulatedDepreciationRow[`month${monthIndex + 1}`] = depreciationSum
+        .slice(0, monthIndex + 1)
+        .reduce((acc, curr) => acc + curr, 0)
+        .toFixed(2);
+    }
+    investmentTableData.push(bsTotalAccumulatedDepreciationRow);
+    
+  
     return investmentTableData;
   };
+  
+  const calculateDepreciationArray = (
+    assetCost,
+    residualValue,
+    usefulLifetime,
+    purchaseMonth,
+    numberOfMonths
+  ) => {
+    const depreciationArray = new Array(numberOfMonths).fill(0);
+    const depreciationPerMonth = (assetCost - residualValue) / usefulLifetime;
+  
+    for (let i = 0; i < numberOfMonths; i++) {
+      if (i >= purchaseMonth - 1 && i < purchaseMonth - 1 + usefulLifetime) {
+        depreciationArray[i] = depreciationPerMonth;
+      }
+    }
+    return depreciationArray;
+  };
+  
+  
 
   useEffect(() => {
     const calculatedData = calculateInvestmentData();

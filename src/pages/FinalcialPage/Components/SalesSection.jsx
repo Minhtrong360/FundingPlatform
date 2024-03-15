@@ -608,7 +608,7 @@ const SalesSection = ({
                 </div>
                 <div className="flex justify-end items-center">
                   <button
-                    className="bg-red-600 text-white py-1 px-4 rounded"
+                    className="bg-red-600 text-white py-0.5 px-2 rounded"
                     onClick={() => removeChannelInput(input.id)}
                   >
                     Remove

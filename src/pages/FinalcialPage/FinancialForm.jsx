@@ -47,6 +47,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [startMonth, setStartMonth] = useState([]);
   const [startYear, setStartYear] = useState(2024);
   const [financialProjectName, setFinancialProjectName] = useState([]);
+  
 
   // Gemini
   const [chatbotResponse, setChatbotResponse] = useState("");

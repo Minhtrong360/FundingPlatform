@@ -64,6 +64,8 @@ const DurationSelect = ({
     "Entertainment",
   ];
 
+  
+
   return (
     <section aria-labelledby="duration-heading" className="mb-8">
       <h2
@@ -164,7 +166,7 @@ const DurationSelect = ({
         <Tooltip title="Select the status of the business, e.g. $10,000">
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className=" flex items-center text-sm">Status :</span>
-            <Select onValueChange={(value) => setStatus(value)} value={status}>
+            <Select onValueChange={(value) => setStatus(value)} value={status} disabled>
               <SelectTrigger className="border-solid border-[1px] border-gray-200">
                 <SelectValue />
               </SelectTrigger>
@@ -219,6 +221,7 @@ const DurationSelect = ({
               type="number"
               value={payrollTax}
               onChange={(e) => setPayrollTax(e.target.value)}
+              disabled
             />
           </div>
         </Tooltip>

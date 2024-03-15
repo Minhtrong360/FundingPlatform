@@ -62,12 +62,13 @@ const SalesSection = ({
     const newChannel = {
       id: newId,
       productName: "New channel",
-      price: 0,
-      multiples: 0,
-      deductionPercentage: 0,
-      cogsPercentage: 0,
+      price: 3,
+      multiples: 1,
+      deductionPercentage: 5,
+      cogsPercentage: 30,
       selectedChannel: channelNames[0],
-      channelAllocation: 0,
+      channelAllocation: 0.8,
+      daysGetPaid: 0,
     };
     setTempChannelInputs([...tempChannelInputs, newChannel]);
     setRenderChannelForm(newId.toString());

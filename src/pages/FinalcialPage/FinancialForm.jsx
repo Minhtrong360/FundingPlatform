@@ -559,7 +559,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             <ul className="py-4 flex justify-center items-center border-t-2">
               <li
                 className={`cursor-pointer mr-4 ${
-                  activeTab === "overview" ? "border-b-2 border-black" : ""
+                  activeTab === "overview" ? "border-b-2 border-blue-600 text-blue-600" : ""
                 }`}
                 onClick={() => handleTabChange("overview")}
               >
@@ -567,7 +567,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               </li>
               <li
                 className={`cursor-pointer mr-4 ${
-                  activeTab === "customer" ? "border-b-2 border-black" : ""
+                  activeTab === "customer" ? "border-b-2 border-blue-600 text-blue-600" : ""
                 }`}
                 onClick={() => handleTabChange("customer")}
               >
@@ -575,7 +575,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               </li>
               <li
                 className={`cursor-pointer mr-4 ${
-                  activeTab === "sales" ? "border-b-2 border-black" : ""
+                  activeTab === "sales" ? "border-b-2 border-blue-600 text-blue-600" : ""
                 }`}
                 onClick={() => handleTabChange("sales")}
               >
@@ -583,7 +583,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               </li>
               <li
                 className={`cursor-pointer mr-4 ${
-                  activeTab === "cost" ? "border-b-2 border-black" : ""
+                  activeTab === "cost" ? "border-b-2 border-blue-600 text-blue-600" : ""
                 }`}
                 onClick={() => handleTabChange("cost")}
               >
@@ -591,7 +591,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               </li>
               <li
                 className={`cursor-pointer mr-4 ${
-                  activeTab === "personnel" ? "border-b-2 border-black" : ""
+                  activeTab === "personnel" ? "border-b-2 border-blue-600 text-blue-600" : ""
                 }`}
                 onClick={() => handleTabChange("personnel")}
               >
@@ -599,7 +599,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               </li>
               <li
                 className={`cursor-pointer mr-4 ${
-                  activeTab === "investment" ? "border-b-2 border-black" : ""
+                  activeTab === "investment" ? "border-b-2 border-blue-600 text-blue-600" : ""
                 }`}
                 onClick={() => handleTabChange("investment")}
               >
@@ -607,16 +607,15 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               </li>
               <li
                 className={`cursor-pointer mr-4 ${
-                  activeTab === "loan" ? "border-b-2 border-black" : ""
+                  activeTab === "loan" ? "border-b-2 border-blue-600 text-blue-600" : ""
                 }`}
                 onClick={() => handleTabChange("loan")}
               >
                 Loan
               </li>
-
               <li
                 className={`cursor-pointer mr-4 ${
-                  activeTab === "result" ? "border-b-2 border-black" : ""
+                  activeTab === "result" ? "border-b-2 border-blue-600 text-blue-600" : ""
                 }`}
                 onClick={() => handleTabChange("result")}
               >

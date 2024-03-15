@@ -224,6 +224,20 @@ const InvestmentSection = ({
         .toFixed(2);
     }
     investmentTableData.push(bsTotalInvestmentRow);
+
+    //Add row for BS Total Accumulated Depreciation
+    const bsTotalAccumulatedDepreciationRow = {
+      key: `BS Total Accumulated Depreciation`,
+      type: "BS Total Accumulated Depreciation",
+    };
+    for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
+      bsTotalAccumulatedDepreciationRow[`month${monthIndex + 1}`] = depreciationSum
+        .slice(0, monthIndex + 1)
+        .reduce((acc, curr) => acc + curr, 0)
+        .toFixed(2);
+    }
+    investmentTableData.push(bsTotalAccumulatedDepreciationRow);
+    
   
     return investmentTableData;
   };

@@ -16,6 +16,7 @@ const CustomerSection = ({
   setYearlyAverageCustomers,
   customerGrowthChart,
   setCustomerGrowthChart,
+  beginCustomer,
 }) => {
   const [tempCustomerInputs, setTempCustomerInputs] = useState(
     customerInputs.map((input) => ({
@@ -148,16 +149,18 @@ const CustomerSection = ({
     });
   });
 
-  const customerTableData = Object.values(transformedCustomerTableData).map(
-    (row) => {
-      for (let month = 1; month <= numberOfMonths; month++) {
-        if (!row.hasOwnProperty(`month${month}`)) {
-          row[`month${month}`] = "0.00";
-        }
-      }
-      return row;
+  const beginCustomerRow = {
+    key: "beginCustomer",
+    channelName: "Begin Customer",
+  };
+  
+  tempCustomerInputs.forEach(input => {
+    for (let month = 1; month <= numberOfMonths; month++) {
+      beginCustomerRow[`month${month}`] = month === input.beginMonth ? input.beginCustomer.toString() : "0.00";
     }
-  );
+  });
+  
+  const customerTableData = [beginCustomerRow, ...Object.values(transformedCustomerTableData)]; 
 
   // CustomerColumns
   const customerColumns = [

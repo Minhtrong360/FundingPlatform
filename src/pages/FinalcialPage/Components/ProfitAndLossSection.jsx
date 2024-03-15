@@ -17,7 +17,7 @@
     loanTableData,
   }) => {
 
-  
+
 
 
     const calculateProfitAndLoss = () => {
@@ -249,6 +249,8 @@
       investmentData.reduce((acc, data) => acc + data?.assetValue[index], 0)
     );
 
+    console.log("totalAssetValue", totalAssetValue)
+
     const cfInvestmentsSum = investmentTableData.map(
       (investment) =>
         investment?.monthlyInvestments?.reduce((acc, curr) => acc + curr, 0) || 0
@@ -311,8 +313,9 @@
       const increaseCommonStock = 0; // Placeholder value
       const increasePreferredStock = 0; // Placeholder value
       const increasePaidInCapital = 0; // Placeholder value
+      const cfLoan = cfLoanArray[index] || 0;
       const cfInvestment = cfInvestmentsArray[index] || 0;
-      const cfFinancing = netIncome[index] - totalPrincipal[index] + increaseCommonStock + increasePreferredStock + increasePaidInCapital; // Calculate CF Financing directly
+      const cfFinancing = cfLoan - totalPrincipal[index] + increaseCommonStock + increasePreferredStock + increasePaidInCapital; // Calculate CF Financing directly
       const netCash = cfOperations - cfInvestment + cfFinancing;
       return netCash;
     });
@@ -322,21 +325,10 @@
     const cashBeginBalances = [startingCashBalance, ...calculateCashBalances(startingCashBalance, netCashChanges)?.slice(0, -1)];
     const cashEndBalances = calculateCashBalances(startingCashBalance, netCashChanges);
 
-    const netCashValues = netIncome.map((_, index) => {
-      const cfOperations = netIncome[index] + totalInvestmentDepreciation[index] + 0 - 0 - 0; // Placeholder values
-      const increaseCommonStock = 0; // Placeholder value
-      const increasePreferredStock = 0; // Placeholder value
-      const increasePaidInCapital = 0; // Placeholder value
-      const cfInvestment = cfInvestmentsArray[index] || 0;
-      const cfFinancing = netIncome[index] - totalPrincipal[index] + increaseCommonStock + increasePreferredStock + increasePaidInCapital; // Calculate CF Financing directly
-      return cfOperations - cfInvestment + cfFinancing;
-    });
-
-    
 
     const positionDataWithNetIncome = [
+      { key: "Operating Activities"},  
       { key: "Net Income", values: netIncome },
-      // { key: "Costs", values: totalCosts },
       { key: "Depreciation", values: totalInvestmentDepreciation },
       {
         key: "Decrease (Increase) in Inventory",
@@ -361,10 +353,12 @@
             0 /* AP */
         ),
       },
+      { key: "Investing Activities"},
       {
         key: "CF Investments",
         values: cfInvestmentsArray,
       },
+      { key: "Financing Activities"},  
       {
         key: "CF Loans",
         values: cfLoanArray,
@@ -396,18 +390,26 @@
         }),
       },
       {
-    key: "Net +/- in Cash",
-    values: netCashChanges,
-  },
-  {
-    key: "Cash Begin",
-    values: cashBeginBalances,
-  },
-  {
-    key: "Cash End",
-    values: cashEndBalances,
-  },
-      
+        key: "Net +/- in Cash",
+        values: netIncome.map((_, index) => {
+          const cfLoan = cfLoanArray[index] || 0;
+          const increaseCommonStock = 0; // Placeholder value
+          const increasePreferredStock = 0; // Placeholder value
+          const increasePaidInCapital = 0; // Placeholder value
+          const cfOperations = netIncome[index] + totalInvestmentDepreciation[index] + 0 - 0 - 0; // Placeholder values
+          const cfInvestment = cfInvestmentsArray[index] || 0;
+          const cfFinancing = cfLoan - totalPrincipal[index] + increaseCommonStock + increasePreferredStock + increasePaidInCapital; 
+          return cfOperations - cfInvestment + cfFinancing;
+        }),
+      },
+      {
+        key: "Cash Begin",
+        values: cashBeginBalances,
+      },
+      {
+        key: "Cash End",
+        values: cashEndBalances,
+      },
       {
         key: "Accounts Receivable", // Added Accounts Receivable row
         values: new Array(numberOfMonths).fill(0), // Set values to zero
@@ -416,28 +418,25 @@
         key: "Inventory", // Added Inventory row
         values: new Array(numberOfMonths).fill(0), // Set values to zero
       },
-
       {
         key: "Current Assets", // Added Current Assets row
         values: netIncome.map((_, index) => {
-          const cashEnd =
-            startingCashBalance +
-            netIncome[index] +
-            totalInvestmentDepreciation[index] +
-            0 -
-            0 -
-            0; // Calculate Cash End
+          const cashEnd = cashEndBalances[index];
           const accountsReceivable = 0; // Placeholder value
           const inventory = 0; // Placeholder value
           return cashEnd + accountsReceivable + inventory; // Calculate Current Assets
         }),
-      },
-      
+      },  
+      {key: "Long term assets"}, // New row for long term assets
+
+      // insert BS Total investment here
+      {key: "Total Investment", values: totalAssetValue}, // New row for total investment
+
+
       {
         key: "Account Payable", // Added Inventory row
         values: new Array(numberOfMonths).fill(0), // Set values to zero
       },
-
       {
         key: "Long term liabilities", // New row for long term liabilities
         values: remainingBalance, // Values taken from totalRemainingBalance
@@ -458,8 +457,6 @@
         key: "Retain Earnings", // Added Inventory row
         values: netIncome, 
       },
-      
-
     ].map((item, index) => ({
       metric: item.key,
       ...item.values?.reduce(
@@ -467,6 +464,7 @@
         {}
       ),
     }));
+    
 
     const positionColumns = [
       {

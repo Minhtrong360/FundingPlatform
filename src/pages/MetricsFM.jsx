@@ -210,7 +210,7 @@ const MetricsFM = ({
             <div className="mt-1 flex items-center gap-x-2">
               <div className="flex flex-col xl:flex-row items-center ">
                 <h3 className="text-sm sm:text-3xl font-bold text-gray-800 my-2">
-                  ${Math.round(yearlySales[yearlySales.length - 1])}
+                  {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.round(yearlySales[yearlySales.length - 1]))}
                 </h3>
                 <span className="flex items-center gap-x-1 text-green-600 ml-2">
                   <svg

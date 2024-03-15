@@ -4,7 +4,7 @@ import React from "react";
 import { Card } from "antd";
 
 import Chart from "react-apexcharts";
-import { YoutubeSearchedForTwoTone } from "@mui/icons-material";
+import { useSelector } from "react-redux";
 
 function Component({
   yearlyAverageCustomers,
@@ -97,13 +97,10 @@ function Component({
   );
 }
 
-const MetricsFM = ({
-  yearlyAverageCustomers,
-  yearlySales,
-  customerGrowthChart,
-  revenue,
-}) => {
+const MetricsFM = ({ customerGrowthChart, revenue }) => {
   // Define data for each card
+  const { yearlyAverageCustomers } = useSelector((state) => state.customer);
+  const { yearlySales } = useSelector((state) => state.sales);
 
   return (
     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
@@ -138,7 +135,7 @@ const MetricsFM = ({
             </div>
 
             <div className="mt-1 flex items-center gap-x-2">
-              <div className="flex flex-col xl:flex-row items-center">
+              <div className="flex flex-col xl:flex-row xl:items-center items-start">
                 <h3 className="text-sm sm:text-3xl font-bold text-gray-800 my-2">
                   {Math.round(
                     yearlyAverageCustomers[yearlyAverageCustomers.length - 1],
@@ -208,7 +205,7 @@ const MetricsFM = ({
             </div>
 
             <div className="mt-1 flex items-center gap-x-2">
-              <div className="flex flex-col xl:flex-row items-center ">
+              <div className="flex flex-col xl:flex-row xl:items-center items-start">
                 <h3 className="text-sm sm:text-3xl font-bold text-gray-800 my-2">
                   {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.round(yearlySales[yearlySales.length - 1]))}
                 </h3>

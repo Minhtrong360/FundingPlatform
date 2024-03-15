@@ -3,21 +3,32 @@ import { Input } from "../../../components/ui/Input";
 import { Table, Tooltip, message } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import Chart from "react-apexcharts";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setCustomerInputs,
+  setYearlyAverageCustomers,
+  setCustomerGrowthData,
+  calculateYearlyAverage,
+  calculateCustomerGrowth,
+} from "../../../features/CustomerSlice";
+import {
+  calculateChannelRevenue,
+  calculateYearlySales,
+  setYearlySales,
+} from "../../../features/SaleSlice";
 
 const CustomerSection = ({
-  customerInputs,
-  setCustomerInputs,
   numberOfMonths,
-  customerGrowthData,
-  setCustomerGrowthData,
   isSaved,
   setIsSaved,
-  yearlyAverageCustomers,
-  setYearlyAverageCustomers,
   customerGrowthChart,
   setCustomerGrowthChart,
   beginCustomer,
 }) => {
+  const dispatch = useDispatch();
+  const { yearlyAverageCustomers, customerInputs, customerGrowthData } =
+    useSelector((state) => state.customer);
+
   const [tempCustomerInputs, setTempCustomerInputs] = useState(
     customerInputs.map((input) => ({
       ...input,
@@ -75,37 +86,13 @@ const CustomerSection = ({
     setTempCustomerInputs(newInputs);
   };
 
-  const calculateCustomerGrowth = (tempCustomerInputs) => {
-    return tempCustomerInputs.map((channel) => {
-      let customers = [];
-      let currentCustomers = parseFloat(channel.customersPerMonth);
-      for (let i = 1; i <= numberOfMonths; i++) {
-        if (i >= channel.beginMonth && i <= channel.endMonth) {
-          customers.push({
-            month: i,
-            customers: currentCustomers,
-            channelName: channel.channelName,
-          });
-          currentCustomers *= 1 + parseFloat(channel.growthPerMonth) / 100;
-        } else {
-          customers.push({
-            month: i,
-            customers: 0,
-            channelName: channel.channelName,
-          });
-        }
-      }
-      return customers;
-    });
-  };
-
   //CustomerUseEffect
   useEffect(() => {
     const calculatedData = calculateCustomerGrowth(
       customerInputs,
       numberOfMonths
     );
-    setCustomerGrowthData(calculatedData);
+    dispatch(setCustomerGrowthData(calculatedData));
   }, [customerInputs, numberOfMonths]);
 
   //CustomerUseEffect
@@ -145,7 +132,6 @@ const CustomerSection = ({
             "0.00";
         }
       }
-      console.log(customerInput.beginCustomer)
     });
   });
 
@@ -153,14 +139,18 @@ const CustomerSection = ({
     key: "beginCustomer",
     channelName: "Begin Customer",
   };
-  
-  tempCustomerInputs.forEach(input => {
+
+  tempCustomerInputs.forEach((input) => {
     for (let month = 1; month <= numberOfMonths; month++) {
-      beginCustomerRow[`month${month}`] = month === input.beginMonth ? input.beginCustomer.toString() : "0.00";
+      beginCustomerRow[`month${month}`] =
+        month === input.beginMonth ? input.beginCustomer.toString() : "0.00";
     }
   });
-  
-  const customerTableData = [beginCustomerRow, ...Object.values(transformedCustomerTableData)]; 
+
+  const customerTableData = [
+    beginCustomerRow,
+    ...Object.values(transformedCustomerTableData),
+  ];
 
   // CustomerColumns
   const customerColumns = [
@@ -202,40 +192,37 @@ const CustomerSection = ({
     setIsSaved(true);
     message.success("Data saved successfully!");
   };
+  const channelInputs = useSelector((state) => state.sales.channelInputs);
 
   useEffect(() => {
     if (isSaved) {
-      setCustomerInputs(tempCustomerInputs);
+      dispatch(setCustomerInputs(tempCustomerInputs));
+      const { revenueByChannelAndProduct } = dispatch(
+        calculateChannelRevenue(
+          numberOfMonths,
+          tempCustomerGrowthData,
+          tempCustomerInputs,
+          channelInputs
+        )
+      );
+
+      const yearlySale = calculateYearlySales(revenueByChannelAndProduct);
+      dispatch(setYearlySales(yearlySale));
       setIsSaved(false);
     }
   }, [isSaved]);
 
   // Generate ChannelDataTable for each selected channel
-  
 
   // Calculate monthly average of customers for each year
-  const calculateYearlyAverage = (tempCustomerGrowthData, numberOfMonths) => {
-    const yearlyAverages = [];
-    for (let i = 0; i < numberOfMonths; i += 12) {
-      let totalCustomers = 0;
-      for (let j = i; j < i + 12 && j < numberOfMonths; j++) {
-        tempCustomerGrowthData.forEach((channelData) => {
-          totalCustomers += parseFloat(channelData[j]?.customers) || 0;
-        });
-      }
-      const averageCustomers = totalCustomers / 12;
-      yearlyAverages.push(averageCustomers.toFixed(2));
-    }
-    return yearlyAverages;
-  };
 
   useEffect(() => {
     const averages = calculateYearlyAverage(
       tempCustomerGrowthData,
       numberOfMonths
     );
-    setYearlyAverageCustomers(averages);
-  }, [tempCustomerGrowthData, numberOfMonths]);
+    dispatch(setYearlyAverageCustomers(averages));
+  }, [tempCustomerGrowthData, numberOfMonths, isSaved]);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -246,7 +233,7 @@ const CustomerSection = ({
               className="text-2xl font-semibold mb-4 flex items-center"
               id="customers-heading"
             >
-              Customer channel{" "}  
+              Customer channel{" "}
             </h2>
             <p>
               Creating a customer channel is often considered the very first

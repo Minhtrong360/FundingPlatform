@@ -1,13 +1,6 @@
 import { useEffect } from "react";
 
 export default function Spinner({ isLoading }) {
-  useEffect(() => {
-    if (isLoading) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-  }, [isLoading]);
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
       <div className="animate-spin h-12 w-12 text-blue-600">

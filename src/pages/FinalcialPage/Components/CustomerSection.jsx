@@ -8,7 +8,14 @@ import {
   setCustomerInputs,
   setYearlyAverageCustomers,
   setCustomerGrowthData,
+  calculateYearlyAverage,
+  calculateCustomerGrowth,
 } from "../../../features/CustomerSlice";
+import {
+  calculateChannelRevenue,
+  calculateYearlySales,
+  setYearlySales,
+} from "../../../features/SaleSlice";
 
 const CustomerSection = ({
   numberOfMonths,
@@ -76,30 +83,6 @@ const CustomerSection = ({
       return input;
     });
     setTempCustomerInputs(newInputs);
-  };
-
-  const calculateCustomerGrowth = (tempCustomerInputs) => {
-    return tempCustomerInputs.map((channel) => {
-      let customers = [];
-      let currentCustomers = parseFloat(channel.customersPerMonth);
-      for (let i = 1; i <= numberOfMonths; i++) {
-        if (i >= channel.beginMonth && i <= channel.endMonth) {
-          customers.push({
-            month: i,
-            customers: currentCustomers,
-            channelName: channel.channelName,
-          });
-          currentCustomers *= 1 + parseFloat(channel.growthPerMonth) / 100;
-        } else {
-          customers.push({
-            month: i,
-            customers: 0,
-            channelName: channel.channelName,
-          });
-        }
-      }
-      return customers;
-    });
   };
 
   //CustomerUseEffect
@@ -202,64 +185,29 @@ const CustomerSection = ({
     setIsSaved(true);
     message.success("Data saved successfully!");
   };
+  const channelInputs = useSelector((state) => state.sales.channelInputs);
 
   useEffect(() => {
     if (isSaved) {
       dispatch(setCustomerInputs(tempCustomerInputs));
+      const { revenueByChannelAndProduct } = dispatch(
+        calculateChannelRevenue(
+          numberOfMonths,
+          tempCustomerGrowthData,
+          tempCustomerInputs,
+          channelInputs
+        )
+      );
+
+      const yearlySale = calculateYearlySales(revenueByChannelAndProduct);
+      dispatch(setYearlySales(yearlySale));
       setIsSaved(false);
     }
   }, [isSaved]);
 
   // Generate ChannelDataTable for each selected channel
-  const ChannelDataTables = {};
-  tempCustomerInputs.forEach((input) => {
-    const dataTable = {
-      Begin: {
-        channelName: "Begin",
-        ...Array.from({ length: numberOfMonths }, (_, i) => ({
-          [`month${i + 1}`]:
-            i === 0
-              ? (parseFloat(input.beginCustomer) || 0).toFixed(2)
-              : "0.00",
-        })),
-      },
-      Add: {
-        channelName: "Add",
-        ...customerTableData.find(
-          (data) => data.channelName === input.channelName
-        ),
-      },
-      Churn: {
-        channelName: "Churn",
-        ...Array.from({ length: numberOfMonths }, (_, i) => ({
-          [`month${i + 1}`]: "0.00",
-        })),
-      },
-      End: {
-        channelName: "End",
-        ...Array.from({ length: numberOfMonths }, (_, i) => ({
-          [`month${i + 1}`]: "0.00",
-        })),
-      },
-    };
-    ChannelDataTables[`${input.channelName}DataTable`] = dataTable;
-  });
 
   // Calculate monthly average of customers for each year
-  const calculateYearlyAverage = (tempCustomerGrowthData, numberOfMonths) => {
-    const yearlyAverages = [];
-    for (let i = 0; i < numberOfMonths; i += 12) {
-      let totalCustomers = 0;
-      for (let j = i; j < i + 12 && j < numberOfMonths; j++) {
-        tempCustomerGrowthData.forEach((channelData) => {
-          totalCustomers += parseFloat(channelData[j]?.customers) || 0;
-        });
-      }
-      const averageCustomers = totalCustomers / 12;
-      yearlyAverages.push(averageCustomers.toFixed(2));
-    }
-    return yearlyAverages;
-  };
 
   useEffect(() => {
     const averages = calculateYearlyAverage(
@@ -481,20 +429,6 @@ const CustomerSection = ({
                 columns={customerColumns}
                 pagination={false}
               />
-              {Object.entries(ChannelDataTables).map(
-                ([tableName, dataTable]) => (
-                  <div key={tableName}>
-                    <h3 className="text-2xl font-semibold">{tableName}</h3>
-                    <Table
-                      className="overflow-auto my-8"
-                      size="small"
-                      dataSource={Object.values(dataTable)}
-                      columns={customerColumns}
-                      pagination={false}
-                    />
-                  </div>
-                )
-              )}
             </div>
           ))}
         <h3 className="text-2xl font-semibold my-8">Customer Chart</h3>

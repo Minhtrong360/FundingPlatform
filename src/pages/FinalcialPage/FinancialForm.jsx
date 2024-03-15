@@ -29,9 +29,22 @@ import {
   setIncomeTax,
   setPayrollTax,
   setCurrency,
+  setFinancialProjectName,
 } from "../../features/DurationSlice";
-import { setCustomerInputs } from "../../features/CustomerSlice";
-import { setChannelInputs, setChannelNames } from "../../features/SaleSlice";
+import {
+  calculateCustomerGrowth,
+  calculateYearlyAverage,
+  setCustomerGrowthData,
+  setCustomerInputs,
+  setYearlyAverageCustomers,
+} from "../../features/CustomerSlice";
+import {
+  calculateChannelRevenue,
+  calculateYearlySales,
+  setChannelInputs,
+  setChannelNames,
+  setYearlySales,
+} from "../../features/SaleSlice";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
@@ -39,10 +52,20 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [isSaved, setIsSaved] = useState(false);
 
   //DurationSection
+  const {
+    selectedDuration,
+    startingCashBalance,
+    status,
+    industry,
+    incomeTax,
+    payrollTax,
+    currency,
+    startMonth,
+    startYear,
+    financialProjectName,
+  } = useSelector((state) => state.durationSelect);
 
   const [numberOfMonths, setNumberOfMonths] = useState(0);
-
-  const { selectedDuration } = useSelector((state) => state.durationSelect);
 
   useEffect(() => {
     // Chuyển đổi selectedDuration từ dạng "3 years" sang số
@@ -94,9 +117,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
   //CustomerState
 
-  const { yearlyAverageCustomers, customerInputs } = useSelector(
-    (state) => state.customer
-  );
+  const { customerInputs } = useSelector((state) => state.customer);
 
   const [customerGrowthChart, setCustomerGrowthChart] = useState({
     options: {
@@ -140,7 +161,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   });
 
   //RevenueState
-
+  const { channelInputs } = useSelector((state) => state.sales);
   const [revenue, setRevenue] = useState({
     options: {
       chart: { id: "revenue-chart", type: "bar", height: 350, stacked: true }, // Set type to "bar" and stacked to true
@@ -268,7 +289,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   ]);
   const [investmentData, setInvestmentData] = useState([]);
   const [investmentTableData, setInvestmentTableData] = useState([]);
-
+  console.log("investmentTableData", investmentTableData);
   //LoanState
 
   const [loanInputs, setLoanInputs] = useState([
@@ -288,115 +309,189 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
   // Lưu vào DB
 
-  // const { user } = useAuth();
-  // const loadData = async (userId) => {
-  //   setIsLoading(true);
-  //   const { data, error } = await supabase
-  //     .from("finance")
-  //     .select("inputData")
-  //     .eq("user_id", userId);
-  //   if (error) {
-  //     toast.error(error.message);
-  //     console.error("Error fetching data", error);
-  //     return null;
-  //   }
-  //   setIsLoading(false);
-  //   return data.length > 0 ? JSON.parse(data[0]?.inputData) : null;
-  // };
+  const { user } = useAuth();
+  const loadData = async (userId) => {
+    setIsLoading(true);
+    const { data, error } = await supabase
+      .from("finance")
+      .select("inputData")
+      .eq("user_id", userId);
+    if (error) {
+      toast.error(error.message);
+      console.error("Error fetching data", error);
+      return null;
+    }
+    setIsLoading(false);
+    return data.length > 0 ? JSON.parse(data[0]?.inputData) : null;
+  };
 
-  // useEffect(() => {
-  //   // Assuming `user` is your user object
-  //   const userId = user?.id;
-  //   if (userId) {
-  //     loadData(userId).then((inputData) => {
-  //       if (inputData) {
-  //         // Set your state here
-  //         setFinancialProjectName(inputData.financialProjectName);
-  //         setSelectedDuration(inputData.selectedDuration);
-  //         setCustomerInputs(inputData.customerInputs);
-  //         setChannelInputs(inputData.channelInputs);
-  //         setCostInputs(inputData.costInputs);
-  //         setPersonnelInputs(inputData.personnelInputs);
-  //         setInvestmentInputs(inputData.investmentInputs);
-  //         setLoanInputs(inputData.loanInputs);
-  //       }
-  //     });
-  //   }
-  // }, [user?.id]);
+  useEffect(() => {
+    // Assuming `user` is your user object
+    const userId = user?.id;
+    if (userId) {
+      loadData(userId).then((inputData) => {
+        console.log("inputData", inputData);
+        if (inputData) {
+          // Set your state here
 
-  // const saveOrUpdateFinanceData = async (userId, inputData) => {
-  //   setIsLoading(true);
+          dispatch(
+            setFinancialProjectName(
+              inputData.financialProjectName || financialProjectName
+            )
+          );
+          dispatch(
+            setSelectedDuration(inputData.selectedDuration || selectedDuration)
+          );
 
-  //   try {
-  //     const { data: existingData, error: selectError } = await supabase
-  //       .from("finance")
-  //       .select("*")
-  //       .eq("user_id", userId);
+          dispatch(
+            setStartingCashBalance(
+              inputData.startingCashBalance || startingCashBalance
+            )
+          );
+          dispatch(setStatus(inputData.status || status));
+          dispatch(setIndustry(inputData.industry || industry));
+          dispatch(setIncomeTax(inputData.incomeTax || incomeTax));
+          dispatch(setPayrollTax(inputData.payrollTax || payrollTax));
+          dispatch(setCurrency(inputData.currency || currency));
 
-  //     if (selectError) throw selectError;
+          dispatch(
+            setCustomerInputs(inputData.customerInputs || customerInputs)
+          );
+          dispatch(setChannelInputs(inputData.channelInputs || channelInputs));
+          setCostInputs(inputData.costInputs || costInputs);
+          setPersonnelInputs(inputData.personnelInputs || personnelInputs);
+          setInvestmentInputs(inputData.investmentInputs || investmentInputs);
+          setLoanInputs(inputData.loanInputs || loanInputs);
+        }
+      });
+    }
+  }, [user?.id]);
 
-  //     if (existingData.length > 0) {
-  //       const financeRecord = existingData[0];
+  useEffect(() => {
+    const calculatedData = calculateCustomerGrowth(
+      customerInputs,
+      numberOfMonths
+    );
 
-  //       // Kiểm tra nếu tác giả của dữ liệu tài chính trùng với userId
-  //       if (financeRecord.user_id === userId) {
-  //         // Cập nhật bản ghi hiện có
+    dispatch(setCustomerGrowthData(calculatedData));
 
-  //         const { error: updateError } = await supabase
-  //           .from("finance")
-  //           .update({ name: financeName, inputData })
-  //           .eq("id", financeRecord?.id)
-  //           .select();
+    const averages = calculateYearlyAverage(calculatedData, numberOfMonths);
+    dispatch(setYearlyAverageCustomers(averages));
 
-  //         if (updateError) {
-  //           toast.error(updateError.message);
-  //         } else {
-  //           toast.success("Updated successfully.");
-  //         }
-  //       } else {
-  //         toast.error("Bạn không có quyền cập nhật bản ghi này.");
-  //       }
-  //     } else {
-  //       // Thêm bản ghi mới
-  //       const { error: insertError } = await supabase.from("finance").insert([
-  //         {
-  //           user_id: userId,
-  //           name: financeName,
-  //           user_email: user.email,
-  //           inputData,
-  //         },
-  //       ]);
-  //       if (insertError) {
-  //         toast.error(insertError.message);
-  //       } else {
-  //         toast.success("Inserted successfully.");
-  //       }
-  //     }
-  //   } catch (error) {
-  //     toast.error(error.message);
-  //     console.error("Error in saveOrUpdateFinanceData", error);
-  //     return null;
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+    const { revenueByChannelAndProduct } = dispatch(
+      calculateChannelRevenue(
+        numberOfMonths,
+        calculatedData,
+        customerInputs,
+        channelInputs
+      )
+    );
 
-  // const handleSubmit = async () => {
-  //   const financeData = {
-  //     financeName,
-  //     selectedDuration,
-  //     customerInputs,
-  //     channelInputs,
-  //     costInputs,
-  //     personnelInputs,
-  //     investmentInputs,
-  //     loanInputs,
-  //   };
+    const yearlySale = calculateYearlySales(revenueByChannelAndProduct);
+    dispatch(setYearlySales(yearlySale));
 
-  //   await saveOrUpdateFinanceData(user?.id, financeData);
+    const seriesData = calculatedData.map((channelData) => {
+      return {
+        name: channelData[0]?.channelName || "Unknown Channel",
+        data: channelData.map((data) => data.customers),
+      };
+    });
 
-  //   // Handle post-save actions
-  // };
+    setCustomerGrowthChart((prevState) => ({
+      ...prevState,
+      series: seriesData,
+    }));
+
+    const seriesSaleData = Object.entries(revenueByChannelAndProduct).map(
+      ([key, data]) => {
+        return { name: key, data };
+      }
+    );
+
+    setRevenue((prevState) => ({ ...prevState, series: seriesSaleData }));
+  }, [numberOfMonths, customerInputs, channelInputs]);
+
+  const saveOrUpdateFinanceData = async (userId, inputData) => {
+    setIsLoading(true);
+
+    try {
+      const { data: existingData, error: selectError } = await supabase
+        .from("finance")
+        .select("*")
+        .eq("user_id", userId);
+
+      if (selectError) throw selectError;
+
+      if (existingData.length > 0) {
+        const financeRecord = existingData[0];
+
+        // Kiểm tra nếu tác giả của dữ liệu tài chính trùng với userId
+        if (financeRecord.user_id === userId) {
+          // Cập nhật bản ghi hiện có
+
+          const { error: updateError } = await supabase
+            .from("finance")
+            .update({ name: inputData.financialProjectName, inputData })
+            .eq("id", financeRecord?.id)
+            .select();
+
+          if (updateError) {
+            toast.error(updateError.message);
+          } else {
+            toast.success("Updated successfully.");
+          }
+        } else {
+          toast.error("Bạn không có quyền cập nhật bản ghi này.");
+        }
+      } else {
+        // Thêm bản ghi mới
+        const { error: insertError } = await supabase.from("finance").insert([
+          {
+            user_id: userId,
+            name: inputData.financialProjectName,
+            user_email: user.email,
+            inputData,
+          },
+        ]);
+        if (insertError) {
+          toast.error(insertError.message);
+        } else {
+          toast.success("Inserted successfully.");
+        }
+      }
+    } catch (error) {
+      toast.error(error.message);
+      console.error("Error in saveOrUpdateFinanceData", error);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmit = async () => {
+    const financeData = {
+      selectedDuration,
+      startingCashBalance,
+      status,
+      industry,
+      incomeTax,
+      payrollTax,
+      currency,
+      startMonth,
+      startYear,
+      financialProjectName,
+      customerInputs,
+      channelInputs,
+      costInputs,
+      personnelInputs,
+      investmentInputs,
+      loanInputs,
+    };
+
+    await saveOrUpdateFinanceData(user?.id, financeData);
+
+    // Handle post-save actions
+  };
 
   // Download Excel
   // const downloadExcel = () => {
@@ -457,14 +552,14 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     setTemIsLoading(true);
 
     const tabs = [
-      { tab: "customer", delay: 150 },
-      { tab: "sales", delay: 150 },
-      { tab: "cost", delay: 150 },
-      { tab: "personnel", delay: 150 },
-      { tab: "investment", delay: 150 },
-      { tab: "loan", delay: 150 },
-      { tab: "investment", delay: 150 },
-      { tab: "overview", delay: 150 },
+      { tab: "customer", delay: 350 },
+      { tab: "sales", delay: 350 },
+      { tab: "cost", delay: 350 },
+      { tab: "personnel", delay: 350 },
+      { tab: "investment", delay: 350 },
+      { tab: "loan", delay: 350 },
+      { tab: "investment", delay: 350 },
+      { tab: "overview", delay: 350 },
     ];
 
     let currentIndex = 0;
@@ -575,7 +670,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               {activeTab === "overview" && (
                 <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
                   <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
-                    <DurationSelect />
+                    <DurationSelect handleSubmit={handleSubmit} />
                   </div>
 
                   <div className="w-full lg:w-3/4 p-4">

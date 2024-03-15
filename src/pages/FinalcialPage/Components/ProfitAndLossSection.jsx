@@ -9,8 +9,6 @@ const ProfitAndLossSection = ({
   investmentData,
   loanData,
   numberOfMonths,
-
-  startingCashBalance,
   investmentTableData,
   loanTableData,
 }) => {
@@ -18,6 +16,17 @@ const ProfitAndLossSection = ({
   const { revenueData, revenueDeductionData, cogsData } = useSelector(
     (state) => state.sales
   );
+
+  console.log("revenueData", revenueData);
+  console.log("revenueDeductionData", revenueDeductionData);
+  console.log("cogsData", cogsData);
+  console.log("costData", costData);
+  console.log("personnelCostData", personnelCostData);
+  console.log("investmentData", investmentData);
+  console.log("loanData", loanData);
+
+  console.log("investmentTableData", investmentTableData);
+  console.log("loanTableData", loanTableData);
 
   const calculateProfitAndLoss = () => {
     let totalRevenue = new Array(numberOfMonths).fill(0);

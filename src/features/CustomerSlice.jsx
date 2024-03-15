@@ -43,6 +43,48 @@ const customerSlice = createSlice({
   },
 });
 
+export const calculateYearlyAverage = (
+  tempCustomerGrowthData,
+  numberOfMonths
+) => {
+  const yearlyAverages = [];
+  for (let i = 0; i < numberOfMonths; i += 12) {
+    let totalCustomers = 0;
+    for (let j = i; j < i + 12 && j < numberOfMonths; j++) {
+      tempCustomerGrowthData.forEach((channelData) => {
+        totalCustomers += parseFloat(channelData[j]?.customers) || 0;
+      });
+    }
+    const averageCustomers = totalCustomers / 12;
+    yearlyAverages.push(averageCustomers.toFixed(2));
+  }
+  return yearlyAverages;
+};
+
+export const calculateCustomerGrowth = (tempCustomerInputs, numberOfMonths) => {
+  return tempCustomerInputs.map((channel) => {
+    let customers = [];
+    let currentCustomers = parseFloat(channel.customersPerMonth);
+    for (let i = 1; i <= numberOfMonths; i++) {
+      if (i >= channel.beginMonth && i <= channel.endMonth) {
+        customers.push({
+          month: i,
+          customers: currentCustomers,
+          channelName: channel.channelName,
+        });
+        currentCustomers *= 1 + parseFloat(channel.growthPerMonth) / 100;
+      } else {
+        customers.push({
+          month: i,
+          customers: 0,
+          channelName: channel.channelName,
+        });
+      }
+    }
+    return customers;
+  });
+};
+
 export const {
   setCustomerInputs,
   setCustomerGrowthData,

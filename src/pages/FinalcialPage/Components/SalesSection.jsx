@@ -74,7 +74,7 @@ const SalesSection = ({
       productName: "New channel",
       price: 3,
       multiples: 1,
-      deductionPercentage: 5,
+      deductionPercentage: 0,
       cogsPercentage: 30,
       selectedChannel: channelNames[0],
       channelAllocation: 0.8,
@@ -509,7 +509,7 @@ const SalesSection = ({
                 </div>
                 <div className="flex justify-end items-center">
                   <button
-                    className="bg-red-600 text-white py-1 px-4 rounded"
+                    className="bg-red-600 text-white py-0.5 px-2 rounded"
                     onClick={() => removeChannelInput(input.id)}
                   >
                     Remove

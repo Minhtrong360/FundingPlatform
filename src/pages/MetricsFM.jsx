@@ -112,7 +112,7 @@ const MetricsFM = ({ customerGrowthChart, revenue }) => {
           <div className="p-4 md:p-5">
             <div className="flex items-center gap-x-2">
               <p className="text-xs uppercase tracking-wide text-gray-500">
-                TOTAL USER (final year)
+                USER
               </p>
               <Tooltip title="The average users of the final year.">
                 <svg
@@ -182,7 +182,7 @@ const MetricsFM = ({ customerGrowthChart, revenue }) => {
           <div className="p-4 md:p-5">
             <div className="flex items-center gap-x-2">
               <p className="text-xs uppercase tracking-wide text-gray-500">
-                TOTAL REVENUES (final year)
+                REVENUE 
               </p>
               <Tooltip title="The average revenue of the final year.">
                 <svg

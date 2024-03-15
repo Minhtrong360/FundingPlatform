@@ -70,6 +70,8 @@ const DurationSelect = ({ handleSubmit }) => {
     "Entertainment",
   ];
 
+  
+
   return (
     <section aria-labelledby="duration-heading" className="mb-8">
       <h2

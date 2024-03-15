@@ -2386,10 +2386,10 @@ const Z = ({ currentUser, setCurrentUser }) => {
   const [loanInputs, setLoanInputs] = useState([
     {
       loanName: "Banking loan",
-      loanAmount: "150000",
+      loanAmount: "15000",
       interestRate: "6",
       loanBeginMonth: "1",
-      loanEndMonth: "12",
+      loanEndMonth: "24",
     },
   ]);
 

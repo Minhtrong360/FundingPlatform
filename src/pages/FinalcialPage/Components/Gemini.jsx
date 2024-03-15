@@ -77,7 +77,7 @@ const Gemini = ({
                     "productName": "Coffee",
                     "price": 4,
                     "multiples": 1,
-                    "deductionPercentage": 5,
+                    "deductionPercentage": 0,
                     "cogsPercentage": 30,
                     "selectedChannel": "Offline",
                     "channelAllocation": 0.4
@@ -87,7 +87,7 @@ const Gemini = ({
                     "productName": "Cake",
                     "price": 8,
                     "multiples": 1,
-                    "deductionPercentage": 4,
+                    "deductionPercentage": 0,
                     "cogsPercentage": 35,
                     "selectedChannel": "Offline",
                     "channelAllocation": 0.3
@@ -97,7 +97,7 @@ const Gemini = ({
                     "productName": "Coffee Bag",
                     "price": 6,
                     "multiples": 1,
-                    "deductionPercentage": 6,
+                    "deductionPercentage": 0,
                     "cogsPercentage": 25,
                     "selectedChannel": "Online",
                     "channelAllocation": 0.6

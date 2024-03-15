@@ -355,6 +355,10 @@ const ProfitAndLossSection = ({
     (currentAsset, index) => currentAsset + bsTotalNetFixedAssets[index]
   );
 
+  // calculate the total liabilities = remaining balance + account payable
+
+  //calculate the total shareholders equity = paid in capital + common stock + preferred stock + retain earnings
+
   console.log("loanData", loanData);
   console.log("loanTableData", loanTableData);
 
@@ -365,7 +369,30 @@ const ProfitAndLossSection = ({
       bsTotalRemainingBalance.push(parseFloat(loanTableData[6][key]));
     }
   });
-  console.log("bsTotalRemainingBalance", bsTotalRemainingBalance);
+
+  //calculate the accumulated retained earnings
+  const accumulatedRetainEarnings = netIncome.reduce((acc, curr, index) => {
+    if (index === 0) {
+      return [curr];
+    } else {
+      return [...acc, curr + acc[index - 1]];
+    }
+  }, []);
+
+  const totalLiabilities = bsTotalRemainingBalance.map(
+    (remainingBalance, index) => remainingBalance + 0 // Placeholder value
+  );
+
+  const totalShareholdersEquity = accumulatedRetainEarnings.map(
+    (earnings, index) => 0 + 0 + 0 + earnings // Placeholder values
+  );
+
+  //calculate the total liabilities and shareholders equity = total liabilities + total shareholders equity
+  const totalLiabilitiesAndShareholdersEquity = totalLiabilities.map(
+    (totalLiabilities, index) =>
+      totalLiabilities + totalShareholdersEquity[index]
+  );
+
   const positionDataWithNetIncome = [
     { key: "Operating Activities" },
     { key: "Net Income", values: netIncome },
@@ -462,59 +489,6 @@ const ProfitAndLossSection = ({
       key: "Cash End",
       values: cashEndBalances,
     },
-    {
-      key: "Accounts Receivable", // Added Accounts Receivable row
-      values: new Array(numberOfMonths).fill(0), // Set values to zero
-    },
-    {
-      key: "Inventory", // Added Inventory row
-      values: new Array(numberOfMonths).fill(0), // Set values to zero
-    },
-    {
-      key: "Current Assets", // Added Current Assets row
-      values: currentAssets,
-    },
-    { key: "Long term assets (Heading)" },
-
-    // insert BS Total investment here
-    { key: "Total Investment", values: totalAssetValue }, // New row for total investment
-
-    { key: "Total Accumulated Depreciation", values: bsTotalDepreciation },
-
-    {
-      key: "Net Fixed Assets = Same row in Investment Table",
-      values: bsTotalNetFixedAssets,
-    },
-
-    {
-      key: "Total Assets = Sum of Current Assets and Net Fixed Assets",
-      values: totalAssets,
-    },
-
-    {
-      key: "Account Payable", // Added Inventory row
-      values: new Array(numberOfMonths).fill(0), // Set values to zero
-    },
-    {
-      key: "Long term liabilities",
-      values: bsTotalRemainingBalance, // New row for long term liabilities
-    },
-    {
-      key: "Paid in Capital", // Added Inventory row
-      values: new Array(numberOfMonths).fill(0), // Set values to zero
-    },
-    {
-      key: "Common Stock", // Added Inventory row
-      values: new Array(numberOfMonths).fill(0), // Set values to zero
-    },
-    {
-      key: "Preferred Stock", // Added Inventory row
-      values: new Array(numberOfMonths).fill(0), // Set values to zero
-    },
-    {
-      key: "Retain Earnings", // Added Inventory row
-      values: netIncome,
-    },
   ].map((item, index) => ({
     metric: item.key,
     ...item.values?.reduce(
@@ -561,6 +535,12 @@ const ProfitAndLossSection = ({
       key: "Long term liabilities",
       values: bsTotalRemainingBalance, // New row for long term liabilities
     },
+
+    {
+      key: "Total Liabilities", // Added Inventory row
+      values: totalLiabilities,
+    },
+
     {
       key: "Paid in Capital", // Added Inventory row
       values: new Array(numberOfMonths).fill(0), // Set values to zero
@@ -576,6 +556,30 @@ const ProfitAndLossSection = ({
     {
       key: "Retain Earnings", // Added Inventory row
       values: netIncome,
+    },
+
+    // Calculated the accumulated retained earnings here
+
+    {
+      key: "Accumulated Retain Earnings",
+      values: accumulatedRetainEarnings,
+    },
+
+    {
+      key: "Total Shareholders Equity",
+      values: totalShareholdersEquity,
+    },
+
+    // Add the Total Liabilities and Shareholders Equity here
+
+    {
+      key: "Total Liabilities and Shareholders Equity",
+      values: totalLiabilitiesAndShareholdersEquity,
+    },
+
+    {
+      key: "Total Assets = Sum of Current Assets and Net Fixed Assets",
+      values: totalAssets,
     },
   ].map((item, index) => ({
     metric: item.key,
@@ -689,7 +693,7 @@ const ProfitAndLossSection = ({
         columns={positionColumns}
         pagination={false}
       />
-      <h2 className="text-2xl font-semibold mb-4">Cash Flow 2</h2>
+      <h2 className="text-2xl font-semibold mb-4">Balance Sheet</h2>
       <Table
         className="overflow-auto my-8"
         size="small"

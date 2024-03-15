@@ -70,8 +70,6 @@ const DurationSelect = ({ handleSubmit }) => {
     "Entertainment",
   ];
 
-  
-
   return (
     <section aria-labelledby="duration-heading" className="mb-8">
       <h2
@@ -99,7 +97,10 @@ const DurationSelect = ({ handleSubmit }) => {
         <Tooltip title="Enter the starting month of the business">
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className=" flex items-center text-sm">Start Month :</span>
-            <Select onValueChange={setStartMonth} value={startMonth}>
+            <Select
+              onValueChange={(value) => dispatch(setStartMonth(value))}
+              value={startMonth}
+            >
               <SelectTrigger
                 id="start-month"
                 className="border-solid border-[1px] border-gray-200"
@@ -120,7 +121,10 @@ const DurationSelect = ({ handleSubmit }) => {
         <Tooltip title="Enter the starting year of the business">
           <div className="grid grid-cols-2 gap-4 mb-4">
             <span className=" flex items-center text-sm">Start Year :</span>
-            <Select onValueChange={setStartYear} value={startYear}>
+            <Select
+              onValueChange={(value) => dispatch(setStartYear(value))}
+              value={startYear}
+            >
               <SelectTrigger
                 id="start-year"
                 className="border-solid border-[1px] border-gray-200"

@@ -29,12 +29,7 @@ const CustomerSection = ({
   const { yearlyAverageCustomers, customerInputs, customerGrowthData } =
     useSelector((state) => state.customer);
 
-  const [tempCustomerInputs, setTempCustomerInputs] = useState(
-    customerInputs.map((input) => ({
-      ...input,
-      acquisitionCost: input.acquisitionCost || 0,
-    }))
-  );
+  const [tempCustomerInputs, setTempCustomerInputs] = useState(customerInputs);
 
   useEffect(() => {
     setTempCustomerInputs(customerInputs);
@@ -105,52 +100,38 @@ const CustomerSection = ({
   }, [tempCustomerInputs, numberOfMonths]);
 
   // CustomerTableData
-  const transformedCustomerTableData = {};
-  tempCustomerGrowthData.forEach((channelData) => {
-    channelData.forEach((data) => {
-      const customerInput = tempCustomerInputs.find(
-        (input) => input.channelName === data.channelName
-      );
-      if (customerInput) {
-        const beginCustomerValue = parseFloat(customerInput.beginCustomer) || 0;
-        if (!transformedCustomerTableData[data.channelName]) {
-          transformedCustomerTableData[data.channelName] = {
-            key: data.channelName,
-            channelName: data.channelName,
-          };
-        }
-        // Check if the month is within the range
-        if (
-          data.month >= customerInput.beginMonth &&
-          data.month <= customerInput.endMonth
-        ) {
-          transformedCustomerTableData[data.channelName][`month${data.month}`] =
-            parseFloat(data.customers)?.toFixed(2);
-        } else {
-          // Set value to 0 if outside the range
-          transformedCustomerTableData[data.channelName][`month${data.month}`] =
-            "0.00";
-        }
-      }
-    });
+  const transformedCustomerTableData = tempCustomerInputs.map((input) => {
+    const tableData = {
+      key: input.channelName,
+      beginCustomer: Array.from({ length: numberOfMonths }, (_, index) =>
+        index === input.beginMonth - 1
+          ? parseFloat(input.beginCustomer) || 0
+          : 0
+      ),
+      churnRate: Array.from({ length: numberOfMonths }, (_, index) =>
+        index >= input.beginMonth - 1 && index <= input.endMonth - 1
+          ? parseFloat(input.churnRate) || 0
+          : 0
+      ),
+      growth: Array.from({ length: numberOfMonths }, (_, index) =>
+        index >= input.beginMonth - 1 && index <= input.endMonth - 1
+          ? (parseFloat(input.customersPerMonth) || 0) *
+            (1 + parseFloat(input.growthPerMonth) / 100)
+          : 0
+      ),
+      endCustomer: Array.from({ length: numberOfMonths }, () => 0),
+    };
+
+    return tableData;
   });
 
-  const beginCustomerRow = {
-    key: "beginCustomer",
-    channelName: "Begin Customer",
-  };
-
-  tempCustomerInputs.forEach((input) => {
-    for (let month = 1; month <= numberOfMonths; month++) {
-      beginCustomerRow[`month${month}`] =
-        month === input.beginMonth ? input.beginCustomer.toString() : "0.00";
-    }
-  });
-
-  const customerTableData = [
-    beginCustomerRow,
-    ...Object.values(transformedCustomerTableData),
-  ];
+  const customerTableData = transformedCustomerTableData.map((data) => ({
+    key: data.key,
+    beginCustomer: data.beginCustomer.map((value) => value.toFixed(2)),
+    churnRate: data.churnRate.map((value) => value.toFixed(2)),
+    growth: data.growth.map((value) => value.toFixed(2)),
+    endCustomer: data.endCustomer.map((value) => value.toFixed(2)),
+  }));
 
   // CustomerColumns
   const customerColumns = [
@@ -223,6 +204,8 @@ const CustomerSection = ({
     );
     dispatch(setYearlyAverageCustomers(averages));
   }, [tempCustomerGrowthData, numberOfMonths, isSaved]);
+
+  console.log("customerTableData", customerTableData);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -374,24 +357,7 @@ const CustomerSection = ({
                     }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center text-sm">
-                    Acquisition cost:
-                  </span>
-                  <Input
-                    className="col-start-2 border-gray-200"
-                    type="number"
-                    min="0"
-                    value={input.acquisitionCost}
-                    onChange={(e) =>
-                      handleInputChange(
-                        input?.id,
-                        "acquisitionCost",
-                        e.target.value
-                      )
-                    }
-                  />
-                </div>
+
                 <div className="flex justify-end items-center">
                   <button
                     className="bg-red-600 text-white py-1 px-4 rounded"

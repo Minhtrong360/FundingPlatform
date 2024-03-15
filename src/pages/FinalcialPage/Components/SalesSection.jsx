@@ -402,7 +402,7 @@ const SalesSection = ({
                       value={input.deductionPercentage}
                       onChange={(e) =>
                         handleChannelInputChange(
-                          `${input.productName} - ${input.selectedChannel}`,
+                          input.id,
                           "deductionPercentage",
                           e.target.value
                         )

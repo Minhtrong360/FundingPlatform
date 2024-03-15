@@ -365,7 +365,7 @@ const ProfitAndLossSection = ({
       bsTotalRemainingBalance.push(parseFloat(loanTableData[6][key]));
     }
   });
-
+  console.log("bsTotalRemainingBalance", bsTotalRemainingBalance);
   const positionDataWithNetIncome = [
     { key: "Operating Activities" },
     { key: "Net Income", values: netIncome },
@@ -462,6 +462,68 @@ const ProfitAndLossSection = ({
       key: "Cash End",
       values: cashEndBalances,
     },
+    {
+      key: "Accounts Receivable", // Added Accounts Receivable row
+      values: new Array(numberOfMonths).fill(0), // Set values to zero
+    },
+    {
+      key: "Inventory", // Added Inventory row
+      values: new Array(numberOfMonths).fill(0), // Set values to zero
+    },
+    {
+      key: "Current Assets", // Added Current Assets row
+      values: currentAssets,
+    },
+    { key: "Long term assets (Heading)" },
+
+    // insert BS Total investment here
+    { key: "Total Investment", values: totalAssetValue }, // New row for total investment
+
+    { key: "Total Accumulated Depreciation", values: bsTotalDepreciation },
+
+    {
+      key: "Net Fixed Assets = Same row in Investment Table",
+      values: bsTotalNetFixedAssets,
+    },
+
+    {
+      key: "Total Assets = Sum of Current Assets and Net Fixed Assets",
+      values: totalAssets,
+    },
+
+    {
+      key: "Account Payable", // Added Inventory row
+      values: new Array(numberOfMonths).fill(0), // Set values to zero
+    },
+    {
+      key: "Long term liabilities",
+      values: bsTotalRemainingBalance, // New row for long term liabilities
+    },
+    {
+      key: "Paid in Capital", // Added Inventory row
+      values: new Array(numberOfMonths).fill(0), // Set values to zero
+    },
+    {
+      key: "Common Stock", // Added Inventory row
+      values: new Array(numberOfMonths).fill(0), // Set values to zero
+    },
+    {
+      key: "Preferred Stock", // Added Inventory row
+      values: new Array(numberOfMonths).fill(0), // Set values to zero
+    },
+    {
+      key: "Retain Earnings", // Added Inventory row
+      values: netIncome,
+    },
+  ].map((item, index) => ({
+    metric: item.key,
+    ...item.values?.reduce(
+      (acc, value, i) => ({ ...acc, [`Month ${i + 1}`]: value?.toFixed(2) }),
+      {}
+    ),
+  }));
+
+  const positionDataWithNetIncome2 = [
     {
       key: "Accounts Receivable", // Added Accounts Receivable row
       values: new Array(numberOfMonths).fill(0), // Set values to zero
@@ -624,6 +686,14 @@ const ProfitAndLossSection = ({
         className="overflow-auto my-8"
         size="small"
         dataSource={positionDataWithNetIncome}
+        columns={positionColumns}
+        pagination={false}
+      />
+      <h2 className="text-2xl font-semibold mb-4">Cash Flow 2</h2>
+      <Table
+        className="overflow-auto my-8"
+        size="small"
+        dataSource={positionDataWithNetIncome2}
         columns={positionColumns}
         pagination={false}
       />

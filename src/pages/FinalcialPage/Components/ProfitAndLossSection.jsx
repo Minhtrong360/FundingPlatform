@@ -322,7 +322,7 @@
     
 
     console.log("startingCashBalance", startingCashBalance)
-    const cashBeginBalances = [startingCashBalance, ...calculateCashBalances(startingCashBalance, netCashChanges)?.slice(0, -1)];
+    const cashBeginBalances = [parseFloat(startingCashBalance), ...calculateCashBalances(startingCashBalance, netCashChanges)?.slice(0, -1)];
     const cashEndBalances = calculateCashBalances(startingCashBalance, netCashChanges);
 
 
@@ -427,11 +427,19 @@
           return cashEnd + accountsReceivable + inventory; // Calculate Current Assets
         }),
       },  
-      {key: "Long term assets"}, // New row for long term assets
+      {key: "Long term assets (Heading)"},
+      
+      
+
 
       // insert BS Total investment here
       {key: "Total Investment", values: totalAssetValue}, // New row for total investment
+      
+      {key: "Total Accumulated Depreciation"},
 
+      {key: "Net Fixed Assets = Same row in Investment Table"},
+
+      {key: "Total Assets = Sum of Current Assets and Net Fixed Assets"},
 
       {
         key: "Account Payable", // Added Inventory row
@@ -439,7 +447,6 @@
       },
       {
         key: "Long term liabilities", // New row for long term liabilities
-        values: remainingBalance, // Values taken from totalRemainingBalance
       },
       {
         key: "Paid in Capital", // Added Inventory row

@@ -237,7 +237,24 @@ const InvestmentSection = ({
         .toFixed(2);
     }
     investmentTableData.push(bsTotalAccumulatedDepreciationRow);
+
+    // add new row call Total BS Net Fixed Assets equal to BS Total investment - BS Total Accumulated Depreciation
+    const bsTotalNetFixedAssetsRow = {
+      key: `BS Total Net Fixed Assets`,
+      type: "BS Total Net Fixed Assets",
+    };
+    for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
+      bsTotalNetFixedAssetsRow[`month${monthIndex + 1}`] = (cfInvestmentsSum
+        .slice(0, monthIndex + 1)
+        .reduce((acc, curr) => acc + curr, 0) - depreciationSum
+        .slice(0, monthIndex + 1)
+        .reduce((acc, curr) => acc + curr, 0)
+      ).toFixed(2);
+    }
+    investmentTableData.push(bsTotalNetFixedAssetsRow);
+
     
+
   
     return investmentTableData;
   };

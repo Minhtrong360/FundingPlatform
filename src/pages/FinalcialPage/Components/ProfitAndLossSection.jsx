@@ -202,45 +202,6 @@ const ProfitAndLossSection = ({
           borderRight: "1px solid #f0f0f0",
         },
       }),
-      render: (text, record) => {
-        if (
-          record.metric === "Total Revenue" ||
-          record.metric === "Gross Profit"
-        ) {
-          return (
-            <span style={{ fontWeight: "bold", fontSize: "16px" }}>{text}</span>
-          );
-        } else if (record.metric === "EBITDA") {
-          return parseFloat(text) > 0 ? (
-            <span
-              style={{ color: "green", fontWeight: "bold", fontSize: "16px" }}
-            >
-              {text}
-            </span>
-          ) : (
-            <span
-              style={{ color: "red", fontWeight: "bold", fontSize: "16px" }}
-            >
-              {text}
-            </span>
-          );
-        } else if (record.metric === "Net Income") {
-          return parseFloat(text) > 0 ? (
-            <span
-              style={{ fontWeight: "bold", fontSize: "16px", color: "green" }}
-            >
-              {text}
-            </span>
-          ) : (
-            <span
-              style={{ fontWeight: "bold", fontSize: "16px", color: "red" }}
-            >
-              {text}
-            </span>
-          );
-        }
-        return text;
-      },
     })),
   ];
 
@@ -521,7 +482,6 @@ const ProfitAndLossSection = ({
     key: "Current Assets", // Added Current Assets row
     values: currentAssets,
   },
-  { key: "Long term assets (Heading)" },
 
   // insert BS Total investment here
   { key: "Total Investment", values: totalAssetValue }, // New row for total investment
@@ -529,12 +489,12 @@ const ProfitAndLossSection = ({
   { key: "Total Accumulated Depreciation", values: bsTotalDepreciation },
 
   {
-    key: "Net Fixed Assets = Same row in Investment Table",
+    key: "Net Fixed Assets",
     values: bsTotalNetFixedAssets,
   },
 
   {
-    key: "Total Assets = Sum of Current Assets and Net Fixed Assets",
+    key: "Total Assets",
     values: totalAssets,
   },
 
@@ -591,7 +551,7 @@ const ProfitAndLossSection = ({
   },
 
   {
-    key: "Total Assets = Sum of Current Assets and Net Fixed Assets",
+    key: "Total Assets (Double Check)",
     values: totalAssets,
   },
 
@@ -603,7 +563,54 @@ const ProfitAndLossSection = ({
   ),
 }));
 
-  const positionColumns = [
+const positionColumns = [
+  {
+    title: "Metric",
+    dataIndex: "metric",
+    key: "metric",
+    fixed: "left",
+    render: (text, record, index) => ({
+      children: <a style={{ fontWeight: (index === 0 || index === 7 || index === 9) ? 'bold' : 'normal' }}>{text}</a>,
+      props: {
+        colSpan: (index === 0 || index === 7 || index === 9) ? 36 : 1,
+        style: (index === 0 || index === 7 || index === 9) ? {} : { borderRight: "1px solid #f0f0f0" }
+      },
+    }),
+    
+    // onCell: (_, index)  => ({
+    //   style: {
+    //     // borderRight: "1px solid #f0f0f0",
+    //     props: {
+    //       colSpan: (index === 0 || index === 7 || index === 9) ? 36 : 1,
+    //     },
+    //   },
+    // }),
+  },
+  ...Array.from({ length: numberOfMonths }, (_, i) => ({
+    title: `Month_${i + 1}`,
+    dataIndex: `Month ${i + 1}`,
+    key: `Month ${i + 1}`,
+    onCell: (_, index) => {
+      if (index === 0 || index === 7 || index === 9) {
+        return {
+          style: {
+            borderRight: "1px solid #f0f0f0",
+          },
+          colSpan: 0
+        };
+      } else {
+        return {
+          style: {
+            borderRight: "1px solid #f0f0f0",
+          }
+        };
+      }
+    }
+    
+  })),
+];
+
+  const positionColumns1 = [
     {
       title: "Metric",
       dataIndex: "metric",
@@ -713,7 +720,7 @@ const ProfitAndLossSection = ({
         className="overflow-auto my-8"
         size="small"
         dataSource={positionDataWithNetIncome2}
-        columns={positionColumns}
+        columns={positionColumns1}
         pagination={false}
       />
       <Chart

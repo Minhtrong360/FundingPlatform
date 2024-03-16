@@ -225,7 +225,7 @@ const CustomerSection = ({
     dispatch(setYearlyAverageCustomers(averages));
   }, [tempCustomerGrowthData, numberOfMonths, isSaved]);
   
-
+  
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
       <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">

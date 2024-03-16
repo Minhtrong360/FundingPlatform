@@ -251,7 +251,7 @@ const PersonnelSection = ({
                 key={input?.id}
                 className="bg-white rounded-md shadow p-6 border my-4"
               >
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">Job Title</span>
                   <Input
                     className="col-start-2 border-gray-200"
@@ -266,7 +266,7 @@ const PersonnelSection = ({
                     }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Salary/month
                   </span>
@@ -283,7 +283,7 @@ const PersonnelSection = ({
                     }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Increase per year (%)
                   </span>
@@ -300,7 +300,7 @@ const PersonnelSection = ({
                     }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     No. of hires
                   </span>
@@ -317,7 +317,7 @@ const PersonnelSection = ({
                     }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Job begin month
                   </span>
@@ -334,7 +334,7 @@ const PersonnelSection = ({
                     }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Job ending month
                   </span>

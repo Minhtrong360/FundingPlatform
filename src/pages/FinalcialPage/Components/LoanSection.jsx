@@ -343,7 +343,7 @@ const LoanSection = ({
                 key={input?.id}
                 className="bg-white rounded-md shadow p-6 border my-4"
               >
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">Loan Name:</span>
                   <Input
                     required
@@ -359,7 +359,7 @@ const LoanSection = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">
                     Loan Amount:
                   </span>
@@ -378,7 +378,7 @@ const LoanSection = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">
                     Interest Rate (%):
                   </span>
@@ -397,7 +397,7 @@ const LoanSection = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">
                     Month Loan Begins:
                   </span>
@@ -416,7 +416,7 @@ const LoanSection = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">
                     Month Loan Ends:
                   </span>

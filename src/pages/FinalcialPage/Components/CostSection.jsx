@@ -244,7 +244,7 @@ const CostSection = ({
                 key={input?.id}
                 className="bg-white rounded-md shadow p-6 border my-4 "
               >
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">Cost Name:</span>
                   <Input
                     className="col-start-2 border-gray-200"
@@ -259,7 +259,7 @@ const CostSection = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Cost Value:
                   </span>
@@ -277,7 +277,7 @@ const CostSection = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Growth Percentage:
                   </span>
@@ -295,7 +295,7 @@ const CostSection = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Begin Month:
                   </span>
@@ -315,7 +315,7 @@ const CostSection = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">End Month:</span>
                   <Input
                     className="col-start-2 border-gray-200"
@@ -333,7 +333,7 @@ const CostSection = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">Cost Type:</span>
                   <Select
                     className="border-gray-200"

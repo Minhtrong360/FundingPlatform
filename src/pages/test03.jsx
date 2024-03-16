@@ -90,7 +90,7 @@ const DurationSelect = ({
       </h2>
       <div className="bg-white rounded-md shadow p-6 border">
       <Tooltip title="Enter the name of your business">
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-2 gap-4 mb-3">
           <span className=" flex items-center">Business name :</span>
           
           <Input
@@ -103,7 +103,7 @@ const DurationSelect = ({
         </Tooltip>
 
         <Tooltip title="Enter the starting month of the business">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Start Month :</span>
             <Select onValueChange={setStartMonth} value={startMonth}>
               <SelectTrigger
@@ -124,7 +124,7 @@ const DurationSelect = ({
         </Tooltip>
 
         <Tooltip title="Enter the starting year of the business">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Start Year :</span>
             <Select onValueChange={setStartYear} value={startYear}>
               <SelectTrigger
@@ -145,7 +145,7 @@ const DurationSelect = ({
         </Tooltip>
 
         <Tooltip title="Select the duration 3 years or 5 years">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Duration :</span>
             <Select onValueChange={(value) => setSelectedDuration(value)}>
               <SelectTrigger
@@ -163,7 +163,7 @@ const DurationSelect = ({
         </Tooltip>
         
         <Tooltip title="Enter the starting cash balance, e.g. $10,000">
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-2 gap-4 mb-3">
           <span className=" flex items-center">Starting Cash Balance :</span>
           
           <Input
@@ -175,7 +175,7 @@ const DurationSelect = ({
         </Tooltip>
         
         <Tooltip title="Select the status of the business, e.g. $10,000">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Status :</span>
             <Select onValueChange={(value) => setStatus(value)} value={status}>
               <SelectTrigger className="border-solid border-[1px] border-gray-200">
@@ -190,7 +190,7 @@ const DurationSelect = ({
         </Tooltip>
         
         <Tooltip title="Select the business industry, e.g. Fintech, Edtech">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Business industry:</span>
             <Select onValueChange={setIndustry} value={industry}>
               <SelectTrigger
@@ -211,7 +211,7 @@ const DurationSelect = ({
         </Tooltip>
         
         <Tooltip title="Input the income tax, e.g. 10">
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-2 gap-4 mb-3">
           <span className=" flex items-center">Income Tax(%) :</span>
           <Input
             type="number"
@@ -222,7 +222,7 @@ const DurationSelect = ({
         </Tooltip>
 
         <Tooltip title="Input the payroll tax, e.g. 10">
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-2 gap-4 mb-3">
           <span className=" flex items-center">Payroll Tax (%):</span>
           <Input
             type="number"
@@ -233,7 +233,7 @@ const DurationSelect = ({
         </Tooltip>
 
         <Tooltip title="Select the currency, e.g. USD">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Currency :</span>
             <Select
               onValueChange={(value) => setCurrency(value)}
@@ -291,7 +291,7 @@ const CustomerSection = ({
 
       {customerInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 border mb-4">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Channel Name:</span>
             <Input
               className="col-start-2"
@@ -302,7 +302,7 @@ const CustomerSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Customers per month:</span>
             <Input
               className="col-start-2"
@@ -313,7 +313,7 @@ const CustomerSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Growth Per Month:</span>
             <Input
               className="col-start-2"
@@ -324,7 +324,7 @@ const CustomerSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Begin Month:</span>
             <Input
               className="col-start-2"
@@ -336,7 +336,7 @@ const CustomerSection = ({
               }
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">End Month:</span>
             <Input
               className="col-start-2"
@@ -400,7 +400,7 @@ const SalesSection = ({
 
       {channelInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 border mb-4">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Product Name:</span>
             <Input
               className="col-start-2"
@@ -410,7 +410,7 @@ const SalesSection = ({
               }
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Price:</span>
             <Input
               className="col-start-2"
@@ -421,7 +421,7 @@ const SalesSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Multiples:</span>
             <Input
               className="col-start-2"
@@ -433,7 +433,7 @@ const SalesSection = ({
           </div>
 
           <Tooltip title="Revenue deductions like transaction fees, commission fee... ">
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-2 gap-4 mb-3">
               <span className=" flex items-center">Rev. Deductions (%):</span>
               <Input
                 className="col-start-2"
@@ -449,7 +449,7 @@ const SalesSection = ({
             </div>
           </Tooltip>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">COGS (%):</span>
             <Input
               className="col-start-2"
@@ -464,7 +464,7 @@ const SalesSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Sales Channel:</span>
             <Select
               onValueChange={(value) =>
@@ -490,7 +490,7 @@ const SalesSection = ({
             </Select>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Channel Allocation (%):</span>
             <Input
               className="col-start-2"
@@ -557,7 +557,7 @@ const CostSection = ({
 
       {costInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 border mb-4 ">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Cost Name:</span>
             <Input
               className="col-start-2"
@@ -568,7 +568,7 @@ const CostSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Cost Value:</span>
             <Input
               className="col-start-2"
@@ -584,7 +584,7 @@ const CostSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Growth Percentage:</span>
             <Input
               className="col-start-2"
@@ -600,7 +600,7 @@ const CostSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Begin Month:</span>
             <Input
               className="col-start-2"
@@ -618,7 +618,7 @@ const CostSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">End Month:</span>
             <Input
               className="col-start-2"
@@ -636,7 +636,7 @@ const CostSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Cost Type:</span>
             <Select
               onValueChange={(value) =>
@@ -699,7 +699,7 @@ const PersonnelSection = ({
       </h2>
       {personnelInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 border mb-4">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Job Title</span>
             <Input
               className="col-start-2"
@@ -710,7 +710,7 @@ const PersonnelSection = ({
               }
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Salary/month</span>
             <Input
               className="col-start-2"
@@ -725,7 +725,7 @@ const PersonnelSection = ({
               }
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">No. of hires</span>
             <Input
               className="col-start-2"
@@ -740,7 +740,7 @@ const PersonnelSection = ({
               }
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Job begin month</span>
             <Input
               className="col-start-2"
@@ -755,7 +755,7 @@ const PersonnelSection = ({
               }
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Job ending month</span>
             <Input
               className="col-start-2"
@@ -804,7 +804,7 @@ const InvestmentSection = ({
       </h2>
       {investmentInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 border mb-4">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Name of Purchase</span>
             <Input
               className="col-start-2"
@@ -816,7 +816,7 @@ const InvestmentSection = ({
               }}
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Asset Cost</span>
             <Input
               className="col-start-2"
@@ -828,7 +828,7 @@ const InvestmentSection = ({
               }}
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Quantity:</span>
             <Input
               className="col-start-2"
@@ -840,7 +840,7 @@ const InvestmentSection = ({
               }
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Purchase Month</span>
             <Input
               className="col-start-2"
@@ -852,7 +852,7 @@ const InvestmentSection = ({
               }}
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Residual Value</span>
             <Input
               className="col-start-2"
@@ -864,7 +864,7 @@ const InvestmentSection = ({
               }}
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Useful Lifetime (Months)</span>
             <Input
               className="col-start-2"
@@ -914,7 +914,7 @@ const LoanSection = ({
 
       {loanInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 border mb-4">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Loan Name:</span>
             <Input
               className="col-start-2"
@@ -925,7 +925,7 @@ const LoanSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Loan Amount:</span>
             <Input
               type="number"
@@ -937,7 +937,7 @@ const LoanSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Interest Rate (%):</span>
             <Input
               type="number"
@@ -949,7 +949,7 @@ const LoanSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Month Loan Begins:</span>
             <Input
               type="number"
@@ -961,7 +961,7 @@ const LoanSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Month Loan Ends:</span>
             <Input
               type="number"

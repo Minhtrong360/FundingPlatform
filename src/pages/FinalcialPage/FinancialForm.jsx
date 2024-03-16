@@ -283,7 +283,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       assetCost: 200,
       quantity: 10,
       purchaseMonth: 1,
-      residualValue: 10,
+      residualValue: 0,
       usefulLifetime: 36,
     },
   ]);

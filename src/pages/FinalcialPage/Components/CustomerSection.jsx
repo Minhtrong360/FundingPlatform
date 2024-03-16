@@ -166,10 +166,11 @@ const CustomerSection = ({
       dataIndex: `month${month}`,
       key: `month${month}`,
     })),
+    
   ];
 
   //CustomerChart
-
+  
   useEffect(() => {
     const seriesData = tempCustomerGrowthData.map((channelData) => {
       return {
@@ -223,6 +224,7 @@ const CustomerSection = ({
     );
     dispatch(setYearlyAverageCustomers(averages));
   }, [tempCustomerGrowthData, numberOfMonths, isSaved]);
+  
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -266,7 +268,7 @@ const CustomerSection = ({
                 key={input?.id}
                 className="bg-white rounded-md shadow p-6 border my-4"
               >
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Channel Name:
                   </span>
@@ -282,7 +284,7 @@ const CustomerSection = ({
                     }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Customer/month:
                   </span>
@@ -299,7 +301,7 @@ const CustomerSection = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Growth/month (%):
                   </span>
@@ -316,7 +318,7 @@ const CustomerSection = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Begin Month:
                   </span>
@@ -330,7 +332,7 @@ const CustomerSection = ({
                     }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">End Month:</span>
                   <Input
                     className="col-start-2 border-gray-200"
@@ -342,7 +344,7 @@ const CustomerSection = ({
                     }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Begin Customer:
                   </span>
@@ -360,7 +362,7 @@ const CustomerSection = ({
                     }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Churn rate (%):
                   </span>
@@ -374,7 +376,7 @@ const CustomerSection = ({
                     }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Acquisition cost:
                   </span>
@@ -390,6 +392,7 @@ const CustomerSection = ({
                         e.target.value
                       )
                     }
+                    disabled
                   />
                 </div>
                 <div className="flex justify-end items-center">
@@ -444,8 +447,8 @@ const CustomerSection = ({
           type="bar"
           height={350}
         />
-
-        {/* <h3 className="text-2xl font-semibold my-8">
+        
+        <h3 className="text-2xl font-semibold my-8">
           Yearly Average Customers
         </h3>
         <div className="flex items-center">
@@ -454,7 +457,7 @@ const CustomerSection = ({
               <span className="font-semibold">Year {index + 1}:</span> {average}
             </div>
           ))}
-        </div> */}
+        </div>
       </div>
     </div>
   );

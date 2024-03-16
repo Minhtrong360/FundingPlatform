@@ -373,7 +373,7 @@ const ProfitAndLossSection = ({
     }
   });
 
-  
+  const startingPaidInCapital = parseFloat(startingCashBalance);
 
   
   //calculate the accumulated retained earnings
@@ -391,7 +391,7 @@ const ProfitAndLossSection = ({
 
   const totalShareholdersEquity = accumulatedRetainEarnings.map(
     (earnings, index) =>
-      0 + 0 + 0 + earnings // Placeholder values
+      startingPaidInCapital + 0 + 0 + earnings // Placeholder values
   );
 
 
@@ -401,7 +401,9 @@ const ProfitAndLossSection = ({
   );
 
   const positionDataWithNetIncome = [
-    { key: "Operating Activities" },
+
+
+    { key: "Operating Activities"},
     { key: "Net Income", values: netIncome },
     { key: "Depreciation", values: totalInvestmentDepreciation },
     {
@@ -504,6 +506,8 @@ const ProfitAndLossSection = ({
     ),
   }));
 
+  
+
   const positionDataWithNetIncome2 = [
   {
     key: "Accounts Receivable", // Added Accounts Receivable row
@@ -549,8 +553,10 @@ const ProfitAndLossSection = ({
   },
   
   {
-    key: "Paid in Capital", // Added Inventory row
-    values: new Array(numberOfMonths).fill(0), // Set values to zero
+    key: "Paid in Capital",
+    values: Array.from({ length: numberOfMonths }, (_, i) => {
+      return i === 0 ? startingPaidInCapital.toFixed(2) : '0';
+    }).map(value => parseFloat(value)),
   },
   {
     key: "Common Stock", // Added Inventory row
@@ -682,6 +688,7 @@ const ProfitAndLossSection = ({
       },
     },
   };
+  
 
   return (
     <div className="border-t-2">

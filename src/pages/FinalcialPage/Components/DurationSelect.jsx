@@ -82,7 +82,7 @@ const DurationSelect = ({ handleSubmit }) => {
       </h2>
       <div className="bg-white rounded-md shadow p-6 border">
         <Tooltip title="Enter the name of your business">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center text-sm">Business name :</span>
 
             <Input
@@ -97,7 +97,7 @@ const DurationSelect = ({ handleSubmit }) => {
         </Tooltip>
 
         <Tooltip title="Enter the starting month of the business">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center text-sm">Start Month :</span>
             <Select onValueChange={setStartMonth} value={startMonth}>
               <SelectTrigger
@@ -118,7 +118,7 @@ const DurationSelect = ({ handleSubmit }) => {
         </Tooltip>
 
         <Tooltip title="Enter the starting year of the business">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center text-sm">Start Year :</span>
             <Select onValueChange={setStartYear} value={startYear}>
               <SelectTrigger
@@ -139,7 +139,7 @@ const DurationSelect = ({ handleSubmit }) => {
         </Tooltip>
 
         <Tooltip title="Select the duration 3 years or 5 years">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center text-sm">Duration :</span>
             <Select
               onValueChange={(value) => dispatch(setSelectedDuration(value))}
@@ -159,7 +159,7 @@ const DurationSelect = ({ handleSubmit }) => {
         </Tooltip>
 
         <Tooltip title="Enter the starting cash balance, e.g. $10,000">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center text-sm">
               Starting Cash Balance :
             </span>
@@ -174,7 +174,7 @@ const DurationSelect = ({ handleSubmit }) => {
         </Tooltip>
 
         <Tooltip title="Select the status of the business, e.g. $10,000">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center text-sm">Status :</span>
             <Select
               onValueChange={(value) => dispatch(setStatus(value))}
@@ -192,7 +192,7 @@ const DurationSelect = ({ handleSubmit }) => {
         </Tooltip>
 
         <Tooltip title="Select the business industry, e.g. Fintech, Edtech">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center text-sm">
               Business industry:
             </span>
@@ -218,7 +218,7 @@ const DurationSelect = ({ handleSubmit }) => {
         </Tooltip>
 
         <Tooltip title="Input the income tax, e.g. 10">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center text-sm">Income Tax(%) :</span>
             <Input
               className="border-gray-200"
@@ -230,7 +230,7 @@ const DurationSelect = ({ handleSubmit }) => {
         </Tooltip>
 
         <Tooltip title="Input the payroll tax, e.g. 10">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center text-sm">Payroll Tax (%):</span>
             <Input
               className="border-gray-200"
@@ -242,7 +242,7 @@ const DurationSelect = ({ handleSubmit }) => {
         </Tooltip>
 
         <Tooltip title="Select the currency, e.g. USD">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center text-sm">Currency :</span>
             <Select
               onValueChange={(value) => dispatch(setCurrency(value))}

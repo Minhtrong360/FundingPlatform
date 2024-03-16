@@ -1,71 +1,114 @@
+import React from 'react';
+import { Table } from 'antd';
 
+// Define the data structure
+const columns = [
+  {
+    title: ' ',
+    dataIndex: 'name',
+    render: (text, record, index) => ({
+      children: <a style={{ fontWeight: (index === 0 || index === 3) ? 'bold' : 'normal' }}>{text}</a>,
+      props: {
+        colSpan: (index === 0 || index === 3) ? 5 : 1,
+      },
+    }),
+  },
+  {
+    title: 'Age',
+    dataIndex: 'age',
+    onCell: (_, index) => {
+      // In the fifth row, other columns are merged into the first column
+      if (index === 0 || index === 3) {
+        return { colSpan: 0 };
+      }
+      return {};
+    },
+  },
+  {
+    title: 'Home phone',
+    colSpan: 2,
+    dataIndex: 'tel',
+    onCell: (_, index) => {
+      if (index === 0 || index === 3) {
+        return { colSpan: 0 };
+      }
+      return {};
+    },
+  },
+  {
+    title: 'Phone',
+    colSpan: 0,
+    dataIndex: 'phone',
+    onCell: (_, index) => {
+      // In the fifth row, other columns are merged into the first column
+      if (index === 0 || index === 3) {
+        return { colSpan: 0 };
+      }
+      return {};
+    },
+  },
+  {
+    title: 'Address',
+    dataIndex: 'address',
+    onCell: (_, index) => {
+      // In the fifth row, other columns are merged into the first column
+      if (index === 0 || index === 3) {
+        return { colSpan: 0 };
+      }
+      return {};
+    },
+  },
+];
 
-// BaseURLInput.js
-import React, { useState } from 'react';
-import { Input, Button, Spin, message } from 'antd';
-// Compose.js
-import axios from 'axios';
+// Define the data
+const data = [
+  {
+    key: '1',
+    name: 'Short term',
+  },
+  {
+    key: '2',
+    name: 'Jim Green',
+    age: 42,
+    tel: '0571-22098333',
+    phone: 18889898888,
+    address: 'London No. 1 Lake Park',
+  },
+  {
+    key: '3',
+    name: 'Joe Black',
+    age: 32,
+    tel: '0575-22098909',
+    phone: 18900010002,
+    address: 'Sydney No. 1 Lake Park',
+  },
+  {
+    key: '4',
+    name: 'Long term',
+  },
+  {
+    key: '5',
+    name: 'Jake White',
+    age: 18,
+    tel: '0575-22098909',
+    phone: 18900010002,
+    address: 'Dublin No. 2 Lake Park',
+  },
+  {
+    key: '6',
+    name: 'Jim Red',
+    age: 32,
+    tel: '0575-22098909',
+    phone: 18900010002,
+    address: 'London No. 2 Lake Park',
+  }
+];
 
+// Define the App component
+const Post = () => (
+  <div className=" m-10 flex justify-center overflow-auto">
+    <Table columns={columns} dataSource={data} bordered />
+  </div>
+);
 
-const BaseURLInput = ({ onSubmit, loading }) => {
-    const [baseURLs, setBaseURLs] = useState('');
-
-    const handleInputChange = (e) => {
-        setBaseURLs(e.target.value);
-    };
-
-    const handleSubmit = () => {
-        if (!baseURLs.trim()) {
-            message.error('Please enter at least one base URL');
-            return;
-        }
-        const urls = baseURLs.split('\n').filter(url => url.trim());
-        onSubmit(urls);
-    };
-
-    return (
-        <div>
-            <Input.TextArea
-                placeholder="Enter base URLs (one per line)"
-                autoSize={{ minRows: 3, maxRows: 6 }}
-                onChange={handleInputChange}
-            />
-            <Button type="primary" onClick={handleSubmit} loading={loading}>
-                {loading ? <Spin /> : 'Submit'}
-            </Button>
-        </div>
-    );
-};
-
-
-
-
-
-const Compose = () => {
-    const [loading, setLoading] = useState(false);
-
-    const handleSubmitBaseURLs = async (baseURLs) => {
-        try {
-            setLoading(true);
-            const response = await axios.post('http://localhost:8000/process_articles/', { base_urls: baseURLs });
-            console.log(response.data);
-            message.success('Base URLs submitted successfully!');
-        } catch (error) {
-            console.error('Error:', error);
-            message.error('Error occurred while submitting base URLs');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return (
-        <div style={{ padding: '20px' }}>
-            <h1>Enter Base URLs</h1>
-            <BaseURLInput onSubmit={handleSubmitBaseURLs} loading={loading} />
-        </div>
-    );
-};
-
-export default Compose;
-
-
+export default Post;

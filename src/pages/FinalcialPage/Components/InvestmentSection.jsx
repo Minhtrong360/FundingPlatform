@@ -490,6 +490,7 @@ const InvestmentSection = ({
                         e.target.value
                       )
                     }
+                    disabled
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">

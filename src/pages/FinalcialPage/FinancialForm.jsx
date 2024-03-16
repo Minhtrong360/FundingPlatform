@@ -20,55 +20,90 @@ import ProfitAndLossSection from "./Components/ProfitAndLossSection";
 import * as XLSX from "xlsx";
 import BalanceSheetSection from "./Components/BalanceSheetSection";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setSelectedDuration,
+  setStartingCashBalance,
+  setStatus,
+  setIndustry,
+  setIncomeTax,
+  setPayrollTax,
+  setCurrency,
+  setFinancialProjectName,
+} from "../../features/DurationSlice";
+import {
+  calculateCustomerGrowth,
+  calculateYearlyAverage,
+  setCustomerGrowthData,
+  setCustomerInputs,
+  setYearlyAverageCustomers,
+} from "../../features/CustomerSlice";
+import {
+  calculateChannelRevenue,
+  calculateYearlySales,
+  setChannelInputs,
+  setChannelNames,
+  setYearlySales,
+} from "../../features/SaleSlice";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
 
   //DurationSection
-  const [selectedDuration, setSelectedDuration] = useState("3 years");
+  const {
+    selectedDuration,
+    startingCashBalance,
+    status,
+    industry,
+    incomeTax,
+    payrollTax,
+    currency,
+    startMonth,
+    startYear,
+    financialProjectName,
+  } = useSelector((state) => state.durationSelect);
+
   const [numberOfMonths, setNumberOfMonths] = useState(0);
 
   useEffect(() => {
-    if (selectedDuration === "3 years") {
-      setNumberOfMonths(36);
-    }
-    if (selectedDuration === "5 years") {
-      setNumberOfMonths(60);
-    }
-  }, [selectedDuration]);
+    // Chuyển đổi selectedDuration từ dạng "3 years" sang số
+    const extractNumber = (durationString) => {
+      const numberPattern = /\d+/; // Mẫu để trích xuất số từ chuỗi
+      const matches = durationString.match(numberPattern); // Tìm các số trong chuỗi
+      if (matches) {
+        return Number(matches[0]); // Chuyển đổi số thành kiểu số
+      }
+      return 0; // Trả về 0 nếu không tìm thấy số trong chuỗi
+    };
 
-  const [startingCashBalance, setStartingCashBalance] = useState(10000);
-  const [status, setStatus] = useState([]);
-  const [industry, setIndustry] = useState("Technology");
-  const [incomeTax, setIncomeTax] = useState(10);
-  const [payrollTax, setPayrollTax] = useState(0);
-  const [currency, setCurrency] = useState("USD");
-  const [startMonth, setStartMonth] = useState([]);
-  const [startYear, setStartYear] = useState(2024);
-  const [financialProjectName, setFinancialProjectName] = useState([]);
+    const years = extractNumber(selectedDuration);
+    const month = years * 12;
+    setNumberOfMonths(month);
+  }, [selectedDuration]);
 
   // Gemini
   const [chatbotResponse, setChatbotResponse] = useState("");
   // Gemini useEffect
   useEffect(() => {
-    console.log("first");
     // Ensure chatbotResponse is only processed when it's a valid string
     if (!chatbotResponse || chatbotResponse.trim() === "") return;
     try {
       const data = JSON.parse(chatbotResponse);
 
       if (data.DurationSelect)
-        setSelectedDuration(data.DurationSelect.selectedDuration);
-      setStartingCashBalance(data.DurationSelect.startingCashBalance);
-      setStatus(data.DurationSelect.status);
-      setIndustry(data.DurationSelect.industry);
-      setIncomeTax(data.DurationSelect.incomeTax);
-      setPayrollTax(data.DurationSelect.payrollTax);
-      setCurrency(data.DurationSelect.currency);
+        dispatch(setSelectedDuration(data.DurationSelect.selectedDuration));
+      dispatch(setStartingCashBalance(data.DurationSelect.startingCashBalance));
+      dispatch(setStatus(data.DurationSelect.status));
+      dispatch(setIndustry(data.DurationSelect.industry));
+      dispatch(setIncomeTax(data.DurationSelect.incomeTax));
+      dispatch(setPayrollTax(data.DurationSelect.payrollTax));
+      dispatch(setCurrency(data.DurationSelect.currency));
       if (data.CustomerSection)
-        setCustomerInputs(data.CustomerSection.customerInputs);
-      if (data.SalesSection) setChannelInputs(data.SalesSection.channelInputs);
+        dispatch(setCustomerInputs(data.CustomerSection.customerInputs));
+      if (data.SalesSection)
+        dispatch(setChannelInputs(data.SalesSection.channelInputs));
       if (data.CostSection) setCostInputs(data.CostSection.costInputs);
       if (data.PersonnelSection)
         setPersonnelInputs(data.PersonnelSection.personnelInputs);
@@ -81,31 +116,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   }, [chatbotResponse]);
 
   //CustomerState
-  const [customerInputs, setCustomerInputs] = useState([
-    {
-      id: 1,
-      customersPerMonth: 300,
-      growthPerMonth: 1,
-      channelName: "Online",
-      beginMonth: 1,
-      endMonth: 36,
-      beginCustomer: 0,
-      churnRate: 0,
-    },
-    {
-      id: 2,
-      customersPerMonth: 400,
-      growthPerMonth: 2,
-      channelName: "Offline",
-      beginMonth: 1,
-      endMonth: 36,
-      beginCustomer: 0,
-      churnRate: 0,
-    },
-  ]);
 
-  const [customerGrowthData, setCustomerGrowthData] = useState([]);
-  const [yearlyAverageCustomers, setYearlyAverageCustomers] = useState([]);
+  const { customerInputs } = useSelector((state) => state.customer);
+
   const [customerGrowthChart, setCustomerGrowthChart] = useState({
     options: {
       chart: {
@@ -148,48 +161,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   });
 
   //RevenueState
-  
-
-  const [channelInputs, setChannelInputs] = useState([
-    {
-      id: 1,
-      productName: "Coffee", // New field for product name
-      price: 4,
-      multiples: 1,
-      deductionPercentage: 5,
-      cogsPercentage: 30,
-      selectedChannel: "Offline",
-      channelAllocation: 0.4,
-    },
-    {
-      id: 2,
-      productName: "Cake", // New field for product name
-      price: 8,
-      multiples: 1,
-      deductionPercentage: 4,
-      cogsPercentage: 35,
-      selectedChannel: "Offline",
-      channelAllocation: 0.3,
-    },
-    {
-      id: 3,
-      productName: "Coffee Bag", // New field for product name
-      price: 6,
-      multiples: 1,
-      deductionPercentage: 6,
-      cogsPercentage: 25,
-      selectedChannel: "Online",
-      channelAllocation: 0.6,
-    },
-  ]);
-  const [channelNames, setChannelNames] = useState([]);
-
-  const [revenueData, setRevenueData] = useState([]);
-  const [netRevenueData, setNetRevenueData] = useState([]);
-  const [grossProfitData, setGrossProfitData] = useState([]);
-  const [revenueDeductionData, setRevenueDeductionData] = useState([]);
-  const [cogsData, setCogsData] = useState([]);
-  const [yearlySales, setYearlySales] = useState([]);
+  const { channelInputs } = useSelector((state) => state.sales);
   const [revenue, setRevenue] = useState({
     options: {
       chart: { id: "revenue-chart", type: "bar", height: 350, stacked: true }, // Set type to "bar" and stacked to true
@@ -234,7 +206,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     const updatedChannelNames = customerInputs
       .map((input) => input.channelName)
       .filter((name, index, self) => name && self.indexOf(name) === index);
-    setChannelNames(updatedChannelNames);
+    dispatch(setChannelNames(updatedChannelNames));
   }, [customerInputs]);
 
   //CostState
@@ -301,7 +273,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       assetCost: 8000,
       quantity: 1,
       purchaseMonth: 2,
-      residualValue: 10,
+      residualValue: 0,
       usefulLifetime: 36,
     },
 
@@ -311,7 +283,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       assetCost: 200,
       quantity: 10,
       purchaseMonth: 1,
-      residualValue: 10,
+      residualValue: 0,
       usefulLifetime: 36,
     },
   ]);
@@ -345,115 +317,188 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
   // Lưu vào DB
 
-  // const { user } = useAuth();
-  // const loadData = async (userId) => {
-  //   setIsLoading(true);
-  //   const { data, error } = await supabase
-  //     .from("finance")
-  //     .select("inputData")
-  //     .eq("user_id", userId);
-  //   if (error) {
-  //     toast.error(error.message);
-  //     console.error("Error fetching data", error);
-  //     return null;
-  //   }
-  //   setIsLoading(false);
-  //   return data.length > 0 ? JSON.parse(data[0]?.inputData) : null;
-  // };
+  const { user } = useAuth();
+  const loadData = async (userId) => {
+    setIsLoading(true);
+    const { data, error } = await supabase
+      .from("finance")
+      .select("inputData")
+      .eq("user_id", userId);
+    if (error) {
+      toast.error(error.message);
+      console.error("Error fetching data", error);
+      return null;
+    }
+    setIsLoading(false);
+    return data.length > 0 ? JSON.parse(data[0]?.inputData) : null;
+  };
 
-  // useEffect(() => {
-  //   // Assuming `user` is your user object
-  //   const userId = user?.id;
-  //   if (userId) {
-  //     loadData(userId).then((inputData) => {
-  //       if (inputData) {
-  //         // Set your state here
-  //         setFinancialProjectName(inputData.financialProjectName);
-  //         setSelectedDuration(inputData.selectedDuration);
-  //         setCustomerInputs(inputData.customerInputs);
-  //         setChannelInputs(inputData.channelInputs);
-  //         setCostInputs(inputData.costInputs);
-  //         setPersonnelInputs(inputData.personnelInputs);
-  //         setInvestmentInputs(inputData.investmentInputs);
-  //         setLoanInputs(inputData.loanInputs);
-  //       }
-  //     });
-  //   }
-  // }, [user?.id]);
+  useEffect(() => {
+    // Assuming `user` is your user object
+    const userId = user?.id;
+    if (userId) {
+      loadData(userId).then((inputData) => {
+        if (inputData) {
+          // Set your state here
 
-  // const saveOrUpdateFinanceData = async (userId, inputData) => {
-  //   setIsLoading(true);
+          dispatch(
+            setFinancialProjectName(
+              inputData.financialProjectName || financialProjectName
+            )
+          );
+          dispatch(
+            setSelectedDuration(inputData.selectedDuration || selectedDuration)
+          );
 
-  //   try {
-  //     const { data: existingData, error: selectError } = await supabase
-  //       .from("finance")
-  //       .select("*")
-  //       .eq("user_id", userId);
+          dispatch(
+            setStartingCashBalance(
+              inputData.startingCashBalance || startingCashBalance
+            )
+          );
+          dispatch(setStatus(inputData.status || status));
+          dispatch(setIndustry(inputData.industry || industry));
+          dispatch(setIncomeTax(inputData.incomeTax || incomeTax));
+          dispatch(setPayrollTax(inputData.payrollTax || payrollTax));
+          dispatch(setCurrency(inputData.currency || currency));
 
-  //     if (selectError) throw selectError;
+          dispatch(
+            setCustomerInputs(inputData.customerInputs || customerInputs)
+          );
+          dispatch(setChannelInputs(inputData.channelInputs || channelInputs));
+          setCostInputs(inputData.costInputs || costInputs);
+          setPersonnelInputs(inputData.personnelInputs || personnelInputs);
+          setInvestmentInputs(inputData.investmentInputs || investmentInputs);
+          setLoanInputs(inputData.loanInputs || loanInputs);
+        }
+      });
+    }
+  }, [user?.id]);
 
-  //     if (existingData.length > 0) {
-  //       const financeRecord = existingData[0];
+  useEffect(() => {
+    const calculatedData = calculateCustomerGrowth(
+      customerInputs,
+      numberOfMonths
+    );
 
-  //       // Kiểm tra nếu tác giả của dữ liệu tài chính trùng với userId
-  //       if (financeRecord.user_id === userId) {
-  //         // Cập nhật bản ghi hiện có
+    dispatch(setCustomerGrowthData(calculatedData));
 
-  //         const { error: updateError } = await supabase
-  //           .from("finance")
-  //           .update({ name: financeName, inputData })
-  //           .eq("id", financeRecord?.id)
-  //           .select();
+    const averages = calculateYearlyAverage(calculatedData, numberOfMonths);
+    dispatch(setYearlyAverageCustomers(averages));
 
-  //         if (updateError) {
-  //           toast.error(updateError.message);
-  //         } else {
-  //           toast.success("Updated successfully.");
-  //         }
-  //       } else {
-  //         toast.error("Bạn không có quyền cập nhật bản ghi này.");
-  //       }
-  //     } else {
-  //       // Thêm bản ghi mới
-  //       const { error: insertError } = await supabase.from("finance").insert([
-  //         {
-  //           user_id: userId,
-  //           name: financeName,
-  //           user_email: user.email,
-  //           inputData,
-  //         },
-  //       ]);
-  //       if (insertError) {
-  //         toast.error(insertError.message);
-  //       } else {
-  //         toast.success("Inserted successfully.");
-  //       }
-  //     }
-  //   } catch (error) {
-  //     toast.error(error.message);
-  //     console.error("Error in saveOrUpdateFinanceData", error);
-  //     return null;
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+    const { revenueByChannelAndProduct } = dispatch(
+      calculateChannelRevenue(
+        numberOfMonths,
+        calculatedData,
+        customerInputs,
+        channelInputs
+      )
+    );
 
-  // const handleSubmit = async () => {
-  //   const financeData = {
-  //     financeName,
-  //     selectedDuration,
-  //     customerInputs,
-  //     channelInputs,
-  //     costInputs,
-  //     personnelInputs,
-  //     investmentInputs,
-  //     loanInputs,
-  //   };
+    const yearlySale = calculateYearlySales(revenueByChannelAndProduct);
+    dispatch(setYearlySales(yearlySale));
 
-  //   await saveOrUpdateFinanceData(user?.id, financeData);
+    const seriesData = calculatedData.map((channelData) => {
+      return {
+        name: channelData[0]?.channelName || "Unknown Channel",
+        data: channelData.map((data) => data.customers),
+      };
+    });
 
-  //   // Handle post-save actions
-  // };
+    setCustomerGrowthChart((prevState) => ({
+      ...prevState,
+      series: seriesData,
+    }));
+
+    const seriesSaleData = Object.entries(revenueByChannelAndProduct).map(
+      ([key, data]) => {
+        return { name: key, data };
+      }
+    );
+
+    setRevenue((prevState) => ({ ...prevState, series: seriesSaleData }));
+  }, [numberOfMonths, customerInputs, channelInputs]);
+
+  const saveOrUpdateFinanceData = async (userId, inputData) => {
+    setIsLoading(true);
+
+    try {
+      const { data: existingData, error: selectError } = await supabase
+        .from("finance")
+        .select("*")
+        .eq("user_id", userId);
+
+      if (selectError) throw selectError;
+
+      if (existingData.length > 0) {
+        const financeRecord = existingData[0];
+
+        // Kiểm tra nếu tác giả của dữ liệu tài chính trùng với userId
+        if (financeRecord.user_id === userId) {
+          // Cập nhật bản ghi hiện có
+
+          const { error: updateError } = await supabase
+            .from("finance")
+            .update({ name: inputData.financialProjectName, inputData })
+            .eq("id", financeRecord?.id)
+            .select();
+
+          if (updateError) {
+            toast.error(updateError.message);
+          } else {
+            toast.success("Updated successfully.");
+          }
+        } else {
+          toast.error("Bạn không có quyền cập nhật bản ghi này.");
+        }
+      } else {
+        // Thêm bản ghi mới
+        const { error: insertError } = await supabase.from("finance").insert([
+          {
+            user_id: userId,
+            name: inputData.financialProjectName,
+            user_email: user.email,
+            inputData,
+          },
+        ]);
+        if (insertError) {
+          toast.error(insertError.message);
+        } else {
+          toast.success("Inserted successfully.");
+        }
+      }
+    } catch (error) {
+      toast.error(error.message);
+      console.error("Error in saveOrUpdateFinanceData", error);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmit = async () => {
+    const financeData = {
+      selectedDuration,
+      startingCashBalance,
+      status,
+      industry,
+      incomeTax,
+      payrollTax,
+      currency,
+      startMonth,
+      startYear,
+      financialProjectName,
+      customerInputs,
+      channelInputs,
+      costInputs,
+      personnelInputs,
+      investmentInputs,
+      loanInputs,
+    };
+
+    await saveOrUpdateFinanceData(user?.id, financeData);
+
+    // Handle post-save actions
+  };
 
   // Download Excel
   // const downloadExcel = () => {
@@ -514,14 +559,14 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     setTemIsLoading(true);
 
     const tabs = [
-      { tab: "customer", delay: 50 },
-      { tab: "sales", delay: 50 },
-      { tab: "cost", delay: 50 },
-      { tab: "personnel", delay: 50 },
-      { tab: "investment", delay: 50 },
-      { tab: "loan", delay: 50 },
-      { tab: "investment", delay: 50 },
-      { tab: "overview", delay: 50 },
+      { tab: "customer", delay: 350 },
+      { tab: "sales", delay: 350 },
+      { tab: "cost", delay: 350 },
+      { tab: "personnel", delay: 350 },
+      { tab: "investment", delay: 350 },
+      { tab: "loan", delay: 350 },
+      { tab: "investment", delay: 350 },
+      { tab: "overview", delay: 350 },
     ];
 
     let currentIndex = 0;
@@ -557,107 +602,86 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               setCurrentUser={setCurrentUser}
             />
           </div>
-          <div className="my-4">
-            <ul className="py-4 flex justify-center items-center border-t-2">
-              <li
-                className={`cursor-pointer mr-4 ${
-                  activeTab === "overview" ? "border-b-2 border-black" : ""
-                }`}
-                onClick={() => handleTabChange("overview")}
-              >
-                Overview
-              </li>
-              <li
-                className={`cursor-pointer mr-4 ${
-                  activeTab === "customer" ? "border-b-2 border-black" : ""
-                }`}
-                onClick={() => handleTabChange("customer")}
-              >
-                Customer
-              </li>
-              <li
-                className={`cursor-pointer mr-4 ${
-                  activeTab === "sales" ? "border-b-2 border-black" : ""
-                }`}
-                onClick={() => handleTabChange("sales")}
-              >
-                Sales
-              </li>
-              <li
-                className={`cursor-pointer mr-4 ${
-                  activeTab === "cost" ? "border-b-2 border-black" : ""
-                }`}
-                onClick={() => handleTabChange("cost")}
-              >
-                Cost
-              </li>
-              <li
-                className={`cursor-pointer mr-4 ${
-                  activeTab === "personnel" ? "border-b-2 border-black" : ""
-                }`}
-                onClick={() => handleTabChange("personnel")}
-              >
-                Personnel
-              </li>
-              <li
-                className={`cursor-pointer mr-4 ${
-                  activeTab === "investment" ? "border-b-2 border-black" : ""
-                }`}
-                onClick={() => handleTabChange("investment")}
-              >
-                Investment
-              </li>
-              <li
-                className={`cursor-pointer mr-4 ${
-                  activeTab === "loan" ? "border-b-2 border-black" : ""
-                }`}
-                onClick={() => handleTabChange("loan")}
-              >
-                Loan
-              </li>
+          <div className="my-4 ">
+            <div className="overflow-x-auto whitespace-nowrap border-t-2">
+              <ul className="py-4 flex sm:justify-center justify-start items-center">
+                <li
+                  className={`cursor-pointer mr-4 ${
+                    activeTab === "overview" ? "border-b-2 border-black" : ""
+                  }`}
+                  onClick={() => handleTabChange("overview")}
+                >
+                  Overview
+                </li>
+                <li
+                  className={`cursor-pointer mr-4 ${
+                    activeTab === "customer" ? "border-b-2 border-black" : ""
+                  }`}
+                  onClick={() => handleTabChange("customer")}
+                >
+                  Customer
+                </li>
+                <li
+                  className={`cursor-pointer mr-4 ${
+                    activeTab === "sales" ? "border-b-2 border-black" : ""
+                  }`}
+                  onClick={() => handleTabChange("sales")}
+                >
+                  Sales
+                </li>
+                <li
+                  className={`cursor-pointer mr-4 ${
+                    activeTab === "cost" ? "border-b-2 border-black" : ""
+                  }`}
+                  onClick={() => handleTabChange("cost")}
+                >
+                  Cost
+                </li>
+                <li
+                  className={`cursor-pointer mr-4 ${
+                    activeTab === "personnel" ? "border-b-2 border-black" : ""
+                  }`}
+                  onClick={() => handleTabChange("personnel")}
+                >
+                  Personnel
+                </li>
+                <li
+                  className={`cursor-pointer mr-4 ${
+                    activeTab === "investment" ? "border-b-2 border-black" : ""
+                  }`}
+                  onClick={() => handleTabChange("investment")}
+                >
+                  Investment
+                </li>
+                <li
+                  className={`cursor-pointer mr-4 ${
+                    activeTab === "loan" ? "border-b-2 border-black" : ""
+                  }`}
+                  onClick={() => handleTabChange("loan")}
+                >
+                  Loan
+                </li>
 
-              <li
-                className={`cursor-pointer mr-4 ${
-                  activeTab === "result" ? "border-b-2 border-black" : ""
-                }`}
-                onClick={() => handleTabChange("result")}
-              >
-                Result
-              </li>
-            </ul>
+                <li
+                  className={`cursor-pointer mr-4 ${
+                    activeTab === "result" ? "border-b-2 border-black" : ""
+                  }`}
+                  onClick={() => handleTabChange("result")}
+                >
+                  Result
+                </li>
+              </ul>
+            </div>
+
             <div>
               {activeTab === "overview" && (
                 <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
                   <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
-                    <DurationSelect
-                      selectedDuration={selectedDuration}
-                      setSelectedDuration={setSelectedDuration}
-                      startingCashBalance={startingCashBalance}
-                      setStartingCashBalance={setStartingCashBalance}
-                      status={status}
-                      setStatus={setStatus}
-                      industry={industry}
-                      setIndustry={setIndustry}
-                      incomeTax={incomeTax}
-                      setIncomeTax={setIncomeTax}
-                      payrollTax={payrollTax}
-                      setPayrollTax={setPayrollTax}
-                      currency={currency}
-                      setCurrency={setCurrency}
-                      startMonth={startMonth}
-                      setStartMonth={setStartMonth}
-                      startYear={startYear}
-                      setStartYear={setStartYear}
-                      financialProjectName={financialProjectName}
-                      setFinancialProjectName={setFinancialProjectName}
-                    />
+                    <DurationSelect handleSubmit={handleSubmit} />
                   </div>
 
                   <div className="w-full lg:w-3/4 p-4">
                     <MetricsFM
-                      yearlyAverageCustomers={yearlyAverageCustomers}
-                      customerInputs={customerInputs}
-                      yearlySales={yearlySales}
                       customerGrowthChart={customerGrowthChart}
                       revenue={revenue}
                     />
@@ -666,42 +690,18 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               )}
               {activeTab === "customer" && (
                 <CustomerSection
-                  customerInputs={customerInputs}
-                  setCustomerInputs={setCustomerInputs}
                   numberOfMonths={numberOfMonths}
-                  customerGrowthData={customerGrowthData}
-                  setCustomerGrowthData={setCustomerGrowthData}
-                  channelNames={channelNames}
                   isSaved={isSaved}
                   setIsSaved={setIsSaved}
-                  yearlyAverageCustomers={yearlyAverageCustomers}
-                  setYearlyAverageCustomers={setYearlyAverageCustomers}
                   customerGrowthChart={customerGrowthChart}
                   setCustomerGrowthChart={setCustomerGrowthChart}
                 />
               )}
               {activeTab === "sales" && (
                 <SalesSection
-                  channelInputs={channelInputs}
-                  channelNames={channelNames}
-                  setChannelInputs={setChannelInputs}
-                  revenueData={revenueData}
-                  revenueDeductionData={revenueDeductionData}
-                  cogsData={cogsData}
-                  customerInputs={customerInputs}
                   numberOfMonths={numberOfMonths}
-                  netRevenueData={netRevenueData}
-                  grossProfitData={grossProfitData}
-                  setRevenueData={setRevenueData}
-                  setRevenueDeductionData={setRevenueDeductionData}
-                  setCogsData={setCogsData}
-                  setNetRevenueData={setNetRevenueData}
-                  setGrossProfitData={setGrossProfitData}
-                  customerGrowthData={customerGrowthData}
                   isSaved={isSaved}
                   setIsSaved={setIsSaved}
-                  yearlySales={yearlySales}
-                  setYearlySales={setYearlySales}
                   revenue={revenue}
                   setRevenue={setRevenue}
                 />
@@ -754,15 +754,11 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               )}
               {activeTab === "result" && (
                 <ProfitAndLossSection
-                  revenueData={revenueData}
-                  revenueDeductionData={revenueDeductionData}
-                  cogsData={cogsData}
                   costData={costData}
                   personnelCostData={personnelCostData}
                   investmentData={investmentData}
                   loanData={loanData}
                   numberOfMonths={numberOfMonths}
-                  incomeTaxRate={incomeTax}
                   investmentTableData={investmentTableData}
                   loanTableData={loanTableData}
                   startingCashBalance={startingCashBalance}

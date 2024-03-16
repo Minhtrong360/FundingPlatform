@@ -80,7 +80,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
         </style>
         <div className="mt-16 mx-auto flex flex-col items-start h-full px-3 py-4 space-y-2 overflow-y-auto">
           <button
-            className="mt-2  w-full p-2 group flex items-center rounded-lg text-sm  sidebar-button"
+            className="mt-2  w-full p-2 group flex items-center rounded-lg text-sm  sidebar-button hover:bg-gray-300"
             onClick={() => navigate("/")}
           >
             <img
@@ -95,7 +95,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
               selectedItem?.includes("/user-info")
                 ? "bg-gray-300 "
                 : "text-gray-900 darkTextWhite"
-            } sidebar-button`}
+            } sidebar-button hover:bg-gray-300`}
             onClick={() => handleItemClick("/user-info")}
           >
             <img
@@ -110,7 +110,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
               selectedItem?.includes("/dashboard")
                 ? "bg-gray-300 "
                 : "text-gray-900 darkTextWhite"
-            } sidebar-button`}
+            } sidebar-button hover:bg-gray-300 hover:bg-gray-300`}
             onClick={() => handleItemClick("/dashboard")}
           >
             <img
@@ -126,7 +126,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
               selectedItem?.includes("/financials")
                 ? "bg-gray-300 "
                 : "text-gray-900 darkTextWhite"
-            } sidebar-button`}
+            } sidebar-button hover:bg-gray-300`}
             onClick={() => handleItemClick("/financials")}
           >
             <img
@@ -141,7 +141,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
               selectedItem?.includes("/founder")
                 ? "bg-gray-300"
                 : "text-gray-900 darkTextWhite"
-            } sidebar-button`}
+            } sidebar-button hover:bg-gray-300`}
             onClick={() => handleItemClick("/founder")}
           >
             <img

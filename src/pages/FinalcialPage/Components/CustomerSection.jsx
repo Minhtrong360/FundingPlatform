@@ -3,26 +3,33 @@ import { Input } from "../../../components/ui/Input";
 import { Table, Tooltip, message } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import Chart from "react-apexcharts";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setCustomerInputs,
+  setYearlyAverageCustomers,
+  setCustomerGrowthData,
+  calculateYearlyAverage,
+  calculateCustomerGrowth,
+} from "../../../features/CustomerSlice";
+import {
+  calculateChannelRevenue,
+  calculateYearlySales,
+  setYearlySales,
+} from "../../../features/SaleSlice";
 
 const CustomerSection = ({
-  customerInputs,
-  setCustomerInputs,
   numberOfMonths,
-  customerGrowthData,
-  setCustomerGrowthData,
   isSaved,
   setIsSaved,
-  yearlyAverageCustomers,
-  setYearlyAverageCustomers,
   customerGrowthChart,
   setCustomerGrowthChart,
+  beginCustomer,
 }) => {
-  const [tempCustomerInputs, setTempCustomerInputs] = useState(
-    customerInputs.map((input) => ({
-      ...input,
-      acquisitionCost: input.acquisitionCost || 0,
-    }))
-  );
+  const dispatch = useDispatch();
+  const { yearlyAverageCustomers, customerInputs, customerGrowthData } =
+    useSelector((state) => state.customer);
+
+  const [tempCustomerInputs, setTempCustomerInputs] = useState(customerInputs);
 
   useEffect(() => {
     setTempCustomerInputs(customerInputs);
@@ -74,37 +81,13 @@ const CustomerSection = ({
     setTempCustomerInputs(newInputs);
   };
 
-  const calculateCustomerGrowth = (tempCustomerInputs) => {
-    return tempCustomerInputs.map((channel) => {
-      let customers = [];
-      let currentCustomers = parseFloat(channel.customersPerMonth);
-      for (let i = 1; i <= numberOfMonths; i++) {
-        if (i >= channel.beginMonth && i <= channel.endMonth) {
-          customers.push({
-            month: i,
-            customers: currentCustomers,
-            channelName: channel.channelName,
-          });
-          currentCustomers *= 1 + parseFloat(channel.growthPerMonth) / 100;
-        } else {
-          customers.push({
-            month: i,
-            customers: 0,
-            channelName: channel.channelName,
-          });
-        }
-      }
-      return customers;
-    });
-  };
-
   //CustomerUseEffect
   useEffect(() => {
     const calculatedData = calculateCustomerGrowth(
       customerInputs,
       numberOfMonths
     );
-    setCustomerGrowthData(calculatedData);
+    dispatch(setCustomerGrowthData(calculatedData));
   }, [customerInputs, numberOfMonths]);
 
   //CustomerUseEffect
@@ -117,47 +100,38 @@ const CustomerSection = ({
   }, [tempCustomerInputs, numberOfMonths]);
 
   // CustomerTableData
-  const transformedCustomerTableData = {};
-  tempCustomerGrowthData.forEach((channelData) => {
-    channelData.forEach((data) => {
-      const customerInput = tempCustomerInputs.find(
-        (input) => input.channelName === data.channelName
-      );
-      if (customerInput) {
-        const beginCustomerValue = parseFloat(customerInput.beginCustomer) || 0;
-        if (!transformedCustomerTableData[data.channelName]) {
-          transformedCustomerTableData[data.channelName] = {
-            key: data.channelName,
-            channelName: data.channelName,
-          };
-        }
-        // Check if the month is within the range
-        if (
-          data.month >= customerInput.beginMonth &&
-          data.month <= customerInput.endMonth
-        ) {
-          transformedCustomerTableData[data.channelName][`month${data.month}`] =
-            parseFloat(data.customers)?.toFixed(2);
-        } else {
-          // Set value to 0 if outside the range
-          transformedCustomerTableData[data.channelName][`month${data.month}`] =
-            "0.00";
-        }
-      }
-      console.log(customerInput.beginCustomer)
-    });
+  const transformedCustomerTableData = tempCustomerInputs.map((input) => {
+    const tableData = {
+      key: input.channelName,
+      beginCustomer: Array.from({ length: numberOfMonths }, (_, index) =>
+        index === input.beginMonth - 1
+          ? parseFloat(input.beginCustomer) || 0
+          : 0
+      ),
+      churnRate: Array.from({ length: numberOfMonths }, (_, index) =>
+        index >= input.beginMonth - 1 && index <= input.endMonth - 1
+          ? parseFloat(input.churnRate) || 0
+          : 0
+      ),
+      growth: Array.from({ length: numberOfMonths }, (_, index) =>
+        index >= input.beginMonth - 1 && index <= input.endMonth - 1
+          ? (parseFloat(input.customersPerMonth) || 0) *
+            (1 + parseFloat(input.growthPerMonth) / 100)
+          : 0
+      ),
+      endCustomer: Array.from({ length: numberOfMonths }, () => 0),
+    };
+
+    return tableData;
   });
 
-  const customerTableData = Object.values(transformedCustomerTableData).map(
-    (row) => {
-      for (let month = 1; month <= numberOfMonths; month++) {
-        if (!row.hasOwnProperty(`month${month}`)) {
-          row[`month${month}`] = "0.00";
-        }
-      }
-      return row;
-    }
-  );
+  const customerTableData = transformedCustomerTableData.map((data) => ({
+    key: data.key,
+    beginCustomer: data.beginCustomer.map((value) => value.toFixed(2)),
+    churnRate: data.churnRate.map((value) => value.toFixed(2)),
+    growth: data.growth.map((value) => value.toFixed(2)),
+    endCustomer: data.endCustomer.map((value) => value.toFixed(2)),
+  }));
 
   // CustomerColumns
   const customerColumns = [
@@ -199,40 +173,39 @@ const CustomerSection = ({
     setIsSaved(true);
     message.success("Data saved successfully!");
   };
+  const channelInputs = useSelector((state) => state.sales.channelInputs);
 
   useEffect(() => {
     if (isSaved) {
-      setCustomerInputs(tempCustomerInputs);
+      dispatch(setCustomerInputs(tempCustomerInputs));
+      const { revenueByChannelAndProduct } = dispatch(
+        calculateChannelRevenue(
+          numberOfMonths,
+          tempCustomerGrowthData,
+          tempCustomerInputs,
+          channelInputs
+        )
+      );
+
+      const yearlySale = calculateYearlySales(revenueByChannelAndProduct);
+      dispatch(setYearlySales(yearlySale));
       setIsSaved(false);
     }
   }, [isSaved]);
 
   // Generate ChannelDataTable for each selected channel
-  
 
   // Calculate monthly average of customers for each year
-  const calculateYearlyAverage = (tempCustomerGrowthData, numberOfMonths) => {
-    const yearlyAverages = [];
-    for (let i = 0; i < numberOfMonths; i += 12) {
-      let totalCustomers = 0;
-      for (let j = i; j < i + 12 && j < numberOfMonths; j++) {
-        tempCustomerGrowthData.forEach((channelData) => {
-          totalCustomers += parseFloat(channelData[j]?.customers) || 0;
-        });
-      }
-      const averageCustomers = totalCustomers / 12;
-      yearlyAverages.push(averageCustomers.toFixed(2));
-    }
-    return yearlyAverages;
-  };
 
   useEffect(() => {
     const averages = calculateYearlyAverage(
       tempCustomerGrowthData,
       numberOfMonths
     );
-    setYearlyAverageCustomers(averages);
-  }, [tempCustomerGrowthData, numberOfMonths]);
+    dispatch(setYearlyAverageCustomers(averages));
+  }, [tempCustomerGrowthData, numberOfMonths, isSaved]);
+
+  console.log("customerTableData", customerTableData);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -243,8 +216,7 @@ const CustomerSection = ({
               className="text-2xl font-semibold mb-4 flex items-center"
               id="customers-heading"
             >
-              1. Customer channel{" "}
-              <InfoCircleOutlined style={{ marginLeft: "0.5rem" }} />
+              Customer channel{" "}
             </h2>
             <p>
               Creating a customer channel is often considered the very first
@@ -385,24 +357,7 @@ const CustomerSection = ({
                     }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <span className=" flex items-center text-sm">
-                    Acquisition cost:
-                  </span>
-                  <Input
-                    className="col-start-2 border-gray-200"
-                    type="number"
-                    min="0"
-                    value={input.acquisitionCost}
-                    onChange={(e) =>
-                      handleInputChange(
-                        input?.id,
-                        "acquisitionCost",
-                        e.target.value
-                      )
-                    }
-                  />
-                </div>
+
                 <div className="flex justify-end items-center">
                   <button
                     className="bg-red-600 text-white py-1 px-4 rounded"
@@ -456,7 +411,7 @@ const CustomerSection = ({
           height={350}
         />
 
-        <h3 className="text-2xl font-semibold my-8">
+        {/* <h3 className="text-2xl font-semibold my-8">
           Yearly Average Customers
         </h3>
         <div className="flex items-center">
@@ -465,7 +420,7 @@ const CustomerSection = ({
               <span className="font-semibold">Year {index + 1}:</span> {average}
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );

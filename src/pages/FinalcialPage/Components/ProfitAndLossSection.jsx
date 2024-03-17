@@ -473,7 +473,11 @@ const ProfitAndLossSection = ({
   
 
   const positionDataWithNetIncome2 = [
-  {
+    {
+      key: "Cash",
+      values: cashEndBalances, // Set values to zero
+    },
+    {
     key: "Accounts Receivable", // Added Accounts Receivable row
     values: new Array(numberOfMonths).fill(0), // Set values to zero
   },
@@ -493,6 +497,11 @@ const ProfitAndLossSection = ({
 
   {
     key: "Net Fixed Assets",
+    values: bsTotalNetFixedAssets,
+  },
+
+  {
+    key: "Long term assets",
     values: bsTotalNetFixedAssets,
   },
 
@@ -873,7 +882,7 @@ const positionColumns = [
       />
     </Card>
   </Col>
-  // You can add more charts here as needed for other metrics
+
 </Row>
 <Row gutter={16} className="additional-charts" style={{ marginTop: "20px" }}>
   <Col span={8}>

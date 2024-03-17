@@ -2,6 +2,8 @@ import React from "react";
 import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 import { useSelector } from "react-redux";
+import { Row, Col, Card } from 'antd';
+
 
 const ProfitAndLossSection = ({
   costData,
@@ -187,6 +189,7 @@ const ProfitAndLossSection = ({
       dataIndex: "metric",
       key: "metric",
       fixed: "left",
+      width: 200,
       onCell: () => ({
         style: {
           borderRight: "1px solid #f0f0f0",
@@ -202,45 +205,6 @@ const ProfitAndLossSection = ({
           borderRight: "1px solid #f0f0f0",
         },
       }),
-      render: (text, record) => {
-        if (
-          record.metric === "Total Revenue" ||
-          record.metric === "Gross Profit"
-        ) {
-          return (
-            <span style={{ fontWeight: "bold", fontSize: "16px" }}>{text}</span>
-          );
-        } else if (record.metric === "EBITDA") {
-          return parseFloat(text) > 0 ? (
-            <span
-              style={{ color: "green", fontWeight: "bold", fontSize: "16px" }}
-            >
-              {text}
-            </span>
-          ) : (
-            <span
-              style={{ color: "red", fontWeight: "bold", fontSize: "16px" }}
-            >
-              {text}
-            </span>
-          );
-        } else if (record.metric === "Net Income") {
-          return parseFloat(text) > 0 ? (
-            <span
-              style={{ fontWeight: "bold", fontSize: "16px", color: "green" }}
-            >
-              {text}
-            </span>
-          ) : (
-            <span
-              style={{ fontWeight: "bold", fontSize: "16px", color: "red" }}
-            >
-              {text}
-            </span>
-          );
-        }
-        return text;
-      },
     })),
   ];
 
@@ -509,7 +473,11 @@ const ProfitAndLossSection = ({
   
 
   const positionDataWithNetIncome2 = [
-  {
+    {
+      key: "Cash",
+      values: cashEndBalances, // Set values to zero
+    },
+    {
     key: "Accounts Receivable", // Added Accounts Receivable row
     values: new Array(numberOfMonths).fill(0), // Set values to zero
   },
@@ -521,7 +489,6 @@ const ProfitAndLossSection = ({
     key: "Current Assets", // Added Current Assets row
     values: currentAssets,
   },
-  { key: "Long term assets (Heading)" },
 
   // insert BS Total investment here
   { key: "Total Investment", values: totalAssetValue }, // New row for total investment
@@ -529,12 +496,17 @@ const ProfitAndLossSection = ({
   { key: "Total Accumulated Depreciation", values: bsTotalDepreciation },
 
   {
-    key: "Net Fixed Assets = Same row in Investment Table",
+    key: "Net Fixed Assets",
     values: bsTotalNetFixedAssets,
   },
 
   {
-    key: "Total Assets = Sum of Current Assets and Net Fixed Assets",
+    key: "Long term assets",
+    values: bsTotalNetFixedAssets,
+  },
+
+  {
+    key: "Total Assets",
     values: totalAssets,
   },
 
@@ -591,7 +563,7 @@ const ProfitAndLossSection = ({
   },
 
   {
-    key: "Total Assets = Sum of Current Assets and Net Fixed Assets",
+    key: "Total Assets (Double Check)",
     values: totalAssets,
   },
 
@@ -603,7 +575,54 @@ const ProfitAndLossSection = ({
   ),
 }));
 
-  const positionColumns = [
+const positionColumns = [
+  {
+    title: "Metric",
+    dataIndex: "metric",
+    key: "metric",
+    fixed: "left",
+    render: (text, record, index) => ({
+      children: <a style={{ fontWeight: (index === 0 || index === 7 || index === 9) ? 'bold' : 'normal' }}>{text}</a>,
+      props: {
+        colSpan: (index === 0 || index === 7 || index === 9) ? 36 : 1,
+        style: (index === 0 || index === 7 || index === 9) ? {} : { borderRight: "1px solid #f0f0f0" }
+      },
+    }),
+    
+    // onCell: (_, index)  => ({
+    //   style: {
+    //     // borderRight: "1px solid #f0f0f0",
+    //     props: {
+    //       colSpan: (index === 0 || index === 7 || index === 9) ? 36 : 1,
+    //     },
+    //   },
+    // }),
+  },
+  ...Array.from({ length: numberOfMonths }, (_, i) => ({
+    title: `Month_${i + 1}`,
+    dataIndex: `Month ${i + 1}`,
+    key: `Month ${i + 1}`,
+    onCell: (_, index) => {
+      if (index === 0 || index === 7 || index === 9) {
+        return {
+          style: {
+            borderRight: "1px solid #f0f0f0",
+          },
+          colSpan: 0
+        };
+      } else {
+        return {
+          style: {
+            borderRight: "1px solid #f0f0f0",
+          }
+        };
+      }
+    }
+    
+  })),
+];
+
+  const positionColumns1 = [
     {
       title: "Metric",
       dataIndex: "metric",
@@ -713,15 +732,321 @@ const ProfitAndLossSection = ({
         className="overflow-auto my-8"
         size="small"
         dataSource={positionDataWithNetIncome2}
-        columns={positionColumns}
+        columns={positionColumns1}
         pagination={false}
       />
-      <Chart
+      {/* <Chart
         options={chartOptions}
         series={chartSeries}
         type="bar"
         height={350}
+      /> */}
+
+<Row gutter={16} className="additional-charts">
+  <Col span={8}>
+    <Card title="Total Revenue Over Time">
+      <Chart
+        options={{
+          ...chartOptions,
+          chart: { ...chartOptions.chart, id: "total-revenue-chart" },
+          yaxis: { title: { text: "Total Revenue ($)" } },
+        }}
+        series={[
+          {
+            name: "Total Revenue",
+            data: totalRevenue.map((value) => parseFloat(value.toFixed(2))),
+          },
+        ]}
+        type="area"
+        height={300}
       />
+    </Card>
+  </Col>
+  <Col span={8}>
+    <Card title="Total Costs Over Time">
+      <Chart
+        options={{
+          ...chartOptions,
+          chart: { ...chartOptions.chart, id: "total-costs-chart" },
+          yaxis: { title: { text: "Total Costs ($)" } },
+        }}
+        series={[
+          {
+            name: "Total Costs",
+            data: totalCosts.map((value) => parseFloat(value.toFixed(2))),
+          },
+        ]}
+        type="area"
+        height={300}
+      />
+    </Card>
+  </Col>
+  <Col span={8}>
+    <Card title="Net Income Over Time">
+      <Chart
+        options={{
+          ...chartOptions,
+          chart: { ...chartOptions.chart, id: "net-income-chart" },
+          yaxis: { title: { text: "Net Income ($)" } },
+        }}
+        series={[
+          {
+            name: "Net Income",
+            data: netIncome.map((value) => parseFloat(value.toFixed(2))),
+          },
+        ]}
+        type="area"
+        height={300}
+      />
+    </Card>
+  </Col>
+</Row>
+
+<Row gutter={16} className="additional-charts" style={{ marginTop: "20px" }}>
+  <Col span={8}>
+    <Card title="Cash Flow Overview">
+      <Chart
+        options={{
+          ...chartOptions,
+          chart: { ...chartOptions.chart, id: "cash-flow-chart" },
+          yaxis: { title: { text: "Cash Flow ($)" } },
+        }}
+        series={[
+          {
+            name: "Net Cash Change",
+            data: netCashChanges.map((value) => parseFloat(value.toFixed(2))),
+          },
+        ]}
+        type="area"
+        height={300}
+      />
+    </Card>
+  </Col>
+  <Col span={8}>
+    <Card title="Total Assets Over Time">
+      <Chart
+        options={{
+          ...chartOptions,
+          chart: { ...chartOptions.chart, id: "total-assets-chart" },
+          yaxis: { title: { text: "Total Assets ($)" } },
+        }}
+        series={[
+          {
+            name: "Total Assets",
+            data: totalAssets.map((value) => parseFloat(value.toFixed(2))),
+          },
+        ]}
+        type="area"
+        height={300}
+      />
+    </Card>
+  </Col>
+  <Col span={8}>
+    <Card title="Total Liabilities Over Time">
+      <Chart
+        options={{
+          ...chartOptions,
+          chart: { ...chartOptions.chart, id: "total-liabilities-chart" },
+          yaxis: { title: { text: "Total Liabilities ($)" } },
+        }}
+        series={[
+          {
+            name: "Total Liabilities",
+            data: totalLiabilities.map((value) => parseFloat(value.toFixed(2))),
+          },
+        ]}
+        type="area"
+        height={300}
+      />
+    </Card>
+  </Col>
+</Row>
+
+<Row gutter={16} className="additional-charts" style={{ marginTop: "20px" }}>
+  <Col span={8}>
+    <Card title="Total Shareholders Equity Over Time">
+      <Chart
+        options={{
+          ...chartOptions,
+          chart: { ...chartOptions.chart, id: "total-shareholders-equity-chart" },
+          yaxis: { title: { text: "Total Shareholders Equity ($)" } },
+        }}
+        series={[
+          {
+            name: "Total Shareholders Equity",
+            data: totalShareholdersEquity.map((value) => parseFloat(value.toFixed(2))),
+          },
+        ]}
+        type="area"
+        height={300}
+      />
+    </Card>
+  </Col>
+
+</Row>
+<Row gutter={16} className="additional-charts" style={{ marginTop: "20px" }}>
+  <Col span={8}>
+    <Card title="Gross Profit Over Time">
+      <Chart
+        options={{
+          ...chartOptions,
+          chart: { ...chartOptions.chart, id: "gross-profit-chart" },
+          yaxis: { title: { text: "Gross Profit ($)" } },
+        }}
+        series={[
+          {
+            name: "Gross Profit",
+            data: grossProfit.map((value) => parseFloat(value.toFixed(2))),
+          },
+        ]}
+        type="area"
+        height={300}
+      />
+    </Card>
+  </Col>
+  <Col span={8}>
+    <Card title="EBITDA Over Time">
+      <Chart
+        options={{
+          ...chartOptions,
+          chart: { ...chartOptions.chart, id: "ebitda-chart" },
+          yaxis: { title: { text: "EBITDA ($)" } },
+        }}
+        series={[
+          {
+            name: "EBITDA",
+            data: ebitda.map((value) => parseFloat(value.toFixed(2))),
+          },
+        ]}
+        type="area"
+        height={300}
+      />
+    </Card>
+  </Col>
+  <Col span={8}>
+    <Card title="Earnings Before Tax Over Time">
+      <Chart
+        options={{
+          ...chartOptions,
+          chart: { ...chartOptions.chart, id: "earnings-before-tax-chart" },
+          yaxis: { title: { text: "Earnings Before Tax ($)" } },
+        }}
+        series={[
+          {
+            name: "Earnings Before Tax",
+            data: earningsBeforeTax.map((value) => parseFloat(value.toFixed(2))),
+          },
+        ]}
+        type="area"
+        height={300}
+      />
+    </Card>
+  </Col>
+</Row>
+
+<Row gutter={16} className="additional-charts" style={{ marginTop: "20px" }}>
+  <Col span={8}>
+    <Card title="Income Tax Over Time">
+      <Chart
+        options={{
+          ...chartOptions,
+          chart: { ...chartOptions.chart, id: "income-tax-chart" },
+          yaxis: { title: { text: "Income Tax ($)" } },
+        }}
+        series={[
+          {
+            name: "Income Tax",
+            data: incomeTax.map((value) => parseFloat(value.toFixed(2))),
+          },
+        ]}
+        type="area"
+        height={300}
+      />
+    </Card>
+  </Col>
+  <Col span={8}>
+    <Card title="Total Investment Depreciation Over Time">
+      <Chart
+        options={{
+          ...chartOptions,
+          chart: { ...chartOptions.chart, id: "total-investment-depreciation-chart" },
+          yaxis: { title: { text: "Total Investment Depreciation ($)" } },
+        }}
+        series={[
+          {
+            name: "Total Investment Depreciation",
+            data: totalInvestmentDepreciation.map((value) => parseFloat(value.toFixed(2))),
+          },
+        ]}
+        type="area"
+        height={300}
+      />
+    </Card>
+  </Col>
+  <Col span={8}>
+    <Card title="Total Interest Payments Over Time">
+      <Chart
+        options={{
+          ...chartOptions,
+          chart: { ...chartOptions.chart, id: "total-interest-payments-chart" },
+          yaxis: { title: { text: "Total Interest Payments ($)" } },
+        }}
+        series={[
+          {
+            name: "Total Interest Payments",
+            data: totalInterestPayments.map((value) => parseFloat(value.toFixed(2))),
+          },
+        ]}
+        type="area"
+        height={300}
+      />
+    </Card>
+  </Col>
+</Row>
+
+<Row gutter={16} className="additional-charts" style={{ marginTop: "20px" }}>
+  <Col span={8}>
+    <Card title="Total Principal Over Time">
+      <Chart
+        options={{
+          ...chartOptions,
+          chart: { ...chartOptions.chart, id: "total-principal-chart" },
+          yaxis: { title: { text: "Total Principal ($)" } },
+        }}
+        series={[
+          {
+            name: "Total Principal",
+            data: totalPrincipal.map((value) => parseFloat(value.toFixed(2))),
+          },
+        ]}
+        type="area"
+        height={300}
+      />
+    </Card>
+  </Col>
+  
+  <Col span={8}>
+    <Card title="Cash Begin Balances Over Time">
+      <Chart
+        options={{
+          ...chartOptions,
+          chart: { ...chartOptions.chart, id: "cash-begin-balances-chart" },
+          yaxis: { title: { text: "Cash Begin Balances ($)" } },
+        }}
+        series={[
+          {
+            name: "Cash Begin",
+            data: cashBeginBalances.map((value) => parseFloat(value.toFixed(2))),
+          },
+        ]}
+        type="area"
+        height={300}
+      />
+    </Card>
+  </Col>
+</Row>
+
+
     </div>
   );
 };

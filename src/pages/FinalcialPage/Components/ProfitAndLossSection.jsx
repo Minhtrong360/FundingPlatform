@@ -189,6 +189,7 @@ const ProfitAndLossSection = ({
       dataIndex: "metric",
       key: "metric",
       fixed: "left",
+      width: 200,
       onCell: () => ({
         style: {
           borderRight: "1px solid #f0f0f0",

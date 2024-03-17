@@ -668,7 +668,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   }`}
                   onClick={() => handleTabChange("result")}
                 >
-                  Result
+                  Financial Statements
                 </li>
               </ul>
             </div>

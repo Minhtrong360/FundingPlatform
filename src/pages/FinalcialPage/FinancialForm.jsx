@@ -327,6 +327,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     },
   ]);
 
+  const [fundraisingTableData, setFundraisingTableData] = useState([]);
+
   // Lưu vào DB
 
   const { user } = useAuth();
@@ -381,6 +383,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           setPersonnelInputs(inputData.personnelInputs || personnelInputs);
           setInvestmentInputs(inputData.investmentInputs || investmentInputs);
           setLoanInputs(inputData.loanInputs || loanInputs);
+          setFundraisingInputs(
+            inputData.fundraisingInputs || fundraisingInputs
+          );
         }
       });
     }
@@ -505,6 +510,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       personnelInputs,
       investmentInputs,
       loanInputs,
+      fundraisingInputs,
     };
 
     await saveOrUpdateFinanceData(user?.id, financeData);
@@ -776,6 +782,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 <FundraisingSection
                   fundraisingInputs={fundraisingInputs}
                   setFundraisingInputs={setFundraisingInputs}
+                  fundraisingTableData={fundraisingTableData}
+                  setFundraisingTableData={setFundraisingTableData}
                   numberOfMonths={numberOfMonths}
                   isSaved={isSaved}
                   setIsSaved={setIsSaved}
@@ -792,6 +800,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   investmentTableData={investmentTableData}
                   loanTableData={loanTableData}
                   startingCashBalance={startingCashBalance}
+                  fundraisingInputs={fundraisingInputs}
+                  fundraisingTableData={fundraisingTableData}
                 />
               )}
             </div>

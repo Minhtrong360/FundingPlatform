@@ -65,14 +65,25 @@ export const calculateCustomerGrowth = (tempCustomerInputs, numberOfMonths) => {
   return tempCustomerInputs.map((channel) => {
     let customers = [];
     let currentCustomers = parseFloat(channel.customersPerMonth);
+    let beginValue = parseFloat(channel.beginCustomer); // Begin value for the current month
+
     for (let i = 1; i <= numberOfMonths; i++) {
       if (i >= channel.beginMonth && i <= channel.endMonth) {
+        const churnValue = (beginValue * (channel.churnRate / 100)).toFixed(2); // Calculate churn value
+
+        const endValue = (
+          beginValue +
+          currentCustomers -
+          parseFloat(churnValue)
+        ).toFixed(2); // Calculate and assign value to End row
+
         customers.push({
           month: i,
-          customers: currentCustomers,
+          customers: endValue,
           channelName: channel.channelName,
         });
         currentCustomers *= 1 + parseFloat(channel.growthPerMonth) / 100;
+        beginValue = parseFloat(endValue);
       } else {
         customers.push({
           month: i,

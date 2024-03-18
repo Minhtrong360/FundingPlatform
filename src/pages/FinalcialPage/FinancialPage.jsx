@@ -4,6 +4,7 @@ import SideBar from "../../components/SideBar";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import FinancialForm from "./FinancialForm";
+import AnnouncePage from "../../components/AnnouncePage";
 
 function FinancialPage({ subscribed }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -51,14 +52,14 @@ function FinancialPage({ subscribed }) {
           className="p-4 sm:ml-16 ml-0"
           onClick={() => setIsSidebarOpen(false)}
         >
-          {/* {subscribed ? ( */}
-          <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg darkBorderGray">
-            <FinancialForm
-              currentUser={currentUser}
-              setCurrentUser={setCurrentUser}
-            />
-          </div>
-          {/* ) : (
+          {subscribed ? (
+            <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg darkBorderGray">
+              <FinancialForm
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+              />
+            </div>
+          ) : (
             <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg darkBorderGray">
               <AnnouncePage
                 title="Subscription Required"
@@ -66,7 +67,7 @@ function FinancialPage({ subscribed }) {
                 describe="This is our special feature that helps startups or new businesses build their business plans. We provide tools with AI to build your BS, IS, FS... Please upgrade your plan to experience this exciting feature"
               />
             </div>
-          )} */}
+          )}
         </div>
       </div>
     </div>

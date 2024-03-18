@@ -10,9 +10,10 @@ const ProfitAndLossSection = ({
   investmentData,
   loanData,
   numberOfMonths,
-
   investmentTableData,
   loanTableData,
+  fundraisingInputs,
+  fundraisingTableData,
 }) => {
   const { revenueData, revenueDeductionData, cogsData } = useSelector(
     (state) => state.sales

@@ -17,17 +17,15 @@ const FundraisingSection = ({
   isSaved,
   setIsSaved,
 }) => {
-  const [tempFundraisingInputs, setTempFundraisingInputs] =
-    useState(fundraisingInputs);
-
-  const [selectedFundraisingId, setSelectedFundraisingId] = useState(
-    fundraisingInputs[0]?.id
-  );
+  const [tempFundraisingInputs, setTempFundraisingInputs] = useState(fundraisingInputs);
+  const [selectedFundraisingId, setSelectedFundraisingId] = useState(fundraisingInputs[0]?.id);
 
   useEffect(() => {
     setTempFundraisingInputs(fundraisingInputs);
     setSelectedFundraisingId(fundraisingInputs[0]?.id);
   }, [fundraisingInputs]);
+
+  
 
   const addNewFundraisingInput = () => {
     const maxId = Math.max(...tempFundraisingInputs.map((input) => input?.id));
@@ -46,7 +44,6 @@ const FundraisingSection = ({
 
   const removeFundraisingInput = (id) => {
     const newInputs = tempFundraisingInputs.filter((input) => input?.id !== id);
-
     setTempFundraisingInputs(newInputs);
     setSelectedFundraisingId(newInputs[0]?.id);
   };
@@ -99,6 +96,7 @@ const FundraisingSection = ({
           transformedFundraisingTableData[rowKey] = {
             key: rowKey,
             name: rowKey,
+            fundraisingType: fundraisingItem.fundraisingType,
           };
         }
         if (monthData.month === fundraisingItem.fundraisingBeginMonth) {
@@ -111,21 +109,38 @@ const FundraisingSection = ({
       });
     });
 
-    // Add Total Funding row
-    const totalFundingRow = {
-      key: "Total funding",
-      name: "Total funding",
+    const initRow = (keyName) => {
+      const row = { key: keyName, name: keyName };
+      for (let month = 1; month <= numberOfMonths; month++) {
+        row[`month${month}`] = "0.00";
+      }
+      return row;
     };
 
+    const totalFundingRow = initRow("Total funding");
+    const increasedCommonStockRow = initRow("Increased in Common Stock");
+    const increasedPreferredStockRow = initRow("Increased in Preferred Stock");
+    const increasedPaidInCapitalRow = initRow("Increased in Paid in Capital");
+
     for (let month = 1; month <= numberOfMonths; month++) {
-      let totalForMonth = 0;
       Object.values(transformedFundraisingTableData).forEach((item) => {
-        totalForMonth += parseFloat(item[`month${month}`]) || 0;
+        const amount = parseFloat(item[`month${month}`]) || 0;
+        totalFundingRow[`month${month}`] = (parseFloat(totalFundingRow[`month${month}`]) + amount).toFixed(2);
+
+        if (item.fundraisingType === "Common Stock") {
+          increasedCommonStockRow[`month${month}`] = (parseFloat(increasedCommonStockRow[`month${month}`]) + amount).toFixed(2);
+        } else if (item.fundraisingType === "Preferred Stock") {
+          increasedPreferredStockRow[`month${month}`] = (parseFloat(increasedPreferredStockRow[`month${month}`]) + amount).toFixed(2);
+        } else if (item.fundraisingType === "Paid in Capital") {
+          increasedPaidInCapitalRow[`month${month}`] = (parseFloat(increasedPaidInCapitalRow[`month${month}`]) + amount).toFixed(2);
+        }
       });
-      totalFundingRow[`month${month}`] = totalForMonth.toFixed(2);
     }
 
     transformedFundraisingTableData["Total funding"] = totalFundingRow;
+    transformedFundraisingTableData["Increased in Common Stock"] = increasedCommonStockRow;
+    transformedFundraisingTableData["Increased in Preferred Stock"] = increasedPreferredStockRow;
+    transformedFundraisingTableData["Increased in Paid in Capital"] = increasedPaidInCapitalRow;
 
     return Object.values(transformedFundraisingTableData);
   };
@@ -148,10 +163,7 @@ const FundraisingSection = ({
     options: {
       chart: { id: "fundraising-chart", type: "bar", height: 350 },
       xaxis: {
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `${i + 1}`
-        ),
+        categories: Array.from({ length: numberOfMonths }, (_, i) => `${i + 1}`),
         title: {
           text: "Month",
           style: {
@@ -167,7 +179,7 @@ const FundraisingSection = ({
           },
         },
         title: {
-          text: "Fundraising ($)",
+          text: "Fundraising Amount ($)",
           style: {
             fontFamily: "Inter, sans-serif",
             fontWeight: "600",
@@ -182,6 +194,23 @@ const FundraisingSection = ({
     },
     series: [],
   });
+
+  const handleSelectChange = (event) => {
+    const selectedId = event.target.value;
+    setSelectedFundraisingId(selectedId);
+  };
+
+  const handleSave = () => {
+    setIsSaved(true);
+    message.success("Data saved successfully!");
+  };
+
+  useEffect(() => {
+    if (isSaved) {
+      setFundraisingInputs(tempFundraisingInputs);
+      setIsSaved(false);
+    }
+  }, [isSaved]);
 
   useEffect(() => {
     const transformedData = transformFundraisingDataForTable();
@@ -202,23 +231,8 @@ const FundraisingSection = ({
       series: seriesData,
     }));
   }, [tempFundraisingInputs]);
-
-  const handleSelectChange = (event) => {
-    const selectedId = event.target.value;
-    setSelectedFundraisingId(selectedId);
-  };
-
-  const handleSave = () => {
-    setIsSaved(true);
-    message.success("Data saved successfully!");
-  };
-
-  useEffect(() => {
-    if (isSaved) {
-      setFundraisingInputs(tempFundraisingInputs);
-      setIsSaved(false);
-    }
-  }, [isSaved]);
+  
+  
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">

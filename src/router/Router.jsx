@@ -43,6 +43,7 @@ import AdminPage from "../pages/Admin/AdminPage";
 import ProductList from "../lemon/ProductList";
 import PricingSection from "../pages/Home/Components/PricingWithLemon";
 import Post from "../pages/News/Compose";
+import PermissionRequired from "./PermissionRequired";
 function Router() {
   const { user } = useAuth();
 
@@ -164,7 +165,9 @@ function Router() {
           path="/financials"
           element={
             <AuthRequire message="Sign in required!">
-              <FinancialPage subscribed={subscribed} />
+              <PermissionRequired isPrivateDisabled={subscribed}>
+                <FinancialPage />
+              </PermissionRequired>
             </AuthRequire>
           }
         />

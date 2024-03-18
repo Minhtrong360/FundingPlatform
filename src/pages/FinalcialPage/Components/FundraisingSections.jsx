@@ -18,6 +18,7 @@ const FundraisingSection = ({
   numberOfMonths,
   isSaved,
   setIsSaved,
+  handleSubmit,
 }) => {
   const [tempFundraisingInputs, setTempFundraisingInputs] =
     useState(fundraisingInputs);
@@ -132,8 +133,11 @@ const FundraisingSection = ({
 
     const totalFundingRow = initRow("Total funding");
     const increasedCommonStockRow = initRow("Increased in Common Stock");
+    const totalCommonStockRow = initRow("Total in Common Stock");
     const increasedPreferredStockRow = initRow("Increased in Preferred Stock");
+    const totalPreferredStockRow = initRow("Total in Preferred Stock");
     const increasedPaidInCapitalRow = initRow("Increased in Paid in Capital");
+    const totalPaidInCapitalRow = initRow("Total in Paid in Capital");
 
     for (let month = 1; month <= numberOfMonths; month++) {
       Object.values(transformedFundraisingTableData).forEach((item) => {
@@ -290,7 +294,10 @@ const FundraisingSection = ({
       setIsSaved(false);
     }
   }, [isSaved]);
-
+  console.log(
+    "transformFundraisingDataForTable",
+    transformFundraisingDataForTable()
+  );
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
       <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">

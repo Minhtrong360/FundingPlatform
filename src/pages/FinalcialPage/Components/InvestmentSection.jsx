@@ -12,6 +12,7 @@ const InvestmentSection = ({
   isSaved,
   setIsSaved,
   setInvestmentTableData,
+  handleSubmit,
 }) => {
   const [tempInvestmentInputs, setTempInvestmentInputs] =
     useState(investmentInputs);
@@ -356,8 +357,6 @@ const InvestmentSection = ({
     message.success("Data saved successfully!");
   };
 
-  const tableData = transformInvestmentDataForTable();
-
   useEffect(() => {
     if (isSaved) {
       setInvestmentInputs(tempInvestmentInputs);
@@ -371,11 +370,6 @@ const InvestmentSection = ({
     const tableData = transformInvestmentDataForTable();
     setInvestmentTableData(tableData);
   }, []);
-
-  console.log(
-    "transformInvestmentDataForTable",
-    transformInvestmentDataForTable()
-  );
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">

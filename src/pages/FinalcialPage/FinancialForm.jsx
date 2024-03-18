@@ -334,7 +334,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
   const { user } = useAuth();
   const loadData = async (userId) => {
-    setIsLoading(true);
     const { data, error } = await supabase
       .from("finance")
       .select("inputData")
@@ -344,7 +343,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       console.error("Error fetching data", error);
       return null;
     }
-    setIsLoading(false);
+
     return data.length > 0 ? JSON.parse(data[0]?.inputData) : null;
   };
 
@@ -437,8 +436,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   }, [numberOfMonths, customerInputs, channelInputs]);
 
   const saveOrUpdateFinanceData = async (userId, inputData) => {
-    setIsLoading(true);
-
     try {
       const { data: existingData, error: selectError } = await supabase
         .from("finance")
@@ -488,8 +485,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       toast.error(error.message);
       console.error("Error in saveOrUpdateFinanceData", error);
       return null;
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -723,6 +718,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   setIsSaved={setIsSaved}
                   customerGrowthChart={customerGrowthChart}
                   setCustomerGrowthChart={setCustomerGrowthChart}
+                  handleSubmit={handleSubmit}
                 />
               )}
               {activeTab === "sales" && (
@@ -732,6 +728,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   setIsSaved={setIsSaved}
                   revenue={revenue}
                   setRevenue={setRevenue}
+                  handleSubmit={handleSubmit}
                 />
               )}
               {activeTab === "cost" && (
@@ -743,6 +740,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   setCostData={setCostData}
                   isSaved={isSaved}
                   setIsSaved={setIsSaved}
+                  handleSubmit={handleSubmit}
                 />
               )}
               {activeTab === "personnel" && (
@@ -754,6 +752,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   setPersonnelCostData={setPersonnelCostData}
                   isSaved={isSaved}
                   setIsSaved={setIsSaved}
+                  handleSubmit={handleSubmit}
                 />
               )}
               {activeTab === "investment" && (
@@ -766,6 +765,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   isSaved={isSaved}
                   setIsSaved={setIsSaved}
                   setInvestmentTableData={setInvestmentTableData}
+                  handleSubmit={handleSubmit}
                 />
               )}
               {activeTab === "loan" && (
@@ -778,6 +778,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   isSaved={isSaved}
                   setIsSaved={setIsSaved}
                   setLoanTableData={setLoanTableData}
+                  handleSubmit={handleSubmit}
                 />
               )}
               {activeTab === "fundraising" && (
@@ -789,6 +790,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   numberOfMonths={numberOfMonths}
                   isSaved={isSaved}
                   setIsSaved={setIsSaved}
+                  handleSubmit={handleSubmit}
                 />
               )}
 

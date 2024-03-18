@@ -30,6 +30,7 @@ const SalesSection = ({
 
   revenue,
   setRevenue,
+  handleSubmit,
 }) => {
   const dispatch = useDispatch();
   const {

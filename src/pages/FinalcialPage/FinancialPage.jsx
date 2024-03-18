@@ -6,7 +6,7 @@ import { supabase } from "../../supabase";
 import FinancialForm from "./FinancialForm";
 import AnnouncePage from "../../components/AnnouncePage";
 
-function FinancialPage({ subscribed }) {
+function FinancialPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -52,22 +52,12 @@ function FinancialPage({ subscribed }) {
           className="p-4 sm:ml-16 ml-0"
           onClick={() => setIsSidebarOpen(false)}
         >
-          {subscribed ? (
-            <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg darkBorderGray">
-              <FinancialForm
-                currentUser={currentUser}
-                setCurrentUser={setCurrentUser}
-              />
-            </div>
-          ) : (
-            <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg darkBorderGray">
-              <AnnouncePage
-                title="Subscription Required"
-                announce="Financial model helps you build your business plan and you need to subscribe."
-                describe="This is our special feature that helps startups or new businesses build their business plans. We provide tools with AI to build your BS, IS, FS... Please upgrade your plan to experience this exciting feature"
-              />
-            </div>
-          )}
+          <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg darkBorderGray">
+            <FinancialForm
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+            />
+          </div>
         </div>
       </div>
     </div>

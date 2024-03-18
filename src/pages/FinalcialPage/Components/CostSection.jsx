@@ -18,6 +18,7 @@ const CostSection = ({
   setCostData,
   isSaved,
   setIsSaved,
+  handleSubmit,
 }) => {
   const [tempCostInput, setTempCostInput] = useState(costInputs);
 

@@ -11,6 +11,7 @@ const PersonnelSection = ({
   setPersonnelCostData,
   isSaved,
   setIsSaved,
+  handleSubmit,
 }) => {
   //PersonnelFunctions
 

@@ -12,11 +12,10 @@ const LoanSection = ({
   isSaved,
   setIsSaved,
   setLoanTableData,
+  handleSubmit,
 }) => {
   const [tempLoanInputs, setTempLoanInputs] = useState(loanInputs);
   const [renderLoanForm, setRenderLoanForm] = useState(loanInputs[0]?.id);
-
-  console.log("loanData", loanData);
 
   const [loanChart, setLoanChart] = useState({
     options: {

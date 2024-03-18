@@ -86,11 +86,7 @@ const AnnouncePage = ({
   };
 
   return (
-    <section
-      className={`${
-        title === "Congratulations!" ? "bg-white" : "bg-gray-900"
-      }  `}
-    >
+    <section className={`bg-white  `}>
       <LoadingButtonClick isLoading={isLoading} />
       <div className="container flex items-center min-h-screen px-4 sm:px-6 py-12 mx-auto">
         <div className="w-full">
@@ -98,19 +94,13 @@ const AnnouncePage = ({
             {title}
           </p>
           <h1
-            className={`mt-3 text-xl sm:text-2xl font-semibold ${
-              title === "Congratulations!" ? "text-gray-800" : "text-white"
-            }  `}
+            className={`mt-3 text-xl sm:text-2xl font-semibold text-gray-800  `}
           >
             {firstPart}
             <span className="text-white">{highlightedWord}</span>
             {lastPart}
           </h1>
-          <p
-            className={`mt-4 text-sm sm:text-base ${
-              title === "Congratulations!" ? "text-gray-800" : "text-white"
-            } `}
-          >
+          <p className={`mt-4 text-sm sm:text-base text-gray-800 `}>
             {describe}
           </p>
 

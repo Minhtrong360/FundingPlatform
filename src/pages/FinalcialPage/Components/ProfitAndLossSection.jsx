@@ -22,8 +22,6 @@ const ProfitAndLossSection = ({
     (state) => state.durationSelect
   );
 
-  console.log("fundraisingTableData", fundraisingTableData);
-
   const calculateProfitAndLoss = () => {
     let totalRevenue = new Array(numberOfMonths).fill(0);
     let totalDeductions = new Array(numberOfMonths).fill(0);
@@ -395,17 +393,21 @@ const ProfitAndLossSection = ({
   );
 
   const bsTotalDepreciation = [];
-
-  Object.keys(investmentTableData[7]).forEach((key) => {
-    if (key.startsWith("month")) {
-      bsTotalDepreciation.push(parseFloat(investmentTableData[7][key]));
-    }
-  });
   const bsTotalNetFixedAssets = [];
 
-  Object.keys(investmentTableData[8]).forEach((key) => {
-    if (key.startsWith("month")) {
-      bsTotalNetFixedAssets.push(parseFloat(investmentTableData[8][key]));
+  investmentTableData.forEach((data) => {
+    if (data.key === "BS Total Accumulated Depreciation") {
+      Object.keys(data).forEach((key) => {
+        if (key.startsWith("month")) {
+          bsTotalDepreciation.push(parseFloat(data[key]));
+        }
+      });
+    } else if (data.key === "BS Total Net Fixed Assets") {
+      Object.keys(data).forEach((key) => {
+        if (key.startsWith("month")) {
+          bsTotalNetFixedAssets.push(parseFloat(data[key]));
+        }
+      });
     }
   });
 
@@ -424,9 +426,13 @@ const ProfitAndLossSection = ({
 
   const bsTotalRemainingBalance = [];
 
-  Object.keys(loanTableData[6]).forEach((key) => {
-    if (key.startsWith("Month ")) {
-      bsTotalRemainingBalance.push(parseFloat(loanTableData[6][key]));
+  loanTableData.forEach((data) => {
+    if (data.key === "Total Remaining Balance") {
+      Object.keys(data).forEach((key) => {
+        if (key.startsWith("Month ")) {
+          bsTotalRemainingBalance.push(parseFloat(data[key]));
+        }
+      });
     }
   });
 

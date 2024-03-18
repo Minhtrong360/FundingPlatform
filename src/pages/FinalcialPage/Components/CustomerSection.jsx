@@ -23,6 +23,7 @@ const CustomerSection = ({
   setIsSaved,
   customerGrowthChart,
   setCustomerGrowthChart,
+  handleSubmit,
 }) => {
   const dispatch = useDispatch();
   const { customerInputs, customerGrowthData } = useSelector(
@@ -93,8 +94,6 @@ const CustomerSection = ({
     );
     dispatch(setCustomerGrowthData(calculatedData));
   }, [customerInputs, numberOfMonths]);
-
-
 
   useEffect(() => {
     const calculatedData = calculateCustomerGrowth(
@@ -208,8 +207,6 @@ const CustomerSection = ({
     })
     .flat(); // Flatten the array of arrays to a single array
 
-
-
   const customerColumns = [
     {
       fixed: "left",
@@ -273,7 +270,6 @@ const CustomerSection = ({
     );
     dispatch(setYearlyAverageCustomers(averages));
   }, [tempCustomerGrowthData, numberOfMonths, isSaved]);
-
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">

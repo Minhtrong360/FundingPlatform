@@ -41,6 +41,9 @@ const CostSection = ({
       beginMonth: 1,
       endMonth: 6,
       costType: "",
+      fundraisingAmount: 0,
+      fundraisingType: "",
+      fundraisingBeginMonth: 1,
     };
     setTempCostInput([...tempCostInput, newCustomer]);
     setRenderCostForm(newId.toString());
@@ -66,6 +69,7 @@ const CostSection = ({
     setTempCostInput(newInputs);
   };
 
+  // Function to calculate cost data
   const calculateCostData = () => {
     let allCosts = [];
     tempCostInput.forEach((costInput) => {
@@ -88,6 +92,7 @@ const CostSection = ({
     return allCosts;
   };
 
+  // Function to transform cost data for table
   const transformCostDataForTable = () => {
     const transformedCustomerTableData = {};
     const calculatedCostData = calculateCostData();
@@ -109,22 +114,19 @@ const CostSection = ({
     return Object.values(transformedCustomerTableData);
   };
 
-  //CostUseEffect
+  // useEffect to update cost data when cost inputs or number of months change
   useEffect(() => {
     const calculatedData = calculateCostData();
     setCostData(calculatedData);
   }, [costInputs, numberOfMonths]);
 
+  // useEffect to update temporary cost data when temp cost inputs or number of months change
   useEffect(() => {
     const calculatedData = calculateCostData();
     setTempCostData(calculatedData);
   }, [tempCostInput, numberOfMonths]);
 
-  //CostTableData
-
-  const costTableData = transformCostDataForTable();
-
-  //CostColumns
+  // Function to generate columns for the cost table
   const costColumns = [
     {
       fixed: "left",
@@ -139,7 +141,7 @@ const CostSection = ({
     })),
   ];
 
-  //CostChart
+  // State for cost chart
   const [costChart, setCostChart] = useState({
     options: {
       chart: { id: "cost-chart", type: "bar", height: 350 },
@@ -151,23 +153,22 @@ const CostSection = ({
         title: {
           text: "Month",
           style: {
-            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-            fontWeight: "600", // Cỡ chữ semibold
+            fontFamily: "Inter, sans-serif", 
+            fontWeight: "600", 
           },
         },
       },
-      // title: { text: 'Cost Data', align: 'left' },
       yaxis: {
         labels: {
           formatter: function (val) {
-            return Math.floor(val); // Format Y-axis labels as integers
+            return Math.floor(val); 
           },
         },
         title: {
           text: "Cost ($)",
           style: {
-            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-            fontWeight: "600", // Cỡ chữ semibold
+            fontFamily: "Inter, sans-serif", 
+            fontWeight: "600", 
           },
         },
       },
@@ -180,6 +181,7 @@ const CostSection = ({
     series: [],
   });
 
+  // useEffect to update cost chart data
   useEffect(() => {
     const seriesData = tempCostData.map((item) => {
       return {
@@ -191,15 +193,45 @@ const CostSection = ({
     setCostChart((prevState) => ({ ...prevState, series: seriesData }));
   }, [tempCostData, numberOfMonths]);
 
+  // Function to handle select change
   const handleSelectChange = (event) => {
-    setRenderCostForm(event.target.value);
+    const selectedId = event.target.value;
+    const selectedInput = tempCostInput.find(input => input.id.toString() === selectedId);
+  
+    if (selectedInput?.fundraisingType === "Paid in Capital" && selectedInput.fundraisingBeginMonth < 2) {
+      const updatedInputs = tempCostInput.map(input => 
+        input.id.toString() === selectedId ? { ...input, fundraisingBeginMonth: 2 } : input
+      );
+      setTempCostInput(updatedInputs);
+      message.warning("Fundraising Begin Month should be greater or equal to 2 for Paid in Capital.");
+    }
+  
+    setRenderCostForm(selectedId);
   };
+  
 
+
+
+
+// Update useEffect to include fundraising amount, type, and begin month
+useEffect(() => {
+  const calculatedData = calculateCostData();
+  setTempCostData(calculatedData);
+}, [tempCostInput, numberOfMonths, tempCostInput.map(input => input.fundraisingAmount).join(''), tempCostInput.map(input => input.fundraisingType).join(''), tempCostInput.map(input => input.fundraisingBeginMonth).join('')]);
+  // Function to handle save
   const handleSave = () => {
     setIsSaved(true);
     message.success("Data saved successfully!");
   };
 
+  useEffect(() => {
+    const checkFundraisingBeginMonth = tempCostInput.some(input => input.fundraisingBeginMonth < 2);
+    if (checkFundraisingBeginMonth) {
+      message.warning("Fundraising Begin Month should be greater or equal to 2.");
+    }
+  }, [tempCostInput.map(input => input.fundraisingBeginMonth).join('')]);
+  
+  // useEffect to update cost inputs when data is saved
   useEffect(() => {
     if (isSaved) {
       setCostInputs(tempCostInput);
@@ -238,7 +270,7 @@ const CostSection = ({
           </div>
 
           {tempCostInput
-            .filter((input) => input?.id == renderCostForm) // Sử dụng biến renderForm
+            .filter((input) => input?.id == renderCostForm)
             .map((input) => (
               <div
                 key={input?.id}
@@ -258,7 +290,6 @@ const CostSection = ({
                     }
                   />
                 </div>
-
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Cost Value:
@@ -276,7 +307,6 @@ const CostSection = ({
                     }
                   />
                 </div>
-
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Growth Percentage:
@@ -294,7 +324,6 @@ const CostSection = ({
                     }
                   />
                 </div>
-
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Begin Month:
@@ -314,7 +343,6 @@ const CostSection = ({
                     }
                   />
                 </div>
-
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">End Month:</span>
                   <Input
@@ -332,7 +360,6 @@ const CostSection = ({
                     }
                   />
                 </div>
-
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">Cost Type:</span>
                   <Select
@@ -358,7 +385,68 @@ const CostSection = ({
                     </SelectContent>
                   </Select>
                 </div>
-
+                {/* New input fields */}
+                <div className="grid grid-cols-2 gap-4 mb-3">
+                  <span className=" flex items-center text-sm">
+                    Fundraising Amount:
+                  </span>
+                  <Input
+                    className="col-start-2 border-gray-200"
+                    type="number"
+                    value={input.fundraisingAmount}
+                    onChange={(e) =>
+                      handleCostInputChange(
+                        input?.id,
+                        "fundraisingAmount",
+                        parseFloat(e.target.value)
+                      )
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-3">
+                  <span className=" flex items-center text-sm">
+                    Fundraising Type:
+                  </span>
+                  <Select
+                    className="border-gray-200"
+                    onValueChange={(value) =>
+                      handleCostInputChange(input?.id, "fundraisingType", value)
+                    }
+                    value={input.fundraisingType}
+                  >
+                    <SelectTrigger
+                      id={`select-fundraisingType-${input?.id}`}
+                      className="border-solid border-[1px] border-gray-200"
+                    >
+                      <SelectValue placeholder="Select Fundraising Type" />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      <SelectItem value="Common Stock">Common Stock</SelectItem>
+                      <SelectItem value="Preferred Stock">Preferred Stock</SelectItem>
+                      <SelectItem value="Paid in Capital">Paid in Capital</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-3">
+                  <span className=" flex items-center text-sm">
+                    Month Fundraising Begins:
+                  </span>
+                  <Input
+                    className="col-start-2 border-gray-200"
+                    type="number"
+                    min="1"
+                    max="12"
+                    value={input.fundraisingBeginMonth}
+                    onChange={(e) =>
+                      handleCostInputChange(
+                        input?.id,
+                        "fundraisingBeginMonth",
+                        parseInt(e.target.value, 10)
+                      )
+                    }
+                  />
+                </div>
+                {/* End of new input fields */}
                 <div className="flex justify-center items-center">
                   <button
                     className="bg-red-600 text-white py-1 px-4 rounded"
@@ -390,7 +478,7 @@ const CostSection = ({
         <Table
           className="overflow-auto my-8"
           size="small"
-          dataSource={costTableData}
+          dataSource={transformCostDataForTable()}
           columns={costColumns}
           pagination={false}
         />

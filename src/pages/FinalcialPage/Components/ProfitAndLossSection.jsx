@@ -743,7 +743,7 @@ const positionColumns = [
       /> */}
 
 <Row gutter={16} className="additional-charts">
-  <Col span={8}>
+  <Col span={12}>
     <Card title="Total Revenue Over Time">
       <Chart
         options={{
@@ -762,7 +762,7 @@ const positionColumns = [
       />
     </Card>
   </Col>
-  <Col span={8}>
+  <Col span={12}>
     <Card title="Total Costs Over Time">
       <Chart
         options={{
@@ -781,7 +781,10 @@ const positionColumns = [
       />
     </Card>
   </Col>
-  <Col span={8}>
+</Row>
+
+<Row gutter={16} className="additional-charts" style={{ marginTop: "20px" }}>
+  <Col span={12}>
     <Card title="Net Income Over Time">
       <Chart
         options={{
@@ -800,10 +803,7 @@ const positionColumns = [
       />
     </Card>
   </Col>
-</Row>
-
-<Row gutter={16} className="additional-charts" style={{ marginTop: "20px" }}>
-  <Col span={8}>
+  <Col span={12}>
     <Card title="Cash Flow Overview">
       <Chart
         options={{
@@ -822,7 +822,10 @@ const positionColumns = [
       />
     </Card>
   </Col>
-  <Col span={8}>
+</Row>
+
+<Row gutter={16} className="additional-charts" style={{ marginTop: "20px" }}>
+  <Col span={12}>
     <Card title="Total Assets Over Time">
       <Chart
         options={{
@@ -841,7 +844,7 @@ const positionColumns = [
       />
     </Card>
   </Col>
-  <Col span={8}>
+  <Col span={12}>
     <Card title="Total Liabilities Over Time">
       <Chart
         options={{
@@ -863,7 +866,7 @@ const positionColumns = [
 </Row>
 
 <Row gutter={16} className="additional-charts" style={{ marginTop: "20px" }}>
-  <Col span={8}>
+  <Col span={12}>
     <Card title="Total Shareholders Equity Over Time">
       <Chart
         options={{
@@ -882,10 +885,7 @@ const positionColumns = [
       />
     </Card>
   </Col>
-
-</Row>
-<Row gutter={16} className="additional-charts" style={{ marginTop: "20px" }}>
-  <Col span={8}>
+  <Col span={12}>
     <Card title="Gross Profit Over Time">
       <Chart
         options={{
@@ -904,7 +904,10 @@ const positionColumns = [
       />
     </Card>
   </Col>
-  <Col span={8}>
+</Row>
+
+<Row gutter={16} className="additional-charts" style={{ marginTop: "20px" }}>
+  <Col span={12}>
     <Card title="EBITDA Over Time">
       <Chart
         options={{
@@ -923,7 +926,7 @@ const positionColumns = [
       />
     </Card>
   </Col>
-  <Col span={8}>
+  <Col span={12}>
     <Card title="Earnings Before Tax Over Time">
       <Chart
         options={{
@@ -945,7 +948,7 @@ const positionColumns = [
 </Row>
 
 <Row gutter={16} className="additional-charts" style={{ marginTop: "20px" }}>
-  <Col span={8}>
+  <Col span={12}>
     <Card title="Income Tax Over Time">
       <Chart
         options={{
@@ -964,7 +967,7 @@ const positionColumns = [
       />
     </Card>
   </Col>
-  <Col span={8}>
+  <Col span={12}>
     <Card title="Total Investment Depreciation Over Time">
       <Chart
         options={{
@@ -983,7 +986,10 @@ const positionColumns = [
       />
     </Card>
   </Col>
-  <Col span={8}>
+</Row>
+
+<Row gutter={16} className="additional-charts" style={{ marginTop: "20px" }}>
+  <Col span={12}>
     <Card title="Total Interest Payments Over Time">
       <Chart
         options={{
@@ -1002,10 +1008,7 @@ const positionColumns = [
       />
     </Card>
   </Col>
-</Row>
-
-<Row gutter={16} className="additional-charts" style={{ marginTop: "20px" }}>
-  <Col span={8}>
+  <Col span={12}>
     <Card title="Total Principal Over Time">
       <Chart
         options={{
@@ -1024,8 +1027,10 @@ const positionColumns = [
       />
     </Card>
   </Col>
-  
-  <Col span={8}>
+</Row>
+
+<Row gutter={16} className="additional-charts" style={{ marginTop: "20px" }}>
+  <Col span={12}>
     <Card title="Cash Begin Balances Over Time">
       <Chart
         options={{
@@ -1045,6 +1050,7 @@ const positionColumns = [
     </Card>
   </Col>
 </Row>
+
 
 
     </div>

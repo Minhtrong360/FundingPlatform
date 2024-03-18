@@ -511,15 +511,15 @@ function CustomerInput({
           Customers
         </h2>
         <div className="bg-white rounded-md shadow p-6 border">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Begin Projection</span>
             <Input className="col-start-2" placeholder="Sep 2022 - 1" />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">End Projection</span>
             <Input className="col-start-2" placeholder="Aug 2025 - 36" />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Customers per Month</span>
             <Input
               className="col-start-2"
@@ -551,11 +551,11 @@ function CustomerInput({
 //           Assumptions
 //         </h2>
 //         <div className="bg-white rounded-md shadow p-6 border">
-//           <div className="grid grid-cols-2 gap-4 mb-4">
+//           <div className="grid grid-cols-2 gap-4 mb-3">
 //             <span className="font-medium">Acquisition Type</span>
 //             <Input className="col-start-2" placeholder="Annual Projection" />
 //           </div>
-//           <div className="grid grid-cols-2 gap-4 mb-4">
+//           <div className="grid grid-cols-2 gap-4 mb-3">
 //             <span className="font-medium">Revenue Streams</span>
 //             <Input className="col-start-2" placeholder="5" />
 //           </div>
@@ -571,15 +571,15 @@ function CustomerInput({
 //           Customers
 //         </h2>
 //         <div className="bg-white rounded-md shadow p-6 border">
-//           <div className="grid grid-cols-2 gap-4 mb-4">
+//           <div className="grid grid-cols-2 gap-4 mb-3">
 //             <span className="font-medium">Begin Projection</span>
 //             <Input className="col-start-2" placeholder="Sep 2022 - 1" />
 //           </div>
-//           <div className="grid grid-cols-2 gap-4 mb-4">
+//           <div className="grid grid-cols-2 gap-4 mb-3">
 //             <span className="font-medium">End Projection</span>
 //             <Input className="col-start-2" placeholder="Aug 2025 - 36" />
 //           </div>
-//           <div className="grid grid-cols-2 gap-4 mb-4">
+//           <div className="grid grid-cols-2 gap-4 mb-3">
 //             <span className="font-medium">Customers per Month</span>
 //             <Input className="col-start-2" placeholder="950" />
 //           </div>

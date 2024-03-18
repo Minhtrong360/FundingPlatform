@@ -20,7 +20,7 @@ const DurationSelect = ({ selectedDuration, setSelectedDuration }) => {
         Duration
       </h2>
       <div className="bg-white rounded-md shadow p-6 border">
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-2 gap-4 mb-3">
           <span className="font-medium">Duration</span>
           <Select onValueChange={(value) => setSelectedDuration(value)}>
             <SelectTrigger id="start-date-year">
@@ -63,7 +63,7 @@ const CustomerSection = ({
 
       {customerInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 border mb-4">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Customers Per Month:</span>
             <Input
               className="col-start-2"
@@ -74,7 +74,7 @@ const CustomerSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Growth Per Month:</span>
             <Input
               className="col-start-2"
@@ -85,7 +85,7 @@ const CustomerSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Channel Name:</span>
             <Input
               className="col-start-2"
@@ -95,7 +95,7 @@ const CustomerSection = ({
               }
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Begin Month:</span>
             <Input
               className="col-start-2"
@@ -107,7 +107,7 @@ const CustomerSection = ({
               }
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">End Month:</span>
             <Input
               className="col-start-2"
@@ -121,7 +121,7 @@ const CustomerSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-1 px-4 rounded"
+              className="bg-red-500 text-white py-1 px-2 rounded"
               onClick={() => removeCustomerInput(index)}
             >
               Remove
@@ -131,7 +131,7 @@ const CustomerSection = ({
       ))}
 
       <button
-        className="bg-blue-600 text-white py-1 px-4 rounded"
+        className="bg-blue-600 text-white py-1 px-2 rounded"
         onClick={handleAddNewCustomer}
       >
         Add New
@@ -170,7 +170,7 @@ const SalesSection = ({
 
       {channelInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 border mb-4">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Product Name:</span>
             <Input
               className="col-start-2"
@@ -180,7 +180,7 @@ const SalesSection = ({
               }
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Price:</span>
             <Input
               className="col-start-2"
@@ -191,7 +191,7 @@ const SalesSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Multiples:</span>
             <Input
               className="col-start-2"
@@ -202,7 +202,7 @@ const SalesSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Tx Fee (%):</span>
             <Input
               className="col-start-2"
@@ -217,7 +217,7 @@ const SalesSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">COGS (%):</span>
             <Input
               className="col-start-2"
@@ -232,7 +232,7 @@ const SalesSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Sales Channel:</span>
             <Select
               onValueChange={(value) =>
@@ -255,7 +255,7 @@ const SalesSection = ({
             </Select>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Channel Allocation (%):</span>
             <Input
               className="col-start-2"
@@ -274,7 +274,7 @@ const SalesSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-1 px-4 rounded"
+              className="bg-red-500 text-white py-1 px-2 rounded"
               onClick={() => removeChannelInput(index)}
             >
               Remove
@@ -284,7 +284,7 @@ const SalesSection = ({
       ))}
 
       <button
-        className="bg-blue-500 text-white py-1 px-4 rounded"
+        className="bg-blue-500 text-white py-1 px-2 rounded"
         onClick={handleAddNewChannelInput}
       >
         Add New
@@ -320,8 +320,11 @@ const CostSection = ({
       </h2>
 
       {costInputs.map((input, index) => (
-        <div key={index} className="bg-white rounded-md shadow p-6 border mb-4 ">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+        <div
+          key={index}
+          className="bg-white rounded-md shadow p-6 border mb-4 "
+        >
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Cost Name:</span>
             <Input
               className="col-start-2"
@@ -332,7 +335,7 @@ const CostSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Cost Value:</span>
             <Input
               className="col-start-2"
@@ -348,7 +351,7 @@ const CostSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Growth Percentage:</span>
             <Input
               className="col-start-2"
@@ -364,7 +367,7 @@ const CostSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Begin Month:</span>
             <Input
               className="col-start-2"
@@ -382,7 +385,7 @@ const CostSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">End Month:</span>
             <Input
               className="col-start-2"
@@ -400,7 +403,7 @@ const CostSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Cost Type:</span>
             <Select
               onValueChange={(value) =>
@@ -420,7 +423,7 @@ const CostSection = ({
 
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-1 px-4 rounded"
+              className="bg-red-500 text-white py-1 px-2 rounded"
               onClick={() => removeCostInput(index)}
             >
               Remove
@@ -430,7 +433,7 @@ const CostSection = ({
       ))}
 
       <button
-        className="bg-blue-600 text-white py-1 px-4 rounded"
+        className="bg-blue-600 text-white py-1 px-2 rounded"
         onClick={handleAddNewCost}
       >
         Add New
@@ -455,7 +458,7 @@ const PersonnelSection = ({
       </h2>
       {personnelInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 border mb-4">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Job Title</span>
             <Input
               className="col-start-2"
@@ -466,7 +469,7 @@ const PersonnelSection = ({
               }
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Salary/month</span>
             <Input
               className="col-start-2"
@@ -481,7 +484,7 @@ const PersonnelSection = ({
               }
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">No. of hires</span>
             <Input
               className="col-start-2"
@@ -496,7 +499,7 @@ const PersonnelSection = ({
               }
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Job begin month</span>
             <Input
               className="col-start-2"
@@ -511,7 +514,7 @@ const PersonnelSection = ({
               }
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Job ending month</span>
             <Input
               className="col-start-2"
@@ -524,7 +527,7 @@ const PersonnelSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-1 px-4 rounded"
+              className="bg-red-500 text-white py-1 px-2 rounded"
               onClick={() => removePersonnelInput(index)}
             >
               Remove
@@ -533,7 +536,7 @@ const PersonnelSection = ({
         </div>
       ))}
       <button
-        className="bg-blue-500 text-white py-1 px-4 rounded"
+        className="bg-blue-500 text-white py-1 px-2 rounded"
         onClick={addNewPersonnelInput}
       >
         Add New
@@ -559,7 +562,7 @@ const InvestmentSection = ({
       </h2>
       {investmentInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 border mb-4">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Name of Purchase</span>
             <Input
               className="col-start-2"
@@ -571,7 +574,7 @@ const InvestmentSection = ({
               }}
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Asset Cost</span>
             <Input
               className="col-start-2"
@@ -583,7 +586,7 @@ const InvestmentSection = ({
               }}
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Quantity:</span>
             <Input
               className="col-start-2"
@@ -595,7 +598,7 @@ const InvestmentSection = ({
               }
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Purchase Month</span>
             <Input
               className="col-start-2"
@@ -607,7 +610,7 @@ const InvestmentSection = ({
               }}
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Residual Value</span>
             <Input
               className="col-start-2"
@@ -619,7 +622,7 @@ const InvestmentSection = ({
               }}
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Useful Lifetime (Months)</span>
             <Input
               className="col-start-2"
@@ -633,7 +636,7 @@ const InvestmentSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-1 px-4 rounded"
+              className="bg-red-500 text-white py-1 px-2 rounded"
               onClick={() => removeInvestmentInput(index)}
             >
               Remove
@@ -642,7 +645,7 @@ const InvestmentSection = ({
         </div>
       ))}
       <button
-        className="bg-blue-500 text-white py-1 px-4 rounded"
+        className="bg-blue-500 text-white py-1 px-2 rounded"
         onClick={addNewInvestmentInput}
       >
         Add New
@@ -668,7 +671,7 @@ const LoanSection = ({
 
       {loanInputs.map((input, index) => (
         <div key={index} className="bg-white rounded-md shadow p-6 border mb-4">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Loan Name:</span>
             <input
               className="border p-2 rounded"
@@ -679,7 +682,7 @@ const LoanSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Loan Amount:</span>
             <input
               type="number"
@@ -691,7 +694,7 @@ const LoanSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Interest Rate (%):</span>
             <input
               type="number"
@@ -703,7 +706,7 @@ const LoanSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Month Loan Begins:</span>
             <input
               type="number"
@@ -715,7 +718,7 @@ const LoanSection = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
             <span className="font-medium">Month Loan Ends:</span>
             <input
               type="number"
@@ -728,7 +731,7 @@ const LoanSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-1 px-4 rounded"
+              className="bg-red-500 text-white py-1 px-2 rounded"
               onClick={() => removeLoanInput(index)}
             >
               Remove
@@ -738,7 +741,7 @@ const LoanSection = ({
       ))}
 
       <button
-        className="bg-blue-500 text-white py-1 px-4 rounded"
+        className="bg-blue-500 text-white py-1 px-2 rounded"
         onClick={addNewLoanInput}
       >
         Add New

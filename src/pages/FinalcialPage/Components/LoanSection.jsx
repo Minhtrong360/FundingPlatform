@@ -216,7 +216,7 @@ const LoanSection = ({
       key: `Total Remaining Balance`,
       type: `Total Remaining Balance`,
     };
-  
+
     for (let monthIndex = 1; monthIndex <= numberOfMonths; monthIndex++) {
       const monthKey = `Month ${monthIndex}`;
       const totalBalanceForMonth = tempLoanInputs.reduce((total, input) => {
@@ -234,11 +234,9 @@ const LoanSection = ({
       }, 0);
       totalRemainingBalanceRow[monthKey] = totalBalanceForMonth.toFixed(2);
     }
-  
+
     // Add the total remaining balance row to the table data
     loanTableData.push(totalRemainingBalanceRow);
-
-
 
     return loanTableData;
   };
@@ -343,7 +341,7 @@ const LoanSection = ({
                 key={input?.id}
                 className="bg-white rounded-md shadow p-6 border my-4"
               >
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">Loan Name:</span>
                   <Input
                     required
@@ -359,7 +357,7 @@ const LoanSection = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">
                     Loan Amount:
                   </span>
@@ -378,7 +376,7 @@ const LoanSection = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">
                     Interest Rate (%):
                   </span>
@@ -397,7 +395,7 @@ const LoanSection = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">
                     Month Loan Begins:
                   </span>
@@ -416,7 +414,7 @@ const LoanSection = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">
                     Month Loan Ends:
                   </span>
@@ -436,7 +434,7 @@ const LoanSection = ({
                 </div>
                 <div className="flex justify-end items-center">
                   <button
-                    className="bg-red-500 text-white py-1 px-4 rounded"
+                    className="bg-red-500 text-white py-1 px-2 rounded"
                     onClick={() => removeLoanInput(input?.id)}
                   >
                     Remove
@@ -446,14 +444,14 @@ const LoanSection = ({
             ))}
 
           <button
-            className="bg-blue-600 text-white py-1 px-4 rounded mt-4 mr-4"
+            className="bg-blue-600 text-white py-1 px-2 rounded mt-4 mr-4"
             onClick={addNewLoanInput}
           >
             Add new
           </button>
 
           <button
-            className="bg-blue-600 text-white py-1 px-4 rounded mt-4"
+            className="bg-blue-600 text-white py-1 px-2 rounded mt-4"
             onClick={handleSave}
           >
             Save

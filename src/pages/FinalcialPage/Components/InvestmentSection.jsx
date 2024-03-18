@@ -414,7 +414,7 @@ const InvestmentSection = ({
                 key={input?.id}
                 className="bg-white rounded-md shadow p-6 border my-4"
               >
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Name of Purchase
                   </span>
@@ -430,7 +430,7 @@ const InvestmentSection = ({
                     }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">Asset Cost</span>
                   <Input
                     className="col-start-2 border-gray-200"
@@ -444,7 +444,7 @@ const InvestmentSection = ({
                     }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">Quantity:</span>
                   <Input
                     className="col-start-2 border-gray-200"
@@ -460,7 +460,7 @@ const InvestmentSection = ({
                     }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Purchase Month
                   </span>
@@ -476,7 +476,7 @@ const InvestmentSection = ({
                     }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Residual Value
                   </span>
@@ -493,7 +493,7 @@ const InvestmentSection = ({
                     disabled
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Useful Lifetime (Months)
                   </span>
@@ -511,7 +511,7 @@ const InvestmentSection = ({
                 </div>
                 <div className="flex justify-end items-center">
                   <button
-                    className="bg-red-600 text-white py-1 px-4 rounded"
+                    className="bg-red-600 text-white py-1 px-2 rounded"
                     onClick={() => removeInvestmentInput(input?.id)}
                   >
                     Remove
@@ -520,14 +520,14 @@ const InvestmentSection = ({
               </div>
             ))}
           <button
-            className="bg-blue-600 text-white py-1 px-4 rounded mt-4 mr-4"
+            className="bg-blue-600 text-white py-1 px-2 rounded mt-4 mr-4"
             onClick={addNewInvestmentInput}
           >
             Add new
           </button>
 
           <button
-            className="bg-blue-600 text-white py-1 px-4 rounded mt-4"
+            className="bg-blue-600 text-white py-1 px-2 rounded mt-4"
             onClick={handleSave}
           >
             Save

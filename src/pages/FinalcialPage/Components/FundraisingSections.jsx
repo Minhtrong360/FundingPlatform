@@ -10,54 +10,49 @@ import { useEffect, useState } from "react";
 import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 
-const CostSection = ({
-  costInputs,
-  setCostInputs,
+const FundraisingSection = ({
+  fundraisingInputs,
+  setFundraisingInputs,
   numberOfMonths,
-  costData,
-  setCostData,
+
   isSaved,
   setIsSaved,
 }) => {
-  const [tempCostInput, setTempCostInput] = useState(costInputs);
+  const [tempFundraisingInputs, setTempFundraisingInputs] =
+    useState(fundraisingInputs);
 
-  const [tempCostData, setTempCostData] = useState(costData);
-
-  const [renderCostForm, setRenderCostForm] = useState(costInputs[0]?.id);
+  const [renderCostForm, setRenderCostForm] = useState(
+    fundraisingInputs[0]?.id
+  );
 
   useEffect(() => {
-    setTempCostInput(costInputs);
-    setRenderCostForm(costInputs[0]?.id);
-  }, [costInputs]);
+    setTempFundraisingInputs(fundraisingInputs);
+    setRenderCostForm(fundraisingInputs[0]?.id);
+  }, [fundraisingInputs]);
 
   const addNewCostInput = () => {
-    const maxId = Math.max(...tempCostInput.map((input) => input?.id));
+    const maxId = Math.max(...tempFundraisingInputs.map((input) => input?.id));
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
     const newCustomer = {
       id: newId,
-      costName: "",
-      costValue: 1000,
-      growthPercentage: 0,
-      beginMonth: 1,
-      endMonth: 6,
-      costType: "",
+      name: "",
       fundraisingAmount: 0,
       fundraisingType: "",
       fundraisingBeginMonth: 1,
     };
-    setTempCostInput([...tempCostInput, newCustomer]);
+    setTempFundraisingInputs([...tempFundraisingInputs, newCustomer]);
     setRenderCostForm(newId.toString());
   };
 
   const removeCostInput = (id) => {
-    const newInputs = tempCostInput.filter((input) => input?.id != id);
+    const newInputs = tempFundraisingInputs.filter((input) => input?.id != id);
 
-    setTempCostInput(newInputs);
+    setTempFundraisingInputs(newInputs);
     setRenderCostForm(newInputs[0]?.id);
   };
 
-  const handleCostInputChange = (id, field, value) => {
-    const newInputs = tempCostInput.map((input) => {
+  const handleFundraisingInputChange = (id, field, value) => {
+    const newInputs = tempFundraisingInputs.map((input) => {
       if (input?.id === id) {
         return {
           ...input,
@@ -66,13 +61,13 @@ const CostSection = ({
       }
       return input;
     });
-    setTempCostInput(newInputs);
+    setTempFundraisingInputs(newInputs);
   };
 
   // Function to calculate cost data
   const calculateCostData = () => {
     let allCosts = [];
-    tempCostInput.forEach((costInput) => {
+    tempFundraisingInputs.forEach((costInput) => {
       let monthlyCosts = [];
       let currentCost = parseFloat(costInput.costValue);
       for (let month = 1; month <= numberOfMonths; month++) {
@@ -84,7 +79,7 @@ const CostSection = ({
         }
       }
       allCosts.push({
-        costName: costInput.costName,
+        name: costInput.name,
         monthlyCosts,
         costType: costInput.costType,
       });
@@ -98,12 +93,12 @@ const CostSection = ({
     const calculatedCostData = calculateCostData();
 
     calculatedCostData.forEach((costItem) => {
-      const rowKey = `${costItem.costName}`;
+      const rowKey = `${costItem.name}`;
       costItem.monthlyCosts.forEach((monthData) => {
         if (!transformedCustomerTableData[rowKey]) {
           transformedCustomerTableData[rowKey] = {
             key: rowKey,
-            costName: rowKey,
+            name: rowKey,
           };
         }
         transformedCustomerTableData[rowKey][`month${monthData.month}`] =
@@ -114,25 +109,13 @@ const CostSection = ({
     return Object.values(transformedCustomerTableData);
   };
 
-  // useEffect to update cost data when cost inputs or number of months change
-  useEffect(() => {
-    const calculatedData = calculateCostData();
-    setCostData(calculatedData);
-  }, [costInputs, numberOfMonths]);
-
-  // useEffect to update temporary cost data when temp cost inputs or number of months change
-  useEffect(() => {
-    const calculatedData = calculateCostData();
-    setTempCostData(calculatedData);
-  }, [tempCostInput, numberOfMonths]);
-
   // Function to generate columns for the cost table
   const costColumns = [
     {
       fixed: "left",
-      title: "CostName",
-      dataIndex: "costName",
-      key: "costName",
+      title: "name",
+      dataIndex: "name",
+      key: "name",
     },
     ...Array.from({ length: numberOfMonths }, (_, i) => ({
       title: `Month_${i + 1}`,
@@ -182,21 +165,11 @@ const CostSection = ({
   });
 
   // useEffect to update cost chart data
-  useEffect(() => {
-    const seriesData = tempCostData.map((item) => {
-      return {
-        name: item.costName,
-        data: item.monthlyCosts.map((cost) => cost.cost),
-      };
-    });
-
-    setCostChart((prevState) => ({ ...prevState, series: seriesData }));
-  }, [tempCostData, numberOfMonths]);
 
   // Function to handle select change
   const handleSelectChange = (event) => {
     const selectedId = event.target.value;
-    const selectedInput = tempCostInput.find(
+    const selectedInput = tempFundraisingInputs.find(
       (input) => input.id.toString() === selectedId
     );
 
@@ -204,12 +177,12 @@ const CostSection = ({
       selectedInput?.fundraisingType === "Paid in Capital" &&
       selectedInput.fundraisingBeginMonth < 2
     ) {
-      const updatedInputs = tempCostInput.map((input) =>
+      const updatedInputs = tempFundraisingInputs.map((input) =>
         input.id.toString() === selectedId
           ? { ...input, fundraisingBeginMonth: 2 }
           : input
       );
-      setTempCostInput(updatedInputs);
+      setTempFundraisingInputs(updatedInputs);
       message.warning(
         "Fundraising Begin Month should be greater or equal to 2 for Paid in Capital."
       );
@@ -219,16 +192,7 @@ const CostSection = ({
   };
 
   // Update useEffect to include fundraising amount, type, and begin month
-  useEffect(() => {
-    const calculatedData = calculateCostData();
-    setTempCostData(calculatedData);
-  }, [
-    tempCostInput,
-    numberOfMonths,
-    tempCostInput.map((input) => input.fundraisingAmount).join(""),
-    tempCostInput.map((input) => input.fundraisingType).join(""),
-    tempCostInput.map((input) => input.fundraisingBeginMonth).join(""),
-  ]);
+
   // Function to handle save
   const handleSave = () => {
     setIsSaved(true);
@@ -236,7 +200,7 @@ const CostSection = ({
   };
 
   useEffect(() => {
-    const checkFundraisingBeginMonth = tempCostInput.some(
+    const checkFundraisingBeginMonth = tempFundraisingInputs.some(
       (input) => input.fundraisingBeginMonth < 2
     );
     if (checkFundraisingBeginMonth) {
@@ -244,12 +208,14 @@ const CostSection = ({
         "Fundraising Begin Month should be greater or equal to 2."
       );
     }
-  }, [tempCostInput.map((input) => input.fundraisingBeginMonth).join("")]);
+  }, [
+    tempFundraisingInputs.map((input) => input.fundraisingBeginMonth).join(""),
+  ]);
 
   // useEffect to update cost inputs when data is saved
   useEffect(() => {
     if (isSaved) {
-      setCostInputs(tempCostInput);
+      setFundraisingInputs(tempFundraisingInputs);
       setIsSaved(false);
     }
   }, [isSaved]);
@@ -262,7 +228,7 @@ const CostSection = ({
             className="text-2xl font-semibold mb-4 flex items-center"
             id="costs-heading"
           >
-            Costs
+            Fundraising
           </h2>
 
           <div>
@@ -276,15 +242,15 @@ const CostSection = ({
               value={renderCostForm}
               onChange={handleSelectChange}
             >
-              {tempCostInput.map((input) => (
+              {tempFundraisingInputs.map((input) => (
                 <option key={input?.id} value={input?.id}>
-                  {input.costName}
+                  {input.name}
                 </option>
               ))}
             </select>
           </div>
 
-          {tempCostInput
+          {tempFundraisingInputs
             .filter((input) => input?.id == renderCostForm)
             .map((input) => (
               <div
@@ -292,114 +258,22 @@ const CostSection = ({
                 className="bg-white rounded-md shadow p-6 border my-4 "
               >
                 <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">Cost Name:</span>
+                  <span className=" flex items-center text-sm">
+                    Fundraising Name:
+                  </span>
                   <Input
                     className="col-start-2 border-gray-200"
-                    value={input.costName}
+                    value={input.name}
                     onChange={(e) =>
-                      handleCostInputChange(
+                      handleFundraisingInputChange(
                         input?.id,
-                        "costName",
+                        "name",
                         e.target.value
                       )
                     }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Cost Value:
-                  </span>
-                  <Input
-                    className="col-start-2 border-gray-200"
-                    type="number"
-                    value={input.costValue}
-                    onChange={(e) =>
-                      handleCostInputChange(
-                        input?.id,
-                        "costValue",
-                        parseFloat(e.target.value)
-                      )
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Growth Percentage:
-                  </span>
-                  <Input
-                    className="col-start-2 border-gray-200"
-                    type="number"
-                    value={input.growthPercentage}
-                    onChange={(e) =>
-                      handleCostInputChange(
-                        input?.id,
-                        "growthPercentage",
-                        parseFloat(e.target.value)
-                      )
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Begin Month:
-                  </span>
-                  <Input
-                    className="col-start-2 border-gray-200"
-                    type="number"
-                    min="1"
-                    max="12"
-                    value={input.beginMonth}
-                    onChange={(e) =>
-                      handleCostInputChange(
-                        input?.id,
-                        "beginMonth",
-                        parseInt(e.target.value, 10)
-                      )
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">End Month:</span>
-                  <Input
-                    className="col-start-2 border-gray-200"
-                    type="number"
-                    min="1"
-                    max="12"
-                    value={input.endMonth}
-                    onChange={(e) =>
-                      handleCostInputChange(
-                        input?.id,
-                        "endMonth",
-                        parseInt(e.target.value, 10)
-                      )
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">Cost Type:</span>
-                  <Select
-                    className="border-gray-200"
-                    onValueChange={(value) =>
-                      handleCostInputChange(input?.id, "costType", value)
-                    }
-                    value={input.costType}
-                  >
-                    <SelectTrigger
-                      id={`select-costType-${input?.id}`}
-                      className="border-solid border-[1px] border-gray-200"
-                    >
-                      <SelectValue placeholder="Select Cost Type" />
-                    </SelectTrigger>
-                    <SelectContent position="popper">
-                      <SelectItem value="Sales, Marketing Cost">
-                        Sales, Marketing
-                      </SelectItem>
-                      <SelectItem value="General Administrative Cost">
-                        General Administrative
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+
                 {/* New input fields */}
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
@@ -410,7 +284,7 @@ const CostSection = ({
                     type="number"
                     value={input.fundraisingAmount}
                     onChange={(e) =>
-                      handleCostInputChange(
+                      handleFundraisingInputChange(
                         input?.id,
                         "fundraisingAmount",
                         parseFloat(e.target.value)
@@ -425,7 +299,11 @@ const CostSection = ({
                   <Select
                     className="border-gray-200"
                     onValueChange={(value) =>
-                      handleCostInputChange(input?.id, "fundraisingType", value)
+                      handleFundraisingInputChange(
+                        input?.id,
+                        "fundraisingType",
+                        value
+                      )
                     }
                     value={input.fundraisingType}
                   >
@@ -457,7 +335,7 @@ const CostSection = ({
                     max="12"
                     value={input.fundraisingBeginMonth}
                     onChange={(e) =>
-                      handleCostInputChange(
+                      handleFundraisingInputChange(
                         input?.id,
                         "fundraisingBeginMonth",
                         parseInt(e.target.value, 10)
@@ -513,4 +391,4 @@ const CostSection = ({
   );
 };
 
-export default CostSection;
+export default FundraisingSection;

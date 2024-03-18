@@ -339,9 +339,14 @@ const ProfitAndLossSection = ({
     }, []);
     return cashBalances;
   };
+
+  console.log("fundraisingTableData", fundraisingTableData);
   const commonStockArr = [];
   const preferredStockArr = [];
   const capitalArr = [];
+  const accumulatedCommonStockArr = [];
+  const accumulatedPreferredStockArr = [];
+  const accumulatedCapitalArr = [];
 
   fundraisingTableData.forEach((data) => {
     if (data.key === "Increased in Common Stock") {
@@ -360,6 +365,24 @@ const ProfitAndLossSection = ({
       Object.keys(data).forEach((key) => {
         if (key.startsWith("month")) {
           capitalArr.push(parseFloat(data[key]));
+        }
+      });
+    } else if (data.key === "Accumulated Common Stock") {
+      Object.keys(data).forEach((key) => {
+        if (key.startsWith("month")) {
+          accumulatedCommonStockArr.push(parseFloat(data[key]));
+        }
+      });
+    } else if (data.key === "Accumulated Preferred Stock") {
+      Object.keys(data).forEach((key) => {
+        if (key.startsWith("month")) {
+          accumulatedPreferredStockArr.push(parseFloat(data[key]));
+        }
+      });
+    } else if (data.key === "Accumulated Paid in Capital") {
+      Object.keys(data).forEach((key) => {
+        if (key.startsWith("month")) {
+          accumulatedCapitalArr.push(parseFloat(data[key]));
         }
       });
     }
@@ -454,9 +477,9 @@ const ProfitAndLossSection = ({
   const totalShareholdersEquity = accumulatedRetainEarnings.map(
     (earnings, index) =>
       startingPaidInCapital +
-      commonStockArr[index] +
-      preferredStockArr[index] +
-      capitalArr[index] +
+      accumulatedCommonStockArr[index] +
+      accumulatedPreferredStockArr[index] +
+      accumulatedCapitalArr[index] +
       earnings // Placeholder values
   );
 

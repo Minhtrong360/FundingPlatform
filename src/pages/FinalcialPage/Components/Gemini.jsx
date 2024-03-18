@@ -166,7 +166,7 @@ const Gemini = ({
                     "assetCost": 8000,
                     "quantity": 1,
                     "purchaseMonth": 2,
-                    "residualValue": 10,
+                    "residualValue": 0,
                     "usefulLifetime": 36
                   },
                   {
@@ -175,7 +175,7 @@ const Gemini = ({
                     "assetCost": 200,
                     "quantity": 10,
                     "purchaseMonth": 1,
-                    "residualValue": 10,
+                    "residualValue": 0,
                     "usefulLifetime": 36
                   }
                 ]

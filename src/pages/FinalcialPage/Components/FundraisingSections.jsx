@@ -13,12 +13,16 @@ import Chart from "react-apexcharts";
 const FundraisingSection = ({
   fundraisingInputs,
   setFundraisingInputs,
+  fundraisingTableData,
+  setFundraisingTableData,
   numberOfMonths,
   isSaved,
   setIsSaved,
 }) => {
   const [tempFundraisingInputs, setTempFundraisingInputs] =
     useState(fundraisingInputs);
+  const [tempFundraisingTableData, setTempFundraisingTableData] =
+    useState(fundraisingTableData);
 
   const [selectedFundraisingId, setSelectedFundraisingId] = useState(
     fundraisingInputs[0]?.id
@@ -70,9 +74,16 @@ const FundraisingSection = ({
       let monthlyFundraising = [];
       let currentFundraising = parseFloat(fundraisingInput.fundraisingAmount);
       for (let month = 1; month <= numberOfMonths; month++) {
-        if (month >= fundraisingInput.beginMonth && month <= fundraisingInput.endMonth) {
-          monthlyFundraising.push({ month: month, fundraising: currentFundraising });
-          currentFundraising *= 1 + parseFloat(fundraisingInput.growthPercentage) / 100;
+        if (
+          month >= fundraisingInput.beginMonth &&
+          month <= fundraisingInput.endMonth
+        ) {
+          monthlyFundraising.push({
+            month: month,
+            fundraising: currentFundraising,
+          });
+          currentFundraising *=
+            1 + parseFloat(fundraisingInput.growthPercentage) / 100;
         } else {
           monthlyFundraising.push({ month: month, fundraising: 0 });
         }
@@ -110,6 +121,20 @@ const FundraisingSection = ({
         }
       });
     });
+    const totalFundingRow = {
+      key: "Total funding",
+      name: "Total funding",
+    };
+
+    for (let month = 1; month <= numberOfMonths; month++) {
+      let totalForMonth = 0;
+      Object.values(transformedFundraisingTableData).forEach((item) => {
+        totalForMonth += parseFloat(item[`month${month}`]) || 0;
+      });
+      totalFundingRow[`month${month}`] = totalForMonth.toFixed(2);
+    }
+
+    transformedFundraisingTableData["Total funding"] = totalFundingRow;
 
     return Object.values(transformedFundraisingTableData);
   };
@@ -217,7 +242,14 @@ const FundraisingSection = ({
   };
 
   useEffect(() => {
+    const tableData = transformFundraisingDataForTable();
+    setTempFundraisingTableData(tableData);
+  }, [tempFundraisingInputs]);
+
+  useEffect(() => {
     if (isSaved) {
+      const tableData = transformFundraisingDataForTable();
+      setFundraisingTableData(tableData);
       setFundraisingInputs(tempFundraisingInputs);
       setIsSaved(false);
     }
@@ -336,7 +368,9 @@ const FundraisingSection = ({
                       <FundraisingSelectValue placeholder="Select Fundraising Type" />
                     </FundraisingSelectTrigger>
                     <FundraisingSelectContent position="popper">
-                      <FundraisingSelectItem value="Common Stock">Common Stock</FundraisingSelectItem>
+                      <FundraisingSelectItem value="Common Stock">
+                        Common Stock
+                      </FundraisingSelectItem>
                       <FundraisingSelectItem value="Preferred Stock">
                         Preferred Stock
                       </FundraisingSelectItem>
@@ -396,7 +430,7 @@ const FundraisingSection = ({
         <Table
           className="overflow-auto my-8"
           size="small"
-          dataSource={transformFundraisingDataForTable()}
+          dataSource={tempFundraisingTableData}
           columns={fundraisingColumns}
           pagination={false}
         />

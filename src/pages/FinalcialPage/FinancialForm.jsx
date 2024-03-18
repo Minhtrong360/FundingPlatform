@@ -324,6 +324,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       fundraisingAmount: 0,
       fundraisingType: "",
       fundraisingBeginMonth: 1,
+      equityOffered: 0,
     },
   ]);
 

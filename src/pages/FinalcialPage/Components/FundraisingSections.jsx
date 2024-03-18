@@ -7,7 +7,7 @@ import {
 } from "../../../components/ui/Select";
 import { Input as FundraisingInput } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
-import { Table, Tooltip, message } from "antd";
+import { Table, message } from "antd";
 import Chart from "react-apexcharts";
 
 const FundraisingSection = ({

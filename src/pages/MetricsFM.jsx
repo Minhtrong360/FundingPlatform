@@ -41,7 +41,7 @@ function Component({
               options={revenue.options}
               series={revenue.series}
               type="bar"
-              height={325}
+              height={300}
             />
           </Card>
         </div>

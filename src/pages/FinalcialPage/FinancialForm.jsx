@@ -45,6 +45,7 @@ import {
   setChannelNames,
   setYearlySales,
 } from "../../features/SaleSlice";
+import FundraisingSection from "./Components/FundraisingSections";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
@@ -314,6 +315,17 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [loanData, setLoanData] = useState([]);
 
   const [loanTableData, setLoanTableData] = useState([]);
+
+  // Fundraising State
+  const [fundraisingInputs, setFundraisingInputs] = useState([
+    {
+      id: 1,
+      name: "",
+      fundraisingAmount: 0,
+      fundraisingType: "",
+      fundraisingBeginMonth: 1,
+    },
+  ]);
 
   // Lưu vào DB
 
@@ -661,6 +673,14 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 >
                   Loan
                 </li>
+                <li
+                  className={`cursor-pointer mr-4 ${
+                    activeTab === "fundraising" ? "border-b-2 border-black" : ""
+                  }`}
+                  onClick={() => handleTabChange("fundraising")}
+                >
+                  Fundraising
+                </li>
 
                 <li
                   className={`cursor-pointer mr-4 ${
@@ -668,7 +688,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   }`}
                   onClick={() => handleTabChange("result")}
                 >
-                  Result
+                  Financial Statements
                 </li>
               </ul>
             </div>
@@ -752,6 +772,16 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   setLoanTableData={setLoanTableData}
                 />
               )}
+              {activeTab === "fundraising" && (
+                <FundraisingSection
+                  fundraisingInputs={fundraisingInputs}
+                  setFundraisingInputs={setFundraisingInputs}
+                  numberOfMonths={numberOfMonths}
+                  isSaved={isSaved}
+                  setIsSaved={setIsSaved}
+                />
+              )}
+
               {activeTab === "result" && (
                 <ProfitAndLossSection
                   costData={costData}

@@ -346,7 +346,7 @@ const SalesSection = ({
                 key={input.id}
                 className="bg-white rounded-md shadow p-6 border my-4"
               >
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Product Name:
                   </span>
@@ -362,7 +362,7 @@ const SalesSection = ({
                     }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">Price:</span>
                   <Input
                     className="col-start-2 border-gray-200"
@@ -377,7 +377,7 @@ const SalesSection = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">Multiples:</span>
                   <Input
                     className="col-start-2 border-gray-200"
@@ -393,7 +393,7 @@ const SalesSection = ({
                 </div>
 
                 <Tooltip title="Revenue deductions like transaction fees, commission fee... ">
-                  <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="grid grid-cols-2 gap-4 mb-3">
                     <span className=" flex items-center text-sm">
                       Rev. Deductions (%):
                     </span>
@@ -411,7 +411,7 @@ const SalesSection = ({
                   </div>
                 </Tooltip>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">COGS (%):</span>
                   <Input
                     className="col-start-2 border-gray-200"
@@ -426,7 +426,7 @@ const SalesSection = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Sales Channel:
                   </span>
@@ -461,7 +461,7 @@ const SalesSection = ({
                   </Select>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Channel Allocation (%):
                   </span>
@@ -481,7 +481,7 @@ const SalesSection = ({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Days get paid:
                   </span>
@@ -491,6 +491,7 @@ const SalesSection = ({
                       handleChannelInputChange(input.id, "daysGetPaid", value)
                     }
                     value={input.daysGetPaid !== null ? input.daysGetPaid : ""}
+                    disabled
                   >
                     <SelectTrigger
                       id={`select-days-get-paid-${index}`}
@@ -519,14 +520,14 @@ const SalesSection = ({
             ))}
 
           <button
-            className="bg-blue-600 text-white py-1 px-4 rounded mt-4 mr-4"
+            className="bg-blue-600 text-white py-1 px-2 rounded mt-4 mr-4"
             onClick={addNewChannelInput}
           >
             Add new
           </button>
 
           <button
-            className="bg-blue-600 text-white py-1 px-4 rounded mt-4"
+            className="bg-blue-600 text-white py-1 px-2 rounded mt-4"
             onClick={handleSave}
           >
             Save

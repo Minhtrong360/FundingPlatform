@@ -115,8 +115,9 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
           >
             <img
               className="w-5 h-5"
-              src="https://img.icons8.com/ios/50/control-panel--v2.png"
-              alt="control-panel--v2"
+              src="https://img.icons8.com/ios/50/performance-macbook.png"
+               alt="performance-macbook"
+            
             />
             <span className="sidebar-text">Dashboard</span>
           </button>

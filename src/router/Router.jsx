@@ -42,7 +42,7 @@ import Confirmed from "../pages/SignUp/Confirmed";
 import AdminPage from "../pages/Admin/AdminPage";
 import ProductList from "../lemon/ProductList";
 import PricingSection from "../pages/Home/Components/PricingWithLemon";
-
+import Post from "../pages/News/Compose";
 function Router() {
   const { user } = useAuth();
 
@@ -176,6 +176,7 @@ function Router() {
         {/* <Route path="/W" element={<ImageCropper />} /> */}
         <Route path="/Z" element={<PricingSection />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/Post" element={<Post />} />
 
         <Route path="/loading" element={<ProgressBar isLoading={true} />} />
       </Routes>

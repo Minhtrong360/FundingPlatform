@@ -162,14 +162,18 @@ const ProfitAndLossSection = ({
   } = calculateProfitAndLoss();
 
   const transposedData = [
+    { key: "Revenue"},
     { key: "Total Revenue", values: totalRevenue },
     { key: "Deductions", values: totalDeductions },
     { key: "Net Revenue", values: netRevenue },
+    { key: "Cost of Revenue"},
     { key: "Total COGS", values: totalCOGS },
     { key: "Gross Profit", values: grossProfit },
-    { key: "Costs", values: totalCosts },
+    { key: "Operating Expenses"},
+    { key: "Operating Costs", values: totalCosts },
     { key: "Personnel", values: totalPersonnelCosts },
     { key: "EBITDA", values: ebitda },
+    { key: "Additional Expenses"},
     { key: "Depreciation", values: totalInvestmentDepreciation },
     { key: "Interest", values: totalInterestPayments },
     { key: "EBT", values: earningsBeforeTax },
@@ -177,7 +181,7 @@ const ProfitAndLossSection = ({
     { key: "Net Income", values: netIncome },
   ].map((item, index) => ({
     metric: item.key,
-    ...item.values.reduce(
+    ...item.values?.reduce(
       (acc, value, i) => ({ ...acc, [`Month ${i + 1}`]: value?.toFixed(2) }),
       {}
     ),
@@ -190,21 +194,45 @@ const ProfitAndLossSection = ({
       key: "metric",
       fixed: "left",
       width: 200,
-      onCell: () => ({
-        style: {
-          borderRight: "1px solid #f0f0f0",
+      render: (text, record) => ({
+        children:
+        <div className={" md:whitespace-nowrap "}>
+        <a style={{ fontWeight: (record.metric === "Total Revenue"|| record.metric === "Total COGS" || record.metric === "Net Revenue" || record.metric === "Gross Profit" || record.metric === "EBITDA" || record.metric === "Operating Costs" || record.metric === "Net Income"||record.metric === "Revenue" || record.metric === "Cost of Revenue" || record.metric === "Operating Expenses" || record.metric === "Additional Expenses") ? 'bold' : 'normal' }}>{text}</a>
+        </div>,
+        props: {
+          colSpan: (record.metric === "Revenue" || record.metric === "Cost of Revenue" || record.metric === "Operating Expenses" || record.metric === "Additional Expenses" ) ? 36 : 1,
+          style: (record.metric === "Revenue" || record.metric === "Cost of Revenue" || record.metric === "Operating Expenses" || record.metric === "Additional Expenses" ) ? {} : { borderRight: "1px solid #f0f0f0" }
         },
       }),
+      
     },
     ...Array.from({ length: numberOfMonths }, (_, i) => ({
       title: `Month_${i + 1}`,
       dataIndex: `Month ${i + 1}`,
       key: `Month ${i + 1}`,
-      onCell: () => ({
-        style: {
-          borderRight: "1px solid #f0f0f0",
-        },
-      }),
+      onCell: (record) => {
+        if (record.metric === "Revenue" || record.metric === "Cost of Revenue" || record.metric === "Operating Expenses" || record.metric === "Additional expenses") {
+          return {
+            style: {
+              borderRight: "1px solid #f0f0f0",
+            },
+            colSpan: 0,
+          };
+        } else if (record.metric === "Total Revenue"|| record.metric === "Total COGS" || record.metric === "Net Revenue" || record.metric === "Gross Profit" || record.metric === "EBITDA" || record.metric === "Operating Costs" || record.metric === "Net Income") {
+          return {
+              style: {
+                  borderRight: "1px solid #f0f0f0",
+                  fontWeight: "bold", // Add bold styling for Total Revenue
+              },
+          };
+        } else {
+          return {
+            style: {
+              borderRight: "1px solid #f0f0f0",
+            },
+          };
+        }
+      },
     })),
   ];
 
@@ -357,7 +385,7 @@ const ProfitAndLossSection = ({
   );
 
   const positionDataWithNetIncome = [
-    { key: "Operating Activities" },
+    { key: " Operating Activities " },
     { key: "Net Income", values: netIncome },
     { key: "Depreciation", values: totalInvestmentDepreciation },
     {
@@ -383,12 +411,12 @@ const ProfitAndLossSection = ({
           0 /* AP */
       ),
     },
-    { key: "Investing Activities" },
+    { key: " Investing Activities " },
     {
       key: "CF Investments",
       values: cfInvestmentsArray,
     },
-    { key: "Financing Activities" },
+    { key: " Financing Activities " },
     {
       key: "CF Loans",
       values: cfLoanArray,
@@ -462,6 +490,12 @@ const ProfitAndLossSection = ({
 
   const positionDataWithNetIncome2 = [
     {
+      key: "Assets", 
+    },
+    {
+      key: " Current Assets", 
+    },
+    {
       key: "Cash",
       values: cashEndBalances, // Set values to zero
     },
@@ -477,7 +511,9 @@ const ProfitAndLossSection = ({
       key: "Current Assets", // Added Current Assets row
       values: currentAssets,
     },
-
+    {
+      key: "Long-Term Assets", 
+    },
     // insert BS Total investment here
     { key: "Total Investment", values: totalAssetValue }, // New row for total investment
 
@@ -499,8 +535,20 @@ const ProfitAndLossSection = ({
     },
 
     {
+      key: "Liabilities & Equity",
+    
+    },
+    {
+      key: "Current Liabilities",
+     
+    },
+    {
       key: "Account Payable", // Added Inventory row
       values: new Array(numberOfMonths).fill(0), // Set values to zero
+    },
+   
+    {
+      key: "Long-Term Liabilities", 
     },
     {
       key: "Long term liabilities",
@@ -512,6 +560,9 @@ const ProfitAndLossSection = ({
       values: totalLiabilities,
     },
 
+    {
+      key: "Shareholders Equity",
+    },
     {
       key: "Paid in Capital",
       values: Array.from({ length: numberOfMonths }, (_, i) => {
@@ -568,25 +619,17 @@ const ProfitAndLossSection = ({
       dataIndex: "metric",
       key: "metric",
       fixed: "left",
-      render: (text, record, index) => ({
-        children: (
-          <a
-            style={{
-              fontWeight:
-                index === 0 || index === 7 || index === 9 ? "bold" : "normal",
-            }}
-          >
-            {text}
-          </a>
-        ),
+      render: (text, record) => ({
+        children: 
+        <div className={" md:whitespace-nowrap "}>
+        <a style={{ fontWeight: (record.metric === "CF Operations" || record.metric === "CF Investments" || record.metric === "CF Financing" || record.metric === "Net +/- in Cash" || record.metric === "Cash Begin" || record.metric === "Cash End" || record.metric === " Operating Activities " || record.metric === " Investing Activities " || record.metric === " Financing Activities ") ? 'bold' : 'normal' }}>{text}</a>
+        </div>,
         props: {
-          colSpan: index === 0 || index === 7 || index === 9 ? 36 : 1,
-          style:
-            index === 0 || index === 7 || index === 9
-              ? {}
-              : { borderRight: "1px solid #f0f0f0" },
+          colSpan: (record.metric === " Operating Activities " || record.metric === " Investing Activities " || record.metric === " Financing Activities ") ? 36 : 1,
+          style: (record.metric === " Operating Activities " || record.metric === " Investing Activities " || record.metric === " Financing Activities ") ? {} : { borderRight: "1px solid #f0f0f0" }
         },
       }),
+      
 
       // onCell: (_, index)  => ({
       //   style: {
@@ -601,13 +644,20 @@ const ProfitAndLossSection = ({
       title: `Month_${i + 1}`,
       dataIndex: `Month ${i + 1}`,
       key: `Month ${i + 1}`,
-      onCell: (_, index) => {
-        if (index === 0 || index === 7 || index === 9) {
+      onCell: (record) => {
+        if (record.metric === " Operating Activities " || record.metric === " Investing Activities " || record.metric === " Financing Activities ") {
           return {
             style: {
               borderRight: "1px solid #f0f0f0",
             },
             colSpan: 0,
+          };
+        } else if (record.metric === "CF Operations" || record.metric === "CF Investments" || record.metric === "CF Financing" || record.metric === "Net +/- in Cash" || record.metric === "Cash Begin" || record.metric === "Cash End") {
+          return {
+              style: {
+                  borderRight: "1px solid #f0f0f0",
+                  fontWeight: "bold",
+              },
           };
         } else {
           return {
@@ -626,21 +676,49 @@ const ProfitAndLossSection = ({
       dataIndex: "metric",
       key: "metric",
       fixed: "left",
-      onCell: () => ({
-        style: {
-          borderRight: "1px solid #f0f0f0",
-        },
-      }),
+      
+      render: (text, record) => ({
+        children: (
+          <div className={" md:whitespace-nowrap "}>
+            <a style={{ fontWeight: (record.metric === "Current Assets" || record.metric === "Long term assets" || record.metric === "Total Assets" || record.metric === "Total Liabilities" || record.metric === "Total Assets (Double Check)" || record.metric === "Total Shareholders Equity" || record.metric === "Total Liabilities and Shareholders Equity" ||record.metric === "Assets" || record.metric === " Current Assets" || record.metric === "Long-Term Assets" || record.metric === "Liabilities & Equity" || record.metric === "Current Liabilities" || record.metric === "Long-Term Liabilities" || record.metric === "Shareholders Equity") ? 'bold' : 'normal' }}>
+              {text}
+            </a>
+          </div>
+        ),
+        props: {
+          colSpan: (record.metric === "Assets" || record.metric === " Current Assets" || record.metric === "Long-Term Assets" || record.metric === "Liabilities & Equity" || record.metric === "Current Liabilities" || record.metric === "Long-Term Liabilities" || record.metric === "Shareholders Equity") ? 36 : 1,
+          style: (record.metric === "Assets" || record.metric === " Current Assets" || record.metric === "Long-Term Assets" || record.metric === "Liabilities & Equity" || record.metric === "Current Liabilities" || record.metric === "Long-Term Liabilities" || record.metric === "Shareholders Equity") ? {} : { borderRight: "1px solid #f0f0f0" }
+        }
+      })
     },
     ...Array.from({ length: numberOfMonths }, (_, i) => ({
       title: `Month_${i + 1}`,
       dataIndex: `Month ${i + 1}`,
       key: `Month ${i + 1}`,
-      onCell: () => ({
-        style: {
-          borderRight: "1px solid #f0f0f0",
-        },
-      }),
+      onCell: (record) => {
+        if (record.metric === "Assets" || record.metric === " Current Assets" || record.metric ===  "Long-Term Assets" || record.metric === "Liabilities & Equity" || record.metric === "Current Liabilities" || record.metric === "Long-Term Liabilities" || record.metric ===  "Shareholders Equity") {
+          return {
+            style: {
+              borderRight: "1px solid #f0f0f0",
+            },
+            colSpan: 0
+          };
+        } else if (record.metric === "Current Assets" || record.metric === "Long term assets" || record.metric === "Total Assets" || record.metric === "Total Liabilities" || record.metric === "Total Assets (Double Check)" || record.metric === "Total Shareholders Equity" || record.metric === "Total Liabilities and Shareholders Equity") {
+          return {
+              style: {
+                  borderRight: "1px solid #f0f0f0",
+                  fontWeight: "bold", // Add bold styling for Total Revenue
+              },
+          };
+        } else {
+          return {
+            style: {
+              borderRight: "1px solid #f0f0f0",
+            }
+          };
+        }
+      }
+      
     })),
   ];
 

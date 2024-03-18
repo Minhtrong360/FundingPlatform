@@ -77,7 +77,7 @@ const PricingCard = ({ plan, onClick }) => {
           </>
         )}
 
-        {plan.price_formatted.includes("$9.99") && (
+        {plan.price_formatted.includes("$19.99") && (
           <>
             <p className="mt-2 text-sm text-gray-500">
               For Startups, small project owners

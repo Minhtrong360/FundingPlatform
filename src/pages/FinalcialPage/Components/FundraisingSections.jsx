@@ -111,6 +111,22 @@ const FundraisingSection = ({
       });
     });
 
+    // Add Total Funding row
+    const totalFundingRow = {
+      key: "Total funding",
+      name: "Total funding",
+    };
+
+    for (let month = 1; month <= numberOfMonths; month++) {
+      let totalForMonth = 0;
+      Object.values(transformedFundraisingTableData).forEach((item) => {
+        totalForMonth += parseFloat(item[`month${month}`]) || 0;
+      });
+      totalFundingRow[`month${month}`] = totalForMonth.toFixed(2);
+    }
+
+    transformedFundraisingTableData["Total funding"] = totalFundingRow;
+
     return Object.values(transformedFundraisingTableData);
   };
 
@@ -189,25 +205,6 @@ const FundraisingSection = ({
 
   const handleSelectChange = (event) => {
     const selectedId = event.target.value;
-    const selectedInput = tempFundraisingInputs.find(
-      (input) => input.id.toString() === selectedId
-    );
-
-    if (
-      selectedInput?.fundraisingType === "Paid in Capital" &&
-      selectedInput.fundraisingBeginMonth < 2
-    ) {
-      const updatedInputs = tempFundraisingInputs.map((input) =>
-        input.id.toString() === selectedId
-          ? { ...input, fundraisingBeginMonth: 2 }
-          : input
-      );
-      setTempFundraisingInputs(updatedInputs);
-      message.warning(
-        "Fundraising Begin Month should be greater or equal to 2 for Paid in Capital."
-      );
-    }
-
     setSelectedFundraisingId(selectedId);
   };
 

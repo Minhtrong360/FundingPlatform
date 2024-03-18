@@ -23,11 +23,11 @@ const CustomerSection = ({
   setIsSaved,
   customerGrowthChart,
   setCustomerGrowthChart,
-  beginCustomer,
 }) => {
   const dispatch = useDispatch();
-  const { yearlyAverageCustomers, customerInputs, customerGrowthData } =
-    useSelector((state) => state.customer);
+  const { customerInputs, customerGrowthData } = useSelector(
+    (state) => state.customer
+  );
 
   const [tempCustomerInputs, setTempCustomerInputs] = useState(
     customerInputs.map((input) => ({
@@ -94,6 +94,8 @@ const CustomerSection = ({
     dispatch(setCustomerGrowthData(calculatedData));
   }, [customerInputs, numberOfMonths]);
 
+
+
   useEffect(() => {
     const calculatedData = calculateCustomerGrowth(
       tempCustomerInputs,
@@ -131,10 +133,18 @@ const CustomerSection = ({
   });
 
   const customerTableData = Object.values(transformedCustomerTableData)
+    .filter((data) =>
+      tempCustomerInputs.find(
+        (input) =>
+          input.id == renderCustomerForm &&
+          input.channelName === data.channelName
+      )
+    )
     .map((curr) => {
       const customerInput = tempCustomerInputs.find(
         (input) => input.channelName === curr.channelName
       );
+
       const startRow = {
         key: `${curr.channelName}-start`,
         channelName: `${curr.channelName} (Start)`,
@@ -148,19 +158,28 @@ const CustomerSection = ({
         channelName: `${curr.channelName} (Churn)`,
       };
       const endRow = {
+        ...curr,
         key: `${curr.channelName}-end`,
         channelName: `${curr.channelName} (End)`,
       };
       const channelAddRow = {
-        ...curr,
+        key: `${curr.channelName}-add`,
         channelName: `${curr.channelName} (Add)`,
       }; // Update the current channel row to Channel (Add)
 
+      let currentCustomers = parseFloat(customerInput.customersPerMonth);
       for (let i = 1; i <= numberOfMonths; i++) {
+        if (i >= customerInput.beginMonth && i <= customerInput.endMonth) {
+          const channelValue = currentCustomers.toFixed(2); // Calculate channel value
+          channelAddRow[`month${i}`] = channelValue; // Assign channel value to Channel (Add) row of the current month
+          currentCustomers *=
+            1 + parseFloat(customerInput.growthPerMonth) / 100;
+        } else {
+          channelAddRow[`month${i}`] = "0.00"; // Set to 0 for months outside the channel's active period
+        }
         startRow[`month${i}`] = "0.00";
         beginRow[`month${i}`] = "0.00";
         churnRow[`month${i}`] = "0.00";
-        endRow[`month${i}`] = "0.00";
       }
 
       if (customerInput) {
@@ -175,7 +194,6 @@ const CustomerSection = ({
             beginRow[`month${i}`] = endRow[`month${i - 1}`]; // Set Begin row of month i to End row of month i-1
           }
 
-          const channelValue = parseFloat(channelAddRow[`month${i}`]) || 0; // Channel value for the current month
           const beginValue = parseFloat(beginRow[`month${i}`]) || 0; // Begin value for the current month
 
           const churnValue = (
@@ -183,18 +201,14 @@ const CustomerSection = ({
             (customerInput.churnRate / 100)
           ).toFixed(2); // Calculate churn value
           churnRow[`month${i}`] = churnValue; // Assign churn value to Churn row of the current month
-
-          endRow[`month${i}`] = (
-            beginValue +
-            channelValue -
-            parseFloat(churnValue)
-          ).toFixed(2); // Calculate and assign value to End row
         }
       }
 
       return [startRow, beginRow, channelAddRow, churnRow, endRow];
     })
     .flat(); // Flatten the array of arrays to a single array
+
+
 
   const customerColumns = [
     {
@@ -260,6 +274,7 @@ const CustomerSection = ({
     dispatch(setYearlyAverageCustomers(averages));
   }, [tempCustomerGrowthData, numberOfMonths, isSaved]);
 
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
       <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
@@ -295,142 +310,151 @@ const CustomerSection = ({
             </select>
           </div>
 
-          {tempCustomerInputs.map((input) => (
-            <div
-              key={input?.id}
-              className="bg-white rounded-md shadow p-6 border my-4"
-            >
-              <div className="grid grid-cols-2 gap-4 mb-3">
-                <span className=" flex items-center text-sm">
-                  Channel Name:
-                </span>
-                <Input
-                  className="col-start-2 border-gray-200"
-                  value={input.channelName}
-                  onChange={(e) =>
-                    handleInputChange(input?.id, "channelName", e.target.value)
-                  }
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4 mb-3">
-                <span className=" flex items-center text-sm">
-                  New Customer /month:
-                </span>
-                <Input
-                  className="col-start-2 border-gray-200"
-                  value={input.customersPerMonth}
-                  onChange={(e) =>
-                    handleInputChange(
-                      input?.id,
-                      "customersPerMonth",
-                      e.target.value
-                    )
-                  }
-                />
-              </div>
+          {tempCustomerInputs
+            .filter((input) => input?.id == renderCustomerForm)
+            .map((input) => (
+              <div
+                key={input?.id}
+                className="bg-white rounded-md shadow p-6 border my-4"
+              >
+                <div className="grid grid-cols-2 gap-4 mb-3">
+                  <span className=" flex items-center text-sm">
+                    Channel Name:
+                  </span>
+                  <Input
+                    className="col-start-2 border-gray-200"
+                    value={input.channelName}
+                    onChange={(e) =>
+                      handleInputChange(
+                        input?.id,
+                        "channelName",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-3">
+                  <span className=" flex items-center text-sm">
+                    Begin Customer:
+                  </span>
+                  <Input
+                    className="col-start-2 border-gray-200"
+                    type="number"
+                    min="0"
+                    value={input.beginCustomer}
+                    onChange={(e) =>
+                      handleInputChange(
+                        input?.id,
+                        "beginCustomer",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-3">
+                  <span className=" flex items-center text-sm">
+                    New Customer /month:
+                  </span>
+                  <Input
+                    className="col-start-2 border-gray-200"
+                    value={input.customersPerMonth}
+                    onChange={(e) =>
+                      handleInputChange(
+                        input?.id,
+                        "customersPerMonth",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-3">
-                <span className=" flex items-center text-sm">
-                  Growth/month (%):
-                </span>
-                <Input
-                  className="col-start-2 border-gray-200"
-                  value={input.growthPerMonth}
-                  onChange={(e) =>
-                    handleInputChange(
-                      input?.id,
-                      "growthPerMonth",
-                      e.target.value
-                    )
-                  }
-                />
-              </div>
+                <div className="grid grid-cols-2 gap-4 mb-3">
+                  <span className=" flex items-center text-sm">
+                    Growth/month (%):
+                  </span>
+                  <Input
+                    className="col-start-2 border-gray-200"
+                    value={input.growthPerMonth}
+                    onChange={(e) =>
+                      handleInputChange(
+                        input?.id,
+                        "growthPerMonth",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-3">
-                <span className=" flex items-center text-sm">Begin Month:</span>
-                <Input
-                  className="col-start-2 border-gray-200"
-                  type="number"
-                  min="1"
-                  value={input.beginMonth}
-                  onChange={(e) =>
-                    handleInputChange(input?.id, "beginMonth", e.target.value)
-                  }
-                />
+                <div className="grid grid-cols-2 gap-4 mb-3">
+                  <span className=" flex items-center text-sm">
+                    Begin Month:
+                  </span>
+                  <Input
+                    className="col-start-2 border-gray-200"
+                    type="number"
+                    min="1"
+                    value={input.beginMonth}
+                    onChange={(e) =>
+                      handleInputChange(input?.id, "beginMonth", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-3">
+                  <span className=" flex items-center text-sm">End Month:</span>
+                  <Input
+                    className="col-start-2 border-gray-200"
+                    type="number"
+                    min="1"
+                    value={input.endMonth}
+                    onChange={(e) =>
+                      handleInputChange(input?.id, "endMonth", e.target.value)
+                    }
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mb-3">
+                  <span className=" flex items-center text-sm">
+                    Churn rate (%):
+                  </span>
+                  <Input
+                    className="col-start-2 border-gray-200"
+                    type="number"
+                    min="0"
+                    value={input.churnRate}
+                    onChange={(e) =>
+                      handleInputChange(input?.id, "churnRate", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-3">
+                  <span className=" flex items-center text-sm">
+                    Acquisition cost:
+                  </span>
+                  <Input
+                    className="col-start-2 border-gray-200"
+                    type="number"
+                    min="0"
+                    value={input.acquisitionCost}
+                    onChange={(e) =>
+                      handleInputChange(
+                        input?.id,
+                        "acquisitionCost",
+                        e.target.value
+                      )
+                    }
+                    disabled
+                  />
+                </div>
+                <div className="flex justify-end items-center">
+                  <button
+                    className="bg-red-600 text-white py-1 px-2 rounded"
+                    onClick={() => removeCustomerInput(input.id)}
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-4 mb-3">
-                <span className=" flex items-center text-sm">End Month:</span>
-                <Input
-                  className="col-start-2 border-gray-200"
-                  type="number"
-                  min="1"
-                  value={input.endMonth}
-                  onChange={(e) =>
-                    handleInputChange(input?.id, "endMonth", e.target.value)
-                  }
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4 mb-3">
-                <span className=" flex items-center text-sm">
-                  Begin Customer:
-                </span>
-                <Input
-                  className="col-start-2 border-gray-200"
-                  type="number"
-                  min="0"
-                  value={input.beginCustomer}
-                  onChange={(e) =>
-                    handleInputChange(
-                      input?.id,
-                      "beginCustomer",
-                      e.target.value
-                    )
-                  }
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4 mb-3">
-                <span className=" flex items-center text-sm">
-                  Churn rate (%):
-                </span>
-                <Input
-                  className="col-start-2 border-gray-200"
-                  type="number"
-                  min="0"
-                  value={input.churnRate}
-                  onChange={(e) =>
-                    handleInputChange(input?.id, "churnRate", e.target.value)
-                  }
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4 mb-3">
-                <span className=" flex items-center text-sm">
-                  Acquisition cost:
-                </span>
-                <Input
-                  className="col-start-2 border-gray-200"
-                  type="number"
-                  min="0"
-                  value={input.acquisitionCost}
-                  onChange={(e) =>
-                    handleInputChange(
-                      input?.id,
-                      "acquisitionCost",
-                      e.target.value
-                    )
-                  }
-                  disabled
-                />
-              </div>
-              <div className="flex justify-end items-center">
-                <button
-                  className="bg-red-600 text-white py-1 px-2 rounded"
-                  onClick={() => removeCustomerInput(input.id)}
-                >
-                  Remove
-                </button>
-              </div>
-            </div>
-          ))}
+            ))}
 
           <button
             className="bg-blue-600 text-white py-1 px-2 rounded mt-4 mr-4"

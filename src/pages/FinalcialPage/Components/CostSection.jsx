@@ -400,72 +400,7 @@ const CostSection = ({
                     </SelectContent>
                   </Select>
                 </div>
-                {/* New input fields */}
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Fundraising Amount:
-                  </span>
-                  <Input
-                    className="col-start-2 border-gray-200"
-                    type="number"
-                    value={input.fundraisingAmount}
-                    onChange={(e) =>
-                      handleCostInputChange(
-                        input?.id,
-                        "fundraisingAmount",
-                        parseFloat(e.target.value)
-                      )
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Fundraising Type:
-                  </span>
-                  <Select
-                    className="border-gray-200"
-                    onValueChange={(value) =>
-                      handleCostInputChange(input?.id, "fundraisingType", value)
-                    }
-                    value={input.fundraisingType}
-                  >
-                    <SelectTrigger
-                      id={`select-fundraisingType-${input?.id}`}
-                      className="border-solid border-[1px] border-gray-200"
-                    >
-                      <SelectValue placeholder="Select Fundraising Type" />
-                    </SelectTrigger>
-                    <SelectContent position="popper">
-                      <SelectItem value="Common Stock">Common Stock</SelectItem>
-                      <SelectItem value="Preferred Stock">
-                        Preferred Stock
-                      </SelectItem>
-                      <SelectItem value="Paid in Capital">
-                        Paid in Capital
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Month Fundraising Begins:
-                  </span>
-                  <Input
-                    className="col-start-2 border-gray-200"
-                    type="number"
-                    min="1"
-                    max="12"
-                    value={input.fundraisingBeginMonth}
-                    onChange={(e) =>
-                      handleCostInputChange(
-                        input?.id,
-                        "fundraisingBeginMonth",
-                        parseInt(e.target.value, 10)
-                      )
-                    }
-                  />
-                </div>
-                {/* End of new input fields */}
+
                 <div className="flex justify-end items-center">
                   <button
                     className="bg-red-600 text-white py-1 px-2 rounded"

@@ -323,9 +323,6 @@ const ProfitAndLossSection = ({
 
   //calculate the total shareholders equity = paid in capital + common stock + preferred stock + retain earnings
 
-  console.log("loanData", loanData);
-  console.log("loanTableData", loanTableData);
-
   const bsTotalRemainingBalance = [];
 
   Object.keys(loanTableData[6]).forEach((key) => {

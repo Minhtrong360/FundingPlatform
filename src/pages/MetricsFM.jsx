@@ -12,41 +12,6 @@ function Component({
   yearlySales,
   revenue,
 }) {
-  const groupedbarChartData = {
-    series: [
-      {
-        name: "New Customers",
-        data: [44, 55, 41, 67, 22, 43],
-      },
-      {
-        name: "Returning Customers",
-        data: [13, 23, 20, 8, 13, 27],
-      },
-    ],
-    options: {
-      chart: {
-        type: "bar",
-        height: 350,
-        stacked: true,
-        toolbar: {
-          show: false, // Turn off toolbar
-        },
-      },
-      plotOptions: {
-        bar: {
-          horizontal: false,
-        },
-      },
-      xaxis: {
-        categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-      },
-
-      fill: {
-        opacity: 1,
-      },
-    },
-  };
-
   function sumArray(arr) {
     return arr.reduce((total, num) => total + Number(num), 0);
   }
@@ -54,7 +19,7 @@ function Component({
   return (
     <div className="flex flex-col">
       <main className="flex flex-1 flex-col gap-4 mt-4 mb-4 md:gap-8 ">
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col">
             <div>
               <h3>Total User</h3>
@@ -77,18 +42,6 @@ function Component({
               series={revenue.series}
               type="bar"
               height={325}
-            />
-          </Card>
-          <Card className="flex flex-col">
-            <div>
-              <h3>Returning Customers</h3>
-              <p>33.5%</p>
-            </div>
-            <Chart
-              type="bar"
-              series={groupedbarChartData.series}
-              options={groupedbarChartData.options}
-              height={300}
             />
           </Card>
         </div>
@@ -182,7 +135,7 @@ const MetricsFM = ({ customerGrowthChart, revenue }) => {
           <div className="p-4 md:p-5">
             <div className="flex items-center gap-x-2">
               <p className="text-xs uppercase tracking-wide text-gray-500">
-                REVENUE 
+                REVENUE
               </p>
               <Tooltip title="The average revenue of the final year.">
                 <svg
@@ -207,7 +160,12 @@ const MetricsFM = ({ customerGrowthChart, revenue }) => {
             <div className="mt-1 flex items-center gap-x-2">
               <div className="flex flex-col xl:flex-row xl:items-center items-start">
                 <h3 className="text-sm sm:text-3xl font-bold text-gray-800 my-2">
-                  {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.round(yearlySales[yearlySales.length - 1]))}
+                  {new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  }).format(Math.round(yearlySales[yearlySales.length - 1]))}
                 </h3>
                 <span className="flex items-center gap-x-1 text-green-600 ml-2">
                   <svg

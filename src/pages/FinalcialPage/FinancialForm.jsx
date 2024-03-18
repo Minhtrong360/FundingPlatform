@@ -322,7 +322,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       id: 1,
       name: "",
       fundraisingAmount: 0,
-      fundraisingType: "",
+      fundraisingType: "Common Stock",
       fundraisingBeginMonth: 1,
       equityOffered: 0,
     },
@@ -585,6 +585,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       { tab: "investment", delay: 350 },
       { tab: "loan", delay: 350 },
       { tab: "investment", delay: 350 },
+      { tab: "fundraising", delay: 350 },
       { tab: "overview", delay: 350 },
     ];
 

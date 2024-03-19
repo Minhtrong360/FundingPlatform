@@ -3,6 +3,25 @@ import { Input } from "../../../components/ui/Input";
 import { Table, message } from "antd";
 import Chart from "react-apexcharts";
 
+const formatNumber = (value) => {
+  // Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
+  const stringValue = value?.toString()?.replace(/,/g, "");
+  // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
+  return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+const parseNumber = (value) => {
+  // Xóa dấu phẩy trong chuỗi giá trị
+  const numberString = value.replace(/,/g, "");
+  // Chuyển đổi chuỗi thành số
+  const parsedNumber = parseFloat(numberString);
+  // Kiểm tra nếu giá trị không phải là một số hợp lệ, trả về 0
+  if (isNaN(parsedNumber)) {
+    return 0;
+  }
+  return parsedNumber;
+};
+
 const LoanSection = ({
   loanInputs,
   setLoanInputs,
@@ -178,11 +197,11 @@ const LoanSection = ({
 
     loanData.loanDataPerMonth.forEach((monthData) => {
       const monthKey = `Month ${monthData.month}`;
-      loanAmountRow[monthKey] = monthData.loanAmount?.toFixed(2);
-      paymentRow[monthKey] = monthData.payment?.toFixed(2);
-      principalRow[monthKey] = monthData.principal?.toFixed(2);
-      interestRow[monthKey] = monthData.interest?.toFixed(2);
-      balanceRow[monthKey] = monthData.balance?.toFixed(2);
+      loanAmountRow[monthKey] = formatNumber(monthData.loanAmount?.toFixed(2));
+      paymentRow[monthKey] = formatNumber(monthData.payment?.toFixed(2));
+      principalRow[monthKey] = formatNumber(monthData.principal?.toFixed(2));
+      interestRow[monthKey] = formatNumber(monthData.interest?.toFixed(2));
+      balanceRow[monthKey] = formatNumber(monthData.balance?.toFixed(2));
     });
 
     loanTableData.push(
@@ -206,8 +225,9 @@ const LoanSection = ({
       type: `CF Loans`,
     };
     for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
-      cfLoansRow[`Month ${monthIndex + 1}`] =
-        cfLoansSum[monthIndex]?.toFixed(2);
+      cfLoansRow[`Month ${monthIndex + 1}`] = formatNumber(
+        cfLoansSum[monthIndex]?.toFixed(2)
+      );
     }
     loanTableData.push(cfLoansRow);
 
@@ -231,7 +251,9 @@ const LoanSection = ({
         }
         return total;
       }, 0);
-      totalRemainingBalanceRow[monthKey] = totalBalanceForMonth.toFixed(2);
+      totalRemainingBalanceRow[monthKey] = formatNumber(
+        totalBalanceForMonth.toFixed(2)
+      );
     }
 
     // Add the total remaining balance row to the table data
@@ -362,14 +384,13 @@ const LoanSection = ({
                   </span>
                   <Input
                     required
-                    type="number"
                     className="border p-2 rounded border-gray-200"
-                    value={input.loanAmount}
+                    value={formatNumber(input.loanAmount)}
                     onChange={(e) =>
                       handleLoanInputChange(
                         input?.id,
                         "loanAmount",
-                        e.target.value
+                        parseNumber(e.target.value)
                       )
                     }
                   />
@@ -381,14 +402,13 @@ const LoanSection = ({
                   </span>
                   <Input
                     required
-                    type="number"
                     className="border p-2 rounded border-gray-200"
-                    value={input.interestRate}
+                    value={formatNumber(input.interestRate)}
                     onChange={(e) =>
                       handleLoanInputChange(
                         input?.id,
                         "interestRate",
-                        e.target.value
+                        parseNumber(e.target.value)
                       )
                     }
                   />

@@ -340,7 +340,6 @@ const ProfitAndLossSection = ({
     return cashBalances;
   };
 
-  console.log("fundraisingTableData", fundraisingTableData);
   const commonStockArr = [];
   const preferredStockArr = [];
   const capitalArr = [];
@@ -1015,8 +1014,8 @@ const ProfitAndLossSection = ({
         height={350}
       /> */}
 
-      <Row gutter={16} className="additional-charts">
-        <Col span={12}>
+      <Row gutter={[16, 16]} className="additional-charts">
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Total Revenue Over Time">
             <Chart
               options={{
@@ -1037,7 +1036,7 @@ const ProfitAndLossSection = ({
             />
           </Card>
         </Col>
-        <Col span={12}>
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Total Costs Over Time">
             <Chart
               options={{
@@ -1057,13 +1056,8 @@ const ProfitAndLossSection = ({
           </Card>
         </Col>
       </Row>
-
-      <Row
-        gutter={16}
-        className="additional-charts"
-        style={{ marginTop: "20px" }}
-      >
-        <Col span={12}>
+      <Row gutter={[16, 16]} className="additional-charts">
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Net Income Over Time">
             <Chart
               options={{
@@ -1082,7 +1076,7 @@ const ProfitAndLossSection = ({
             />
           </Card>
         </Col>
-        <Col span={12}>
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Cash Flow Overview">
             <Chart
               options={{
@@ -1104,13 +1098,8 @@ const ProfitAndLossSection = ({
           </Card>
         </Col>
       </Row>
-
-      <Row
-        gutter={16}
-        className="additional-charts"
-        style={{ marginTop: "20px" }}
-      >
-        <Col span={12}>
+      <Row gutter={[16, 16]} className="additional-charts">
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Total Assets Over Time">
             <Chart
               options={{
@@ -1131,7 +1120,7 @@ const ProfitAndLossSection = ({
             />
           </Card>
         </Col>
-        <Col span={12}>
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Total Liabilities Over Time">
             <Chart
               options={{
@@ -1153,13 +1142,8 @@ const ProfitAndLossSection = ({
           </Card>
         </Col>
       </Row>
-
-      <Row
-        gutter={16}
-        className="additional-charts"
-        style={{ marginTop: "20px" }}
-      >
-        <Col span={12}>
+      <Row gutter={[16, 16]} className="additional-charts">
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Total Shareholders Equity Over Time">
             <Chart
               options={{
@@ -1183,7 +1167,7 @@ const ProfitAndLossSection = ({
             />
           </Card>
         </Col>
-        <Col span={12}>
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Gross Profit Over Time">
             <Chart
               options={{
@@ -1205,13 +1189,8 @@ const ProfitAndLossSection = ({
           </Card>
         </Col>
       </Row>
-
-      <Row
-        gutter={16}
-        className="additional-charts"
-        style={{ marginTop: "20px" }}
-      >
-        <Col span={12}>
+      <Row gutter={[16, 16]} className="additional-charts">
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="EBITDA Over Time">
             <Chart
               options={{
@@ -1230,7 +1209,7 @@ const ProfitAndLossSection = ({
             />
           </Card>
         </Col>
-        <Col span={12}>
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Earnings Before Tax Over Time">
             <Chart
               options={{
@@ -1255,13 +1234,8 @@ const ProfitAndLossSection = ({
           </Card>
         </Col>
       </Row>
-
-      <Row
-        gutter={16}
-        className="additional-charts"
-        style={{ marginTop: "20px" }}
-      >
-        <Col span={12}>
+      <Row gutter={[16, 16]} className="additional-charts">
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Income Tax Over Time">
             <Chart
               options={{
@@ -1280,7 +1254,7 @@ const ProfitAndLossSection = ({
             />
           </Card>
         </Col>
-        <Col span={12}>
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Total Investment Depreciation Over Time">
             <Chart
               options={{
@@ -1305,13 +1279,8 @@ const ProfitAndLossSection = ({
           </Card>
         </Col>
       </Row>
-
-      <Row
-        gutter={16}
-        className="additional-charts"
-        style={{ marginTop: "20px" }}
-      >
-        <Col span={12}>
+      <Row gutter={[16, 16]} className="additional-charts">
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Total Interest Payments Over Time">
             <Chart
               options={{
@@ -1335,7 +1304,7 @@ const ProfitAndLossSection = ({
             />
           </Card>
         </Col>
-        <Col span={12}>
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Total Principal Over Time">
             <Chart
               options={{
@@ -1357,13 +1326,8 @@ const ProfitAndLossSection = ({
           </Card>
         </Col>
       </Row>
-
-      <Row
-        gutter={16}
-        className="additional-charts"
-        style={{ marginTop: "20px" }}
-      >
-        <Col span={12}>
+      <Row gutter={[16, 16]} className="additional-charts">
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Cash Begin Balances Over Time">
             <Chart
               options={{

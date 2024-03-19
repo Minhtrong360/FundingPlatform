@@ -10,6 +10,25 @@ import { useEffect, useState } from "react";
 import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 
+const formatNumber = (value) => {
+  // Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
+  const stringValue = value?.toString()?.replace(/,/g, "");
+  // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
+  return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+const parseNumber = (value) => {
+  // Xóa dấu phẩy trong chuỗi giá trị
+  const numberString = value.replace(/,/g, "");
+  // Chuyển đổi chuỗi thành số
+  const parsedNumber = parseFloat(numberString);
+  // Kiểm tra nếu giá trị không phải là một số hợp lệ, trả về 0
+  if (isNaN(parsedNumber)) {
+    return 0;
+  }
+  return parsedNumber;
+};
+
 const CostSection = ({
   costInputs,
   setCostInputs,
@@ -108,7 +127,7 @@ const CostSection = ({
           };
         }
         transformedCustomerTableData[rowKey][`month${monthData.month}`] =
-          parseFloat(monthData.cost)?.toFixed(2);
+          formatNumber(parseFloat(monthData.cost)?.toFixed(2));
       });
     });
 
@@ -312,30 +331,30 @@ const CostSection = ({
                   </span>
                   <Input
                     className="col-start-2 border-gray-200"
-                    type="number"
-                    value={input.costValue}
+                    type="text"
+                    value={formatNumber(input.costValue)}
                     onChange={(e) =>
                       handleCostInputChange(
                         input?.id,
                         "costValue",
-                        parseFloat(e.target.value)
+                        parseNumber(e.target.value)
                       )
                     }
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
-                    Growth Percentage:
+                    Growth Percentage (%):
                   </span>
                   <Input
                     className="col-start-2 border-gray-200"
-                    type="number"
-                    value={input.growthPercentage}
+                    type="text"
+                    value={formatNumber(input.growthPercentage)}
                     onChange={(e) =>
                       handleCostInputChange(
                         input?.id,
                         "growthPercentage",
-                        parseFloat(e.target.value)
+                        parseNumber(e.target.value)
                       )
                     }
                   />

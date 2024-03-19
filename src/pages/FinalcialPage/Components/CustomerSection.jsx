@@ -17,6 +17,25 @@ import {
   setYearlySales,
 } from "../../../features/SaleSlice";
 
+const formatNumber = (value) => {
+  // Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
+  const stringValue = value?.toString()?.replace(/,/g, "");
+  // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
+  return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+const parseNumber = (value) => {
+  // Xóa dấu phẩy trong chuỗi giá trị
+  const numberString = value.replace(/,/g, "");
+  // Chuyển đổi chuỗi thành số
+  const parsedNumber = parseFloat(numberString);
+  // Kiểm tra nếu giá trị không phải là một số hợp lệ, trả về 0
+  if (isNaN(parsedNumber)) {
+    return 0;
+  }
+  return parsedNumber;
+};
+
 const CustomerSection = ({
   numberOfMonths,
   isSaved,
@@ -30,12 +49,7 @@ const CustomerSection = ({
     (state) => state.customer
   );
 
-  const [tempCustomerInputs, setTempCustomerInputs] = useState(
-    customerInputs.map((input) => ({
-      ...input,
-      acquisitionCost: input.acquisitionCost || 0,
-    }))
-  );
+  const [tempCustomerInputs, setTempCustomerInputs] = useState(customerInputs);
 
   useEffect(() => {
     setTempCustomerInputs(customerInputs);
@@ -170,7 +184,7 @@ const CustomerSection = ({
       for (let i = 1; i <= numberOfMonths; i++) {
         if (i >= customerInput.beginMonth && i <= customerInput.endMonth) {
           const channelValue = currentCustomers.toFixed(2); // Calculate channel value
-          channelAddRow[`month${i}`] = channelValue; // Assign channel value to Channel (Add) row of the current month
+          channelAddRow[`month${i}`] = formatNumber(channelValue); // Assign channel value to Channel (Add) row of the current month
           currentCustomers *=
             1 + parseFloat(customerInput.growthPerMonth) / 100;
         } else {
@@ -182,17 +196,17 @@ const CustomerSection = ({
       }
 
       if (customerInput) {
-        startRow[`month${customerInput.beginMonth}`] = parseFloat(
-          customerInput.beginCustomer
-        ).toFixed(2);
+        startRow[`month${customerInput.beginMonth}`] = formatNumber(
+          parseFloat(customerInput.beginCustomer).toFixed(2)
+        );
         beginRow[`month${customerInput.beginMonth}`] =
           startRow[`month${customerInput.beginMonth}`];
 
         for (let i = customerInput.beginMonth; i <= numberOfMonths; i++) {
           if (i > customerInput.beginMonth) {
-            beginRow[`month${i}`] = endRow[`month${i - 1}`]; // Set Begin row of month i to End row of month i-1
+            beginRow[`month${i}`] = formatNumber(endRow[`month${i - 1}`]); // Set Begin row of month i to End row of month i-1
           }
-
+          endRow[`month${i}`] = formatNumber(endRow[`month${i}`]);
           const beginValue = parseFloat(beginRow[`month${i}`]) || 0; // Begin value for the current month
 
           const churnValue = (
@@ -335,14 +349,13 @@ const CustomerSection = ({
                   </span>
                   <Input
                     className="col-start-2 border-gray-200"
-                    type="number"
-                    min="0"
-                    value={input.beginCustomer}
+                    type="text"
+                    value={formatNumber(input.beginCustomer)}
                     onChange={(e) =>
                       handleInputChange(
                         input?.id,
                         "beginCustomer",
-                        e.target.value
+                        parseNumber(e.target.value)
                       )
                     }
                   />
@@ -353,14 +366,15 @@ const CustomerSection = ({
                   </span>
                   <Input
                     className="col-start-2 border-gray-200"
-                    value={input.customersPerMonth}
+                    value={formatNumber(input.customersPerMonth)}
                     onChange={(e) =>
                       handleInputChange(
                         input?.id,
                         "customersPerMonth",
-                        e.target.value
+                        parseNumber(e.target.value)
                       )
                     }
+                    type="text"
                   />
                 </div>
 
@@ -370,14 +384,15 @@ const CustomerSection = ({
                   </span>
                   <Input
                     className="col-start-2 border-gray-200"
-                    value={input.growthPerMonth}
+                    value={formatNumber(input.growthPerMonth)}
                     onChange={(e) =>
                       handleInputChange(
                         input?.id,
                         "growthPerMonth",
-                        e.target.value
+                        parseNumber(e.target.value)
                       )
                     }
+                    type="text"
                   />
                 </div>
 
@@ -388,7 +403,7 @@ const CustomerSection = ({
                   <Input
                     className="col-start-2 border-gray-200"
                     type="number"
-                    min="1"
+                    min={1}
                     value={input.beginMonth}
                     onChange={(e) =>
                       handleInputChange(input?.id, "beginMonth", e.target.value)
@@ -400,7 +415,7 @@ const CustomerSection = ({
                   <Input
                     className="col-start-2 border-gray-200"
                     type="number"
-                    min="1"
+                    min={1}
                     value={input.endMonth}
                     onChange={(e) =>
                       handleInputChange(input?.id, "endMonth", e.target.value)
@@ -414,11 +429,14 @@ const CustomerSection = ({
                   </span>
                   <Input
                     className="col-start-2 border-gray-200"
-                    type="number"
-                    min="0"
-                    value={input.churnRate}
+                    type="text"
+                    value={formatNumber(input.churnRate)}
                     onChange={(e) =>
-                      handleInputChange(input?.id, "churnRate", e.target.value)
+                      handleInputChange(
+                        input?.id,
+                        "churnRate",
+                        parseNumber(e.target.value)
+                      )
                     }
                   />
                 </div>
@@ -428,14 +446,13 @@ const CustomerSection = ({
                   </span>
                   <Input
                     className="col-start-2 border-gray-200"
-                    type="number"
-                    min="0"
-                    value={input.acquisitionCost}
+                    type="text"
+                    value={formatNumber(input.acquisitionCost)}
                     onChange={(e) =>
                       handleInputChange(
                         input?.id,
                         "acquisitionCost",
-                        e.target.value
+                        parseNumber(e.target.value)
                       )
                     }
                     disabled

@@ -70,8 +70,7 @@ export function compareArrays(array1, array2) {
 // Hàm hiển thị kết quả so sánh
 export function displayCommonElements(array1, array2) {
   const commonElements = compareArrays(array1, array2);
-  console.log("array1", array1);
-  console.log("array2", array2);
+
   if (commonElements.length > 0) {
     console.log("Có sự trùng khớp giữa hai mảng:");
     console.log("Các phần tử trùng khớp:", commonElements);
@@ -88,6 +87,8 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const [subscribed, setSubscribed] = useState(false);
+
   useEffect(() => {
     setLoading(true);
     const getUser = async () => {
@@ -97,6 +98,23 @@ const AuthProvider = ({ children }) => {
       setAuth(currentUser ? true : false);
       ReactGA.set({ user_pseudo_id: currentUser?.id ? currentUser?.id : "" });
       ReactGA.set({ client_id: currentUser?.id ? currentUser?.id : "" });
+
+      let { data: userSupabase } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", currentUser.id);
+
+      if (
+        userSupabase[0]?.plan === "Free" ||
+        userSupabase[0]?.plan === null ||
+        userSupabase[0]?.plan === undefined ||
+        userSupabase[0]?.subscription_status !== "active"
+      ) {
+        setSubscribed(false);
+      } else {
+        setSubscribed(true);
+      }
+
       setLoading(false);
     };
     getUser();
@@ -122,6 +140,7 @@ const AuthProvider = ({ children }) => {
       value={{
         auth,
         user,
+        subscribed,
         login: (email, password) => login(email, password, setLoading),
         signOut,
         loginWithGG: () => loginWithGG(setLoading),

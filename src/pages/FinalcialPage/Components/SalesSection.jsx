@@ -22,6 +22,25 @@ import {
   calculateYearlySales,
 } from "../../../features/SaleSlice";
 
+const formatNumber = (value) => {
+  // Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
+  const stringValue = value?.toString()?.replace(/,/g, "");
+  // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
+  return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+const parseNumber = (value) => {
+  // Xóa dấu phẩy trong chuỗi giá trị
+  const numberString = value.replace(/,/g, "");
+  // Chuyển đổi chuỗi thành số
+  const parsedNumber = parseFloat(numberString);
+  // Kiểm tra nếu giá trị không phải là một số hợp lệ, trả về 0
+  if (isNaN(parsedNumber)) {
+    return 0;
+  }
+  return parsedNumber;
+};
+
 const SalesSection = ({
   numberOfMonths,
 
@@ -41,8 +60,6 @@ const SalesSection = ({
     cogsData,
     netRevenueData,
     grossProfitData,
-
-    yearlySales,
   } = useSelector((state) => state.sales);
   const { customerInputs, customerGrowthData } = useSelector(
     (state) => state.customer
@@ -212,33 +229,33 @@ const SalesSection = ({
             channelProductKey
           ].forEach((value, index) => {
             transformedRevenueTableData[revenueRowKey][`month${index + 1}`] =
-              parseFloat(value)?.toFixed(2);
+              formatNumber(parseFloat(value)?.toFixed(2));
           });
           calculatedChannelRevenue.DeductionByChannelAndProduct[
             channelProductKey
           ].forEach((value, index) => {
             transformedRevenueTableData[revenueDeductionRowKey][
               `month${index + 1}`
-            ] = parseFloat(value)?.toFixed(2);
+            ] = formatNumber(parseFloat(value)?.toFixed(2));
           });
           calculatedChannelRevenue.cogsByChannelAndProduct[
             channelProductKey
           ].forEach((value, index) => {
             transformedRevenueTableData[cogsRowKey][`month${index + 1}`] =
-              parseFloat(value)?.toFixed(2);
+              formatNumber(parseFloat(value)?.toFixed(2));
           });
           calculatedChannelRevenue.netRevenueByChannelAndProduct[
             channelProductKey
           ].forEach((value, index) => {
             transformedRevenueTableData[netRevenueRowKey][`month${index + 1}`] =
-              parseFloat(value)?.toFixed(2);
+              formatNumber(parseFloat(value)?.toFixed(2));
           });
           calculatedChannelRevenue.grossProfitByChannelAndProduct[
             channelProductKey
           ].forEach((value, index) => {
             transformedRevenueTableData[grossProfitRowKey][
               `month${index + 1}`
-            ] = parseFloat(value)?.toFixed(2);
+            ] = formatNumber(parseFloat(value)?.toFixed(2));
           });
         }
       }
@@ -324,7 +341,7 @@ const SalesSection = ({
           <div>
             <label
               htmlFor="selectedChannel"
-              className="block my-4 text-base  darkTextWhite"
+              className="block my-4 text-base darkTextWhite"
             ></label>
             <select
               id="selectedChannel"
@@ -348,7 +365,7 @@ const SalesSection = ({
                 className="bg-white rounded-md shadow p-6 border my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
+                  <span className="flex items-center text-sm">
                     Product Name:
                   </span>
                   <Input
@@ -364,30 +381,30 @@ const SalesSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">Price:</span>
+                  <span className="flex items-center text-sm">Price:</span>
                   <Input
                     className="col-start-2 border-gray-200"
-                    value={input.price}
+                    value={formatNumber(input.price)}
                     onChange={(e) =>
                       handleChannelInputChange(
                         input.id,
                         "price",
-                        e.target.value
+                        parseNumber(e.target.value)
                       )
                     }
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">Multiples:</span>
+                  <span className="flex items-center text-sm">Multiples:</span>
                   <Input
                     className="col-start-2 border-gray-200"
-                    value={input.multiples}
+                    value={formatNumber(input.multiples)}
                     onChange={(e) =>
                       handleChannelInputChange(
                         input.id,
                         "multiples",
-                        e.target.value
+                        parseNumber(e.target.value)
                       )
                     }
                   />
@@ -395,17 +412,17 @@ const SalesSection = ({
 
                 <Tooltip title="Revenue deductions like transaction fees, commission fee... ">
                   <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
+                    <span className="flex items-center text-sm">
                       Rev. Deductions (%):
                     </span>
                     <Input
                       className="col-start-2 border-gray-200"
-                      value={input.deductionPercentage}
+                      value={formatNumber(input.deductionPercentage)}
                       onChange={(e) =>
                         handleChannelInputChange(
                           input.id,
                           "deductionPercentage",
-                          e.target.value
+                          parseNumber(e.target.value)
                         )
                       }
                     />
@@ -413,22 +430,22 @@ const SalesSection = ({
                 </Tooltip>
 
                 <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">COGS (%):</span>
+                  <span className="flex items-center text-sm">COGS (%):</span>
                   <Input
                     className="col-start-2 border-gray-200"
-                    value={input.cogsPercentage}
+                    value={formatNumber(input.cogsPercentage)}
                     onChange={(e) =>
                       handleChannelInputChange(
                         input.id,
                         "cogsPercentage",
-                        e.target.value
+                        parseNumber(e.target.value)
                       )
                     }
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
+                  <span className="flex items-center text-sm">
                     Sales Channel:
                   </span>
                   <Select
@@ -463,7 +480,7 @@ const SalesSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
+                  <span className="flex items-center text-sm">
                     Channel Allocation (%):
                   </span>
                   <Input
@@ -471,19 +488,19 @@ const SalesSection = ({
                     type="number"
                     min={0}
                     max={100}
-                    value={input.channelAllocation * 100} // Convert to percentage for display
+                    value={formatNumber(input.channelAllocation * 100)}
                     onChange={(e) =>
                       handleChannelInputChange(
                         input.id,
                         "channelAllocation",
-                        e.target.value / 100
+                        parseNumber(e.target.value) / 100
                       )
-                    } // Convert back to fraction
+                    }
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
+                  <span className="flex items-center text-sm">
                     Days get paid:
                   </span>
                   <Select
@@ -551,17 +568,6 @@ const SalesSection = ({
           type="bar"
           height={350}
         />
-
-        {/* <div className="mt-8">
-          <h3 className="text-2xl font-semibold mb-4">Yearly Sales</h3>
-          <ul>
-            {yearlySales.map((sales, index) => (
-              <li key={index}>
-                Year {index + 1}: ${sales.toFixed(2)}
-              </li>
-            ))}
-          </ul>
-        </div> */}
       </div>
     </div>
   );

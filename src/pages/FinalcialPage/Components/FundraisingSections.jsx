@@ -10,6 +10,25 @@ import { useEffect, useState } from "react";
 import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 
+const formatNumber = (value) => {
+  // Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
+  const stringValue = value?.toString()?.replace(/,/g, "");
+  // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
+  return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+const parseNumber = (value) => {
+  // Xóa dấu phẩy trong chuỗi giá trị
+  const numberString = value.replace(/,/g, "");
+  // Chuyển đổi chuỗi thành số
+  const parsedNumber = parseFloat(numberString);
+  // Kiểm tra nếu giá trị không phải là một số hợp lệ, trả về 0
+  if (isNaN(parsedNumber)) {
+    return 0;
+  }
+  return parsedNumber;
+};
+
 const FundraisingSection = ({
   fundraisingInputs,
   setFundraisingInputs,
@@ -147,9 +166,11 @@ const FundraisingSection = ({
         ).toFixed(2);
 
         if (item.fundraisingType === "Common Stock") {
-          increasedCommonStockRow[`month${month}`] = (
-            parseFloat(increasedCommonStockRow[`month${month}`]) + amount
-          ).toFixed(2);
+          increasedCommonStockRow[`month${month}`] = formatNumber(
+            (
+              parseFloat(increasedCommonStockRow[`month${month}`]) + amount
+            ).toFixed(2)
+          );
           accumulatedCommonStock += amount;
         } else if (item.fundraisingType === "Preferred Stock") {
           increasedPreferredStockRow[`month${month}`] = (
@@ -163,8 +184,9 @@ const FundraisingSection = ({
           accumulatedPaidInCapital += amount;
         }
 
-        accumulatedCommonStockRow[`month${month}`] =
-          accumulatedCommonStock.toFixed(2);
+        accumulatedCommonStockRow[`month${month}`] = formatNumber(
+          accumulatedCommonStock.toFixed(2)
+        );
         accumulatedPreferredStockRow[`month${month}`] =
           accumulatedPreferredStock.toFixed(2);
         accumulatedPaidInCapitalRow[`month${month}`] =
@@ -369,14 +391,14 @@ const FundraisingSection = ({
                   <FundraisingInput
                     className="col-start-2 border-gray-200"
                     type="number"
-                    min="0"
-                    max="100"
-                    value={input.equityOffered}
+                    min={0}
+                    max={100}
+                    value={formatNumber(input.equityOffered)}
                     onChange={(e) =>
                       handleFundraisingInputChange(
                         input?.id,
                         "equityOffered",
-                        parseFloat(e.target.value)
+                        parseNumber(e.target.value)
                       )
                     }
                   />
@@ -388,13 +410,12 @@ const FundraisingSection = ({
                   </span>
                   <FundraisingInput
                     className="col-start-2 border-gray-200"
-                    type="number"
-                    value={input.fundraisingAmount}
+                    value={formatNumber(input.fundraisingAmount)}
                     onChange={(e) =>
                       handleFundraisingInputChange(
                         input?.id,
                         "fundraisingAmount",
-                        parseFloat(e.target.value)
+                        parseNumber(e.target.value)
                       )
                     }
                   />

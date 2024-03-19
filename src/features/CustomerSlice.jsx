@@ -11,6 +11,7 @@ const initialState = {
       endMonth: 36,
       beginCustomer: 0,
       churnRate: 0,
+      acquisitionCost: 0, // Default value for acquisition cost
     },
     {
       id: 2,
@@ -21,6 +22,7 @@ const initialState = {
       endMonth: 36,
       beginCustomer: 0,
       churnRate: 0,
+      acquisitionCost: 0, // Default value for acquisition cost
     },
   ],
   customerGrowthData: [],

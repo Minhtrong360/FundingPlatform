@@ -358,7 +358,7 @@ const SalesSection = ({
           </div>
 
           {tempChannelInputs
-            .filter((input) => input?.id === renderChannelForm)
+            .filter((input) => input?.id == renderChannelForm)
             .map((input, index) => (
               <div
                 key={input.id}

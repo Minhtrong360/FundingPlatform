@@ -46,6 +46,9 @@ import {
   setYearlySales,
 } from "../../features/SaleSlice";
 import FundraisingSection from "./Components/FundraisingSections";
+import { setCostInputs } from "../../features/CostSlice";
+import { setPersonnelInputs } from "../../features/PersonnelSlice";
+import { setInvestmentInputs } from "../../features/InvestmentSlice";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
@@ -105,11 +108,12 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         dispatch(setCustomerInputs(data.CustomerSection.customerInputs));
       if (data.SalesSection)
         dispatch(setChannelInputs(data.SalesSection.channelInputs));
-      if (data.CostSection) setCostInputs(data.CostSection.costInputs);
+      if (data.CostSection)
+        dispatch(setCostInputs(data.CostSection.costInputs));
       if (data.PersonnelSection)
-        setPersonnelInputs(data.PersonnelSection.personnelInputs);
+        dispatch(setPersonnelInputs(data.PersonnelSection.personnelInputs));
       if (data.InvestmentSection)
-        setInvestmentInputs(data.InvestmentSection.investmentInputs);
+        dispatch(setInvestmentInputs(data.InvestmentSection.investmentInputs));
       if (data.LoanSection) setLoanInputs(data.LoanSection.loanInputs);
     } catch (error) {
       console.log("Error parsing JSON:", error);
@@ -211,83 +215,14 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   }, [customerInputs]);
 
   //CostState
-  const [costInputs, setCostInputs] = useState([
-    {
-      id: 1,
-      costName: "Website",
-      costValue: 1000,
-      growthPercentage: 0,
-      beginMonth: 1,
-      endMonth: 6,
-      costType: "Sales, Marketing Cost",
-    },
-    {
-      id: 2,
-      costName: "Marketing",
-      costValue: 500,
-      growthPercentage: 0,
-      beginMonth: 1,
-      endMonth: 36,
-      costType: "Sales, Marketing Cost",
-    },
-    {
-      id: 3,
-      costName: "Rent",
-      costValue: 1000,
-      growthPercentage: 2,
-      beginMonth: 1,
-      endMonth: 36,
-      costType: "General Administrative Cost",
-    },
-  ]);
+  const { costInputs } = useSelector((state) => state.cost);
 
   //PersonnelState
-  const [personnelInputs, setPersonnelInputs] = useState([
-    {
-      id: 1,
-      jobTitle: "Cashier",
-      salaryPerMonth: 800,
-      increasePerYear: 10,
-      numberOfHires: 2,
-      jobBeginMonth: 1,
-      jobEndMonth: 36,
-    },
-    {
-      id: 2,
-      jobTitle: "Manager",
-      salaryPerMonth: 2000,
-      increasePerYear: 10,
-      numberOfHires: 1,
-      jobBeginMonth: 1,
-      jobEndMonth: 36,
-    },
-  ]);
-  const [personnelCostData, setPersonnelCostData] = useState([]);
+
+  const { personnelInputs } = useSelector((state) => state.personnel);
 
   //InvestmentState
-  const [investmentInputs, setInvestmentInputs] = useState([
-    {
-      id: 1,
-      purchaseName: "Coffee machine",
-      assetCost: 8000,
-      quantity: 1,
-      purchaseMonth: 2,
-      residualValue: 0,
-      usefulLifetime: 36,
-    },
-
-    {
-      id: 2,
-      purchaseName: "Table",
-      assetCost: 200,
-      quantity: 10,
-      purchaseMonth: 1,
-      residualValue: 0,
-      usefulLifetime: 36,
-    },
-  ]);
-  const [investmentData, setInvestmentData] = useState([]);
-  const [investmentTableData, setInvestmentTableData] = useState([]);
+  const { investmentInputs } = useSelector((state) => state.investment);
 
   //LoanState
 
@@ -377,9 +312,13 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             setCustomerInputs(inputData.customerInputs || customerInputs)
           );
           dispatch(setChannelInputs(inputData.channelInputs || channelInputs));
-          setCostInputs(inputData.costInputs || costInputs);
-          setPersonnelInputs(inputData.personnelInputs || personnelInputs);
-          setInvestmentInputs(inputData.investmentInputs || investmentInputs);
+          dispatch(setCostInputs(inputData.costInputs || costInputs));
+          dispatch(
+            setPersonnelInputs(inputData.personnelInputs || personnelInputs)
+          );
+          dispatch(
+            setInvestmentInputs(inputData.investmentInputs || investmentInputs)
+          );
           setLoanInputs(inputData.loanInputs || loanInputs);
           setFundraisingInputs(
             inputData.fundraisingInputs || fundraisingInputs
@@ -749,14 +688,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               )}
               {activeTab === "investment" && (
                 <InvestmentSection
-                  investmentInputs={investmentInputs}
-                  setInvestmentInputs={setInvestmentInputs}
                   numberOfMonths={numberOfMonths}
-                  investmentData={investmentData}
-                  setInvestmentData={setInvestmentData}
                   isSaved={isSaved}
                   setIsSaved={setIsSaved}
-                  setInvestmentTableData={setInvestmentTableData}
                   handleSubmit={handleSubmit}
                 />
               )}
@@ -788,10 +722,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
               {activeTab === "result" && (
                 <ProfitAndLossSection
-                  investmentData={investmentData}
                   loanData={loanData}
                   numberOfMonths={numberOfMonths}
-                  investmentTableData={investmentTableData}
                   loanTableData={loanTableData}
                   startingCashBalance={startingCashBalance}
                   fundraisingInputs={fundraisingInputs}

@@ -244,10 +244,12 @@ const DurationSelect = ({ handleSubmit }) => {
             <Input
               className="border-gray-200"
               type="text"
-              value={formatNumber(payrollTax)}
-              onChange={(e) =>
-                dispatch(setPayrollTax(parseNumber(e.target.value)))
-              }
+              placeholder="0"
+              // value={formatNumber(payrollTax)}
+              // onChange={(e) =>
+              //   dispatch(setPayrollTax(parseNumber(e.target.value)))
+              // }
+              disabled
             />
           </div>
         </Tooltip>

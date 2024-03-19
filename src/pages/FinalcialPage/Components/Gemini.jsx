@@ -42,7 +42,6 @@ const Gemini = ({
                 "status": "active",
                 "industry": "retail",
                 "incomeTax": 25,
-                "payrollTax": 12,
                 "currency": "USD"
               },
               "CustomerSection": {

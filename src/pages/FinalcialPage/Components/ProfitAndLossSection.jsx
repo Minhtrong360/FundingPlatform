@@ -6,12 +6,10 @@ import { Row, Col, Card } from "antd";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 
 const ProfitAndLossSection = ({
-  investmentData,
   loanData,
   numberOfMonths,
-  investmentTableData,
-  loanTableData,
 
+  loanTableData,
   fundraisingTableData,
 }) => {
   const { revenueData, revenueDeductionData, cogsData } = useSelector(
@@ -22,6 +20,9 @@ const ProfitAndLossSection = ({
   );
   const { costData } = useSelector((state) => state.cost);
   const { personnelCostData } = useSelector((state) => state.personnel);
+  const { investmentData, investmentTableData } = useSelector(
+    (state) => state.investment
+  );
 
   const calculateProfitAndLoss = () => {
     let totalRevenue = new Array(numberOfMonths).fill(0);

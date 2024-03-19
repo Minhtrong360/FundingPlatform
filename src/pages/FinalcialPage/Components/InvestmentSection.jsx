@@ -3,18 +3,26 @@ import { Input } from "../../../components/ui/Input";
 import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  calculateInvestmentData,
+  setInvestmentData,
+  setInvestmentInputs,
+  setInvestmentTableData,
+} from "../../../features/InvestmentSlice";
 
 const InvestmentSection = ({
-  investmentInputs,
-  setInvestmentInputs,
   numberOfMonths,
-  investmentData,
-  setInvestmentData,
+
   isSaved,
   setIsSaved,
-  setInvestmentTableData,
+
   handleSubmit,
 }) => {
+  const { investmentInputs, investmentData } = useSelector(
+    (state) => state.investment
+  );
+  const dispatch = useDispatch();
   const [tempInvestmentInputs, setTempInvestmentInputs] =
     useState(investmentInputs);
 
@@ -65,49 +73,6 @@ const InvestmentSection = ({
     setTempInvestmentInputs(newInputs);
   };
 
-  const calculateInvestmentData = () => {
-    return tempInvestmentInputs.map((investment) => {
-      const quantity = parseInt(investment.quantity, 10) || 1;
-      const assetCost = parseFloat(investment.assetCost) * quantity;
-      const residualValue = parseFloat(investment.residualValue) * quantity;
-      const usefulLifetime = parseFloat(investment.usefulLifetime);
-      const purchaseMonth = parseInt(investment.purchaseMonth, 10);
-
-      const depreciationPerMonth = (assetCost - residualValue) / usefulLifetime;
-      const depreciationArray = new Array(numberOfMonths).fill(0);
-
-      for (let i = 0; i < numberOfMonths; i++) {
-        if (i >= purchaseMonth - 1 && i < purchaseMonth - 1 + usefulLifetime) {
-          depreciationArray[i] = depreciationPerMonth;
-        }
-      }
-
-      const accumulatedDepreciation = depreciationArray.reduce(
-        (acc, val, index) => {
-          acc[index] = (acc[index - 1] || 0) + val;
-          return acc;
-        },
-        []
-      );
-
-      const assetValue = new Array(numberOfMonths).fill(0);
-      const bookValue = new Array(numberOfMonths).fill(0);
-      for (let i = 0; i < numberOfMonths; i++) {
-        if (i >= purchaseMonth - 1 && i < purchaseMonth - 1 + usefulLifetime) {
-          assetValue[i] = assetCost;
-          bookValue[i] = assetValue[i] - accumulatedDepreciation[i];
-        }
-      }
-
-      return {
-        assetValue,
-        depreciationArray,
-        accumulatedDepreciation,
-        bookValue,
-      };
-    });
-  };
-
   const transformInvestmentDataForTable = () => {
     const investmentTableData = [];
 
@@ -153,6 +118,7 @@ const InvestmentSection = ({
         assetCostRow[`month${monthIndex + 1}`] = formatNumber(
           assetCost?.toFixed(2)
         );
+
         depreciationRow[`month${monthIndex + 1}`] = formatNumber(
           selectedInvestmentData.depreciationArray[monthIndex]?.toFixed(2)
         );
@@ -273,36 +239,24 @@ const InvestmentSection = ({
     return investmentTableData;
   };
 
-  const calculateDepreciationArray = (
-    assetCost,
-    residualValue,
-    usefulLifetime,
-    purchaseMonth,
-    numberOfMonths
-  ) => {
-    const depreciationArray = new Array(numberOfMonths).fill(0);
-    const depreciationPerMonth = (assetCost - residualValue) / usefulLifetime;
-
-    for (let i = 0; i < numberOfMonths; i++) {
-      if (i >= purchaseMonth - 1 && i < purchaseMonth - 1 + usefulLifetime) {
-        depreciationArray[i] = depreciationPerMonth;
-      }
-    }
-    return depreciationArray;
-  };
-
   useEffect(() => {
-    const calculatedData = calculateInvestmentData();
-    setInvestmentData(calculatedData);
+    const calculatedData = calculateInvestmentData(
+      tempInvestmentInputs,
+      numberOfMonths
+    );
+    dispatch(setInvestmentData(calculatedData));
     const tableData = transformInvestmentDataForTable();
-    setInvestmentTableData(tableData);
+    dispatch(setInvestmentTableData(tableData));
   }, [investmentInputs, numberOfMonths, renderInvestmentForm]);
 
   useEffect(() => {
-    const calculatedData = calculateInvestmentData();
+    const calculatedData = calculateInvestmentData(
+      tempInvestmentInputs,
+      numberOfMonths
+    );
     setTempInvestmentData(calculatedData);
     const tableData = transformInvestmentDataForTable();
-    setInvestmentTableData(tableData);
+    dispatch(setInvestmentTableData(tableData));
   }, [tempInvestmentInputs, numberOfMonths, renderInvestmentForm]);
 
   const investmentColumns = [
@@ -372,16 +326,16 @@ const InvestmentSection = ({
 
   useEffect(() => {
     if (isSaved) {
-      setInvestmentInputs(tempInvestmentInputs);
+      dispatch(setInvestmentInputs(tempInvestmentInputs));
       const tableData = transformInvestmentDataForTable();
-      setInvestmentTableData(tableData);
+      dispatch(setInvestmentTableData(tableData));
       setIsSaved(false);
     }
   }, [isSaved]);
 
   useEffect(() => {
     const tableData = transformInvestmentDataForTable();
-    setInvestmentTableData(tableData);
+    dispatch(setInvestmentTableData(tableData));
   }, []);
 
   return (

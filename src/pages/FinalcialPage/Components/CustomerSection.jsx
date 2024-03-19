@@ -447,12 +447,12 @@ const CustomerSection = ({
                   <Input
                     className="col-start-2 border-gray-200"
                     type="text"
-                    value={formatNumber(input.acquisitionCost)}
+                    value={input.acquisitionCost}
                     onChange={(e) =>
                       handleInputChange(
                         input?.id,
                         "acquisitionCost",
-                        parseNumber(e.target.value)
+                      e.target.value
                       )
                     }
                     disabled

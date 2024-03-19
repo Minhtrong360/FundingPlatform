@@ -174,23 +174,18 @@ const InvestmentSection = ({
       bookValueRow
     );
 
+    const depreciationSum = Array(numberOfMonths).fill(0);
     const cfInvestmentsSum = Array(numberOfMonths).fill(0);
-    const depreciationSum = Array(numberOfMonths).fill(0); // Total depreciation for each month
-    tempInvestmentInputs.forEach((input) => {
-      const purchaseMonth = parseInt(input.purchaseMonth, 10);
-      const assetCost =
-        parseFloat(input.assetCost) * parseInt(input.quantity, 10);
-      const depreciationArray = calculateDepreciationArray(
-        assetCost,
-        parseFloat(input.residualValue),
-        parseFloat(input.usefulLifetime),
-        purchaseMonth,
-        numberOfMonths
-      );
-      depreciationArray.forEach((depreciation, index) => {
-        depreciationSum[index] += depreciation;
+
+    tempInvestmentData.forEach((data, index) => {
+      data.depreciationArray.forEach((value, month) => {
+        depreciationSum[month] += value;
       });
-      cfInvestmentsSum[purchaseMonth - 1] += assetCost;
+      const purchaseMonth = parseInt(tempInvestmentInputs[index].purchaseMonth, 10) - 1;
+      if (purchaseMonth >= 0 && purchaseMonth < numberOfMonths) {
+        const assetCost = parseFloat(tempInvestmentInputs[index].assetCost) * parseInt(tempInvestmentInputs[index].quantity, 10);
+        cfInvestmentsSum[purchaseMonth] += assetCost;
+      }
     });
 
     const cfInvestmentsRow = {
@@ -484,7 +479,7 @@ const InvestmentSection = ({
                         e.target.value
                       )
                     }
-                    disabled
+                    
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-3">

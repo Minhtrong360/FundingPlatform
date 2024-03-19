@@ -225,7 +225,7 @@ const NewProjectPosts = () => {
         <button
           className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
             currentTab === "All"
-              ? "bg-blue-600 text-black"
+              ? "bg-blue-600 text-white"
               : "bg-white text-gray-800 hover:bg-gray-50"
           } shadow-sm hover:cursor-pointer`}
           onClick={() => setCurrentTab("All")}
@@ -235,7 +235,7 @@ const NewProjectPosts = () => {
         <button
           className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
             currentTab === "verified"
-              ? "bg-blue-600 text-black"
+              ? "bg-blue-600 text-white"
               : "bg-white text-gray-800 hover:bg-gray-50"
           } shadow-sm hover:cursor-pointer`}
           onClick={() => setCurrentTab("verified")}
@@ -245,7 +245,7 @@ const NewProjectPosts = () => {
         <button
           className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
             currentTab === "unverified"
-              ? "bg-blue-600 text-black"
+              ? "bg-blue-600 text-white"
               : "bg-white text-gray-800 hover:bg-gray-50"
           } shadow-sm hover:cursor-pointer`}
           onClick={() => setCurrentTab("unverified")}

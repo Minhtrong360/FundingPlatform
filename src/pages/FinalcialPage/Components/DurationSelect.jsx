@@ -20,6 +20,7 @@ import {
   SelectContent,
   SelectItem,
 } from "../../../components/ui/Select";
+import { formatNumber, parseNumber } from "../../../features/CostSlice";
 
 const DurationSelect = ({ handleSubmit }) => {
   const dispatch = useDispatch();
@@ -69,25 +70,6 @@ const DurationSelect = ({ handleSubmit }) => {
     "Real Estate",
     "Entertainment",
   ];
-
-  const formatNumber = (value) => {
-    // Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
-    const stringValue = value.toString().replace(/,/g, "");
-    // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
-    return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-
-  const parseNumber = (value) => {
-    // Xóa dấu phẩy trong chuỗi giá trị
-    const numberString = value.replace(/,/g, "");
-    // Chuyển đổi chuỗi thành số
-    const parsedNumber = parseFloat(numberString);
-    // Kiểm tra nếu giá trị không phải là một số hợp lệ, trả về 0
-    if (isNaN(parsedNumber)) {
-      return 0;
-    }
-    return parsedNumber;
-  };
 
   return (
     <section aria-labelledby="duration-heading" className="mb-8">

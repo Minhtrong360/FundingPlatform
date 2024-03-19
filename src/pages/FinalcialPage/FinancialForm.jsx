@@ -241,8 +241,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     },
   ]);
 
-  const [costData, setCostData] = useState([]);
-
   //PersonnelState
   const [personnelInputs, setPersonnelInputs] = useState([
     {
@@ -735,11 +733,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               )}
               {activeTab === "cost" && (
                 <CostSection
-                  costInputs={costInputs}
-                  setCostInputs={setCostInputs}
                   numberOfMonths={numberOfMonths}
-                  costData={costData}
-                  setCostData={setCostData}
                   isSaved={isSaved}
                   setIsSaved={setIsSaved}
                   handleSubmit={handleSubmit}
@@ -747,11 +741,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               )}
               {activeTab === "personnel" && (
                 <PersonnelSection
-                  personnelInputs={personnelInputs}
-                  setPersonnelInputs={setPersonnelInputs}
                   numberOfMonths={numberOfMonths}
-                  personnelCostData={personnelCostData}
-                  setPersonnelCostData={setPersonnelCostData}
                   isSaved={isSaved}
                   setIsSaved={setIsSaved}
                   handleSubmit={handleSubmit}
@@ -798,8 +788,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
               {activeTab === "result" && (
                 <ProfitAndLossSection
-                  costData={costData}
-                  personnelCostData={personnelCostData}
                   investmentData={investmentData}
                   loanData={loanData}
                   numberOfMonths={numberOfMonths}

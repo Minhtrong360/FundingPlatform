@@ -5,6 +5,7 @@ import { Card } from "antd";
 
 import Chart from "react-apexcharts";
 import { useSelector } from "react-redux";
+import { formatNumber } from "../features/CostSlice";
 
 function Component({
   yearlyAverageCustomers,
@@ -15,13 +16,6 @@ function Component({
   function sumArray(arr) {
     return arr.reduce((total, num) => total + Number(num), 0);
   }
-
-  const formatNumber = (value) => {
-    // Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
-    const stringValue = value?.toString()?.replace(/,/g, "");
-    // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
-    return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
 
   return (
     <div className="flex flex-col">
@@ -63,25 +57,6 @@ const MetricsFM = ({ customerGrowthChart, revenue }) => {
   // Define data for each card
   const { yearlyAverageCustomers } = useSelector((state) => state.customer);
   const { yearlySales } = useSelector((state) => state.sales);
-
-  const formatNumber = (value) => {
-    // Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
-    const stringValue = value?.toString()?.replace(/,/g, "");
-    // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
-    return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-
-  const parseNumber = (value) => {
-    // Xóa dấu phẩy trong chuỗi giá trị
-    const numberString = value.replace(/,/g, "");
-    // Chuyển đổi chuỗi thành số
-    const parsedNumber = parseFloat(numberString);
-    // Kiểm tra nếu giá trị không phải là một số hợp lệ, trả về 0
-    if (isNaN(parsedNumber)) {
-      return 0;
-    }
-    return parsedNumber;
-  };
 
   return (
     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">

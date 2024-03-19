@@ -9,36 +9,25 @@ import { Input } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
 import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
+import {
+  setCostInputs,
+  setCostData,
+  calculateCostData,
+} from "../../../features/CostSlice";
 
-const formatNumber = (value) => {
-  // Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
-  const stringValue = value?.toString()?.replace(/,/g, "");
-  // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
-  return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
-
-const parseNumber = (value) => {
-  // Xóa dấu phẩy trong chuỗi giá trị
-  const numberString = value.replace(/,/g, "");
-  // Chuyển đổi chuỗi thành số
-  const parsedNumber = parseFloat(numberString);
-  // Kiểm tra nếu giá trị không phải là một số hợp lệ, trả về 0
-  if (isNaN(parsedNumber)) {
-    return 0;
-  }
-  return parsedNumber;
-};
+import { formatNumber, parseNumber } from "../../../features/CostSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const CostSection = ({
-  costInputs,
-  setCostInputs,
   numberOfMonths,
-  costData,
-  setCostData,
+
   isSaved,
   setIsSaved,
   handleSubmit,
 }) => {
+  const { costInputs, costData } = useSelector((state) => state.cost);
+  const dispatch = useDispatch();
+
   const [tempCostInput, setTempCostInput] = useState(costInputs);
 
   const [tempCostData, setTempCostData] = useState(costData);
@@ -60,10 +49,7 @@ const CostSection = ({
       growthPercentage: 0,
       beginMonth: 1,
       endMonth: 6,
-      costType: "",
-      fundraisingAmount: 0,
-      fundraisingType: "",
-      fundraisingBeginMonth: 1,
+      costType: "Sales, Marketing Cost",
     };
     setTempCostInput([...tempCostInput, newCustomer]);
     setRenderCostForm(newId.toString());
@@ -90,34 +76,13 @@ const CostSection = ({
   };
 
   // Function to calculate cost data
-  const calculateCostData = () => {
-    let allCosts = [];
-    tempCostInput.forEach((costInput) => {
-      let monthlyCosts = [];
-      let currentCost = parseFloat(costInput.costValue);
-      for (let month = 1; month <= numberOfMonths; month++) {
-        if (month >= costInput.beginMonth && month <= costInput.endMonth) {
-          monthlyCosts.push({ month: month, cost: currentCost });
-          currentCost *= 1 + parseFloat(costInput.growthPercentage) / 100;
-        } else {
-          monthlyCosts.push({ month: month, cost: 0 });
-        }
-      }
-      allCosts.push({
-        costName: costInput.costName,
-        monthlyCosts,
-        costType: costInput.costType,
-      });
-    });
-    return allCosts;
-  };
 
   // Function to transform cost data for table
   const transformCostDataForTable = () => {
     const transformedCustomerTableData = {};
-    const calculatedCostData = calculateCostData();
+    const calculatedCostData = calculateCostData(tempCostInput, numberOfMonths);
 
-    calculatedCostData.forEach((costItem) => {
+    calculatedCostData?.forEach((costItem) => {
       const rowKey = `${costItem.costName}`;
       costItem.monthlyCosts.forEach((monthData) => {
         if (!transformedCustomerTableData[rowKey]) {
@@ -136,8 +101,8 @@ const CostSection = ({
 
   // useEffect to update cost data when cost inputs or number of months change
   useEffect(() => {
-    const calculatedData = calculateCostData();
-    setCostData(calculatedData);
+    const calculatedData = calculateCostData(tempCostInput, numberOfMonths);
+    dispatch(setCostData(calculatedData));
   }, [costInputs, numberOfMonths]);
 
   // useEffect to update temporary cost data when temp cost inputs or number of months change
@@ -240,36 +205,20 @@ const CostSection = ({
 
   // Update useEffect to include fundraising amount, type, and begin month
   useEffect(() => {
-    const calculatedData = calculateCostData();
+    const calculatedData = calculateCostData(tempCostInput, numberOfMonths);
     setTempCostData(calculatedData);
-  }, [
-    tempCostInput,
-    numberOfMonths,
-    tempCostInput.map((input) => input.fundraisingAmount).join(""),
-    tempCostInput.map((input) => input.fundraisingType).join(""),
-    tempCostInput.map((input) => input.fundraisingBeginMonth).join(""),
-  ]);
+  }, [tempCostInput, numberOfMonths]);
+
   // Function to handle save
   const handleSave = () => {
     setIsSaved(true);
     message.success("Data saved successfully!");
   };
 
-  useEffect(() => {
-    const checkFundraisingBeginMonth = tempCostInput.some(
-      (input) => input.fundraisingBeginMonth < 2
-    );
-    if (checkFundraisingBeginMonth) {
-      message.warning(
-        "Fundraising Begin Month should be greater or equal to 2."
-      );
-    }
-  }, [tempCostInput.map((input) => input.fundraisingBeginMonth).join("")]);
-
   // useEffect to update cost inputs when data is saved
   useEffect(() => {
     if (isSaved) {
-      setCostInputs(tempCostInput);
+      dispatch(setCostInputs(tempCostInput));
       setIsSaved(false);
     }
   }, [isSaved]);

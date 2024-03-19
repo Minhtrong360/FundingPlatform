@@ -3,35 +3,15 @@ import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 import { useSelector } from "react-redux";
 import { Row, Col, Card } from "antd";
-
-const formatNumber = (value) => {
-  // Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
-  const stringValue = value?.toString()?.replace(/,/g, "");
-  // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
-  return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
-
-const parseNumber = (value) => {
-  // Xóa dấu phẩy trong chuỗi giá trị
-  const numberString = value.replace(/,/g, "");
-  // Chuyển đổi chuỗi thành số
-  const parsedNumber = parseFloat(numberString);
-  // Kiểm tra nếu giá trị không phải là một số hợp lệ, trả về 0
-  if (isNaN(parsedNumber)) {
-    return 0;
-  }
-  return parsedNumber;
-};
+import { formatNumber, parseNumber } from "../../../features/CostSlice";
 
 const ProfitAndLossSection = ({
-  costData,
-  personnelCostData,
   investmentData,
   loanData,
   numberOfMonths,
   investmentTableData,
   loanTableData,
-  fundraisingInputs,
+
   fundraisingTableData,
 }) => {
   const { revenueData, revenueDeductionData, cogsData } = useSelector(
@@ -40,6 +20,8 @@ const ProfitAndLossSection = ({
   const { incomeTax: incomeTaxRate, startingCashBalance } = useSelector(
     (state) => state.durationSelect
   );
+  const { costData } = useSelector((state) => state.cost);
+  const { personnelCostData } = useSelector((state) => state.personnel);
 
   const calculateProfitAndLoss = () => {
     let totalRevenue = new Array(numberOfMonths).fill(0);
@@ -333,11 +315,13 @@ const ProfitAndLossSection = ({
   const cfInvestments = investmentTableData.find(
     (item) => item.key === "CF Investments"
   );
+
+  console.log("cfInvestments", cfInvestments);
   const cfInvestmentsArray = [];
 
   Object.keys(cfInvestments).forEach((key) => {
     if (key.startsWith("month")) {
-      cfInvestmentsArray.push(parseFloat(cfInvestments[key]));
+      cfInvestmentsArray.push(parseNumber(cfInvestments[key]));
     }
   });
 
@@ -346,7 +330,7 @@ const ProfitAndLossSection = ({
 
   Object.keys(cfLoans).forEach((key) => {
     if (key.startsWith("Month ")) {
-      cfLoanArray.push(parseFloat(cfLoans[key]));
+      cfLoanArray.push(parseNumber(cfLoans[key]));
     }
   });
 
@@ -373,37 +357,37 @@ const ProfitAndLossSection = ({
     if (data.key === "Increased in Common Stock") {
       Object.keys(data).forEach((key) => {
         if (key.startsWith("month")) {
-          commonStockArr.push(parseFloat(data[key]));
+          commonStockArr.push(parseNumber(data[key]));
         }
       });
     } else if (data.key === "Increased in Preferred Stock") {
       Object.keys(data).forEach((key) => {
         if (key.startsWith("month")) {
-          preferredStockArr.push(parseFloat(data[key]));
+          preferredStockArr.push(parseNumber(data[key]));
         }
       });
     } else if (data.key === "Increased in Paid in Capital") {
       Object.keys(data).forEach((key) => {
         if (key.startsWith("month")) {
-          capitalArr.push(parseFloat(data[key]));
+          capitalArr.push(parseNumber(data[key]));
         }
       });
     } else if (data.key === "Accumulated Common Stock") {
       Object.keys(data).forEach((key) => {
         if (key.startsWith("month")) {
-          accumulatedCommonStockArr.push(parseFloat(data[key]));
+          accumulatedCommonStockArr.push(parseNumber(data[key]));
         }
       });
     } else if (data.key === "Accumulated Preferred Stock") {
       Object.keys(data).forEach((key) => {
         if (key.startsWith("month")) {
-          accumulatedPreferredStockArr.push(parseFloat(data[key]));
+          accumulatedPreferredStockArr.push(parseNumber(data[key]));
         }
       });
     } else if (data.key === "Accumulated Paid in Capital") {
       Object.keys(data).forEach((key) => {
         if (key.startsWith("month")) {
-          accumulatedCapitalArr.push(parseFloat(data[key]));
+          accumulatedCapitalArr.push(parseNumber(data[key]));
         }
       });
     }
@@ -443,13 +427,13 @@ const ProfitAndLossSection = ({
     if (data.key === "BS Total Accumulated Depreciation") {
       Object.keys(data).forEach((key) => {
         if (key.startsWith("month")) {
-          bsTotalDepreciation.push(parseFloat(data[key]));
+          bsTotalDepreciation.push(parseNumber(data[key]));
         }
       });
     } else if (data.key === "BS Total Net Fixed Assets") {
       Object.keys(data).forEach((key) => {
         if (key.startsWith("month")) {
-          bsTotalNetFixedAssets.push(parseFloat(data[key]));
+          bsTotalNetFixedAssets.push(parseNumber(data[key]));
         }
       });
     }
@@ -474,7 +458,7 @@ const ProfitAndLossSection = ({
     if (data.key === "Total Remaining Balance") {
       Object.keys(data).forEach((key) => {
         if (key.startsWith("Month ")) {
-          bsTotalRemainingBalance.push(parseFloat(data[key]));
+          bsTotalRemainingBalance.push(parseNumber(data[key]));
         }
       });
     }

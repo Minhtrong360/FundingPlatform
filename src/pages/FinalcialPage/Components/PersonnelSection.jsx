@@ -2,37 +2,27 @@ import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
 import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
-
-const formatNumber = (value) => {
-  // Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
-  const stringValue = value?.toString()?.replace(/,/g, "");
-  // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
-  return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
-
-const parseNumber = (value) => {
-  // Xóa dấu phẩy trong chuỗi giá trị
-  const numberString = value.replace(/,/g, "");
-  // Chuyển đổi chuỗi thành số
-  const parsedNumber = parseFloat(numberString);
-  // Kiểm tra nếu giá trị không phải là một số hợp lệ, trả về 0
-  if (isNaN(parsedNumber)) {
-    return 0;
-  }
-  return parsedNumber;
-};
+import { formatNumber, parseNumber } from "../../../features/CostSlice";
+import {
+  setPersonnelInputs,
+  setPersonnelCostData,
+  calculatePersonnelCostData,
+} from "../../../features/PersonnelSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const PersonnelSection = ({
-  personnelInputs,
-  setPersonnelInputs,
   numberOfMonths,
-  personnelCostData,
-  setPersonnelCostData,
+
   isSaved,
   setIsSaved,
   handleSubmit,
 }) => {
   //PersonnelFunctions
+
+  const { personnelInputs, personnelCostData } = useSelector(
+    (state) => state.personnel
+  );
+  const dispatch = useDispatch();
 
   const [tempPersonnelInputs, setTempPersonnelInputs] =
     useState(personnelInputs);
@@ -87,42 +77,6 @@ const PersonnelSection = ({
     setTempPersonnelInputs(newInputs);
   };
 
-  const calculatePersonnelCostData = () => {
-    let allPersonnelCosts = [];
-    tempPersonnelInputs.forEach((personnelInput) => {
-      let monthlyCosts = [];
-      let lastYearSalary = parseFloat(personnelInput.salaryPerMonth);
-      // Determine the number of months based on the selected duration
-      for (let month = 1; month <= numberOfMonths; month++) {
-        if (
-          month >= personnelInput.jobBeginMonth &&
-          month <= personnelInput.jobEndMonth
-        ) {
-          const salaryPerMonth = lastYearSalary;
-          const numberOfHires = parseInt(personnelInput.numberOfHires);
-          const increasePercentage = parseFloat(personnelInput.increasePerYear);
-          let newSalary = salaryPerMonth;
-          if (
-            (month - personnelInput.jobBeginMonth) % 12 === 0 &&
-            month !== personnelInput.jobBeginMonth
-          ) {
-            newSalary *= 1 + increasePercentage / 100;
-            lastYearSalary = newSalary; // Update last year's salary
-          }
-          const monthlyCost = newSalary * numberOfHires;
-          monthlyCosts.push({ month: month, cost: monthlyCost });
-        } else {
-          monthlyCosts.push({ month: month, cost: 0 });
-        }
-      }
-      allPersonnelCosts.push({
-        jobTitle: personnelInput.jobTitle,
-        monthlyCosts,
-      });
-    });
-    return allPersonnelCosts;
-  };
-
   const transformPersonnelCostDataForTable = () => {
     const transformedCustomerTableData = tempPersonnelCostData.map((item) => {
       const rowData = { key: item.jobTitle, jobTitle: item.jobTitle };
@@ -138,12 +92,18 @@ const PersonnelSection = ({
 
   //PersonnelUseEffect
   useEffect(() => {
-    const calculatedData = calculatePersonnelCostData();
-    setPersonnelCostData(calculatedData);
+    const calculatedData = calculatePersonnelCostData(
+      personnelInputs,
+      numberOfMonths
+    );
+    dispatch(setPersonnelCostData(calculatedData));
   }, [personnelInputs, numberOfMonths]);
 
   useEffect(() => {
-    const calculatedData = calculatePersonnelCostData();
+    const calculatedData = calculatePersonnelCostData(
+      tempPersonnelInputs,
+      numberOfMonths
+    );
     setTempPersonnelCostData(calculatedData);
   }, [tempPersonnelInputs, numberOfMonths]);
 
@@ -229,7 +189,7 @@ const PersonnelSection = ({
 
   useEffect(() => {
     if (isSaved) {
-      setPersonnelInputs(tempPersonnelInputs);
+      dispatch(setPersonnelInputs(tempPersonnelInputs));
 
       setIsSaved(false);
     }
@@ -316,7 +276,7 @@ const PersonnelSection = ({
                       handlePersonnelInputChange(
                         input.id,
                         "increasePerYear",
-                        parseNumber(e.target.value) / 100
+                        parseNumber(e.target.value)
                       )
                     }
                   />

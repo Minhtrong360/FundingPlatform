@@ -2,25 +2,7 @@ import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
 import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
-
-const formatNumber = (value) => {
-  // Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
-  const stringValue = value?.toString()?.replace(/,/g, "");
-  // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
-  return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
-
-const parseNumber = (value) => {
-  // Xóa dấu phẩy trong chuỗi giá trị
-  const numberString = value.replace(/,/g, "");
-  // Chuyển đổi chuỗi thành số
-  const parsedNumber = parseFloat(numberString);
-  // Kiểm tra nếu giá trị không phải là một số hợp lệ, trả về 0
-  if (isNaN(parsedNumber)) {
-    return 0;
-  }
-  return parsedNumber;
-};
+import { formatNumber, parseNumber } from "../../../features/CostSlice";
 
 const InvestmentSection = ({
   investmentInputs,
@@ -205,9 +187,12 @@ const InvestmentSection = ({
       data.depreciationArray.forEach((value, month) => {
         depreciationSum[month] += value;
       });
-      const purchaseMonth = parseInt(tempInvestmentInputs[index].purchaseMonth, 10) - 1;
+      const purchaseMonth =
+        parseInt(tempInvestmentInputs[index].purchaseMonth, 10) - 1;
       if (purchaseMonth >= 0 && purchaseMonth < numberOfMonths) {
-        const assetCost = parseFloat(tempInvestmentInputs[index].assetCost) * parseInt(tempInvestmentInputs[index].quantity, 10);
+        const assetCost =
+          parseFloat(tempInvestmentInputs[index].assetCost) *
+          parseInt(tempInvestmentInputs[index].quantity, 10);
         cfInvestmentsSum[purchaseMonth] += assetCost;
       }
     });
@@ -512,7 +497,6 @@ const InvestmentSection = ({
                         e.target.value
                       )
                     }
-                    
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-3">

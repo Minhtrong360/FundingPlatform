@@ -16,6 +16,13 @@ function Component({
     return arr.reduce((total, num) => total + Number(num), 0);
   }
 
+  const formatNumber = (value) => {
+    // Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
+    const stringValue = value?.toString()?.replace(/,/g, "");
+    // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
+    return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   return (
     <div className="flex flex-col">
       <main className="flex flex-1 flex-col gap-4 mt-4 mb-4 md:gap-8 ">
@@ -23,7 +30,9 @@ function Component({
           <Card className="flex flex-col">
             <div>
               <h3>Total User</h3>
-              <p>{Math.round(sumArray(yearlyAverageCustomers))}</p>
+              <p>
+                {formatNumber(Math.round(sumArray(yearlyAverageCustomers)))}
+              </p>
             </div>
             <Chart
               type="bar"
@@ -35,7 +44,7 @@ function Component({
           <Card className="flex flex-col">
             <div>
               <h3>Total Revenue</h3>
-              <p>{Math.round(sumArray(yearlySales))}</p>
+              <p>{formatNumber(Math.round(sumArray(yearlySales)))}</p>
             </div>
             <Chart
               options={revenue.options}
@@ -54,6 +63,25 @@ const MetricsFM = ({ customerGrowthChart, revenue }) => {
   // Define data for each card
   const { yearlyAverageCustomers } = useSelector((state) => state.customer);
   const { yearlySales } = useSelector((state) => state.sales);
+
+  const formatNumber = (value) => {
+    // Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
+    const stringValue = value?.toString()?.replace(/,/g, "");
+    // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
+    return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  const parseNumber = (value) => {
+    // Xóa dấu phẩy trong chuỗi giá trị
+    const numberString = value.replace(/,/g, "");
+    // Chuyển đổi chuỗi thành số
+    const parsedNumber = parseFloat(numberString);
+    // Kiểm tra nếu giá trị không phải là một số hợp lệ, trả về 0
+    if (isNaN(parsedNumber)) {
+      return 0;
+    }
+    return parsedNumber;
+  };
 
   return (
     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
@@ -90,10 +118,7 @@ const MetricsFM = ({ customerGrowthChart, revenue }) => {
             <div className="mt-1 flex items-center gap-x-2">
               <div className="flex flex-col xl:flex-row xl:items-center items-start">
                 <h3 className="text-sm sm:text-3xl font-bold text-gray-800 my-2">
-                  {Math.round(
-                    yearlyAverageCustomers[yearlyAverageCustomers.length - 1],
-                    2
-                  )}
+                  {formatNumber(Math.round(yearlyAverageCustomers[0], 2))}
                 </h3>
                 <span className="flex items-center gap-x-1 text-green-600 ml-2">
                   <svg
@@ -113,14 +138,14 @@ const MetricsFM = ({ customerGrowthChart, revenue }) => {
                   </svg>
                   <Tooltip title="The increase percentage of the final year compared to the first year in the series.">
                     <span className="inline-block text-sm">
-                      {(
-                        ((yearlyAverageCustomers[
-                          yearlyAverageCustomers.length - 1
-                        ] -
-                          yearlyAverageCustomers[0]) *
-                          100) /
-                        yearlyAverageCustomers[0]
-                      )?.toFixed(2)}
+                      {formatNumber(
+                        (
+                          ((yearlyAverageCustomers[1] -
+                            yearlyAverageCustomers[0]) *
+                            100) /
+                          yearlyAverageCustomers[0]
+                        )?.toFixed(2)
+                      )}
                       %
                     </span>
                   </Tooltip>
@@ -165,7 +190,7 @@ const MetricsFM = ({ customerGrowthChart, revenue }) => {
                     currency: "USD",
                     minimumFractionDigits: 0,
                     maximumFractionDigits: 0,
-                  }).format(Math.round(yearlySales[yearlySales.length - 1]))}
+                  }).format(Math.round(yearlySales[0]))}
                 </h3>
                 <span className="flex items-center gap-x-1 text-green-600 ml-2">
                   <svg
@@ -185,12 +210,12 @@ const MetricsFM = ({ customerGrowthChart, revenue }) => {
                   </svg>
                   <Tooltip title="The increase percentage of the final year compared to the first year in the series.">
                     <span className="inline-block text-sm">
-                      {(
-                        ((yearlySales[yearlySales.length - 1] -
-                          yearlySales[0]) *
-                          100) /
-                        yearlySales[0]
-                      )?.toFixed(2)}
+                      {formatNumber(
+                        (
+                          ((yearlySales[1] - yearlySales[0]) * 100) /
+                          yearlySales[0]
+                        )?.toFixed(2)
+                      )}
                       %
                     </span>
                   </Tooltip>

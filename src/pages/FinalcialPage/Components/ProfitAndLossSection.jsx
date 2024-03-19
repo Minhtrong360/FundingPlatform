@@ -4,6 +4,25 @@ import Chart from "react-apexcharts";
 import { useSelector } from "react-redux";
 import { Row, Col, Card } from "antd";
 
+const formatNumber = (value) => {
+  // Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
+  const stringValue = value?.toString()?.replace(/,/g, "");
+  // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
+  return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+const parseNumber = (value) => {
+  // Xóa dấu phẩy trong chuỗi giá trị
+  const numberString = value.replace(/,/g, "");
+  // Chuyển đổi chuỗi thành số
+  const parsedNumber = parseFloat(numberString);
+  // Kiểm tra nếu giá trị không phải là một số hợp lệ, trả về 0
+  if (isNaN(parsedNumber)) {
+    return 0;
+  }
+  return parsedNumber;
+};
+
 const ProfitAndLossSection = ({
   costData,
   personnelCostData,
@@ -182,7 +201,10 @@ const ProfitAndLossSection = ({
   ].map((item, index) => ({
     metric: item.key,
     ...item.values?.reduce(
-      (acc, value, i) => ({ ...acc, [`Month ${i + 1}`]: value?.toFixed(2) }),
+      (acc, value, i) => ({
+        ...acc,
+        [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+      }),
       {}
     ),
   }));
@@ -193,7 +215,7 @@ const ProfitAndLossSection = ({
       dataIndex: "metric",
       key: "metric",
       fixed: "left",
-      width: 200,
+
       render: (text, record) => ({
         children: (
           <div className={" md:whitespace-nowrap "}>
@@ -225,7 +247,7 @@ const ProfitAndLossSection = ({
             record.metric === "Cost of Revenue" ||
             record.metric === "Operating Expenses" ||
             record.metric === "Additional Expenses"
-              ? 36
+              ? numberOfMonths
               : 1,
           style:
             record.metric === "Revenue" ||
@@ -340,7 +362,6 @@ const ProfitAndLossSection = ({
     return cashBalances;
   };
 
-  console.log("fundraisingTableData", fundraisingTableData);
   const commonStockArr = [];
   const preferredStockArr = [];
   const capitalArr = [];
@@ -588,7 +609,10 @@ const ProfitAndLossSection = ({
   ].map((item, index) => ({
     metric: item.key,
     ...item.values?.reduce(
-      (acc, value, i) => ({ ...acc, [`Month ${i + 1}`]: value?.toFixed(2) }),
+      (acc, value, i) => ({
+        ...acc,
+        [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+      }),
       {}
     ),
   }));
@@ -714,7 +738,10 @@ const ProfitAndLossSection = ({
   ].map((item, index) => ({
     metric: item.key,
     ...item.values?.reduce(
-      (acc, value, i) => ({ ...acc, [`Month ${i + 1}`]: value?.toFixed(2) }),
+      (acc, value, i) => ({
+        ...acc,
+        [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+      }),
       {}
     ),
   }));
@@ -859,7 +886,7 @@ const ProfitAndLossSection = ({
             record.metric === "Current Liabilities" ||
             record.metric === "Long-Term Liabilities" ||
             record.metric === "Shareholders Equity"
-              ? 36
+              ? numberOfMonths
               : 1,
           style:
             record.metric === "Assets" ||
@@ -1015,8 +1042,8 @@ const ProfitAndLossSection = ({
         height={350}
       /> */}
 
-      <Row gutter={16} className="additional-charts">
-        <Col span={12}>
+      <Row gutter={[16, 16]} className="additional-charts">
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Total Revenue Over Time">
             <Chart
               options={{
@@ -1037,7 +1064,7 @@ const ProfitAndLossSection = ({
             />
           </Card>
         </Col>
-        <Col span={12}>
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Total Costs Over Time">
             <Chart
               options={{
@@ -1057,13 +1084,8 @@ const ProfitAndLossSection = ({
           </Card>
         </Col>
       </Row>
-
-      <Row
-        gutter={16}
-        className="additional-charts"
-        style={{ marginTop: "20px" }}
-      >
-        <Col span={12}>
+      <Row gutter={[16, 16]} className="additional-charts">
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Net Income Over Time">
             <Chart
               options={{
@@ -1082,7 +1104,7 @@ const ProfitAndLossSection = ({
             />
           </Card>
         </Col>
-        <Col span={12}>
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Cash Flow Overview">
             <Chart
               options={{
@@ -1104,13 +1126,8 @@ const ProfitAndLossSection = ({
           </Card>
         </Col>
       </Row>
-
-      <Row
-        gutter={16}
-        className="additional-charts"
-        style={{ marginTop: "20px" }}
-      >
-        <Col span={12}>
+      <Row gutter={[16, 16]} className="additional-charts">
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Total Assets Over Time">
             <Chart
               options={{
@@ -1131,7 +1148,7 @@ const ProfitAndLossSection = ({
             />
           </Card>
         </Col>
-        <Col span={12}>
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Total Liabilities Over Time">
             <Chart
               options={{
@@ -1153,13 +1170,8 @@ const ProfitAndLossSection = ({
           </Card>
         </Col>
       </Row>
-
-      <Row
-        gutter={16}
-        className="additional-charts"
-        style={{ marginTop: "20px" }}
-      >
-        <Col span={12}>
+      <Row gutter={[16, 16]} className="additional-charts">
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Total Shareholders Equity Over Time">
             <Chart
               options={{
@@ -1183,7 +1195,7 @@ const ProfitAndLossSection = ({
             />
           </Card>
         </Col>
-        <Col span={12}>
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Gross Profit Over Time">
             <Chart
               options={{
@@ -1205,13 +1217,8 @@ const ProfitAndLossSection = ({
           </Card>
         </Col>
       </Row>
-
-      <Row
-        gutter={16}
-        className="additional-charts"
-        style={{ marginTop: "20px" }}
-      >
-        <Col span={12}>
+      <Row gutter={[16, 16]} className="additional-charts">
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="EBITDA Over Time">
             <Chart
               options={{
@@ -1230,7 +1237,7 @@ const ProfitAndLossSection = ({
             />
           </Card>
         </Col>
-        <Col span={12}>
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Earnings Before Tax Over Time">
             <Chart
               options={{
@@ -1255,13 +1262,8 @@ const ProfitAndLossSection = ({
           </Card>
         </Col>
       </Row>
-
-      <Row
-        gutter={16}
-        className="additional-charts"
-        style={{ marginTop: "20px" }}
-      >
-        <Col span={12}>
+      <Row gutter={[16, 16]} className="additional-charts">
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Income Tax Over Time">
             <Chart
               options={{
@@ -1280,7 +1282,7 @@ const ProfitAndLossSection = ({
             />
           </Card>
         </Col>
-        <Col span={12}>
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Total Investment Depreciation Over Time">
             <Chart
               options={{
@@ -1305,13 +1307,8 @@ const ProfitAndLossSection = ({
           </Card>
         </Col>
       </Row>
-
-      <Row
-        gutter={16}
-        className="additional-charts"
-        style={{ marginTop: "20px" }}
-      >
-        <Col span={12}>
+      <Row gutter={[16, 16]} className="additional-charts">
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Total Interest Payments Over Time">
             <Chart
               options={{
@@ -1335,7 +1332,7 @@ const ProfitAndLossSection = ({
             />
           </Card>
         </Col>
-        <Col span={12}>
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Total Principal Over Time">
             <Chart
               options={{
@@ -1357,13 +1354,8 @@ const ProfitAndLossSection = ({
           </Card>
         </Col>
       </Row>
-
-      <Row
-        gutter={16}
-        className="additional-charts"
-        style={{ marginTop: "20px" }}
-      >
-        <Col span={12}>
+      <Row gutter={[16, 16]} className="additional-charts">
+        <Col span={24} md={12} className="md:mt-0 mt-5">
           <Card title="Cash Begin Balances Over Time">
             <Chart
               options={{

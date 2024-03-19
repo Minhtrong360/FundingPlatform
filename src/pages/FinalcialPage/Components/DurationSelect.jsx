@@ -70,6 +70,25 @@ const DurationSelect = ({ handleSubmit }) => {
     "Entertainment",
   ];
 
+  const formatNumber = (value) => {
+    // Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
+    const stringValue = value.toString().replace(/,/g, "");
+    // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
+    return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  const parseNumber = (value) => {
+    // Xóa dấu phẩy trong chuỗi giá trị
+    const numberString = value.replace(/,/g, "");
+    // Chuyển đổi chuỗi thành số
+    const parsedNumber = parseFloat(numberString);
+    // Kiểm tra nếu giá trị không phải là một số hợp lệ, trả về 0
+    if (isNaN(parsedNumber)) {
+      return 0;
+    }
+    return parsedNumber;
+  };
+
   return (
     <section aria-labelledby="duration-heading" className="mb-8">
       <h2
@@ -170,9 +189,11 @@ const DurationSelect = ({ handleSubmit }) => {
 
             <Input
               className="border-gray-200"
-              value={startingCashBalance}
-              onChange={(e) => dispatch(setStartingCashBalance(e.target.value))}
-              type="number"
+              value={formatNumber(startingCashBalance)}
+              onChange={(e) =>
+                dispatch(setStartingCashBalance(parseNumber(e.target.value)))
+              }
+              type="text"
             />
           </div>
         </Tooltip>
@@ -226,9 +247,11 @@ const DurationSelect = ({ handleSubmit }) => {
             <span className=" flex items-center text-sm">Income Tax(%) :</span>
             <Input
               className="border-gray-200"
-              type="number"
-              value={incomeTax}
-              onChange={(e) => dispatch(setIncomeTax(e.target.value))}
+              type="text"
+              value={formatNumber(incomeTax)}
+              onChange={(e) =>
+                dispatch(setIncomeTax(parseNumber(e.target.value)))
+              }
             />
           </div>
         </Tooltip>
@@ -238,9 +261,11 @@ const DurationSelect = ({ handleSubmit }) => {
             <span className=" flex items-center text-sm">Payroll Tax (%):</span>
             <Input
               className="border-gray-200"
-              type="number"
-              value={payrollTax}
-              onChange={(e) => dispatch(setPayrollTax(e.target.value))}
+              type="text"
+              value={formatNumber(payrollTax)}
+              onChange={(e) =>
+                dispatch(setPayrollTax(parseNumber(e.target.value)))
+              }
             />
           </div>
         </Tooltip>

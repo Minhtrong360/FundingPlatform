@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { supabase } from "../../../supabase";
 import apiService from "../../../app/apiService";
-import { SendOutlined } from '@ant-design/icons';
-
+import { SendOutlined } from "@ant-design/icons";
 
 const industries = [
   "Coffee shop ☕",
@@ -166,7 +165,7 @@ const Gemini = ({
                     "assetCost": 8000,
                     "quantity": 1,
                     "purchaseMonth": 2,
-                    "residualValue": 10,
+                    "residualValue": 0,
                     "usefulLifetime": 36
                   },
                   {
@@ -175,7 +174,7 @@ const Gemini = ({
                     "assetCost": 200,
                     "quantity": 10,
                     "purchaseMonth": 1,
-                    "residualValue": 10,
+                    "residualValue": 0,
                     "usefulLifetime": 36
                   }
                 ]
@@ -222,12 +221,15 @@ const Gemini = ({
   async function saveUserData() {
     try {
       console.log("7");
+      const maxPrompt = 20;
       // Thực hiện truy vấn để lấy thông tin người dùng theo id (điều này cần được thay đổi dựa trên cấu trúc dữ liệu của bạn trong Supabase)
       const currentPrompt = currentUser.financePromptNumber - 1;
       if (currentPrompt <= 0) {
         toast.warning("Prompt per hour limited. Let return after an hour.");
+        return;
       } else {
-        if (currentPrompt === 99) {
+        if (currentPrompt === maxPrompt - 1) {
+          console.log("7.5");
           await supabase
             .from("users")
             .update({ financeFirstPrompt: Date.now() })

@@ -3,6 +3,25 @@ import { Input } from "../../../components/ui/Input";
 import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 
+const formatNumber = (value) => {
+  // Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
+  const stringValue = value?.toString()?.replace(/,/g, "");
+  // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
+  return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+const parseNumber = (value) => {
+  // Xóa dấu phẩy trong chuỗi giá trị
+  const numberString = value.replace(/,/g, "");
+  // Chuyển đổi chuỗi thành số
+  const parsedNumber = parseFloat(numberString);
+  // Kiểm tra nếu giá trị không phải là một số hợp lệ, trả về 0
+  if (isNaN(parsedNumber)) {
+    return 0;
+  }
+  return parsedNumber;
+};
+
 const PersonnelSection = ({
   personnelInputs,
   setPersonnelInputs,
@@ -31,7 +50,6 @@ const PersonnelSection = ({
   }, [personnelInputs]);
 
   // Add state for the increase per year
-  const [increasePerYear, setIncreasePerYear] = useState(0);
 
   const addNewPersonnelInput = () => {
     const maxId = Math.max(...tempPersonnelInputs.map((input) => input?.id));
@@ -109,7 +127,9 @@ const PersonnelSection = ({
     const transformedCustomerTableData = tempPersonnelCostData.map((item) => {
       const rowData = { key: item.jobTitle, jobTitle: item.jobTitle };
       item.monthlyCosts.forEach((monthData) => {
-        rowData[`month${monthData.month}`] = monthData.cost?.toFixed(2); // Adjust formatting as needed
+        rowData[`month${monthData.month}`] = formatNumber(
+          monthData.cost?.toFixed(2)
+        ); // Adjust formatting as needed
       });
       return rowData;
     });
@@ -125,7 +145,7 @@ const PersonnelSection = ({
   useEffect(() => {
     const calculatedData = calculatePersonnelCostData();
     setTempPersonnelCostData(calculatedData);
-  }, [tempPersonnelInputs, numberOfMonths, increasePerYear]);
+  }, [tempPersonnelInputs, numberOfMonths]);
 
   //PersonnelCostTableData
 
@@ -274,12 +294,12 @@ const PersonnelSection = ({
                   <Input
                     className="col-start-2 border-gray-200"
                     placeholder="Enter Salary per Month"
-                    value={input.salaryPerMonth}
+                    value={formatNumber(input.salaryPerMonth)}
                     onChange={(e) =>
                       handlePersonnelInputChange(
                         input.id,
                         "salaryPerMonth",
-                        e.target.value
+                        parseNumber(e.target.value)
                       )
                     }
                   />
@@ -291,12 +311,12 @@ const PersonnelSection = ({
                   <Input
                     className="col-start-2 border-gray-200"
                     placeholder="Enter Increase per Year"
-                    value={input.increasePerYear}
+                    value={formatNumber(input.increasePerYear)}
                     onChange={(e) =>
                       handlePersonnelInputChange(
                         input.id,
                         "increasePerYear",
-                        e.target.value
+                        parseNumber(e.target.value) / 100
                       )
                     }
                   />
@@ -308,12 +328,12 @@ const PersonnelSection = ({
                   <Input
                     className="col-start-2 border-gray-200"
                     placeholder="Enter Number of Hires"
-                    value={input.numberOfHires}
+                    value={formatNumber(input.numberOfHires)}
                     onChange={(e) =>
                       handlePersonnelInputChange(
                         input.id,
                         "numberOfHires",
-                        e.target.value
+                        parseNumber(e.target.value)
                       )
                     }
                   />

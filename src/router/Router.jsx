@@ -44,52 +44,10 @@ import ProductList from "../lemon/ProductList";
 import PricingSection from "../pages/Home/Components/PricingWithLemon";
 import Post from "../pages/News/Compose";
 import PermissionRequired from "./PermissionRequired";
+import AnnouncePage from "../components/AnnouncePage";
 function Router() {
-  const { user } = useAuth();
+  const { subscribed } = useAuth();
 
-  const [currentUser, setCurrentUser] = useState(null);
-  const [subscribed, setSubscribed] = useState(false);
-
-  useEffect(() => {
-    const fetchCurrentUser = async () => {
-      try {
-        if (!navigator.onLine) {
-          toast.error("No internet access.");
-          return;
-        }
-        let { data: users, error } = await supabase
-          .from("users")
-          .select("*")
-          .eq("id", user.id);
-
-        if (error) {
-          console.log("error", error);
-          throw error;
-        }
-
-        setCurrentUser(users[0]);
-      } catch (error) {
-        console.error("Error fetching projects:", error);
-      }
-    };
-
-    if (user) {
-      fetchCurrentUser();
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (
-      currentUser?.plan === "Free" ||
-      currentUser?.plan === null ||
-      currentUser?.plan === undefined ||
-      currentUser?.subscription_status !== "active"
-    ) {
-      setSubscribed(false);
-    } else {
-      setSubscribed(true);
-    }
-  }, [currentUser]);
   return (
     <>
       <Routes>
@@ -171,7 +129,16 @@ function Router() {
             </AuthRequire>
           }
         />
-        {/* <Route path="/financialList" element={<FinancialList />} /> */}
+        <Route
+          path="/announce"
+          element={
+            <AnnouncePage
+              title="Subscription Required"
+              announce="Financial model helps you build your business plan and you need to subscribe."
+              describe="This is our special feature that helps startups or new businesses build their business plans. We provide tools with AI to build your BS, IS, FS... Please upgrade your plan to experience this exciting feature"
+            />
+          }
+        />
         <Route path="/news" element={<News />} />
         {/* <Route path="/X" element={<X />} />
         <Route path="/Y" element={<Y />} />

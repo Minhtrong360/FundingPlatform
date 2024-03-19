@@ -3,6 +3,25 @@ import { Input } from "../../../components/ui/Input";
 import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 
+const formatNumber = (value) => {
+  // Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
+  const stringValue = value?.toString()?.replace(/,/g, "");
+  // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
+  return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+const parseNumber = (value) => {
+  // Xóa dấu phẩy trong chuỗi giá trị
+  const numberString = value.replace(/,/g, "");
+  // Chuyển đổi chuỗi thành số
+  const parsedNumber = parseFloat(numberString);
+  // Kiểm tra nếu giá trị không phải là một số hợp lệ, trả về 0
+  if (isNaN(parsedNumber)) {
+    return 0;
+  }
+  return parsedNumber;
+};
+
 const InvestmentSection = ({
   investmentInputs,
   setInvestmentInputs,
@@ -149,16 +168,21 @@ const InvestmentSection = ({
 
     for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
       if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
-        assetCostRow[`month${monthIndex + 1}`] = assetCost?.toFixed(2);
-        depreciationRow[`month${monthIndex + 1}`] =
-          selectedInvestmentData.depreciationArray[monthIndex]?.toFixed(2);
-        accumulatedDepreciationRow[`month${monthIndex + 1}`] =
-          selectedInvestmentData.accumulatedDepreciation[monthIndex]?.toFixed(
-            2
-          );
-        bookValueRow[`month${monthIndex + 1}`] = (
-          assetCost - selectedInvestmentData.accumulatedDepreciation[monthIndex]
-        )?.toFixed(2);
+        assetCostRow[`month${monthIndex + 1}`] = formatNumber(
+          assetCost?.toFixed(2)
+        );
+        depreciationRow[`month${monthIndex + 1}`] = formatNumber(
+          selectedInvestmentData.depreciationArray[monthIndex]?.toFixed(2)
+        );
+        accumulatedDepreciationRow[`month${monthIndex + 1}`] = formatNumber(
+          selectedInvestmentData.accumulatedDepreciation[monthIndex]?.toFixed(2)
+        );
+        bookValueRow[`month${monthIndex + 1}`] = formatNumber(
+          (
+            assetCost -
+            selectedInvestmentData.accumulatedDepreciation[monthIndex]
+          )?.toFixed(2)
+        );
       } else {
         assetCostRow[`month${monthIndex + 1}`] = "0.00";
         depreciationRow[`month${monthIndex + 1}`] = "0.00";
@@ -193,8 +217,9 @@ const InvestmentSection = ({
       type: "CF Investments",
     };
     for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
-      cfInvestmentsRow[`month${monthIndex + 1}`] =
-        cfInvestmentsSum[monthIndex]?.toFixed(2);
+      cfInvestmentsRow[`month${monthIndex + 1}`] = formatNumber(
+        cfInvestmentsSum[monthIndex]?.toFixed(2)
+      );
     }
     investmentTableData.push(cfInvestmentsRow);
 
@@ -204,7 +229,9 @@ const InvestmentSection = ({
       type: "Total Depreciation",
     };
     depreciationSum.forEach((depreciation, index) => {
-      totalDepreciationRow[`month${index + 1}`] = depreciation.toFixed(2);
+      totalDepreciationRow[`month${index + 1}`] = formatNumber(
+        depreciation.toFixed(2)
+      );
     });
     investmentTableData.push(totalDepreciationRow);
 
@@ -214,10 +241,12 @@ const InvestmentSection = ({
       type: "BS Total investment",
     };
     for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
-      bsTotalInvestmentRow[`month${monthIndex + 1}`] = cfInvestmentsSum
-        .slice(0, monthIndex + 1)
-        .reduce((acc, curr) => acc + curr, 0)
-        .toFixed(2);
+      bsTotalInvestmentRow[`month${monthIndex + 1}`] = formatNumber(
+        cfInvestmentsSum
+          .slice(0, monthIndex + 1)
+          .reduce((acc, curr) => acc + curr, 0)
+          .toFixed(2)
+      );
     }
     investmentTableData.push(bsTotalInvestmentRow);
 
@@ -228,10 +257,12 @@ const InvestmentSection = ({
     };
     for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
       bsTotalAccumulatedDepreciationRow[`month${monthIndex + 1}`] =
-        depreciationSum
-          .slice(0, monthIndex + 1)
-          .reduce((acc, curr) => acc + curr, 0)
-          .toFixed(2);
+        formatNumber(
+          depreciationSum
+            .slice(0, monthIndex + 1)
+            .reduce((acc, curr) => acc + curr, 0)
+            .toFixed(2)
+        );
     }
     investmentTableData.push(bsTotalAccumulatedDepreciationRow);
 
@@ -241,14 +272,16 @@ const InvestmentSection = ({
       type: "BS Total Net Fixed Assets",
     };
     for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
-      bsTotalNetFixedAssetsRow[`month${monthIndex + 1}`] = (
-        cfInvestmentsSum
-          .slice(0, monthIndex + 1)
-          .reduce((acc, curr) => acc + curr, 0) -
-        depreciationSum
-          .slice(0, monthIndex + 1)
-          .reduce((acc, curr) => acc + curr, 0)
-      ).toFixed(2);
+      bsTotalNetFixedAssetsRow[`month${monthIndex + 1}`] = formatNumber(
+        (
+          cfInvestmentsSum
+            .slice(0, monthIndex + 1)
+            .reduce((acc, curr) => acc + curr, 0) -
+          depreciationSum
+            .slice(0, monthIndex + 1)
+            .reduce((acc, curr) => acc + curr, 0)
+        ).toFixed(2)
+      );
     }
     investmentTableData.push(bsTotalNetFixedAssetsRow);
 
@@ -423,12 +456,12 @@ const InvestmentSection = ({
                   <span className=" flex items-center text-sm">Asset Cost</span>
                   <Input
                     className="col-start-2 border-gray-200"
-                    value={input.assetCost}
+                    value={formatNumber(input.assetCost)}
                     onChange={(e) =>
                       handleInvestmentInputChange(
                         input?.id,
                         "assetCost",
-                        e.target.value
+                        parseNumber(e.target.value)
                       )
                     }
                   />
@@ -437,14 +470,14 @@ const InvestmentSection = ({
                   <span className=" flex items-center text-sm">Quantity:</span>
                   <Input
                     className="col-start-2 border-gray-200"
-                    type="number"
+                    type="text"
                     min="1"
-                    value={input.quantity}
+                    value={formatNumber(input.quantity)}
                     onChange={(e) =>
                       handleInvestmentInputChange(
                         input?.id,
                         "quantity",
-                        e.target.value
+                        parseNumber(e.target.value)
                       )
                     }
                   />
@@ -488,12 +521,12 @@ const InvestmentSection = ({
                   </span>
                   <Input
                     className="col-start-2 border-gray-200"
-                    value={input.usefulLifetime}
+                    value={formatNumber(input.usefulLifetime)}
                     onChange={(e) =>
                       handleInvestmentInputChange(
                         input?.id,
                         "usefulLifetime",
-                        e.target.value
+                        parseNumber(e.target.value)
                       )
                     }
                   />

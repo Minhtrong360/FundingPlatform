@@ -573,15 +573,17 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     setTemIsLoading(true);
 
     const tabs = [
-      { tab: "customer", delay: 350 },
-      { tab: "sales", delay: 350 },
-      { tab: "cost", delay: 350 },
-      { tab: "personnel", delay: 350 },
-      { tab: "investment", delay: 350 },
-      { tab: "loan", delay: 350 },
-      { tab: "investment", delay: 350 },
-      { tab: "fundraising", delay: 350 },
-      { tab: "overview", delay: 350 },
+      { tab: "customer", delay: 100 },
+      { tab: "sales", delay: 100 },
+      { tab: "cost", delay: 100 },
+      { tab: "sales", delay: 100 },
+      { tab: "personnel", delay: 100 },
+      { tab: "investment", delay: 100 },
+      { tab: "loan", delay: 100 },
+      { tab: "fundraising", delay: 100 },
+      { tab: "investment", delay: 100 },
+      { tab: "fundraising", delay: 100 },
+      { tab: "overview", delay: 100 },
     ];
 
     let currentIndex = 0;

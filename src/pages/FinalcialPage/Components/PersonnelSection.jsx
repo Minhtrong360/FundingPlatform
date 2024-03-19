@@ -316,7 +316,7 @@ const PersonnelSection = ({
                       handlePersonnelInputChange(
                         input.id,
                         "increasePerYear",
-                        parseNumber(e.target.value) / 100
+                        parseNumber(e.target.value)
                       )
                     }
                   />

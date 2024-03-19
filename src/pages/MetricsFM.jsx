@@ -95,7 +95,7 @@ const MetricsFM = ({ customerGrowthChart, revenue }) => {
               <p className="text-xs uppercase tracking-wide text-gray-500">
                 USER
               </p>
-              <Tooltip title="The average users of the final year.">
+              <Tooltip title="The average users of the first year.">
                 <svg
                   className="flex-shrink-0 size-4 text-gray-500"
                   xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +136,7 @@ const MetricsFM = ({ customerGrowthChart, revenue }) => {
                     <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
                     <polyline points="16 7 22 7 22 13" />
                   </svg>
-                  <Tooltip title="The increase percentage of the final year compared to the first year in the series.">
+                  <Tooltip title="The increase percentage of the second year compared to the first year in the series.">
                     <span className="inline-block text-sm">
                       {formatNumber(
                         (
@@ -162,7 +162,7 @@ const MetricsFM = ({ customerGrowthChart, revenue }) => {
               <p className="text-xs uppercase tracking-wide text-gray-500">
                 REVENUE
               </p>
-              <Tooltip title="The average revenue of the final year.">
+              <Tooltip title="The average revenue of the first year.">
                 <svg
                   className="flex-shrink-0 size-4 text-gray-500"
                   xmlns="http://www.w3.org/2000/svg"
@@ -208,7 +208,7 @@ const MetricsFM = ({ customerGrowthChart, revenue }) => {
                     <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
                     <polyline points="16 7 22 7 22 13" />
                   </svg>
-                  <Tooltip title="The increase percentage of the final year compared to the first year in the series.">
+                  <Tooltip title="The increase percentage of the second year compared to the first year in the series.">
                     <span className="inline-block text-sm">
                       {formatNumber(
                         (

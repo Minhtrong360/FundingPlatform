@@ -138,7 +138,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     );
 
     dispatch(setFundraisingTableData(tableData));
-  }, []);
+  }, [fundraisingInputs, numberOfMonths]);
 
   const {
     totalRevenue,
@@ -996,7 +996,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
         columns={positionColumns}
         pagination={false}
       />
-
       <h2 className="text-2xl font-semibold mb-4">Balance Sheet</h2>
       <Table
         className="overflow-auto my-8"

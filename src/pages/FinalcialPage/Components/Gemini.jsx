@@ -228,7 +228,7 @@ const Gemini = ({
         toast.warning("Prompt per hour limited. Let return after an hour.");
         return;
       } else {
-        if (currentPrompt <= maxPrompt - 1) {
+        if (currentPrompt == maxPrompt - 1) {
           console.log("7.5");
           await supabase
             .from("users")
@@ -290,9 +290,11 @@ const Gemini = ({
             </div>
           </div>
         </form>
-        <h3 className="text-2xl font-semibold mt-8 text-center">Templates</h3>
+        {/* <h3 className="text-2xl sm:flex hidden justify-center font-semibold mt-8">
+          Templates
+        </h3>
 
-        <div className="mt-2 sm:mt-4 hidden lg:flex flex-wrap justify-center">
+        <div className="mt-2 sm:mt-4 hidden sm:flex flex-wrap justify-center">
           {industries.map((industry, index) => (
             <button
               key={index}
@@ -302,8 +304,8 @@ const Gemini = ({
               {industry}
             </button>
           ))}
-        </div>
-        <div className="text-sm mt-4 lg:hidden overflow-x-auto flex flex-nowrap">
+        </div> */}
+        {/* <div className="text-sm mt-4 lg:hidden overflow-x-auto flex flex-nowrap">
           {industries.map((industry, index) => (
             <button
               key={index}
@@ -313,7 +315,7 @@ const Gemini = ({
               {industry}
             </button>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );

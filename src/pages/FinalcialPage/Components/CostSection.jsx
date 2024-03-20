@@ -101,13 +101,13 @@ const CostSection = ({
 
   // useEffect to update cost data when cost inputs or number of months change
   useEffect(() => {
-    const calculatedData = calculateCostData(tempCostInput, numberOfMonths);
+    const calculatedData = calculateCostData(costInputs, numberOfMonths);
     dispatch(setCostData(calculatedData));
   }, [costInputs, numberOfMonths]);
 
   // useEffect to update temporary cost data when temp cost inputs or number of months change
   useEffect(() => {
-    const calculatedData = calculateCostData();
+    const calculatedData = calculateCostData(tempCostInput, numberOfMonths);
     setTempCostData(calculatedData);
   }, [tempCostInput, numberOfMonths]);
 

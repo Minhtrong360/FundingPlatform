@@ -9,6 +9,7 @@ import {
   setInvestmentData,
   setInvestmentInputs,
   setInvestmentTableData,
+  transformInvestmentDataForTable,
 } from "../../../features/InvestmentSlice";
 
 const InvestmentSection = ({
@@ -19,7 +20,7 @@ const InvestmentSection = ({
 
   handleSubmit,
 }) => {
-  const { investmentInputs, investmentData } = useSelector(
+  const { investmentInputs, investmentData, investmentTableData } = useSelector(
     (state) => state.investment
   );
   const dispatch = useDispatch();
@@ -73,181 +74,30 @@ const InvestmentSection = ({
     setTempInvestmentInputs(newInputs);
   };
 
-  const transformInvestmentDataForTable = () => {
-    const investmentTableData = [];
-
-    const selectedInput = tempInvestmentInputs.find(
-      (input) => input.id == renderInvestmentForm
-    );
-    if (!selectedInput || tempInvestmentData.length === 0) return [];
-
-    const selectedInvestmentData = tempInvestmentData.find(
-      (_, index) => tempInvestmentInputs[index].id == renderInvestmentForm
-    );
-
-    if (!selectedInvestmentData) return [];
-
-    const purchaseName =
-      selectedInput.purchaseName || `Investment ${renderInvestmentForm}`;
-    const assetCostRow = {
-      key: `Asset Cost`,
-      type: `${purchaseName}`,
-    };
-    const depreciationRow = {
-      key: `Depreciation`,
-      type: "Depreciation",
-    };
-    const accumulatedDepreciationRow = {
-      key: `Accumulated Depre.`,
-      type: "Accumulated Depre.",
-    };
-    const bookValueRow = {
-      key: `Book Value`,
-      type: "Book Value",
-    };
-
-    const purchaseMonth = parseInt(selectedInput.purchaseMonth, 10);
-    const usefulLife = parseInt(selectedInput.usefulLifetime, 10);
-    const endMonth = purchaseMonth + usefulLife - 1;
-    const assetCost =
-      parseFloat(selectedInput.assetCost) *
-      parseInt(selectedInput.quantity, 10);
-
-    for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
-      if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
-        assetCostRow[`month${monthIndex + 1}`] = formatNumber(
-          assetCost?.toFixed(2)
-        );
-
-        depreciationRow[`month${monthIndex + 1}`] = formatNumber(
-          selectedInvestmentData.depreciationArray[monthIndex]?.toFixed(2)
-        );
-        accumulatedDepreciationRow[`month${monthIndex + 1}`] = formatNumber(
-          selectedInvestmentData.accumulatedDepreciation[monthIndex]?.toFixed(2)
-        );
-        bookValueRow[`month${monthIndex + 1}`] = formatNumber(
-          (
-            assetCost -
-            selectedInvestmentData.accumulatedDepreciation[monthIndex]
-          )?.toFixed(2)
-        );
-      } else {
-        assetCostRow[`month${monthIndex + 1}`] = "0.00";
-        depreciationRow[`month${monthIndex + 1}`] = "0.00";
-        accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0.00";
-        bookValueRow[`month${monthIndex + 1}`] = "0.00";
-      }
-    }
-
-    investmentTableData.push(
-      assetCostRow,
-      depreciationRow,
-      accumulatedDepreciationRow,
-      bookValueRow
-    );
-
-    const depreciationSum = Array(numberOfMonths).fill(0);
-    const cfInvestmentsSum = Array(numberOfMonths).fill(0);
-
-    tempInvestmentData.forEach((data, index) => {
-      data.depreciationArray.forEach((value, month) => {
-        depreciationSum[month] += value;
-      });
-      const purchaseMonth =
-        parseInt(tempInvestmentInputs[index].purchaseMonth, 10) - 1;
-      if (purchaseMonth >= 0 && purchaseMonth < numberOfMonths) {
-        const assetCost =
-          parseFloat(tempInvestmentInputs[index].assetCost) *
-          parseInt(tempInvestmentInputs[index].quantity, 10);
-        cfInvestmentsSum[purchaseMonth] += assetCost;
-      }
-    });
-
-    const cfInvestmentsRow = {
-      key: `CF Investments`,
-      type: "CF Investments",
-    };
-    for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
-      cfInvestmentsRow[`month${monthIndex + 1}`] = formatNumber(
-        cfInvestmentsSum[monthIndex]?.toFixed(2)
-      );
-    }
-    investmentTableData.push(cfInvestmentsRow);
-
-    // Add row for Total Depreciation
-    const totalDepreciationRow = {
-      key: `Total Depreciation`,
-      type: "Total Depreciation",
-    };
-    depreciationSum.forEach((depreciation, index) => {
-      totalDepreciationRow[`month${index + 1}`] = formatNumber(
-        depreciation.toFixed(2)
-      );
-    });
-    investmentTableData.push(totalDepreciationRow);
-
-    // Add row for BS Total investment
-    const bsTotalInvestmentRow = {
-      key: `BS Total investment`,
-      type: "BS Total investment",
-    };
-    for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
-      bsTotalInvestmentRow[`month${monthIndex + 1}`] = formatNumber(
-        cfInvestmentsSum
-          .slice(0, monthIndex + 1)
-          .reduce((acc, curr) => acc + curr, 0)
-          .toFixed(2)
-      );
-    }
-    investmentTableData.push(bsTotalInvestmentRow);
-
-    //Add row for BS Total Accumulated Depreciation
-    const bsTotalAccumulatedDepreciationRow = {
-      key: `BS Total Accumulated Depreciation`,
-      type: "BS Total Accumulated Depreciation",
-    };
-    for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
-      bsTotalAccumulatedDepreciationRow[`month${monthIndex + 1}`] =
-        formatNumber(
-          depreciationSum
-            .slice(0, monthIndex + 1)
-            .reduce((acc, curr) => acc + curr, 0)
-            .toFixed(2)
-        );
-    }
-    investmentTableData.push(bsTotalAccumulatedDepreciationRow);
-
-    // add new row call Total BS Net Fixed Assets equal to BS Total investment - BS Total Accumulated Depreciation
-    const bsTotalNetFixedAssetsRow = {
-      key: `BS Total Net Fixed Assets`,
-      type: "BS Total Net Fixed Assets",
-    };
-    for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
-      bsTotalNetFixedAssetsRow[`month${monthIndex + 1}`] = formatNumber(
-        (
-          cfInvestmentsSum
-            .slice(0, monthIndex + 1)
-            .reduce((acc, curr) => acc + curr, 0) -
-          depreciationSum
-            .slice(0, monthIndex + 1)
-            .reduce((acc, curr) => acc + curr, 0)
-        ).toFixed(2)
-      );
-    }
-    investmentTableData.push(bsTotalNetFixedAssetsRow);
-
-    return investmentTableData;
-  };
-
   useEffect(() => {
     const calculatedData = calculateInvestmentData(
-      tempInvestmentInputs,
+      investmentInputs,
       numberOfMonths
     );
     dispatch(setInvestmentData(calculatedData));
-    const tableData = transformInvestmentDataForTable();
+    const tableData = transformInvestmentDataForTable(
+      investmentInputs,
+      renderInvestmentForm,
+      investmentData,
+      numberOfMonths
+    );
     dispatch(setInvestmentTableData(tableData));
   }, [investmentInputs, numberOfMonths, renderInvestmentForm]);
+
+  useEffect(() => {
+    const tableData = transformInvestmentDataForTable(
+      investmentInputs,
+      renderInvestmentForm,
+      investmentData,
+      numberOfMonths
+    );
+    dispatch(setInvestmentTableData(tableData));
+  }, [investmentInputs, numberOfMonths, investmentData]);
 
   useEffect(() => {
     const calculatedData = calculateInvestmentData(
@@ -255,7 +105,12 @@ const InvestmentSection = ({
       numberOfMonths
     );
     setTempInvestmentData(calculatedData);
-    const tableData = transformInvestmentDataForTable();
+    const tableData = transformInvestmentDataForTable(
+      tempInvestmentInputs,
+      renderInvestmentForm,
+      tempInvestmentData,
+      numberOfMonths
+    );
     dispatch(setInvestmentTableData(tableData));
   }, [tempInvestmentInputs, numberOfMonths, renderInvestmentForm]);
 
@@ -327,17 +182,27 @@ const InvestmentSection = ({
   useEffect(() => {
     if (isSaved) {
       dispatch(setInvestmentInputs(tempInvestmentInputs));
-      const tableData = transformInvestmentDataForTable();
+      const tableData = transformInvestmentDataForTable(
+        tempInvestmentInputs,
+        renderInvestmentForm,
+        tempInvestmentData,
+        numberOfMonths
+      );
       dispatch(setInvestmentTableData(tableData));
       setIsSaved(false);
     }
   }, [isSaved]);
 
   useEffect(() => {
-    const tableData = transformInvestmentDataForTable();
+    const tableData = transformInvestmentDataForTable(
+      investmentInputs,
+      renderInvestmentForm,
+      investmentData,
+      numberOfMonths
+    );
     dispatch(setInvestmentTableData(tableData));
   }, []);
-
+  console.log("investmentTableData", investmentTableData);
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
       <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
@@ -499,7 +364,12 @@ const InvestmentSection = ({
         <Table
           className="overflow-auto my-8"
           size="small"
-          dataSource={transformInvestmentDataForTable()}
+          dataSource={transformInvestmentDataForTable(
+            tempInvestmentInputs,
+            renderInvestmentForm,
+            tempInvestmentData,
+            numberOfMonths
+          )}
           columns={investmentColumns}
           pagination={false}
         />

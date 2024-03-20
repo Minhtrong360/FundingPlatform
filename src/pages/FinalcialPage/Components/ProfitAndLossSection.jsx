@@ -1,149 +1,144 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Col, Card } from "antd";
-import { formatNumber, parseNumber } from "../../../features/CostSlice";
+import {
+  calculateCostData,
+  formatNumber,
+  parseNumber,
+  setCostData,
+} from "../../../features/CostSlice";
+import {
+  calculateChannelRevenue,
+  setCogsData,
+  setRevenueData,
+  setRevenueDeductionData,
+} from "../../../features/SaleSlice";
+import {
+  calculatePersonnelCostData,
+  setPersonnelCostData,
+} from "../../../features/PersonnelSlice";
+import {
+  calculateInvestmentData,
+  setInvestmentData,
+  setInvestmentTableData,
+  transformInvestmentDataForTable,
+} from "../../../features/InvestmentSlice";
+import {
+  calculateLoanData,
+  setLoanData,
+  setLoanTableData,
+  transformLoanDataForTable,
+} from "../../../features/LoanSlice";
+import {
+  setFundraisingTableData,
+  transformFundraisingDataForTable,
+} from "../../../features/FundraisingSlice";
+import { calculateProfitAndLoss } from "../../../features/ProfitAndLossSlice";
 
-const ProfitAndLossSection = ({
-  loanData,
-  numberOfMonths,
-
-  loanTableData,
-  fundraisingTableData,
-}) => {
-  const { revenueData, revenueDeductionData, cogsData } = useSelector(
-    (state) => state.sales
+const ProfitAndLossSection = ({ numberOfMonths }) => {
+  const dispatch = useDispatch();
+  const { customerGrowthData, customerInputs } = useSelector(
+    (state) => state.customer
   );
+
+  const { channelInputs, revenueData, revenueDeductionData, cogsData } =
+    useSelector((state) => state.sales);
+
+  useEffect(() => {
+    const {
+      revenueByChannelAndProduct,
+      DeductionByChannelAndProduct,
+      cogsByChannelAndProduct,
+    } = dispatch(
+      calculateChannelRevenue(
+        numberOfMonths,
+        customerGrowthData,
+        customerInputs,
+        channelInputs
+      )
+    );
+
+    dispatch(setRevenueData(revenueByChannelAndProduct));
+    dispatch(setRevenueDeductionData(DeductionByChannelAndProduct));
+    dispatch(setCogsData(cogsByChannelAndProduct));
+  }, [customerGrowthData, channelInputs, numberOfMonths]);
+
   const { incomeTax: incomeTaxRate, startingCashBalance } = useSelector(
     (state) => state.durationSelect
   );
-  const { costData } = useSelector((state) => state.cost);
-  const { personnelCostData } = useSelector((state) => state.personnel);
-  const { investmentData, investmentTableData } = useSelector(
-    (state) => state.investment
+
+  const { costData, costInputs } = useSelector((state) => state.cost);
+
+  useEffect(() => {
+    const calculatedData = calculateCostData(costInputs, numberOfMonths);
+    dispatch(setCostData(calculatedData));
+  }, [costInputs, numberOfMonths]);
+
+  const { personnelCostData, personnelInputs } = useSelector(
+    (state) => state.personnel
   );
 
-  const calculateProfitAndLoss = () => {
-    let totalRevenue = new Array(numberOfMonths).fill(0);
-    let totalDeductions = new Array(numberOfMonths).fill(0);
-    let totalCOGS = new Array(numberOfMonths).fill(0);
-    let totalCosts = new Array(numberOfMonths).fill(0);
-    let totalPersonnelCosts = new Array(numberOfMonths).fill(0);
-    let totalInvestmentDepreciation = new Array(numberOfMonths).fill(0);
-    let totalLoanPayments = new Array(numberOfMonths).fill(0);
-
-    Object.entries(revenueData).forEach(([channelProductName, monthlyData]) => {
-      monthlyData.forEach((deduction, index) => {
-        totalRevenue[index] += parseFloat(deduction);
-      });
-    });
-
-    Object.entries(revenueDeductionData).forEach(
-      ([channelProductName, monthlyData]) => {
-        monthlyData.forEach((deduction, index) => {
-          totalDeductions[index] += parseFloat(deduction);
-        });
-      }
+  useEffect(() => {
+    const calculatedData = calculatePersonnelCostData(
+      personnelInputs,
+      numberOfMonths
     );
-    Object.entries(cogsData).forEach(([channelProductName, monthlyData]) => {
-      monthlyData.forEach((deduction, index) => {
-        totalCOGS[index] += parseFloat(deduction);
-      });
-    });
+    dispatch(setPersonnelCostData(calculatedData));
+  }, [personnelInputs, numberOfMonths]);
 
-    costData.forEach((cost) => {
-      cost.monthlyCosts.forEach((monthData) => {
-        totalCosts[monthData.month - 1] += monthData.cost;
-      });
-    });
-
-    personnelCostData.forEach((personnel) => {
-      personnel.monthlyCosts.forEach((monthData) => {
-        totalPersonnelCosts[monthData.month - 1] += monthData.cost;
-      });
-    });
-
-    investmentData.forEach((investment) => {
-      investment.depreciationArray.forEach((value, index) => {
-        totalInvestmentDepreciation[index] += value;
-      });
-    });
-
-    loanData.forEach((loan) => {
-      loan.loanDataPerMonth.forEach((monthData) => {
-        totalLoanPayments[monthData.month - 1] += monthData.payment;
-      });
-    });
-
-    let netRevenue = totalRevenue.map(
-      (revenue, index) => revenue - totalDeductions[index]
+  const { investmentData, investmentTableData, investmentInputs } = useSelector(
+    (state) => state.investment
+  );
+  useEffect(() => {
+    const calculatedData = calculateInvestmentData(
+      investmentInputs,
+      numberOfMonths
     );
+    dispatch(setInvestmentData(calculatedData));
+  }, [investmentInputs, numberOfMonths]);
 
-    let grossProfit = netRevenue.map(
-      (revenue, index) => revenue - totalCOGS[index]
+  useEffect(() => {
+    const tableData = transformInvestmentDataForTable(
+      investmentInputs,
+      investmentInputs[0]?.id,
+      investmentData,
+      numberOfMonths
+    );
+    dispatch(setInvestmentTableData(tableData));
+  }, [investmentData, investmentInputs, numberOfMonths]);
+
+  const { loanInputs, loanData, loanTableData } = useSelector(
+    (state) => state.loan
+  );
+
+  useEffect(() => {
+    const calculatedData = calculateLoanData(loanInputs);
+    dispatch(setLoanData(calculatedData));
+  }, [loanInputs, numberOfMonths]);
+
+  useEffect(() => {
+    const tableData = transformLoanDataForTable(
+      loanInputs,
+      loanInputs[0]?.id,
+      numberOfMonths
+    );
+    dispatch(setLoanTableData(tableData));
+  }, [loanInputs, numberOfMonths]);
+
+  const { fundraisingInputs, fundraisingTableData } = useSelector(
+    (state) => state.fundraising
+  );
+
+  useEffect(() => {
+    const tableData = transformFundraisingDataForTable(
+      fundraisingInputs,
+      numberOfMonths
     );
 
-    let ebitda = grossProfit.map(
-      (profit, index) =>
-        profit - (totalCosts[index] + totalPersonnelCosts[index])
-    );
-
-    let totalInterestPayments = new Array(numberOfMonths).fill(0);
-    loanData.forEach((loan) => {
-      loan.loanDataPerMonth.forEach((monthData) => {
-        totalInterestPayments[monthData.month - 1] += monthData.interest;
-      });
-    });
-
-    let earningsBeforeTax = ebitda.map(
-      (profit, index) =>
-        profit -
-        (totalInvestmentDepreciation[index] + totalInterestPayments[index])
-    );
-
-    let incomeTax = earningsBeforeTax.map((earnings) =>
-      earnings > 0 ? earnings * (incomeTaxRate / 100) : 0
-    );
-
-    let netIncome = earningsBeforeTax.map(
-      (earnings, index) => earnings - incomeTax[index]
-    );
-
-    const totalPrincipal = new Array(numberOfMonths).fill(0);
-    loanData.forEach((loan) => {
-      loan.loanDataPerMonth.forEach((monthData) => {
-        totalPrincipal[monthData.month - 1] += monthData.principal;
-      });
-    });
-
-    const totalRemainingBalance = new Array(numberOfMonths).fill(0);
-    loanData.forEach((loan) => {
-      loan.loanDataPerMonth.forEach((monthData) => {
-        totalRemainingBalance[monthData.month - 1] +=
-          monthData.remainingBalance;
-      });
-    });
-
-    return {
-      totalRevenue,
-      totalDeductions,
-      netRevenue,
-      totalCOGS,
-      grossProfit,
-      totalCosts,
-      totalPersonnelCosts,
-      totalInvestmentDepreciation,
-      totalInterestPayments,
-      totalPrincipal,
-      ebitda,
-      earningsBeforeTax,
-      incomeTax,
-      netIncome,
-      startingCashBalance,
-      totalRemainingBalance,
-    };
-  };
+    dispatch(setFundraisingTableData(tableData));
+  }, []);
 
   const {
     totalRevenue,
@@ -160,8 +155,18 @@ const ProfitAndLossSection = ({
     earningsBeforeTax,
     incomeTax,
     netIncome,
-    remainingBalance,
-  } = calculateProfitAndLoss();
+  } = calculateProfitAndLoss(
+    numberOfMonths,
+    revenueData,
+    revenueDeductionData,
+    cogsData,
+    costData,
+    personnelCostData,
+    investmentData,
+    loanData,
+    incomeTaxRate,
+    startingCashBalance
+  );
 
   const transposedData = [
     { key: "Revenue" },
@@ -289,51 +294,30 @@ const ProfitAndLossSection = ({
     investmentData.reduce((acc, data) => acc + data?.assetValue[index], 0)
   );
 
-  const cfInvestmentsSum = investmentTableData.map(
-    (investment) =>
-      investment?.monthlyInvestments?.reduce((acc, curr) => acc + curr, 0) || 0
-  );
-
-  const totalLoanAmount = loanData[0]?.loanDataPerMonth?.map((_, index) =>
-    loanData.reduce(
-      (acc, loan) => acc + (loan.loanDataPerMonth[index]?.loanAmount || 0),
-      0
-    )
-  );
-
-  const maxLength = Math.max(
-    totalLoanAmount?.length || 0,
-    totalPrincipal?.length || 0,
-    numberOfMonths
-  );
-
-  const fillWithZero = (arr) =>
-    Array.from({ length: maxLength }, (_, i) => arr[i] || 0);
-
-  const filledTotalLoanAmount = fillWithZero(totalLoanAmount);
-  const filledTotalPrincipal = fillWithZero(totalPrincipal);
-
-  const cfInvestments = investmentTableData.find(
-    (item) => item.key === "CF Investments"
-  );
-
-  console.log("cfInvestments", cfInvestments);
   const cfInvestmentsArray = [];
+  if (investmentTableData.length > 0) {
+    const cfInvestments = investmentTableData.find(
+      (item) => item.key === "CF Investments"
+    );
 
-  Object.keys(cfInvestments).forEach((key) => {
-    if (key.startsWith("month")) {
-      cfInvestmentsArray.push(parseNumber(cfInvestments[key]));
-    }
-  });
+    Object.keys(cfInvestments).forEach((key) => {
+      if (key.startsWith("month")) {
+        cfInvestmentsArray.push(parseNumber(cfInvestments[key]));
+      }
+    });
+  }
 
-  const cfLoans = loanTableData.find((item) => item.key === "CF Loans");
   const cfLoanArray = [];
 
-  Object.keys(cfLoans).forEach((key) => {
-    if (key.startsWith("Month ")) {
-      cfLoanArray.push(parseNumber(cfLoans[key]));
-    }
-  });
+  if (loanTableData.length > 0) {
+    const cfLoans = loanTableData.find((item) => item.key === "CF Loans");
+
+    Object.keys(cfLoans).forEach((key) => {
+      if (key.startsWith("Month ")) {
+        cfLoanArray.push(parseNumber(cfLoans[key]));
+      }
+    });
+  }
 
   const calculateCashBalances = (startingCash, netCashChanges) => {
     const cashBalances = netCashChanges?.reduce((acc, netCashChange, index) => {
@@ -1012,6 +996,7 @@ const ProfitAndLossSection = ({
         columns={positionColumns}
         pagination={false}
       />
+
       <h2 className="text-2xl font-semibold mb-4">Balance Sheet</h2>
       <Table
         className="overflow-auto my-8"

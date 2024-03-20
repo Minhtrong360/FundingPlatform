@@ -4,7 +4,6 @@ import { Col, Card } from "antd";
 
 const CustomChart = ({
   numberOfMonths,
-
   id,
   yaxisTitle,
   seriesTitle,

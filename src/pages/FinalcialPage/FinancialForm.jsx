@@ -473,7 +473,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   //   );
   // };
 
-  const [activeTab, setActiveTab] = useState("result");
+  const [activeTab, setActiveTab] = useState("overview");
 
   const handleTabChange = (tabName) => {
     setActiveTab(tabName);

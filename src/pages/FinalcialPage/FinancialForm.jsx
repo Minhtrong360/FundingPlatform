@@ -49,12 +49,14 @@ import FundraisingSection from "./Components/FundraisingSections";
 import { setCostInputs } from "../../features/CostSlice";
 import { setPersonnelInputs } from "../../features/PersonnelSlice";
 import { setInvestmentInputs } from "../../features/InvestmentSlice";
+import { setLoanInputs } from "../../features/LoanSlice";
+import { setFundraisingInputs } from "../../features/FundraisingSlice";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-
+  const [temIsLoading, setTemIsLoading] = useState(true);
   //DurationSection
   const {
     selectedDuration,
@@ -114,7 +116,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         dispatch(setPersonnelInputs(data.PersonnelSection.personnelInputs));
       if (data.InvestmentSection)
         dispatch(setInvestmentInputs(data.InvestmentSection.investmentInputs));
-      if (data.LoanSection) setLoanInputs(data.LoanSection.loanInputs);
+      if (data.LoanSection)
+        dispatch(setLoanInputs(data.LoanSection.loanInputs));
     } catch (error) {
       console.log("Error parsing JSON:", error);
     }
@@ -226,43 +229,11 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
   //LoanState
 
-  const [loanInputs, setLoanInputs] = useState([
-    {
-      id: 1,
-      loanName: "Banking loan",
-      loanAmount: "30000",
-      interestRate: "6",
-      loanBeginMonth: "1",
-      loanEndMonth: "12",
-    },
-    {
-      id: 2,
-      loanName: "Startup loan",
-      loanAmount: "20000",
-      interestRate: "3",
-      loanBeginMonth: "6",
-      loanEndMonth: "24",
-    },
-  ]);
-
-  const [loanData, setLoanData] = useState([]);
-
-  const [loanTableData, setLoanTableData] = useState([]);
+  const { loanInputs } = useSelector((state) => state.loan);
 
   // Fundraising State
-  const [fundraisingInputs, setFundraisingInputs] = useState([
-    {
-      id: 1,
-      name: "",
-      fundraisingAmount: 0,
-      fundraisingType: "Common Stock",
-      fundraisingBeginMonth: 1,
-      equityOffered: 0,
-    },
-  ]);
 
-  const [fundraisingTableData, setFundraisingTableData] = useState([]);
-
+  const { fundraisingInputs } = useSelector((state) => state.fundraising);
   // Lưu vào DB
 
   const { user } = useAuth();
@@ -281,6 +252,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   };
 
   useEffect(() => {
+    setTemIsLoading(true);
     // Assuming `user` is your user object
     const userId = user?.id;
     if (userId) {
@@ -319,13 +291,16 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           dispatch(
             setInvestmentInputs(inputData.investmentInputs || investmentInputs)
           );
-          setLoanInputs(inputData.loanInputs || loanInputs);
-          setFundraisingInputs(
-            inputData.fundraisingInputs || fundraisingInputs
+          dispatch(setLoanInputs(inputData.loanInputs || loanInputs));
+          dispatch(
+            setFundraisingInputs(
+              inputData.fundraisingInputs || fundraisingInputs
+            )
           );
         }
       });
     }
+    setTemIsLoading(false);
   }, [user?.id]);
 
   useEffect(() => {
@@ -504,41 +479,39 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     setActiveTab(tabName);
   };
 
-  const [temIsLoading, setTemIsLoading] = useState(true);
+  // useEffect(() => {
+  //   setTemIsLoading(true);
 
-  useEffect(() => {
-    setTemIsLoading(true);
+  //   const tabs = [
+  //     { tab: "customer", delay: 100 },
+  //     // { tab: "sales", delay: 100 },
+  //     // { tab: "cost", delay: 100 },
+  //     // { tab: "sales", delay: 100 },
+  //     // { tab: "personnel", delay: 100 },
+  //     // { tab: "investment", delay: 100 },
+  //     // { tab: "loan", delay: 100 },
+  //     // { tab: "fundraising", delay: 100 },
+  //     // { tab: "investment", delay: 100 },
+  //     // { tab: "fundraising", delay: 100 },
+  //     { tab: "overview", delay: 100 },
+  //   ];
 
-    const tabs = [
-      { tab: "customer", delay: 100 },
-      { tab: "sales", delay: 100 },
-      { tab: "cost", delay: 100 },
-      { tab: "sales", delay: 100 },
-      { tab: "personnel", delay: 100 },
-      { tab: "investment", delay: 100 },
-      { tab: "loan", delay: 100 },
-      { tab: "fundraising", delay: 100 },
-      { tab: "investment", delay: 100 },
-      { tab: "fundraising", delay: 100 },
-      { tab: "overview", delay: 100 },
-    ];
+  //   let currentIndex = 0;
 
-    let currentIndex = 0;
+  //   const switchTabs = () => {
+  //     setTimeout(() => {
+  //       setActiveTab(tabs[currentIndex].tab);
+  //       currentIndex++;
+  //       if (currentIndex < tabs.length) {
+  //         switchTabs();
+  //       } else {
+  //         setTemIsLoading(false);
+  //       }
+  //     }, tabs[currentIndex].delay);
+  //   };
 
-    const switchTabs = () => {
-      setTimeout(() => {
-        setActiveTab(tabs[currentIndex].tab);
-        currentIndex++;
-        if (currentIndex < tabs.length) {
-          switchTabs();
-        } else {
-          setTemIsLoading(false);
-        }
-      }, tabs[currentIndex].delay);
-    };
-
-    switchTabs();
-  }, [chatbotResponse]);
+  //   switchTabs();
+  // }, [chatbotResponse]);
 
   return (
     <div>
@@ -558,10 +531,12 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           </div>
           <div className="my-4 ">
             <div className="overflow-x-auto whitespace-nowrap border-t-2">
-              <ul className="py-4 flex sm:justify-center justify-start items-center">
+              <ul className="py-4 flex lg:justify-center justify-start items-center">
                 <li
                   className={`cursor-pointer mr-4 ${
-                    activeTab === "overview" ? "border-b-2 border-black" : ""
+                    activeTab === "overview"
+                      ? "border-b-2 border-black font-bold"
+                      : ""
                   }`}
                   onClick={() => handleTabChange("overview")}
                 >
@@ -569,7 +544,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </li>
                 <li
                   className={`cursor-pointer mr-4 ${
-                    activeTab === "customer" ? "border-b-2 border-black" : ""
+                    activeTab === "customer"
+                      ? "border-b-2 border-black font-bold"
+                      : ""
                   }`}
                   onClick={() => handleTabChange("customer")}
                 >
@@ -577,7 +554,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </li>
                 <li
                   className={`cursor-pointer mr-4 ${
-                    activeTab === "sales" ? "border-b-2 border-black" : ""
+                    activeTab === "sales"
+                      ? "border-b-2 border-black font-bold"
+                      : ""
                   }`}
                   onClick={() => handleTabChange("sales")}
                 >
@@ -585,7 +564,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </li>
                 <li
                   className={`cursor-pointer mr-4 ${
-                    activeTab === "cost" ? "border-b-2 border-black" : ""
+                    activeTab === "cost"
+                      ? "border-b-2 border-black font-bold"
+                      : ""
                   }`}
                   onClick={() => handleTabChange("cost")}
                 >
@@ -593,7 +574,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </li>
                 <li
                   className={`cursor-pointer mr-4 ${
-                    activeTab === "personnel" ? "border-b-2 border-black" : ""
+                    activeTab === "personnel"
+                      ? "border-b-2 border-black font-bold"
+                      : ""
                   }`}
                   onClick={() => handleTabChange("personnel")}
                 >
@@ -601,7 +584,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </li>
                 <li
                   className={`cursor-pointer mr-4 ${
-                    activeTab === "investment" ? "border-b-2 border-black" : ""
+                    activeTab === "investment"
+                      ? "border-b-2 border-black font-bold"
+                      : ""
                   }`}
                   onClick={() => handleTabChange("investment")}
                 >
@@ -609,7 +594,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </li>
                 <li
                   className={`cursor-pointer mr-4 ${
-                    activeTab === "loan" ? "border-b-2 border-black" : ""
+                    activeTab === "loan"
+                      ? "border-b-2 border-black font-bold"
+                      : ""
                   }`}
                   onClick={() => handleTabChange("loan")}
                 >
@@ -617,7 +604,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </li>
                 <li
                   className={`cursor-pointer mr-4 ${
-                    activeTab === "fundraising" ? "border-b-2 border-black" : ""
+                    activeTab === "fundraising"
+                      ? "border-b-2 border-black font-bold"
+                      : ""
                   }`}
                   onClick={() => handleTabChange("fundraising")}
                 >
@@ -626,7 +615,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
                 <li
                   className={`cursor-pointer mr-4 ${
-                    activeTab === "result" ? "border-b-2 border-black" : ""
+                    activeTab === "result"
+                      ? "border-b-2 border-black font-bold"
+                      : ""
                   }`}
                   onClick={() => handleTabChange("result")}
                 >
@@ -696,23 +687,14 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               )}
               {activeTab === "loan" && (
                 <LoanSection
-                  loanInputs={loanInputs}
-                  setLoanInputs={setLoanInputs}
                   numberOfMonths={numberOfMonths}
-                  loanData={loanData}
-                  setLoanData={setLoanData}
                   isSaved={isSaved}
                   setIsSaved={setIsSaved}
-                  setLoanTableData={setLoanTableData}
                   handleSubmit={handleSubmit}
                 />
               )}
               {activeTab === "fundraising" && (
                 <FundraisingSection
-                  fundraisingInputs={fundraisingInputs}
-                  setFundraisingInputs={setFundraisingInputs}
-                  fundraisingTableData={fundraisingTableData}
-                  setFundraisingTableData={setFundraisingTableData}
                   numberOfMonths={numberOfMonths}
                   isSaved={isSaved}
                   setIsSaved={setIsSaved}
@@ -722,12 +704,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
               {activeTab === "result" && (
                 <ProfitAndLossSection
-                  loanData={loanData}
                   numberOfMonths={numberOfMonths}
-                  loanTableData={loanTableData}
                   startingCashBalance={startingCashBalance}
-                  fundraisingInputs={fundraisingInputs}
-                  fundraisingTableData={fundraisingTableData}
                 />
               )}
             </div>

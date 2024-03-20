@@ -95,7 +95,7 @@ export const transformInvestmentDataForTable = (
   numberOfMonths
 ) => {
   const investmentTableData = [];
-
+  console.log("tempInvestmentInputs", tempInvestmentInputs);
   const selectedInput = tempInvestmentInputs.find(
     (input) => input.id == renderInvestmentForm
   );
@@ -172,11 +172,12 @@ export const transformInvestmentDataForTable = (
       depreciationSum[month] += value;
     });
     const purchaseMonth =
-      parseInt(tempInvestmentInputs[index].purchaseMonth, 10) - 1;
+      parseInt(tempInvestmentInputs[index]?.purchaseMonth, 10) - 1;
+
     if (purchaseMonth >= 0 && purchaseMonth < numberOfMonths) {
       const assetCost =
-        parseFloat(tempInvestmentInputs[index].assetCost) *
-        parseInt(tempInvestmentInputs[index].quantity, 10);
+        parseFloat(tempInvestmentInputs[index]?.assetCost) *
+        parseInt(tempInvestmentInputs[index]?.quantity, 10);
       cfInvestmentsSum[purchaseMonth] += assetCost;
     }
   });

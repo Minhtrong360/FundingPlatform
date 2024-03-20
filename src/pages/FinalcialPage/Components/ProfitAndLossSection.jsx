@@ -290,9 +290,27 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     })),
   ];
 
-  const totalAssetValue = investmentData[0]?.assetValue?.map((_, index) =>
-    investmentData.reduce((acc, data) => acc + data?.assetValue[index], 0)
-  );
+  let totalAssetValue = [];
+
+  console.log("investmentData", investmentData);
+
+  // Kiểm tra nếu investmentData không có giá trị hoặc investmentData[0]?.assetValue không tồn tại
+  if (!investmentData || !investmentData[0]?.assetValue) {
+    // Tạo một mảng mới với các phần tử có giá trị là 0
+    // Ví dụ: Tạo một mảng gồm 12 phần tử có giá trị 0
+    for (let i = 0; i < numberOfMonths; i++) {
+      totalAssetValue.push(0);
+    }
+  } else {
+    // Nếu investmentData có giá trị và investmentData[0]?.assetValue tồn tại
+    // Thực hiện tính tổng của từng phần tử tại index trong mảng assetValue của mỗi phần tử trong investmentData
+    totalAssetValue = investmentData[0]?.assetValue?.map((_, index) =>
+      investmentData.reduce(
+        (acc, data) => acc + (data?.assetValue ? data.assetValue[index] : 0),
+        0
+      )
+    );
+  }
 
   const cfInvestmentsArray = [];
   if (investmentTableData.length > 0) {
@@ -305,6 +323,12 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
         cfInvestmentsArray.push(parseNumber(cfInvestments[key]));
       }
     });
+  } else {
+    // Trường hợp investmentTableData.length = 0, tạo mảng với giá trị 0
+    // Giả sử bạn muốn tạo một mảng gồm 12 phần tử có giá trị 0
+    for (let i = 0; i < numberOfMonths; i++) {
+      cfInvestmentsArray.push(0);
+    }
   }
 
   const cfLoanArray = [];
@@ -317,6 +341,12 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
         cfLoanArray.push(parseNumber(cfLoans[key]));
       }
     });
+  } else {
+    // Trường hợp investmentTableData.length = 0, tạo mảng với giá trị 0
+    // Giả sử bạn muốn tạo một mảng gồm 12 phần tử có giá trị 0
+    for (let i = 0; i < numberOfMonths; i++) {
+      cfLoanArray.push(0);
+    }
   }
 
   const calculateCashBalances = (startingCash, netCashChanges) => {
@@ -408,21 +438,31 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   const bsTotalDepreciation = [];
   const bsTotalNetFixedAssets = [];
 
-  investmentTableData.forEach((data) => {
-    if (data.key === "BS Total Accumulated Depreciation") {
-      Object.keys(data).forEach((key) => {
-        if (key.startsWith("month")) {
-          bsTotalDepreciation.push(parseNumber(data[key]));
-        }
-      });
-    } else if (data.key === "BS Total Net Fixed Assets") {
-      Object.keys(data).forEach((key) => {
-        if (key.startsWith("month")) {
-          bsTotalNetFixedAssets.push(parseNumber(data[key]));
-        }
-      });
+  if (investmentTableData.length === 0) {
+    // Trường hợp không có dữ liệu trong investmentTableData, tạo mảng mới với các phần tử có giá trị là 0
+    // Giả sử bạn muốn tạo một mảng gồm 12 phần tử có giá trị 0
+    for (let i = 0; i < numberOfMonths; i++) {
+      bsTotalDepreciation.push(0);
+      bsTotalNetFixedAssets.push(0);
     }
-  });
+  } else {
+    // Nếu có dữ liệu trong investmentTableData, thực hiện vòng lặp để xử lý dữ liệu
+    investmentTableData.forEach((data) => {
+      if (data.key === "BS Total Accumulated Depreciation") {
+        Object.keys(data).forEach((key) => {
+          if (key.startsWith("month")) {
+            bsTotalDepreciation.push(parseNumber(data[key]));
+          }
+        });
+      } else if (data.key === "BS Total Net Fixed Assets") {
+        Object.keys(data).forEach((key) => {
+          if (key.startsWith("month")) {
+            bsTotalNetFixedAssets.push(parseNumber(data[key]));
+          }
+        });
+      }
+    });
+  }
 
   const currentAssets = cashEndBalances.map((cashEnd, index) => {
     const accountsReceivable = 0; // Placeholder value
@@ -439,15 +479,24 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
 
   const bsTotalRemainingBalance = [];
 
-  loanTableData.forEach((data) => {
-    if (data.key === "Total Remaining Balance") {
-      Object.keys(data).forEach((key) => {
-        if (key.startsWith("Month ")) {
-          bsTotalRemainingBalance.push(parseNumber(data[key]));
-        }
-      });
+  if (loanTableData.length === 0) {
+    // Trường hợp không có dữ liệu trong loanTableData, tạo mảng mới với các phần tử có giá trị là 0
+    // Giả sử bạn muốn tạo một mảng gồm 12 phần tử có giá trị 0
+    for (let i = 0; i < numberOfMonths; i++) {
+      bsTotalRemainingBalance.push(0);
     }
-  });
+  } else {
+    // Nếu có dữ liệu trong loanTableData, thực hiện vòng lặp để xử lý dữ liệu
+    loanTableData.forEach((data) => {
+      if (data.key === "Total Remaining Balance") {
+        Object.keys(data).forEach((key) => {
+          if (key.startsWith("Month ")) {
+            bsTotalRemainingBalance.push(parseNumber(data[key]));
+          }
+        });
+      }
+    });
+  }
 
   const startingPaidInCapital = parseFloat(startingCashBalance);
 
@@ -475,8 +524,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
 
   //calculate the total liabilities and shareholders equity = total liabilities + total shareholders equity
   const totalLiabilitiesAndShareholdersEquity = totalLiabilities.map(
-    (totalLiabilities, index) =>
-      totalLiabilities + totalShareholdersEquity[index]
+    (totalLiability, index) => totalLiability + totalShareholdersEquity[index]
   );
 
   const positionDataWithNetIncome = [

@@ -118,6 +118,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         dispatch(setInvestmentInputs(data.InvestmentSection.investmentInputs));
       if (data.LoanSection)
         dispatch(setLoanInputs(data.LoanSection.loanInputs));
+      if (data.FundraisingSection)
+        dispatch(
+          setFundraisingInputs(data.FundraisingSection.fundraisingInputs)
+        );
     } catch (error) {
       console.log("Error parsing JSON:", error);
     }
@@ -478,40 +482,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const handleTabChange = (tabName) => {
     setActiveTab(tabName);
   };
-
-  // useEffect(() => {
-  //   setTemIsLoading(true);
-
-  //   const tabs = [
-  //     { tab: "customer", delay: 100 },
-  //     // { tab: "sales", delay: 100 },
-  //     // { tab: "cost", delay: 100 },
-  //     // { tab: "sales", delay: 100 },
-  //     // { tab: "personnel", delay: 100 },
-  //     // { tab: "investment", delay: 100 },
-  //     // { tab: "loan", delay: 100 },
-  //     // { tab: "fundraising", delay: 100 },
-  //     // { tab: "investment", delay: 100 },
-  //     // { tab: "fundraising", delay: 100 },
-  //     { tab: "overview", delay: 100 },
-  //   ];
-
-  //   let currentIndex = 0;
-
-  //   const switchTabs = () => {
-  //     setTimeout(() => {
-  //       setActiveTab(tabs[currentIndex].tab);
-  //       currentIndex++;
-  //       if (currentIndex < tabs.length) {
-  //         switchTabs();
-  //       } else {
-  //         setTemIsLoading(false);
-  //       }
-  //     }, tabs[currentIndex].delay);
-  //   };
-
-  //   switchTabs();
-  // }, [chatbotResponse]);
 
   return (
     <div>

@@ -6,7 +6,7 @@ const initialState = {
   status: "active",
   industry: "",
   incomeTax: 0,
-  payrollTax: 10,
+  payrollTax: 0,
   currency: "USD",
   startMonth: "",
   startYear: 2024,

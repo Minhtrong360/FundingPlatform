@@ -153,6 +153,7 @@ const InvestmentSection = ({
         assetCostRow[`month${monthIndex + 1}`] = formatNumber(
           assetCost?.toFixed(2)
         );
+        console.log("selectedInvestmentData", selectedInvestmentData)
         depreciationRow[`month${monthIndex + 1}`] = formatNumber(
           selectedInvestmentData.depreciationArray[monthIndex]?.toFixed(2)
         );

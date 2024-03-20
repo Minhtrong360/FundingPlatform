@@ -327,10 +327,10 @@ const NewProjectPosts = () => {
                     return (
                       <button
                         key={pageNumber}
-                        className={`flex items-center justify-center px-4 py-2 mx-1 text-black capitalize rounded-md  rtl:-scale-x-100 ${
+                        className={`flex items-center justify-center px-4 py-2 mx-1  capitalize rounded-md  rtl:-scale-x-100 ${
                           pageNumber + 1 === currentPage
-                            ? "bg-blue-600 hover:bg-blue-800"
-                            : "bg-gray-200 hover:bg-gray-400"
+                            ? "bg-blue-600 hover:bg-blue-800 text-white"
+                            : "bg-gray-200 hover:bg-gray-400 text-black"
                         }`}
                         onClick={() =>
                           handlePageChange(pageNumber + 1, currentTab)

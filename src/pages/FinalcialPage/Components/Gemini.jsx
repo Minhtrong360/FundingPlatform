@@ -178,6 +178,18 @@ const Gemini = ({
                   }
                 ]
               },
+              "FundraisingSection": {
+                "fundraisingInputs": [
+                  {
+                    id: 1,
+                    name: "Money",
+                    fundraisingAmount: 0,
+                    fundraisingType: "Common Stock",
+                    fundraisingBeginMonth: 1,
+                    equityOffered: 0,
+                  }
+                ]
+              },         
               "LoanSection": {
                 "loanInputs": [
                   {
@@ -195,6 +207,7 @@ const Gemini = ({
           }),
         }
       );
+
       console.log("2", response);
       const data = await response.json();
       console.log("3", data);

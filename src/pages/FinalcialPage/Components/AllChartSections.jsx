@@ -465,7 +465,7 @@ const AllChartSections = ({
               value={selectedChart}
               className="border-solid border-[1px] border-gray-200"
             >
-              <SelectTrigger className="border-solid border-[1px] border-gray-200 w-[20%]">
+              <SelectTrigger className="border-solid border-[1px] border-gray-200 md:w-[20%] w-full">
                 <SelectValue />
               </SelectTrigger>
 

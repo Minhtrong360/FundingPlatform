@@ -632,12 +632,12 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
             <div>
               {activeTab === "overview" && (
-                <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-                  <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
+                <div className="w-full h-full flex flex-col lg:flex-row border-t-2 ">
+                  <div className="w-full lg:w-1/4 sm:p-4 p-0 sm:border-r-2 border-r-0 sm:border-b-0 border-b-2">
                     <DurationSelect handleSubmit={handleSubmit} />
                   </div>
 
-                  <div className="w-full lg:w-3/4 p-4">
+                  <div className="w-full lg:w-3/4 sm:p-4 p-0">
                     <MetricsFM
                       customerGrowthChart={customerGrowthChart}
                       revenue={revenue}

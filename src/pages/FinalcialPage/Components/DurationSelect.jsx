@@ -30,7 +30,6 @@ const DurationSelect = ({ handleSubmit }) => {
     status,
     industry,
     incomeTax,
-    payrollTax,
     currency,
     startMonth,
     startYear,
@@ -74,7 +73,7 @@ const DurationSelect = ({ handleSubmit }) => {
   return (
     <section aria-labelledby="duration-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-4 flex items-center"
+        className="text-2xl font-semibold mb-4 flex items-center mt-4"
         id="duration-heading"
       >
         General Setup

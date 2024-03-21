@@ -9,7 +9,7 @@ const HeroCard = () => {
     if (!user) {
       navigate("/login");
     } else {
-      navigate("/founder");
+      navigate("/financials");
     }
   };
   return (
@@ -39,7 +39,7 @@ const HeroCard = () => {
               className=" py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
               onClick={handleClick}
             >
-              {user ? "Create project" : "Get started"}
+              {user ? "Financial Model" : "Get started"}
               <span>→</span>
             </button>
             <button

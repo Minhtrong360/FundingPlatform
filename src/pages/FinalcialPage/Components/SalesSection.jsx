@@ -530,7 +530,7 @@ const SalesSection = ({
             className="bg-blue-600 text-white py-1 px-2 rounded mt-4"
             onClick={handleSave}
           >
-            Save
+            Save changes
           </button>
         </section>
       </div>

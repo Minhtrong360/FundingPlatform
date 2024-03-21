@@ -278,7 +278,7 @@ const DurationSelect = ({ handleSubmit }) => {
         className="bg-blue-600 text-white py-1 px-2 rounded mt-4"
         onClick={handleSubmit}
       >
-        Save
+        Save project
       </button>
     </section>
   );

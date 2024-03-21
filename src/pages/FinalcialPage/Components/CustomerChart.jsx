@@ -43,7 +43,7 @@ const CustomChart = ({
     },
   };
   return (
-    <Col span={24} md={12} className="md:mt-0 mt-5">
+    <Col span={24} md={24} className="my-5">
       <Card title={title}>
         <Chart
           options={{

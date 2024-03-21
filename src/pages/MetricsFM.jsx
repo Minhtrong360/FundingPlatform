@@ -1,59 +1,10 @@
 import { Tooltip } from "antd";
-import React from "react";
 
-import { Card } from "antd";
-
-import Chart from "react-apexcharts";
 import { useSelector } from "react-redux";
 import { formatNumber } from "../features/CostSlice";
+import AllChartSections from "./FinalcialPage/Components/AllChartSections";
 
-function Component({
-  yearlyAverageCustomers,
-  customerGrowthChart,
-  yearlySales,
-  revenue,
-}) {
-  function sumArray(arr) {
-    return arr.reduce((total, num) => total + Number(num), 0);
-  }
-
-  return (
-    <div className="flex flex-col">
-      <main className="flex flex-1 flex-col gap-4 mt-4 mb-4 md:gap-8 ">
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col">
-            <div>
-              <h3>Total User</h3>
-              <p>
-                {formatNumber(Math.round(sumArray(yearlyAverageCustomers)))}
-              </p>
-            </div>
-            <Chart
-              type="bar"
-              series={customerGrowthChart.series}
-              options={customerGrowthChart.options}
-              height={300}
-            />
-          </Card>
-          <Card className="flex flex-col">
-            <div>
-              <h3>Total Revenue</h3>
-              <p>{formatNumber(Math.round(sumArray(yearlySales)))}</p>
-            </div>
-            <Chart
-              options={revenue.options}
-              series={revenue.series}
-              type="bar"
-              height={300}
-            />
-          </Card>
-        </div>
-      </main>
-    </div>
-  );
-}
-
-const MetricsFM = ({ customerGrowthChart, revenue }) => {
+const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
   // Define data for each card
   const { yearlyAverageCustomers } = useSelector((state) => state.customer);
   const { yearlySales } = useSelector((state) => state.sales);
@@ -70,7 +21,7 @@ const MetricsFM = ({ customerGrowthChart, revenue }) => {
               <p className="text-xs uppercase tracking-wide text-gray-500">
                 USER
               </p>
-              <Tooltip title="The average users of the first year.">
+              <Tooltip title="Total users of the first year.">
                 <svg
                   className="flex-shrink-0 size-4 text-gray-500"
                   xmlns="http://www.w3.org/2000/svg"
@@ -113,14 +64,19 @@ const MetricsFM = ({ customerGrowthChart, revenue }) => {
                   </svg>
                   <Tooltip title="The increase percentage of the second year compared to the first year in the series.">
                     <span className="inline-block text-sm">
-                      {formatNumber(
-                        (
-                          ((yearlyAverageCustomers[1] -
-                            yearlyAverageCustomers[0]) *
-                            100) /
-                          yearlyAverageCustomers[0]
-                        )?.toFixed(2)
-                      )}
+                      {((yearlyAverageCustomers[1] -
+                        yearlyAverageCustomers[0]) *
+                        100) /
+                      yearlyAverageCustomers[0]
+                        ? formatNumber(
+                            (
+                              ((yearlyAverageCustomers[1] -
+                                yearlyAverageCustomers[0]) *
+                                100) /
+                              yearlyAverageCustomers[0]
+                            ).toFixed(2)
+                          )
+                        : 0}
                       %
                     </span>
                   </Tooltip>
@@ -165,7 +121,7 @@ const MetricsFM = ({ customerGrowthChart, revenue }) => {
                     currency: "USD",
                     minimumFractionDigits: 0,
                     maximumFractionDigits: 0,
-                  }).format(Math.round(yearlySales[0]))}
+                  }).format(Math.round(yearlySales[0] ? yearlySales[0] : 0))}
                 </h3>
                 <span className="flex items-center gap-x-1 text-green-600 ml-2">
                   <svg
@@ -185,12 +141,15 @@ const MetricsFM = ({ customerGrowthChart, revenue }) => {
                   </svg>
                   <Tooltip title="The increase percentage of the second year compared to the first year in the series.">
                     <span className="inline-block text-sm">
-                      {formatNumber(
-                        (
-                          ((yearlySales[1] - yearlySales[0]) * 100) /
-                          yearlySales[0]
-                        )?.toFixed(2)
-                      )}
+                      {((yearlySales[1] - yearlySales[0]) * 100) /
+                      yearlySales[0]
+                        ? formatNumber(
+                            (
+                              ((yearlySales[1] - yearlySales[0]) * 100) /
+                              yearlySales[0]
+                            )?.toFixed(2)
+                          )
+                        : 0}
                       %
                     </span>
                   </Tooltip>
@@ -204,11 +163,12 @@ const MetricsFM = ({ customerGrowthChart, revenue }) => {
         {/* End Map */}
       </div>
       {/* End Grid */}
-      <Component
+      <AllChartSections
         yearlyAverageCustomers={yearlyAverageCustomers}
         customerGrowthChart={customerGrowthChart}
         yearlySales={yearlySales}
         revenue={revenue}
+        numberOfMonths={numberOfMonths}
       />
     </div>
   );

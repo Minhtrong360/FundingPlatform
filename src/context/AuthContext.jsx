@@ -102,7 +102,7 @@ const AuthProvider = ({ children }) => {
       let { data: userSupabase } = await supabase
         .from("users")
         .select("*")
-        .eq("id", currentUser.id);
+        .eq("id", currentUser?.id);
 
       if (
         userSupabase[0]?.plan === "Free" ||

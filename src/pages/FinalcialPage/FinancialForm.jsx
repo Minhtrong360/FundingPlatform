@@ -51,6 +51,7 @@ import { setPersonnelInputs } from "../../features/PersonnelSlice";
 import { setInvestmentInputs } from "../../features/InvestmentSlice";
 import { setLoanInputs } from "../../features/LoanSlice";
 import { setFundraisingInputs } from "../../features/FundraisingSlice";
+import CashFlowSection from "./Components/CashFlowSection";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
@@ -105,23 +106,36 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       dispatch(setIndustry(data.DurationSelect.industry));
       dispatch(setIncomeTax(data.DurationSelect.incomeTax));
       dispatch(setPayrollTax(data.DurationSelect.payrollTax));
-      dispatch(setCurrency(data.DurationSelect.currency));
+      dispatch(setCurrency("USD"));
       if (data.CustomerSection)
         dispatch(setCustomerInputs(data.CustomerSection.customerInputs));
       if (data.SalesSection)
         dispatch(setChannelInputs(data.SalesSection.channelInputs));
       if (data.CostSection)
-        dispatch(setCostInputs(data.CostSection.costInputs));
+        dispatch(
+          setCostInputs(
+            data.CostSection.costInputs.map((input) => ({
+              ...input,
+              costType: "General Administrative Cost",
+            }))
+          )
+        );
       if (data.PersonnelSection)
         dispatch(setPersonnelInputs(data.PersonnelSection.personnelInputs));
       if (data.InvestmentSection)
         dispatch(setInvestmentInputs(data.InvestmentSection.investmentInputs));
       if (data.LoanSection)
         dispatch(setLoanInputs(data.LoanSection.loanInputs));
-      if (data.FundraisingSection)
+      if (data.FundraisingSection) {
         dispatch(
-          setFundraisingInputs(data.FundraisingSection.fundraisingInputs)
+          setFundraisingInputs(
+            data.FundraisingSection.fundraisingInputs.map((input) => ({
+              ...input,
+              fundraisingType: "Common Stock",
+            }))
+          )
         );
+      }
     } catch (error) {
       console.log("Error parsing JSON:", error);
     }
@@ -585,13 +599,33 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
                 <li
                   className={`cursor-pointer mr-4 ${
-                    activeTab === "result"
+                    activeTab === "profitAndLoss"
                       ? "border-b-2 border-black font-bold"
                       : ""
                   }`}
-                  onClick={() => handleTabChange("result")}
+                  onClick={() => handleTabChange("profitAndLoss")}
                 >
-                  Financial Statements
+                  Profit and Loss
+                </li>
+                <li
+                  className={`cursor-pointer mr-4 ${
+                    activeTab === "cashFlow"
+                      ? "border-b-2 border-black font-bold"
+                      : ""
+                  }`}
+                  onClick={() => handleTabChange("cashFlow")}
+                >
+                  Cash Flow
+                </li>
+                <li
+                  className={`cursor-pointer mr-4 ${
+                    activeTab === "balanceSheet"
+                      ? "border-b-2 border-black font-bold"
+                      : ""
+                  }`}
+                  onClick={() => handleTabChange("balanceSheet")}
+                >
+                  Balance Sheet
                 </li>
               </ul>
             </div>
@@ -607,6 +641,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                     <MetricsFM
                       customerGrowthChart={customerGrowthChart}
                       revenue={revenue}
+                      numberOfMonths={numberOfMonths}
                     />
                   </div>
                 </div>
@@ -672,11 +707,14 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 />
               )}
 
-              {activeTab === "result" && (
-                <ProfitAndLossSection
-                  numberOfMonths={numberOfMonths}
-                  startingCashBalance={startingCashBalance}
-                />
+              {activeTab === "profitAndLoss" && (
+                <ProfitAndLossSection numberOfMonths={numberOfMonths} />
+              )}
+              {activeTab === "cashFlow" && (
+                <CashFlowSection numberOfMonths={numberOfMonths} />
+              )}
+              {activeTab === "balanceSheet" && (
+                <BalanceSheetSection numberOfMonths={numberOfMonths} />
               )}
             </div>
           </div>

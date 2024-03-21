@@ -175,7 +175,7 @@ const LoanSection = ({
       <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
         <section aria-labelledby="loan-heading" className="mb-8">
           <h2
-            className="text-lg font-semibold mb-4 flex items-center mt-16"
+            className="text-2xl font-semibold mb-4 flex items-center"
             id="loan-heading"
           >
             Loan
@@ -318,7 +318,7 @@ const LoanSection = ({
             className="bg-blue-600 text-white py-1 px-2 rounded mt-4"
             onClick={handleSave}
           >
-            Save
+            Save changes
           </button>
         </section>
       </div>

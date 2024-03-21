@@ -95,7 +95,7 @@ export const transformInvestmentDataForTable = (
   numberOfMonths
 ) => {
   const investmentTableData = [];
-  console.log("tempInvestmentInputs", tempInvestmentInputs);
+
   const selectedInput = tempInvestmentInputs.find(
     (input) => input.id == renderInvestmentForm
   );

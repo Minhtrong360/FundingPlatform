@@ -669,7 +669,7 @@ function BalanceSheetSection({ numberOfMonths }) {
               value="cash-flow-chart"
               className="hover:cursor-pointer"
             >
-              Cash Flow
+              Cash
             </SelectItem>
             <SelectItem
               value="total-liabilities-chart"

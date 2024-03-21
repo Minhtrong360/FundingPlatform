@@ -1,4 +1,3 @@
-import AnnouncePage from "../components/AnnouncePage";
 import { Navigate, useLocation } from "react-router-dom";
 
 function PermissionRequired({ children, message, isPrivateDisabled }) {

@@ -110,6 +110,12 @@ const CostSection = ({
     const calculatedData = calculateCostData(tempCostInput, numberOfMonths);
     setTempCostData(calculatedData);
   }, [tempCostInput, numberOfMonths]);
+ 
+  const [showActualInput, setShowActualInput] = useState(false);
+
+const handleCheckboxChange = (e) => {
+  setShowActualInput(e.target.checked);
+};
 
   // Function to generate columns for the cost table
   const costColumns = [
@@ -119,12 +125,31 @@ const CostSection = ({
       dataIndex: "costName",
       key: "costName",
     },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `month${i + 1}`,
-      key: `month${i + 1}`,
-    })),
+    ...Array.from({ length: numberOfMonths }, (_, i) => i + 1).flatMap((month) => [
+      {
+        title: `Month_${month} Forecast`,
+        dataIndex: `month${month}`,
+        key: `month${month}_forecast`,
+      },
+      ...(showActualInput ? [
+        {
+          title: `Month_${month} Actual`,
+          dataIndex: `month${month}_actual`,
+          key: `month${month}_actual`,
+          render: (text, record) => (
+            <input 
+              type="number" 
+              className="py-1 px-2 block w-full border-gray-200 rounded-md text-xs focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" 
+              defaultValue={text || record[`month${month}`]} // Ensure defaultValue is set correctly
+              onChange={e => handleActualChange(e.target.value, record, month)} 
+            />
+          )
+        }
+      ] : []),
+    ]),
   ];
+  
+  
 
   // State for cost chart
   const [costChart, setCostChart] = useState({
@@ -178,30 +203,26 @@ const CostSection = ({
     setCostChart((prevState) => ({ ...prevState, series: seriesData }));
   }, [tempCostData, numberOfMonths]);
 
+  const [selectedCostForComparison, setSelectedCostForComparison] = useState(null);
+
   // Function to handle select change
   const handleSelectChange = (event) => {
     const selectedId = event.target.value;
-    const selectedInput = tempCostInput.find(
-      (input) => input.id.toString() === selectedId
-    );
-
-    if (
-      selectedInput?.fundraisingType === "Paid in Capital" &&
-      selectedInput.fundraisingBeginMonth < 2
-    ) {
+    const selectedCostName = tempCostInput.find((input) => input.id.toString() === selectedId)?.costName;
+    setSelectedCostForComparison(selectedCostName);
+  
+    // Existing code for handling select change...
+    const selectedInput = tempCostInput.find((input) => input.id.toString() === selectedId);
+    if (selectedInput?.costType === "Paid in Capital" && selectedInput.beginMonth < 2) {
       const updatedInputs = tempCostInput.map((input) =>
-        input.id.toString() === selectedId
-          ? { ...input, fundraisingBeginMonth: 2 }
-          : input
+        input.id.toString() === selectedId ? { ...input, beginMonth: 2 } : input
       );
       setTempCostInput(updatedInputs);
-      message.warning(
-        "Fundraising Begin Month should be greater or equal to 2 for Paid in Capital."
-      );
+      message.warning("Begin Month should be greater or equal to 2 for Paid in Capital.");
     }
-
     setRenderCostForm(selectedId);
   };
+  
 
   // Update useEffect to include fundraising amount, type, and begin month
   useEffect(() => {
@@ -222,6 +243,104 @@ const CostSection = ({
       setIsSaved(false);
     }
   }, [isSaved]);
+
+
+  const [comparisonChart, setComparisonChart] = useState({
+    options: {
+      chart: { id: "comparison-chart", type: "bar", height: 350, stacked: false },
+      xaxis: {
+        categories: Array.from({ length: numberOfMonths }, (_, i) => `Month ${i + 1}`),
+        title: {
+          text: "Month",
+          style: {
+            fontFamily: "Inter, sans-serif",
+            fontWeight: "600",
+          },
+        },
+      },
+      yaxis: {
+        labels: {
+          formatter: function (val) {
+            return Math.floor(val);
+          },
+        },
+        title: {
+          text: "Cost ($)",
+          style: {
+            fontFamily: "Inter, sans-serif",
+            fontWeight: "600",
+          },
+        },
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          dataLabels: {
+            enabled: false,
+            position: 'top',
+          },
+        }
+      },
+      fill: { type: "solid" },
+      dataLabels: { enabled: false },
+      stroke: { curve: "smooth" },
+      markers: { size: 1 },
+      legend: { position: "bottom", horizontalAlign: "right" },
+    },
+    series: [
+      {
+        name: 'Forecast',
+        data: [], // This will be updated with forecast data
+      },
+      {
+        name: 'Actual',
+        data: [], // This will be updated with actual data input by user
+      },
+    ],
+  });
+
+  const handleActualChange = (value, record, monthIndex) => {
+    const updatedTempCostData = tempCostData.map((item) => {
+      if (item.costName === record.costName) {
+        const updatedMonthlyCosts = item.monthlyCosts.map((month) => {
+          if (month.month === monthIndex) {
+            return { ...month, actual: parseFloat(value) || 0 };
+          }
+          return month;
+        });
+        return { ...item, monthlyCosts: updatedMonthlyCosts };
+      }
+      return item;
+    });
+  
+    setTempCostData(updatedTempCostData);
+  };
+  
+  useEffect(() => {
+    if (!selectedCostForComparison) return;
+  
+    const selectedCostData = tempCostData.find(data => data.costName === selectedCostForComparison);
+    if (!selectedCostData) return;
+  
+    const forecastData = selectedCostData.monthlyCosts.map(month => month.cost);
+    const actualData = selectedCostData.monthlyCosts.map(month => month.actual || month.cost);
+  
+    setComparisonChart(prevState => ({
+      ...prevState,
+      options: {
+        ...prevState.options,
+        xaxis: {
+          ...prevState.options.xaxis,
+          categories: Array.from({ length: numberOfMonths }, (_, i) => `Month ${i + 1}`),
+        },
+      },
+      series: [
+        { name: 'Forecast', data: forecastData },
+        { name: 'Actual', data: actualData },
+      ],
+    }));
+  }, [selectedCostForComparison, tempCostData, numberOfMonths]);
+  
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
@@ -398,6 +517,16 @@ const CostSection = ({
       </div>
       <div className="w-full lg:w-3/4 p-4">
         <h3 className="text-2xl font-semibold mb-4">Cost Table</h3>
+        <div className="mb-4">
+      <label className="inline-flex items-center">
+        <input
+          type="checkbox"
+          className="form-checkbox"
+          onChange={handleCheckboxChange}
+        />
+        <span className="ml-2">Actual input</span>
+      </label>
+    </div>
         <Table
           className="overflow-auto my-8"
           size="small"
@@ -412,6 +541,14 @@ const CostSection = ({
           type="bar"
           height={350}
         />
+
+<Chart
+  options={comparisonChart.options}
+  series={comparisonChart.series}
+  type="bar"
+  height={350}
+/>
+
       </div>
     </div>
   );

@@ -58,8 +58,8 @@ const FeaturesComponent = () => {
                 className="flex-shrink-0 size-7 p-1 mb-3"
               />
           <span className="mt-5">
-            <span className={`block text-xl font-semibold text-gray-800 darkTextWhite ${activeTab === 1 ? 'hs-tab-active:text-blue-600 dark:hs-tab-active:text-blue-500' : 'dark:text-gray-200'}`}>Financial Model</span>
-            <span className="hidden lg:block mt-2 text-gray-600">Create a business, whether you’ve got a fresh idea.</span>
+            <span className={`block text-xl font-semibold text-gray-800 darkTextWhite ${activeTab === 1 ? 'hs-tab-active:text-blue-600 dark:hs-tab-active:text-blue-500' : 'dark:text-gray-200'}`}>Financial Model with AI</span>
+            <span className="hidden lg:block mt-2 text-gray-600">Prompt to build your financial model under 5 mins.</span>
           </span>
         </button>
 
@@ -80,15 +80,15 @@ const FeaturesComponent = () => {
                 className="flex-shrink-0 size-7 p-1 mb-3"
               />
           <span className="mt-5">
-            <span className={`block text-xl font-semibold text-gray-800 darkTextWhite ${activeTab === 2 ? 'hs-tab-active:text-blue-600 dark:hs-tab-active:text-blue-500' : 'dark:text-gray-200'}`}>Automation on a whole new level</span>
-            <span className="hidden lg:block mt-2 text-gray-600">Use automation to scale campaigns profitably and save time doing it.</span>
+            <span className={`block text-xl font-semibold text-gray-800 darkTextWhite ${activeTab === 2 ? 'hs-tab-active:text-blue-600 dark:hs-tab-active:text-blue-500' : 'dark:text-gray-200'}`}>Insightful charts & figures</span>
+            <span className="hidden lg:block mt-2 text-gray-600">All metrics, charts and financial ratios ready.</span>
           </span>
         </button>
 
         {/* Tab 3 */}
         <button
           type="button"
-          className={`text-left  size-full bg-white shadow-lg rounded-lg p-5 darkBgSlate ${activeTab === 3 ? 'hs-tab-active:bg-gray-100' : ''}`}
+          className={`text-left  size-full bg-white shadow-lg rounded-lg p-5 ${activeTab === 3 ? 'hs-tab-active:bg-gray-100' : ''}`}
           onClick={() => handleTabClick(3)}
           id="tabs-with-card-item-3"
           data-hs-tab="#tabs-with-card-3"
@@ -102,8 +102,8 @@ const FeaturesComponent = () => {
                 className="flex-shrink-0 size-7 p-1 mb-3"
               />
           <span className="mt-5">
-            <span className={`block text-xl font-semibold text-gray-800 darkTextWhite ${activeTab === 3 ? 'hs-tab-active:text-blue-600 dark:hs-tab-active:text-blue-500' : 'dark:text-gray-200'}`}>Solving problems for every team</span>
-            <span className="hidden lg:block mt-2 text-gray-600">One tool for your company to share knowledge and ship projects.</span>
+            <span className={`block text-xl font-semibold text-gray-800 darkTextWhite ${activeTab === 3 ? 'hs-tab-active:text-blue-600 dark:hs-tab-active:text-blue-500' : 'dark:text-gray-200'}`}>Forecasting vs Actual</span>
+            <span className="hidden lg:block mt-2 text-gray-600">One tool to make financial projections and compare with actual results.</span>
           </span>
         </button>
       </nav>
@@ -170,7 +170,7 @@ const FeaturesComponent = () => {
                    <iframe
                      title="YouTube video player"
                      className="absolute top-0 left-0 right-0 w-full h-full rounded-b-lg"
-                     src="https://www.youtube.com/embed/5Eg5xvAoooM?si=hjh5CGAuu4pANs6J"
+                     src="https://www.youtube.com/embed/ejk2Q02oRxg?si=toKbBBA-z91VVcUg"
                      width="560"
                      height="315"
                      allowFullScreen
@@ -207,7 +207,7 @@ const FeaturesComponent = () => {
                    <iframe
                      title="YouTube video player"
                      className="absolute top-0 left-0 right-0 w-full h-full rounded-b-lg"
-                     src="https://www.youtube.com/embed/MYPVQccHhAQ?si=7cwoVCXBEWRqKSbk"
+                     src="https://www.youtube.com/embed/CQgTTkMD7vM?si=MDMb3jY8vBe9sP_D"
                      width="560"
                      height="315"
                      allowFullScreen

@@ -123,7 +123,7 @@ const FeaturesComponent = () => {
                 <span className="w-2 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></span>
                 <span className="w-2 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></span>
               </div>
-              <div  className="flex justify-center items-center w-full bg-gray-200 text-xs text-gray-600 rounded-sm sm:text-sm ">www.beekrowd.com</div>
+              <div  className="flex justify-center items-center w-full bg-gray-200 text-xs text-gray-600 rounded-sm sm:text-sm ">BeeKrowd</div>
             </div>
                
 
@@ -161,7 +161,7 @@ const FeaturesComponent = () => {
                 <span className="w-2 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></span>
                 <span className="w-2 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></span>
               </div>
-              <div  className="flex justify-center items-center w-full bg-gray-200 text-xs text-gray-600 rounded-sm sm:text-sm ">www.beekrowd.com</div>
+              <div  className="flex justify-center items-center w-full bg-gray-200 text-xs text-gray-600 rounded-sm sm:text-sm ">BeeKrowd</div>
             </div>
 
                <div className="w-full min-w-400px max-w-800px rounded-b-lg">
@@ -198,7 +198,7 @@ const FeaturesComponent = () => {
                 <span className="w-2 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></span>
                 <span className="w-2 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></span>
               </div>
-              <div  className="flex justify-center items-center w-full bg-gray-200 text-xs text-gray-600 rounded-sm sm:text-sm ">www.beekrowd.com</div>
+              <div  className="flex justify-center items-center w-full bg-gray-200 text-xs text-gray-600 rounded-sm sm:text-sm ">BeeKrowd</div>
             </div>
 
                <div className="w-full min-w-400px max-w-800px rounded-b-lg">

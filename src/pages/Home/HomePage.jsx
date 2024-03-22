@@ -59,7 +59,7 @@ const FeaturesComponent = () => {
               />
           <span className="mt-5">
             <span className={`block text-xl font-semibold text-gray-800 darkTextWhite ${activeTab === 1 ? 'hs-tab-active:text-blue-600 dark:hs-tab-active:text-blue-500' : 'dark:text-gray-200'}`}>Financial Model</span>
-            <span className="hidden lg:block mt-2 text-gray-800 dark:text-gray-200">Create a business, whether you’ve got a fresh idea.</span>
+            <span className="hidden lg:block mt-2 text-gray-600">Create a business, whether you’ve got a fresh idea.</span>
           </span>
         </button>
 
@@ -81,7 +81,7 @@ const FeaturesComponent = () => {
               />
           <span className="mt-5">
             <span className={`block text-xl font-semibold text-gray-800 darkTextWhite ${activeTab === 2 ? 'hs-tab-active:text-blue-600 dark:hs-tab-active:text-blue-500' : 'dark:text-gray-200'}`}>Automation on a whole new level</span>
-            <span className="hidden lg:block mt-2 text-gray-800 dark:text-gray-200">Use automation to scale campaigns profitably and save time doing it.</span>
+            <span className="hidden lg:block mt-2 text-gray-600">Use automation to scale campaigns profitably and save time doing it.</span>
           </span>
         </button>
 
@@ -103,7 +103,7 @@ const FeaturesComponent = () => {
               />
           <span className="mt-5">
             <span className={`block text-xl font-semibold text-gray-800 darkTextWhite ${activeTab === 3 ? 'hs-tab-active:text-blue-600 dark:hs-tab-active:text-blue-500' : 'dark:text-gray-200'}`}>Solving problems for every team</span>
-            <span className="hidden lg:block mt-2 text-gray-800 dark:text-gray-200">One tool for your company to share knowledge and ship projects.</span>
+            <span className="hidden lg:block mt-2 text-gray-600">One tool for your company to share knowledge and ship projects.</span>
           </span>
         </button>
       </nav>
@@ -123,7 +123,7 @@ const FeaturesComponent = () => {
                 <span className="w-2 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></span>
                 <span className="w-2 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></span>
               </div>
-              <a href="https:www.beekrowd.com" className="flex justify-center items-center w-full bg-gray-200 text-xs text-gray-600 rounded-sm sm:text-sm ">www.beekrowd.com</a>
+              <div  className="flex justify-center items-center w-full bg-gray-200 text-xs text-gray-600 rounded-sm sm:text-sm ">www.beekrowd.com</div>
             </div>
                
 
@@ -161,7 +161,7 @@ const FeaturesComponent = () => {
                 <span className="w-2 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></span>
                 <span className="w-2 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></span>
               </div>
-              <a href="https:www.beekrowd.com" className="flex justify-center items-center w-full bg-gray-200 text-xs text-gray-600 rounded-sm sm:text-sm ">www.beekrowd.com</a>
+              <div  className="flex justify-center items-center w-full bg-gray-200 text-xs text-gray-600 rounded-sm sm:text-sm ">www.beekrowd.com</div>
             </div>
 
                <div className="w-full min-w-400px max-w-800px rounded-b-lg">
@@ -198,7 +198,7 @@ const FeaturesComponent = () => {
                 <span className="w-2 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></span>
                 <span className="w-2 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></span>
               </div>
-              <a href="https:www.beekrowd.com" className="flex justify-center items-center w-full bg-gray-200 text-xs text-gray-600 rounded-sm sm:text-sm ">www.beekrowd.com</a>
+              <div  className="flex justify-center items-center w-full bg-gray-200 text-xs text-gray-600 rounded-sm sm:text-sm ">www.beekrowd.com</div>
             </div>
 
                <div className="w-full min-w-400px max-w-800px rounded-b-lg">
@@ -280,7 +280,7 @@ const HomePage = () => {
       <Features />
       {/* <FeatureComponent /> */}
       <FeaturesComponent />
-
+     
       
       
       {/* <ProfileCard /> */}

@@ -636,9 +636,122 @@ function BalanceSheetSection({ numberOfMonths }) {
     setSelectedChart(value);
   };
 
+  const [cutMonth, setCutMonth] = useState(4);
+  const handleCutMonthChange = (e) => {
+    setCutMonth(Number(e.target.value));
+  };
+
+
+   const divideMonthsIntoYearsForBalanceSheet = () => {
+    const years = [];
+    if (cutMonth - 1 > 0) {
+      years.push({
+        year: "First Year",
+        months: Array.from({ length: cutMonth - 1 }, (_, i) => i + 1),
+      });
+    }
+
+    const remainingMonthsAfterFirstYear = numberOfMonths - (cutMonth - 1);
+    const fullYearsCount = Math.floor(remainingMonthsAfterFirstYear / 12);
+    const remainingMonthsInLastYear = remainingMonthsAfterFirstYear % 12;
+
+    for (let i = 0; i < fullYearsCount; i++) {
+      years.push({
+        year: `Year ${i + 2}`,
+        months: Array.from({ length: 12 }, (_, idx) => idx + 1 + (cutMonth - 1) + i * 12),
+      });
+    }
+
+    if (remainingMonthsInLastYear > 0) {
+      years.push({
+        year: `Last Year`,
+        months: Array.from({ length: remainingMonthsInLastYear }, (_, idx) => idx + 1 + (cutMonth - 1) + fullYearsCount * 12),
+      });
+    }
+
+    return years;
+  };
+  
+  // Generate table columns including Year Total column for Balance Sheet
+  const generateBalanceSheetTableColumns = (months) => [
+    {
+      title: "Metric",
+      dataIndex: "metric",
+      key: "metric",
+      fixed: "left",
+    },
+    ...months.map((month) => ({
+      title: `Month ${month}`,
+      dataIndex: `Month ${month}`,
+      key: `Month ${month}`,
+    })),
+    {
+      title: "Year Total",
+      dataIndex: "yearTotal",
+      key: "yearTotal",
+      // Add any formatting if needed
+    },
+  ];
+
+  const getDataSourceForYearBalanceSheet = (months) => {
+    const monthKeys = months.map(month => `Month ${month}`);
+  
+    return positionDataWithNetIncome2.map((data) => {
+      const filteredData = monthKeys.reduce((acc, monthKey) => {
+        acc[monthKey] = data[monthKey]; // keep original formatted value
+        return acc;
+      }, {});
+  
+      const yearTotal = monthKeys.reduce((sum, key) => sum + (data[key] ? parseFloat(data[key].replace(/,/g, '')) : 0), 0);
+  
+      return {
+        metric: data.metric,
+        ...filteredData,
+        yearTotal, // Adding Year Total to each row
+      };
+    });
+  };
+
+  const calculateBalanceSheetRatios = (dataSource) => {
+    const findYearTotalByKey = (key) => {
+      const item = dataSource.find(data => data.metric === key);
+      return item ? item.yearTotal : 0;
+    };
+  
+    const totalAssets = findYearTotalByKey("Total Assets");
+    const totalLiabilities = findYearTotalByKey("Total Liabilities");
+    const currentAssets = findYearTotalByKey("Current Assets");
+    const currentLiabilities = findYearTotalByKey("Current Liabilities");
+    const totalEquity = findYearTotalByKey("Total Shareholders Equity");
+  
+    // Basic financial ratios from balance sheet
+    const currentRatio = currentAssets / currentLiabilities; // Measures liquidity
+    const debtToEquityRatio = totalLiabilities / totalEquity; // Measures financial leverage
+    const assetToEquityRatio = totalAssets / totalEquity; // Measures how much assets are financed by owners' interests
+  
+    // Additional ratios for a deeper financial analysis
+    const quickRatio = (currentAssets - findYearTotalByKey("Inventory")) / currentLiabilities; // Measures immediate liquidity
+    const liabilitiesToAssetsRatio = totalLiabilities / totalAssets; // Measures the percentage of assets financed by liabilities
+    const equityRatio = totalEquity / totalAssets; // Measures the proportion of total assets financed by shareholders
+    const fixedAssetTurnoverRatio = findYearTotalByKey("Net Fixed Assets") / totalAssets; // Efficiency ratio for fixed assets usage
+  
+    return {
+      currentRatio: currentRatio.toFixed(2),
+      debtToEquityRatio: debtToEquityRatio.toFixed(2),
+      assetToEquityRatio: assetToEquityRatio.toFixed(2),
+      quickRatio: quickRatio.toFixed(2),
+      liabilitiesToAssetsRatio: liabilitiesToAssetsRatio.toFixed(2),
+      equityRatio: equityRatio.toFixed(2),
+      fixedAssetTurnoverRatio: fixedAssetTurnoverRatio.toFixed(2),
+    };
+  };
+  
+
+
   return (
     <div className="border-t-2">
       <h2 className="text-2xl font-semibold my-4">Balance Sheet</h2>
+
       <Table
         className="overflow-auto my-8"
         size="small"
@@ -727,6 +840,54 @@ function BalanceSheetSection({ numberOfMonths }) {
           title="Total Shareholders Equity Over Time"
         />
       )}
+
+<div className="my-4">
+        <label htmlFor="cutMonthSelect" className="mr-2">Select Cut Month:</label>
+        <select
+          id="cutMonthSelect"
+          value={cutMonth}
+          onChange={handleCutMonthChange}
+          className="border px-2 py-1"
+        >
+          {Array.from({ length: 12 }, (_, i) => (
+            <option key={i + 1} value={i + 1}>
+              {i + 1}
+            </option>
+          ))}
+        </select>
+      </div>
+
+{divideMonthsIntoYearsForBalanceSheet().map((year, index) => (
+  <div key={index}>
+    <h3>{year.year}</h3>
+    <Table
+      className="overflow-auto my-8"
+      size="small"
+      dataSource={getDataSourceForYearBalanceSheet(year.months)}
+      columns={generateBalanceSheetTableColumns(year.months)}
+      pagination={false}
+    />
+    <div>
+      <h4>Financial Ratios for {year.year}</h4>
+      {(() => {
+        const dataSourceForYear = getDataSourceForYearBalanceSheet(year.months);
+        const ratios = calculateBalanceSheetRatios(dataSourceForYear);
+        return (
+          <ul>
+            <li>Current Ratio: {ratios.currentRatio}</li>
+            <li>Debt to Equity Ratio: {ratios.debtToEquityRatio}</li>
+            <li>Asset to Equity Ratio: {ratios.assetToEquityRatio}</li>
+            <li>Quick Ratio: {ratios.quickRatio}</li>
+            <li>Liabilities to Assets Ratio: {ratios.liabilitiesToAssetsRatio}</li>
+            <li>Equity Ratio: {ratios.equityRatio}</li>
+            <li>Fixed Asset Turnover Ratio: {ratios.fixedAssetTurnoverRatio}</li>
+          </ul>
+        );
+      })()}
+    </div>
+  </div>
+))}
+
     </div>
   );
 }

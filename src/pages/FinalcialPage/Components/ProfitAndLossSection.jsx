@@ -466,9 +466,142 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     setSelectedChart(value);
   };
 
+  
+  const [cutMonth, setCutMonth] = useState(4);
+  const handleCutMonthChange = (value) => {
+    setCutMonth(Number(value));
+  };
+
+  const divideMonthsIntoYears = () => {
+    const years = [];
+    if (cutMonth - 1 > 0) {
+      years.push({
+        year: "First Year",
+        months: Array.from({ length: cutMonth - 1 }, (_, i) => i + 1),
+      });
+    }
+
+    const remainingMonthsAfterFirstYear = numberOfMonths - (cutMonth - 1);
+    const fullYearsCount = Math.floor(remainingMonthsAfterFirstYear / 12);
+    const remainingMonthsInLastYear = remainingMonthsAfterFirstYear % 12;
+
+    for (let i = 0; i < fullYearsCount; i++) {
+      years.push({
+        year: `Year ${i + 2}`,
+        months: Array.from({ length: 12 }, (_, idx) => idx + 1 + (cutMonth - 1) + i * 12),
+      });
+    }
+
+    if (remainingMonthsInLastYear > 0) {
+      years.push({
+        year: `Last Year`,
+        months: Array.from({ length: remainingMonthsInLastYear }, (_, idx) => idx + 1 + (cutMonth - 1) + fullYearsCount * 12),
+      });
+    }
+
+    return years;
+  };
+
+
+
+  const years = divideMonthsIntoYears();
+
+  // Function to generate table columns dynamically based on months in a year
+  const generateTableColumns = (months) => [
+    {
+      title: "Metric",
+      dataIndex: "metric",
+      key: "metric",
+      fixed: "left",
+    },
+    ...months.map((month) => ({
+      title: `Month ${month}`,
+      dataIndex: `Month ${month}`,
+      key: `Month ${month}`,
+    })),
+    {
+      title: "Year Total",
+      dataIndex: "yearTotal",
+      key: "yearTotal",
+      render: (text) => formatNumber(text?.toFixed(2)), // Optional: formatting the number if needed
+    },
+  ];
+  
+  function parseNumberInternal(value) {
+    if (value === undefined || value === null) return 0;
+    return Number(value.toString().replace(/,/g, ''));
+  }
+  
+  const getDataSourceForYear = (months) => {
+    const monthKeys = months.map(month => `Month ${month}`);
+    
+    return transposedData.map((data) => {
+      const filteredData = monthKeys.reduce((acc, monthKey) => {
+        acc[monthKey] = data[monthKey]; // keep original formatted value
+        return acc;
+      }, {});
+    
+      // Calculate Year Total for each row, ensuring values are defined before parsing with the parseNumberInternal function
+      const yearTotal = monthKeys.reduce((sum, key) => {
+        const value = data[key];
+        return sum + (value ? parseNumberInternal(value) : 0);
+      }, 0);
+    
+      return {
+        metric: data.metric,
+        ...filteredData,
+        yearTotal, // Adding Year Total to each row
+      };
+    });
+  };
+  
+  
+  const calculateFinancialRatios = (dataSource) => {
+    const findValueByKey = (key) => {
+      const item = dataSource.find(data => data.metric === key);
+      return item ? parseNumberInternal(item.yearTotal) : 0;
+    };
+  
+    const totalRevenue = findValueByKey("Total Revenue");
+    const netIncome = findValueByKey("Net Income");
+    const grossProfit = findValueByKey("Gross Profit");
+    const operatingCosts = findValueByKey("Operating Costs");
+    const ebitda = findValueByKey("EBITDA");
+    const interestExpense = findValueByKey("Interest");
+    const totalCOGS = findValueByKey("Total COGS");
+    const totalDeductions = findValueByKey("Deductions");
+  
+    // Calculate ratios
+    const grossProfitMargin = totalRevenue ? (grossProfit / totalRevenue) * 100 : 0;
+    const netProfitMargin = totalRevenue ? (netIncome / totalRevenue) * 100 : 0;
+    const operatingMargin = totalRevenue ? (ebitda / totalRevenue) * 100 : 0;
+    const interestCoverageRatio = ebitda ? ebitda / interestExpense : 0;
+    const operatingExpenseRatio = totalRevenue ? (operatingCosts / totalRevenue) * 100 : 0;
+    const cogsToRevenue = totalRevenue ? (totalCOGS / totalRevenue) * 100 : 0;
+    const deductionToRevenue = totalRevenue ? (totalDeductions / totalRevenue) * 100 : 0;
+    // Add any other ratios here, making sure you're not dividing by zero
+  
+    return {
+      grossProfitMargin,
+      netProfitMargin,
+      operatingMargin,
+      interestCoverageRatio,
+      operatingExpenseRatio,
+      cogsToRevenue,
+      deductionToRevenue,
+      // List other calculated ratios here
+    };
+  };
+  
+
+  
+
+
+
   return (
     <div className="border-t-2">
       <h2 className="text-2xl font-semibold my-4">Profit and Loss Statement</h2>
+
       <Table
         className="overflow-auto my-8"
         size="small"
@@ -644,7 +777,55 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           title="Total Interest Payments Over Time"
         />
       )}
+
+<div className="flex gap-4 mb-3">
+        <span>Select Cut Month: </span>
+        <select value={cutMonth} onChange={(e) => handleCutMonthChange(e.target.value)} className="border-solid border-[1px] border-gray-200">
+          {Array.from({ length: 12 }, (_, i) => (
+            <option key={i + 1} value={i + 1}>
+              {i + 1}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {years.map((year, index) => (
+  <div key={index}>
+    <h3>{year.year}</h3>
+    <Table
+      className="overflow-auto my-8"
+      size="small"
+      dataSource={getDataSourceForYear(year.months)}
+      columns={generateTableColumns(year.months)}
+      pagination={false}
+    />
+    {/* Expanded section to calculate and display financial ratios */}
+    <div>
+      <h4>Financial Ratios for {year.year}</h4>
+      {(() => {
+        const dataSourceForYear = getDataSourceForYear(year.months);
+        const ratios = calculateFinancialRatios(dataSourceForYear);
+        return (
+          <ul>
+            <li>Gross Profit Margin: {ratios.grossProfitMargin.toFixed(2)}%</li>
+            <li>Net Profit Margin: {ratios.netProfitMargin.toFixed(2)}%</li>
+            <li>Operating Margin: {ratios.operatingMargin.toFixed(2)}%</li>
+            <li>Interest Coverage Ratio: {ratios.interestCoverageRatio.toFixed(2)}</li>
+            <li>Operating Expense Ratio: {ratios.operatingExpenseRatio.toFixed(2)}%</li>
+            <li>COGS to Revenue: {ratios.cogsToRevenue.toFixed(2)}%</li>
+            <li>Deduction to Revenue: {ratios.deductionToRevenue.toFixed(2)}%</li>
+            {/* Add more ratios as needed */}
+          </ul>
+        );
+      })()}
     </div>
+  </div>
+))}
+
+
+    </div>
+
+    
   );
 };
 

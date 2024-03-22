@@ -13,7 +13,7 @@ function Footer() {
       <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-5 text-center">
         <div>
           <a
-            className="font-semibold text-2xl text-blue-600 flex items-center space-x-3 rtl:space-x-reverse hover:cursor-pointer"
+            className="font-semibold text-2xl text-blue-600 flex items-center sm:justify-start justify-center space-x-3 rtl:space-x-reverse hover:cursor-pointer"
             href="#"
             aria-label="Brand"
           >

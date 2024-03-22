@@ -7,12 +7,12 @@ import InputField from "../../components/InputField";
 
 import apiService from "../../app/apiService";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
-import AvatarUpload from "./AvatarUpload";
+
 import industries from "../../components/Industries";
 import countries from "../../components/Country";
 import MultiSelectField from "../../components/MultiSelectField";
 import SelectField from "../../components/SelectField";
-import AvatarEditor from "react-avatar-editor";
+
 import { Avatar, Tooltip } from "antd";
 import { IconButton } from "@mui/material";
 

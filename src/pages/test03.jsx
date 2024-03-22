@@ -83,7 +83,7 @@ const DurationSelect = ({
   return (
     <section aria-labelledby="duration-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-4 flex items-center"
+        className="text-2xl font-semibold mb-4 flex items-center mt-4"
         id="duration-heading"
       >
         Duration and Initial Setup
@@ -276,7 +276,7 @@ const CustomerSection = ({
     <section aria-labelledby="customers-heading" className="mb-8">
       <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Here's a list of common customer channels that startups often utilize: Website, Social Media,Email Marketing, Referral Programs, Events and Networking, Direct Sales, Subscription.">
         <h2
-          className="text-2xl font-semibold mb-4 flex items-center"
+          className="text-2xl font-semibold mb-4 flex items-center mt-4"
           id="customers-heading"
         >
           1. Identify your customer{" "}
@@ -391,7 +391,7 @@ const SalesSection = ({
   return (
     <section aria-labelledby="sales-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-4 flex items-center"
+        className="text-2xl font-semibold mb-4 flex items-center mt-4"
         id="sales-heading"
       >
         Sales Section
@@ -548,7 +548,7 @@ const CostSection = ({
   return (
     <section aria-labelledby="costs-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-4 flex items-center"
+        className="text-2xl font-semibold mb-4 flex items-center mt-4"
         id="costs-heading"
       >
         Costs
@@ -694,7 +694,7 @@ const PersonnelSection = ({
   return (
     <section aria-labelledby="personnel-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-4 flex items-center"
+        className="text-2xl font-semibold mb-4 flex items-center mt-4"
         id="personnel-heading"
       >
         Personnel
@@ -799,7 +799,7 @@ const InvestmentSection = ({
   return (
     <section aria-labelledby="investment-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-4 flex items-center"
+        className="text-2xl font-semibold mb-4 flex items-center mt-4"
         id="investment-heading"
       >
         Investment
@@ -908,7 +908,7 @@ const LoanSection = ({
   return (
     <section aria-labelledby="loan-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-4 flex items-center"
+        className="text-2xl font-semibold mb-4 flex items-center mt-4"
         id="loan-heading"
       >
         Loan
@@ -2922,7 +2922,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
           {/* DurationSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
+            <div className="w-full lg:w-1/4 sm:p-4 p-0 sm:border-r-2 border-r-0 sm:border-b-0 border-b-2">
               <DurationSelect
                 selectedDuration={selectedDuration}
                 setSelectedDuration={setSelectedDuration}
@@ -2948,14 +2948,14 @@ const Z = ({ currentUser, setCurrentUser }) => {
             </div>
 
             {/* FMMetrics */}
-            <div className="w-full lg:w-3/4 p-4">
+            <div className="w-full lg:w-3/4 sm:p-4 p-0">
               <MetricsFM />
             </div>
           </div>
 
           {/* CustomerSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
+            <div className="w-full lg:w-1/4 sm:p-4 p-0 sm:border-r-2 border-r-0 sm:border-b-0 border-b-2">
               <CustomerSection
                 customerInputs={customerInputs}
                 addNewCustomerInput={addNewCustomerInput}
@@ -2963,7 +2963,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 handleInputChange={handleInputChange}
               />
             </div>
-            <div className="w-full lg:w-3/4 p-4 ">
+            <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
               <h3 className="text-2xl font-semibold ">Customer Table</h3>
               <Table
                 className="overflow-auto my-8"
@@ -2983,7 +2983,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
           {/* RevenueSetion */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
+            <div className="w-full lg:w-1/4 sm:p-4 p-0 sm:border-r-2 border-r-0 sm:border-b-0 border-b-2">
               <SalesSection
                 channelInputs={channelInputs}
                 channelNames={channelNames}
@@ -2992,7 +2992,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 handleChannelInputChange={handleChannelInputChange}
               />
             </div>
-            <div className="w-full lg:w-3/4 p-4">
+            <div className="w-full lg:w-3/4 sm:p-4 p-0">
               <h3 className="text-2xl font-semibold mb-4">
                 Revenue Data by Channel and Product
               </h3>
@@ -3016,7 +3016,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
           {/* CostSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
+            <div className="w-full lg:w-1/4 sm:p-4 p-0 sm:border-r-2 border-r-0 sm:border-b-0 border-b-2">
               <CostSection
                 costInputs={costInputs}
                 addNewCostInput={addNewCostInput}
@@ -3024,7 +3024,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 handleCostInputChange={handleCostInputChange}
               />
             </div>
-            <div className="w-full lg:w-3/4 p-4">
+            <div className="w-full lg:w-3/4 sm:p-4 p-0">
               <h3 className="text-2xl font-semibold mb-4">Cost Table</h3>
               <Table
                 className="overflow-auto my-8"
@@ -3044,7 +3044,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
           {/* PersonnelSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
+            <div className="w-full lg:w-1/4 sm:p-4 p-0 sm:border-r-2 border-r-0 sm:border-b-0 border-b-2">
               <PersonnelSection
                 personnelInputs={personnelInputs}
                 addNewPersonnelInput={addNewPersonnelInput}
@@ -3052,7 +3052,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 handlePersonnelInputChange={handlePersonnelInputChange}
               />
             </div>
-            <div className="w-full lg:w-3/4 p-4">
+            <div className="w-full lg:w-3/4 sm:p-4 p-0">
               <h3 className="text-2xl font-semibold mb-4">
                 Personnel Cost Table
               </h3>
@@ -3076,7 +3076,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
           {/* InvestmentSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
+            <div className="w-full lg:w-1/4 sm:p-4 p-0 sm:border-r-2 border-r-0 sm:border-b-0 border-b-2">
               <InvestmentSection
                 investmentInputs={investmentInputs}
                 setInvestmentInputs={setInvestmentInputs}
@@ -3085,7 +3085,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 handleInvestmentInputChange={handleInvestmentInputChange}
               />
             </div>
-            <div className="w-full lg:w-3/4 p-4">
+            <div className="w-full lg:w-3/4 sm:p-4 p-0">
               <h3 className="text-2xl font-semibold mb-4">Investment Table</h3>
               <Table
                 className="overflow-auto my-8"
@@ -3105,7 +3105,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
           {/* LoanSection */}
           <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
+            <div className="w-full lg:w-1/4 sm:p-4 p-0 sm:border-r-2 border-r-0 sm:border-b-0 border-b-2">
               <LoanSection
                 loanInputs={loanInputs}
                 addNewLoanInput={addNewLoanInput}
@@ -3113,7 +3113,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 handleLoanInputChange={handleLoanInputChange}
               />
             </div>
-            <div className="w-full lg:w-3/4 p-4">
+            <div className="w-full lg:w-3/4 sm:p-4 p-0">
               <h3 className="text-2xl font-semibold mb-4">Loan Data</h3>
               <Table
                 className="overflow-auto my-8"

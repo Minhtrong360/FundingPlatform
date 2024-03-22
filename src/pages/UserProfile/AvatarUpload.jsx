@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
 import { Modal, Upload } from "antd";
 
 const getBase64 = (file) =>

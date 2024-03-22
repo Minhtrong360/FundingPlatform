@@ -102,17 +102,19 @@ const AuthProvider = ({ children }) => {
       let { data: userSupabase } = await supabase
         .from("users")
         .select("*")
-        .eq("id", currentUser.id);
+        .eq("id", currentUser?.id);
 
-      if (
-        userSupabase[0]?.plan === "Free" ||
-        userSupabase[0]?.plan === null ||
-        userSupabase[0]?.plan === undefined ||
-        userSupabase[0]?.subscription_status !== "active"
-      ) {
-        setSubscribed(false);
-      } else {
-        setSubscribed(true);
+      if (userSupabase) {
+        if (
+          userSupabase[0]?.plan === "Free" ||
+          userSupabase[0]?.plan === null ||
+          userSupabase[0]?.plan === undefined ||
+          userSupabase[0]?.subscription_status !== "active"
+        ) {
+          setSubscribed(false);
+        } else {
+          setSubscribed(true);
+        }
       }
 
       setLoading(false);

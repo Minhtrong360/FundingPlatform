@@ -9,6 +9,7 @@ import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import { LinearProgress } from "@mui/material";
 
 const NewProjectPosts = () => {
   const [companies, setCompanies] = useState([]);
@@ -29,7 +30,6 @@ const NewProjectPosts = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        setIsLoading(true);
         let { data, error } = await supabase
           .from("company")
           .select("*")
@@ -43,8 +43,6 @@ const NewProjectPosts = () => {
         }
       } catch (error) {
         console.error("Error fetching data from Supabase:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -69,39 +67,6 @@ const NewProjectPosts = () => {
   const handleIndustryChange = (industry) => {
     setSelectedIndustry(industry);
     setPage(1);
-  };
-
-  const goToFirstPage = () => {
-    if (currentTab === "verified") {
-      setVerifiedPage(1);
-    } else if (currentTab === "unverified") {
-      setUnverifiedPage(1);
-    } else if (currentTab === "All") {
-      setAllPage(1);
-    }
-  };
-
-  const goToLastPage = () => {
-    let totalPages;
-    let data;
-
-    if (currentTab === "All") {
-      data = companies;
-    } else if (currentTab === "verified") {
-      data = verifiedCompanies;
-    } else if (currentTab === "unverified") {
-      data = unverifiedCompanies;
-    }
-
-    totalPages = Math.ceil(data.length / itemsPerPage);
-
-    if (currentTab === "verified") {
-      setVerifiedPage(totalPages);
-    } else if (currentTab === "unverified") {
-      setUnverifiedPage(totalPages);
-    } else if (currentTab === "All") {
-      setAllPage(totalPages);
-    }
   };
 
   const fetchVerifiedStatus = async (companyId) => {
@@ -149,14 +114,14 @@ const NewProjectPosts = () => {
           await divideCompaniesByVerifiedStatus(companies);
         setVerifiedCompanies(verifiedCompanies);
         setUnverifiedCompanies(unverifiedCompanies);
-        setIsLoading(false);
       } catch (error) {
         console.log(
           "Error dividing companies by verified status:",
           error.message
         );
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     divideCompanies();
@@ -220,7 +185,7 @@ const NewProjectPosts = () => {
         setSelectedIndustry={setSelectedIndustry}
         currentTab={currentTab}
       />
-      <LoadingButtonClick isLoading={isLoading} />
+
       <div className="mt-10 flex justify-center">
         <button
           className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
@@ -253,133 +218,131 @@ const NewProjectPosts = () => {
           Unverified
         </button>
       </div>
-      <>
-        {companiesToRender.length === 0 ? (
-          <div className="mt-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
-            No result
-          </div>
-        ) : (
-          <>
-            <div className="mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
-              {[...Array(itemsPerPage)].map((_, index) => {
-                const company =
-                  companiesToRender[(currentPage - 1) * itemsPerPage + index];
-                return (
-                  <div key={index} className="group flex justify-center">
-                    {company ? (
-                      <Card
-                        key={company.id}
-                        title={company.name}
-                        description={company.description}
-                        imageUrl={company.card_url}
-                        buttonText="More"
-                        project_id={company.project_id}
-                      />
-                    ) : (
-                      <div className="w-[30vw] h-[55vh]"></div>
-                    )}
-                  </div>
-                );
-              })}
+      {isLoading ? (
+        <LinearProgress className="my-20" />
+      ) : (
+        <>
+          {companiesToRender.length === 0 ? (
+            <div className="mt-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
+              No result
             </div>
-
-            <div className="mt-10 flex justify-center">
-              {/* <button
-                className="sm:px-4 sm:py-1 sm:mx-2  text-black rounded-md"
-                onClick={goToFirstPage}
-                disabled={currentPage === 1}
-              >
-                <SkipPreviousIcon />
-              </button> */}
-              <button
-                className="flex items-center justify-center px-4 py-2 mx-1 text-black capitalize bg-gray-200 rounded-md  rtl:-scale-x-100 "
-                onClick={() => handlePageChange(currentPage - 1, currentTab)}
-                disabled={currentPage === 1}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-5 h-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-              <div className="flex flex-wrap items-center">
-                {[...Array(totalPages).keys()].map((pageNumber) => {
-                  if (
-                    totalPages <= 5 ||
-                    pageNumber + 1 === currentPage ||
-                    pageNumber === 0 ||
-                    pageNumber === totalPages - 1 ||
-                    (pageNumber === currentPage - 1 &&
-                      currentPage > 2 &&
-                      currentPage < totalPages - 1) ||
-                    (pageNumber === currentPage - 2 &&
-                      currentPage > 3 &&
-                      currentPage < totalPages - 1) ||
-                    (pageNumber === currentPage && currentPage < totalPages - 2)
-                  ) {
-                    return (
-                      <button
-                        key={pageNumber}
-                        className={`flex items-center justify-center px-4 py-2 mx-1 text-black capitalize rounded-md  rtl:-scale-x-100 ${
-                          pageNumber + 1 === currentPage
-                            ? "bg-blue-600 hover:bg-blue-800"
-                            : "bg-gray-200 hover:bg-gray-400"
-                        }`}
-                        onClick={() =>
-                          handlePageChange(pageNumber + 1, currentTab)
-                        }
-                      >
-                        {pageNumber + 1}
-                      </button>
-                    );
-                  } else if (
-                    (pageNumber === 1 && currentPage > 3) ||
-                    (pageNumber === totalPages - 2 &&
-                      currentPage < totalPages - 2)
-                  ) {
-                    return <span key={pageNumber}>...</span>;
-                  } else {
-                    return null;
-                  }
+          ) : (
+            <>
+              <div className="mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
+                {[...Array(itemsPerPage)].map((_, index) => {
+                  const company =
+                    companiesToRender[(currentPage - 1) * itemsPerPage + index];
+                  return (
+                    <div key={index} className="group flex justify-center">
+                      {company ? (
+                        <Card
+                          key={company.id}
+                          title={company.name}
+                          description={company.description}
+                          imageUrl={company.card_url}
+                          buttonText="More"
+                          project_id={company.project_id}
+                        />
+                      ) : (
+                        <div className="w-[30vw] h-[55vh]"></div>
+                      )}
+                    </div>
+                  );
                 })}
               </div>
 
-              <button
-                className="flex items-center justify-center px-4 py-2 mx-1 text-black capitalize bg-gray-200 rounded-md  rtl:-scale-x-100 "
-                onClick={() => handlePageChange(currentPage + 1, currentTab)}
-                disabled={currentPage === totalPages}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-5 h-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
+              <div className="mt-10 flex justify-center">
+                <button
+                  className="flex items-center justify-center px-4 py-2 mx-1 text-black capitalize bg-gray-200 rounded-md  rtl:-scale-x-100 "
+                  onClick={() => handlePageChange(currentPage - 1, currentTab)}
+                  disabled={currentPage === 1}
                 >
-                  <path
-                    fill-rule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-              {/* <button
-                className="sm:px-4 sm:py-1 sm:mx-2  text-black rounded-md"
-                onClick={goToLastPage}
-                disabled={currentPage === totalPages}
-              >
-                <SkipNextIcon />
-              </button> */}
-            </div>
-          </>
-        )}
-      </>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+                <div className="flex flex-wrap items-center">
+                  {[...Array(totalPages).keys()].map((pageNumber) => {
+                    if (
+                      totalPages <= 5 ||
+                      pageNumber + 1 === currentPage ||
+                      pageNumber === 0 ||
+                      pageNumber === totalPages - 1 ||
+                      (pageNumber === currentPage - 1 &&
+                        currentPage > 2 &&
+                        currentPage < totalPages - 1) ||
+                      (pageNumber === currentPage - 2 &&
+                        currentPage > 3 &&
+                        currentPage < totalPages - 1) ||
+                      (pageNumber === currentPage &&
+                        currentPage < totalPages - 2)
+                    ) {
+                      return (
+                        <button
+                          key={pageNumber}
+                          className={`flex items-center justify-center px-4 py-2 mx-1  capitalize rounded-md  rtl:-scale-x-100 ${
+                            pageNumber + 1 === currentPage
+                              ? "bg-blue-600 hover:bg-blue-800 text-white"
+                              : "bg-gray-200 hover:bg-gray-400 text-black"
+                          }`}
+                          onClick={() =>
+                            handlePageChange(pageNumber + 1, currentTab)
+                          }
+                        >
+                          {pageNumber + 1}
+                        </button>
+                      );
+                    } else if (
+                      (pageNumber === 1 && currentPage > 3) ||
+                      (pageNumber === totalPages - 2 &&
+                        currentPage < totalPages - 2)
+                    ) {
+                      return <span key={pageNumber}>...</span>;
+                    } else {
+                      return null;
+                    }
+                  })}
+                </div>
+
+                <button
+                  className="flex items-center justify-center px-4 py-2 mx-1 text-black capitalize bg-gray-200 rounded-md  rtl:-scale-x-100 "
+                  onClick={() => handlePageChange(currentPage + 1, currentTab)}
+                  disabled={currentPage === totalPages}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+                {/* <button
+                    className="sm:px-4 sm:py-1 sm:mx-2  text-black rounded-md"
+                    onClick={goToLastPage}
+                    disabled={currentPage === totalPages}
+                  >
+                    <SkipNextIcon />
+                  </button> */}
+              </div>
+            </>
+          )}
+        </>
+      )}
     </div>
   );
 };

@@ -1,21 +1,27 @@
-import React from 'react';
-import { Table } from 'antd';
+import React from "react";
+import { Table } from "antd";
 
 // Define the data structure
 const columns = [
   {
-    title: ' ',
-    dataIndex: 'name',
+    title: " ",
+    dataIndex: "name",
     render: (text, record, index) => ({
-      children: <a style={{ fontWeight: (index === 0 || index === 3) ? 'bold' : 'normal' }}>{text}</a>,
+      children: (
+        <button
+          style={{ fontWeight: index === 0 || index === 3 ? "bold" : "normal" }}
+        >
+          {text}
+        </button>
+      ),
       props: {
-        colSpan: (index === 0 || index === 3) ? 5 : 1,
+        colSpan: index === 0 || index === 3 ? 5 : 1,
       },
     }),
   },
   {
-    title: 'Age',
-    dataIndex: 'age',
+    title: "Age",
+    dataIndex: "age",
     onCell: (_, index) => {
       // In the fifth row, other columns are merged into the first column
       if (index === 0 || index === 3) {
@@ -25,9 +31,9 @@ const columns = [
     },
   },
   {
-    title: 'Home phone',
+    title: "Home phone",
     colSpan: 2,
-    dataIndex: 'tel',
+    dataIndex: "tel",
     onCell: (_, index) => {
       if (index === 0 || index === 3) {
         return { colSpan: 0 };
@@ -36,9 +42,9 @@ const columns = [
     },
   },
   {
-    title: 'Phone',
+    title: "Phone",
     colSpan: 0,
-    dataIndex: 'phone',
+    dataIndex: "phone",
     onCell: (_, index) => {
       // In the fifth row, other columns are merged into the first column
       if (index === 0 || index === 3) {
@@ -48,8 +54,8 @@ const columns = [
     },
   },
   {
-    title: 'Address',
-    dataIndex: 'address',
+    title: "Address",
+    dataIndex: "address",
     onCell: (_, index) => {
       // In the fifth row, other columns are merged into the first column
       if (index === 0 || index === 3) {
@@ -63,45 +69,45 @@ const columns = [
 // Define the data
 const data = [
   {
-    key: '1',
-    name: 'Short term',
+    key: "1",
+    name: "Short term",
   },
   {
-    key: '2',
-    name: 'Jim Green',
+    key: "2",
+    name: "Jim Green",
     age: 42,
-    tel: '0571-22098333',
+    tel: "0571-22098333",
     phone: 18889898888,
-    address: 'London No. 1 Lake Park',
+    address: "London No. 1 Lake Park",
   },
   {
-    key: '3',
-    name: 'Joe Black',
+    key: "3",
+    name: "Joe Black",
     age: 32,
-    tel: '0575-22098909',
+    tel: "0575-22098909",
     phone: 18900010002,
-    address: 'Sydney No. 1 Lake Park',
+    address: "Sydney No. 1 Lake Park",
   },
   {
-    key: '4',
-    name: 'Long term',
+    key: "4",
+    name: "Long term",
   },
   {
-    key: '5',
-    name: 'Jake White',
+    key: "5",
+    name: "Jake White",
     age: 18,
-    tel: '0575-22098909',
+    tel: "0575-22098909",
     phone: 18900010002,
-    address: 'Dublin No. 2 Lake Park',
+    address: "Dublin No. 2 Lake Park",
   },
   {
-    key: '6',
-    name: 'Jim Red',
+    key: "6",
+    name: "Jim Red",
     age: 32,
-    tel: '0575-22098909',
+    tel: "0575-22098909",
     phone: 18900010002,
-    address: 'London No. 2 Lake Park',
-  }
+    address: "London No. 2 Lake Park",
+  },
 ];
 
 // Define the App component

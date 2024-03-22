@@ -42,7 +42,6 @@ const Gemini = ({
                 "status": "active",
                 "industry": "retail",
                 "incomeTax": 25,
-                "payrollTax": 12,
                 "currency": "USD"
               },
               "CustomerSection": {
@@ -179,6 +178,18 @@ const Gemini = ({
                   }
                 ]
               },
+              "FundraisingSection": {
+                "fundraisingInputs": [
+                  {
+                    id: 1,
+                    name: "Money",
+                    fundraisingAmount: 0,
+                    fundraisingType: "Common Stock",
+                    fundraisingBeginMonth: 1,
+                    equityOffered: 0,
+                  }
+                ]
+              },         
               "LoanSection": {
                 "loanInputs": [
                   {
@@ -196,6 +207,7 @@ const Gemini = ({
           }),
         }
       );
+
       console.log("2", response);
       const data = await response.json();
       console.log("3", data);
@@ -224,11 +236,12 @@ const Gemini = ({
       const maxPrompt = 20;
       // Thực hiện truy vấn để lấy thông tin người dùng theo id (điều này cần được thay đổi dựa trên cấu trúc dữ liệu của bạn trong Supabase)
       const currentPrompt = currentUser.financePromptNumber - 1;
+      console.log("currentPrompt", currentPrompt);
       if (currentPrompt <= 0) {
         toast.warning("Prompt per hour limited. Let return after an hour.");
         return;
       } else {
-        if (currentPrompt === maxPrompt - 1) {
+        if (currentPrompt == maxPrompt - 1) {
           console.log("7.5");
           await supabase
             .from("users")
@@ -290,9 +303,11 @@ const Gemini = ({
             </div>
           </div>
         </form>
-        <h3 className="text-2xl font-semibold mt-8 text-center">Templates</h3>
+        {/* <h3 className="text-2xl sm:flex hidden justify-center font-semibold mt-8">
+          Templates
+        </h3>
 
-        <div className="mt-2 sm:mt-4 hidden lg:flex flex-wrap justify-center">
+        <div className="mt-2 sm:mt-4 hidden sm:flex flex-wrap justify-center">
           {industries.map((industry, index) => (
             <button
               key={index}
@@ -302,8 +317,8 @@ const Gemini = ({
               {industry}
             </button>
           ))}
-        </div>
-        <div className="text-sm mt-4 lg:hidden overflow-x-auto flex flex-nowrap">
+        </div> */}
+        {/* <div className="text-sm mt-4 lg:hidden overflow-x-auto flex flex-nowrap">
           {industries.map((industry, index) => (
             <button
               key={index}
@@ -313,7 +328,7 @@ const Gemini = ({
               {industry}
             </button>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );

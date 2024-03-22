@@ -23,26 +23,14 @@ import LinkedInLoginComponent from "../pages/Login/linkedin";
 import DashBoardPage from "../pages/DashBoard/DashBoardPage";
 import CompanySetting from "../pages/FounderGitbook/CompanySetting";
 import News from "../pages/News/News";
-
-import X from "../pages/test01";
-import Y from "../pages/test02";
 import FinancialPage from "../pages/FinalcialPage/FinancialPage";
-
-import Z from "../pages/test03";
-
 import { useAuth } from "../context/AuthContext";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import { supabase } from "../supabase";
 import ProgressBar from "../components/ProgressBar";
-import ImageCrop from "../components/cropImage/ImageCrop";
-import ImageCropper from "../components/ImageCropper";
 import NotificationsPage from "../pages/Notification/Notification";
 import Confirmed from "../pages/SignUp/Confirmed";
 import AdminPage from "../pages/Admin/AdminPage";
-import ProductList from "../lemon/ProductList";
 import PricingSection from "../pages/Home/Components/PricingWithLemon";
-import Post from "../pages/News/Compose";
+
 import PermissionRequired from "./PermissionRequired";
 import AnnouncePage from "../components/AnnouncePage";
 function Router() {
@@ -140,13 +128,9 @@ function Router() {
           }
         />
         <Route path="/news" element={<News />} />
-        {/* <Route path="/X" element={<X />} />
-        <Route path="/Y" element={<Y />} />
-        <Route path="/Z" element={<Z />} /> */}
-        {/* <Route path="/W" element={<ImageCropper />} /> */}
+
         <Route path="/Z" element={<PricingSection />} />
         <Route path="/admin" element={<AdminPage />} />
-        <Route path="/Post" element={<Post />} />
 
         <Route path="/loading" element={<ProgressBar isLoading={true} />} />
       </Routes>

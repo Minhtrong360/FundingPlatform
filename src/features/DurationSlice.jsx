@@ -6,7 +6,7 @@ const initialState = {
   status: "active",
   industry: "",
   incomeTax: 0,
-  payrollTax: 10,
+  payrollTax: 0,
   currency: "USD",
   startMonth: "",
   startYear: 2024,
@@ -48,6 +48,9 @@ const durationSelectSlice = createSlice({
     setFinancialProjectName(state, action) {
       state.financialProjectName = action.payload;
     },
+    setNumberOfMonths(state, action) {
+      state.numberOfMonths = action.payload;
+    },
     // Thêm reducers khác nếu cần
   },
 });
@@ -63,6 +66,7 @@ export const {
   setStartMonth,
   setStartYear,
   setFinancialProjectName,
+  setNumberOfMonths,
 } = durationSelectSlice.actions;
 
 export default durationSelectSlice.reducer;

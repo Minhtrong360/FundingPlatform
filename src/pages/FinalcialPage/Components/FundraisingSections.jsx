@@ -10,16 +10,22 @@ import { useEffect, useState } from "react";
 import { Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setFundraisingInputs,
+  setFundraisingTableData,
+  transformFundraisingDataForTable,
+} from "../../../features/FundraisingSlice";
 
 const FundraisingSection = ({
-  fundraisingInputs,
-  setFundraisingInputs,
   numberOfMonths,
   isSaved,
   setIsSaved,
   handleSubmit,
-  setFundraisingTableData,
 }) => {
+  const { fundraisingInputs } = useSelector((state) => state.fundraising);
+  const dispatch = useDispatch();
+
   const [tempFundraisingInputs, setTempFundraisingInputs] =
     useState(fundraisingInputs);
   const [selectedFundraisingId, setSelectedFundraisingId] = useState(
@@ -63,167 +69,6 @@ const FundraisingSection = ({
       return input;
     });
     setTempFundraisingInputs(newInputs);
-  };
-
-  const calculateFundraisingData = () => {
-    let allFundraising = [];
-    tempFundraisingInputs.forEach((fundraisingInput) => {
-      let monthlyFundraising = [];
-      let currentFundraising = parseFloat(fundraisingInput.fundraisingAmount);
-      for (let month = 1; month <= numberOfMonths; month++) {
-        if (
-          month >= fundraisingInput.beginMonth &&
-          month <= fundraisingInput.endMonth
-        ) {
-          monthlyFundraising.push({
-            month: month,
-            fundraising: currentFundraising,
-          });
-          currentFundraising *=
-            1 + parseFloat(fundraisingInput.growthPercentage) / 100;
-        } else {
-          monthlyFundraising.push({ month: month, fundraising: 0 });
-        }
-      }
-      allFundraising.push({
-        name: fundraisingInput.name,
-        monthlyFundraising,
-        fundraisingType: fundraisingInput.fundraisingType,
-        fundraisingBeginMonth: fundraisingInput.fundraisingBeginMonth,
-        fundraisingAmount: fundraisingInput.fundraisingAmount,
-      });
-    });
-    return allFundraising;
-  };
-
-  const transformFundraisingDataForTable = () => {
-    const transformedFundraisingTableData = {};
-    const calculatedFundraisingData = calculateFundraisingData();
-
-    calculatedFundraisingData.forEach((fundraisingItem) => {
-      const rowKey = `${fundraisingItem.name}`;
-      fundraisingItem.monthlyFundraising.forEach((monthData) => {
-        if (!transformedFundraisingTableData[rowKey]) {
-          transformedFundraisingTableData[rowKey] = {
-            key: rowKey,
-            name: rowKey,
-            fundraisingType: fundraisingItem.fundraisingType,
-          };
-        }
-        if (monthData.month === fundraisingItem.fundraisingBeginMonth) {
-          transformedFundraisingTableData[rowKey][`month${monthData.month}`] =
-            formatNumber(
-              parseFloat(fundraisingItem.fundraisingAmount)?.toFixed(2)
-            );
-        } else {
-          transformedFundraisingTableData[rowKey][`month${monthData.month}`] =
-            formatNumber(parseFloat(monthData.fundraising)?.toFixed(2));
-        }
-      });
-    });
-
-    const initRow = (keyName) => {
-      const row = { key: keyName, name: keyName };
-      for (let month = 1; month <= numberOfMonths; month++) {
-        row[`month${month}`] = "0.00";
-      }
-      return row;
-    };
-
-    const totalFundingRow = initRow("Total funding");
-    const increasedCommonStockRow = initRow("Increased in Common Stock");
-    const increasedPreferredStockRow = initRow("Increased in Preferred Stock");
-    const increasedPaidInCapitalRow = initRow("Increased in Paid in Capital");
-    const accumulatedCommonStockRow = initRow("Accumulated Common Stock");
-    const accumulatedPreferredStockRow = initRow("Accumulated Preferred Stock");
-    const accumulatedPaidInCapitalRow = initRow("Accumulated Paid in Capital");
-
-    for (let month = 1; month <= numberOfMonths; month++) {
-      let accumulatedCommonStock = 0;
-      let accumulatedPreferredStock = 0;
-      let accumulatedPaidInCapital = 0;
-
-      Object.values(transformedFundraisingTableData).forEach((item) => {
-        const amount = parseNumber(item[`month${month}`]) || 0;
-        totalFundingRow[`month${month}`] = formatNumber(
-          (parseNumber(totalFundingRow[`month${month}`]) + amount).toFixed(2)
-        );
-
-        if (item.fundraisingType === "Common Stock") {
-          increasedCommonStockRow[`month${month}`] = formatNumber(
-            (
-              parseFloat(increasedCommonStockRow[`month${month}`]) + amount
-            ).toFixed(2)
-          );
-          accumulatedCommonStock += amount;
-        } else if (item.fundraisingType === "Preferred Stock") {
-          increasedPreferredStockRow[`month${month}`] = formatNumber(
-            (
-              parseFloat(increasedPreferredStockRow[`month${month}`]) + amount
-            ).toFixed(2)
-          );
-          accumulatedPreferredStock += amount;
-        } else if (item.fundraisingType === "Paid in Capital") {
-          increasedPaidInCapitalRow[`month${month}`] = formatNumber(
-            (
-              parseFloat(increasedPaidInCapitalRow[`month${month}`]) + amount
-            ).toFixed(2)
-          );
-          accumulatedPaidInCapital += amount;
-        }
-
-        // accumulatedCommonStockRow[`month${month}`] =
-        //   accumulatedCommonStock.toFixed(2);
-        // accumulatedPreferredStockRow[`month${month}`] =
-        //   accumulatedPreferredStock.toFixed(2);
-        // accumulatedPaidInCapitalRow[`month${month}`] =
-        //   accumulatedPaidInCapital.toFixed(2);
-      });
-
-      // Update accumulatedPreferredStockRow
-      let accumulatedPreferredStockTotal = 0;
-      for (let i = 1; i <= month; i++) {
-        accumulatedPreferredStockTotal +=
-          parseNumber(increasedPreferredStockRow[`month${i}`]) || 0;
-      }
-      accumulatedPreferredStockRow[`month${month}`] = formatNumber(
-        accumulatedPreferredStockTotal.toFixed(2)
-      );
-
-      let accumulatedCommonStockTotal = 0;
-      for (let i = 1; i <= month; i++) {
-        accumulatedCommonStockTotal +=
-          parseNumber(increasedCommonStockRow[`month${i}`]) || 0;
-      }
-      accumulatedCommonStockRow[`month${month}`] = formatNumber(
-        accumulatedCommonStockTotal.toFixed(2)
-      );
-
-      let accumulatedPaidInCapitalTotal = 0;
-      for (let i = 1; i <= month; i++) {
-        accumulatedPaidInCapitalTotal +=
-          parseNumber(increasedPaidInCapitalRow[`month${i}`]) || 0;
-      }
-      accumulatedPaidInCapitalRow[`month${month}`] = formatNumber(
-        accumulatedPaidInCapitalTotal.toFixed(2)
-      );
-    }
-
-    transformedFundraisingTableData["Increased in Common Stock"] =
-      increasedCommonStockRow;
-    transformedFundraisingTableData["Increased in Preferred Stock"] =
-      increasedPreferredStockRow;
-    transformedFundraisingTableData["Increased in Paid in Capital"] =
-      increasedPaidInCapitalRow;
-    transformedFundraisingTableData["Accumulated Common Stock"] =
-      accumulatedCommonStockRow;
-    transformedFundraisingTableData["Accumulated Preferred Stock"] =
-      accumulatedPreferredStockRow;
-    transformedFundraisingTableData["Accumulated Paid in Capital"] =
-      accumulatedPaidInCapitalRow;
-    transformedFundraisingTableData["Total funding"] = totalFundingRow;
-
-    return Object.values(transformedFundraisingTableData);
   };
 
   const fundraisingColumns = [
@@ -291,17 +136,35 @@ const FundraisingSection = ({
 
   useEffect(() => {
     if (isSaved) {
-      setFundraisingInputs(tempFundraisingInputs);
+      dispatch(setFundraisingInputs(tempFundraisingInputs));
 
-      const tableData = transformFundraisingDataForTable();
-      setFundraisingTableData(tableData);
+      const tableData = transformFundraisingDataForTable(
+        tempFundraisingInputs,
+        numberOfMonths
+      );
+
+      dispatch(setFundraisingTableData(tableData));
       setIsSaved(false);
     }
   }, [isSaved]);
 
   useEffect(() => {
-    const transformedData = transformFundraisingDataForTable();
-    setFundraisingTableData(transformedData);
+    dispatch(setFundraisingInputs(tempFundraisingInputs));
+
+    const tableData = transformFundraisingDataForTable(
+      tempFundraisingInputs,
+      numberOfMonths
+    );
+
+    dispatch(setFundraisingTableData(tableData));
+  }, []);
+
+  useEffect(() => {
+    const transformedData = transformFundraisingDataForTable(
+      tempFundraisingInputs,
+      numberOfMonths
+    );
+
     const seriesData = [];
 
     transformedData.forEach((item) => {
@@ -322,10 +185,10 @@ const FundraisingSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-      <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
+      <div className="w-full lg:w-1/4 sm:p-4 p-0 sm:border-r-2 border-r-0 sm:border-b-0 border-b-2">
         <section aria-labelledby="fundraising-heading" className="mb-8">
           <h2
-            className="text-2xl font-semibold mb-4 flex items-center"
+            className="text-2xl font-semibold mb-4 flex items-center mt-4"
             id="fundraising-heading"
           >
             Fundraising
@@ -485,16 +348,19 @@ const FundraisingSection = ({
             className="bg-blue-600 text-white py-1 px-2 rounded mt-4"
             onClick={handleSave}
           >
-            Save
+            Save changes
           </button>
         </section>
       </div>
-      <div className="w-full lg:w-3/4 p-4">
+      <div className="w-full lg:w-3/4 sm:p-4 p-0">
         <h3 className="text-2xl font-semibold mb-4">Fundraising Table</h3>
         <Table
           className="overflow-auto my-8"
           size="small"
-          dataSource={transformFundraisingDataForTable()}
+          dataSource={transformFundraisingDataForTable(
+            tempFundraisingInputs,
+            numberOfMonths
+          )}
           columns={fundraisingColumns}
           pagination={false}
         />

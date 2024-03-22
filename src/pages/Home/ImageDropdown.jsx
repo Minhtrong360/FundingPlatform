@@ -186,7 +186,6 @@ const ImageDropdown = () => {
           </button>
           <button
             style={{ minWidth: "100%" }}
-            n
             className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
             onClick={(e) => handleClickDashBoard(e)}
           >

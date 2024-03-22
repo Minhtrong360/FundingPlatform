@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Header from "../Home/Header";
 import { supabase } from "../../supabase"; // Import supabase connection
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 const NotificationItem = ({ notification }) => {
   const parsedContent = JSON.parse(notification.content);
@@ -95,7 +94,7 @@ const NotificationsPage = () => {
     };
 
     fetchNotifications(); // Call the function to fetch notifications
-  }, []);
+  }, [user.email]);
 
   return (
     <>

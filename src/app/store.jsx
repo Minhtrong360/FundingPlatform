@@ -3,18 +3,22 @@ import DurationSlice from "../features/DurationSlice";
 import CustomerSlice from "../features/CustomerSlice";
 import SaleSlice from "../features/SaleSlice";
 import CostSlice from "../features/CostSlice";
-import personnelSlice from "../features/PersonnelSlice";
+import PersonnelSlice from "../features/PersonnelSlice";
 import InvestmentSlice from "../features/InvestmentSlice";
+import LoanSlice from "../features/LoanSlice";
+import FundraisingSlice from "../features/FundraisingSlice";
+import ProfitAndLossSlice from "../features/ProfitAndLossSlice";
 
 const rootReducer = {
   durationSelect: DurationSlice,
   customer: CustomerSlice,
   sales: SaleSlice,
   cost: CostSlice,
-  personnel: personnelSlice,
+  personnel: PersonnelSlice,
   investment: InvestmentSlice,
-  loan: 0,
-  profitAndLoss: 0,
+  loan: LoanSlice,
+  fundraising: FundraisingSlice,
+  profitAndLoss: ProfitAndLossSlice,
 };
 const store = configureStore({
   reducer: rootReducer,

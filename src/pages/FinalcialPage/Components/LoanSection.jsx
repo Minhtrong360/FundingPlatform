@@ -3,18 +3,25 @@ import { Input } from "../../../components/ui/Input";
 import { Table, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  calculateLoanData,
+  setLoanData,
+  setLoanInputs,
+  setLoanTableData,
+  transformLoanDataForTable,
+} from "../../../features/LoanSlice";
 
 const LoanSection = ({
-  loanInputs,
-  setLoanInputs,
   numberOfMonths,
-  loanData,
-  setLoanData,
+
   isSaved,
   setIsSaved,
-  setLoanTableData,
+
   handleSubmit,
 }) => {
+  const dispatch = useDispatch();
+  const { loanInputs } = useSelector((state) => state.loan);
   const [tempLoanInputs, setTempLoanInputs] = useState(loanInputs);
   const [renderLoanForm, setRenderLoanForm] = useState(loanInputs[0]?.id);
 
@@ -96,158 +103,10 @@ const LoanSection = ({
     setTempLoanInputs(newInputs);
   };
 
-  const calculateLoanData = () => {
-    return tempLoanInputs.map((loan) => {
-      const monthlyRate = parseFloat(loan.interestRate) / 100 / 12;
-      const loanAmount = parseFloat(loan.loanAmount);
-      const loanDuration =
-        parseInt(loan.loanEndMonth, 10) - parseInt(loan.loanBeginMonth, 10) + 1;
-
-      const monthlyPayment =
-        (loanAmount * monthlyRate) /
-        (1 - Math.pow(1 + monthlyRate, -loanDuration));
-
-      let remainingBalance = loanAmount;
-      const loanDataPerMonth = [];
-
-      for (let month = 1; month <= loanDuration; month++) {
-        const interestForMonth = remainingBalance * monthlyRate;
-        const principalForMonth = monthlyPayment - interestForMonth;
-        remainingBalance -= principalForMonth;
-
-        loanDataPerMonth.push({
-          month: month + parseInt(loan.loanBeginMonth, 10) - 1,
-          payment: monthlyPayment,
-          principal: principalForMonth,
-          interest: interestForMonth,
-          balance: remainingBalance,
-          loanAmount: loanAmount,
-        });
-      }
-
-      return {
-        loanName: loan.loanName,
-        loanDataPerMonth,
-      };
-    });
-  };
-
-  const transformLoanDataForTable = () => {
-    const loanTableData = [];
-
-    const selectedLoan = tempLoanInputs.find(
-      (input) => input.id === parseInt(renderLoanForm)
-    );
-    if (!selectedLoan) return loanTableData;
-
-    const loanIndex = tempLoanInputs.findIndex(
-      (input) => input.id === parseInt(renderLoanForm)
-    );
-    const loanData = calculateLoanData()[loanIndex];
-
-    const loanName = selectedLoan.loanName || `Loan ${loanIndex + 1}`;
-
-    const loanAmountRow = {
-      key: `Loan Amount`,
-      type: `Loan Amount`,
-    };
-    const paymentRow = {
-      key: `Payment`,
-      type: `Payment`,
-    };
-    const principalRow = {
-      key: `Principal`,
-      type: `Principal`,
-    };
-    const interestRow = {
-      key: `Interest`,
-      type: `Interest`,
-    };
-    const balanceRow = {
-      key: `Remaining Balance`,
-      type: `Remaining Balance`,
-    };
-
-    for (let monthIndex = 1; monthIndex <= numberOfMonths; monthIndex++) {
-      const monthKey = `Month ${monthIndex}`;
-      loanAmountRow[monthKey] = "0.00";
-      paymentRow[monthKey] = "0.00";
-      principalRow[monthKey] = "0.00";
-      interestRow[monthKey] = "0.00";
-      balanceRow[monthKey] = "0.00";
-    }
-
-    loanData.loanDataPerMonth.forEach((monthData) => {
-      const monthKey = `Month ${monthData.month}`;
-      loanAmountRow[monthKey] = formatNumber(monthData.loanAmount?.toFixed(2));
-      paymentRow[monthKey] = formatNumber(monthData.payment?.toFixed(2));
-      principalRow[monthKey] = formatNumber(monthData.principal?.toFixed(2));
-      interestRow[monthKey] = formatNumber(monthData.interest?.toFixed(2));
-      balanceRow[monthKey] = formatNumber(monthData.balance?.toFixed(2));
-    });
-
-    loanTableData.push(
-      loanAmountRow,
-      paymentRow,
-      principalRow,
-      interestRow,
-      balanceRow
-    );
-
-    const cfLoansSum = Array(numberOfMonths).fill(0);
-    tempLoanInputs.forEach((input) => {
-      const beginMonth = parseInt(input.loanBeginMonth, 10);
-      const loanAmount = parseFloat(input.loanAmount);
-
-      cfLoansSum[beginMonth - 1] += loanAmount;
-    });
-
-    const cfLoansRow = {
-      key: `CF Loans`,
-      type: `CF Loans`,
-    };
-    for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
-      cfLoansRow[`Month ${monthIndex + 1}`] = formatNumber(
-        cfLoansSum[monthIndex]?.toFixed(2)
-      );
-    }
-    loanTableData.push(cfLoansRow);
-
-    const totalRemainingBalanceRow = {
-      key: `Total Remaining Balance`,
-      type: `Total Remaining Balance`,
-    };
-
-    for (let monthIndex = 1; monthIndex <= numberOfMonths; monthIndex++) {
-      const monthKey = `Month ${monthIndex}`;
-      const totalBalanceForMonth = tempLoanInputs.reduce((total, input) => {
-        const loanData = calculateLoanData().find(
-          (loan) => loan.loanName === input.loanName
-        );
-        const monthData = loanData?.loanDataPerMonth.find(
-          (data) => data.month === monthIndex
-        );
-        // Add a check for monthData being defined before accessing balance property
-        if (monthData) {
-          total += monthData.balance;
-        }
-        return total;
-      }, 0);
-      totalRemainingBalanceRow[monthKey] = formatNumber(
-        totalBalanceForMonth.toFixed(2)
-      );
-    }
-
-    // Add the total remaining balance row to the table data
-    loanTableData.push(totalRemainingBalanceRow);
-
-    return loanTableData;
-  };
-
   useEffect(() => {
-    const calculatedData = calculateLoanData();
-    setLoanData(calculatedData);
-    setLoanTableData(tableData);
+    const calculatedData = calculateLoanData(loanInputs);
+    dispatch(setLoanData(calculatedData));
+    dispatch(setLoanTableData(tableData));
   }, [loanInputs, numberOfMonths, renderLoanForm]);
 
   const loanColumns = [
@@ -260,7 +119,7 @@ const LoanSection = ({
   ];
 
   useEffect(() => {
-    const seriesData = calculateLoanData().flatMap((loan) => {
+    const seriesData = calculateLoanData(tempLoanInputs).flatMap((loan) => {
       return [
         {
           name: `${loan.loanName} - Payment`,
@@ -293,26 +152,30 @@ const LoanSection = ({
     message.success("Data saved successfully!");
   };
 
-  const tableData = transformLoanDataForTable();
+  const tableData = transformLoanDataForTable(
+    tempLoanInputs,
+    renderLoanForm,
+    numberOfMonths
+  );
 
   useEffect(() => {
     if (isSaved) {
-      setLoanInputs(tempLoanInputs);
-      setLoanTableData(tableData);
+      dispatch(setLoanInputs(tempLoanInputs));
+      dispatch(setLoanTableData(tableData));
       setIsSaved(false);
     }
   }, [isSaved]);
 
   useEffect(() => {
-    setLoanTableData(tableData);
+    dispatch(setLoanTableData(tableData));
   }, []);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-      <div className="w-full lg:w-1/4 p-4 sm:border-r-2 border-r-0">
+      <div className="w-full lg:w-1/4 sm:p-4 p-0 sm:border-r-2 border-r-0 sm:border-b-0 border-b-2">
         <section aria-labelledby="loan-heading" className="mb-8">
           <h2
-            className="text-lg font-semibold mb-4 flex items-center mt-16"
+            className="text-2xl font-semibold mb-4 flex items-center mt-4"
             id="loan-heading"
           >
             Loan
@@ -455,16 +318,20 @@ const LoanSection = ({
             className="bg-blue-600 text-white py-1 px-2 rounded mt-4"
             onClick={handleSave}
           >
-            Save
+            Save changes
           </button>
         </section>
       </div>
-      <div className="w-full lg:w-3/4 p-4">
+      <div className="w-full lg:w-3/4 sm:p-4 p-0">
         <h3 className="text-2xl font-semibold mb-4">Loan Data</h3>
         <Table
           className="overflow-auto my-8"
           size="small"
-          dataSource={transformLoanDataForTable()}
+          dataSource={transformLoanDataForTable(
+            tempLoanInputs,
+            renderLoanForm,
+            numberOfMonths
+          )}
           columns={loanColumns}
           pagination={false}
         />

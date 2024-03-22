@@ -30,7 +30,6 @@ const DurationSelect = ({ handleSubmit }) => {
     status,
     industry,
     incomeTax,
-    payrollTax,
     currency,
     startMonth,
     startYear,
@@ -74,7 +73,7 @@ const DurationSelect = ({ handleSubmit }) => {
   return (
     <section aria-labelledby="duration-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-4 flex items-center"
+        className="text-2xl font-semibold mb-4 flex items-center mt-4"
         id="duration-heading"
       >
         General Setup
@@ -244,10 +243,12 @@ const DurationSelect = ({ handleSubmit }) => {
             <Input
               className="border-gray-200"
               type="text"
-              value={formatNumber(payrollTax)}
-              onChange={(e) =>
-                dispatch(setPayrollTax(parseNumber(e.target.value)))
-              }
+              placeholder="0"
+              // value={formatNumber(payrollTax)}
+              // onChange={(e) =>
+              //   dispatch(setPayrollTax(parseNumber(e.target.value)))
+              // }
+              disabled
             />
           </div>
         </Tooltip>
@@ -276,7 +277,7 @@ const DurationSelect = ({ handleSubmit }) => {
         className="bg-blue-600 text-white py-1 px-2 rounded mt-4"
         onClick={handleSubmit}
       >
-        Save
+        Save project
       </button>
     </section>
   );

@@ -524,7 +524,7 @@ const handleCheckboxChange = (e) => {
           className="form-checkbox"
           onChange={handleCheckboxChange}
         />
-        <span className="ml-2">Actual input</span>
+        <span className="ml-2 text-sm">Actual input</span>
       </label>
     </div>
         <Table

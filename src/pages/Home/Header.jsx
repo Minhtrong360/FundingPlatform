@@ -230,7 +230,7 @@ const Header = () => {
                   Home
                 </NavbarItem>
                 <NavbarItem onClick={() => navigate(`/financials`)}>
-                  Financial Model
+                  Financial Model ✨ 
                 </NavbarItem>
                 <NavbarItem onClick={handleProductFeaturesClick}>
                   Startups

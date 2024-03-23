@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import AlertMsg from "../../components/AlertMsg";
 import ProgressBar from "../../components/ProgressBar";
 import Gemini from "./Components/Gemini";
+import GPTAnalyzer from "./Components/GPTAnalyzer";
 import MetricsFM from "../MetricsFM";
 import ProfitAndLossSection from "./Components/ProfitAndLossSection";
 import * as XLSX from "xlsx";
@@ -512,6 +513,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               currentUser={currentUser}
               setCurrentUser={setCurrentUser}
             />
+          </div>
+          <div className="w-full h-full flex flex-col lg:flex-row">
+          <GPTAnalyzer/>
           </div>
           <div className="my-4 ">
             <div className="overflow-x-auto whitespace-nowrap border-t-2">

@@ -289,7 +289,7 @@ const Gemini = ({
                 className=" px-4 block w-full h-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Candy shop, pizza restaurant, hospital, HR SaaS software... or anything"
+                placeholder="Your business model"
               />
             </div>
 

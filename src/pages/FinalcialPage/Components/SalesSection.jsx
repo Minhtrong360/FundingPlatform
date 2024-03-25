@@ -248,6 +248,8 @@ const SalesSection = ({
 
   const revenueTableData = transformRevenueDataForTable();
 
+  const handleActualChange = (value, record, field) => {};
+
   //RevenueColumns
   const revenueColumns = [
     {

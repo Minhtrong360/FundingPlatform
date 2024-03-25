@@ -428,7 +428,7 @@ const AllChartSections = ({
   };
 
   const renderCard = (title, value) => (
-    <div className="flex flex-col bg-white border shadow-lg rounded-xl m-8 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+    <div className="flex flex-col bg-white border shadow-lg rounded-xl m-4 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
       <div className="p-4 md:p-5">
         <div className="flex items-center gap-x-2">
           <p className="text-xs uppercase tracking-wide text-gray-800">
@@ -794,7 +794,7 @@ const AllChartSections = ({
               </SelectContent>
             </Select>
           </div>
-          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-0">
             {renderCard("Total Revenue", totalRevenue)}
             {renderCard("Total Costs", totalCosts)}
             {renderCard("Net Income", netIncome)}

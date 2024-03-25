@@ -6,15 +6,19 @@ function Features() {
           id="platform"
           className="block text-3xl font-extrabold text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl darkTextWhite"
         >
-          A <span className="text-blue-600 bg-yellow-300 h-6">data-centric </span> platform for users.
+          A{" "}
+          <span className="text-blue-600 bg-yellow-300 h-6">data-centric </span>{" "}
+          platform for users.
         </h3>
         <p className="mt-6 text-lg text-gray-800">
-        Regardless of who you are, our orientation is to provide you with a data-centric platform that serves best for analyzing the data of a business profile, financial analysis, and investment analysis.
+          Regardless of who you are, our orientation is to provide you with a
+          data-centric platform that serves best for analyzing the data of a
+          business profile, financial analysis, and investment analysis.
         </p>
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <a
+        <div
           className="group flex flex-col h-full border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-5 "
           href="#"
         >
@@ -30,20 +34,19 @@ function Features() {
               FOUNDER & BUSINESS OWNER
             </h3>
             <p className="mt-5 text-gray-800 darkTextGray">
-            
-<ul>
-  <li>✅ Financial forecasting </li>
-  <li>✅ Financial reporting</li>
-  <li>✅ Expense tracking</li>
-  <li>✅ Cash flow management</li>
-  <li>✅ Sensitivity analysis</li>
-  <li>✅ Investment valuation</li>
-</ul>
+              <ul>
+                <li>✅ Financial forecasting </li>
+                <li>✅ Financial reporting</li>
+                <li>✅ Expense tracking</li>
+                <li>✅ Cash flow management</li>
+                <li>✅ Sensitivity analysis</li>
+                <li>✅ Investment valuation</li>
+              </ul>
             </p>
           </div>
-        </a>
+        </div>
 
-        <a
+        <div
           className="group flex flex-col h-full border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-5 "
           href="#"
         >
@@ -56,22 +59,22 @@ function Features() {
           </div>
           <div className="my-6">
             <h3 className="text-xl font-semibold text-gray-800 darkTextGray darkGroupHoverText">
-            BROKER & INVESTMENT ANALYST
+              BROKER & INVESTMENT ANALYST
             </h3>
             <p className="mt-5 text-gray-800 darkTextGray">
-            <ul>
-              <li>✅ Business Profile analysis</li>
-              <li>✅ Investment research</li>
-              <li>✅ Portfolio management</li>
-              <li>✅ Risk assessment, Due diligence</li>
-              <li>✅ Performance tracking</li>
-              <li>✅ Financial modeling</li>
-            </ul>
+              <ul>
+                <li>✅ Business Profile analysis</li>
+                <li>✅ Investment research</li>
+                <li>✅ Portfolio management</li>
+                <li>✅ Risk assessment, Due diligence</li>
+                <li>✅ Performance tracking</li>
+                <li>✅ Financial modeling</li>
+              </ul>
             </p>
           </div>
-        </a>
+        </div>
 
-        <a
+        <div
           className="group flex flex-col h-full border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-5 "
           href="#"
         >
@@ -84,20 +87,20 @@ function Features() {
           </div>
           <div className="my-6">
             <h3 className="text-xl font-semibold text-gray-800 darkTextGray darkGroupHoverText">
-              INVESTORS (ANGEL, VC, PE)  
+              INVESTORS (ANGEL, VC, PE)
             </h3>
             <p className="mt-5 text-gray-800 darkTextGray">
-            <ul>
-              <li>✅ Analyzing financial data</li>
-              <li>✅ Advanced analytics</li>
-              <li>✅ Reporting features</li>
-              <li>✅ Conduct thorough due diligence</li>
-              <li>✅ Assess risk factors</li>
-              <li>✅ Evaluate the potential returns</li>
-            </ul>
+              <ul>
+                <li>✅ Analyzing financial data</li>
+                <li>✅ Advanced analytics</li>
+                <li>✅ Reporting features</li>
+                <li>✅ Conduct thorough due diligence</li>
+                <li>✅ Assess risk factors</li>
+                <li>✅ Evaluate the potential returns</li>
+              </ul>
             </p>
           </div>
-        </a>
+        </div>
       </div>
 
       <div className="mt-12 text-center"></div>

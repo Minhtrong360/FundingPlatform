@@ -201,7 +201,7 @@ const PricingWithLemon = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [lemon_api_key]);
 
   const makePayment = async (plan, useEmail) => {
     setIsLoading(true);
@@ -227,12 +227,12 @@ const PricingWithLemon = () => {
       <LoadingButtonClick isLoading={isLoading} />
       <div className="text-center mb-10 lg:mb-14">
         <h2
-          className="text-2xl font-semibold md:text-4xl md:leading-tight darkTextWhite  hover:cursor-pointer"
+          className="block text-3xl font-extrabold text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl darkTextWhite"
           id="pricing"
         >
           Pricing
         </h2>
-        <p className="text-gray-600 mt-1 darkTextGray">
+        <p className="text-gray-600 mt-4 darkTextGray">
           Whatever your status, our offers evolve according to your needs.
         </p>
       </div>

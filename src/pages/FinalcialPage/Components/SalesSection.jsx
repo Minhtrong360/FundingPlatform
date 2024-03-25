@@ -247,19 +247,8 @@ const SalesSection = ({
   };
 
   const revenueTableData = transformRevenueDataForTable();
-  
-  const handleActualChange = (value, record, key) => {
-    const newRecord = { ...record };
-    newRecord[key] = value;
-    setTempRevenueData((prevData) => {
-      const newData = [...prevData];
-      const index = newData.findIndex((data) => data.key === record.key);
-      newData[index] = newRecord;
-      return newData;
-    });
-  };
-  
-  // Define the revenueColumns array
+
+  //RevenueColumns
   const revenueColumns = [
     {
       fixed: "left",
@@ -288,13 +277,9 @@ const SalesSection = ({
       }
     ])),
   ];
-  
-
-
 
   //RevenueChart
-  
-  console.log("tempRevenueData", tempRevenueData)
+
   useEffect(() => {
     const seriesData = Object.entries(tempRevenueData).map(([key, data]) => {
       return { name: key, data };

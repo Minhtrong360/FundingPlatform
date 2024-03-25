@@ -36,8 +36,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
               <span className="text-green-600">
                 <Tooltip title="The increase percentage of the second year compared to the first year in the series.">
                   <span className="inline-block text-sm">
-                    {((yearlyAverageCustomers[1] -
-                      yearlyAverageCustomers[0]) *
+                    {((yearlyAverageCustomers[1] - yearlyAverageCustomers[0]) *
                       100) /
                     yearlyAverageCustomers[0]
                       ? formatNumber(
@@ -85,8 +84,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
               <span className="text-green-600">
                 <Tooltip title="The increase percentage of the second year compared to the first year in the series.">
                   <span className="inline-block text-sm">
-                    {((yearlySales[1] - yearlySales[0]) * 100) /
-                    yearlySales[0]
+                    {((yearlySales[1] - yearlySales[0]) * 100) / yearlySales[0]
                       ? formatNumber(
                           (
                             ((yearlySales[1] - yearlySales[0]) * 100) /

@@ -295,13 +295,22 @@ const FundraisingSection = ({
                       <FundraisingSelectValue placeholder="Select Fundraising Type" />
                     </FundraisingSelectTrigger>
                     <FundraisingSelectContent position="popper">
-                      <FundraisingSelectItem value="Common Stock">
+                      <FundraisingSelectItem
+                        value="Common Stock"
+                        className="hover:cursor-pointer"
+                      >
                         Common Stock
                       </FundraisingSelectItem>
-                      <FundraisingSelectItem value="Preferred Stock">
+                      <FundraisingSelectItem
+                        value="Preferred Stock"
+                        className="hover:cursor-pointer"
+                      >
                         Preferred Stock
                       </FundraisingSelectItem>
-                      <FundraisingSelectItem value="Paid in Capital">
+                      <FundraisingSelectItem
+                        value="Paid in Capital"
+                        className="hover:cursor-pointer"
+                      >
                         Paid in Capital
                       </FundraisingSelectItem>
                     </FundraisingSelectContent>

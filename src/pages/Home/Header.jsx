@@ -218,36 +218,47 @@ const Header = () => {
               </svg>
             </button>
           </div>
-          {loginPart === "" ? (
-            <div
-              className={`items-center justify-between w-full md:flex md:w-auto md:order-1 ${
-                isOpen ? "block" : "hidden"
-              }`}
-              id="navbar-sticky"
-            >
-              <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-4 lg:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white darkBgBlue md:darkBg darkBorderGray">
-                <NavbarItem href="#" isActive>
-                  Home
-                </NavbarItem>
-                <NavbarItem onClick={() => navigate(`/financials`)}>
-                  Financial Model ✨ 
-                </NavbarItem>
-                <NavbarItem onClick={handleProductFeaturesClick}>
-                  Startups
-                </NavbarItem>
-                <NavbarItem onClick={handlePricingClick}>Pricing</NavbarItem>
-                <NavbarItem onClick={() => navigate("/news")}>News</NavbarItem>
-                <NavbarItem
-                  href="https://beekrowd.canny.io/beekrowd-feedback"
-                  target="_blank"
-                >
-                  Feedback
-                </NavbarItem>
-              </ul>
-            </div>
-          ) : (
-            ""
-          )}
+
+          <div
+            className={`items-center justify-between w-full md:flex md:w-auto md:order-1 ${
+              isOpen ? "block" : "hidden"
+            }`}
+            id="navbar-sticky"
+          >
+            <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-4 lg:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white darkBgBlue md:darkBg darkBorderGray">
+              <NavbarItem
+                onClick={() => navigate(`/`)}
+                isActive={loginPart === ""}
+              >
+                Home
+              </NavbarItem>
+              <NavbarItem
+                onClick={() => navigate(`/financials`)}
+                isActive={loginPart === "financials"}
+              >
+                Financial Model ✨
+              </NavbarItem>
+              <NavbarItem
+                onClick={() => navigate(`/startups`)}
+                isActive={loginPart === "startups"}
+              >
+                Startups
+              </NavbarItem>
+
+              <NavbarItem
+                href="https://beekrowd.gitbook.io/beekrowd-financial-model-guide"
+                target="_blank"
+              >
+                Documentation
+              </NavbarItem>
+              <NavbarItem
+                href="https://beekrowd.canny.io/beekrowd-feedback"
+                target="_blank"
+              >
+                Feedback
+              </NavbarItem>
+            </ul>
+          </div>
         </div>
       </nav>
     </>

@@ -362,6 +362,7 @@ const FundraisingSection = ({
             numberOfMonths
           )}
           columns={fundraisingColumns}
+          bordered
           pagination={false}
         />
         <h3 className="text-2xl font-semibold my-8">Fundraising Chart</h3>

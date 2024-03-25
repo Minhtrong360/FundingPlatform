@@ -60,7 +60,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             max-width: 0;
             overflow: hidden;
             white-space: nowrap;
-            transition: max-width 0.5s ease-in-out, opacity 0.5s ease;
+            
             opacity: 0;
           }
           .group:hover .sidebar-text {

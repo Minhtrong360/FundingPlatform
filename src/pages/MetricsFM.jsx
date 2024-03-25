@@ -82,7 +82,6 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
                 </span>
               </div>
             </div>
-<<<<<<< HEAD
             <div className="ml-0">
               <span className="text-green-600">
                 <Tooltip title="The increase percentage of the second year compared to the first year in the series.">
@@ -105,9 +104,6 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
               </span>
             </div>
             <div className="whitespace-normal">Customer</div>
-=======
-            <div>Customer</div>
->>>>>>> 2639d908c0db910868246412f34306c95aaab5b5
           </div>
         </div>
 
@@ -181,7 +177,6 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
                 </span>
               </div>
             </div>
-<<<<<<< HEAD
             <div className="ml-0">
               <span className="text-green-600">
                 <Tooltip title="The increase percentage of the second year compared to the first year in the series.">
@@ -200,9 +195,6 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
               </span>
             </div>
             <div className="whitespace-normal">Revenue</div>
-=======
-            <div>Revenue</div>
->>>>>>> 2639d908c0db910868246412f34306c95aaab5b5
           </div>
         </div>
 

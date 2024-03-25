@@ -146,7 +146,7 @@ const HeroSection = () => {
 
     <div className="flex justify-center mt-10">
       <video
-        className="object-cover w-full md:w-4/5 rounded-xl shadow-md"
+        className="object-cover w-full md:w-4/5 rounded-xl shadow-2xl border border-gray-300"
         autoPlay
         loop
         muted

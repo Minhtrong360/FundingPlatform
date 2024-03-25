@@ -466,11 +466,12 @@ const CustomerSection = ({
         <div className="mb-8">
           <h3 className="text-2xl font-semibold">Customer Table</h3>
           <Table
-            className="overflow-auto border border-gray-300 my-8"
+            className="overflow-auto  my-8"
             size="small"
             dataSource={customerTableData}
             columns={customerColumns}
             pagination={false}
+            bordered
           />
         </div>
         <h3 className="text-2xl font-semibold my-8">Customer Chart</h3>

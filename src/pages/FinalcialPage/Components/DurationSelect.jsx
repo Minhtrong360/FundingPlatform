@@ -109,7 +109,11 @@ const DurationSelect = ({ handleSubmit }) => {
               </SelectTrigger>
               <SelectContent position="popper">
                 {months.map((month, index) => (
-                  <SelectItem key={index} value={month}>
+                  <SelectItem
+                    className="hover:cursor-pointer"
+                    key={index}
+                    value={month}
+                  >
                     {month}
                   </SelectItem>
                 ))}
@@ -133,7 +137,11 @@ const DurationSelect = ({ handleSubmit }) => {
               </SelectTrigger>
               <SelectContent position="popper">
                 {years.map((year, index) => (
-                  <SelectItem key={index} value={year}>
+                  <SelectItem
+                    className="hover:cursor-pointer"
+                    key={index}
+                    value={year}
+                  >
                     {year}
                   </SelectItem>
                 ))}
@@ -155,8 +163,12 @@ const DurationSelect = ({ handleSubmit }) => {
                 <SelectValue placeholder={selectedDuration} />
               </SelectTrigger>
               <SelectContent position="popper">
-                <SelectItem value="3 years">3 years</SelectItem>
-                <SelectItem value="5 years">5 years</SelectItem>
+                <SelectItem className="hover:cursor-pointer" value="3 years">
+                  3 years
+                </SelectItem>
+                <SelectItem className="hover:cursor-pointer" value="5 years">
+                  5 years
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -190,8 +202,12 @@ const DurationSelect = ({ handleSubmit }) => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent position="popper">
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="inactive">Inactive</SelectItem>
+                <SelectItem className="hover:cursor-pointer" value="active">
+                  Active
+                </SelectItem>
+                <SelectItem className="hover:cursor-pointer" value="inactive">
+                  Inactive
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -214,7 +230,11 @@ const DurationSelect = ({ handleSubmit }) => {
               </SelectTrigger>
               <SelectContent position="popper">
                 {industries.map((industry, index) => (
-                  <SelectItem key={index} value={industry}>
+                  <SelectItem
+                    className="hover:cursor-pointer"
+                    key={index}
+                    value={industry}
+                  >
                     {industry}
                   </SelectItem>
                 ))}
@@ -264,9 +284,15 @@ const DurationSelect = ({ handleSubmit }) => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent position="popper">
-                <SelectItem value="USD">USD</SelectItem>
-                <SelectItem value="EUR">EUR</SelectItem>
-                <SelectItem value="GBP">GBP</SelectItem>
+                <SelectItem className="hover:cursor-pointer" value="USD">
+                  USD
+                </SelectItem>
+                <SelectItem className="hover:cursor-pointer" value="EUR">
+                  EUR
+                </SelectItem>
+                <SelectItem className="hover:cursor-pointer" value="GBP">
+                  GBP
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>

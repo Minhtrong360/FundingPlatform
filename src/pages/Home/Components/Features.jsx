@@ -1,3 +1,6 @@
+import FsB from "./founder&Business.jpg";
+import BsI from "./B&I.jpg";
+import VCs from "./VCs.jpg";
 function Features() {
   return (
     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto mt-24">
@@ -21,7 +24,7 @@ function Features() {
           <div className="aspect-w-16 aspect-h-11">
             <img
               className="w-full object-cover rounded-xl"
-              src="https://images.unsplash.com/photo-1692606932040-c7788965e217?q=80&h=2360&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+               src= {FsB}
               alt=" Description"
             />
           </div>
@@ -31,41 +34,13 @@ function Features() {
             </h3>
             <p className="mt-5 text-gray-800 darkTextGray">
             
-<ul>
-  <li>✅ Financial forecasting </li>
-  <li>✅ Financial reporting</li>
-  <li>✅ Expense tracking</li>
-  <li>✅ Cash flow management</li>
-  <li>✅ Sensitivity analysis</li>
-  <li>✅ Investment valuation</li>
-</ul>
-            </p>
-          </div>
-        </a>
-
-        <a
-          className="group flex flex-col h-full border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-5 "
-          href="#"
-        >
-          <div className="aspect-w-16 aspect-h-11">
-            <img
-              className="w-full object-cover rounded-xl"
-              src="https://images.unsplash.com/photo-1692607038301-07f744323ede?q=80&h=2360&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt="Description"
-            />
-          </div>
-          <div className="my-6">
-            <h3 className="text-xl font-semibold text-gray-800 darkTextGray darkGroupHoverText">
-            BROKER & INVESTMENT ANALYST
-            </h3>
-            <p className="mt-5 text-gray-800 darkTextGray">
             <ul>
-              <li>✅ Business Profile analysis</li>
-              <li>✅ Investment research</li>
-              <li>✅ Portfolio management</li>
-              <li>✅ Risk assessment, Due diligence</li>
-              <li>✅ Performance tracking</li>
-              <li>✅ Financial modeling</li>
+              <li><img width="16" height="16" src="https://img.icons8.com/ios/50/checkmark--v1.png" alt="checkmark--v1"/> Financial forecasting </li>
+              <li><img width="16" height="16" src="https://img.icons8.com/ios/50/checkmark--v1.png" alt="checkmark--v1"/> Financial reporting</li>
+              <li><img width="16" height="16" src="https://img.icons8.com/ios/50/checkmark--v1.png" alt="checkmark--v1"/> Expense tracking</li>
+              <li><img width="16" height="16" src="https://img.icons8.com/ios/50/checkmark--v1.png" alt="checkmark--v1"/> Cash flow management</li>
+              <li><img width="16" height="16" src="https://img.icons8.com/ios/50/checkmark--v1.png" alt="checkmark--v1"/> Sensitivity analysis</li>
+              <li><img width="16" height="16" src="https://img.icons8.com/ios/50/checkmark--v1.png" alt="checkmark--v1"/> Investment valuation</li>
             </ul>
             </p>
           </div>
@@ -78,8 +53,35 @@ function Features() {
           <div className="aspect-w-16 aspect-h-11">
             <img
               className="w-full object-cover rounded-xl"
-              src="https://images.unsplash.com/photo-1692606866812-843adbc73e18?q=80&h=2360&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt="Description"
+               src= {BsI} 
+               alt="Description"
+            />
+          </div>
+          <div className="my-6">
+            <h3 className="text-xl font-semibold text-gray-800 darkTextGray darkGroupHoverText">
+            BROKER & INVESTMENT ANALYST
+            </h3>
+            <p className="mt-5 text-gray-800 darkTextGray">
+            <ul>
+              <li><img width="16" height="16" src="https://img.icons8.com/ios/50/checkmark--v1.png" alt="checkmark--v1"/> Business Profile analysis</li>
+              <li><img width="16" height="16" src="https://img.icons8.com/ios/50/checkmark--v1.png" alt="checkmark--v1"/> Investment research</li>
+              <li><img width="16" height="16" src="https://img.icons8.com/ios/50/checkmark--v1.png" alt="checkmark--v1"/> Portfolio management</li>
+              <li><img width="16" height="16" src="https://img.icons8.com/ios/50/checkmark--v1.png" alt="checkmark--v1"/> Risk assessment, Due diligence</li>
+              <li><img width="16" height="16" src="https://img.icons8.com/ios/50/checkmark--v1.png" alt="checkmark--v1"/> Performance tracking</li>
+              <li><img width="16" height="16" src="https://img.icons8.com/ios/50/checkmark--v1.png" alt="checkmark--v1"/> Financial modeling</li>
+            </ul>
+            </p>
+          </div>
+        </a>
+
+        <a
+          className="group flex flex-col h-full border border-gray-200 hover:border-transparent hover:shadow-lg transition-all duration-300 rounded-xl p-5 "
+          href="#"
+        >
+          <div className="aspect-w-16 aspect-h-11">
+            <img
+              className="w-full object-cover rounded-xl"
+               src= {VCs} alt="Description"
             />
           </div>
           <div className="my-6">
@@ -88,12 +90,12 @@ function Features() {
             </h3>
             <p className="mt-5 text-gray-800 darkTextGray">
             <ul>
-              <li>✅ Analyzing financial data</li>
-              <li>✅ Advanced analytics</li>
-              <li>✅ Reporting features</li>
-              <li>✅ Conduct thorough due diligence</li>
-              <li>✅ Assess risk factors</li>
-              <li>✅ Evaluate the potential returns</li>
+              <li><img width="16" height="16" src="https://img.icons8.com/ios/50/checkmark--v1.png" alt="checkmark--v1"/> Analyzing financial data</li>
+              <li><img width="16" height="16" src="https://img.icons8.com/ios/50/checkmark--v1.png" alt="checkmark--v1"/> Advanced analytics</li>
+              <li><img width="16" height="16" src="https://img.icons8.com/ios/50/checkmark--v1.png" alt="checkmark--v1"/> Reporting features</li>
+              <li><img width="16" height="16" src="https://img.icons8.com/ios/50/checkmark--v1.png" alt="checkmark--v1"/> Conduct thorough due diligence</li>
+              <li><img width="16" height="16" src="https://img.icons8.com/ios/50/checkmark--v1.png" alt="checkmark--v1"/> Assess risk factors</li>
+              <li><img width="16" height="16" src="https://img.icons8.com/ios/50/checkmark--v1.png" alt="checkmark--v1"/> Evaluate the potential returns</li>
             </ul>
             </p>
           </div>

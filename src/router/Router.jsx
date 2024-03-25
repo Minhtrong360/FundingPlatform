@@ -33,6 +33,7 @@ import PricingSection from "../pages/Home/Components/PricingWithLemon";
 
 import PermissionRequired from "./PermissionRequired";
 import AnnouncePage from "../components/AnnouncePage";
+import NewProjectPosts from "../pages/Home/Components/NewProjectPosts";
 function Router() {
   const { subscribed } = useAuth();
 
@@ -128,6 +129,7 @@ function Router() {
           }
         />
         <Route path="/news" element={<News />} />
+        <Route path="/startups" element={<NewProjectPosts />} />
 
         <Route path="/Z" element={<PricingSection />} />
         <Route path="/admin" element={<AdminPage />} />

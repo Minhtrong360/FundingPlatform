@@ -334,6 +334,7 @@ const LoanSection = ({
           )}
           columns={loanColumns}
           pagination={false}
+          bordered
         />
         <h3 className="text-2xl font-semibold my-8">Loan Data</h3>
         <Chart

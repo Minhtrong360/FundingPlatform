@@ -513,11 +513,11 @@ function CashFlowSection({ numberOfMonths }) {
         months: Array.from({ length: cutMonth - 1 }, (_, i) => i + 1),
       });
     }
-  
+
     const remainingMonths = numberOfMonths - (cutMonth - 1);
     const fullYears = Math.floor(remainingMonths / 12);
     const remainingMonthsInLastYear = remainingMonths % 12;
-  
+
     for (let i = 0; i < fullYears; i++) {
       years.push({
         year: `Year ${i + 2}`,
@@ -527,7 +527,7 @@ function CashFlowSection({ numberOfMonths }) {
         ),
       });
     }
-  
+
     if (remainingMonthsInLastYear > 0) {
       years.push({
         year: `Last Year`,
@@ -537,22 +537,26 @@ function CashFlowSection({ numberOfMonths }) {
         ),
       });
     }
-  
+
     return years;
   };
-  
+
   const getDataSourceForYearCashFlow = (months) => {
-    const monthKeys = months.map(month => `Month ${month}`);
-  
+    const monthKeys = months.map((month) => `Month ${month}`);
+
     return positionDataWithNetIncome.map((data) => {
       const filteredData = monthKeys.reduce((acc, monthKey) => {
         acc[monthKey] = data[monthKey]; // Extracts the value for each month
         return acc;
       }, {});
-  
+
       // Calculate the Year Total for each cash flow component
-      const yearTotal = monthKeys.reduce((sum, key) => sum + (data[key] ? parseFloat(data[key].replace(/,/g, '')) : 0), 0);
-  
+      const yearTotal = monthKeys.reduce(
+        (sum, key) =>
+          sum + (data[key] ? parseFloat(data[key].replace(/,/g, "")) : 0),
+        0
+      );
+
       return {
         metric: data.metric,
         ...filteredData,
@@ -566,7 +570,7 @@ function CashFlowSection({ numberOfMonths }) {
       title: "Metric",
       dataIndex: "metric",
       key: "metric",
-      fixed: 'left',
+      fixed: "left",
       render: (text) => <strong>{text}</strong>,
     },
     ...months.map((month) => ({
@@ -581,40 +585,42 @@ function CashFlowSection({ numberOfMonths }) {
       render: (text) => <strong>{formatNumber(text)}</strong>, // Assuming formatNumber is a utility function to format numbers
     },
   ];
-  
+
   const calculateCashFlowRatios = (dataSource) => {
     const findYearTotalByKey = (key) => {
-      const item = dataSource.find(data => data.metric === key);
+      const item = dataSource.find((data) => data.metric === key);
       return item ? item.yearTotal : 0;
     };
-  
+
     // Assuming Operating Cash Flow (OCF), Capital Expenditure (CAPEX), and Net Income are available from the data source
     const operatingCashFlow = findYearTotalByKey("CF Operations");
     const capitalExpenditure = Math.abs(findYearTotalByKey("CF Investments")); // CAPEX is expected to be a negative number, so we take its absolute
     const netIncome = findYearTotalByKey("Net Income");
-  
+
     // Operating Cash Flow Ratio = OCF / Current Liabilities
     // Note: Current Liabilities value would need to be available; placeholder value used here
     const currentLiabilities = findYearTotalByKey("Decrease (Increase) in AP"); // Assuming this as a proxy for current liabilities
-    const operatingCashFlowRatio = currentLiabilities ? operatingCashFlow / currentLiabilities : 0;
-  
+    const operatingCashFlowRatio = currentLiabilities
+      ? operatingCashFlow / currentLiabilities
+      : 0;
+
     // Free Cash Flow (FCF) = Operating Cash Flow - Capital Expenditures
     const freeCashFlow = operatingCashFlow - capitalExpenditure;
-  
+
     // Cash Conversion Cycle (CCC) is a more complex calculation involving Receivables Turnover, Payables Turnover, and Inventory Turnover
     // Placeholder values for demonstration; actual calculation would require detailed data
     const cashConversionCycle = 0; // Placeholder for Cash Conversion Cycle calculation
-  
+
     // Cash Flow to Debt Ratio = Operating Cash Flow / Total Debt
     // Note: Total Debt value would need to be available; placeholder value used here
     const totalDebt = findYearTotalByKey("Total Principal"); // Assuming this as a proxy for total debt
     const cashFlowToDebtRatio = totalDebt ? operatingCashFlow / totalDebt : 0;
-  
+
     // Cash Flow Margin = Free Cash Flow / Net Sales
     // Note: Net Sales value would need to be available; placeholder value used here
     const netSales = findYearTotalByKey("Net +/- in Cash"); // Assuming this as a proxy for net sales
     const cashFlowMargin = netSales ? freeCashFlow / netSales : 0;
-  
+
     return {
       operatingCashFlowRatio: operatingCashFlowRatio.toFixed(2),
       freeCashFlow: freeCashFlow.toFixed(2),
@@ -623,7 +629,6 @@ function CashFlowSection({ numberOfMonths }) {
       cashFlowMargin: cashFlowMargin.toFixed(2),
     };
   };
-  
 
   return (
     <div className="border-t-2">
@@ -634,6 +639,7 @@ function CashFlowSection({ numberOfMonths }) {
         dataSource={positionDataWithNetIncome}
         columns={positionColumns}
         pagination={false}
+        bordered
       />
 
       <div className=" gap-4 mb-3">
@@ -649,24 +655,29 @@ function CashFlowSection({ numberOfMonths }) {
 
           <SelectContent position="popper">
             <SelectItem
+              className="hover:cursor-pointer"
+              className="hover:cursor-pointer"
               value="cash-flow-chart"
               className="hover:cursor-pointer"
             >
               Cash Flow
             </SelectItem>
             <SelectItem
+              className="hover:cursor-pointer"
               value="cash-begin-balances-chart"
               className="hover:cursor-pointer"
             >
               Cash Begin
             </SelectItem>
             <SelectItem
+              className="hover:cursor-pointer"
               value="cash-end-balances-chart"
               className="hover:cursor-pointer"
             >
               Cash End
             </SelectItem>
             <SelectItem
+              className="hover:cursor-pointer"
               value="total-principal-chart"
               className="hover:cursor-pointer"
             >
@@ -719,7 +730,7 @@ function CashFlowSection({ numberOfMonths }) {
         />
       )}
 
-<div>
+      <div>
         <label>Select Cut Month:</label>
         <select value={cutMonth} onChange={handleCutMonthChange}>
           {Array.from({ length: 12 }, (_, i) => (
@@ -731,36 +742,41 @@ function CashFlowSection({ numberOfMonths }) {
       </div>
 
       {divideMonthsIntoYearsForCashFlow().map((year, index) => (
-  <div key={index}>
-    <h3>{year.year}</h3>
-    <Table
-      dataSource={getDataSourceForYearCashFlow(year.months)}
-      columns={generateCashFlowTableColumns(year.months)}
-      pagination={false}
-      bordered
-    />
-    <div>
-      <h4>Financial Ratios for {year.year}</h4>
-      <ul>
-        {/* Assuming calculateCashFlowRatios returns ratios for the specific year */}
-        {(() => {
-          const dataSourceForYear = getDataSourceForYearCashFlow(year.months);
-          const ratios = calculateCashFlowRatios(dataSourceForYear);
-          return (
+        <div key={index}>
+          <h3>{year.year}</h3>
+          <Table
+            dataSource={getDataSourceForYearCashFlow(year.months)}
+            columns={generateCashFlowTableColumns(year.months)}
+            pagination={false}
+            bordered
+          />
+          <div>
+            <h4>Financial Ratios for {year.year}</h4>
             <ul>
-              <li>Operating Cash Flow Ratio: {ratios.operatingCashFlowRatio}</li>
-              <li>Free Cash Flow: {ratios.freeCashFlow}</li>
-              <li>Cash Conversion Cycle: {ratios.cashConversionCycle}</li>
-              <li>Cash Flow to Debt Ratio: {ratios.cashFlowToDebtRatio}</li>
-              <li>Cash Flow Margin: {ratios.cashFlowMargin}</li>
+              {/* Assuming calculateCashFlowRatios returns ratios for the specific year */}
+              {(() => {
+                const dataSourceForYear = getDataSourceForYearCashFlow(
+                  year.months
+                );
+                const ratios = calculateCashFlowRatios(dataSourceForYear);
+                return (
+                  <ul>
+                    <li>
+                      Operating Cash Flow Ratio: {ratios.operatingCashFlowRatio}
+                    </li>
+                    <li>Free Cash Flow: {ratios.freeCashFlow}</li>
+                    <li>Cash Conversion Cycle: {ratios.cashConversionCycle}</li>
+                    <li>
+                      Cash Flow to Debt Ratio: {ratios.cashFlowToDebtRatio}
+                    </li>
+                    <li>Cash Flow Margin: {ratios.cashFlowMargin}</li>
+                  </ul>
+                );
+              })()}
             </ul>
-          );
-        })()}
-      </ul>
-    </div>
-  </div>
-))}
-
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

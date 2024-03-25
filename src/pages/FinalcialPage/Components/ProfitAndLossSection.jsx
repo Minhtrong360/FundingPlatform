@@ -467,7 +467,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     setSelectedChart(value);
   };
 
-  
   const [cutMonth, setCutMonth] = useState(4);
   const handleCutMonthChange = (value) => {
     setCutMonth(Number(value));
@@ -489,21 +488,25 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     for (let i = 0; i < fullYearsCount; i++) {
       years.push({
         year: `Year ${i + 2}`,
-        months: Array.from({ length: 12 }, (_, idx) => idx + 1 + (cutMonth - 1) + i * 12),
+        months: Array.from(
+          { length: 12 },
+          (_, idx) => idx + 1 + (cutMonth - 1) + i * 12
+        ),
       });
     }
 
     if (remainingMonthsInLastYear > 0) {
       years.push({
         year: `Last Year`,
-        months: Array.from({ length: remainingMonthsInLastYear }, (_, idx) => idx + 1 + (cutMonth - 1) + fullYearsCount * 12),
+        months: Array.from(
+          { length: remainingMonthsInLastYear },
+          (_, idx) => idx + 1 + (cutMonth - 1) + fullYearsCount * 12
+        ),
       });
     }
 
     return years;
   };
-
-
 
   const years = divideMonthsIntoYears();
 
@@ -527,27 +530,27 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       render: (text) => formatNumber(text?.toFixed(2)), // Optional: formatting the number if needed
     },
   ];
-  
+
   function parseNumberInternal(value) {
     if (value === undefined || value === null) return 0;
-    return Number(value.toString().replace(/,/g, ''));
+    return Number(value.toString().replace(/,/g, ""));
   }
-  
+
   const getDataSourceForYear = (months) => {
-    const monthKeys = months.map(month => `Month ${month}`);
-    
+    const monthKeys = months.map((month) => `Month ${month}`);
+
     return transposedData.map((data) => {
       const filteredData = monthKeys.reduce((acc, monthKey) => {
         acc[monthKey] = data[monthKey]; // keep original formatted value
         return acc;
       }, {});
-    
+
       // Calculate Year Total for each row, ensuring values are defined before parsing with the parseNumberInternal function
       const yearTotal = monthKeys.reduce((sum, key) => {
         const value = data[key];
         return sum + (value ? parseNumberInternal(value) : 0);
       }, 0);
-    
+
       return {
         metric: data.metric,
         ...filteredData,
@@ -555,14 +558,13 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       };
     });
   };
-  
-  
+
   const calculateFinancialRatios = (dataSource) => {
     const findValueByKey = (key) => {
-      const item = dataSource.find(data => data.metric === key);
+      const item = dataSource.find((data) => data.metric === key);
       return item ? parseNumberInternal(item.yearTotal) : 0;
     };
-  
+
     const totalRevenue = findValueByKey("Total Revenue");
     const netIncome = findValueByKey("Net Income");
     const grossProfit = findValueByKey("Gross Profit");
@@ -571,17 +573,23 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     const interestExpense = findValueByKey("Interest");
     const totalCOGS = findValueByKey("Total COGS");
     const totalDeductions = findValueByKey("Deductions");
-  
+
     // Calculate ratios
-    const grossProfitMargin = totalRevenue ? (grossProfit / totalRevenue) * 100 : 0;
+    const grossProfitMargin = totalRevenue
+      ? (grossProfit / totalRevenue) * 100
+      : 0;
     const netProfitMargin = totalRevenue ? (netIncome / totalRevenue) * 100 : 0;
     const operatingMargin = totalRevenue ? (ebitda / totalRevenue) * 100 : 0;
     const interestCoverageRatio = ebitda ? ebitda / interestExpense : 0;
-    const operatingExpenseRatio = totalRevenue ? (operatingCosts / totalRevenue) * 100 : 0;
+    const operatingExpenseRatio = totalRevenue
+      ? (operatingCosts / totalRevenue) * 100
+      : 0;
     const cogsToRevenue = totalRevenue ? (totalCOGS / totalRevenue) * 100 : 0;
-    const deductionToRevenue = totalRevenue ? (totalDeductions / totalRevenue) * 100 : 0;
+    const deductionToRevenue = totalRevenue
+      ? (totalDeductions / totalRevenue) * 100
+      : 0;
     // Add any other ratios here, making sure you're not dividing by zero
-  
+
     return {
       grossProfitMargin,
       netProfitMargin,
@@ -593,11 +601,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       // List other calculated ratios here
     };
   };
-  
-
-  
-
-
 
   return (
     <div className="border-t-2">
@@ -632,53 +635,53 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
 
           <SelectContent position="popper">
             <SelectItem
-              value="total-revenue-chart"
               className="hover:cursor-pointer"
+              value="total-revenue-chart"
             >
               Total Revenue
             </SelectItem>
             <SelectItem
-              value="total-costs-chart"
               className="hover:cursor-pointer"
+              value="total-costs-chart"
             >
               Total Costs
             </SelectItem>
             <SelectItem
-              value="net-income-chart"
               className="hover:cursor-pointer"
+              value="net-income-chart"
             >
               Net Income
             </SelectItem>
             <SelectItem
-              value="gross-profit-chart"
               className="hover:cursor-pointer"
+              value="gross-profit-chart"
             >
               Gross Profit
             </SelectItem>
-            <SelectItem value="ebitda-chart" className="hover:cursor-pointer">
+            <SelectItem className="hover:cursor-pointer" value="ebitda-chart">
               EBITDA
             </SelectItem>
             <SelectItem
-              value="earnings-before-tax-chart"
               className="hover:cursor-pointer"
+              value="earnings-before-tax-chart"
             >
               Earnings Before Tax
             </SelectItem>
             <SelectItem
-              value="income-tax-chart"
               className="hover:cursor-pointer"
+              value="income-tax-chart"
             >
               Income Tax
             </SelectItem>
             <SelectItem
-              value="total-investment-depreciation-chart"
               className="hover:cursor-pointer"
+              value="total-investment-depreciation-chart"
             >
               Total Investment Depreciation
             </SelectItem>
             <SelectItem
-              value="total-interest-payments-chart"
               className="hover:cursor-pointer"
+              value="total-interest-payments-chart"
             >
               Total Interest Payments
             </SelectItem>
@@ -780,9 +783,13 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
         />
       )}
 
-<div className="flex gap-4 mb-3">
+      <div className="flex gap-4 mb-3">
         <span>Select Cut Month: </span>
-        <select value={cutMonth} onChange={(e) => handleCutMonthChange(e.target.value)} className="border-solid border-[1px] border-gray-200">
+        <select
+          value={cutMonth}
+          onChange={(e) => handleCutMonthChange(e.target.value)}
+          className="border-solid border-[1px] border-gray-200"
+        >
           {Array.from({ length: 12 }, (_, i) => (
             <option key={i + 1} value={i + 1}>
               {i + 1}
@@ -792,96 +799,94 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       </div>
 
       {years.map((year, index) => (
-  <div key={index}>
-    <h3>{year.year}</h3>
-    <Table
-      className="overflow-auto my-8"
-      size="small"
-      dataSource={getDataSourceForYear(year.months)}
-      columns={generateTableColumns(year.months)}
-      pagination={false}
-    />
-    {/* Expanded section to calculate and display financial ratios */}
-    <div>
-      <h4>Financial Ratios for {year.year}</h4>
-      {(() => {
-        const dataSourceForYear = getDataSourceForYear(year.months);
-        const ratios = calculateFinancialRatios(dataSourceForYear);
-        return (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div key={index}>
+          <h3>{year.year}</h3>
+          <Table
+            className="overflow-auto my-8"
+            size="small"
+            dataSource={getDataSourceForYear(year.months)}
+            columns={generateTableColumns(year.months)}
+            pagination={false}
+          />
+          {/* Expanded section to calculate and display financial ratios */}
+          <div>
+            <h4>Financial Ratios for {year.year}</h4>
+            {(() => {
+              const dataSourceForYear = getDataSourceForYear(year.months);
+              const ratios = calculateFinancialRatios(dataSourceForYear);
+              return (
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                  {Object.keys(ratios).map((key) => (
+                    <div
+                      className="flex flex-col bg-white border shadow-lg rounded-xl m-8 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110"
+                      key={key}
+                    >
+                      <div className="p-4 md:p-5">
+                        <div className="flex items-center gap-x-2">
+                          <p className="text-xs uppercase tracking-wide text-gray-500">
+                            {key.toUpperCase().replace(/_/g, " ")}
+                          </p>
+                          <Tooltip
+                            title={`This is the ${key.replace(/_/g, " ")}.`}
+                          >
+                            <svg
+                              className="flex-shrink-0 size-4 text-gray-500"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <circle cx="12" cy="12" r="10" />
+                              <line x1="12" y1="16" x2="12" y2="12" />
+                              <line x1="12" y1="8" x2="12" y2="8" />
+                            </svg>
+                          </Tooltip>
+                        </div>
 
-{Object.keys(ratios).map((key) => (
-  <div className="flex flex-col bg-white border shadow-lg rounded-xl m-8 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110" key={key}>
-    <div className="p-4 md:p-5">
-      <div className="flex items-center gap-x-2">
-        <p className="text-xs uppercase tracking-wide text-gray-500">
-          {key.toUpperCase().replace(/_/g, ' ')}
-        </p>
-        <Tooltip title={`This is the ${key.replace(/_/g, ' ')}.`}>
-          <svg
-            className="flex-shrink-0 size-4 text-gray-500"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="16" x2="12" y2="12" />
-            <line x1="12" y1="8" x2="12" y2="8" />
-          </svg>
-        </Tooltip>
-      </div>
-
-      <div className="mt-1">
-        <div className="flex flex-col xl:flex-row xl:items-center items-start gap-2">
-          <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 my-2">
-            {ratios[key].toFixed(2)}
-          </h3>
+                        <div className="mt-1">
+                          <div className="flex flex-col xl:flex-row xl:items-center items-start gap-2">
+                            <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 my-2">
+                              {ratios[key].toFixed(2)}
+                            </h3>
+                          </div>
+                          <p className="text-sm text-gray-600 mt-4">
+                            {(() => {
+                              switch (key) {
+                                case "grossProfitMargin":
+                                  return "Gross Profit Margin = (Gross Profit / Total Revenue) * 100. It measures the percentage of revenue that exceeds the cost of goods sold.";
+                                case "netProfitMargin":
+                                  return "Net Profit Margin = (Net Income / Total Revenue) * 100. It indicates how much profit a company makes for every dollar of its revenue.";
+                                case "operatingMargin":
+                                  return "Operating Margin = (EBITDA / Total Revenue) * 100. This ratio shows the percentage of revenue left after paying variable production costs.";
+                                case "interestCoverageRatio":
+                                  return "Interest Coverage Ratio = EBITDA / Interest Expenses. It measures how easily a company can pay interest expenses on outstanding debt.";
+                                case "operatingExpenseRatio":
+                                  return "Operating Expense Ratio = (Operating Costs / Total Revenue) * 100. It assesses what percentage of revenue is consumed by operating expenses.";
+                                case "cogsToRevenue":
+                                  return "COGS to Revenue = (Total COGS / Total Revenue) * 100. This ratio shows the cost of goods sold as a percentage of revenue.";
+                                case "deductionToRevenue":
+                                  return "Deduction to Revenue = (Total Deductions / Total Revenue) * 100. It measures the deductions as a percentage of total revenue.";
+                                default:
+                                  return "";
+                              }
+                            })()}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+          </div>
         </div>
-        <p className="text-sm text-gray-600 mt-4">
-          {(() => {
-            switch (key) {
-              case "grossProfitMargin":
-                return "Gross Profit Margin = (Gross Profit / Total Revenue) * 100. It measures the percentage of revenue that exceeds the cost of goods sold.";
-              case "netProfitMargin":
-                return "Net Profit Margin = (Net Income / Total Revenue) * 100. It indicates how much profit a company makes for every dollar of its revenue.";
-              case "operatingMargin":
-                return "Operating Margin = (EBITDA / Total Revenue) * 100. This ratio shows the percentage of revenue left after paying variable production costs.";
-              case "interestCoverageRatio":
-                return "Interest Coverage Ratio = EBITDA / Interest Expenses. It measures how easily a company can pay interest expenses on outstanding debt.";
-              case "operatingExpenseRatio":
-                return "Operating Expense Ratio = (Operating Costs / Total Revenue) * 100. It assesses what percentage of revenue is consumed by operating expenses.";
-              case "cogsToRevenue":
-                return "COGS to Revenue = (Total COGS / Total Revenue) * 100. This ratio shows the cost of goods sold as a percentage of revenue.";
-              case "deductionToRevenue":
-                return "Deduction to Revenue = (Total Deductions / Total Revenue) * 100. It measures the deductions as a percentage of total revenue.";
-              default:
-                return "";
-            }
-          })()}
-        </p>
-      </div>
+      ))}
     </div>
-  </div>
-))}
-
-  </div>
-
-        );
-      })()}
-    </div>
-  </div>
-))}
-
-
-    </div>
-
-    
   );
 };
 

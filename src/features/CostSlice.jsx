@@ -47,15 +47,11 @@ const costSlice = createSlice({
 });
 
 export const formatNumber = (value) => {
-  
   try {
     const stringValue = value?.toString()?.replace(/,/g, "");
-  // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
-  return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  } catch (error) {
-    console.log("first error", error, "with value", value);
-  }// Chuyển đổi giá trị thành chuỗi và loại bỏ tất cả các dấu phẩy
-  
+    // Sử dụng regex để thêm dấu phẩy mỗi 3 chữ số
+    return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  } catch (error) {}
 };
 
 export const parseNumber = (value) => {

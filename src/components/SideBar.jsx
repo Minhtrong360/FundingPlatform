@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import SpaceDashboardOutlinedIcon from "@mui/icons-material/SpaceDashboardOutlined";
-import FolderCopyOutlinedIcon from "@mui/icons-material/FolderCopyOutlined";
-import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
+
 function SideBar({ toggleSidebar, isSidebarOpen }) {
   const navigate = useNavigate();
 
@@ -47,7 +43,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
 
       <aside
         id="default-sidebar"
-        className={`fixed top-0 left-0 z-20 h-screen transition-all duration-300 ease-in-out transform w-16 group hover:w-64 bg-gray-50 ${
+        className={`fixed top-0 left-0 z-20 h-screen transition-transform duration-300 ease-out transform w-16 group hover:w-64 bg-gray-50 ${
           isSidebarOpen ? "" : "-translate-x-full sm:translate-x-0"
         }`}
         aria-label="Sidebar"
@@ -60,9 +56,12 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             max-width: 0;
             overflow: hidden;
             white-space: nowrap;
+<<<<<<< HEAD
             
+=======
+>>>>>>> 62e04f4c3f94ac01f670fff71cf14cdfebada20f
             opacity: 0;
-          }
+        }
           .group:hover .sidebar-text {
             max-width: 300px; /* Adjust as needed */
             opacity: 1;
@@ -110,14 +109,13 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
               selectedItem?.includes("/dashboard")
                 ? "bg-gray-300 "
                 : "text-gray-900 darkTextWhite"
-            } sidebar-button hover:bg-gray-300 hover:bg-gray-300`}
+            } sidebar-button hover:bg-gray-300 `}
             onClick={() => handleItemClick("/dashboard")}
           >
             <img
               className="w-5 h-5"
               src="https://img.icons8.com/ios/50/performance-macbook.png"
-               alt="performance-macbook"
-            
+              alt="performance-macbook"
             />
             <span className="sidebar-text">Dashboard</span>
           </button>

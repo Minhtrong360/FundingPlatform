@@ -18,7 +18,7 @@ const GPTAnalyzer = ({ setChatbotResponse }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            user_input: `${inputValue}`,
+            user_input: `${inputValue}. Give some red flags from this financial statement data and always back up reasons with specific numbers, figures.`,
           }),
         }
       );

@@ -594,6 +594,18 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     };
   };
   
+  const [tableData, setTableData] = useState([]);
+
+useEffect(() => {
+  const data = transposedData.map((row) => {
+    const rowData = {};
+    columns.forEach((column) => {
+      rowData[column.dataIndex] = row[column.dataIndex];
+    });
+    return rowData;
+  });
+  setTableData(data);
+}, [transposedData, columns]);
 
   
 
@@ -602,7 +614,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   return (
     <div className="border-t-2">
       <h2 className="text-2xl font-semibold my-4">Profit and Loss Statement</h2>
-
+      <pre>{JSON.stringify(tableData, null, 2)}</pre>
       <Table
         className="overflow-auto my-8"
         size="small"
@@ -838,7 +850,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
 
       <div className="mt-1">
         <div className="flex flex-col xl:flex-row xl:items-center items-start gap-2">
-          <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 my-2">
+          <h3 className="text-4xl sm:text-3xl font-bold text-blue-600 my-2">
             {ratios[key].toFixed(2)}
           </h3>
         </div>

@@ -202,20 +202,26 @@ const CustomerSection = ({
     })
     .flat(); // Flatten the array of arrays to a single array
 
-  const customerColumns = [
-    {
-      fixed: "left",
-      title: "Channel Name",
-      dataIndex: "channelName",
-      key: "channelName",
-    },
-    ...Array.from({ length: numberOfMonths }, (_, i) => i + 1).map((month) => ({
-      title: `Month_${month}`,
-      dataIndex: `month${month}`,
-      key: `month${month}`,
-    })),
-  ];
-
+    const customerColumns = [
+      {
+        fixed: "left",
+        title: "Channel Name",
+        dataIndex: "channelName",
+        key: "channelName",
+        width: 200,
+      },
+      ...Array.from({ length: numberOfMonths }, (_, i) => ({
+        title: `Month_${i + 1}`,
+        dataIndex: `month${i + 1}`,
+        key: `month${i + 1}`,
+        onCell: (record) => ({
+          style: {
+            borderRight: "1px solid #f0f0f0", // Add border right style
+          },
+        }),
+      })),
+    ];
+    
   useEffect(() => {
     const seriesData = tempCustomerGrowthData.map((channelData) => {
       return {

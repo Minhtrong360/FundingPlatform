@@ -170,11 +170,11 @@ const SalesSection = ({
         const [selectedChannel, selectedProduct] =
           channelProductKey.split(" - ");
         if (
-          selectedChannel ===
-            tempChannelInputs.find((input) => input.id === renderChannelForm)
+          selectedChannel ==
+            tempChannelInputs.find((input) => input.id == renderChannelForm)
               ?.selectedChannel &&
-          selectedProduct ===
-            tempChannelInputs.find((input) => input.id === renderChannelForm)
+          selectedProduct ==
+            tempChannelInputs.find((input) => input.id == renderChannelForm)
               ?.productName
         ) {
           const revenueRowKey = `Revenue`;
@@ -280,7 +280,7 @@ const SalesSection = ({
         render: (text, record, index) => (
           <input 
             type="text" 
-            className="py-1 px-2 block w-full border-gray-200 rounded-lg text-xs focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" 
+            className="py-1 px-2 block w-full border-gray-200 rounded-lg text-xs focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" 
             value={record[`month${month}`]} // Set value to corresponding forecast value
             onChange={e => handleActualChange(e.target.value, record, `month${month}_actual`)} 
           />

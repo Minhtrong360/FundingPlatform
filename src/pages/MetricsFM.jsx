@@ -32,7 +32,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
                 </h3>
               </div>
             </div>
-            <div className="ml-4">
+            <div className="ml-0">
               <span className="text-green-600">
                 <Tooltip title="The increase percentage of the second year compared to the first year in the series.">
                   <span className="inline-block text-sm">
@@ -81,7 +81,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
                 </h3>
               </div>
             </div>
-            <div className="ml-4">
+            <div className="ml-0">
               <span className="text-green-600">
                 <Tooltip title="The increase percentage of the second year compared to the first year in the series.">
                   <span className="inline-block text-sm">

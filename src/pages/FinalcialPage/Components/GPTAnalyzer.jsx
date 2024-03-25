@@ -18,7 +18,11 @@ const GPTAnalyzer = ({ setChatbotResponse }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+<<<<<<< HEAD
             user_input: `${inputValue}. Give some red flags from this financial statement data and always back up reasons with specific numbers, figures.`,
+=======
+            user_input: `${inputValue} `,
+>>>>>>> 2639d908c0db910868246412f34306c95aaab5b5
           }),
         }
       );
@@ -61,13 +65,19 @@ const GPTAnalyzer = ({ setChatbotResponse }) => {
                type="primary" onClick={handleAnalyze}>
             Analyze
           </button>
-      <div className="max-w-2xl mx-auto p-4 bg-white border rounded-lg shadow-lg shadow-gray-100 ">
-      {responseResult && (
-        <div >
-          Analysis Result: {responseResult}
-        </div>
-      )}
-        </div>
+          <div className="max-w-2xl mx-auto p-4 bg-white border rounded-lg shadow-lg shadow-gray-100">
+            {responseResult && (
+              <div>
+                <div>
+                  Analysis Result:
+                </div>
+                {responseResult.split('\n').map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))}
+              </div>
+            )}
+          </div>
+
       </div>
     </div>
     </div>

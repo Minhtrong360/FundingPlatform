@@ -404,6 +404,7 @@ const CostSection = ({
           dataSource={transformCostDataForTable()}
           columns={costColumns}
           pagination={false}
+          bordered
         />
         <h3 className="text-2xl font-semibold my-8">Cost Chart</h3>
         <Chart

@@ -10,6 +10,7 @@ const CustomTable = ({ dataSource, columns, title }) => (
       dataSource={dataSource}
       columns={columns}
       pagination={false}
+      bordered
     />
   </div>
 );

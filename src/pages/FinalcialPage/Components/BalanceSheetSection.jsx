@@ -768,6 +768,7 @@ function BalanceSheetSection({ numberOfMonths }) {
         dataSource={positionDataWithNetIncome2}
         columns={positionColumns1}
         pagination={false}
+        bordered
       />
 
       <div className=" gap-4 mb-3">
@@ -785,7 +786,7 @@ function BalanceSheetSection({ numberOfMonths }) {
             <SelectItem
               className="hover:cursor-pointer"
               value="total-assets-chart"
-              className="hover:cursor-pointer"
+              
             >
               Total Asset
             </SelectItem>

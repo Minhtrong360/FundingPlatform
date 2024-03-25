@@ -559,6 +559,7 @@ const SalesSection = ({
           dataSource={revenueTableData}
           columns={revenueColumns}
           pagination={false}
+          bordered
         />
         <h3 className="text-2xl font-semibold my-8">Revenue Chart</h3>
         <Chart

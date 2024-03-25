@@ -609,6 +609,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       <Table
         className="overflow-auto my-8"
         size="small"
+        bordered
         dataSource={transposedData}
         columns={columns}
         pagination={false}

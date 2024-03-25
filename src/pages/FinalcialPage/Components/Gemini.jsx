@@ -4,20 +4,13 @@ import { supabase } from "../../../supabase";
 import apiService from "../../../app/apiService";
 import { SendOutlined } from "@ant-design/icons";
 
-const industries = [
-  "Coffee shop ☕",
-  "HR SaaS 💼🖥️",
-  "Lending fintech 💸🏦",
-  "Food delivery platform 🚚🍲",
-  "Ride-sharing service 🚗👥",
-  "E-commerce platform 🛒🌐",
-];
-
 const Gemini = ({
   setIsLoading,
   setChatbotResponse,
   currentUser,
   setCurrentUser,
+  spinning,
+  setSpinning,
 }) => {
   // const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -25,7 +18,8 @@ const Gemini = ({
   const handleSendMessage = async () => {
     try {
       setIsLoading(true);
-      console.log("1");
+      setSpinning(true);
+
       const response = await fetch(
         "https://news-fetcher-8k6m.onrender.com/message",
         {
@@ -208,22 +202,19 @@ const Gemini = ({
         }
       );
 
-      console.log("2", response);
       const data = await response.json();
-      console.log("3", data);
+
       if (data.error) {
         throw new Error(data.error);
       }
       //Remove backticks from the constant responseText
       const cleanedResponseText = data?.response?.replace(/json|`/g, "");
-      console.log("4");
+
       // Set the chatbot response to the latest messag
 
       setChatbotResponse(cleanedResponseText);
-      console.log("5");
+
       saveUserData();
-      console.log("6");
-      setIsLoading(false);
     } catch (error) {
       console.log("Error sending message:", error);
       setIsLoading(false);
@@ -232,7 +223,6 @@ const Gemini = ({
 
   async function saveUserData() {
     try {
-      console.log("7");
       const maxPrompt = 20;
       // Thực hiện truy vấn để lấy thông tin người dùng theo id (điều này cần được thay đổi dựa trên cấu trúc dữ liệu của bạn trong Supabase)
       const currentPrompt = currentUser.financePromptNumber - 1;
@@ -242,7 +232,6 @@ const Gemini = ({
         return;
       } else {
         if (currentPrompt == maxPrompt - 1) {
-          console.log("7.5");
           await supabase
             .from("users")
             .update({ financeFirstPrompt: Date.now() })
@@ -253,9 +242,9 @@ const Gemini = ({
           .update({ financePromptNumber: currentPrompt })
           .eq("id", currentUser?.id)
           .select();
-        console.log("8");
+
         await apiService.post("/count/finance");
-        console.log("9");
+
         if (error) {
           throw error;
         }
@@ -263,15 +252,10 @@ const Gemini = ({
         // Cập nhật state userData với thông tin người dùng đã lấy được
         if (data) {
           setCurrentUser(data[0]);
-          console.log("10");
         }
       }
     } catch (error) {}
   }
-
-  const handleIndustrySelect = (industry) => {
-    setInputValue(industry);
-  };
 
   return (
     <div className=" mx-auto w-full">
@@ -303,32 +287,6 @@ const Gemini = ({
             </div>
           </div>
         </form>
-        {/* <h3 className="text-2xl sm:flex hidden justify-center font-semibold mt-8">
-          Templates
-        </h3>
-
-        <div className="mt-2 sm:mt-4 hidden sm:flex flex-wrap justify-center">
-          {industries.map((industry, index) => (
-            <button
-              key={index}
-              onClick={() => handleIndustrySelect(industry)}
-              className={`text-sm m-2 py-2 px-2 inline-flex items-center gap-x-2  rounded-2xl border shadow-sm hover:cursor-pointer`}
-            >
-              {industry}
-            </button>
-          ))}
-        </div> */}
-        {/* <div className="text-sm mt-4 lg:hidden overflow-x-auto flex flex-nowrap">
-          {industries.map((industry, index) => (
-            <button
-              key={index}
-              onClick={() => handleIndustrySelect(industry)}
-              className={`m-2 py-3 px-4 inline-flex items-center gap-x-2  rounded-lg border shadow-sm hover:cursor-pointer`}
-            >
-              {industry}
-            </button>
-          ))}
-        </div> */}
       </div>
     </div>
   );

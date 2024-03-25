@@ -2,14 +2,16 @@ import Modal from "react-modal";
 import React, { useEffect, useState } from "react";
 import { Progress } from "antd";
 
-const ProgressBar = ({ isLoading }) => {
+const ProgressBar = ({ spinning, isLoading }) => {
   const [progress, setProgress] = useState(0);
   const [loadingInterval, setLoadingInterval] = useState(200); // Default interval for loading
+  const [closingTimeout, setClosingTimeout] = useState(null); // Timeout for closing the ProgressBar
 
   useEffect(() => {
     const updateProgress = () => {
       setProgress((prevProgress) => {
         if (prevProgress >= 100) {
+          clearInterval(interval); // Stop interval when progress reaches 100
           return 100;
         }
         return prevProgress + 1;
@@ -25,19 +27,21 @@ const ProgressBar = ({ isLoading }) => {
     // Reset progress to 0 when isLoading becomes true
     if (isLoading) {
       setProgress(0);
+      setLoadingInterval(200); // Start with the fast loading interval
+      clearTimeout(closingTimeout); // Clear any existing closing timeout
+    } else {
+      // Set progress to 100 immediately when isLoading becomes false
+      setProgress(100);
+      // Optionally, you can set a timeout to close the ProgressBar after a delay
+      setClosingTimeout(setTimeout(() => setProgress(100), 750));
     }
-  }, [isLoading]);
-
-  useEffect(() => {
-    // Adjust interval based on isLoading status
-    setLoadingInterval(isLoading ? 200 : 2000); // Example: 200ms when loading, 2000ms when not loading
   }, [isLoading]);
 
   return (
     <>
       <Modal
         ariaHideApp={false}
-        isOpen={isLoading}
+        isOpen={isLoading || progress < 100} // Keep modal open until progress reaches 100
         style={{
           overlay: {
             backgroundColor: "white",

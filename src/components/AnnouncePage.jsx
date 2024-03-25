@@ -129,6 +129,14 @@ const AnnouncePage = ({
                 Send Request
               </button>
             )}
+            {title === "Free trial" && (
+              <button
+                onClick={() => navigate("/pricing")}
+                className="w-full sm:w-auto px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-600 rounded-lg hover:bg-blue-700 darkHoverBgBlue darkBgBlue"
+              >
+                Subscribe
+              </button>
+            )}
           </div>
         </div>
       </div>

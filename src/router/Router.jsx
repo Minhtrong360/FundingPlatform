@@ -29,11 +29,11 @@ import ProgressBar from "../components/ProgressBar";
 import NotificationsPage from "../pages/Notification/Notification";
 import Confirmed from "../pages/SignUp/Confirmed";
 import AdminPage from "../pages/Admin/AdminPage";
-import PricingSection from "../pages/Home/Components/PricingWithLemon";
 
 import PermissionRequired from "./PermissionRequired";
 import AnnouncePage from "../components/AnnouncePage";
 import NewProjectPosts from "../pages/Home/Components/NewProjectPosts";
+import PricingPage from "../pages/Home/Components/PricingPage";
 function Router() {
   const { subscribed } = useAuth();
 
@@ -131,7 +131,7 @@ function Router() {
         <Route path="/news" element={<News />} />
         <Route path="/startups" element={<NewProjectPosts />} />
 
-        <Route path="/Z" element={<PricingSection />} />
+        <Route path="/pricing" element={<PricingPage />} />
         <Route path="/admin" element={<AdminPage />} />
 
         <Route path="/loading" element={<ProgressBar isLoading={true} />} />

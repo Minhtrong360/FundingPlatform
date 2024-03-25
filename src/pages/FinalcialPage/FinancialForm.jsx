@@ -57,6 +57,7 @@ import CashFlowSection from "./Components/CashFlowSection";
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [spinning, setSpinning] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [temIsLoading, setTemIsLoading] = useState(true);
   //DurationSection
@@ -137,6 +138,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           )
         );
       }
+      setIsLoading(false);
+      setTimeout(() => {
+        setSpinning(false);
+      }, 1000);
     } catch (error) {
       console.log("Error parsing JSON:", error);
     }
@@ -501,8 +506,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   return (
     <div>
       <AlertMsg />
-      {isLoading ? (
-        <ProgressBar isLoading={isLoading} />
+      {spinning ? (
+        <ProgressBar spinning={spinning} isLoading={isLoading} />
       ) : (
         <>
           <LoadingButtonClick isLoading={temIsLoading} />
@@ -512,11 +517,13 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               setChatbotResponse={setChatbotResponse}
               currentUser={currentUser}
               setCurrentUser={setCurrentUser}
+              spinning={spinning}
+              setSpinning={setSpinning}
             />
           </div>
-          <div className="w-full h-full flex flex-col lg:flex-row">
-          <GPTAnalyzer/>
-          </div>
+          {/* <div className="w-full h-full flex flex-col lg:flex-row">
+            <GPTAnalyzer />
+          </div> */}
           <div className="my-4 ">
             <div className="overflow-x-auto whitespace-nowrap border-t-2">
               <ul className="py-4 flex lg:justify-center justify-start items-center">

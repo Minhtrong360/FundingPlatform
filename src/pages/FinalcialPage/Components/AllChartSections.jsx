@@ -428,7 +428,7 @@ const AllChartSections = ({
   };
 
   const renderCard = (title, value) => (
-    <div className="flex flex-col bg-white border shadow-lg rounded-xl m-8 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+    <div className="flex flex-col bg-white border shadow-lg rounded-xl m-4 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
       <div className="p-4 md:p-5">
         <div className="flex items-center gap-x-2">
           <p className="text-xs uppercase tracking-wide text-gray-800">
@@ -456,8 +456,8 @@ const AllChartSections = ({
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col">
             <div>
-              <h3>Total User</h3>
-              <p>
+              <div className="text-base">Total User</div>
+              <p className="text-sm sm:text-3xl font-bold text-blue-600 my-2">
                 {formatNumber(Math.round(sumArray(yearlyAverageCustomers)))}
               </p>
             </div>
@@ -470,8 +470,10 @@ const AllChartSections = ({
           </Card>
           <Card className="flex flex-col">
             <div>
-              <h3>Total Revenue</h3>
-              <p>{formatNumber(Math.round(sumArray(yearlySales)))}</p>
+              <div className="text-base">Total Revenue</div>
+              <p className="text-sm sm:text-3xl font-bold text-blue-600 my-2">
+                ${formatNumber(Math.round(sumArray(yearlySales)))}
+              </p>
             </div>
             <Chart
               options={revenue.options}
@@ -486,9 +488,6 @@ const AllChartSections = ({
 
         <div>
           <div className=" gap-4 mb-3">
-            <span className="flex items-center text-sm my-4">
-              Select Chart :
-            </span>
             <Select
               onValueChange={(value) => handleChartSelect(value)}
               value={selectedChart}
@@ -769,9 +768,6 @@ const AllChartSections = ({
 
         <div>
           <div className=" gap-4 mb-3">
-            <span className="flex items-center text-sm my-4">
-              Select Month :
-            </span>
             <Select
               onValueChange={(value) => handleMonthSelect(value)}
               value={selectedMonth.toString()}
@@ -794,7 +790,7 @@ const AllChartSections = ({
               </SelectContent>
             </Select>
           </div>
-          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-0">
             {renderCard("Total Revenue", totalRevenue)}
             {renderCard("Total Costs", totalCosts)}
             {renderCard("Net Income", netIncome)}
@@ -802,10 +798,7 @@ const AllChartSections = ({
             {renderCard("EBITDA", ebitda)}
             {renderCard("Earnings Before Tax", earningsBeforeTax)}
             {renderCard("Income Tax", incomeTax)}
-            {renderCard(
-              "Total Investment Depreciation",
-              totalInvestmentDepreciation
-            )}
+            {renderCard("Total Investment Depre.", totalInvestmentDepreciation)}
             {renderCard("Total Interest Payments", totalInterestPayments)}
             {renderCard("Net Cash Changes", netCashChanges)}
             {renderCard("Total Principal", totalPrincipal)}

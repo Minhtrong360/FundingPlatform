@@ -4,13 +4,12 @@ function Features() {
       <div className="max-w-2xl mx-auto text-center mb-10 lg:mb-14">
         <h3
           id="platform"
-          className="text-4xl font-semibold md:text-4xl md:leading-tight darkTextWhite"
+          className="block text-3xl font-extrabold text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl darkTextWhite"
         >
-          A data-centric platform for all
+          A <span className="text-blue-600 bg-yellow-300 h-6">data-centric </span> platform for users.
         </h3>
-        <p className="mt-1 text-gray-600 darkTextGray">
-          Empowering Data-Driven Decisions: Unleash the Potential of Your Data
-          with Our Comprehensive Platform.
+        <p className="mt-6 text-lg text-gray-800">
+        Regardless of who you are, our orientation is to provide you with a data-centric platform that serves best for analyzing the data of a business profile, financial analysis, and investment analysis.
         </p>
       </div>
 
@@ -28,25 +27,19 @@ function Features() {
           </div>
           <div className="my-6">
             <h3 className="text-xl font-semibold text-gray-800 darkTextGray darkGroupHoverText">
-              Startup Founder
+              FOUNDER & BUSINESS OWNER
             </h3>
-            <p className="mt-5 text-gray-600 darkTextGray">
-              To present compelling evidence of market demand, growth potential,
-              and a clear path to profitability, making their proposition more
-              attractive.
+            <p className="mt-5 text-gray-800 darkTextGray">
+            
+<ul>
+  <li>✅ Financial forecasting </li>
+  <li>✅ Financial reporting</li>
+  <li>✅ Expense tracking</li>
+  <li>✅ Cash flow management</li>
+  <li>✅ Sensitivity analysis</li>
+  <li>✅ Investment valuation</li>
+</ul>
             </p>
-          </div>
-          <div className="mt-auto flex items-center gap-x-3">
-            <img
-              className="w-8 h-8 rounded-full"
-              src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDEwfHx8ZW58MHx8fHx8"
-              alt="Description"
-            />
-            <div>
-              <h5 className="text-sm text-gray-800  darkTextGray">
-                By Mr. Hung, Founder & CEO BOS.
-              </h5>
-            </div>
           </div>
         </a>
 
@@ -63,25 +56,18 @@ function Features() {
           </div>
           <div className="my-6">
             <h3 className="text-xl font-semibold text-gray-800 darkTextGray darkGroupHoverText">
-              Angel Investor
+            BROKER & INVESTMENT ANALYST
             </h3>
-            <p className="mt-5 text-gray-600 darkTextGray">
-              Data-centric fundraising provides transparency and evidence of
-              impact, helping them trust the project or organization they're
-              considering.
+            <p className="mt-5 text-gray-800 darkTextGray">
+            <ul>
+              <li>✅ Business Profile analysis</li>
+              <li>✅ Investment research</li>
+              <li>✅ Portfolio management</li>
+              <li>✅ Risk assessment, Due diligence</li>
+              <li>✅ Performance tracking</li>
+              <li>✅ Financial modeling</li>
+            </ul>
             </p>
-          </div>
-          <div className="mt-auto flex items-center gap-x-3">
-            <img
-              className="w-8 h-8 rounded-full"
-              src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-              alt=""
-            />
-            <div>
-              <h5 className="text-sm text-gray-800 darkTextGray">
-                By Mr. Don, Angel Investor
-              </h5>
-            </div>
           </div>
         </a>
 
@@ -98,25 +84,18 @@ function Features() {
           </div>
           <div className="my-6">
             <h3 className="text-xl font-semibold text-gray-800 darkTextGray darkGroupHoverText">
-              Venture Capitalist
+              INVESTORS (ANGEL, VC, PE)  
             </h3>
-            <p className="mt-5 text-gray-600 darkTextGray">
-              Data helps them monitor the performance of their portfolio
-              companies, identify trends, and make strategic decisions to
-              maximize returns.
+            <p className="mt-5 text-gray-800 darkTextGray">
+            <ul>
+              <li>✅ Analyzing financial data</li>
+              <li>✅ Advanced analytics</li>
+              <li>✅ Reporting features</li>
+              <li>✅ Conduct thorough due diligence</li>
+              <li>✅ Assess risk factors</li>
+              <li>✅ Evaluate the potential returns</li>
+            </ul>
             </p>
-          </div>
-          <div className="mt-auto flex items-center gap-x-3">
-            <img
-              className="w-8 h-8 rounded-full"
-              src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-              alt=""
-            />
-            <div>
-              <h5 className="text-sm text-gray-800 darkTextGray">
-                By Lauren Waller, VC
-              </h5>
-            </div>
           </div>
         </a>
       </div>

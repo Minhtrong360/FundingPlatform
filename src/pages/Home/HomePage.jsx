@@ -15,6 +15,7 @@ import HeroCard from "./Components/HeroCard";
 import FAQ from "./Components/FAQ";
 import NewProjectPosts from "./Components/NewProjectPosts";
 import PricingWithLemon from "./Components/PricingWithLemon";
+import videoFile from "./Components/UpscaleVideo.mp4";
 
 // create a function that returns all the components
 import {
@@ -126,22 +127,18 @@ const FeaturesComponent = () => {
               <div  className="flex justify-center items-center w-full bg-gray-200 text-xs text-gray-600 rounded-sm sm:text-sm ">BeeKrowd</div>
             </div>
                
-
-               <div className="w-full min-w-400px max-w-800px rounded-b-lg">
-                 <div className="relative w-full overflow-hidden rounded-b-lg" style={{ paddingTop: '56.25%' }}>
-                 <p>
-                   <iframe
-                     title="YouTube video player"
-                     className="absolute top-0 left-0 right-0 w-full h-full rounded-b-lg"
-                     src="https://www.youtube.com/embed/56lpx33qSpI?si=CaJKbilv0ghPwRLC"
-                     width="560"
-                     height="315"
-                     allowFullScreen
-                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                   ></iframe>
-                 </p>
-               </div>
-             </div>
+            <div className="w-full min-w-400px max-w-1200px rounded-b-lg">
+              <div className="relative w-full overflow-hidden rounded-b-lg" style={{ paddingTop: '56.25%' }}>
+                <video
+                  className="absolute top-0 left-0 right-0 w-full h-full rounded-b-lg"
+                  autoPlay
+                  loop
+                >
+                  <source src={videoFile} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
               
              </figure>
              {/* End Browser Device */}
@@ -277,20 +274,22 @@ const HomePage = () => {
     <>
       <Header />
       <HeroSection />
+      <HeroCard />
+      <HeroSection />
       <Features />
       {/* <FeatureComponent /> */}
-      <FeaturesComponent />
+      {/* <FeaturesComponent /> */}
      
       
       
       {/* <ProfileCard /> */}
-      <NewProjectPosts />
-      <HeroCard />
+      {/* <NewProjectPosts /> */}
+      
       {/* <PricingSection /> */}
 
       <PricingWithLemon />
 
-      <FAQ />
+      {/* <FAQ /> */}
       {/* <Marquee /> */}
       <Footer />
     </>

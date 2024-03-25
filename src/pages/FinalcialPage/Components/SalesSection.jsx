@@ -171,10 +171,10 @@ const SalesSection = ({
           channelProductKey.split(" - ");
         if (
           selectedChannel ===
-            tempChannelInputs.find((input) => input.id === renderChannelForm)
+            tempChannelInputs.find((input) => input.id == renderChannelForm)
               ?.selectedChannel &&
           selectedProduct ===
-            tempChannelInputs.find((input) => input.id === renderChannelForm)
+            tempChannelInputs.find((input) => input.id == renderChannelForm)
               ?.productName
         ) {
           const revenueRowKey = `Revenue`;
@@ -247,19 +247,8 @@ const SalesSection = ({
   };
 
   const revenueTableData = transformRevenueDataForTable();
-  
-  const handleActualChange = (value, record, key) => {
-    const newRecord = { ...record };
-    newRecord[key] = value;
-    setTempRevenueData((prevData) => {
-      const newData = [...prevData];
-      const index = newData.findIndex((data) => data.key === record.key);
-      newData[index] = newRecord;
-      return newData;
-    });
-  };
-  
-  // Define the revenueColumns array
+
+  //RevenueColumns
   const revenueColumns = [
     {
       fixed: "left",
@@ -267,34 +256,15 @@ const SalesSection = ({
       dataIndex: "channelName",
       key: "channelName",
     },
-    ...Array.from({ length: numberOfMonths }, (_, i) => i + 1).flatMap((month) => ([
-      {
-        title: `Month_${month} Forecast`,
-        dataIndex: `month${month}`,
-        key: `month${month}_forecast`,
-      },
-      {
-        title: `Month_${month} Actual`,
-        dataIndex: `month${month}_actual`,
-        key: `month${month}_actual`,
-        render: (text, record, index) => (
-          <input 
-            type="text" 
-            className="py-1 px-2 block w-full border-gray-200 rounded-lg text-xs focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" 
-            value={record[`month${month}`]} // Set value to corresponding forecast value
-            onChange={e => handleActualChange(e.target.value, record, `month${month}_actual`)} 
-          />
-        )
-      }
-    ])),
+    ...Array.from({ length: numberOfMonths }, (_, i) => i + 1).map((month) => ({
+      title: `Month_${month}`,
+      dataIndex: `month${month}`,
+      key: `month${month}`,
+    })),
   ];
-  
-
-
 
   //RevenueChart
-  
-  console.log("tempRevenueData", tempRevenueData)
+
   useEffect(() => {
     const seriesData = Object.entries(tempRevenueData).map(([key, data]) => {
       return { name: key, data };

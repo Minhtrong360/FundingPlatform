@@ -421,6 +421,35 @@ const AllChartSections = ({
     setSelectedChart(value);
   };
 
+  const [selectedMonth, setSelectedMonth] = useState(1);
+
+  const handleMonthSelect = (value) => {
+    setSelectedMonth(parseInt(value));
+  };
+
+  const renderCard = (title, value) => (
+    <div className="flex flex-col bg-white border shadow-lg rounded-xl m-8 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+      <div className="p-4 md:p-5">
+        <div className="flex items-center gap-x-2">
+          <p className="text-xs uppercase tracking-wide text-gray-800">
+            {title}
+          </p>
+        </div>
+
+        <div className="mt-1 flex items-center gap-x-2">
+          <div className="flex flex-col xl:flex-row xl:items-center items-start">
+            <h3 className="text-sm sm:text-3xl font-bold text-blue-600 my-2">
+              ${formatNumber(Math.round(value[selectedMonth - 1]))}
+            </h3>
+          </div>
+        </div>
+        <div className="flex flex-col xl:flex-row xl:items-center items-start">
+          <p className="text-base text-gray-800 my-2">Month: {selectedMonth}</p>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="flex flex-col">
       <main className="flex flex-1 flex-col gap-4 mt-4 mb-4 md:gap-8 ">
@@ -736,6 +765,56 @@ const AllChartSections = ({
               title="Total Shareholders Equity Over Time"
             />
           )}
+        </div>
+
+        <div>
+          <div className=" gap-4 mb-3">
+            <span className="flex items-center text-sm my-4">
+              Select Month :
+            </span>
+            <Select
+              onValueChange={(value) => handleMonthSelect(value)}
+              value={selectedMonth.toString()}
+              className="border-solid border-[1px] border-gray-200"
+            >
+              <SelectTrigger className="border-solid border-[1px] border-gray-200 md:w-[20%] w-full">
+                <SelectValue />
+              </SelectTrigger>
+
+              <SelectContent position="popper">
+                {[...Array(numberOfMonths)].map((_, index) => (
+                  <SelectItem
+                    className="hover:cursor-pointer"
+                    key={index}
+                    value={(index + 1).toString()}
+                  >
+                    {`Month ${index + 1}`}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+            {renderCard("Total Revenue", totalRevenue)}
+            {renderCard("Total Costs", totalCosts)}
+            {renderCard("Net Income", netIncome)}
+            {renderCard("Gross Profit", grossProfit)}
+            {renderCard("EBITDA", ebitda)}
+            {renderCard("Earnings Before Tax", earningsBeforeTax)}
+            {renderCard("Income Tax", incomeTax)}
+            {renderCard(
+              "Total Investment Depreciation",
+              totalInvestmentDepreciation
+            )}
+            {renderCard("Total Interest Payments", totalInterestPayments)}
+            {renderCard("Net Cash Changes", netCashChanges)}
+            {renderCard("Total Principal", totalPrincipal)}
+            {renderCard("Cash Begin Balances", cashBeginBalances)}
+            {renderCard("Cash End Balances", cashEndBalances)}
+            {renderCard("Total Assets", totalAssets)}
+            {renderCard("Total Liabilities", totalLiabilities)}
+            {renderCard("Total Shareholders Equity", totalShareholdersEquity)}
+          </div>
         </div>
       </main>
     </div>

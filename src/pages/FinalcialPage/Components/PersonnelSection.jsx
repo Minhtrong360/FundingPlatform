@@ -365,6 +365,7 @@ const PersonnelSection = ({
           dataSource={personnelCostTableData}
           columns={personnelCostColumns}
           pagination={false}
+          bordered
         />
         <h3 className="text-2xl font-semibold my-8">Personnel Cost Chart</h3>
         <Chart

@@ -18,7 +18,7 @@ const PricingCard = ({ plan, onClick }) => {
   ];
 
   const price_10 = [
-    "Free plan features",
+    "14-day free trial",
     "Unlimited projects",
     "Private Dataroom feature",
     "Financial model feature",
@@ -43,10 +43,10 @@ const PricingCard = ({ plan, onClick }) => {
         </h4>
         <span className="mt-5 font-semibold text-5xl text-gray-800 darkTextGray">
           ${plan.price / 100}
-          <span className="font-medium text-lg">/month</span>
+          <span className="font-medium text-lg"> /month</span>
         </span>
 
-        {plan.price_formatted.includes("$49.99") && (
+        {plan.price_formatted.includes("$100") && (
           <>
             <p className="mt-2 text-sm text-gray-500">For Enterprise</p>
             <ul className="mt-7 space-y-2.5 text-sm">
@@ -77,7 +77,7 @@ const PricingCard = ({ plan, onClick }) => {
           </>
         )}
 
-        {plan.price_formatted.includes("$19.99") && (
+        {plan.price_formatted.includes("$30") && (
           <>
             <p className="mt-2 text-sm text-gray-500">
               For Startups, small project owners
@@ -144,15 +144,19 @@ const PricingCard = ({ plan, onClick }) => {
         <button
           onClick={onClick}
           className={`mt-5 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-white hover:bg-blue-700 disabled:opacity-0.5 disabled:pointer-events-none ${
-            plan.price / 100 === 0 || plan.price_formatted.includes("$49.99")
+            plan.price / 100 === 0 || plan.price_formatted.includes("$100")
               ? "bg-gray-400"
               : "bg-blue-600"
           } darkHoverBgBlue900 darkTextBlue darkFocusOutlineNone darkFocusRing-1 darkFocus`}
           disabled={
-            plan.price / 100 === 0 || plan.price_formatted.includes("$49.99")
+            plan.price / 100 === 0 || plan.price_formatted.includes("$100")
           }
         >
-          {plan.price / 100 === 0 ? "Free" : "Subscribe"}
+          {plan.price / 100 === 0
+            ? "Free"
+            : plan.price / 100 === 30
+            ? "14-day free trial"
+            : "Coming soon"}
         </button>
       </div>
     </>

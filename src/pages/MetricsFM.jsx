@@ -14,25 +14,40 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Map over cardData array */}
 
-        <div className="flex flex-col bg-white border shadow-lg rounded-xl m-8 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+        <div className="flex flex-col bg-white border shadow-sm rounded-xl">
           <div className="p-4 md:p-5">
             <div className="flex items-center gap-x-2">
               <p className="text-xs uppercase tracking-wide text-gray-500">
                 USER
               </p>
               <Tooltip title="Total users of the first year.">
-                <span className="inline-block text-gray-500"></span>
+                <svg
+                  className="flex-shrink-0 size-4 text-gray-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                  <path d="M12 17h.01" />
+                </svg>
               </Tooltip>
             </div>
 
             <div className="mt-1 flex items-center gap-x-2">
               <div className="flex flex-col xl:flex-row xl:items-center items-start">
-                <h3 className="text-sm sm:text-3xl font-bold text-gray-800 my-2">
+                <h3 className="text-sm sm:text-3xl font-bold text-blue-600 my-2">
                   {formatNumber(Math.round(yearlyAverageCustomers[0], 2))}
                 </h3>
               </div>
             </div>
-            <div className="ml-4">
+            <div className="ml-0">
               <span className="text-green-600">
                 <Tooltip title="The increase percentage of the second year compared to the first year in the series.">
                   <span className="inline-block text-sm">
@@ -53,24 +68,39 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
                 </Tooltip>
               </span>
             </div>
-            <div className="whitespace-normal">Customer</div>
+            <div className="whitespace-normal mt-2">Customer</div>
           </div>
         </div>
 
-        <div className="flex flex-col bg-white border shadow-lg rounded-xl m-8 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+        <div className="flex flex-col bg-white border shadow-sm rounded-xl">
           <div className="p-4 md:p-5">
             <div className="flex items-center gap-x-2">
               <p className="text-xs uppercase tracking-wide text-gray-500">
                 REVENUE
               </p>
               <Tooltip title="The average revenue of the first year.">
-                <span className="inline-block text-gray-500"></span>
+                <svg
+                  className="flex-shrink-0 size-4 text-gray-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                  <path d="M12 17h.01" />
+                </svg>
               </Tooltip>
             </div>
 
             <div className="mt-1 flex items-center gap-x-2">
               <div className="flex flex-col xl:flex-row xl:items-center items-start">
-                <h3 className="text-sm sm:text-3xl font-bold text-gray-800 my-2">
+                <h3 className="text-sm sm:text-3xl font-bold text-blue-600 my-2 ">
                   {new Intl.NumberFormat("en-US", {
                     style: "currency",
                     currency: "USD",
@@ -80,7 +110,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
                 </h3>
               </div>
             </div>
-            <div className="ml-4">
+            <div className="ml-0">
               <span className="text-green-600">
                 <Tooltip title="The increase percentage of the second year compared to the first year in the series.">
                   <span className="inline-block text-sm">
@@ -97,7 +127,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
                 </Tooltip>
               </span>
             </div>
-            <div className="whitespace-normal">Revenue</div>
+            <div className="whitespace-normal mt-2">Revenue</div>
           </div>
         </div>
 

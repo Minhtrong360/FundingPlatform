@@ -1,6 +1,9 @@
+import FsB from "./founder&Business.jpg";
+import BsI from "./B&I.jpg";
+import VCs from "./VCs.jpg";
 function Features() {
   return (
-    <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto mt-24">
+    <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto mt-64">
       <div className="max-w-2xl mx-auto text-center mb-10 lg:mb-14">
         <h3
           id="platform"
@@ -25,22 +28,130 @@ function Features() {
           <div className="aspect-w-16 aspect-h-11">
             <img
               className="w-full object-cover rounded-xl"
-              src="https://images.unsplash.com/photo-1692606932040-c7788965e217?q=80&h=2360&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src={FsB}
               alt=" Description"
             />
           </div>
-          <div className="my-6">
+          <div className="mt-6">
             <h3 className="text-xl font-semibold text-gray-800 darkTextGray darkGroupHoverText">
               FOUNDER & BUSINESS OWNER
             </h3>
             <p className="mt-5 text-gray-800 darkTextGray">
               <ul>
-                <li>✅ Financial forecasting </li>
-                <li>✅ Financial reporting</li>
-                <li>✅ Expense tracking</li>
-                <li>✅ Cash flow management</li>
-                <li>✅ Sensitivity analysis</li>
-                <li>✅ Investment valuation</li>
+                <li className="flex space-x-2 justify-start items-center my-2">
+                  <svg
+                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="text-gray-800 darkTextGray">
+                    Financial forecasting{" "}
+                  </span>
+                </li>
+                <li className="flex space-x-2 justify-start items-center my-2">
+                  <svg
+                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="text-gray-800 darkTextGray">
+                    Financial reporting
+                  </span>
+                </li>
+                <li className="flex space-x-2 justify-start items-center my-2">
+                  <svg
+                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="text-gray-800 darkTextGray">
+                    Expense tracking
+                  </span>
+                </li>
+                <li className="flex space-x-2 justify-start items-center my-2">
+                  <svg
+                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="text-gray-800 darkTextGray">
+                    Cash flow management
+                  </span>
+                </li>
+                <li className="flex space-x-2 justify-start items-center my-2">
+                  <svg
+                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="text-gray-800 darkTextGray">
+                    Sensitivity analysis
+                  </span>
+                </li>
+                <li className="flex space-x-2 justify-start items-center my-2">
+                  <svg
+                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="text-gray-800 darkTextGray">
+                    Investment valuation
+                  </span>
+                </li>
               </ul>
             </p>
           </div>
@@ -53,22 +164,130 @@ function Features() {
           <div className="aspect-w-16 aspect-h-11">
             <img
               className="w-full object-cover rounded-xl"
-              src="https://images.unsplash.com/photo-1692607038301-07f744323ede?q=80&h=2360&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src={BsI}
               alt="Description"
             />
           </div>
-          <div className="my-6">
+          <div className="mt-6">
             <h3 className="text-xl font-semibold text-gray-800 darkTextGray darkGroupHoverText">
               BROKER & INVESTMENT ANALYST
             </h3>
             <p className="mt-5 text-gray-800 darkTextGray">
               <ul>
-                <li>✅ Business Profile analysis</li>
-                <li>✅ Investment research</li>
-                <li>✅ Portfolio management</li>
-                <li>✅ Risk assessment, Due diligence</li>
-                <li>✅ Performance tracking</li>
-                <li>✅ Financial modeling</li>
+                <li className="flex space-x-2 justify-start items-center my-2">
+                  <svg
+                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="text-gray-800 darkTextGray">
+                    Business Profile analysis
+                  </span>
+                </li>
+                <li className="flex space-x-2 justify-start items-center my-2">
+                  <svg
+                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="text-gray-800 darkTextGray">
+                    Investment research
+                  </span>
+                </li>
+                <li className="flex space-x-2 justify-start items-center my-2">
+                  <svg
+                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="text-gray-800 darkTextGray">
+                    Portfolio management
+                  </span>
+                </li>
+                <li className="flex space-x-2 justify-start items-center my-2">
+                  <svg
+                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="text-gray-800 darkTextGray">
+                    Risk assessment, Due diligence
+                  </span>
+                </li>
+                <li className="flex space-x-2 justify-start items-center my-2">
+                  <svg
+                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="text-gray-800 darkTextGray">
+                    Performance tracking
+                  </span>
+                </li>
+                <li className="flex space-x-2 justify-start items-center my-2">
+                  <svg
+                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="text-gray-800 darkTextGray">
+                    Financial modeling
+                  </span>
+                </li>
               </ul>
             </p>
           </div>
@@ -81,22 +300,130 @@ function Features() {
           <div className="aspect-w-16 aspect-h-11">
             <img
               className="w-full object-cover rounded-xl"
-              src="https://images.unsplash.com/photo-1692606866812-843adbc73e18?q=80&h=2360&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src={VCs}
               alt="Description"
             />
           </div>
-          <div className="my-6">
+          <div className="mt-6">
             <h3 className="text-xl font-semibold text-gray-800 darkTextGray darkGroupHoverText">
               INVESTORS (ANGEL, VC, PE)
             </h3>
             <p className="mt-5 text-gray-800 darkTextGray">
               <ul>
-                <li>✅ Analyzing financial data</li>
-                <li>✅ Advanced analytics</li>
-                <li>✅ Reporting features</li>
-                <li>✅ Conduct thorough due diligence</li>
-                <li>✅ Assess risk factors</li>
-                <li>✅ Evaluate the potential returns</li>
+                <li className="flex space-x-2 justify-start items-center my-2">
+                  <svg
+                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="text-gray-800 darkTextGray">
+                    Analyzing financial data
+                  </span>
+                </li>
+                <li className="flex space-x-2 justify-start items-center my-2">
+                  <svg
+                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="text-gray-800 darkTextGray">
+                    Advanced analytics
+                  </span>
+                </li>
+                <li className="flex space-x-2 justify-start items-center my-2">
+                  <svg
+                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="text-gray-800 darkTextGray">
+                    Reporting features
+                  </span>
+                </li>
+                <li className="flex space-x-2 justify-start items-center my-2">
+                  <svg
+                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="text-gray-800 darkTextGray">
+                    Conduct thorough due diligence
+                  </span>
+                </li>
+                <li className="flex space-x-2 justify-start items-center my-2">
+                  <svg
+                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="text-gray-800 darkTextGray">
+                    Assess risk factors
+                  </span>
+                </li>
+                <li className="flex space-x-2 justify-start items-center my-2">
+                  <svg
+                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="text-gray-800 darkTextGray">
+                    Evaluate the potential returns
+                  </span>
+                </li>
               </ul>
             </p>
           </div>

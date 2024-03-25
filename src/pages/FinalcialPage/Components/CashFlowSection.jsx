@@ -639,6 +639,7 @@ function CashFlowSection({ numberOfMonths }) {
         dataSource={positionDataWithNetIncome}
         columns={positionColumns}
         pagination={false}
+        bordered
       />
 
       <div className=" gap-4 mb-3">

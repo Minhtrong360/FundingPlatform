@@ -170,10 +170,10 @@ const SalesSection = ({
         const [selectedChannel, selectedProduct] =
           channelProductKey.split(" - ");
         if (
-          selectedChannel ===
+          selectedChannel ==
             tempChannelInputs.find((input) => input.id == renderChannelForm)
               ?.selectedChannel &&
-          selectedProduct ===
+          selectedProduct ==
             tempChannelInputs.find((input) => input.id == renderChannelForm)
               ?.productName
         ) {
@@ -248,6 +248,8 @@ const SalesSection = ({
 
   const revenueTableData = transformRevenueDataForTable();
 
+  const handleActualChange = (value, record, field) => {};
+
   //RevenueColumns
   const revenueColumns = [
     {
@@ -256,11 +258,26 @@ const SalesSection = ({
       dataIndex: "channelName",
       key: "channelName",
     },
-    ...Array.from({ length: numberOfMonths }, (_, i) => i + 1).map((month) => ({
-      title: `Month_${month}`,
-      dataIndex: `month${month}`,
-      key: `month${month}`,
-    })),
+    ...Array.from({ length: numberOfMonths }, (_, i) => i + 1).flatMap((month) => ([
+      {
+        title: `Month_${month} Forecast`,
+        dataIndex: `month${month}`,
+        key: `month${month}_forecast`,
+      },
+      {
+        title: `Month_${month} Actual`,
+        dataIndex: `month${month}_actual`,
+        key: `month${month}_actual`,
+        render: (text, record, index) => (
+          <input 
+            type="text" 
+            className="py-1 px-2 block w-full border-gray-200 rounded-lg text-xs focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" 
+            value={record[`month${month}`]} // Set value to corresponding forecast value
+            onChange={e => handleActualChange(e.target.value, record, `month${month}_actual`)} 
+          />
+        )
+      }
+    ])),
   ];
 
   //RevenueChart
@@ -542,6 +559,7 @@ const SalesSection = ({
           dataSource={revenueTableData}
           columns={revenueColumns}
           pagination={false}
+          bordered
         />
         <h3 className="text-2xl font-semibold my-8">Revenue Chart</h3>
         <Chart

@@ -605,10 +605,11 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   return (
     <div className="border-t-2">
       <h2 className="text-2xl font-semibold my-4">Profit and Loss Statement</h2>
-
+      {/* <pre>{JSON.stringify(tableData, null, 2)}</pre> */}
       <Table
         className="overflow-auto my-8"
         size="small"
+        bordered
         dataSource={transposedData}
         columns={columns}
         pagination={false}

@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 
 import SpinnerBtn from "../../components/SpinnerBtn";
 import { GoogleOutlined } from "@ant-design/icons";
+import { message } from "antd";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -23,7 +24,7 @@ const Login = () => {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       setLoading(true);
@@ -31,14 +32,14 @@ const Login = () => {
       const { error } = await login(email, password);
 
       if (error) {
-        toast.error(error.message);
+        message.error(error.message);
       } else {
         const redirectTo = location?.state?.from?.pathname || "/";
         navigate(redirectTo);
       }
     } catch (error) {
       console.log("HandleSignIn error:", error.message);
-      toast.error(error.message);
+      message.error(error.message);
     } finally {
       setLoading(false);
     }

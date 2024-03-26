@@ -53,6 +53,7 @@ import { setInvestmentInputs } from "../../features/InvestmentSlice";
 import { setLoanInputs } from "../../features/LoanSlice";
 import { setFundraisingInputs } from "../../features/FundraisingSlice";
 import CashFlowSection from "./Components/CashFlowSection";
+import { message } from "antd";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
@@ -267,7 +268,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       .select("inputData")
       .eq("user_id", userId);
     if (error) {
-      toast.error(error.message);
+      message.error(error.message);
       console.error("Error fetching data", error);
       return null;
     }
@@ -394,12 +395,12 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             .select();
 
           if (updateError) {
-            toast.error(updateError.message);
+            message.error(updateError.message);
           } else {
-            toast.success("Updated successfully.");
+            message.success("Updated successfully.");
           }
         } else {
-          toast.error("Bạn không có quyền cập nhật bản ghi này.");
+          message.error("Bạn không có quyền cập nhật bản ghi này.");
         }
       } else {
         // Thêm bản ghi mới
@@ -412,13 +413,13 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           },
         ]);
         if (insertError) {
-          toast.error(insertError.message);
+          message.error(insertError.message);
         } else {
-          toast.success("Inserted successfully.");
+          message.success("Inserted successfully.");
         }
       }
     } catch (error) {
-      toast.error(error.message);
+      message.error(error.message);
       console.error("Error in saveOrUpdateFinanceData", error);
       return null;
     }

@@ -57,7 +57,7 @@ function UserInfoSettings() {
     async function fetchUserData() {
       try {
         if (!navigator.onLine) {
-          toast.error("No internet access.");
+          message.error("No internet access.");
           return;
         }
         setIsLoading(true);
@@ -101,7 +101,7 @@ function UserInfoSettings() {
           }
         }
       } catch (error) {
-        toast.error(error.message);
+        message.error(error.message);
         console.error("Error fetching user data:", error);
       }
       setIsLoading(false);
@@ -160,7 +160,7 @@ function UserInfoSettings() {
     setIsLoading(true);
     try {
       if (!navigator.onLine) {
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
 
@@ -269,10 +269,10 @@ function UserInfoSettings() {
           throw error;
         }
 
-        toast.success("Updated successfully!");
+        message.success("Updated successfully!");
       }
     } catch (error) {
-      toast.error(error.message);
+      message.error(error.message);
       console.error("Error updating user data:", error);
     }
     setIsLoading(false);
@@ -290,7 +290,7 @@ function UserInfoSettings() {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       setIsLoading(true);
@@ -305,7 +305,7 @@ function UserInfoSettings() {
       window.open(response.data.data.urls.customer_portal, "_blank");
     } catch (error) {
       console.log("error", error);
-      toast.warning("User does not subscribe.");
+      message.warning("User does not subscribe.");
     }
     setIsLoading(false);
   };

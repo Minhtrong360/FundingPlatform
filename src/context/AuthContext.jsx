@@ -4,6 +4,7 @@ import SpinnerBtn from "../components/SpinnerBtn";
 import { toast } from "react-toastify";
 import AlertMsg from "../components/AlertMsg";
 import ReactGA from "react-ga4";
+import { message } from "antd";
 
 const GA_MEASUREMENT_ID = process.env.REACT_APP_GA_MEASUREMENT_ID; // Thay thế với Measurement ID của bạn
 
@@ -17,7 +18,7 @@ const login = async (email, password, setLoading) => {
   try {
     if (!navigator.onLine) {
       // Không có kết nối Internet
-      toast.error("No internet access.");
+      message.error("No internet access.");
       return;
     }
     setLoading(true);
@@ -42,7 +43,7 @@ const loginWithGG = async (setLoading) => {
   try {
     if (!navigator.onLine) {
       // Không có kết nối Internet
-      toast.error("No internet access.");
+      message.error("No internet access.");
       return;
     }
     setLoading(true);

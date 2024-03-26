@@ -7,6 +7,7 @@ import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
 import SideBar from "../../components/SideBar";
 import { toast } from "react-toastify";
+import { message } from "antd";
 
 const FounderGitbook = () => {
   const { user } = useAuth();
@@ -23,7 +24,7 @@ const FounderGitbook = () => {
       try {
         if (!navigator.onLine) {
           // Không có kết nối Internet
-          toast.error("No internet access.");
+          message.error("No internet access.");
           return;
         }
 
@@ -70,7 +71,7 @@ const FounderGitbook = () => {
         setProjects(uniqueProjects);
       } catch (error) {
         console.error("Error fetching projects:", error);
-        toast.error(error.message);
+        message.error(error.message);
       }
     };
 

@@ -13,6 +13,7 @@ import AlertMsg from "../../components/AlertMsg";
 import CompanyTest from "./CompanyTest";
 import { data } from "jquery";
 import axios from "axios";
+import { message } from "antd";
 
 function CompanySetting() {
   const navigate = useNavigate();
@@ -139,7 +140,7 @@ function CompanySetting() {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         setIsLoading(false);
         return;
       }
@@ -149,7 +150,7 @@ function CompanySetting() {
         formData.industry.length === 0
       ) {
         // Không có kết nối Internet
-        toast.error("Please choose industry before submitting.");
+        message.error("Please choose industry before submitting.");
         setIsLoading(false);
         return;
       }
@@ -310,7 +311,7 @@ function CompanySetting() {
         }
       }
     } catch (error) {
-      toast.error(error.message);
+      message.error(error.message);
       console.error("Error updating company data:", error);
     }
     setIsLoading(false);
@@ -329,7 +330,7 @@ function CompanySetting() {
         setIsLoading(false); // Đánh dấu rằng dữ liệu đã được tải xong
         if (error) {
           console.log("error", error);
-          toast.error(error.message);
+          message.error(error.message);
           // Xử lý lỗi khi không thể lấy dự án
         } else {
           // Kiểm tra quyền truy cập của người dùng
@@ -547,10 +548,10 @@ function CompanySetting() {
         }
       } else {
         // If there are no users matching the criteria, display a message
-        // toast.warning("No users matching the criteria for notifications.");
+        // message.warning("No users matching the criteria for notifications.");
       }
     } catch (error) {
-      toast.error(error.message);
+      message.error(error.message);
       console.log("Error updating company data:", error);
     }
   }

@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import PricingSection from "../Home/Pricing";
 import ReactModal from "react-modal";
 import Spinner from "../../components/Spinner";
-import { Tooltip } from "antd";
+import { Tooltip, message } from "antd";
 
 const Modal = ({
   isOpen,
@@ -175,7 +175,7 @@ export default function AddLinkFile({
       try {
         if (!navigator.onLine) {
           // Không có kết nối Internet
-          toast.error("No internet access.");
+          message.error("No internet access.");
           return;
         }
         let { data: users, error } = await supabase

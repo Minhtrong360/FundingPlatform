@@ -24,7 +24,7 @@ const FounderGitbook = () => {
       try {
         if (!navigator.onLine) {
           // Không có kết nối Internet
-          toast.error("No internet access.");
+          message.error("No internet access.");
           return;
         }
         let { data: projects, error } = await supabase
@@ -39,7 +39,7 @@ const FounderGitbook = () => {
         setProjects(projects);
       } catch (error) {
         console.error("Error fetching projects:", error);
-        toast.error(error.message);
+        message.error(error.message);
       }
     };
 

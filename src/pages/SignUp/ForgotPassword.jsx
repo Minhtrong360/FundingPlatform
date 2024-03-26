@@ -6,6 +6,7 @@ import AnnouncePage from "../../components/AnnouncePage";
 import AlertMsg from "../../components/AlertMsg";
 import { toast } from "react-toastify";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
+import { message } from "antd";
 
 const InputField = ({ label, type, name, value, onChange }) => {
   return (
@@ -56,7 +57,7 @@ const ForgotPassword = () => {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       // Kiểm tra xem email có tồn tại trong Supabase hay không
@@ -80,7 +81,7 @@ const ForgotPassword = () => {
         }
       }
     } catch (error) {
-      toast.error(error.message);
+      message.error(error.message);
       console.log("error", error);
     } finally {
       setIsLoading(false); // Kết thúc loading dù có lỗi hay không

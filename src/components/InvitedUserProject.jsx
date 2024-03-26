@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import apiService from "../app/apiService";
 import { useAuth } from "../context/AuthContext";
 import ReactModal from "react-modal";
+import { message } from "antd";
 
 const Modal = ({ isOpen, onClose, projectId }) => {
   const [email, setEmail] = useState("email@gmail.com");
@@ -14,7 +15,7 @@ const Modal = ({ isOpen, onClose, projectId }) => {
   const handleInvite = async () => {
     try {
       if (!navigator.onLine) {
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
 
@@ -26,13 +27,13 @@ const Modal = ({ isOpen, onClose, projectId }) => {
 
       if (fileError) {
         console.log("Error fetching project data:", fileError);
-        toast.error(fileError);
+        message.error(fileError);
         return;
       }
 
       if (!projectData) {
         console.log("File with ID not found.");
-        toast.error("File with ID not found.");
+        message.error("File with ID not found.");
         return;
       }
 
@@ -40,12 +41,12 @@ const Modal = ({ isOpen, onClose, projectId }) => {
       const currentCollabs = projectData.collabs || [];
 
       if (invited_type === "View only" && currentInvitedUsers.includes(email)) {
-        toast.warning(`User with email ${email} is already invited.`);
+        message.warning(`User with email ${email} is already invited.`);
         return;
       }
 
       if (invited_type === "Collaborate" && currentCollabs.includes(email)) {
-        toast.warning(
+        message.warning(
           `User with email ${email} is already invited as collaborator.`
         );
         return;
@@ -77,15 +78,15 @@ const Modal = ({ isOpen, onClose, projectId }) => {
 
       if (updateError) {
         console.log("Error updating file data:", updateError);
-        toast.error(updateError);
+        message.error(updateError);
       } else {
         console.log(`Successfully invited user with email: ${email}`);
-        toast.success("Invited user successfully");
+        message.success("Invited user successfully");
         onClose();
       }
     } catch (error) {
       console.log("Error inviting user:", error);
-      toast.error(error.message);
+      message.error(error.message);
     }
   };
 

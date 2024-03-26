@@ -3,6 +3,7 @@ import { supabase } from "../supabase";
 import { toast } from "react-toastify";
 import ReactModal from "react-modal";
 import apiService from "../app/apiService";
+import { message } from "antd";
 
 const Modal = ({ isOpen, onClose, fileId }) => {
   const [email, setEmail] = useState("email@gmail.com");
@@ -11,7 +12,7 @@ const Modal = ({ isOpen, onClose, fileId }) => {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       // Truy vấn để tìm file có id = fileId trong bảng "files"
@@ -31,7 +32,7 @@ const Modal = ({ isOpen, onClose, fileId }) => {
         // Thêm email người dùng mới vào danh sách "invited_user"
 
         if (currentInvitedUsers.includes(email)) {
-          toast.warning(`User with email ${email} is already invited.`);
+          message.warning(`User with email ${email} is already invited.`);
           return; // Ngắt nếu đã tồn tại
         }
 
@@ -53,22 +54,22 @@ const Modal = ({ isOpen, onClose, fileId }) => {
 
         if (updateError) {
           console.log("Error updating file data:", updateError);
-          toast.error(updateError);
+          message.error(updateError);
           // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
         } else {
-          toast.success("Invited successfully!");
+          message.success("Invited successfully!");
           console.log(`Successfully invited user with email: ${email}`);
           onClose();
           // Xử lý khi mời thành công (ví dụ: hiển thị thông báo cho người dùng)
         }
       } else {
         console.log("File with ID not found.");
-        toast.error("File with ID not found.");
+        message.error("File with ID not found.");
         // Xử lý trường hợp không tìm thấy file với ID cụ thể
       }
     } catch (error) {
       console.log("Error inviting user:", error);
-      toast.error(error.message);
+      message.error(error.message);
       // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }
   };

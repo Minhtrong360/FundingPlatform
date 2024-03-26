@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import apiService from "../app/apiService";
 
 import ReactModal from "react-modal";
+import { message } from "antd";
 
 const Modal = ({
   isOpen,
@@ -19,7 +20,7 @@ const Modal = ({
     try {
       // Kiểm tra kết nối internet
       if (!navigator.onLine) {
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
 
@@ -31,12 +32,12 @@ const Modal = ({
 
       if (userError) {
         console.log("Error fetching user data:", userError);
-        toast.error(userError.message);
+        message.error(userError.message);
         return;
       }
 
       if (!userData.length > 0) {
-        toast.error(`User with email ${email} not found.`);
+        message.error(`User with email ${email} not found.`);
         return;
       }
 
@@ -49,13 +50,13 @@ const Modal = ({
 
       if (projectError) {
         console.log("Error fetching project data:", projectError);
-        toast.error(projectError.message);
+        message.error(projectError.message);
         return;
       }
 
       if (!projectData.length > 0) {
         console.log("Project not found.");
-        toast.error("Project not found.");
+        message.error("Project not found.");
         return;
       }
 
@@ -66,12 +67,12 @@ const Modal = ({
 
       if (updateError) {
         console.log("Error updating project data:", updateError);
-        toast.error(updateError.message);
+        message.error(updateError.message);
         return;
       }
 
       console.log(`Successfully invited user with email: ${email}`);
-      toast.success("Assign project successfully");
+      message.success("Assign project successfully");
       const updatedProjectsCopy = updatedProjects?.filter(
         (project) => project.id !== projectId
       );
@@ -79,7 +80,7 @@ const Modal = ({
       onClose();
     } catch (error) {
       console.log("Error inviting user:", error);
-      toast.error(error.message);
+      message.error(error.message);
     }
   };
 

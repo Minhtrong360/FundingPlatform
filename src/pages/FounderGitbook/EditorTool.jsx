@@ -21,7 +21,7 @@ import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 
 import LoadingButtonClick from "../../components/LoadingButtonClick";
-import { Tooltip } from "antd";
+import { Tooltip, message } from "antd";
 import ReactModal from "react-modal";
 import ButtonGroup from "./ButtonGroup";
 
@@ -113,7 +113,7 @@ export default function EditorTool() {
       try {
         if (!navigator.onLine) {
           // Không có kết nối Internet
-          toast.error("No internet access.");
+          message.error("No internet access.");
           return;
         }
         if (params) {
@@ -175,7 +175,7 @@ export default function EditorTool() {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       // Tạo tên file độc đáo để tránh xung đột
@@ -194,7 +194,7 @@ export default function EditorTool() {
 
       return `${process.env.REACT_APP_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
     } catch (error) {
-      toast.error(error.message);
+      message.error(error.message);
       // Xử lý lỗi tại đây
     }
   }
@@ -218,7 +218,7 @@ export default function EditorTool() {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
 
@@ -242,23 +242,23 @@ export default function EditorTool() {
             .match({ id: params.id });
 
           if (error) {
-            toast.error(error.message);
+            message.error(error.message);
           } else {
             setIsLoading(false);
-            toast.success("Saved successfully.");
+            message.success("Saved successfully.");
             // Reset isSaved to false after 1 second
           }
         } else {
-          toast.error("You do not have permission to save this project.");
+          message.error("You do not have permission to save this project.");
           setIsLoading(false);
         }
       }
     } catch (error) {
       // Xử lý lỗi mạng
       if (!navigator.onLine) {
-        toast.error("No internet access.");
+        message.error("No internet access.");
       } else {
-        toast.error(error.message);
+        message.error(error.message);
       }
       setIsLoading(false);
     }
@@ -268,7 +268,7 @@ export default function EditorTool() {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
 
@@ -295,7 +295,7 @@ export default function EditorTool() {
             .match({ id: params.id });
 
           if (error) {
-            toast.error(error.message);
+            message.error(error.message);
           } else {
             // Set isSaved to true after a successful save
 
@@ -306,16 +306,16 @@ export default function EditorTool() {
           }
         } else {
           // Handle the case where project.user_id doesn't match user.id
-          toast.error("You do not have permission to save this project.");
+          message.error("You do not have permission to save this project.");
 
           setIsLoading(false);
         }
       }
     } catch (error) {
       if (!navigator.onLine) {
-        toast.error("No internet access.");
+        message.error("No internet access.");
       } else {
-        toast.error(error.message);
+        message.error(error.message);
       }
       setIsLoading(false);
     }
@@ -326,7 +326,7 @@ export default function EditorTool() {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
 
@@ -353,7 +353,7 @@ export default function EditorTool() {
             .match({ id: params.id });
 
           if (error) {
-            toast.error(error.message);
+            message.error(error.message);
           } else {
             // Set isSaved to true after a successful save
 
@@ -364,16 +364,16 @@ export default function EditorTool() {
           }
         } else {
           // Handle the case where project.user_id doesn't match user.id
-          toast.error("You do not have permission to save this project.");
+          message.error("You do not have permission to save this project.");
 
           setIsLoading(false);
         }
       }
     } catch (error) {
       if (!navigator.onLine) {
-        toast.error("No internet access.");
+        message.error("No internet access.");
       } else {
-        toast.error(error.message);
+        message.error(error.message);
       }
       setIsLoading(false);
     }
@@ -477,7 +477,7 @@ export default function EditorTool() {
       setIsLoading(false);
     } catch (error) {
       console.log("error", error);
-      toast.error(error.message);
+      message.error(error.message);
     }
   };
 

@@ -3,6 +3,7 @@ import { LinkedIn } from "react-linkedin-login-oauth2";
 import axios from "axios";
 import { toast } from "react-toastify";
 import AlertMsg from "../../components/AlertMsg";
+import { message } from "antd";
 
 function LinkedInLoginComponent() {
   const [data, setData] = useState(null);
@@ -12,7 +13,7 @@ function LinkedInLoginComponent() {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       const accessToken = await getAccessToken(data.code);

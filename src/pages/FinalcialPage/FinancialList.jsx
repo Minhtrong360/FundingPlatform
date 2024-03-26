@@ -24,7 +24,7 @@ function FinancialList() {
         .filter("user_id", "eq", user.id);
 
       if (error) {
-        toast.error(error.message);
+        message.error(error.message);
         console.error("Lỗi khi tải danh sách finance:", error.message);
       } else {
         setFinances(data);

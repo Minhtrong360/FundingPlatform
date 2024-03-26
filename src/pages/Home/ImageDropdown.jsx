@@ -5,6 +5,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 import { supabase } from "../../supabase";
+import { message } from "antd";
 
 const ImageDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +29,7 @@ const ImageDropdown = () => {
       try {
         if (!navigator.onLine) {
           // Không có kết nối Internet
-          toast.error("No internet access.");
+          message.error("No internet access.");
           return;
         }
 
@@ -48,7 +49,7 @@ const ImageDropdown = () => {
           setUserData(data);
         }
       } catch (error) {
-        toast.error(error.message);
+        message.error(error.message);
         console.error("Error fetching user data:", error);
       }
     }

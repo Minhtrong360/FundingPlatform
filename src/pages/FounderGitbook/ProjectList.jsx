@@ -7,7 +7,7 @@ import AlertMsg from "../../components/AlertMsg";
 import InvitedUserProject from "../../components/InvitedUserProject";
 import { toast } from "react-toastify";
 import ProjectGiven from "../../components/ProjectGiven";
-import { Dropdown, Menu, Button } from "antd";
+import { Dropdown, Menu, Button, message } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 
 function formatDate(inputDateString) {
@@ -59,7 +59,7 @@ function ProjectList({ projects }) {
       try {
         if (!navigator.onLine) {
           // Không có kết nối Internet
-          toast.error("No internet access.");
+          message.error("No internet access.");
           return;
         }
         let { data: users, error } = await supabase
@@ -76,7 +76,7 @@ function ProjectList({ projects }) {
 
         setCurrentUser(users[0]);
       } catch (error) {
-        toast.error(error.message);
+        message.error(error.message);
         console.error("Error fetching projects:", error);
       }
     };
@@ -105,7 +105,7 @@ function ProjectList({ projects }) {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       if (
@@ -115,7 +115,7 @@ function ProjectList({ projects }) {
         !editedProjectStatus &&
         currentUser.subscription_status !== "active"
       ) {
-        toast.warning(
+        message.warning(
           "You need to upgrade your plan to create a private project"
         );
 
@@ -146,7 +146,7 @@ function ProjectList({ projects }) {
         setEditingProjectId(null);
       }
     } catch (error) {
-      toast.error(error.message);
+      message.error(error.message);
       console.error("Error updating project name:", error);
       // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }
@@ -162,7 +162,7 @@ function ProjectList({ projects }) {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       // Gửi yêu cầu xóa dự án ra khỏi Supabase bằng cách sử dụng phương thức `delete`
@@ -183,7 +183,7 @@ function ProjectList({ projects }) {
         setUpdatedProjects(updatedProjectsCopy);
       }
     } catch (error) {
-      toast.error(error.message);
+      message.error(error.message);
       console.error("Error deleting project:", error);
       // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }

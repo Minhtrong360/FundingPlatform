@@ -1,5 +1,5 @@
 import { CardContent } from "@mui/material";
-import { Avatar, Card, Tooltip } from "antd";
+import { Avatar, Card, Tooltip, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
@@ -62,7 +62,7 @@ function NewUserPage() {
     async function fetchUserData() {
       try {
         if (!navigator.onLine) {
-          toast.error("No internet access.");
+          message.error("No internet access.");
           return;
         }
         setIsLoading(true);
@@ -102,7 +102,7 @@ function NewUserPage() {
           });
         }
       } catch (error) {
-        toast.error(error.message);
+        message.error(error.message);
         console.error("Error fetching user data:", error);
       }
       setIsLoading(false);
@@ -161,7 +161,7 @@ function NewUserPage() {
     setIsLoading(true);
     try {
       if (!navigator.onLine) {
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
 
@@ -274,10 +274,10 @@ function NewUserPage() {
           throw error;
         }
 
-        toast.success("Updated successfully!");
+        message.success("Updated successfully!");
       }
     } catch (error) {
-      toast.error(error.message);
+      message.error(error.message);
       console.error("Error updating user data:", error);
     }
     setIsLoading(false);
@@ -295,7 +295,7 @@ function NewUserPage() {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       setIsLoading(true);
@@ -310,7 +310,7 @@ function NewUserPage() {
       window.open(response.data.data.urls.customer_portal, "_blank");
     } catch (error) {
       console.log("error", error);
-      toast.warning("User does not subscribe.");
+      message.warning("User does not subscribe.");
     }
     setIsLoading(false);
   };

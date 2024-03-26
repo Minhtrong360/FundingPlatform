@@ -7,6 +7,7 @@ import AlertMsg from "../../components/AlertMsg";
 import AnnouncePage from "../../components/AnnouncePage";
 import { GoogleOutlined } from "@ant-design/icons";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
+import { message } from "antd";
 
 const HeroSignUp = () => {
   const [rememberMe, setRememberMe] = useState(false);
@@ -29,8 +30,8 @@ const HeroSignUp = () => {
     setIsLoading(true); // Đặt isLoading thành true để bật trạng thái loading
     // Kiểm tra email đã tồn tại trong Supabase
     if (!rememberMe) {
-      // Nếu rememberMe không được chọn, hiển thị thông báo lỗi bằng toast.error
-      toast.error("Please accept the Terms and Conditions");
+      // Nếu rememberMe không được chọn, hiển thị thông báo lỗi bằng message.error
+      message.error("Please accept the Terms and Conditions");
     } else {
       const { data, error } = await supabase
         .from("users")
@@ -40,15 +41,15 @@ const HeroSignUp = () => {
       if (error) {
         console.error("Error checking email:", error);
       } else if (data && data.length > 0) {
-        // Nếu email đã tồn tại, hiển thị thông báo lỗi bằng toast.error
-        toast.error("Email is already existed");
+        // Nếu email đã tồn tại, hiển thị thông báo lỗi bằng message.error
+        message.error("Email is already existed");
       } else {
         // Nếu email không tồn tại, thực hiện đăng ký
 
         try {
           if (!navigator.onLine) {
             // Không có kết nối Internet
-            toast.error("No internet access.");
+            message.error("No internet access.");
             return;
           }
           await supabase.auth.signUp({ email, password, fullName });
@@ -67,7 +68,7 @@ const HeroSignUp = () => {
           setResetLink(true);
         } catch (error) {
           console.error("Error signing up:", error);
-          toast.error(error.message);
+          message.error(error.message);
           // Xử lý lỗi đăng ký tại đây nếu cần
         }
       }

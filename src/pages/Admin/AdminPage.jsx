@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import SideBar from "../../components/SideBar";
 import Header from "../Home/Header";
+import { message } from "antd";
 
 function formatDate(inputDateString) {
   const dateObject = new Date(inputDateString);
@@ -90,7 +91,7 @@ function AdminPage() {
       .eq("id", project.id);
     if (error) {
       console.error("Error updating project:", error.message);
-      toast.error(error.message);
+      message.error(error.message);
     } else {
       // Update projects state with updated data
       setProjects((prevProjects) =>

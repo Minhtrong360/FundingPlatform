@@ -11,26 +11,26 @@ const PricingCard = ({ plan, onClick }) => {
   // const navigate = useNavigate();
   const price_0 = [
     "Free forever",
-    "1 public profile",
-    "Notion-like editor",
-    "Chart visualization",
-    "Data room feature",
+    "01 business profile (Public mode)",
+    "Business Profile listing (Public mode)",
+    "Invite collaborators (Profile editing)",
+    "Data room file upload (Public mode)",
   ];
 
   const price_10 = [
     "14-day free trial",
-    "Unlimited projects",
-    "Private Dataroom feature",
-    "Financial model feature",
-    "Private project feature",
+    "Financial Model feature access",
+    "Unlimited business profiles",
+    "Private Data room (access control)",
+    "Private project listing (access control)",
   ];
 
   const price_50 = [
     "Premium features included",
-    "Dealroom listing",
-    "Data analytics dashboard",
-    "Team collaboration",
-    "BeeKrowd support",
+    "Signature Dealroom listing",
+    "What if scenario analysis",
+    "Customer-facing analytics",
+    "BeeKrowd customer support",
   ];
 
   return (

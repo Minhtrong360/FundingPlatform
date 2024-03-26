@@ -66,10 +66,10 @@ function Company({
         <div className="max-w-xl mx-auto">
           <div className="text-center">
             <h1 className="text-3xl font-semibold text-gray-800 sm:text-4xl darkTextWhite">
-              Company Info
+              Company info
             </h1>
             <p className="mt-1 text-gray-600 darkTextGray">
-              This will be an amazing journey.
+              Please fill basic information about your company.
             </p>
           </div>
 

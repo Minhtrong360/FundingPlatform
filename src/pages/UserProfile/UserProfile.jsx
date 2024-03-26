@@ -15,6 +15,8 @@ import SelectField from "../../components/SelectField";
 
 import { Avatar, Tooltip } from "antd";
 import { IconButton } from "@mui/material";
+import { message } from "antd";
+
 
 function UserInfoSettings() {
   const { user } = useAuth();

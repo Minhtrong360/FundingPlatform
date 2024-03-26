@@ -56,10 +56,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             max-width: 0;
             overflow: hidden;
             white-space: nowrap;
-<<<<<<< HEAD
             
-=======
->>>>>>> 62e04f4c3f94ac01f670fff71cf14cdfebada20f
             opacity: 0;
         }
           .group:hover .sidebar-text {

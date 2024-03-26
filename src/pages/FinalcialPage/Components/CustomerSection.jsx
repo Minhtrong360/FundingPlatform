@@ -141,7 +141,7 @@ const CustomerSection = ({
 
       const startRow = {
         key: `${curr.channelName}-start`,
-        channelName: `${curr.channelName} (Start)`,
+        channelName: `${curr.channelName} (Existing)`,
       };
       const beginRow = {
         key: `${curr.channelName}-begin`,
@@ -205,10 +205,10 @@ const CustomerSection = ({
     const customerColumns = [
       {
         fixed: "left",
-        title: "Channel Name",
+        title: <div style={{ paddingLeft: '5px', paddingRight: '5px' }}>Channel_Name</div>,
         dataIndex: "channelName",
         key: "channelName",
-        width: 200,
+        width: 500,
       },
       ...Array.from({ length: numberOfMonths }, (_, i) => ({
         title: `Month_${i + 1}`,
@@ -329,7 +329,7 @@ const CustomerSection = ({
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
-                    Begin Customer:
+                    Existing Customer:
                   </span>
                   <Input
                     className="col-start-2 border-gray-200"

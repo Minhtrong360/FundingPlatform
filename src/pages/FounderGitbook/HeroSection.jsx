@@ -3,7 +3,7 @@ import ImageCrop from "../../components/cropImage/ImageCrop";
 import ResizeImage from "../../components/ResizeImage";
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
-import { Tag } from 'antd';
+import { Tag } from "antd";
 function formatNumber(value) {
   // Kiểm tra xem value có phải là một chuỗi không
   if (typeof value !== "string") {
@@ -56,6 +56,8 @@ const HeroSection = ({
     fetchProject();
   }, [formData]);
 
+  console.log("imageUrl", imageUrl);
+
   return (
     <div className="max-w-[85rem] mx-auto mt-24 px-4 sm:px-6 lg:px-8 z-0">
       <div className="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
@@ -71,7 +73,7 @@ const HeroSection = ({
               color={"geekblue"}
             >
               <div className="truncate overflow-hidden py-2 px-2 inline-flex justify-center items-center  text-sm text-white rounded-2xl border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus">
-                <p className="truncate">
+                <p className="truncate pl-1">
                   {" "}
                   Target: ${formatNumber(button1Text)}{" "}
                 </p>
@@ -82,7 +84,7 @@ const HeroSection = ({
               color={"geekblue"}
             >
               <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-lg border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus">
-                <p className="truncate">
+                <p className="truncate pl-1">
                   {" "}
                   No. ticket: {formatNumber(button2Text)}{" "}
                 </p>
@@ -93,22 +95,22 @@ const HeroSection = ({
               color={"geekblue"}
             >
               <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-lg border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus">
-                <p className="truncate"> Min ticket size: {button3Text} </p>
+                <p className="truncate pl-1"> Min ticket size: {button3Text} </p>
               </div>
             </Tooltip>
             <Tooltip title={` Offer: ${button4Text}`} color={"geekblue"}>
               <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-lg border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus">
-                <p className="truncate"> Offer: {button4Text} </p>
+                <p className="truncate pl-1"> Offer: {button4Text} </p>
               </div>
             </Tooltip>
             <Tooltip title={`Type: ${button5Text}`} color={"geekblue"}>
               <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-lg border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus">
-                <p className="truncate"> Type: {button5Text} </p>
+                <p className="truncate pl-1"> Type: {button5Text} </p>
               </div>
             </Tooltip>
             <Tooltip title={`Website: ${formData?.website}`} color={"geekblue"}>
               <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-lg border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus">
-                <p className="truncate"> Website: {formData?.website} </p>
+                <p className="truncate pl-1"> Website: {formData?.website} </p>
               </div>
             </Tooltip>
           </div>
@@ -120,51 +122,73 @@ const HeroSection = ({
                 color={"geekblue"}
               >
                 <div className="truncate overflow-hidden  py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md font-semibold rounded-full border border-transparent bg-orange-400   disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus">
-                  <p className="truncate">{industry}</p>
+                  <p className="truncate pl-1">{industry}</p>
                 </div>
               </Tooltip>
             ))}
           </div> */}
-          
+
           <div className=" gap-4 mt-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2">
             <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
               <span className="text-sm font-medium text-gray-600">Target:</span>
-              <span className="text-sm font-semibold text-gray-800">${formatNumber(button1Text)}</span>
+              <span className="text-sm font-semibold text-gray-800 truncate pl-1">
+                ${formatNumber(button1Text)}
+              </span>
             </div>
             <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
-              <span className="text-sm font-medium text-gray-600">No. tickets:</span>
-              <span className="text-sm font-semibold text-gray-800">{formatNumber(button2Text)}</span>
+              <span className="text-sm font-medium text-gray-600 ">
+                No. tickets:
+              </span>
+              <span className="text-sm font-semibold text-gray-800 truncate pl-1">
+                {formatNumber(button2Text)}
+              </span>
             </div>
             <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
-              <span className="text-sm font-medium text-gray-600">Min ticket size:</span>
-              <span className="text-sm font-semibold text-gray-800"> {button3Text}</span>
+              <span className="text-sm font-medium text-gray-600">
+                Min ticket size:
+              </span>
+              <span className="text-sm font-semibold text-gray-800 truncate pl-1">
+                {" "}
+                {button3Text}
+              </span>
             </div>
             <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
               <span className="text-sm font-medium text-gray-600">Offer:</span>
-              <span className="text-sm font-semibold text-gray-800"> {button4Text}</span>
+              <span className="text-sm font-semibold text-gray-800 truncate pl-1">
+                {" "}
+                {button4Text}
+              </span>
             </div>
             <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
               <span className="text-sm font-medium text-gray-600">Type:</span>
-              <span className="text-sm font-semibold text-gray-800">{button5Text}</span>
+              <span className="text-sm font-semibold text-gray-800 truncate pl-1">
+                {button5Text}
+              </span>
             </div>
             <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
-              <span className="text-sm font-medium text-gray-600">Website:</span>
-              <a className="text-sm font-semibold text-blue-600 hover:underline" href="#">
-              {formData?.website}
+              <span className="text-sm font-medium text-gray-600">
+                Website:
+              </span>
+              <a
+                className="text-sm font-semibold text-blue-600 hover:underline truncate pl-1"
+                href={formData?.website}
+              >
+                {formData?.website}
               </a>
             </div>
           </div>
           <div className=" mt-4 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4">
-          {formData?.industry?.map((industry, index) => (
-            <Tag 
-            key={index}
-            title={`Industry: ${industry}`}
-            color={"geekblue"}
-            className="  bg-gray-50 border border-gray-200 text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl ">{industry}</Tag>
+            {formData?.industry?.map((industry, index) => (
+              <Tag
+                key={index}
+                title={`Industry: ${industry}`}
+                color={"geekblue"}
+                className="  bg-gray-50 border border-gray-200 text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
+              >
+                {industry}
+              </Tag>
             ))}
-            </div>
-        
-
+          </div>
         </div>
 
         <div className="relative ">
@@ -188,13 +212,18 @@ const HeroSection = ({
               setFormData={setFormData}
             />
           ) : ( */}
-          <img
-            src={imageUrl}
-            width={700}
-            height={800}
-            className="object-cover"
-            alt=""
-          />
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              width={700}
+              height={800}
+              className="object-cover"
+              alt=""
+            />
+          ) : (
+            <div className="w-[400px] h-[500px]"></div>
+          )}
+
           {/* )} */}
 
           {project?.verified && (
@@ -211,4 +240,3 @@ const HeroSection = ({
 };
 
 export default HeroSection;
-

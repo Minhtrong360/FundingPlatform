@@ -63,3 +63,7 @@ code {
 .ant-table table {
   font-size: 12px;
 }
+
+.ant-select-lg {
+  font-size: 14px;
+}

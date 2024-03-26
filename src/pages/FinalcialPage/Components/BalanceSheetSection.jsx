@@ -1,4 +1,4 @@
-import { Row, Table } from "antd";
+import { Table, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -717,12 +717,13 @@ function BalanceSheetSection({ numberOfMonths }) {
       return {
         metric: data.metric,
         ...filteredData,
-        yearTotal, // Adding Year Total to each row
+        yearTotal: formatNumber(yearTotal.toFixed(2)), // Adding Year Total to each row
       };
     });
   };
 
   const calculateBalanceSheetRatios = (dataSource) => {
+    console.log("dataSource", dataSource);
     const findYearTotalByKey = (key) => {
       const item = dataSource.find((data) => data.metric === key);
       return item ? item.yearTotal : 0;
@@ -733,25 +734,34 @@ function BalanceSheetSection({ numberOfMonths }) {
     const currentAssets = findYearTotalByKey("Current Assets");
     const currentLiabilities = findYearTotalByKey("Current Liabilities");
     const totalEquity = findYearTotalByKey("Total Shareholders Equity");
-
+    console.log("currentAssets", currentAssets);
+    console.log("currentLiabilities", currentLiabilities);
     // Basic financial ratios from balance sheet
-    const currentRatio = currentAssets / currentLiabilities; // Measures liquidity
-    const debtToEquityRatio = totalLiabilities / totalEquity; // Measures financial leverage
-    const assetToEquityRatio = totalAssets / totalEquity; // Measures how much assets are financed by owners' interests
+
+    const currentRatio =
+      parseNumber(currentAssets) / parseNumber(currentLiabilities); // Measures liquidity
+    const debtToEquityRatio =
+      parseNumber(totalLiabilities) / parseNumber(totalEquity); // Measures financial leverage
+    const assetToEquityRatio =
+      parseNumber(totalAssets) / parseNumber(totalEquity); // Measures how much assets are financed by owners' interests
 
     // Additional ratios for a deeper financial analysis
     const quickRatio =
-      (currentAssets - findYearTotalByKey("Inventory")) / currentLiabilities; // Measures immediate liquidity
-    const liabilitiesToAssetsRatio = totalLiabilities / totalAssets; // Measures the percentage of assets financed by liabilities
-    const equityRatio = totalEquity / totalAssets; // Measures the proportion of total assets financed by shareholders
+      (parseNumber(currentAssets) -
+        parseNumber(findYearTotalByKey("Inventory"))) /
+      parseNumber(currentLiabilities); // Measures immediate liquidity
+    const liabilitiesToAssetsRatio =
+      parseNumber(totalLiabilities) / parseNumber(totalAssets); // Measures the percentage of assets financed by liabilities
+    const equityRatio = parseNumber(totalEquity) / parseNumber(totalAssets); // Measures the proportion of total assets financed by shareholders
     const fixedAssetTurnoverRatio =
-      findYearTotalByKey("Net Fixed Assets") / totalAssets; // Efficiency ratio for fixed assets usage
+      parseNumber(findYearTotalByKey("Net Fixed Assets")) /
+      parseNumber(totalAssets); // Efficiency ratio for fixed assets usage
 
     return {
-      currentRatio: currentRatio.toFixed(2),
+      // currentRatio: currentRatio.toFixed(2),
       debtToEquityRatio: debtToEquityRatio.toFixed(2),
       assetToEquityRatio: assetToEquityRatio.toFixed(2),
-      quickRatio: quickRatio.toFixed(2),
+      // quickRatio: quickRatio.toFixed(2),
       liabilitiesToAssetsRatio: liabilitiesToAssetsRatio.toFixed(2),
       equityRatio: equityRatio.toFixed(2),
       fixedAssetTurnoverRatio: fixedAssetTurnoverRatio.toFixed(2),
@@ -772,7 +782,6 @@ function BalanceSheetSection({ numberOfMonths }) {
       />
 
       <div className=" gap-4 mb-3">
-        <span className="flex items-center text-sm my-4">Select Chart :</span>
         <Select
           onValueChange={(value) => handleChartSelect(value)}
           value={selectedChart}
@@ -786,28 +795,24 @@ function BalanceSheetSection({ numberOfMonths }) {
             <SelectItem
               className="hover:cursor-pointer"
               value="total-assets-chart"
-              
             >
               Total Asset
             </SelectItem>
             <SelectItem
               className="hover:cursor-pointer"
               value="cash-flow-chart"
-              className="hover:cursor-pointer"
             >
               Cash
             </SelectItem>
             <SelectItem
               className="hover:cursor-pointer"
               value="total-liabilities-chart"
-              className="hover:cursor-pointer"
             >
               Total Liabilities
             </SelectItem>
             <SelectItem
               className="hover:cursor-pointer"
               value="total-shareholders-equity-chart"
-              className="hover:cursor-pointer"
             >
               Total Shareholders Equity
             </SelectItem>
@@ -856,18 +861,11 @@ function BalanceSheetSection({ numberOfMonths }) {
         />
       )}
 
-      <div className="my-4">
-        <label htmlFor="cutMonthSelect" className="mr-2">
-          Select Cut Month:
-        </label>
-        <select
-          id="cutMonthSelect"
-          value={cutMonth}
-          onChange={handleCutMonthChange}
-          className="border px-2 py-1"
-        >
+      <div>
+        <label className="mr-4">Select Cut Month:</label>
+        <select value={cutMonth} onChange={handleCutMonthChange}>
           {Array.from({ length: 12 }, (_, i) => (
-            <option key={i + 1} value={i + 1}>
+            <option key={i} value={i + 1}>
               {i + 1}
             </option>
           ))}
@@ -892,20 +890,50 @@ function BalanceSheetSection({ numberOfMonths }) {
               );
               const ratios = calculateBalanceSheetRatios(dataSourceForYear);
               return (
-                <ul>
-                  <li>Current Ratio: {ratios.currentRatio}</li>
-                  <li>Debt to Equity Ratio: {ratios.debtToEquityRatio}</li>
-                  <li>Asset to Equity Ratio: {ratios.assetToEquityRatio}</li>
-                  <li>Quick Ratio: {ratios.quickRatio}</li>
-                  <li>
-                    Liabilities to Assets Ratio:{" "}
-                    {ratios.liabilitiesToAssetsRatio}
-                  </li>
-                  <li>Equity Ratio: {ratios.equityRatio}</li>
-                  <li>
-                    Fixed Asset Turnover Ratio: {ratios.fixedAssetTurnoverRatio}
-                  </li>
-                </ul>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                  {Object.keys(ratios).map((key, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-col bg-white border shadow-lg rounded-xl m-8 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110"
+                    >
+                      <div className="p-4 md:p-5">
+                        <div className="flex items-center gap-x-2">
+                          <p className="text-xs uppercase tracking-wide text-gray-500">
+                            {key}:
+                          </p>
+                          <Tooltip
+                            title={`This is the ${key.replace(/_/g, " ")}.`}
+                          >
+                            <svg
+                              className="flex-shrink-0 size-4 text-gray-500"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <circle cx="12" cy="12" r="10" />
+                              <line x1="12" y1="16" x2="12" y2="12" />
+                              <line x1="12" y1="8" x2="12" y2="8" />
+                            </svg>
+                          </Tooltip>
+                        </div>
+
+                        <div className="mt-1">
+                          <div className="flex flex-col xl:flex-row xl:items-center items-start gap-2">
+                            <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 my-2">
+                              {ratios[key]}
+                            </h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               );
             })()}
           </div>

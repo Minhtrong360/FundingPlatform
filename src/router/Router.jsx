@@ -24,7 +24,7 @@ import DashBoardPage from "../pages/DashBoard/DashBoardPage";
 import CompanySetting from "../pages/FounderGitbook/CompanySetting";
 import News from "../pages/News/News";
 import FinancialPage from "../pages/FinalcialPage/FinancialPage";
-import { useAuth } from "../context/AuthContext";
+
 import ProgressBar from "../components/ProgressBar";
 import NotificationsPage from "../pages/Notification/Notification";
 import Confirmed from "../pages/SignUp/Confirmed";
@@ -34,9 +34,8 @@ import PermissionRequired from "./PermissionRequired";
 import AnnouncePage from "../components/AnnouncePage";
 import NewProjectPosts from "../pages/Home/Components/NewProjectPosts";
 import PricingPage from "../pages/Home/Components/PricingPage";
+import NewUserPage from "../pages/UserProfile/NewUserPage";
 function Router() {
-  const { subscribed } = useAuth();
-
   return (
     <>
       <Routes>
@@ -112,7 +111,7 @@ function Router() {
           path="/financials"
           element={
             <AuthRequire message="Sign in required!">
-              <PermissionRequired isPrivateDisabled={subscribed}>
+              <PermissionRequired>
                 <FinancialPage />
               </PermissionRequired>
             </AuthRequire>
@@ -133,6 +132,7 @@ function Router() {
 
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/z" element={<NewUserPage />} />
 
         <Route path="/loading" element={<ProgressBar isLoading={true} />} />
       </Routes>

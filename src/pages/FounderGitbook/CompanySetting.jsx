@@ -39,6 +39,7 @@ function CompanySetting() {
     rememberMe: false,
     user_email: "",
     revenueStatus: "Pre-revenue",
+    calendly: "",
   });
 
   useEffect(() => {
@@ -81,6 +82,7 @@ function CompanySetting() {
                 companyDescription: companyData.description,
                 user_email: companyData.user_email,
                 revenueStatus: companyData.revenueStatus,
+                calendly: companyData.calendly,
               });
 
               setIsLoading(false);
@@ -247,6 +249,7 @@ function CompanySetting() {
                 user_email: user.email,
                 project_id: params.id,
                 revenueStatus: formData.revenueStatus,
+                calendly: formData.calendly,
               },
             ])
             .select();
@@ -292,6 +295,7 @@ function CompanySetting() {
                 user_email: user.email,
                 project_id: params.id,
                 revenueStatus: formData.revenueStatus,
+                calendly: formData.calendly,
               },
             ])
             .select();
@@ -564,13 +568,11 @@ function CompanySetting() {
   const canClick = false;
 
   return (
-    <div className="grid sm:grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="grid sm:grid-cols-1 lg:grid-cols-4 gap-6">
       {" "}
       {/* Sử dụng lg:grid-cols-3 để chia thành 3 cột, trong đó Company component chiếm 1/3 và các div còn lại chiếm 2/3 */}
       <LoadingButtonClick isLoading={isLoading} />
       <div className="flex-1 lg:col-span-1">
-        {" "}
-        {/* Sử dụng lg:col-span-1 để Company component chiếm 1/3 */}
         <Company
           isLoading={isLoading}
           handleSubmit={handleSubmit}
@@ -581,7 +583,7 @@ function CompanySetting() {
         />
         <AlertMsg />
       </div>
-      <div className="flex-1 lg:col-span-2">
+      <div className="flex-1 lg:col-span-3">
         {" "}
         {/* Sử dụng lg:col-span-2 để các div còn lại chiếm 2/3 */}
         <div className="flex flex-col">

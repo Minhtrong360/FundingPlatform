@@ -4,7 +4,6 @@ import SideBar from "../../components/SideBar";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import FinancialForm from "./FinancialForm";
-import AnnouncePage from "../../components/AnnouncePage";
 
 function FinancialPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

@@ -2,10 +2,14 @@ import React from "react";
 
 import {
   LinkedinOutlined,
-  GoogleOutlined,
   FacebookOutlined,
   TwitterOutlined,
 } from "@ant-design/icons";
+import {
+  FacebookIcon,
+  LinkedinIcon,
+  TwitterIcon,
+} from "../UserProfile/NewUserPage";
 
 function Footer() {
   return (
@@ -49,35 +53,21 @@ function Footer() {
         <div className="md:text-end space-x-2">
           <a
             className="w-8 h-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkTextGray darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
-            href="#"
+            href="https://www.facebook.com/BeeKrowd"
           >
-            <GoogleOutlined
-              style={{ color: "rgb(37, 99, 235)", fontSize: "24px" }}
-            />
-          </a>
-          <a
-            className="w-8 h-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkTextGray darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
-            href="#"
-          >
-            <FacebookOutlined
-              style={{ color: "rgb(37, 99, 235)", fontSize: "24px" }}
-            />
+            <FacebookIcon />
           </a>
           <a
             className="w-8 h-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkTextGray darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
             href="https://twitter.com/BeeKrowd"
           >
-            <TwitterOutlined
-              style={{ color: "rgb(37, 99, 235)", fontSize: "24px" }}
-            />
+            <TwitterIcon />
           </a>
           <a
             className="w-8 h-8 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkTextGray darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
-            href="https://www.linkedin.com/company/beekrowd/"
+            href="https://vn.linkedin.com/company/beekrowd"
           >
-            <LinkedinOutlined
-              style={{ color: "rgb(37, 99, 235)", fontSize: "24px" }}
-            />
+            <LinkedinIcon />
           </a>
         </div>
       </div>

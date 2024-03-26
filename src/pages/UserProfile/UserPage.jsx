@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import SideBar from "../../components/SideBar";
 import UserInfoSettings from "./UserProfile";
+import NewUserPage from "./NewUserPage";
 
 const UserPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -19,7 +20,8 @@ const UserPage = () => {
           onClick={() => setIsSidebarOpen(false)}
         >
           <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg darkBorderGray">
-            <UserInfoSettings />
+            {/* <UserInfoSettings /> */}
+            <NewUserPage />
           </div>
         </div>
       </div>

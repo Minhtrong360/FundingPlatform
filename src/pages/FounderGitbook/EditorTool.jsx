@@ -23,6 +23,7 @@ import { toast } from "react-toastify";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { Tooltip } from "antd";
 import ReactModal from "react-modal";
+import ButtonGroup from "./ButtonGroup";
 
 // Create the YouTube Link block
 const YouTubeLinkBlock = createReactBlockSpec(
@@ -597,59 +598,16 @@ export default function EditorTool() {
 
           {user?.id === currentProject?.user_id ||
           currentProject?.collabs?.includes(user.email) ? (
-            <>
-              <button
-                className={`fixed top-[12px] right-[6.7em]   flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-                onClick={handleDrawChart}
-                disabled={isLoading}
-              >
-                Chart
-              </button>
-
-              <button
-                className={`fixed top-[12px] right-[12.5em]  flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-                onClick={handleCompanySettings}
-                disabled={isLoading}
-              >
-                Settings
-              </button>
-              <button
-                className={`fixed top-[12px] right-[1.2em] flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-                onClick={handleSave}
-                disabled={isLoading}
-              >
-                Save
-              </button>
-
-              <Tooltip
-                title={`Required verification for increasing your trusted. 
-          ${
-            currentProject.required
-              ? "Our admin are verifying your project."
-              : ""
-          }
-          `}
-                color="gray"
-                zIndex={20000}
-              >
-                <button
-                  className={`${
-                    currentProject.required
-                      ? "bg-gray-500 hover:cursor-not-allowed"
-                      : "bg-blue-600 hover:bg-blue-700"
-                  } ${currentProject.verified ? "bg-green-600" : ""}
-                  fixed top-[48px] right-[1.2em] flex justify-center text-white bg-blue-600  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-                  onClick={handleRequired}
-                  disabled={currentProject.required}
-                >
-                  {currentProject.required
-                    ? currentProject.verified
-                      ? "Verified"
-                      : "Waiting for verification"
-                    : "Required verification"}
-                </button>
-              </Tooltip>
-            </>
+            <div className="fixed top-8 right-8">
+              <ButtonGroup
+                handleDrawChart={handleDrawChart}
+                handleCompanySettings={handleCompanySettings}
+                handleSave={handleSave}
+                handleRequired={handleRequired}
+                currentProject={currentProject}
+                isLoading={isLoading}
+              />
+            </div>
           ) : null}
         </div>
       )}

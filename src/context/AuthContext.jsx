@@ -85,6 +85,7 @@ export function displayCommonElements(array1, array2) {
 const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(false);
   const [user, setUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
 
   const [subscribed, setSubscribed] = useState(false);
@@ -105,16 +106,7 @@ const AuthProvider = ({ children }) => {
         .eq("id", currentUser?.id);
 
       if (userSupabase) {
-        if (
-          userSupabase[0]?.plan === "Free" ||
-          userSupabase[0]?.plan === null ||
-          userSupabase[0]?.plan === undefined ||
-          userSupabase[0]?.subscription_status !== "active"
-        ) {
-          setSubscribed(false);
-        } else {
-          setSubscribed(true);
-        }
+        setCurrentUser(userSupabase);
       }
 
       setLoading(false);
@@ -136,6 +128,20 @@ const AuthProvider = ({ children }) => {
       data.subscription.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      if (
+        currentUser[0]?.plan === "Free" ||
+        currentUser[0]?.plan === null ||
+        currentUser[0]?.plan === undefined ||
+        currentUser[0]?.subscription_status !== "active"
+      )
+        setSubscribed(false);
+    } else {
+      setSubscribed(true);
+    }
+  }, [currentUser]);
 
   return (
     <AuthContext.Provider

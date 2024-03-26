@@ -437,14 +437,14 @@ const AllChartSections = ({
         </div>
 
         <div className="mt-1 flex items-center gap-x-2">
-          <div className="flex flex-col xl:flex-row xl:items-center items-start">
+          <div className="flex flex-col xl:flex-row xl:items-center items-start w-full">
             <h3 className="text-sm sm:text-3xl font-bold text-blue-600 my-2">
               ${formatNumber(Math.round(value[selectedMonth - 1]))}
             </h3>
           </div>
         </div>
-        <div className="flex flex-col xl:flex-row xl:items-center items-start">
-          <p className="text-base text-gray-800 my-2">Month: {selectedMonth}</p>
+        <div className="flex flex-col xl:flex-row xl:items-center items-start w-full">
+          <p className="text-base text-gray-800 ">Month: {selectedMonth}</p>
         </div>
       </div>
     </div>

@@ -44,7 +44,8 @@ import {
 import CustomChart from "./CustomerChart";
 import SelectField from "../../../components/SelectField";
 import { setCutMonth } from "../../../features/DurationSlice";
-
+import { InfoCircleOutlined } from "@ant-design/icons";
+  
 function CashFlowSection({ numberOfMonths }) {
   const dispatch = useDispatch();
   const { cutMonth } = useSelector((state) => state.durationSelect);

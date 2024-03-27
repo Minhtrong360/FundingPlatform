@@ -48,6 +48,8 @@ import { calculateProfitAndLoss } from "../../../features/ProfitAndLossSlice";
 import CustomChart from "./CustomerChart";
 import SelectField from "../../../components/SelectField";
 import { setCutMonth } from "../../../features/DurationSlice";
+import { InfoCircleOutlined } from "@ant-design/icons";
+
 
 const ProfitAndLossSection = ({ numberOfMonths }) => {
   const dispatch = useDispatch();

@@ -8,7 +8,7 @@ function AuthRequire({ children, message }) {
   const location = useLocation();
 
   if (!user) {
-    toast.warning(message);
+    message.warning(message);
     return (
       <>
         <AlertMsg />

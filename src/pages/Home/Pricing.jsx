@@ -7,6 +7,7 @@ import AlertMsg from "../../components/AlertMsg";
 import { toast } from "react-toastify";
 import { stripeAPI } from "../../stripe/stripeAPI";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
+import { message } from "antd";
 
 const PricingCard = ({ plan, onClick }) => {
   // const { user } = useAuth();
@@ -99,7 +100,7 @@ const PricingSection = () => {
       try {
         if (!navigator.onLine) {
           // Không có kết nối Internet
-          toast.error("No internet access.");
+          message.error("No internet access.");
           return;
         }
         const response = await apiService.get("stripe");
@@ -109,7 +110,7 @@ const PricingSection = () => {
 
         setPricingPlans(pricingData);
       } catch (error) {
-        toast.error(error.message);
+        message.error(error.message);
         console.log("error", error);
       } finally {
         setIsLoading(false);
@@ -124,7 +125,7 @@ const PricingSection = () => {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       // Khi xử lý form submit
@@ -144,7 +145,7 @@ const PricingSection = () => {
 
       window.open(updatedURL, "_blank");
     } catch (error) {
-      toast.error(error.message);
+      message.error(error.message);
       console.error(error);
     }
     setIsLoading(false);

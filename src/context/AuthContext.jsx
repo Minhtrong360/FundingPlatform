@@ -4,6 +4,7 @@ import SpinnerBtn from "../components/SpinnerBtn";
 import { toast } from "react-toastify";
 import AlertMsg from "../components/AlertMsg";
 import ReactGA from "react-ga4";
+import { message } from "antd";
 
 const GA_MEASUREMENT_ID = process.env.REACT_APP_GA_MEASUREMENT_ID; // Thay thế với Measurement ID của bạn
 
@@ -17,7 +18,7 @@ const login = async (email, password, setLoading) => {
   try {
     if (!navigator.onLine) {
       // Không có kết nối Internet
-      toast.error("No internet access.");
+      message.error("No internet access.");
       return;
     }
     setLoading(true);
@@ -42,7 +43,7 @@ const loginWithGG = async (setLoading) => {
   try {
     if (!navigator.onLine) {
       // Không có kết nối Internet
-      toast.error("No internet access.");
+      message.error("No internet access.");
       return;
     }
     setLoading(true);
@@ -85,6 +86,7 @@ export function displayCommonElements(array1, array2) {
 const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(false);
   const [user, setUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
 
   const [subscribed, setSubscribed] = useState(false);
@@ -105,16 +107,7 @@ const AuthProvider = ({ children }) => {
         .eq("id", currentUser?.id);
 
       if (userSupabase) {
-        if (
-          userSupabase[0]?.plan === "Free" ||
-          userSupabase[0]?.plan === null ||
-          userSupabase[0]?.plan === undefined ||
-          userSupabase[0]?.subscription_status !== "active"
-        ) {
-          setSubscribed(false);
-        } else {
-          setSubscribed(true);
-        }
+        setCurrentUser(userSupabase);
       }
 
       setLoading(false);
@@ -136,6 +129,20 @@ const AuthProvider = ({ children }) => {
       data.subscription.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      if (
+        currentUser[0]?.plan === "Free" ||
+        currentUser[0]?.plan === null ||
+        currentUser[0]?.plan === undefined ||
+        currentUser[0]?.subscription_status !== "active"
+      )
+        setSubscribed(false);
+    } else {
+      setSubscribed(true);
+    }
+  }, [currentUser]);
 
   return (
     <AuthContext.Provider

@@ -115,7 +115,7 @@ const PersonnelSection = ({
   const personnelCostColumns = [
     {
       fixed: "left",
-      title: "Personnel",
+      title: <div style={{ paddingLeft: '50px', paddingRight: '50px' }}>Personnel</div>,
       dataIndex: "jobTitle",
       key: "jobTitle",
     },

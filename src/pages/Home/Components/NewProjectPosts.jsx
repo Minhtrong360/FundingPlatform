@@ -6,6 +6,7 @@ import Search from "./Search";
 
 import { LinearProgress } from "@mui/material";
 import Header from "../Header";
+import { message } from "antd";
 
 const NewProjectPosts = () => {
   const [companies, setCompanies] = useState([]);
@@ -31,7 +32,7 @@ const NewProjectPosts = () => {
           .order("created_at", { ascending: false });
 
         if (error) {
-          toast.error(error.message);
+          message.error(error.message);
           console.error("Error fetching data from Supabase:", error);
         } else {
           setCompanies(data);

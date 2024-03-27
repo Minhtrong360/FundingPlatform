@@ -1113,7 +1113,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
         // Thực hiện truy vấn để lấy thông tin người dùng theo id (điều này cần được thay đổi dựa trên cấu trúc dữ liệu của bạn trong Supabase)
         const currentPrompt = currentUser.financePromptNumber - 1;
         if (currentPrompt <= 0) {
-          toast.warning("Prompt per hour limited. Let return after an hour.");
+          message.warning("Prompt per hour limited. Let return after an hour.");
         } else {
           if (currentPrompt === 99) {
             await supabase

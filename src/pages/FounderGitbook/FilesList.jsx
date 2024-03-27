@@ -9,7 +9,7 @@ import InvitedUserFile from "../../components/InvitedUserFile";
 import apiService from "../../app/apiService";
 import { toast } from "react-toastify";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
-import { Tooltip } from "antd";
+import { Tooltip, message } from "antd";
 
 function FilesList() {
   const { id } = useParams();
@@ -47,7 +47,7 @@ function FilesList() {
       try {
         if (!navigator.onLine) {
           // Không có kết nối Internet
-          toast.error("No internet access.");
+          message.error("No internet access.");
           return;
         }
         let { data: files, error } = await supabase
@@ -92,7 +92,7 @@ function FilesList() {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       // Tạo một dự án mới và lưu vào Supabase
@@ -132,7 +132,7 @@ function FilesList() {
       }
     } catch (error) {
       console.log("Error creating files:", error);
-      toast.error(error.message);
+      message.error(error.message);
       // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }
   };
@@ -148,7 +148,7 @@ function FilesList() {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       // Trước khi xóa, hãy truy vấn để kiểm tra user_id
@@ -184,14 +184,14 @@ function FilesList() {
             setProjectLinks(updatedLinks);
           }
         } else {
-          toast.error("User does not have permission to delete this file.");
+          message.error("User does not have permission to delete this file.");
           console.log("User does not have permission to delete this file.");
           // Xử lý trường hợp người dùng không có quyền xóa (ví dụ: hiển thị thông báo lỗi cho người dùng)
         }
       }
     } catch (error) {
       console.error("Error deleting project:", error);
-      toast.error(error.message);
+      message.error(error.message);
       // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }
   };
@@ -208,7 +208,7 @@ function FilesList() {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       setIsLoading(true);
@@ -223,7 +223,7 @@ function FilesList() {
       }
     } catch (error) {
       console.log("error", error);
-      toast.error(error.message);
+      message.error(error.message);
     }
     setIsLoading(false);
   };
@@ -235,7 +235,7 @@ function FilesList() {
       try {
         if (!navigator.onLine) {
           // Không có kết nối Internet
-          toast.error("No internet access.");
+          message.error("No internet access.");
           return;
         }
         let { data: users, error } = await supabase

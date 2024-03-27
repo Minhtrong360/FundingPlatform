@@ -1,4 +1,4 @@
-import { Row, Table } from "antd";
+import { Row, Table, Tooltip } from "antd";
 import {
   Select,
   SelectTrigger,
@@ -413,7 +413,7 @@ function CashFlowSection({ numberOfMonths }) {
                   record.metric === "Net +/- in Cash" ||
                   record.metric === "Cash Begin" ||
                   record.metric === "Cash End" ||
-                  record.metric === " Operating Activities " ||
+                  record.metric === "  " ||
                   record.metric === " Investing Activities " ||
                   record.metric === " Financing Activities "
                     ? "bold"
@@ -560,7 +560,7 @@ function CashFlowSection({ numberOfMonths }) {
       return {
         metric: data.metric,
         ...filteredData,
-        yearTotal, // Add the Year Total to the data object
+        yearTotal: yearTotal.toFixed(2), // Add the Year Total to the data object
       };
     });
   };
@@ -600,6 +600,7 @@ function CashFlowSection({ numberOfMonths }) {
     // Operating Cash Flow Ratio = OCF / Current Liabilities
     // Note: Current Liabilities value would need to be available; placeholder value used here
     const currentLiabilities = findYearTotalByKey("Decrease (Increase) in AP"); // Assuming this as a proxy for current liabilities
+
     const operatingCashFlowRatio = currentLiabilities
       ? operatingCashFlow / currentLiabilities
       : 0;
@@ -614,6 +615,7 @@ function CashFlowSection({ numberOfMonths }) {
     // Cash Flow to Debt Ratio = Operating Cash Flow / Total Debt
     // Note: Total Debt value would need to be available; placeholder value used here
     const totalDebt = findYearTotalByKey("Total Principal"); // Assuming this as a proxy for total debt
+
     const cashFlowToDebtRatio = totalDebt ? operatingCashFlow / totalDebt : 0;
 
     // Cash Flow Margin = Free Cash Flow / Net Sales
@@ -622,11 +624,11 @@ function CashFlowSection({ numberOfMonths }) {
     const cashFlowMargin = netSales ? freeCashFlow / netSales : 0;
 
     return {
-      operatingCashFlowRatio: operatingCashFlowRatio.toFixed(2),
-      freeCashFlow: freeCashFlow.toFixed(2),
-      cashConversionCycle: cashConversionCycle.toFixed(2), // This is a placeholder; actual calculation would differ
-      cashFlowToDebtRatio: cashFlowToDebtRatio.toFixed(2),
-      cashFlowMargin: cashFlowMargin.toFixed(2),
+      operatingCashFlowRatio: formatNumber(operatingCashFlowRatio.toFixed(2)),
+      freeCashFlow: formatNumber(freeCashFlow.toFixed(2)),
+      cashConversionCycle: formatNumber(cashConversionCycle.toFixed(2)), // This is a placeholder; actual calculation would differ
+      cashFlowToDebtRatio: formatNumber(cashFlowToDebtRatio.toFixed(2)),
+      cashFlowMargin: formatNumber(cashFlowMargin.toFixed(2)),
     };
   };
 
@@ -643,7 +645,6 @@ function CashFlowSection({ numberOfMonths }) {
       />
 
       <div className=" gap-4 mb-3">
-        <span className="flex items-center text-sm my-4">Select Chart :</span>
         <Select
           onValueChange={(value) => handleChartSelect(value)}
           value={selectedChart}
@@ -656,30 +657,25 @@ function CashFlowSection({ numberOfMonths }) {
           <SelectContent position="popper">
             <SelectItem
               className="hover:cursor-pointer"
-              className="hover:cursor-pointer"
               value="cash-flow-chart"
-              className="hover:cursor-pointer"
             >
               Cash Flow
             </SelectItem>
             <SelectItem
               className="hover:cursor-pointer"
               value="cash-begin-balances-chart"
-              className="hover:cursor-pointer"
             >
               Cash Begin
             </SelectItem>
             <SelectItem
               className="hover:cursor-pointer"
               value="cash-end-balances-chart"
-              className="hover:cursor-pointer"
             >
               Cash End
             </SelectItem>
             <SelectItem
               className="hover:cursor-pointer"
               value="total-principal-chart"
-              className="hover:cursor-pointer"
             >
               Total principal
             </SelectItem>
@@ -731,7 +727,7 @@ function CashFlowSection({ numberOfMonths }) {
       )}
 
       <div>
-        <label>Select Cut Month:</label>
+        <label className="mr-4">Select Cut Month:</label>
         <select value={cutMonth} onChange={handleCutMonthChange}>
           {Array.from({ length: 12 }, (_, i) => (
             <option key={i} value={i + 1}>
@@ -745,6 +741,8 @@ function CashFlowSection({ numberOfMonths }) {
         <div key={index}>
           <h3>{year.year}</h3>
           <Table
+            className="overflow-auto my-8"
+            size="small"
             dataSource={getDataSourceForYearCashFlow(year.months)}
             columns={generateCashFlowTableColumns(year.months)}
             pagination={false}
@@ -760,17 +758,188 @@ function CashFlowSection({ numberOfMonths }) {
                 );
                 const ratios = calculateCashFlowRatios(dataSourceForYear);
                 return (
-                  <ul>
-                    <li>
-                      Operating Cash Flow Ratio: {ratios.operatingCashFlowRatio}
-                    </li>
-                    <li>Free Cash Flow: {ratios.freeCashFlow}</li>
-                    <li>Cash Conversion Cycle: {ratios.cashConversionCycle}</li>
-                    <li>
-                      Cash Flow to Debt Ratio: {ratios.cashFlowToDebtRatio}
-                    </li>
-                    <li>Cash Flow Margin: {ratios.cashFlowMargin}</li>
-                  </ul>
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    <div className="flex flex-col bg-white border shadow-lg rounded-xl m-8 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+                      <div className="p-4 md:p-5">
+                        <div className="flex items-center gap-x-2">
+                          <p className="text-xs uppercase tracking-wide text-gray-500">
+                            Operating Cash Flow Ratio:
+                          </p>
+                          <Tooltip
+                            title={`This is the Operating Cash Flow Ratio.`}
+                          >
+                            <svg
+                              className="flex-shrink-0 size-4 text-gray-500"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <circle cx="12" cy="12" r="10" />
+                              <line x1="12" y1="16" x2="12" y2="12" />
+                              <line x1="12" y1="8" x2="12" y2="8" />
+                            </svg>
+                          </Tooltip>
+                        </div>
+
+                        <div className="mt-1">
+                          <div className="flex flex-col xl:flex-row xl:items-center items-start gap-2">
+                            <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 my-2">
+                              {ratios.operatingCashFlowRatio}
+                            </h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col bg-white border shadow-lg rounded-xl m-8 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+                      <div className="p-4 md:p-5">
+                        <div className="flex items-center gap-x-2">
+                          <p className="text-xs uppercase tracking-wide text-gray-500">
+                            Free Cash Flow:
+                          </p>
+                          <Tooltip title={`This is the Free Cash Flow.`}>
+                            <svg
+                              className="flex-shrink-0 size-4 text-gray-500"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <circle cx="12" cy="12" r="10" />
+                              <line x1="12" y1="16" x2="12" y2="12" />
+                              <line x1="12" y1="8" x2="12" y2="8" />
+                            </svg>
+                          </Tooltip>
+                        </div>
+
+                        <div className="mt-1">
+                          <div className="flex flex-col xl:flex-row xl:items-center items-start gap-2">
+                            <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 my-2">
+                              {ratios.freeCashFlow}
+                            </h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-col bg-white border shadow-lg rounded-xl m-8 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+                      <div className="p-4 md:p-5">
+                        <div className="flex items-center gap-x-2">
+                          <p className="text-xs uppercase tracking-wide text-gray-500">
+                            Cash Conversion Cycle:
+                          </p>
+                          <Tooltip title={`This is the Cash Conversion Cycle.`}>
+                            <svg
+                              className="flex-shrink-0 size-4 text-gray-500"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <circle cx="12" cy="12" r="10" />
+                              <line x1="12" y1="16" x2="12" y2="12" />
+                              <line x1="12" y1="8" x2="12" y2="8" />
+                            </svg>
+                          </Tooltip>
+                        </div>
+
+                        <div className="mt-1">
+                          <div className="flex flex-col xl:flex-row xl:items-center items-start gap-2">
+                            <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 my-2">
+                              {ratios.cashConversionCycle}
+                            </h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-col bg-white border shadow-lg rounded-xl m-8 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+                      <div className="p-4 md:p-5">
+                        <div className="flex items-center gap-x-2">
+                          <p className="text-xs uppercase tracking-wide text-gray-500">
+                            Cash Flow to Debt Ratio:
+                          </p>
+                          <Tooltip
+                            title={`This is the Cash Flow to Debt Ratio.`}
+                          >
+                            <svg
+                              className="flex-shrink-0 size-4 text-gray-500"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <circle cx="12" cy="12" r="10" />
+                              <line x1="12" y1="16" x2="12" y2="12" />
+                              <line x1="12" y1="8" x2="12" y2="8" />
+                            </svg>
+                          </Tooltip>
+                        </div>
+
+                        <div className="mt-1">
+                          <div className="flex flex-col xl:flex-row xl:items-center items-start gap-2">
+                            <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 my-2">
+                              {ratios.cashFlowToDebtRatio}
+                            </h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-col bg-white border shadow-lg rounded-xl m-8 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+                      <div className="p-4 md:p-5">
+                        <div className="flex items-center gap-x-2">
+                          <p className="text-xs uppercase tracking-wide text-gray-500">
+                            Cash Flow Margin:
+                          </p>
+                          <Tooltip title={`This is the Cash Flow Margin.`}>
+                            <svg
+                              className="flex-shrink-0 size-4 text-gray-500"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <circle cx="12" cy="12" r="10" />
+                              <line x1="12" y1="16" x2="12" y2="12" />
+                              <line x1="12" y1="8" x2="12" y2="8" />
+                            </svg>
+                          </Tooltip>
+                        </div>
+
+                        <div className="mt-1">
+                          <div className="flex flex-col xl:flex-row xl:items-center items-start gap-2">
+                            <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 my-2">
+                              {ratios.cashFlowMargin}
+                            </h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 );
               })()}
             </ul>

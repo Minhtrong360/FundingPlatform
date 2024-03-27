@@ -245,7 +245,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             record.metric === "Cost of Revenue" ||
             record.metric === "Operating Expenses" ||
             record.metric === "Additional Expenses"
-              ? numberOfMonths
+              ? 36
               : 1,
           style:
             record.metric === "Revenue" ||
@@ -623,7 +623,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       /> */}
 
       <div className=" gap-4 mb-3">
-        <span className="flex items-center text-sm my-4">Select Chart :</span>
         <Select
           onValueChange={(value) => handleChartSelect(value)}
           value={selectedChart}
@@ -783,15 +782,11 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
         />
       )}
 
-      <div className="flex gap-4 mb-3">
-        <span>Select Cut Month: </span>
-        <select
-          value={cutMonth}
-          onChange={(e) => handleCutMonthChange(e.target.value)}
-          className="border-solid border-[1px] border-gray-200"
-        >
+      <div>
+        <label className="mr-4">Select Cut Month:</label>
+        <select value={cutMonth} onChange={handleCutMonthChange}>
           {Array.from({ length: 12 }, (_, i) => (
-            <option key={i + 1} value={i + 1}>
+            <option key={i} value={i + 1}>
               {i + 1}
             </option>
           ))}

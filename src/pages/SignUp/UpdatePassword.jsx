@@ -5,6 +5,7 @@ import AlertMsg from "../../components/AlertMsg";
 import { toast } from "react-toastify";
 
 import LoadingButtonClick from "../../components/LoadingButtonClick";
+import { message } from "antd";
 
 const InputField = ({ label, type, name, value, onChange }) => {
   return (
@@ -61,7 +62,7 @@ const UpdatePassword = () => {
       try {
         if (!navigator.onLine) {
           // Không có kết nối Internet
-          toast.error("No internet access.");
+          message.error("No internet access.");
           return;
         }
         const { error } = await supabase.auth.updateUser({
@@ -70,9 +71,9 @@ const UpdatePassword = () => {
 
         if (error) {
           console.log("error supabase", error);
-          toast.error(error.message);
+          message.error(error.message);
         } else {
-          toast.success("Password updated successfully.");
+          message.success("Password updated successfully.");
 
           setTimeout(() => {
             setIsLoading(false); // Kết thúc loading sau 1 giây
@@ -80,10 +81,10 @@ const UpdatePassword = () => {
           }, 1000);
         }
       } catch (error) {
-        toast.error(error.message);
+        message.error(error.message);
       }
     } else {
-      toast.error("Passwords do not match.");
+      message.error("Passwords do not match.");
     }
     setIsLoading(false);
   };

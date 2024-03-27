@@ -13,6 +13,7 @@ import AlertMsg from "../../components/AlertMsg";
 import CompanyTest from "./CompanyTest";
 import { data } from "jquery";
 import axios from "axios";
+import { message } from "antd";
 
 function CompanySetting() {
   const navigate = useNavigate();
@@ -39,6 +40,7 @@ function CompanySetting() {
     rememberMe: false,
     user_email: "",
     revenueStatus: "Pre-revenue",
+    calendly: "",
   });
 
   useEffect(() => {
@@ -81,6 +83,7 @@ function CompanySetting() {
                 companyDescription: companyData.description,
                 user_email: companyData.user_email,
                 revenueStatus: companyData.revenueStatus,
+                calendly: companyData.calendly,
               });
 
               setIsLoading(false);
@@ -137,7 +140,7 @@ function CompanySetting() {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         setIsLoading(false);
         return;
       }
@@ -147,7 +150,7 @@ function CompanySetting() {
         formData.industry.length === 0
       ) {
         // Không có kết nối Internet
-        toast.error("Please choose industry before submitting.");
+        message.error("Please choose industry before submitting.");
         setIsLoading(false);
         return;
       }
@@ -247,6 +250,7 @@ function CompanySetting() {
                 user_email: user.email,
                 project_id: params.id,
                 revenueStatus: formData.revenueStatus,
+                calendly: formData.calendly,
               },
             ])
             .select();
@@ -292,6 +296,7 @@ function CompanySetting() {
                 user_email: user.email,
                 project_id: params.id,
                 revenueStatus: formData.revenueStatus,
+                calendly: formData.calendly,
               },
             ])
             .select();
@@ -306,7 +311,7 @@ function CompanySetting() {
         }
       }
     } catch (error) {
-      toast.error(error.message);
+      message.error(error.message);
       console.error("Error updating company data:", error);
     }
     setIsLoading(false);
@@ -325,7 +330,7 @@ function CompanySetting() {
         setIsLoading(false); // Đánh dấu rằng dữ liệu đã được tải xong
         if (error) {
           console.log("error", error);
-          toast.error(error.message);
+          message.error(error.message);
           // Xử lý lỗi khi không thể lấy dự án
         } else {
           // Kiểm tra quyền truy cập của người dùng
@@ -543,10 +548,10 @@ function CompanySetting() {
         }
       } else {
         // If there are no users matching the criteria, display a message
-        // toast.warning("No users matching the criteria for notifications.");
+        // message.warning("No users matching the criteria for notifications.");
       }
     } catch (error) {
-      toast.error(error.message);
+      message.error(error.message);
       console.log("Error updating company data:", error);
     }
   }
@@ -564,13 +569,11 @@ function CompanySetting() {
   const canClick = false;
 
   return (
-    <div className="grid sm:grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="grid sm:grid-cols-1 lg:grid-cols-4 gap-6">
       {" "}
       {/* Sử dụng lg:grid-cols-3 để chia thành 3 cột, trong đó Company component chiếm 1/3 và các div còn lại chiếm 2/3 */}
       <LoadingButtonClick isLoading={isLoading} />
       <div className="flex-1 lg:col-span-1">
-        {" "}
-        {/* Sử dụng lg:col-span-1 để Company component chiếm 1/3 */}
         <Company
           isLoading={isLoading}
           handleSubmit={handleSubmit}
@@ -581,7 +584,7 @@ function CompanySetting() {
         />
         <AlertMsg />
       </div>
-      <div className="flex-1 lg:col-span-2">
+      <div className="flex-1 lg:col-span-3">
         {" "}
         {/* Sử dụng lg:col-span-2 để các div còn lại chiếm 2/3 */}
         <div className="flex flex-col">

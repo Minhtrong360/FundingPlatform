@@ -13,7 +13,7 @@ async function summarizeKeyInformation(text, query) {
   try {
     if (!navigator.onLine) {
       // Không có kết nối Internet
-      toast.error("No internet access.");
+      message.error("No internet access.");
       return;
     }
     const response = await openai.chat.completions.create({
@@ -54,7 +54,7 @@ async function fetchNewsAndSummarize(query) {
   try {
     if (!navigator.onLine) {
       // Không có kết nối Internet
-      toast.error("No internet access.");
+      message.error("No internet access.");
       return;
     }
     const response = await axios.get(url, { params });
@@ -96,7 +96,7 @@ function MarketDataAI() {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       const results = await fetchNewsAndSummarize(search);

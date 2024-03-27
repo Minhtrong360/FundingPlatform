@@ -5,7 +5,7 @@ import PricingSection from "../Home/Pricing";
 import ReactModal from "react-modal";
 import { toast } from "react-toastify";
 import AlertMsg from "../../components/AlertMsg";
-import { Tooltip } from "antd";
+import { Tooltip, message } from "antd";
 
 const Modal = ({
   isOpen,
@@ -39,7 +39,7 @@ const Modal = ({
       // Check if it's a private project and the user doesn't meet the conditions
       if (privateProject && isPrivateDisabled) {
         setIsPricingOpen(true);
-        toast.warning(
+        message.warning(
           "You need to upgrade your plan to create a private project"
         );
         return;
@@ -58,7 +58,7 @@ const Modal = ({
         .select();
 
       if (error) {
-        toast.error(error.message);
+        message.error(error.message);
         console.error("Error creating project:", error);
         // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
       } else {
@@ -68,7 +68,7 @@ const Modal = ({
         setUpdatedProjects([data[0], ...updatedProjects]);
       }
     } catch (error) {
-      toast.error(error.message);
+      message.error(error.message);
       console.error("Error creating project:", error);
       // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }
@@ -195,7 +195,7 @@ export default function AddProject({ updatedProjects, setUpdatedProjects }) {
       try {
         if (!navigator.onLine) {
           // Không có kết nối Internet
-          toast.error("No internet access.");
+          message.error("No internet access.");
           return;
         }
         let { data: users, error } = await supabase

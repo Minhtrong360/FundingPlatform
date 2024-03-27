@@ -115,7 +115,7 @@ const CostSection = ({
   const costColumns = [
     {
       fixed: "left",
-      title: "CostName",
+      title: <div style={{ paddingLeft: '50px', paddingRight: '50px' }}>Cost_Name</div>,
       dataIndex: "costName",
       key: "costName",
     },

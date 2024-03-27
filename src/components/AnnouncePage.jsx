@@ -6,6 +6,7 @@ import apiService from "../app/apiService";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../supabase";
 import LoadingButtonClick from "./LoadingButtonClick";
+import { message } from "antd";
 
 const AnnouncePage = ({
   title,
@@ -27,7 +28,7 @@ const AnnouncePage = ({
       try {
         if (!navigator.onLine) {
           // Không có kết nối Internet
-          toast.error("No internet access.");
+          message.error("No internet access.");
           return;
         }
         if (id) {
@@ -64,7 +65,7 @@ const AnnouncePage = ({
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       setIsLoading(true);
@@ -74,13 +75,13 @@ const AnnouncePage = ({
         project_name: currentProject.name,
       });
       if (response) {
-        toast.success(
+        message.success(
           "The request was sent successfully. Please wait for the owner to accept."
         );
       }
     } catch (error) {
       console.log("error", error);
-      toast.error(error.message);
+      message.error(error.message);
     }
     setIsLoading(false);
   };

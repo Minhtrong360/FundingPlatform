@@ -66,10 +66,10 @@ function Company({
         <div className="max-w-xl mx-auto">
           <div className="text-center">
             <h1 className="text-3xl font-semibold text-gray-800 sm:text-4xl darkTextWhite">
-              Company Info
+              Company info
             </h1>
             <p className="mt-1 text-gray-600 darkTextGray">
-              This will be an amazing journey.
+              Please fill basic information about your company.
             </p>
           </div>
 
@@ -177,7 +177,7 @@ function Company({
                   />
                   {/* Add file input for project image */}
                   <span className="py-1 px-2 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60">
-                    Or you can:{" "}
+                    {" "}
                   </span>
                   <input
                     type="file"
@@ -198,7 +198,7 @@ function Company({
                     required
                   />
                   <span className="py-1 px-2 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60">
-                    Or you can:{" "}
+                    {" "}
                   </span>
                   <input
                     type="file"
@@ -214,6 +214,16 @@ function Company({
                   id="website"
                   name="website"
                   value={formData.website}
+                  onChange={handleInputChange}
+                  type="text"
+                  required
+                />
+
+                <InputField
+                  label="Calendly"
+                  id="calendly"
+                  name="calendly"
+                  value={formData.calendly}
                   onChange={handleInputChange}
                   type="text"
                   required

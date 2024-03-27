@@ -21,8 +21,9 @@ import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 
 import LoadingButtonClick from "../../components/LoadingButtonClick";
-import { Tooltip } from "antd";
+import { Tooltip, message } from "antd";
 import ReactModal from "react-modal";
+import ButtonGroup from "./ButtonGroup";
 
 // Create the YouTube Link block
 const YouTubeLinkBlock = createReactBlockSpec(
@@ -112,7 +113,7 @@ export default function EditorTool() {
       try {
         if (!navigator.onLine) {
           // Không có kết nối Internet
-          toast.error("No internet access.");
+          message.error("No internet access.");
           return;
         }
         if (params) {
@@ -174,7 +175,7 @@ export default function EditorTool() {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       // Tạo tên file độc đáo để tránh xung đột
@@ -193,7 +194,7 @@ export default function EditorTool() {
 
       return `${process.env.REACT_APP_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
     } catch (error) {
-      toast.error(error.message);
+      message.error(error.message);
       // Xử lý lỗi tại đây
     }
   }
@@ -217,7 +218,7 @@ export default function EditorTool() {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
 
@@ -241,23 +242,23 @@ export default function EditorTool() {
             .match({ id: params.id });
 
           if (error) {
-            toast.error(error.message);
+            message.error(error.message);
           } else {
             setIsLoading(false);
-            toast.success("Saved successfully.");
+            message.success("Saved successfully.");
             // Reset isSaved to false after 1 second
           }
         } else {
-          toast.error("You do not have permission to save this project.");
+          message.error("You do not have permission to save this project.");
           setIsLoading(false);
         }
       }
     } catch (error) {
       // Xử lý lỗi mạng
       if (!navigator.onLine) {
-        toast.error("No internet access.");
+        message.error("No internet access.");
       } else {
-        toast.error(error.message);
+        message.error(error.message);
       }
       setIsLoading(false);
     }
@@ -267,7 +268,7 @@ export default function EditorTool() {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
 
@@ -294,7 +295,7 @@ export default function EditorTool() {
             .match({ id: params.id });
 
           if (error) {
-            toast.error(error.message);
+            message.error(error.message);
           } else {
             // Set isSaved to true after a successful save
 
@@ -305,16 +306,16 @@ export default function EditorTool() {
           }
         } else {
           // Handle the case where project.user_id doesn't match user.id
-          toast.error("You do not have permission to save this project.");
+          message.error("You do not have permission to save this project.");
 
           setIsLoading(false);
         }
       }
     } catch (error) {
       if (!navigator.onLine) {
-        toast.error("No internet access.");
+        message.error("No internet access.");
       } else {
-        toast.error(error.message);
+        message.error(error.message);
       }
       setIsLoading(false);
     }
@@ -325,7 +326,7 @@ export default function EditorTool() {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
 
@@ -352,7 +353,7 @@ export default function EditorTool() {
             .match({ id: params.id });
 
           if (error) {
-            toast.error(error.message);
+            message.error(error.message);
           } else {
             // Set isSaved to true after a successful save
 
@@ -363,16 +364,16 @@ export default function EditorTool() {
           }
         } else {
           // Handle the case where project.user_id doesn't match user.id
-          toast.error("You do not have permission to save this project.");
+          message.error("You do not have permission to save this project.");
 
           setIsLoading(false);
         }
       }
     } catch (error) {
       if (!navigator.onLine) {
-        toast.error("No internet access.");
+        message.error("No internet access.");
       } else {
-        toast.error(error.message);
+        message.error(error.message);
       }
       setIsLoading(false);
     }
@@ -476,7 +477,7 @@ export default function EditorTool() {
       setIsLoading(false);
     } catch (error) {
       console.log("error", error);
-      toast.error(error.message);
+      message.error(error.message);
     }
   };
 
@@ -597,59 +598,16 @@ export default function EditorTool() {
 
           {user?.id === currentProject?.user_id ||
           currentProject?.collabs?.includes(user.email) ? (
-            <>
-              <button
-                className={`fixed top-[12px] right-[6.7em]   flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-                onClick={handleDrawChart}
-                disabled={isLoading}
-              >
-                Chart
-              </button>
-
-              <button
-                className={`fixed top-[12px] right-[12.5em]  flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-                onClick={handleCompanySettings}
-                disabled={isLoading}
-              >
-                Settings
-              </button>
-              <button
-                className={`fixed top-[12px] right-[1.2em] flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-                onClick={handleSave}
-                disabled={isLoading}
-              >
-                Save
-              </button>
-
-              <Tooltip
-                title={`Required verification for increasing your trusted. 
-          ${
-            currentProject.required
-              ? "Our admin are verifying your project."
-              : ""
-          }
-          `}
-                color="gray"
-                zIndex={20000}
-              >
-                <button
-                  className={`${
-                    currentProject.required
-                      ? "bg-gray-500 hover:cursor-not-allowed"
-                      : "bg-blue-600 hover:bg-blue-700"
-                  } ${currentProject.verified ? "bg-green-600" : ""}
-                  fixed top-[48px] right-[1.2em] flex justify-center text-white bg-blue-600  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-                  onClick={handleRequired}
-                  disabled={currentProject.required}
-                >
-                  {currentProject.required
-                    ? currentProject.verified
-                      ? "Verified"
-                      : "Waiting for verification"
-                    : "Required verification"}
-                </button>
-              </Tooltip>
-            </>
+            <div className="fixed top-8 right-8">
+              <ButtonGroup
+                handleDrawChart={handleDrawChart}
+                handleCompanySettings={handleCompanySettings}
+                handleSave={handleSave}
+                handleRequired={handleRequired}
+                currentProject={currentProject}
+                isLoading={isLoading}
+              />
+            </div>
           ) : null}
         </div>
       )}

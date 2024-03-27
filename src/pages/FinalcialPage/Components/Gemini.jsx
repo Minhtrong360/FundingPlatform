@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { supabase } from "../../../supabase";
 import apiService from "../../../app/apiService";
 import { SendOutlined } from "@ant-design/icons";
+import { message } from "antd";
 
 const Gemini = ({
   setIsLoading,
@@ -228,7 +229,7 @@ const Gemini = ({
       const currentPrompt = currentUser.financePromptNumber - 1;
       console.log("currentPrompt", currentPrompt);
       if (currentPrompt <= 0) {
-        toast.warning("Prompt per hour limited. Let return after an hour.");
+        message.warning("Prompt per hour limited. Let return after an hour.");
         return;
       } else {
         if (currentPrompt == maxPrompt - 1) {

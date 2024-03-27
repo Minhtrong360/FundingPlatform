@@ -5,32 +5,34 @@ import { toast } from "react-toastify";
 import { useAuth } from "../../../context/AuthContext";
 import AlertMsg from "../../../components/AlertMsg";
 import LoadingButtonClick from "../../../components/LoadingButtonClick";
+import { message } from "antd";
+
 
 const PricingCard = ({ plan, onClick }) => {
   // const { user } = useAuth();
   // const navigate = useNavigate();
   const price_0 = [
     "Free forever",
-    "1 public profile",
-    "Notion-like editor",
-    "Chart visualization",
-    "Data room feature",
+    "01 business profile (Public mode)",
+    "Business Profile listing (Public mode)",
+    "Invite collaborators (Profile editing)",
+    "Data room file upload (Public mode)",
   ];
 
   const price_10 = [
     "14-day free trial",
-    "Unlimited projects",
-    "Private Dataroom feature",
-    "Financial model feature",
-    "Private project feature",
+    "Financial Model feature access",
+    "Unlimited business profiles",
+    "Private Data room (access control)",
+    "Private project listing (access control)",
   ];
 
   const price_50 = [
     "Premium features included",
-    "Dealroom listing",
-    "Data analytics dashboard",
-    "Team collaboration",
-    "BeeKrowd support",
+    "Signature Dealroom listing",
+    "What if scenario analysis",
+    "Customer-facing analytics",
+    "BeeKrowd customer support",
   ];
 
   return (
@@ -212,14 +214,14 @@ const PricingWithLemon = () => {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       const checkoutUrl = plan.buy_now_url;
 
       window.open(checkoutUrl, "_blank");
     } catch (error) {
-      toast.error(error.message);
+      message.error(error.message);
       console.error(error);
     }
     setIsLoading(false);

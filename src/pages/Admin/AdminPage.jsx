@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import SideBar from "../../components/SideBar";
 import Header from "../Home/Header";
-import { message } from "antd";
+import { message, Table, Space, Button } from "antd";
 
 function formatDate(inputDateString) {
   const dateObject = new Date(inputDateString);
@@ -104,6 +104,105 @@ function AdminPage() {
     }
   };
 
+  const columns = [
+    {
+      title: "No",
+      key: "index",
+      render: (text, record, index) => index + 1,
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text, record) => (
+        <div
+          className={`w-[150px] flex items-center  hover:cursor-pointer`}
+          onClick={() => handleProjectClick(record)}
+          style={{ fontSize: "14px" }} // Updated font size
+        >
+          {text}
+        </div>
+      ),
+    },
+    {
+      title: "Date",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (text) => formatDate(text),
+      ellipsis: true, // Add ellipsis to truncate long content
+      width: "10%", // Set a fixed width for the column
+      align: "center", // Center align the content
+    },
+    {
+      title: "Customer",
+      dataIndex: "user_email",
+      key: "user_email",
+      render: (text, record) => (
+        <div
+          className="px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap hover:cursor-pointer"
+          onClick={() => handleProjectClick(record)}
+          style={{ fontSize: "14px" }} // Updated font size
+        >
+          {text}
+        </div>
+      ),
+    },
+    {
+      title: "Required verification",
+      key: "required",
+      render: (text, record) => (
+        <div
+          onClick={() => handleProjectClick(record)}
+          className={`w-[5em] 
+            ${
+              record.required
+                ? "text-blue-600"
+                : " text-black-500"
+            }
+            focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+        >
+          {record.required && record.verified
+            ? "Accepted"
+            : record.required
+            ? "Waiting..."
+            : "No required"}
+        </div>
+      ),
+    },
+    {
+      title: "Status",
+      key: "status",
+      render: (text, record) => (
+        <Button
+          onClick={() => handleProjectClick(record)}
+          className={`w-[5em] ${
+            record.status ? "bg-blue-600" : "bg-red-600"
+          } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+        >
+          {record.status ? "Public" : "Private"}
+        </Button>
+      ),
+    },
+    {
+      title: "Verified",
+      key: "verified",
+      render: (text, record) => (
+        <Button
+          onClick={() => handleVerifyToggle(record)}
+          className={`w-[6em] ${
+            record.verified
+              ? "bg-blue-600"
+              : "bg-red-600"
+          } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+          style={{ fontSize: "14px" }} // Updated font size
+        >
+          {record.verified ? "Verified" : "Unverified"}
+        </Button>
+      ),
+    },
+  ];
+  
+
   return (
     <main className="w-full my-28">
       <Header />
@@ -114,153 +213,13 @@ function AdminPage() {
             <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
                 <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
-                  <table className="min-w-full divide-y divide-gray-200 darkDivideGray">
-                    <thead className="bg-gray-50 darkBgBlue ">
-                      <tr>
-                        <th
-                          scope="col"
-                          className="py-3.5 px-4 text-sm font-semibold text-left rtl:text-right text-black-500 darkTextGray"
-                        >
-                          <div className="flex items-center gap-x-3">
-                            <input
-                              type="checkbox"
-                              className="text-blue-500 border-gray-300 rounded darkBg darkRingOffsetGray darkBorderGray"
-                            />
-                            <button className="flex items-center gap-x-2">
-                              <span>NO.</span>
-                            </button>
-                          </div>
-                        </th>
-                        <th
-                          scope="col"
-                          className="w-[150px] px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 darkTextGray"
-                        >
-                          Name
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 darkTextGray"
-                        >
-                          Date
-                        </th>
-
-                        <th
-                          scope="col"
-                          className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 darkTextGray"
-                        >
-                          Customer
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 darkTextGray"
-                        >
-                          Required verification
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 darkTextGray"
-                        >
-                          Status
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-4 py-3.5 text-sm font-semibold text-left rtl:text-right text-black-500 darkTextGray"
-                        >
-                          Verified
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200 darkDivideGray darkBg">
-                      {projects?.map((project, index) => (
-                        <tr key={index}>
-                          <td className="px-4 py-4 text-sm font-medium text-gray-700 darkTextGray whitespace-nowrap">
-                            <div className="inline-flex items-center gap-x-3">
-                              <input
-                                type="checkbox"
-                                className="text-blue-500 border-gray-300 rounded darkBg darkRingOffsetGray darkBorderGray"
-                              />
-                              <span
-                                className="hover:cursor-pointer"
-                                onClick={() => handleProjectClick(project)}
-                              >
-                                #{index + 1}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap">
-                            <div
-                              className={`w-[150px] flex items-center  hover:cursor-pointer`}
-                              onClick={() => handleProjectClick(project)}
-                            >
-                              {project.name}
-                            </div>
-                          </td>
-                          <td
-                            className="px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap hover:cursor-pointer"
-                            onClick={() => handleProjectClick(project)}
-                          >
-                            {formatDate(project.created_at)}
-                          </td>
-                          {/* <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">{project.status}</td> */}
-                          <td
-                            className="px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap hover:cursor-pointer"
-                            onClick={() => handleProjectClick(project)}
-                          >
-                            {project.user_email}
-                          </td>
-
-                          <td
-                            className={`hover:cursor-pointer px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap `}
-                          >
-                            <div
-                              onClick={() => handleProjectClick(project)}
-                              className={`w-[5em] 
-                              ${
-                                project.required
-                                  ? "text-blue-600"
-                                  : " text-black-500"
-                              }
-                               focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-                            >
-                              {project.required && project.verified
-                                ? "Accepted"
-                                : project.required
-                                ? "Waiting..."
-                                : "No required"}
-                            </div>
-                          </td>
-
-                          <td
-                            className={`hover:cursor-pointer px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap `}
-                          >
-                            <button
-                              onClick={() => handleProjectClick(project)}
-                              className={`w-[5em] ${
-                                project.status ? "bg-blue-600" : "bg-red-600"
-                              } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-                            >
-                              {project.status ? "Public" : "Private"}
-                            </button>
-                          </td>
-
-                          <td className="px-4 py-4 text-sm whitespace-nowrap">
-                            <div className="flex items-center gap-x-3">
-                              <button
-                                className={`w-[6em] ${
-                                  project.verified
-                                    ? "bg-blue-600"
-                                    : "bg-red-600"
-                                } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-                                onClick={() => handleVerifyToggle(project)}
-                              >
-                                {project.verified ? "Verified" : "Unverified"}
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                  <Table
+                    columns={columns}
+                    dataSource={projects}
+                    pagination={false}
+                    rowKey="id"
+                    size = "small"
+                  />
                 </div>
               </div>
             </div>
@@ -279,3 +238,4 @@ function AdminPage() {
 }
 
 export default AdminPage;
+

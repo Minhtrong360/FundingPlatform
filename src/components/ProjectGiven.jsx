@@ -109,14 +109,14 @@ const Modal = ({
             <button
               type="button"
               onClick={onClose}
-              className="w-full px-4 py-1 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+              className="w-full px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={handleAssign}
-              className="w-full px-4 py-1 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
+              className="w-full px-3 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
             >
               Assign
             </button>
@@ -137,7 +137,7 @@ export default function ProjectGiven({
   return (
     <div className="App">
       <button
-        // className={`text-black  focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-lg text-sm px-4 py-1  darkBgBlue darkHoverBgBlue darkFocus `}
+        // className={`text-black  focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-lg text-sm px-3 py-2  darkBgBlue darkHoverBgBlue darkFocus `}
         onClick={() => setIsModalOpen(true)}
       >
         Assign

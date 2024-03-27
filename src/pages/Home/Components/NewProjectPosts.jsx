@@ -174,7 +174,7 @@ const NewProjectPosts = () => {
   return (
     <div className="max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto my-12">
       <Header />
-      <div className="max-w-[85rem] px-4 py-1 sm:px-6 lg:px-8 lg:py-1 mx-auto">
+      <div className="max-w-[85rem] px-3 py-2 sm:px-6 lg:px-8 lg:py-1 mx-auto">
         <Search
           onSearch={handleSearch}
           onIndustryChange={handleIndustryChange}

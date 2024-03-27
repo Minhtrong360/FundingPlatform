@@ -21,14 +21,14 @@ const CustomNotification = ({ title, content, onCancel, onArchive }) => {
         <div className="sm:flex sm:items-center">
           <button
             onClick={onCancel}
-            className="w-full px-4 py-1 mt-2 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md sm:mt-0 sm:w-auto sm:mx-2 darkTextGray darkBorderGray darkHoverBgBlue hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40"
+            className="w-full px-3 py-2 mt-2 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md sm:mt-0 sm:w-auto sm:mx-2 darkTextGray darkBorderGray darkHoverBgBlue hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40"
           >
             Cancel
           </button>
 
           <button
             onClick={onArchive}
-            className="w-full px-4 py-1 mt-2 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md sm:w-auto sm:mt-0 hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+            className="w-full px-3 py-2 mt-2 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md sm:w-auto sm:mt-0 hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
           >
             Archive
           </button>

@@ -2,7 +2,7 @@
 
 // const FeaturesComponent = () => {
 //   return (
-//     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+//     <div className="max-w-[85rem] px-3 py-20 sm:px-6 lg:px-8 lg:py-14 mx-auto">
 //       {/* Tab Nav */}
 //       <nav className="max-w-6xl mx-auto grid sm:flex gap-y-px sm:gap-y-0 sm:gap-x-4" aria-label="Tabs" role="tablist">
 //         {/* Tab 1 */}
@@ -169,7 +169,7 @@ const FeaturesComponent = () => {
   };
 
   return (
-    <div className=" max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+    <div className=" max-w-[85rem] px-3 py-20 sm:px-6 lg:px-8 lg:py-14 mx-auto">
       <h3 className="text-3xl sm:text-5xl font-semibold text-gray-800 darkTextGray text-center p-4 mb-10">
         Features
       </h3>

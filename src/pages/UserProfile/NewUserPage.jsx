@@ -400,7 +400,7 @@ function NewUserPage() {
 
           <form onSubmit={handleSubmit} className="sm:ml-10">
             <div className="flex flex-col w-full max-w-4xl space-y-4 sm:ml-0">
-              <h2 className="text-2xl font-semibold">Edit Profile</h2>
+              <h2 className="text-2xl font-semibold">User Profile</h2>
 
               <ul className="py-4 flex  justify-start items-center border-y-2">
                 <li

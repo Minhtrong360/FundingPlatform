@@ -87,7 +87,7 @@ const HeroSignUp = () => {
           highlightedWord="BeeKrowd"
         />
       ) : (
-        <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+        <div className="max-w-[85rem] px-3 py-20 sm:px-6 lg:px-8 lg:py-14 mx-auto">
           {/* Grid */}
           <div className="grid items-center md:grid-cols-2 gap-8 lg:gap-12">
             {/* Left Column */}

@@ -4,7 +4,7 @@ import { supabase } from "../../supabase";
 
 import AnnouncePage from "../../components/AnnouncePage";
 import AlertMsg from "../../components/AlertMsg";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { message } from "antd";
 

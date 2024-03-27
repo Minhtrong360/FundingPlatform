@@ -10,7 +10,7 @@ import ProjectList from "./ProjectList";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
 import Sidebar from "./SideBar";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 
 const FounderGitbook = () => {
   const { user } = useAuth();

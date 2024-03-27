@@ -3,7 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import PricingSection from "../Home/Pricing";
 import ReactModal from "react-modal";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import AlertMsg from "../../components/AlertMsg";
 import { Tooltip, message } from "antd";
 

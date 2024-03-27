@@ -3,7 +3,7 @@ import { Avatar, Card, Tooltip, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 
 import InputField from "../../components/InputField";
 
@@ -214,13 +214,18 @@ function NewUserPage() {
         .select("*")
         .eq("receivedUser", userData.email);
 
-      const notifiedCompanies = notifications.data.map(
-        (notification) => notification.content
+      const notifiedCompanies = notifications.data.flatMap((notification) =>
+        JSON.parse(notification.content)
       );
 
-      // Filter out companies that have already been notified
+      // Trích xuất danh sách tên công ty từ các đối tượng JSON
+      const notifiedCompanyNames = notifiedCompanies.map(
+        (company) => company.name
+      );
+
+      // Lọc ra các công ty chưa được thông báo
       const newCompanies = filteredCompanies.filter(
-        (company) => !notifiedCompanies.includes(company.name)
+        (company) => !notifiedCompanyNames.includes(company.name)
       );
 
       // Prepare notification content with array of companies
@@ -349,7 +354,7 @@ function NewUserPage() {
   return (
     <>
       {isLoading ? (
-        <LoadingButtonClick />
+        <LoadingButtonClick isLoading={isLoading} />
       ) : (
         <div className="flex-row justify-center sm:flex py-10 min-h-screen">
           <div className="flex flex-col space-y-6">
@@ -628,12 +633,13 @@ function NewUserPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-4 lg:gap-6 mt-6">
+                  <div className="grid grid-cols-1 gap-4 lg:gap-6 mt-6 ">
                     <button
                       type="submit"
-                      className={`w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600 ${
+                      className={`w-full sm:w-[30%] py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600 ${
                         isLoading ? "bg-gray-500 disabled" : ""
                       }`}
+                      style={{ justifySelf: "end" }} // Canh phải
                     >
                       Save
                     </button>
@@ -710,10 +716,11 @@ function NewUserPage() {
                   <div className="grid grid-cols-1 gap-4 lg:gap-6 mt-6">
                     <button
                       type="button"
-                      className={`w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600 ${
+                      className={`w-full sm:w-[30%] py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600 ${
                         isLoading ? "bg-gray-500 disabled" : ""
                       }`}
                       onClick={handleBilling}
+                      style={{ justifySelf: "end" }}
                     >
                       Billing Portal
                     </button>

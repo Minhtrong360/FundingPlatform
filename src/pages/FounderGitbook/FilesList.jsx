@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 
 import InvitedUserFile from "../../components/InvitedUserFile";
 import apiService from "../../app/apiService";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { Tooltip, message } from "antd";
 
@@ -67,7 +67,7 @@ function FilesList() {
     };
 
     fetchFiles();
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     // Lấy dự án từ Supabase
@@ -85,7 +85,7 @@ function FilesList() {
           setCurrentProject(data);
         }
       });
-  }, []);
+  }, [id]);
 
   const handleAddLinks = async (newLink) => {
     newLink.owner_email = user.email;
@@ -257,7 +257,7 @@ function FilesList() {
     };
 
     fetchCurrentUser();
-  }, []);
+  }, [user.id]);
 
   useEffect(() => {
     // Check if the user doesn't meet the conditions to create a private project
@@ -271,7 +271,7 @@ function FilesList() {
     } else {
       setIsPrivateDisabled(false);
     }
-  }, []);
+  }, [currentUser?.plan, currentUser?.subscription_status]);
 
   return (
     <main className="w-full ml-2">

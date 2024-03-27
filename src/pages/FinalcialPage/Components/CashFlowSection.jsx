@@ -1,4 +1,4 @@
-import { Row, Table, Tooltip } from "antd";
+import { Row, Table, Tooltip, message } from "antd";
 import {
   Select,
   SelectTrigger,
@@ -42,10 +42,13 @@ import {
   transformFundraisingDataForTable,
 } from "../../../features/FundraisingSlice";
 import CustomChart from "./CustomerChart";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import SelectField from "../../../components/SelectField";
+import { setCutMonth } from "../../../features/DurationSlice";
 
 function CashFlowSection({ numberOfMonths }) {
   const dispatch = useDispatch();
+  const { cutMonth } = useSelector((state) => state.durationSelect);
+
   const { customerGrowthData, customerInputs } = useSelector(
     (state) => state.customer
   );
@@ -289,6 +292,30 @@ function CashFlowSection({ numberOfMonths }) {
     netCashChanges
   );
 
+  const CFOperationsArray = netIncome.map(
+    (value, index) =>
+      value +
+      totalInvestmentDepreciation[index] +
+      0 /* Inventory */ +
+      0 /* AR */ -
+      0 /* AP */
+  );
+
+  const warningMessages = CFOperationsArray.reduce((acc, value, index) => {
+    if (value < 0) {
+      acc.push(
+        `CF Operations of month ${
+          index + 1
+        } < 0. You need to more capital injection by increase beginning cash or fundraising.`
+      );
+    }
+    return acc;
+  }, []);
+
+  if (warningMessages) {
+    message.warning(warningMessages[0]);
+  }
+
   const positionDataWithNetIncome = [
     { key: " Operating Activities " },
     { key: "Net Income", values: netIncome },
@@ -307,14 +334,7 @@ function CashFlowSection({ numberOfMonths }) {
     },
     {
       key: "CF Operations",
-      values: netIncome.map(
-        (value, index) =>
-          value +
-          totalInvestmentDepreciation[index] +
-          0 /* Inventory */ +
-          0 /* AR */ -
-          0 /* AP */
-      ),
+      values: CFOperationsArray,
     },
     { key: " Investing Activities " },
     {
@@ -410,11 +430,12 @@ function CashFlowSection({ numberOfMonths }) {
                 fontWeight:
                   record.metric === "CF Operations" ||
                   record.metric === "CF Investments" ||
+                  record.metric === "CF Investments" ||
                   record.metric === "CF Financing" ||
                   record.metric === "Net +/- in Cash" ||
                   record.metric === "Cash Begin" ||
                   record.metric === "Cash End" ||
-                  record.metric === "  " ||
+                  record.metric === " Operating Activities " ||
                   record.metric === " Investing Activities " ||
                   record.metric === " Financing Activities "
                     ? "bold"
@@ -425,20 +446,6 @@ function CashFlowSection({ numberOfMonths }) {
             </a>
           </div>
         ),
-        props: {
-          colSpan:
-            record.metric === " Operating Activities " ||
-            record.metric === " Investing Activities " ||
-            record.metric === " Financing Activities "
-              ? 36
-              : 1,
-          style:
-            record.metric === " Operating Activities " ||
-            record.metric === " Investing Activities " ||
-            record.metric === " Financing Activities "
-              ? {}
-              : { borderRight: "1px solid #f0f0f0" },
-        },
       }),
 
       // onCell: (_, index)  => ({
@@ -464,10 +471,10 @@ function CashFlowSection({ numberOfMonths }) {
             style: {
               borderRight: "1px solid #f0f0f0",
             },
-            colSpan: 0,
           };
         } else if (
           record.metric === "CF Operations" ||
+          record.metric === " Operating Activities " ||
           record.metric === "CF Investments" ||
           record.metric === "CF Financing" ||
           record.metric === "Net +/- in Cash" ||
@@ -500,10 +507,8 @@ function CashFlowSection({ numberOfMonths }) {
     setSelectedChart(value);
   };
 
-  const [cutMonth, setCutMonth] = useState(4);
-
   const handleCutMonthChange = (e) => {
-    setCutMonth(Number(e.target.value));
+    dispatch(setCutMonth(Number(e.target.value)));
   };
 
   const divideMonthsIntoYearsForCashFlow = () => {
@@ -651,7 +656,7 @@ function CashFlowSection({ numberOfMonths }) {
           value={selectedChart}
           className="border-solid border-[1px] border-gray-200"
         >
-          <SelectTrigger className="border-solid border-[1px] border-gray-200 w-[20%]">
+          <SelectTrigger className="border-solid border-[1px] border-gray-200 w-full lg:w-[20%]">
             <SelectValue />
           </SelectTrigger>
 
@@ -727,15 +732,18 @@ function CashFlowSection({ numberOfMonths }) {
         />
       )}
 
-      <div>
-        <label className="mr-4">Select Cut Month:</label>
-        <select value={cutMonth} onChange={handleCutMonthChange}>
-          {Array.from({ length: 12 }, (_, i) => (
-            <option key={i} value={i + 1}>
-              {i + 1}
-            </option>
-          ))}
-        </select>
+      <div className="w-full md:w-[20%] mb-5">
+        <SelectField
+          label="Select Cut Month:"
+          id="Select Cut Month:"
+          name="Select Cut Month:"
+          value={cutMonth}
+          onChange={handleCutMonthChange}
+          options={Array.from({ length: 12 }, (_, index) => ({
+            label: `${index + 1}`,
+            value: `${index + 1}`,
+          })).map((option) => option.label)} // Chỉ trả về mảng các label
+        />
       </div>
 
       {divideMonthsIntoYearsForCashFlow().map((year, index) => (

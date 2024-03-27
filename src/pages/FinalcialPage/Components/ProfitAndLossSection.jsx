@@ -46,10 +46,13 @@ import {
 } from "../../../features/FundraisingSlice";
 import { calculateProfitAndLoss } from "../../../features/ProfitAndLossSlice";
 import CustomChart from "./CustomerChart";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import SelectField from "../../../components/SelectField";
+import { setCutMonth } from "../../../features/DurationSlice";
 
 const ProfitAndLossSection = ({ numberOfMonths }) => {
   const dispatch = useDispatch();
+  const { cutMonth } = useSelector((state) => state.durationSelect);
+
   const { customerGrowthData, customerInputs } = useSelector(
     (state) => state.customer
   );
@@ -213,11 +216,10 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       title: "Metric",
       dataIndex: "metric",
       key: "metric",
-      fixed: "left",
-
+      fixed: "left", // Cố định ở bên trái của bảng
       render: (text, record) => ({
         children: (
-          <div className={" md:whitespace-nowrap "}>
+          <div className={"md:whitespace-nowrap"}>
             <a
               style={{
                 fontWeight:
@@ -240,22 +242,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             </a>
           </div>
         ),
-        props: {
-          colSpan:
-            record.metric === "Revenue" ||
-            record.metric === "Cost of Revenue" ||
-            record.metric === "Operating Expenses" ||
-            record.metric === "Additional Expenses"
-              ? 36
-              : 1,
-          style:
-            record.metric === "Revenue" ||
-            record.metric === "Cost of Revenue" ||
-            record.metric === "Operating Expenses" ||
-            record.metric === "Additional Expenses"
-              ? {}
-              : { borderRight: "1px solid #f0f0f0" },
-        },
       }),
     },
     ...Array.from({ length: numberOfMonths }, (_, i) => ({
@@ -273,7 +259,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             style: {
               borderRight: "1px solid #f0f0f0",
             },
-            colSpan: 0,
           };
         } else if (
           record.metric === "Total Revenue" ||
@@ -468,9 +453,8 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     setSelectedChart(value);
   };
 
-  const [cutMonth, setCutMonth] = useState(4);
-  const handleCutMonthChange = (value) => {
-    setCutMonth(Number(value));
+  const handleCutMonthChange = (e) => {
+    dispatch(setCutMonth(Number(e.target.value)));
   };
 
   const divideMonthsIntoYears = () => {
@@ -629,7 +613,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           value={selectedChart}
           className="border-solid border-[1px] border-gray-200"
         >
-          <SelectTrigger className="border-solid border-[1px] border-gray-200 w-[20%]">
+          <SelectTrigger className="border-solid border-[1px] border-gray-200 w-full lg:w-[20%]">
             <SelectValue />
           </SelectTrigger>
 
@@ -783,15 +767,18 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
         />
       )}
 
-      <div>
-        <label className="mr-4">Select Cut Month:</label>
-        <select value={cutMonth} onChange={handleCutMonthChange}>
-          {Array.from({ length: 12 }, (_, i) => (
-            <option key={i} value={i + 1}>
-              {i + 1}
-            </option>
-          ))}
-        </select>
+      <div className="w-full md:w-[20%] mb-5">
+        <SelectField
+          label="Select Cut Month:"
+          id="Select Cut Month:"
+          name="Select Cut Month:"
+          value={cutMonth}
+          onChange={handleCutMonthChange}
+          options={Array.from({ length: 12 }, (_, index) => ({
+            label: `${index + 1}`,
+            value: `${index + 1}`,
+          })).map((option) => option.label)} // Chỉ trả về mảng các label
+        />
       </div>
 
       {years.map((year, index) => (

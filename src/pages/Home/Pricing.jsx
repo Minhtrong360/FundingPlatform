@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import AlertMsg from "../../components/AlertMsg";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { stripeAPI } from "../../stripe/stripeAPI";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { message } from "antd";

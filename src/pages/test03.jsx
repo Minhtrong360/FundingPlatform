@@ -15,7 +15,7 @@ import Chart from "react-apexcharts";
 import { Typography } from "antd";
 import LoadingButtonClick from "../components/LoadingButtonClick";
 import ProgressBar from "../components/ProgressBar";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { supabase } from "../supabase";
 import AlertMsg from "../components/AlertMsg";
 import apiService from "../app/apiService";

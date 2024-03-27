@@ -5,7 +5,7 @@ import AddProject from "./AddProject";
 import { useNavigate } from "react-router-dom";
 import AlertMsg from "../../components/AlertMsg";
 import InvitedUserProject from "../../components/InvitedUserProject";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import ProjectGiven from "../../components/ProjectGiven";
 import { Dropdown, Button, Menu, message, Table, Switch } from "antd";
 import { DownOutlined } from "@ant-design/icons";

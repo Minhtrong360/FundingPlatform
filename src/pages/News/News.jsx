@@ -104,7 +104,7 @@ function BlogPost({ articles, blogs }) {
                   </a>
 
                   <p className="mt-3 text-sm text-gray-500 darkTextGray md:text-sm line-clamp-5">
-                    {blog?.content}
+                    {blog?.content.article.introduction.text}
                   </p>
 
                   <a
@@ -204,7 +204,7 @@ function News() {
   return (
     <>
       <BlogPost
-        articles={articles.slice(0, visibleArticles)}
+        // articles={articles.slice(0, visibleArticles)}
         blogs={blogs.slice(0, visibleArticles)}
       />
 

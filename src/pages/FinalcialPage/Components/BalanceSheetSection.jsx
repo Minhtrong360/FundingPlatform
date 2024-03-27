@@ -43,9 +43,12 @@ import {
 import { calculateProfitAndLoss } from "../../../features/ProfitAndLossSlice";
 import CustomChart from "./CustomerChart";
 import SelectField from "../../../components/SelectField";
+import { setCutMonth } from "../../../features/DurationSlice";
 
 function BalanceSheetSection({ numberOfMonths }) {
   const dispatch = useDispatch();
+  const { cutMonth } = useSelector((state) => state.durationSelect);
+
   const { customerGrowthData, customerInputs } = useSelector(
     (state) => state.customer
   );
@@ -615,9 +618,8 @@ function BalanceSheetSection({ numberOfMonths }) {
     setSelectedChart(value);
   };
 
-  const [cutMonth, setCutMonth] = useState(4);
   const handleCutMonthChange = (e) => {
-    setCutMonth(Number(e.target.value));
+    dispatch(setCutMonth(Number(e.target.value)));
   };
 
   const divideMonthsIntoYearsForBalanceSheet = () => {
@@ -701,7 +703,6 @@ function BalanceSheetSection({ numberOfMonths }) {
   };
 
   const calculateBalanceSheetRatios = (dataSource) => {
-    console.log("dataSource", dataSource);
     const findYearTotalByKey = (key) => {
       const item = dataSource.find((data) => data.metric === key);
       return item ? item.yearTotal : 0;
@@ -712,8 +713,7 @@ function BalanceSheetSection({ numberOfMonths }) {
     const currentAssets = findYearTotalByKey("Current Assets");
     const currentLiabilities = findYearTotalByKey("Current Liabilities");
     const totalEquity = findYearTotalByKey("Total Shareholders Equity");
-    console.log("currentAssets", currentAssets);
-    console.log("currentLiabilities", currentLiabilities);
+
     // Basic financial ratios from balance sheet
 
     const currentRatio =

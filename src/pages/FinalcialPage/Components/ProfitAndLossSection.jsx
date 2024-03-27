@@ -47,9 +47,12 @@ import {
 import { calculateProfitAndLoss } from "../../../features/ProfitAndLossSlice";
 import CustomChart from "./CustomerChart";
 import SelectField from "../../../components/SelectField";
+import { setCutMonth } from "../../../features/DurationSlice";
 
 const ProfitAndLossSection = ({ numberOfMonths }) => {
   const dispatch = useDispatch();
+  const { cutMonth } = useSelector((state) => state.durationSelect);
+
   const { customerGrowthData, customerInputs } = useSelector(
     (state) => state.customer
   );
@@ -450,9 +453,8 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     setSelectedChart(value);
   };
 
-  const [cutMonth, setCutMonth] = useState(4);
-  const handleCutMonthChange = (value) => {
-    setCutMonth(Number(value));
+  const handleCutMonthChange = (e) => {
+    dispatch(setCutMonth(Number(e.target.value)));
   };
 
   const divideMonthsIntoYears = () => {

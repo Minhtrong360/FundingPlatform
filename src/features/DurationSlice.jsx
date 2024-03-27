@@ -12,6 +12,7 @@ const initialState = {
   startYear: 2024,
   financialProjectName: "",
   numberOfMonths: 36,
+  cutMonth: 4,
 };
 
 const durationSelectSlice = createSlice({
@@ -51,6 +52,9 @@ const durationSelectSlice = createSlice({
     setNumberOfMonths(state, action) {
       state.numberOfMonths = action.payload;
     },
+    setCutMonth(state, action) {
+      state.cutMonth = action.payload;
+    },
     // Thêm reducers khác nếu cần
   },
 });
@@ -67,6 +71,7 @@ export const {
   setStartYear,
   setFinancialProjectName,
   setNumberOfMonths,
+  setCutMonth,
 } = durationSelectSlice.actions;
 
 export default durationSelectSlice.reducer;

@@ -43,9 +43,12 @@ import {
 } from "../../../features/FundraisingSlice";
 import CustomChart from "./CustomerChart";
 import SelectField from "../../../components/SelectField";
+import { setCutMonth } from "../../../features/DurationSlice";
 
 function CashFlowSection({ numberOfMonths }) {
   const dispatch = useDispatch();
+  const { cutMonth } = useSelector((state) => state.durationSelect);
+
   const { customerGrowthData, customerInputs } = useSelector(
     (state) => state.customer
   );
@@ -504,10 +507,8 @@ function CashFlowSection({ numberOfMonths }) {
     setSelectedChart(value);
   };
 
-  const [cutMonth, setCutMonth] = useState(4);
-
   const handleCutMonthChange = (e) => {
-    setCutMonth(Number(e.target.value));
+    dispatch(setCutMonth(Number(e.target.value)));
   };
 
   const divideMonthsIntoYearsForCashFlow = () => {

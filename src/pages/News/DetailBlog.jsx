@@ -4,6 +4,18 @@ import { supabase } from "../../supabase";
 import image from "../Home/Components/founder&Business.jpg";
 import Header from "../Home/Header";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
+import { Avatar, Button } from "antd";
+import { TwitterOutlined } from "@ant-design/icons";
+
+const renderContentWithLineBreaks = (content) => {
+  // Replace newline characters with <br> elements
+  return content.split("\n").map((line, index) => (
+    <React.Fragment key={index}>
+      {line}
+      <br />
+    </React.Fragment>
+  ));
+};
 
 function DetailBlog() {
   const { id } = useParams();
@@ -33,7 +45,7 @@ function DetailBlog() {
 
     fetchData();
   }, [id]);
-
+  console.log("blog", blog);
   return (
     <>
       {isLoading ? (
@@ -41,48 +53,41 @@ function DetailBlog() {
       ) : (
         <div className="max-w-3xl px-4 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
           <Header />
-          <div className="max-w-2xl mt-28">
-            {/* Avatar */}
-            <div className="flex justify-between items-center mb-6">
-              <div className="flex w-full sm:items-center gap-x-5 sm:gap-x-3">
-                <div className="flex-shrink-0">
-                  <img
-                    className="w-[60px] h-[60px] rounded-full"
-                    src={blog.image_link ? blog.image_link : image}
-                    alt="Description"
-                  />
-                </div>
-
-                <div className="flex justify-between items-center">
-                  <div className="flex-col justify-between items-center gap-x-2">
-                    <div className="text-base font-semibold text-gray-800 py-2">
-                      BeeKrowd
-                    </div>
-                    <div className="text-sm py-2">
-                      {new Date(blog.publish_date).toISOString().split("T")[0]}
-                    </div>
-                  </div>
-                </div>
+          <article className="max-w-2xl mx-auto mt-16 p-4">
+            <header className="flex items-center mb-8">
+              <Avatar
+                src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8YXZhdGFyfGVufDB8fDB8fHww"
+                alt="Leyla Ludic"
+              ></Avatar>
+              <div className="ml-4">
+                <p className="text-sm font-semibold">
+                  {blog.author ? blog.author : "BeeKrowd"}
+                </p>
+                <p className="text-sm text-gray-500">{blog.publish_date}</p>
               </div>
-            </div>
-            {/* End Avatar */}
+              {/* <Button className="ml-auto" shape="circle" icon={<TwitterOutlined />} size="large">
+          Tweet
+        </Button> */}
+            </header>
+            {/* Render introduction text */}
 
-            {/* Content */}
-            <div className="space-y-5 md:space-y-8 mt-14">
-              <div className="space-y-3">
-                <h2 className="text-2xl font-bold md:text-3xl dark:text-white my-10">
-                  {blog?.title}
-                </h2>
-                <div
-                  className="blog-content"
-                  dangerouslySetInnerHTML={{ __html: blog.content }}
-                />
-              </div>
-
-              {/* Other content goes here */}
-            </div>
-            {/* End Content */}
-          </div>
+            <section>
+              <p>
+                {renderContentWithLineBreaks(
+                  blog.content.article.introduction.text
+                )}
+              </p>
+              {blog.content.article.sections.map((section, index) => (
+                <section key={index}>
+                  <h2 className="text-xl font-semibold mb-8">
+                    {section.title}
+                  </h2>
+                  {/* Render content with line breaks */}
+                  <p>{renderContentWithLineBreaks(section.content)}</p>
+                </section>
+              ))}
+            </section>
+          </article>
         </div>
       )}
     </>

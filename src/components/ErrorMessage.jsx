@@ -25,7 +25,7 @@ function ErrorMessage({ isModalOpen, closeModal, message, onCancel }) {
           aria-hidden="true"
         ></span>
 
-        <div className="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl rtl:text-right darkBg sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
+        <div className="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-md shadow-xl rtl:text-right darkBg sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
           <div>
             <div className="flex items-center justify-center">
               {/* You can add any error-related content here */}

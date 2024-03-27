@@ -188,7 +188,7 @@ const NewProjectPosts = () => {
 
         <div className="mt-10 flex justify-center">
           <button
-            className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
+            className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
               currentTab === "All"
                 ? "bg-blue-600 text-white"
                 : "bg-white text-gray-800 hover:bg-gray-50"
@@ -201,7 +201,7 @@ const NewProjectPosts = () => {
             All
           </button>
           <button
-            className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
+            className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
               currentTab === "verified"
                 ? "bg-blue-600 text-white"
                 : "bg-white text-gray-800 hover:bg-gray-50"
@@ -214,7 +214,7 @@ const NewProjectPosts = () => {
             Verified
           </button>
           <button
-            className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
+            className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
               currentTab === "unverified"
                 ? "bg-blue-600 text-white"
                 : "bg-white text-gray-800 hover:bg-gray-50"

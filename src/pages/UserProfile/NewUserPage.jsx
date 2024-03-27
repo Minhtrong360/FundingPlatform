@@ -494,7 +494,7 @@ function NewUserPage() {
                           name="roll"
                           value={userData.roll}
                           onChange={handleRollChange}
-                          className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus:ring-gray-600"
+                          className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus:ring-gray-600"
                         >
                           <option value="Founder">Founder</option>
                           <option value="Investor">Investor</option>
@@ -603,7 +603,7 @@ function NewUserPage() {
                         name="facebook"
                         value={userData.facebook}
                         onChange={handleInputChange}
-                        className="ml-4 py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                        className="ml-4 py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
                       />
                     </div>
                     <div className="flex items-center mt-4">
@@ -613,7 +613,7 @@ function NewUserPage() {
                         name="twitter"
                         value={userData.twitter}
                         onChange={handleInputChange}
-                        className="ml-4 py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                        className="ml-4 py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
                       />
                     </div>
                     <div className="flex items-center mt-4">
@@ -623,7 +623,7 @@ function NewUserPage() {
                         name="linkedin"
                         value={userData.linkedin}
                         onChange={handleInputChange}
-                        className="ml-4 py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                        className="ml-4 py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
                       />
                     </div>
                   </div>
@@ -631,7 +631,7 @@ function NewUserPage() {
                   <div className="grid grid-cols-1 gap-4 lg:gap-6 mt-6">
                     <button
                       type="submit"
-                      className={`w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600 ${
+                      className={`w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600 ${
                         isLoading ? "bg-gray-500 disabled" : ""
                       }`}
                     >
@@ -710,7 +710,7 @@ function NewUserPage() {
                   <div className="grid grid-cols-1 gap-4 lg:gap-6 mt-6">
                     <button
                       type="button"
-                      className={`w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600 ${
+                      className={`w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600 ${
                         isLoading ? "bg-gray-500 disabled" : ""
                       }`}
                       onClick={handleBilling}

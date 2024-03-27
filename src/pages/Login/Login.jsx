@@ -76,7 +76,7 @@ const Login = () => {
               <button
                 onClick={(e) => signInWitGG(e)}
                 type="button"
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
+                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
               >
                 {loading ? (
                   <SpinnerBtn />
@@ -105,7 +105,7 @@ const Login = () => {
                       type="email"
                       id="email"
                       name="email"
-                      className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm darkBgBlue darkBorderGray darkTextGray"
+                      className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm darkBgBlue darkBorderGray darkTextGray"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -132,7 +132,7 @@ const Login = () => {
                       type="password"
                       id="password"
                       name="password"
-                      className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm darkBgBlue darkBorderGray darkTextGray"
+                      className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm darkBgBlue darkBorderGray darkTextGray"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
@@ -158,7 +158,7 @@ const Login = () => {
 
                   <button
                     type="submit"
-                    className="w-full py-3 px-4 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 darkFocusOutlineNone darkFocusRing-1 darkFocus"
+                    className="w-full py-3 px-4 text-sm font-semibold rounded-md bg-blue-600 text-white hover:bg-blue-700 darkFocusOutlineNone darkFocusRing-1 darkFocus"
                     disabled={loading} // Vô hiệu hóa nút khi đang loading
                   >
                     {loading ? <SpinnerBtn /> : "Sign in"}{" "}

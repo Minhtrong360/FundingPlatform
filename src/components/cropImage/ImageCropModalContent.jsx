@@ -22,7 +22,7 @@ const ImageCropModalContent = ({
   return (
     <div className="text-center relative">
       <h5 className="text-gray-800 mb-4">Edit profile picture</h5>
-      <div className="border border-dashed border-gray-200 p-6 rounded-lg">
+      <div className="border border-dashed border-gray-200 p-6 rounded-md">
         <div className="flex justify-center">
           <div className="crop-container mb-4">
             <Cropper cropWidth={cropWidth} cropHeight={cropHeight} />

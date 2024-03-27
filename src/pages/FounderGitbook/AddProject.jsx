@@ -81,7 +81,7 @@ const Modal = ({
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
       <AlertMsg />
-      <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
+      <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
         <h3 className="text-lg font-medium leading-6 text-gray-800 capitalize">
           Project Name
         </h3>
@@ -267,7 +267,7 @@ export default function AddProject({ updatedProjects, setUpdatedProjects }) {
           zIndex={20000}
         >
           <button
-            className={`text-white opacity-50 bg-gray-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
+            className={`text-white opacity-50 bg-gray-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
             onClick={handleClick}
           >
             Add new
@@ -276,7 +276,7 @@ export default function AddProject({ updatedProjects, setUpdatedProjects }) {
       ) : (
         <>
           <button
-            className={`text-white bg-blue-600 "hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
+            className={`text-white bg-blue-600 "hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
             onClick={handleClick}
           >
             Add new
@@ -336,7 +336,7 @@ export default function AddProject({ updatedProjects, setUpdatedProjects }) {
         }}
       >
         <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-          <div className="relative p-8 bg-white w-full  m-auto flex-col flex rounded-lg">
+          <div className="relative p-8 bg-white w-full  m-auto flex-col flex rounded-md">
             <PricingSection />
             <div className="mt-4 flex items-center gap-10">
               <button

@@ -52,7 +52,7 @@ const termsContent = [
 
 const TermSection = ({ title, content }) => {
   return (
-    <div className="border-2 border-gray-100 rounded-lg darkBorderGray">
+    <div className="border-2 border-gray-100 rounded-md darkBorderGray">
       <div className="flex items-center justify-between w-full p-8">
         <h1 className="font-semibold text-gray-700 darkTextWhite">{title}</h1>
         <span className="text-gray-400 bg-gray-200 rounded-full"></span>

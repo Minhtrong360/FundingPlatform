@@ -80,7 +80,7 @@ const Modal = ({ isOpen, onClose, fileId }) => {
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-      <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
+      <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
         <p className="mt-2 text-xl text-gray-500 ">
           Invite a user to see this file!
         </p>
@@ -125,7 +125,7 @@ export default function InvitedUser({ fileId }) {
   return (
     <div className="App">
       <button
-        className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+        className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus `}
         onClick={() => setIsModalOpen(true)}
       >
         Invite

@@ -83,7 +83,7 @@ const HeroSection = ({
               title={` No. ticket: ${formatNumber(button2Text)}`}
               color={"geekblue"}
             >
-              <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-lg border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus">
+              <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-md border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus">
                 <p className="truncate pl-1">
                   {" "}
                   No. ticket: {formatNumber(button2Text)}{" "}
@@ -94,22 +94,22 @@ const HeroSection = ({
               title={`Min ticket size: ${button3Text}`}
               color={"geekblue"}
             >
-              <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-lg border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus">
+              <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-md border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus">
                 <p className="truncate pl-1"> Min ticket size: {button3Text} </p>
               </div>
             </Tooltip>
             <Tooltip title={` Offer: ${button4Text}`} color={"geekblue"}>
-              <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-lg border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus">
+              <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-md border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus">
                 <p className="truncate pl-1"> Offer: {button4Text} </p>
               </div>
             </Tooltip>
             <Tooltip title={`Type: ${button5Text}`} color={"geekblue"}>
-              <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-lg border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus">
+              <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-md border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus">
                 <p className="truncate pl-1"> Type: {button5Text} </p>
               </div>
             </Tooltip>
             <Tooltip title={`Website: ${formData?.website}`} color={"geekblue"}>
-              <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-lg border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus">
+              <div className="truncate overflow-hidden py-3 px-4 inline-flex justify-center items-center gap-x-2 text-md text-white font-semibold rounded-md border border-transparent bg-blue-500   disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus">
                 <p className="truncate pl-1"> Website: {formData?.website} </p>
               </div>
             </Tooltip>
@@ -192,7 +192,7 @@ const HeroSection = ({
         </div>
 
         <div className="relative ">
-          {/* <div class=" relative  pt-[50%] sm:pt-[70%] rounded-lg overflow-hidden">
+          {/* <div class=" relative  pt-[50%] sm:pt-[70%] rounded-md overflow-hidden">
             <img
               class=" h-full w-full  absolute top-0 start-0 object-cover  transition-transform duration-500 ease-in-out "
               src={imageUrl}
@@ -228,7 +228,7 @@ const HeroSection = ({
 
           {project?.verified && (
             <span className="absolute top-0 right-0 bg-green-600 text-white text-sm font-medium py-1.5 px-3 rounded-bl-lg">
-              Verified by BeeKrowd
+              Verified
             </span>
           )}
 

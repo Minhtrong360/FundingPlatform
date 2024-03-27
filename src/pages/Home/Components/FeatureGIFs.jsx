@@ -62,7 +62,7 @@ const FeatureComponent = () => {
       </h3>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 items-center gap-6 md:gap-10">
         {/* Notion-like editor */}
-        <div className="size-full bg-white shadow-lg rounded-lg p-5 darkBgSlate">
+        <div className="size-full bg-white shadow-lg rounded-md p-5 darkBgSlate">
           <div className="flex items-center gap-x-4 mb-3">
             {/* Notion-like editor icon */}
             <div className="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-blue-50 bg-blue-100 darkBorderBlue darkBgBlue">
@@ -86,7 +86,7 @@ const FeatureComponent = () => {
         {/* End Notion-like editor card */}
 
         {/* Beautiful images */}
-        <div className="size-full bg-white shadow-lg rounded-lg p-5 darkBgSlate">
+        <div className="size-full bg-white shadow-lg rounded-md p-5 darkBgSlate">
           <div className="flex items-center gap-x-4 mb-3">
             {/* Beautiful images icon */}
             <div className="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-blue-50 bg-blue-100 darkBorderBlue darkBgBlue">
@@ -110,7 +110,7 @@ const FeatureComponent = () => {
         {/* End Beautiful images card */}
 
         {/* YouTube videos */}
-        <div className="size-full bg-white shadow-lg rounded-lg p-5 darkBgSlate">
+        <div className="size-full bg-white shadow-lg rounded-md p-5 darkBgSlate">
           <div className="flex items-center gap-x-4 mb-3">
             {/* YouTube videos icon */}
             <div className="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-blue-50 bg-blue-100 darkBorderBlue darkBgBlue">
@@ -134,7 +134,7 @@ const FeatureComponent = () => {
         {/* End YouTube videos card */}
 
         {/* Insightful charts */}
-        <div className="size-full bg-white shadow-lg rounded-lg p-5 darkBgSlate">
+        <div className="size-full bg-white shadow-lg rounded-md p-5 darkBgSlate">
           <div className="flex items-center gap-x-4 mb-3">
             {/* Insightful charts icon */}
             <div className="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-blue-50 bg-blue-100 darkBorderBlue darkBgBlue">
@@ -158,7 +158,7 @@ const FeatureComponent = () => {
         {/* End Insightful charts card */}
 
         {/* Your own Dataroom */}
-        <div className="size-full bg-white shadow-lg rounded-lg p-5 darkBgSlate">
+        <div className="size-full bg-white shadow-lg rounded-md p-5 darkBgSlate">
           <div className="flex items-center gap-x-4 mb-3">
             {/* Your own Dataroom icon */}
             <div className="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-blue-50 bg-blue-100 darkBorderBlue darkBgBlue">
@@ -182,7 +182,7 @@ const FeatureComponent = () => {
         {/* End Your own Dataroom card */}
 
         {/* Fundraising info settings */}
-        <div className="size-full bg-white shadow-lg rounded-lg p-5 darkBgSlate">
+        <div className="size-full bg-white shadow-lg rounded-md p-5 darkBgSlate">
           <div className="flex items-center gap-x-4 mb-3">
             {/* Fundraising info settings icon */}
             <div className="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-blue-50 bg-blue-100 darkBorderBlue darkBgBlue">

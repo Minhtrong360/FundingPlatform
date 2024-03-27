@@ -50,7 +50,7 @@ import { useState } from "react";
 //         {/* Tab 1 */}
 //         <button
 //           type="button"
-//           className={`text-left  size-full bg-white shadow-lg rounded-lg p-5 darkBgSlate ${
+//           className={`text-left  size-full bg-white shadow-lg rounded-md p-5 darkBgSlate ${
 //             activeTab === 1 ? "hs-tab-active:bg-gray-100" : ""
 //           }`}
 //           onClick={() => handleTabClick(1)}
@@ -84,7 +84,7 @@ import { useState } from "react";
 //         {/* Tab 2 */}
 //         <button
 //           type="button"
-//           className={`text-left  size-full bg-white shadow-lg rounded-lg p-5 darkBgSlate ${
+//           className={`text-left  size-full bg-white shadow-lg rounded-md p-5 darkBgSlate ${
 //             activeTab === 2 ? "hs-tab-active:bg-gray-100" : ""
 //           }`}
 //           onClick={() => handleTabClick(2)}
@@ -118,7 +118,7 @@ import { useState } from "react";
 //         {/* Tab 3 */}
 //         <button
 //           type="button"
-//           className={`text-left  size-full bg-white shadow-lg rounded-lg p-5 ${
+//           className={`text-left  size-full bg-white shadow-lg rounded-md p-5 ${
 //             activeTab === 3 ? "hs-tab-active:bg-gray-100" : ""
 //           }`}
 //           onClick={() => handleTabClick(3)}

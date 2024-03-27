@@ -47,7 +47,7 @@ const Modal = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-      <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
+      <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
         <h3 className="text-lg font-medium leading-6 text-gray-800 capitalize">
           Project Name: {currentProject.name}
         </h3>
@@ -217,7 +217,7 @@ export default function AddLinkFile({
       {(user?.id === currentProject?.user_id ||
         currentProject?.collabs?.includes(user.email)) && (
         <button
-          className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+          className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus `}
           onClick={() => setIsModalOpen(true)}
         >
           Add file
@@ -278,7 +278,7 @@ export default function AddLinkFile({
         }}
       >
         <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-          <div className="relative p-8 bg-white w-full  m-auto flex-col flex rounded-lg">
+          <div className="relative p-8 bg-white w-full  m-auto flex-col flex rounded-md">
             <PricingSection />
             <div className="mt-4 flex items-center gap-10">
               <button

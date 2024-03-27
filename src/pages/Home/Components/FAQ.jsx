@@ -59,7 +59,7 @@ const FAQ = () => {
                 key={index}
               >
                 <button
-                  className="mt-3 hs-accordion-toggle group pb-3 inline-flex items-center justify-between gap-x-3 w-full md:text-lg font-semibold text-start text-gray-800 rounded-lg transition hover:text-gray-500 darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
+                  className="mt-3 hs-accordion-toggle group pb-3 inline-flex items-center justify-between gap-x-3 w-full md:text-lg font-semibold text-start text-gray-800 rounded-md transition hover:text-gray-500 darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
                   aria-controls={`hs-basic-with-title-and-arrow-stretched-collapse-${index}`}
                   onClick={() => toggleAccordion(index)}
                 >

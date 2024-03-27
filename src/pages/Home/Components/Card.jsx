@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "../../../supabase";
-import { Flex, Tag } from "antd";
+import { Tag } from "antd";
 
 const Card = ({
   title,

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import AlertMsg from "../../components/AlertMsg";
 import InputField from "../../components/InputField";
 
@@ -13,7 +13,7 @@ import countries from "../../components/Country";
 import MultiSelectField from "../../components/MultiSelectField";
 import SelectField from "../../components/SelectField";
 
-import { Avatar, Tooltip } from "antd";
+import { Avatar, Tooltip, message } from "antd";
 import { IconButton } from "@mui/material";
 
 function UserInfoSettings() {

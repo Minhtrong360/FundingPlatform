@@ -5,7 +5,7 @@ import SideBar from "../../components/SideBar";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 
 function FinancialList() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

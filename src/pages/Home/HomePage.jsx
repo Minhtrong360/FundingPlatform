@@ -15,19 +15,18 @@ import HeroCard from "./Components/HeroCard";
 // import FAQ from "./Components/FAQ";
 // import NewProjectPosts from "./Components/NewProjectPosts";
 import PricingWithLemon from "./Components/PricingWithLemon";
-import videoFile from "./Components/UpscaleVideo.mp4";
+// import videoFile from "./Components/UpscaleVideo.mp4";
 
 // create a function that returns all the components
-import {
-  NoteOutlined,
-  // PhotoOutlined,
-  // YouTube,
-  TimelineOutlined,
-  LockOutlined,
-  // SettingsOutlined,
-} from "@mui/icons-material";
+import // NoteOutlined,
+// PhotoOutlined,
+// YouTube,
+// TimelineOutlined,
+// LockOutlined,
+// SettingsOutlined,
+"@mui/icons-material";
 
-import { useState } from "react";
+// import { useState } from "react";
 
 // const FeaturesComponent = () => {
 //   const [activeTab, setActiveTab] = useState(1);

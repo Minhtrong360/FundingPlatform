@@ -3,15 +3,15 @@ import Company from "./Company"; // Import your Company component
 import HeroSection from "./HeroSection"; // Import your HeroSection component
 import AnnouncePage from "../../components/AnnouncePage";
 
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { supabase } from "../../supabase";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Card from "../Home/Components/Card";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import AlertMsg from "../../components/AlertMsg";
-import CompanyTest from "./CompanyTest";
-import { data } from "jquery";
+// import CompanyTest from "./CompanyTest";
+
 import axios from "axios";
 import { message } from "antd";
 

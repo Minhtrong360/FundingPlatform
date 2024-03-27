@@ -67,3 +67,10 @@ code {
 .ant-select-lg {
   font-size: 14px;
 }
+.ant-select-multiple.ant-select-lg {
+  font-size: 14px;
+}
+
+.ant-card {
+  font-family: "Inter", sans-serif;
+}

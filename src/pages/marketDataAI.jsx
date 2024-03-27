@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import OpenAI from "openai";
 import ArticleBrief from "./FounderGitbook/ArticalBrief";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_openaiApiKey,

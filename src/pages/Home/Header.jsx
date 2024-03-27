@@ -26,7 +26,6 @@ const Header = () => {
   const { user } = useAuth();
   const [loginPart, setLoginPart] = useState("");
   const navigate = useNavigate();
-
   // Function to handle the click event of the Login button
   const handleLoginButtonClick = () => {
     navigate("/login"); // Show the LoginPage component when the button is clicked
@@ -126,7 +125,8 @@ const Header = () => {
   };
 
   useEffect(() => {
-    const loginPart = location.pathname.split("/").pop();
+    const loginPart = location.pathname;
+
     setLoginPart(loginPart);
   }, [location]); // Phụ thuộc vào location
 
@@ -228,21 +228,27 @@ const Header = () => {
             <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-4 lg:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white darkBgBlue md:darkBg darkBorderGray">
               <NavbarItem
                 onClick={() => navigate(`/`)}
-                isActive={loginPart === ""}
+                isActive={loginPart === "/"}
               >
                 Home
               </NavbarItem>
               <NavbarItem
                 onClick={() => navigate(`/financials`)}
-                isActive={loginPart === "financials"}
+                isActive={loginPart.includes("financials")}
               >
                 Financial Model ✨
               </NavbarItem>
               <NavbarItem
                 onClick={() => navigate(`/startups`)}
-                isActive={loginPart === "startups"}
+                isActive={loginPart.includes("startups")}
               >
                 Startups
+              </NavbarItem>
+              <NavbarItem
+                onClick={() => navigate(`/news`)}
+                isActive={loginPart.includes("news")}
+              >
+                News
               </NavbarItem>
 
               <NavbarItem

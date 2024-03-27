@@ -42,6 +42,7 @@ import {
 } from "../../../features/FundraisingSlice";
 import { calculateProfitAndLoss } from "../../../features/ProfitAndLossSlice";
 import CustomChart from "./CustomerChart";
+import SelectField from "../../../components/SelectField";
 
 function BalanceSheetSection({ numberOfMonths }) {
   const dispatch = useDispatch();
@@ -557,28 +558,6 @@ function BalanceSheetSection({ numberOfMonths }) {
             </a>
           </div>
         ),
-        props: {
-          colSpan:
-            record.metric === "Assets" ||
-            record.metric === " Current Assets" ||
-            record.metric === "Long-Term Assets" ||
-            record.metric === "Liabilities & Equity" ||
-            record.metric === "Current Liabilities" ||
-            record.metric === "Long-Term Liabilities" ||
-            record.metric === "Shareholders Equity"
-              ? numberOfMonths
-              : 1,
-          style:
-            record.metric === "Assets" ||
-            record.metric === " Current Assets" ||
-            record.metric === "Long-Term Assets" ||
-            record.metric === "Liabilities & Equity" ||
-            record.metric === "Current Liabilities" ||
-            record.metric === "Long-Term Liabilities" ||
-            record.metric === "Shareholders Equity"
-              ? {}
-              : { borderRight: "1px solid #f0f0f0" },
-        },
       }),
     },
     ...Array.from({ length: numberOfMonths }, (_, i) => ({
@@ -600,7 +579,6 @@ function BalanceSheetSection({ numberOfMonths }) {
             style: {
               borderRight: "1px solid #f0f0f0",
             },
-            colSpan: 0,
           };
         } else if (
           record.metric === "Current Assets" ||
@@ -787,7 +765,7 @@ function BalanceSheetSection({ numberOfMonths }) {
           value={selectedChart}
           className="border-solid border-[1px] border-gray-200 "
         >
-          <SelectTrigger className="border-solid border-[1px] border-gray-200 w-[20%]">
+          <SelectTrigger className="border-solid border-[1px] border-gray-200 w-full lg:w-[20%]">
             <SelectValue />
           </SelectTrigger>
 
@@ -861,15 +839,18 @@ function BalanceSheetSection({ numberOfMonths }) {
         />
       )}
 
-      <div>
-        <label className="mr-4">Select Cut Month:</label>
-        <select value={cutMonth} onChange={handleCutMonthChange}>
-          {Array.from({ length: 12 }, (_, i) => (
-            <option key={i} value={i + 1}>
-              {i + 1}
-            </option>
-          ))}
-        </select>
+      <div className="w-full md:w-[20%] mb-5">
+        <SelectField
+          label="Select Cut Month:"
+          id="Select Cut Month:"
+          name="Select Cut Month:"
+          value={cutMonth}
+          onChange={handleCutMonthChange}
+          options={Array.from({ length: 12 }, (_, index) => ({
+            label: `${index + 1}`,
+            value: `${index + 1}`,
+          })).map((option) => option.label)} // Chỉ trả về mảng các label
+        />
       </div>
 
       {divideMonthsIntoYearsForBalanceSheet().map((year, index) => (

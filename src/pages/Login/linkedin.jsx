@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { LinkedIn } from "react-linkedin-login-oauth2";
 import axios from "axios";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import AlertMsg from "../../components/AlertMsg";
 import { message } from "antd";
 

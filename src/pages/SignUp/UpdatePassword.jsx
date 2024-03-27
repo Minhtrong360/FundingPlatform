@@ -2,7 +2,7 @@ import { useState } from "react";
 import { supabase } from "../../supabase";
 import { useNavigate } from "react-router";
 import AlertMsg from "../../components/AlertMsg";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { message } from "antd";

@@ -11,7 +11,7 @@ import LoanSection from "./Components/LoanSection";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import AlertMsg from "../../components/AlertMsg";
 import ProgressBar from "../../components/ProgressBar";
 import Gemini from "./Components/Gemini";

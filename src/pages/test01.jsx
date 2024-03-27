@@ -131,7 +131,7 @@ const CustomerSection = ({
       ))}
 
       <button
-        className="bg-blue-600 text-white py-1 px-2 rounded"
+        className="bg-blue-600 text-white py-1 px-2 text-sm rounded"
         onClick={handleAddNewCustomer}
       >
         Add New
@@ -433,7 +433,7 @@ const CostSection = ({
       ))}
 
       <button
-        className="bg-blue-600 text-white py-1 px-2 rounded"
+        className="bg-blue-600 text-white py-1 px-2 text-sm rounded"
         onClick={handleAddNewCost}
       >
         Add New

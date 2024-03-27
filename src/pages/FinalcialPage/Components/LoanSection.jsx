@@ -308,14 +308,14 @@ const LoanSection = ({
             ))}
 
           <button
-            className="bg-blue-600 text-white py-1 px-2 rounded mt-4 mr-4"
+            className="bg-blue-600 text-white py-1 px-2 text-sm rounded mt-4 mr-4"
             onClick={addNewLoanInput}
           >
             Add new
           </button>
 
           <button
-            className="bg-blue-600 text-white py-1 px-2 rounded mt-4"
+            className="bg-blue-600 text-white py-1 px-2 text-sm rounded mt-4"
             onClick={handleSave}
           >
             Save changes

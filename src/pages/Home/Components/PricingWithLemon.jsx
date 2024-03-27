@@ -227,7 +227,7 @@ const PricingWithLemon = () => {
   };
 
   return (
-    <div className="max-w-[85rem] mx-auto px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mt-28">
+    <div className="max-w-[85rem] mx-auto px-3 py-20 sm:px-6 lg:px-8 lg:py-14 mt-28">
       <AlertMsg />
       <LoadingButtonClick isLoading={isLoading} />
       <div className="text-center mb-10 lg:mb-14">

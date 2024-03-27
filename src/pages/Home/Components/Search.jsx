@@ -101,7 +101,7 @@ const Search = ({
                 {suggestions.map((company, index) => (
                   <li
                     key={index}
-                    className="text-left px-4 py-1 hover:bg-gray-100 cursor-pointer"
+                    className="text-left px-3 py-2 hover:bg-gray-100 cursor-pointer"
                     onClick={() => handleSuggestionClick(company.name)}
                   >
                     {company.name}

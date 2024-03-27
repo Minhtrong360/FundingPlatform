@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
+import { SaveOutlined } from '@ant-design/icons';
 import {
   setSelectedDuration,
   setStartingCashBalance,
@@ -300,7 +301,7 @@ const DurationSelect = ({ handleSubmit }) => {
       </div>
 
       <button
-        className="bg-blue-600 text-white py-1 px-2 rounded mt-4"
+        className="bg-blue-600 text-white py-2 px-4 rounded mt-8 text-sm flex items-center"
         onClick={handleSubmit}
       >
         Save project

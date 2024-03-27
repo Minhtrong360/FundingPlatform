@@ -55,7 +55,7 @@ const PricingCard = ({ plan, onClick }) => {
         </ul>
         {/* <div
           className={`flex flex-col border rounded-xl text-center shadow-xl group hover:scale-105 hover:border-blue-700 transition-transform duration-300 ease-in-out ${
-            isLoading ? "p-8" : "px-4 py-1"
+            isLoading ? "p-8" : "px-3 py-2"
           }`}
         >
           {user ? ( // Kiểm tra xem user có tồn tại không
@@ -152,7 +152,7 @@ const PricingSection = () => {
   };
 
   return (
-    <div className="max-w-[85rem] mx-auto px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mt-28">
+    <div className="max-w-[85rem] mx-auto px-3 py-20 sm:px-6 lg:px-8 lg:py-14 mt-28">
       <AlertMsg />
       <LoadingButtonClick isLoading={isLoading} />
       <div className="text-center mb-10 lg:mb-14">

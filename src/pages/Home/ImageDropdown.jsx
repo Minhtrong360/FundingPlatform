@@ -182,7 +182,7 @@ const ImageDropdown = () => {
               onClick={() => navigate("/admin")}
             >
               <UserSwitchOutlined />
-              Admin dashboard
+              Admin Dashboard
             </button>
           )}
 
@@ -192,7 +192,7 @@ const ImageDropdown = () => {
             onClick={(e) => handleClickUserInfo(e)}
           >
             <UserOutlined />
-            User settings
+            User Settings
           </button>
           <button
             style={{ minWidth: "100%" }}
@@ -200,7 +200,7 @@ const ImageDropdown = () => {
             onClick={(e) => handleClickDashBoard(e)}
           >
             <DashboardOutlined />
-            User dashboard
+            User Dashboard
           </button>
 
           <button
@@ -209,7 +209,7 @@ const ImageDropdown = () => {
             onClick={(e) => handleClickFinancial(e)}
           >
             <DollarCircleOutlined />
-            Financial model
+            Financial Model
           </button>
           <button
             style={{ minWidth: "100%" }}
@@ -217,7 +217,7 @@ const ImageDropdown = () => {
             onClick={(e) => handleClickProject(e)}
           >
             <ProfileOutlined />
-            Project list
+            Project List
           </button>
 
           <button
@@ -241,7 +241,7 @@ const ImageDropdown = () => {
             className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
           >
             <LogoutOutlined />
-            Log out
+            Log Out
           </button>
         </div>
       )}

@@ -34,7 +34,7 @@ function Features() {
           </div>
           <div className="mt-6">
             <h3 className="text-xl font-semibold text-gray-800 darkTextGray darkGroupHoverText">
-              FOUNDER & BUSINESS OWNER
+              FOUNDERS
             </h3>
             <p className="mt-5 text-gray-800 darkTextGray">
               <ul>
@@ -170,7 +170,7 @@ function Features() {
           </div>
           <div className="mt-6">
             <h3 className="text-xl font-semibold text-gray-800 darkTextGray darkGroupHoverText">
-              BROKER & INVESTMENT ANALYST
+              ANALYSTS
             </h3>
             <p className="mt-5 text-gray-800 darkTextGray">
               <ul>
@@ -306,7 +306,7 @@ function Features() {
           </div>
           <div className="mt-6">
             <h3 className="text-xl font-semibold text-gray-800 darkTextGray darkGroupHoverText">
-              INVESTORS (ANGEL, VC, PE)
+              INVESTORS
             </h3>
             <p className="mt-5 text-gray-800 darkTextGray">
               <ul>

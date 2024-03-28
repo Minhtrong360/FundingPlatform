@@ -22,6 +22,11 @@ function StaticNews() {
         </header>
         {/* Render introduction text */}
 
+        <div className="text-3xl font-bold my-10">
+          How to build Solarpanel Financial Model and Valuation under 5 mins
+          with AI.
+        </div>
+
         <section>
           <p>
             The article below will help you understand more about how to build a

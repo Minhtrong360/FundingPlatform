@@ -73,6 +73,8 @@ function DetailBlog() {
             </header>
             {/* Render introduction text */}
 
+            <div className="text-3xl font-bold my-10">{blog.title}</div>
+
             <section>
               <p>
                 {renderContentWithLineBreaks(

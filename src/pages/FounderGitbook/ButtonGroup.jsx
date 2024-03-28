@@ -30,9 +30,9 @@ const ButtonGroup = ({
 
   const menuItems = (
     <Menu onClick={handleMenuClick}>
-      <Menu.Item key="chart">Chart</Menu.Item>
-      <Menu.Item key="settings">Settings</Menu.Item>
-      <Menu.Item key="save">Save</Menu.Item>
+      <Menu.Item key="chart">Add Chart</Menu.Item>
+      <Menu.Item key="settings">Company Settings</Menu.Item>
+      <Menu.Item key="save">Save Profile</Menu.Item>
       <Menu.Item key="verification" disabled={currentProject.required}>
         {currentProject.required
           ? currentProject.verified

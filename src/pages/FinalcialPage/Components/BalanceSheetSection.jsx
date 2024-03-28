@@ -649,10 +649,24 @@ function BalanceSheetSection({ numberOfMonths }) {
 
   const divideMonthsIntoYearsForBalanceSheet = () => {
     const years = [];
+    const startingMonthIndex = startMonth - 1;
+    const startingYear = startYear;
+
     if (cutMonth - 1 > 0) {
+      const firstYearMonths = Array.from(
+        { length: cutMonth - 1 },
+        (_, i) => i + 1
+      );
+      const firstYearTextMonths = firstYearMonths.map((month) => {
+        const monthIndex = (startingMonthIndex + month - 1) % 12;
+        const year =
+          startingYear + Math.floor((startingMonthIndex + month - 1) / 12);
+        return `${months[monthIndex]}/${year}`;
+      });
       years.push({
         year: "First Year",
-        months: Array.from({ length: cutMonth - 1 }, (_, i) => i + 1),
+        months: firstYearMonths,
+        textMonth: firstYearTextMonths,
       });
     }
 
@@ -661,22 +675,38 @@ function BalanceSheetSection({ numberOfMonths }) {
     const remainingMonthsInLastYear = remainingMonthsAfterFirstYear % 12;
 
     for (let i = 0; i < fullYearsCount; i++) {
+      const yearMonths = Array.from(
+        { length: 12 },
+        (_, idx) => idx + 1 + (cutMonth - 1) + i * 12
+      );
+      const yearTextMonths = yearMonths.map((month) => {
+        const monthIndex = (startingMonthIndex + month - 1) % 12;
+        const year =
+          startingYear + Math.floor((startingMonthIndex + month - 1) / 12);
+        return `${months[monthIndex]}/${year}`;
+      });
       years.push({
         year: `Year ${i + 2}`,
-        months: Array.from(
-          { length: 12 },
-          (_, idx) => idx + 1 + (cutMonth - 1) + i * 12
-        ),
+        months: yearMonths,
+        textMonth: yearTextMonths,
       });
     }
 
     if (remainingMonthsInLastYear > 0) {
+      const lastYearMonths = Array.from(
+        { length: remainingMonthsInLastYear },
+        (_, idx) => idx + 1 + (cutMonth - 1) + fullYearsCount * 12
+      );
+      const lastYearTextMonths = lastYearMonths.map((month) => {
+        const monthIndex = (startingMonthIndex + month - 1) % 12;
+        const year =
+          startingYear + Math.floor((startingMonthIndex + month - 1) / 12);
+        return `${months[monthIndex]}/${year}`;
+      });
       years.push({
         year: `Last Year`,
-        months: Array.from(
-          { length: remainingMonthsInLastYear },
-          (_, idx) => idx + 1 + (cutMonth - 1) + fullYearsCount * 12
-        ),
+        months: lastYearMonths,
+        textMonth: lastYearTextMonths,
       });
     }
 
@@ -684,17 +714,17 @@ function BalanceSheetSection({ numberOfMonths }) {
   };
 
   // Generate table columns including Year Total column for Balance Sheet
-  const generateBalanceSheetTableColumns = (months) => [
+  const generateBalanceSheetTableColumns = (year) => [
     {
       title: "Metric",
       dataIndex: "metric",
       key: "metric",
       fixed: "left",
     },
-    ...months.map((month) => ({
-      title: `Month ${month}`,
-      dataIndex: `Month ${month}`,
-      key: `Month ${month}`,
+    ...year.textMonth.map((textMonth, index) => ({
+      title: textMonth,
+      dataIndex: `Month ${year.months[index]}`,
+      key: `Month ${year.months[index]}`,
     })),
     {
       title: "Year Total",
@@ -885,7 +915,7 @@ function BalanceSheetSection({ numberOfMonths }) {
             className="overflow-auto my-8"
             size="small"
             dataSource={getDataSourceForYearBalanceSheet(year.months)}
-            columns={generateBalanceSheetTableColumns(year.months)}
+            columns={generateBalanceSheetTableColumns(year)}
             pagination={false}
           />
           <div>

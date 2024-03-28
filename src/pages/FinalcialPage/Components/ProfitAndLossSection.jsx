@@ -485,10 +485,24 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
 
   const divideMonthsIntoYears = () => {
     const years = [];
+    const startingMonthIndex = startMonth - 1;
+    const startingYear = startYear;
+
     if (cutMonth - 1 > 0) {
+      const firstYearMonths = Array.from(
+        { length: cutMonth - 1 },
+        (_, i) => i + 1
+      );
+      const firstYearTextMonths = firstYearMonths.map((month) => {
+        const monthIndex = (startingMonthIndex + month - 1) % 12;
+        const year =
+          startingYear + Math.floor((startingMonthIndex + month - 1) / 12);
+        return `${months[monthIndex]}/${year}`;
+      });
       years.push({
         year: "First Year",
-        months: Array.from({ length: cutMonth - 1 }, (_, i) => i + 1),
+        months: firstYearMonths,
+        textMonth: firstYearTextMonths,
       });
     }
 
@@ -497,22 +511,38 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     const remainingMonthsInLastYear = remainingMonthsAfterFirstYear % 12;
 
     for (let i = 0; i < fullYearsCount; i++) {
+      const yearMonths = Array.from(
+        { length: 12 },
+        (_, idx) => idx + 1 + (cutMonth - 1) + i * 12
+      );
+      const yearTextMonths = yearMonths.map((month) => {
+        const monthIndex = (startingMonthIndex + month - 1) % 12;
+        const year =
+          startingYear + Math.floor((startingMonthIndex + month - 1) / 12);
+        return `${months[monthIndex]}/${year}`;
+      });
       years.push({
         year: `Year ${i + 2}`,
-        months: Array.from(
-          { length: 12 },
-          (_, idx) => idx + 1 + (cutMonth - 1) + i * 12
-        ),
+        months: yearMonths,
+        textMonth: yearTextMonths,
       });
     }
 
     if (remainingMonthsInLastYear > 0) {
+      const lastYearMonths = Array.from(
+        { length: remainingMonthsInLastYear },
+        (_, idx) => idx + 1 + (cutMonth - 1) + fullYearsCount * 12
+      );
+      const lastYearTextMonths = lastYearMonths.map((month) => {
+        const monthIndex = (startingMonthIndex + month - 1) % 12;
+        const year =
+          startingYear + Math.floor((startingMonthIndex + month - 1) / 12);
+        return `${months[monthIndex]}/${year}`;
+      });
       years.push({
         year: `Last Year`,
-        months: Array.from(
-          { length: remainingMonthsInLastYear },
-          (_, idx) => idx + 1 + (cutMonth - 1) + fullYearsCount * 12
-        ),
+        months: lastYearMonths,
+        textMonth: lastYearTextMonths,
       });
     }
 
@@ -520,28 +550,32 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   };
 
   const years = divideMonthsIntoYears();
-
+  console.log("years", years);
   // Function to generate table columns dynamically based on months in a year
 
-  const generateTableColumns = (months) => [
-    {
-      title: "Metric",
-      dataIndex: "metric",
-      key: "metric",
-      fixed: "left",
-    },
-    ...months.map((month) => ({
-      title: `Month ${month}`,
-      dataIndex: `Month ${month}`,
-      key: `Month ${month}`,
-    })),
-    {
-      title: "Year Total",
-      dataIndex: "yearTotal",
-      key: "yearTotal",
-      render: (text) => formatNumber(text?.toFixed(2)), // Optional: formatting the number if needed
-    },
-  ];
+  const generateTableColumns = (year) => {
+    const columns = [
+      {
+        title: "Metric",
+        dataIndex: "metric",
+        key: "metric",
+        fixed: "left",
+      },
+      ...year.textMonth.map((textMonth, index) => ({
+        title: textMonth,
+        dataIndex: `Month ${year.months[index]}`,
+        key: `Month ${year.months[index]}`,
+      })),
+      {
+        title: "Year Total",
+        dataIndex: "yearTotal",
+        key: "yearTotal",
+        render: (text) => formatNumber(text?.toFixed(2)), // Optional: formatting the number if needed
+      },
+    ];
+
+    return columns;
+  };
 
   function parseNumberInternal(value) {
     if (value === undefined || value === null) return 0;
@@ -815,7 +849,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             className="overflow-auto my-8"
             size="small"
             dataSource={getDataSourceForYear(year.months)}
-            columns={generateTableColumns(year.months)}
+            columns={generateTableColumns(year)}
             pagination={false}
           />
           {/* Expanded section to calculate and display financial ratios */}

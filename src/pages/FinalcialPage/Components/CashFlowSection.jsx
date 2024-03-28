@@ -546,34 +546,64 @@ function CashFlowSection({ numberOfMonths }) {
 
   const divideMonthsIntoYearsForCashFlow = () => {
     const years = [];
-    if (cutMonth > 1) {
+    const startingMonthIndex = startMonth - 1;
+    const startingYear = startYear;
+
+    if (cutMonth - 1 > 0) {
+      const firstYearMonths = Array.from(
+        { length: cutMonth - 1 },
+        (_, i) => i + 1
+      );
+      const firstYearTextMonths = firstYearMonths.map((month) => {
+        const monthIndex = (startingMonthIndex + month - 1) % 12;
+        const year =
+          startingYear + Math.floor((startingMonthIndex + month - 1) / 12);
+        return `${months[monthIndex]}/${year}`;
+      });
       years.push({
         year: "First Year",
-        months: Array.from({ length: cutMonth - 1 }, (_, i) => i + 1),
+        months: firstYearMonths,
+        textMonth: firstYearTextMonths,
       });
     }
 
-    const remainingMonths = numberOfMonths - (cutMonth - 1);
-    const fullYears = Math.floor(remainingMonths / 12);
-    const remainingMonthsInLastYear = remainingMonths % 12;
+    const remainingMonthsAfterFirstYear = numberOfMonths - (cutMonth - 1);
+    const fullYearsCount = Math.floor(remainingMonthsAfterFirstYear / 12);
+    const remainingMonthsInLastYear = remainingMonthsAfterFirstYear % 12;
 
-    for (let i = 0; i < fullYears; i++) {
+    for (let i = 0; i < fullYearsCount; i++) {
+      const yearMonths = Array.from(
+        { length: 12 },
+        (_, idx) => idx + 1 + (cutMonth - 1) + i * 12
+      );
+      const yearTextMonths = yearMonths.map((month) => {
+        const monthIndex = (startingMonthIndex + month - 1) % 12;
+        const year =
+          startingYear + Math.floor((startingMonthIndex + month - 1) / 12);
+        return `${months[monthIndex]}/${year}`;
+      });
       years.push({
         year: `Year ${i + 2}`,
-        months: Array.from(
-          { length: 12 },
-          (_, index) => index + 1 + (cutMonth - 1) + i * 12
-        ),
+        months: yearMonths,
+        textMonth: yearTextMonths,
       });
     }
 
     if (remainingMonthsInLastYear > 0) {
+      const lastYearMonths = Array.from(
+        { length: remainingMonthsInLastYear },
+        (_, idx) => idx + 1 + (cutMonth - 1) + fullYearsCount * 12
+      );
+      const lastYearTextMonths = lastYearMonths.map((month) => {
+        const monthIndex = (startingMonthIndex + month - 1) % 12;
+        const year =
+          startingYear + Math.floor((startingMonthIndex + month - 1) / 12);
+        return `${months[monthIndex]}/${year}`;
+      });
       years.push({
         year: `Last Year`,
-        months: Array.from(
-          { length: remainingMonthsInLastYear },
-          (_, index) => index + 1 + (cutMonth - 1) + fullYears * 12
-        ),
+        months: lastYearMonths,
+        textMonth: lastYearTextMonths,
       });
     }
 
@@ -604,26 +634,29 @@ function CashFlowSection({ numberOfMonths }) {
     });
   };
 
-  const generateCashFlowTableColumns = (months) => [
-    {
-      title: "Metric",
-      dataIndex: "metric",
-      key: "metric",
-      fixed: "left",
-      render: (text) => <strong>{text}</strong>,
-    },
-    ...months.map((month) => ({
-      title: `Month ${month}`,
-      dataIndex: `Month ${month}`,
-      key: `Month ${month}`,
-    })),
-    {
-      title: "Year Total",
-      dataIndex: "yearTotal",
-      key: "yearTotal",
-      render: (text) => <strong>{formatNumber(text)}</strong>, // Assuming formatNumber is a utility function to format numbers
-    },
-  ];
+  const generateCashFlowTableColumns = (year) => {
+    console.log("year", year);
+    const columns = [
+      {
+        title: "Metric",
+        dataIndex: "metric",
+        key: "metric",
+        fixed: "left",
+      },
+      ...year.textMonth.map((textMonth, index) => ({
+        title: textMonth,
+        dataIndex: `Month ${year.months[index]}`,
+        key: `Month ${year.months[index]}`,
+      })),
+      {
+        title: "Year Total",
+        dataIndex: "yearTotal",
+        key: "yearTotal",
+        render: (text) => <strong>{formatNumber(text)}</strong>, // Assuming formatNumber is a utility function to format numbers
+      },
+    ];
+    return columns;
+  };
 
   const calculateCashFlowRatios = (dataSource) => {
     const findYearTotalByKey = (key) => {
@@ -786,7 +819,7 @@ function CashFlowSection({ numberOfMonths }) {
             className="overflow-auto my-8"
             size="small"
             dataSource={getDataSourceForYearCashFlow(year.months)}
-            columns={generateCashFlowTableColumns(year.months)}
+            columns={generateCashFlowTableColumns(year)}
             pagination={false}
             bordered
           />

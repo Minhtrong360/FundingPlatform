@@ -222,6 +222,8 @@ function AdminPage() {
                     pagination={false}
                     rowKey="id"
                     size="small"
+                    scroll={{ x: "max-content" }}
+                    bordered
                   />
                 </div>
               </div>

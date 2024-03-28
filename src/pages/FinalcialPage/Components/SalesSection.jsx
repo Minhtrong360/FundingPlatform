@@ -251,33 +251,43 @@ const SalesSection = ({
   const handleActualChange = (value, record, field) => {};
 
   //RevenueColumns
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+
+  const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  const startingYear = startYear; // Năm bắt đầu từ 24
+
   const revenueColumns = [
     {
       fixed: "left",
-      title: "Revenue_Table",
+      title: <div>Revenue Table</div>,
       dataIndex: "channelName",
       key: "channelName",
     },
-    ...Array.from({ length: numberOfMonths }, (_, i) => i + 1).flatMap((month) => ([
-      {
-        title: `Month_${month} Forecast`,
-        dataIndex: `month${month}`,
-        key: `month${month}_forecast`,
-      },
-      {
-        title: `Month_${month} Actual`,
-        dataIndex: `month${month}_actual`,
-        key: `month${month}_actual`,
-        render: (text, record, index) => (
-          <input 
-            type="text" 
-            className="py-1 px-2 block w-full border-gray-200 rounded-lg text-xs focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" 
-            value={record[`month${month}`]} // Set value to corresponding forecast value
-            onChange={e => handleActualChange(e.target.value, record, `month${month}_actual`)} 
-          />
-        )
-      }
-    ])),
+    ...Array.from({ length: numberOfMonths }, (_, i) => i + 1).flatMap(
+      (month) => [
+        {
+          title: `Month_${month}`,
+          dataIndex: `month${month}`,
+          key: `month${month}`,
+        },
+      ]
+    ),
   ];
 
   //RevenueChart

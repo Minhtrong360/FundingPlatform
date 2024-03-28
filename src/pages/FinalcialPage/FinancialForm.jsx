@@ -15,10 +15,10 @@ import { supabase } from "../../supabase";
 import AlertMsg from "../../components/AlertMsg";
 import ProgressBar from "../../components/ProgressBar";
 import Gemini from "./Components/Gemini";
-import GPTAnalyzer from "./Components/GPTAnalyzer";
+// import GPTAnalyzer from "./Components/GPTAnalyzer";
 import MetricsFM from "../MetricsFM";
 import ProfitAndLossSection from "./Components/ProfitAndLossSection";
-import * as XLSX from "xlsx";
+// import * as XLSX from "xlsx";
 import BalanceSheetSection from "./Components/BalanceSheetSection";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,6 +32,8 @@ import {
   setCurrency,
   setFinancialProjectName,
   setCutMonth,
+  setStartMonth,
+  setStartYear,
 } from "../../features/DurationSlice";
 import {
   calculateCustomerGrowth,
@@ -109,6 +111,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       dispatch(setStartingCashBalance(data.DurationSelect.startingCashBalance));
       dispatch(setStatus(data.DurationSelect.status));
       dispatch(setIndustry(data.DurationSelect.industry));
+      dispatch(setStartMonth(data.DurationSelect.startMonth));
+      dispatch(setStartYear(data.DurationSelect.startYear));
       dispatch(setIncomeTax(data.DurationSelect.incomeTax));
       dispatch(setPayrollTax(data.DurationSelect.payrollTax));
       dispatch(setCurrency("USD"));
@@ -308,6 +312,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           dispatch(setPayrollTax(inputData.payrollTax || payrollTax));
           dispatch(setCurrency(inputData.currency || currency));
           dispatch(setCutMonth(inputData.cutMonth || cutMonth));
+          dispatch(setStartMonth(inputData.startMonth || startMonth));
+          dispatch(setStartYear(inputData.startYear || startYear));
 
           dispatch(
             setCustomerInputs(inputData.customerInputs || customerInputs)

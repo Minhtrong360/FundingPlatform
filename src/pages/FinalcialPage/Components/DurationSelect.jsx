@@ -52,6 +52,8 @@ const DurationSelect = ({ handleSubmit }) => {
     "December",
   ];
 
+  console.log("startMonth", startMonth);
+
   const currentYear = new Date().getFullYear();
   const years = Array.from(
     { length: currentYear - 2019 },

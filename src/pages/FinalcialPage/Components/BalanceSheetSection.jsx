@@ -525,6 +525,27 @@ function BalanceSheetSection({ numberOfMonths }) {
     ),
   }));
 
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+
+  const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  const startingYear = startYear; // Năm bắt đầu từ 24
+
   const positionColumns1 = [
     {
       title: "Metric",
@@ -563,50 +584,54 @@ function BalanceSheetSection({ numberOfMonths }) {
         ),
       }),
     },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `Month ${i + 1}`,
-      key: `Month ${i + 1}`,
-      style: { borderRight: "1px solid #f0f0f0" },
-      onCell: (record) => {
-        if (
-          record.metric === "Assets" ||
-          record.metric === " Current Assets" ||
-          record.metric === "Long-Term Assets" ||
-          record.metric === "Liabilities & Equity" ||
-          record.metric === "Current Liabilities" ||
-          record.metric === "Long-Term Liabilities" ||
-          record.metric === "Shareholders Equity"
-        ) {
-          return {
-            style: {
-              borderRight: "1px solid #f0f0f0",
-            },
-          };
-        } else if (
-          record.metric === "Current Assets" ||
-          record.metric === "Long term assets" ||
-          record.metric === "Total Assets" ||
-          record.metric === "Total Liabilities" ||
-          record.metric === "Total Assets (Double Check)" ||
-          record.metric === "Total Shareholders Equity" ||
-          record.metric === "Total Liabilities and Shareholders Equity"
-        ) {
-          return {
-            style: {
-              borderRight: "1px solid #f0f0f0",
-              fontWeight: "bold", // Add bold styling for Total Revenue
-            },
-          };
-        } else {
-          return {
-            style: {
-              borderRight: "1px solid #f0f0f0",
-            },
-          };
-        }
-      },
-    })),
+    ...Array.from({ length: numberOfMonths }, (_, i) => {
+      const monthIndex = (startingMonth + i - 1) % 12;
+      const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+      return {
+        title: `${months[monthIndex]}/${year}`,
+        dataIndex: `Month ${i + 1}`,
+        key: `Month ${i + 1}`,
+        style: { borderRight: "1px solid #f0f0f0" },
+        onCell: (record) => {
+          if (
+            record.metric === "Assets" ||
+            record.metric === " Current Assets" ||
+            record.metric === "Long-Term Assets" ||
+            record.metric === "Liabilities & Equity" ||
+            record.metric === "Current Liabilities" ||
+            record.metric === "Long-Term Liabilities" ||
+            record.metric === "Shareholders Equity"
+          ) {
+            return {
+              style: {
+                borderRight: "1px solid #f0f0f0",
+              },
+            };
+          } else if (
+            record.metric === "Current Assets" ||
+            record.metric === "Long term assets" ||
+            record.metric === "Total Assets" ||
+            record.metric === "Total Liabilities" ||
+            record.metric === "Total Assets (Double Check)" ||
+            record.metric === "Total Shareholders Equity" ||
+            record.metric === "Total Liabilities and Shareholders Equity"
+          ) {
+            return {
+              style: {
+                borderRight: "1px solid #f0f0f0",
+                fontWeight: "bold", // Add bold styling for Total Revenue
+              },
+            };
+          } else {
+            return {
+              style: {
+                borderRight: "1px solid #f0f0f0",
+              },
+            };
+          }
+        },
+      };
+    }),
   ];
 
   const [selectedChart, setSelectedChart] = useState("total-assets-chart"); // State để lưu trữ biểu đồ được chọn

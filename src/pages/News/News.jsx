@@ -15,7 +15,7 @@ function BlogPost({ articles, blogs }) {
       <section className="bg-white darkBg">
         <div className="container sm:px-6 py-10 mx-auto">
           <h1 className="text-2xl font-semibold text-gray-800 capitalize lg:text-3xl darkTextWhite">
-            Just Raised
+            Financial Model with AI
           </h1>
 
           {/* {articles.map((article, index) => (

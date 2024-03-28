@@ -312,9 +312,17 @@ function CashFlowSection({ numberOfMonths }) {
     return acc;
   }, []);
 
-  if (warningMessages) {
-    message.warning(warningMessages[0]);
-  }
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (warningMessages && isMounted) {
+      message.warning(warningMessages[0]);
+    }
+  }, [isMounted]);
 
   const positionDataWithNetIncome = [
     { key: " Operating Activities " },

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import SideBar from "../../components/SideBar";
-import UserInfoSettings from "./UserProfile";
+// import UserInfoSettings from "./UserProfile";
 import NewUserPage from "./NewUserPage";
 
 const UserPage = () => {

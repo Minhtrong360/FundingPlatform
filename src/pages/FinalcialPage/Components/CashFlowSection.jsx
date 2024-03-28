@@ -44,7 +44,8 @@ import {
 import CustomChart from "./CustomerChart";
 import SelectField from "../../../components/SelectField";
 import { setCutMonth } from "../../../features/DurationSlice";
-
+import { InfoCircleOutlined } from "@ant-design/icons";
+  
 function CashFlowSection({ numberOfMonths }) {
   const dispatch = useDispatch();
   const { cutMonth } = useSelector((state) => state.durationSelect);
@@ -843,22 +844,7 @@ function CashFlowSection({ numberOfMonths }) {
                           <Tooltip
                             title={`This is the Operating Cash Flow Ratio.`}
                           >
-                            <svg
-                              className="flex-shrink-0 size-4 text-gray-500"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <circle cx="12" cy="12" r="10" />
-                              <line x1="12" y1="16" x2="12" y2="12" />
-                              <line x1="12" y1="8" x2="12" y2="8" />
-                            </svg>
+                           <InfoCircleOutlined />
                           </Tooltip>
                         </div>
 
@@ -879,22 +865,7 @@ function CashFlowSection({ numberOfMonths }) {
                             Free Cash Flow:
                           </p>
                           <Tooltip title={`This is the Free Cash Flow.`}>
-                            <svg
-                              className="flex-shrink-0 size-4 text-gray-500"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <circle cx="12" cy="12" r="10" />
-                              <line x1="12" y1="16" x2="12" y2="12" />
-                              <line x1="12" y1="8" x2="12" y2="8" />
-                            </svg>
+                            <InfoCircleOutlined />
                           </Tooltip>
                         </div>
 
@@ -914,22 +885,7 @@ function CashFlowSection({ numberOfMonths }) {
                             Cash Conversion Cycle:
                           </p>
                           <Tooltip title={`This is the Cash Conversion Cycle.`}>
-                            <svg
-                              className="flex-shrink-0 size-4 text-gray-500"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <circle cx="12" cy="12" r="10" />
-                              <line x1="12" y1="16" x2="12" y2="12" />
-                              <line x1="12" y1="8" x2="12" y2="8" />
-                            </svg>
+                          <InfoCircleOutlined />
                           </Tooltip>
                         </div>
 
@@ -951,22 +907,7 @@ function CashFlowSection({ numberOfMonths }) {
                           <Tooltip
                             title={`This is the Cash Flow to Debt Ratio.`}
                           >
-                            <svg
-                              className="flex-shrink-0 size-4 text-gray-500"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <circle cx="12" cy="12" r="10" />
-                              <line x1="12" y1="16" x2="12" y2="12" />
-                              <line x1="12" y1="8" x2="12" y2="8" />
-                            </svg>
+                          <InfoCircleOutlined />
                           </Tooltip>
                         </div>
 
@@ -986,22 +927,7 @@ function CashFlowSection({ numberOfMonths }) {
                             Cash Flow Margin:
                           </p>
                           <Tooltip title={`This is the Cash Flow Margin.`}>
-                            <svg
-                              className="flex-shrink-0 size-4 text-gray-500"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <circle cx="12" cy="12" r="10" />
-                              <line x1="12" y1="16" x2="12" y2="12" />
-                              <line x1="12" y1="8" x2="12" y2="8" />
-                            </svg>
+                            <InfoCircleOutlined />
                           </Tooltip>
                         </div>
 

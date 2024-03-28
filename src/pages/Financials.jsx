@@ -363,7 +363,7 @@ const CustomerGrowthComponent = ({
 
 function GeneralForm() {
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md font-inter">
+    <div className="max-w-4xl mx-auto p-6 bg-white rounded-md shadow-md font-inter">
       <h1 className="text-xl font-semibold mb-6">General Settings</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
@@ -595,7 +595,7 @@ function CustomerInput({
 
 const Financials = () => {
   return (
-    <div className="bg-white rounded-lg p-6">
+    <div className="bg-white rounded-md p-6">
       <GeneralForm />
       <CustomerInput />
       <CustomerGrowthComponent />

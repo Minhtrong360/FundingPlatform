@@ -22,7 +22,7 @@ const NavbarButton = ({ children, onClick, className }) => (
   <button
     type="button"
     onClick={onClick}
-    className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus ${className}`}
+    className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus ${className}`}
   >
     {children}
   </button>
@@ -44,7 +44,7 @@ const NavBar = () => {
           <button
             data-collapse-toggle="navbar-sticky"
             type="button"
-            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 darkTextGray darkHoverBgBlue darkFocus"
+            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-md md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 darkTextGray darkHoverBgBlue darkFocus"
             onClick={() => setIsOpen(!isOpen)}
             aria-controls="navbar-sticky"
             aria-expanded={isOpen}
@@ -73,7 +73,7 @@ const NavBar = () => {
           }`}
           id="navbar-sticky"
         >
-          <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white darkBgBlue md:darkBg darkBorderGray">
+          <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-md bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white darkBgBlue md:darkBg darkBorderGray">
             <NavbarItem href="#" isActive>
               Home
             </NavbarItem>
@@ -96,7 +96,7 @@ const Search = () => {
           </h3>
           <div className="mt-7 sm:mt-12 mx-auto max-w-xl relative">
             <form>
-              <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100 darkBgBlue darkBorderGray darkShadowGray">
+              <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-md shadow-lg shadow-gray-100 darkBgBlue darkBorderGray darkShadowGray">
                 <div className="flex-[1_0_0%]">
                   <label
                     htmlFor="hs-search-article-1"
@@ -108,13 +108,13 @@ const Search = () => {
                     type="email"
                     name="hs-search-article-1"
                     id="hs-search-article-1"
-                    className="py-1.5 px-4 block w-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
+                    className="py-1.5 px-4 block w-full border-transparent rounded-md focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
                     placeholder="Search company"
                   />
                 </div>
                 <div className="flex-[0_0_auto]">
                   <a
-                    className="w-[46px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
+                    className="w-[46px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
                     href="#"
                   >
                     <svg
@@ -179,7 +179,7 @@ const Search = () => {
           </div>
           <div className="mt-2 sm:mt-4">
             <a
-              className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
+              className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
               href="#"
             >
               <svg
@@ -195,7 +195,7 @@ const Search = () => {
               Business
             </a>
             <a
-              className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
+              className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
               href="#"
             >
               <svg
@@ -218,7 +218,7 @@ const Search = () => {
 };
 
 const Card = ({ title, description, imageUrl, buttonText, buttonLink }) => (
-  <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow darkBgBlue darkBorderGray">
+  <div className="max-w-sm bg-white border border-gray-200 rounded-md shadow darkBgBlue darkBorderGray">
     <a href={buttonLink}>
       <img className="rounded-t-lg" src={imageUrl} alt={title} />
     </a>
@@ -233,7 +233,7 @@ const Card = ({ title, description, imageUrl, buttonText, buttonLink }) => (
       </p>
       <a
         href={buttonLink}
-        className="inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkHoverBgBlue darkFocus mt-8"
+        className="inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkHoverBgBlue darkFocus mt-8"
       >
         {buttonText}
         <span className="w-3.5 h-3.5 ml-2">🇻🇳</span>

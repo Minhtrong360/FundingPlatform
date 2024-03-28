@@ -144,7 +144,7 @@ const PricingCard = ({ plan, onClick }) => {
 
         <button
           onClick={onClick}
-          className={`mt-5 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-white hover:bg-blue-700 disabled:opacity-0.5 disabled:pointer-events-none ${
+          className={`mt-5 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent text-white hover:bg-blue-700 disabled:opacity-0.5 disabled:pointer-events-none ${
             plan.price / 100 === 0 || plan.price_formatted.includes("$100")
               ? "bg-gray-400"
               : "bg-blue-600"

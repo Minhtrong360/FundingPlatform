@@ -98,7 +98,7 @@ const HeroSection = () => {
   //         </p>
   //         <div className="mt-7 grid gap-3 w-full sm:inline-flex">
   //           <motion.a
-  //             className="hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
+  //             className="hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
   //             variants={containerVariants}
   //             onClick={handleClick}
   //           >
@@ -106,7 +106,7 @@ const HeroSection = () => {
   //             <span>→</span>
   //           </motion.a>
   //           <motion.a
-  //             className="hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
+  //             className="hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
   //             onClick={() =>
   //               navigate(`/founder/${"3ec3f142-f33c-4977-befd-30d4ce2b764d"}`)
   //             }
@@ -166,7 +166,7 @@ const HeroSection = () => {
             <span className="hidden sm:inline">&nbsp;</span>{" "}
             {/* Add spacing for small screens */}
             {/* <a
-              className="hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
+              className="hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
               onClick={() =>
                 navigate(`/founder/${"3ec3f142-f33c-4977-befd-30d4ce2b764d"}`)
               }

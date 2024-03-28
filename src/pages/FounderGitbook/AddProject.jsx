@@ -6,6 +6,8 @@ import ReactModal from "react-modal";
 // import { toast } from "react-toastify";
 import AlertMsg from "../../components/AlertMsg";
 import { Tooltip, message } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import { Radio } from "antd";
 
 const Modal = ({
   isOpen,
@@ -15,7 +17,7 @@ const Modal = ({
   updatedProjects,
   setUpdatedProjects,
 }) => {
-  const [projectName, setProjectName] = useState("SpaceX");
+  const [projectName, setProjectName] = useState("");
   const [privateProject, setPrivateProject] = useState(false); // Use a flag to indicate private project
   const [isPrivateDisabled, setIsPrivateDisabled] = useState(false); // New state for disabling private option
   const { user } = useAuth();
@@ -81,96 +83,55 @@ const Modal = ({
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
       <AlertMsg />
-      <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
-        <h3 className="text-lg font-medium leading-6 text-gray-800 capitalize">
+      <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
+        <h3 className="text-md font-medium leading-6 text-gray-800 capitalize">
           Project Name
         </h3>
-        <p className="mt-2 text-sm text-gray-500 ">Create a new project</p>
-        <form className="mt-4">
-          <label className="block mt-3">
+        <form className="mt-2">
+          <label className="block mt-2">
             <input
               type="text"
               name="projectName"
-              placeholder="SpaceX"
+              placeholder=""
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
-              className="block w-full px-4 py-3 text-sm text-gray-700 border rounded-md"
+              className="block w-full px-4 py-3 text-sm text-gray-200 border-gray-200 rounded-md"
             />
           </label>
 
           <div className="mt-4">
-            <label className="block text-sm text-gray-700">Project Type:</label>
-            <div className="mt-2">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="projectType"
-                  value="public"
-                  checked={!privateProject} // Check if it's not a private project
-                  onChange={() => setPrivateProject(false)} // Disable private when switching to public
-                  className="form-radio text-blue-600 h-5 w-5"
-                />
-                <span className="ml-2 text-gray-700">Public</span>
-              </label>
-
-              {isPrivateDisabled ? (
-                <Tooltip
-                  title={`You need to upgrade your plan to create a private project`}
-                  color="gray"
-                  zIndex={20000}
-                >
-                  <label className="inline-flex items-center ml-6">
-                    <input
-                      type="radio"
-                      name="projectType"
-                      value="private"
-                      checked={privateProject}
-                      onChange={() => setPrivateProject(true)}
-                      disabled={isPrivateDisabled}
-                      className={`form-radio h-5 w-5 ${
-                        isPrivateDisabled
-                          ? "border-gray-300"
-                          : "border-gray-600"
-                      }`}
-                    />
-                    <span className="ml-2 text-gray-300">Private</span>
-                  </label>
+            <div className="mt-4">
+              <Radio.Group onChange={(e) => setPrivateProject(e.target.value === "private")} value={privateProject ? "private" : "public"}>
+                <Tooltip title="This project will be visible to everyone" zIndex={20000}>
+                  <Radio value="public">Public</Radio>
                 </Tooltip>
-              ) : (
-                <>
-                  <label className="inline-flex items-center ml-6">
-                    <input
-                      type="radio"
-                      name="projectType"
-                      value="private"
-                      checked={privateProject}
-                      onChange={() => setPrivateProject(true)}
-                      disabled={isPrivateDisabled}
-                      className={`form-radio h-5 w-5 ${
-                        isPrivateDisabled
-                          ? "border-gray-300"
-                          : "border-gray-600"
-                      }`}
-                    />
-                    <span className="ml-2 text-gray-700">Private</span>
-                  </label>
-                </>
-              )}
+                {isPrivateDisabled ? (
+                  <Tooltip
+                    title={`You need to upgrade your plan to create a private project`}
+                    color="gray"
+                    zIndex={20000}
+                  >
+                    <Radio value="private" disabled>Private</Radio>
+                  </Tooltip>
+                ) : (
+                  <Radio value="private">Private</Radio>
+                )}
+              </Radio.Group>
             </div>
           </div>
 
-          <div className="mt-4 flex items-center gap-10">
+          <div className="mt-4 flex items-center justify-center gap-10">
             <button
               type="button"
               onClick={onClose}
-              className="w-full px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+              className="text-black bg-white hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-md text-sm px-3 py-2 text-center border border-gray-200"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={handleCreate}
-              className="w-full px-3 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
+              className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus"
             >
               Create
             </button>
@@ -267,7 +228,7 @@ export default function AddProject({ updatedProjects, setUpdatedProjects }) {
           zIndex={20000}
         >
           <button
-            className={`text-white opacity-50 bg-gray-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
+            className={`text-white opacity-50 bg-gray-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
             onClick={handleClick}
           >
             Add new
@@ -276,9 +237,10 @@ export default function AddProject({ updatedProjects, setUpdatedProjects }) {
       ) : (
         <>
           <button
-            className={`text-white bg-blue-600 "hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
+            className={`text-white bg-blue-600 "hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
             onClick={handleClick}
-          >
+          > 
+            <PlusOutlined className="mr-1" />
             Add new
           </button>
         </>
@@ -289,8 +251,9 @@ export default function AddProject({ updatedProjects, setUpdatedProjects }) {
         ariaHideApp={false}
         style={{
           overlay: {
-            backgroundColor: "gray", // Màu nền overlay
-            position: "fixed", // Để nền overlay cố định
+            backdropFilter: "blur(0.5px)", // Add backdrop filter for blur effect
+            backgroundColor: "rgba(0, 0, 0, 0.3)", // Adjust background color with transparency
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
             top: 0,
             left: 0,
             right: 0,
@@ -336,7 +299,7 @@ export default function AddProject({ updatedProjects, setUpdatedProjects }) {
         }}
       >
         <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-          <div className="relative p-8 bg-white w-full  m-auto flex-col flex rounded-lg">
+          <div className="relative p-8 bg-white w-full  m-auto flex-col flex rounded-md">
             <PricingSection />
             <div className="mt-4 flex items-center gap-10">
               <button

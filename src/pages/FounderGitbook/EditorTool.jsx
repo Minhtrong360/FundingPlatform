@@ -513,7 +513,7 @@ export default function EditorTool() {
             }}
           >
             <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-              <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
+              <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
                 <h2 className="mt-2 text-base text-gray-500 ">
                   {" "}
                   Our admins need to see all of your project, include your
@@ -568,7 +568,7 @@ export default function EditorTool() {
             }}
           >
             <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-              <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
+              <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
                 <h2 className="text-lg font-medium leading-6 text-gray-800 capitalize">
                   Enter YouTube Video URL
                 </h2>

@@ -116,7 +116,7 @@ function MarketDataAI() {
 
   return (
     <div className="flex items-start justify-center  px-4 pt-4  text-center sm:block sm:p-0">
-      <div className="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl darkBg sm:my-8 sm:w-full sm:max-w-sm sm:p-6 sm:align-middle">
+      <div className="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-md shadow-xl darkBg sm:my-8 sm:w-full sm:max-w-sm sm:p-6 sm:align-middle">
         <h3
           className="text-lg font-medium leading-6 text-gray-800 capitalize darkTextWhite"
           id="modal-title"

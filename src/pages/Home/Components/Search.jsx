@@ -66,13 +66,13 @@ const Search = ({
           </h3>
           <div className="mt-7 sm:mt-12 mx-auto max-w-xl relative">
             <form onSubmit={handleSearchSubmit}>
-              <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100 darkBgBlue darkBorderGray darkShadowGray">
+              <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-md shadow-lg shadow-gray-100 darkBgBlue darkBorderGray darkShadowGray">
                 <div className="flex-[1_0_0%]">
                   <input
                     type="text"
                     name="hs-search-article-1"
                     id="hs-search-article-1"
-                    className=" px-4 block w-full h-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
+                    className=" px-4 block w-full h-full border-transparent rounded-md focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
                     placeholder="Search profiles"
                     value={searchTerm}
                     onChange={handleSearchChange} // Thêm sự kiện onChange này
@@ -81,7 +81,7 @@ const Search = ({
                 <div className="flex-[0_0_auto]">
                   <button
                     type="submit"
-                    className="w-[46px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
+                    className="w-[46px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -114,7 +114,7 @@ const Search = ({
           <div className="mt-2 sm:mt-4 hidden lg:flex flex-wrap justify-center">
             <button
               onClick={() => handleIndustryClick("")}
-              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
+              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
                 !selectedIndustry
                   ? "bg-blue-600 text-white"
                   : "bg-white text-gray-800 hover:bg-gray-50"
@@ -127,7 +127,7 @@ const Search = ({
               <button
                 key={index}
                 onClick={() => handleIndustryClick(industry)}
-                className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
+                className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
                   selectedIndustry === industry
                     ? "bg-blue-600 text-white"
                     : "bg-white text-gray-800 hover:bg-gray-50"
@@ -140,7 +140,7 @@ const Search = ({
           <div className="mt-4 lg:hidden overflow-x-auto flex flex-nowrap">
             <button
               onClick={() => handleIndustryClick("")}
-              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
+              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
                 !selectedIndustry
                   ? "bg-blue-600 text-white"
                   : "bg-white text-gray-800 hover:bg-gray-50"
@@ -153,7 +153,7 @@ const Search = ({
               <button
                 key={index}
                 onClick={() => handleIndustryClick(industry)}
-                className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
+                className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
                   selectedIndustry === industry
                     ? "bg-blue-600 text-white"
                     : "bg-white text-gray-800 hover:bg-gray-50"

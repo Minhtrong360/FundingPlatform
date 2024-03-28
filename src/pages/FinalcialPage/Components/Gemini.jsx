@@ -265,13 +265,13 @@ const Gemini = ({
           Build your financial model with AI
         </h2>
         <form onSubmit={handleSendMessage} className="flex justify-center">
-          <div className="sm:w-[50%] w-[100%] relative z-10 flex space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100 darkBgBlue darkBorderGray darkShadowGray">
+          <div className="sm:w-[50%] w-[100%] relative z-10 flex space-x-3 p-3 bg-white border rounded-md shadow-lg shadow-gray-100 darkBgBlue darkBorderGray darkShadowGray">
             <div className="flex-[1_0_0%]">
               <input
                 type="text"
                 name="hs-search-article-1"
                 id="hs-search-article-1"
-                className=" px-4 block w-full h-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
+                className=" px-4 block w-full h-full border-transparent rounded-md focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Your business model"
@@ -281,7 +281,7 @@ const Gemini = ({
             <div className="flex-[0_0_auto]">
               <button
                 type="submit"
-                className="w-[64px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
+                className="w-[64px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
               >
                 <SendOutlined />
               </button>

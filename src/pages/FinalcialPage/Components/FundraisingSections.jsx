@@ -231,7 +231,7 @@ const FundraisingSection = ({
             ></label>
             <select
               id="selectedFundraising"
-              className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+              className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
               value={selectedFundraisingId}
               onChange={handleSelectChange}
             >
@@ -367,7 +367,7 @@ const FundraisingSection = ({
                 </div>
                 <div className="flex justify-end items-center">
                   <button
-                    className="bg-red-600 text-white py-1 px-2 rounded"
+                    className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
                     onClick={() => removeFundraisingInput(input?.id)}
                   >
                     Remove
@@ -377,14 +377,14 @@ const FundraisingSection = ({
             ))}
 
           <button
-            className="bg-blue-600 text-white py-1 px-2 text-sm rounded mt-4 mr-4"
+            className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
             onClick={addNewFundraisingInput}
           >
             Add new
           </button>
 
           <button
-            className="bg-blue-600 text-white py-1 px-2 text-sm rounded mt-4"
+            className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
             onClick={handleSave}
           >
             Save changes

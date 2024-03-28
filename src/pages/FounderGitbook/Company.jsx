@@ -7,6 +7,7 @@ import AlertMsg from "../../components/AlertMsg";
 import industries from "../../components/Industries";
 import MultiSelectField from "../../components/MultiSelectField";
 import { useEffect, useState } from "react";
+import { formatNumber } from "../../features/CostSlice";
 
 function Company({
   handleSubmit,
@@ -14,6 +15,7 @@ function Company({
   handleInputChange,
   handleIndustryChange,
   typeOfferingOptions,
+  handleRoundChange,
 }) {
   const [projectImageUrl, setProjectImageUrl] = useState(formData.project_url); // State to store project image URL
   const [cardImageUrl, setCardImageUrl] = useState(formData.card_url); // State to store card image URL
@@ -228,6 +230,46 @@ function Company({
                   type="text"
                   required
                 />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                  <InputField
+                    label="Team size"
+                    id="teamSize"
+                    name="teamSize"
+                    value={formData.teamSize}
+                    onChange={handleInputChange}
+                    type="text"
+                    required
+                  />
+                  <InputField
+                    label="No. years in operation"
+                    id="operationTime"
+                    name="operationTime"
+                    value={formData.operationTime}
+                    onChange={handleInputChange}
+                    type="text"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                  <InputField
+                    label="Amount raised"
+                    id="amountRaised"
+                    name="amountRaised"
+                    value={formatNumber(formData.amountRaised)}
+                    onChange={handleInputChange}
+                    type="text"
+                    required
+                  />
+                  <MultiSelectField
+                    label="Round"
+                    id="round"
+                    name="round"
+                    OPTIONS={["Pre-seed", "Seed"]}
+                    selectedItems={formData.round}
+                    setSelectedItems={handleRoundChange}
+                    type="text"
+                  />
+                </div>
 
                 <TextAreaField
                   label="Company description"

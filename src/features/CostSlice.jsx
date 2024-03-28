@@ -55,15 +55,19 @@ export const formatNumber = (value) => {
 };
 
 export const parseNumber = (value) => {
-  // Xóa dấu phẩy trong chuỗi giá trị
-  const numberString = value.replace(/,/g, "");
-  // Chuyển đổi chuỗi thành số
-  const parsedNumber = parseFloat(numberString);
-  // Kiểm tra nếu giá trị không phải là một số hợp lệ, trả về 0
-  if (isNaN(parsedNumber)) {
-    return 0;
+  if (typeof value === "string") {
+    // Xóa dấu phẩy trong chuỗi giá trị
+    const numberString = value.replace(/,/g, "");
+    // Chuyển đổi chuỗi thành số
+    const parsedNumber = parseFloat(numberString);
+    // Kiểm tra nếu giá trị không phải là một số hợp lệ, trả về 0
+    if (isNaN(parsedNumber)) {
+      return 0;
+    }
+    return parsedNumber;
+  } else {
+    return value;
   }
-  return parsedNumber;
 };
 
 export const calculateCostData = (tempCostInput, numberOfMonths) => {

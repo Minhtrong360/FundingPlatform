@@ -16,6 +16,7 @@ import MultiSelectField from "../../components/MultiSelectField";
 import SelectField from "../../components/SelectField";
 
 import { IconButton } from "@mui/material";
+import { formatDate } from "../../features/DurationSlice";
 
 function NewUserPage() {
   const { user } = useAuth();
@@ -34,7 +35,7 @@ function NewUserPage() {
     avatar: null,
     interested_in: ["Technology"],
     investment_size: ["$0-$10,000"],
-    country: "US",
+    country: ["US"],
     subscription_status: "",
     type: "Individual", // Default value for type
     revenueStatusWanted: "Pre-revenue",
@@ -43,11 +44,19 @@ function NewUserPage() {
     twitter: "",
     linkedin: "",
     next_billing_date: "",
+    institutionalName: "",
+    institutionalWebsite: "",
   });
   const handleIndustryChange = (selectedItems) => {
     setUserData({
       ...userData,
       interested_in: selectedItems,
+    });
+  };
+  const handleCountryChange = (selectedItems) => {
+    setUserData({
+      ...userData,
+      country: selectedItems,
     });
   };
 
@@ -99,6 +108,8 @@ function NewUserPage() {
             twitter: data.twitter || "",
             linkedin: data.linkedin || "",
             next_billing_date: data.next_billing_date || "",
+            institutionalName: data.institutionalName || "",
+            institutionalWebsite: data.institutionalWebsite || "",
           });
         }
       } catch (error) {
@@ -161,10 +172,8 @@ function NewUserPage() {
     setIsLoading(true);
     try {
       if (!navigator.onLine) {
-        message.error("No internet access.");
-        return;
+        throw new Error("No internet access.");
       }
-
       let avatarUrl = userData.avatar;
       if (avatarUrl && avatarUrl.startsWith("data:image")) {
         const file = dataURItoFile(avatarUrl, "img");
@@ -174,17 +183,14 @@ function NewUserPage() {
         }
       }
 
-      // Find all companies with revenueStatus matching userData.revenueStatusWanted
       const { data: companies, error: companyError } = await supabase
         .from("company")
         .select("*")
         .eq("revenueStatus", userData.revenueStatusWanted);
 
       if (companyError) {
-        throw companyError;
+        throw new Error("Error fetching companies: " + companyError.message);
       }
-
-      // Define conditions for filtering companies
       const industryCondition = userData.interested_in;
       const investmentSizeCondition = userData.investment_size.map((size) => {
         const min = parseInt(
@@ -196,7 +202,6 @@ function NewUserPage() {
         return { min, max };
       });
 
-      // Filter companies by industry and investment size
       const filteredCompanies = companies.filter(
         (company) =>
           company.industry.some((industry) =>
@@ -207,83 +212,72 @@ function NewUserPage() {
               company.ticket_size >= size.min && company.ticket_size <= size.max
           )
       );
-
-      // Check if the user has already been notified about these companies
       const notifications = await supabase
         .from("notifications")
         .select("*")
         .eq("receivedUser", userData.email);
-
       const notifiedCompanies = notifications.data.flatMap((notification) =>
         JSON.parse(notification.content)
       );
-
-      // Trích xuất danh sách tên công ty từ các đối tượng JSON
       const notifiedCompanyNames = notifiedCompanies.map(
         (company) => company.name
       );
-
-      // Lọc ra các công ty chưa được thông báo
       const newCompanies = filteredCompanies.filter(
         (company) => !notifiedCompanyNames.includes(company.name)
       );
-
-      // Prepare notification content with array of companies
       const notificationContent = newCompanies.map((company) => ({
         id: company.id,
         name: company.name,
         project_id: company.project_id,
       }));
-
+      let currentNotificationCount = userData.notification_count;
       if (notificationContent.length > 0) {
-        // Add new notifications for the user
         const notificationsToInsert = [
           {
             receivedUser: userData.email,
-            content: JSON.stringify(notificationContent), // Convert content to JSON string
+            content: JSON.stringify(notificationContent),
           },
         ];
 
-        // Insert new notifications into the notifications table
         await supabase.from("notifications").insert(notificationsToInsert);
-
-        const currentNotificationCount = userData.notification_count + 1;
-
-        // Update user data in Supabase
-        const { error } = await supabase
-          .from("users")
-          .update({
-            full_name: userData.full_name,
-            email: userData.email,
-            plan: userData.plan,
-            subscribe: userData.subscribe,
-            company: userData.company,
-            company_website: userData.company_website,
-            detail: userData.detail,
-            roll: userData.roll,
-            avatar: avatarUrl,
-            interested_in: userData.interested_in,
-            investment_size: userData.investment_size,
-            country: userData.country,
-            type: userData.type,
-            revenueStatusWanted: userData.revenueStatusWanted,
-            notification_count: currentNotificationCount,
-            facebook: userData.facebook,
-            twitter: userData.twitter,
-            linkedin: userData.linkedin,
-            next_billing_date: userData.next_billing_date,
-          })
-          .eq("id", user.id);
-
-        if (error) {
-          throw error;
-        }
-
-        message.success("Updated successfully!");
+        currentNotificationCount = userData.notification_count + 1;
       }
+
+      const { error } = await supabase
+        .from("users")
+        .update({
+          full_name: userData.full_name,
+          email: userData.email,
+          plan: userData.plan,
+          subscribe: userData.subscribe,
+          company: userData.company,
+          company_website: userData.company_website,
+          detail: userData.detail,
+          roll: userData.roll,
+          avatar: avatarUrl,
+          interested_in: userData.interested_in,
+          investment_size: userData.investment_size,
+          country: userData.country,
+          type: userData.type,
+          revenueStatusWanted: userData.revenueStatusWanted,
+          notification_count: currentNotificationCount,
+          facebook: userData.facebook,
+          twitter: userData.twitter,
+          linkedin: userData.linkedin,
+          next_billing_date: userData.next_billing_date,
+          institutionalName: userData.institutionalName,
+          institutionalWebsite: userData.institutionalWebsite,
+        })
+        .eq("id", user.id);
+
+      if (error) {
+        throw new Error("Error updating user data: " + error.message);
+      }
+
+      message.success("Updated successfully!");
     } catch (error) {
       message.error(error.message);
-      console.error("Error updating user data:", error);
+      console.log("Error handling form submission:", error);
     }
     setIsLoading(false);
   };
@@ -350,6 +344,11 @@ function NewUserPage() {
   }, [avatarUrl]);
 
   const [currentTab, setCurrentTab] = useState("user-info");
+
+  const capitalizeFirstLetter = (str) => {
+    if (!str) return ""; // Bảo vệ trường hợp giá trị null hoặc undefined
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
 
   return (
     <>
@@ -455,15 +454,23 @@ function NewUserPage() {
                         />
                       </div>
                       <div className="mt-4">
-                        <SelectField
-                          label="Country"
-                          id="country"
-                          name="country"
-                          value={userData.country}
-                          onChange={handleInputChange}
-                          required
-                          options={countries} // Thay thế bằng danh sách các tùy chọn bạn muốn
-                        />
+                        <label
+                          htmlFor="roll"
+                          className="block mb-2 text-sm text-gray-700 font-medium darkTextWhite"
+                        >
+                          Role
+                        </label>
+                        <select
+                          id="roll"
+                          name="roll"
+                          value={userData.roll}
+                          onChange={handleRollChange}
+                          className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus:ring-gray-600"
+                        >
+                          <option value="Founder">Founder</option>
+                          <option value="Investor">Investor</option>
+                          <option value="Other">Other</option>
+                        </select>
                       </div>
                     </div>
                     <div className="flex flex-col">
@@ -487,24 +494,14 @@ function NewUserPage() {
                           type="text"
                         />
                       </div>
-                      <div className="mt-4">
-                        <label
-                          htmlFor="roll"
-                          className="block mb-2 text-sm text-gray-700 font-medium darkTextWhite"
-                        >
-                          Role
-                        </label>
-                        <select
-                          id="roll"
-                          name="roll"
-                          value={userData.roll}
-                          onChange={handleRollChange}
-                          className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus:ring-gray-600"
-                        >
-                          <option value="Founder">Founder</option>
-                          <option value="Investor">Investor</option>
-                          <option value="Other">Other</option>
-                        </select>
+                      <div className="mt-4" style={{ visibility: "hidden" }}>
+                        <SelectField
+                          label="Country"
+                          id="country"
+                          name="country"
+                          required
+                          options={countries} // Thay thế bằng danh sách các tùy chọn bạn muốn
+                        />
                       </div>
                     </div>
                   </div>
@@ -532,30 +529,6 @@ function NewUserPage() {
                             selectedItems={userData.investment_size}
                             setSelectedItems={handleInvestmentChange}
                             required
-                          />
-                        </div>
-                        <div className="mt-4">
-                          <SelectField
-                            label="Country"
-                            id="country"
-                            name="country"
-                            value={userData.country}
-                            onChange={handleInputChange}
-                            required
-                            options={countries} // Thay thế bằng danh sách các tùy chọn bạn muốn
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-col">
-                        <div className="mt-4">
-                          <SelectField
-                            label="Which company do you like?"
-                            id="revenueStatusWanted"
-                            name="revenueStatusWanted"
-                            value={userData.revenueStatusWanted}
-                            onChange={handleInputChange}
-                            required
-                            options={["Pre-revenue", "Post-revenue"]} // Thay thế bằng danh sách các tùy chọn bạn muốn
                           />
                         </div>
                         <div className="mt-4">
@@ -596,11 +569,67 @@ function NewUserPage() {
                           </div>
                         </div>
                       </div>
+                      <div className="flex flex-col">
+                        <div className="mt-4">
+                          <SelectField
+                            label="Which company do you like?"
+                            id="revenueStatusWanted"
+                            name="revenueStatusWanted"
+                            value={userData.revenueStatusWanted}
+                            onChange={handleInputChange}
+                            required
+                            options={["Pre-revenue", "Post-revenue"]} // Thay thế bằng danh sách các tùy chọn bạn muốn
+                          />
+                        </div>
+                        <div className="mt-4">
+                          <MultiSelectField
+                            label="Country"
+                            id="country"
+                            name="country"
+                            selectedItems={userData.country}
+                            setSelectedItems={handleCountryChange}
+                            required
+                            OPTIONS={countries} // Thay thế bằng danh sách các tùy chọn bạn muốn
+                          />
+                        </div>
+                      </div>
                     </div>
                   )}
 
+                  {userData.type === "Institutional" &&
+                    userData.roll === "Investor" && (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div className="flex flex-col">
+                          <div className="mt-4">
+                            <InputField
+                              label="Institutional name"
+                              id="institutionalName"
+                              name="institutionalName"
+                              value={userData.institutionalName}
+                              onChange={handleInputChange}
+                              type="text"
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div className="flex flex-col">
+                          <div className="mt-4">
+                            <InputField
+                              label="Institutional Website"
+                              id="institutionalWebsite"
+                              name="institutionalWebsite"
+                              value={userData.institutionalWebsite}
+                              onChange={handleInputChange}
+                              type="text"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                   <div className="mt-4">
-                    <h3 className="text-sm">Social Profile</h3>
+                    <h3 className="text-sm mt-4">Social Profile</h3>
                     <div className="flex items-center mt-2">
                       <FacebookIcon />
                       <input
@@ -666,7 +695,9 @@ function NewUserPage() {
                           label="Subscription status"
                           id="subscription_status"
                           name="subscription_status"
-                          value={userData.subscription_status}
+                          value={capitalizeFirstLetter(
+                            userData.subscription_status
+                          )}
                           type="text"
                           disabled
                         />
@@ -678,35 +709,25 @@ function NewUserPage() {
                       </div>
                     </div>
                     <div className="flex flex-col">
-                      <Tooltip title="YYYY-MM-DD">
+                      <Tooltip title="DD-MM-YYYY">
                         <div className="mt-4">
                           <InputField
                             label="Subscribe date"
                             id="subscribe"
                             name="subscribe"
-                            value={
-                              new Date(userData.subscribe)
-                                .toISOString()
-                                .split("T")[0]
-                            }
-                            type="text"
+                            value={formatDate(userData.subscribe)}
                             disabled
                           />
                         </div>
                       </Tooltip>
 
-                      <Tooltip title="YYYY-MM-DD">
+                      <Tooltip title="DD-MM-YYYY">
                         <div className="mt-4">
                           <InputField
                             label="Next billing date"
                             id="next_billing_date"
                             name="next_billing_date"
-                            value={
-                              new Date(userData.next_billing_date)
-                                .toISOString()
-                                .split("T")[0]
-                            }
-                            type="text"
+                            value={formatDate(userData.next_billing_date)}
                             disabled
                           />
                         </div>

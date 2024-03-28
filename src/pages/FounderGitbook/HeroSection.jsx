@@ -149,9 +149,48 @@ const HeroSection = ({
               </span>
               <span className="text-sm font-semibold text-gray-800 truncate pl-1">
                 {" "}
-                {button3Text}
+                ${formatNumber(button3Text)}
               </span>
             </div>
+
+            <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
+              <span className="text-sm font-medium text-gray-600">
+                Amount raised:
+              </span>
+              <span className="text-sm font-semibold text-gray-800 truncate pl-1">
+                {" "}
+                ${formatNumber(formData?.amountRaised)}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
+              <span className="text-sm font-medium text-gray-600">
+                Team size:
+              </span>
+              <span className="text-sm font-semibold text-gray-800 truncate pl-1">
+                {" "}
+                {formData.teamSize}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
+              <span className="text-sm font-medium text-gray-600">Round:</span>
+              <span className="text-sm font-semibold text-gray-800 truncate pl-1">
+                {" "}
+                {formData.round.join(", ")}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
+              <span className="text-sm font-medium text-gray-600">
+                Number of year in operation:
+              </span>
+              <span className="text-sm font-semibold text-gray-800 truncate pl-1">
+                {" "}
+                {formData.operationTime}
+              </span>
+            </div>
+
             <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
               <span className="text-sm font-medium text-gray-600">Offer:</span>
               <span className="text-sm font-semibold text-gray-800 truncate pl-1">

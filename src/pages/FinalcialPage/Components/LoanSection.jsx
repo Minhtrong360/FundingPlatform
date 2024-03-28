@@ -109,13 +109,48 @@ const LoanSection = ({
     dispatch(setLoanTableData(tableData));
   }, [loanInputs, numberOfMonths, renderLoanForm]);
 
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+
+  const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  const startingYear = startYear; // Năm bắt đầu từ 24
+
   const loanColumns = [
-    { fixed: "left", title: "Type", dataIndex: "type", key: "type" },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `Month ${i + 1}`,
-      key: `Month ${i + 1}`,
-    })),
+    {
+      fixed: "left",
+      title: <div>Type</div>,
+      dataIndex: "type",
+      key: "type",
+    },
+    ...Array.from({ length: numberOfMonths }, (_, i) => {
+      const monthIndex = (startingMonth + i - 1) % 12;
+      const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+      return {
+        title: `${months[monthIndex]}/${year}`,
+        dataIndex: `Month ${i + 1}`,
+        key: `Month ${i + 1}`,
+        onCell: (record) => ({
+          style: {
+            borderRight: "1px solid #f0f0f0", // Add border right style
+          },
+        }),
+      };
+    }),
   ];
 
   useEffect(() => {

@@ -112,18 +112,48 @@ const CostSection = ({
   }, [tempCostInput, numberOfMonths]);
 
   // Function to generate columns for the cost table
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+
+  const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  const startingYear = startYear; // Năm bắt đầu từ 24
+
   const costColumns = [
     {
       fixed: "left",
-      title: <div style={{ paddingLeft: '50px', paddingRight: '50px' }}>Cost_Name</div>,
+      title: <div>Cost name</div>,
       dataIndex: "costName",
       key: "costName",
     },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `month${i + 1}`,
-      key: `month${i + 1}`,
-    })),
+    ...Array.from({ length: numberOfMonths }, (_, i) => {
+      const monthIndex = (startingMonth + i - 1) % 12;
+      const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+      return {
+        title: `${months[monthIndex]}/${year}`,
+        dataIndex: `month${i + 1}`,
+        key: `month${i + 1}`,
+        onCell: (record) => ({
+          style: {
+            borderRight: "1px solid #f0f0f0", // Add border right style
+          },
+        }),
+      };
+    }),
   ];
 
   // State for cost chart

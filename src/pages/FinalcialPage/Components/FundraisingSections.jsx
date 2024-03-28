@@ -71,18 +71,48 @@ const FundraisingSection = ({
     setTempFundraisingInputs(newInputs);
   };
 
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+
+  const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  const startingYear = startYear; // Năm bắt đầu từ 24
+
   const fundraisingColumns = [
     {
       fixed: "left",
-      title: "Fundraising Activities",
+      title: <div>Fundraising Activities</div>,
       dataIndex: "name",
       key: "name",
     },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `month${i + 1}`,
-      key: `month${i + 1}`,
-    })),
+    ...Array.from({ length: numberOfMonths }, (_, i) => {
+      const monthIndex = (startingMonth + i - 1) % 12;
+      const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+      return {
+        title: `${months[monthIndex]}/${year}`,
+        dataIndex: `month${i + 1}`,
+        key: `month${i + 1}`,
+        onCell: (record) => ({
+          style: {
+            borderRight: "1px solid #f0f0f0", // Add border right style
+          },
+        }),
+      };
+    }),
   ];
 
   const [fundraisingChart, setFundraisingChart] = useState({

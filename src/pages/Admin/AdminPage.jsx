@@ -4,18 +4,10 @@ import { useAuth } from "../../context/AuthContext";
 import AnnouncePage from "../../components/AnnouncePage";
 import { useNavigate } from "react-router-dom";
 // import { toast } from "react-toastify";
-import SideBar from "../../components/SideBar";
-import Header from "../Home/Header";
-import { message, Table, Space, Button } from "antd";
 
-function formatDate(inputDateString) {
-  const dateObject = new Date(inputDateString);
-  const day = String(dateObject.getDate()).padStart(2, "0");
-  const month = String(dateObject.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0, nên cộng thêm 1
-  const year = dateObject.getFullYear();
-  const formattedDate = `${day}/${month}/${year}`;
-  return formattedDate;
-}
+import Header from "../Home/Header";
+import { message, Table, Button } from "antd";
+import { formatDate } from "../../features/DurationSlice";
 
 function AdminPage() {
   const { user } = useAuth();
@@ -230,6 +222,8 @@ function AdminPage() {
                     pagination={false}
                     rowKey="id"
                     size="small"
+                    scroll={{ x: "max-content" }}
+                    bordered
                   />
                 </div>
               </div>

@@ -31,6 +31,9 @@ const CustomerSection = ({
     (state) => state.customer
   );
 
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
   const [tempCustomerInputs, setTempCustomerInputs] = useState(customerInputs);
 
   useEffect(() => {
@@ -202,16 +205,37 @@ const CustomerSection = ({
     })
     .flat(); // Flatten the array of arrays to a single array
 
-    const customerColumns = [
-      {
-        fixed: "left",
-        title: <div style={{ paddingLeft: '5px', paddingRight: '5px' }}>Channel_Name</div>,
-        dataIndex: "channelName",
-        key: "channelName",
-        width: 500,
-      },
-      ...Array.from({ length: numberOfMonths }, (_, i) => ({
-        title: `Month_${i + 1}`,
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  const startingYear = startYear; // Năm bắt đầu từ 24
+
+  const customerColumns = [
+    {
+      fixed: "left",
+      title: <div>Channel_Name</div>,
+      dataIndex: "channelName",
+      key: "channelName",
+      width: 500,
+    },
+    ...Array.from({ length: numberOfMonths }, (_, i) => {
+      const monthIndex = (startingMonth + i - 1) % 12;
+      const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+      return {
+        title: `${months[monthIndex]}/${year}`,
         dataIndex: `month${i + 1}`,
         key: `month${i + 1}`,
         onCell: (record) => ({
@@ -219,9 +243,10 @@ const CustomerSection = ({
             borderRight: "1px solid #f0f0f0", // Add border right style
           },
         }),
-      })),
-    ];
-    
+      };
+    }),
+  ];
+
   useEffect(() => {
     const seriesData = tempCustomerGrowthData.map((channelData) => {
       return {
@@ -283,7 +308,6 @@ const CustomerSection = ({
             >
               Customer channel{" "}
             </h2>
-          
           </Tooltip>
           <div>
             <label

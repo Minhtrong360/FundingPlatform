@@ -213,12 +213,34 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     ),
   }));
 
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+
+  const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  const startingYear = startYear; // Năm bắt đầu từ 24
+
   const columns = [
     {
-      title: "Metric",
+      fixed: "left",
+      title: <div>Metric</div>,
       dataIndex: "metric",
       key: "metric",
-      fixed: "left", // Cố định ở bên trái của bảng
+
       render: (text, record) => ({
         children: (
           <div className={"md:whitespace-nowrap"}>
@@ -246,46 +268,50 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
         ),
       }),
     },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `Month ${i + 1}`,
-      key: `Month ${i + 1}`,
-      onCell: (record) => {
-        if (
-          record.metric === "Revenue" ||
-          record.metric === "Cost of Revenue" ||
-          record.metric === "Operating Expenses" ||
-          record.metric === "Additional expenses"
-        ) {
-          return {
-            style: {
-              borderRight: "1px solid #f0f0f0",
-            },
-          };
-        } else if (
-          record.metric === "Total Revenue" ||
-          record.metric === "Total COGS" ||
-          record.metric === "Net Revenue" ||
-          record.metric === "Gross Profit" ||
-          record.metric === "EBITDA" ||
-          record.metric === "Operating Costs" ||
-          record.metric === "Net Income"
-        ) {
-          return {
-            style: {
-              borderRight: "1px solid #f0f0f0",
-              fontWeight: "bold", // Add bold styling for Total Revenue
-            },
-          };
-        } else {
-          return {
-            style: {
-              borderRight: "1px solid #f0f0f0",
-            },
-          };
-        }
-      },
-    })),
+    ...Array.from({ length: numberOfMonths }, (_, i) => {
+      const monthIndex = (startingMonth + i - 1) % 12;
+      const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+      return {
+        title: `${months[monthIndex]}/${year}`,
+        dataIndex: `Month ${i + 1}`,
+        key: `Month ${i + 1}`,
+        onCell: (record) => {
+          if (
+            record.metric === "Revenue" ||
+            record.metric === "Cost of Revenue" ||
+            record.metric === "Operating Expenses" ||
+            record.metric === "Additional expenses"
+          ) {
+            return {
+              style: {
+                borderRight: "1px solid #f0f0f0",
+              },
+            };
+          } else if (
+            record.metric === "Total Revenue" ||
+            record.metric === "Total COGS" ||
+            record.metric === "Net Revenue" ||
+            record.metric === "Gross Profit" ||
+            record.metric === "EBITDA" ||
+            record.metric === "Operating Costs" ||
+            record.metric === "Net Income"
+          ) {
+            return {
+              style: {
+                borderRight: "1px solid #f0f0f0",
+                fontWeight: "bold", // Add bold styling for Total Revenue
+              },
+            };
+          } else {
+            return {
+              style: {
+                borderRight: "1px solid #f0f0f0",
+              },
+            };
+          }
+        },
+      };
+    }),
   ];
 
   let totalAssetValue = [];
@@ -498,6 +524,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   const years = divideMonthsIntoYears();
 
   // Function to generate table columns dynamically based on months in a year
+
   const generateTableColumns = (months) => [
     {
       title: "Metric",

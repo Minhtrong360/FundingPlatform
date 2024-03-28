@@ -138,7 +138,7 @@ function BlogPost({ articles, blogs }) {
 }
 
 function News() {
-  const [articles, setArticles] = useState([]);
+  // const [articles, setArticles] = useState([]);
   const [blogs, setBlogs] = useState([]);
   const [visibleArticles, setVisibleArticles] = useState(10); // Số lượng bài viết ban đầu hiển thị
 
@@ -149,27 +149,24 @@ function News() {
       try {
         setIsLoading(true);
 
-        let { data: articles, error: articleError } = await supabase
-          .from("articles")
-          .select("*")
-          .order("created_at", { ascending: false });
+        // let { data: articles, error: articleError } = await supabase
+        //   .from("articles")
+        //   .select("*")
+        //   .order("created_at", { ascending: false });
 
         let { data: blogs, error: blogError } = await supabase
           .from("blogs")
           .select("*")
           .order("created_at", { ascending: false });
 
-        if (articleError || blogError) {
-          console.log(
-            "Error fetching from Supabase:",
-            articleError || blogError
-          );
+        if (blogError) {
+          console.log("Error fetching from Supabase:", blogError);
           // Xử lý lỗi ở đây, ví dụ: hiển thị thông báo lỗi
           return;
         }
 
         setBlogs(blogs);
-        setArticles(articles);
+        // setArticles(articles);
       } catch (error) {
         console.error("An error occurred:", error);
         // Xử lý lỗi, ví dụ: hiển thị một thông báo hoặc thông báo lỗi thân thiện

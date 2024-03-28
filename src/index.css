@@ -62,7 +62,7 @@ code {
 
 .ant-table table {
   font-size: 12px;
-  white-space: nowrap;
+  white-space: noWrap;
 }
 
 .ant-select-lg {

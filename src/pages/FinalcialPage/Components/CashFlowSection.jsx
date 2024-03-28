@@ -313,9 +313,17 @@ function CashFlowSection({ numberOfMonths }) {
     return acc;
   }, []);
 
-  if (warningMessages) {
-    message.warning(warningMessages[0]);
-  }
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (warningMessages && isMounted) {
+      message.warning(warningMessages[0]);
+    }
+  }, [isMounted]);
 
   const positionDataWithNetIncome = [
     { key: " Operating Activities " },
@@ -417,6 +425,27 @@ function CashFlowSection({ numberOfMonths }) {
     ),
   }));
 
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+
+  const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  const startingYear = startYear; // Năm bắt đầu từ 24
+
   const positionColumns = [
     {
       title: "Metric",
@@ -458,45 +487,49 @@ function CashFlowSection({ numberOfMonths }) {
       //   },
       // }),
     },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `Month ${i + 1}`,
-      key: `Month ${i + 1}`,
-      onCell: (record) => {
-        if (
-          record.metric === " Operating Activities " ||
-          record.metric === " Investing Activities " ||
-          record.metric === " Financing Activities "
-        ) {
-          return {
-            style: {
-              borderRight: "1px solid #f0f0f0",
-            },
-          };
-        } else if (
-          record.metric === "CF Operations" ||
-          record.metric === " Operating Activities " ||
-          record.metric === "CF Investments" ||
-          record.metric === "CF Financing" ||
-          record.metric === "Net +/- in Cash" ||
-          record.metric === "Cash Begin" ||
-          record.metric === "Cash End"
-        ) {
-          return {
-            style: {
-              borderRight: "1px solid #f0f0f0",
-              fontWeight: "bold",
-            },
-          };
-        } else {
-          return {
-            style: {
-              borderRight: "1px solid #f0f0f0",
-            },
-          };
-        }
-      },
-    })),
+    ...Array.from({ length: numberOfMonths }, (_, i) => {
+      const monthIndex = (startingMonth + i - 1) % 12;
+      const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+      return {
+        title: `${months[monthIndex]}/${year}`,
+        dataIndex: `Month ${i + 1}`,
+        key: `Month ${i + 1}`,
+        onCell: (record) => {
+          if (
+            record.metric === " Operating Activities " ||
+            record.metric === " Investing Activities " ||
+            record.metric === " Financing Activities "
+          ) {
+            return {
+              style: {
+                borderRight: "1px solid #f0f0f0",
+              },
+            };
+          } else if (
+            record.metric === "CF Operations" ||
+            record.metric === " Operating Activities " ||
+            record.metric === "CF Investments" ||
+            record.metric === "CF Financing" ||
+            record.metric === "Net +/- in Cash" ||
+            record.metric === "Cash Begin" ||
+            record.metric === "Cash End"
+          ) {
+            return {
+              style: {
+                borderRight: "1px solid #f0f0f0",
+                fontWeight: "bold",
+              },
+            };
+          } else {
+            return {
+              style: {
+                borderRight: "1px solid #f0f0f0",
+              },
+            };
+          }
+        },
+      };
+    }),
   ];
 
   const [selectedChart, setSelectedChart] = useState("cash-flow-chart"); // State để lưu trữ biểu đồ được chọn

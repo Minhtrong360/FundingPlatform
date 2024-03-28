@@ -4,8 +4,8 @@ import { supabase } from "../../supabase";
 import image from "../Home/Components/founder&Business.jpg";
 import Header from "../Home/Header";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
-import { Avatar, Button } from "antd";
-import { TwitterOutlined } from "@ant-design/icons";
+import { Avatar } from "antd";
+import { formatDate } from "../../features/DurationSlice";
 
 const renderContentWithLineBreaks = (content) => {
   // Replace newline characters with <br> elements
@@ -63,7 +63,9 @@ function DetailBlog() {
                 <p className="text-sm font-semibold">
                   {blog.author ? blog.author : "BeeKrowd"}
                 </p>
-                <p className="text-sm text-gray-500">{blog.publish_date}</p>
+                <p className="text-sm text-gray-500">
+                  {formatDate(blog.publish_date)}
+                </p>
               </div>
               {/* <Button className="ml-auto" shape="circle" icon={<TwitterOutlined />} size="large">
           Tweet

@@ -9,15 +9,7 @@ import InvitedUserProject from "../../components/InvitedUserProject";
 import ProjectGiven from "../../components/ProjectGiven";
 import { Dropdown, Button, Menu, message, Table, Switch } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-
-function formatDate(inputDateString) {
-  const dateObject = new Date(inputDateString);
-  const day = String(dateObject.getDate()).padStart(2, "0");
-  const month = String(dateObject.getMonth() + 1).padStart(2, "0");
-  const year = dateObject.getFullYear();
-  const formattedDate = `${day}/${month}/${year}`;
-  return formattedDate;
-}
+import { formatDate } from "../../features/DurationSlice";
 
 function ProjectList({ projects }) {
   const { user } = useAuth();
@@ -225,168 +217,166 @@ function ProjectList({ projects }) {
                           Save
                         </Button>
                       </Menu.Item>
-                      <Menu.Item
-key="cancel">
-<Button onClick={() => setEditingProjectId(null)}>
-  Cancel
-</Button>
-</Menu.Item>
-</>
-) : (
-<>
-<Menu.Item key="edit">
-<Button onClick={() => handleEditClick(record)}>
-  Edit
-</Button>
-</Menu.Item>
-<Menu.Item key="delete">
-<Button
-  type="danger"
-  onClick={() => handleDelete(record.id)}
->
-  Delete
-</Button>
-</Menu.Item>
-<Menu.Item key="assign">
-<ProjectGiven
-  projectId={record.id}
-  setUpdatedProjects={setUpdatedProjects}
-  updatedProject={updatedProjects}
-/>
-</Menu.Item>
-</>
-)}
-</Menu>
-}
->
-<Button
-className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-onClick={(e) => e.preventDefault()}
->
-Actions <DownOutlined className="ml-2 -mr-0.5 h-4 w-4" />
-</Button>
-</Dropdown>
-) : (
-<Button
-onClick={() => handleProjectClick(record)}
-className={`w-[8em] bg-blue-600  text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
->
-{record.invited_user?.includes(user.email) &&
-record.collabs?.includes(user.email)
-? "Collaboration"
-: record.invited_user?.includes(user.email)
-? "View only"
-: record.collabs?.includes(user.email)
-? "Collaboration"
-: "Default Label"}
-</Button>
-)}
-</>
-),
-},
-{
-title: "Invite",
-dataIndex: "invite",
-key: "invite",
-render: (text, record) => (
-<td className="px-4 py-4 text-sm whitespace-nowrap">
-{record.status ? (
-""
-) : record.user_id === user.id ? (
-<InvitedUserProject projectId={record.id} />
-) : (
-""
-)}
-</td>
-),
-},
-];
+                      <Menu.Item key="cancel">
+                        <Button onClick={() => setEditingProjectId(null)}>
+                          Cancel
+                        </Button>
+                      </Menu.Item>
+                    </>
+                  ) : (
+                    <>
+                      <Menu.Item key="edit">
+                        <Button onClick={() => handleEditClick(record)}>
+                          Edit
+                        </Button>
+                      </Menu.Item>
+                      <Menu.Item key="delete">
+                        <Button
+                          type="danger"
+                          onClick={() => handleDelete(record.id)}
+                        >
+                          Delete
+                        </Button>
+                      </Menu.Item>
+                      <Menu.Item key="assign">
+                        <ProjectGiven
+                          projectId={record.id}
+                          setUpdatedProjects={setUpdatedProjects}
+                          updatedProject={updatedProjects}
+                        />
+                      </Menu.Item>
+                    </>
+                  )}
+                </Menu>
+              }
+            >
+              <Button
+                className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                onClick={(e) => e.preventDefault()}
+              >
+                Actions <DownOutlined className="ml-2 -mr-0.5 h-4 w-4" />
+              </Button>
+            </Dropdown>
+          ) : (
+            <Button
+              onClick={() => handleProjectClick(record)}
+              className={`w-[8em] bg-blue-600  text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+            >
+              {record.invited_user?.includes(user.email) &&
+              record.collabs?.includes(user.email)
+                ? "Collaboration"
+                : record.invited_user?.includes(user.email)
+                ? "View only"
+                : record.collabs?.includes(user.email)
+                ? "Collaboration"
+                : "Default Label"}
+            </Button>
+          )}
+        </>
+      ),
+    },
+    {
+      title: "Invite",
+      dataIndex: "invite",
+      key: "invite",
+      render: (text, record) => (
+        <td className="px-4 py-4 text-sm whitespace-nowrap">
+          {record.status ? (
+            ""
+          ) : record.user_id === user.id ? (
+            <InvitedUserProject projectId={record.id} />
+          ) : (
+            ""
+          )}
+        </td>
+      ),
+    },
+  ];
 
-const dataSource = updatedProjects.map((project, index) => ({
-...project,
-index,
-}));
+  const dataSource = updatedProjects.map((project, index) => ({
+    ...project,
+    index,
+  }));
 
-const handleProjectClick = async (project) => {
-try {
-const { data: companies, error } = await supabase
-.from("company")
-.select("id")
-.eq("project_id", project.id);
+  const handleProjectClick = async (project) => {
+    try {
+      const { data: companies, error } = await supabase
+        .from("company")
+        .select("id")
+        .eq("project_id", project.id);
 
-if (error) {
-throw error;
-}
+      if (error) {
+        throw error;
+      }
 
-if (companies.length > 0) {
-navigate(`/founder/${project.id}`);
-} else {
-navigate(`/company/${project.id}`);
-}
-} catch (error) {
-console.error("Error checking company:", error.message);
-}
-};
+      if (companies.length > 0) {
+        navigate(`/founder/${project.id}`);
+      } else {
+        navigate(`/company/${project.id}`);
+      }
+    } catch (error) {
+      console.error("Error checking company:", error.message);
+    }
+  };
 
-useEffect(() => {
-const fetchCurrentUser = async () => {
-try {
-if (!navigator.onLine) {
-message.error("No internet access.");
-return;
-}
-let { data: users, error } = await supabase
-.from("users")
-.select("*")
-.eq("id", user.id);
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        if (!navigator.onLine) {
+          message.error("No internet access.");
+          return;
+        }
+        let { data: users, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("id", user.id);
 
-if (error) {
-console.log("error", error);
-throw error;
-}
+        if (error) {
+          console.log("error", error);
+          throw error;
+        }
 
-setCurrentUser(users[0]);
-} catch (error) {
-message.error(error.message);
-console.error("Error fetching projects:", error);
-}
-};
+        setCurrentUser(users[0]);
+      } catch (error) {
+        message.error(error.message);
+        console.error("Error fetching projects:", error);
+      }
+    };
 
-if (user) {
-fetchCurrentUser();
-}
-}, [user]);
+    if (user) {
+      fetchCurrentUser();
+    }
+  }, [user]);
 
-return (
-<main className="w-full">
-<AlertMsg />
-<div className="flex justify-end mr-5 mb-5 items-end">
-<AddProject
-updatedProjects={updatedProjects}
-setUpdatedProjects={setUpdatedProjects}
-/>
-</div>
-<section className="container px-4 mx-auto">
-<div className="flex flex-col">
-<div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-<div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-<div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-md">
-<Table
-  columns={columns}
-  dataSource={dataSource}
-  pagination={false}
-  rowKey="id"
-  size="small"
-  bordered
-
-/>
-</div>
-</div>
-</div>
-</div>
-</section>
-</main>
-);
+  return (
+    <main className="w-full">
+      <AlertMsg />
+      <div className="flex justify-end mr-5 mb-5 items-end">
+        <AddProject
+          updatedProjects={updatedProjects}
+          setUpdatedProjects={setUpdatedProjects}
+        />
+      </div>
+      <section className="container px-4 mx-auto">
+        <div className="flex flex-col">
+          <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
+              <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
+                <Table
+                  columns={columns}
+                  dataSource={dataSource}
+                  pagination={false}
+                  rowKey="id"
+                  size="small"
+                  bordered
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
 }
 
 export default ProjectList;

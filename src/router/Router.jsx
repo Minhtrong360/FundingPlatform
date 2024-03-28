@@ -32,11 +32,11 @@ import AdminPage from "../pages/Admin/AdminPage";
 
 import PermissionRequired from "./PermissionRequired";
 import AnnouncePage from "../components/AnnouncePage";
-import NewProjectPosts from "../pages/Home/Components/NewProjectPosts";
 import PricingPage from "../pages/Home/Components/PricingPage";
-import NewUserPage from "../pages/UserProfile/NewUserPage";
 import FAQ from "../pages/Home/Components/FAQ";
 import DetailBlog from "../pages/News/DetailBlog";
+import StaticNews from "../pages/News/StaticNews";
+import NewProjectPosts from "../pages/StartUps.jsx/NewProjectPosts";
 function Router() {
   return (
     <>
@@ -135,7 +135,7 @@ function Router() {
 
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/admin" element={<AdminPage />} />
-        <Route path="/z" element={<NewUserPage />} />
+        <Route path="/example" element={<StaticNews />} />
         <Route path="/FAQ" element={<FAQ />} />
 
         <Route path="/loading" element={<ProgressBar isLoading={true} />} />

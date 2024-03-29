@@ -89,3 +89,19 @@ code {
 .ant-card {
   font-family: "Inter", sans-serif;
 }
+
+.ant-switch {
+  font-family: "Inter", sans-serif;
+}
+
+.ant-switch.ant-switch-checked {
+  background-color: #2563eb;
+}
+
+.ant-switch.ant-switch-unchecked {
+  background-color: rgb(209 213 219 /1);
+}
+
+.ant-switch-inner-unchecked {
+  color: black;
+}

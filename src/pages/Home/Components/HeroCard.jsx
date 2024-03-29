@@ -81,7 +81,7 @@ const HeroCard = () => {
       {/* Second card */}
       <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 mt-12 sm:mt-24">
         {/* Grid */}
-        <div className="grid lg:grid-cols-7 lg:gap-x-8 xl:gap-x-12 lg:items-center mt-64">
+        <div className="grid lg:grid-cols-7 lg:gap-x-8 xl:gap-x-12 lg:items-center mt-16 md:mt-64">
           {/* Video */}
           <div className="lg:col-span-4 order-2 lg:order-1">
             <video

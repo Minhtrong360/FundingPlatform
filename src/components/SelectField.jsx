@@ -1,10 +1,7 @@
 export default function SelectField({ label, id, options, ...rest }) {
   return (
     <div>
-      <label
-        htmlFor={id}
-        className="block mb-2 text-sm text-gray-700 darkTextWhite"
-      >
+      <label htmlFor={id} className="block mb-2 text-sm  darkTextWhite">
         {label}
       </label>
       <select

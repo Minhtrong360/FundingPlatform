@@ -15,7 +15,6 @@ const HeroSignUp = () => {
   const auth = useAuth();
   const navigate = useNavigate();
   const signInWitGG = async (e) => {
-    console.log("signInWitGG");
     e.preventDefault();
     await auth.loginWithGG();
   };

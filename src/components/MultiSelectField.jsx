@@ -13,10 +13,7 @@ const MultiSelectField = ({
 
   return (
     <div aria-required>
-      <label
-        htmlFor={id}
-        className="block mb-2 text-sm text-gray-700 font-medium darkTextWhite"
-      >
+      <label htmlFor={id} className="block mb-2 text-sm  darkTextWhite">
         {label}
       </label>
       <Select

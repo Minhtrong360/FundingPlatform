@@ -6,8 +6,9 @@ import { useNavigate } from "react-router-dom";
 // import { toast } from "react-toastify";
 
 import Header from "../Home/Header";
-import { message, Table, Button } from "antd";
+import { message, Table } from "antd";
 import { formatDate } from "../../features/DurationSlice";
+import { Switch, Space } from "antd";
 
 function AdminPage() {
   const { user } = useAuth();
@@ -102,7 +103,7 @@ function AdminPage() {
       key: "index",
       render: (text, record, index) => (
         <div
-          className={` flex items-center  hover:cursor-pointer`}
+          className={`  hover:cursor-pointer`}
           onClick={() => handleProjectClick(record)}
         >
           {index + 1}
@@ -117,7 +118,6 @@ function AdminPage() {
         <div
           className={`flex items-center  hover:cursor-pointer`}
           onClick={() => handleProjectClick(record)}
-          style={{ fontSize: "14px" }} // Updated font size
         >
           {text}
         </div>
@@ -144,9 +144,8 @@ function AdminPage() {
       key: "user_email",
       render: (text, record) => (
         <div
-          className="px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap hover:cursor-pointer"
+          className=" whitespace-nowrap hover:cursor-pointer"
           onClick={() => handleProjectClick(record)}
-          style={{ fontSize: "14px" }} // Updated font size
         >
           {text}
         </div>
@@ -160,7 +159,7 @@ function AdminPage() {
           onClick={() => handleProjectClick(record)}
           className={`w-[5em] 
             ${record.required ? "text-blue-600" : " text-black-500"}
-            focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+            focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md   py-1 text-center `}
         >
           {record.required && record.verified
             ? "Accepted"
@@ -174,15 +173,15 @@ function AdminPage() {
       title: "Status",
       key: "status",
       render: (text, record) => (
-        <div className="text-sm">
-          <Button
+        <div className="">
+          <button
             onClick={() => handleProjectClick(record)}
             className={`w-[5em] ${
               record.status ? "bg-blue-600" : "bg-red-600"
-            } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+            } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300  py-1 text-center rounded-md `}
           >
             {record.status ? "Public" : "Private"}
-          </Button>
+          </button>
         </div>
       ),
     },
@@ -190,15 +189,15 @@ function AdminPage() {
       title: "Verified",
       key: "verified",
       render: (text, record) => (
-        <Button
-          onClick={() => handleVerifyToggle(record)}
-          className={`w-[6em] ${
-            record.verified ? "bg-blue-600" : "bg-red-600"
-          } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-          style={{ fontSize: "14px" }} // Updated font size
-        >
-          {record.verified ? "Verified" : "Unverified"}
-        </Button>
+        <Space direction="vertical">
+          <Switch
+            className="text-black"
+            checkedChildren="Verified"
+            unCheckedChildren="Unverified"
+            value={record.verified}
+            onClick={() => handleVerifyToggle(record)}
+          />
+        </Space>
       ),
     },
   ];
@@ -212,7 +211,7 @@ function AdminPage() {
           <div className="flex flex-col">
             <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-                <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-md">
+                <div className="overflow-hidden  md:rounded-md">
                   <Table
                     columns={columns}
                     dataSource={projects}

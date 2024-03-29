@@ -26,7 +26,7 @@ const HeroStartup = () => {
             <span className="text-blue-600 bg-yellow-300 h-6">
               Profile listing
             </span>{" "}
-            made easy.
+            for raising fund made easy.
           </h1>
           <p className="mt-6 text-lg text-gray-800">
             Create a fundraising profile and get discovered by investors.

@@ -46,7 +46,7 @@ const Card = ({
   }
 
   return (
-    <div className="flex flex-col h-full max-w-sm bg-white border rounded-md shadow-md transition-all duration-300  hover:shadow-lg">
+    <div className="flex flex-col h-full max-w-sm bg-white border rounded-md shadow-md transition-all duration-300  hover:shadow-lg cursor-pointer">
       <div className="relative pt-[50%] sm:pt-[70%] rounded-t-lg overflow-hidden">
         {imageUrl ? (
           <>
@@ -70,8 +70,8 @@ const Card = ({
         )}
 
         {project?.verified && (
-          <span className="absolute top-0 right-0 bg-green-600 text-white text-sm font-medium py-1.5 px-3 rounded-bl-lg">
-            Verified
+          <span className="absolute top-0 right-0 bg-yellow-300 text-gray-800 text-sm font-bold py-1.5 px-3 rounded-bl-lg">
+            Verified profile
           </span>
         )}
       </div>
@@ -108,7 +108,7 @@ const Card = ({
           <Tag
             className={` ${
               project?.status === true
-                ? "bg-green-600 text-white"
+                ? "bg-yellow-300 text-black"
                 : "bg-bg-gray-50 border border-gray-200 text-black"
             } mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center   rounded-3xl`}
             onClick={() => navigate(`/founder/${project_id}`)}

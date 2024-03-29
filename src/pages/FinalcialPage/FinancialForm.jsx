@@ -537,7 +537,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             <GPTAnalyzer />
           </div> */}
           <div className="my-4 ">
-            <div className="overflow-x-auto whitespace-nowrap border-t-2">
+            <div className="overflow-x-auto  whitespace-nowrap border-t-2">
               <ul className="py-4 flex lg:justify-center justify-start items-center">
                 <li
                   className={`cursor-pointer mr-4 ${

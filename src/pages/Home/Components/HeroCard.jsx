@@ -37,7 +37,7 @@ const HeroCard = () => {
     <>
       <div className="max-w-[85rem]  mx-auto px-4 sm:px-6 lg:px-8 sm:mt-24">
         {/* Grid */}
-        <div className="grid lg:grid-cols-7 lg:gap-x-8 xl:gap-x-12 lg:items-center mt-64">
+        <div className="grid lg:grid-cols-7 lg:gap-x-8 xl:gap-x-12 lg:items-center mt16 md:mt-64">
           <div className="lg:col-span-3">
             <h1 className="block text-3xl font-extrabold leading-relaxed text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl">
               It can't be{" "}
@@ -64,7 +64,7 @@ const HeroCard = () => {
           </div>
 
           {/* Video */}
-          <div className="lg:col-span-4 mt-8 order-2 lg:order-1">
+          <div className="lg:col-span-4 mt-10 order-2 lg:order-1">
             <video
               className="object-cover w-full rounded-xl shadow-2xl border border-gray-300"
               autoPlay

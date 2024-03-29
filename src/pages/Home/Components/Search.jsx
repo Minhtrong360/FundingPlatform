@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import AllInclusiveOutlinedIcon from "@mui/icons-material/AllInclusiveOutlined";
 import industries from "../../../components/Industries";
+import { Select } from 'antd';
 
 const Search = ({
   onSearch,
@@ -45,6 +46,8 @@ const Search = ({
     setSuggestions([]);
     onSearch(name); // Optional: Trigger the search when a suggestion is clicked
   };
+
+  const { Option } = Select;
 
   useEffect(() => {
     if (!searchTerm) {
@@ -112,57 +115,40 @@ const Search = ({
           </div>
 
           <div className="mt-2 sm:mt-4 hidden lg:flex flex-wrap justify-center">
-            <button
-              onClick={() => handleIndustryClick("")}
-              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
-                !selectedIndustry
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-800 hover:bg-gray-50"
-              } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
-            >
-              All
-              <AllInclusiveOutlinedIcon fontSize="small" />
-            </button>
-            {industries.map((industry, index) => (
-              <button
-                key={index}
-                onClick={() => handleIndustryClick(industry)}
-                className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
-                  selectedIndustry === industry
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-800 hover:bg-gray-50"
-                } shadow-sm hover:cursor-pointer`}
+              <Select
+                className="m-1 w-40"
+                defaultValue=""
+                onChange={handleIndustryClick}
+                optionLabelProp="label"
               >
-                {industry}
-              </button>
-            ))}
-          </div>
-          <div className="mt-4 lg:hidden overflow-x-auto flex flex-nowrap">
-            <button
-              onClick={() => handleIndustryClick("")}
-              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
-                !selectedIndustry
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-800 hover:bg-gray-50"
-              } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
-            >
-              All
-              <AllInclusiveOutlinedIcon fontSize="small" />
-            </button>
-            {industries.map((industry, index) => (
-              <button
-                key={index}
-                onClick={() => handleIndustryClick(industry)}
-                className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
-                  selectedIndustry === industry
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-800 hover:bg-gray-50"
-                } shadow-sm hover:cursor-pointer flex-shrink-0`}
-              >
-                {industry}
-              </button>
-            ))}
-          </div>
+                <Option value="" label="All">
+                  <AllInclusiveOutlinedIcon /> All
+                </Option>
+                {industries.map((industry, index) => (
+                  <Option key={index} value={industry} label={industry}>
+                    {industry}
+                  </Option>
+                ))}
+              </Select>
+            </div>
+              <div className="mt-4 lg:hidden \ flex flex-nowrap">
+                <Select
+                  className="m-1 w-40"
+                  defaultValue=""
+                  onChange={handleSuggestionClick}
+                  optionLabelProp="label"
+                >
+                  <Option value="" label="All">
+                    <AllInclusiveOutlinedIcon /> All
+                  </Option>
+                  {industries.map((industry, index) => (
+                    <Option key={index} value={industry} label={industry}>
+                      {industry}
+                    </Option>
+                  ))}
+                </Select>
+              </div>
+
         </div>
       </div>
     </div>
@@ -170,3 +156,8 @@ const Search = ({
 };
 
 export default Search;
+
+//////////////
+
+
+

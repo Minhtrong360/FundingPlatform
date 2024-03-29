@@ -6,7 +6,7 @@ import Search from "../Home/Components/Search";
 
 import { LinearProgress } from "@mui/material";
 import Header from "../Home/Header";
-import { message } from "antd";
+import { message, Select } from "antd";
 import HeroSection from "./HeroSection";
 
 const NewProjectPosts = () => {
@@ -23,6 +23,12 @@ const NewProjectPosts = () => {
   const [verifiedCompanies, setVerifiedCompanies] = useState([]);
   const [unverifiedCompanies, setUnverifiedCompanies] = useState([]);
   const [visibleItemCount, setVisibleItemCount] = useState(itemsPerPage);
+
+  const { Option } = Select;
+  const handleChange = (value) => {
+    setVisibleItemCount(itemsPerPage);
+    setCurrentTab(value);
+  };
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -188,7 +194,20 @@ const NewProjectPosts = () => {
           currentTab={currentTab}
         />
 
-        <div className="mt-10 flex justify-center">
+        <div className="mt-2 sm:mt-4  lg:flex flex-wrap justify-center">
+              <Select
+                className="m-1 w-40 text-center"
+                value={currentTab}
+                onChange={handleChange}
+                
+              >
+                <Option value="All">All</Option>
+                <Option value="verified">Verified</Option>
+                <Option value="unverified">Unverified</Option>
+              </Select>
+            </div>
+
+        {/* <div className="mt-10 flex justify-center">
           <button
             className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
               currentTab === "All"
@@ -228,7 +247,7 @@ const NewProjectPosts = () => {
           >
             Unverified
           </button>
-        </div>
+        </div> */}
         {isLoading ? (
           <LinearProgress className="my-20" />
         ) : (

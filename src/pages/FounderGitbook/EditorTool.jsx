@@ -18,10 +18,10 @@ import {
 import { YoutubeOutlined } from "@ant-design/icons";
 import { useAuth } from "../../context/AuthContext";
 
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 
 import LoadingButtonClick from "../../components/LoadingButtonClick";
-import { Tooltip, message } from "antd";
+import { message } from "antd";
 import ReactModal from "react-modal";
 import ButtonGroup from "./ButtonGroup";
 
@@ -513,7 +513,7 @@ export default function EditorTool() {
             }}
           >
             <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-              <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
+              <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
                 <h2 className="mt-2 text-base text-gray-500 ">
                   {" "}
                   Our admins need to see all of your project, include your
@@ -525,14 +525,14 @@ export default function EditorTool() {
                   <button
                     type="button"
                     onClick={handleRequiredVerification}
-                    className="w-full px-4 py-1 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
+                    className="w-full px-3 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
                   >
                     Agree and Continue
                   </button>
                   <button
                     type="button"
                     onClick={() => setShowConfirmation(false)} // Sử dụng hàm addLink để thêm liên kết
-                    className="w-full px-4 py-1 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+                    className="w-full px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
                   >
                     Disagree
                   </button>
@@ -568,7 +568,7 @@ export default function EditorTool() {
             }}
           >
             <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-              <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
+              <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
                 <h2 className="text-lg font-medium leading-6 text-gray-800 capitalize">
                   Enter YouTube Video URL
                 </h2>
@@ -580,13 +580,13 @@ export default function EditorTool() {
                 />
                 <div className="mt-4 flex items-center gap-10">
                   <button
-                    className="w-full px-4 py-1 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+                    className="w-full px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
                     onClick={closeModal}
                   >
                     Cancel
                   </button>
                   <button
-                    className="w-full px-4 py-1 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
+                    className="w-full px-3 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
                     onClick={handleInsertYouTubeLink}
                   >
                     Insert

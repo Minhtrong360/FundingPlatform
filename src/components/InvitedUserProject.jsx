@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { supabase } from "../supabase";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 
 import apiService from "../app/apiService";
 import { useAuth } from "../context/AuthContext";
@@ -96,7 +96,7 @@ const Modal = ({ isOpen, onClose, projectId }) => {
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-      <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
+      <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
         <p className="mt-2 text-xl text-gray-500 ">
           Invite a user to see this project!
         </p>
@@ -146,14 +146,14 @@ const Modal = ({ isOpen, onClose, projectId }) => {
             <button
               type="button"
               onClick={onClose}
-              className="w-full px-4 py-1 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+              className="w-full px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={handleInvite}
-              className="w-full px-4 py-1 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
+              className="w-full px-3 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
             >
               Invite
             </button>
@@ -170,7 +170,7 @@ export default function InvitedUserProject({ projectId }) {
   return (
     <div className="App">
       <button
-        className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+        className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus `}
         onClick={() => setIsModalOpen(true)}
       >
         Invite

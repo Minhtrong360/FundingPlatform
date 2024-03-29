@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { DashboardOutlined, DollarCircleOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { ProjectOutlined } from '@ant-design/icons';
+
+
 
 function SideBar({ toggleSidebar, isSidebarOpen }) {
   const navigate = useNavigate();
@@ -22,7 +26,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
         data-drawer-toggle="default-sidebar"
         aria-controls="default-sidebar"
         type="button"
-        className="z-30 inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 "
+        className="z-30 inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-md sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 "
         onClick={toggleSidebar}
       >
         <span className="sr-only">Open sidebar</span>
@@ -76,75 +80,58 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
         </style>
         <div className="mt-16 mx-auto flex flex-col items-start h-full px-3 py-4 space-y-2 overflow-y-auto">
           <button
-            className="mt-2  w-full p-2 group flex items-center rounded-lg text-sm  sidebar-button hover:bg-gray-300"
+            className="mt-2  w-full p-2 group flex items-center rounded-md text-sm  sidebar-button hover:bg-gray-300"
             onClick={() => navigate("/")}
           >
-            <img
-              className="w-5 h-5"
-              src="https://img.icons8.com/ios/50/home--v1.png"
-              alt="home--v1"
-            />
+            
+            <HomeOutlined />
             <span className="sidebar-text">Home</span>
           </button>
           <button
-            className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-lg text-sm ${
+            className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm ${
               selectedItem?.includes("/user-info")
                 ? "bg-gray-300 "
                 : "text-gray-900 darkTextWhite"
             } sidebar-button hover:bg-gray-300`}
             onClick={() => handleItemClick("/user-info")}
           >
-            <img
-              className="w-5 h-5"
-              src="https://img.icons8.com/ios/50/user--v1.png"
-              alt="user--v1"
-            />
+          
+            <UserOutlined />
             <span className="sidebar-text">User Settings</span>
           </button>
           <button
-            className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-lg text-sm ${
+            className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm ${
               selectedItem?.includes("/dashboard")
                 ? "bg-gray-300 "
                 : "text-gray-900 darkTextWhite"
             } sidebar-button hover:bg-gray-300 `}
             onClick={() => handleItemClick("/dashboard")}
           >
-            <img
-              className="w-5 h-5"
-              src="https://img.icons8.com/ios/50/performance-macbook.png"
-              alt="performance-macbook"
-            />
+            <DashboardOutlined />
             <span className="sidebar-text">Dashboard</span>
           </button>
           <button
-            className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-lg text-sm ${
+            className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm ${
               selectedItem?.includes("/financials")
                 ? "bg-gray-300 "
                 : "text-gray-900 darkTextWhite"
             } sidebar-button hover:bg-gray-300`}
             onClick={() => handleItemClick("/financials")}
           >
-            <img
-              className="w-5 h-5"
-              src="https://img.icons8.com/ios/50/investment.png"
-              alt="investment"
-            />
-            <span className="sidebar-text">Financials</span>
+            <DollarCircleOutlined />
+            <span className="sidebar-text">Financial Model</span>
           </button>
           <button
-            className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-lg text-sm  ${
+            className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm  ${
               selectedItem?.includes("/founder")
                 ? "bg-gray-300"
                 : "text-gray-900 darkTextWhite"
             } sidebar-button hover:bg-gray-300`}
             onClick={() => handleItemClick("/founder")}
           >
-            <img
-              className="w-5 h-5"
-              src="https://img.icons8.com/ios/50/folder-invoices--v1.png"
-              alt="folder-invoices--v1"
-            />
-            <span className="sidebar-text">Projects</span>
+            
+            <ProjectOutlined />
+            <span className="sidebar-text">Project list</span>
           </button>
         </div>
       </aside>

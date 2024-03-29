@@ -1,14 +1,15 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import AlertMsg from "../components/AlertMsg";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
+import { message as messageAntd } from "antd";
 
 function AuthRequire({ children, message }) {
   const { user } = useAuth();
   const location = useLocation();
 
   if (!user) {
-    message.warning(message);
+    messageAntd.warning(message);
     return (
       <>
         <AlertMsg />

@@ -3,9 +3,16 @@ import { useNavigate } from "react-router-dom";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useAuth } from "../../context/AuthContext";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { supabase } from "../../supabase";
 import { message } from "antd";
+import { UserOutlined } from "@ant-design/icons";
+import { BellOutlined } from "@ant-design/icons";
+import { UserSwitchOutlined } from "@ant-design/icons";
+import { DashboardOutlined } from "@ant-design/icons";
+import { DollarCircleOutlined } from "@ant-design/icons";
+import { ProfileOutlined } from "@ant-design/icons";
+import { LogoutOutlined } from "@ant-design/icons";
 
 const ImageDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -174,7 +181,8 @@ const ImageDropdown = () => {
               className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
               onClick={() => navigate("/admin")}
             >
-              Admin
+              <UserSwitchOutlined />
+              Admin Dashboard
             </button>
           )}
 
@@ -183,14 +191,16 @@ const ImageDropdown = () => {
             className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
             onClick={(e) => handleClickUserInfo(e)}
           >
-            User Info
+            <UserOutlined />
+            User Settings
           </button>
           <button
             style={{ minWidth: "100%" }}
             className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
             onClick={(e) => handleClickDashBoard(e)}
           >
-            Dashboard
+            <DashboardOutlined />
+            User Dashboard
           </button>
 
           <button
@@ -198,14 +208,16 @@ const ImageDropdown = () => {
             className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
             onClick={(e) => handleClickFinancial(e)}
           >
-            Financials
+            <DollarCircleOutlined />
+            Financial Model
           </button>
           <button
             style={{ minWidth: "100%" }}
             className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
             onClick={(e) => handleClickProject(e)}
           >
-            Projects
+            <ProfileOutlined />
+            Project List
           </button>
 
           <button
@@ -213,7 +225,9 @@ const ImageDropdown = () => {
             className="hover:cursor-pointer flex items-center justify-between gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
             onClick={(e) => handleClickNotifications(e)}
           >
-            <span className="flex items-center gap-x-3.5">Notifications</span>
+            <span className="flex items-center gap-x-3.5">
+              <BellOutlined /> Notifications
+            </span>
             <span className="bg-red-600 text-white h-7 w-7 rounded-full text-sm flex items-center justify-center">
               {userData.notification_count ? userData.notification_count : 0}{" "}
               {/* Display the notification count here */}
@@ -226,7 +240,8 @@ const ImageDropdown = () => {
             onClick={(e) => handleLogout(e)}
             className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
           >
-            Log out
+            <LogoutOutlined />
+            Log Out
           </button>
         </div>
       )}

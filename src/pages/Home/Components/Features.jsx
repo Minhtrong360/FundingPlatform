@@ -3,7 +3,7 @@ import BsI from "./B&I.jpg";
 import VCs from "./VCs.jpg";
 function Features() {
   return (
-    <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto mt-64">
+    <div className="max-w-[85rem] px-3 py-20 sm:px-6 lg:px-8 lg:py-14 mx-auto mt-64">
       <div className="max-w-2xl mx-auto text-center mb-10 lg:mb-14">
         <h3
           id="platform"
@@ -34,7 +34,7 @@ function Features() {
           </div>
           <div className="mt-6">
             <h3 className="text-xl font-semibold text-gray-800 darkTextGray darkGroupHoverText">
-              FOUNDER & BUSINESS OWNER
+              FOUNDERS
             </h3>
             <p className="mt-5 text-gray-800 darkTextGray">
               <ul>
@@ -170,7 +170,7 @@ function Features() {
           </div>
           <div className="mt-6">
             <h3 className="text-xl font-semibold text-gray-800 darkTextGray darkGroupHoverText">
-              BROKER & INVESTMENT ANALYST
+              ANALYSTS
             </h3>
             <p className="mt-5 text-gray-800 darkTextGray">
               <ul>
@@ -306,7 +306,7 @@ function Features() {
           </div>
           <div className="mt-6">
             <h3 className="text-xl font-semibold text-gray-800 darkTextGray darkGroupHoverText">
-              INVESTORS (ANGEL, VC, PE)
+              INVESTORS
             </h3>
             <p className="mt-5 text-gray-800 darkTextGray">
               <ul>

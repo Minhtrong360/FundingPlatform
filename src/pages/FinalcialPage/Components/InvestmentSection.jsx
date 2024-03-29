@@ -114,13 +114,48 @@ const InvestmentSection = ({
     dispatch(setInvestmentTableData(tableData));
   }, [tempInvestmentInputs, numberOfMonths, renderInvestmentForm]);
 
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+
+  const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  const startingYear = startYear; // Năm bắt đầu từ 24
+
   const investmentColumns = [
-    { fixed: "left", title: "Type", dataIndex: "type", key: "type" },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `month${i + 1}`,
-      key: `month${i + 1}`,
-    })),
+    {
+      fixed: "left",
+      title: <div>Type</div>,
+      dataIndex: "type",
+      key: "type",
+    },
+    ...Array.from({ length: numberOfMonths }, (_, i) => {
+      const monthIndex = (startingMonth + i - 1) % 12;
+      const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+      return {
+        title: `${months[monthIndex]}/${year}`,
+        dataIndex: `month${i + 1}`,
+        key: `month${i + 1}`,
+        onCell: (record) => ({
+          style: {
+            borderRight: "1px solid #f0f0f0", // Add border right style
+          },
+        }),
+      };
+    }),
   ];
 
   const [investmentChart, setInvestmentChart] = useState({
@@ -221,7 +256,7 @@ const InvestmentSection = ({
             ></label>
             <select
               id="selectedChannel"
-              className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+              className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
               value={renderInvestmentForm}
               onChange={handleSelectChange}
             >
@@ -336,7 +371,7 @@ const InvestmentSection = ({
                 </div>
                 <div className="flex justify-end items-center">
                   <button
-                    className="bg-red-600 text-white py-1 px-2 rounded"
+                    className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
                     onClick={() => removeInvestmentInput(input?.id)}
                   >
                     Remove
@@ -345,14 +380,14 @@ const InvestmentSection = ({
               </div>
             ))}
           <button
-            className="bg-blue-600 text-white py-1 px-2 rounded mt-4 mr-4"
+            className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
             onClick={addNewInvestmentInput}
           >
             Add new
           </button>
 
           <button
-            className="bg-blue-600 text-white py-1 px-2 rounded mt-4"
+            className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
             onClick={handleSave}
           >
             Save changes

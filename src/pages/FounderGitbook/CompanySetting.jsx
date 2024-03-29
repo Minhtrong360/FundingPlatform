@@ -3,17 +3,18 @@ import Company from "./Company"; // Import your Company component
 import HeroSection from "./HeroSection"; // Import your HeroSection component
 import AnnouncePage from "../../components/AnnouncePage";
 
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { supabase } from "../../supabase";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Card from "../Home/Components/Card";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import AlertMsg from "../../components/AlertMsg";
-import CompanyTest from "./CompanyTest";
-import { data } from "jquery";
+// import CompanyTest from "./CompanyTest";
+
 import axios from "axios";
 import { message } from "antd";
+import { parseNumber } from "../../features/CostSlice";
 
 function CompanySetting() {
   const navigate = useNavigate();
@@ -41,6 +42,10 @@ function CompanySetting() {
     user_email: "",
     revenueStatus: "Pre-revenue",
     calendly: "",
+    teamSize: "",
+    operationTime: "",
+    amountRaised: 0,
+    round: ["Pre-seed"],
   });
 
   useEffect(() => {
@@ -84,6 +89,10 @@ function CompanySetting() {
                 user_email: companyData.user_email,
                 revenueStatus: companyData.revenueStatus,
                 calendly: companyData.calendly,
+                teamSize: companyData.teamSize,
+                operationTime: companyData.operationTime,
+                amountRaised: parseNumber(companyData.amountRaised),
+                round: companyData.round,
               });
 
               setIsLoading(false);
@@ -251,6 +260,10 @@ function CompanySetting() {
                 project_id: params.id,
                 revenueStatus: formData.revenueStatus,
                 calendly: formData.calendly,
+                teamSize: formData.teamSize,
+                operationTime: formData.operationTime,
+                amountRaised: parseNumber(formData.amountRaised),
+                round: formData.round,
               },
             ])
             .select();
@@ -297,6 +310,10 @@ function CompanySetting() {
                 project_id: params.id,
                 revenueStatus: formData.revenueStatus,
                 calendly: formData.calendly,
+                teamSize: formData.teamSize,
+                operationTime: formData.operationTime,
+                amountRaised: parseNumber(formData.amountRaised),
+                round: formData.round,
               },
             ])
             .select();
@@ -568,6 +585,13 @@ function CompanySetting() {
 
   const canClick = false;
 
+  const handleRoundChange = (selectedItems) => {
+    setFormData({
+      ...formData,
+      round: selectedItems,
+    });
+  };
+
   return (
     <div className="grid sm:grid-cols-1 lg:grid-cols-4 gap-6">
       {" "}
@@ -581,6 +605,7 @@ function CompanySetting() {
           handleInputChange={handleInputChange}
           typeOfferingOptions={typeOfferingOptions}
           handleIndustryChange={handleIndustryChange}
+          handleRoundChange={handleRoundChange}
         />
         <AlertMsg />
       </div>

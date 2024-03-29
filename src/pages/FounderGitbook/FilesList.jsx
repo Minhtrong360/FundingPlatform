@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 
 import InvitedUserFile from "../../components/InvitedUserFile";
 import apiService from "../../app/apiService";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { Tooltip, message } from "antd";
 
@@ -67,7 +67,7 @@ function FilesList() {
     };
 
     fetchFiles();
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     // Lấy dự án từ Supabase
@@ -85,7 +85,7 @@ function FilesList() {
           setCurrentProject(data);
         }
       });
-  }, []);
+  }, [id]);
 
   const handleAddLinks = async (newLink) => {
     newLink.owner_email = user.email;
@@ -257,7 +257,7 @@ function FilesList() {
     };
 
     fetchCurrentUser();
-  }, []);
+  }, [user.id]);
 
   useEffect(() => {
     // Check if the user doesn't meet the conditions to create a private project
@@ -271,7 +271,7 @@ function FilesList() {
     } else {
       setIsPrivateDisabled(false);
     }
-  }, []);
+  }, [currentUser?.plan, currentUser?.subscription_status]);
 
   return (
     <main className="w-full ml-2">
@@ -288,7 +288,7 @@ function FilesList() {
         <div className="flex flex-col">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-              <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
+              <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-md">
                 <table className="min-w-full divide-y divide-gray-200 darkDivideGray">
                   <thead className="bg-gray-50 darkBgBlue">
                     <tr>
@@ -443,7 +443,7 @@ function FilesList() {
                             ""
                           ) : (
                             <button
-                              className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+                              className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus `}
                               onClick={() => handleSendRequest(link)}
                             >
                               Send Request

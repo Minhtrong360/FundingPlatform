@@ -2,7 +2,7 @@
 
 // const FeaturesComponent = () => {
 //   return (
-//     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+//     <div className="max-w-[85rem] px-3 py-20 sm:px-6 lg:px-8 lg:py-14 mx-auto">
 //       {/* Tab Nav */}
 //       <nav className="max-w-6xl mx-auto grid sm:flex gap-y-px sm:gap-y-0 sm:gap-x-4" aria-label="Tabs" role="tablist">
 //         {/* Tab 1 */}
@@ -169,7 +169,7 @@ const FeaturesComponent = () => {
   };
 
   return (
-    <div className=" max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+    <div className=" max-w-[85rem] px-3 py-20 sm:px-6 lg:px-8 lg:py-14 mx-auto">
       <h3 className="text-3xl sm:text-5xl font-semibold text-gray-800 darkTextGray text-center p-4 mb-10">
         Features
       </h3>
@@ -178,7 +178,7 @@ const FeaturesComponent = () => {
         {/* Tab 1 */}
         <button
           type="button"
-          className={`text-left  size-full bg-white shadow-lg rounded-lg p-5 darkBgSlate ${activeTab === 1 ? 'hs-tab-active:bg-gray-100' : ''}`}
+          className={`text-left  size-full bg-white shadow-lg rounded-md p-5 darkBgSlate ${activeTab === 1 ? 'hs-tab-active:bg-gray-100' : ''}`}
           onClick={() => handleTabClick(1)}
           id="tabs-with-card-item-1"
           data-hs-tab="#tabs-with-card-1"
@@ -200,7 +200,7 @@ const FeaturesComponent = () => {
         {/* Tab 2 */}
         <button
           type="button"
-          className={`text-left  size-full bg-white shadow-lg rounded-lg p-5 darkBgSlate ${activeTab === 2 ? 'hs-tab-active:bg-gray-100' : ''}`}
+          className={`text-left  size-full bg-white shadow-lg rounded-md p-5 darkBgSlate ${activeTab === 2 ? 'hs-tab-active:bg-gray-100' : ''}`}
           onClick={() => handleTabClick(2)}
           id="tabs-with-card-item-2"
           data-hs-tab="#tabs-with-card-2"
@@ -222,7 +222,7 @@ const FeaturesComponent = () => {
         {/* Tab 3 */}
         <button
           type="button"
-          className={`text-left  size-full bg-white shadow-lg rounded-lg p-5 darkBgSlate ${activeTab === 3 ? 'hs-tab-active:bg-gray-100' : ''}`}
+          className={`text-left  size-full bg-white shadow-lg rounded-md p-5 darkBgSlate ${activeTab === 3 ? 'hs-tab-active:bg-gray-100' : ''}`}
           onClick={() => handleTabClick(3)}
           id="tabs-with-card-item-3"
           data-hs-tab="#tabs-with-card-3"

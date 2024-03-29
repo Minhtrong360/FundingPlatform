@@ -48,7 +48,7 @@ const GPTAnalyzer = ({ setChatbotResponse }) => {
         <div className="space-y-4">
           <div className="space-y-2">
             <input
-              className=" m-2 px-4 block w-full h-full border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 "
+              className=" m-2 px-4 block w-full h-full border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 "
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
@@ -56,13 +56,13 @@ const GPTAnalyzer = ({ setChatbotResponse }) => {
             />
           </div>
           <button
-            className="w-[64px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
+            className="w-[64px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
             type="primary"
             onClick={handleAnalyze}
           >
             Analyze
           </button>
-          <div className="max-w-2xl mx-auto p-4 bg-white border rounded-lg shadow-lg shadow-gray-100">
+          <div className="max-w-2xl mx-auto p-4 bg-white border rounded-md shadow-lg shadow-gray-100">
             {responseResult && (
               <div>
                 <div>Analysis Result:</div>

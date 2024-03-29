@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import AlertMsg from "../../components/AlertMsg";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { stripeAPI } from "../../stripe/stripeAPI";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { message } from "antd";
@@ -55,7 +55,7 @@ const PricingCard = ({ plan, onClick }) => {
         </ul>
         {/* <div
           className={`flex flex-col border rounded-xl text-center shadow-xl group hover:scale-105 hover:border-blue-700 transition-transform duration-300 ease-in-out ${
-            isLoading ? "p-8" : "px-4 py-1"
+            isLoading ? "p-8" : "px-3 py-2"
           }`}
         >
           {user ? ( // Kiểm tra xem user có tồn tại không
@@ -67,7 +67,7 @@ const PricingCard = ({ plan, onClick }) => {
           ) : (
             <button
               onClick={() => navigate("/login")}
-              className="w-full sm:w-auto px-5 py-1 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-600 rounded-lg hover:bg-blue-700 darkHoverBgBlue darkBgBlue"
+              className="w-full sm:w-auto px-5 py-1 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-600 rounded-md hover:bg-blue-700 darkHoverBgBlue darkBgBlue"
             >
               Login required
             </button>
@@ -75,7 +75,7 @@ const PricingCard = ({ plan, onClick }) => {
         </div> */}
         <button
           onClick={onClick}
-          className={`mt-5 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-white hover:bg-blue-700 disabled:opacity-0.5 disabled:pointer-events-none ${
+          className={`mt-5 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent text-white hover:bg-blue-700 disabled:opacity-0.5 disabled:pointer-events-none ${
             plan.price?.unit_amount / 100 === 0 ? "bg-gray-400" : "bg-blue-600"
           } darkHoverBgBlue900 darkTextBlue darkFocusOutlineNone darkFocusRing-1 darkFocus`}
           disabled={plan.price?.unit_amount / 100 === 0}
@@ -152,7 +152,7 @@ const PricingSection = () => {
   };
 
   return (
-    <div className="max-w-[85rem] mx-auto px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mt-28">
+    <div className="max-w-[85rem] mx-auto px-3 py-20 sm:px-6 lg:px-8 lg:py-14 mt-28">
       <AlertMsg />
       <LoadingButtonClick isLoading={isLoading} />
       <div className="text-center mb-10 lg:mb-14">

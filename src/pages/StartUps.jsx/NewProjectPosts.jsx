@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Card from "./Card";
-import { supabase } from "../../../supabase";
-import { toast } from "react-toastify";
-import Search from "./Search";
+import Card from "../Home/Components/Card";
+import { supabase } from "../../supabase";
+// import { toast } from "react-toastify";
+import Search from "../Home/Components/Search";
 
 import { LinearProgress } from "@mui/material";
-import Header from "../Header";
+import Header from "../Home/Header";
 import { message } from "antd";
+import HeroSection from "./HeroSection";
 
 const NewProjectPosts = () => {
   const [companies, setCompanies] = useState([]);
@@ -174,7 +175,8 @@ const NewProjectPosts = () => {
   return (
     <div className="max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto my-12">
       <Header />
-      <div className="max-w-[85rem] px-4 py-1 sm:px-6 lg:px-8 lg:py-1 mx-auto">
+      <div className="max-w-[85rem] px-3 py-2 sm:px-6 lg:px-8 lg:py-1 mx-auto">
+        <HeroSection />
         <Search
           onSearch={handleSearch}
           onIndustryChange={handleIndustryChange}
@@ -188,7 +190,7 @@ const NewProjectPosts = () => {
 
         <div className="mt-10 flex justify-center">
           <button
-            className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
+            className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
               currentTab === "All"
                 ? "bg-blue-600 text-white"
                 : "bg-white text-gray-800 hover:bg-gray-50"
@@ -201,7 +203,7 @@ const NewProjectPosts = () => {
             All
           </button>
           <button
-            className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
+            className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
               currentTab === "verified"
                 ? "bg-blue-600 text-white"
                 : "bg-white text-gray-800 hover:bg-gray-50"
@@ -214,7 +216,7 @@ const NewProjectPosts = () => {
             Verified
           </button>
           <button
-            className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-lg border ${
+            className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
               currentTab === "unverified"
                 ? "bg-blue-600 text-white"
                 : "bg-white text-gray-800 hover:bg-gray-50"

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "../../../supabase";
-import { Flex, Tag } from "antd";
+import { Tag } from "antd";
 
 const Card = ({
   title,
@@ -46,7 +46,7 @@ const Card = ({
   }
 
   return (
-    <div className="flex flex-col h-full max-w-sm bg-white border rounded-lg shadow-md transition-all duration-300  hover:shadow-lg">
+    <div className="flex flex-col h-full max-w-sm bg-white border rounded-md shadow-md transition-all duration-300  hover:shadow-lg">
       <div className="relative pt-[50%] sm:pt-[70%] rounded-t-lg overflow-hidden">
         {imageUrl ? (
           <>
@@ -71,7 +71,7 @@ const Card = ({
 
         {project?.verified && (
           <span className="absolute top-0 right-0 bg-green-600 text-white text-sm font-medium py-1.5 px-3 rounded-bl-lg">
-            Verified by BeeKrowd
+            Verified
           </span>
         )}
       </div>
@@ -93,13 +93,13 @@ const Card = ({
           {canClick !== false ? (
             <button
               onClick={() => navigate(`/founder/${project_id}`)}
-              className="mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 darkBgBlue darkHoverBgBlue darkFocus"
+              className="mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white bg-blue-600 rounded-md hover:bg-blue-700 darkBgBlue darkHoverBgBlue darkFocus"
             >
               {buttonText}
             </button>
           ) : (
             <button
-              className="mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-black bg-gray-100 rounded-lg cursor-not-allowed darkBgBlue"
+              className="mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-black bg-gray-100 rounded-md cursor-not-allowed darkBgBlue"
               disabled
             >
               {buttonText}

@@ -21,11 +21,10 @@ const MultiSelectField = ({
       </label>
       <Select
         allowClear={true}
-        popupClassName="py-3 px-4"
         size="large"
         mode="multiple"
-        placeholder="Inserted are removed"
-        value={selectedItems ? selectedItems : ""}
+        placeholder="No item"
+        value={selectedItems}
         onChange={setSelectedItems}
         style={{
           width: "100%",

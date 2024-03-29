@@ -63,10 +63,30 @@ code {
 
 .ant-table table {
   font-size: 12px;
-  white-space: nowrap;
-  
+  white-space: noWrap;
 }
 
 .ant-select-lg {
   font-size: 14px;
+}
+.ant-select-multiple.ant-select-lg {
+  font-size: 14px;
+}
+.ant-select-selection-overflow {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.ant-select-selection-search {
+  padding-top: 7px;
+  padding-bottom: 8px;
+}
+
+.ant-select-selection-placeholder {
+  font-size: 14px;
+  font-family: "Inter", sans-serif;
+}
+
+.ant-card {
+  font-family: "Inter", sans-serif;
 }

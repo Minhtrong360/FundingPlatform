@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
+import { SaveOutlined } from "@ant-design/icons";
 import {
   setSelectedDuration,
   setStartingCashBalance,
@@ -51,6 +52,8 @@ const DurationSelect = ({ handleSubmit }) => {
     "December",
   ];
 
+  console.log("startMonth", startMonth);
+
   const currentYear = new Date().getFullYear();
   const years = Array.from(
     { length: currentYear - 2019 },
@@ -96,10 +99,13 @@ const DurationSelect = ({ handleSubmit }) => {
 
         <Tooltip title="Enter the starting month of the business">
           <div className="grid grid-cols-2 gap-4 mb-3">
-            <span className=" flex items-center text-sm">Start Month :</span>
+            <span className="flex items-center text-sm">Start Month :</span>
             <Select
-              onValueChange={(value) => dispatch(setStartMonth(value))}
-              value={startMonth}
+              onValueChange={(value) => {
+                const selectedMonthIndex = months.indexOf(value);
+                dispatch(setStartMonth(selectedMonthIndex + 1));
+              }}
+              value={months[startMonth - 1]}
             >
               <SelectTrigger
                 id="start-month"
@@ -300,7 +306,7 @@ const DurationSelect = ({ handleSubmit }) => {
       </div>
 
       <button
-        className="bg-blue-600 text-white py-1 px-2 rounded mt-4"
+        className="bg-blue-600 text-white py-2 px-2 rounded mt-8 text-sm flex items-center"
         onClick={handleSubmit}
       >
         Save project

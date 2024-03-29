@@ -42,9 +42,15 @@ import {
 } from "../../../features/FundraisingSlice";
 import { calculateProfitAndLoss } from "../../../features/ProfitAndLossSlice";
 import CustomChart from "./CustomerChart";
+import SelectField from "../../../components/SelectField";
+import { setCutMonth } from "../../../features/DurationSlice";
+import { InfoCircleOutlined } from "@ant-design/icons";
+
 
 function BalanceSheetSection({ numberOfMonths }) {
   const dispatch = useDispatch();
+  const { cutMonth } = useSelector((state) => state.durationSelect);
+
   const { customerGrowthData, customerInputs } = useSelector(
     (state) => state.customer
   );
@@ -521,6 +527,27 @@ function BalanceSheetSection({ numberOfMonths }) {
     ),
   }));
 
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+
+  const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  const startingYear = startYear; // Năm bắt đầu từ 24
+
   const positionColumns1 = [
     {
       title: "Metric",
@@ -557,75 +584,56 @@ function BalanceSheetSection({ numberOfMonths }) {
             </a>
           </div>
         ),
-        props: {
-          colSpan:
-            record.metric === "Assets" ||
-            record.metric === " Current Assets" ||
-            record.metric === "Long-Term Assets" ||
-            record.metric === "Liabilities & Equity" ||
-            record.metric === "Current Liabilities" ||
-            record.metric === "Long-Term Liabilities" ||
-            record.metric === "Shareholders Equity"
-              ? numberOfMonths
-              : 1,
-          style:
-            record.metric === "Assets" ||
-            record.metric === " Current Assets" ||
-            record.metric === "Long-Term Assets" ||
-            record.metric === "Liabilities & Equity" ||
-            record.metric === "Current Liabilities" ||
-            record.metric === "Long-Term Liabilities" ||
-            record.metric === "Shareholders Equity"
-              ? {}
-              : { borderRight: "1px solid #f0f0f0" },
-        },
       }),
     },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `Month ${i + 1}`,
-      key: `Month ${i + 1}`,
-      style: { borderRight: "1px solid #f0f0f0" },
-      onCell: (record) => {
-        if (
-          record.metric === "Assets" ||
-          record.metric === " Current Assets" ||
-          record.metric === "Long-Term Assets" ||
-          record.metric === "Liabilities & Equity" ||
-          record.metric === "Current Liabilities" ||
-          record.metric === "Long-Term Liabilities" ||
-          record.metric === "Shareholders Equity"
-        ) {
-          return {
-            style: {
-              borderRight: "1px solid #f0f0f0",
-            },
-            colSpan: 0,
-          };
-        } else if (
-          record.metric === "Current Assets" ||
-          record.metric === "Long term assets" ||
-          record.metric === "Total Assets" ||
-          record.metric === "Total Liabilities" ||
-          record.metric === "Total Assets (Double Check)" ||
-          record.metric === "Total Shareholders Equity" ||
-          record.metric === "Total Liabilities and Shareholders Equity"
-        ) {
-          return {
-            style: {
-              borderRight: "1px solid #f0f0f0",
-              fontWeight: "bold", // Add bold styling for Total Revenue
-            },
-          };
-        } else {
-          return {
-            style: {
-              borderRight: "1px solid #f0f0f0",
-            },
-          };
-        }
-      },
-    })),
+    ...Array.from({ length: numberOfMonths }, (_, i) => {
+      const monthIndex = (startingMonth + i - 1) % 12;
+      const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+      return {
+        title: `${months[monthIndex]}/${year}`,
+        dataIndex: `Month ${i + 1}`,
+        key: `Month ${i + 1}`,
+        style: { borderRight: "1px solid #f0f0f0" },
+        onCell: (record) => {
+          if (
+            record.metric === "Assets" ||
+            record.metric === " Current Assets" ||
+            record.metric === "Long-Term Assets" ||
+            record.metric === "Liabilities & Equity" ||
+            record.metric === "Current Liabilities" ||
+            record.metric === "Long-Term Liabilities" ||
+            record.metric === "Shareholders Equity"
+          ) {
+            return {
+              style: {
+                borderRight: "1px solid #f0f0f0",
+              },
+            };
+          } else if (
+            record.metric === "Current Assets" ||
+            record.metric === "Long term assets" ||
+            record.metric === "Total Assets" ||
+            record.metric === "Total Liabilities" ||
+            record.metric === "Total Assets (Double Check)" ||
+            record.metric === "Total Shareholders Equity" ||
+            record.metric === "Total Liabilities and Shareholders Equity"
+          ) {
+            return {
+              style: {
+                borderRight: "1px solid #f0f0f0",
+                fontWeight: "bold", // Add bold styling for Total Revenue
+              },
+            };
+          } else {
+            return {
+              style: {
+                borderRight: "1px solid #f0f0f0",
+              },
+            };
+          }
+        },
+      };
+    }),
   ];
 
   const [selectedChart, setSelectedChart] = useState("total-assets-chart"); // State để lưu trữ biểu đồ được chọn
@@ -637,17 +645,30 @@ function BalanceSheetSection({ numberOfMonths }) {
     setSelectedChart(value);
   };
 
-  const [cutMonth, setCutMonth] = useState(4);
   const handleCutMonthChange = (e) => {
-    setCutMonth(Number(e.target.value));
+    dispatch(setCutMonth(Number(e.target.value)));
   };
 
   const divideMonthsIntoYearsForBalanceSheet = () => {
     const years = [];
+    const startingMonthIndex = startMonth - 1;
+    const startingYear = startYear;
+
     if (cutMonth - 1 > 0) {
+      const firstYearMonths = Array.from(
+        { length: cutMonth - 1 },
+        (_, i) => i + 1
+      );
+      const firstYearTextMonths = firstYearMonths.map((month) => {
+        const monthIndex = (startingMonthIndex + month - 1) % 12;
+        const year =
+          startingYear + Math.floor((startingMonthIndex + month - 1) / 12);
+        return `${months[monthIndex]}/${year}`;
+      });
       years.push({
         year: "First Year",
-        months: Array.from({ length: cutMonth - 1 }, (_, i) => i + 1),
+        months: firstYearMonths,
+        textMonth: firstYearTextMonths,
       });
     }
 
@@ -656,22 +677,38 @@ function BalanceSheetSection({ numberOfMonths }) {
     const remainingMonthsInLastYear = remainingMonthsAfterFirstYear % 12;
 
     for (let i = 0; i < fullYearsCount; i++) {
+      const yearMonths = Array.from(
+        { length: 12 },
+        (_, idx) => idx + 1 + (cutMonth - 1) + i * 12
+      );
+      const yearTextMonths = yearMonths.map((month) => {
+        const monthIndex = (startingMonthIndex + month - 1) % 12;
+        const year =
+          startingYear + Math.floor((startingMonthIndex + month - 1) / 12);
+        return `${months[monthIndex]}/${year}`;
+      });
       years.push({
         year: `Year ${i + 2}`,
-        months: Array.from(
-          { length: 12 },
-          (_, idx) => idx + 1 + (cutMonth - 1) + i * 12
-        ),
+        months: yearMonths,
+        textMonth: yearTextMonths,
       });
     }
 
     if (remainingMonthsInLastYear > 0) {
+      const lastYearMonths = Array.from(
+        { length: remainingMonthsInLastYear },
+        (_, idx) => idx + 1 + (cutMonth - 1) + fullYearsCount * 12
+      );
+      const lastYearTextMonths = lastYearMonths.map((month) => {
+        const monthIndex = (startingMonthIndex + month - 1) % 12;
+        const year =
+          startingYear + Math.floor((startingMonthIndex + month - 1) / 12);
+        return `${months[monthIndex]}/${year}`;
+      });
       years.push({
         year: `Last Year`,
-        months: Array.from(
-          { length: remainingMonthsInLastYear },
-          (_, idx) => idx + 1 + (cutMonth - 1) + fullYearsCount * 12
-        ),
+        months: lastYearMonths,
+        textMonth: lastYearTextMonths,
       });
     }
 
@@ -679,17 +716,17 @@ function BalanceSheetSection({ numberOfMonths }) {
   };
 
   // Generate table columns including Year Total column for Balance Sheet
-  const generateBalanceSheetTableColumns = (months) => [
+  const generateBalanceSheetTableColumns = (year) => [
     {
       title: "Metric",
       dataIndex: "metric",
       key: "metric",
       fixed: "left",
     },
-    ...months.map((month) => ({
-      title: `Month ${month}`,
-      dataIndex: `Month ${month}`,
-      key: `Month ${month}`,
+    ...year.textMonth.map((textMonth, index) => ({
+      title: textMonth,
+      dataIndex: `Month ${year.months[index]}`,
+      key: `Month ${year.months[index]}`,
     })),
     {
       title: "Year Total",
@@ -723,7 +760,6 @@ function BalanceSheetSection({ numberOfMonths }) {
   };
 
   const calculateBalanceSheetRatios = (dataSource) => {
-    console.log("dataSource", dataSource);
     const findYearTotalByKey = (key) => {
       const item = dataSource.find((data) => data.metric === key);
       return item ? item.yearTotal : 0;
@@ -734,8 +770,7 @@ function BalanceSheetSection({ numberOfMonths }) {
     const currentAssets = findYearTotalByKey("Current Assets");
     const currentLiabilities = findYearTotalByKey("Current Liabilities");
     const totalEquity = findYearTotalByKey("Total Shareholders Equity");
-    console.log("currentAssets", currentAssets);
-    console.log("currentLiabilities", currentLiabilities);
+
     // Basic financial ratios from balance sheet
 
     const currentRatio =
@@ -787,7 +822,7 @@ function BalanceSheetSection({ numberOfMonths }) {
           value={selectedChart}
           className="border-solid border-[1px] border-gray-200 "
         >
-          <SelectTrigger className="border-solid border-[1px] border-gray-200 w-[20%]">
+          <SelectTrigger className="border-solid border-[1px] border-gray-200 w-full lg:w-[20%]">
             <SelectValue />
           </SelectTrigger>
 
@@ -861,15 +896,18 @@ function BalanceSheetSection({ numberOfMonths }) {
         />
       )}
 
-      <div>
-        <label className="mr-4">Select Cut Month:</label>
-        <select value={cutMonth} onChange={handleCutMonthChange}>
-          {Array.from({ length: 12 }, (_, i) => (
-            <option key={i} value={i + 1}>
-              {i + 1}
-            </option>
-          ))}
-        </select>
+      <div className="w-full md:w-[20%] mb-5">
+        <SelectField
+          label="Select Cut Month:"
+          id="Select Cut Month:"
+          name="Select Cut Month:"
+          value={cutMonth}
+          onChange={handleCutMonthChange}
+          options={Array.from({ length: 12 }, (_, index) => ({
+            label: `${index + 1}`,
+            value: `${index + 1}`,
+          })).map((option) => option.label)} // Chỉ trả về mảng các label
+        />
       </div>
 
       {divideMonthsIntoYearsForBalanceSheet().map((year, index) => (
@@ -879,7 +917,7 @@ function BalanceSheetSection({ numberOfMonths }) {
             className="overflow-auto my-8"
             size="small"
             dataSource={getDataSourceForYearBalanceSheet(year.months)}
-            columns={generateBalanceSheetTableColumns(year.months)}
+            columns={generateBalanceSheetTableColumns(year)}
             pagination={false}
           />
           <div>
@@ -904,22 +942,7 @@ function BalanceSheetSection({ numberOfMonths }) {
                           <Tooltip
                             title={`This is the ${key.replace(/_/g, " ")}.`}
                           >
-                            <svg
-                              className="flex-shrink-0 size-4 text-gray-500"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <circle cx="12" cy="12" r="10" />
-                              <line x1="12" y1="16" x2="12" y2="12" />
-                              <line x1="12" y1="8" x2="12" y2="8" />
-                            </svg>
+                            <InfoCircleOutlined />
                           </Tooltip>
                         </div>
 

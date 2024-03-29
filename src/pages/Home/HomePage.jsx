@@ -15,19 +15,18 @@ import HeroCard from "./Components/HeroCard";
 // import FAQ from "./Components/FAQ";
 // import NewProjectPosts from "./Components/NewProjectPosts";
 import PricingWithLemon from "./Components/PricingWithLemon";
-import videoFile from "./Components/UpscaleVideo.mp4";
+// import videoFile from "./Components/UpscaleVideo.mp4";
 
 // create a function that returns all the components
-import {
-  NoteOutlined,
-  // PhotoOutlined,
-  // YouTube,
-  TimelineOutlined,
-  LockOutlined,
-  // SettingsOutlined,
-} from "@mui/icons-material";
+import // NoteOutlined,
+// PhotoOutlined,
+// YouTube,
+// TimelineOutlined,
+// LockOutlined,
+// SettingsOutlined,
+"@mui/icons-material";
 
-import { useState } from "react";
+// import { useState } from "react";
 
 // const FeaturesComponent = () => {
 //   const [activeTab, setActiveTab] = useState(1);
@@ -37,7 +36,7 @@ import { useState } from "react";
 //   };
 
 //   return (
-//     <div className=" max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+//     <div className=" max-w-[85rem] px-3 py-20 sm:px-6 lg:px-8 lg:py-14 mx-auto">
 //       <h3 className="text-3xl sm:text-5xl font-semibold text-gray-800 darkTextGray text-center p-4 mb-10">
 //         Features
 //       </h3>
@@ -50,7 +49,7 @@ import { useState } from "react";
 //         {/* Tab 1 */}
 //         <button
 //           type="button"
-//           className={`text-left  size-full bg-white shadow-lg rounded-lg p-5 darkBgSlate ${
+//           className={`text-left  size-full bg-white shadow-lg rounded-md p-5 darkBgSlate ${
 //             activeTab === 1 ? "hs-tab-active:bg-gray-100" : ""
 //           }`}
 //           onClick={() => handleTabClick(1)}
@@ -84,7 +83,7 @@ import { useState } from "react";
 //         {/* Tab 2 */}
 //         <button
 //           type="button"
-//           className={`text-left  size-full bg-white shadow-lg rounded-lg p-5 darkBgSlate ${
+//           className={`text-left  size-full bg-white shadow-lg rounded-md p-5 darkBgSlate ${
 //             activeTab === 2 ? "hs-tab-active:bg-gray-100" : ""
 //           }`}
 //           onClick={() => handleTabClick(2)}
@@ -118,7 +117,7 @@ import { useState } from "react";
 //         {/* Tab 3 */}
 //         <button
 //           type="button"
-//           className={`text-left  size-full bg-white shadow-lg rounded-lg p-5 ${
+//           className={`text-left  size-full bg-white shadow-lg rounded-md p-5 ${
 //             activeTab === 3 ? "hs-tab-active:bg-gray-100" : ""
 //           }`}
 //           onClick={() => handleTabClick(3)}

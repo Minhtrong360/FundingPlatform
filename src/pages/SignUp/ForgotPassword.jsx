@@ -4,7 +4,7 @@ import { supabase } from "../../supabase";
 
 import AnnouncePage from "../../components/AnnouncePage";
 import AlertMsg from "../../components/AlertMsg";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { message } from "antd";
 
@@ -20,7 +20,7 @@ const InputField = ({ label, type, name, value, onChange }) => {
         name={name}
         value={value}
         onChange={onChange}
-        className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextGray darkFocus"
+        className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextGray darkFocus"
         required
         aria-describedby={`${name}-error`}
       />
@@ -33,7 +33,7 @@ const SubmitButton = ({ text }) => {
   return (
     <button
       type="submit"
-      className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
+      className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
     >
       {text}
     </button>

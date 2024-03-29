@@ -15,7 +15,7 @@ const Modal = ({ open, children }) => {
             ​
           </span>
           <div
-            className="inline-block align-center bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full"
+            className="inline-block align-center bg-white rounded-md text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full"
             role="dialog"
             aria-modal="true"
             aria-labelledby="modal-headline"

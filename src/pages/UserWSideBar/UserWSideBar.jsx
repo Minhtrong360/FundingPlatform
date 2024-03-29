@@ -5,7 +5,7 @@ function FileUpload() {
     <div className="flex items-center justify-center w-full">
       <label
         htmlFor="dropzone-file"
-        className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 darkHoverBgBlue darkBgBlue hover:bg-gray-100  darkHoverBgBlue"
+        className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-md cursor-pointer bg-gray-50 darkHoverBgBlue darkBgBlue hover:bg-gray-100  darkHoverBgBlue"
       >
         <div className="flex flex-col items-center justify-center pt-5 pb-6">
           <svg
@@ -108,7 +108,7 @@ const ProfilePhoto = ({ src, alt, buttonText }) => (
       <div>
         <button
           type="button"
-          className="py-1 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
+          className="py-1 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
         >
           {buttonText}
         </button>
@@ -138,7 +138,7 @@ const TextInput = ({ id, type, placeholder }) => (
   <input
     id={id}
     type={type}
-    className="py-1 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextGray darkFocus"
+    className="py-1 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextGray darkFocus"
     placeholder={placeholder}
   />
 );
@@ -173,14 +173,14 @@ const RadioButton = ({ id, label, isChecked }) => (
 const TextAreaInput = () => (
   <textarea
     id="af-account-bio"
-    className="py-1 px-3 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextGray darkFocus"
+    className="py-1 px-3 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextGray darkFocus"
     rows="6"
     placeholder="Type your message..."
   ></textarea>
 );
 
 const UserProfileForm = () => (
-  <div className="max-w-4xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+  <div className="max-w-4xl px-3 py-20 sm:px-6 lg:px-8 lg:py-14 mx-auto">
     <div className="bg-white rounded-xl shadow p-4 sm:p-7 darkBgBlue">
       <div className="mb-8">
         <SectionTitle text="Profile" />
@@ -342,13 +342,13 @@ const UserProfileForm = () => (
         <div className="mt-5 flex justify-end gap-x-2">
           <button
             type="button"
-            className="py-1 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
+            className="py-1 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
           >
             Cancel
           </button>
           <button
             type="button"
-            className="py-1 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
+            className="py-1 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
           >
             Save changes
           </button>
@@ -390,7 +390,7 @@ function Sidebar() {
           {/* Menu Items */}
           <li>
             <a
-              className="flex items-center gap-x-3.5 py-1 px-2.5 bg-gray-100 text-sm text-slate-700 rounded-lg hover:bg-gray-100 darkBg darkTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
+              className="flex items-center gap-x-3.5 py-1 px-2.5 bg-gray-100 text-sm text-slate-700 rounded-md hover:bg-gray-100 darkBg darkTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
               href="#"
             >
               <svg
@@ -420,7 +420,7 @@ function Sidebar() {
                 usersAccordionOpen
                   ? "hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent"
                   : ""
-              } w-full text-start flex items-center gap-x-3.5 py-1 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 darkBgBlue darkHoverBgBlue darkTextGray darkHoverTextWhite `}
+              } w-full text-start flex items-center gap-x-3.5 py-1 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 darkBgBlue darkHoverBgBlue darkTextGray darkHoverTextWhite `}
               onClick={toggleUsersAccordion}
             >
               <svg
@@ -496,7 +496,7 @@ function Sidebar() {
                 <li className="hs-accordion" id="users-accordion-sub-1">
                   <button
                     type="button"
-                    className="hs-accordion-toggle hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent w-full text-start flex items-center gap-x-3.5 py-1 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 darkBgBlue darkHoverBgBlue darkTextGray darkHoverTextWhite "
+                    className="hs-accordion-toggle hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent w-full text-start flex items-center gap-x-3.5 py-1 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 darkBgBlue darkHoverBgBlue darkTextGray darkHoverTextWhite "
                   >
                     Sub Menu 1{/* Accordion Icons */}
                     <svg
@@ -537,7 +537,7 @@ function Sidebar() {
                     <ul className="ps-3 pt-2">
                       <li>
                         <a
-                          className="flex items-center gap-x-3.5 py-1 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 darkBgBlue darkHoverBgBlue darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
+                          className="flex items-center gap-x-3.5 py-1 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 darkBgBlue darkHoverBgBlue darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
                           href="#"
                         >
                           Sub-Menu Item 1
@@ -545,7 +545,7 @@ function Sidebar() {
                       </li>
                       <li>
                         <a
-                          className="flex items-center gap-x-3.5 py-1 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 darkBgBlue darkHoverBgBlue darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
+                          className="flex items-center gap-x-3.5 py-1 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 darkBgBlue darkHoverBgBlue darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
                           href="#"
                         >
                           Sub-Menu Item 2
@@ -567,7 +567,7 @@ function Sidebar() {
       </nav>
       <div className="px-6">
         <a
-          className="flex items-center gap-x-3.5 py-1 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 darkHoverBgBlue darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
+          className="flex items-center gap-x-3.5 py-1 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 darkHoverBgBlue darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
           href="#"
         >
           <svg
@@ -590,7 +590,7 @@ function Sidebar() {
       </div>
       <div className="px-6">
         <a
-          className="flex items-center gap-x-3.5 py-1 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 darkHoverBgBlue darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
+          className="flex items-center gap-x-3.5 py-1 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 darkHoverBgBlue darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
           href="#"
         >
           <svg

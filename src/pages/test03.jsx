@@ -15,7 +15,7 @@ import Chart from "react-apexcharts";
 import { Typography } from "antd";
 import LoadingButtonClick from "../components/LoadingButtonClick";
 import ProgressBar from "../components/ProgressBar";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { supabase } from "../supabase";
 import AlertMsg from "../components/AlertMsg";
 import apiService from "../app/apiService";
@@ -349,7 +349,7 @@ const CustomerSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-600 text-white py-1 px-2 rounded"
+              className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
               onClick={() => removeCustomerInput(index)}
             >
               Remove
@@ -359,7 +359,7 @@ const CustomerSection = ({
       ))}
 
       <button
-        className="bg-blue-600 text-white py-1 px-2 rounded"
+        className="bg-blue-600 text-white py-2 px-4 text-sm rounded"
         onClick={handleAddNewCustomer}
       >
         Add New
@@ -508,7 +508,7 @@ const SalesSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-600 text-white py-1 px-2 rounded"
+              className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
               onClick={() => removeChannelInput(index)}
             >
               Remove
@@ -518,7 +518,7 @@ const SalesSection = ({
       ))}
 
       <button
-        className="bg-blue-500 text-white py-1 px-2 rounded"
+        className="bg-blue-500 text-white py-2 px-4 rounded"
         onClick={handleAddNewChannelInput}
       >
         Add New
@@ -665,7 +665,7 @@ const CostSection = ({
 
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-600 text-white py-1 px-2 rounded"
+              className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
               onClick={() => removeCostInput(index)}
             >
               Remove
@@ -675,7 +675,7 @@ const CostSection = ({
       ))}
 
       <button
-        className="bg-blue-600 text-white py-1 px-2 rounded"
+        className="bg-blue-600 text-white py-2 px-4 text-sm rounded"
         onClick={handleAddNewCost}
       >
         Add New
@@ -770,7 +770,7 @@ const PersonnelSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-600 text-white py-1 px-2 rounded"
+              className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
               onClick={() => removePersonnelInput(index)}
             >
               Remove
@@ -779,7 +779,7 @@ const PersonnelSection = ({
         </div>
       ))}
       <button
-        className="bg-blue-500 text-white py-1 px-2 rounded"
+        className="bg-blue-500 text-white py-2 px-4 rounded"
         onClick={addNewPersonnelInput}
       >
         Add New
@@ -880,7 +880,7 @@ const InvestmentSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-600 text-white py-1 px-2 rounded"
+              className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
               onClick={() => removeInvestmentInput(index)}
             >
               Remove
@@ -889,7 +889,7 @@ const InvestmentSection = ({
         </div>
       ))}
       <button
-        className="bg-blue-500 text-white py-1 px-2 rounded"
+        className="bg-blue-500 text-white py-2 px-4 rounded"
         onClick={addNewInvestmentInput}
       >
         Add New
@@ -976,7 +976,7 @@ const LoanSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-600 text-white py-1 px-2 rounded"
+              className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
               onClick={() => removeLoanInput(index)}
             >
               Remove
@@ -986,7 +986,7 @@ const LoanSection = ({
       ))}
 
       <button
-        className="bg-blue-500 text-white py-1 px-2 rounded"
+        className="bg-blue-500 text-white py-2 px-4 rounded"
         onClick={addNewLoanInput}
       >
         Add New
@@ -1153,13 +1153,13 @@ const Z = ({ currentUser, setCurrentUser }) => {
             Build your financial model with AI
           </h2>
           <form onSubmit={handleSendMessage}>
-            <div className="w-[50%] relative z-10 flex space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100 darkBgBlue darkBorderGray darkShadowGray">
+            <div className="w-[50%] relative z-10 flex space-x-3 p-3 bg-white border rounded-md shadow-lg shadow-gray-100 darkBgBlue darkBorderGray darkShadowGray">
               <div className="flex-[1_0_0%]">
                 <input
                   type="text"
                   name="hs-search-article-1"
                   id="hs-search-article-1"
-                  className=" px-4 block w-full h-full border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
+                  className=" px-4 block w-full h-full border-transparent rounded-md focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder="Candy shop, pizza restaurant, hospital, HR SaaS software... or anything"
@@ -1169,7 +1169,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
               <div className="flex-[0_0_auto]">
                 <button
                   type="submit"
-                  className="w-[64px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
+                  className="w-[64px] h-[46px] inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
                 >
                   {/* <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -1191,7 +1191,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
               <button
                 key={index}
                 onClick={() => handleIndustrySelect(industry)}
-                className={`m-2 py-3 px-4 inline-flex items-center gap-x-2  rounded-lg border shadow-sm hover:cursor-pointer`}
+                className={`m-2 py-3 px-4 inline-flex items-center gap-x-2  rounded-md border shadow-sm hover:cursor-pointer`}
               >
                 {industry}
               </button>

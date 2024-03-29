@@ -46,9 +46,15 @@ import {
 } from "../../../features/FundraisingSlice";
 import { calculateProfitAndLoss } from "../../../features/ProfitAndLossSlice";
 import CustomChart from "./CustomerChart";
+import SelectField from "../../../components/SelectField";
+import { setCutMonth } from "../../../features/DurationSlice";
+import { InfoCircleOutlined } from "@ant-design/icons";
+
 
 const ProfitAndLossSection = ({ numberOfMonths }) => {
   const dispatch = useDispatch();
+  const { cutMonth } = useSelector((state) => state.durationSelect);
+
   const { customerGrowthData, customerInputs } = useSelector(
     (state) => state.customer
   );
@@ -207,16 +213,37 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     ),
   }));
 
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+
+  const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  const startingYear = startYear; // Năm bắt đầu từ 24
+
   const columns = [
     {
-      title: "Metric",
+      fixed: "left",
+      title: <div>Metric</div>,
       dataIndex: "metric",
       key: "metric",
-      fixed: "left",
 
       render: (text, record) => ({
         children: (
-          <div className={" md:whitespace-nowrap "}>
+          <div className={"md:whitespace-nowrap"}>
             <a
               style={{
                 fontWeight:
@@ -239,65 +266,52 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             </a>
           </div>
         ),
-        props: {
-          colSpan:
-            record.metric === "Revenue" ||
-            record.metric === "Cost of Revenue" ||
-            record.metric === "Operating Expenses" ||
-            record.metric === "Additional Expenses"
-              ? 36
-              : 1,
-          style:
-            record.metric === "Revenue" ||
-            record.metric === "Cost of Revenue" ||
-            record.metric === "Operating Expenses" ||
-            record.metric === "Additional Expenses"
-              ? {}
-              : { borderRight: "1px solid #f0f0f0" },
-        },
       }),
     },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `Month ${i + 1}`,
-      key: `Month ${i + 1}`,
-      onCell: (record) => {
-        if (
-          record.metric === "Revenue" ||
-          record.metric === "Cost of Revenue" ||
-          record.metric === "Operating Expenses" ||
-          record.metric === "Additional expenses"
-        ) {
-          return {
-            style: {
-              borderRight: "1px solid #f0f0f0",
-            },
-            colSpan: 0,
-          };
-        } else if (
-          record.metric === "Total Revenue" ||
-          record.metric === "Total COGS" ||
-          record.metric === "Net Revenue" ||
-          record.metric === "Gross Profit" ||
-          record.metric === "EBITDA" ||
-          record.metric === "Operating Costs" ||
-          record.metric === "Net Income"
-        ) {
-          return {
-            style: {
-              borderRight: "1px solid #f0f0f0",
-              fontWeight: "bold", // Add bold styling for Total Revenue
-            },
-          };
-        } else {
-          return {
-            style: {
-              borderRight: "1px solid #f0f0f0",
-            },
-          };
-        }
-      },
-    })),
+    ...Array.from({ length: numberOfMonths }, (_, i) => {
+      const monthIndex = (startingMonth + i - 1) % 12;
+      const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+      return {
+        title: `${months[monthIndex]}/${year}`,
+        dataIndex: `Month ${i + 1}`,
+        key: `Month ${i + 1}`,
+        onCell: (record) => {
+          if (
+            record.metric === "Revenue" ||
+            record.metric === "Cost of Revenue" ||
+            record.metric === "Operating Expenses" ||
+            record.metric === "Additional expenses"
+          ) {
+            return {
+              style: {
+                borderRight: "1px solid #f0f0f0",
+              },
+            };
+          } else if (
+            record.metric === "Total Revenue" ||
+            record.metric === "Total COGS" ||
+            record.metric === "Net Revenue" ||
+            record.metric === "Gross Profit" ||
+            record.metric === "EBITDA" ||
+            record.metric === "Operating Costs" ||
+            record.metric === "Net Income"
+          ) {
+            return {
+              style: {
+                borderRight: "1px solid #f0f0f0",
+                fontWeight: "bold", // Add bold styling for Total Revenue
+              },
+            };
+          } else {
+            return {
+              style: {
+                borderRight: "1px solid #f0f0f0",
+              },
+            };
+          }
+        },
+      };
+    }),
   ];
 
   let totalAssetValue = [];
@@ -467,17 +481,30 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     setSelectedChart(value);
   };
 
-  const [cutMonth, setCutMonth] = useState(4);
-  const handleCutMonthChange = (value) => {
-    setCutMonth(Number(value));
+  const handleCutMonthChange = (e) => {
+    dispatch(setCutMonth(Number(e.target.value)));
   };
 
   const divideMonthsIntoYears = () => {
     const years = [];
+    const startingMonthIndex = startMonth - 1;
+    const startingYear = startYear;
+
     if (cutMonth - 1 > 0) {
+      const firstYearMonths = Array.from(
+        { length: cutMonth - 1 },
+        (_, i) => i + 1
+      );
+      const firstYearTextMonths = firstYearMonths.map((month) => {
+        const monthIndex = (startingMonthIndex + month - 1) % 12;
+        const year =
+          startingYear + Math.floor((startingMonthIndex + month - 1) / 12);
+        return `${months[monthIndex]}/${year}`;
+      });
       years.push({
         year: "First Year",
-        months: Array.from({ length: cutMonth - 1 }, (_, i) => i + 1),
+        months: firstYearMonths,
+        textMonth: firstYearTextMonths,
       });
     }
 
@@ -486,22 +513,38 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     const remainingMonthsInLastYear = remainingMonthsAfterFirstYear % 12;
 
     for (let i = 0; i < fullYearsCount; i++) {
+      const yearMonths = Array.from(
+        { length: 12 },
+        (_, idx) => idx + 1 + (cutMonth - 1) + i * 12
+      );
+      const yearTextMonths = yearMonths.map((month) => {
+        const monthIndex = (startingMonthIndex + month - 1) % 12;
+        const year =
+          startingYear + Math.floor((startingMonthIndex + month - 1) / 12);
+        return `${months[monthIndex]}/${year}`;
+      });
       years.push({
         year: `Year ${i + 2}`,
-        months: Array.from(
-          { length: 12 },
-          (_, idx) => idx + 1 + (cutMonth - 1) + i * 12
-        ),
+        months: yearMonths,
+        textMonth: yearTextMonths,
       });
     }
 
     if (remainingMonthsInLastYear > 0) {
+      const lastYearMonths = Array.from(
+        { length: remainingMonthsInLastYear },
+        (_, idx) => idx + 1 + (cutMonth - 1) + fullYearsCount * 12
+      );
+      const lastYearTextMonths = lastYearMonths.map((month) => {
+        const monthIndex = (startingMonthIndex + month - 1) % 12;
+        const year =
+          startingYear + Math.floor((startingMonthIndex + month - 1) / 12);
+        return `${months[monthIndex]}/${year}`;
+      });
       years.push({
         year: `Last Year`,
-        months: Array.from(
-          { length: remainingMonthsInLastYear },
-          (_, idx) => idx + 1 + (cutMonth - 1) + fullYearsCount * 12
-        ),
+        months: lastYearMonths,
+        textMonth: lastYearTextMonths,
       });
     }
 
@@ -509,27 +552,32 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   };
 
   const years = divideMonthsIntoYears();
-
+  console.log("years", years);
   // Function to generate table columns dynamically based on months in a year
-  const generateTableColumns = (months) => [
-    {
-      title: "Metric",
-      dataIndex: "metric",
-      key: "metric",
-      fixed: "left",
-    },
-    ...months.map((month) => ({
-      title: `Month ${month}`,
-      dataIndex: `Month ${month}`,
-      key: `Month ${month}`,
-    })),
-    {
-      title: "Year Total",
-      dataIndex: "yearTotal",
-      key: "yearTotal",
-      render: (text) => formatNumber(text?.toFixed(2)), // Optional: formatting the number if needed
-    },
-  ];
+
+  const generateTableColumns = (year) => {
+    const columns = [
+      {
+        title: "Metric",
+        dataIndex: "metric",
+        key: "metric",
+        fixed: "left",
+      },
+      ...year.textMonth.map((textMonth, index) => ({
+        title: textMonth,
+        dataIndex: `Month ${year.months[index]}`,
+        key: `Month ${year.months[index]}`,
+      })),
+      {
+        title: "Year Total",
+        dataIndex: "yearTotal",
+        key: "yearTotal",
+        render: (text) => formatNumber(text?.toFixed(2)), // Optional: formatting the number if needed
+      },
+    ];
+
+    return columns;
+  };
 
   function parseNumberInternal(value) {
     if (value === undefined || value === null) return 0;
@@ -628,7 +676,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           value={selectedChart}
           className="border-solid border-[1px] border-gray-200"
         >
-          <SelectTrigger className="border-solid border-[1px] border-gray-200 w-[20%]">
+          <SelectTrigger className="border-solid border-[1px] border-gray-200 w-full lg:w-[20%]">
             <SelectValue />
           </SelectTrigger>
 
@@ -782,15 +830,18 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
         />
       )}
 
-      <div>
-        <label className="mr-4">Select Cut Month:</label>
-        <select value={cutMonth} onChange={handleCutMonthChange}>
-          {Array.from({ length: 12 }, (_, i) => (
-            <option key={i} value={i + 1}>
-              {i + 1}
-            </option>
-          ))}
-        </select>
+      <div className="w-full md:w-[20%] mb-5">
+        <SelectField
+          label="Select Cut Month:"
+          id="Select Cut Month:"
+          name="Select Cut Month:"
+          value={cutMonth}
+          onChange={handleCutMonthChange}
+          options={Array.from({ length: 12 }, (_, index) => ({
+            label: `${index + 1}`,
+            value: `${index + 1}`,
+          })).map((option) => option.label)} // Chỉ trả về mảng các label
+        />
       </div>
 
       {years.map((year, index) => (
@@ -800,7 +851,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             className="overflow-auto my-8"
             size="small"
             dataSource={getDataSourceForYear(year.months)}
-            columns={generateTableColumns(year.months)}
+            columns={generateTableColumns(year)}
             pagination={false}
           />
           {/* Expanded section to calculate and display financial ratios */}
@@ -824,22 +875,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
                           <Tooltip
                             title={`This is the ${key.replace(/_/g, " ")}.`}
                           >
-                            <svg
-                              className="flex-shrink-0 size-4 text-gray-500"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <circle cx="12" cy="12" r="10" />
-                              <line x1="12" y1="16" x2="12" y2="12" />
-                              <line x1="12" y1="8" x2="12" y2="8" />
-                            </svg>
+                            <InfoCircleOutlined />
                           </Tooltip>
                         </div>
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import AlertMsg from "../../components/AlertMsg";
 import InputField from "../../components/InputField";
 
@@ -13,10 +13,8 @@ import countries from "../../components/Country";
 import MultiSelectField from "../../components/MultiSelectField";
 import SelectField from "../../components/SelectField";
 
-import { Avatar, Tooltip } from "antd";
+import { Avatar, Tooltip, message } from "antd";
 import { IconButton } from "@mui/material";
-import { message } from "antd";
-
 
 function UserInfoSettings() {
   const { user } = useAuth();
@@ -342,7 +340,7 @@ function UserInfoSettings() {
   }, [avatarUrl]);
 
   return (
-    <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+    <div className="max-w-[85rem] px-3 py-20 sm:px-6 lg:px-8 lg:py-14 mx-auto">
       <AlertMsg />
       <div className="max-w-xl mx-auto">
         <div className="text-center">
@@ -418,7 +416,7 @@ function UserInfoSettings() {
                   name="roll"
                   value={userData.roll}
                   onChange={handleRollChange}
-                  className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus:ring-gray-600"
+                  className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus:ring-gray-600"
                 >
                   <option value="Founder">Founder</option>
                   <option value="Investor">Investor</option>
@@ -512,7 +510,7 @@ function UserInfoSettings() {
                       <button
                         type="button"
                         onClick={handleBilling}
-                        className="w-full py-2 px-2 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
+                        className="w-full py-2 px-2 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
                       >
                         Billing Portal
                       </button>
@@ -538,7 +536,7 @@ function UserInfoSettings() {
                     <button
                       type="button"
                       onClick={handleBilling}
-                      className="hidden w-full py-3 px-4 my-2 justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
+                      className="hidden w-full py-3 px-4 my-2 justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
                     >
                       Billing Portal
                     </button>
@@ -592,7 +590,7 @@ function UserInfoSettings() {
                   id="hs-about-hire-us-2"
                   name="detail"
                   rows="4"
-                  className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus:ring-gray-600"
+                  className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus:ring-gray-600"
                   value={userData.detail}
                   onChange={handleInputChange}
                 ></textarea>
@@ -602,7 +600,7 @@ function UserInfoSettings() {
             <div className="grid grid-cols-1  gap-4 lg:gap-6 mt-6">
               <button
                 type="submit"
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
+                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
               >
                 Save
               </button>

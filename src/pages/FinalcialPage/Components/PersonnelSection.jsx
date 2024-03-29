@@ -112,18 +112,48 @@ const PersonnelSection = ({
   const personnelCostTableData = transformPersonnelCostDataForTable();
 
   //PersonnelColumns
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+
+  const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  const startingYear = startYear; // Năm bắt đầu từ 24
+
   const personnelCostColumns = [
     {
       fixed: "left",
-      title: <div style={{ paddingLeft: '50px', paddingRight: '50px' }}>Personnel</div>,
+      title: <div>Personnel</div>,
       dataIndex: "jobTitle",
       key: "jobTitle",
     },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `month${i + 1}`,
-      key: `month${i + 1}`,
-    })),
+    ...Array.from({ length: numberOfMonths }, (_, i) => {
+      const monthIndex = (startingMonth + i - 1) % 12;
+      const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+      return {
+        title: `${months[monthIndex]}/${year}`,
+        dataIndex: `month${i + 1}`,
+        key: `month${i + 1}`,
+        onCell: (record) => ({
+          style: {
+            borderRight: "1px solid #f0f0f0", // Add border right style
+          },
+        }),
+      };
+    }),
   ];
 
   //PersonnelChart
@@ -213,7 +243,7 @@ const PersonnelSection = ({
             ></label>
             <select
               id="selectedChannel"
-              className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+              className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
               value={renderPersonnelForm}
               onChange={handleSelectChange}
             >
@@ -334,7 +364,7 @@ const PersonnelSection = ({
                 </div>
                 <div className="flex justify-end items-center">
                   <button
-                    className="bg-red-600 text-white py-1 px-2 rounded"
+                    className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
                     onClick={() => removePersonnelInput(input.id)}
                   >
                     Remove
@@ -343,14 +373,14 @@ const PersonnelSection = ({
               </div>
             ))}
           <button
-            className="bg-blue-600 text-white py-1 px-2 rounded mt-4 mr-4"
+            className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
             onClick={addNewPersonnelInput}
           >
             Add new
           </button>
 
           <button
-            className="bg-blue-600 text-white py-1 px-2 rounded mt-4"
+            className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
             onClick={handleSave}
           >
             Save changes

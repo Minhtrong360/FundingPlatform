@@ -8,10 +8,11 @@ const initialState = {
   incomeTax: 0,
   payrollTax: 0,
   currency: "USD",
-  startMonth: "",
+  startMonth: 1,
   startYear: 2024,
   financialProjectName: "",
   numberOfMonths: 36,
+  cutMonth: 4,
 };
 
 const durationSelectSlice = createSlice({
@@ -51,6 +52,9 @@ const durationSelectSlice = createSlice({
     setNumberOfMonths(state, action) {
       state.numberOfMonths = action.payload;
     },
+    setCutMonth(state, action) {
+      state.cutMonth = action.payload;
+    },
     // Thêm reducers khác nếu cần
   },
 });
@@ -67,6 +71,16 @@ export const {
   setStartYear,
   setFinancialProjectName,
   setNumberOfMonths,
+  setCutMonth,
 } = durationSelectSlice.actions;
+
+export function formatDate(inputDateString) {
+  const dateObject = new Date(inputDateString);
+  const day = String(dateObject.getDate()).padStart(2, "0");
+  const month = String(dateObject.getMonth() + 1).padStart(2, "0");
+  const year = dateObject.getFullYear();
+  const formattedDate = `${day}/${month}/${year}`;
+  return formattedDate;
+}
 
 export default durationSelectSlice.reducer;

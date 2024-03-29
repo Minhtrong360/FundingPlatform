@@ -2,6 +2,7 @@ import { Tooltip } from "antd";
 import { useSelector } from "react-redux";
 import { formatNumber } from "../features/CostSlice";
 import AllChartSections from "./FinalcialPage/Components/AllChartSections";
+import { InfoCircleOutlined } from '@ant-design/icons';
 
 const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
   // Define data for each card
@@ -21,22 +22,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
                 USER
               </p>
               <Tooltip title="Total users of the first year.">
-                <svg
-                  className="flex-shrink-0 size-4 text-gray-500"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                  <path d="M12 17h.01" />
-                </svg>
+                <InfoCircleOutlined />
               </Tooltip>
             </div>
 
@@ -79,22 +65,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
                 REVENUE
               </p>
               <Tooltip title="The average revenue of the first year.">
-                <svg
-                  className="flex-shrink-0 size-4 text-gray-500"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                  <path d="M12 17h.01" />
-                </svg>
+               <InfoCircleOutlined />
               </Tooltip>
             </div>
 

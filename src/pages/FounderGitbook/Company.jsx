@@ -7,6 +7,7 @@ import AlertMsg from "../../components/AlertMsg";
 import industries from "../../components/Industries";
 import MultiSelectField from "../../components/MultiSelectField";
 import { useEffect, useState } from "react";
+import { formatNumber } from "../../features/CostSlice";
 
 function Company({
   handleSubmit,
@@ -14,6 +15,7 @@ function Company({
   handleInputChange,
   handleIndustryChange,
   typeOfferingOptions,
+  handleRoundChange,
 }) {
   const [projectImageUrl, setProjectImageUrl] = useState(formData.project_url); // State to store project image URL
   const [cardImageUrl, setCardImageUrl] = useState(formData.card_url); // State to store card image URL
@@ -61,7 +63,7 @@ function Company({
 
   return (
     <>
-      <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto sm:border-r-2 border-r-0">
+      <div className="max-w-[85rem] px-3 py-20 sm:px-6 lg:px-8 lg:py-14 mx-auto sm:border-r-2 border-r-0">
         <AlertMsg />
         <div className="max-w-xl mx-auto">
           <div className="text-center">
@@ -176,14 +178,14 @@ function Company({
                     required
                   />
                   {/* Add file input for project image */}
-                  <span className="py-1 px-2 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60">
+                  <span className="py-1 px-2 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60">
                     {" "}
                   </span>
                   <input
                     type="file"
                     accept="image/*"
                     onChange={handleProjectImageUpload}
-                    className="py-1 px-2 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60"
+                    className="py-1 px-2 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60"
                   />
                 </div>
 
@@ -197,14 +199,14 @@ function Company({
                     type="text"
                     required
                   />
-                  <span className="py-1 px-2 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60">
+                  <span className="py-1 px-2 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60">
                     {" "}
                   </span>
                   <input
                     type="file"
                     accept="image/*"
                     onChange={handleCardImageUpload}
-                    className="py-1 px-2 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60"
+                    className="py-1 px-2 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60"
                   />
                   {/* Display the card image */}
                 </div>
@@ -228,6 +230,46 @@ function Company({
                   type="text"
                   required
                 />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                  <InputField
+                    label="Team size"
+                    id="teamSize"
+                    name="teamSize"
+                    value={formData.teamSize}
+                    onChange={handleInputChange}
+                    type="text"
+                    required
+                  />
+                  <InputField
+                    label="No. years in operation"
+                    id="operationTime"
+                    name="operationTime"
+                    value={formData.operationTime}
+                    onChange={handleInputChange}
+                    type="text"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                  <InputField
+                    label="Amount raised"
+                    id="amountRaised"
+                    name="amountRaised"
+                    value={formatNumber(formData.amountRaised)}
+                    onChange={handleInputChange}
+                    type="text"
+                    required
+                  />
+                  <MultiSelectField
+                    label="Round"
+                    id="round"
+                    name="round"
+                    OPTIONS={["Pre-seed", "Seed"]}
+                    selectedItems={formData.round}
+                    setSelectedItems={handleRoundChange}
+                    type="text"
+                  />
+                </div>
 
                 <TextAreaField
                   label="Company description"
@@ -242,7 +284,7 @@ function Company({
               <div className="mt-6 grid">
                 <button
                   type="submit"
-                  className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
+                  className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
                 >
                   Submit
                 </button>

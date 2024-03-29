@@ -121,7 +121,7 @@ const CustomerSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-1 px-2 rounded"
+              className="bg-red-500 text-white py-2 px-4 rounded"
               onClick={() => removeCustomerInput(index)}
             >
               Remove
@@ -131,7 +131,7 @@ const CustomerSection = ({
       ))}
 
       <button
-        className="bg-blue-600 text-white py-1 px-2 rounded"
+        className="bg-blue-600 text-white py-2 px-4 text-sm rounded"
         onClick={handleAddNewCustomer}
       >
         Add New
@@ -274,7 +274,7 @@ const SalesSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-1 px-2 rounded"
+              className="bg-red-500 text-white py-2 px-4 rounded"
               onClick={() => removeChannelInput(index)}
             >
               Remove
@@ -284,7 +284,7 @@ const SalesSection = ({
       ))}
 
       <button
-        className="bg-blue-500 text-white py-1 px-2 rounded"
+        className="bg-blue-500 text-white py-2 px-4 rounded"
         onClick={handleAddNewChannelInput}
       >
         Add New
@@ -423,7 +423,7 @@ const CostSection = ({
 
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-1 px-2 rounded"
+              className="bg-red-500 text-white py-2 px-4 rounded"
               onClick={() => removeCostInput(index)}
             >
               Remove
@@ -433,7 +433,7 @@ const CostSection = ({
       ))}
 
       <button
-        className="bg-blue-600 text-white py-1 px-2 rounded"
+        className="bg-blue-600 text-white py-2 px-4 text-sm rounded"
         onClick={handleAddNewCost}
       >
         Add New
@@ -527,7 +527,7 @@ const PersonnelSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-1 px-2 rounded"
+              className="bg-red-500 text-white py-2 px-4 rounded"
               onClick={() => removePersonnelInput(index)}
             >
               Remove
@@ -536,7 +536,7 @@ const PersonnelSection = ({
         </div>
       ))}
       <button
-        className="bg-blue-500 text-white py-1 px-2 rounded"
+        className="bg-blue-500 text-white py-2 px-4 rounded"
         onClick={addNewPersonnelInput}
       >
         Add New
@@ -636,7 +636,7 @@ const InvestmentSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-1 px-2 rounded"
+              className="bg-red-500 text-white py-2 px-4 rounded"
               onClick={() => removeInvestmentInput(index)}
             >
               Remove
@@ -645,7 +645,7 @@ const InvestmentSection = ({
         </div>
       ))}
       <button
-        className="bg-blue-500 text-white py-1 px-2 rounded"
+        className="bg-blue-500 text-white py-2 px-4 rounded"
         onClick={addNewInvestmentInput}
       >
         Add New
@@ -731,7 +731,7 @@ const LoanSection = ({
           </div>
           <div className="flex justify-end items-center">
             <button
-              className="bg-red-500 text-white py-1 px-2 rounded"
+              className="bg-red-500 text-white py-2 px-4 rounded"
               onClick={() => removeLoanInput(index)}
             >
               Remove
@@ -741,7 +741,7 @@ const LoanSection = ({
       ))}
 
       <button
-        className="bg-blue-500 text-white py-1 px-2 rounded"
+        className="bg-blue-500 text-white py-2 px-4 rounded"
         onClick={addNewLoanInput}
       >
         Add New

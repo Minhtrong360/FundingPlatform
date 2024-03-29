@@ -6,7 +6,7 @@ import ProjectList from "./ProjectList";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
 import SideBar from "../../components/SideBar";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { message } from "antd";
 
 const FounderGitbook = () => {
@@ -89,7 +89,7 @@ const FounderGitbook = () => {
           className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0 "
           onClick={() => setIsSidebarOpen(false)}
         >
-          <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg darkBorderGray">
+          <div className="p-4 border-2 border-gray-200 border-dashed rounded-md darkBorderGray">
             <ProjectList projects={projects} />
           </div>
         </div>

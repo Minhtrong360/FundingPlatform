@@ -21,10 +21,10 @@ const NotificationItem = ({ notification }) => {
       return createdDate.toLocaleDateString("en-GB", options);
     } else if (hoursPassed > 0) {
       // If less than 24 hours but more than 0 hours have passed, display hours
-      return `${hoursPassed} giờ trước`;
+      return `${hoursPassed} hours ago`;
     } else {
       // If less than an hour has passed, display minutes
-      return `${minutesPassed} phút trước`;
+      return `${minutesPassed} minutes ago`;
     }
   };
 
@@ -35,13 +35,13 @@ const NotificationItem = ({ notification }) => {
   return (
     <div className="flex justify-between items-start px-4 py-2 border-b border-gray-200">
       <div className="flex-1">
-        <p className="text-sm font-semibold text-gray-800">Thông báo</p>
-        <p className="text-sm text-gray-600 mt-1">
-          Các dự án sau có thể phù hợp với nhu cầu của bạn:
+        <p className="text-sm font-semibold text-gray-800">Message</p>
+        <p className="text-sm text-gray-600 mt-4">
+          Check out these projects tailored to your interests
         </p>
 
         {Object.keys(parsedContent).map((key, index) => (
-          <span key={index}>
+          <span key={index} className="ant-tag bg-bg-gray-50 border border-gray-200 text-black mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center rounded-3xl css-6j9yrn">
             <span
               className="font-semibold text-sm hover:cursor-pointer"
               onClick={() =>

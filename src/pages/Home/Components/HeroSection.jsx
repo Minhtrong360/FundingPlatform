@@ -1,41 +1,59 @@
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import img from "../Components/UpscaleVideo.mp4";
 
 const HeroSection = () => {
-  const { user } = useAuth();
+  const { user, subscribed } = useAuth();
   const navigate = useNavigate();
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 1 } },
-  };
+  // const containerVariants = {
+  //   hidden: { opacity: 0 },
+  //   visible: { opacity: 1, transition: { duration: 1 } },
+  // };
 
-  const textVariants = {
-    hidden: { x: -50, opacity: 0 },
-    visible: { x: 0, opacity: 0.9, transition: { delay: 0.5, duration: 1 } },
-  };
+  // const textVariants = {
+  //   hidden: { x: -50, opacity: 0 },
+  //   visible: { x: 0, opacity: 0.9, transition: { delay: 0.5, duration: 1 } },
+  // };
 
-  const buttonVariants = {
-    hidden: { scale: 0 },
-    visible: { scale: 1, transition: { delay: 1, duration: 0.5 } },
-  };
+  // const buttonVariants = {
+  //   hidden: { scale: 0 },
+  //   visible: { scale: 1, transition: { delay: 1, duration: 0.5 } },
+  // };
 
-  const textAnimation = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { delay: 1, duration: 1.5, ease: "easeOut" },
-    },
+  // const textAnimation = {
+  //   hidden: { opacity: 0, y: 50 },
+  //   visible: {
+  //     opacity: 1,
+  //     y: 0,
+  //     transition: { delay: 1, duration: 1.5, ease: "easeOut" },
+  //   },
+  // };
+
+  const handlePricingClick = () => {
+    // Lấy đối tượng ref của phần tử "Financial Product" từ Home component
+    const financialProductRef = document.getElementById("pricing"); // Đặt ID tương ứng với ref của bạn
+
+    if (financialProductRef) {
+      // Sử dụng `scrollIntoView()` để cuộn đến phần tử "Financial Product"
+      const elementRect = financialProductRef.getBoundingClientRect();
+      const bodyRect = document.body.getBoundingClientRect();
+      const offsetTop = elementRect.top - bodyRect.top;
+      window.scrollTo({
+        top: offsetTop - (window.innerHeight - elementRect.height) / 20,
+        behavior: "smooth",
+      });
+    }
   };
 
   const handleClick = () => {
     if (!user) {
       navigate("/login");
-    } else {
+    } else if (subscribed) {
       navigate("/financials");
+    } else {
+      handlePricingClick();
     }
   };
 
@@ -80,7 +98,7 @@ const HeroSection = () => {
   //         </p>
   //         <div className="mt-7 grid gap-3 w-full sm:inline-flex">
   //           <motion.a
-  //             className="hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
+  //             className="hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
   //             variants={containerVariants}
   //             onClick={handleClick}
   //           >
@@ -88,7 +106,7 @@ const HeroSection = () => {
   //             <span>→</span>
   //           </motion.a>
   //           <motion.a
-  //             className="hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
+  //             className="hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
   //             onClick={() =>
   //               navigate(`/founder/${"3ec3f142-f33c-4977-befd-30d4ce2b764d"}`)
   //             }
@@ -135,16 +153,20 @@ const HeroSection = () => {
           <div className="mt-7 flex justify-center">
             {" "}
             {/* Add justify-center class */}
-            <a
+            <button
               className="mr-5 hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
               onClick={handleClick}
             >
-              {user ? "14-day free trial" : "Get started"}
-            </a>
+              {user
+                ? subscribed
+                  ? "Financial Model"
+                  : "14-day free trial"
+                : "Get started"}
+            </button>
             <span className="hidden sm:inline">&nbsp;</span>{" "}
             {/* Add spacing for small screens */}
             {/* <a
-              className="hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
+              className="hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
               onClick={() =>
                 navigate(`/founder/${"3ec3f142-f33c-4977-befd-30d4ce2b764d"}`)
               }

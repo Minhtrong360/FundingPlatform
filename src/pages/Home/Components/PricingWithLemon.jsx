@@ -1,12 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { useAuth } from "../../../context/AuthContext";
 import AlertMsg from "../../../components/AlertMsg";
 import LoadingButtonClick from "../../../components/LoadingButtonClick";
 import { message } from "antd";
-
 
 const PricingCard = ({ plan, onClick }) => {
   // const { user } = useAuth();
@@ -145,7 +144,7 @@ const PricingCard = ({ plan, onClick }) => {
 
         <button
           onClick={onClick}
-          className={`mt-5 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-white hover:bg-blue-700 disabled:opacity-0.5 disabled:pointer-events-none ${
+          className={`mt-5 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent text-white hover:bg-blue-700 disabled:opacity-0.5 disabled:pointer-events-none ${
             plan.price / 100 === 0 || plan.price_formatted.includes("$100")
               ? "bg-gray-400"
               : "bg-blue-600"
@@ -228,7 +227,7 @@ const PricingWithLemon = () => {
   };
 
   return (
-    <div className="max-w-[85rem] mx-auto px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mt-28">
+    <div className="max-w-[85rem] mx-auto px-3 py-20 sm:px-6 lg:px-8 lg:py-14 mt-28">
       <AlertMsg />
       <LoadingButtonClick isLoading={isLoading} />
       <div className="text-center mb-10 lg:mb-14">

@@ -194,7 +194,7 @@ const NewProjectPosts = () => {
           currentTab={currentTab}
         />
 
-        <div className="mt-2 sm:mt-4  lg:flex flex-wrap justify-center">
+        <div className="mt-2 sm:mt-4 ml-4 md:mt-0 lg:flex flex-wrap justify-center">
               <Select
                 className="m-1 w-40 text-center"
                 value={currentTab}

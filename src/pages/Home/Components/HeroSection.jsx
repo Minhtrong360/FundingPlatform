@@ -154,7 +154,7 @@ const HeroSection = () => {
             {" "}
             {/* Add justify-center class */}
             <button
-              className="mr-5 hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+              className="hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
               onClick={handleClick}
             >
               {user
@@ -163,7 +163,6 @@ const HeroSection = () => {
                   : "14-day free trial"
                 : "Get started"}
             </button>
-            <span className="hidden sm:inline">&nbsp;</span>{" "}
             {/* Add spacing for small screens */}
             {/* <a
               className="hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"

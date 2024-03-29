@@ -277,6 +277,7 @@ function Company({
                   value={formData.companyDescription}
                   onChange={handleInputChange}
                   required
+                  maxLength={700} // Giới hạn 700 ký tự
                 />
               </div>
 

@@ -389,12 +389,9 @@ function NewUserPage() {
                   </label>
                   <label htmlFor="avatar" />
                 </div>
-                <p className="mt-4 text-sm text-gray-500">
-                  Upload a new avatar. Larger image will be resized
-                  automatically.
-                </p>
+            
                 {/* <p className="text-sm text-gray-500">Maximum upload size is 1 MB</p> */}
-                <p className="mt-4 text-sm text-gray-500">
+                <p className="mt-4 text-sm text-gray-800">
                   Member Since:{" "}
                   {new Date(user.created_at).toISOString().split("T")[0]}
                 </p>
@@ -572,7 +569,7 @@ function NewUserPage() {
                       <div className="flex flex-col">
                         <div className="mt-4">
                           <SelectField
-                            label="Which company do you like?"
+                            label="Revenue status"
                             id="revenueStatusWanted"
                             name="revenueStatusWanted"
                             value={userData.revenueStatusWanted}

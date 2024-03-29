@@ -104,7 +104,6 @@ function AdminPage() {
         <div
           className={` flex items-center  hover:cursor-pointer`}
           onClick={() => handleProjectClick(record)}
-          style={{ fontSize: "14px" }} // Updated font size
         >
           {index + 1}
         </div>
@@ -130,9 +129,7 @@ function AdminPage() {
       key: "created_at",
       render: (text, record) => (
         <div
-          className={`w-[150px] flex items-center  hover:cursor-pointer`}
           onClick={() => handleProjectClick(record)}
-          style={{ fontSize: "14px" }} // Updated font size
         >
           {formatDate(text)}
         </div>
@@ -233,9 +230,9 @@ function AdminPage() {
       )}
       {userData.admin === false && (
         <AnnouncePage
-          title="Permission Required"
-          announce="You are not ADMIN"
-          describe="Only ADMIN can access this site!"
+          title="Admin Page"
+          announce="Admin Page"
+          describe="Only for admin"
         />
       )}
     </main>

@@ -36,7 +36,7 @@ import PricingPage from "../pages/Home/Components/PricingPage";
 import FAQ from "../pages/Home/Components/FAQ";
 import DetailBlog from "../pages/News/DetailBlog";
 import StaticNews from "../pages/News/StaticNews";
-import NewProjectPosts from "../pages/StartUps.jsx/NewProjectPosts";
+import NewProjectPosts from "../pages/StartUps/NewProjectPosts";
 function Router() {
   return (
     <>

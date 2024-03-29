@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import AllInclusiveOutlinedIcon from "@mui/icons-material/AllInclusiveOutlined";
 import industries from "../../../components/Industries";
+import { Select } from "antd";
 
 const Search = ({
   onSearch,
@@ -12,6 +13,8 @@ const Search = ({
   selectedIndustry,
   setSelectedIndustry,
   currentTab,
+  setCurrentTab,
+  setVisibleItemCount,
 }) => {
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -46,6 +49,8 @@ const Search = ({
     onSearch(name); // Optional: Trigger the search when a suggestion is clicked
   };
 
+  const { Option } = Select;
+
   useEffect(() => {
     if (!searchTerm) {
       setSuggestions([]);
@@ -53,6 +58,11 @@ const Search = ({
       setSuggestions(companies);
     }
   }, [currentTab, companies, searchTerm]);
+
+  const handleChange = (value) => {
+    setVisibleItemCount(6);
+    setCurrentTab(value);
+  };
 
   return (
     <div className="relative overflow-hidden">
@@ -111,57 +121,32 @@ const Search = ({
             )}
           </div>
 
-          <div className="mt-2 sm:mt-4 hidden lg:flex flex-wrap justify-center">
-            <button
-              onClick={() => handleIndustryClick("")}
-              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
-                !selectedIndustry
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-800 hover:bg-gray-50"
-              } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
+          <div className="mt-4  flex flex-wrap justify-center sm:gap-5 gap-2">
+            <Select
+              className="m-1 w-40 my-2 min-h-[40px]"
+              defaultValue=""
+              onChange={handleIndustryClick}
+              optionLabelProp="label"
             >
-              All
-              <AllInclusiveOutlinedIcon fontSize="small" />
-            </button>
-            {industries.map((industry, index) => (
-              <button
-                key={index}
-                onClick={() => handleIndustryClick(industry)}
-                className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
-                  selectedIndustry === industry
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-800 hover:bg-gray-50"
-                } shadow-sm hover:cursor-pointer`}
-              >
-                {industry}
-              </button>
-            ))}
-          </div>
-          <div className="mt-4 lg:hidden overflow-x-auto flex flex-nowrap">
-            <button
-              onClick={() => handleIndustryClick("")}
-              className={`m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
-                !selectedIndustry
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-800 hover:bg-gray-50"
-              } shadow-sm  disabled:opacity-50 hover:cursor-pointer`}
+              <Option value="" label="All industries">
+                All industries
+              </Option>
+              {industries.map((industry, index) => (
+                <Option key={index} value={industry} label={industry}>
+                  {industry}
+                </Option>
+              ))}
+            </Select>
+
+            <Select
+              className="m-1 w-40 text-center my-2 min-h-[40px]"
+              value={currentTab}
+              onChange={handleChange}
             >
-              All
-              <AllInclusiveOutlinedIcon fontSize="small" />
-            </button>
-            {industries.map((industry, index) => (
-              <button
-                key={index}
-                onClick={() => handleIndustryClick(industry)}
-                className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
-                  selectedIndustry === industry
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-800 hover:bg-gray-50"
-                } shadow-sm hover:cursor-pointer flex-shrink-0`}
-              >
-                {industry}
-              </button>
-            ))}
+              <Option value="All">All profiles</Option>
+              <Option value="verified">Verified profiles</Option>
+              <Option value="unverified">Unverified profiles</Option>
+            </Select>
           </div>
         </div>
       </div>
@@ -170,3 +155,5 @@ const Search = ({
 };
 
 export default Search;
+
+//////////////

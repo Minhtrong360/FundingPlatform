@@ -190,13 +190,12 @@ function CompanySetting() {
           }
         }
       }
-      console.log("projectUrl", projectUrl);
       // Upload ảnh card_url nếu có
       let cardUrl = formData.card_url;
       if (cardUrl && cardUrl.startsWith("data:image")) {
         const file = dataURItoFile(cardUrl, "card_image.jpg");
         const uploadedCardUrl = await uploadImageToSupabase(file);
-        console.log("uploadedCardUrl", uploadedCardUrl);
+
         if (uploadedCardUrl) {
           cardUrl = uploadedCardUrl;
         }
@@ -212,7 +211,6 @@ function CompanySetting() {
           }
         }
       }
-      console.log("cardUrl", cardUrl);
       // Kiểm tra xem công ty đã tồn tại trong Supabase chưa bằng cách truy vấn theo project_id
       const { data: existingCompany, error: existingCompanyError } =
         await supabase.from("company").select("*").eq("project_id", params.id);

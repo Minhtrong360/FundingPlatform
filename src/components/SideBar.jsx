@@ -4,6 +4,7 @@ import {
   DashboardOutlined,
   DollarCircleOutlined,
   HomeOutlined,
+  ProfileOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { ProjectOutlined } from "@ant-design/icons";
@@ -130,7 +131,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             } sidebar-button hover:bg-gray-300`}
             onClick={() => handleItemClick("/founder")}
           >
-            <ProjectOutlined />
+            <ProfileOutlined />
             <span className="sidebar-text">Project list</span>
           </button>
         </div>

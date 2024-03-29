@@ -183,7 +183,7 @@ const HeroSection = ({
 
             <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
               <span className="text-sm font-medium text-gray-600">
-                Number of year in operation:
+                Established:
               </span>
               <span className="text-sm font-semibold text-gray-800 truncate pl-1">
                 {" "}

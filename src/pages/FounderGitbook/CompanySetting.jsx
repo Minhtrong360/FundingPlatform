@@ -144,6 +144,10 @@ function CompanySetting() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (formData.companyDescription.length < 50) {
+      message.warning("Please input at least 50 characters.");
+      return;
+    }
     setIsLoading(true);
 
     try {

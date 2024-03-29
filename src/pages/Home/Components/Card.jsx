@@ -83,23 +83,23 @@ const Card = ({
         >
           {title}
         </h5>
-        <p className="mb-2 font-normal text-gray-700  overflow-hidden text-ellipsis line-clamp-5">
+        <p className="mb-2 text-sm font-normal text-gray-700  overflow-hidden text-ellipsis line-clamp-6">
           {description}
         </p>
       </div>
 
-      <div className="px-5 pt-3 pb-5  rounded-b-lg">
+      <div className="px-5 pb-5  rounded-b-lg">
         <div className="flex justify-between items-center">
           {canClick !== false ? (
             <button
               onClick={() => navigate(`/founder/${project_id}`)}
-              className="mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white bg-blue-600 rounded-md hover:bg-blue-700 darkBgBlue darkHoverBgBlue darkFocus"
+              className="mt-1 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white bg-blue-600 rounded-md hover:bg-blue-700 darkBgBlue darkHoverBgBlue darkFocus"
             >
               {buttonText}
             </button>
           ) : (
             <button
-              className="mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-black bg-gray-100 rounded-md cursor-not-allowed darkBgBlue"
+              className="mt-1 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-black bg-gray-100 rounded-md cursor-not-allowed darkBgBlue"
               disabled
             >
               {buttonText}
@@ -110,7 +110,7 @@ const Card = ({
               project?.status === true
                 ? "bg-yellow-300 text-black"
                 : "bg-bg-gray-50 border border-gray-200 text-black"
-            } mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center   rounded-3xl`}
+            } mt-1 inline-flex items-center px-3 py-1 text-sm font-medium text-center   rounded-3xl`}
             onClick={() => navigate(`/founder/${project_id}`)}
           >
             {project?.status === true ? "Public" : "Private"}

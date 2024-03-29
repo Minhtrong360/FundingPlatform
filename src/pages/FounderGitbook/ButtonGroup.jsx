@@ -1,5 +1,6 @@
 import React from "react";
 import { Dropdown, Menu } from "antd";
+import { SettingOutlined } from "@ant-design/icons";
 
 const ButtonGroup = ({
   handleDrawChart,
@@ -30,9 +31,9 @@ const ButtonGroup = ({
 
   const menuItems = (
     <Menu onClick={handleMenuClick}>
-      <Menu.Item key="chart">Add Chart</Menu.Item>
-      <Menu.Item key="settings">Company Settings</Menu.Item>
-      <Menu.Item key="save">Save Profile</Menu.Item>
+      <Menu.Item key="chart">Draw Chart</Menu.Item>
+      <Menu.Item key="settings">Profile Settings</Menu.Item>
+      <Menu.Item key="save">Save</Menu.Item>
       <Menu.Item key="verification" disabled={currentProject.required}>
         {currentProject.required
           ? currentProject.verified
@@ -45,13 +46,14 @@ const ButtonGroup = ({
 
   return (
     <Dropdown.Button
-      className={`bg-blue-600 text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+      className={`bg-yellow-300 text-black focus:ring-4 focus:outline-none font-medium rounded-md text-sm py-1.5 px-0.5 text-center`}
       overlay={menuItems}
       placement="bottomRight"
-      disabled={isLoading}
+      disabled={isLoading}  
+      icon = {<SettingOutlined />}
       onClick={(e) => e.preventDefault()} // Prevents the dropdown from closing when clicking the button
     >
-      <span className="p-1">Actions</span>
+      {/* <span className="p-1">Action</span> */}
     </Dropdown.Button>
   );
 };

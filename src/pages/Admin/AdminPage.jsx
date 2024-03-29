@@ -129,7 +129,6 @@ function AdminPage() {
       key: "created_at",
       render: (text, record) => (
         <div
-          className={`w-[150px] flex items-center  hover:cursor-pointer`}
           onClick={() => handleProjectClick(record)}
         >
           {formatDate(text)}
@@ -187,14 +186,14 @@ function AdminPage() {
       ),
     },
     {
-      title: "Verified",
-      key: "verified",
+      title: "Verified Status",
+      key: "Verified",
       render: (text, record) => (
         <Space direction="vertical">
           <Switch
             className="text-black"
-            checkedChildren="Verified"
-            unCheckedChildren="Unverified"
+            checkedChildren="Yes"
+            unCheckedChildren="No"
             value={record.verified}
             onClick={() => handleVerifyToggle(record)}
           />
@@ -230,9 +229,9 @@ function AdminPage() {
       )}
       {userData.admin === false && (
         <AnnouncePage
-          title="Permission Required"
-          announce="You are not ADMIN"
-          describe="Only ADMIN can access this site!"
+          title="Admin Page"
+          announce="Admin Page"
+          describe="Only for admin"
         />
       )}
     </main>

@@ -598,7 +598,7 @@ export default function EditorTool() {
 
           {user?.id === currentProject?.user_id ||
           currentProject?.collabs?.includes(user.email) ? (
-            <div className="fixed top-8 right-8">
+            <div className="fixed top-3.5 right-4">
               <ButtonGroup
                 handleDrawChart={handleDrawChart}
                 handleCompanySettings={handleCompanySettings}

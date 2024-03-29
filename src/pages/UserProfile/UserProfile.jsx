@@ -455,7 +455,7 @@ function UserInfoSettings() {
                   />
 
                   <SelectField
-                    label="Which company do you like?"
+                    label="Revenue status"
                     id="revenueStatusWanted"
                     name="revenueStatusWanted"
                     value={userData.revenueStatusWanted}

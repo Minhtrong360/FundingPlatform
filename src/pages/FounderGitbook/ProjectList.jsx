@@ -206,6 +206,16 @@ function ProjectList({ projects }) {
     },
   ];
 
+  const myProjects = updatedProjects.filter(
+    (project) =>
+      project.user_id === user.id || project.collabs?.includes(user.email)
+  );
+
+  const sharedProjects = updatedProjects.filter(
+    (project) =>
+      project.user_id !== user.id && !project.collabs?.includes(user.email)
+  );
+
   const dataSource = updatedProjects.map((project, index) => ({
     ...project,
     index,

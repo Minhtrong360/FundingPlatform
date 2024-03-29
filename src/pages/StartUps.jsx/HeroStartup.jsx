@@ -5,15 +5,19 @@ import img from "../Home/Components/UpscaleVideo.mp4";
 import { useAuth } from "../../context/AuthContext";
 
 const HeroStartup = () => {
-  const { user, subscribed } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const handleClick = () => {
     if (!user) {
       navigate("/login");
     } else {
-      navigate("/founder");
+      navigate(`/founder/${"3ec3f142-f33c-4977-befd-30d4ce2b764d"}`);
     }
+  };
+
+  const handleClickProfile = () => {
+    navigate(`/founder`);
   };
 
   return (
@@ -29,19 +33,26 @@ const HeroStartup = () => {
             made easy.
           </h1>
           <p className="mt-6 text-lg text-gray-800">
-            Create a fundraising profile and get discovered by investors.
-            It will be easy, fast and well-structured.  
+            Create a fundraising profile and get discovered by investors. It
+            will be easy, fast and well-structured.
           </p>
           <div className="mt-7 flex justify-center">
             {" "}
             {/* Add justify-center class */}
             <button
-              className="mr-5 hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+              className="mx-4 hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
               onClick={handleClick}
             >
               {user ? "See demo" : "Get started"}
             </button>
-            <span className="hidden sm:inline">&nbsp;</span>{" "}
+            {user && (
+              <button
+                className="mx-4 hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                onClick={handleClickProfile}
+              >
+                Create profile
+              </button>
+            )}
             {/* Add spacing for small screens */}
             {/* <a
               className="hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"

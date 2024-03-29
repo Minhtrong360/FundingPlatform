@@ -41,7 +41,10 @@ const NotificationItem = ({ notification }) => {
         </p>
 
         {Object.keys(parsedContent).map((key, index) => (
-          <span key={index} className="ant-tag bg-bg-gray-50 border border-gray-200 text-black mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center rounded-3xl css-6j9yrn">
+          <span
+            key={index}
+            className="ant-tag bg-bg-gray-50 border border-gray-200 text-black mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center rounded-3xl css-6j9yrn"
+          >
             <span
               className="font-semibold text-sm hover:cursor-pointer"
               onClick={() =>
@@ -99,7 +102,7 @@ const NotificationsPage = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gray-100 p-8 mt-24 w-[50vw] mx-auto">
+      <div className="min-h-screen bg-gray-100 p-8 mt-24 lg:w-[50vw] w-full mx-auto">
         <Notifications notifications={notifications} />
       </div>
     </>

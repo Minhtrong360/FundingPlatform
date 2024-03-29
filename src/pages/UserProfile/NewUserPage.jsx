@@ -534,7 +534,7 @@ function NewUserPage() {
                         <div className="mt-4">
                           <label
                             htmlFor="type"
-                            className="block mb-2 text-sm text-gray-700 font-medium darkTextWhite"
+                            className="block mb-2 text-sm  darkTextWhite"
                           >
                             Type
                           </label>

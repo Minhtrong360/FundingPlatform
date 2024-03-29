@@ -178,14 +178,14 @@ function AdminPage() {
       key: "status",
       render: (text, record) => (
         <div className="text-sm">
-          <Button
+          <button
             onClick={() => handleProjectClick(record)}
             className={`w-[5em] ${
               record.status ? "bg-blue-600" : "bg-red-600"
             } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
           >
             {record.status ? "Public" : "Private"}
-          </Button>
+          </button>
         </div>
       ),
     },
@@ -193,7 +193,7 @@ function AdminPage() {
       title: "Verified",
       key: "verified",
       render: (text, record) => (
-        <Button
+        <button
           onClick={() => handleVerifyToggle(record)}
           className={`w-[6em] ${
             record.verified ? "bg-blue-600" : "bg-red-600"
@@ -201,7 +201,7 @@ function AdminPage() {
           style={{ fontSize: "14px" }} // Updated font size
         >
           {record.verified ? "Verified" : "Unverified"}
-        </Button>
+        </button>
       ),
     },
   ];

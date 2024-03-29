@@ -134,7 +134,7 @@ const ImageDropdown = () => {
   };
 
   return (
-    <div className="hs-dropdown relative inline-flex z-30">
+    <div className="hs-dropdown rounded-md relative inline-flex z-30 shadow-md">
       <button
         id="hs-dropdown-custom-trigger"
         type="button"
@@ -151,7 +151,7 @@ const ImageDropdown = () => {
           <AccountCircleIcon fontSize="large" />
         )}
 
-        <span className="text-gray-600 font-medium truncate sm:max-w-[7.5rem] max-w-[4rem] darkTextGray">
+        <span className="text-gray-600 text-xs truncate sm:max-w-[7.5rem] max-w-[4rem] darkTextGray">
           {userData.email ? userData.email : ""}
         </span>
         <svg

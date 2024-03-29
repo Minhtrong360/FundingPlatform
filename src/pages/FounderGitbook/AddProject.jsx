@@ -95,7 +95,7 @@ const Modal = ({
               placeholder=""
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
-              className="block w-full px-4 py-3 text-sm text-gray-200 border-gray-200 rounded-md"
+              className="block w-full px-4 py-3 text-sm text-gray-800 border-gray-200 rounded-md"
             />
           </label>
 

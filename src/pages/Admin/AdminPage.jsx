@@ -186,14 +186,14 @@ function AdminPage() {
       ),
     },
     {
-      title: "Verified",
-      key: "verified",
+      title: "Verified Status",
+      key: "Verified",
       render: (text, record) => (
         <Space direction="vertical">
           <Switch
             className="text-black"
-            checkedChildren="Verified"
-            unCheckedChildren="Unverified"
+            checkedChildren="Yes"
+            unCheckedChildren="No"
             value={record.verified}
             onClick={() => handleVerifyToggle(record)}
           />

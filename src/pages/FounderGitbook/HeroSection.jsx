@@ -266,8 +266,8 @@ const HeroSection = ({
           {/* )} */}
 
           {project?.verified && (
-            <span className="absolute top-0 right-0 bg-green-600 text-white text-sm font-medium py-1.5 px-3 rounded-bl-lg">
-              Verified
+            <span className="absolute top-0 right-0 bg-yellow-300 text-black text-sm font-medium py-1.5 px-3 rounded-bl-lg">
+              Verified profile  
             </span>
           )}
 

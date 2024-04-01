@@ -102,7 +102,7 @@ const HeroSection = ({
 
             <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
               <span className="text-sm font-medium text-gray-600">
-                Amount raised:
+                Raised before:
               </span>
               <span className="text-sm font-semibold text-gray-800 truncate pl-1">
                 {" "}
@@ -177,7 +177,7 @@ const HeroSection = ({
           </div>
         </div>
 
-        <div className="relative mt-4">
+        <div className="relative mt-2">
           {/* <div class=" relative  pt-[50%] sm:pt-[70%] rounded-md overflow-hidden">
             <img
               class=" h-full w-full  absolute top-0 start-0 object-cover  transition-transform duration-500 ease-in-out "

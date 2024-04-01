@@ -636,7 +636,7 @@ function CompanySetting() {
               title={formData.companyName}
               description={formData.companyDescription}
               imageUrl={formData.card_url}
-              buttonText="Read more"
+              buttonText="More"
               project_id={id}
               canClick={canClick}
               formData={formData}

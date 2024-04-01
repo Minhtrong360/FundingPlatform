@@ -242,13 +242,13 @@ const Header = () => {
                 onClick={() => navigate(`/startups`)}
                 isActive={loginPart.includes("startups")}
               >
-                Startups
+                Profile Listing 🚀
               </NavbarItem>
               <NavbarItem
                 onClick={() => navigate(`/news`)}
                 isActive={loginPart.includes("news")}
               >
-                News
+                Blog
               </NavbarItem>
 
               <NavbarItem

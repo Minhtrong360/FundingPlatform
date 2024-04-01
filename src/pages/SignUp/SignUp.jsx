@@ -76,14 +76,13 @@ const HeroSignUp = () => {
   };
 
   return (
-    <div className="relative bg-gradient-to-bl from-blue-100 via-transparent darkFromBlueViaTransparent">
+    <div className="relative bg-gradient-to-bl via-transparent darkFromBlueViaTransparent">
       <AlertMsg />
       {resetLink ? (
         <AnnouncePage
           title="Congratulations!"
           announce="You have signed up to BeeKrowd."
           describe="Email sent successfully. Check your inbox to confirm."
-          highlightedWord="BeeKrowd"
         />
       ) : (
         <div className="max-w-[85rem] px-3 py-20 sm:px-6 lg:px-8 lg:py-14 mx-auto">

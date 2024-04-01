@@ -379,10 +379,11 @@ const MyTab = () => {
   
   const tabContents = {
     Introduction: <div> <h2 className='text-red-600 font-bold text-3xl'> Introduction </h2> 
+
     <BlockNoteView
     editor={editor}
     theme={"light"}
-    className="w-full lg:w-9/12 mt-8"
+    className="w-full lg:w-12/12 mt-8"
     />
      <Modal
             ariaHideApp={false}
@@ -440,7 +441,7 @@ const MyTab = () => {
     <BlockNoteView
     editor={editor}
     theme={"light"}
-    className="w-full lg:w-9/12 mt-8"
+    className="w-full lg:w-12/12 mt-8"
     />
      <Modal
             ariaHideApp={false}
@@ -497,7 +498,7 @@ const MyTab = () => {
     <BlockNoteView
     editor={editor}
     theme={"light"}
-    className="w-full lg:w-9/12 mt-8"
+    className="w-full lg:w-12/12 mt-8"
     />
      <Modal
             ariaHideApp={false}
@@ -554,7 +555,7 @@ const MyTab = () => {
     <BlockNoteView
     editor={editor}
     theme={"light"}
-    className="w-full lg:w-9/12 mt-8"
+    className="w-full lg:w-12/12 mt-8"
     />
      <Modal
             ariaHideApp={false}
@@ -611,7 +612,7 @@ const MyTab = () => {
     <BlockNoteView
     editor={editor}
     theme={"light"}
-    className="w-full lg:w-9/12 mt-8"
+    className="w-full lg:w-12/12 mt-8"
     />
      <Modal
             ariaHideApp={false}
@@ -668,7 +669,7 @@ const MyTab = () => {
     <BlockNoteView
     editor={editor}
     theme={"light"}
-    className="w-full lg:w-9/12 mt-8"
+    className="w-full lg:w-12/12 mt-8"
     />
      <Modal
             ariaHideApp={false}
@@ -725,7 +726,7 @@ const MyTab = () => {
     <BlockNoteView
     editor={editor}
     theme={"light"}
-    className="w-full lg:w-9/12 mt-8"
+    className="w-full lg:w-12/12 mt-8"
     />
      <Modal
             ariaHideApp={false}
@@ -782,7 +783,7 @@ const MyTab = () => {
     <BlockNoteView
     editor={editor}
     theme={"light"}
-    className="w-full lg:w-9/12 mt-8"
+    className="w-full lg:w-12/12 mt-8"
     />
      <Modal
             ariaHideApp={false}
@@ -839,7 +840,7 @@ const MyTab = () => {
     <BlockNoteView
     editor={editor}
     theme={"light"}
-    className="w-full lg:w-9/12 mt-8"
+    className="w-full lg:w-12/12 mt-8"
     />
      <Modal
             ariaHideApp={false}
@@ -896,7 +897,7 @@ const MyTab = () => {
     <BlockNoteView
     editor={editor}
     theme={"light"}
-    className="w-full lg:w-9/12 mt-8"
+    className="w-full lg:w-12/12 mt-8"
     />
      <Modal
             ariaHideApp={false}
@@ -973,8 +974,8 @@ const MyTab = () => {
 
 function ProfileInfo() {
   return (
-    <div key="1" className="mt-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+    <div key="1" className="mt-32 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
         <div>
           <h1 className="text-4xl font-bold leading-tight text-gray-900">
             Making earth cooler for people, nature, climate
@@ -988,7 +989,7 @@ function ProfileInfo() {
             <Button type="primary" ghost>Learn more</Button>
           </div>
           <div className="mt-8">
-            <div className="text-gray-600 font-semibold">Partners:</div>
+            <div className="text-gray-600 font-semibold">Features:</div>
             <div className="flex mt-2 space-x-4">
               <Badge className="h-6 bg-blue-100 text-blue-600">Greenpeace</Badge>
               <Badge className="h-6 bg-blue-100 text-blue-600">United Nations</Badge>
@@ -1018,43 +1019,43 @@ function ProfileInfo() {
         </div>
       </div>
       <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <div className="text-3xl font-semibold">104M</div>
-          <div className="text-gray-600 mt-2">Trees planted</div>
+        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border ">
+          <div className="text-3xl font-semibold">$1,000,000</div>
+          <Badge className="text-gray-600 bg-yellow-300 rounded-md mt-2">Target amount</Badge>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
           <div className="text-3xl font-semibold">20k+</div>
           <div className="text-gray-600 mt-2">Partners & Donors</div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
           <div className="text-3xl font-semibold">90M</div>
           <div className="text-gray-600 mt-2">Tonnes of Carbon Stored</div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
           <div className="text-3xl font-semibold">50+</div>
           <div className="text-gray-600 mt-2">People-Powered Projects</div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
           <div className="text-3xl font-semibold">100+</div>
           <div className="text-gray-600 mt-2">New Projects</div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
           <div className="text-3xl font-semibold">200k+</div>
           <div className="text-gray-600 mt-2">Active Volunteers</div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm">
+        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
         <div className="text-3xl font-semibold">500+</div>
         <div className="text-gray-600 mt-2">Completed Projects</div>
       </div>
-      <div className="bg-white p-6 rounded-lg shadow-sm">
+      <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
         <div className="text-3xl font-semibold">300M</div>
         <div className="text-gray-600 mt-2">Tonnes of Waste Recycled</div>
       </div>
-      <div className="bg-white p-6 rounded-lg shadow-sm">
+      <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
         <div className="text-3xl font-semibold">1000+</div>
         <div className="text-gray-600 mt-2">Global Initiatives</div>
       </div>
-      <div className="bg-white p-6 rounded-lg shadow-sm">
+      <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
         <div className="text-3xl font-semibold">80+</div>
         <div className="text-gray-600 mt-2">Countries Reached</div>
       </div>
@@ -1068,49 +1069,7 @@ function ProfileInfo() {
 export default function MyTabs() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Navbar */}
-      {/* <nav className="bg-white border-b">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <img
-                alt="Logo"
-                className="mr-3 h-10"
-                height="40"
-                src="/placeholder.svg"
-                style={{
-                  aspectRatio: "40/40",
-                  objectFit: "cover",
-                }}
-                width="40"
-              />
-              <span className="font-semibold text-xl tracking-tight">Flowbite</span>
-            </div>
-            <div className="hidden md:flex space-x-8">
-              <a className="text-gray-700 hover:text-gray-900" href="#">
-                Home
-              </a>
-              <a className="text-gray-700 hover:text-gray-900" href="#">
-                Company
-              </a>
-              <a className="text-gray-700 hover:text-gray-900" href="#">
-                Marketplace
-              </a>
-              <a className="text-gray-700 hover:text-gray-900" href="#">
-                Features
-              </a>
-              <a className="text-gray-700 hover:text-gray-900" href="#">
-                Team
-              </a>
-              <a className="text-gray-700 hover:text-gray-900" href="#">
-                Contact
-              </a>
-            </div>
-            <Button className="hidden md:block">Get started</Button>
-          </div>
-        </div>
-      </nav>
-      */}
+      
       <Header/>
       <ProfileInfo/>
     
@@ -1134,29 +1093,16 @@ export default function MyTabs() {
             <div className="mt-4">
               <p>Hey! I'm Jese Leos. I'm a career-changer. Bootcamp grad & Dev.</p>
               <div className="mt-4">
-                <h5 className="font-bold text-gray-700">LOCATION</h5>
+                <h5 className="font-bold text-gray-700">Location</h5>
                 <p className="text-sm text-gray-500">California, United States</p>
               </div>
               <div className="mt-4">
-                <h5 className="font-bold text-gray-700">JOINED</h5>
+                <h5 className="font-bold text-gray-700">Joined</h5>
                 <p className="text-sm text-gray-500">September 20, 2018</p>
               </div>
-              <Button className="w-full mt-4">Follow</Button>
+              <Button className="border border-gray-200  w-full mt-4">Follow</Button>
             </div>
-            <div className="mt-8">
-              <Input className="w-full" placeholder="Search..." />
-            </div>
-            <div className="mt-8">
-              <h5 className="font-bold text-gray-700">RECOMMENDED TOPICS</h5>
-              <div className="flex flex-wrap gap-2 mt-4">
-                <Badge color="default">Technology</Badge>
-                <Badge color="default">Money</Badge>
-                <Badge color="default">Art</Badge>
-                <Badge color="default">Productivity</Badge>
-                <Badge color="default">Psychology</Badge>
-                <Badge color="default">Design</Badge>
-              </div>
-            </div>
+            
           </div>
         </aside>
       </div>

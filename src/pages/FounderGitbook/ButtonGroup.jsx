@@ -38,8 +38,8 @@ const ButtonGroup = ({
         {currentProject.required
           ? currentProject.verified
             ? "Verified"
-            : "Waiting for verification"
-          : "Required verification"}
+            : "Verifying"
+          : "Verify profile"}
       </Menu.Item>
     </Menu>
   );

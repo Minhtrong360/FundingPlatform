@@ -63,7 +63,7 @@ function Company({
 
   return (
     <>
-      <div className="max-w-[85rem] px-3 py-20 sm:px-6 lg:px-8 lg:py-14 mx-auto sm:border-r-2 border-r-0">
+      <div className="max-w-[85rem] px-3 py-20 sm:px-6 lg:px-8 lg:py-14 mx-auto lg:border-r-2 border-r-0">
         <AlertMsg />
         <div className="max-w-xl mx-auto">
           <div className="text-center">
@@ -240,17 +240,7 @@ function Company({
                     type="text"
                     required
                   />
-                  <InputField
-                    label="No. years in operation"
-                    id="operationTime"
-                    name="operationTime"
-                    value={formData.operationTime}
-                    onChange={handleInputChange}
-                    type="text"
-                  />
-                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
                   <InputField
                     label="Amount raised"
                     id="amountRaised"
@@ -260,16 +250,25 @@ function Company({
                     type="text"
                     required
                   />
-                  <MultiSelectField
-                    label="Round"
-                    id="round"
-                    name="round"
-                    OPTIONS={["Pre-seed", "Seed"]}
-                    selectedItems={formData.round}
-                    setSelectedItems={handleRoundChange}
-                    type="text"
-                  />
                 </div>
+
+                <InputField
+                  label="No. years in operation"
+                  id="operationTime"
+                  name="operationTime"
+                  value={formData.operationTime}
+                  onChange={handleInputChange}
+                  type="text"
+                />
+                <MultiSelectField
+                  label="Round"
+                  id="round"
+                  name="round"
+                  OPTIONS={["Pre-seed", "Seed"]}
+                  selectedItems={formData.round}
+                  setSelectedItems={handleRoundChange}
+                  type="text"
+                />
 
                 <TextAreaField
                   label="Company description"
@@ -278,6 +277,7 @@ function Company({
                   value={formData.companyDescription}
                   onChange={handleInputChange}
                   required
+                  maxLength={700} // Giới hạn 700 ký tự
                 />
               </div>
 

@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { DashboardOutlined, DollarCircleOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
-import { ProjectOutlined } from '@ant-design/icons';
-
-
+import {
+  DashboardOutlined,
+  DollarCircleOutlined,
+  HomeOutlined,
+  ProfileOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { ProjectOutlined } from "@ant-design/icons";
 
 function SideBar({ toggleSidebar, isSidebarOpen }) {
   const navigate = useNavigate();
@@ -67,7 +71,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             max-width: 300px; /* Adjust as needed */
             opacity: 1;
             margin-left: 8px;
-            font-size: 16px
+            font-size: 12px
           }
           .sidebar-button {
             display: flex;
@@ -83,7 +87,6 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             className="mt-2  w-full p-2 group flex items-center rounded-md text-sm  sidebar-button hover:bg-gray-300"
             onClick={() => navigate("/")}
           >
-            
             <HomeOutlined />
             <span className="sidebar-text">Home</span>
           </button>
@@ -95,7 +98,6 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             } sidebar-button hover:bg-gray-300`}
             onClick={() => handleItemClick("/user-info")}
           >
-          
             <UserOutlined />
             <span className="sidebar-text">User Settings</span>
           </button>
@@ -129,8 +131,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             } sidebar-button hover:bg-gray-300`}
             onClick={() => handleItemClick("/founder")}
           >
-            
-            <ProjectOutlined />
+            <ProfileOutlined />
             <span className="sidebar-text">Project list</span>
           </button>
         </div>

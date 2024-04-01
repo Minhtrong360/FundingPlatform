@@ -134,11 +134,11 @@ const ImageDropdown = () => {
   };
 
   return (
-    <div className="hs-dropdown relative inline-flex z-30">
+    <div className="hs-dropdown rounded-md relative inline-flex z-30 shadow-md">
       <button
         id="hs-dropdown-custom-trigger"
         type="button"
-        className="hs-dropdown-toggle py-1 ps-1 pe-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-full border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
+        className="hs-dropdown-toggle py-1 ps-1 pe-3 inline-flex items-center gap-x-2 text-sm  rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
         onClick={toggleDropdown}
       >
         {userData.avatar ? (
@@ -151,7 +151,7 @@ const ImageDropdown = () => {
           <AccountCircleIcon fontSize="large" />
         )}
 
-        <span className="text-gray-600 font-medium truncate sm:max-w-[7.5rem] max-w-[4rem] darkTextGray">
+        <span className="text-gray-600 text-sm truncate sm:max-w-[7.5rem] max-w-[4rem] darkTextGray">
           {userData.email ? userData.email : ""}
         </span>
         <svg

@@ -48,7 +48,7 @@ const loginWithGG = async (setLoading) => {
     }
     setLoading(true);
     const { user, session, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
+      provider: ["google"],
     });
 
     setLoading(false);

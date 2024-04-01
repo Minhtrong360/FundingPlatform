@@ -537,7 +537,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             <GPTAnalyzer />
           </div> */}
           <div className="my-4 ">
-            <div className="overflow-x-auto  whitespace-nowrap border-t-2">
+            <div className="overflow-x-auto whitespace-nowrap border-t-2 text-sm">
               <ul className="py-4 flex lg:justify-center justify-start items-center">
                 <li
                   className={`cursor-pointer mr-4 ${
@@ -656,7 +656,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             <div>
               {activeTab === "overview" && (
                 <div className="w-full h-full flex flex-col lg:flex-row border-t-2 ">
-                  <div className="w-full lg:w-1/4 sm:p-4 p-0 sm:border-r-2 border-r-0 sm:border-b-0 border-b-2">
+                  <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:border-r-2 border-r-0 lg:border-b-0 border-b-2">
                     <DurationSelect handleSubmit={handleSubmit} />
                   </div>
 

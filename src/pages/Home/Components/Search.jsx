@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import AllInclusiveOutlinedIcon from "@mui/icons-material/AllInclusiveOutlined";
 import industries from "../../../components/Industries";
-import { Select } from 'antd';
+import { Select } from "antd";
 
 const Search = ({
   onSearch,
@@ -13,6 +13,8 @@ const Search = ({
   selectedIndustry,
   setSelectedIndustry,
   currentTab,
+  setCurrentTab,
+  setVisibleItemCount,
 }) => {
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -56,6 +58,11 @@ const Search = ({
       setSuggestions(companies);
     }
   }, [currentTab, companies, searchTerm]);
+
+  const handleChange = (value) => {
+    setVisibleItemCount(6);
+    setCurrentTab(value);
+  };
 
   return (
     <div className="relative overflow-hidden">
@@ -114,41 +121,33 @@ const Search = ({
             )}
           </div>
 
-          <div className="mt-2 sm:mt-4 hidden lg:flex flex-wrap justify-center">
-              <Select
-                className="m-1 w-40"
-                defaultValue=""
-                onChange={handleIndustryClick}
-                optionLabelProp="label"
-              >
-                <Option value="" label="All">
-                  <AllInclusiveOutlinedIcon /> All
+          <div className="mt-4  flex flex-wrap justify-center sm:gap-5 gap-2">
+            <Select
+              className="m-1 w-40 my-2 min-h-[40px]"
+              defaultValue=""
+              onChange={handleIndustryClick}
+              optionLabelProp="label"
+            >
+              <Option value="" label="All industries">
+                All industries
+              </Option>
+              {industries.map((industry, index) => (
+                <Option key={index} value={industry} label={industry}>
+                  {industry}
                 </Option>
-                {industries.map((industry, index) => (
-                  <Option key={index} value={industry} label={industry}>
-                    {industry}
-                  </Option>
-                ))}
-              </Select>
-            </div>
-              <div className="mt-4 lg:hidden \ flex flex-nowrap">
-                <Select
-                  className="m-1 w-40"
-                  defaultValue=""
-                  onChange={handleSuggestionClick}
-                  optionLabelProp="label"
-                >
-                  <Option value="" label="All">
-                    <AllInclusiveOutlinedIcon /> All
-                  </Option>
-                  {industries.map((industry, index) => (
-                    <Option key={index} value={industry} label={industry}>
-                      {industry}
-                    </Option>
-                  ))}
-                </Select>
-              </div>
+              ))}
+            </Select>
 
+            <Select
+              className="m-1 w-40 text-center my-2 min-h-[40px]"
+              value={currentTab}
+              onChange={handleChange}
+            >
+              <Option value="All">All profiles</Option>
+              <Option value="verified">Verified profiles</Option>
+              <Option value="unverified">Unverified profiles</Option>
+            </Select>
+          </div>
         </div>
       </div>
     </div>
@@ -158,6 +157,3 @@ const Search = ({
 export default Search;
 
 //////////////
-
-
-

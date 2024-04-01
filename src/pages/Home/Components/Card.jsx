@@ -46,7 +46,7 @@ const Card = ({
   }
 
   return (
-    <div className="flex flex-col h-full max-w-sm bg-white border rounded-md shadow-md transition-all duration-300  hover:shadow-lg">
+    <div className="flex flex-col h-full max-w-sm bg-white border rounded-md shadow-md transition-all duration-300  hover:shadow-lg cursor-pointer">
       <div className="relative pt-[50%] sm:pt-[70%] rounded-t-lg overflow-hidden">
         {imageUrl ? (
           <>
@@ -70,8 +70,8 @@ const Card = ({
         )}
 
         {project?.verified && (
-          <span className="absolute top-0 right-0 bg-green-600 text-white text-sm font-medium py-1.5 px-3 rounded-bl-lg">
-            Verified
+          <span className="absolute top-0 right-0 bg-yellow-300 text-gray-800 text-sm font-bold py-1.5 px-3 rounded-bl-lg">
+            Verified profile
           </span>
         )}
       </div>
@@ -83,23 +83,23 @@ const Card = ({
         >
           {title}
         </h5>
-        <p className="mb-2 font-normal text-gray-700  overflow-hidden text-ellipsis line-clamp-5">
+        <p className="mb-2 text-sm font-normal text-gray-700  overflow-hidden text-ellipsis line-clamp-6">
           {description}
         </p>
       </div>
 
-      <div className="px-5 pt-3 pb-5  rounded-b-lg">
+      <div className="px-5 pb-5  rounded-b-lg">
         <div className="flex justify-between items-center">
           {canClick !== false ? (
             <button
               onClick={() => navigate(`/founder/${project_id}`)}
-              className="mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white bg-blue-600 rounded-md hover:bg-blue-700 darkBgBlue darkHoverBgBlue darkFocus"
+              className="mt-1 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white bg-blue-600 rounded-md hover:bg-blue-700 darkBgBlue darkHoverBgBlue darkFocus"
             >
               {buttonText}
             </button>
           ) : (
             <button
-              className="mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-black bg-gray-100 rounded-md cursor-not-allowed darkBgBlue"
+              className="mt-1 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-black bg-gray-100 rounded-md cursor-not-allowed darkBgBlue"
               disabled
             >
               {buttonText}
@@ -108,9 +108,9 @@ const Card = ({
           <Tag
             className={` ${
               project?.status === true
-                ? "bg-green-600 text-white"
+                ? "bg-yellow-300 text-black"
                 : "bg-bg-gray-50 border border-gray-200 text-black"
-            } mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center   rounded-3xl`}
+            } mt-1 inline-flex items-center px-3 py-1 text-sm font-medium text-center   rounded-3xl`}
             onClick={() => navigate(`/founder/${project_id}`)}
           >
             {project?.status === true ? "Public" : "Private"}

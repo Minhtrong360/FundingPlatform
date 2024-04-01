@@ -36,7 +36,8 @@ import PricingPage from "../pages/Home/Components/PricingPage";
 import FAQ from "../pages/Home/Components/FAQ";
 import DetailBlog from "../pages/News/DetailBlog";
 import StaticNews from "../pages/News/StaticNews";
-import NewProjectPosts from "../pages/StartUps.jsx/NewProjectPosts";
+import NewProjectPosts from "../pages/StartUps/NewProjectPosts";
+import Brochure from "../pages/Home/Components/Brochure.jsx";
 function Router() {
   return (
     <>
@@ -137,7 +138,7 @@ function Router() {
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/example" element={<StaticNews />} />
         <Route path="/FAQ" element={<FAQ />} />
-
+        <Route path="/brochure" element={<Brochure />} />
         <Route path="/loading" element={<ProgressBar isLoading={true} />} />
       </Routes>
     </>

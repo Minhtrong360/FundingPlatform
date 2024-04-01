@@ -6,8 +6,9 @@ import { useNavigate } from "react-router-dom";
 // import { toast } from "react-toastify";
 
 import Header from "../Home/Header";
-import { message, Table, Button } from "antd";
+import { message, Table } from "antd";
 import { formatDate } from "../../features/DurationSlice";
+import { Switch, Space } from "antd";
 
 function AdminPage() {
   const { user } = useAuth();
@@ -104,7 +105,6 @@ function AdminPage() {
         <div
           className={`  hover:cursor-pointer`}
           onClick={() => handleProjectClick(record)}
-          
         >
           {index + 1}
         </div>
@@ -118,7 +118,6 @@ function AdminPage() {
         <div
           className={`flex items-center  hover:cursor-pointer`}
           onClick={() => handleProjectClick(record)}
-          
         >
           {text}
         </div>
@@ -130,9 +129,7 @@ function AdminPage() {
       key: "created_at",
       render: (text, record) => (
         <div
-          className={`w-[150px] flex items-center  hover:cursor-pointer`}
           onClick={() => handleProjectClick(record)}
-          
         >
           {formatDate(text)}
         </div>
@@ -149,7 +146,6 @@ function AdminPage() {
         <div
           className=" whitespace-nowrap hover:cursor-pointer"
           onClick={() => handleProjectClick(record)}
-          
         >
           {text}
         </div>
@@ -190,18 +186,18 @@ function AdminPage() {
       ),
     },
     {
-      title: "Verified",
-      key: "verified",
+      title: "Verified Status",
+      key: "Verified",
       render: (text, record) => (
-        <button
-          onClick={() => handleVerifyToggle(record)}
-          className={`w-[6em] ${
-            record.verified ? "bg-blue-600" : "bg-red-600"
-          } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300    py-1 text-center rounded-md `}
-          
-        >
-          {record.verified ? "Verified" : "Unverified"}
-        </button>
+        <Space direction="vertical">
+          <Switch
+            className="text-black"
+            checkedChildren="Yes"
+            unCheckedChildren="No"
+            value={record.verified}
+            onClick={() => handleVerifyToggle(record)}
+          />
+        </Space>
       ),
     },
   ];
@@ -233,9 +229,9 @@ function AdminPage() {
       )}
       {userData.admin === false && (
         <AnnouncePage
-          title="Permission Required"
-          announce="You are not ADMIN"
-          describe="Only ADMIN can access this site!"
+          title="Admin Page"
+          announce="Admin Page"
+          describe="Only for admin"
         />
       )}
     </main>

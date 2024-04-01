@@ -13,11 +13,9 @@ import { formatDate } from "../../features/DurationSlice";
 
 function ProjectList({ projects }) {
   const { user } = useAuth();
-  const [currentUser, setCurrentUser] = useState(null);
-  const [editingProjectId, setEditingProjectId] = useState(null);
-  const [editedProjectName, setEditedProjectName] = useState("");
+
   const [updatedProjects, setUpdatedProjects] = useState([]);
-  const [editedProjectStatus, setEditedProjectStatus] = useState(true);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,57 +26,6 @@ function ProjectList({ projects }) {
     });
     setUpdatedProjects(sortedProjects);
   }, [projects]);
-
-  const handleEditClick = (project) => {
-    setEditingProjectId(project.id);
-    setEditedProjectName(project.name);
-    setEditedProjectStatus(project.status);
-  };
-
-  const handleSaveClick = async (project) => {
-    try {
-      if (!navigator.onLine) {
-        message.error("No internet access.");
-        return;
-      }
-      if (
-        (currentUser.plan === "Free" ||
-          currentUser.plan === null ||
-          currentUser.plan === undefined) &&
-        !editedProjectStatus &&
-        currentUser.subscription_status !== "active"
-      ) {
-        message.warning(
-          "You need to upgrade your plan to create a private project"
-        );
-        return;
-      }
-      const { error } = await supabase
-        .from("projects")
-        .update({ name: editedProjectName, status: editedProjectStatus })
-        .eq("id", project.id);
-
-      if (error) {
-        console.error("Error updating project name:", error);
-      } else {
-        const updatedProjectIndex = updatedProjects.findIndex(
-          (p) => p.id === project.id
-        );
-        if (updatedProjectIndex !== -1) {
-          const updatedProject = { ...updatedProjects[updatedProjectIndex] };
-          updatedProject.name = editedProjectName;
-          updatedProject.status = editedProjectStatus;
-          const updatedProjectsCopy = [...updatedProjects];
-          updatedProjectsCopy[updatedProjectIndex] = updatedProject;
-          setUpdatedProjects(updatedProjectsCopy);
-        }
-        setEditingProjectId(null);
-      }
-    } catch (error) {
-      message.error(error.message);
-      console.error("Error updating project name:", error);
-    }
-  };
 
   const handleDelete = async (projectId) => {
     const isConfirmed = window.confirm(
@@ -110,9 +57,12 @@ function ProjectList({ projects }) {
       console.error("Error deleting project:", error);
     }
   };
-
-  const handleStatusToggle = () => {
-    setEditedProjectStatus((prevStatus) => !prevStatus);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState();
+  // Trong hàm handleEdit, khi người dùng nhấp vào nút Edit, mở modal và truyền thông tin dự án được chọn vào AddProject
+  const handleEdit = (record) => {
+    setIsModalOpen(true); // Mở modal
+    setSelectedProject(record); // Truyền thông tin dự án được chọn
   };
 
   const columns = [
@@ -129,21 +79,12 @@ function ProjectList({ projects }) {
       key: "name",
       render: (text, record) => (
         <>
-          {editingProjectId === record.id ? (
-            <input
-              type="text"
-              value={editedProjectName}
-              onChange={(e) => setEditedProjectName(e.target.value)}
-              className="w-[150px] border-0 p-0 text-sm text-red-500 darkTextGray whitespace-nowrap focus:outline-none focus:ring-0"
-            />
-          ) : (
-            <span
-              className="hover:cursor-pointer"
-              onClick={() => handleProjectClick(record)}
-            >
-              {record.name}
-            </span>
-          )}
+          <span
+            className="hover:cursor-pointer"
+            onClick={() => handleProjectClick(record)}
+          >
+            {record.name}
+          </span>
         </>
       ),
     },
@@ -179,21 +120,15 @@ function ProjectList({ projects }) {
       key: "status",
       render: (text, record) => (
         <>
-          {editingProjectId !== record.id ? (
-            <Button
-              onClick={() => handleProjectClick(record)}
-              className={`w-[5em] ${
-                record.status ? "bg-blue-600" : "bg-red-600"
-              } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-            >
-              {record.status ? "Public" : "Private"}
-            </Button>
-          ) : (
-            <Switch
-              checked={editedProjectStatus}
-              onChange={handleStatusToggle}
-            />
-          )}
+          <button
+            onClick={() => handleProjectClick(record)}
+            className={`w-[5em] ${
+              record.status ? "bg-blue-600" : "bg-red-600"
+            } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+            style={{ fontSize: "12px" }}
+          >
+            {record.status ? "Public" : "Private"}
+          </button>
         </>
       ),
     },
@@ -207,52 +142,48 @@ function ProjectList({ projects }) {
             <Dropdown
               overlay={
                 <Menu>
-                  {editingProjectId === record.id ? (
-                    <>
-                      <Menu.Item key="save">
-                        <Button
-                          type="primary"
-                          onClick={() => handleSaveClick(record)}
-                        >
-                          Save
-                        </Button>
+                  <>
+                    <Menu.Item key="edit">
+                      <Button
+                        onClick={() => handleEdit(record)}
+                        style={{ fontSize: "12px" }}
+                      >
+                        Edit
+                      </Button>
+                    </Menu.Item>
+                    <Menu.Item key="delete">
+                      <Button
+                        type="danger"
+                        onClick={() => handleDelete(record.id)}
+                        style={{ fontSize: "12px" }}
+                      >
+                        Delete
+                      </Button>
+                    </Menu.Item>
+                    <Menu.Item key="assign">
+                      <ProjectGiven
+                        projectId={record.id}
+                        setUpdatedProjects={setUpdatedProjects}
+                        updatedProject={updatedProjects}
+                      />
+                    </Menu.Item>
+
+                    {record.status ? (
+                      ""
+                    ) : record.user_id === user.id ? (
+                      <Menu.Item key="invite">
+                        <InvitedUserProject projectId={record.id} />
                       </Menu.Item>
-                      <Menu.Item key="cancel">
-                        <Button onClick={() => setEditingProjectId(null)}>
-                          Cancel
-                        </Button>
-                      </Menu.Item>
-                    </>
-                  ) : (
-                    <>
-                      <Menu.Item key="edit">
-                        <Button onClick={() => handleEditClick(record)}>
-                          Edit
-                        </Button>
-                      </Menu.Item>
-                      <Menu.Item key="delete">
-                        <Button
-                          type="danger"
-                          onClick={() => handleDelete(record.id)}
-                        >
-                          Delete
-                        </Button>
-                      </Menu.Item>
-                      <Menu.Item key="assign">
-                        <ProjectGiven
-                          projectId={record.id}
-                          setUpdatedProjects={setUpdatedProjects}
-                          updatedProject={updatedProjects}
-                        />
-                      </Menu.Item>
-                    </>
-                  )}
+                    ) : (
+                      ""
+                    )}
+                  </>
                 </Menu>
               }
             >
-              <Button className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Actions
-                <DownOutlined className="ml-2 -mr-0.5 h-4 w-4" />
+              <Button>
+                Action
+                <DownOutlined />
               </Button>
             </Dropdown>
           ) : (
@@ -273,23 +204,17 @@ function ProjectList({ projects }) {
         </>
       ),
     },
-    {
-      title: "Invite",
-      dataIndex: "invite",
-      key: "invite",
-      render: (text, record) => (
-        <td className="px-4 py-4 text-sm whitespace-nowrap">
-          {record.status ? (
-            ""
-          ) : record.user_id === user.id ? (
-            <InvitedUserProject projectId={record.id} />
-          ) : (
-            ""
-          )}
-        </td>
-      ),
-    },
   ];
+
+  const myProjects = updatedProjects.filter(
+    (project) =>
+      project.user_id === user.id || project.collabs?.includes(user.email)
+  );
+
+  const sharedProjects = updatedProjects.filter(
+    (project) =>
+      project.user_id !== user.id && !project.collabs?.includes(user.email)
+  );
 
   const dataSource = updatedProjects.map((project, index) => ({
     ...project,
@@ -317,42 +242,17 @@ function ProjectList({ projects }) {
     }
   };
 
-  useEffect(() => {
-    const fetchCurrentUser = async () => {
-      try {
-        if (!navigator.onLine) {
-          message.error("No internet access.");
-          return;
-        }
-        let { data: users, error } = await supabase
-          .from("users")
-          .select("*")
-          .eq("id", user.id);
-
-        if (error) {
-          console.log("error", error);
-          throw error;
-        }
-
-        setCurrentUser(users[0]);
-      } catch (error) {
-        message.error(error.message);
-        console.error("Error fetching projects:", error);
-      }
-    };
-
-    if (user) {
-      fetchCurrentUser();
-    }
-  }, [user]);
-
   return (
-    <main className="w-full">
+    <main className="w-full min-h-[92.5vh]">
       <AlertMsg />
       <div className="flex justify-end mr-5 mb-5 items-end">
         <AddProject
           updatedProjects={updatedProjects}
           setUpdatedProjects={setUpdatedProjects}
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          selectedProject={selectedProject}
+          setSelectedProject={setSelectedProject}
         />
       </div>
       <section className="container px-4 mx-auto">

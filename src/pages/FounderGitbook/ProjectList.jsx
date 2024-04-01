@@ -181,14 +181,12 @@ function ProjectList({ projects }) {
                 </Menu>
               }
             >
-              
-                Action
-                <DownOutlined  />
+              <div className="w-[6rem] bg-blue-600 text-white  focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus">Action</div>
             </Dropdown>
           ) : (
-            <Button
+            <div
               onClick={() => handleProjectClick(record)}
-              className={`w-[8em] bg-blue-600  text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+              className={`w-[6rem] bg-blue-600  text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md   py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
             >
               {record.invited_user?.includes(user.email) &&
               record.collabs?.includes(user.email)
@@ -198,7 +196,7 @@ function ProjectList({ projects }) {
                 : record.collabs?.includes(user.email)
                 ? "Collaboration"
                 : "Default Label"}
-            </Button>
+            </div>
           )}
         </>
       ),

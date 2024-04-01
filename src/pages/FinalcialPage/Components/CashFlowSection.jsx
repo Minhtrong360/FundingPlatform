@@ -708,8 +708,9 @@ function CashFlowSection({ numberOfMonths }) {
   return (
     <div className="border-t-2">
       <h2 className="text-2xl font-semibold my-4">Cash Flow</h2>
+      
       <Table
-        className="overflow-auto my-8"
+        className="overflow-x-auto my-8"
         size="small"
         dataSource={positionDataWithNetIncome}
         columns={positionColumns}

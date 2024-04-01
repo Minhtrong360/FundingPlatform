@@ -239,7 +239,7 @@ const InvestmentSection = ({
   }, []);
 
   return (
-    <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
+    <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:border-r-2 border-r-0 lg:border-b-0 border-b-2">
         <section aria-labelledby="investment-heading" className="mb-8">
           <h2

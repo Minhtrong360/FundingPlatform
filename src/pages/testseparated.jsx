@@ -10,15 +10,16 @@ import {
 import "@blocknote/core/style.css";
 
 import { useNavigate, useParams } from "react-router-dom";
-
+import Header from './Home/Header';
 import {
   defaultBlockSchema,
   defaultBlockSpecs,
   defaultProps,
 } from "@blocknote/core";
 import { YoutubeOutlined } from "@ant-design/icons";
-import { Button, Input, Avatar, Badge } from 'antd';
-
+import {  Input, Avatar } from 'antd';
+import {Button} from "../components/ui/Button";
+import {Badge} from "../components/ui/Badge";
 const { TabPane } = Tabs;
 
 // const TabContent = ({ tab }) => {
@@ -956,7 +957,7 @@ const MyTab = () => {
 
   return (
     <div className="p-4">
-      <Tabs activeKey={activeTab} onChange={handleTabChange} tabPosition="left">
+      <Tabs activeKey={activeTab} onChange={handleTabChange} tabPosition="left" >
         {Object.keys(tabContents).map((tab) => (
           <TabPane tab={tab} key={tab}>
             {tabContents[tab]}
@@ -1068,7 +1069,7 @@ export default function MyTabs() {
   return (
     <div className="min-h-screen bg-white">
       {/* Navbar */}
-      <nav className="bg-white border-b">
+      {/* <nav className="bg-white border-b">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
@@ -1109,7 +1110,8 @@ export default function MyTabs() {
           </div>
         </div>
       </nav>
-     
+      */}
+      <Header/>
       <ProfileInfo/>
     
       <div className="mt-4 container mx-auto px-4 flex flex-col md:flex-row">

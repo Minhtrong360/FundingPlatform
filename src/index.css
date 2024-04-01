@@ -133,6 +133,9 @@ code {
 }
 
 
+.ant-tabs-tab-btn {
+  font-size: 12px;
+}
 
 
 ::-webkit-scrollbar {

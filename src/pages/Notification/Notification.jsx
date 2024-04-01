@@ -43,7 +43,7 @@ const NotificationItem = ({ notification }) => {
         {Object.keys(parsedContent).map((key, index) => (
           <span
             key={index}
-            className="ant-tag bg-bg-gray-50 border border-gray-200 text-black mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center rounded-md"
+            className="mr-3 ant-tag bg-bg-gray-50 border border-gray-200 text-black mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center rounded-md"
           >
             <span
               className="font-semibold text-sm hover:cursor-pointer"
@@ -53,7 +53,7 @@ const NotificationItem = ({ notification }) => {
             >
               {parsedContent[key].name}
             </span>
-            {index < parsedContent.length - 1 && ", "}
+            {index < parsedContent.length - 1 && " "}
           </span>
         ))}
       </div>

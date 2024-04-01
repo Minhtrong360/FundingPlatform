@@ -169,7 +169,7 @@ function Company({
                 />
                 <div>
                   <InputField
-                    label="Profile image url (>700*800 recommended)"
+                    label="Profile Image link"
                     id="project_url"
                     name="project_url"
                     value={formData.project_url}
@@ -191,7 +191,7 @@ function Company({
 
                 <div>
                   <InputField
-                    label="Company card url (>716*384 recommended)"
+                    label="Card Image link"
                     id="card_url"
                     name="card_url"
                     value={formData.card_url}
@@ -242,7 +242,7 @@ function Company({
                   />
 
                   <InputField
-                    label="Amount raised"
+                    label="Raised before"
                     id="amountRaised"
                     name="amountRaised"
                     value={formatNumber(formData.amountRaised)}
@@ -253,7 +253,7 @@ function Company({
                 </div>
 
                 <InputField
-                  label="No. years in operation"
+                  label="Founded year"
                   id="operationTime"
                   name="operationTime"
                   value={formData.operationTime}

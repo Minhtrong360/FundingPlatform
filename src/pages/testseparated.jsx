@@ -25,6 +25,7 @@ import AnnouncePage from "../components/AnnouncePage";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../supabase";
 import { formatNumber } from "../features/CostSlice";
+import ProfileInfo from "./FounderGitbook/ProfileInfo";
 const { TabPane } = Tabs;
 
 // const TabContent = ({ tab }) => {
@@ -1019,127 +1020,11 @@ const MyTab = () => {
 
 // export default MyTabs;
 
-function ProfileInfo({ company }) {
-  console.log("company", company);
-  const navigate = useNavigate();
-  return (
-    <div key="1" className="mt-32 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-        <div>
-          <h1 className="text-4xl font-bold leading-tight text-gray-900">
-            {company?.name}
-          </h1>
-          <p className="mt-4 text-black">{company?.description}</p>
-          <div className="mt-6 flex gap-4">
-            <Button
-              className="bg-blue-600 text-white"
-              onClick={() => navigate(company?.calendly)}
-            >
-              Book meeting
-            </Button>
-            {/* <Button type="primary" ghost>
-              Learn more
-            </Button> */}
-          </div>
-          <div className="mt-8">
-            <div className="text-black font-semibold">Features:</div>
-
-            <div className="flex mt-2 space-x-4">
-              {company?.industry?.map((industry, index) => (
-                <Badge
-                  key={index}
-                  title={`Industry: ${industry}`}
-                  className="h-6 bg-yellow-300 text-black"
-                >
-                  {industry}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="relative">
-          <img
-            alt="Volunteers working"
-            className="rounded-lg object-cover"
-            height="400"
-            src="https://images.unsplash.com/photo-1711522676532-d6dce8a42335?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzNXx8fGVufDB8fHx8fA%3D%3D"
-            style={{
-              aspectRatio: "600/400",
-              objectFit: "cover",
-            }}
-            width="600"
-          />
-          <div className="absolute bottom-4 left-4 flex items-center space-x-2">
-            <div className="h-3 w-3 rounded-full bg-white" />
-            <div className="h-3 w-3 rounded-full bg-white opacity-50" />
-            <div className="h-3 w-3 rounded-full bg-white opacity-50" />
-            <div className="h-3 w-3 rounded-full bg-white opacity-50" />
-          </div>
-        </div>
-      </div>
-      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border ">
-          <div className="text-2xl font-semibold">
-            ${formatNumber(company?.target_amount)}
-          </div>
-          <div className="text-black mt-2">Target amount</div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-          <div className="text-2xl font-semibold">
-            ${formatNumber(company?.ticket_size)}
-          </div>
-          <div className="text-black mt-2">Min ticket size</div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-          <div className="text-2xl font-semibold">$0-50,000</div>
-          <div className="text-black mt-2">Revenue range</div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-          <div className="text-2xl font-semibold">
-            {" "}
-            ${formatNumber(company?.amountRaised)}
-          </div>
-          <div className="text-black mt-2">Raised before</div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-          <div className="text-2xl font-semibold">{company?.teamSize}+</div>
-          <div className="text-black mt-2">Team size</div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-          <div className="text-2xl font-semibold">Round</div>
-          <div className="text-black mt-2">{company?.round}</div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-          <div className="text-2xl font-semibold">Established</div>
-          <div className="text-black mt-2">{company?.operationTime}</div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-          <div className="text-2xl font-semibold">Offer</div>
-          <div className="text-black mt-2">{company?.offer}</div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-          <div className="text-2xl font-semibold">Type</div>
-          <div className="text-black mt-2">{company?.offer_type}</div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-          <div className="text-2xl font-semibold">Website</div>
-          <div className="text-black mt-2">{company?.website}</div>
-        </div>
-        {/* Repeat the structure for other statistic cards */}
-      </div>
-    </div>
-  );
-}
-
 export default function MyTabs() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [company, setCompany] = useState([]);
   const [viewError, setViewError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
 
   const id = "3ec3f142-f33c-4977-befd-30d4ce2b764d";
   const { user } = useAuth();

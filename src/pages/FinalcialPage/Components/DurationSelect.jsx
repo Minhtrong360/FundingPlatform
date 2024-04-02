@@ -52,12 +52,10 @@ const DurationSelect = ({ handleSubmit }) => {
     "December",
   ];
 
-  console.log("startMonth", startMonth);
-
   const currentYear = new Date().getFullYear();
   const years = Array.from(
-    { length: currentYear - 2019 },
-    (_, index) => 2020 + index
+    { length: 11 },
+    (_, index) => currentYear - 5 + index
   );
 
   const industries = [

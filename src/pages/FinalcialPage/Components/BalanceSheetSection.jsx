@@ -594,6 +594,7 @@ function BalanceSheetSection({ numberOfMonths }) {
         dataIndex: `Month ${i + 1}`,
         key: `Month ${i + 1}`,
         style: { borderRight: "1px solid #f0f0f0" },
+        align: "right",
         onCell: (record) => {
           if (
             record.metric === "Assets" ||

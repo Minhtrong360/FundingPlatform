@@ -980,7 +980,7 @@ function ProfileInfo() {
           <h1 className="text-4xl font-bold leading-tight text-gray-900">
             Making earth cooler for people, nature, climate
           </h1>
-          <p className="mt-4 text-gray-600">
+          <p className="mt-4 text-black">
             Protecting the planet and its natural resources for future generations, by reducing pollution, promoting
             sustainability, and conserving energy and resources.
           </p>
@@ -989,12 +989,12 @@ function ProfileInfo() {
             <Button type="primary" ghost>Learn more</Button>
           </div>
           <div className="mt-8">
-            <div className="text-gray-600 font-semibold">Features:</div>
+            <div className="text-black font-semibold">Features:</div>
             <div className="flex mt-2 space-x-4">
-              <Badge className="h-6 bg-blue-100 text-blue-600">Greenpeace</Badge>
-              <Badge className="h-6 bg-blue-100 text-blue-600">United Nations</Badge>
-              <Badge className="h-6 bg-blue-100 text-blue-600">WWF</Badge>
-              <Badge className="h-6 bg-blue-100 text-blue-600">OXFAM</Badge>
+              <Badge className="h-6 bg-yellow-300 text-black">Fintech</Badge>
+              <Badge className="h-6 bg-yellow-300 text-black">Post-revenue</Badge>
+              <Badge className="h-6 bg-yellow-300 text-black">Vietnam</Badge>
+              <Badge className="h-6 bg-yellow-300 text-black">Seed round </Badge>
             </div>
           </div>
         </div>
@@ -1020,44 +1020,44 @@ function ProfileInfo() {
       </div>
       <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border ">
-          <div className="text-3xl font-semibold">$1,000,000</div>
-          <Badge className="text-gray-600 bg-yellow-300 rounded-md mt-2">Target amount</Badge>
+          <div className="text-2xl font-semibold">$1,000,000</div>
+          <div className="text-black mt-2">Target amount</div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-          <div className="text-3xl font-semibold">20k+</div>
-          <div className="text-gray-600 mt-2">Partners & Donors</div>
+          <div className="text-2xl font-semibold">$100,000</div>
+          <div className="text-black mt-2">Min ticket size</div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-          <div className="text-3xl font-semibold">90M</div>
-          <div className="text-gray-600 mt-2">Tonnes of Carbon Stored</div>
+          <div className="text-2xl font-semibold">$0-50,000</div>
+          <div className="text-black mt-2">Revenue range</div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-          <div className="text-3xl font-semibold">50+</div>
-          <div className="text-gray-600 mt-2">People-Powered Projects</div>
+          <div className="text-2xl font-semibold">$200,000</div>
+          <div className="text-black mt-2">Raised before</div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-          <div className="text-3xl font-semibold">100+</div>
-          <div className="text-gray-600 mt-2">New Projects</div>
+          <div className="text-2xl font-semibold">10+</div>
+          <div className="text-black mt-2">Team size</div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-          <div className="text-3xl font-semibold">200k+</div>
-          <div className="text-gray-600 mt-2">Active Volunteers</div>
+          <div className="text-2xl font-semibold">Round</div>
+          <div className="text-black mt-2">Pre-seed</div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-        <div className="text-3xl font-semibold">500+</div>
-        <div className="text-gray-600 mt-2">Completed Projects</div>
+        <div className="text-2xl font-semibold">Established</div>
+        <div className="text-black mt-2">2019</div>
+      </div>
+      <div className="bg-white p-6 rounded-lg shad  ow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
+        <div className="text-2xl font-semibold">Offer</div>
+        <div className="text-black mt-2">15% equity</div>
       </div>
       <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-        <div className="text-3xl font-semibold">300M</div>
-        <div className="text-gray-600 mt-2">Tonnes of Waste Recycled</div>
+        <div className="text-2xl font-semibold">Type</div>
+        <div className="text-black mt-2">Investment</div>
       </div>
       <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-        <div className="text-3xl font-semibold">1000+</div>
-        <div className="text-gray-600 mt-2">Global Initiatives</div>
-      </div>
-      <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-        <div className="text-3xl font-semibold">80+</div>
-        <div className="text-gray-600 mt-2">Countries Reached</div>
+        <div className="text-2xl font-semibold">Website</div>
+        <div className="text-black mt-2">beekrowd.com</div>
       </div>
         {/* Repeat the structure for other statistic cards */}
       </div>
@@ -1086,21 +1086,21 @@ export default function MyTabs() {
             <div className="flex items-center space-x-4">
               <Avatar src="/placeholder.svg?height=40&width=40" />
               <div>
-                <h4 className="font-bold">Jese Leos</h4>
+                <h4 className="font-bold">Takegawa Pham</h4>
                 <p className="text-sm text-gray-500">34k followers</p>
               </div>
             </div>
             <div className="mt-4">
-              <p>Hey! I'm Jese Leos. I'm a career-changer. Bootcamp grad & Dev.</p>
+              <p>Hey! I'm Takegawa. I'm the founder of BeeKrowd.</p>
               <div className="mt-4">
                 <h5 className="font-bold text-gray-700">Location</h5>
-                <p className="text-sm text-gray-500">California, United States</p>
+                <p className="text-sm text-gray-500">HCMC, Vietnam</p>
               </div>
               <div className="mt-4">
                 <h5 className="font-bold text-gray-700">Joined</h5>
-                <p className="text-sm text-gray-500">September 20, 2018</p>
+                <p className="text-sm text-gray-500">September 20, 2024</p>
               </div>
-              <Button className="border border-gray-200  w-full mt-4">Follow</Button>
+              <Button className="border border-gray-200  w-full mt-4">Follow me</Button>
             </div>
             
           </div>

@@ -383,10 +383,10 @@ const MyTab = () => {
   };
 
   const tabContents = {
-    Introduction: (
+    "Your profile": (
       <div>
         {" "}
-        <h2 className="text-red-600 font-bold text-3xl"> Introduction </h2>
+        <h2 className="text-red-600 font-bold text-3xl"> Your profile </h2>
         <BlockNoteView
           editor={editor}
           theme={"light"}
@@ -444,6 +444,7 @@ const MyTab = () => {
         </Modal>
       </div>
     ),
+    Introduction: <div>Hello</div>,
     "Market Research": (
       <div>
         {" "}
@@ -1021,7 +1022,6 @@ const MyTab = () => {
 // export default MyTabs;
 
 export default function MyTabs() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [company, setCompany] = useState([]);
   const [viewError, setViewError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);

@@ -121,7 +121,7 @@ export default function ProfileInfo({ company }) {
             className="text-black mt-2 truncate hover:cursor-pointer"
             onClick={() => window.open(company?.website)}
           >
-            {company?.website}
+            {company?.website.replace(/^https?:\/\/(www\.)?/i, "")}
           </div>
         </div>
         {/* Repeat the structure for other statistic cards */}

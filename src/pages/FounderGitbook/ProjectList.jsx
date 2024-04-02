@@ -188,9 +188,7 @@ function ProjectList({ projects }) {
                       />
                     </Menu.Item>
 
-                    {record.status === "public" ? (
-                      ""
-                    ) : record.user_id === user.id ? (
+                    {record.user_id === user.id ? (
                       <Menu.Item key="invite">
                         <InvitedUserProject projectId={record.id} />
                       </Menu.Item>

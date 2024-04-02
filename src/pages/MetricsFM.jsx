@@ -73,13 +73,11 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
               <div className="flex flex-col xl:flex-row xl:items-center items-start">
                 <h3 className="text-sm sm:text-3xl font-bold text-blue-600 my-2 ">
                   {new Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: "USD",
                     minimumFractionDigits: 0,
                     maximumFractionDigits: 0,
                   }).format(Math.round(yearlySales[0] ? yearlySales[0] : 0))}
                 </h3>
-              </div>
+                </div>
             </div>
             <div className="ml-0">
               <span className="text-green-600">

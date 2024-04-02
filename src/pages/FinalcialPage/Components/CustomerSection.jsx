@@ -238,6 +238,7 @@ const CustomerSection = ({
         title: `${months[monthIndex]}/${year}`,
         dataIndex: `month${i + 1}`,
         key: `month${i + 1}`,
+        align: 'right',
         onCell: (record) => ({
           style: {
             borderRight: "1px solid #f0f0f0", // Add border right style

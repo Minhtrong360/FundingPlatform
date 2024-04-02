@@ -275,6 +275,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
         title: `${months[monthIndex]}/${year}`,
         dataIndex: `Month ${i + 1}`,
         key: `Month ${i + 1}`,
+        align: "right", 
         onCell: (record) => {
           if (
             record.metric === "Revenue" ||

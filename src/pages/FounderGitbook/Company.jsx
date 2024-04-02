@@ -15,7 +15,6 @@ function Company({
   handleInputChange,
   handleIndustryChange,
   typeOfferingOptions,
-  handleRoundChange,
 }) {
   const [projectImageUrl, setProjectImageUrl] = useState(formData.project_url); // State to store project image URL
   const [cardImageUrl, setCardImageUrl] = useState(formData.card_url); // State to store card image URL
@@ -60,6 +59,26 @@ function Company({
   useEffect(() => {
     setCardImageUrl(formData.card_url);
   }, [formData.card_url]);
+
+  const [years, setYears] = useState([]);
+
+  useEffect(() => {
+    // Hàm để tạo danh sách các năm từ năm bắt đầu đến năm hiện tại
+    const generateYears = () => {
+      const currentYear = new Date().getFullYear();
+      console.log("currentYear", currentYear);
+      const startYear = 1900; // Bạn có thể thay đổi năm bắt đầu tại đây
+      const yearsArray = [];
+      for (let year = startYear; year <= currentYear; year++) {
+        yearsArray.push(year.toString());
+      }
+      return yearsArray;
+    };
+
+    // Gọi hàm generateYears để tạo danh sách các năm và cập nhật state
+    const yearsList = generateYears();
+    setYears(yearsList);
+  }, []);
 
   return (
     <>
@@ -252,21 +271,22 @@ function Company({
                   />
                 </div>
 
-                <InputField
+                <SelectField
                   label="Founded year"
                   id="operationTime"
                   name="operationTime"
                   value={formData.operationTime}
                   onChange={handleInputChange}
+                  options={years}
                   type="text"
                 />
-                <MultiSelectField
+                <SelectField
                   label="Round"
                   id="round"
                   name="round"
-                  OPTIONS={["Pre-seed", "Seed"]}
+                  options={["Pre-seed", "Seed"]}
                   selectedItems={formData.round}
-                  setSelectedItems={handleRoundChange}
+                  setSelectedItems={handleInputChange}
                   type="text"
                 />
 

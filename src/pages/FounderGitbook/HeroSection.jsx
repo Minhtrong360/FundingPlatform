@@ -122,7 +122,7 @@ const HeroSection = ({
               <span className="text-sm font-medium text-gray-600">Round:</span>
               <span className="text-sm font-semibold text-gray-800 truncate pl-1">
                 {" "}
-                {formData?.round?.join(", ")}
+                {formData?.round}
               </span>
             </div>
 

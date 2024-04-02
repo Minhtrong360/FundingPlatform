@@ -128,11 +128,7 @@ function AdminPage() {
       dataIndex: "created_at",
       key: "created_at",
       render: (text, record) => (
-        <div
-          onClick={() => handleProjectClick(record)}
-        >
-          {formatDate(text)}
-        </div>
+        <div onClick={() => handleProjectClick(record)}>{formatDate(text)}</div>
       ),
       ellipsis: true, // Add ellipsis to truncate long content
       width: "10%", // Set a fixed width for the column
@@ -177,10 +173,14 @@ function AdminPage() {
           <button
             onClick={() => handleProjectClick(record)}
             className={`w-[5em] ${
-              record.status ? "bg-blue-600" : "bg-red-600"
+              record?.status === "public" ? "bg-blue-600" : "bg-red-600"
             } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300  py-1 text-center rounded-md `}
           >
-            {record.status ? "Public" : "Private"}
+            {record?.status === "public"
+              ? "Public"
+              : record?.status === "private"
+              ? "Private"
+              : "Stealth"}
           </button>
         </div>
       ),

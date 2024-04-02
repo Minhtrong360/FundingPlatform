@@ -56,8 +56,6 @@ const HeroSection = ({
     fetchProject();
   }, [formData]);
 
-  console.log("imageUrl", imageUrl);
-
   return (
     <div className="max-w-[85rem] mx-auto mt-24 px-4 sm:px-6 lg:px-8 z-0">
       <div className="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-start">

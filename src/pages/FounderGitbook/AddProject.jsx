@@ -20,7 +20,7 @@ const Modal = ({
   setSelectedProject,
 }) => {
   const [projectName, setProjectName] = useState("");
-  const [privateProject, setPrivateProject] = useState(false); // Use a flag to indicate private project
+  const [projectStatus, setProjectStatus] = useState("public"); // Use a flag to indicate private project
   const [isPrivateDisabled, setIsPrivateDisabled] = useState(false); // New state for disabling private option
   const { user } = useAuth();
 
@@ -30,14 +30,14 @@ const Modal = ({
     if (selectedProject) {
       setIsEditing(true); // Nếu có dự án được chọn, đang chỉnh sửa
       setProjectName(selectedProject.name);
-      setPrivateProject(!selectedProject.status);
+      setProjectStatus(selectedProject.status);
     }
   }, [selectedProject]);
 
   const handleSave = async () => {
     try {
       // Kiểm tra nếu là dự án riêng tư và người dùng không đáp ứng điều kiện
-      if (privateProject && isPrivateDisabled) {
+      if (projectStatus === "private" && isPrivateDisabled) {
         setIsPricingOpen(true);
         message.warning(
           "You need to upgrade your plan to save this project as private"
@@ -50,7 +50,7 @@ const Modal = ({
         .from("projects")
         .update({
           name: projectName,
-          status: !privateProject, // Invert lại trạng thái cho công khai/riêng tư
+          status: projectStatus, // Invert lại trạng thái cho công khai/riêng tư
         })
         .eq("id", selectedProject.id);
 
@@ -71,7 +71,7 @@ const Modal = ({
           updatedProjectsCopy[updatedProjectIndex] = {
             ...updatedProjectsCopy[updatedProjectIndex],
             name: projectName,
-            status: !privateProject,
+            status: projectStatus,
           };
           setUpdatedProjects(updatedProjectsCopy);
         }
@@ -104,7 +104,7 @@ const Modal = ({
   const handleCreate = async () => {
     try {
       // Check if it's a private project and the user doesn't meet the conditions
-      if (privateProject && isPrivateDisabled) {
+      if (projectStatus === "private" && isPrivateDisabled) {
         setIsPricingOpen(true);
         message.warning(
           "You need to upgrade your plan to create a private project"
@@ -118,7 +118,7 @@ const Modal = ({
           {
             name: projectName,
             user_id: user.id,
-            status: !privateProject, // Invert the status for public/private
+            status: projectStatus, // Invert the status for public/private
             user_email: user.email, // Thêm giá trị is_public
           },
         ])
@@ -145,6 +145,8 @@ const Modal = ({
     return null;
   }
 
+  console.log("isPrivateDisabled", isPrivateDisabled);
+
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
       <AlertMsg />
@@ -167,29 +169,52 @@ const Modal = ({
           <div className="mt-4">
             <div className="mt-4">
               <Radio.Group
-                onChange={(e) =>
-                  setPrivateProject(e.target.value === "private")
-                }
-                value={privateProject ? "private" : "public"}
+                onChange={(e) => setProjectStatus(e.target.value)}
+                value={projectStatus}
               >
                 <Tooltip
-                  title="This project will be visible to everyone"
+                  title="This project will be visible to everyone."
                   zIndex={20000}
                 >
                   <Radio value="public">Public</Radio>
                 </Tooltip>
-                {isPrivateDisabled ? (
+                {!isPrivateDisabled ? (
                   <Tooltip
-                    title={`You need to upgrade your plan to create a private project`}
+                    title={`This project will be visible to everyone but they can't access the project.`}
                     color="gray"
                     zIndex={20000}
                   >
-                    <Radio value="private" disabled>
+                    <Radio value="private">Private</Radio>
+                  </Tooltip>
+                ) : (
+                  <Tooltip
+                    title={`You need to upgrade your plan to create a private project.`}
+                    color="gray"
+                    zIndex={20000}
+                  >
+                    <Radio disabled value="private">
                       Private
                     </Radio>
                   </Tooltip>
+                )}
+                {!isPrivateDisabled ? (
+                  <Tooltip
+                    title={`This project will be invisible to everyone.`}
+                    color="gray"
+                    zIndex={20000}
+                  >
+                    <Radio value="stealth">Stealth</Radio>
+                  </Tooltip>
                 ) : (
-                  <Radio value="private">Private</Radio>
+                  <Tooltip
+                    title={`You need to upgrade your plan to create a stealth project.`}
+                    color="gray"
+                    zIndex={20000}
+                  >
+                    <Radio disabled value="stealth">
+                      Stealth
+                    </Radio>
+                  </Tooltip>
                 )}
               </Radio.Group>
             </div>

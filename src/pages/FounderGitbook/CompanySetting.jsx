@@ -354,7 +354,7 @@ function CompanySetting() {
         } else {
           // Kiểm tra quyền truy cập của người dùng
           if (
-            data.status === false &&
+            data.status === "private" &&
             data.user_id !== user?.id &&
             !data.collabs?.includes(user.email)
           ) {

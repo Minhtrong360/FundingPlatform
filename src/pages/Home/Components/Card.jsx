@@ -107,13 +107,17 @@ const Card = ({
           )}
           <Tag
             className={` ${
-              project?.status === true
+              project?.status === "public"
                 ? "bg-yellow-300 text-black"
                 : "bg-bg-gray-50 border border-gray-200 text-black"
             } mt-1 inline-flex items-center px-3 py-1 text-sm font-medium text-center   rounded-3xl`}
             onClick={() => navigate(`/founder/${project_id}`)}
           >
-            {project?.status === true ? "Public" : "Private"}
+            {project?.status === "public"
+              ? "Public"
+              : project?.status === "private"
+              ? "Private"
+              : "Stealth"}
           </Tag>
         </div>
       </div>

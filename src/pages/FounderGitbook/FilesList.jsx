@@ -7,9 +7,9 @@ import { useParams } from "react-router-dom";
 
 import InvitedUserFile from "../../components/InvitedUserFile";
 import apiService from "../../app/apiService";
-// import { toast } from "react-toastify";
+import { message, Modal } from "antd";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
-import { Tooltip, message } from "antd";
+import { Tooltip } from "antd";
 
 function FilesList() {
   const { id } = useParams();
@@ -18,35 +18,65 @@ function FilesList() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentProject, setCurrentProject] = useState();
   const [currentUser, setCurrentUser] = useState(null);
-  const [isPrivateDisabled, setIsPrivateDisabled] = useState(false); // New state for disabling private option
+  const [isPrivateDisabled, setIsPrivateDisabled] = useState(false);
+  const [deleteFileId, setDeleteFileId] = useState(null); // Thêm state để lưu ID của file sẽ bị xóa
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false); // Thêm state để kiểm soát hiển thị của Modal
 
-  // Tạo một hàm để tính giá trị canClick cho từng dòng trong bảng
-  const calculateCanClick = (link) => {
-    // Nếu link.status = true thì canClick=true
-    if (link.status) {
-      return true;
+  const showDeleteModal = (fileId) => {
+    setDeleteFileId(fileId);
+    setIsDeleteModalVisible(true);
+  };
+
+  const handleDeleteModalOk = async () => {
+    try {
+      if (!navigator.onLine) {
+        message.error("No internet access.");
+        return;
+      }
+
+      const { data: fileData, error: fileError } = await supabase
+        .from("files")
+        .select("user_id")
+        .eq("id", deleteFileId)
+        .single();
+
+      if (fileError) {
+        console.log("Error fetching file data:", fileError);
+      } else {
+        if (fileData.user_id === user.id) {
+          const { error } = await supabase
+            .from("files")
+            .delete()
+            .eq("id", deleteFileId);
+
+          if (error) {
+            console.log("Error deleting file:", error);
+          } else {
+            const updatedLinks = projectLinks.filter(
+              (link) => link.id !== deleteFileId
+            );
+            setProjectLinks(updatedLinks);
+          }
+        } else {
+          message.error("User does not have permission to delete this file.");
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting file:", error);
+      message.error(error.message);
     }
 
-    // Nếu link.invited_user chứa user.id thì canClick = true
-    if (link?.invited_user && link?.invited_user?.includes(user.email)) {
-      return true;
-    }
+    setIsDeleteModalVisible(false);
+  };
 
-    if (link.user_id && link.user_id === user.id) {
-      return true;
-    }
-
-    // Còn lại canClick = false
-    return false;
+  const handleDeleteModalCancel = () => {
+    setIsDeleteModalVisible(false);
   };
 
   useEffect(() => {
-    // Import Supabase client và thiết lập nó
-
     const fetchFiles = async () => {
       try {
         if (!navigator.onLine) {
-          // Không có kết nối Internet
           message.error("No internet access.");
           return;
         }
@@ -70,17 +100,15 @@ function FilesList() {
   }, [id]);
 
   useEffect(() => {
-    // Lấy dự án từ Supabase
     supabase
       .from("projects")
       .select("*")
       .eq("id", id)
       .single()
       .then(({ data, error }) => {
-        setIsLoading(false); // Đánh dấu rằng dữ liệu đã được tải xong
+        setIsLoading(false);
         if (error) {
           console.log(error);
-          // Xử lý lỗi khi không thể lấy dự án
         } else {
           setCurrentProject(data);
         }
@@ -91,11 +119,10 @@ function FilesList() {
     newLink.owner_email = user.email;
     try {
       if (!navigator.onLine) {
-        // Không có kết nối Internet
         message.error("No internet access.");
         return;
       }
-      // Tạo một dự án mới và lưu vào Supabase
+
       if (currentProject.user_id === user.id) {
         const { error } = await supabase.from("files").insert([
           {
@@ -109,10 +136,8 @@ function FilesList() {
         ]);
 
         if (error) {
-          console.log("Error creating files:", error);
-          // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
+          console.log("Error creating file:", error);
         } else {
-          // Check if the link with the same name already exists
           const linkWithSameNameExists = projectLinks.some(
             (existingLink) => existingLink.name === newLink.name
           );
@@ -122,84 +147,19 @@ function FilesList() {
             return;
           }
 
-          // Create a new link object and add it to the projectLinks array
-
           setProjectLinks([...projectLinks, newLink]);
         }
       } else {
-        alert("You are not the owner of project");
-        return;
+        alert("You are not the owner of the project.");
       }
     } catch (error) {
-      console.log("Error creating files:", error);
+      console.log("Error creating file:", error);
       message.error(error.message);
-      // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
-    }
-  };
-
-  const handleDelete = async (fileId) => {
-    const isConfirmed = window.confirm(
-      "Are you sure you want to delete this link?"
-    );
-    if (!isConfirmed) {
-      return; // Don't proceed with deletion if the user doesn't confirm
-    }
-
-    try {
-      if (!navigator.onLine) {
-        // Không có kết nối Internet
-        message.error("No internet access.");
-        return;
-      }
-      // Trước khi xóa, hãy truy vấn để kiểm tra user_id
-      const { data: fileData, error: fileError } = await supabase
-        .from("files")
-        .select("user_id")
-        .eq("id", fileId)
-        .single();
-
-      if (fileError) {
-        console.log("Error fetching file data:", fileError);
-        // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
-      } else {
-        // Kiểm tra user_id từ dữ liệu file với user.id đăng nhập
-        if (fileData.user_id === user.id) {
-          // Xóa dự án ra khỏi Supabase bằng cách sử dụng phương thức `delete`
-          const { error } = await supabase
-            .from("files")
-            .delete()
-            .eq("id", fileId);
-
-          if (error) {
-            console.log("Error deleting project:", error);
-            // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
-          } else {
-            // Xóa dự án thành công, cập nhật lại danh sách dự án
-            // Tạo một mảng mới của các liên kết không có fileId cụ thể
-            const updatedLinks = projectLinks.filter(
-              (link) => link.id !== fileId
-            );
-
-            // Đặt trạng thái với mảng liên kết đã cập nhật
-            setProjectLinks(updatedLinks);
-          }
-        } else {
-          message.error("User does not have permission to delete this file.");
-          console.log("User does not have permission to delete this file.");
-          // Xử lý trường hợp người dùng không có quyền xóa (ví dụ: hiển thị thông báo lỗi cho người dùng)
-        }
-      }
-    } catch (error) {
-      console.error("Error deleting project:", error);
-      message.error(error.message);
-      // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }
   };
 
   const handleLinkClick = (link) => {
-    // Sử dụng hàm calculateCanClick để kiểm tra điều kiện
     if (calculateCanClick(link)) {
-      // Nếu canClick là true, mở tab mới với đường dẫn từ link.link
       window.open(link.link, "_blank");
     }
   };
@@ -207,7 +167,6 @@ function FilesList() {
   const handleSendRequest = async (link) => {
     try {
       if (!navigator.onLine) {
-        // Không có kết nối Internet
         message.error("No internet access.");
         return;
       }
@@ -229,20 +188,15 @@ function FilesList() {
   };
 
   useEffect(() => {
-    // Import Supabase client và thiết lập nó
-
     const fetchCurrentUser = async () => {
       try {
         if (!navigator.onLine) {
-          // Không có kết nối Internet
           message.error("No internet access.");
           return;
         }
         let { data: users, error } = await supabase
           .from("users")
           .select("*")
-
-          // Filters
           .eq("id", user.id);
 
         if (error) {
@@ -260,7 +214,6 @@ function FilesList() {
   }, [user.id]);
 
   useEffect(() => {
-    // Check if the user doesn't meet the conditions to create a private project
     if (
       (currentUser?.plan === "Free" ||
         currentUser?.plan === null ||
@@ -272,6 +225,22 @@ function FilesList() {
       setIsPrivateDisabled(false);
     }
   }, [currentUser?.plan, currentUser?.subscription_status]);
+
+  const calculateCanClick = (link) => {
+    if (link.status) {
+      return true;
+    }
+
+    if (link?.invited_user && link?.invited_user?.includes(user.email)) {
+      return true;
+    }
+
+    if (link.user_id && link.user_id === user.id) {
+      return true;
+    }
+
+    return false;
+  };
 
   return (
     <main className="w-full ml-2">
@@ -285,6 +254,7 @@ function FilesList() {
             isPrivateDisabled={isPrivateDisabled}
           />
         </div>
+
         <div className="flex flex-col">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
@@ -318,13 +288,6 @@ function FilesList() {
                       >
                         File link
                       </th>
-
-                      {/* <th
-                        scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
-                      >
-                        Status
-                      </th> */}
                       <th
                         scope="col"
                         className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
@@ -366,7 +329,7 @@ function FilesList() {
                         <td
                           className={`hover:cursor-pointer px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap`}
                           style={{
-                            maxWidth: "150px", // Set the maximum width here
+                            maxWidth: "150px",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
                             whiteSpace: "nowrap",
@@ -394,7 +357,7 @@ function FilesList() {
                               ? "pointer"
                               : "not-allowed",
                             color: calculateCanClick(link) ? "blue" : "black",
-                            maxWidth: "10rem", // Set the maximum width here
+                            maxWidth: "10rem",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
                             whiteSpace: "nowrap",
@@ -405,7 +368,7 @@ function FilesList() {
                         <td
                           className="px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap"
                           style={{
-                            maxWidth: "10rem", // Set the maximum width here
+                            maxWidth: "10rem",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
                             whiteSpace: "nowrap",
@@ -422,13 +385,11 @@ function FilesList() {
                         <td className="px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap">
                           {link.status ? "Public" : "Private"}
                         </td>
-                        {/* <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">{project.status}</td> */}
-
                         <td className="px-4 py-4 text-sm whitespace-nowrap">
                           <div className="flex items-center gap-x-6">
                             <button
-                              className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
-                              onClick={() => handleDelete(link.id)}
+                              className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+                              onClick={() => showDeleteModal(link.id)}
                             >
                               Delete
                             </button>
@@ -443,7 +404,7 @@ function FilesList() {
                             ""
                           ) : (
                             <button
-                              className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+                              className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
                               onClick={() => handleSendRequest(link)}
                             >
                               Send Request
@@ -459,6 +420,38 @@ function FilesList() {
           </div>
         </div>
       </section>
+
+      {/* Modal */}
+      <Modal
+        title="Confirm Delete"
+        visible={isDeleteModalVisible}
+        onOk={handleDeleteModalOk}
+        onCancel={handleDeleteModalCancel}
+        okText="Delete"
+        cancelText="Cancel"
+        cancelButtonProps={{
+          style: {
+            borderColor: "black",
+            padding: "8px 16px",
+
+            borderRadius: "0.375rem",
+            cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+          },
+        }}
+        okButtonProps={{
+          style: {
+            background: "#f5222d",
+            borderColor: "#f5222d",
+            padding: "8px 16px",
+            color: "#fff",
+            borderRadius: "0.375rem",
+            cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+          },
+        }}
+        centered={true}
+      >
+        Are you sure you want to delete this link?
+      </Modal>
     </main>
   );
 }

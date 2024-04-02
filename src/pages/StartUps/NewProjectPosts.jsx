@@ -27,17 +27,38 @@ const NewProjectPosts = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        let { data, error } = await supabase
+        const { data: projects, error: projectsError } = await supabase
+          .from("projects")
+          .select("id")
+          .neq("status", "stealth");
+
+        if (projectsError) {
+          message.error(projectsError.message);
+          console.error(
+            "Error fetching projects from Supabase:",
+            projectsError
+          );
+          return;
+        }
+
+        const projectIds = projects.map((project) => project.id);
+
+        const { data: companies, error: companiesError } = await supabase
           .from("company")
           .select("*")
+          .in("project_id", projectIds)
           .order("created_at", { ascending: false });
 
-        if (error) {
-          message.error(error.message);
-          console.error("Error fetching data from Supabase:", error);
-        } else {
-          setCompanies(data);
+        if (companiesError) {
+          message.error(companiesError.message);
+          console.error(
+            "Error fetching companies from Supabase:",
+            companiesError
+          );
+          return;
         }
+
+        setCompanies(companies);
       } catch (error) {
         console.error("Error fetching data from Supabase:", error);
       }

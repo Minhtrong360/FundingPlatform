@@ -43,9 +43,9 @@ function CompanySetting() {
     revenueStatus: "Pre-revenue",
     calendly: "",
     teamSize: "",
-    operationTime: "",
+    operationTime: "2024",
     amountRaised: 0,
-    round: ["Pre-seed"],
+    round: "Pre-seed",
   });
 
   useEffect(() => {
@@ -354,7 +354,7 @@ function CompanySetting() {
         } else {
           // Kiểm tra quyền truy cập của người dùng
           if (
-            data.status === false &&
+            data.status === "private" &&
             data.user_id !== user?.id &&
             !data.collabs?.includes(user.email)
           ) {
@@ -587,13 +587,6 @@ function CompanySetting() {
 
   const canClick = false;
 
-  const handleRoundChange = (selectedItems) => {
-    setFormData({
-      ...formData,
-      round: selectedItems,
-    });
-  };
-
   return (
     <div className="grid sm:grid-cols-1 lg:grid-cols-4 gap-6">
       {" "}
@@ -607,7 +600,6 @@ function CompanySetting() {
           handleInputChange={handleInputChange}
           typeOfferingOptions={typeOfferingOptions}
           handleIndustryChange={handleIndustryChange}
-          handleRoundChange={handleRoundChange}
         />
         <AlertMsg />
       </div>

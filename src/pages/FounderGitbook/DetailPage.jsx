@@ -44,7 +44,7 @@ const DetailPage = () => {
         }
 
         if (
-          projectData.status === false &&
+          projectData.status === "private" &&
           projectData.user_id !== user?.id &&
           !projectData.invited_user?.includes(user.email) &&
           !projectData.collabs?.includes(user.email)

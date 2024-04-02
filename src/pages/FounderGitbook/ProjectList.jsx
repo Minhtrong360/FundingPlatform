@@ -7,7 +7,7 @@ import AlertMsg from "../../components/AlertMsg";
 import InvitedUserProject from "../../components/InvitedUserProject";
 // import { toast } from "react-toastify";
 import ProjectGiven from "../../components/ProjectGiven";
-import { Dropdown, Button, Menu, message, Table, Switch } from "antd";
+import { Dropdown, Button, Menu, message, Table, Switch, Modal } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { formatDate } from "../../features/DurationSlice";
 
@@ -27,13 +27,18 @@ function ProjectList({ projects }) {
     setUpdatedProjects(sortedProjects);
   }, [projects]);
 
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deletingProjectId, setDeletingProjectId] = useState();
   const handleDelete = async (projectId) => {
-    const isConfirmed = window.confirm(
-      "Are you sure you want to delete this project?"
-    );
-    if (!isConfirmed) {
-      return;
-    }
+    // Hiển thị modal xác nhận xóa
+    setIsDeleteModalOpen(true);
+
+    // Lưu projectId của dự án cần xóa
+    setDeletingProjectId(projectId);
+  };
+
+  // Hàm xác nhận xóa dự án
+  const confirmDelete = async () => {
     try {
       if (!navigator.onLine) {
         message.error("No internet access.");
@@ -42,24 +47,35 @@ function ProjectList({ projects }) {
       const { error } = await supabase
         .from("projects")
         .delete()
-        .eq("id", projectId);
+        .eq("id", deletingProjectId);
 
       if (error) {
         console.error("Error deleting project:", error);
       } else {
         const updatedProjectsCopy = updatedProjects.filter(
-          (project) => project.id !== projectId
+          (project) => project.id !== deletingProjectId
         );
         setUpdatedProjects(updatedProjectsCopy);
       }
     } catch (error) {
       message.error(error.message);
       console.error("Error deleting project:", error);
+    } finally {
+      // Đóng modal sau khi xóa hoặc xảy ra lỗi
+      setIsDeleteModalOpen(false);
     }
   };
+
+  // Hàm hủy bỏ xóa dự án
+  const cancelDelete = () => {
+    // Đóng modal và không làm gì cả
+    setIsDeleteModalOpen(false);
+  };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState();
   // Trong hàm handleEdit, khi người dùng nhấp vào nút Edit, mở modal và truyền thông tin dự án được chọn vào AddProject
+
   const handleEdit = (record) => {
     setIsModalOpen(true); // Mở modal
     setSelectedProject(record); // Truyền thông tin dự án được chọn
@@ -123,11 +139,15 @@ function ProjectList({ projects }) {
           <button
             onClick={() => handleProjectClick(record)}
             className={`w-[5em] ${
-              record.status ? "bg-blue-600" : "bg-red-600"
+              record.status === "public" ? "bg-blue-600" : "bg-red-600"
             } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
             style={{ fontSize: "12px" }}
           >
-            {record.status ? "Public" : "Private"}
+            {record.status === "public"
+              ? "Public"
+              : record.status === "private"
+              ? "Private"
+              : "Stealth"}
           </button>
         </>
       ),
@@ -168,7 +188,7 @@ function ProjectList({ projects }) {
                       />
                     </Menu.Item>
 
-                    {record.status ? (
+                    {record.status === "public" ? (
                       ""
                     ) : record.user_id === user.id ? (
                       <Menu.Item key="invite">
@@ -181,12 +201,14 @@ function ProjectList({ projects }) {
                 </Menu>
               }
             >
-              <div className="w-[6rem] bg-blue-600 text-white  focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus">Action</div>
+              <div className="w-[6rem] bg-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus cursor-pointer">
+                Action
+              </div>
             </Dropdown>
           ) : (
             <div
               onClick={() => handleProjectClick(record)}
-              className={`w-[6rem] bg-blue-600  text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md   py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+              className={`w-[6rem] bg-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus cursor-pointer`}
             >
               {record.invited_user?.includes(user.email) &&
               record.collabs?.includes(user.email)
@@ -238,7 +260,7 @@ function ProjectList({ projects }) {
       console.error("Error checking company:", error.message);
     }
   };
-
+  console.log("isDeleteModalOpen", isDeleteModalOpen);
   return (
     <main className="w-full min-h-[92.5vh]">
       <AlertMsg />
@@ -252,6 +274,39 @@ function ProjectList({ projects }) {
           setSelectedProject={setSelectedProject}
         />
       </div>
+
+      {isDeleteModalOpen && (
+        <Modal
+          title="Confirm Delete"
+          visible={isDeleteModalOpen}
+          onOk={confirmDelete}
+          onCancel={cancelDelete}
+          okText="Delete"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              borderColor: "black",
+              padding: "8px 16px",
+
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#f5222d",
+              borderColor: "#f5222d",
+              padding: "8px 16px",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          centered={true}
+        >
+          Are you sure you want to delete this project?
+        </Modal>
+      )}
       <section className="container px-4 mx-auto">
         <div className="flex flex-col">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

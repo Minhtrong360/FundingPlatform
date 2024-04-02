@@ -9,7 +9,7 @@ const initialState = {
   payrollTax: 0,
   currency: "USD",
   startMonth: 1,
-  startYear: 2024,
+  startYear: new Date().getFullYear(),
   financialProjectName: "",
   numberOfMonths: 36,
   cutMonth: 4,

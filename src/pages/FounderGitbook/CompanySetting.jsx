@@ -15,6 +15,7 @@ import AlertMsg from "../../components/AlertMsg";
 import axios from "axios";
 import { message } from "antd";
 import { parseNumber } from "../../features/CostSlice";
+import ProfileInfo from "./ProfileInfo";
 
 function CompanySetting() {
   const navigate = useNavigate();
@@ -25,19 +26,18 @@ function CompanySetting() {
   const [isLoading, setIsLoading] = useState(true);
 
   const [formData, setFormData] = useState({
-    companyName: "",
+    name: "",
     country: "",
     industry: [],
-    targetAmount: 0,
-    typeOffering: "Investment", // Mặc định là "land"
-    minTicketSize: 0,
-    noTicket: "",
+    target_amount: 0,
+    offer_type: "Investment", // Mặc định là "land"
+    ticket_size: 0,
+    no_ticket: "",
     offer: "",
     project_url: "",
     website: "",
-
     card_url: "",
-    companyDescription: "",
+    description: "",
     rememberMe: false,
     user_email: "",
     revenueStatus: "Pre-revenue",
@@ -67,16 +67,16 @@ function CompanySetting() {
 
               setFormData({
                 ...formData, // Giữ lại các giá trị hiện tại của formData
-                companyName: companyData.name,
+                name: companyData.name,
                 country: companyData.country,
                 industry:
                   companyData.industry.length > 0
                     ? companyData.industry
                     : formData.industry,
-                targetAmount: companyData.target_amount,
-                typeOffering: companyData.offer_type,
-                minTicketSize: companyData.ticket_size,
-                noTicket: companyData.no_ticket,
+                target_amount: companyData.target_amount,
+                offer_type: companyData.offer_type,
+                ticket_size: companyData.ticket_size,
+                no_ticket: companyData.no_ticket,
                 offer: companyData.offer,
                 project_url: companyData.project_url
                   ? companyData.project_url
@@ -85,7 +85,7 @@ function CompanySetting() {
                   ? companyData.card_url
                   : formData.card_url,
                 website: companyData.website,
-                companyDescription: companyData.description,
+                description: companyData.description,
                 user_email: companyData.user_email,
                 revenueStatus: companyData.revenueStatus,
                 calendly: companyData.calendly,
@@ -117,34 +117,30 @@ function CompanySetting() {
 
   useEffect(() => {
     const calculateNoTicket = () => {
-      const targetAmount =
-        formData.targetAmount && typeof formData.targetAmount === "string"
-          ? parseInt(formData.targetAmount.replace(/,/g, ""), 10)
-          : formData.targetAmount;
-      const minTicketSize =
-        formData.minTicketSize && typeof formData.minTicketSize === "string"
-          ? parseInt(formData.minTicketSize.replace(/,/g, ""), 10)
-          : formData.minTicketSize;
+      const target_amount =
+        formData.target_amount && typeof formData.target_amount === "string"
+          ? parseInt(formData.target_amount.replace(/,/g, ""), 10)
+          : formData.target_amount;
+      const ticket_size =
+        formData.ticket_size && typeof formData.ticket_size === "string"
+          ? parseInt(formData.ticket_size.replace(/,/g, ""), 10)
+          : formData.ticket_size;
 
-      if (
-        !isNaN(targetAmount) &&
-        !isNaN(minTicketSize) &&
-        minTicketSize !== 0
-      ) {
-        const noTicket = Math.ceil(targetAmount / minTicketSize);
-        return noTicket;
+      if (!isNaN(target_amount) && !isNaN(ticket_size) && ticket_size !== 0) {
+        const no_ticket = Math.ceil(target_amount / ticket_size);
+        return no_ticket;
       }
       return 0;
     };
     setFormData({
       ...formData,
-      noTicket: calculateNoTicket(),
+      no_ticket: calculateNoTicket(),
     });
-  }, [formData.targetAmount, formData.minTicketSize]);
+  }, [formData.target_amount, formData.ticket_size]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.companyDescription.length < 50) {
+    if (formData?.description?.length < 50) {
       message.warning("Please input at least 50 characters.");
       return;
     }
@@ -234,29 +230,29 @@ function CompanySetting() {
             .upsert([
               {
                 id: existingCompanyId, // Sử dụng id của công ty đã tồn tại để thực hiện cập nhật
-                name: formData.companyName,
+                name: formData.name,
                 country: formData.country,
                 industry: formData.industry,
                 target_amount:
-                  formData.targetAmount &&
-                  typeof formData.targetAmount === "string"
-                    ? parseInt(formData.targetAmount.replace(/,/g, ""), 10)
-                    : formData.targetAmount,
-                offer_type: formData.typeOffering,
+                  formData.target_amount &&
+                  typeof formData.target_amount === "string"
+                    ? parseInt(formData.target_amount.replace(/,/g, ""), 10)
+                    : formData.target_amount,
+                offer_type: formData.offer_type,
                 ticket_size:
-                  formData.minTicketSize &&
-                  typeof formData.minTicketSize === "string"
-                    ? parseInt(formData.minTicketSize.replace(/,/g, ""), 10)
-                    : formData.minTicketSize,
+                  formData.ticket_size &&
+                  typeof formData.ticket_size === "string"
+                    ? parseInt(formData.ticket_size.replace(/,/g, ""), 10)
+                    : formData.ticket_size,
                 no_ticket:
-                  formData.noTicket && typeof formData.noTicket === "string"
-                    ? parseInt(formData.noTicket.replace(/,/g, ""), 10)
-                    : formData.noTicket,
+                  formData.no_ticket && typeof formData.no_ticket === "string"
+                    ? parseInt(formData.no_ticket.replace(/,/g, ""), 10)
+                    : formData.no_ticket,
                 offer: formData.offer,
                 project_url: projectUrl,
                 card_url: cardUrl,
                 website: formData.website,
-                description: formData.companyDescription,
+                description: formData.description,
                 user_id: user.id,
                 user_email: user.email,
                 project_id: params.id,
@@ -284,29 +280,29 @@ function CompanySetting() {
             .from("company")
             .upsert([
               {
-                name: formData.companyName,
+                name: formData.name,
                 country: formData.country,
                 industry: formData.industry,
                 target_amount:
-                  formData.targetAmount &&
-                  typeof formData.targetAmount === "string"
-                    ? parseInt(formData.targetAmount.replace(/,/g, ""), 10)
-                    : formData.targetAmount,
-                offer_type: formData.typeOffering,
+                  formData.target_amount &&
+                  typeof formData.target_amount === "string"
+                    ? parseInt(formData.target_amount.replace(/,/g, ""), 10)
+                    : formData.target_amount,
+                offer_type: formData.offer_type,
                 ticket_size:
-                  formData.minTicketSize &&
-                  typeof formData.minTicketSize === "string"
-                    ? parseInt(formData.minTicketSize.replace(/,/g, ""), 10)
-                    : formData.minTicketSize,
+                  formData.ticket_size &&
+                  typeof formData.ticket_size === "string"
+                    ? parseInt(formData.ticket_size.replace(/,/g, ""), 10)
+                    : formData.ticket_size,
                 no_ticket:
-                  formData.noTicket && typeof formData.noTicket === "string"
-                    ? parseInt(formData.noTicket.replace(/,/g, ""), 10)
-                    : formData.noTicket,
+                  formData.no_ticket && typeof formData.no_ticket === "string"
+                    ? parseInt(formData.no_ticket.replace(/,/g, ""), 10)
+                    : formData.no_ticket,
                 offer: formData.offer,
                 project_url: projectUrl,
                 card_url: cardUrl,
                 website: formData.website,
-                description: formData.companyDescription,
+                description: formData.description,
                 user_id: user.id,
                 user_email: user.email,
                 project_id: params.id,
@@ -607,26 +603,28 @@ function CompanySetting() {
         {" "}
         {/* Sử dụng lg:col-span-2 để các div còn lại chiếm 2/3 */}
         <div className="flex flex-col">
-          <HeroSection
+          {/* <HeroSection
             formData={formData}
-            title={formData.companyName}
-            description={formData.companyDescription}
-            button1Text={formData.targetAmount}
-            button2Text={formData.minTicketSize}
-            button3Text={formData.noTicket}
+            title={formData.name}
+            description={formData.description}
+            button1Text={formData.target_amount}
+            button2Text={formData.ticket_size}
+            button3Text={formData.no_ticket}
             button4Text={formData.offer}
-            button5Text={formData.typeOffering}
+            button5Text={formData.offer_type}
             imageUrl={formData.project_url}
             setFormData={setFormData}
             canClick={canClick}
-          />
+          /> */}
+
+          <ProfileInfo company={formData} />
 
           <hr className="mt-16 border-dashed border-gray-400" />
 
           <div className="mt-11 px-4 sm:px-6 lg:px-8">
             <Card
-              title={formData.companyName}
-              description={formData.companyDescription}
+              title={formData.name}
+              description={formData.description}
               imageUrl={formData.card_url}
               buttonText="More"
               project_id={id}

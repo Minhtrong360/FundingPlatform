@@ -100,9 +100,9 @@ function Company({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
                   <InputField
                     label="Company name"
-                    id="company-name"
-                    name="companyName"
-                    value={formData.companyName}
+                    id="name"
+                    name="name"
+                    value={formData.name}
                     onChange={handleInputChange}
                     type="text"
                     required
@@ -122,8 +122,8 @@ function Company({
                   <InputField
                     label="Target amount"
                     id="target-amount"
-                    name="targetAmount"
-                    value={formData.targetAmount}
+                    name="target_amount"
+                    value={formData.target_amount}
                     onChange={handleInputChange}
                     type="number"
                     required
@@ -131,9 +131,9 @@ function Company({
                   <SelectField
                     label="Type offering"
                     id="type-offering"
-                    name="typeOffering"
+                    name="offer_type"
                     options={typeOfferingOptions}
-                    value={formData.typeOffering}
+                    value={formData.offer_type}
                     onChange={handleInputChange}
                     required
                   />
@@ -143,8 +143,8 @@ function Company({
                   <InputField
                     label="Min ticket size"
                     id="min-ticket-size"
-                    name="minTicketSize"
-                    value={formData.minTicketSize}
+                    name="ticket_size"
+                    value={formData.ticket_size}
                     onChange={handleInputChange}
                     type="number"
                     required
@@ -152,8 +152,8 @@ function Company({
                   <InputField
                     label="No. ticket"
                     id="no-ticket"
-                    name="noTicket"
-                    value={formData.noTicket}
+                    name="no_ticket"
+                    value={formData.no_ticket}
                     type="number"
                     readOnly // Đặt readOnly để ngăn người dùng chỉnh sửa trường này thủ công
                   />
@@ -247,7 +247,6 @@ function Company({
                   value={formData.calendly}
                   onChange={handleInputChange}
                   type="text"
-                  required
                 />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
                   <InputField
@@ -293,8 +292,8 @@ function Company({
                 <TextAreaField
                   label="Company description"
                   id="company-description"
-                  name="companyDescription"
-                  value={formData.companyDescription}
+                  name="description"
+                  value={formData.description}
                   onChange={handleInputChange}
                   required
                   maxLength={700} // Giới hạn 700 ký tự

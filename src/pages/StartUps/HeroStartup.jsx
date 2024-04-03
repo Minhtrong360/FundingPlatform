@@ -65,6 +65,25 @@ const HeroStartup = () => {
           </div>
         </div>
 
+<<<<<<<<< Temporary merge branch 1
+        <div className="flex justify-center mt-10">
+        <div className="flex justify-center items-center w-full   mt-8 rounded-xl ml-10">
+                 <div className="relative w-full md:w-4/5 overflow-hidden shadow-2xl rounded-xl border border-gray-300" style={{ paddingTop: '56.25%' }}>
+                 <p>
+                   <iframe
+                    title="YouTube video player"
+                    className="absolute top-0 left-0 right-0 w-full h-full shadow-2xl border border-gray-300 rounded-xl"
+                    src="https://www.youtube.com/embed/lW6wAq-meH0?si=h_xONinfVSYADpFc&amp;controls=0"
+                    width="640"
+                    height="360"
+                    allowFullScreen
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  ></iframe>
+                </p>
+              </div>
+            </div>
+        </div>
+=========
         {/* <div className="flex justify-center mt-10">
           <video
             className="object-cover w-full md:w-4/5 rounded-xl shadow-2xl border border-gray-300"
@@ -76,6 +95,7 @@ const HeroStartup = () => {
             alt="Description"
           />
         </div> */}
+>>>>>>>>> Temporary merge branch 2
       </div>
     </section>
   );

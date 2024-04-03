@@ -238,7 +238,7 @@ const CustomerSection = ({
         title: `${months[monthIndex]}/${year}`,
         dataIndex: `month${i + 1}`,
         key: `month${i + 1}`,
-        align: 'right',
+        align: "right",
         onCell: (record) => ({
           style: {
             borderRight: "1px solid #f0f0f0", // Add border right style
@@ -304,7 +304,7 @@ const CustomerSection = ({
         <section aria-labelledby="customers-heading" className="mb-8">
           <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Examples:  Online, Offline, Social Media, Email Marketing, Referrals, Direct Sales, Subscription...">
             <h2
-              className="text-2xl font-semibold mb-4 flex items-center mt-4"
+              className="text-2xl font-semibold mb-8 flex items-center"
               id="customers-heading"
             >
               Customer channel{" "}

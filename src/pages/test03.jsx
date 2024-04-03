@@ -83,7 +83,7 @@ const DurationSelect = ({
   return (
     <section aria-labelledby="duration-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-4 flex items-center mt-4"
+        className="text-2xl font-semibold mb-8 flex items-center"
         id="duration-heading"
       >
         Duration and Initial Setup
@@ -276,7 +276,7 @@ const CustomerSection = ({
     <section aria-labelledby="customers-heading" className="mb-8">
       <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Here's a list of common customer channels that startups often utilize: Website, Social Media,Email Marketing, Referral Programs, Events and Networking, Direct Sales, Subscription.">
         <h2
-          className="text-2xl font-semibold mb-4 flex items-center mt-4"
+          className="text-2xl font-semibold mb-8 flex items-center"
           id="customers-heading"
         >
           1. Identify your customer{" "}
@@ -391,7 +391,7 @@ const SalesSection = ({
   return (
     <section aria-labelledby="sales-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-4 flex items-center mt-4"
+        className="text-2xl font-semibold mb-8 flex items-center"
         id="sales-heading"
       >
         Sales Section
@@ -548,7 +548,7 @@ const CostSection = ({
   return (
     <section aria-labelledby="costs-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-4 flex items-center mt-4"
+        className="text-2xl font-semibold mb-8 flex items-center"
         id="costs-heading"
       >
         Costs
@@ -694,7 +694,7 @@ const PersonnelSection = ({
   return (
     <section aria-labelledby="personnel-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-4 flex items-center mt-4"
+        className="text-2xl font-semibold mb-8 flex items-center"
         id="personnel-heading"
       >
         Personnel
@@ -799,7 +799,7 @@ const InvestmentSection = ({
   return (
     <section aria-labelledby="investment-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-4 flex items-center mt-4"
+        className="text-2xl font-semibold mb-8 flex items-center"
         id="investment-heading"
       >
         Investment
@@ -908,7 +908,7 @@ const LoanSection = ({
   return (
     <section aria-labelledby="loan-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-4 flex items-center mt-4"
+        className="text-2xl font-semibold mb-8 flex items-center"
         id="loan-heading"
       >
         Loan

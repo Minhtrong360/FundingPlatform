@@ -8,7 +8,7 @@ const initialState = {
   incomeTax: 0,
   payrollTax: 0,
   currency: "USD",
-  startMonth: 1,
+  startMonth: new Date().getMonth(),
   startYear: new Date().getFullYear(),
   financialProjectName: "",
   numberOfMonths: 36,

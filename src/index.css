@@ -171,3 +171,7 @@ code {
   background-color: #8b8686;
   border-radius: 10px;
 }
+
+.ant-tabs-tab:hover {
+  cursor: pointer;
+}

@@ -93,13 +93,16 @@ function ProjectList({ projects }) {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      width: "25%",
       render: (text, record) => (
         <>
           <span
             className="hover:cursor-pointer"
             onClick={() => handleProjectClick(record)}
           >
-            {record.name}
+             <div className="truncate" style={{ maxWidth: "100%" }} title={record.name}>
+        {record.name}
+      </div>
           </span>
         </>
       ),
@@ -121,13 +124,18 @@ function ProjectList({ projects }) {
       title: "Customer",
       dataIndex: "user_email",
       key: "user_email",
+      width: "25%",
       render: (text, record) => (
-        <span
-          className="hover:cursor-pointer"
-          onClick={() => handleProjectClick(record)}
-        >
-          {record.user_email}
-        </span>
+        <>
+          <span
+            className="hover:cursor-pointer"
+            onClick={() => handleProjectClick(record)}
+          >
+            <div className="truncate" style={{ maxWidth: "100%" }} title={record.user_email}>
+              {record.user_email}
+            </div>
+          </span>
+        </>
       ),
     },
     {
@@ -137,10 +145,9 @@ function ProjectList({ projects }) {
       render: (text, record) => (
         <>
           <button
-            onClick={() => handleProjectClick(record)}
-            className={`w-[5em] ${
+            className={`pointer-events-none w-[5em] ${
               record.status === "public" ? "bg-blue-600" : "bg-red-600"
-            } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+            } text-white rounded-3xl py-1 text-center`}
             style={{ fontSize: "12px" }}
           >
             {record.status === "public"
@@ -227,12 +234,12 @@ function ProjectList({ projects }) {
 
   const myProjects = updatedProjects.filter(
     (project) =>
-      project.user_id === user.id || project.collabs?.includes(user.email)
+      project.user_id === user.id
   );
 
   const sharedProjects = updatedProjects.filter(
     (project) =>
-      project.user_id !== user.id && !project.collabs?.includes(user.email)
+      project.user_id !== user.id
   );
 
   const dataSource = updatedProjects.map((project, index) => ({
@@ -325,6 +332,45 @@ function ProjectList({ projects }) {
           </div>
         </div>
       </section>
+
+      <section className="container px-4 mx-auto">
+  <h2 className="text-xl font-semibold mb-4">My Projects</h2>
+  <div className="flex flex-col mb-8">
+    <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
+        <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
+          <Table
+            columns={columns}
+            dataSource={myProjects}
+            pagination={false}
+            rowKey="id"
+            size="small"
+            bordered
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 className="text-xl font-semibold mb-4">Shared With Me</h2>
+  <div className="flex flex-col">
+    <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
+        <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
+          <Table
+            columns={columns}
+            dataSource={sharedProjects}
+            pagination={false}
+            rowKey="id"
+            size="small"
+            bordered
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
     </main>
   );
 }

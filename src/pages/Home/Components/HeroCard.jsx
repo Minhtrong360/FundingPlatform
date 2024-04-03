@@ -64,17 +64,26 @@ const HeroCard = () => {
           </div>
 
           {/* Video */}
-          {/* <div className="lg:col-span-4 mt-10 order-2 lg:order-1">
-            <video
-              className="object-cover w-full rounded-xl shadow-2xl border border-gray-300"
-              autoPlay
-              loop
-              muted
-              playsInline
-              src={video2}
-              alt="Description"
-            />
-          </div> */}
+          <div className="lg:col-span-4 mt-10 order-2 lg:order-1">
+            <div className="flex justify-center items-center w-full   mt-8 rounded-xl ml-10">
+              <div
+                className="relative w-full md:w-4/5 overflow-hidden shadow-2xl rounded-xl border border-gray-300"
+                style={{ paddingTop: "56.25%" }}
+              >
+                <p>
+                  <iframe
+                    title="YouTube video player"
+                    className="absolute top-0 left-0 right-0 w-full h-full shadow-2xl border border-gray-300 rounded-xl"
+                    src="https://www.youtube.com/embed/bSZRgmHuZAY?si=-Bq1EI6BpePgDtz7&amp;controls=0"
+                    width="640"
+                    height="360"
+                    allowFullScreen
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  ></iframe>
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -83,17 +92,26 @@ const HeroCard = () => {
         {/* Grid */}
         <div className="grid lg:grid-cols-7 lg:gap-x-8 xl:gap-x-12 lg:items-center mt-16 md:mt-64">
           {/* Video */}
-          {/* <div className="lg:col-span-4 order-2 lg:order-1">
-            <video
-              className="object-cover w-full rounded-xl shadow-2xl border border-gray-300"
-              autoPlay
-              loop
-              muted
-              playsInline
-              src={video3}
-              alt="Description"
-            />
-          </div> */}
+          <div className="lg:col-span-4 order-2 lg:order-1">
+            <div className="flex justify-center items-center w-full   mt-8 rounded-xl ml-10">
+              <div
+                className="relative w-full md:w-4/5 overflow-hidden shadow-2xl rounded-xl border border-gray-300"
+                style={{ paddingTop: "56.25%" }}
+              >
+                <p>
+                  <iframe
+                    title="YouTube video player"
+                    className="absolute top-0 left-0 right-0 w-full h-full shadow-2xl border border-gray-300 rounded-xl"
+                    src="https://www.youtube.com/embed/DYk03iWpfpM?si=98bILLnafaMlVosF&amp;controls=0"
+                    width="640"
+                    height="360"
+                    allowFullScreen
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  ></iframe>
+                </p>
+              </div>
+            </div>
+          </div>
 
           <div className="lg:col-span-3 order-1 lg:order-2  sm:mt-0">
             <h1 className="block text-3xl font-extrabold text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl">

@@ -617,7 +617,12 @@ function CompanySetting() {
             canClick={canClick}
           /> */}
 
-          <ProfileInfo company={formData} />
+          <div className="text-4xl text-red-600 font-bold leading-tight sm:px-6 lg:px-8 mt-16">
+            {" "}
+            Preview
+          </div>
+          <hr className=" border-dashed border-gray-400" />
+          <ProfileInfo company={formData} canClick={canClick} />
 
           <hr className="mt-16 border-dashed border-gray-400" />
 

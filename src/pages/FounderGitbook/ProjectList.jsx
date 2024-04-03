@@ -139,12 +139,14 @@ function ProjectList({ projects }) {
           <button
             onClick={() => handleProjectClick(record)}
             className={`w-[5em] ${
-              record.status === "public"
-                ? "bg-blue-600"
-                  ? record?.status === "private"
-                  : "bg-red-600"
-                : "bg-yellow-300"
-            } text-white  focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+              record?.status === "public"
+                ? "bg-blue-600 text-white"
+                : record?.status === "private"
+                ? "bg-red-600 text-white"
+                : record?.status === "stealth"
+                ? "bg-yellow-300 text-black"
+                : ""
+            }   focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
             style={{ fontSize: "12px" }}
           >
             {record.status === "public"

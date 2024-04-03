@@ -165,7 +165,7 @@ function ProjectList({ projects }) {
       ),
     },
     {
-      title: "Action",
+      title: "Action/Roles",
       dataIndex: "action",
       key: "action",
       render: (text, record) => (
@@ -317,7 +317,7 @@ function ProjectList({ projects }) {
           Are you sure you want to delete this project?
         </Modal>
       )}
-      <section className="container px-4 mx-auto">
+      {/* <section className="container px-4 mx-auto">
         <div className="flex flex-col">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
@@ -334,7 +334,7 @@ function ProjectList({ projects }) {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="container px-4 mx-auto">
   <h2 className="text-xl font-semibold mb-4">My Projects</h2>
@@ -355,7 +355,7 @@ function ProjectList({ projects }) {
     </div>
   </div>
 
-  <h2 className="text-xl font-semibold mb-4">Shared With Me</h2>
+  <h2 className="text-xl font-semibold mb-4 mt-12">Projects Shared With Me</h2>
   <div className="flex flex-col">
     <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
       <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">

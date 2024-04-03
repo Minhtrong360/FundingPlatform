@@ -38,8 +38,8 @@ export default function ProfileInfo({ company, canClick }) {
   return (
     <div
       key="1"
-      className={`mt-16 max-w-7xl ${
-        canClick === false ? "" : "mx-auto"
+      className={`max-w-7xl ${
+        canClick === false ? "mt-16 " : "mx-auto mt-32"
       } px-4 sm:px-6 lg:px-8`}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">

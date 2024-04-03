@@ -176,7 +176,7 @@ const HeroSection = () => {
         </div>
 
         <div className="flex justify-center mt-10">
-          <video
+          {/* <video
             className="object-cover w-full md:w-4/5 rounded-xl shadow-2xl border border-gray-300"
             autoPlay
             loop
@@ -184,7 +184,7 @@ const HeroSection = () => {
             playsInline
             src={img}
             alt="Description"
-          />
+          /> */}
         </div>
       </div>
     </section>

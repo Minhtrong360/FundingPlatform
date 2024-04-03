@@ -58,7 +58,7 @@ export default function ProfileInfo({ company, canClick }) {
             >
               <Button
                 className={`bg-blue-600 text-white ${
-                  company?.calendly ? "" : "bg-blue-400"
+                  company?.calendly ? "" : "bg-blue-600"
                 }`}
                 onClick={() => navigate(company?.calendly)}
                 // disabled={company?.calendly ? false : true}

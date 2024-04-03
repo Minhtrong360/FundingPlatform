@@ -227,7 +227,7 @@ const MyTab = () => {
     Sample: (
       <div>
         {" "}
-        <h1 className="text-red-600 font-bold text-3xl"> Sample </h1>
+        <h1 className="text-red-600 font-bold text-3xl"> Sample Fundaising Profile </h1>
         <Sample />
       </div>
     ),

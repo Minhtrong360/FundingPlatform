@@ -16,7 +16,8 @@ import AnnouncePage from "../../components/AnnouncePage";
 
 import HeroSection from "./HeroSection";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
-import ProfileInfo from "./ProfileInfo";
+import MyTabs from "../testseparated";
+
 
 const DetailPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -45,7 +46,7 @@ const DetailPage = () => {
         }
 
         if (
-          projectData.status === "private" &&
+          projectData.status === false &&
           projectData.user_id !== user?.id &&
           !projectData.invited_user?.includes(user.email) &&
           !projectData.collabs?.includes(user.email)
@@ -116,7 +117,7 @@ const DetailPage = () => {
           onClick={() => setIsSidebarOpen(false)}
         >
           <div className="p-0 sm:p-4 border-0 border-gray-200 border-dashed sm:border-2 rounded-md darkBorderGray">
-            {/* <HeroSection
+            <HeroSection
               formData={company}
               title={company.name}
               description={company.description}
@@ -126,12 +127,13 @@ const DetailPage = () => {
               button4Text={company.offer}
               button5Text={company.offer_type}
               imageUrl={company.project_url}
-            /> */}
-            <ProfileInfo company={company} />
+            />
             <div className="flex justify-center">
               <EditorTool />
             </div>
-
+            {/* <div className="flex justify-center">
+              <MyTabs />
+            </div> */}
             <FilesList />
           </div>
         </div>

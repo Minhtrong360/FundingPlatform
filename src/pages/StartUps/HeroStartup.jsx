@@ -66,7 +66,7 @@ const HeroStartup = () => {
         </div>
 
         <div className="flex justify-center mt-10">
-        <div className="flex justify-center items-center w-full   mt-8 rounded-xl ml-10">
+        <div className="flex justify-center items-center w-full   mt-8 rounded-xl ">
                  <div className="relative w-full md:w-4/5 overflow-hidden shadow-2xl rounded-xl border border-gray-300" style={{ paddingTop: '56.25%' }}>
                  <p>
                    <iframe

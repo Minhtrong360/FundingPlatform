@@ -65,7 +65,7 @@ const HeroCard = () => {
 
           {/* Video */}
           <div className="lg:col-span-4 mt-10 order-2 lg:order-1">
-          <div className="flex justify-center items-center w-full   mt-8 rounded-xl ml-10">
+          <div className="flex justify-center items-center w-full   mt-8 rounded-xl ">
                  <div className="relative w-full md:w-4/5 overflow-hidden shadow-2xl rounded-xl border border-gray-300" style={{ paddingTop: '56.25%' }}>
                  <p>
                    <iframe
@@ -90,7 +90,7 @@ const HeroCard = () => {
         <div className="grid lg:grid-cols-7 lg:gap-x-8 xl:gap-x-12 lg:items-center mt-16 md:mt-64">
           {/* Video */}
           <div className="lg:col-span-4 order-2 lg:order-1">
-          <div className="flex justify-center items-center w-full   mt-8 rounded-xl ml-10">
+          <div className="flex justify-center items-center w-full   mt-8 rounded-xl ">
                  <div className="relative w-full md:w-4/5 overflow-hidden shadow-2xl rounded-xl border border-gray-300" style={{ paddingTop: '56.25%' }}>
                  <p>
                    <iframe

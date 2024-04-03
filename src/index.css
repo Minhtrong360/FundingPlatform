@@ -136,7 +136,10 @@ code {
 
 .ant-tabs-tab-btn {
   font-size: 12px;
+  font-family: "Inter", sans-serif;
+
 }
+
 
 
 ::-webkit-scrollbar {
@@ -171,3 +174,5 @@ code {
   background-color: #8b8686;
   border-radius: 10px;
 }
+
+

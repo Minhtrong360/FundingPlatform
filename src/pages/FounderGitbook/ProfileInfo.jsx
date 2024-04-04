@@ -337,20 +337,11 @@ export default function ProfileInfo({
           <div className="mt-8">
             <div className="text-black font-semibold">Features:</div>
 
-<<<<<<< HEAD
-            <div className="grid grid-cols-2 sm:flex mt-2 space-x-0 sm:space-x-4 gap-4">
-=======
             <div className=" mt-4 grid grid-cols-2 xl:grid-cols-3 ">
->>>>>>> 549b8a19b05424b9f3cf00e3b5b5d1435aa3fd50
               {company?.industry?.map((industry, index) => (
                 <Tag
                   key={index}
-<<<<<<< HEAD
-                  title={`Industry: ${industry}`}
-                  className="min-h-6 bg-yellow-300 text-black px-2 py-1 rounded-md"
-=======
                   className="bg-yellow-300 border border-gray-200 text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
->>>>>>> 549b8a19b05424b9f3cf00e3b5b5d1435aa3fd50
                 >
                   {industry}
                 </Tag>

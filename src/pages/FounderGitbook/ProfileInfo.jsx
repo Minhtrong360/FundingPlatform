@@ -3,13 +3,46 @@ import { Badge, Tooltip } from "antd";
 import { useNavigate } from "react-router-dom";
 import { formatNumber } from "../../features/CostSlice";
 import { Button } from "../../components/ui/Button";
+import { useEffect, useState } from "react";
+import { supabase } from "../../supabase";
 
-export default function ProfileInfo({ company }) {
+export default function ProfileInfo({ company, canClick }) {
   console.log("company", company);
+  const [project, setProject] = useState(null);
+
+  useEffect(() => {
+    const fetchProject = async () => {
+      if (!company.id) return;
+
+      try {
+        const { data, error } = await supabase
+          .from("projects")
+          .select("*")
+          .eq("id", company.project_id)
+          .single();
+
+        if (error) {
+          throw error;
+        }
+
+        setProject(data);
+      } catch (error) {
+        console.log("Error fetching project:", error.message);
+      }
+    };
+
+    fetchProject();
+  }, [company]);
   const navigate = useNavigate();
+
   return (
-    <div key="1" className="mt-32 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+    <div
+      key="1"
+      className={`max-w-7xl ${
+        canClick === false ? "mt-16 " : "mx-auto mt-32"
+      } px-4 sm:px-6 lg:px-8`}
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
         <div>
           <h1 className="text-4xl font-bold leading-tight text-gray-900">
             {company?.name}
@@ -53,7 +86,7 @@ export default function ProfileInfo({ company }) {
             </div>
           </div>
         </div>
-        <div className="relative">
+        <div className="relative mt-2">
           {company.card_url ? (
             <img
               alt="Insert your cover here"
@@ -68,6 +101,12 @@ export default function ProfileInfo({ company }) {
             />
           ) : (
             <div className="w-[400px] h-[300px] bg-gray-300"></div>
+          )}
+
+          {project?.verified && (
+            <span className="absolute top-0 right-0 bg-yellow-300 text-black text-sm font-medium py-1.5 px-3 rounded-bl-lg">
+              Verified profile
+            </span>
           )}
         </div>
       </div>

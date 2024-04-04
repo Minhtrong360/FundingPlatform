@@ -38,7 +38,7 @@ function NewUserPage() {
     country: ["US"],
     subscription_status: "",
     type: "Individual", // Default value for type
-    revenueStatusWanted: "Pre-revenue",
+    revenueStatusWanted: "$0 - $10k",
     notification_count: 0,
     facebook: "",
     twitter: "",
@@ -101,7 +101,7 @@ function NewUserPage() {
             country: data.country || "US",
             type: data.type || "Individual", // Default value for type
             subscription_status: data.subscription_status || "",
-            revenueStatusWanted: data.revenueStatusWanted || "Pre-revenue",
+            revenueStatusWanted: data.revenueStatusWanted || "$0 - $10k",
             notification_count: data.notification_count || 0,
             subscription_id: data.subscription_id || "",
             facebook: data.facebook || "",
@@ -491,6 +491,7 @@ function NewUserPage() {
                           type="text"
                         />
                       </div>
+
                       <div className="mt-4" style={{ visibility: "hidden" }}>
                         <SelectField
                           label="Country"
@@ -569,13 +570,21 @@ function NewUserPage() {
                       <div className="flex flex-col">
                         <div className="mt-4">
                           <SelectField
-                            label="Revenue status"
+                            label="Expected revenue range"
                             id="revenueStatusWanted"
                             name="revenueStatusWanted"
                             value={userData.revenueStatusWanted}
                             onChange={handleInputChange}
                             required
-                            options={["$0 - $10k", "$10k - $50k", "$50k - $100k", "$100k - $500k", "$500k - $1M", "$1M - $5M", "> $5M"]}
+                            options={[
+                              "$0 - $10k",
+                              "$10k - $50k",
+                              "$50k - $100k",
+                              "$100k - $500k",
+                              "$500k - $1M",
+                              "$1M - $5M",
+                              ">$5M",
+                            ]} // Thay thế bằng danh sách các tùy chọn bạn muốn
                           />
                         </div>
                         <div className="mt-4">
@@ -624,7 +633,22 @@ function NewUserPage() {
                         </div>
                       </div>
                     )}
-
+                  <div>
+                    <label
+                      htmlFor="hs-about-hire-us-2"
+                      className="block mb-2 text-sm text-gray-700 font-medium darkTextWhite mt-2"
+                    >
+                      Tell something about you
+                    </label>
+                    <textarea
+                      id="hs-about-hire-us-2"
+                      name="detail"
+                      rows="4"
+                      className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus:ring-gray-600"
+                      value={userData.detail}
+                      onChange={handleInputChange}
+                    ></textarea>
+                  </div>
                   <div className="mt-4">
                     <h3 className="text-sm mt-4">Social Profile</h3>
                     <div className="flex items-center mt-2">

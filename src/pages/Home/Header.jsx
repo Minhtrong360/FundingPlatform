@@ -20,7 +20,7 @@ const NavbarButton = ({ children, onClick, className }) => {
   );
 };
 
-const Header = () => {
+const Header = ({ position }) => {
   const [isOpen, setIsOpen] = useState(false);
   // const [isHidden, setIsHidden] = useState(false);
   const { user } = useAuth();
@@ -30,70 +30,6 @@ const Header = () => {
   const handleLoginButtonClick = () => {
     navigate("/login"); // Show the LoginPage component when the button is clicked
   };
-
-  // const handleFinancialProductClick = () => {
-  //   // Lấy đối tượng ref của phần tử "Financial Product" từ Home component
-  //   const financialProductRef = document.getElementById("platform"); // Đặt ID tương ứng với ref của bạn
-  //   setIsOpen(!isOpen);
-  //   if (financialProductRef) {
-  //     // Sử dụng `scrollIntoView()` để cuộn đến phần tử "Financial Product"
-  //     const elementRect = financialProductRef.getBoundingClientRect();
-  //     const bodyRect = document.body.getBoundingClientRect();
-  //     const offsetTop = elementRect.top - bodyRect.top;
-  //     window.scrollTo({
-  //       top: offsetTop - (window.innerHeight - elementRect.height) / 20,
-  //       behavior: "smooth",
-  //     });
-  //   }
-  // };
-
-  const handleProductFeaturesClick = () => {
-    // Lấy đối tượng ref của phần tử "Financial Product" từ Home component
-    const financialProductRef = document.getElementById("profiles"); // Đặt ID tương ứng với ref của bạn
-    setIsOpen(!isOpen);
-    if (financialProductRef) {
-      // Sử dụng `scrollIntoView()` để cuộn đến phần tử "Financial Product"
-      const elementRect = financialProductRef.getBoundingClientRect();
-      const bodyRect = document.body.getBoundingClientRect();
-      const offsetTop = elementRect.top - bodyRect.top;
-      window.scrollTo({
-        top: offsetTop - (window.innerHeight - elementRect.height) / 20,
-        behavior: "smooth",
-      });
-    }
-  };
-
-  const handlePricingClick = () => {
-    // Lấy đối tượng ref của phần tử "Financial Product" từ Home component
-    const financialProductRef = document.getElementById("pricing"); // Đặt ID tương ứng với ref của bạn
-    setIsOpen(!isOpen);
-    if (financialProductRef) {
-      // Sử dụng `scrollIntoView()` để cuộn đến phần tử "Financial Product"
-      const elementRect = financialProductRef.getBoundingClientRect();
-      const bodyRect = document.body.getBoundingClientRect();
-      const offsetTop = elementRect.top - bodyRect.top;
-      window.scrollTo({
-        top: offsetTop - (window.innerHeight - elementRect.height) / 20,
-        behavior: "smooth",
-      });
-    }
-  };
-
-  // const handleFAQClick = () => {
-  //   // Lấy đối tượng ref của phần tử "Financial Product" từ Home component
-  //   const financialProductRef = document.getElementById("FAQ"); // Đặt ID tương ứng với ref của bạn
-  //   setIsOpen(!isOpen);
-  //   if (financialProductRef) {
-  //     // Sử dụng `scrollIntoView()` để cuộn đến phần tử "Financial Product"
-  //     const elementRect = financialProductRef.getBoundingClientRect();
-  //     const bodyRect = document.body.getBoundingClientRect();
-  //     const offsetTop = elementRect.top - bodyRect.top;
-  //     window.scrollTo({
-  //       top: offsetTop - (window.innerHeight - elementRect.height) / 20,
-  //       behavior: "smooth",
-  //     });
-  //   }
-  // };
 
   const handleClickHome = (e) => {
     e.preventDefault();
@@ -166,7 +102,9 @@ const Header = () => {
   return (
     <>
       <nav
-        className={`fixed bg-white darkBg w-full z-50 top-0 start-0 border-b border-gray-200 darkBorderGray transition-transform duration-100 ease-in-out ${
+        className={`${
+          position === "notFixed" ? "absolute" : "fixed "
+        } z-50 top-0 start-0 bg-white darkBg w-full  border-b border-gray-200 darkBorderGray transition-transform duration-100 ease-in-out ${
           !isVisible ? "-translate-y-full" : "translate-y-0"
         }`}
       >

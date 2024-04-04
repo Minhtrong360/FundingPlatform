@@ -1,4 +1,4 @@
-import { Table, Tooltip } from "antd";
+import { Table, Tooltip, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -45,7 +45,6 @@ import CustomChart from "./CustomerChart";
 import SelectField from "../../../components/SelectField";
 import { setCutMonth } from "../../../features/DurationSlice";
 import { InfoCircleOutlined } from "@ant-design/icons";
-
 
 function BalanceSheetSection({ numberOfMonths }) {
   const dispatch = useDispatch();
@@ -290,6 +289,29 @@ function BalanceSheetSection({ numberOfMonths }) {
     netCashChanges
   );
 
+  const warningMessages = cashEndBalances.reduce((acc, value, index) => {
+    if (value < 0) {
+      acc.push(
+        `CF Operations of month ${
+          index + 1
+        } < 0. You need to more capital injection by increase beginning cash or fundraising.`
+      );
+    }
+    return acc;
+  }, []);
+
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (warningMessages && isMounted) {
+      message.warning(warningMessages[0]);
+    }
+  }, [isMounted]);
+
   const currentAssets = cashEndBalances.map((cashEnd, index) => {
     const accountsReceivable = 0; // Placeholder value
     const inventory = 0; // Placeholder value
@@ -528,18 +550,18 @@ function BalanceSheetSection({ numberOfMonths }) {
   }));
 
   const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
   ];
   const { startMonth, startYear } = useSelector(
     (state) => state.durationSelect

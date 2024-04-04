@@ -1,30 +1,42 @@
-import { Avatar, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { Button } from "../../../components/ui/Button";
-import { useAuth } from "../../../context/AuthContext";
 import { supabase } from "../../../supabase";
+import { StarFilled, StarOutlined } from "@ant-design/icons";
+import { useParams } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 import LoadingButtonClick from "../../../components/LoadingButtonClick";
+import { Avatar } from "antd";
 import { formatDate } from "../../../features/DurationSlice";
 
-function Author() {
+const InterestButton = React.memo(({ onClick, isLiked }) => (
+  <Button
+    className={`border border-gray-200 w-full mt-4 ${
+      isLiked ? "bg-blue-600 text-white" : ""
+    }`}
+    onClick={onClick}
+  >
+    {isLiked ? "Unlike" : "Like"} &nbsp;{" "}
+    {isLiked ? <StarFilled /> : <StarOutlined />}
+  </Button>
+));
+
+function Author({ company }) {
   const [isLoading, setIsLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState();
+  const [projectData, setProjectData] = useState();
+  const [isLiked, setIsLiked] = useState(false);
 
-  const id = "3ec3f142-f33c-4977-befd-30d4ce2b764d";
+  const { id } = useParams();
+  const { user } = useAuth();
 
   useEffect(() => {
     async function fetchUserData() {
       try {
-        if (!navigator.onLine) {
-          message.error("No internet access.");
-          return;
-        }
         setIsLoading(true);
 
-        // Lấy user_id từ bảng projects
         const { data: projectData, error: projectError } = await supabase
           .from("projects")
-          .select("user_id")
+          .select("*")
           .eq("id", id)
           .single();
 
@@ -35,10 +47,9 @@ function Author() {
         if (!projectData) {
           throw new Error("Project not found.");
         }
-
+        setProjectData(projectData);
         const user_id = projectData.user_id;
 
-        // Lấy thông tin user từ bảng users với user_id đã lấy được
         const { data, error } = await supabase
           .from("users")
           .select("*")
@@ -51,44 +62,149 @@ function Author() {
 
         if (data) {
           setCurrentUser(data);
+          setIsLiked(data.liked.includes(user.email));
         }
       } catch (error) {
-        message.error(error.message);
         console.error("Error fetching user data:", error);
       }
       setIsLoading(false);
     }
 
     fetchUserData();
-  }, [id]);
+  }, []);
+  console.log("projectData", projectData);
+  const like = async () => {
+    console.log("unlike");
+    try {
+      if (!currentUser || !user.email) return;
 
-  console.log("currentUser", currentUser);
+      const liked = [...currentUser.liked];
+      liked.push(user.email);
+
+      // Thêm thông tin người like vào bảng likedNotifications
+      const content = JSON.stringify([
+        {
+          id: company.id,
+          name: company.name,
+          project_id: company.project_id,
+          project_name: projectData.name,
+        },
+      ]);
+      const receivedUser = currentUser?.email;
+      const { error: notificationError } = await supabase
+        .from("likedNotifications")
+        .insert([
+          {
+            receivedUser,
+            content,
+            from: user?.email,
+            likedID: company?.project_id,
+          },
+        ]);
+
+      if (notificationError) {
+        throw notificationError;
+      }
+
+      const { error } = await supabase
+        .from("users")
+        .update({
+          liked,
+          notification_count: currentUser?.notification_count + 1,
+        })
+        .eq("id", currentUser?.id);
+
+      if (error) {
+        throw error;
+      }
+
+      // Cập nhật trạng thái của isLiked
+      setIsLiked(true);
+    } catch (error) {
+      console.error("Error updating liked:", error);
+    }
+  };
+
+  const unlike = async () => {
+    console.log("unlike");
+    try {
+      if (!currentUser || !user.email) return;
+
+      const liked = [...currentUser.liked];
+      const index = liked.indexOf(user.email);
+      if (index !== -1) {
+        liked.splice(index, 1);
+
+        // Xóa thông báo like khỏi bảng likedNotifications
+        const { error } = await supabase
+          .from("likedNotifications")
+          .delete()
+          .eq("receivedUser", currentUser.email)
+          .eq("from", user.email)
+          .single();
+
+        if (error) {
+          throw error;
+        }
+
+        const { error: updateError } = await supabase
+          .from("users")
+          .update({
+            liked,
+          })
+          .eq("id", currentUser?.id);
+
+        if (updateError) {
+          throw updateError;
+        }
+
+        // Cập nhật trạng thái của isLiked
+        setIsLiked(false);
+      }
+    } catch (error) {
+      console.error("Error updating unliked:", error);
+    }
+  };
+
+  const onClickShowInterested = async () => {
+    try {
+      if (!currentUser || !user.email) return;
+
+      if (isLiked) {
+        unlike();
+      } else {
+        like();
+      }
+    } catch (error) {
+      console.error("Error on click show interested:", error);
+    }
+  };
 
   return (
-    <>
-      {isLoading ? (
-        <LoadingButtonClick />
-      ) : (
-        <aside className="w-full md:w-1/4 py-8 px-4 md:pl-8">
-          <div className="sticky top-24 space-y-4">
+    <aside className="w-full lg:w-1/4 py-8 px-4 xl:pl-8">
+      <div className="sticky top-8 space-y-4">
+        {isLoading ? (
+          <LoadingButtonClick />
+        ) : (
+          <>
             <div className="flex items-center space-x-4">
-              <Avatar
-                id="avatar"
-                src={currentUser?.avatar}
-                style={{
-                  width: "40px",
-                  height: "40px",
-                }}
-              />
+              <div className="avatar-container">
+                <Avatar
+                  id="avatar"
+                  src={currentUser?.avatar}
+                  className="avatar"
+                />
+              </div>
+
               <div>
                 <h4 className="font-bold">
                   {currentUser?.full_name
                     ? currentUser?.full_name
                     : currentUser?.email}
                 </h4>
-                {/* <p className="text-sm text-gray-500">34k followers</p> */}
               </div>
             </div>
+
             <div className="mt-4">
               <p>{currentUser?.detail ? currentUser?.detail : "No detail"}</p>
               <div className="mt-4">
@@ -116,14 +232,15 @@ function Author() {
                   {formatDate(currentUser?.created_at)}
                 </p>
               </div>
-              <Button className="border border-gray-200  w-full mt-4">
-                Follow me
-              </Button>
+              <InterestButton
+                onClick={onClickShowInterested}
+                isLiked={isLiked}
+              />
             </div>
-          </div>
-        </aside>
-      )}
-    </>
+          </>
+        )}
+      </div>
+    </aside>
   );
 }
 

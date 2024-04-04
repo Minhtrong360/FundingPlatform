@@ -58,7 +58,7 @@ export const calculateYearlyAverage = (
       });
     }
     const averageCustomers = totalCustomers / 12;
-    yearlyAverages.push(averageCustomers.toFixed(2));
+    yearlyAverages.push(averageCustomers.toFixed(0));
   }
   return yearlyAverages;
 };
@@ -71,13 +71,13 @@ export const calculateCustomerGrowth = (tempCustomerInputs, numberOfMonths) => {
 
     for (let i = 1; i <= numberOfMonths; i++) {
       if (i >= channel.beginMonth && i <= channel.endMonth) {
-        const churnValue = (beginValue * (channel.churnRate / 100)).toFixed(2); // Calculate churn value
+        const churnValue = (beginValue * (channel.churnRate / 100)).toFixed(0); // Calculate churn value
 
         const endValue = (
           beginValue +
           currentCustomers -
           parseFloat(churnValue)
-        ).toFixed(2); // Calculate and assign value to End row
+        ).toFixed(0); // Calculate and assign value to End row
 
         customers.push({
           month: i,

@@ -132,15 +132,10 @@ code {
   color: black;
 }
 
-
-
 .ant-tabs-tab-btn {
   font-size: 12px;
   font-family: "Inter", sans-serif;
-
 }
-
-
 
 ::-webkit-scrollbar {
   width: 5px; /* Decreased width */

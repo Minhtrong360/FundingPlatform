@@ -113,18 +113,18 @@ const CostSection = ({
 
   // Function to generate columns for the cost table
   const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
   ];
   const { startMonth, startYear } = useSelector(
     (state) => state.durationSelect
@@ -411,20 +411,21 @@ const CostSection = ({
                 </div>
               </div>
             ))}
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <button
+              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
+              onClick={addNewCostInput}
+            >
+              Add new
+            </button>
 
-          <button
-            className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
-            onClick={addNewCostInput}
-          >
-            Add new
-          </button>
-
-          <button
-            className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
-            onClick={handleSave}
-          >
-            Save changes
-          </button>
+            <button
+              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
+              onClick={handleSave}
+            >
+              Save changes
+            </button>
+          </div>
         </section>
       </div>
       <div className="w-full lg:w-3/4 sm:p-4 p-0">

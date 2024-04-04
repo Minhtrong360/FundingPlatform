@@ -83,4 +83,20 @@ export function formatDate(inputDateString) {
   return formattedDate;
 }
 
+export function splitStringToArray(inputString) {
+  // Tách chuỗi thành mảng các từ
+  const wordsArray = inputString.split(/\s*,\s*/);
+  // Loại bỏ tất cả các dấu chấm và dấu phẩy từ mỗi từ trong mảng
+  const sanitizedArray = wordsArray.map((word) => word.replace(/[.,]/g, ""));
+  return sanitizedArray;
+}
+
+export function joinArrayToString(array) {
+  if (array && array.length > 0) {
+    // Sử dụng phương thức join() để ghép các phần tử của mảng thành chuỗi
+    // và phân cách bằng dấu phẩy và khoảng trắng
+    return array.join(", ");
+  }
+}
+
 export default durationSelectSlice.reducer;

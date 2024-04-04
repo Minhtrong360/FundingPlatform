@@ -45,7 +45,7 @@ import CustomChart from "./CustomerChart";
 import SelectField from "../../../components/SelectField";
 import { setCutMonth } from "../../../features/DurationSlice";
 import { InfoCircleOutlined } from "@ant-design/icons";
-  
+
 function CashFlowSection({ numberOfMonths }) {
   const dispatch = useDispatch();
   const { cutMonth } = useSelector((state) => state.durationSelect);
@@ -302,29 +302,6 @@ function CashFlowSection({ numberOfMonths }) {
       0 /* AP */
   );
 
-  const warningMessages = CFOperationsArray.reduce((acc, value, index) => {
-    if (value < 0) {
-      acc.push(
-        `CF Operations of month ${
-          index + 1
-        } < 0. You need to more capital injection by increase beginning cash or fundraising.`
-      );
-    }
-    return acc;
-  }, []);
-
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (warningMessages && isMounted) {
-      message.warning(warningMessages[0]);
-    }
-  }, [isMounted]);
-
   const positionDataWithNetIncome = [
     { key: " Operating Activities " },
     { key: "Net Income", values: netIncome },
@@ -426,18 +403,18 @@ function CashFlowSection({ numberOfMonths }) {
   }));
 
   const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
   ];
   const { startMonth, startYear } = useSelector(
     (state) => state.durationSelect
@@ -709,7 +686,7 @@ function CashFlowSection({ numberOfMonths }) {
   return (
     <div className="border-t-2">
       <h2 className="text-2xl font-semibold my-4">Cash Flow</h2>
-      
+
       <Table
         className="overflow-x-auto my-8"
         size="small"
@@ -846,7 +823,7 @@ function CashFlowSection({ numberOfMonths }) {
                           <Tooltip
                             title={`This is the Operating Cash Flow Ratio.`}
                           >
-                           <InfoCircleOutlined />
+                            <InfoCircleOutlined />
                           </Tooltip>
                         </div>
 
@@ -887,7 +864,7 @@ function CashFlowSection({ numberOfMonths }) {
                             Cash Conversion Cycle:
                           </p>
                           <Tooltip title={`This is the Cash Conversion Cycle.`}>
-                          <InfoCircleOutlined />
+                            <InfoCircleOutlined />
                           </Tooltip>
                         </div>
 
@@ -909,7 +886,7 @@ function CashFlowSection({ numberOfMonths }) {
                           <Tooltip
                             title={`This is the Cash Flow to Debt Ratio.`}
                           >
-                          <InfoCircleOutlined />
+                            <InfoCircleOutlined />
                           </Tooltip>
                         </div>
 

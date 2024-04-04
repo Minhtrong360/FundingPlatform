@@ -120,7 +120,7 @@ const CustomerSection = ({
           data.month <= customerInput.endMonth
         ) {
           transformedCustomerTableData[data.channelName][`month${data.month}`] =
-            parseFloat(data.customers)?.toFixed(2);
+            parseFloat(data.customers)?.toFixed(0);
         } else {
           transformedCustomerTableData[data.channelName][`month${data.month}`] =
             "0.00";
@@ -167,7 +167,7 @@ const CustomerSection = ({
       let currentCustomers = parseFloat(customerInput.customersPerMonth);
       for (let i = 1; i <= numberOfMonths; i++) {
         if (i >= customerInput.beginMonth && i <= customerInput.endMonth) {
-          const channelValue = currentCustomers.toFixed(2); // Calculate channel value
+          const channelValue = currentCustomers.toFixed(0); // Calculate channel value
           channelAddRow[`month${i}`] = formatNumber(channelValue); // Assign channel value to Channel (Add) row of the current month
           currentCustomers *=
             1 + parseFloat(customerInput.growthPerMonth) / 100;
@@ -181,7 +181,7 @@ const CustomerSection = ({
 
       if (customerInput) {
         startRow[`month${customerInput.beginMonth}`] = formatNumber(
-          parseFloat(customerInput.beginCustomer).toFixed(2)
+          parseFloat(customerInput.beginCustomer).toFixed(0)
         );
         beginRow[`month${customerInput.beginMonth}`] =
           startRow[`month${customerInput.beginMonth}`];
@@ -191,12 +191,11 @@ const CustomerSection = ({
             beginRow[`month${i}`] = formatNumber(endRow[`month${i - 1}`]); // Set Begin row of month i to End row of month i-1
           }
           endRow[`month${i}`] = formatNumber(endRow[`month${i}`]);
-          const beginValue = parseFloat(beginRow[`month${i}`]) || 0; // Begin value for the current month
-
+          const beginValue = beginRow[`month${i}`] || 0; // Begin value for the current month
           const churnValue = (
-            beginValue *
+            parseNumber(beginValue) *
             (customerInput.churnRate / 100)
-          ).toFixed(2); // Calculate churn value
+          ).toFixed(0); // Calculate churn value
           churnRow[`month${i}`] = churnValue; // Assign churn value to Churn row of the current month
         }
       }
@@ -206,18 +205,18 @@ const CustomerSection = ({
     .flat(); // Flatten the array of arrays to a single array
 
   const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
   ];
 
   const startingMonth = startMonth; // Tháng bắt đầu từ 1
@@ -478,19 +477,21 @@ const CustomerSection = ({
               </div>
             ))}
 
-          <button
-            className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
-            onClick={handleAddNewCustomer}
-          >
-            Add new
-          </button>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <button
+              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
+              onClick={handleAddNewCustomer}
+            >
+              Add new
+            </button>
 
-          <button
-            className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
-            onClick={handleSave}
-          >
-            Save changes
-          </button>
+            <button
+              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
+              onClick={handleSave}
+            >
+              Save changes
+            </button>
+          </div>
         </section>
       </div>
       <div className="w-full lg:w-3/4 sm:p-4 p-0 ">

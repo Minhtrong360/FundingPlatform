@@ -178,3 +178,15 @@ code {
 .ant-tabs-tab:hover {
   cursor: pointer;
 }
+
+.bn-default-styles p {
+  font-size: 18px !important;
+  font-family: Inter, sans-serif !important;
+  font-weight: 400 !important;
+  color: #1a202c !important;
+  line-height: 1.6 !important;
+}
+
+.bn-block-content {
+  padding: 12px !important;
+}

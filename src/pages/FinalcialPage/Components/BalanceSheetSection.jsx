@@ -941,7 +941,7 @@ function BalanceSheetSection({ numberOfMonths }) {
                             {key}:
                           </p>
                           <Tooltip
-                            title={`This is the ${key.replace(/_/g, " ")}.`}
+                            title={` ${key.replace(/_/g, " ")}.`}
                           >
                             <InfoCircleOutlined />
                           </Tooltip>

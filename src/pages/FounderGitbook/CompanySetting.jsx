@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Company from "./Company"; // Import your Company component
-import HeroSection from "./HeroSection"; // Import your HeroSection component
+
 import AnnouncePage from "../../components/AnnouncePage";
 
 // import { toast } from "react-toastify";
 import { supabase } from "../../supabase";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import Card from "../Home/Components/Card";
+
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import AlertMsg from "../../components/AlertMsg";
 // import CompanyTest from "./CompanyTest";
@@ -40,12 +40,13 @@ function CompanySetting() {
     description: "",
     rememberMe: false,
     user_email: "",
-    revenueStatus: "Pre-revenue",
+    revenueStatus: "$0 - $10k",
     calendly: "",
     teamSize: "",
     operationTime: "2024",
     amountRaised: 0,
     round: "Pre-seed",
+    keyWords: "",
   });
 
   useEffect(() => {
@@ -93,6 +94,7 @@ function CompanySetting() {
                 operationTime: companyData.operationTime,
                 amountRaised: parseNumber(companyData.amountRaised),
                 round: companyData.round,
+                keyWords: companyData.keyWords,
               });
 
               setIsLoading(false);
@@ -262,6 +264,7 @@ function CompanySetting() {
                 operationTime: formData.operationTime,
                 amountRaised: parseNumber(formData.amountRaised),
                 round: formData.round,
+                keyWords: formData.keyWords,
               },
             ])
             .select();
@@ -312,6 +315,7 @@ function CompanySetting() {
                 operationTime: formData.operationTime,
                 amountRaised: parseNumber(formData.amountRaised),
                 round: formData.round,
+                keyWords: formData.keyWords,
               },
             ])
             .select();
@@ -624,9 +628,9 @@ function CompanySetting() {
           <hr className=" border-dashed border-gray-400" />
           <ProfileInfo company={formData} canClick={canClick} />
 
-          <hr className="mt-16 border-dashed border-gray-400" />
+          {/* <hr className="mt-16 border-dashed border-gray-400" /> */}
 
-          <div className="mt-11 px-4 sm:px-6 lg:px-8">
+          {/* <div className="mt-11 px-4 sm:px-6 lg:px-8">
             <Card
               title={formData.name}
               description={formData.description}
@@ -637,7 +641,7 @@ function CompanySetting() {
               formData={formData}
               setFormData={setFormData}
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -38,7 +38,7 @@ function NewUserPage() {
     country: ["US"],
     subscription_status: "",
     type: "Individual", // Default value for type
-    revenueStatusWanted: "Pre-revenue",
+    revenueStatusWanted: "$0 - $10k",
     notification_count: 0,
     facebook: "",
     twitter: "",
@@ -101,7 +101,7 @@ function NewUserPage() {
             country: data.country || "US",
             type: data.type || "Individual", // Default value for type
             subscription_status: data.subscription_status || "",
-            revenueStatusWanted: data.revenueStatusWanted || "Pre-revenue",
+            revenueStatusWanted: data.revenueStatusWanted || "$0 - $10k",
             notification_count: data.notification_count || 0,
             subscription_id: data.subscription_id || "",
             facebook: data.facebook || "",
@@ -570,13 +570,21 @@ function NewUserPage() {
                       <div className="flex flex-col">
                         <div className="mt-4">
                           <SelectField
-                            label="Revenue status"
+                            label="Expected revenue range"
                             id="revenueStatusWanted"
                             name="revenueStatusWanted"
                             value={userData.revenueStatusWanted}
                             onChange={handleInputChange}
                             required
-                            options={["Pre-revenue", "Post-revenue"]} // Thay thế bằng danh sách các tùy chọn bạn muốn
+                            options={[
+                              "$0 - $10k",
+                              "$10k - $50k",
+                              "$50k - $100k",
+                              "$100k - $500k",
+                              "$500k - $1M",
+                              "$1M - $5M",
+                              ">$5M",
+                            ]} // Thay thế bằng danh sách các tùy chọn bạn muốn
                           />
                         </div>
                         <div className="mt-4">

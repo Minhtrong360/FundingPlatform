@@ -244,9 +244,8 @@ function FilesList() {
 
   return (
     <main className="w-full ml-2">
-      <LoadingButtonClick isLoading={isLoading} />
       <section className="container px-4 mx-auto">
-        <div className="flex justify-start my-5 items-start">
+        <div className="flex justify-end my-5 items-end">
           <AddLinkFile
             isLoading={isLoading}
             currentProject={currentProject}

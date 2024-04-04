@@ -518,13 +518,13 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   };
 
   return (
-    <div>
+    <div className="min-h-screen">
       <AlertMsg />
       {spinning ? (
         <ProgressBar spinning={spinning} isLoading={isLoading} />
       ) : (
         <>
-          <LoadingButtonClick isLoading={temIsLoading} />
+          {temIsLoading && <LoadingButtonClick isLoading={temIsLoading} />}
           <div className="w-full h-full flex flex-col lg:flex-row">
             <Gemini
               setIsLoading={setIsLoading}

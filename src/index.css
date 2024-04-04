@@ -132,12 +132,10 @@ code {
   color: black;
 }
 
-
-
 .ant-tabs-tab-btn {
   font-size: 12px;
+  font-family: "Inter", sans-serif;
 }
-
 
 ::-webkit-scrollbar {
   width: 5px; /* Decreased width */
@@ -174,4 +172,20 @@ code {
 
 .ant-tabs-tab:hover {
   cursor: pointer;
+}
+
+.avatar-container {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.avatar {
+  position: absolute;
+  width: 100%;
+  height: auto;
+  top: 0;
+  left: 0;
 }

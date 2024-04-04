@@ -20,9 +20,10 @@ const InterestButton = React.memo(({ onClick, isLiked }) => (
   </Button>
 ));
 
-function Author() {
+function Author({ company }) {
   const [isLoading, setIsLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState();
+  const [projectData, setProjectData] = useState();
   const [isLiked, setIsLiked] = useState(false);
 
   const { id } = useParams();
@@ -35,7 +36,7 @@ function Author() {
 
         const { data: projectData, error: projectError } = await supabase
           .from("projects")
-          .select("user_id")
+          .select("*")
           .eq("id", id)
           .single();
 
@@ -46,7 +47,7 @@ function Author() {
         if (!projectData) {
           throw new Error("Project not found.");
         }
-
+        setProjectData(projectData);
         const user_id = projectData.user_id;
 
         const { data, error } = await supabase
@@ -71,53 +72,130 @@ function Author() {
 
     fetchUserData();
   }, []);
-
-  const onClickShowInterested = async () => {
+  console.log("projectData", projectData);
+  const like = async () => {
+    console.log("unlike");
     try {
       if (!currentUser || !user.email) return;
 
       const liked = [...currentUser.liked];
+      liked.push(user.email);
 
-      if (isLiked) {
-        const index = liked.indexOf(user.email);
-        if (index !== -1) {
-          liked.splice(index, 1);
-        }
-      } else {
-        liked.push(user.email);
+      // Thêm thông tin người like vào bảng likedNotifications
+      const content = JSON.stringify([
+        {
+          id: company.id,
+          name: company.name,
+          project_id: company.project_id,
+          project_name: projectData.name,
+        },
+      ]);
+      const receivedUser = currentUser?.email;
+      const { error: notificationError } = await supabase
+        .from("likedNotifications")
+        .insert([
+          {
+            receivedUser,
+            content,
+            from: user?.email,
+            likedID: company?.project_id,
+          },
+        ]);
+
+      if (notificationError) {
+        throw notificationError;
       }
 
       const { error } = await supabase
         .from("users")
-        .update({ liked })
-        .eq("id", currentUser.id);
+        .update({
+          liked,
+          notification_count: currentUser?.notification_count + 1,
+        })
+        .eq("id", currentUser?.id);
 
       if (error) {
         throw error;
       }
 
-      setIsLiked(!isLiked);
+      // Cập nhật trạng thái của isLiked
+      setIsLiked(true);
     } catch (error) {
       console.error("Error updating liked:", error);
     }
   };
 
+  const unlike = async () => {
+    console.log("unlike");
+    try {
+      if (!currentUser || !user.email) return;
+
+      const liked = [...currentUser.liked];
+      const index = liked.indexOf(user.email);
+      if (index !== -1) {
+        liked.splice(index, 1);
+
+        // Xóa thông báo like khỏi bảng likedNotifications
+        const { error } = await supabase
+          .from("likedNotifications")
+          .delete()
+          .eq("receivedUser", currentUser.email)
+          .eq("from", user.email)
+          .single();
+
+        if (error) {
+          throw error;
+        }
+
+        const { error: updateError } = await supabase
+          .from("users")
+          .update({
+            liked,
+          })
+          .eq("id", currentUser?.id);
+
+        if (updateError) {
+          throw updateError;
+        }
+
+        // Cập nhật trạng thái của isLiked
+        setIsLiked(false);
+      }
+    } catch (error) {
+      console.error("Error updating unliked:", error);
+    }
+  };
+
+  const onClickShowInterested = async () => {
+    try {
+      if (!currentUser || !user.email) return;
+
+      if (isLiked) {
+        unlike();
+      } else {
+        like();
+      }
+    } catch (error) {
+      console.error("Error on click show interested:", error);
+    }
+  };
+
   return (
-    <aside className="w-full md:w-1/4 py-8 px-4 md:pl-8">
-      <div className="sticky top-24 space-y-4">
+    <aside className="w-full lg:w-1/4 py-8 px-4 xl:pl-8">
+      <div className="sticky top-8 space-y-4">
         {isLoading ? (
           <LoadingButtonClick />
         ) : (
           <>
             <div className="flex items-center space-x-4">
-              <Avatar
-                id="avatar"
-                src={currentUser?.avatar}
-                style={{
-                  width: "40px",
-                  height: "40px",
-                }}
-              />
+              <div className="avatar-container">
+                <Avatar
+                  id="avatar"
+                  src={currentUser?.avatar}
+                  className="avatar"
+                />
+              </div>
+
               <div>
                 <h4 className="font-bold">
                   {currentUser?.full_name
@@ -126,6 +204,7 @@ function Author() {
                 </h4>
               </div>
             </div>
+
             <div className="mt-4">
               <p>{currentUser?.detail ? currentUser?.detail : "No detail"}</p>
               <div className="mt-4">

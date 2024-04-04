@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import { formatNumber } from "../../features/CostSlice";
 import { Tooltip } from "antd";
 
-
 function Company({
   handleSubmit,
   formData,
@@ -68,7 +67,7 @@ function Company({
     // Hàm để tạo danh sách các năm từ năm bắt đầu đến năm hiện tại
     const generateYears = () => {
       const currentYear = new Date().getFullYear();
-      console.log("currentYear", currentYear);
+
       const startYear = 1900; // Bạn có thể thay đổi năm bắt đầu tại đây
       const yearsArray = [];
       for (let year = startYear; year <= currentYear; year++) {
@@ -161,15 +160,23 @@ function Company({
                   />
                 </div>
 
-                  <SelectField
-                    label="Annual revenue last year"
-                    id="revenueStatus"
-                    name="revenueStatus"
-                    value={formData.revenueStatus}
-                    onChange={handleInputChange}
-                    required
-                    options={["$0 - $10k", "$10k - $50k", "$50k - $100k", "$100k - $500k", "$500k - $1M", "$1M - $5M", ">$5M"]} 
-                  />
+                <SelectField
+                  label="Annual revenue last year"
+                  id="revenueStatus"
+                  name="revenueStatus"
+                  value={formData.revenueStatus}
+                  onChange={handleInputChange}
+                  required
+                  options={[
+                    "$0 - $10k",
+                    "$10k - $50k",
+                    "$50k - $100k",
+                    "$100k - $500k",
+                    "$500k - $1M",
+                    "$1M - $5M",
+                    ">$5M",
+                  ]}
+                />
 
                 <MultiSelectField
                   label="Industry"
@@ -178,6 +185,17 @@ function Company({
                   OPTIONS={industries}
                   selectedItems={formData.industry}
                   setSelectedItems={handleIndustryChange}
+                  required
+                />
+
+                <InputField
+                  label="Key words"
+                  title="Key words should be separated by comma (,)"
+                  id="keyWords"
+                  name="keyWords"
+                  value={formData.keyWords}
+                  onChange={handleInputChange}
+                  type="text"
                   required
                 />
 
@@ -253,13 +271,14 @@ function Company({
                   type="text"
                 />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                  <InputField
+                  <SelectField
                     label="Team size"
                     id="teamSize"
                     name="teamSize"
                     value={formData.teamSize}
                     onChange={handleInputChange}
                     type="text"
+                    options={["1-10", "11-50", "51-200", "201-500", ">500"]}
                     required
                   />
 
@@ -287,7 +306,13 @@ function Company({
                   label="Round"
                   id="round"
                   name="round"
-                  options={["Pre-seed", "Seed", "Series A", "Series B", "Series C"]}
+                  options={[
+                    "Pre-seed",
+                    "Seed",
+                    "Series A",
+                    "Series B",
+                    "Series C",
+                  ]}
                   selectedItems={formData.round}
                   setSelectedItems={handleInputChange}
                   type="text"

@@ -50,7 +50,6 @@ import SelectField from "../../../components/SelectField";
 import { setCutMonth } from "../../../features/DurationSlice";
 import { InfoCircleOutlined } from "@ant-design/icons";
 
-
 const ProfitAndLossSection = ({ numberOfMonths }) => {
   const dispatch = useDispatch();
   const { cutMonth } = useSelector((state) => state.durationSelect);
@@ -214,18 +213,18 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   }));
 
   const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
   ];
   const { startMonth, startYear } = useSelector(
     (state) => state.durationSelect
@@ -275,7 +274,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
         title: `${months[monthIndex]}/${year}`,
         dataIndex: `Month ${i + 1}`,
         key: `Month ${i + 1}`,
-        align: "right", 
+        align: "right",
         onCell: (record) => {
           if (
             record.metric === "Revenue" ||

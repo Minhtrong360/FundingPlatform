@@ -27,7 +27,6 @@ import LoadingButtonClick from "../../../components/LoadingButtonClick";
 export default function Sample() {
   const [blocks, setBlocks] = useState([]);
 
-  const [currentProject, setCurrentProject] = useState("");
   const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
 
   const id = "3ec3f142-f33c-4977-befd-30d4ce2b764d";

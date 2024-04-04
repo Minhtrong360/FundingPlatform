@@ -28,7 +28,7 @@ import { Button } from "../../components/ui/Button";
 import Author from "./Components/Author";
 const { TabPane } = Tabs;
 
-const MyTab = () => {
+const MyTab = ({ company }) => {
   const [activeTab, setActiveTab] = useState("Your profile");
 
   const [blocks, setBlocks] = useState([]);
@@ -162,6 +162,7 @@ const MyTab = () => {
     }
   };
 
+  const { user } = useAuth();
   const tabContents = {
     "Your profile": (
       <div>
@@ -226,8 +227,9 @@ const MyTab = () => {
     ),
     Sample: (
       <div>
-        {" "}
-        <h1 className="text-red-600 font-bold text-3xl"> Sample Fundaising Profile </h1>
+        <h1 className="text-red-600 font-bold text-3xl">
+          Sample Fundraising Profile
+        </h1>
         <Sample />
       </div>
     ),
@@ -240,24 +242,26 @@ const MyTab = () => {
   return (
     <div className="p-4">
       <Tabs activeKey={activeTab} onChange={handleTabChange} tabPosition="left">
-        {Object.keys(tabContents).map((tab) => (
-          <TabPane tab={tab} key={tab}>
-            {tabContents[tab]}
-          </TabPane>
-        ))}
+        {Object.keys(tabContents).map((tab) =>
+          // Sử dụng điều kiện để kiểm tra xem tab là "Sample" và thỏa mãn điều kiện company.user_id !== user.id
+          tab === "Sample" && company.user_id !== user.id ? null : (
+            <TabPane tab={tab} key={tab}>
+              {tabContents[tab]}
+            </TabPane>
+          )
+        )}
       </Tabs>
     </div>
   );
 };
 
-// export default MyTabs;
-
 export default function NewDetailPage() {
   const [company, setCompany] = useState([]);
+  const [currentProject, setCurrentProject] = useState([]);
   const [viewError, setViewError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const id = "3ec3f142-f33c-4977-befd-30d4ce2b764d";
+  const { id } = useParams();
   const { user } = useAuth();
 
   useEffect(() => {
@@ -272,7 +276,7 @@ export default function NewDetailPage() {
         if (projectError) {
           throw projectError;
         }
-
+        setCurrentProject(projectData);
         if (
           projectData.status === "private" &&
           projectData.user_id !== user?.id &&
@@ -340,10 +344,24 @@ export default function NewDetailPage() {
 
       <div className="mt-4 container mx-auto px-4 flex flex-col md:flex-row">
         <div className="w-full md:w-3/4 py-8 px-4 md:px-8">
-          <MyTab />
+          <MyTab company={company} />
         </div>
 
         <Author />
+
+        {user?.id === currentProject?.user_id ||
+        currentProject?.collabs?.includes(user.email) ? (
+          <div className="fixed top-3.5 right-4">
+            <ButtonGroup
+              handleDrawChart={handleDrawChart}
+              handleCompanySettings={handleCompanySettings}
+              handleSave={handleSave}
+              handleRequired={handleRequired}
+              currentProject={currentProject}
+              isLoading={isLoading}
+            />
+          </div>
+        ) : null}
       </div>
     </div>
   );

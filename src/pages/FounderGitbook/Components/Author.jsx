@@ -1,27 +1,38 @@
-import { Avatar, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { Button } from "../../../components/ui/Button";
-import { useAuth } from "../../../context/AuthContext";
 import { supabase } from "../../../supabase";
+import { StarFilled, StarOutlined } from "@ant-design/icons";
+import { useParams } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 import LoadingButtonClick from "../../../components/LoadingButtonClick";
+import { Avatar } from "antd";
 import { formatDate } from "../../../features/DurationSlice";
+
+const InterestButton = React.memo(({ onClick, isLiked }) => (
+  <Button
+    className={`border border-gray-200 w-full mt-4 ${
+      isLiked ? "bg-blue-600 text-white" : ""
+    }`}
+    onClick={onClick}
+  >
+    {isLiked ? "Unlike" : "Like"} &nbsp;{" "}
+    {isLiked ? <StarFilled /> : <StarOutlined />}
+  </Button>
+));
 
 function Author() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState();
+  const [isLiked, setIsLiked] = useState(false);
 
-  const id = "3ec3f142-f33c-4977-befd-30d4ce2b764d";
+  const { id } = useParams();
+  const { user } = useAuth();
 
   useEffect(() => {
     async function fetchUserData() {
       try {
-        if (!navigator.onLine) {
-          message.error("No internet access.");
-          return;
-        }
         setIsLoading(true);
 
-        // Lấy user_id từ bảng projects
         const { data: projectData, error: projectError } = await supabase
           .from("projects")
           .select("user_id")
@@ -38,7 +49,6 @@ function Author() {
 
         const user_id = projectData.user_id;
 
-        // Lấy thông tin user từ bảng users với user_id đã lấy được
         const { data, error } = await supabase
           .from("users")
           .select("*")
@@ -51,26 +61,54 @@ function Author() {
 
         if (data) {
           setCurrentUser(data);
+          setIsLiked(data.liked.includes(user.email));
         }
       } catch (error) {
-        message.error(error.message);
         console.error("Error fetching user data:", error);
       }
       setIsLoading(false);
     }
 
     fetchUserData();
-  }, [id]);
+  }, []);
 
-  console.log("currentUser", currentUser);
+  const onClickShowInterested = async () => {
+    try {
+      if (!currentUser || !user.email) return;
+
+      const liked = [...currentUser.liked];
+
+      if (isLiked) {
+        const index = liked.indexOf(user.email);
+        if (index !== -1) {
+          liked.splice(index, 1);
+        }
+      } else {
+        liked.push(user.email);
+      }
+
+      const { error } = await supabase
+        .from("users")
+        .update({ liked })
+        .eq("id", currentUser.id);
+
+      if (error) {
+        throw error;
+      }
+
+      setIsLiked(!isLiked);
+    } catch (error) {
+      console.error("Error updating liked:", error);
+    }
+  };
 
   return (
-    <>
-      {isLoading ? (
-        <LoadingButtonClick />
-      ) : (
-        <aside className="w-full md:w-1/4 py-8 px-4 md:pl-8">
-          <div className="sticky top-24 space-y-4">
+    <aside className="w-full md:w-1/4 py-8 px-4 md:pl-8">
+      <div className="sticky top-24 space-y-4">
+        {isLoading ? (
+          <LoadingButtonClick />
+        ) : (
+          <>
             <div className="flex items-center space-x-4">
               <Avatar
                 id="avatar"
@@ -86,7 +124,6 @@ function Author() {
                     ? currentUser?.full_name
                     : currentUser?.email}
                 </h4>
-                {/* <p className="text-sm text-gray-500">34k followers</p> */}
               </div>
             </div>
             <div className="mt-4">
@@ -116,14 +153,15 @@ function Author() {
                   {formatDate(currentUser?.created_at)}
                 </p>
               </div>
-              <Button className="border border-gray-200  w-full mt-4">
-                Follow me
-              </Button>
+              <InterestButton
+                onClick={onClickShowInterested}
+                isLiked={isLiked}
+              />
             </div>
-          </div>
-        </aside>
-      )}
-    </>
+          </>
+        )}
+      </div>
+    </aside>
   );
 }
 

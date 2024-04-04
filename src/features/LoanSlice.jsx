@@ -85,12 +85,12 @@ export const transformLoanDataForTable = (
   const loanTableData = [];
 
   const selectedLoan = tempLoanInputs.find(
-    (input) => input.id === parseInt(renderLoanForm)
+    (input) => input.id == parseInt(renderLoanForm)
   );
   if (!selectedLoan) return loanTableData;
 
   const loanIndex = tempLoanInputs.findIndex(
-    (input) => input.id === parseInt(renderLoanForm)
+    (input) => input.id == parseInt(renderLoanForm)
   );
   const loanData = calculateLoanData(tempLoanInputs)[loanIndex];
 

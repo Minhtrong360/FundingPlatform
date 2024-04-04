@@ -491,6 +491,7 @@ function NewUserPage() {
                           type="text"
                         />
                       </div>
+
                       <div className="mt-4" style={{ visibility: "hidden" }}>
                         <SelectField
                           label="Country"
@@ -624,7 +625,22 @@ function NewUserPage() {
                         </div>
                       </div>
                     )}
-
+                  <div>
+                    <label
+                      htmlFor="hs-about-hire-us-2"
+                      className="block mb-2 text-sm text-gray-700 font-medium darkTextWhite mt-2"
+                    >
+                      Tell something about you
+                    </label>
+                    <textarea
+                      id="hs-about-hire-us-2"
+                      name="detail"
+                      rows="4"
+                      className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus:ring-gray-600"
+                      value={userData.detail}
+                      onChange={handleInputChange}
+                    ></textarea>
+                  </div>
                   <div className="mt-4">
                     <h3 className="text-sm mt-4">Social Profile</h3>
                     <div className="flex items-center mt-2">

@@ -45,10 +45,10 @@ const InvestmentSection = ({
       id: newId,
       purchaseName: "New investment",
       assetCost: 0,
-      quantity: 0,
-      purchaseMonth: 0,
+      quantity: 1,
+      purchaseMonth: 1,
       residualValue: 0,
-      usefulLifetime: 0,
+      usefulLifetime: 1,
     };
     setTempInvestmentInputs([...tempInvestmentInputs, newCustomer]);
     setRenderInvestmentForm(newId.toString());
@@ -380,19 +380,21 @@ const InvestmentSection = ({
                 </div>
               </div>
             ))}
-          <button
-            className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
-            onClick={addNewInvestmentInput}
-          >
-            Add new
-          </button>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <button
+              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
+              onClick={addNewInvestmentInput}
+            >
+              Add new
+            </button>
 
-          <button
-            className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
-            onClick={handleSave}
-          >
-            Save changes
-          </button>
+            <button
+              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
+              onClick={handleSave}
+            >
+              Save changes
+            </button>
+          </div>
         </section>
       </div>
       <div className="w-full lg:w-3/4 sm:p-4 p-0">

@@ -107,12 +107,14 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       const data = JSON.parse(chatbotResponse);
 
       if (data.DurationSelect)
-        dispatch(setSelectedDuration(data.DurationSelect.selectedDuration));
-      dispatch(setStartingCashBalance(data.DurationSelect.startingCashBalance));
+        // dispatch(setSelectedDuration(data.DurationSelect.selectedDuration));
+        dispatch(
+          setStartingCashBalance(data.DurationSelect.startingCashBalance)
+        );
       dispatch(setStatus(data.DurationSelect.status));
       dispatch(setIndustry(data.DurationSelect.industry));
-      dispatch(setStartMonth(data.DurationSelect.startMonth));
-      dispatch(setStartYear(data.DurationSelect.startYear));
+      // dispatch(setStartMonth(data.DurationSelect.startMonth));
+      // dispatch(setStartYear(data.DurationSelect.startYear));
       dispatch(setIncomeTax(data.DurationSelect.incomeTax));
       dispatch(setPayrollTax(data.DurationSelect.payrollTax));
       dispatch(setCurrency("USD"));
@@ -541,9 +543,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               <ul className="py-4 flex lg:justify-center justify-start items-center space-x-4">
                 <li
                   className={`cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
-                    activeTab === "overview"
-                      ? "bg-yellow-300 font-bold"
-                      : ""
+                    activeTab === "overview" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("overview")}
                 >
@@ -552,9 +552,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 {/* Repeat for other tabs */}
                 <li
                   className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
-                    activeTab === "customer"
-                      ? "bg-yellow-300 font-bold"
-                      : ""
+                    activeTab === "customer" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("customer")}
                 >
@@ -562,9 +560,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </li>
                 <li
                   className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
-                    activeTab === "sales"
-                      ? "bg-yellow-300 font-bold"
-                      : ""
+                    activeTab === "sales" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("sales")}
                 >
@@ -572,9 +568,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </li>
                 <li
                   className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
-                    activeTab === "cost"
-                      ? "bg-yellow-300 font-bold"
-                      : ""
+                    activeTab === "cost" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("cost")}
                 >
@@ -582,9 +576,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </li>
                 <li
                   className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
-                    activeTab === "personnel"
-                      ? "bg-yellow-300 font-bold"
-                      : ""
+                    activeTab === "personnel" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("personnel")}
                 >
@@ -592,9 +584,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </li>
                 <li
                   className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
-                    activeTab === "investment"
-                      ? "bg-yellow-300 font-bold"
-                      : ""
+                    activeTab === "investment" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("investment")}
                 >
@@ -602,9 +592,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </li>
                 <li
                   className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
-                    activeTab === "loan"
-                      ? "bg-yellow-300 font-bold"
-                      : ""
+                    activeTab === "loan" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("loan")}
                 >
@@ -612,9 +600,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </li>
                 <li
                   className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
-                    activeTab === "fundraising"
-                      ? "bg-yellow-300 font-bold"
-                      : ""
+                    activeTab === "fundraising" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("fundraising")}
                 >
@@ -632,9 +618,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </li>
                 <li
                   className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
-                    activeTab === "cashFlow"
-                      ? "bg-yellow-300 font-bold"
-                      : ""
+                    activeTab === "cashFlow" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("cashFlow")}
                 >

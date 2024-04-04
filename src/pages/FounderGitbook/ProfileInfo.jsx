@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 
 export default function ProfileInfo({ company, canClick }) {
-  console.log("company", company);
   const [project, setProject] = useState(null);
 
   useEffect(() => {

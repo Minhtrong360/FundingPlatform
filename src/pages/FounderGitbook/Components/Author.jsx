@@ -62,7 +62,7 @@ function Author({ company }) {
 
         if (data) {
           setCurrentUser(data);
-          setIsLiked(data.liked.includes(user.email));
+          setIsLiked(projectData.liked.includes(user.email));
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -72,13 +72,12 @@ function Author({ company }) {
 
     fetchUserData();
   }, []);
-  console.log("projectData", projectData);
+
   const like = async () => {
-    console.log("unlike");
     try {
       if (!currentUser || !user.email) return;
 
-      const liked = [...currentUser.liked];
+      const liked = [...projectData.liked];
       liked.push(user.email);
 
       // Thêm thông tin người like vào bảng likedNotifications
@@ -106,16 +105,21 @@ function Author({ company }) {
         throw notificationError;
       }
 
-      const { error } = await supabase
+      const { error1 } = await supabase
         .from("users")
         .update({
-          liked,
           notification_count: currentUser?.notification_count + 1,
         })
         .eq("id", currentUser?.id);
+      const { error2 } = await supabase
+        .from("projects")
+        .update({
+          liked,
+        })
+        .eq("id", projectData?.id);
 
-      if (error) {
-        throw error;
+      if (error1 || error2) {
+        throw error1 || error2;
       }
 
       // Cập nhật trạng thái của isLiked
@@ -126,15 +130,15 @@ function Author({ company }) {
   };
 
   const unlike = async () => {
-    console.log("unlike");
     try {
       if (!currentUser || !user.email) return;
 
-      const liked = [...currentUser.liked];
+      const liked = [...projectData.liked];
+
       const index = liked.indexOf(user.email);
       if (index !== -1) {
         liked.splice(index, 1);
-
+        console.log("liked", liked);
         // Xóa thông báo like khỏi bảng likedNotifications
         const { error } = await supabase
           .from("likedNotifications")
@@ -147,12 +151,12 @@ function Author({ company }) {
           throw error;
         }
 
-        const { error: updateError } = await supabase
-          .from("users")
+        const { updateError } = await supabase
+          .from("projects")
           .update({
             liked,
           })
-          .eq("id", currentUser?.id);
+          .eq("id", projectData?.id);
 
         if (updateError) {
           throw updateError;

@@ -74,7 +74,7 @@ const DurationSelect = ({ handleSubmit }) => {
   return (
     <section aria-labelledby="duration-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-4 flex items-center mt-4"
+        className="text-2xl font-semibold mb-8 flex items-center"
         id="duration-heading"
       >
         General Setup

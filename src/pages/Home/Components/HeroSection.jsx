@@ -176,7 +176,7 @@ const HeroSection = () => {
         </div>
 
         {/* <div className="flex h-full w-full  justify-center mt-10"> */}
-          {/* <video
+        {/* <video
             className="object-cover w-full md:w-4/5 rounded-xl shadow-2xl border border-gray-300"
             autoPlay
             loop
@@ -185,24 +185,27 @@ const HeroSection = () => {
             src="https://www.youtube.com/embed/huFpQcuRHEw?si=nskABHXF2dDxbyix&amp;controls=0" 
             alt="Description"
           /> */}
-         {/* <iframe className="object-cover w-full md:w-4/5 rounded-xl shadow-2xl border border-gray-300" width="779" height="487" src="https://www.youtube.com/embed/huFpQcuRHEw?si=puZIpeSfbHc7hLDu&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        {/* <iframe className="object-cover w-full md:w-4/5 rounded-xl shadow-2xl border border-gray-300" width="779" height="487" src="https://www.youtube.com/embed/huFpQcuRHEw?si=puZIpeSfbHc7hLDu&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
          */}
         {/* </div> */}
-        <div className="flex justify-center items-center w-full   mt-8 rounded-xl ">
-                 <div className="relative w-full md:w-4/5  overflow-hidden shadow-2xl rounded-xl border border-gray-300" style={{ paddingTop: '56.25%' }}>
-                 <p>
-                   <iframe
-                    title="YouTube video player"
-                    className="absolute top-0 left-0 right-0 w-full h-full shadow-2xl border border-gray-300 rounded-xl"
-                    src="https://www.youtube.com/embed/huFpQcuRHEw?si=puZIpeSfbHc7hLDu&amp;controls=0"
-                    width="640"
-                    height="360"
-                    allowFullScreen
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  ></iframe>
-                </p>
-              </div>
-            </div>
+        <div className="flex justify-center items-center w-full   mt-8 rounded-xl">
+          <div
+            className="relative w-full md:w-4/5 md:h-16 overflow-hidden shadow-2xl rounded-xl border border-gray-300"
+            style={{ paddingTop: "56.25%" }}
+          >
+            <p>
+              <iframe
+                title="YouTube video player"
+                className="absolute top-0 left-0 right-0 w-full h-full shadow-2xl border border-gray-300 rounded-xl"
+                src="https://www.youtube.com/embed/huFpQcuRHEw?si=puZIpeSfbHc7hLDu&amp;controls=0&autoplay=1&mute=1&loop=1&playlist=huFpQcuRHEw"
+                width="100%"
+                height="100%"
+                allowFullScreen
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              ></iframe>
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -264,15 +264,15 @@ const FeaturesComponent = () => {
                <div className="w-full min-w-400px max-w-800px rounded-b-lg">
                  <div className="relative w-full overflow-hidden rounded-b-lg" style={{ paddingTop: '56.25%' }}>
                  <p>
-                   <iframe
-                     title="YouTube video player"
-                     className="absolute top-0 left-0 right-0 w-full h-full rounded-b-lg"
-                     src="https:www.youtube.com/embed/56lpx33qSpI?si=CaJKbilv0ghPwRLC"
-                     width="560"
-                     height="315"
-                     allowFullScreen
-                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                   ></iframe>
+                <iframe
+                    title="YouTube video player"
+                    className="absolute top-0 left-0 right-0 w-full h-full rounded-b-lg"
+                    src="https://www.youtube.com/embed/56lpx33qSpI?si=CaJKbilv0ghPwRLC&autoplay=1&mute=1&loop=1&playlist=56lpx33qSpI"
+                    width="100%"
+                    height="100%"
+                    allowFullScreen
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                ></iframe>
                  </p>
                </div>
              </div>

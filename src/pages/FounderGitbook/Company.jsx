@@ -8,6 +8,8 @@ import industries from "../../components/Industries";
 import MultiSelectField from "../../components/MultiSelectField";
 import { useEffect, useState } from "react";
 import { formatNumber } from "../../features/CostSlice";
+import { Tooltip } from "antd";
+
 
 function Company({
   handleSubmit,
@@ -158,15 +160,17 @@ function Company({
                     readOnly // Đặt readOnly để ngăn người dùng chỉnh sửa trường này thủ công
                   />
                 </div>
-                <SelectField
-                  label="Revenue status"
-                  id="revenueStatus"
-                  name="revenueStatus"
-                  value={formData.revenueStatus}
-                  onChange={handleInputChange}
-                  required
-                  options={["Pre-revenue", "Post-revenue"]} // Thay thế bằng danh sách các tùy chọn bạn muốn
-                />
+
+                  <SelectField
+                    label="Annual revenue last year"
+                    id="revenueStatus"
+                    name="revenueStatus"
+                    value={formData.revenueStatus}
+                    onChange={handleInputChange}
+                    required
+                    options={["$0 - $10k", "$10k - $50k", "$50k - $100k", "$100k - $500k", "$500k - $1M", "$1M - $5M", ">$5M"]} 
+                  />
+
                 <MultiSelectField
                   label="Industry"
                   id="industry"
@@ -283,7 +287,7 @@ function Company({
                   label="Round"
                   id="round"
                   name="round"
-                  options={["Pre-seed", "Seed"]}
+                  options={["Pre-seed", "Seed", "Series A", "Series B", "Series C"]}
                   selectedItems={formData.round}
                   setSelectedItems={handleInputChange}
                   type="text"

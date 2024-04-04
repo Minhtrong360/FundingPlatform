@@ -16,7 +16,7 @@ import {
   defaultBlockSpecs,
   defaultProps,
 } from "@blocknote/core";
-import { YoutubeOutlined } from "@ant-design/icons";
+import { DownOutlined, YoutubeOutlined } from "@ant-design/icons";
 import { Input, Avatar } from "antd";
 import { Button } from "../components/ui/Button";
 import { Badge } from "../components/ui/Badge";
@@ -26,13 +26,15 @@ import { useAuth } from "../context/AuthContext";
 import { supabase } from "../supabase";
 import { formatNumber } from "../features/CostSlice";
 import ProfileInfo from "./FounderGitbook/ProfileInfo";
+import StarOutlined from "@ant-design/icons/StarOutlined";
+
 const { TabPane } = Tabs;
 
 // const TabContent = ({ tab }) => {
 //   // Define your content for each tab
 //   const [blocks, setBlocks] = useState([]);
 //   const [isModalOpen, setIsModalOpen] = useState(false);
-//   const [youtubeLink, setYoutubeLink] = useState("Add wanted youtube url"); // State to store YouTube link
+//   const [youtubeLink, setYoutubeLink] = useState("Add wanted youtube url"); // State to store YouTube link 
 //   const YouTubeLinkBlock = createReactBlockSpec(
 //     {
 //       type: "youtubeLink",
@@ -1132,7 +1134,10 @@ export default function MyTabs() {
                 <p className="text-sm text-gray-500">September 20, 2024</p>
               </div>
               <Button className="border border-gray-200  w-full mt-4">
-                Follow me
+                
+
+                  Show interest &nbsp; <StarOutlined />
+
               </Button>
             </div>
           </div>
@@ -1141,3 +1146,4 @@ export default function MyTabs() {
     </div>
   );
 }
+

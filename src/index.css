@@ -175,4 +175,6 @@ code {
   border-radius: 10px;
 }
 
-
+.ant-tabs-tab:hover {
+  cursor: pointer;
+}

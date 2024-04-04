@@ -8,7 +8,7 @@ import ReactModal from "react-modal";
 import { message } from "antd";
 
 const Modal = ({ isOpen, onClose, projectId }) => {
-  const [email, setEmail] = useState("email@gmail.com");
+  const [email, setEmail] = useState("elonmusk@gmail.com");
   const [invited_type, setInvited_type] = useState("View only"); // Thay đổi giá trị state để phản ánh "View only" thay vì "public" và "Collaborate" thay vì "private"
   const { user } = useAuth();
 
@@ -106,7 +106,7 @@ const Modal = ({ isOpen, onClose, projectId }) => {
               type="email"
               required
               name="email"
-              placeholder="email@gmail.com"
+              placeholder="elonmusk@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="block w-full px-4 py-3 text-sm text-gray-700 border rounded-md"

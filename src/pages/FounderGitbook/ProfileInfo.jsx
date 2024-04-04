@@ -40,12 +40,12 @@ export default function ProfileInfo({ company }) {
           <div className="mt-8">
             <div className="text-black font-semibold">Features:</div>
 
-            <div className="flex mt-2 space-x-4">
+            <div className="grid grid-cols-2 sm:flex mt-2 space-x-0 sm:space-x-4 gap-4">
               {company?.industry?.map((industry, index) => (
                 <Badge
                   key={index}
                   title={`Industry: ${industry}`}
-                  className="h-6 bg-yellow-300 text-black p-1 rounded-md"
+                  className="min-h-6 bg-yellow-300 text-black px-2 py-1 rounded-md"
                 >
                   {industry}
                 </Badge>

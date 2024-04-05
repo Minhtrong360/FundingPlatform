@@ -138,7 +138,6 @@ function Author({ company }) {
       const index = liked.indexOf(user.email);
       if (index !== -1) {
         liked.splice(index, 1);
-        console.log("liked", liked);
         // Xóa thông báo like khỏi bảng likedNotifications
         const { error } = await supabase
           .from("likedNotifications")
@@ -185,8 +184,8 @@ function Author({ company }) {
   };
 
   return (
-    <aside className="w-full lg:w-1/4 py-8 px-4 xl:pl-8">
-      <div className="sticky top-8 space-y-4">
+    <aside className="max-w-sm lg:w-1/4 py-5 px-1 xl:pl-8 ">
+      <div className="sticky top-8 space-y-4 border-2 p-3">
         {isLoading ? (
           <LoadingButtonClick />
         ) : (

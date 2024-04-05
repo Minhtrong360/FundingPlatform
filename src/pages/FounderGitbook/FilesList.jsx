@@ -26,7 +26,6 @@ function FilesList() {
     setDeleteFileId(fileId);
     setIsDeleteModalVisible(true);
   };
-
   const handleDeleteModalOk = async () => {
     try {
       if (!navigator.onLine) {
@@ -124,16 +123,19 @@ function FilesList() {
       }
 
       if (currentProject.user_id === user.id) {
-        const { error } = await supabase.from("files").insert([
-          {
-            name: newLink.name,
-            link: newLink.link,
-            user_id: user.id,
-            owner_email: user.email,
-            status: newLink.status,
-            project_id: id,
-          },
-        ]);
+        const { data: newFile, error } = await supabase
+          .from("files")
+          .insert([
+            {
+              name: newLink.name,
+              link: newLink.link,
+              user_id: user.id,
+              owner_email: user.email,
+              status: newLink.status,
+              project_id: id,
+            },
+          ])
+          .select();
 
         if (error) {
           console.log("Error creating file:", error);
@@ -147,7 +149,7 @@ function FilesList() {
             return;
           }
 
-          setProjectLinks([...projectLinks, newLink]);
+          setProjectLinks([...projectLinks, newFile[0]]);
         }
       } else {
         alert("You are not the owner of the project.");

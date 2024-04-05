@@ -341,7 +341,7 @@ export default function ProfileInfo({
               {company?.industry?.map((industry, index) => (
                 <Tag
                   key={index}
-                  className="bg-yellow-300 border border-gray-200 text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
+                  className="bg-yellow-300 border border-gray-200 truncate text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
                 >
                   {industry}
                 </Tag>
@@ -356,7 +356,7 @@ export default function ProfileInfo({
                 company.keyWords.split(",").map((keyWord, index) => (
                   <Tag
                     key={index}
-                    className="bg-yellow-300 border border-gray-200 text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
+                    className="bg-yellow-300 border border-gray-200 truncate text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
                   >
                     {keyWord.trim()}
                   </Tag>

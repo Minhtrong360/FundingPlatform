@@ -10,7 +10,6 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
   const { yearlyAverageCustomers } = useSelector((state) => state.customer);
   const { yearlySales } = useSelector((state) => state.sales);
   const { currency } = useSelector((state) => state.durationSelect);
-  console.log("currency", currency);
 
   return (
     <div className="sm:max-w-[85rem] max-w-full px-0 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
@@ -75,7 +74,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
             <div className="mt-1 flex items-center gap-x-2">
               <div className="flex flex-col xl:flex-row xl:items-center items-start">
                 <h3 className="text-sm sm:text-3xl font-bold text-blue-600 my-2 ">
-                  <span>{getCurrencyLabelByKey(currency)}</span>
+                  <span>{getCurrencyLabelByKey(currency)}&nbsp;</span>
                   {new Intl.NumberFormat("en-US", {
                     minimumFractionDigits: 0,
                     maximumFractionDigits: 0,

@@ -474,7 +474,7 @@ const AllChartSections = ({
             <div>
               <div className="text-base">Total Revenue</div>
               <p className="text-sm sm:text-3xl font-bold text-blue-600 my-2">
-                {getCurrencyLabelByKey(currency)}
+                {getCurrencyLabelByKey(currency)}&nbsp;
                 {formatNumber(Math.round(sumArray(yearlySales)))}
               </p>
             </div>

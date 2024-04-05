@@ -8,16 +8,21 @@ import LoadingButtonClick from "../../../components/LoadingButtonClick";
 import { Avatar } from "antd";
 import { formatDate } from "../../../features/DurationSlice";
 
-const InterestButton = React.memo(({ onClick, isLiked }) => (
-  <Button
-    className={`border border-gray-200 w-full mt-4 ${
-      isLiked ? "bg-blue-600 text-white" : ""
-    }`}
-    onClick={onClick}
-  >
-    {isLiked ? "Unlike" : "Like"} &nbsp;{" "}
-    {isLiked ? <StarFilled /> : <StarOutlined />}
-  </Button>
+const InterestButton = React.memo(({ onClick, isLiked, likeCount }) => (
+  <div style={{ display: "flex", alignItems: "center", marginTop: "20px" }}>
+    <Button
+      className={`border border-gray-200 ${
+        isLiked ? "bg-blue-600 text-white" : ""
+      }`}
+      onClick={onClick}
+    >
+      {isLiked ? "Unlike" : "Like"}
+    </Button>
+    <div style={{ marginLeft: "8px" }}>
+      <StarOutlined />
+      <span style={{ marginLeft: "4px" }}>{likeCount ? likeCount : 0}</span>
+    </div>
+  </div>
 ));
 
 function Author({ company }) {
@@ -73,6 +78,12 @@ function Author({ company }) {
     fetchUserData();
   }, []);
 
+  const [likedCount, setLikedCount] = useState(projectData?.liked.length);
+
+  useEffect(() => {
+    setLikedCount(projectData?.liked.length);
+  }, [projectData?.liked.length]);
+
   const like = async () => {
     try {
       if (!currentUser || !user.email) return;
@@ -123,6 +134,10 @@ function Author({ company }) {
       }
 
       // Cập nhật trạng thái của isLiked
+
+      const newLikedCount = likedCount + 1;
+
+      setLikedCount(newLikedCount);
       setIsLiked(true);
     } catch (error) {
       console.error("Error updating liked:", error);
@@ -144,6 +159,7 @@ function Author({ company }) {
           .delete()
           .eq("receivedUser", currentUser.email)
           .eq("from", user.email)
+          .eq("likedID", projectData?.id)
           .single();
 
         if (error) {
@@ -162,6 +178,9 @@ function Author({ company }) {
         }
 
         // Cập nhật trạng thái của isLiked
+        const newLikedCount = likedCount - 1;
+
+        setLikedCount(newLikedCount);
         setIsLiked(false);
       }
     } catch (error) {
@@ -238,6 +257,7 @@ function Author({ company }) {
               <InterestButton
                 onClick={onClickShowInterested}
                 isLiked={isLiked}
+                likeCount={likedCount}
               />
             </div>
           </>

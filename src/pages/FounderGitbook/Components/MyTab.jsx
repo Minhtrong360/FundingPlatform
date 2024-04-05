@@ -24,7 +24,7 @@ import LoadingButtonClick from "../../../components/LoadingButtonClick";
 import FilesList from "../FilesList";
 
 const MyTab = ({ blocks, setBlocks, company }) => {
-  const [activeTab, setActiveTab] = useState("Your profile");
+  const [activeTab, setActiveTab] = useState("Your Profile");
   const [youtubeLink, setYoutubeLink] = useState("Add wanted youtube url");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -255,14 +255,13 @@ const MyTab = ({ blocks, setBlocks, company }) => {
     }
   };
   const tabContents = {
-    "Your profile": (
+    "Your Profile": (
       <div>
         {" "}
-        <h2 className="text-red-600 font-bold text-3xl"> Your profile </h2>
         <BlockNoteView
           editor={editor}
           theme={"light"}
-          className="w-full lg:w-12/12 mt-8"
+          className="w-full lg:w-12/12 "
         />
         <div className="mt-28">
           <div className="text-black font-semibold">Key words:</div>
@@ -282,10 +281,10 @@ const MyTab = ({ blocks, setBlocks, company }) => {
         {user?.id === currentProject?.user_id ||
         currentProject?.collabs?.includes(user.email) ? (
           <button
-            className="mt-8 hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+            className="mt-8 hover:cursor-pointer py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
             onClick={handleSave}
           >
-            Save
+            Save profile
           </button>
         ) : null}
         <Modal
@@ -340,20 +339,15 @@ const MyTab = ({ blocks, setBlocks, company }) => {
         </Modal>
       </div>
     ),
-    Sample: (
+    "Sample PitchDeck": (
       <div>
         {" "}
-        <h1 className="text-red-600 font-bold text-3xl">
-          {" "}
-          Sample Fundaising Profile{" "}
-        </h1>
         <Sample />
       </div>
     ),
-    Files: (
+    "Data Room": (
       <div>
         {" "}
-        <h1 className="text-red-600 font-bold text-3xl"> Your files list</h1>
         <FilesList />
       </div>
     ),

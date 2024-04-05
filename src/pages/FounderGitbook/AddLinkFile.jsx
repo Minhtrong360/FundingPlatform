@@ -51,10 +51,7 @@ const Modal = ({
         <h3 className="text-lg font-medium leading-6 text-gray-800 capitalize">
           Project Name: {currentProject.name}
         </h3>
-        <p className="mt-2 text-sm text-gray-500 ">
-          {" "}
-          Please add public file link.{" "}
-        </p>
+        
         <form className="mt-4">
           <label className="block mt-3">
             <input
@@ -71,7 +68,7 @@ const Modal = ({
             <input
               type="text"
               name="File_link"
-              placeholder="upload your file's link"
+              placeholder="File link"
               value={link}
               onChange={(e) => setLink(e.target.value)}
               className="block w-full px-4 py-3 text-sm text-gray-700 border rounded-md"
@@ -202,7 +199,7 @@ export default function AddLinkFile({
   }, [user]);
 
   const [link, setLink] = useState();
-  const [fileName, setFileName] = useState("File 1");
+  const [fileName, setFileName] = useState("File name");
   const [isPublic, setIsPublic] = useState(true); // Thêm trạng thái cho lựa chọn Public/Private
 
   if (isLoading) {

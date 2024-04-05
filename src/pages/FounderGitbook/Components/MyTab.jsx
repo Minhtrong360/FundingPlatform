@@ -254,6 +254,9 @@ const MyTab = ({ blocks, setBlocks, company }) => {
       setIsLoading(false);
     }
   };
+
+  const isOwner = user?.id === currentProject?.user_id;
+
   const tabContents = {
     "Your Profile": (
       <div>
@@ -339,12 +342,15 @@ const MyTab = ({ blocks, setBlocks, company }) => {
         </Modal>
       </div>
     ),
-    "Sample PitchDeck": (
-      <div>
-        {" "}
-        <Sample />
-      </div>
-    ),
+    ...(isOwner
+      ? {
+          "Sample PitchDeck": (
+            <div>
+              <Sample />
+            </div>
+          ),
+        }
+      : {}),
     "Data Room": (
       <div>
         {" "}

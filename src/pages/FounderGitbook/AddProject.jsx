@@ -250,6 +250,7 @@ export default function AddProject({
   setIsModalOpen,
   selectedProject,
   setSelectedProject,
+  myProjects,
 }) {
   const { user } = useAuth();
   const [currentUser, setCurrentUser] = useState(null);
@@ -285,7 +286,6 @@ export default function AddProject({
       fetchCurrentUser();
     }
   }, [user]);
-
   useEffect(() => {
     if (currentUser && updatedProjects) {
       const hasProjectWithCurrentUser = updatedProjects.some(
@@ -301,9 +301,8 @@ export default function AddProject({
 
       if (
         hasProjectWithCurrentUser &&
-        updatedProjects.length > 1 &&
-        isFreeUser &&
-        isSubscriptionInactive
+        myProjects.length >= 1 &&
+        (isFreeUser || isSubscriptionInactive)
       ) {
         setIsButtonDisabled(true);
       } else {
@@ -340,6 +339,7 @@ export default function AddProject({
             className={`text-white opacity-50 bg-gray-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
             onClick={handleClickAddNew}
           >
+            <PlusOutlined className="mr-1" />
             Add new
           </button>
         </Tooltip>

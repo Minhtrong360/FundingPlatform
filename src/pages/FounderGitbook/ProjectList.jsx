@@ -100,9 +100,13 @@ function ProjectList({ projects }) {
             className="hover:cursor-pointer"
             onClick={() => handleProjectClick(record)}
           >
-             <div className="truncate" style={{ maxWidth: "100%" }} title={record.name}>
-        {record.name}
-      </div>
+            <div
+              className="truncate"
+              style={{ maxWidth: "100%" }}
+              title={record.name}
+            >
+              {record.name}
+            </div>
           </span>
         </>
       ),
@@ -131,7 +135,11 @@ function ProjectList({ projects }) {
             className="hover:cursor-pointer"
             onClick={() => handleProjectClick(record)}
           >
-            <div className="truncate" style={{ maxWidth: "100%" }} title={record.user_email}>
+            <div
+              className="truncate"
+              style={{ maxWidth: "100%" }}
+              title={record.user_email}
+            >
               {record.user_email}
             </div>
           </span>
@@ -238,13 +246,11 @@ function ProjectList({ projects }) {
   ];
 
   const myProjects = updatedProjects.filter(
-    (project) =>
-      project.user_id === user.id
+    (project) => project.user_id === user.id
   );
 
   const sharedProjects = updatedProjects.filter(
-    (project) =>
-      project.user_id !== user.id
+    (project) => project.user_id !== user.id
   );
 
   const dataSource = updatedProjects.map((project, index) => ({
@@ -272,7 +278,6 @@ function ProjectList({ projects }) {
       console.error("Error checking company:", error.message);
     }
   };
-  console.log("isDeleteModalOpen", isDeleteModalOpen);
   return (
     <main className="w-full min-h-[92.5vh]">
       <AlertMsg />
@@ -284,6 +289,7 @@ function ProjectList({ projects }) {
           setIsModalOpen={setIsModalOpen}
           selectedProject={selectedProject}
           setSelectedProject={setSelectedProject}
+          myProjects={myProjects}
         />
       </div>
 
@@ -339,43 +345,44 @@ function ProjectList({ projects }) {
       </section> */}
 
       <section className="container px-4 mx-auto">
-  <h2 className="text-xl font-semibold mb-4">My Projects</h2>
-  <div className="flex flex-col mb-8">
-    <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-      <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-        <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
-          <Table
-            columns={columns}
-            dataSource={myProjects}
-            pagination={false}
-            rowKey="id"
-            size="small"
-            bordered
-          />
+        <h2 className="text-xl font-semibold mb-4">My Projects</h2>
+        <div className="flex flex-col mb-8">
+          <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
+              <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
+                <Table
+                  columns={columns}
+                  dataSource={myProjects}
+                  pagination={false}
+                  rowKey="id"
+                  size="small"
+                  bordered
+                />
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <h2 className="text-xl font-semibold mb-4 mt-12">Projects Shared With Me</h2>
-  <div className="flex flex-col">
-    <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-      <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-        <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
-          <Table
-            columns={columns}
-            dataSource={sharedProjects}
-            pagination={false}
-            rowKey="id"
-            size="small"
-            bordered
-          />
+        <h2 className="text-xl font-semibold mb-4 mt-12">
+          Projects Shared With Me
+        </h2>
+        <div className="flex flex-col">
+          <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
+              <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
+                <Table
+                  columns={columns}
+                  dataSource={sharedProjects}
+                  pagination={false}
+                  rowKey="id"
+                  size="small"
+                  bordered
+                />
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-
+      </section>
     </main>
   );
 }

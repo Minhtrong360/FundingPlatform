@@ -217,10 +217,11 @@ function FilesList() {
 
   useEffect(() => {
     if (
-      (currentUser?.plan === "Free" ||
-        currentUser?.plan === null ||
-        currentUser?.plan === undefined) &&
-      currentUser?.subscription_status !== "active"
+      currentUser?.plan === "Free" ||
+      currentUser?.plan === null ||
+      currentUser?.plan === undefined ||
+      currentUser?.subscription_status === "canceled" ||
+      currentUser?.subscription_status === "cancelled"
     ) {
       setIsPrivateDisabled(true);
     } else {

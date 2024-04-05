@@ -93,7 +93,8 @@ const Modal = ({
       currentUser.plan === "Free" ||
       currentUser.plan === null ||
       currentUser.plan === undefined ||
-      currentUser.subscription_status !== "active"
+      currentUser.subscription_status === "canceled" ||
+      currentUser.subscription_status === "cancelled"
     ) {
       setIsPrivateDisabled(true);
     } else {
@@ -295,7 +296,8 @@ export default function AddProject({
         currentUser.plan === null ||
         currentUser.plan === undefined;
       const isSubscriptionInactive =
-        currentUser.subscription_status !== "active";
+        currentUser.subscription_status === "canceled" ||
+        currentUser.subscription_status === "cancelled";
 
       if (
         hasProjectWithCurrentUser &&

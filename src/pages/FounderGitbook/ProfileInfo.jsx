@@ -19,7 +19,6 @@ export default function ProfileInfo({
   const [project, setProject] = useState(null);
   const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
   const params = useParams();
-
   useEffect(() => {
     const fetchProject = async () => {
       if (!company.id) return;

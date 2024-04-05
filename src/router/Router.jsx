@@ -39,6 +39,7 @@ import StaticNews from "../pages/News/StaticNews";
 import NewProjectPosts from "../pages/StartUps/NewProjectPosts";
 import Brochure from "../pages/Home/Components/Brochure.jsx";
 import NewDetailPage from "../pages/FounderGitbook/NewDetailPage.jsx";
+import App from "../supabase/PrivateDemo.jsx";
 
 function Router() {
   return (
@@ -142,6 +143,7 @@ function Router() {
         <Route path="/FAQ" element={<FAQ />} />
         <Route path="/brochure" element={<Brochure />} />
         <Route path="/mytabs" element={<NewDetailPage />} />
+        <Route path="/app" element={<App />} />
         <Route path="/loading" element={<ProgressBar isLoading={true} />} />
       </Routes>
     </>

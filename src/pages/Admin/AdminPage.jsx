@@ -9,11 +9,10 @@ import Header from "../Home/Header";
 import { message, Table } from "antd";
 import { formatDate } from "../../features/DurationSlice";
 import { Switch, Space } from "antd";
-import { Input, Button } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
-import { DatePicker } from 'antd';
-import moment from 'moment';
-
+import { Input, Button } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import { DatePicker } from "antd";
+import moment from "moment";
 
 function AdminPage() {
   const { user } = useAuth();
@@ -115,12 +114,11 @@ function AdminPage() {
         </div>
       ),
     },
-    
 
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
       render: (text, record) => (
         <div
           className={`flex items-center  hover:cursor-pointer`}
@@ -129,17 +127,28 @@ function AdminPage() {
           {text}
         </div>
       ),
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
         <div style={{ padding: 8 }}>
           <Input
             placeholder={`Search Name`}
             value={selectedKeys[0]}
-            onChange={e => {
+            onChange={(e) => {
               setSelectedKeys(e.target.value ? [e.target.value] : []);
-              confirm(); // Call confirm immediately after setSelectedKeys
             }}
             onPressEnter={() => confirm()}
-            style={{ width: 188, marginBottom: 8, display: 'block' }}
+            style={{
+              width: 188,
+              marginBottom: 8,
+              display: "block",
+              fontSize: "12px",
+              paddingTop: "2px",
+              paddingBottom: "2px",
+            }}
           />
           <Space>
             <Button
@@ -147,38 +156,43 @@ function AdminPage() {
               onClick={() => confirm()}
               icon={<SearchOutlined />}
               size="small"
-              style={{ width: 90 }}
+              style={{ width: 90, fontSize: "12px" }}
             >
               Search
             </Button>
-            <Button onClick={() => clearFilters()} size="small" style={{ width: 90 }}>
+            <Button
+              onClick={() => clearFilters()}
+              size="small"
+              style={{ width: 90, fontSize: "12px" }}
+            >
               Reset
             </Button>
           </Space>
         </div>
       ),
-      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-      onFilter: (value, record) => record.name.toString().toLowerCase().includes(value.toLowerCase()),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        record.name.toString().toLowerCase().includes(value.toLowerCase()),
     },
-   
- 
 
     {
-      title: 'Date',
-      dataIndex: 'created_at',
-      key: 'created_at',
+      title: "Date",
+      dataIndex: "created_at",
+      key: "created_at",
       render: (text, record) => (
         <div onClick={() => handleProjectClick(record)}>{formatDate(text)}</div>
       ),
       ellipsis: true,
-      width: '10%',
-      align: 'center',
+      width: "10%",
+      align: "center",
       filterDropdown: ({ setSelectedKeys, confirm, clearFilters }) => (
         <div style={{ padding: 8 }}>
           <Space direction="vertical">
             <DatePicker.RangePicker
-              onChange={value => setSelectedKeys(value ? [value] : [])}
-              style={{ width: 188, marginBottom: 8, display: 'block' }}
+              onChange={(value) => setSelectedKeys(value ? [value] : [])}
+              style={{ width: 188, marginBottom: 8, display: "block" }}
               format="DD/MM/YYYY" // Add this line
             />
           </Space>
@@ -191,7 +205,11 @@ function AdminPage() {
             >
               Search
             </Button>
-            <Button onClick={() => clearFilters()} size="small" style={{ width: 90 }}>
+            <Button
+              onClick={() => clearFilters()}
+              size="small"
+              style={{ width: 90 }}
+            >
               Reset
             </Button>
           </Space>
@@ -201,7 +219,7 @@ function AdminPage() {
         if (!value) return true;
         const [start, end] = value;
         const createdAt = moment(record.created_at);
-        return createdAt.isBetween(start, end, 'day', '[]');
+        return createdAt.isBetween(start, end, "day", "[]");
       },
     },
     {

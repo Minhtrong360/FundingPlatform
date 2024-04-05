@@ -82,15 +82,15 @@ function Company({
   }, []);
 
   return (
-    <>
+    <> <div className="max-w-xl mx-auto overflow-auto h-screen">
       <div className="max-w-[85rem] px-3 py-20 sm:px-6 lg:px-8 lg:py-14 mx-auto lg:border-r-2 border-r-0">
         <AlertMsg />
+       
+
         <div className="max-w-xl mx-auto">
-          <div className="text-center">
-            <h1 className="text-3xl font-semibold text-gray-800 sm:text-4xl darkTextWhite">
-              Company info
-            </h1>
-            <p className="mt-1 text-gray-600 darkTextGray">
+          <div className="text-left">
+          
+            <p className="mt-1 text-gray-800 font-semibold darkTextGray">
               Please fill basic information about your company.
             </p>
           </div>
@@ -340,7 +340,8 @@ function Company({
             </form>
           </div>
         </div>
-      </div>
+        </div>
+        </div>
     </>
   );
 }

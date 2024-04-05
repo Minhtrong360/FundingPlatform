@@ -245,11 +245,9 @@ export default function ProfileInfo({
       >
         <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
           <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
-            <h2 className="mt-2 text-base text-gray-500 ">
+            <h2 className="mt-2 text-base text-gray-800 ">
               {" "}
-              Our admins need to see all of your project, include your content,
-              your files,... If you agree, we will start to verify as soon as
-              possible.
+            Apply verification 
             </h2>
 
             <div className="mt-4 flex items-center gap-10">
@@ -258,7 +256,7 @@ export default function ProfileInfo({
                 onClick={handleRequiredVerification}
                 className="w-full px-3 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
               >
-                Agree and Continue
+                Agree
               </button>
               <button
                 type="button"
@@ -307,7 +305,7 @@ export default function ProfileInfo({
                   onClick={() => navigate(company?.calendly)}
                   disabled={true}
                 >
-                  Book meeting
+                  Book Meeting
                 </Button>
               </Tooltip>
             ) : (
@@ -315,7 +313,7 @@ export default function ProfileInfo({
                 title={
                   company?.calendly
                     ? ""
-                    : "You need to add a Calendly link or a Google Meeting"
+                    : "You need to add a Calendly link"
                 }
               >
                 <Button
@@ -349,7 +347,7 @@ export default function ProfileInfo({
             </div>
           </div>
           <div className="mt-8">
-            <div className="text-black font-semibold">Key words:</div>
+            <div className="text-black font-semibold">Keywords</div>
 
             <div className="mt-4 grid grid-cols-2 xl:grid-cols-3">
               {company?.keyWords &&

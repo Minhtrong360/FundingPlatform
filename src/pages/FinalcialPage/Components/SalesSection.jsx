@@ -22,6 +22,8 @@ import {
   calculateYearlySales,
 } from "../../../features/SaleSlice";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
+import { supabase } from "../../../supabase";
+import { useAuth } from "../../../context/AuthContext";
 
 const SalesSection = ({
   numberOfMonths,
@@ -314,27 +316,59 @@ const SalesSection = ({
     setIsSaved(true);
     message.success("Data saved successfully!");
   };
-
+  const { user } = useAuth();
   useEffect(() => {
-    if (isSaved) {
-      dispatch(setChannelInputs(tempChannelInputs));
+    const saveData = async () => {
+      try {
+        if (isSaved) {
+          dispatch(setChannelInputs(tempChannelInputs));
 
-      dispatch(setRevenueData(tempRevenueData));
+          dispatch(setRevenueData(tempRevenueData));
 
-      dispatch(setRevenueDeductionData(tempRevenueDeductionData));
+          dispatch(setRevenueDeductionData(tempRevenueDeductionData));
 
-      dispatch(setCogsData(tempCogsData));
+          dispatch(setCogsData(tempCogsData));
 
-      dispatch(setNetRevenueData(tempNetRevenueData));
+          dispatch(setNetRevenueData(tempNetRevenueData));
 
-      dispatch(setGrossProfitData(tempGrossProfitData));
+          dispatch(setGrossProfitData(tempGrossProfitData));
 
-      const sales = calculateYearlySales(tempRevenueData);
+          const sales = calculateYearlySales(tempRevenueData);
 
-      dispatch(setYearlySales(sales));
+          dispatch(setYearlySales(sales));
 
-      setIsSaved(false);
-    }
+          const { data: existingData, error: selectError } = await supabase
+            .from("finance")
+            .select("*")
+            .eq("user_id", user.id);
+          if (selectError) {
+            throw selectError;
+          }
+
+          if (existingData && existingData.length > 0) {
+            const newInputData = JSON.parse(existingData[0].inputData);
+
+            newInputData.channelInputs = tempChannelInputs;
+
+            const { error: updateError } = await supabase
+              .from("finance")
+              .update({ inputData: newInputData })
+              .eq("id", existingData[0]?.id)
+              .select();
+
+            if (updateError) {
+              throw updateError;
+            }
+          }
+        }
+      } catch (error) {
+        message.error(error);
+      } finally {
+        setIsSaved(false);
+      }
+    };
+
+    saveData();
   }, [isSaved]);
 
   useEffect(() => {

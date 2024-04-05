@@ -22,6 +22,7 @@ import {
   SelectItem,
 } from "../../../components/ui/Select";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
+import currencyLists from "../../../components/Currency";
 
 const DurationSelect = ({ handleSubmit }) => {
   const dispatch = useDispatch();
@@ -261,7 +262,7 @@ const DurationSelect = ({ handleSubmit }) => {
           </div>
         </Tooltip>
 
-        <Tooltip title="Input the payroll tax, e.g. 10">
+        {/* <Tooltip title="Input the payroll tax, e.g. 10">
           <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center text-sm">Payroll Tax (%):</span>
             <Input
@@ -275,11 +276,11 @@ const DurationSelect = ({ handleSubmit }) => {
               disabled
             />
           </div>
-        </Tooltip>
+        </Tooltip> */}
 
         <Tooltip title="Select the currency, e.g. USD">
           <div className="grid grid-cols-2 gap-4 mb-3">
-            <span className=" flex items-center text-sm">Currency :</span>
+            <span className="flex items-center text-sm">Currency :</span>
             <Select
               onValueChange={(value) => dispatch(setCurrency(value))}
               value={currency}
@@ -288,15 +289,15 @@ const DurationSelect = ({ handleSubmit }) => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent position="popper">
-                <SelectItem className="hover:cursor-pointer" value="USD">
-                  USD
-                </SelectItem>
-                <SelectItem className="hover:cursor-pointer" value="EUR">
-                  EUR
-                </SelectItem>
-                <SelectItem className="hover:cursor-pointer" value="GBP">
-                  GBP
-                </SelectItem>
+                {currencyLists?.map((option) => (
+                  <SelectItem
+                    key={option.key}
+                    className="hover:cursor-pointer"
+                    value={option.key}
+                  >
+                    {option.key}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

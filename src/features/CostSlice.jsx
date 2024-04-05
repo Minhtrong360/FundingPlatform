@@ -8,7 +8,7 @@ const initialState = {
       costValue: 1000,
       growthPercentage: 0,
       beginMonth: 1,
-      endMonth: 6,
+      endMonth: 36,
       costType: "Sales, Marketing Cost",
     },
     {

@@ -41,6 +41,7 @@ const Login = () => {
       console.log("HandleSignIn error:", error.message);
       message.error(error.message);
     } finally {
+      window.location.reload(); // Tải lại trang sau khi navigate
       setLoading(false);
     }
   };

@@ -336,30 +336,15 @@ export default function ProfileInfo({
           <div className="mt-8">
             <div className="text-black font-semibold">Features:</div>
 
-            <div className=" mt-4 grid grid-cols-2 xl:grid-cols-3 ">
+            <div className=" mt-4  ">
               {company?.industry?.map((industry, index) => (
-                <Tag
+                <Badge
                   key={index}
-                  className="bg-yellow-300 border border-gray-200 truncate text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
+                  className="mx-4 bg-yellow-300 border border-gray-200 truncate text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
                 >
                   {industry}
-                </Tag>
+                </Badge>
               ))}
-            </div>
-          </div>
-          <div className="mt-8">
-            <div className="text-black font-semibold">Key words:</div>
-
-            <div className="mt-4 grid grid-cols-2 xl:grid-cols-3">
-              {company?.keyWords &&
-                company.keyWords.split(",").map((keyWord, index) => (
-                  <Tag
-                    key={index}
-                    className="bg-yellow-300 border border-gray-200 truncate text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
-                  >
-                    {keyWord.trim()}
-                  </Tag>
-                ))}
             </div>
           </div>
         </div>

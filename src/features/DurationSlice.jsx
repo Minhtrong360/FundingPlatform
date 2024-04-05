@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
+import currencyLists from "../components/Currency";
 
 const initialState = {
   selectedDuration: "3 years",
   startingCashBalance: 0,
   status: "active",
-  industry: "",
+  industry: "Technology",
   incomeTax: 0,
   payrollTax: 0,
   currency: "USD",
@@ -97,6 +98,11 @@ export function joinArrayToString(array) {
     // và phân cách bằng dấu phẩy và khoảng trắng
     return array.join(", ");
   }
+}
+
+export function getCurrencyLabelByKey(key) {
+  const currencyObj = currencyLists.find((item) => item.key === key);
+  return currencyObj ? currencyObj.label : null;
 }
 
 export default durationSelectSlice.reducer;

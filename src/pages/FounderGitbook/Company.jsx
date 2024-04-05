@@ -207,8 +207,8 @@ function Company({
                     type="text"
                     required
                   />
-                  <div>
-                    <InputField
+                  {/* <div> */}
+                  {/* <InputField
                       label="Profile Image link"
                       id="project_url"
                       name="project_url"
@@ -216,18 +216,18 @@ function Company({
                       onChange={handleInputChange}
                       type="text"
                       required
-                    />
-                    {/* Add file input for project image */}
-                    <span className="py-1 px-2 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60">
+                    /> */}
+                  {/* Add file input for project image */}
+                  {/* <span className="py-1 px-2 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60">
                       {" "}
-                    </span>
-                    <input
+                    </span> */}
+                  {/* <input
                       type="file"
                       accept="image/*"
                       onChange={handleProjectImageUpload}
                       className="py-1 px-2 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60"
-                    />
-                  </div>
+                    /> */}
+                  {/* </div> */}
 
                   <div>
                     <InputField

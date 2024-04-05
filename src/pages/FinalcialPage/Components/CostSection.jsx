@@ -17,6 +17,8 @@ import {
 
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { supabase } from "../../../supabase";
+import { useAuth } from "../../../context/AuthContext";
 
 const CostSection = ({
   numberOfMonths,
@@ -247,11 +249,44 @@ const CostSection = ({
   };
 
   // useEffect to update cost inputs when data is saved
+  const { user } = useAuth();
   useEffect(() => {
-    if (isSaved) {
-      dispatch(setCostInputs(tempCostInput));
-      setIsSaved(false);
-    }
+    const saveData = async () => {
+      try {
+        if (isSaved) {
+          dispatch(setCostInputs(tempCostInput));
+
+          const { data: existingData, error: selectError } = await supabase
+            .from("finance")
+            .select("*")
+            .eq("user_id", user.id);
+          if (selectError) {
+            throw selectError;
+          }
+
+          if (existingData && existingData.length > 0) {
+            const newInputData = JSON.parse(existingData[0].inputData);
+
+            newInputData.costInputs = tempCostInput;
+
+            const { error: updateError } = await supabase
+              .from("finance")
+              .update({ inputData: newInputData })
+              .eq("id", existingData[0]?.id)
+              .select();
+
+            if (updateError) {
+              throw updateError;
+            }
+          }
+        }
+      } catch (error) {
+        message.error(error);
+      } finally {
+        setIsSaved(false);
+      }
+    };
+    saveData();
   }, [isSaved]);
 
   return (

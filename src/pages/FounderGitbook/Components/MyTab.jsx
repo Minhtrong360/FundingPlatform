@@ -1,4 +1,4 @@
-import { Tabs, message } from "antd";
+import { Badge, Tabs, Tag, message } from "antd";
 import Modal from "react-modal";
 import {
   BlockNoteView,
@@ -23,7 +23,7 @@ import { useAuth } from "../../../context/AuthContext";
 import LoadingButtonClick from "../../../components/LoadingButtonClick";
 import FilesList from "../FilesList";
 
-const MyTab = ({ blocks, setBlocks }) => {
+const MyTab = ({ blocks, setBlocks, company }) => {
   const [activeTab, setActiveTab] = useState("Your profile");
   const [youtubeLink, setYoutubeLink] = useState("Add wanted youtube url");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -264,10 +264,25 @@ const MyTab = ({ blocks, setBlocks }) => {
           theme={"light"}
           className="w-full lg:w-12/12 mt-8"
         />
+        <div className="mt-28">
+          <div className="text-black font-semibold">Key words:</div>
+
+          <div className="mt-2">
+            {company?.keyWords &&
+              company.keyWords.split(",").map((keyWord, index) => (
+                <Badge
+                  key={index}
+                  className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
+                >
+                  {keyWord.trim()}
+                </Badge>
+              ))}
+          </div>
+        </div>
         {user?.id === currentProject?.user_id ||
         currentProject?.collabs?.includes(user.email) ? (
           <button
-            className="mt-28 hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+            className="mt-8 hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
             onClick={handleSave}
           >
             Save

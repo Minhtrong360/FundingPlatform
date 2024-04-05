@@ -112,7 +112,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           setStartingCashBalance(data.DurationSelect.startingCashBalance)
         );
       dispatch(setStatus(data.DurationSelect.status));
-      dispatch(setIndustry(data.DurationSelect.industry));
+      // dispatch(setIndustry(data.DurationSelect.industry));
       // dispatch(setStartMonth(data.DurationSelect.startMonth));
       // dispatch(setStartYear(data.DurationSelect.startYear));
       dispatch(setIncomeTax(data.DurationSelect.incomeTax));

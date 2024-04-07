@@ -83,9 +83,15 @@ export const calculateCostData = (tempCostInput, numberOfMonths) => {
         if (costInput.growthFrequency === "Monthly") {
           monthlyCosts.push({ month: month, cost: currentCost });
           currentCost *= 1 + parseFloat(costInput.growthPercentage) / 100;
-        } else if (costInput.growthFrequency === "Annually") {
-          if (month % 12 === 1) {
-            currentCost *= 1 + parseFloat(costInput.growthPercentage) / 100;
+        } else if (costInput.growthFrequency === "Annually" || costInput.growthFrequency === "Quarterly" || costInput.growthFrequency === "Semi-Annually") {
+          let frequency = 12;
+          if (costInput.growthFrequency === "Quarterly") frequency = 3;
+          else if (costInput.growthFrequency === "Semi-Annually") frequency = 6;
+
+          if (month === costInput.beginMonth || (month > costInput.beginMonth && (month - costInput.beginMonth) % frequency === 0)) {
+            if (month !== costInput.beginMonth) {
+              currentCost *= 1 + parseFloat(costInput.growthPercentage) / 100;
+            }
           }
           monthlyCosts.push({ month: month, cost: currentCost });
         }
@@ -101,6 +107,8 @@ export const calculateCostData = (tempCostInput, numberOfMonths) => {
   });
   return allCosts;
 };
+
+
 
 export const { setCostInputs, setCostData, setIsSaved } = costSlice.actions;
 

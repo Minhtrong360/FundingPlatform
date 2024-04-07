@@ -19,6 +19,13 @@ import {
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { supabase } from "../../../supabase";
 import { useAuth } from "../../../context/AuthContext";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "../../../components/ui/Select";
 
 const CustomerSection = ({
   numberOfMonths,
@@ -57,6 +64,7 @@ const CustomerSection = ({
       id: newId,
       customersPerMonth: 100,
       growthPerMonth: 2,
+      customerGrowthFrequency: "Monthly", 
       channelName: "New channel",
       beginMonth: 1,
       endMonth: 15,
@@ -86,7 +94,7 @@ const CustomerSection = ({
       return input;
     });
     setTempCustomerInputs(newInputs);
-  };
+  };  
 
   useEffect(() => {
     const calculatedData = calculateCustomerGrowth(
@@ -166,20 +174,38 @@ const CustomerSection = ({
         channelName: `${curr.channelName} (Add)`,
       }; // Update the current channel row to Channel (Add)
 
+      
       let currentCustomers = parseFloat(customerInput.customersPerMonth);
-      for (let i = 1; i <= numberOfMonths; i++) {
-        if (i >= customerInput.beginMonth && i <= customerInput.endMonth) {
-          const channelValue = currentCustomers.toFixed(0); // Calculate channel value
-          channelAddRow[`month${i}`] = formatNumber(channelValue); // Assign channel value to Channel (Add) row of the current month
-          currentCustomers *=
-            1 + parseFloat(customerInput.growthPerMonth) / 100;
-        } else {
-          channelAddRow[`month${i}`] = "0.00"; // Set to 0 for months outside the channel's active period
+for (let i = 1; i <= numberOfMonths; i++) {
+  if (i >= customerInput.beginMonth && i <= customerInput.endMonth) {
+    if (customerInput.customerGrowthFrequency === "Monthly") {
+      channelAddRow[`month${i}`] = formatNumber(currentCustomers.toFixed(0));
+      currentCustomers *= 1 + parseFloat(customerInput.growthPerMonth) / 100;
+    } else if (["Annually", "Quarterly", "Semi-Annually"].includes(customerInput.customerGrowthFrequency)) {
+      let frequency = 12;
+      if (customerInput.customerGrowthFrequency === "Quarterly") frequency = 3;
+      else if (customerInput.customerGrowthFrequency === "Semi-Annually") frequency = 6;
+
+      // Include the first month in the calculation interval
+      if (i === customerInput.beginMonth || ((i - customerInput.beginMonth) % frequency === 0)) {
+        if (i !== customerInput.beginMonth) {
+          currentCustomers *= 1 + parseFloat(customerInput.growthPerMonth) / 100;
         }
-        startRow[`month${i}`] = "0.00";
-        beginRow[`month${i}`] = "0.00";
-        churnRow[`month${i}`] = "0.00";
+        channelAddRow[`month${i}`] = formatNumber(currentCustomers.toFixed(0));
+      } else {
+        channelAddRow[`month${i}`] = formatNumber(currentCustomers.toFixed(0));
       }
+    }
+  } else {
+    channelAddRow[`month${i}`] = "0.00";
+  }
+  startRow[`month${i}`] = "0.00";
+  beginRow[`month${i}`] = "0.00";
+  churnRow[`month${i}`] = "0.00";
+}
+
+
+
 
       if (customerInput) {
         startRow[`month${customerInput.beginMonth}`] = formatNumber(
@@ -406,9 +432,9 @@ const CustomerSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    New Customer /month:
-                  </span>
+                 <span className="flex items-center text-sm">
+  Adding (First month)
+</span>
                   <Input
                     className="col-start-2 border-gray-200"
                     value={formatNumber(input.customersPerMonth)}
@@ -425,7 +451,7 @@ const CustomerSection = ({
 
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
-                    Growth/month (%):
+                    Growth rate (%):
                   </span>
                   <Input
                     className="col-start-2 border-gray-200"
@@ -440,6 +466,38 @@ const CustomerSection = ({
                     type="text"
                   />
                 </div>
+
+                <div className="grid grid-cols-2 gap-4 mb-3">
+        <span className="flex items-center text-sm">Frequency:</span>
+        <Select
+          className="border-gray-200"
+          onValueChange={(value) =>
+            handleInputChange(input?.id, "customerGrowthFrequency", value)
+          }
+          value={input.customerGrowthFrequency}
+        >
+          <SelectTrigger
+            id={`select-customerGrowthFrequency-${input?.id}`}
+            className="border-solid border-[1px] border-gray-200"
+          >
+            <SelectValue placeholder="Select Growth Frequency" />
+          </SelectTrigger>
+          <SelectContent position="popper">
+            <SelectItem value="Monthly">
+              Monthly
+            </SelectItem>
+            <SelectItem value="Quarterly">
+              Quarterly
+            </SelectItem>
+            <SelectItem value="Semi-Annually">
+              Semi-Annually
+            </SelectItem>
+            <SelectItem value="Annually">
+              Annually
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">

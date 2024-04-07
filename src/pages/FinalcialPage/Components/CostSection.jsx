@@ -380,30 +380,37 @@ const CostSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm"> Frequency:</span>
-                  <Select
-                    className="border-gray-200"
-                    onValueChange={(value) =>
-                      handleCostInputChange(input?.id, "growthFrequency", value)
-                    }
-                    value={input.growthFrequency}
-                  >
-                    <SelectTrigger
-                      id={`select-growthFrequency-${input?.id}`}
-                      className="border-solid border-[1px] border-gray-200"
-                    >
-                      <SelectValue placeholder="Select Growth Frequency" />
-                    </SelectTrigger>
-                    <SelectContent position="popper">
-                      <SelectItem value="Monthly">
-                        Monthly
-                      </SelectItem>
-                      <SelectItem value="Annually">
-                        Annually
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+  <span className="flex items-center text-sm">Frequency:</span>
+  <Select
+    className="border-gray-200"
+    onValueChange={(value) =>
+      handleCostInputChange(input?.id, "growthFrequency", value)
+    }
+    value={input.growthFrequency}
+  >
+    <SelectTrigger
+      id={`select-growthFrequency-${input?.id}`}
+      className="border-solid border-[1px] border-gray-200"
+    >
+      <SelectValue placeholder="Select Growth Frequency" />
+    </SelectTrigger>
+    <SelectContent position="popper">
+      <SelectItem value="Monthly">
+        Monthly
+      </SelectItem>
+      <SelectItem value="Quarterly">
+        Quarterly
+      </SelectItem>
+      <SelectItem value="Semi-Annually">
+        Semi-Annually
+      </SelectItem>
+      <SelectItem value="Annually">
+        Annually
+      </SelectItem>
+    </SelectContent>
+  </Select>
+</div>
+
 
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">

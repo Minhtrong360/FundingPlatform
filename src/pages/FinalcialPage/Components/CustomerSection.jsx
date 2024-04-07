@@ -186,12 +186,11 @@ for (let i = 1; i <= numberOfMonths; i++) {
       if (customerInput.customerGrowthFrequency === "Quarterly") frequency = 3;
       else if (customerInput.customerGrowthFrequency === "Semi-Annually") frequency = 6;
 
-      // Include the first month in the calculation interval
-      if (i === customerInput.beginMonth || ((i - customerInput.beginMonth) % frequency === 0)) {
+      if (i === customerInput.beginMonth || (i > customerInput.beginMonth && (i - customerInput.beginMonth) % frequency === 0)) {
+        channelAddRow[`month${i}`] = formatNumber(currentCustomers.toFixed(0));
         if (i !== customerInput.beginMonth) {
           currentCustomers *= 1 + parseFloat(customerInput.growthPerMonth) / 100;
         }
-        channelAddRow[`month${i}`] = formatNumber(currentCustomers.toFixed(0));
       } else {
         channelAddRow[`month${i}`] = formatNumber(currentCustomers.toFixed(0));
       }
@@ -206,7 +205,6 @@ for (let i = 1; i <= numberOfMonths; i++) {
 
 
 
-
       if (customerInput) {
         startRow[`month${customerInput.beginMonth}`] = formatNumber(
           parseFloat(customerInput.beginCustomer).toFixed(0)
@@ -214,18 +212,23 @@ for (let i = 1; i <= numberOfMonths; i++) {
         beginRow[`month${customerInput.beginMonth}`] =
           startRow[`month${customerInput.beginMonth}`];
 
-        for (let i = customerInput.beginMonth; i <= numberOfMonths; i++) {
-          if (i > customerInput.beginMonth) {
-            beginRow[`month${i}`] = formatNumber(endRow[`month${i - 1}`]); // Set Begin row of month i to End row of month i-1
+          for (let i = customerInput.beginMonth; i <= numberOfMonths; i++) {
+            if (i > customerInput.beginMonth) {
+              beginRow[`month${i}`] = formatNumber(endRow[`month${i - 1}`]); // Set Begin row of month i to End row of month i-1
+            }
+            endRow[`month${i}`] = formatNumber(endRow[`month${i}`]);
+            const beginValue = beginRow[`month${i}`] || 0; // Begin value for the current month
+            const addValue = parseNumber(channelAddRow[`month${i}`]) || 0; // Add value for the current month
+            const churnValue = (
+              parseNumber(beginValue) *
+              (customerInput.churnRate / 100)
+            ).toFixed(0); // Calculate churn value
+            churnRow[`month${i}`] = churnValue; // Assign churn value to Churn row of the current month
+            endRow[`month${i}`] = formatNumber(
+              parseNumber(beginValue) + parseNumber(addValue) - parseNumber(churnValue)
+            ); // Update End row to Begin + Add - Churn
           }
-          endRow[`month${i}`] = formatNumber(endRow[`month${i}`]);
-          const beginValue = beginRow[`month${i}`] || 0; // Begin value for the current month
-          const churnValue = (
-            parseNumber(beginValue) *
-            (customerInput.churnRate / 100)
-          ).toFixed(0); // Calculate churn value
-          churnRow[`month${i}`] = churnValue; // Assign churn value to Churn row of the current month
-        }
+          
       }
 
       return [startRow, beginRow, channelAddRow, churnRow, endRow];

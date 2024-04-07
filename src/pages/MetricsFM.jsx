@@ -30,7 +30,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
 
             <div className="mt-1 flex items-center gap-x-2">
               <div className="flex flex-col xl:flex-row xl:items-center items-start">
-                <h3 className="text-sm sm:text-3xl font-bold text-blue-600 my-2">
+                <h3 className="text-sm sm:text-3xl font-bold text-black my-2">
                   {formatNumber(Math.round(yearlyAverageCustomers[0], 2))}
                 </h3>
               </div>
@@ -73,7 +73,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
 
             <div className="mt-1 flex items-center gap-x-2">
               <div className="flex flex-col xl:flex-row xl:items-center items-start">
-                <h3 className="text-sm sm:text-3xl font-bold text-blue-600 my-2 ">
+                <h3 className="text-sm sm:text-3xl font-bold text-black my-2 ">
                   <span>{getCurrencyLabelByKey(currency)}&nbsp;</span>
                   {new Intl.NumberFormat("en-US", {
                     minimumFractionDigits: 0,
@@ -116,7 +116,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
 
             <div className="mt-1 flex items-center gap-x-2">
               <div className="flex flex-col xl:flex-row xl:items-center items-start">
-                <h3 className="text-sm sm:text-3xl font-bold text-blue-600 my-2 ">
+                <h3 className="text-sm sm:text-3xl font-bold text-black my-2 ">
                   <span>{getCurrencyLabelByKey(currency)}&nbsp;</span>
                   {new Intl.NumberFormat("en-US", {
                     minimumFractionDigits: 0,

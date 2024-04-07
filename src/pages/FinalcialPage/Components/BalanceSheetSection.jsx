@@ -943,7 +943,7 @@ function BalanceSheetSection({ numberOfMonths }) {
             columns={generateBalanceSheetTableColumns(year)}
             pagination={false}
           />
-          <div>
+          {/* <div>
             <h4>Financial Ratios for {year.year}</h4>
             {(() => {
               const dataSourceForYear = getDataSourceForYearBalanceSheet(
@@ -982,7 +982,7 @@ function BalanceSheetSection({ numberOfMonths }) {
                 </div>
               );
             })()}
-          </div>
+          </div> */}
         </div>
       ))}
     </div>

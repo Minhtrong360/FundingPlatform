@@ -459,7 +459,7 @@ const AllChartSections = ({
           <Card className="flex flex-col">
             <div>
               <div className="text-base">Total User</div>
-              <p className="text-sm sm:text-3xl font-bold text-blue-600 my-2">
+              <p className="text-sm sm:text-3xl font-bold text-black my-2">
                 {formatNumber(Math.round(sumArray(yearlyAverageCustomers)))}
               </p>
             </div>
@@ -473,7 +473,7 @@ const AllChartSections = ({
           <Card className="flex flex-col">
             <div>
               <div className="text-base">Total Revenue</div>
-              <p className="text-sm sm:text-3xl font-bold text-blue-600 my-2">
+              <p className="text-sm sm:text-3xl font-bold text-black my-2">
                 {getCurrencyLabelByKey(currency)}&nbsp;
                 {formatNumber(Math.round(sumArray(yearlySales)))}
               </p>

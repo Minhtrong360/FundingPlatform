@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { saveAs } from "file-saver";
+import Joyride from "react-joyride";
+
 
 import DurationSelect from "./Components/DurationSelect";
 import CustomerSection from "./Components/CustomerSection";
@@ -517,8 +519,53 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     setActiveTab(tabName);
   };
 
+  const [run, setRun] = useState(false);
+
+  useEffect(() => {
+    setRun(true); // Initialize Joyride on component mount
+  }, []);
+
+  const handleJoyrideCallback = (data) => {
+    const { status } = data;
+    if (status === "finished") {
+      // Handle the tour completion as needed
+    }
+  };
+
+  
+
   return (
     <div className="min-h-screen">
+      <Joyride
+        steps={[
+          {
+            target: ".cursor-pointer[onClick*='overview']",
+            content: "This is the Overview tab. It provides a summary of your financial data.",
+            disableBeacon: true,
+          },
+          {
+            target: ".cursor-pointer[onClick*='customer']",
+            content: "This is the Customer tab. It allows you to manage customer-related data.",
+            disableBeacon: true,
+          },
+          // Add steps for other tabs as needed
+        ]}
+        run={run}
+        continuous
+        scrollToFirstStep
+        showProgress
+        showSkipButton
+        disableOverlayClose
+        disableScrolling
+        disableCloseOnEsc
+        callback={handleJoyrideCallback}
+        styles={{
+          options: {
+            zIndex: 10000,
+          },
+        }}
+      />
+
       <AlertMsg />
       {spinning ? (
         <ProgressBar spinning={spinning} isLoading={isLoading} />

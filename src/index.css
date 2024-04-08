@@ -180,7 +180,8 @@ code {
   font-weight: 400 !important;
   color: #1a202c !important;
   line-height: 1.6 !important;
-}
+  letter-spacing: -0.5px !important; /* Adjust this value as needed */
+} 
 
 .bn-block-content {
   padding: 12px !important;

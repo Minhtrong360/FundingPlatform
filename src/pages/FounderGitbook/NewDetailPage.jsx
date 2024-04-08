@@ -105,7 +105,7 @@ export default function NewDetailPage() {
         blocks={blocks}
       />
 
-      <div className="mt-4 xl:container w-full mx-auto px-4 flex flex-col lg:flex-row">
+      <div className="mt-4 xl:container w-full mx-auto sm:px-4 pl-8 flex flex-col lg:flex-row">
         <MyTab blocks={blocks} setBlocks={setBlocks} company={company} />
 
         <Author company={company} />

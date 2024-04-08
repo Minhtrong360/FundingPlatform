@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { saveAs } from "file-saver";
 import Joyride from "react-joyride";
 
-
 import DurationSelect from "./Components/DurationSelect";
 import CustomerSection from "./Components/CustomerSection";
 import SalesSection from "./Components/SalesSection";
@@ -532,23 +531,76 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     }
   };
 
-  
-
   return (
     <div className="min-h-screen">
       <Joyride
         steps={[
           {
             target: ".cursor-pointer[onClick*='overview']",
-            content: "This is the Overview tab. It provides a summary of your financial data.",
+            content:
+              "This is the Overview tab. It provides a summary of your financial data.",
             disableBeacon: true,
           },
           {
             target: ".cursor-pointer[onClick*='customer']",
-            content: "This is the Customer tab. It allows you to manage customer-related data.",
+            content:
+              "This is the Customer tab. It allows you to manage customer-related data.",
             disableBeacon: true,
           },
-          // Add steps for other tabs as needed
+          {
+            target: ".cursor-pointer[onClick*='sales']",
+            content:
+              "This is the Sales tab. It helps you track your sales performance.",
+            disableBeacon: true,
+          },
+          {
+            target: ".cursor-pointer[onClick*='cost']",
+            content:
+              "This is the Cost tab. It helps you analyze your costs and expenses.",
+            disableBeacon: true,
+          },
+          {
+            target: ".cursor-pointer[onClick*='personnel']",
+            content:
+              "This is the Personnel tab. It allows you to manage your workforce.",
+            disableBeacon: true,
+          },
+          {
+            target: ".cursor-pointer[onClick*='investment']",
+            content:
+              "This is the Investment tab. It helps you track your investments.",
+            disableBeacon: true,
+          },
+          {
+            target: ".cursor-pointer[onClick*='loan']",
+            content:
+              "This is the Loan tab. It allows you to manage your loans and debts.",
+            disableBeacon: true,
+          },
+          {
+            target: ".cursor-pointer[onClick*='fundraising']",
+            content:
+              "This is the Fundraising tab. It helps you manage fundraising activities.",
+            disableBeacon: true,
+          },
+          {
+            target: ".cursor-pointer[onClick*='profitAndLoss']",
+            content:
+              "This is the Profit and Loss tab. It provides insights into your profitability.",
+            disableBeacon: true,
+          },
+          {
+            target: ".cursor-pointer[onClick*='cashFlow']",
+            content:
+              "This is the Cash Flow tab. It helps you monitor your cash flow.",
+            disableBeacon: true,
+          },
+          {
+            target: ".cursor-pointer[onClick*='balanceSheet']",
+            content:
+              "This is the Balance Sheet tab. It provides an overview of your financial position.",
+            disableBeacon: true,
+          },
         ]}
         run={run}
         continuous

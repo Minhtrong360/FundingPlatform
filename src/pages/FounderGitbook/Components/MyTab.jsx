@@ -264,7 +264,7 @@ const MyTab = ({ blocks, setBlocks, company }) => {
         <BlockNoteView
           editor={editor}
           theme={"light"}
-          className="w-full lg:w-12/12 "
+          className="w-full lg:w-12/12"
         />
         <div className="mt-28">
           <div className="text-black font-semibold">Key words:</div>
@@ -385,7 +385,7 @@ const MyTab = ({ blocks, setBlocks, company }) => {
               </nav>
             </div>
           </aside>
-          <div className="w-full  py-8 px-4 lg:px-8">
+          <div className="w-full  py-8 px-0 md:px-8">
             {/* Content */}
             {tabContents[activeTab]}
           </div>

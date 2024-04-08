@@ -255,94 +255,111 @@ const MyTab = ({ blocks, setBlocks, company }) => {
     }
   };
 
-  const isOwner = user?.id === currentProject?.user_id;
+  const isOwner =
+    user?.id === currentProject?.user_id ||
+    currentProject?.collabs?.includes(user.email);
+
+  const isDemo =
+    params.id === "3ec3f142-f33c-4977-befd-30d4ce2b764d" ? true : false;
+
+  useEffect(() => {
+    if (isDemo) {
+      setActiveTab("Sample PitchDeck");
+    } else {
+      setActiveTab("Your Profile");
+    }
+  }, [isDemo]);
 
   const tabContents = {
-    "Your Profile": (
-      <div>
-        {" "}
-        <BlockNoteView
-          editor={editor}
-          theme={"light"}
-          className="w-full lg:w-12/12"
-        />
-        <div className="mt-28">
-          <div className="text-black font-semibold">Key words:</div>
-
-          <div className="mt-2">
-            {company?.keyWords &&
-              company.keyWords.split(",").map((keyWord, index) => (
-                <Badge
-                  key={index}
-                  className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
-                >
-                  {keyWord.trim()}
-                </Badge>
-              ))}
-          </div>
-        </div>
-        {user?.id === currentProject?.user_id ||
-        currentProject?.collabs?.includes(user.email) ? (
-          <button
-            className="mt-8 hover:cursor-pointer py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
-            onClick={handleSave}
-          >
-            Save profile
-          </button>
-        ) : null}
-        <Modal
-          ariaHideApp={false}
-          isOpen={isModalOpen}
-          onRequestClose={closeModal}
-          contentLabel="YouTube Link Modal"
-          style={{
-            overlay: {
-              backgroundColor: "gray", // Màu nền overlay
-              position: "fixed", // Để nền overlay cố định
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 9999, // Chỉ số z để đảm bảo nó hiển thị trên cùng
-            },
-            content: {
-              border: "none", // Để ẩn border của nội dung Modal
-              background: "none", // Để ẩn background của nội dung Modal
-              margin: "auto", // Để căn giữa
-            },
-          }}
-        >
-          <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-            <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
-              <h2 className="text-lg font-medium leading-6 text-gray-800 capitalize">
-                Enter YouTube Video URL
-              </h2>
-              <input
-                className="block w-full px-4 py-3 text-sm text-gray-700 border rounded-md"
-                type="text"
-                value={youtubeLink}
-                onChange={(e) => setYoutubeLink(e.target.value)}
+    ...(isDemo && user.email !== "ha.pham@beekrowd.com"
+      ? {}
+      : {
+          "Your Profile": (
+            <div>
+              {" "}
+              <BlockNoteView
+                editor={editor}
+                theme={"light"}
+                className="w-full lg:w-12/12"
               />
-              <div className="mt-4 flex items-center gap-10">
-                <button
-                  className="w-full px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
-                  onClick={closeModal}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="w-full px-3 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
-                  onClick={handleInsertYouTubeLink}
-                >
-                  Insert
-                </button>
+              <div className="mt-28">
+                <div className="text-black font-semibold">Key words:</div>
+
+                <div className="mt-2">
+                  {company?.keyWords &&
+                    company.keyWords.split(",").map((keyWord, index) => (
+                      <Badge
+                        key={index}
+                        className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
+                      >
+                        {keyWord.trim()}
+                      </Badge>
+                    ))}
+                </div>
               </div>
+              {user?.id === currentProject?.user_id ||
+              currentProject?.collabs?.includes(user.email) ? (
+                <button
+                  className="mt-8 hover:cursor-pointer py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                  onClick={handleSave}
+                >
+                  Save profile
+                </button>
+              ) : null}
+              <Modal
+                ariaHideApp={false}
+                isOpen={isModalOpen}
+                onRequestClose={closeModal}
+                contentLabel="YouTube Link Modal"
+                style={{
+                  overlay: {
+                    backgroundColor: "gray", // Màu nền overlay
+                    position: "fixed", // Để nền overlay cố định
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    zIndex: 9999, // Chỉ số z để đảm bảo nó hiển thị trên cùng
+                  },
+                  content: {
+                    border: "none", // Để ẩn border của nội dung Modal
+                    background: "none", // Để ẩn background của nội dung Modal
+                    margin: "auto", // Để căn giữa
+                  },
+                }}
+              >
+                <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
+                  <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
+                    <h2 className="text-lg font-medium leading-6 text-gray-800 capitalize">
+                      Enter YouTube Video URL
+                    </h2>
+                    <input
+                      className="block w-full px-4 py-3 text-sm text-gray-700 border rounded-md"
+                      type="text"
+                      value={youtubeLink}
+                      onChange={(e) => setYoutubeLink(e.target.value)}
+                    />
+                    <div className="mt-4 flex items-center gap-10">
+                      <button
+                        className="w-full px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+                        onClick={closeModal}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        className="w-full px-3 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
+                        onClick={handleInsertYouTubeLink}
+                      >
+                        Insert
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </Modal>
             </div>
-          </div>
-        </Modal>
-      </div>
-    ),
-    ...(isOwner
+          ),
+        }),
+    ...(isOwner || isDemo
       ? {
           "Sample PitchDeck": (
             <div>

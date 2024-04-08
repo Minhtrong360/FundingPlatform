@@ -246,8 +246,8 @@ function FilesList() {
   };
 
   return (
-    <main className="max-w-4xl ml-2">
-      <section className="container px-4 mx-auto">
+    <main className="w-full ml-2">
+      <section className="px-4 mx-auto">
         <div className="flex justify-end my-5 items-end">
           <AddLinkFile
             isLoading={isLoading}

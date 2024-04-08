@@ -301,7 +301,7 @@ export default function ProfileInfo({
                   className={`bg-blue-600 text-white ${
                     company?.calendly ? "" : "bg-blue-600"
                   }`}
-                  onClick={() => navigate(company?.calendly)}
+                  onClick={() => window.open(company?.calendly, "_blank")}
                   disabled={true}
                 >
                   Book Meeting
@@ -317,7 +317,7 @@ export default function ProfileInfo({
                   className={`bg-blue-600 text-white ${
                     company?.calendly ? "" : "bg-blue-600"
                   }`}
-                  onClick={() => navigate(company?.calendly)}
+                  onClick={() => window.open(company?.calendly, "_blank")}
                   // disabled={company?.calendly ? false : true}
                 >
                   Book meeting

@@ -145,6 +145,8 @@ const AuthProvider = ({ children }) => {
     }
   }, [currentUser]);
 
+  console.log("subscribe", subscribed);
+
   return (
     <AuthContext.Provider
       value={{

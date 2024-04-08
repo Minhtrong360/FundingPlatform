@@ -336,7 +336,13 @@ function CompanySetting() {
     setIsLoading(false);
   };
 
-  const typeOfferingOptions = ["Lending", "Investment", "M&A", "Convertible"];
+  const typeOfferingOptions = [
+    "Lending",
+    "Investment",
+    "M&A",
+    "Convertible",
+    "Non-profit",
+  ];
 
   useEffect(() => {
     // Lấy dự án từ Supabase
@@ -621,7 +627,7 @@ function CompanySetting() {
             canClick={canClick}
           /> */}
 
-          <div className="text-4xl text-red-600 font-bold leading-tight sm:px-6 lg:px-8 mt-16">
+          <div className="text-4xl text-red-600 font-bold leading-tight sm:px-6 lg:px-8 sm:mt-16 mt-8 px-4">
             {" "}
             Preview
           </div>

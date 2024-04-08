@@ -84,7 +84,7 @@ function Company({
   return (
     <>
       <div className="max-w-xl mx-auto overflow-auto h-screen">
-        <div className="max-w-[85rem] px-3 py-20 sm:px-6 lg:px-8 lg:py-14 mx-auto lg:border-r-2 border-r-0">
+        <div className="max-w-[85rem] px-4 py-8 mx-auto ">
           <AlertMsg />
 
           <div className="max-w-xl mx-auto">

@@ -602,7 +602,7 @@ function NewUserPage() {
                     </div>
                   )}
 
-                  {userData.type === "Institutional" &&
+                  {/* {userData.type === "Institutional" &&
                     userData.roll === "Investor" && (
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div className="flex flex-col">
@@ -632,7 +632,7 @@ function NewUserPage() {
                           </div>
                         </div>
                       </div>
-                    )}
+                    )} */}
                   <div>
                     <label
                       htmlFor="hs-about-hire-us-2"
@@ -649,6 +649,7 @@ function NewUserPage() {
                       onChange={handleInputChange}
                     ></textarea>
                   </div>
+
                   <div className="mt-4">
                     <h3 className="text-sm mt-4">Social Profile</h3>
                     <div className="flex items-center mt-2">

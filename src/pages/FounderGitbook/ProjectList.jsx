@@ -325,24 +325,6 @@ function ProjectList({ projects }) {
           Are you sure you want to delete this project?
         </Modal>
       )}
-      {/* <section className="container px-4 mx-auto">
-        <div className="flex flex-col">
-          <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-              <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
-                <Table
-                  columns={columns}
-                  dataSource={dataSource}
-                  pagination={false}
-                  rowKey="id"
-                  size="small"
-                  bordered
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section> */}
 
       <section className="container px-4 mx-auto">
         <h2 className="text-xl font-semibold mb-4">My Projects</h2>

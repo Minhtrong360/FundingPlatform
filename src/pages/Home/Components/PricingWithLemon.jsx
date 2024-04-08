@@ -216,9 +216,10 @@ const PricingWithLemon = () => {
         message.error("No internet access.");
         return;
       }
+      console.log("checkoutUrl", plan.buy_now_url);
       const checkoutUrl = plan.buy_now_url;
 
-      window.open(checkoutUrl, "_blank");
+      window.location.href = checkoutUrl;
     } catch (error) {
       message.error(error.message);
       console.error(error);

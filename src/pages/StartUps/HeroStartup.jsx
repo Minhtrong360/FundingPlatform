@@ -24,7 +24,7 @@ const HeroStartup = () => {
     <section className="bg-white mt-12">
       {" "}
       {/* Add margin-top */}
-      <div className="container px-6 py-16 mx-auto text-center">
+      <div className="container sm:px-6 px-0 py-16 mx-auto text-center">
         <div className="max-w-2xl mx-auto">
           <h1 className="block text-3xl font-extrabold leading-relaxed text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl">
             <span className="text-blue-600 bg-yellow-300 h-6">

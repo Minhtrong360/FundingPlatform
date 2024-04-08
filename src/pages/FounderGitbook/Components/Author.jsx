@@ -204,7 +204,7 @@ function Author({ company }) {
 
   return (
     <aside className="max-w-sm lg:w-1/4 py-5 px-1">
-      <div className="sticky top-8 space-y-4 border-2 p-3">
+      <div className="sticky top-8 space-y-4 border-2 border-gray-200 rounded-md p-3">
         {isLoading ? (
           <LoadingButtonClick />
         ) : (

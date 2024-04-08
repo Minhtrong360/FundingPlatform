@@ -336,7 +336,13 @@ function CompanySetting() {
     setIsLoading(false);
   };
 
-  const typeOfferingOptions = ["Lending", "Investment", "M&A", "Convertible"];
+  const typeOfferingOptions = [
+    "Lending",
+    "Investment",
+    "M&A",
+    "Convertible",
+    "Non-profit",
+  ];
 
   useEffect(() => {
     // Lấy dự án từ Supabase

@@ -64,7 +64,7 @@ const CustomerSection = ({
       id: newId,
       customersPerMonth: 100,
       growthPerMonth: 2,
-      customerGrowthFrequency: "Monthly", 
+      customerGrowthFrequency: "Monthly",
       channelName: "New channel",
       beginMonth: 1,
       endMonth: 15,
@@ -94,8 +94,7 @@ const CustomerSection = ({
       return input;
     });
     setTempCustomerInputs(newInputs);
-  };  
-  
+  };
 
   useEffect(() => {
     const calculatedData = calculateCustomerGrowth(
@@ -141,74 +140,94 @@ const CustomerSection = ({
   });
 
   const customerTableData = Object.values(transformedCustomerTableData)
-  .filter((data) =>
-    renderCustomerForm === "all" ? true : tempCustomerInputs.find(
-      (input) =>
-        input.id == renderCustomerForm &&
-        input.channelName === data.channelName
+    .filter((data) =>
+      renderCustomerForm === "all"
+        ? true
+        : tempCustomerInputs.find(
+            (input) =>
+              input.id == renderCustomerForm &&
+              input.channelName === data.channelName
+          )
     )
-  )
-  .map((curr) => {
-    const customerInput = tempCustomerInputs.find(
-      (input) => input.channelName === curr.channelName
-    );
-
-    const startRow = {
-      key: `${curr.channelName}-start`,
-      channelName: `${curr.channelName} (Existing)`,
-    };
-    const beginRow = {
-      key: `${curr.channelName}-begin`,
-      channelName: `${curr.channelName} (Begin)`,
-    };
-    const churnRow = {
-      key: `${curr.channelName}-churn`,
-      channelName: `${curr.channelName} (Churn)`,
-    };
-    const endRow = {
-      ...curr,
-      key: `${curr.channelName}-end`,
-      channelName: `${curr.channelName} (End)`,
-    };
-    const channelAddRow = {
-      key: `${curr.channelName}-add`,
-      channelName: `${curr.channelName} (Add)`,
-    };
-
-    let currentCustomers = parseFloat(customerInput.customersPerMonth);
-    for (let i = 1; i <= numberOfMonths; i++) {
-      if (i >= customerInput.beginMonth && i <= customerInput.endMonth) {
-        if (customerInput.customerGrowthFrequency === "Monthly") {
-          channelAddRow[`month${i}`] = formatNumber(currentCustomers.toFixed(0));
-          currentCustomers *= 1 + parseFloat(customerInput.growthPerMonth) / 100;
-        } else if (["Annually", "Quarterly", "Semi-Annually"].includes(customerInput.customerGrowthFrequency)) {
-          let frequency = 12;
-          if (customerInput.customerGrowthFrequency === "Quarterly") frequency = 3;
-          else if (customerInput.customerGrowthFrequency === "Semi-Annually") frequency = 6;
-
-          if (i === customerInput.beginMonth || (i > customerInput.beginMonth && (i - customerInput.beginMonth) % frequency === 0)) {
-            channelAddRow[`month${i}`] = formatNumber(currentCustomers.toFixed(0));
-            if (i !== customerInput.beginMonth) {
-              currentCustomers *= 1 + parseFloat(customerInput.growthPerMonth) / 100;
-            }
-          } else {
-            channelAddRow[`month${i}`] = formatNumber(currentCustomers.toFixed(0));
-          }
-        }
-      } else {
-        channelAddRow[`month${i}`] = "0.00";
-      }
-      startRow[`month${i}`] = "0.00";
-      beginRow[`month${i}`] = "0.00";
-      churnRow[`month${i}`] = "0.00";
-    }
-
-    if (customerInput) {
-      startRow[`month${customerInput.beginMonth}`] = formatNumber(
-        parseFloat(customerInput.beginCustomer).toFixed(0)
+    .map((curr) => {
+      const customerInput = tempCustomerInputs.find(
+        (input) => input.channelName === curr.channelName
       );
-      beginRow[`month${customerInput.beginMonth}`] =
-        startRow[`month${customerInput.beginMonth}`];
+
+      const startRow = {
+        key: `${curr.channelName}-start`,
+        channelName: `${curr.channelName} (Existing)`,
+      };
+      const beginRow = {
+        key: `${curr.channelName}-begin`,
+        channelName: `${curr.channelName} (Begin)`,
+      };
+      const churnRow = {
+        key: `${curr.channelName}-churn`,
+        channelName: `${curr.channelName} (Churn)`,
+      };
+      const endRow = {
+        ...curr,
+        key: `${curr.channelName}-end`,
+        channelName: `${curr.channelName} (End)`,
+      };
+      const channelAddRow = {
+        key: `${curr.channelName}-add`,
+        channelName: `${curr.channelName} (Add)`,
+      };
+
+      let currentCustomers = parseFloat(customerInput.customersPerMonth);
+      for (let i = 1; i <= numberOfMonths; i++) {
+        if (i >= customerInput.beginMonth && i <= customerInput.endMonth) {
+          if (customerInput.customerGrowthFrequency === "Monthly") {
+            channelAddRow[`month${i}`] = formatNumber(
+              currentCustomers.toFixed(0)
+            );
+            currentCustomers *=
+              1 + parseFloat(customerInput.growthPerMonth) / 100;
+          } else if (
+            ["Annually", "Quarterly", "Semi-Annually"].includes(
+              customerInput.customerGrowthFrequency
+            )
+          ) {
+            let frequency = 12;
+            if (customerInput.customerGrowthFrequency === "Quarterly")
+              frequency = 3;
+            else if (customerInput.customerGrowthFrequency === "Semi-Annually")
+              frequency = 6;
+
+            if (
+              i === customerInput.beginMonth ||
+              (i > customerInput.beginMonth &&
+                (i - customerInput.beginMonth) % frequency === 0)
+            ) {
+              channelAddRow[`month${i}`] = formatNumber(
+                currentCustomers.toFixed(0)
+              );
+              if (i !== customerInput.beginMonth) {
+                currentCustomers *=
+                  1 + parseFloat(customerInput.growthPerMonth) / 100;
+              }
+            } else {
+              channelAddRow[`month${i}`] = formatNumber(
+                currentCustomers.toFixed(0)
+              );
+            }
+          }
+        } else {
+          channelAddRow[`month${i}`] = "0.00";
+        }
+        startRow[`month${i}`] = "0.00";
+        beginRow[`month${i}`] = "0.00";
+        churnRow[`month${i}`] = "0.00";
+      }
+
+      if (customerInput) {
+        startRow[`month${customerInput.beginMonth}`] = formatNumber(
+          parseFloat(customerInput.beginCustomer).toFixed(0)
+        );
+        beginRow[`month${customerInput.beginMonth}`] =
+          startRow[`month${customerInput.beginMonth}`];
 
         for (let i = customerInput.beginMonth; i <= numberOfMonths; i++) {
           if (i > customerInput.beginMonth) {
@@ -223,18 +242,16 @@ const CustomerSection = ({
           ).toFixed(0); // Calculate churn value
           churnRow[`month${i}`] = churnValue; // Assign churn value to Churn row of the current month
           endRow[`month${i}`] = formatNumber(
-            parseNumber(beginValue) + parseNumber(addValue) - parseNumber(churnValue)
+            parseNumber(beginValue) +
+              parseNumber(addValue) -
+              parseNumber(churnValue)
           ); // Update End row to Begin + Add - Churn
         }
-        
-    }
+      }
 
-    return [startRow, beginRow, channelAddRow, churnRow, endRow];
-  })
-  .flat(); // Flatten the array of arrays to a single array
-
-
-
+      return [startRow, beginRow, channelAddRow, churnRow, endRow];
+    })
+    .flat(); // Flatten the array of arrays to a single array
 
   const months = [
     "01",
@@ -382,18 +399,18 @@ const CustomerSection = ({
               className="block my-4 text-base  darkTextWhite"
             ></label>
             <select
-  id="selectedChannel"
-  className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-  value={renderCustomerForm}
-  onChange={handleSelectChange}
->
-  <option value="all">All</option>
-  {tempCustomerInputs.map((input) => (
-    <option key={input?.id} value={input?.id}>
-      {input.channelName}
-    </option>
-  ))}
-</select>
+              id="selectedChannel"
+              className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+              value={renderCustomerForm}
+              onChange={handleSelectChange}
+            >
+              <option value="all">All</option>
+              {tempCustomerInputs.map((input) => (
+                <option key={input?.id} value={input?.id}>
+                  {input.channelName}
+                </option>
+              ))}
+            </select>
           </div>
 
           {tempCustomerInputs
@@ -437,9 +454,9 @@ const CustomerSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-3">
-                 <span className="flex items-center text-sm">
-  Adding (First month)
-</span>
+                  <span className="flex items-center text-sm">
+                    Adding (First month)
+                  </span>
                   <Input
                     className="col-start-2 border-gray-200"
                     value={formatNumber(input.customersPerMonth)}
@@ -473,36 +490,34 @@ const CustomerSection = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Frequency:</span>
-        <Select
-          className="border-gray-200"
-          onValueChange={(value) =>
-            handleInputChange(input?.id, "customerGrowthFrequency", value)
-          }
-          value={input.customerGrowthFrequency}
-        >
-          <SelectTrigger
-            id={`select-customerGrowthFrequency-${input?.id}`}
-            className="border-solid border-[1px] border-gray-200"
-          >
-            <SelectValue placeholder="Select Growth Frequency" />
-          </SelectTrigger>
-          <SelectContent position="popper">
-            <SelectItem value="Monthly">
-              Monthly
-            </SelectItem>
-            <SelectItem value="Quarterly">
-              Quarterly
-            </SelectItem>
-            <SelectItem value="Semi-Annually">
-              Semi-Annually
-            </SelectItem>
-            <SelectItem value="Annually">
-              Annually
-            </SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+                  <span className="flex items-center text-sm">Frequency:</span>
+                  <Select
+                    className="border-gray-200"
+                    onValueChange={(value) =>
+                      handleInputChange(
+                        input?.id,
+                        "customerGrowthFrequency",
+                        value
+                      )
+                    }
+                    value={input.customerGrowthFrequency}
+                  >
+                    <SelectTrigger
+                      id={`select-customerGrowthFrequency-${input?.id}`}
+                      className="border-solid border-[1px] border-gray-200"
+                    >
+                      <SelectValue placeholder="Select Growth Frequency" />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      <SelectItem value="Monthly">Monthly</SelectItem>
+                      <SelectItem value="Quarterly">Quarterly</SelectItem>
+                      <SelectItem value="Semi-Annually">
+                        Semi-Annually
+                      </SelectItem>
+                      <SelectItem value="Annually">Annually</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">

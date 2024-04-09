@@ -8,6 +8,7 @@ import { LinearProgress } from "@mui/material";
 import Header from "../Home/Header";
 import { message, Select } from "antd";
 import HeroStartup from "./HeroStartup";
+import regions from "../../components/Regions";
 
 const NewProjectPosts = () => {
   const [companies, setCompanies] = useState([]);
@@ -19,6 +20,7 @@ const NewProjectPosts = () => {
   const [revenueRange, setRevenueRange] = useState("");
   const [round, setRound] = useState("");
   const [region, setRegion] = useState("");
+  const [country, setCountry] = useState("");
 
   const [isLoading, setIsLoading] = useState(true);
   const [currentTab, setCurrentTab] = useState("verified");
@@ -139,6 +141,29 @@ const NewProjectPosts = () => {
     divideCompanies();
   }, [companies]);
 
+  const getMinMaxFromLabel = (label) => {
+    const target = targetAmountArray.find((item) => item.label === label);
+    if (target) {
+      return { min: target.min, max: target.max };
+    } else {
+      // Trường hợp không tìm thấy nhãn tương ứng trong mảng
+      return { min: 0, max: Infinity }; // Giả sử mặc định là từ 0 đến vô cùng
+    }
+  };
+
+  const findCompaniesByRegion = (companies, region) => {
+    const selectedRegion = regions.find((item) => item.key === region);
+    if (selectedRegion) {
+      const subCountries = selectedRegion.sub;
+      return companies.filter((company) =>
+        subCountries.includes(company.country)
+      );
+    } else {
+      // Trường hợp không tìm thấy region tương ứng trong mảng
+      return [];
+    }
+  };
+
   useEffect(() => {
     let data = [];
     if (currentTab === "verified") {
@@ -163,6 +188,29 @@ const NewProjectPosts = () => {
         )
       );
     }
+    console.log("data", data);
+    if (targetAmount) {
+      const { min, max } = getMinMaxFromLabel(targetAmount);
+      data = data.filter(
+        (company) =>
+          company.target_amount >= min && company.target_amount <= max
+      );
+    }
+
+    if (revenueRange) {
+      data = data.filter((company) => company?.revenueStatus === revenueRange);
+    }
+
+    if (round) {
+      data = data.filter((company) => company?.round === round);
+    }
+    if (country) {
+      data = data.filter((company) => company?.country === country);
+    }
+    if (region) {
+      const filteredCompanies = findCompaniesByRegion(data, region);
+      data = filteredCompanies;
+    }
 
     const visibleCompanies = data.slice(0, visibleItemCount);
     setCompaniesToRender(visibleCompanies);
@@ -175,6 +223,11 @@ const NewProjectPosts = () => {
     verifiedCompanies,
     unverifiedCompanies,
     visibleItemCount,
+    targetAmount,
+    revenueRange,
+    round,
+    region,
+    country,
   ]);
 
   // Function to handle scrolling to the bottom of the page
@@ -197,10 +250,18 @@ const NewProjectPosts = () => {
     };
   }, []);
 
-  console.log("targetAmount", targetAmount);
-  console.log("revenueRange", revenueRange);
-  console.log("round", round);
-  console.log("region", region);
+  const targetAmountArray = [
+    { min: 0, max: 100000, label: "$0 - $100k" },
+    { min: 100001, max: 500000, label: "$100k - $500k" },
+    { min: 500001, max: 1000000, label: "$500k - $1M" },
+    { min: 1000001, max: 5000000, label: "$1M - $5M" },
+    { min: 5000001, max: 10000000, label: "$5M - $10M" },
+    { min: 10000001, max: 50000000, label: "$10M - $50M" },
+    { min: 50000001, max: 100000000, label: "$50M - $100M" },
+    { min: 100000001, max: 500000000, label: "$100M - $500M" },
+    { min: 500000001, max: Infinity, label: ">$500M" },
+    { min: Infinity, max: Infinity, label: "Non-Profit" },
+  ];
 
   return (
     <div className="max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto my-12">
@@ -220,6 +281,8 @@ const NewProjectPosts = () => {
           setRevenueRange={setRevenueRange}
           setRound={setRound}
           setRegion={setRegion}
+          targetAmountArray={targetAmountArray}
+          setCountry={setCountry}
         />
 
         {isLoading ? (

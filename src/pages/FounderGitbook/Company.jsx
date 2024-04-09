@@ -8,6 +8,7 @@ import industries from "../../components/Industries";
 import MultiSelectField from "../../components/MultiSelectField";
 import { useEffect, useState } from "react";
 import { formatNumber } from "../../features/CostSlice";
+import { message } from "antd";
 
 function Company({
   handleSubmit,
@@ -41,8 +42,19 @@ function Company({
   }, [formData.project_url]);
 
   // Function to handle card image file upload
+  const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
+
   const handleCardImageUpload = (event) => {
     const file = event.target.files[0]; // Get the uploaded file
+
+    // Check if the file size exceeds the maximum allowed size
+    if (file.size > MAX_FILE_SIZE) {
+      message.warning("File size exceeds the maximum allowed size: 2MB.");
+      // Perform any error handling here, such as displaying an error message to the user
+      event.target.value = null;
+      return;
+    }
+
     // Assuming you're using FileReader to read the uploaded file as data URL
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -51,6 +63,7 @@ function Company({
     reader.readAsDataURL(file); // Read the uploaded file
     // Update formData with the card image URL
   };
+
   useEffect(() => {
     handleInputChange({
       target: { name: "card_url", value: cardImageUrl },

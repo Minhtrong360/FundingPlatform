@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import industries from "../../../components/Industries";
 import { Select } from "antd";
+import regions from "../../../components/Regions";
+import countries from "../../../components/Country";
 
 const Search = ({
   onSearch,
@@ -17,6 +19,8 @@ const Search = ({
   setRevenueRange,
   setRound,
   setRegion,
+  targetAmountArray,
+  setCountry,
 }) => {
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -52,6 +56,9 @@ const Search = ({
   const handleRegion = (value) => {
     setRegion(value);
   };
+  const handleCountry = (value) => {
+    setCountry(value);
+  };
 
   const [suggestions, setSuggestions] = useState([]);
 
@@ -86,18 +93,6 @@ const Search = ({
     ">$5M",
     "Non-Profit",
   ];
-  const targetAmount = [
-    ">$100k",
-    ">$500k",
-    ">$1M",
-    ">$5M",
-    ">$10M",
-    ">$50M",
-    ">$100M",
-    ">$500M",
-    "Non-Profit",
-  ];
-  const regions = ["Asia", "Africa"];
 
   return (
     <div className="relative overflow-hidden">
@@ -185,15 +180,15 @@ const Search = ({
             <Select
               className="m-1 w-40 my-2 min-h-[40px]"
               defaultValue=""
-              onChange={handleTargetAmount}
+              onChange={(value) => handleTargetAmount(value)}
               optionLabelProp="label"
             >
               <Option value="" label="All target amount">
                 All target amount
               </Option>
-              {targetAmount.map((amount, index) => (
-                <Option key={index} value={amount} label={amount}>
-                  {amount}
+              {targetAmountArray.map((amount, index) => (
+                <Option key={index} value={amount.label} label={amount.label}>
+                  {amount.label}
                 </Option>
               ))}
             </Select>
@@ -234,6 +229,21 @@ const Search = ({
                 </Option>
               ))}
             </Select>
+            {/* <Select
+              className="m-1 w-40 my-2 min-h-[40px]"
+              defaultValue=""
+              onChange={handleCountry}
+              optionLabelProp="label"
+            >
+              <Option value="" label="All countries">
+                All countries
+              </Option>
+              {countries.map((country, index) => (
+                <Option key={index} value={country} label={country}>
+                  {country}
+                </Option>
+              ))}
+            </Select> */}
             <Select
               className="m-1 w-40 my-2 min-h-[40px]"
               defaultValue=""
@@ -243,9 +253,9 @@ const Search = ({
               <Option value="" label="All region">
                 All region
               </Option>
-              {regions.map((range, index) => (
-                <Option key={index} value={range} label={range}>
-                  {range}
+              {regions.map((region, index) => (
+                <Option key={index} value={region.key} label={region.key}>
+                  {region.key}
                 </Option>
               ))}
             </Select>

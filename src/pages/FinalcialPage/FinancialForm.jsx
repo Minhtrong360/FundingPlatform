@@ -650,7 +650,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </li>
                 {/* Repeat for other tabs */}
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "customer" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("customer")}
@@ -658,7 +658,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Customer
                 </li>
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "sales" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("sales")}
@@ -666,7 +666,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Sales
                 </li>
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "cost" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("cost")}
@@ -674,7 +674,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Cost
                 </li>
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "personnel" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("personnel")}
@@ -682,7 +682,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Personnel
                 </li>
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "investment" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("investment")}
@@ -690,7 +690,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Investment
                 </li>
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "loan" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("loan")}
@@ -698,7 +698,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Loan
                 </li>
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "fundraising" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("fundraising")}
@@ -706,7 +706,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Fundraising
                 </li>
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "profitAndLoss"
                       ? "bg-yellow-300 font-bold"
                       : ""
@@ -716,7 +716,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Profit and Loss
                 </li>
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "cashFlow" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("cashFlow")}
@@ -724,7 +724,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Cash Flow
                 </li>
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "balanceSheet"
                       ? "bg-yellow-300 font-bold"
                       : ""

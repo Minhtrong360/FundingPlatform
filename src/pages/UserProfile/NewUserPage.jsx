@@ -220,7 +220,7 @@ function NewUserPage() {
             (size) =>
               company.ticket_size >= size.min && company.ticket_size <= size.max
           ) &&
-          company.revenueStatus == userData.revenueStatusWanted
+          company.revenueStatus === userData.revenueStatusWanted
       );
 
       const notifications = await supabase
@@ -752,7 +752,7 @@ function NewUserPage() {
                     ></textarea>
                   </div>
 
-                  <div className="mt-4">
+                  {/* <div className="mt-4">
                     <h3 className="text-sm mt-4">Social Profile</h3>
                     <div className="flex items-center mt-2">
                       <FacebookIcon />
@@ -784,7 +784,7 @@ function NewUserPage() {
                         className="ml-4 py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
                       />
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="grid grid-cols-1 gap-4 lg:gap-6 mt-6 ">
                     <button

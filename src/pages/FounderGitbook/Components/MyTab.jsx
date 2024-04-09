@@ -1,4 +1,4 @@
-import { Badge, Tabs, Tag, message } from "antd";
+import { Badge, message } from "antd";
 import Modal from "react-modal";
 import {
   BlockNoteView,
@@ -8,7 +8,7 @@ import {
 } from "@blocknote/react";
 import "@blocknote/core/style.css";
 
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   defaultBlockSchema,
   defaultBlockSpecs,

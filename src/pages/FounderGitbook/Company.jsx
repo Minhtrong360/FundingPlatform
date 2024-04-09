@@ -8,7 +8,6 @@ import industries from "../../components/Industries";
 import MultiSelectField from "../../components/MultiSelectField";
 import { useEffect, useState } from "react";
 import { formatNumber } from "../../features/CostSlice";
-import { Tooltip } from "antd";
 
 function Company({
   handleSubmit,
@@ -21,16 +20,16 @@ function Company({
   const [cardImageUrl, setCardImageUrl] = useState(formData.card_url); // State to store card image URL
 
   // Function to handle project image file upload
-  const handleProjectImageUpload = (event) => {
-    const file = event.target.files[0]; // Get the uploaded file
-    // Assuming you're using FileReader to read the uploaded file as data URL
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setProjectImageUrl(e.target.result); // Set the project image URL in state
-    };
-    reader.readAsDataURL(file); // Read the uploaded file
-    // Update formData with the project image URL
-  };
+  // const handleProjectImageUpload = (event) => {
+  //   const file = event.target.files[0]; // Get the uploaded file
+  //   // Assuming you're using FileReader to read the uploaded file as data URL
+  //   const reader = new FileReader();
+  //   reader.onload = (e) => {
+  //     setProjectImageUrl(e.target.result); // Set the project image URL in state
+  //   };
+  //   reader.readAsDataURL(file); // Read the uploaded file
+  //   // Update formData with the project image URL
+  // };
 
   useEffect(() => {
     handleInputChange({

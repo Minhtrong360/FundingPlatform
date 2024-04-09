@@ -8,7 +8,6 @@ import { useParams } from "react-router-dom";
 import InvitedUserFile from "../../components/InvitedUserFile";
 import apiService from "../../app/apiService";
 import { message, Modal } from "antd";
-import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { Tooltip } from "antd";
 
 function FilesList() {

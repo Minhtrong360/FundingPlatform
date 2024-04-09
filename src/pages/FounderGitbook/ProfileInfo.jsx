@@ -1,4 +1,4 @@
-import { Badge, Tag, Tooltip, message } from "antd";
+import { Badge, Tooltip, message } from "antd";
 
 import { useNavigate, useParams } from "react-router-dom";
 import { formatNumber } from "../../features/CostSlice";
@@ -329,10 +329,6 @@ export default function ProfileInfo({
                 </Button>
               </Tooltip>
             )}
-
-            {/* <Button type="primary" ghost>
-              Learn more
-            </Button> */}
           </div>
           <div className="mt-8">
             <div className="text-black font-semibold">Industry:</div>

@@ -7,8 +7,7 @@ import AlertMsg from "../../components/AlertMsg";
 import InvitedUserProject from "../../components/InvitedUserProject";
 // import { toast } from "react-toastify";
 import ProjectGiven from "../../components/ProjectGiven";
-import { Dropdown, Button, Menu, message, Table, Switch, Modal } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import { Dropdown, Button, Menu, message, Table, Modal } from "antd";
 import { formatDate } from "../../features/DurationSlice";
 
 function ProjectList({ projects }) {
@@ -252,11 +251,6 @@ function ProjectList({ projects }) {
   const sharedProjects = updatedProjects.filter(
     (project) => project.user_id !== user.id
   );
-
-  const dataSource = updatedProjects.map((project, index) => ({
-    ...project,
-    index,
-  }));
 
   const handleProjectClick = async (project) => {
     try {

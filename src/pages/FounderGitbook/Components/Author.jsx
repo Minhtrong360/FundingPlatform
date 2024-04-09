@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "../../../components/ui/Button";
 import { supabase } from "../../../supabase";
-import { StarFilled, StarOutlined } from "@ant-design/icons";
+import { StarOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import LoadingButtonClick from "../../../components/LoadingButtonClick";
@@ -76,7 +76,7 @@ function Author({ company }) {
     }
 
     fetchUserData();
-  }, []);
+  }, [id, user]);
 
   const [likedCount, setLikedCount] = useState(projectData?.liked.length);
 

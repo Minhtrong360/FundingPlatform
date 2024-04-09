@@ -199,10 +199,22 @@ code {
   font-weight: 400 !important;
   color: #1a202c !important;
   line-height: 1.6 !important;
+  letter-spacing: -0.25px !important;
 }
 
 .bn-block-content {
-  padding: 12px !important;
+  padding: 8px !important;
+}
+
+/* Styles for mobile screens */
+@media screen and (max-width: 600px) {
+  .bn-default-styles p {
+    font-size: 14px !important;
+  }
+
+  .bn-block-content {
+    padding: 6px !important;
+  }
 }
 
 .avatar-container {

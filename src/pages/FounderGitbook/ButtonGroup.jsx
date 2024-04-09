@@ -54,7 +54,7 @@ const ButtonGroup = ({
       onClick={(e) => e.preventDefault()} // Prevents the dropdown from closing when clicking the button
     >
       <span>
-        Settings <SettingOutlined />
+      <SettingOutlined /> Profile Settings 
       </span>
     </Dropdown>
   );

@@ -174,6 +174,7 @@ function Company({
                       "$500k - $1M",
                       "$1M - $5M",
                       ">$5M",
+                      "Non-Profit",
                     ]}
                   />
 
@@ -311,6 +312,7 @@ function Company({
                       "Series A",
                       "Series B",
                       "Series C",
+                      "Non-Profit",
                     ]}
                     value={formData.round}
                     onChange={handleInputChange}

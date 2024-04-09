@@ -17,6 +17,7 @@ import SelectField from "../../components/SelectField";
 
 import { IconButton } from "@mui/material";
 import { formatDate } from "../../features/DurationSlice";
+import { formatNumber } from "../../features/CostSlice";
 
 function NewUserPage() {
   const { user } = useAuth();
@@ -46,6 +47,10 @@ function NewUserPage() {
     next_billing_date: "",
     institutionalName: "",
     institutionalWebsite: "",
+    teamSize: "1-10",
+    amountRaised: "",
+    operationTime: "",
+    round: "",
   });
   const handleIndustryChange = (selectedItems) => {
     setUserData({
@@ -110,6 +115,10 @@ function NewUserPage() {
             next_billing_date: data.next_billing_date || "",
             institutionalName: data.institutionalName || "",
             institutionalWebsite: data.institutionalWebsite || "",
+            teamSize: data.teamSize || "1-10",
+            amountRaised: data.amountRaised || "",
+            operationTime: data.operationTime || "2024",
+            round: data.round || "Pre-seed",
           });
         }
       } catch (error) {
@@ -210,8 +219,10 @@ function NewUserPage() {
           investmentSizeCondition.some(
             (size) =>
               company.ticket_size >= size.min && company.ticket_size <= size.max
-          )
+          ) &&
+          company.revenueStatus == userData.revenueStatusWanted
       );
+
       const notifications = await supabase
         .from("notifications")
         .select("*")
@@ -267,6 +278,10 @@ function NewUserPage() {
           next_billing_date: userData.next_billing_date,
           institutionalName: userData.institutionalName,
           institutionalWebsite: userData.institutionalWebsite,
+          teamSize: userData.teamSize,
+          amountRaised: userData.amountRaised,
+          operationTime: userData.operationTime,
+          round: userData.round,
         })
         .eq("id", user.id);
 
@@ -349,6 +364,27 @@ function NewUserPage() {
     if (!str) return ""; // Bảo vệ trường hợp giá trị null hoặc undefined
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
+
+  console.log("userData", userData);
+  const [years, setYears] = useState([]);
+
+  useEffect(() => {
+    // Hàm để tạo danh sách các năm từ năm bắt đầu đến năm hiện tại
+    const generateYears = () => {
+      const currentYear = new Date().getFullYear();
+
+      const startYear = 1900; // Bạn có thể thay đổi năm bắt đầu tại đây
+      const yearsArray = [];
+      for (let year = startYear; year <= currentYear; year++) {
+        yearsArray.push(year.toString());
+      }
+      return yearsArray;
+    };
+
+    // Gọi hàm generateYears để tạo danh sách các năm và cập nhật state
+    const yearsList = generateYears();
+    setYears(yearsList);
+  }, []);
 
   return (
     <>
@@ -505,101 +541,167 @@ function NewUserPage() {
                   </div>
 
                   {userData.roll === "Investor" && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                      <div className="flex flex-col">
-                        <div className="mt-4">
-                          <MultiSelectField
-                            label="Interested in"
-                            id="industry"
-                            name="industry"
-                            OPTIONS={industries}
-                            selectedItems={userData.interested_in}
-                            setSelectedItems={handleIndustryChange}
-                            required
-                          />
-                        </div>
-                        <div className="mt-4">
-                          <MultiSelectField
-                            label="Investment size"
-                            id="investment_size"
-                            name="investment_size"
-                            OPTIONS={investment_size}
-                            selectedItems={userData.investment_size}
-                            setSelectedItems={handleInvestmentChange}
-                            required
-                          />
-                        </div>
-                        <div className="mt-4">
-                          <label
-                            htmlFor="type"
-                            className="block mb-2 text-sm  darkTextWhite"
-                          >
-                            Type
-                          </label>
-                          <div className="flex items-center">
-                            <input
-                              type="radio"
-                              id="individual"
-                              name="type"
-                              value="Individual"
-                              checked={userData.type === "Individual"}
-                              onChange={handleInputChange}
-                              className="mr-2"
+                    <>
+                      <div className="italic">
+                        * We need some information about what company will you
+                        be attracted as an INVESTOR
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div className="flex flex-col">
+                          <div className="mt-4">
+                            <MultiSelectField
+                              label="Industry"
+                              id="industry"
+                              name="industry"
+                              OPTIONS={industries}
+                              selectedItems={userData.interested_in}
+                              setSelectedItems={handleIndustryChange}
+                              required
                             />
+                          </div>
+                          <div className="mt-4">
+                            <MultiSelectField
+                              label="Investment size"
+                              id="investment_size"
+                              name="investment_size"
+                              OPTIONS={investment_size}
+                              selectedItems={userData.investment_size}
+                              setSelectedItems={handleInvestmentChange}
+                              required
+                            />
+                          </div>
+                          <div className="mt-4">
+                            <SelectField
+                              label="Team size"
+                              id="teamSize"
+                              name="teamSize"
+                              value={userData.teamSize}
+                              onChange={handleInputChange}
+                              type="text"
+                              options={[
+                                "1-10",
+                                "11-50",
+                                "51-200",
+                                "201-500",
+                                ">500",
+                              ]}
+                            />
+                          </div>
+                          <div className="mt-4">
+                            <SelectField
+                              label="Founded year"
+                              id="operationTime"
+                              name="operationTime"
+                              value={userData.operationTime}
+                              onChange={handleInputChange}
+                              options={years}
+                              type="text"
+                            />
+                          </div>
+                          <div className="mt-4">
                             <label
-                              htmlFor="individual"
-                              className="mr-4 text-sm"
+                              htmlFor="type"
+                              className="block mb-2 text-sm  darkTextWhite"
                             >
-                              Individual
+                              Type of Organization
                             </label>
-                            <input
-                              type="radio"
-                              id="institutional"
-                              name="type"
-                              value="Institutional"
-                              checked={userData.type === "Institutional"}
+                            <div className="flex items-center">
+                              <input
+                                type="radio"
+                                id="individual"
+                                name="type"
+                                value="Individual"
+                                checked={userData.type === "Individual"}
+                                onChange={handleInputChange}
+                                className="mr-2"
+                              />
+                              <label
+                                htmlFor="individual"
+                                className="mr-4 text-sm"
+                              >
+                                Individual
+                              </label>
+                              <input
+                                type="radio"
+                                id="institutional"
+                                name="type"
+                                value="Institutional"
+                                checked={userData.type === "Institutional"}
+                                onChange={handleInputChange}
+                                className="mr-2"
+                              />
+                              <label
+                                htmlFor="institutional"
+                                className="text-sm"
+                              >
+                                Institutional
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-col">
+                          <div className="mt-4">
+                            <SelectField
+                              label="Expected revenue range"
+                              id="revenueStatusWanted"
+                              name="revenueStatusWanted"
+                              value={userData.revenueStatusWanted}
                               onChange={handleInputChange}
-                              className="mr-2"
+                              required
+                              options={[
+                                "$0 - $10k",
+                                "$10k - $50k",
+                                "$50k - $100k",
+                                "$100k - $500k",
+                                "$500k - $1M",
+                                "$1M - $5M",
+                                ">$5M",
+                              ]} // Thay thế bằng danh sách các tùy chọn bạn muốn
                             />
-                            <label htmlFor="institutional" className="text-sm">
-                              Institutional
-                            </label>
+                          </div>
+                          <div className="mt-4">
+                            <MultiSelectField
+                              label="Country"
+                              id="country"
+                              name="country"
+                              selectedItems={userData.country}
+                              setSelectedItems={handleCountryChange}
+                              required
+                              OPTIONS={countries} // Thay thế bằng danh sách các tùy chọn bạn muốn
+                            />
+                          </div>
+                          <div className="mt-4">
+                            <InputField
+                              label="Raised before"
+                              id="amountRaised"
+                              name="amountRaised"
+                              value={formatNumber(userData.amountRaised)}
+                              onChange={handleInputChange}
+                              type="text"
+                              required
+                            />
+                          </div>
+                          <div className="mt-4">
+                            <SelectField
+                              label="Round"
+                              id="round"
+                              name="round"
+                              options={[
+                                "Pre-seed",
+                                "Seed",
+                                "Series A",
+                                "Series B",
+                                "Series C",
+                                "Non-Profit",
+                              ]}
+                              value={userData.round}
+                              onChange={handleInputChange}
+                              type="text"
+                            />
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-col">
-                        <div className="mt-4">
-                          <SelectField
-                            label="Expected revenue range"
-                            id="revenueStatusWanted"
-                            name="revenueStatusWanted"
-                            value={userData.revenueStatusWanted}
-                            onChange={handleInputChange}
-                            required
-                            options={[
-                              "$0 - $10k",
-                              "$10k - $50k",
-                              "$50k - $100k",
-                              "$100k - $500k",
-                              "$500k - $1M",
-                              "$1M - $5M",
-                              ">$5M",
-                            ]} // Thay thế bằng danh sách các tùy chọn bạn muốn
-                          />
-                        </div>
-                        <div className="mt-4">
-                          <MultiSelectField
-                            label="Country"
-                            id="country"
-                            name="country"
-                            selectedItems={userData.country}
-                            setSelectedItems={handleCountryChange}
-                            required
-                            OPTIONS={countries} // Thay thế bằng danh sách các tùy chọn bạn muốn
-                          />
-                        </div>
-                      </div>
-                    </div>
+                    </>
                   )}
 
                   {/* {userData.type === "Institutional" &&
@@ -717,9 +819,13 @@ function NewUserPage() {
                           label="Subscription status"
                           id="subscription_status"
                           name="subscription_status"
-                          value={capitalizeFirstLetter(
+                          value={
                             userData.subscription_status
-                          )}
+                              ? capitalizeFirstLetter(
+                                  userData.subscription_status
+                                )
+                              : "Active"
+                          }
                           type="text"
                           disabled
                         />
@@ -737,7 +843,11 @@ function NewUserPage() {
                             label="Subscribe date"
                             id="subscribe"
                             name="subscribe"
-                            value={formatDate(userData.subscribe)}
+                            value={
+                              userData.subscribe
+                                ? formatDate(userData.subscribe)
+                                : formatDate(user.created_at)
+                            }
                             disabled
                           />
                         </div>
@@ -749,7 +859,11 @@ function NewUserPage() {
                             label="Next billing date"
                             id="next_billing_date"
                             name="next_billing_date"
-                            value={formatDate(userData.next_billing_date)}
+                            value={
+                              userData.next_billing_date
+                                ? formatDate(userData.next_billing_date)
+                                : "01/01/2050"
+                            }
                             disabled
                           />
                         </div>

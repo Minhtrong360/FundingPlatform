@@ -341,7 +341,7 @@ function CompanySetting() {
     "Investment",
     "M&A",
     "Convertible",
-    "Non-profit",
+    "Non-Profit",
   ];
 
   useEffect(() => {

@@ -5,6 +5,7 @@ import {
   LinkedinIcon,
   TwitterIcon,
 } from "../UserProfile/NewUserPage";
+import NavbarItem from "./NavbarItem";
 
 function Footer() {
   return (
@@ -29,12 +30,20 @@ function Footer() {
             </a>
           </li>
           <li className="inline-block relative pe-8 last:pe-0 last-of-type:before:hidden before:absolute before:top-1/2 before:end-3 before:-translate-y-1/2 before:content-['/'] before:text-gray-300 darkBeforeTextGray">
-            <a
-              className="inline-flex gap-x-2 text-sm text-gray-500 hover:text-gray-800 darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
-              href="/services"
+            <NavbarItem
+              href="https://beekrowd.gitbook.io/beekrowd-financial-model-guide"
+              target="_blank"
             >
-              Services
-            </a>
+              Documentation
+            </NavbarItem>
+          </li>
+          <li className="inline-block relative pe-8 last:pe-0 last-of-type:before:hidden before:absolute before:top-1/2 before:end-3 before:-translate-y-1/2 before:content-['/'] before:text-gray-300 darkBeforeTextGray">
+            <NavbarItem
+              href="https://beekrowd.canny.io/beekrowd-feedback"
+              target="_blank"
+            >
+              Feedback
+            </NavbarItem>
           </li>
           <li className="inline-block relative pe-8 last:pe-0 last-of-type:before:hidden before:absolute before:top-1/2 before:end-3 before:-translate-y-1/2 before:content-['/'] before:text-gray-300 darkBeforeTextGray">
             <a

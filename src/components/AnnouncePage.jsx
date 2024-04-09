@@ -98,7 +98,7 @@ const AnnouncePage = ({
             className={`mt-3 text-xl sm:text-2xl font-semibold text-gray-800  `}
           >
             {firstPart}
-            <span className="text-white">{highlightedWord}</span>
+            <span className="text-blue-600">{highlightedWord}</span>
             {lastPart}
           </h1>
           <p className={`mt-4 text-sm sm:text-base text-gray-800 `}>

@@ -15,6 +15,10 @@ const NewProjectPosts = () => {
   const itemsPerPage = 6;
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIndustry, setSelectedIndustry] = useState("");
+  const [targetAmount, setTargetAmount] = useState("");
+  const [revenueRange, setRevenueRange] = useState("");
+  const [round, setRound] = useState("");
+  const [region, setRegion] = useState("");
 
   const [isLoading, setIsLoading] = useState(true);
   const [currentTab, setCurrentTab] = useState("verified");
@@ -193,6 +197,11 @@ const NewProjectPosts = () => {
     };
   }, []);
 
+  console.log("targetAmount", targetAmount);
+  console.log("revenueRange", revenueRange);
+  console.log("round", round);
+  console.log("region", region);
+
   return (
     <div className="max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto my-12">
       <Header />
@@ -204,54 +213,15 @@ const NewProjectPosts = () => {
           companies={companiesToRender}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
-          selectedIndustry={selectedIndustry}
-          setSelectedIndustry={setSelectedIndustry}
           currentTab={currentTab}
           setCurrentTab={setCurrentTab}
           setVisibleItemCount={setVisibleItemCount}
+          setTargetAmount={setTargetAmount}
+          setRevenueRange={setRevenueRange}
+          setRound={setRound}
+          setRegion={setRegion}
         />
 
-        {/* <div className="mt-10 flex justify-center">
-          <button
-            className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
-              currentTab === "All"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-800 hover:bg-gray-50"
-            } shadow-sm hover:cursor-pointer`}
-            onClick={() => {
-              setVisibleItemCount(itemsPerPage);
-              setCurrentTab("All");
-            }}
-          >
-            All
-          </button>
-          <button
-            className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
-              currentTab === "verified"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-800 hover:bg-gray-50"
-            } shadow-sm hover:cursor-pointer`}
-            onClick={() => {
-              setVisibleItemCount(itemsPerPage);
-              setCurrentTab("verified");
-            }}
-          >
-            Verified
-          </button>
-          <button
-            className={`m-2 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border ${
-              currentTab === "unverified"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-800 hover:bg-gray-50"
-            } shadow-sm hover:cursor-pointer`}
-            onClick={() => {
-              setVisibleItemCount(itemsPerPage);
-              setCurrentTab("unverified");
-            }}
-          >
-            Unverified
-          </button>
-        </div> */}
         {isLoading ? (
           <LinearProgress className="my-20" />
         ) : (

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import AllInclusiveOutlinedIcon from "@mui/icons-material/AllInclusiveOutlined";
 import industries from "../../../components/Industries";
 import { Select } from "antd";
 
@@ -10,11 +9,14 @@ const Search = ({
   companies,
   searchTerm,
   setSearchTerm,
-  selectedIndustry,
-  setSelectedIndustry,
+
   currentTab,
   setCurrentTab,
   setVisibleItemCount,
+  setTargetAmount,
+  setRevenueRange,
+  setRound,
+  setRegion,
 }) => {
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -36,9 +38,19 @@ const Search = ({
   };
 
   const handleIndustryClick = (industry) => {
-    setSelectedIndustry(industry);
-
     onIndustryChange(industry);
+  };
+  const handleTargetAmount = (value) => {
+    setTargetAmount(value);
+  };
+  const handleRevenueRange = (value) => {
+    setRevenueRange(value);
+  };
+  const handleRound = (value) => {
+    setRound(value);
+  };
+  const handleRegion = (value) => {
+    setRegion(value);
   };
 
   const [suggestions, setSuggestions] = useState([]);
@@ -63,6 +75,29 @@ const Search = ({
     setVisibleItemCount(6);
     setCurrentTab(value);
   };
+
+  const revenueRange = [
+    "$0 - $10k",
+    "$10k - $50k",
+    "$50k - $100k",
+    "$100k - $500k",
+    "$500k - $1M",
+    "$1M - $5M",
+    ">$5M",
+    "Non-Profit",
+  ];
+  const targetAmount = [
+    ">$100k",
+    ">$500k",
+    ">$1M",
+    ">$5M",
+    ">$10M",
+    ">$50M",
+    ">$100M",
+    ">$500M",
+    "Non-Profit",
+  ];
+  const regions = ["Asia", "Africa"];
 
   return (
     <div className="relative overflow-hidden">
@@ -123,6 +158,16 @@ const Search = ({
 
           <div className="mt-4  flex flex-wrap justify-center sm:gap-5 gap-2">
             <Select
+              className="m-1 w-40 text-center my-2 min-h-[40px]"
+              value={currentTab}
+              onChange={handleChange}
+            >
+              <Option value="All">All profiles</Option>
+              <Option value="verified">Verified profiles</Option>
+              <Option value="unverified">Unverified profiles</Option>
+            </Select>
+
+            <Select
               className="m-1 w-40 my-2 min-h-[40px]"
               defaultValue=""
               onChange={handleIndustryClick}
@@ -137,15 +182,72 @@ const Search = ({
                 </Option>
               ))}
             </Select>
-
             <Select
-              className="m-1 w-40 text-center my-2 min-h-[40px]"
-              value={currentTab}
-              onChange={handleChange}
+              className="m-1 w-40 my-2 min-h-[40px]"
+              defaultValue=""
+              onChange={handleTargetAmount}
+              optionLabelProp="label"
             >
-              <Option value="All">All profiles</Option>
-              <Option value="verified">Verified profiles</Option>
-              <Option value="unverified">Unverified profiles</Option>
+              <Option value="" label="All target amount">
+                All target amount
+              </Option>
+              {targetAmount.map((amount, index) => (
+                <Option key={index} value={amount} label={amount}>
+                  {amount}
+                </Option>
+              ))}
+            </Select>
+            <Select
+              className="m-1 w-40 my-2 min-h-[40px]"
+              defaultValue=""
+              onChange={handleRevenueRange}
+              optionLabelProp="label"
+            >
+              <Option value="" label="All revenue range">
+                All revenue range
+              </Option>
+              {revenueRange.map((range, index) => (
+                <Option key={index} value={range} label={range}>
+                  {range}
+                </Option>
+              ))}
+            </Select>
+            <Select
+              className="m-1 w-40 my-2 min-h-[40px]"
+              defaultValue=""
+              onChange={handleRound}
+              optionLabelProp="label"
+            >
+              <Option value="" label="All round">
+                All round
+              </Option>
+              {[
+                "Pre-seed",
+                "Seed",
+                "Series A",
+                "Series B",
+                "Series C",
+                "Non-Profit",
+              ].map((round, index) => (
+                <Option key={index} value={round} label={round}>
+                  {round}
+                </Option>
+              ))}
+            </Select>
+            <Select
+              className="m-1 w-40 my-2 min-h-[40px]"
+              defaultValue=""
+              onChange={handleRegion}
+              optionLabelProp="label"
+            >
+              <Option value="" label="All region">
+                All region
+              </Option>
+              {regions.map((range, index) => (
+                <Option key={index} value={range} label={range}>
+                  {range}
+                </Option>
+              ))}
             </Select>
           </div>
         </div>
@@ -155,5 +257,3 @@ const Search = ({
 };
 
 export default Search;
-
-//////////////

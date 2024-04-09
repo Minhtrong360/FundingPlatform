@@ -627,7 +627,7 @@ function CompanySetting() {
             canClick={canClick}
           /> */}
 
-          <div className="text-4xl text-red-600 font-bold leading-tight sm:px-6 lg:px-8 sm:mt-16 mt-8 px-4">
+          <div className="text-4xl text-red-600 font-bold leading-tight sm:px-6 lg:px-8 sm:mt-8 mt-4 px-4">
             {" "}
             Preview
           </div>

@@ -115,9 +115,38 @@ const MyTab = ({ blocks, setBlocks, company }) => {
     youtubeLink: YouTubeLinkBlock,
   };
 
+  // Hàm để upload file lên database riêng của bạn
+  async function uploadToCustomDatabase(file) {
+    try {
+      if (!navigator.onLine) {
+        // Không có kết nối Internet
+        message.error("No internet access.");
+        return;
+      }
+      // Tạo tên file độc đáo để tránh xung đột
+      const uniqueFileName = `profile_images/${Date.now()}-${file.name}`;
+
+      // Upload file lên Supabase Storage
+      let { error, data } = await supabase.storage
+        .from("beekrowd_storage")
+        .upload(uniqueFileName, file);
+
+      if (error) {
+        throw error;
+      }
+
+      // Trả về URL của file
+
+      return `${process.env.REACT_APP_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
+    } catch (error) {
+      message.error(error.message);
+      // Xử lý lỗi tại đây
+    }
+  }
+
   const editor = useBlockNote({
     blockSpecs: blockSpecs,
-    // uploadFile: uploadToCustomDatabase,
+    uploadFile: uploadToCustomDatabase,
     slashMenuItems: [
       ...getDefaultReactSlashMenuItems(blockSchema),
       insertYouTubeLink,

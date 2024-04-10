@@ -70,7 +70,7 @@ function Router() {
           path="/founder/:id"
           element={
             <AuthRequire message="Sign in required!">
-              <DetailPage />
+              <NewDetailPage />
             </AuthRequire>
           }
         />

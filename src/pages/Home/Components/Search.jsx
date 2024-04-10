@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 
 import industries from "../../../components/Industries";
-import { Select } from "antd";
+import { Modal, Select } from "antd";
 import regions from "../../../components/Regions";
 import countries from "../../../components/Country";
+
+import { PlusCircleOutlined } from "@ant-design/icons";
 
 const Search = ({
   onSearch,
@@ -34,6 +36,8 @@ const Search = ({
       setSuggestions([]);
     }
   };
+
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -93,6 +97,18 @@ const Search = ({
     ">$5M",
     "Non-Profit",
   ];
+
+  const handleOk = () => {
+    setIsOpen(false);
+  };
+
+  const handleCancel = () => {
+    setTargetAmount("");
+    setRevenueRange("");
+    setRound("");
+    setRegion("");
+    setIsOpen(false);
+  };
 
   return (
     <div className="relative overflow-hidden">
@@ -177,59 +193,61 @@ const Search = ({
                 </Option>
               ))}
             </Select>
-            <Select
-              className="m-1 w-40 my-2 min-h-[40px]"
-              defaultValue=""
-              onChange={(value) => handleTargetAmount(value)}
-              optionLabelProp="label"
-            >
-              <Option value="" label="All target amount">
-                All target amount
-              </Option>
-              {targetAmountArray.map((amount, index) => (
-                <Option key={index} value={amount.label} label={amount.label}>
-                  {amount.label}
+
+            <div className="lg:flex hidden  flex-wrap justify-center sm:gap-5 gap-2">
+              <Select
+                className="m-1 w-40 my-2 min-h-[40px]"
+                defaultValue=""
+                onChange={(value) => handleTargetAmount(value)}
+                optionLabelProp="label"
+              >
+                <Option value="" label="All target amount">
+                  All target amount
                 </Option>
-              ))}
-            </Select>
-            <Select
-              className="m-1 w-40 my-2 min-h-[40px]"
-              defaultValue=""
-              onChange={handleRevenueRange}
-              optionLabelProp="label"
-            >
-              <Option value="" label="All revenue range">
-                All revenue range
-              </Option>
-              {revenueRange.map((range, index) => (
-                <Option key={index} value={range} label={range}>
-                  {range}
+                {targetAmountArray.map((amount, index) => (
+                  <Option key={index} value={amount.label} label={amount.label}>
+                    {amount.label}
+                  </Option>
+                ))}
+              </Select>
+              <Select
+                className="m-1 w-40 my-2 min-h-[40px]"
+                defaultValue=""
+                onChange={handleRevenueRange}
+                optionLabelProp="label"
+              >
+                <Option value="" label="All revenue range">
+                  All revenue range
                 </Option>
-              ))}
-            </Select>
-            <Select
-              className="m-1 w-40 my-2 min-h-[40px]"
-              defaultValue=""
-              onChange={handleRound}
-              optionLabelProp="label"
-            >
-              <Option value="" label="All round">
-                All round
-              </Option>
-              {[
-                "Pre-seed",
-                "Seed",
-                "Series A",
-                "Series B",
-                "Series C",
-                "Non-Profit",
-              ].map((round, index) => (
-                <Option key={index} value={round} label={round}>
-                  {round}
+                {revenueRange.map((range, index) => (
+                  <Option key={index} value={range} label={range}>
+                    {range}
+                  </Option>
+                ))}
+              </Select>
+              <Select
+                className="m-1 w-40 my-2 min-h-[40px]"
+                defaultValue=""
+                onChange={handleRound}
+                optionLabelProp="label"
+              >
+                <Option value="" label="All round">
+                  All round
                 </Option>
-              ))}
-            </Select>
-            {/* <Select
+                {[
+                  "Pre-seed",
+                  "Seed",
+                  "Series A",
+                  "Series B",
+                  "Series C",
+                  "Non-Profit",
+                ].map((round, index) => (
+                  <Option key={index} value={round} label={round}>
+                    {round}
+                  </Option>
+                ))}
+              </Select>
+              {/* <Select
               className="m-1 w-40 my-2 min-h-[40px]"
               defaultValue=""
               onChange={handleCountry}
@@ -244,21 +262,137 @@ const Search = ({
                 </Option>
               ))}
             </Select> */}
-            <Select
-              className="m-1 w-40 my-2 min-h-[40px]"
-              defaultValue=""
-              onChange={handleRegion}
-              optionLabelProp="label"
-            >
-              <Option value="" label="All region">
-                All region
-              </Option>
-              {regions.map((region, index) => (
-                <Option key={index} value={region.key} label={region.key}>
-                  {region.key}
+              <Select
+                className="m-1 w-40 my-2 min-h-[40px]"
+                defaultValue=""
+                onChange={handleRegion}
+                optionLabelProp="label"
+              >
+                <Option value="" label="All region">
+                  All region
                 </Option>
-              ))}
-            </Select>
+                {regions.map((region, index) => (
+                  <Option key={index} value={region.key} label={region.key}>
+                    {region.key}
+                  </Option>
+                ))}
+              </Select>
+            </div>
+
+            <div
+              className="lg:hidden flex items-center justify-center"
+              onClick={() => setIsOpen(true)}
+            >
+              <PlusCircleOutlined style={{ fontSize: "24px" }} />
+            </div>
+
+            {isOpen && (
+              <Modal
+                title="Add filter criteria"
+                visible={isOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText="Apply filters"
+                cancelText="Remove filters"
+                cancelButtonProps={{
+                  style: {
+                    background: "#f5222d",
+                    borderColor: "#f5222d",
+                    padding: "8px 16px",
+                    color: "#fff",
+                    borderRadius: "0.375rem",
+                    cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                  },
+                }}
+                okButtonProps={{
+                  style: {
+                    background: "#2563EB",
+                    borderColor: "#2563EB",
+                    padding: "8px 16px",
+                    color: "#fff",
+                    borderRadius: "0.375rem",
+                    cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                  },
+                }}
+                centered={true}
+              >
+                <div className="flex flex-wrap items-stretch justify-around">
+                  <Select
+                    className="m-1 w-40 my-2 min-h-[40px]"
+                    defaultValue=""
+                    onChange={(value) => handleTargetAmount(value)}
+                    optionLabelProp="label"
+                  >
+                    <Option value="" label="All target amount">
+                      All target amount
+                    </Option>
+                    {targetAmountArray.map((amount, index) => (
+                      <Option
+                        key={index}
+                        value={amount.label}
+                        label={amount.label}
+                      >
+                        {amount.label}
+                      </Option>
+                    ))}
+                  </Select>
+                  <Select
+                    className="m-1 w-40 my-2 min-h-[40px]"
+                    defaultValue=""
+                    onChange={handleRevenueRange}
+                    optionLabelProp="label"
+                  >
+                    <Option value="" label="All revenue range">
+                      All revenue range
+                    </Option>
+                    {revenueRange.map((range, index) => (
+                      <Option key={index} value={range} label={range}>
+                        {range}
+                      </Option>
+                    ))}
+                  </Select>
+
+                  <Select
+                    className="m-1 w-40 my-2 min-h-[40px]"
+                    defaultValue=""
+                    onChange={handleRound}
+                    optionLabelProp="label"
+                  >
+                    <Option value="" label="All round">
+                      All round
+                    </Option>
+                    {[
+                      "Pre-seed",
+                      "Seed",
+                      "Series A",
+                      "Series B",
+                      "Series C",
+                      "Non-Profit",
+                    ].map((round, index) => (
+                      <Option key={index} value={round} label={round}>
+                        {round}
+                      </Option>
+                    ))}
+                  </Select>
+
+                  <Select
+                    className="m-1 w-40 my-2 min-h-[40px]"
+                    defaultValue=""
+                    onChange={handleRegion}
+                    optionLabelProp="label"
+                  >
+                    <Option value="" label="All region">
+                      All region
+                    </Option>
+                    {regions.map((region, index) => (
+                      <Option key={index} value={region.key} label={region.key}>
+                        {region.key}
+                      </Option>
+                    ))}
+                  </Select>
+                </div>
+              </Modal>
+            )}
           </div>
         </div>
       </div>

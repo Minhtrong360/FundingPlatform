@@ -135,6 +135,7 @@ const Modal = ({
 
         onClose();
         setUpdatedProjects([data[0], ...updatedProjects]);
+        message.success("Created project successfully.");
       }
     } catch (error) {
       message.error(error.message);
@@ -147,12 +148,10 @@ const Modal = ({
     return null;
   }
 
-  console.log("isPrivateDisabled", isPrivateDisabled);
-
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
       <AlertMsg />
-      <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
+      <div className="relative p-5 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
         <h3 className="text-md font-medium leading-6 text-gray-800 capitalize">
           Project Name
         </h3>
@@ -222,18 +221,18 @@ const Modal = ({
             </div>
           </div>
 
-          <div className="mt-4 flex items-center justify-center gap-10">
+          <div className="mt-4 flex items-end justify-end gap-2">
             <button
               type="button"
               onClick={handleCancel}
-              className="text-black bg-white hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-md text-sm px-3 py-2 text-center border border-gray-200"
+              className="w-20 text-black bg-white hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-md text-sm px-3 py-2 text-center border border-gray-200"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={isEditing ? handleSave : handleCreate}
-              className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
+              className={`w-20 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
             >
               {isEditing ? "Save" : "Create"}
             </button>
@@ -411,7 +410,7 @@ export default function AddProject({
         }}
       >
         <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-          <div className="relative p-8 bg-white w-full  m-auto flex-col flex rounded-md">
+          <div className="relative p-5 bg-white w-full  m-auto flex-col flex rounded-md">
             <PricingWithLemon />
             <div className="mt-4 flex items-center gap-10">
               <button

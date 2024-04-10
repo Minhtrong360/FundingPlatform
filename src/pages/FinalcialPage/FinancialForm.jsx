@@ -537,7 +537,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
   return (
     <div className="min-h-screen">
-      <div>
+      {/* <div>
         <Joyride
           steps={[
             {
@@ -622,7 +622,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             },
           }}
         />
-      </div>
+      </div> */}
 
       <AlertMsg />
       {spinning ? (
@@ -642,11 +642,11 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           </div>
 
           <div className="my-4 ">
-            <div className="rounded-lg bg-green-500 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">
+            {/* <div className="rounded-lg bg-green-500 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">
               <button onClick={startTour}>
                 <QuestionCircleOutlined />
               </button>
-            </div>
+            </div> */}
             <div className="overflow-x-auto whitespace-nowrap border-t-2 border-b-2 border-yellow-300 text-sm">
               <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
                 <li

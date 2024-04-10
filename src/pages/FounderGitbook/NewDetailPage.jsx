@@ -17,6 +17,7 @@ export default function NewDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentProject, setCurrentProject] = useState("");
   const [blocks, setBlocks] = useState([]);
+  const [fullScreen, setFullScreen] = useState(false);
 
   const params = useParams();
   const { user } = useAuth();
@@ -95,21 +96,42 @@ export default function NewDetailPage() {
   }
   const position = "notFixed";
 
+  console.log("fullScreen", fullScreen);
+
   return (
     <div className="min-h-screen bg-white">
-      <Header position={position} />
-      <ProfileInfo
-        company={company}
-        currentProject={currentProject}
-        setCurrentProject={setCurrentProject}
-        blocks={blocks}
-      />
+      <button
+        className={`w-[100px] fixed bottom-5 sm:left-5 right-5 p-2 rounded-md ${
+          fullScreen ? "bg-gray-300" : "bg-blue-600 text-white"
+        } z-50 text-sm`}
+        onClick={() => setFullScreen((prev) => !prev)}
+      >
+        Full screen
+      </button>
+      {fullScreen === false ? (
+        <div>
+          <Header position={position} />
+          <ProfileInfo
+            company={company}
+            currentProject={currentProject}
+            setCurrentProject={setCurrentProject}
+            blocks={blocks}
+          />
 
-      <div className="mt-4 xl:container w-full mx-auto sm:px-4 pl-8 flex flex-col lg:flex-row">
+          <div className="mt-4 xl:container w-full mx-auto sm:px-4 pl-8 flex flex-col lg:flex-row">
+            <MyTab
+              blocks={blocks}
+              setBlocks={setBlocks}
+              company={company}
+              fullScreen={fullScreen}
+            />
+
+            <Author company={company} />
+          </div>
+        </div>
+      ) : (
         <MyTab blocks={blocks} setBlocks={setBlocks} company={company} />
-
-        <Author company={company} />
-      </div>
+      )}
     </div>
   );
 }

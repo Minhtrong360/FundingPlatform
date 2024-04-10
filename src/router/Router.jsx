@@ -40,7 +40,7 @@ import NewProjectPosts from "../pages/StartUps/NewProjectPosts";
 import Brochure from "../pages/Home/Components/Brochure.jsx";
 import NewDetailPage from "../pages/FounderGitbook/NewDetailPage.jsx";
 import App from "../supabase/PrivateDemo.jsx";
-import TourComponent from "../pages/JoyRide.jsx";
+
 function Router() {
   return (
     <>
@@ -70,7 +70,7 @@ function Router() {
           path="/founder/:id"
           element={
             <AuthRequire message="Sign in required!">
-              <DetailPage />
+              <NewDetailPage />
             </AuthRequire>
           }
         />
@@ -144,7 +144,6 @@ function Router() {
         <Route path="/brochure" element={<Brochure />} />
         <Route path="/mytabs" element={<NewDetailPage />} />
         <Route path="/app" element={<App />} />
-        <Route path="/tour" element={<TourComponent />} />
         <Route path="/loading" element={<ProgressBar isLoading={true} />} />
       </Routes>
     </>

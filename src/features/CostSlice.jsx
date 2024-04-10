@@ -6,27 +6,30 @@ const initialState = {
       id: 1,
       costName: "Website",
       costValue: 1000,
-      growthPercentage: 0,
+      growthPercentage: 5,
       beginMonth: 1,
       endMonth: 6,
+      growthFrequency: "Monthly",
       costType: "Sales, Marketing Cost",
     },
     {
       id: 2,
       costName: "Marketing",
       costValue: 500,
-      growthPercentage: 0,
+      growthPercentage: 10,
       beginMonth: 1,
       endMonth: 36,
+      growthFrequency: "Annually",
       costType: "Sales, Marketing Cost",
     },
     {
       id: 3,
       costName: "Rent",
       costValue: 1000,
-      growthPercentage: 2,
+      growthPercentage: 4,
       beginMonth: 1,
       endMonth: 36,
+      growthFrequency: "Annually",
       costType: "General Administrative Cost",
     },
   ],
@@ -77,8 +80,21 @@ export const calculateCostData = (tempCostInput, numberOfMonths) => {
     let currentCost = parseFloat(costInput.costValue);
     for (let month = 1; month <= numberOfMonths; month++) {
       if (month >= costInput.beginMonth && month <= costInput.endMonth) {
-        monthlyCosts.push({ month: month, cost: currentCost });
-        currentCost *= 1 + parseFloat(costInput.growthPercentage) / 100;
+        if (costInput.growthFrequency === "Monthly") {
+          monthlyCosts.push({ month: month, cost: currentCost });
+          currentCost *= 1 + parseFloat(costInput.growthPercentage) / 100;
+        } else if (costInput.growthFrequency === "Annually" || costInput.growthFrequency === "Quarterly" || costInput.growthFrequency === "Semi-Annually") {
+          let frequency = 12;
+          if (costInput.growthFrequency === "Quarterly") frequency = 3;
+          else if (costInput.growthFrequency === "Semi-Annually") frequency = 6;
+
+          if (month === costInput.beginMonth || (month > costInput.beginMonth && (month - costInput.beginMonth) % frequency === 0)) {
+            if (month !== costInput.beginMonth) {
+              currentCost *= 1 + parseFloat(costInput.growthPercentage) / 100;
+            }
+          }
+          monthlyCosts.push({ month: month, cost: currentCost });
+        }
       } else {
         monthlyCosts.push({ month: month, cost: 0 });
       }
@@ -91,6 +107,8 @@ export const calculateCostData = (tempCostInput, numberOfMonths) => {
   });
   return allCosts;
 };
+
+
 
 export const { setCostInputs, setCostData, setIsSaved } = costSlice.actions;
 

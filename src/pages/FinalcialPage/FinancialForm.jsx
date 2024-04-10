@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { saveAs } from "file-saver";
+import Joyride, { STATUS, CallBackProps, Step } from "react-joyride";
+import {QuestionCircleOutlined } from "@ant-design/icons";
+
 
 import DurationSelect from "./Components/DurationSelect";
 import CustomerSection from "./Components/CustomerSection";
@@ -58,6 +61,7 @@ import { setFundraisingInputs } from "../../features/FundraisingSlice";
 import CashFlowSection from "./Components/CashFlowSection";
 import { message } from "antd";
 
+
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -112,7 +116,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           setStartingCashBalance(data.DurationSelect.startingCashBalance)
         );
       dispatch(setStatus(data.DurationSelect.status));
-      dispatch(setIndustry(data.DurationSelect.industry));
+      // dispatch(setIndustry(data.DurationSelect.industry));
       // dispatch(setStartMonth(data.DurationSelect.startMonth));
       // dispatch(setStartYear(data.DurationSelect.startYear));
       dispatch(setIncomeTax(data.DurationSelect.incomeTax));
@@ -517,8 +521,113 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     setActiveTab(tabName);
   };
 
+  const [run, setRun] = useState(false);
+
+  useEffect(() => {
+    setRun(true); // Initialize Joyride on component mount
+  }, []);
+
+  const handleJoyrideCallback = (data) => {
+    if (data.status === "finished"||data.status === "skipped") {
+      setRun(false);
+    }
+  };
+
+
+  
+  const startTour = () => {
+    setRun(true);
+  };
+
   return (
     <div className="min-h-screen">
+      <Joyride
+        steps={[
+          {
+            target: ".cursor-pointer-overview",
+            content:
+              "This is the Overview tab. It provides a summary of your financial data.",
+            disableBeacon: true,
+            
+          },
+          {
+            target: ".cursor-pointer-customer",
+            content:
+              "This is the Customer tab. It allows you to manage customer-related data.",
+            disableBeacon: true,
+            
+          },
+          {
+            target: ".cursor-pointer-sales",
+            content:
+              "This is the Sales tab. It helps you track your sales performance.",
+            disableBeacon: true,
+          },
+          {
+            target: ".cursor-pointer-cost",
+            content:
+              "This is the Cost tab. It helps you analyze your costs and expenses.",
+            disableBeacon: true,
+          },
+          {
+            target: ".cursor-pointer-personnel",
+            content:
+              "This is the Personnel tab. It allows you to manage your workforce.",
+            disableBeacon: true,
+          },
+          {
+            target: ".cursor-pointer-investment",
+            content:
+              "This is the Investment tab. It helps you track your investments.",
+            disableBeacon: true,
+          },
+          {
+            target: ".cursor-pointer-loan",
+            content:
+              "This is the Loan tab. It allows you to manage your loans and debts.",
+            disableBeacon: true,
+          },
+          {
+            target: ".cursor-pointer-fundraising",
+            content:
+              "This is the Fundraising tab. It helps you manage fundraising activities.",
+            disableBeacon: true,
+          },
+          {
+            target: ".cursor-pointer-profitAndLoss",
+            content:
+              "This is the Profit and Loss tab. It provides insights into your profitability.",
+            disableBeacon: true,
+          },
+          {
+            target: ".cursor-pointer-cashFlow",
+            content:
+              "This is the Cash Flow tab. It helps you monitor your cash flow.",
+            disableBeacon: true,
+          },
+          {
+            target: ".cursor-pointer-balanceSheet",
+            content:
+              "This is the Balance Sheet tab. It provides an overview of your financial position.",
+            disableBeacon: true,
+          },
+        ]}
+        run={run}
+        continuous
+        scrollToFirstStep
+        showProgress
+        showSkipButton
+        disableOverlayClose
+        disableScrolling
+        disableCloseOnEsc
+        callback={handleJoyrideCallback}
+        styles={{
+          options: {
+            zIndex: 10000,
+          },
+        }}
+      />
+
       <AlertMsg />
       {spinning ? (
         <ProgressBar spinning={spinning} isLoading={isLoading} />
@@ -539,10 +648,15 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             <GPTAnalyzer />
           </div> */}
           <div className="my-4 ">
+          <div className="rounded-lg bg-green-500 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">
+            <button onClick={startTour}>
+          <QuestionCircleOutlined />
+          </button>
+          </div> 
             <div className="overflow-x-auto whitespace-nowrap border-t-2 border-b-2 border-yellow-300 text-sm">
               <ul className="py-4 flex lg:justify-center justify-start items-center space-x-4">
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                  className={`cursor-pointer-overview px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "overview" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("overview")}
@@ -551,7 +665,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </li>
                 {/* Repeat for other tabs */}
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer-customer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "customer" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("customer")}
@@ -559,7 +673,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Customer
                 </li>
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer-sales px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "sales" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("sales")}
@@ -567,7 +681,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Sales
                 </li>
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer-cost px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "cost" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("cost")}
@@ -575,7 +689,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Cost
                 </li>
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer-personnel px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "personnel" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("personnel")}
@@ -583,7 +697,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Personnel
                 </li>
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer-investment px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "investment" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("investment")}
@@ -591,7 +705,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Investment
                 </li>
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer-loan px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "loan" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("loan")}
@@ -599,7 +713,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Loan
                 </li>
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer-fundraising px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "fundraising" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("fundraising")}
@@ -607,7 +721,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Fundraising
                 </li>
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer-profitAndLoss px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "profitAndLoss"
                       ? "bg-yellow-300 font-bold"
                       : ""
@@ -617,7 +731,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Profit and Loss
                 </li>
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer-cashFlow px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "cashFlow" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("cashFlow")}
@@ -625,7 +739,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Cash Flow
                 </li>
                 <li
-                  className={`cursor-pointer px-2 py-1 rounded-yellowover:bg-gray-200 rounded-md ${
+                  className={`cursor-pointer-balanceSheet px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "balanceSheet"
                       ? "bg-yellow-300 font-bold"
                       : ""

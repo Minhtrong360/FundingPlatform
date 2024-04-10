@@ -1,12 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
-import { SaveOutlined } from "@ant-design/icons";
 import {
   setSelectedDuration,
   setStartingCashBalance,
   setStatus,
   setIndustry,
   setIncomeTax,
-  setPayrollTax,
   setCurrency,
   setStartMonth,
   setStartYear,
@@ -22,6 +20,7 @@ import {
   SelectItem,
 } from "../../../components/ui/Select";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
+import currencyLists from "../../../components/Currency";
 
 const DurationSelect = ({ handleSubmit }) => {
   const dispatch = useDispatch();
@@ -69,6 +68,44 @@ const DurationSelect = ({ handleSubmit }) => {
     "Hospitality",
     "Real Estate",
     "Entertainment",
+    "Automotive",
+    "Construction",
+    "Telecommunications",
+    "Energy",
+    "Food and Beverage",
+    "Pharmaceuticals",
+    "Agriculture",
+    "Media",
+    "Insurance",
+    "Utilities",
+    "Government",
+    "Aerospace",
+    "Biotechnology",
+    "Consulting",
+    "Logistics",
+    "Internet",
+    "Software",
+    "Hardware",
+    "E-commerce",
+    "Health and Wellness",
+    "Fashion",
+    "Banking",
+    "Investment",
+    "Advertising",
+    "Consumer Goods",
+    "Engineering",
+    "Defense",
+    "Mining",
+    "Chemicals",
+    "Legal",
+    "Nonprofit",
+    "Gaming",
+    "Renewable Energy",
+    "Shipping",
+    "Venture Capital",
+    "Social Media",
+    "Travel",
+    "Human Resources",
   ];
 
   return (
@@ -80,188 +117,183 @@ const DurationSelect = ({ handleSubmit }) => {
         General Setup
       </h2>
       <div className="bg-white rounded-md shadow p-6 border">
-        <Tooltip title="Enter the name of your business">
-          <div className="grid grid-cols-2 gap-4 mb-3">
+        <div className="grid grid-cols-2 gap-4 mb-3">
+          <Tooltip title="Enter the name of your business">
             <span className=" flex items-center text-sm">Business name :</span>
+          </Tooltip>
 
-            <Input
-              className="border-gray-200"
-              value={financialProjectName}
-              onChange={(e) =>
-                dispatch(setFinancialProjectName(e.target.value))
-              }
-              type="text"
-            />
-          </div>
-        </Tooltip>
+          <Input
+            className="border-gray-200"
+            value={financialProjectName}
+            onChange={(e) => dispatch(setFinancialProjectName(e.target.value))}
+            type="text"
+          />
+        </div>
 
-        <Tooltip title="Enter the starting month of the business">
-          <div className="grid grid-cols-2 gap-4 mb-3">
+        <div className="grid grid-cols-2 gap-4 mb-3">
+          <Tooltip title="Enter the starting month of the business">
             <span className="flex items-center text-sm">Start Month :</span>
-            <Select
-              onValueChange={(value) => {
-                const selectedMonthIndex = months.indexOf(value);
-                dispatch(setStartMonth(selectedMonthIndex + 1));
-              }}
-              value={months[startMonth - 1]}
+          </Tooltip>
+          <Select
+            onValueChange={(value) => {
+              const selectedMonthIndex = months.indexOf(value);
+              dispatch(setStartMonth(selectedMonthIndex + 1));
+            }}
+            value={months[startMonth - 1]}
+          >
+            <SelectTrigger
+              id="start-month"
+              className="border-solid border-[1px] border-gray-200"
             >
-              <SelectTrigger
-                id="start-month"
-                className="border-solid border-[1px] border-gray-200"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent position="popper">
-                {months.map((month, index) => (
-                  <SelectItem
-                    className="hover:cursor-pointer"
-                    key={index}
-                    value={month}
-                  >
-                    {month}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </Tooltip>
-
-        <Tooltip title="Enter the starting year of the business">
-          <div className="grid grid-cols-2 gap-4 mb-3">
-            <span className=" flex items-center text-sm">Start Year :</span>
-            <Select
-              onValueChange={(value) => dispatch(setStartYear(value))}
-              value={startYear}
-            >
-              <SelectTrigger
-                id="start-year"
-                className="border-solid border-[1px] border-gray-200"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent position="popper">
-                {years.map((year, index) => (
-                  <SelectItem
-                    className="hover:cursor-pointer"
-                    key={index}
-                    value={year}
-                  >
-                    {year}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </Tooltip>
-
-        <Tooltip title="Select the duration 3 years or 5 years">
-          <div className="grid grid-cols-2 gap-4 mb-3">
-            <span className=" flex items-center text-sm">Duration :</span>
-            <Select
-              onValueChange={(value) => dispatch(setSelectedDuration(value))}
-            >
-              <SelectTrigger
-                id="start-date-year"
-                className="border-solid border-[1px] border-gray-200"
-              >
-                <SelectValue placeholder={selectedDuration} />
-              </SelectTrigger>
-              <SelectContent position="popper">
-                <SelectItem className="hover:cursor-pointer" value="3 years">
-                  3 years
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              {months.map((month, index) => (
+                <SelectItem
+                  className="hover:cursor-pointer"
+                  key={index}
+                  value={month}
+                >
+                  {month}
                 </SelectItem>
-                <SelectItem className="hover:cursor-pointer" value="5 years">
-                  5 years
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </Tooltip>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-        <Tooltip title="Enter the starting cash balance, e.g. $10,000">
-          <div className="grid grid-cols-2 gap-4 mb-3">
-            <span className=" flex items-center text-sm">
+        <div className="grid grid-cols-2 gap-4 mb-3">
+          <Tooltip title="Enter the starting year of the business">
+            <span className="flex items-center text-sm">Start Year :</span>
+          </Tooltip>
+          <Select
+            onValueChange={(value) => dispatch(setStartYear(value))}
+            value={startYear}
+          >
+            <SelectTrigger
+              id="start-year"
+              className="border-solid border-[1px] border-gray-200"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              {years.map((year, index) => (
+                <SelectItem
+                  className="hover:cursor-pointer"
+                  key={index}
+                  value={year}
+                >
+                  {year}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 mb-3">
+          <Tooltip title="Select the duration 3 years or 5 years">
+            <span className="flex items-center text-sm">Duration :</span>
+          </Tooltip>
+          <Select
+            onValueChange={(value) => dispatch(setSelectedDuration(value))}
+          >
+            <SelectTrigger
+              id="start-date-year"
+              className="border-solid border-[1px] border-gray-200"
+            >
+              <SelectValue placeholder={selectedDuration} />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              <SelectItem className="hover:cursor-pointer" value="3 years">
+                3 years
+              </SelectItem>
+              <SelectItem className="hover:cursor-pointer" value="5 years">
+                5 years
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 mb-3">
+          <Tooltip title="Enter the starting cash balance, e.g. $10,000">
+            <span className="flex items-center text-sm">
               Starting Cash Balance :
             </span>
+          </Tooltip>
+          <Input
+            className="border-gray-200"
+            value={formatNumber(startingCashBalance)}
+            onChange={(e) =>
+              dispatch(setStartingCashBalance(parseNumber(e.target.value)))
+            }
+            type="text"
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4 mb-3">
+          <Tooltip title="Select the status of the business">
+            <span className="flex items-center text-sm">Status :</span>
+          </Tooltip>
+          <Select
+            onValueChange={(value) => dispatch(setStatus(value))}
+            value={status}
+          >
+            <SelectTrigger className="border-solid border-[1px] border-gray-200">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              <SelectItem className="hover:cursor-pointer" value="active">
+                Active
+              </SelectItem>
+              <SelectItem className="hover:cursor-pointer" value="inactive">
+                Inactive
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-            <Input
-              className="border-gray-200"
-              value={formatNumber(startingCashBalance)}
-              onChange={(e) =>
-                dispatch(setStartingCashBalance(parseNumber(e.target.value)))
-              }
-              type="text"
-            />
-          </div>
-        </Tooltip>
-
-        <Tooltip title="Select the status of the business, e.g. $10,000">
-          <div className="grid grid-cols-2 gap-4 mb-3">
-            <span className=" flex items-center text-sm">Status :</span>
-            <Select
-              onValueChange={(value) => dispatch(setStatus(value))}
-              value={status}
-            >
-              <SelectTrigger className="border-solid border-[1px] border-gray-200">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent position="popper">
-                <SelectItem className="hover:cursor-pointer" value="active">
-                  Active
-                </SelectItem>
-                <SelectItem className="hover:cursor-pointer" value="inactive">
-                  Inactive
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </Tooltip>
-
-        <Tooltip title="Select the business industry, e.g. Fintech, Edtech">
-          <div className="grid grid-cols-2 gap-4 mb-3">
-            <span className=" flex items-center text-sm">
+        <div className="grid grid-cols-2 gap-4 mb-3">
+          <Tooltip title="Select the business industry, e.g. Fintech, Edtech">
+            <span className="flex items-center text-sm">
               Business industry:
             </span>
-            <Select
-              onValueChange={(value) => dispatch(setIndustry(value))}
-              value={industry}
+          </Tooltip>
+          <Select
+            onValueChange={(value) => dispatch(setIndustry(value))}
+            value={industry}
+          >
+            <SelectTrigger
+              id="industry"
+              className="border-solid border-[1px] border-gray-200"
             >
-              <SelectTrigger
-                id="industry"
-                className="border-solid border-[1px] border-gray-200"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent position="popper">
-                {industries.map((industry, index) => (
-                  <SelectItem
-                    className="hover:cursor-pointer"
-                    key={index}
-                    value={industry}
-                  >
-                    {industry}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </Tooltip>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              {industries.map((industry, index) => (
+                <SelectItem
+                  className="hover:cursor-pointer"
+                  key={index}
+                  value={industry}
+                >
+                  {industry}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-        <Tooltip title="Input the income tax, e.g. 10">
-          <div className="grid grid-cols-2 gap-4 mb-3">
-            <span className=" flex items-center text-sm">Income Tax(%) :</span>
-            <Input
-              className="border-gray-200"
-              type="text"
-              value={formatNumber(incomeTax)}
-              onChange={(e) =>
-                dispatch(setIncomeTax(parseNumber(e.target.value)))
-              }
-            />
-          </div>
-        </Tooltip>
-
-        <Tooltip title="Input the payroll tax, e.g. 10">
+        <div className="grid grid-cols-2 gap-4 mb-3">
+          <Tooltip title="Input the income tax, e.g. 10">
+            <span className="flex items-center text-sm">Income Tax(%) :</span>
+          </Tooltip>
+          <Input
+            className="border-gray-200"
+            type="text"
+            value={formatNumber(incomeTax)}
+            onChange={(e) =>
+              dispatch(setIncomeTax(parseNumber(e.target.value)))
+            }
+          />
+        </div>
+        {/* <Tooltip title="Input the payroll tax, e.g. 10">
           <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center text-sm">Payroll Tax (%):</span>
             <Input
@@ -275,39 +307,39 @@ const DurationSelect = ({ handleSubmit }) => {
               disabled
             />
           </div>
-        </Tooltip>
+        </Tooltip> */}
 
-        <Tooltip title="Select the currency, e.g. USD">
-          <div className="grid grid-cols-2 gap-4 mb-3">
-            <span className=" flex items-center text-sm">Currency :</span>
-            <Select
-              onValueChange={(value) => dispatch(setCurrency(value))}
-              value={currency}
-            >
-              <SelectTrigger className="border-solid border-[1px] border-gray-200">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent position="popper">
-                <SelectItem className="hover:cursor-pointer" value="USD">
-                  USD
+        <div className="grid grid-cols-2 gap-4 mb-3">
+          <Tooltip title="Select the currency, e.g. USD">
+            <span className="flex items-center text-sm">Currency :</span>
+          </Tooltip>
+          <Select
+            onValueChange={(value) => dispatch(setCurrency(value))}
+            value={currency}
+          >
+            <SelectTrigger className="border-solid border-[1px] border-gray-200">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              {currencyLists?.map((option) => (
+                <SelectItem
+                  key={option.key}
+                  className="hover:cursor-pointer"
+                  value={option.key}
+                >
+                  {option.key}
                 </SelectItem>
-                <SelectItem className="hover:cursor-pointer" value="EUR">
-                  EUR
-                </SelectItem>
-                <SelectItem className="hover:cursor-pointer" value="GBP">
-                  GBP
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </Tooltip>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <button
         className="bg-blue-600 text-white py-2 px-2 rounded mt-8 text-sm flex items-center"
         onClick={handleSubmit}
       >
-        Save project
+        Save changes
       </button>
     </section>
   );

@@ -92,7 +92,11 @@ function UserInfoSettings() {
             subscription_id: data.subscription_id || "",
           });
 
-          if (data.subscribe && data.subscription_status === "active") {
+          if (
+            data.subscribe &&
+            (data.subscription_status !== "canceled" ||
+              data.subscription_status !== "cancelled")
+          ) {
             const subscribeDate = new Date(data.subscribe);
             setExpiredDate(subscribeDate.toISOString().split("T")[0]);
           } else if (user.created_at) {
@@ -534,7 +538,8 @@ function UserInfoSettings() {
                       name="plan"
                       value={
                         userData.plan &&
-                        userData.subscription_status === "active"
+                        (userData.subscription_status !== "canceled" ||
+                          userData.subscription_status !== "cancelled")
                           ? userData.plan
                           : "Free"
                       }

@@ -52,7 +52,8 @@ const Modal = ({ isOpen, onClose, setIsPricingOpen }) => {
       currentUser.plan === "Free" ||
       currentUser.plan === null ||
       currentUser.plan === undefined ||
-      currentUser.subscription_status !== "active"
+      currentUser.subscription_status === "canceled" ||
+      currentUser.subscription_status === "cancelled"
     ) {
       setIsPrivateDisabled(true);
     } else {
@@ -188,7 +189,8 @@ function EditProject(isEditModalOpen, setIsEditModalOpen) {
         currentUser.plan === null ||
         currentUser.plan === undefined;
       const isSubscriptionInactive =
-        currentUser.subscription_status !== "active";
+        currentUser.subscription_status === "canceled" ||
+        currentUser.subscription_status === "cancelled";
 
       if (
         hasProjectWithCurrentUser &&

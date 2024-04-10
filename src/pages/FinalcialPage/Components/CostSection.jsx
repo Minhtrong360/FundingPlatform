@@ -17,6 +17,8 @@ import {
 
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { supabase } from "../../../supabase";
+import { useAuth } from "../../../context/AuthContext";
 
 const CostSection = ({
   numberOfMonths,
@@ -33,6 +35,10 @@ const CostSection = ({
   const [tempCostData, setTempCostData] = useState(costData);
 
   const [renderCostForm, setRenderCostForm] = useState(costInputs[0]?.id);
+
+  
+
+  
 
   useEffect(() => {
     setTempCostInput(costInputs);
@@ -247,11 +253,44 @@ const CostSection = ({
   };
 
   // useEffect to update cost inputs when data is saved
+  const { user } = useAuth();
   useEffect(() => {
-    if (isSaved) {
-      dispatch(setCostInputs(tempCostInput));
-      setIsSaved(false);
-    }
+    const saveData = async () => {
+      try {
+        if (isSaved) {
+          dispatch(setCostInputs(tempCostInput));
+
+          const { data: existingData, error: selectError } = await supabase
+            .from("finance")
+            .select("*")
+            .eq("user_id", user.id);
+          if (selectError) {
+            throw selectError;
+          }
+
+          if (existingData && existingData.length > 0) {
+            const newInputData = JSON.parse(existingData[0].inputData);
+
+            newInputData.costInputs = tempCostInput;
+
+            const { error: updateError } = await supabase
+              .from("finance")
+              .update({ inputData: newInputData })
+              .eq("id", existingData[0]?.id)
+              .select();
+
+            if (updateError) {
+              throw updateError;
+            }
+          }
+        }
+      } catch (error) {
+        message.error(error);
+      } finally {
+        setIsSaved(false);
+      }
+    };
+    saveData();
   }, [isSaved]);
 
   return (
@@ -339,6 +378,40 @@ const CostSection = ({
                     }
                   />
                 </div>
+
+                <div className="grid grid-cols-2 gap-4 mb-3">
+  <span className="flex items-center text-sm">Frequency:</span>
+  <Select
+    className="border-gray-200"
+    onValueChange={(value) =>
+      handleCostInputChange(input?.id, "growthFrequency", value)
+    }
+    value={input.growthFrequency}
+  >
+    <SelectTrigger
+      id={`select-growthFrequency-${input?.id}`}
+      className="border-solid border-[1px] border-gray-200"
+    >
+      <SelectValue placeholder="Select Growth Frequency" />
+    </SelectTrigger>
+    <SelectContent position="popper">
+      <SelectItem value="Monthly">
+        Monthly
+      </SelectItem>
+      <SelectItem value="Quarterly">
+        Quarterly
+      </SelectItem>
+      <SelectItem value="Semi-Annually">
+        Semi-Annually
+      </SelectItem>
+      <SelectItem value="Annually">
+        Annually
+      </SelectItem>
+    </SelectContent>
+  </Select>
+</div>
+
+
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     Begin Month:

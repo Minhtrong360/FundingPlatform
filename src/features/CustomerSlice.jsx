@@ -6,6 +6,7 @@ const initialState = {
       id: 1,
       customersPerMonth: 300,
       growthPerMonth: 1,
+      customerGrowthFrequency: "Monthly",
       channelName: "Online",
       beginMonth: 1,
       endMonth: 36,
@@ -17,6 +18,7 @@ const initialState = {
       id: 2,
       customersPerMonth: 400,
       growthPerMonth: 2,
+      customerGrowthFrequency: "Monthly",
       channelName: "Offline",
       beginMonth: 1,
       endMonth: 36,
@@ -63,40 +65,51 @@ export const calculateYearlyAverage = (
   return yearlyAverages;
 };
 
-export const calculateCustomerGrowth = (tempCustomerInputs, numberOfMonths) => {
-  return tempCustomerInputs.map((channel) => {
-    let customers = [];
-    let currentCustomers = parseFloat(channel.customersPerMonth);
-    let beginValue = parseFloat(channel.beginCustomer); // Begin value for the current month
+export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
+  return customerInputs.map((customerInput) => {
+    let monthlyCustomers = [];
+    let initialCustomers = parseFloat(customerInput.customersPerMonth); // Initial customers per month, remains unchanged
+    let currentCustomers = initialCustomers; // Current customers, will be updated based on growth
+    let beginValue = parseFloat(customerInput.beginCustomer); // Begin value for the current month
 
-    for (let i = 1; i <= numberOfMonths; i++) {
-      if (i >= channel.beginMonth && i <= channel.endMonth) {
-        const churnValue = (beginValue * (channel.churnRate / 100)).toFixed(0); // Calculate churn value
+    for (let month = 1; month <= numberOfMonths; month++) {
+      if (month >= customerInput.beginMonth && month <= customerInput.endMonth) {
+        if (customerInput.customerGrowthFrequency === "Monthly") {
+          currentCustomers = initialCustomers * (1 + parseFloat(customerInput.growthPerMonth) / 100);
+        } else if (["Annually", "Quarterly", "Semi-Annually"].includes(customerInput.customerGrowthFrequency)) {
+          let frequency = 12;
+          if (customerInput.customerGrowthFrequency === "Quarterly") frequency = 3;
+          else if (customerInput.customerGrowthFrequency === "Semi-Annually") frequency = 6;
 
-        const endValue = (
-          beginValue +
-          currentCustomers -
-          parseFloat(churnValue)
-        ).toFixed(0); // Calculate and assign value to End row
+          if (month === customerInput.beginMonth || ((month - customerInput.beginMonth) % frequency === 0 && month !== customerInput.beginMonth)) {
+            currentCustomers = initialCustomers * (1 + parseFloat(customerInput.growthPerMonth) / 100);
+          }
+        }
 
-        customers.push({
-          month: i,
-          customers: endValue,
-          channelName: channel.channelName,
+        const churnValue = (beginValue * (customerInput.churnRate / 100)).toFixed(0); // Calculate churn value
+        beginValue += currentCustomers - parseFloat(churnValue); // Update beginValue for the calculation of the next month
+
+        monthlyCustomers.push({
+          month: month,
+          customers: beginValue.toFixed(0),
+          channelName: customerInput.channelName,
         });
-        currentCustomers *= 1 + parseFloat(channel.growthPerMonth) / 100;
-        beginValue = parseFloat(endValue);
       } else {
-        customers.push({
-          month: i,
-          customers: 0,
-          channelName: channel.channelName,
+        monthlyCustomers.push({
+          month: month,
+          customers: "0",
+          channelName: customerInput.channelName,
         });
       }
     }
-    return customers;
+    return monthlyCustomers;
   });
 };
+
+
+
+
+
 
 export const {
   setCustomerInputs,

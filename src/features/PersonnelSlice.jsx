@@ -9,6 +9,7 @@ export const personnelSlice = createSlice({
         jobTitle: "Cashier",
         salaryPerMonth: 800,
         increasePerYear: 10,
+        growthSalaryFrequency: "Annually",
         numberOfHires: 2,
         jobBeginMonth: 1,
         jobEndMonth: 36,
@@ -18,6 +19,7 @@ export const personnelSlice = createSlice({
         jobTitle: "Manager",
         salaryPerMonth: 2000,
         increasePerYear: 10,
+        growthSalaryFrequency: "Annually",
         numberOfHires: 1,
         jobBeginMonth: 1,
         jobEndMonth: 36,
@@ -35,33 +37,41 @@ export const personnelSlice = createSlice({
   },
 });
 
-export const calculatePersonnelCostData = (
-  tempPersonnelInputs,
-  numberOfMonths
-) => {
+export const calculatePersonnelCostData = (tempPersonnelInputs, numberOfMonths) => {
   let allPersonnelCosts = [];
   tempPersonnelInputs.forEach((personnelInput) => {
     let monthlyCosts = [];
-    let lastYearSalary = parseFloat(personnelInput.salaryPerMonth);
-    // Determine the number of months based on the selected duration
+    let currentSalary = parseFloat(personnelInput.salaryPerMonth);
     for (let month = 1; month <= numberOfMonths; month++) {
       if (
         month >= personnelInput.jobBeginMonth &&
         month <= personnelInput.jobEndMonth
       ) {
-        const salaryPerMonth = lastYearSalary;
-        const numberOfHires = parseInt(personnelInput.numberOfHires);
-        const increasePercentage = parseFloat(personnelInput.increasePerYear);
-        let newSalary = salaryPerMonth;
-        if (
-          (month - personnelInput.jobBeginMonth) % 12 === 0 &&
-          month !== personnelInput.jobBeginMonth
-        ) {
-          newSalary *= 1 + increasePercentage / 100;
-          lastYearSalary = newSalary; // Update last year's salary
+        if (personnelInput.growthSalaryFrequency === "Monthly") {
+          monthlyCosts.push({
+            month: month,
+            cost: currentSalary * parseInt(personnelInput.numberOfHires),
+          });
+          currentSalary *= 1 + parseFloat(personnelInput.increasePerYear) / 100;
+        } else {
+          let frequency = 12; // Default to Annually
+          if (personnelInput.growthSalaryFrequency === "Quarterly") frequency = 3;
+          else if (personnelInput.growthSalaryFrequency === "Semi-Annually") frequency = 6;
+
+          if (
+            month === personnelInput.jobBeginMonth ||
+            (month > personnelInput.jobBeginMonth &&
+              (month - personnelInput.jobBeginMonth) % frequency === 0)
+          ) {
+            if (month !== personnelInput.jobBeginMonth) {
+              currentSalary *= 1 + parseFloat(personnelInput.increasePerYear) / 100;
+            }
+          }
+          monthlyCosts.push({
+            month: month,
+            cost: currentSalary * parseInt(personnelInput.numberOfHires),
+          });
         }
-        const monthlyCost = newSalary * numberOfHires;
-        monthlyCosts.push({ month: month, cost: monthlyCost });
       } else {
         monthlyCosts.push({ month: month, cost: 0 });
       }
@@ -73,6 +83,7 @@ export const calculatePersonnelCostData = (
   });
   return allPersonnelCosts;
 };
+
 
 export const { setPersonnelInputs, setPersonnelCostData, setIsSaved } =
   personnelSlice.actions;

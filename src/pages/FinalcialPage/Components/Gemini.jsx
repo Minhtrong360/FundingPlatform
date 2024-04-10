@@ -181,7 +181,7 @@ const Gemini = ({
                     fundraisingAmount: 0,
                     fundraisingType: "Common Stock",
                     fundraisingBeginMonth: 1,
-                    equityOffered: 0,
+                    equityOffered: 0
                   }
                 ]
               },         

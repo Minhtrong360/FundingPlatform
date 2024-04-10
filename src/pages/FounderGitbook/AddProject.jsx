@@ -8,6 +8,7 @@ import AlertMsg from "../../components/AlertMsg";
 import { Tooltip, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { Radio } from "antd";
+import PricingWithLemon from "../Home/Components/PricingWithLemon";
 
 const Modal = ({
   isOpen,
@@ -93,7 +94,8 @@ const Modal = ({
       currentUser.plan === "Free" ||
       currentUser.plan === null ||
       currentUser.plan === undefined ||
-      currentUser.subscription_status !== "active"
+      currentUser.subscription_status === "canceled" ||
+      currentUser.subscription_status === "cancelled"
     ) {
       setIsPrivateDisabled(true);
     } else {
@@ -249,6 +251,7 @@ export default function AddProject({
   setIsModalOpen,
   selectedProject,
   setSelectedProject,
+  myProjects,
 }) {
   const { user } = useAuth();
   const [currentUser, setCurrentUser] = useState(null);
@@ -284,7 +287,6 @@ export default function AddProject({
       fetchCurrentUser();
     }
   }, [user]);
-
   useEffect(() => {
     if (currentUser && updatedProjects) {
       const hasProjectWithCurrentUser = updatedProjects.some(
@@ -295,13 +297,13 @@ export default function AddProject({
         currentUser.plan === null ||
         currentUser.plan === undefined;
       const isSubscriptionInactive =
-        currentUser.subscription_status !== "active";
+        currentUser.subscription_status === "canceled" ||
+        currentUser.subscription_status === "cancelled";
 
       if (
         hasProjectWithCurrentUser &&
-        updatedProjects.length > 1 &&
-        isFreeUser &&
-        isSubscriptionInactive
+        myProjects.length >= 1 &&
+        (isFreeUser || isSubscriptionInactive)
       ) {
         setIsButtonDisabled(true);
       } else {
@@ -338,6 +340,7 @@ export default function AddProject({
             className={`text-white opacity-50 bg-gray-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
             onClick={handleClickAddNew}
           >
+            <PlusOutlined className="mr-1" />
             Add new
           </button>
         </Tooltip>
@@ -409,7 +412,7 @@ export default function AddProject({
       >
         <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
           <div className="relative p-8 bg-white w-full  m-auto flex-col flex rounded-md">
-            <PricingSection />
+            <PricingWithLemon />
             <div className="mt-4 flex items-center gap-10">
               <button
                 className="max-w-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"

@@ -855,7 +855,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             pagination={false}
           />
           {/* Expanded section to calculate and display financial ratios */}
-          <div>
+          {/* <div>
             <h4>Financial Ratios for {year.year}</h4>
             {(() => {
               const dataSourceForYear = getDataSourceForYear(year.months);
@@ -873,7 +873,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
                             {key.toUpperCase().replace(/_/g, " ")}
                           </p>
                           <Tooltip
-                            title={`This is the ${key.replace(/_/g, " ")}.`}
+                            title={`${key.replace(/_/g, " ")}.`}
                           >
                             <InfoCircleOutlined />
                           </Tooltip>
@@ -914,7 +914,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
                 </div>
               );
             })()}
-          </div>
+          </div> */}
         </div>
       ))}
     </div>

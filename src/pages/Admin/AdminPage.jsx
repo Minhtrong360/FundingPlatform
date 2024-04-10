@@ -9,6 +9,10 @@ import Header from "../Home/Header";
 import { message, Table } from "antd";
 import { formatDate } from "../../features/DurationSlice";
 import { Switch, Space } from "antd";
+import { Input, Button } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import { DatePicker } from "antd";
+import moment from "moment";
 
 function AdminPage() {
   const { user } = useAuth();
@@ -110,6 +114,7 @@ function AdminPage() {
         </div>
       ),
     },
+
     {
       title: "Name",
       dataIndex: "name",
@@ -122,7 +127,56 @@ function AdminPage() {
           {text}
         </div>
       ),
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder={`Search Name`}
+            value={selectedKeys[0]}
+            onChange={(e) => {
+              setSelectedKeys(e.target.value ? [e.target.value] : []);
+            }}
+            onPressEnter={() => confirm()}
+            style={{
+              width: 188,
+              marginBottom: 8,
+              display: "block",
+              fontSize: "12px",
+              paddingTop: "2px",
+              paddingBottom: "2px",
+            }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => confirm()}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 90, fontSize: "12px" }}
+            >
+              Search
+            </Button>
+            <Button
+              onClick={() => clearFilters()}
+              size="small"
+              style={{ width: 90, fontSize: "12px" }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        record.name.toString().toLowerCase().includes(value.toLowerCase()),
     },
+
     {
       title: "Date",
       dataIndex: "created_at",
@@ -130,9 +184,43 @@ function AdminPage() {
       render: (text, record) => (
         <div onClick={() => handleProjectClick(record)}>{formatDate(text)}</div>
       ),
-      ellipsis: true, // Add ellipsis to truncate long content
-      width: "10%", // Set a fixed width for the column
-      align: "center", // Center align the content
+      ellipsis: true,
+      width: "10%",
+      align: "center",
+      filterDropdown: ({ setSelectedKeys, confirm, clearFilters }) => (
+        <div style={{ padding: 8 }}>
+          <Space direction="vertical">
+            <DatePicker.RangePicker
+              onChange={(value) => setSelectedKeys(value ? [value] : [])}
+              style={{ width: 188, marginBottom: 8, display: "block" }}
+              format="DD/MM/YYYY" // Add this line
+            />
+          </Space>
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => confirm()}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Search
+            </Button>
+            <Button
+              onClick={() => clearFilters()}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      onFilter: (value, record) => {
+        if (!value) return true;
+        const [start, end] = value;
+        const createdAt = moment(record.created_at);
+        return createdAt.isBetween(start, end, "day", "[]");
+      },
     },
     {
       title: "Customer",

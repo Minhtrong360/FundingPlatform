@@ -45,16 +45,18 @@ const ButtonGroup = ({
   );
 
   return (
-    <Dropdown.Button
-      className={`bg-yellow-300 text-black focus:ring-4 focus:outline-none font-medium rounded-md text-sm py-1.5 px-0.5 text-center`}
+    <Dropdown
+      className={`bg-yellow-300 text-black focus:ring-4 focus:outline-none font-medium rounded-md text-sm py-3 text-center px-2 hover:cursor-pointer`}
       overlay={menuItems}
       placement="bottomRight"
       disabled={isLoading}
-      icon={<SettingOutlined />}
+      // icon={<SettingOutlined />}
       onClick={(e) => e.preventDefault()} // Prevents the dropdown from closing when clicking the button
     >
-      {/* <span className="p-1">Action</span> */}
-    </Dropdown.Button>
+      <span>
+      <SettingOutlined /> Profile Settings 
+      </span>
+    </Dropdown>
   );
 };
 

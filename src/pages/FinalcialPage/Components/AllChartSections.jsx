@@ -46,6 +46,7 @@ import {
   setRevenueDeductionData,
 } from "../../../features/SaleSlice";
 import CustomChart from "./CustomerChart";
+import { getCurrencyLabelByKey } from "../../../features/DurationSlice";
 
 const AllChartSections = ({
   yearlyAverageCustomers,
@@ -438,18 +439,19 @@ const AllChartSections = ({
 
         <div className="mt-1 flex items-center gap-x-2">
           <div className="flex flex-col xl:flex-row xl:items-center items-start w-full">
-            <h3 className="text-sm sm:text-3xl font-bold text-blue-600 my-2">
-              ${formatNumber(Math.round(value[selectedMonth - 1]))}
+            <h3 className="text-sm sm:text-3xl font-bold text-gray-800 my-2">
+              {formatNumber(Math.round(value[selectedMonth - 1]))}
             </h3>
           </div>
         </div>
         <div className="flex flex-col xl:flex-row xl:items-center items-start w-full">
-          <p className="text-base text-gray-800 ">Month: {selectedMonth}</p>
+          {/* <p className="text-base text-gray-800 ">Month: {selectedMonth}</p> */}
         </div>
       </div>
     </div>
   );
 
+  const { currency } = useSelector((state) => state.durationSelect);
   return (
     <div className="flex flex-col">
       <main className="flex flex-1 flex-col gap-4 mt-4 mb-4 md:gap-8 ">
@@ -457,7 +459,7 @@ const AllChartSections = ({
           <Card className="flex flex-col">
             <div>
               <div className="text-base">Total User</div>
-              <p className="text-sm sm:text-3xl font-bold text-blue-600 my-2">
+              <p className="text-sm sm:text-3xl font-bold text-black my-2">
                 {formatNumber(Math.round(sumArray(yearlyAverageCustomers)))}
               </p>
             </div>
@@ -471,8 +473,9 @@ const AllChartSections = ({
           <Card className="flex flex-col">
             <div>
               <div className="text-base">Total Revenue</div>
-              <p className="text-sm sm:text-3xl font-bold text-blue-600 my-2">
-                ${formatNumber(Math.round(sumArray(yearlySales)))}
+              <p className="text-sm sm:text-3xl font-bold text-black my-2">
+                {getCurrencyLabelByKey(currency)}&nbsp;
+                {formatNumber(Math.round(sumArray(yearlySales)))}
               </p>
             </div>
             <Chart

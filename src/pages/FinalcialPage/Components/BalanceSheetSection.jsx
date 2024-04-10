@@ -943,7 +943,7 @@ function BalanceSheetSection({ numberOfMonths }) {
             columns={generateBalanceSheetTableColumns(year)}
             pagination={false}
           />
-          <div>
+          {/* <div>
             <h4>Financial Ratios for {year.year}</h4>
             {(() => {
               const dataSourceForYear = getDataSourceForYearBalanceSheet(
@@ -963,7 +963,7 @@ function BalanceSheetSection({ numberOfMonths }) {
                             {key}:
                           </p>
                           <Tooltip
-                            title={`This is the ${key.replace(/_/g, " ")}.`}
+                            title={` ${key.replace(/_/g, " ")}.`}
                           >
                             <InfoCircleOutlined />
                           </Tooltip>
@@ -982,7 +982,7 @@ function BalanceSheetSection({ numberOfMonths }) {
                 </div>
               );
             })()}
-          </div>
+          </div> */}
         </div>
       ))}
     </div>

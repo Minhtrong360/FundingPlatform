@@ -16,6 +16,8 @@ import {
   setFundraisingTableData,
   transformFundraisingDataForTable,
 } from "../../../features/FundraisingSlice";
+import { useAuth } from "../../../context/AuthContext";
+import { supabase } from "../../../supabase";
 
 const FundraisingSection = ({
   numberOfMonths,
@@ -165,18 +167,51 @@ const FundraisingSection = ({
     message.success("Data saved successfully!");
   };
 
+  const { user } = useAuth();
   useEffect(() => {
-    if (isSaved) {
-      dispatch(setFundraisingInputs(tempFundraisingInputs));
+    const saveData = async () => {
+      try {
+        if (isSaved) {
+          dispatch(setFundraisingInputs(tempFundraisingInputs));
 
-      const tableData = transformFundraisingDataForTable(
-        tempFundraisingInputs,
-        numberOfMonths
-      );
+          const tableData = transformFundraisingDataForTable(
+            tempFundraisingInputs,
+            numberOfMonths
+          );
 
-      dispatch(setFundraisingTableData(tableData));
-      setIsSaved(false);
-    }
+          dispatch(setFundraisingTableData(tableData));
+
+          const { data: existingData, error: selectError } = await supabase
+            .from("finance")
+            .select("*")
+            .eq("user_id", user.id);
+          if (selectError) {
+            throw selectError;
+          }
+
+          if (existingData && existingData.length > 0) {
+            const newInputData = JSON.parse(existingData[0].inputData);
+
+            newInputData.fundraisingInputs = tempFundraisingInputs;
+
+            const { error: updateError } = await supabase
+              .from("finance")
+              .update({ inputData: newInputData })
+              .eq("id", existingData[0]?.id)
+              .select();
+
+            if (updateError) {
+              throw updateError;
+            }
+          }
+        }
+      } catch (error) {
+        message.error(error);
+      } finally {
+        setIsSaved(false);
+      }
+    };
+    saveData();
   }, [isSaved]);
 
   useEffect(() => {

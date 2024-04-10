@@ -9,6 +9,15 @@ import {
   calculatePersonnelCostData,
 } from "../../../features/PersonnelSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useAuth } from "../../../context/AuthContext";
+import { supabase } from "../../../supabase";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "../../../components/ui/Select";
 
 const PersonnelSection = ({
   numberOfMonths,
@@ -49,6 +58,7 @@ const PersonnelSection = ({
       jobTitle: "New position",
       salaryPerMonth: 0,
       increasePerYear: 10,
+      growthSalaryFrequency: "Annually",
       numberOfHires: 1,
       jobBeginMonth: 1,
       jobEndMonth: 36,
@@ -217,13 +227,45 @@ const PersonnelSection = ({
     setIsSaved(true);
     message.success("Data saved successfully!");
   };
-
+  const { user } = useAuth();
   useEffect(() => {
-    if (isSaved) {
-      dispatch(setPersonnelInputs(tempPersonnelInputs));
+    const saveData = async () => {
+      try {
+        if (isSaved) {
+          dispatch(setPersonnelInputs(tempPersonnelInputs));
 
-      setIsSaved(false);
-    }
+          const { data: existingData, error: selectError } = await supabase
+            .from("finance")
+            .select("*")
+            .eq("user_id", user.id);
+          if (selectError) {
+            throw selectError;
+          }
+
+          if (existingData && existingData.length > 0) {
+            const newInputData = JSON.parse(existingData[0].inputData);
+
+            newInputData.personnelInputs = tempPersonnelInputs;
+
+            const { error: updateError } = await supabase
+              .from("finance")
+              .update({ inputData: newInputData })
+              .eq("id", existingData[0]?.id)
+              .select();
+
+            if (updateError) {
+              throw updateError;
+            }
+          }
+        }
+      } catch (error) {
+        message.error(error);
+      } finally {
+        setIsSaved(false);
+      }
+    };
+
+    saveData();
   }, [isSaved]);
 
   return (
@@ -297,11 +339,11 @@ const PersonnelSection = ({
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
-                    Increase per year (%)
+                    Growth rate (%)
                   </span>
                   <Input
                     className="col-start-2 border-gray-200"
-                    placeholder="Enter Increase per Year"
+                    placeholder="Growth rate"
                     value={formatNumber(input.increasePerYear)}
                     onChange={(e) =>
                       handlePersonnelInputChange(
@@ -312,6 +354,39 @@ const PersonnelSection = ({
                     }
                   />
                 </div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-3">
+  <span className="flex items-center text-sm">Frequency:</span>
+  <Select
+    className="border-gray-200"
+    onValueChange={(value) =>
+      handlePersonnelInputChange(input?.id, "growthSalaryFrequency", value)
+    }
+    value={input.growthSalaryFrequency}
+  >
+    <SelectTrigger
+      id={`select-growthSalaryFrequency-${input?.id}`}
+      className="border-solid border-[1px] border-gray-200"
+    >
+      <SelectValue placeholder="Select Growth Frequency" />
+    </SelectTrigger>
+    <SelectContent position="popper">
+      <SelectItem value="Monthly">
+        Monthly
+      </SelectItem>
+      <SelectItem value="Quarterly">
+        Quarterly
+      </SelectItem>
+      <SelectItem value="Semi-Annually">
+        Semi-Annually
+      </SelectItem>
+      <SelectItem value="Annually">
+        Annually
+      </SelectItem>
+    </SelectContent>
+  </Select>
+</div>
+                
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     No. of hires
@@ -373,19 +448,22 @@ const PersonnelSection = ({
                 </div>
               </div>
             ))}
-          <button
-            className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
-            onClick={addNewPersonnelInput}
-          >
-            Add new
-          </button>
 
-          <button
-            className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
-            onClick={handleSave}
-          >
-            Save changes
-          </button>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <button
+              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
+              onClick={addNewPersonnelInput}
+            >
+              Add new
+            </button>
+
+            <button
+              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
+              onClick={handleSave}
+            >
+              Save changes
+            </button>
+          </div>
         </section>
       </div>
       <div className="w-full lg:w-3/4 sm:p-4 p-0">

@@ -10,6 +10,7 @@ import ProjectList from "./ProjectList";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
 import Sidebar from "./SideBar";
+import { message } from "antd";
 // import { toast } from "react-toastify";
 
 const FounderGitbook = () => {

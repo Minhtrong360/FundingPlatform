@@ -5,8 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 
 const NotificationItem = ({ notification, isLiked }) => {
   const parsedContent = JSON.parse(notification?.content);
-  console.log("notification", notification);
-  console.log("isLiked", isLiked);
+
   // Calculate the time passed since createdAt
   const timePassed = (created_at) => {
     const createdDate = new Date(created_at); // Convert createdAt to a JavaScript Date object

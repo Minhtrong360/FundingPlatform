@@ -11,6 +11,8 @@ import {
   setLoanTableData,
   transformLoanDataForTable,
 } from "../../../features/LoanSlice";
+import { useAuth } from "../../../context/AuthContext";
+import { supabase } from "../../../supabase";
 
 const LoanSection = ({
   numberOfMonths,
@@ -194,12 +196,46 @@ const LoanSection = ({
     numberOfMonths
   );
 
+  const { user } = useAuth();
+
   useEffect(() => {
-    if (isSaved) {
-      dispatch(setLoanInputs(tempLoanInputs));
-      dispatch(setLoanTableData(tableData));
-      setIsSaved(false);
-    }
+    const saveData = async () => {
+      try {
+        if (isSaved) {
+          dispatch(setLoanInputs(tempLoanInputs));
+          dispatch(setLoanTableData(tableData));
+
+          const { data: existingData, error: selectError } = await supabase
+            .from("finance")
+            .select("*")
+            .eq("user_id", user.id);
+          if (selectError) {
+            throw selectError;
+          }
+
+          if (existingData && existingData.length > 0) {
+            const newInputData = JSON.parse(existingData[0].inputData);
+
+            newInputData.loanInputs = tempLoanInputs;
+
+            const { error: updateError } = await supabase
+              .from("finance")
+              .update({ inputData: newInputData })
+              .eq("id", existingData[0]?.id)
+              .select();
+
+            if (updateError) {
+              throw updateError;
+            }
+          }
+        }
+      } catch (error) {
+        message.error(error);
+      } finally {
+        setIsSaved(false);
+      }
+    };
+    saveData();
   }, [isSaved]);
 
   useEffect(() => {

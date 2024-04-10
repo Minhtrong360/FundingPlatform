@@ -136,13 +136,16 @@ const AuthProvider = ({ children }) => {
         currentUser[0]?.plan === "Free" ||
         currentUser[0]?.plan === null ||
         currentUser[0]?.plan === undefined ||
-        currentUser[0]?.subscription_status !== "active"
+        currentUser[0]?.subscription_status === "canceled" ||
+        currentUser[0]?.subscription_status === "cancelled"
       )
         setSubscribed(false);
     } else {
       setSubscribed(true);
     }
   }, [currentUser]);
+
+  console.log("subscribe", subscribed);
 
   return (
     <AuthContext.Provider

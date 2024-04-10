@@ -197,7 +197,7 @@ export default function Sample() {
       {isLoading ? (
         <LoadingButtonClick isLoading={isLoading} />
       ) : (
-        <div className="flex-grow items-center justify-center py-10 ">
+        <div className="flex-grow items-center justify-center pb-10 ">
           <BlockNoteView editor={editor} theme={"light"} className="w-full " />
         </div>
       )}

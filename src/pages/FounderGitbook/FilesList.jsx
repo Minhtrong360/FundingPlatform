@@ -8,7 +8,6 @@ import { useParams } from "react-router-dom";
 import InvitedUserFile from "../../components/InvitedUserFile";
 import apiService from "../../app/apiService";
 import { message, Modal } from "antd";
-import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { Tooltip } from "antd";
 
 function FilesList() {
@@ -26,7 +25,6 @@ function FilesList() {
     setDeleteFileId(fileId);
     setIsDeleteModalVisible(true);
   };
-
   const handleDeleteModalOk = async () => {
     try {
       if (!navigator.onLine) {
@@ -124,16 +122,19 @@ function FilesList() {
       }
 
       if (currentProject.user_id === user.id) {
-        const { error } = await supabase.from("files").insert([
-          {
-            name: newLink.name,
-            link: newLink.link,
-            user_id: user.id,
-            owner_email: user.email,
-            status: newLink.status,
-            project_id: id,
-          },
-        ]);
+        const { data: newFile, error } = await supabase
+          .from("files")
+          .insert([
+            {
+              name: newLink.name,
+              link: newLink.link,
+              user_id: user.id,
+              owner_email: user.email,
+              status: newLink.status,
+              project_id: id,
+            },
+          ])
+          .select();
 
         if (error) {
           console.log("Error creating file:", error);
@@ -147,7 +148,7 @@ function FilesList() {
             return;
           }
 
-          setProjectLinks([...projectLinks, newLink]);
+          setProjectLinks([...projectLinks, newFile[0]]);
         }
       } else {
         alert("You are not the owner of the project.");
@@ -215,10 +216,11 @@ function FilesList() {
 
   useEffect(() => {
     if (
-      (currentUser?.plan === "Free" ||
-        currentUser?.plan === null ||
-        currentUser?.plan === undefined) &&
-      currentUser?.subscription_status !== "active"
+      currentUser?.plan === "Free" ||
+      currentUser?.plan === null ||
+      currentUser?.plan === undefined ||
+      currentUser?.subscription_status === "canceled" ||
+      currentUser?.subscription_status === "cancelled"
     ) {
       setIsPrivateDisabled(true);
     } else {
@@ -244,7 +246,7 @@ function FilesList() {
 
   return (
     <main className="w-full ml-2">
-      <section className="container px-4 mx-auto">
+      <section className="px-4 mx-auto">
         <div className="flex justify-end my-5 items-end">
           <AddLinkFile
             isLoading={isLoading}

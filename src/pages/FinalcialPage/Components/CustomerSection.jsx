@@ -17,6 +17,15 @@ import {
   setYearlySales,
 } from "../../../features/SaleSlice";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
+import { supabase } from "../../../supabase";
+import { useAuth } from "../../../context/AuthContext";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "../../../components/ui/Select";
 
 const CustomerSection = ({
   numberOfMonths,
@@ -55,6 +64,7 @@ const CustomerSection = ({
       id: newId,
       customersPerMonth: 100,
       growthPerMonth: 2,
+      customerGrowthFrequency: "Monthly",
       channelName: "New channel",
       beginMonth: 1,
       endMonth: 15,
@@ -130,79 +140,105 @@ const CustomerSection = ({
   });
 
   const customerTableData = Object.values(transformedCustomerTableData)
-    .filter((data) =>
-      tempCustomerInputs.find(
-        (input) =>
-          input.id == renderCustomerForm &&
-          input.channelName === data.channelName
-      )
-    )
-    .map((curr) => {
-      const customerInput = tempCustomerInputs.find(
-        (input) => input.channelName === curr.channelName
-      );
+  .filter((data) =>
+    renderCustomerForm === "all"
+      ? true
+      : tempCustomerInputs.find(
+          (input) =>
+            input.id == renderCustomerForm &&
+            input.channelName === data.channelName
+        )
+  )
+  .map((curr) => {
+    const customerInput = tempCustomerInputs.find(
+      (input) => input.channelName === curr.channelName
+    );
 
-      const startRow = {
-        key: `${curr.channelName}-start`,
-        channelName: `${curr.channelName} (Existing)`,
-      };
-      const beginRow = {
-        key: `${curr.channelName}-begin`,
-        channelName: `${curr.channelName} (Begin)`,
-      };
-      const churnRow = {
-        key: `${curr.channelName}-churn`,
-        channelName: `${curr.channelName} (Churn)`,
-      };
-      const endRow = {
-        ...curr,
-        key: `${curr.channelName}-end`,
-        channelName: `${curr.channelName} (End)`,
-      };
-      const channelAddRow = {
-        key: `${curr.channelName}-add`,
-        channelName: `${curr.channelName} (Add)`,
-      }; // Update the current channel row to Channel (Add)
+    const startRow = {
+      key: `${curr.channelName}-start`,
+      channelName: `${curr.channelName} (Existing)`,
+    };
+    const beginRow = {
+      key: `${curr.channelName}-begin`,
+      channelName: `${curr.channelName} (Begin)`,
+    };
+    const churnRow = {
+      key: `${curr.channelName}-churn`,
+      channelName: `${curr.channelName} (Churn)`,
+    };
+    const endRow = {
+      ...curr,
+      key: `${curr.channelName}-end`,
+      channelName: `${curr.channelName} (End)`,
+    };
+    const channelAddRow = {
+      key: `${curr.channelName}-add`,
+      channelName: `${curr.channelName} (Add)`,
+    };
 
-      let currentCustomers = parseFloat(customerInput.customersPerMonth);
-      for (let i = 1; i <= numberOfMonths; i++) {
-        if (i >= customerInput.beginMonth && i <= customerInput.endMonth) {
-          const channelValue = currentCustomers.toFixed(0); // Calculate channel value
-          channelAddRow[`month${i}`] = formatNumber(channelValue); // Assign channel value to Channel (Add) row of the current month
+    let currentCustomers = parseFloat(customerInput.customersPerMonth);
+    for (let i = 1; i <= numberOfMonths; i++) {
+      if (i >= customerInput.beginMonth && i <= customerInput.endMonth) {
+        if (customerInput.customerGrowthFrequency === "Monthly") {
           currentCustomers *=
             1 + parseFloat(customerInput.growthPerMonth) / 100;
         } else {
-          channelAddRow[`month${i}`] = "0.00"; // Set to 0 for months outside the channel's active period
-        }
-        startRow[`month${i}`] = "0.00";
-        beginRow[`month${i}`] = "0.00";
-        churnRow[`month${i}`] = "0.00";
-      }
+          let frequency = 12; // Default to Annually
+          if (customerInput.customerGrowthFrequency === "Quarterly") frequency = 3;
+          else if (customerInput.customerGrowthFrequency === "Semi-Annually") frequency = 6;
 
-      if (customerInput) {
-        startRow[`month${customerInput.beginMonth}`] = formatNumber(
-          parseFloat(customerInput.beginCustomer).toFixed(0)
-        );
-        beginRow[`month${customerInput.beginMonth}`] =
-          startRow[`month${customerInput.beginMonth}`];
-
-        for (let i = customerInput.beginMonth; i <= numberOfMonths; i++) {
-          if (i > customerInput.beginMonth) {
-            beginRow[`month${i}`] = formatNumber(endRow[`month${i - 1}`]); // Set Begin row of month i to End row of month i-1
+          if (
+            i === customerInput.beginMonth ||
+            (i > customerInput.beginMonth &&
+              (i - customerInput.beginMonth) % frequency === 0)
+          ) {
+            if (i !== customerInput.beginMonth) {
+              currentCustomers *=
+                1 + parseFloat(customerInput.growthPerMonth) / 100;
+            }
           }
-          endRow[`month${i}`] = formatNumber(endRow[`month${i}`]);
-          const beginValue = beginRow[`month${i}`] || 0; // Begin value for the current month
-          const churnValue = (
-            parseNumber(beginValue) *
-            (customerInput.churnRate / 100)
-          ).toFixed(0); // Calculate churn value
-          churnRow[`month${i}`] = churnValue; // Assign churn value to Churn row of the current month
         }
+        channelAddRow[`month${i}`] = formatNumber(
+          currentCustomers.toFixed(0)
+        );
+      } else {
+        channelAddRow[`month${i}`] = "0.00";
       }
+      startRow[`month${i}`] = "0.00";
+      beginRow[`month${i}`] = "0.00";
+      churnRow[`month${i}`] = "0.00";
+    }
 
-      return [startRow, beginRow, channelAddRow, churnRow, endRow];
-    })
-    .flat(); // Flatten the array of arrays to a single array
+    if (customerInput) {
+      startRow[`month${customerInput.beginMonth}`] = formatNumber(
+        parseFloat(customerInput.beginCustomer).toFixed(0)
+      );
+      beginRow[`month${customerInput.beginMonth}`] =
+        startRow[`month${customerInput.beginMonth}`];
+
+      for (let i = customerInput.beginMonth; i <= numberOfMonths; i++) {
+        if (i > customerInput.beginMonth) {
+          beginRow[`month${i}`] = formatNumber(endRow[`month${i - 1}`]); // Set Begin row of month i to End row of month i-1
+        }
+        endRow[`month${i}`] = formatNumber(endRow[`month${i}`]);
+        const beginValue = beginRow[`month${i}`] || 0; // Begin value for the current month
+        const addValue = parseNumber(channelAddRow[`month${i}`]) || 0; // Add value for the current month
+        const churnValue = (
+          parseNumber(beginValue) *
+          (customerInput.churnRate / 100)
+        ).toFixed(0); // Calculate churn value
+        churnRow[`month${i}`] = churnValue; // Assign churn value to Churn row of the current month
+        endRow[`month${i}`] = formatNumber(
+          parseNumber(beginValue) +
+            parseNumber(addValue) -
+            parseNumber(churnValue)
+        ); // Update End row to Begin + Add - Churn
+      }
+    }
+
+    return [startRow, beginRow, channelAddRow, churnRow, endRow];
+  })
+  .flat(); // Flatten the array of arrays to a single array
 
   const months = [
     "01",
@@ -267,26 +303,61 @@ const CustomerSection = ({
 
   const handleSave = () => {
     setIsSaved(true);
+
     message.success("Data saved successfully!");
   };
   const channelInputs = useSelector((state) => state.sales.channelInputs);
 
+  const { user } = useAuth();
   useEffect(() => {
-    if (isSaved) {
-      dispatch(setCustomerInputs(tempCustomerInputs));
-      const { revenueByChannelAndProduct } = dispatch(
-        calculateChannelRevenue(
-          numberOfMonths,
-          tempCustomerGrowthData,
-          tempCustomerInputs,
-          channelInputs
-        )
-      );
+    const saveData = async () => {
+      try {
+        if (isSaved) {
+          dispatch(setCustomerInputs(tempCustomerInputs));
+          const { revenueByChannelAndProduct } = dispatch(
+            calculateChannelRevenue(
+              numberOfMonths,
+              tempCustomerGrowthData,
+              tempCustomerInputs,
+              channelInputs
+            )
+          );
 
-      const yearlySale = calculateYearlySales(revenueByChannelAndProduct);
-      dispatch(setYearlySales(yearlySale));
-      setIsSaved(false);
-    }
+          const yearlySale = calculateYearlySales(revenueByChannelAndProduct);
+          dispatch(setYearlySales(yearlySale));
+
+          const { data: existingData, error: selectError } = await supabase
+            .from("finance")
+            .select("*")
+            .eq("user_id", user.id);
+          if (selectError) {
+            throw selectError;
+          }
+
+          if (existingData && existingData.length > 0) {
+            const newInputData = JSON.parse(existingData[0].inputData);
+
+            newInputData.customerInputs = tempCustomerInputs;
+
+            const { error: updateError } = await supabase
+              .from("finance")
+              .update({ inputData: newInputData })
+              .eq("id", existingData[0]?.id)
+              .select();
+
+            if (updateError) {
+              throw updateError;
+            }
+          }
+        }
+      } catch (error) {
+        message.error(error);
+      } finally {
+        setIsSaved(false);
+      }
+    };
+
+    saveData();
   }, [isSaved]);
 
   useEffect(() => {
@@ -320,6 +391,7 @@ const CustomerSection = ({
               value={renderCustomerForm}
               onChange={handleSelectChange}
             >
+              <option value="all">All</option>
               {tempCustomerInputs.map((input) => (
                 <option key={input?.id} value={input?.id}>
                   {input.channelName}
@@ -369,8 +441,8 @@ const CustomerSection = ({
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    New Customer /month:
+                  <span className="flex items-center text-sm">
+                    Adding (First month)
                   </span>
                   <Input
                     className="col-start-2 border-gray-200"
@@ -388,7 +460,7 @@ const CustomerSection = ({
 
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
-                    Growth/month (%):
+                    Growth rate (%):
                   </span>
                   <Input
                     className="col-start-2 border-gray-200"
@@ -402,6 +474,36 @@ const CustomerSection = ({
                     }
                     type="text"
                   />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mb-3">
+                  <span className="flex items-center text-sm">Frequency:</span>
+                  <Select
+                    className="border-gray-200"
+                    onValueChange={(value) =>
+                      handleInputChange(
+                        input?.id,
+                        "customerGrowthFrequency",
+                        value
+                      )
+                    }
+                    value={input.customerGrowthFrequency}
+                  >
+                    <SelectTrigger
+                      id={`select-customerGrowthFrequency-${input?.id}`}
+                      className="border-solid border-[1px] border-gray-200"
+                    >
+                      <SelectValue placeholder="Select Growth Frequency" />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      <SelectItem value="Monthly">Monthly</SelectItem>
+                      <SelectItem value="Quarterly">Quarterly</SelectItem>
+                      <SelectItem value="Semi-Annually">
+                        Semi-Annually
+                      </SelectItem>
+                      <SelectItem value="Annually">Annually</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-3">

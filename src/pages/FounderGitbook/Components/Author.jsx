@@ -1,23 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "../../../components/ui/Button";
 import { supabase } from "../../../supabase";
-import { StarFilled, StarOutlined } from "@ant-design/icons";
+import { StarOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import LoadingButtonClick from "../../../components/LoadingButtonClick";
 import { Avatar } from "antd";
 import { formatDate } from "../../../features/DurationSlice";
 
-const InterestButton = React.memo(({ onClick, isLiked }) => (
-  <Button
-    className={`border border-gray-200 w-full mt-4 ${
-      isLiked ? "bg-blue-600 text-white" : ""
-    }`}
-    onClick={onClick}
-  >
-    {isLiked ? "Unlike" : "Like"} &nbsp;{" "}
-    {isLiked ? <StarFilled /> : <StarOutlined />}
-  </Button>
+const InterestButton = React.memo(({ onClick, isLiked, likeCount }) => (
+  <div style={{ display: "flex", alignItems: "center", marginTop: "20px" }}>
+    <Button
+      className={`border border-gray-200 ${
+        isLiked ? "bg-blue-600 text-white" : ""
+      }`}
+      onClick={onClick}
+    >
+      {isLiked ? "Unlike" : "Like"}
+    </Button>
+    <div style={{ marginLeft: "8px" }}>
+      <StarOutlined />
+      <span style={{ marginLeft: "4px" }}>{likeCount ? likeCount : 0}</span>
+    </div>
+  </div>
 ));
 
 function Author({ company }) {
@@ -71,7 +76,13 @@ function Author({ company }) {
     }
 
     fetchUserData();
-  }, []);
+  }, [id, user]);
+
+  const [likedCount, setLikedCount] = useState(projectData?.liked.length);
+
+  useEffect(() => {
+    setLikedCount(projectData?.liked.length);
+  }, [projectData?.liked.length]);
 
   const like = async () => {
     try {
@@ -123,6 +134,10 @@ function Author({ company }) {
       }
 
       // Cập nhật trạng thái của isLiked
+
+      const newLikedCount = likedCount + 1;
+
+      setLikedCount(newLikedCount);
       setIsLiked(true);
     } catch (error) {
       console.error("Error updating liked:", error);
@@ -138,13 +153,13 @@ function Author({ company }) {
       const index = liked.indexOf(user.email);
       if (index !== -1) {
         liked.splice(index, 1);
-        console.log("liked", liked);
         // Xóa thông báo like khỏi bảng likedNotifications
         const { error } = await supabase
           .from("likedNotifications")
           .delete()
           .eq("receivedUser", currentUser.email)
           .eq("from", user.email)
+          .eq("likedID", projectData?.id)
           .single();
 
         if (error) {
@@ -163,6 +178,9 @@ function Author({ company }) {
         }
 
         // Cập nhật trạng thái của isLiked
+        const newLikedCount = likedCount - 1;
+
+        setLikedCount(newLikedCount);
         setIsLiked(false);
       }
     } catch (error) {
@@ -185,8 +203,8 @@ function Author({ company }) {
   };
 
   return (
-    <aside className="w-full lg:w-1/4 py-8 px-4 xl:pl-8">
-      <div className="sticky top-8 space-y-4">
+    <aside className="max-w-sm lg:w-1/4 py-5 px-1">
+      <div className="sticky top-8 space-y-4 border-2 border-gray-200 rounded-md p-3">
         {isLoading ? (
           <LoadingButtonClick />
         ) : (
@@ -239,6 +257,7 @@ function Author({ company }) {
               <InterestButton
                 onClick={onClickShowInterested}
                 isLiked={isLiked}
+                likeCount={likedCount}
               />
             </div>
           </>

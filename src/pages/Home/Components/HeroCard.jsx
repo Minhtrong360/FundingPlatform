@@ -35,9 +35,9 @@ const HeroCard = () => {
 
   return (
     <>
-      <div className="max-w-[85rem]  mx-auto px-4 sm:px-6 lg:px-8 sm:mt-24">
+      <div className="max-w-[85rem]  mx-auto px-4 sm:px-6 lg:px-8 mt-24">
         {/* Grid */}
-        <div className="grid lg:grid-cols-7 lg:gap-x-8 xl:gap-x-12 lg:items-center mt16 md:mt-64">
+        <div className="grid lg:grid-cols-7 lg:gap-x-8 xl:gap-x-12 lg:items-center md:mt-64">
           <div className="lg:col-span-3">
             <h1 className="block text-3xl font-extrabold leading-relaxed text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl">
               It can't be{" "}
@@ -88,7 +88,7 @@ const HeroCard = () => {
       </div>
 
       {/* Second card */}
-      <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 mt-12 sm:mt-24">
+      <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 mt-24">
         {/* Grid */}
         <div className="grid lg:grid-cols-7 lg:gap-x-8 xl:gap-x-12 lg:items-center mt-16 md:mt-64">
           {/* Video */}
@@ -113,7 +113,7 @@ const HeroCard = () => {
             </div>
           </div>
 
-          <div className="lg:col-span-3 order-1 lg:order-2  sm:mt-0">
+          <div className="lg:col-span-3 order-1 lg:order-2 mt-24">
             <h1 className="block text-3xl font-extrabold text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl">
               Insightful{" "}
               <span className="text-blue-600 bg-yellow-300 h-6">

@@ -1,4 +1,4 @@
-import { Badge, Tag, Tooltip, message } from "antd";
+import { Badge, Tooltip, message } from "antd";
 
 import { useNavigate, useParams } from "react-router-dom";
 import { formatNumber } from "../../features/CostSlice";
@@ -19,7 +19,6 @@ export default function ProfileInfo({
   const [project, setProject] = useState(null);
   const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
   const params = useParams();
-
   useEffect(() => {
     const fetchProject = async () => {
       if (!company.id) return;
@@ -219,7 +218,7 @@ export default function ProfileInfo({
     <div
       key="1"
       className={`max-w-7xl ${
-        canClick === false ? "mt-16 " : "mx-auto mt-32"
+        canClick === false ? "mt-8 " : "mx-auto mt-32"
       } px-4 sm:px-6 lg:px-8 `}
     >
       <ReactModal
@@ -245,11 +244,9 @@ export default function ProfileInfo({
       >
         <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
           <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
-            <h2 className="mt-2 text-base text-gray-500 ">
+            <h2 className="mt-2 text-base text-gray-800 ">
               {" "}
-              Our admins need to see all of your project, include your content,
-              your files,... If you agree, we will start to verify as soon as
-              possible.
+              Apply verification
             </h2>
 
             <div className="mt-4 flex items-center gap-10">
@@ -258,7 +255,7 @@ export default function ProfileInfo({
                 onClick={handleRequiredVerification}
                 className="w-full px-3 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
               >
-                Agree and Continue
+                Agree
               </button>
               <button
                 type="button"
@@ -275,7 +272,7 @@ export default function ProfileInfo({
         <div>
           <div className="flex justify-between items-center">
             <h1 className="text-4xl font-bold leading-tight text-gray-900">
-              {company?.name}
+              {company?.name ? company?.name : "VoltDrive (DEMO)"}
             </h1>
             {user?.id === currentProject?.user_id ||
             currentProject?.collabs?.includes(user.email) ? (
@@ -290,7 +287,14 @@ export default function ProfileInfo({
               </div>
             ) : null}
           </div>
-          <p className="mt-4 text-black">{company?.description}</p>
+          <p
+            className="mt-4 text-black"
+            style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+          >
+            {company?.description
+              ? company?.description
+              : "In the bustling heart of Silicon Valley, nestled among the towering tech giants, lies a beacon of innovation and sustainability: VoltDrive Electric. Founded by visionary engineer, Emily Rodriguez, VoltDrive is not just an electric car company; it's a revolution on wheels. At VoltDrive, every day begins with a dedication to a greener, cleaner future. Their state-of-the-art manufacturing facility, powered entirely by renewable energy, is a testament to their commitment to sustainability. The sleek, modern architecture of the building mirrors the company's ethos: merging cutting-edge technology with eco-conscious design."}
+          </p>
           <div className="mt-6 flex gap-4">
             {canClick === false ? (
               <Tooltip
@@ -304,67 +308,53 @@ export default function ProfileInfo({
                   className={`bg-blue-600 text-white ${
                     company?.calendly ? "" : "bg-blue-600"
                   }`}
-                  onClick={() => navigate(company?.calendly)}
-                  disabled={true}
                 >
-                  Book meeting
+                  Book Meeting
                 </Button>
               </Tooltip>
             ) : (
               <Tooltip
                 title={
-                  company?.calendly
-                    ? ""
-                    : "You need to add a Calendly link or a Google Meeting"
+                  company?.calendly ? "" : "You need to add a Calendly link"
                 }
               >
                 <Button
                   className={`bg-blue-600 text-white ${
                     company?.calendly ? "" : "bg-blue-600"
                   }`}
-                  onClick={() => navigate(company?.calendly)}
+                  onClick={() => window.open(company?.calendly, "_blank")}
                   // disabled={company?.calendly ? false : true}
                 >
                   Book meeting
                 </Button>
               </Tooltip>
             )}
-
-            {/* <Button type="primary" ghost>
-              Learn more
-            </Button> */}
           </div>
           <div className="mt-8">
-            <div className="text-black font-semibold">Features:</div>
+            <div className="text-black font-semibold">Industry:</div>
 
-            <div className=" mt-4 grid grid-cols-2 xl:grid-cols-3 ">
-              {company?.industry?.map((industry, index) => (
-                <Tag
-                  key={index}
-                  className="bg-yellow-300 border border-gray-200 text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
-                >
-                  {industry}
-                </Tag>
-              ))}
-            </div>
-          </div>
-          <div className="mt-8">
-            <div className="text-black font-semibold">Key words:</div>
-
-            <div className="mt-4 grid grid-cols-2 xl:grid-cols-3">
-              {company?.keyWords &&
-                company.keyWords.split(",").map((keyWord, index) => (
-                  <Tag
+            <div className=" mt-4  ">
+              {company?.industry.length > 0 ? (
+                company?.industry?.map((industry, index) => (
+                  <Badge
                     key={index}
-                    className="bg-yellow-300 border border-gray-200 text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
+                    className="mx-4 bg-yellow-300 border border-gray-200 truncate text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
                   >
-                    {keyWord.trim()}
-                  </Tag>
-                ))}
+                    {industry}
+                  </Badge>
+                ))
+              ) : (
+                <Badge
+                  key={1}
+                  className="mx-4 bg-yellow-300 border border-gray-200 truncate text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
+                >
+                  Technology
+                </Badge>
+              )}
             </div>
           </div>
         </div>
-        <div className="relative mt-2">
+        <div className="relative mt-2 flex justify-end">
           {company.card_url ? (
             <img
               alt="Insert your cover here"
@@ -378,7 +368,17 @@ export default function ProfileInfo({
               width="600"
             />
           ) : (
-            <div className="w-[400px] h-[300px] bg-gray-300"></div>
+            <img
+              alt="Insert your cover here"
+              className="rounded-lg object-cover"
+              height="400"
+              src="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_storage/beekrowd_images/img-1710146272575"
+              style={{
+                aspectRatio: "600/400",
+                objectFit: "cover",
+              }}
+              width="600"
+            />
           )}
 
           {project?.verified && (
@@ -391,55 +391,82 @@ export default function ProfileInfo({
       <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 transform scale-90">
         <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border ">
           <div className="text-xl font-semibold">
-            ${formatNumber(company?.target_amount)}
+            $
+            {company?.target_amount
+              ? formatNumber(company?.target_amount)
+              : "1,000,000"}
           </div>
           <div className="text-black mt-2">Target amount</div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
           <div className="text-xl font-semibold">
-            ${formatNumber(company?.ticket_size)}
+            $
+            {company?.ticket_size
+              ? formatNumber(company?.ticket_size)
+              : "100,000"}
           </div>
           <div className="text-black mt-2">Min ticket size</div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-          <div className="text-xl font-semibold">{company?.revenueStatus}</div>
+          <div className="text-xl font-semibold">
+            {company?.revenueStatus ? company?.revenueStatus : "0k-10k"}
+          </div>
           <div className="text-black mt-2">Revenue range</div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
           <div className="text-xl font-semibold">
             {" "}
-            ${formatNumber(company?.amountRaised)}
+            $
+            {company?.amountRaised
+              ? formatNumber(company?.amountRaised)
+              : "100,000"}
           </div>
           <div className="text-black mt-2">Raised before</div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-          <div className="text-xl font-semibold">{company?.teamSize}+</div>
+          <div className="text-xl font-semibold">
+            {company?.teamSize ? company?.teamSize : "1-10"}+
+          </div>
           <div className="text-black mt-2">Team size</div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
           <div className="text-xl font-semibold">Round</div>
-          <div className="text-black mt-2">{company?.round}</div>
+          <div className="text-black mt-2">
+            {company?.round ? company?.round : "Pre-seed"}
+          </div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
           <div className="text-xl font-semibold">Established</div>
-          <div className="text-black mt-2">{company?.operationTime}</div>
+          <div className="text-black mt-2">
+            {company?.operationTime ? company?.operationTime : "2024"}
+          </div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-          <div className="text-xl font-semibold">Offer</div>
-          <div className="text-black mt-2">{company?.offer}</div>
+          <Tooltip title={company?.offer}>
+            <div className="text-xl font-semibold">Offer</div>
+            <div className="text-black mt-2 truncate">
+              {company?.offer ? company?.offer : "5% equity"}
+            </div>
+          </Tooltip>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
           <div className="text-xl font-semibold">Type</div>
-          <div className="text-black mt-2">{company?.offer_type}</div>
+          <div className="text-black mt-2">
+            {company?.offer_type ? company?.offer_type : "Investment"}
+          </div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
-          <div className="text-xl font-semibold ">Website</div>
-          <div
-            className="text-black mt-2 truncate hover:cursor-pointer"
-            onClick={() => window.open(company?.website)}
-          >
-            {company?.website.replace(/^https?:\/\/(www\.)?/i, "")}
-          </div>
+          <Tooltip title={company?.website}>
+            <div className="text-xl font-semibold ">Website</div>
+            <div
+              className="text-black mt-2 truncate hover:cursor-pointer"
+              onClick={() => window.open(company?.website)}
+            >
+              {company?.website
+                ? company?.website.replace(/^https?:\/\/(www\.)?/i, "")
+                : "beekrowd.com"}
+            </div>
+          </Tooltip>
         </div>
         {/* Repeat the structure for other statistic cards */}
       </div>

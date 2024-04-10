@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { saveAs } from "file-saver";
 import Joyride, { STATUS, CallBackProps, Step } from "react-joyride";
-import {QuestionCircleOutlined } from "@ant-design/icons";
-
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 import DurationSelect from "./Components/DurationSelect";
 import CustomerSection from "./Components/CustomerSection";
@@ -60,7 +59,6 @@ import { setLoanInputs } from "../../features/LoanSlice";
 import { setFundraisingInputs } from "../../features/FundraisingSlice";
 import CashFlowSection from "./Components/CashFlowSection";
 import { message } from "antd";
-
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
@@ -528,105 +526,103 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   }, []);
 
   const handleJoyrideCallback = (data) => {
-    if (data.status === "finished"||data.status === "skipped") {
+    if (data.status === "finished" || data.status === "skipped") {
       setRun(false);
     }
   };
 
-
-  
   const startTour = () => {
     setRun(true);
   };
 
   return (
     <div className="min-h-screen">
-      <Joyride
-        steps={[
-          {
-            target: ".cursor-pointer-overview",
-            content:
-              "This is the Overview tab. It provides a summary of your financial data.",
-            disableBeacon: true,
-            
-          },
-          {
-            target: ".cursor-pointer-customer",
-            content:
-              "This is the Customer tab. It allows you to manage customer-related data.",
-            disableBeacon: true,
-            
-          },
-          {
-            target: ".cursor-pointer-sales",
-            content:
-              "This is the Sales tab. It helps you track your sales performance.",
-            disableBeacon: true,
-          },
-          {
-            target: ".cursor-pointer-cost",
-            content:
-              "This is the Cost tab. It helps you analyze your costs and expenses.",
-            disableBeacon: true,
-          },
-          {
-            target: ".cursor-pointer-personnel",
-            content:
-              "This is the Personnel tab. It allows you to manage your workforce.",
-            disableBeacon: true,
-          },
-          {
-            target: ".cursor-pointer-investment",
-            content:
-              "This is the Investment tab. It helps you track your investments.",
-            disableBeacon: true,
-          },
-          {
-            target: ".cursor-pointer-loan",
-            content:
-              "This is the Loan tab. It allows you to manage your loans and debts.",
-            disableBeacon: true,
-          },
-          {
-            target: ".cursor-pointer-fundraising",
-            content:
-              "This is the Fundraising tab. It helps you manage fundraising activities.",
-            disableBeacon: true,
-          },
-          {
-            target: ".cursor-pointer-profitAndLoss",
-            content:
-              "This is the Profit and Loss tab. It provides insights into your profitability.",
-            disableBeacon: true,
-          },
-          {
-            target: ".cursor-pointer-cashFlow",
-            content:
-              "This is the Cash Flow tab. It helps you monitor your cash flow.",
-            disableBeacon: true,
-          },
-          {
-            target: ".cursor-pointer-balanceSheet",
-            content:
-              "This is the Balance Sheet tab. It provides an overview of your financial position.",
-            disableBeacon: true,
-          },
-        ]}
-        run={run}
-        continuous
-        scrollToFirstStep
-        showProgress
-        showSkipButton
-        disableOverlayClose
-        disableScrolling
-        disableCloseOnEsc
-        callback={handleJoyrideCallback}
-        styles={{
-          options: {
-            zIndex: 10000,
-          },
-        }}
-      />
+      <div>
+        <Joyride
+          steps={[
+            {
+              target: ".cursor-pointer-overview",
+              content:
+                "This is the Overview tab. It provides a summary of your financial data.",
+              disableBeacon: true,
+            },
+            {
+              target: ".cursor-pointer-customer",
+              content:
+                "This is the Customer tab. It allows you to manage customer-related data.",
+              disableBeacon: true,
+            },
+            {
+              target: ".cursor-pointer-sales",
+              content:
+                "This is the Sales tab. It helps you track your sales performance.",
+              disableBeacon: true,
+            },
+            {
+              target: ".cursor-pointer-cost",
+              content:
+                "This is the Cost tab. It helps you analyze your costs and expenses.",
+              disableBeacon: true,
+            },
+            {
+              target: ".cursor-pointer-personnel",
+              content:
+                "This is the Personnel tab. It allows you to manage your workforce.",
+              disableBeacon: true,
+            },
+            {
+              target: ".cursor-pointer-investment",
+              content:
+                "This is the Investment tab. It helps you track your investments.",
+              disableBeacon: true,
+            },
+            {
+              target: ".cursor-pointer-loan",
+              content:
+                "This is the Loan tab. It allows you to manage your loans and debts.",
+              disableBeacon: true,
+            },
+            {
+              target: ".cursor-pointer-fundraising",
+              content:
+                "This is the Fundraising tab. It helps you manage fundraising activities.",
+              disableBeacon: true,
+            },
+            {
+              target: ".cursor-pointer-profitAndLoss",
+              content:
+                "This is the Profit and Loss tab. It provides insights into your profitability.",
+              disableBeacon: true,
+            },
+            {
+              target: ".cursor-pointer-cashFlow",
+              content:
+                "This is the Cash Flow tab. It helps you monitor your cash flow.",
+              disableBeacon: true,
+            },
+            {
+              target: ".cursor-pointer-balanceSheet",
+              content:
+                "This is the Balance Sheet tab. It provides an overview of your financial position.",
+              disableBeacon: true,
+            },
+          ]}
+          run={run}
+          continuous
+          scrollToFirstStep
+          showProgress
+          showSkipButton
+          disableOverlayClose
+          disableScrolling
+          disableCloseOnEsc
+          callback={handleJoyrideCallback}
+          styles={{
+            options: {
+              zIndex: 10000,
+            },
+          }}
+        />
+      </div>
 
       <AlertMsg />
       {spinning ? (
@@ -644,17 +640,15 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               setSpinning={setSpinning}
             />
           </div>
-          {/* <div className="w-full h-full flex flex-col lg:flex-row">
-            <GPTAnalyzer />
-          </div> */}
+
           <div className="my-4 ">
-          <div className="rounded-lg bg-green-500 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">
-            <button onClick={startTour}>
-          <QuestionCircleOutlined />
-          </button>
-          </div> 
+            <div className="rounded-lg bg-green-500 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">
+              <button onClick={startTour}>
+                <QuestionCircleOutlined />
+              </button>
+            </div>
             <div className="overflow-x-auto whitespace-nowrap border-t-2 border-b-2 border-yellow-300 text-sm">
-              <ul className="py-4 flex lg:justify-center justify-start items-center space-x-4">
+              <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
                 <li
                   className={`cursor-pointer-overview px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "overview" ? "bg-yellow-300 font-bold" : ""

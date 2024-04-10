@@ -6,13 +6,14 @@ import { useNavigate } from "react-router-dom";
 // import { toast } from "react-toastify";
 
 import Header from "../Home/Header";
-import { message, Table } from "antd";
+import { Badge, message, Table } from "antd";
 import { formatDate } from "../../features/DurationSlice";
 import { Switch, Space } from "antd";
 import { Input, Button } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { DatePicker } from "antd";
 import moment from "moment";
+import { formatNumber } from "../../features/CostSlice";
 
 function AdminPage() {
   const { user } = useAuth();
@@ -38,6 +39,8 @@ function AdminPage() {
   }, [user]); // Sử dụng một lần khi component được render
 
   const [projects, setProjects] = useState([]);
+  const [company, setCompany] = useState([]);
+  const [dataSource, setDataSource] = useState([]);
 
   useEffect(() => {
     async function fetchProjects() {
@@ -52,6 +55,7 @@ function AdminPage() {
         if (projectsError || companiesError) {
           throw new Error(projectsError || companiesError);
         } else {
+          setCompany(companies);
           // Find project ids associated with companies
           const projectIds = companies.map((company) => company.project_id);
 
@@ -66,6 +70,26 @@ function AdminPage() {
           );
 
           setProjects(filteredProjects);
+
+          const combinedArray = [];
+
+          // Duyệt qua mảng projects
+          filteredProjects.forEach((project) => {
+            // Tìm company tương ứng với project_id
+            const company = companies.find(
+              (company) => company.project_id === project.id
+            );
+
+            // Nếu tìm thấy company
+            if (company) {
+              // Kết hợp thông tin từ cả project và company vào một object mới
+              const combinedObject = { ...project, ...company };
+
+              // Thêm object kết hợp vào mảng tổng hợp
+              combinedArray.push(combinedObject);
+            }
+          });
+          setDataSource(combinedArray);
         }
       } catch (error) {
         console.error("Error fetching projects:", error.message);
@@ -77,7 +101,7 @@ function AdminPage() {
 
   const navigate = useNavigate();
   const handleProjectClick = (project) => {
-    navigate(`/founder/${project.id}`);
+    navigate(`/founder/${project.project_id}`);
   };
 
   const handleVerifyToggle = async (project) => {
@@ -116,7 +140,7 @@ function AdminPage() {
     },
 
     {
-      title: "Name",
+      title: "Company name",
       dataIndex: "name",
       key: "name",
       render: (text, record) => (
@@ -294,7 +318,195 @@ function AdminPage() {
         </Space>
       ),
     },
+    {
+      title: "Target Amount",
+      dataIndex: "target_amount",
+      key: "target_amount",
+      render: (text, record) => (
+        <div
+          className=" whitespace-nowrap hover:cursor-pointer"
+          onClick={() => handleProjectClick(record)}
+        >
+          {formatNumber(text)}
+        </div>
+      ),
+    },
+    {
+      title: "Ticket Size",
+      dataIndex: "ticket_size",
+      key: "ticket_size",
+      render: (text, record) => (
+        <div
+          className=" whitespace-nowrap hover:cursor-pointer"
+          onClick={() => handleProjectClick(record)}
+        >
+          {formatNumber(text)}
+        </div>
+      ),
+    },
+    {
+      title: "No. Ticket",
+      dataIndex: "no_ticket",
+      key: "no_ticket",
+      render: (text, record) => (
+        <div
+          className=" whitespace-nowrap hover:cursor-pointer"
+          onClick={() => handleProjectClick(record)}
+        >
+          {formatNumber(text)}
+        </div>
+      ),
+    },
+    {
+      title: "Offer Type",
+      dataIndex: "offer_type",
+      key: "offer_type",
+      render: (text, record) => (
+        <div
+          className=" whitespace-nowrap hover:cursor-pointer"
+          onClick={() => handleProjectClick(record)}
+        >
+          {text}
+        </div>
+      ),
+    },
+    {
+      title: "Offer",
+      dataIndex: "offer",
+      key: "offer",
+      render: (text, record) => (
+        <div
+          className=" whitespace-nowrap hover:cursor-pointer"
+          onClick={() => handleProjectClick(record)}
+        >
+          {formatNumber(text)}
+        </div>
+      ),
+    },
+    {
+      title: "Amount Raised",
+      dataIndex: "amountRaised",
+      key: "amountRaised",
+      render: (text, record) => (
+        <div
+          className=" whitespace-nowrap hover:cursor-pointer"
+          onClick={() => handleProjectClick(record)}
+        >
+          {formatNumber(text)}
+        </div>
+      ),
+    },
+    {
+      title: "Country",
+      dataIndex: "country",
+      key: "country",
+      render: (text, record) => (
+        <div
+          className=" whitespace-nowrap hover:cursor-pointer"
+          onClick={() => handleProjectClick(record)}
+        >
+          {text}
+        </div>
+      ),
+    },
+    {
+      title: "Established",
+      dataIndex: "operationTime",
+      key: "operationTime",
+      render: (text, record) => (
+        <div
+          className=" whitespace-nowrap hover:cursor-pointer"
+          onClick={() => handleProjectClick(record)}
+        >
+          {text}
+        </div>
+      ),
+    },
+    {
+      title: "Revenue Range",
+      dataIndex: "revenueStatus",
+      key: "revenueStatus",
+      render: (text, record) => (
+        <div
+          className=" whitespace-nowrap hover:cursor-pointer"
+          onClick={() => handleProjectClick(record)}
+        >
+          {text}
+        </div>
+      ),
+    },
+    {
+      title: "Round",
+      dataIndex: "round",
+      key: "round",
+      render: (text, record) => (
+        <div
+          className=" whitespace-nowrap hover:cursor-pointer"
+          onClick={() => handleProjectClick(record)}
+        >
+          {text}
+        </div>
+      ),
+    },
+    {
+      title: "Website",
+      dataIndex: "website",
+      key: "website",
+      render: (text, record) => (
+        <div
+          className=" whitespace-nowrap hover:cursor-pointer"
+          onClick={() => handleProjectClick(record)}
+        >
+          {text}
+        </div>
+      ),
+    },
+    {
+      title: "Industry",
+      dataIndex: "industry",
+      key: "industry",
+      render: (text, record) => (
+        <div
+          className=" whitespace-nowrap hover:cursor-pointer"
+          onClick={() => handleProjectClick(record)}
+        >
+          {record?.industry?.map((industry, index) => (
+            <Badge
+              key={index}
+              className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
+            >
+              {industry}
+            </Badge>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: "Key words",
+      dataIndex: "keyWords",
+      key: "keyWords",
+      render: (text, record) => (
+        <div
+          className=" whitespace-nowrap hover:cursor-pointer"
+          onClick={() => handleProjectClick(record)}
+        >
+          {record?.keyWords &&
+            record.keyWords.split(",").map((keyWord, index) => (
+              <Badge
+                key={index}
+                className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
+              >
+                {keyWord.trim()}
+              </Badge>
+            ))}
+        </div>
+      ),
+    },
   ];
+
+  console.log("dataSource", dataSource);
+  console.log("projects", projects);
+  console.log("company", company);
 
   return (
     <main className="w-full my-28">
@@ -303,12 +515,12 @@ function AdminPage() {
       {userData.admin === true && (
         <section className="container px-4 mx-auto">
           <div className="flex flex-col">
-            <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
                 <div className="overflow-hidden  md:rounded-md">
                   <Table
                     columns={columns}
-                    dataSource={projects}
+                    dataSource={dataSource}
                     pagination={false}
                     rowKey="id"
                     size="small"

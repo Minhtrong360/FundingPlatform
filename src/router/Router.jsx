@@ -38,8 +38,8 @@ import DetailBlog from "../pages/News/DetailBlog";
 import StaticNews from "../pages/News/StaticNews";
 import NewProjectPosts from "../pages/StartUps/NewProjectPosts";
 import Brochure from "../pages/Home/Components/Brochure.jsx";
-import NewDetailPage from "../pages/FounderGitbook/NewDetailPage.jsx";
-
+import MyTabs from "../pages/testseparated.jsx";
+import TourComponent from "../pages/JoyRide.jsx";
 function Router() {
   return (
     <>
@@ -69,7 +69,7 @@ function Router() {
           path="/founder/:id"
           element={
             <AuthRequire message="Sign in required!">
-              <NewDetailPage />
+              <DetailPage />
             </AuthRequire>
           }
         />
@@ -141,7 +141,8 @@ function Router() {
         <Route path="/example" element={<StaticNews />} />
         <Route path="/FAQ" element={<FAQ />} />
         <Route path="/brochure" element={<Brochure />} />
-        <Route path="/mytabs" element={<NewDetailPage />} />
+        <Route path="/mytabs" element={<MyTabs />} />
+        <Route path="/tour" element={<TourComponent />} />
         <Route path="/loading" element={<ProgressBar isLoading={true} />} />
       </Routes>
     </>

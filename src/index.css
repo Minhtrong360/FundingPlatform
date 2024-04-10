@@ -60,9 +60,16 @@ code {
   color: black;
 }
 
+/* Default styling for the table */
 .ant-table table {
   font-size: 12px;
-  white-space: noWrap;
+}
+
+/* Apply noWrap only when screen width is md or larger */
+@media (min-width: 768px) {
+  .ant-table table {
+    white-space: nowrap;
+  }
 }
 
 .ant-select-lg {

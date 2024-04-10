@@ -522,7 +522,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [run, setRun] = useState(false);
 
   useEffect(() => {
-    setRun(false); // Initialize Joyride on component mount
+    setRun(true); // Initialize Joyride on component mount
   }, []);
 
   const handleJoyrideCallback = (data) => {
@@ -537,13 +537,13 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
   return (
     <div className="min-h-screen">
-      <div>
+      {/* <div>
         <Joyride
           steps={[
             {
               target: ".cursor-pointer-overview",
               content:
-                "To build a financial model, you must go through several steps. The first is the general assumptions about the project. A good financial model must have a set of assumptions that are accurate in terms of value, reflect reality, and are easy to change and update.",
+                "This is the Overview tab. It provides a summary of your financial data.",
               disableBeacon: true,
             },
             {
@@ -619,11 +619,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           styles={{
             options: {
               zIndex: 10000,
-              primaryColor: '#2563eb',
             },
           }}
         />
-      </div>
+      </div> */}
 
       <AlertMsg />
       {spinning ? (
@@ -643,11 +642,11 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           </div>
 
           <div className="my-4 ">
-            <div className="rounded-lg bg-blue-600 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">
+            {/* <div className="rounded-lg bg-green-500 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">
               <button onClick={startTour}>
                 <QuestionCircleOutlined />
               </button>
-            </div>
+            </div> */}
             <div className="overflow-x-auto whitespace-nowrap border-t-2 border-b-2 border-yellow-300 text-sm">
               <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
                 <li

@@ -473,7 +473,7 @@ function AdminPage() {
           {record?.industry?.map((industry, index) => (
             <Badge
               key={index}
-              className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
+              className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black  inline-flex justify-center items-center gap-x-1 px-2 py-1 text-xs  text-center   rounded-3xl "
             >
               {industry}
             </Badge>
@@ -494,7 +494,7 @@ function AdminPage() {
             record.keyWords.split(",").map((keyWord, index) => (
               <Badge
                 key={index}
-                className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
+                className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black inline-flex justify-center items-center gap-x-1 px-2 py-1 text-xs text-center rounded-3xl"
               >
                 {keyWord.trim()}
               </Badge>
@@ -503,10 +503,6 @@ function AdminPage() {
       ),
     },
   ];
-
-  console.log("dataSource", dataSource);
-  console.log("projects", projects);
-  console.log("company", company);
 
   return (
     <main className="w-full my-28">

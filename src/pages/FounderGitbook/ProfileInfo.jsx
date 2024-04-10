@@ -1,4 +1,4 @@
-import { Badge, Tooltip, message } from "antd";
+import { Avatar, Badge, Modal, Tooltip, message } from "antd";
 
 import { useNavigate, useParams } from "react-router-dom";
 import { formatNumber } from "../../features/CostSlice";
@@ -8,6 +8,7 @@ import { supabase } from "../../supabase";
 import ButtonGroup from "./ButtonGroup";
 import { useAuth } from "../../context/AuthContext";
 import ReactModal from "react-modal";
+import { UserOutlined } from "@ant-design/icons";
 
 export default function ProfileInfo({
   company,
@@ -218,60 +219,52 @@ export default function ProfileInfo({
     <div
       key="1"
       className={`max-w-7xl ${
-        canClick === false ? "mt-8 " : "mx-auto mt-32"
+        canClick === false ? "mt-8 " : "mx-auto sm:mt-28 mt-16"
       } px-4 sm:px-6 lg:px-8 `}
     >
-      <ReactModal
-        isOpen={showConfirmation}
-        onRequestClose={() => setShowConfirmation(false)}
-        ariaHideApp={false}
-        style={{
-          overlay: {
-            backgroundColor: "gray", // Màu nền overlay
-            position: "fixed", // Để nền overlay cố định
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 9998, // Chỉ số z để đảm bảo nó hiển thị trên cùng
-          },
-          content: {
-            border: "none", // Để ẩn border của nội dung Modal
-            background: "none", // Để ẩn background của nội dung Modal
-            // margin: "auto", // Để căn giữa
-          },
-        }}
-      >
-        <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-          <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
-            <h2 className="mt-2 text-base text-gray-800 ">
-              {" "}
-              Apply verification
-            </h2>
+      {showConfirmation && (
+        <Modal
+          title="Apply verification"
+          visible={showConfirmation}
+          onOk={handleRequiredVerification}
+          onCancel={() => setShowConfirmation(false)}
+          okText="Agree"
+          cancelText="Disagree"
+          cancelButtonProps={{
+            style: {
+              background: "#f5222d",
+              borderColor: "#f5222d",
+              padding: "8px 16px",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#2563EB",
+              borderColor: "#2563EB",
+              padding: "8px 16px",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          centered={true}
+        ></Modal>
+      )}
 
-            <div className="mt-4 flex items-center gap-10">
-              <button
-                type="button"
-                onClick={handleRequiredVerification}
-                className="w-full px-3 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
-              >
-                Agree
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowConfirmation(false)} // Sử dụng hàm addLink để thêm liên kết
-                className="w-full px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
-              >
-                Disagree
-              </button>
-            </div>
-          </div>
-        </div>
-      </ReactModal>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start transform scale-90">
         <div>
-          <div className="flex justify-between items-center">
-            <h1 className="text-4xl font-bold leading-tight text-gray-900">
+          <div className="flex justify-start items-center">
+            <Avatar
+              shape="square"
+              size={64}
+              src={company.project_url ? company.project_url : null}
+              icon={!company.project_url && <UserOutlined />}
+            />
+
+            <h1 className="text-4xl font-bold leading-tight text-gray-900 mx-2">
               {company?.name ? company?.name : "VoltDrive (DEMO)"}
             </h1>
             {user?.id === currentProject?.user_id ||

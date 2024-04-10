@@ -9,6 +9,8 @@ import InvitedUserProject from "../../components/InvitedUserProject";
 import ProjectGiven from "../../components/ProjectGiven";
 import { Dropdown, Button, Menu, message, Table, Modal } from "antd";
 import { formatDate } from "../../features/DurationSlice";
+import InputField from "../../components/InputField";
+import apiService from "../../app/apiService";
 
 function ProjectList({ projects }) {
   const { user } = useAuth();
@@ -27,13 +29,31 @@ function ProjectList({ projects }) {
   }, [projects]);
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deletingProjectId, setDeletingProjectId] = useState();
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+
+  const [email, setEmail] = useState("elonmusk@gmail.com");
+  const [inviteEmail, setInviteEmail] = useState("elonmusk@gmail.com");
+
+  const [SelectedID, setSelectedID] = useState();
+
   const handleDelete = async (projectId) => {
     // Hiển thị modal xác nhận xóa
     setIsDeleteModalOpen(true);
-
     // Lưu projectId của dự án cần xóa
-    setDeletingProjectId(projectId);
+    setSelectedID(projectId);
+  };
+
+  const handleAssign = async (projectId) => {
+    setIsAssignModalOpen(true);
+
+    setSelectedID(projectId);
+  };
+
+  const handleInvite = async (projectId) => {
+    setIsInviteModalOpen(true);
+
+    setSelectedID(projectId);
   };
 
   // Hàm xác nhận xóa dự án
@@ -46,15 +66,17 @@ function ProjectList({ projects }) {
       const { error } = await supabase
         .from("projects")
         .delete()
-        .eq("id", deletingProjectId);
+        .eq("id", SelectedID);
 
       if (error) {
         console.error("Error deleting project:", error);
       } else {
         const updatedProjectsCopy = updatedProjects.filter(
-          (project) => project.id !== deletingProjectId
+          (project) => project.id !== SelectedID
         );
         setUpdatedProjects(updatedProjectsCopy);
+
+        message.success("Deleted project.");
       }
     } catch (error) {
       message.error(error.message);
@@ -62,6 +84,163 @@ function ProjectList({ projects }) {
     } finally {
       // Đóng modal sau khi xóa hoặc xảy ra lỗi
       setIsDeleteModalOpen(false);
+    }
+  };
+
+  // Hàm Assign dự án
+  const handleConfirmAssign = async () => {
+    try {
+      // Kiểm tra kết nối internet
+      if (!navigator.onLine) {
+        message.error("No internet access.");
+        return;
+      }
+
+      // Tìm id của user dựa trên email nhập vào
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("id")
+        .eq("email", email);
+
+      if (userError) {
+        console.log("Error fetching user data:", userError);
+        message.error(userError.message);
+        return;
+      }
+
+      if (!userData.length > 0) {
+        message.error(`User with email ${email} not found.`);
+        return;
+      }
+
+      const userId = userData[0].id;
+
+      const { data: projectData, error: projectError } = await supabase
+        .from("projects")
+        .select("*")
+        .eq("id", SelectedID);
+
+      if (projectError) {
+        console.log("Error fetching project data:", projectError);
+        message.error(projectError.message);
+        return;
+      }
+
+      if (!projectData.length > 0) {
+        console.log("Project not found.");
+        message.error("Project not found.");
+        return;
+      }
+
+      const { error: updateError } = await supabase
+        .from("projects")
+        .update({ user_id: userId, user_email: email })
+        .eq("id", SelectedID);
+
+      if (updateError) {
+        console.log("Error updating project data:", updateError);
+        message.error(updateError.message);
+        return;
+      }
+
+      console.log(`Successfully invited user with email: ${email}`);
+      message.success("Assign project successfully");
+      const updatedProjectsCopy = updatedProjects?.filter(
+        (project) => project.id !== SelectedID
+      );
+      setUpdatedProjects(updatedProjectsCopy);
+    } catch (error) {
+      console.log("Error inviting user:", error);
+      message.error(error.message);
+    } finally {
+      setIsAssignModalOpen(false);
+    }
+  };
+
+  // Hàm Invite user
+  const [invited_type, setInvited_type] = useState("View only");
+  const handleConfirmInvite = async () => {
+    try {
+      if (!navigator.onLine) {
+        message.error("No internet access.");
+        return;
+      }
+
+      const { data: projectData, error: fileError } = await supabase
+        .from("projects")
+        .select("*")
+        .eq("id", SelectedID)
+        .single();
+
+      if (fileError) {
+        console.log("Error fetching project data:", fileError);
+        message.error(fileError);
+        return;
+      }
+
+      if (!projectData) {
+        console.log("File with ID not found.");
+        message.error("File with ID not found.");
+        return;
+      }
+
+      const currentInvitedUsers = projectData.invited_user || [];
+      const currentCollabs = projectData.collabs || [];
+
+      if (
+        invited_type === "View only" &&
+        currentInvitedUsers.includes(inviteEmail)
+      ) {
+        message.warning(`User with email ${inviteEmail} is already invited.`);
+        return;
+      }
+
+      if (
+        invited_type === "Collaborate" &&
+        currentCollabs.includes(inviteEmail)
+      ) {
+        message.warning(
+          `User with email ${inviteEmail} is already invited as collaborator.`
+        );
+        return;
+      }
+
+      if (invited_type === "View only") {
+        currentInvitedUsers.push(inviteEmail);
+      } else if (invited_type === "Collaborate") {
+        currentCollabs.push(inviteEmail);
+      }
+
+      await apiService.post("/invite/project", {
+        target_email: inviteEmail,
+        project_name: projectData.name,
+        owner_email: user.email,
+        project_id: projectData.id,
+        invited_type: invited_type,
+      });
+
+      const updateData =
+        invited_type === "View only"
+          ? { invited_user: currentInvitedUsers }
+          : { collabs: currentCollabs };
+
+      const { error: updateError } = await supabase
+        .from("projects")
+        .update(updateData)
+        .eq("id", SelectedID);
+
+      if (updateError) {
+        console.log("Error updating file data:", updateError);
+        message.error(updateError);
+      } else {
+        console.log(`Successfully invited user with email: ${inviteEmail}`);
+        message.success("Invited user successfully");
+      }
+    } catch (error) {
+      console.log("Error inviting user:", error);
+      message.error(error.message);
+    } finally {
+      setIsInviteModalOpen(false);
     }
   };
 
@@ -194,24 +373,29 @@ function ProjectList({ projects }) {
                     </Menu.Item>
                     <Menu.Item key="delete">
                       <Button
-                        type="danger"
                         onClick={() => handleDelete(record.id)}
                         style={{ fontSize: "12px" }}
                       >
                         Delete Project
                       </Button>
                     </Menu.Item>
-                    <Menu.Item key="Assign Admin">
-                      <ProjectGiven
-                        projectId={record.id}
-                        setUpdatedProjects={setUpdatedProjects}
-                        updatedProject={updatedProjects}
-                      />
+                    <Menu.Item key="assign">
+                      <Button
+                        onClick={() => handleAssign(record.id)}
+                        style={{ fontSize: "12px" }}
+                      >
+                        Assign
+                      </Button>
                     </Menu.Item>
 
                     {record.user_id === user.id ? (
-                      <Menu.Item key="Invite View">
-                        <InvitedUserProject projectId={record.id} />
+                      <Menu.Item key="invite">
+                        <Button
+                          onClick={() => handleInvite(record.id)}
+                          style={{ fontSize: "12px" }}
+                        >
+                          Invite
+                        </Button>
                       </Menu.Item>
                     ) : (
                       ""
@@ -317,6 +501,113 @@ function ProjectList({ projects }) {
           centered={true}
         >
           Are you sure you want to delete this project?
+        </Modal>
+      )}
+
+      {isAssignModalOpen && (
+        <Modal
+          title="Assign project"
+          visible={isAssignModalOpen}
+          onOk={handleConfirmAssign}
+          onCancel={() => setIsAssignModalOpen(false)}
+          okText="Assign"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              background: "#f5222d",
+              borderColor: "#f5222d",
+              padding: "8px 16px",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#2563EB",
+              borderColor: "#2563EB",
+              padding: "8px 16px",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          centered={true}
+        >
+          <InputField
+            label="Assign this project to:"
+            id="email"
+            name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            required
+          />
+        </Modal>
+      )}
+
+      {isInviteModalOpen && (
+        <Modal
+          title="Invite user"
+          visible={isInviteModalOpen}
+          onOk={handleConfirmInvite}
+          onCancel={() => setIsInviteModalOpen(false)}
+          okText="Invite"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              background: "#f5222d",
+              borderColor: "#f5222d",
+              padding: "8px 16px",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#2563EB",
+              borderColor: "#2563EB",
+              padding: "8px 16px",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          centered={true}
+        >
+          <InputField
+            label="Invite this email to watch/collaborate your profile"
+            id="inviteEmail"
+            name="inviteEmail"
+            value={inviteEmail}
+            onChange={(e) => setInviteEmail(e.target.value)}
+            type="text"
+            required
+          />
+          <div className="mt-5">
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                name="invitedType"
+                value="View only"
+                checked={invited_type === "View only"} // Cập nhật giá trị checked dựa trên giá trị state
+                onChange={() => setInvited_type("View only")} // Cập nhật loại dự án khi người dùng thay đổi lựa chọn
+              />
+              <span className="ml-2 text-gray-700 text-sm">View only</span>
+            </label>
+
+            <label className="inline-flex items-center ml-6">
+              <input
+                type="radio"
+                name="invitedType"
+                value="Collaborate"
+                checked={invited_type === "Collaborate"} // Cập nhật giá trị checked dựa trên giá trị state
+                onChange={() => setInvited_type("Collaborate")} // Cập nhật loại dự án khi người dùng thay đổi lựa chọn
+              />
+              <span className="ml-2 text-gray-700 text-sm">Collaborate</span>
+            </label>
+          </div>
         </Modal>
       )}
 

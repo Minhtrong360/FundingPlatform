@@ -184,12 +184,12 @@ function ProjectList({ projects }) {
               overlay={
                 <Menu>
                   <>
-                    <Menu.Item key="edit">
+                    <Menu.Item key="Edit Project">
                       <Button
                         onClick={() => handleEdit(record)}
                         style={{ fontSize: "12px" }}
                       >
-                        Edit
+                        Edit Project
                       </Button>
                     </Menu.Item>
                     <Menu.Item key="delete">
@@ -198,10 +198,10 @@ function ProjectList({ projects }) {
                         onClick={() => handleDelete(record.id)}
                         style={{ fontSize: "12px" }}
                       >
-                        Delete
+                        Delete Project
                       </Button>
                     </Menu.Item>
-                    <Menu.Item key="assign">
+                    <Menu.Item key="Assign Admin">
                       <ProjectGiven
                         projectId={record.id}
                         setUpdatedProjects={setUpdatedProjects}
@@ -210,7 +210,7 @@ function ProjectList({ projects }) {
                     </Menu.Item>
 
                     {record.user_id === user.id ? (
-                      <Menu.Item key="invite">
+                      <Menu.Item key="Invite View">
                         <InvitedUserProject projectId={record.id} />
                       </Menu.Item>
                     ) : (

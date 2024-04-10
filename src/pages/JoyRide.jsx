@@ -80,7 +80,7 @@ function TourComponent() {
 
   return (
     <div className="flex items-center justify-center mt-4">
-      <div className="rounded-lg bg-green-500 text-white shadow-lg p-4 mr-4">
+      <div className="rounded-lg bg-blue-600 text-white shadow-lg p-4 mr-4">
         <button onClick={startTour}>
       <QuestionCircleOutlined />
       </button>

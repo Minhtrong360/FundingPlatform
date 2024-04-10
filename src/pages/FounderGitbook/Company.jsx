@@ -201,8 +201,8 @@ function Company({
                   />
 
                   <InputField
-                    label="Key words"
-                    title="Key words should be separated by comma (,)"
+                    label="Keywords"
+                    title="Keywords should be separated by comma (,)"
                     id="keyWords"
                     name="keyWords"
                     value={formData.keyWords}
@@ -244,7 +244,7 @@ function Company({
 
                   <div>
                     <InputField
-                      label="Card Image link"
+                      label="Profile Image link"
                       id="card_url"
                       name="card_url"
                       value={formData.card_url}

@@ -82,6 +82,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     cutMonth,
   } = useSelector((state) => state.durationSelect);
 
+  const { yearlyAverageCustomers } = useSelector((state) => state.customer);
+  const { yearlySales } = useSelector((state) => state.sales);
+
   const [numberOfMonths, setNumberOfMonths] = useState(0);
 
   useEffect(() => {
@@ -457,6 +460,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       investmentInputs,
       loanInputs,
       fundraisingInputs,
+      yearlyAverageCustomers,
+      yearlySales,
     };
 
     await saveOrUpdateFinanceData(financeData);

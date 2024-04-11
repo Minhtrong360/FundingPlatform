@@ -295,9 +295,6 @@ const Search = ({
                 cancelText="Clear all"
                 cancelButtonProps={{
                   style: {
-                    background: "#f5222d",
-                    borderColor: "#f5222d",
-                    color: "#fff",
                     borderRadius: "0.375rem",
                     cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
                   },

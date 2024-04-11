@@ -432,7 +432,6 @@ function FilesList() {
         cancelText="Cancel"
         cancelButtonProps={{
           style: {
-            borderColor: "black",
             borderRadius: "0.375rem",
             cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
           },

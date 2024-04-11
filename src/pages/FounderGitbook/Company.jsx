@@ -103,7 +103,7 @@ function Company({
           <div className="max-w-xl mx-auto">
             <div className="text-left">
               <p className="mt-1 text-gray-800 font-semibold darkTextGray">
-                Please fill basic information about your company.
+                Please fill basic information below.
               </p>
             </div>
 

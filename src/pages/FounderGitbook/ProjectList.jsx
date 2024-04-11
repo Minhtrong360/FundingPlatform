@@ -456,6 +456,7 @@ function ProjectList({ projects }) {
       console.error("Error checking company:", error.message);
     }
   };
+
   return (
     <main className="w-full min-h-[92.5vh]">
       <AlertMsg />

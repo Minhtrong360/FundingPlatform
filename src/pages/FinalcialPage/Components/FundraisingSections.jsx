@@ -18,6 +18,7 @@ import {
 } from "../../../features/FundraisingSlice";
 import { useAuth } from "../../../context/AuthContext";
 import { supabase } from "../../../supabase";
+import { useParams } from "react-router-dom";
 
 const FundraisingSection = ({
   numberOfMonths,
@@ -168,6 +169,7 @@ const FundraisingSection = ({
   };
 
   const { user } = useAuth();
+  const { id } = useParams();
   useEffect(() => {
     const saveData = async () => {
       try {
@@ -184,7 +186,7 @@ const FundraisingSection = ({
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
             .select("*")
-            .eq("user_id", user.id);
+            .eq("id", id);
           if (selectError) {
             throw selectError;
           }

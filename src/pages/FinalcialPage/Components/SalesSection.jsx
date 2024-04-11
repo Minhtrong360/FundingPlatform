@@ -24,6 +24,7 @@ import {
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { supabase } from "../../../supabase";
 import { useAuth } from "../../../context/AuthContext";
+import { useParams } from "react-router-dom";
 
 const SalesSection = ({
   numberOfMonths,
@@ -317,6 +318,7 @@ const SalesSection = ({
     message.success("Data saved successfully!");
   };
   const { user } = useAuth();
+  const { id } = useParams();
   useEffect(() => {
     const saveData = async () => {
       try {
@@ -340,7 +342,7 @@ const SalesSection = ({
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
             .select("*")
-            .eq("user_id", user.id);
+            .eq("id", id);
           if (selectError) {
             throw selectError;
           }

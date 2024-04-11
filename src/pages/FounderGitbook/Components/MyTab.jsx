@@ -312,7 +312,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen }) => {
                 className="w-full lg:w-12/12"
               />
               <div className="mt-28">
-                <div className="text-black font-semibold">Key words:</div>
+                <div className="text-black font-semibold">Keywords:</div>
 
                 <div className="mt-2">
                   {company?.keyWords &&

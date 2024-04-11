@@ -482,7 +482,7 @@ function AdminPage() {
       ),
     },
     {
-      title: "Key words",
+      title: "Keywords",
       dataIndex: "keyWords",
       key: "keyWords",
       render: (text, record) => (

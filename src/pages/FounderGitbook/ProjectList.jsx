@@ -363,12 +363,12 @@ function ProjectList({ projects }) {
               overlay={
                 <Menu>
                   <>
-                    <Menu.Item key="edit">
+                    <Menu.Item key="Edit Project">
                       <Button
                         onClick={() => handleEdit(record)}
                         style={{ fontSize: "12px", minWidth: "70px" }}
                       >
-                        Edit
+                        Edit Project
                       </Button>
                     </Menu.Item>
                     <Menu.Item key="delete">
@@ -376,7 +376,7 @@ function ProjectList({ projects }) {
                         onClick={() => handleDelete(record.id)}
                         style={{ fontSize: "12px" }}
                       >
-                        Delete
+                        Delete Project
                       </Button>
                     </Menu.Item>
                     <Menu.Item key="assign">

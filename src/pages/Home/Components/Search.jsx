@@ -282,7 +282,7 @@ const Search = ({
               className="lg:hidden flex items-center justify-center"
               onClick={() => setIsOpen(true)}
             >
-              <PlusCircleOutlined style={{ fontSize: "24px" }} />
+              <PlusCircleOutlined style={{ fontSize: "20px" }} />
             </div>
 
             {isOpen && (
@@ -291,8 +291,8 @@ const Search = ({
                 visible={isOpen}
                 onOk={handleOk}
                 onCancel={handleCancel}
-                okText="Apply filters"
-                cancelText="Remove filters"
+                okText="Apply"
+                cancelText="Clear all"
                 cancelButtonProps={{
                   style: {
                     background: "#f5222d",

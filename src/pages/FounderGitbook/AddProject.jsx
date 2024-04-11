@@ -134,7 +134,7 @@ const Modal = ({
 
         onClose();
         setUpdatedProjects([data[0], ...updatedProjects]);
-        message.success("Created project successfully.");
+        message.success("Project created successfully.");
       }
     } catch (error) {
       message.error(error.message);

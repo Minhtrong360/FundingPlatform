@@ -18,6 +18,7 @@ import {
   SelectContent,
   SelectItem,
 } from "../../../components/ui/Select";
+import { useParams } from "react-router-dom";
 
 const PersonnelSection = ({
   numberOfMonths,
@@ -228,6 +229,7 @@ const PersonnelSection = ({
     message.success("Data saved successfully!");
   };
   const { user } = useAuth();
+  const { id } = useParams();
   useEffect(() => {
     const saveData = async () => {
       try {
@@ -237,7 +239,7 @@ const PersonnelSection = ({
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
             .select("*")
-            .eq("user_id", user.id);
+            .eq("id", id);
           if (selectError) {
             throw selectError;
           }
@@ -354,39 +356,37 @@ const PersonnelSection = ({
                     }
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4 mb-3">
-  <span className="flex items-center text-sm">Frequency:</span>
-  <Select
-    className="border-gray-200"
-    onValueChange={(value) =>
-      handlePersonnelInputChange(input?.id, "growthSalaryFrequency", value)
-    }
-    value={input.growthSalaryFrequency}
-  >
-    <SelectTrigger
-      id={`select-growthSalaryFrequency-${input?.id}`}
-      className="border-solid border-[1px] border-gray-200"
-    >
-      <SelectValue placeholder="Select Growth Frequency" />
-    </SelectTrigger>
-    <SelectContent position="popper">
-      <SelectItem value="Monthly">
-        Monthly
-      </SelectItem>
-      <SelectItem value="Quarterly">
-        Quarterly
-      </SelectItem>
-      <SelectItem value="Semi-Annually">
-        Semi-Annually
-      </SelectItem>
-      <SelectItem value="Annually">
-        Annually
-      </SelectItem>
-    </SelectContent>
-  </Select>
-</div>
-                
+                  <span className="flex items-center text-sm">Frequency:</span>
+                  <Select
+                    className="border-gray-200"
+                    onValueChange={(value) =>
+                      handlePersonnelInputChange(
+                        input?.id,
+                        "growthSalaryFrequency",
+                        value
+                      )
+                    }
+                    value={input.growthSalaryFrequency}
+                  >
+                    <SelectTrigger
+                      id={`select-growthSalaryFrequency-${input?.id}`}
+                      className="border-solid border-[1px] border-gray-200"
+                    >
+                      <SelectValue placeholder="Select Growth Frequency" />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      <SelectItem value="Monthly">Monthly</SelectItem>
+                      <SelectItem value="Quarterly">Quarterly</SelectItem>
+                      <SelectItem value="Semi-Annually">
+                        Semi-Annually
+                      </SelectItem>
+                      <SelectItem value="Annually">Annually</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
                     No. of hires

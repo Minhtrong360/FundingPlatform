@@ -4,6 +4,7 @@ import SideBar from "../../components/SideBar";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import FinancialForm from "./FinancialForm";
+import { useParams } from "react-router-dom";
 
 function FinancialPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

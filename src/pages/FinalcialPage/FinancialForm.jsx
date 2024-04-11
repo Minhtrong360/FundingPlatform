@@ -59,6 +59,7 @@ import { setLoanInputs } from "../../features/LoanSlice";
 import { setFundraisingInputs } from "../../features/FundraisingSlice";
 import CashFlowSection from "./Components/CashFlowSection";
 import { message } from "antd";
+import { useParams } from "react-router-dom";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
@@ -271,13 +272,15 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
   const { fundraisingInputs } = useSelector((state) => state.fundraising);
   // Lưu vào DB
-
+  const { id } = useParams();
   const { user } = useAuth();
-  const loadData = async (userId) => {
+
+  const loadData = async () => {
     const { data, error } = await supabase
       .from("finance")
-      .select("inputData")
-      .eq("user_id", userId);
+      .select("*")
+      .eq("id", id);
+
     if (error) {
       message.error(error.message);
       console.error("Error fetching data", error);
@@ -290,57 +293,52 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   useEffect(() => {
     setTemIsLoading(true);
     // Assuming `user` is your user object
-    const userId = user?.id;
-    if (userId) {
-      loadData(userId).then((inputData) => {
-        if (inputData) {
-          // Set your state here
 
-          dispatch(
-            setFinancialProjectName(
-              inputData.financialProjectName || financialProjectName
-            )
-          );
-          dispatch(
-            setSelectedDuration(inputData.selectedDuration || selectedDuration)
-          );
+    loadData().then((inputData) => {
+      if (inputData) {
+        // Set your state here
 
-          dispatch(
-            setStartingCashBalance(
-              inputData.startingCashBalance || startingCashBalance
-            )
-          );
-          dispatch(setStatus(inputData.status || status));
-          dispatch(setIndustry(inputData.industry || industry));
-          dispatch(setIncomeTax(inputData.incomeTax || incomeTax));
-          dispatch(setPayrollTax(inputData.payrollTax || payrollTax));
-          dispatch(setCurrency(inputData.currency || currency));
-          dispatch(setCutMonth(inputData.cutMonth || cutMonth));
-          dispatch(setStartMonth(inputData.startMonth || startMonth));
-          dispatch(setStartYear(inputData.startYear || startYear));
+        dispatch(
+          setFinancialProjectName(
+            inputData.financialProjectName || financialProjectName
+          )
+        );
+        dispatch(
+          setSelectedDuration(inputData.selectedDuration || selectedDuration)
+        );
 
-          dispatch(
-            setCustomerInputs(inputData.customerInputs || customerInputs)
-          );
-          dispatch(setChannelInputs(inputData.channelInputs || channelInputs));
-          dispatch(setCostInputs(inputData.costInputs || costInputs));
-          dispatch(
-            setPersonnelInputs(inputData.personnelInputs || personnelInputs)
-          );
-          dispatch(
-            setInvestmentInputs(inputData.investmentInputs || investmentInputs)
-          );
-          dispatch(setLoanInputs(inputData.loanInputs || loanInputs));
-          dispatch(
-            setFundraisingInputs(
-              inputData.fundraisingInputs || fundraisingInputs
-            )
-          );
-        }
-      });
-    }
+        dispatch(
+          setStartingCashBalance(
+            inputData.startingCashBalance || startingCashBalance
+          )
+        );
+        dispatch(setStatus(inputData.status || status));
+        dispatch(setIndustry(inputData.industry || industry));
+        dispatch(setIncomeTax(inputData.incomeTax || incomeTax));
+        dispatch(setPayrollTax(inputData.payrollTax || payrollTax));
+        dispatch(setCurrency(inputData.currency || currency));
+        dispatch(setCutMonth(inputData.cutMonth || cutMonth));
+        dispatch(setStartMonth(inputData.startMonth || startMonth));
+        dispatch(setStartYear(inputData.startYear || startYear));
+
+        dispatch(setCustomerInputs(inputData.customerInputs || customerInputs));
+        dispatch(setChannelInputs(inputData.channelInputs || channelInputs));
+        dispatch(setCostInputs(inputData.costInputs || costInputs));
+        dispatch(
+          setPersonnelInputs(inputData.personnelInputs || personnelInputs)
+        );
+        dispatch(
+          setInvestmentInputs(inputData.investmentInputs || investmentInputs)
+        );
+        dispatch(setLoanInputs(inputData.loanInputs || loanInputs));
+        dispatch(
+          setFundraisingInputs(inputData.fundraisingInputs || fundraisingInputs)
+        );
+      }
+    });
+
     setTemIsLoading(false);
-  }, [user?.id]);
+  }, [user]);
 
   useEffect(() => {
     const calculatedData = calculateCustomerGrowth(
@@ -386,12 +384,12 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     setRevenue((prevState) => ({ ...prevState, series: seriesSaleData }));
   }, [numberOfMonths, customerInputs, channelInputs]);
 
-  const saveOrUpdateFinanceData = async (userId, inputData) => {
+  const saveOrUpdateFinanceData = async (inputData) => {
     try {
       const { data: existingData, error: selectError } = await supabase
         .from("finance")
         .select("*")
-        .eq("user_id", userId);
+        .eq("id", id);
 
       if (selectError) throw selectError;
 
@@ -399,7 +397,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         const financeRecord = existingData[0];
 
         // Kiểm tra nếu tác giả của dữ liệu tài chính trùng với userId
-        if (financeRecord.user_id === userId) {
+        if (financeRecord.user_id === user.id) {
           // Cập nhật bản ghi hiện có
 
           const { error: updateError } = await supabase
@@ -420,7 +418,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         // Thêm bản ghi mới
         const { error: insertError } = await supabase.from("finance").insert([
           {
-            user_id: userId,
+            user_id: user.id,
             name: inputData.financialProjectName,
             user_email: user.email,
             inputData,
@@ -461,7 +459,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       fundraisingInputs,
     };
 
-    await saveOrUpdateFinanceData(user?.id, financeData);
+    await saveOrUpdateFinanceData(financeData);
 
     // Handle post-save actions
   };
@@ -650,7 +648,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             <div className="overflow-x-auto whitespace-nowrap border-t-2 border-b-2 border-yellow-300 text-sm">
               <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
                 <li
-                  className={`cursor-pointer-overview px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "overview" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("overview")}
@@ -659,7 +657,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </li>
                 {/* Repeat for other tabs */}
                 <li
-                  className={`cursor-pointer-customer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "customer" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("customer")}
@@ -667,7 +665,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Customer
                 </li>
                 <li
-                  className={`cursor-pointer-sales px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "sales" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("sales")}
@@ -675,7 +673,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Sales
                 </li>
                 <li
-                  className={`cursor-pointer-cost px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "cost" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("cost")}
@@ -683,7 +681,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Cost
                 </li>
                 <li
-                  className={`cursor-pointer-personnel px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "personnel" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("personnel")}
@@ -691,7 +689,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Personnel
                 </li>
                 <li
-                  className={`cursor-pointer-investment px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "investment" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("investment")}
@@ -699,7 +697,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Investment
                 </li>
                 <li
-                  className={`cursor-pointer-loan px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "loan" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("loan")}
@@ -707,7 +705,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Loan
                 </li>
                 <li
-                  className={`cursor-pointer-fundraising px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "fundraising" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("fundraising")}
@@ -715,7 +713,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Fundraising
                 </li>
                 <li
-                  className={`cursor-pointer-profitAndLoss px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "profitAndLoss"
                       ? "bg-yellow-300 font-bold"
                       : ""
@@ -725,7 +723,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Profit and Loss
                 </li>
                 <li
-                  className={`cursor-pointer-cashFlow px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "cashFlow" ? "bg-yellow-300 font-bold" : ""
                   }`}
                   onClick={() => handleTabChange("cashFlow")}
@@ -733,7 +731,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   Cash Flow
                 </li>
                 <li
-                  className={`cursor-pointer-balanceSheet px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "balanceSheet"
                       ? "bg-yellow-300 font-bold"
                       : ""

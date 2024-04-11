@@ -439,11 +439,13 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen }) => {
               </div>
             </>
           ) : (
-            <BlockNoteView
-              editor={editor}
-              theme={"light"}
-              className="w-full lg:w-12/12"
-            />
+            <div className="mt-4 flex items-center justify-center flex-nowrap">
+              <BlockNoteView
+                editor={editor}
+                theme={"light"}
+                className="w-full lg:w-8/12"
+              />
+            </div>
           )}
         </>
       )}

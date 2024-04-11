@@ -41,6 +41,7 @@ import Brochure from "../pages/Home/Components/Brochure.jsx";
 import NewDetailPage from "../pages/FounderGitbook/NewDetailPage.jsx";
 import App from "../supabase/PrivateDemo.jsx";
 import TourComponent from "../pages/JoyRide.jsx";
+import FinancialList from "../pages/FinalcialPage/FinancialList.jsx";
 function Router() {
   return (
     <>
@@ -114,11 +115,22 @@ function Router() {
         <Route path="/terms" element={<TermsAndConditions />} />
 
         <Route
-          path="/financials"
+          path="/financials/:id"
           element={
             <AuthRequire message="Sign in required!">
               <PermissionRequired>
                 <FinancialPage />
+              </PermissionRequired>
+            </AuthRequire>
+          }
+        />
+
+        <Route
+          path="/financials"
+          element={
+            <AuthRequire message="Sign in required!">
+              <PermissionRequired>
+                <FinancialList />
               </PermissionRequired>
             </AuthRequire>
           }

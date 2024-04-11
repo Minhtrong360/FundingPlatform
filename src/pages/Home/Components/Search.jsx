@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import industries from "../../../components/Industries";
 import { Modal, Select } from "antd";
 import regions from "../../../components/Regions";
-import countries from "../../../components/Country";
 
 import { PlusCircleOutlined } from "@ant-design/icons";
 
@@ -60,9 +59,9 @@ const Search = ({
   const handleRegion = (value) => {
     setRegion(value);
   };
-  const handleCountry = (value) => {
-    setCountry(value);
-  };
+  // const handleCountry = (value) => {
+  //   setCountry(value);
+  // };
 
   const [suggestions, setSuggestions] = useState([]);
 
@@ -298,7 +297,6 @@ const Search = ({
                   style: {
                     background: "#f5222d",
                     borderColor: "#f5222d",
-                    padding: "8px 16px",
                     color: "#fff",
                     borderRadius: "0.375rem",
                     cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
@@ -308,7 +306,6 @@ const Search = ({
                   style: {
                     background: "#2563EB",
                     borderColor: "#2563EB",
-                    padding: "8px 16px",
                     color: "#fff",
                     borderRadius: "0.375rem",
                     cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua

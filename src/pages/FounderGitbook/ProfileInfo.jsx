@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 import ButtonGroup from "./ButtonGroup";
 import { useAuth } from "../../context/AuthContext";
-import ReactModal from "react-modal";
 import { UserOutlined } from "@ant-design/icons";
 
 export default function ProfileInfo({
@@ -234,7 +233,6 @@ export default function ProfileInfo({
             style: {
               background: "#f5222d",
               borderColor: "#f5222d",
-              padding: "8px 16px",
               color: "#fff",
               borderRadius: "0.375rem",
               cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
@@ -244,7 +242,6 @@ export default function ProfileInfo({
             style: {
               background: "#2563EB",
               borderColor: "#2563EB",
-              padding: "8px 16px",
               color: "#fff",
               borderRadius: "0.375rem",
               cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua

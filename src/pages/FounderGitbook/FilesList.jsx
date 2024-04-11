@@ -433,8 +433,6 @@ function FilesList() {
         cancelButtonProps={{
           style: {
             borderColor: "black",
-            padding: "8px 16px",
-
             borderRadius: "0.375rem",
             cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
           },
@@ -443,7 +441,6 @@ function FilesList() {
           style: {
             background: "#f5222d",
             borderColor: "#f5222d",
-            padding: "8px 16px",
             color: "#fff",
             borderRadius: "0.375rem",
             cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua

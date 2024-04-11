@@ -10,8 +10,6 @@ import Founder from "../pages/FounderGitbook/Founder";
 import NotFoundPage from "../pages/NotFoundPage";
 import PaymentSuccess from "../pages/PaymentSuccess";
 
-import DetailPage from "../pages/FounderGitbook/DetailPage";
-
 import Trial from "../pages/DashBoard/trial";
 import AuthRequire from "./AuthRequired";
 

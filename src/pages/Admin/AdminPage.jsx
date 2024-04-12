@@ -12,18 +12,103 @@ import {
   getCurrencyLabelByKey,
 } from "../../features/DurationSlice";
 import { Switch, Space } from "antd";
-import { Input, Button } from "antd";
+import { Input, Button , InputNumber} from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { DatePicker } from "antd";
 import moment from "moment";
 import { formatNumber } from "../../features/CostSlice";
-
+import Chart from "react-apexcharts";
+const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
+
+// Updated Dashboard component in AdminPage to include an ApexChart for all table data
+
+function Dashboard({ data }) {
+  // Initialize filteredData to an empty array if data is not provided
+  const [filteredData, setFilteredData] = useState(data || []);
+  const [chartData, setChartData] = useState({
+    options: {
+      chart: {
+        height: 350,
+        type: 'bar',
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+        }
+      },
+      xaxis: {
+        categories: [],
+      },
+      yaxis: {
+        title: {
+          text: 'Values'
+        }
+      }
+    },
+    series: [{
+      name: 'Amount Raised',
+      data: []
+    }]
+  });
+
+  useEffect(() => {
+    // Only proceed if filteredData is an array and has elements
+    if (Array.isArray(filteredData) && filteredData.length > 0) {
+      // Aggregate data for chart
+      const countrySums = filteredData.reduce((acc, item) => {
+        acc[item.country] = (acc[item.country] || 0) + item.amountRaised;
+        return acc;
+      }, {});
+
+      const statusCounts = filteredData.reduce((acc, item) => {
+        acc[item.status] = (acc[item.status] || 0) + 1;
+        return acc;
+      }, {});
+
+      // Prepare series and categories for the chart
+      const countryCategories = Object.keys(countrySums);
+      const countrySeries = Object.values(countrySums);
+      const statusCategories = Object.keys(statusCounts);
+      const statusSeries = Object.values(statusCounts);
+
+      setChartData(prev => ({
+        ...prev,
+        options: {
+          ...prev.options,
+          xaxis: {
+            categories: countryCategories.concat(statusCategories),
+          },
+        },
+        series: [{
+          name: 'Amount Raised',
+          data: countrySeries.concat(statusSeries.map(s => s * 10000)) // Adjust if necessary
+        }]
+      }));
+    }
+  }, [filteredData]);
+
+  return (
+    <div>
+      <button onClick={() => setFilteredData(data || [])}>Reset Filter</button>
+      {chartData.series[0].data.length > 0 && (
+        <Chart
+          options={chartData.options}
+          series={chartData.series}
+          type="bar"
+          height={350}
+        />
+      )}
+    </div>
+  );
+}
+
+
 
 function AdminPage() {
   const { user } = useAuth();
   const [userData, setUserData] = useState([]);
-
+  
   useEffect(() => {
     async function fetchUsers() {
       // Thực hiện truy vấn để lấy danh sách người dùng với điều kiện trường email
@@ -211,41 +296,39 @@ function AdminPage() {
       ellipsis: true,
       width: "10%",
       align: "center",
-      filterDropdown: ({ setSelectedKeys, confirm, clearFilters }) => (
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
         <div style={{ padding: 8 }}>
-          <Space direction="vertical">
-            <DatePicker.RangePicker
-              onChange={(value) => setSelectedKeys(value ? [value] : [])}
-              style={{ width: 188, marginBottom: 8, display: "block" }}
-              format="DD/MM/YYYY" // Add this line
-            />
-          </Space>
-          <Space>
-            <Button
-              type="primary"
-              onClick={() => confirm()}
-              size="small"
-              style={{ width: 90 }}
-            >
-              Search
-            </Button>
-            <Button
-              onClick={() => clearFilters()}
-              size="small"
-              style={{ width: 90 }}
-            >
-              Reset
-            </Button>
-          </Space>
+         <RangePicker
+          value={selectedKeys[0] ? [moment(selectedKeys[0][0]), moment(selectedKeys[0][1])] : []}
+          onChange={dates => {
+            const range = dates ? [[dates[0].startOf('day').format('YYYY-MM-DD'), dates[1].endOf('day').format('YYYY-MM-DD')]] : [];
+            setSelectedKeys(range);
+            if (!dates) {
+              clearFilters();
+            }
+          }}
+          style={{ marginBottom: 8, display: 'block' }}
+        />
+          <Button
+            type="primary"
+            onClick={() => confirm()}
+            size="small"
+            style={{ width: 90, marginRight: 8 }}
+          >
+            Filter
+          </Button>
+          <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
+            Reset
+          </Button>
         </div>
       ),
       onFilter: (value, record) => {
-        if (!value) return true;
         const [start, end] = value;
-        const createdAt = moment(record.created_at);
-        return createdAt.isBetween(start, end, "day", "[]");
-      },
-    },
+        const date = moment(record.created_at);
+        return date >= moment(start) && date <= moment(end);
+      }
+    }
+    ,
     {
       title: "Customer",
       dataIndex: "user_email",
@@ -276,6 +359,21 @@ function AdminPage() {
             : "No required"}
         </div>
       ),
+      filters: [
+        { text: "Accepted", value: "accepted" },
+        { text: "Waiting", value: "waiting" },
+        { text: "Not Required", value: "notRequired" }
+      ],
+      onFilter: (value, record) => {
+        switch (value) {
+          case "accepted":
+            return record.required && record.verified;
+          case "waiting":
+            return record.required && !record.verified;
+          case "notRequired":
+            return !record.required;
+        }
+      },
     },
     {
       title: "Status",
@@ -302,6 +400,12 @@ function AdminPage() {
           </button>
         </div>
       ),
+      filters: [
+        { text: "Public", value: "public" },
+        { text: "Private", value: "private" },
+        { text: "Stealth", value: "stealth" }
+      ],
+      onFilter: (value, record) => record.status === value
     },
     {
       title: "Verified Status",
@@ -317,6 +421,11 @@ function AdminPage() {
           />
         </Space>
       ),
+      filters: [
+        { text: "Yes", value: true },
+        { text: "No", value: false }
+      ],
+      onFilter: (value, record) => record.verified === value
     },
     {
       title: "Target Amount",
@@ -330,6 +439,23 @@ function AdminPage() {
           {formatNumber(text)}
         </div>
       ),
+      filters: [
+        { text: "0-100", value: "0-100000" },
+        { text: "100-500", value: "100000-500000" },
+        { text: "500K-1M", value: "500000-1000000" },
+        { text: "1M-5M", value: "1000000-5000000" },
+        { text: ">5M", value: ">5000000" }
+      ],
+      onFilter: (value, record) => {
+        const amount = parseFloat(record.target_amount);
+        switch (value) {
+          case "0-100000": return amount >= 0 && amount <= 100000;
+          case "100000-500000": return amount > 100000 && amount <= 500000;
+          case "500000-1000000": return amount > 500000 && amount <= 1000000;
+          case "1000000-5000000": return amount > 1000000 && amount <= 5000000;
+          case ">5000000": return amount > 5000000;
+        }
+      }
     },
     {
       title: "Ticket Size",
@@ -343,6 +469,24 @@ function AdminPage() {
           {formatNumber(text)}
         </div>
       ),
+      sorter: (a, b) => a.ticket_size - b.ticket_size,
+      filters: [
+        { text: "0-1000", value: "0-100" },
+        { text: "1000-5000", value: "100-500" },
+        { text: "5000-10000", value: "500-1000" },
+        { text: "1000-50000", value: "1000-5000" },
+        { text: ">50000", value: ">5000" }
+      ],
+      onFilter: (value, record) => {
+        const size = parseFloat(record.ticket_size);
+        switch (value) {
+          case "0-100": return size >= 0 && size <= 1000;
+          case "100-500": return size > 1000 && size <= 5000;
+          case "500-1000": return size > 5000 && size <= 10000;
+          case "1000-5000": return size > 10000 && size <= 50000;
+          case ">5000": return size > 50000;
+        }
+      }
     },
     {
       title: "No. Ticket",
@@ -369,6 +513,14 @@ function AdminPage() {
           {text}
         </div>
       ),
+      filters: [
+        { text: "M&A", value: "M&A" },
+        { text: "Investment", value: "Investment" },
+        { text: "Lending", value: "Lending" },
+        { text: "Convertible", value: "Convertible" },
+        { text: "Non-Profit", value: "Non-Profit" }
+      ],
+      onFilter: (value, record) => record.offer_type === value
     },
     {
       title: "Offer",
@@ -395,6 +547,23 @@ function AdminPage() {
           {formatNumber(text)}
         </div>
       ),
+      filters: [
+        { text: "0-100K", value: "0-100" },
+        { text: "100K-500K", value: "100-500" },
+        { text: "500K-1M", value: "500-1000" },
+        { text: "1M-5M", value: "1000-5000" },
+        { text: ">5M", value: ">5000" }
+      ],
+      onFilter: (value, record) => {
+        const raised = parseFloat(record.amountRaised);
+        switch (value) {
+          case "0-100": return raised >= 0 && raised <= 100000;
+          case "100-500": return raised > 100000 && raised <= 500000;
+          case "500-1000": return raised > 500000 && raised <= 1000000;
+          case "1000-5000": return raised > 1000000 && raised <= 5000000;
+          case ">5000": return raised > 5000000;
+        }
+    },
     },
     {
       title: "Country",
@@ -421,6 +590,7 @@ function AdminPage() {
           {text}
         </div>
       ),
+       
     },
     {
       title: "Revenue Range",
@@ -434,6 +604,20 @@ function AdminPage() {
           {text}
         </div>
       ),
+      
+      filters: [
+        { text: "$0 - $10k", value: "$0 - $10k" },
+        { text: "$10k - $50k", value: "$10k - $50k" },
+        { text: "$50k - $100k", value: "$50k - $100k" },
+        { text: "$100k - $500k", value: "$100k - $500k" },
+        { text: "$500k - $1M", value: "$500k - $1M" },
+        { text: "$1M - $5M", value: "$1M - $5M" },
+        { text: ">$5M", value: ">$5M" },
+        { text: "Non-Profit", value: "Non-Profit" },
+        
+        
+      ],
+      onFilter: (value, record) => record.revenueStatus === value
     },
     {
       title: "Round",
@@ -447,6 +631,15 @@ function AdminPage() {
           {text}
         </div>
       ),
+      filters: [
+        { text: "Seed", value: "Seed" },
+        { text: "Pre-seed", value: "Pre-seed" },
+        { text: "Series A", value: "Series A" },
+        { text: "Series B", value: "Series B" },
+        { text: "Series C", value: "Series C" },
+        { text: "Non-Profit", value: "Non-Profit" },
+      ],
+      onFilter: (value, record) => record.round === value
     },
     {
       title: "Website",
@@ -480,6 +673,33 @@ function AdminPage() {
           ))}
         </div>
       ),
+      filters: [
+        { text: "Technology", value: "Technology" }, 
+        { text:"E-commerce", value: "E-commerce" }, 
+        { text:"Healthtech", value: "Healthtech" }, 
+        { text:"Fintech", value: "Fintech" }, 
+        { text:"Food & Beverage", value: "Food & Beverage" }, 
+        { text:"Edtech", value: "Edtech" }, 
+        { text:"Cleantech", value: "Cleantech" }, 
+        { text:"AI & ML", value: "AI & ML" }, 
+        { text:"Cybersecurity", value: "Cybersecurity" }, 
+        { text:"PropTech", value: "PropTech" }, 
+        { text:"Travel & Hospitality", value: "Travel & Hospitality" }, 
+        { text:"Fashion & Apparel", value: "Fashion & Apparel" }, 
+        { text:"IoT", value: "IoT" }, 
+        { text:"Biotech", value: "Biotech" }, 
+        { text:"Social Media", value: "Social Media" }, 
+        { text:"Entertainment", value: "Entertainment" }, 
+        { text:"Gaming", value: "Gaming" }, 
+        { text:"Eco-friendly", value: "Eco-friendly" }, 
+        { text:"Transportation", value: "Transportation" }, 
+        { text:"Fitness & Wellness", value: "Fitness & Wellness" }, 
+        { text:"Agtech", value: "Agtech" },
+        
+         
+     
+      ],
+      onFilter: (value, record) => record.industry.includes(value)
     },
     {
       title: "Keywords",
@@ -728,7 +948,9 @@ function AdminPage() {
                           scroll={{ x: "max-content" }}
                           bordered
                         />
+                        <Dashboard  />
                       </div>
+
                     </div>
                   </div>
                 </div>

@@ -6,10 +6,14 @@ import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import { useNavigate } from "react-router-dom";
 import { Button, Modal, Table, Tooltip, message } from "antd";
-import { formatDate } from "../../features/DurationSlice";
+import {
+  formatDate,
+  getCurrencyLabelByKey,
+} from "../../features/DurationSlice";
 import { PlusOutlined } from "@ant-design/icons";
 import InputField from "../../components/InputField";
 import PricingWithLemon from "../Home/Components/PricingWithLemon";
+import { formatNumber } from "../../features/CostSlice";
 // import { toast } from "react-toastify";
 
 function FinancialList() {
@@ -45,6 +49,8 @@ function FinancialList() {
 
     loadFinances();
   }, [user.id]);
+
+  console.log("finances", finances);
 
   useEffect(() => {
     const sortedProjects = [...finances].sort((a, b) => {
@@ -145,13 +151,14 @@ function FinancialList() {
       dataIndex: "selectedDuration",
       key: "selectedDuration",
       render: (text, record) => (
-        <>
-          <button onClick={() => handleProjectClick(record)}>
-            {record?.inputData?.selectedDuration
-              ? record?.inputData?.selectedDuration
-              : "Waiting for setup"}
-          </button>
-        </>
+        <div
+          onClick={() => handleProjectClick(record)}
+          className="flex justify-end items-end hover:cursor-pointer"
+        >
+          {record?.inputData?.selectedDuration
+            ? record?.inputData?.selectedDuration
+            : "Waiting for setup"}
+        </div>
       ),
     },
     {
@@ -159,20 +166,58 @@ function FinancialList() {
       dataIndex: "startYear",
       key: "startYear",
       render: (text, record) => (
-        <>
-          <button onClick={() => handleProjectClick(record)}>
-            {record?.inputData?.startMonth && record?.inputData?.startYear ? (
-              <>
-                {record?.inputData?.startMonth < 10
-                  ? `0${record?.inputData?.startMonth}`
-                  : record?.inputData?.startMonth}{" "}
-                - {record?.inputData?.startYear}
-              </>
-            ) : (
-              "Waiting for setup"
-            )}
-          </button>
-        </>
+        <div
+          onClick={() => handleProjectClick(record)}
+          className="flex justify-end items-end hover:cursor-pointer"
+        >
+          {record?.inputData?.startMonth && record?.inputData?.startYear ? (
+            <>
+              {record?.inputData?.startMonth < 10
+                ? `0${record?.inputData?.startMonth}`
+                : record?.inputData?.startMonth}{" "}
+              - {record?.inputData?.startYear}
+            </>
+          ) : (
+            "Waiting for setup"
+          )}
+        </div>
+      ),
+    },
+    {
+      title: "Customer",
+      dataIndex: "customer",
+      key: "customer",
+      render: (text, record) => (
+        <Tooltip title="Customer of 1st year">
+          <div
+            onClick={() => handleProjectClick(record)}
+            className="flex justify-end items-end hover:cursor-pointer"
+          >
+            {record?.inputData?.yearlyAverageCustomers
+              ? formatNumber(record?.inputData?.yearlyAverageCustomers[0])
+              : "Waiting for setup"}
+          </div>
+        </Tooltip>
+      ),
+    },
+    {
+      title: "Revenue",
+      dataIndex: "Revenue",
+      key: "Revenue",
+
+      render: (text, record) => (
+        <Tooltip title="Revenue of 1st year">
+          <div
+            className="flex justify-end items-end hover:cursor-pointer"
+            onClick={() => handleProjectClick(record)}
+          >
+            {record?.inputData?.yearlySales
+              ? `${getCurrencyLabelByKey(
+                  record?.inputData?.currency
+                )}${formatNumber(record?.inputData?.yearlySales[0])}`
+              : "Waiting for setup"}
+          </div>
+        </Tooltip>
       ),
     },
     {
@@ -183,7 +228,7 @@ function FinancialList() {
         <Button
           onClick={() => handleDelete(record.id)}
           style={{ fontSize: "12px" }}
-          className="hover:cursor-pointer"
+          className="hover:cursor-pointer bg-red-500 text-white"
         >
           Delete
         </Button>
@@ -305,9 +350,6 @@ function FinancialList() {
                   cancelText="Cancel"
                   cancelButtonProps={{
                     style: {
-                      borderColor: "black",
-                      padding: "8px 16px",
-
                       borderRadius: "0.375rem",
                       cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
                     },
@@ -316,7 +358,6 @@ function FinancialList() {
                     style: {
                       background: "#f5222d",
                       borderColor: "#f5222d",
-                      padding: "8px 16px",
                       color: "#fff",
                       borderRadius: "0.375rem",
                       cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
@@ -337,9 +378,6 @@ function FinancialList() {
                   cancelText="Cancel"
                   cancelButtonProps={{
                     style: {
-                      borderColor: "black",
-                      padding: "8px 16px",
-
                       borderRadius: "0.375rem",
                       cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
                     },
@@ -348,7 +386,7 @@ function FinancialList() {
                     style: {
                       background: "#2563EB",
                       borderColor: "#2563EB",
-                      padding: "8px 16px",
+
                       color: "#fff",
                       borderRadius: "0.375rem",
                       cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
@@ -403,9 +441,9 @@ function FinancialList() {
                 </div>
               </ReactModal>
 
-              <section className="container px-4 mx-auto">
+              <section className="container px-4 mx-auto mt-14">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-semibold">
+                  <h2 className="text-xl font-semibold ">
                     My Financial Projects
                   </h2>
                   {needPremium ? (

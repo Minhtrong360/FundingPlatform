@@ -4,10 +4,10 @@ import { supabase } from "../../supabase";
 import AddProject from "./AddProject";
 import { useNavigate } from "react-router-dom";
 import AlertMsg from "../../components/AlertMsg";
-import InvitedUserProject from "../../components/InvitedUserProject";
+// import InvitedUserProject from "../../components/InvitedUserProject";
 // import { toast } from "react-toastify";
-import ProjectGiven from "../../components/ProjectGiven";
-import { Dropdown, Button, Menu, message, Table, Modal } from "antd";
+// import ProjectGiven from "../../components/ProjectGiven";
+import { Dropdown, Menu, message, Table, Modal } from "antd";
 import { formatDate } from "../../features/DurationSlice";
 import InputField from "../../components/InputField";
 import apiService from "../../app/apiService";
@@ -364,38 +364,38 @@ function ProjectList({ projects }) {
                 <Menu>
                   <>
                     <Menu.Item key="Edit Project">
-                      <Button
+                      <div
                         onClick={() => handleEdit(record)}
                         style={{ fontSize: "12px" }}
                       >
                         Edit Project
-                      </Button>
+                      </div>
                     </Menu.Item>
                     <Menu.Item key="delete">
-                      <Button
+                      <div
                         onClick={() => handleDelete(record.id)}
                         style={{ fontSize: "12px" }}
                       >
                         Delete Project
-                      </Button>
+                      </div>
                     </Menu.Item>
                     <Menu.Item key="assign">
-                      <Button
+                      <div
                         onClick={() => handleAssign(record.id)}
                         style={{ fontSize: "12px" }}
                       >
                         Assign
-                      </Button>
+                      </div>
                     </Menu.Item>
 
                     {record.user_id === user.id ? (
                       <Menu.Item key="invite">
-                        <Button
+                        <div
                           onClick={() => handleInvite(record.id)}
                           style={{ fontSize: "12px" }}
                         >
                           Invite
-                        </Button>
+                        </div>
                       </Menu.Item>
                     ) : (
                       ""
@@ -482,9 +482,6 @@ function ProjectList({ projects }) {
           cancelText="Cancel"
           cancelButtonProps={{
             style: {
-              borderColor: "black",
-              padding: "8px 16px",
-
               borderRadius: "0.375rem",
               cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
             },
@@ -493,7 +490,6 @@ function ProjectList({ projects }) {
             style: {
               background: "#f5222d",
               borderColor: "#f5222d",
-              padding: "8px 16px",
               color: "#fff",
               borderRadius: "0.375rem",
               cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
@@ -515,10 +511,6 @@ function ProjectList({ projects }) {
           cancelText="Cancel"
           cancelButtonProps={{
             style: {
-              background: "#f5222d",
-              borderColor: "#f5222d",
-              padding: "8px 16px",
-              color: "#fff",
               borderRadius: "0.375rem",
               cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
             },
@@ -527,7 +519,6 @@ function ProjectList({ projects }) {
             style: {
               background: "#2563EB",
               borderColor: "#2563EB",
-              padding: "8px 16px",
               color: "#fff",
               borderRadius: "0.375rem",
               cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
@@ -557,10 +548,6 @@ function ProjectList({ projects }) {
           cancelText="Cancel"
           cancelButtonProps={{
             style: {
-              background: "#f5222d",
-              borderColor: "#f5222d",
-              padding: "8px 16px",
-              color: "#fff",
               borderRadius: "0.375rem",
               cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
             },
@@ -569,7 +556,6 @@ function ProjectList({ projects }) {
             style: {
               background: "#2563EB",
               borderColor: "#2563EB",
-              padding: "8px 16px",
               color: "#fff",
               borderRadius: "0.375rem",
               cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua

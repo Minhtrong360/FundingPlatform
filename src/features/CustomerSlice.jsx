@@ -73,20 +73,40 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
     let beginValue = parseFloat(customerInput.beginCustomer); // Begin value for the current month
 
     for (let month = 1; month <= numberOfMonths; month++) {
-      if (month >= customerInput.beginMonth && month <= customerInput.endMonth) {
+      if (
+        month >= customerInput.beginMonth &&
+        month <= customerInput.endMonth
+      ) {
         if (customerInput.customerGrowthFrequency === "Monthly") {
-          currentCustomers = initialCustomers * (1 + parseFloat(customerInput.growthPerMonth) / 100);
-        } else if (["Annually", "Quarterly", "Semi-Annually"].includes(customerInput.customerGrowthFrequency)) {
+          currentCustomers =
+            initialCustomers *
+            (1 + parseFloat(customerInput.growthPerMonth) / 100);
+        } else if (
+          ["Annually", "Quarterly", "Semi-Annually"].includes(
+            customerInput.customerGrowthFrequency
+          )
+        ) {
           let frequency = 12;
-          if (customerInput.customerGrowthFrequency === "Quarterly") frequency = 3;
-          else if (customerInput.customerGrowthFrequency === "Semi-Annually") frequency = 6;
+          if (customerInput.customerGrowthFrequency === "Quarterly")
+            frequency = 3;
+          else if (customerInput.customerGrowthFrequency === "Semi-Annually")
+            frequency = 6;
 
-          if (month === customerInput.beginMonth || ((month - customerInput.beginMonth) % frequency === 0 && month !== customerInput.beginMonth)) {
-            currentCustomers = initialCustomers * (1 + parseFloat(customerInput.growthPerMonth) / 100);
+          if (
+            month === customerInput.beginMonth ||
+            ((month - customerInput.beginMonth) % frequency === 0 &&
+              month !== customerInput.beginMonth)
+          ) {
+            currentCustomers =
+              initialCustomers *
+              (1 + parseFloat(customerInput.growthPerMonth) / 100);
           }
         }
 
-        const churnValue = (beginValue * (customerInput.churnRate / 100)).toFixed(0); // Calculate churn value
+        const churnValue = (
+          beginValue *
+          (customerInput.churnRate / 100)
+        ).toFixed(0); // Calculate churn value
         beginValue += currentCustomers - parseFloat(churnValue); // Update beginValue for the calculation of the next month
 
         monthlyCustomers.push({
@@ -105,11 +125,6 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
     return monthlyCustomers;
   });
 };
-
-
-
-
-
 
 export const {
   setCustomerInputs,

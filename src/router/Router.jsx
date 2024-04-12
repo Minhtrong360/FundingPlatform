@@ -10,22 +10,20 @@ import Founder from "../pages/FounderGitbook/Founder";
 import NotFoundPage from "../pages/NotFoundPage";
 import PaymentSuccess from "../pages/PaymentSuccess";
 
-import DetailPage from "../pages/FounderGitbook/DetailPage";
-
 import Trial from "../pages/DashBoard/trial";
 import AuthRequire from "./AuthRequired";
 
 import TermsAndConditions from "../pages/DashBoard/term";
 import UserPage from "../pages/UserProfile/UserPage";
 
-import LinkedInLoginComponent from "../pages/Login/linkedin";
+// import LinkedInLoginComponent from "../pages/Login/linkedin";
 
 import DashBoardPage from "../pages/DashBoard/DashBoardPage";
 import CompanySetting from "../pages/FounderGitbook/CompanySetting";
 import News from "../pages/News/News";
 import FinancialPage from "../pages/FinalcialPage/FinancialPage";
 
-import ProgressBar from "../components/ProgressBar";
+// import ProgressBar from "../components/ProgressBar";
 import NotificationsPage from "../pages/Notification/Notification";
 import Confirmed from "../pages/SignUp/Confirmed";
 import AdminPage from "../pages/Admin/AdminPage";
@@ -35,12 +33,12 @@ import AnnouncePage from "../components/AnnouncePage";
 import PricingPage from "../pages/Home/Components/PricingPage";
 import FAQ from "../pages/Home/Components/FAQ";
 import DetailBlog from "../pages/News/DetailBlog";
-import StaticNews from "../pages/News/StaticNews";
+// import StaticNews from "../pages/News/StaticNews";
 import NewProjectPosts from "../pages/StartUps/NewProjectPosts";
-import Brochure from "../pages/Home/Components/Brochure.jsx";
+// import Brochure from "../pages/Home/Components/Brochure.jsx";
 import NewDetailPage from "../pages/FounderGitbook/NewDetailPage.jsx";
-import App from "../supabase/PrivateDemo.jsx";
-import TourComponent from "../pages/JoyRide.jsx";
+// import App from "../supabase/PrivateDemo.jsx";
+// import TourComponent from "../pages/JoyRide.jsx";
 import FinancialList from "../pages/FinalcialPage/FinancialList.jsx";
 function Router() {
   return (
@@ -109,7 +107,7 @@ function Router() {
             </AuthRequire>
           }
         />
-        <Route path="/linkedin" element={<LinkedInLoginComponent />} />
+        {/* <Route path="/linkedin" element={<LinkedInLoginComponent />} /> */}
 
         <Route path="/trials" element={<Trial />} />
         <Route path="/terms" element={<TermsAndConditions />} />
@@ -151,13 +149,13 @@ function Router() {
 
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/admin" element={<AdminPage />} />
-        <Route path="/example" element={<StaticNews />} />
+        {/* <Route path="/example" element={<StaticNews />} /> */}
         <Route path="/FAQ" element={<FAQ />} />
-        <Route path="/brochure" element={<Brochure />} />
+        {/* <Route path="/brochure" element={<Brochure />} /> */}
         <Route path="/mytabs" element={<NewDetailPage />} />
-        <Route path="/app" element={<App />} />
-        <Route path="/tour" element={<TourComponent />} />
-        <Route path="/loading" element={<ProgressBar isLoading={true} />} />
+        {/* <Route path="/app" element={<App />} /> */}
+        {/* <Route path="/tour" element={<TourComponent />} /> */}
+        {/* <Route path="/loading" element={<ProgressBar isLoading={true} />} /> */}
       </Routes>
     </>
   );

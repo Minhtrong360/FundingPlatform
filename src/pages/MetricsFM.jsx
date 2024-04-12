@@ -145,7 +145,6 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
             <div className="whitespace-normal mt-2">Revenue</div>
           </div>
         </div>
-        
 
         {/* End Map */}
       </div>

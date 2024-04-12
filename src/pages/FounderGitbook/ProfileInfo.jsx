@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 import ButtonGroup from "./ButtonGroup";
 import { useAuth } from "../../context/AuthContext";
-import ReactModal from "react-modal";
 import { UserOutlined } from "@ant-design/icons";
 
 export default function ProfileInfo({
@@ -232,10 +231,6 @@ export default function ProfileInfo({
           cancelText="Disagree"
           cancelButtonProps={{
             style: {
-              background: "#f5222d",
-              borderColor: "#f5222d",
-              padding: "8px 16px",
-              color: "#fff",
               borderRadius: "0.375rem",
               cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
             },
@@ -244,7 +239,6 @@ export default function ProfileInfo({
             style: {
               background: "#2563EB",
               borderColor: "#2563EB",
-              padding: "8px 16px",
               color: "#fff",
               borderRadius: "0.375rem",
               cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
@@ -331,7 +325,7 @@ export default function ProfileInfo({
                 company?.industry?.map((industry, index) => (
                   <Badge
                     key={index}
-                    className="mx-4 bg-yellow-300 border border-gray-200 truncate text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
+                    className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
                   >
                     {industry}
                   </Badge>
@@ -339,7 +333,7 @@ export default function ProfileInfo({
               ) : (
                 <Badge
                   key={1}
-                  className="mx-4 bg-yellow-300 border border-gray-200 truncate text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
+                  className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
                 >
                   Technology
                 </Badge>

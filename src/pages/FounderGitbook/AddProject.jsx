@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
-import PricingSection from "../Home/Pricing";
 import ReactModal from "react-modal";
 // import { toast } from "react-toastify";
 import AlertMsg from "../../components/AlertMsg";
@@ -47,7 +46,7 @@ const Modal = ({
       }
 
       // Cập nhật dự án trong cơ sở dữ liệu
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("projects")
         .update({
           name: projectName,

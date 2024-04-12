@@ -243,3 +243,12 @@ code {
 .ant-modal {
   font-family: Inter, sans-serif !important;
 }
+
+.ant-btn {
+  font-family: Inter, sans-serif !important;
+}
+
+.ant-tabs-nav-wrap {
+  display: flex;
+  justify-content: center;
+}

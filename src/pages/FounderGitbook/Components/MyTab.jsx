@@ -433,7 +433,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen }) => {
                   </nav>
                 </div>
               </aside>
-              <div className="w-full  py-8 px-0 md:px-8">
+              <div className="w-full  py-8 px-0 md:pl-8">
                 {/* Content */}
                 {tabContents[activeTab]}
               </div>

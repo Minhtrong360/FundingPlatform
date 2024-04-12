@@ -524,7 +524,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [run, setRun] = useState(false);
 
   useEffect(() => {
-    setRun(true); // Initialize Joyride on component mount
+    setRun(false); // Initialize Joyride on component mount
   }, []);
 
   const handleJoyrideCallback = (data) => {
@@ -618,13 +618,17 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         showProgress
         showSkipButton
         disableOverlayClose
-        disableScrolling
-        disableCloseOnEsc
+        disableScrolling={false} 
+        
+        
         callback={handleJoyrideCallback}
         styles={{
           options: {
             zIndex: 10000,
+            primaryColor: '#2563eb',
+            
           },
+          
         }}
       />
 
@@ -648,13 +652,13 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             <GPTAnalyzer />
           </div> */}
           <div className="my-4 ">
-          <div className="rounded-lg bg-green-500 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">
+          <div className="rounded-lg bg-blue-600 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">
             <button onClick={startTour}>
           <QuestionCircleOutlined />
           </button>
           </div> 
             <div className="overflow-x-auto whitespace-nowrap border-t-2 border-b-2 border-yellow-300 text-sm">
-              <ul className="py-4 flex lg:justify-center justify-start items-center space-x-4">
+              <ul className=" py-4 flex lg:justify-center justify-start items-center space-x-4">
                 <li
                   className={`cursor-pointer-overview px-2 py-1 rounded-md hover:bg-yellow-200 ${
                     activeTab === "overview" ? "bg-yellow-300 font-bold" : ""

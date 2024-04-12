@@ -341,7 +341,20 @@ const CustomerSection = ({
           if (existingData && existingData.length > 0) {
             const newInputData = JSON.parse(existingData[0].inputData);
 
+            const calculatedData = calculateCustomerGrowth(
+              tempCustomerInputs,
+              numberOfMonths
+            );
+            const averages = calculateYearlyAverage(
+              calculatedData,
+              numberOfMonths
+            );
+
             newInputData.customerInputs = tempCustomerInputs;
+            newInputData.yearlyAverageCustomers = averages;
+            newInputData.yearlySales = yearlySale;
+
+            console.log("yearlySale", yearlySale);
 
             const { error: updateError } = await supabase
               .from("finance")

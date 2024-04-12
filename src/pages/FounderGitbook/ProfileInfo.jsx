@@ -450,7 +450,10 @@ export default function ProfileInfo({
               onClick={() => window.open(company?.website)}
             >
               {company?.website
-                ? company?.website.replace(/^https?:\/\/(www\.)?/i, "")
+                ? company?.website
+                    .replace(/^(https?:\/\/)?(www\.)?/i, "")
+                    .replace(/^(http?:\/\/)?(www\.)?/i, "")
+                    .replace(/\/+$/, "")
                 : "beekrowd.com"}
             </div>
           </Tooltip>

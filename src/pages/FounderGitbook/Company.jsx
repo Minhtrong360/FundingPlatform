@@ -23,6 +23,13 @@ function Company({
   // Function to handle project image file upload
   const handleProjectImageUpload = (event) => {
     const file = event.target.files[0]; // Get the uploaded file
+    // Check if the file size exceeds the maximum allowed size
+    if (file.size > MAX_FILE_SIZE) {
+      message.warning("File size exceeds the maximum allowed size: 2MB.");
+      // Perform any error handling here, such as displaying an error message to the user
+      event.target.value = null;
+      return;
+    }
     // Assuming you're using FileReader to read the uploaded file as data URL
     const reader = new FileReader();
     reader.onload = (e) => {

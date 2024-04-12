@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 // import { toast } from "react-toastify";
 import { supabase } from "../../supabase";
 import { message } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { ShopOutlined, UserOutlined } from "@ant-design/icons";
 import { BellOutlined } from "@ant-design/icons";
 import { UserSwitchOutlined } from "@ant-design/icons";
 import { DashboardOutlined } from "@ant-design/icons";
@@ -94,6 +94,11 @@ const ImageDropdown = () => {
   };
   const handleClickProject = (e) => {
     navigate("/founder");
+    handleClickOutside(e);
+    setIsOpen(false);
+  };
+  const handleClickFleaMarket = (e) => {
+    navigate("/Flea-Market");
     handleClickOutside(e);
     setIsOpen(false);
   };
@@ -218,6 +223,14 @@ const ImageDropdown = () => {
           >
             <ProfileOutlined />
             Project List
+          </button>
+          <button
+            style={{ minWidth: "100%" }}
+            className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
+            onClick={(e) => handleClickFleaMarket(e)}
+          >
+            <ShopOutlined />
+            Flea-Market List
           </button>
 
           <button

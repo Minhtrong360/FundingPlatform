@@ -183,10 +183,10 @@ const Header = ({ position }) => {
                 Profile Listing 🚀
               </NavbarItem>
               <NavbarItem
-                onClick={() => navigate(`/news`)}
-                isActive={loginPart.includes("news")}
+                onClick={() => navigate(`/Flea-Market/info`)}
+                isActive={loginPart.includes("Flea-Market")}
               >
-                Blog
+                Flea Market
               </NavbarItem>
 
               <NavbarItem

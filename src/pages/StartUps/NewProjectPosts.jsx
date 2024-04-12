@@ -6,7 +6,7 @@ import Search from "../Home/Components/Search";
 
 import { LinearProgress } from "@mui/material";
 import Header from "../Home/Header";
-import { message, Select } from "antd";
+import { message } from "antd";
 import HeroStartup from "./HeroStartup";
 import regions from "../../components/Regions";
 

@@ -552,7 +552,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   };
 
   const years = divideMonthsIntoYears();
-  console.log("years", years);
+
   // Function to generate table columns dynamically based on months in a year
 
   const generateTableColumns = (year) => {

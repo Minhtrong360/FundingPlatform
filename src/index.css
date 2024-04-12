@@ -239,3 +239,16 @@ code {
   top: 0;
   left: 0;
 }
+
+.ant-modal {
+  font-family: Inter, sans-serif !important;
+}
+
+.ant-btn {
+  font-family: Inter, sans-serif !important;
+}
+
+.ant-tabs-nav-wrap {
+  display: flex;
+  justify-content: center;
+}

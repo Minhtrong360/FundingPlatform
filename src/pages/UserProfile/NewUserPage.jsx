@@ -542,9 +542,8 @@ function NewUserPage() {
 
                   {userData.roll === "Investor" && (
                     <>
-                      <div className="italic">
-                        * We need some information about what company will you
-                        be attracted as an INVESTOR
+                      <div className="text-xs italic text-blue-600">
+                        * For better startups matching, please fill in the following information.
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div className="flex flex-col">

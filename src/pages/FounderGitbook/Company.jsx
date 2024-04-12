@@ -21,22 +21,23 @@ function Company({
   const [cardImageUrl, setCardImageUrl] = useState(formData.card_url); // State to store card image URL
 
   // Function to handle project image file upload
-  // const handleProjectImageUpload = (event) => {
-  //   const file = event.target.files[0]; // Get the uploaded file
-  //   // Assuming you're using FileReader to read the uploaded file as data URL
-  //   const reader = new FileReader();
-  //   reader.onload = (e) => {
-  //     setProjectImageUrl(e.target.result); // Set the project image URL in state
-  //   };
-  //   reader.readAsDataURL(file); // Read the uploaded file
-  //   // Update formData with the project image URL
-  // };
+  const handleProjectImageUpload = (event) => {
+    const file = event.target.files[0]; // Get the uploaded file
+    // Assuming you're using FileReader to read the uploaded file as data URL
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setProjectImageUrl(e.target.result); // Set the project image URL in state
+    };
+    reader.readAsDataURL(file); // Read the uploaded file
+    // Update formData with the project image URL
+  };
 
   useEffect(() => {
     handleInputChange({
       target: { name: "project_url", value: projectImageUrl },
     });
   }, [projectImageUrl]);
+
   useEffect(() => {
     setProjectImageUrl(formData.project_url);
   }, [formData.project_url]);
@@ -102,7 +103,7 @@ function Company({
           <div className="max-w-xl mx-auto">
             <div className="text-left">
               <p className="mt-1 text-gray-800 font-semibold darkTextGray">
-                Please fill basic information about your company.
+                Please fill basic information below.
               </p>
             </div>
 
@@ -135,9 +136,9 @@ function Company({
                       label="Target amount"
                       id="target-amount"
                       name="target_amount"
-                      value={formData.target_amount}
+                      value={formatNumber(formData.target_amount)}
                       onChange={handleInputChange}
-                      type="number"
+                      type="text"
                       required
                     />
                     <SelectField
@@ -156,9 +157,9 @@ function Company({
                       label="Min ticket size"
                       id="min-ticket-size"
                       name="ticket_size"
-                      value={formData.ticket_size}
+                      value={formatNumber(formData.ticket_size)}
                       onChange={handleInputChange}
-                      type="number"
+                      type="text"
                       required
                     />
                     <InputField
@@ -201,8 +202,8 @@ function Company({
                   />
 
                   <InputField
-                    label="Key words"
-                    title="Key words should be separated by comma (,)"
+                    label="Keywords"
+                    title="Keywords should be separated by comma (,)"
                     id="keyWords"
                     name="keyWords"
                     value={formData.keyWords}
@@ -220,31 +221,31 @@ function Company({
                     type="text"
                     required
                   />
-                  {/* <div> */}
-                  {/* <InputField
-                      label="Profile Image link"
+                  <div>
+                    <InputField
+                      label="Company logo"
                       id="project_url"
                       name="project_url"
                       value={formData.project_url}
                       onChange={handleInputChange}
                       type="text"
                       required
-                    /> */}
-                  {/* Add file input for project image */}
-                  {/* <span className="py-1 px-2 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60">
+                    />
+                    {/* Add file input for project image */}
+                    <span className="py-1 px-2 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60">
                       {" "}
-                    </span> */}
-                  {/* <input
+                    </span>
+                    <input
                       type="file"
                       accept="image/*"
                       onChange={handleProjectImageUpload}
                       className="py-1 px-2 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60"
-                    /> */}
-                  {/* </div> */}
+                    />
+                  </div>
 
                   <div>
                     <InputField
-                      label="Card Image link"
+                      label="Profile Image link"
                       id="card_url"
                       name="card_url"
                       value={formData.card_url}

@@ -23,7 +23,7 @@ import { useAuth } from "../../../context/AuthContext";
 import LoadingButtonClick from "../../../components/LoadingButtonClick";
 import FilesList from "../FilesList";
 
-const MyTab = ({ blocks, setBlocks, company }) => {
+const MyTab = ({ blocks, setBlocks, company, fullScreen }) => {
   const [activeTab, setActiveTab] = useState("Your Profile");
   const [youtubeLink, setYoutubeLink] = useState("Add wanted youtube url");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -312,7 +312,7 @@ const MyTab = ({ blocks, setBlocks, company }) => {
                 className="w-full lg:w-12/12"
               />
               <div className="mt-28">
-                <div className="text-black font-semibold">Key words:</div>
+                <div className="text-black font-semibold">Keywords:</div>
 
                 <div className="mt-2">
                   {company?.keyWords &&
@@ -411,30 +411,42 @@ const MyTab = ({ blocks, setBlocks, company }) => {
         <LoadingButtonClick isLoading={isLoading} />
       ) : (
         <>
-          <aside className="w-full md:max-w-[200px] py-8">
-            <div className="sticky top-8 space-y-4">
-              <nav className="space-y-1">
-                {/* Navbar */}
-                {Object.keys(tabContents).map((tab) => (
-                  <div
-                    key={tab}
-                    className={` cursor-pointer ${
-                      activeTab === tab
-                        ? "flex items-left px-3 py-2 text-sm font-medium text-blue-600 bg-blue-100 rounded-md"
-                        : "flex items-left px-3 py-2 text-gray-600"
-                    }`}
-                    onClick={() => handleTabChange(tab)}
-                  >
-                    {tab}
-                  </div>
-                ))}
-              </nav>
+          {fullScreen === false ? (
+            <>
+              <aside className="w-full md:max-w-[200px] py-8">
+                <div className="sticky top-8 space-y-4">
+                  <nav className="space-y-1">
+                    {/* Navbar */}
+                    {Object.keys(tabContents).map((tab) => (
+                      <div
+                        key={tab}
+                        className={` cursor-pointer ${
+                          activeTab === tab
+                            ? "flex items-left px-3 py-2 text-sm font-medium text-blue-600 bg-blue-100 rounded-md"
+                            : "flex items-left px-3 py-2 text-gray-600"
+                        }`}
+                        onClick={() => handleTabChange(tab)}
+                      >
+                        {tab}
+                      </div>
+                    ))}
+                  </nav>
+                </div>
+              </aside>
+              <div className="w-full  py-8 px-0 md:pl-8">
+                {/* Content */}
+                {tabContents[activeTab]}
+              </div>
+            </>
+          ) : (
+            <div className="mt-4 flex items-center justify-center flex-nowrap">
+              <BlockNoteView
+                editor={editor}
+                theme={"light"}
+                className="w-full lg:w-8/12"
+              />
             </div>
-          </aside>
-          <div className="w-full  py-8 px-0 md:px-8">
-            {/* Content */}
-            {tabContents[activeTab]}
-          </div>
+          )}
         </>
       )}
     </div>

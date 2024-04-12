@@ -614,7 +614,6 @@ function CashFlowSection({ numberOfMonths }) {
   };
 
   const generateCashFlowTableColumns = (year) => {
-    console.log("year", year);
     const columns = [
       {
         title: "Metric",

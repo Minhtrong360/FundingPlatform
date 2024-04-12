@@ -525,7 +525,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [run, setRun] = useState(false);
 
   useEffect(() => {
-    setRun(true); // Initialize Joyride on component mount
+    setRun(false); // Initialize Joyride on component mount
   }, []);
 
   const handleJoyrideCallback = (data) => {

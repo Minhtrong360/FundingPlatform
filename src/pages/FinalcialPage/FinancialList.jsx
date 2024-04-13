@@ -50,8 +50,6 @@ function FinancialList() {
     loadFinances();
   }, [user.id]);
 
-  console.log("finances", finances);
-
   useEffect(() => {
     const sortedProjects = [...finances].sort((a, b) => {
       const dateA = new Date(a.created_at);

@@ -352,6 +352,8 @@ const SalesSection = ({
 
             newInputData.channelInputs = tempChannelInputs;
 
+            newInputData.yearlySales = sales;
+
             const { error: updateError } = await supabase
               .from("finance")
               .update({ inputData: newInputData })

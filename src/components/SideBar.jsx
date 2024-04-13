@@ -5,9 +5,9 @@ import {
   DollarCircleOutlined,
   HomeOutlined,
   ProfileOutlined,
+  ShopOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { ProjectOutlined } from "@ant-design/icons";
 
 function SideBar({ toggleSidebar, isSidebarOpen }) {
   const navigate = useNavigate();
@@ -133,6 +133,17 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
           >
             <ProfileOutlined />
             <span className="sidebar-text">Project list</span>
+          </button>
+          <button
+            className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm  ${
+              selectedItem?.includes("/Flea-Market")
+                ? "bg-gray-300"
+                : "text-gray-900 darkTextWhite"
+            } sidebar-button hover:bg-gray-300`}
+            onClick={() => handleItemClick("/Flea-Market")}
+          >
+            <ShopOutlined />
+            <span className="sidebar-text">Flea Market</span>
           </button>
         </div>
       </aside>

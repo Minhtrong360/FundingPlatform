@@ -40,10 +40,9 @@ import NewDetailPage from "../pages/FounderGitbook/NewDetailPage.jsx";
 // import App from "../supabase/PrivateDemo.jsx";
 // import TourComponent from "../pages/JoyRide.jsx";
 import FinancialList from "../pages/FinalcialPage/FinancialList.jsx";
-import FleaMarketForm from "../pages/FleaMarket/FleaMarketForm.jsx";
 import FleaMarketList from "../pages/FleaMarket/FleaMarketList.jsx";
 import FleaMarketListAll from "../pages/FleaMarket/FleaMarketListAll.jsx";
-import FleaMarketDetail from "../pages/FleaMarket/FleaMarketDetail.jsx";
+
 function Router() {
   return (
     <>
@@ -73,14 +72,6 @@ function Router() {
           element={
             <AuthRequire message="Sign in required!">
               <FleaMarketListAll />
-            </AuthRequire>
-          }
-        />
-        <Route
-          path="/Flea-Market/id"
-          element={
-            <AuthRequire message="Sign in required!">
-              <FleaMarketDetail />
             </AuthRequire>
           }
         />

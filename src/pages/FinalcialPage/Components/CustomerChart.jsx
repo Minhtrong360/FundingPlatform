@@ -38,7 +38,7 @@ const CustomChart = ({
     tooltip: {
       enabled: true,
       y: {
-        formatter: (val) => `$${val?.toFixed(2)}`,
+        formatter: (val) => `$${val?.toFixed(0)}`,
       },
     },
   };
@@ -54,7 +54,7 @@ const CustomChart = ({
           series={[
             {
               name: seriesTitle,
-              data: RenderData.map((value) => parseFloat(value.toFixed(2))),
+              data: RenderData.map((value) => parseFloat(value.toFixed(0))),
             },
           ]}
           type="area"

@@ -135,25 +135,25 @@ export const transformInvestmentDataForTable = (
   for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
     if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
       assetCostRow[`month${monthIndex + 1}`] = formatNumber(
-        assetCost?.toFixed(2)
+        assetCost?.toFixed(0)
       );
 
       depreciationRow[`month${monthIndex + 1}`] = formatNumber(
-        selectedInvestmentData.depreciationArray[monthIndex]?.toFixed(2)
+        selectedInvestmentData.depreciationArray[monthIndex]?.toFixed(0)
       );
       accumulatedDepreciationRow[`month${monthIndex + 1}`] = formatNumber(
-        selectedInvestmentData.accumulatedDepreciation[monthIndex]?.toFixed(2)
+        selectedInvestmentData.accumulatedDepreciation[monthIndex]?.toFixed(0)
       );
       bookValueRow[`month${monthIndex + 1}`] = formatNumber(
         (
           assetCost - selectedInvestmentData.accumulatedDepreciation[monthIndex]
-        )?.toFixed(2)
+        )?.toFixed(0)
       );
     } else {
-      assetCostRow[`month${monthIndex + 1}`] = "0.00";
-      depreciationRow[`month${monthIndex + 1}`] = "0.00";
-      accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0.00";
-      bookValueRow[`month${monthIndex + 1}`] = "0.00";
+      assetCostRow[`month${monthIndex + 1}`] = "0";
+      depreciationRow[`month${monthIndex + 1}`] = "0";
+      accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0";
+      bookValueRow[`month${monthIndex + 1}`] = "0";
     }
   }
 
@@ -188,7 +188,7 @@ export const transformInvestmentDataForTable = (
   };
   for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
     cfInvestmentsRow[`month${monthIndex + 1}`] = formatNumber(
-      cfInvestmentsSum[monthIndex]?.toFixed(2)
+      cfInvestmentsSum[monthIndex]?.toFixed(0)
     );
   }
   investmentTableData.push(cfInvestmentsRow);
@@ -200,7 +200,7 @@ export const transformInvestmentDataForTable = (
   };
   depreciationSum.forEach((depreciation, index) => {
     totalDepreciationRow[`month${index + 1}`] = formatNumber(
-      depreciation.toFixed(2)
+      depreciation.toFixed(0)
     );
   });
   investmentTableData.push(totalDepreciationRow);
@@ -215,7 +215,7 @@ export const transformInvestmentDataForTable = (
       cfInvestmentsSum
         .slice(0, monthIndex + 1)
         .reduce((acc, curr) => acc + curr, 0)
-        .toFixed(2)
+        .toFixed(0)
     );
   }
   investmentTableData.push(bsTotalInvestmentRow);
@@ -230,7 +230,7 @@ export const transformInvestmentDataForTable = (
       depreciationSum
         .slice(0, monthIndex + 1)
         .reduce((acc, curr) => acc + curr, 0)
-        .toFixed(2)
+        .toFixed(0)
     );
   }
   investmentTableData.push(bsTotalAccumulatedDepreciationRow);
@@ -249,7 +249,7 @@ export const transformInvestmentDataForTable = (
         depreciationSum
           .slice(0, monthIndex + 1)
           .reduce((acc, curr) => acc + curr, 0)
-      ).toFixed(2)
+      ).toFixed(0)
     );
   }
   investmentTableData.push(bsTotalNetFixedAssetsRow);

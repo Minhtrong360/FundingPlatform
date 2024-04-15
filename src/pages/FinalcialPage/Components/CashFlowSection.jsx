@@ -396,7 +396,7 @@ function CashFlowSection({ numberOfMonths }) {
     ...item.values?.reduce(
       (acc, value, i) => ({
         ...acc,
-        [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+        [`Month ${i + 1}`]: formatNumber(value?.toFixed(0)),
       }),
       {}
     ),
@@ -608,7 +608,7 @@ function CashFlowSection({ numberOfMonths }) {
       return {
         metric: data.metric,
         ...filteredData,
-        yearTotal: yearTotal.toFixed(2), // Add the Year Total to the data object
+        yearTotal: yearTotal.toFixed(0), // Add the Year Total to the data object
       };
     });
   };
@@ -674,11 +674,11 @@ function CashFlowSection({ numberOfMonths }) {
     const cashFlowMargin = netSales ? freeCashFlow / netSales : 0;
 
     return {
-      operatingCashFlowRatio: formatNumber(operatingCashFlowRatio.toFixed(2)),
-      freeCashFlow: formatNumber(freeCashFlow.toFixed(2)),
-      cashConversionCycle: formatNumber(cashConversionCycle.toFixed(2)), // This is a placeholder; actual calculation would differ
-      cashFlowToDebtRatio: formatNumber(cashFlowToDebtRatio.toFixed(2)),
-      cashFlowMargin: formatNumber(cashFlowMargin.toFixed(2)),
+      operatingCashFlowRatio: formatNumber(operatingCashFlowRatio.toFixed(0)),
+      freeCashFlow: formatNumber(freeCashFlow.toFixed(0)),
+      cashConversionCycle: formatNumber(cashConversionCycle.toFixed(0)), // This is a placeholder; actual calculation would differ
+      cashFlowToDebtRatio: formatNumber(cashFlowToDebtRatio.toFixed(0)),
+      cashFlowMargin: formatNumber(cashFlowMargin.toFixed(0)),
     };
   };
 

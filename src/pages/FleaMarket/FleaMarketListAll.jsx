@@ -8,6 +8,8 @@ import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
 import FleaMarketForm from "./FleaMarketForm";
 import Header from "../Home/Header";
+import { formatNumber } from "../../features/CostSlice";
+import FleaMarketDetail from "./FleaMarketDetail";
 
 function FleaMarketListAll() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -38,8 +40,11 @@ function FleaMarketListAll() {
     fetchFleaMarketData();
   }, []);
 
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [SelectedID, setSelectedID] = useState("");
   const handleProjectClick = (fleaMarket) => {
-    navigate(`/Flea-Market/${fleaMarket.id}`);
+    setSelectedID(fleaMarket.id);
+    setIsDetailModalOpen(true);
   };
 
   const columns = [
@@ -48,7 +53,11 @@ function FleaMarketListAll() {
       dataIndex: "company",
       key: "company",
       render: (text, record) => (
-        <Row align="middle">
+        <Row
+          align="middle"
+          className="hover:cursor-pointer"
+          onClick={() => handleProjectClick(record)}
+        >
           <Avatar
             shape="square"
             size={32}
@@ -70,20 +79,14 @@ function FleaMarketListAll() {
       dataIndex: "country",
       key: "country",
       render: (text, record) => (
-        <>
-          <span
-            className="hover:cursor-pointer"
-            onClick={() => handleProjectClick(record)}
-          >
-            <div
-              className="truncate"
-              style={{ maxWidth: "100%" }}
-              title={record.name}
-            >
-              {record.name}
-            </div>
-          </span>
-        </>
+        <div
+          className="ml-2 truncate hover:cursor-pointer"
+          style={{ maxWidth: "100%" }}
+          // title={record.company}
+          onClick={() => handleProjectClick(record)}
+        >
+          {record.country}
+        </div>
       ),
     },
 
@@ -92,20 +95,14 @@ function FleaMarketListAll() {
       dataIndex: "industry",
       key: "industry",
       render: (text, record) => (
-        <>
-          <span
-            className="hover:cursor-pointer"
-            onClick={() => handleProjectClick(record)}
-          >
-            <div
-              className="truncate"
-              style={{ maxWidth: "100%" }}
-              title={record.name}
-            >
-              {record.name}
-            </div>
-          </span>
-        </>
+        <div
+          className="ml-2 truncate hover:cursor-pointer"
+          style={{ maxWidth: "100%" }}
+          // title={record.company}
+          onClick={() => handleProjectClick(record)}
+        >
+          {record.industry}
+        </div>
       ),
     },
 
@@ -114,20 +111,14 @@ function FleaMarketListAll() {
       dataIndex: "price",
       key: "price",
       render: (text, record) => (
-        <>
-          <span
-            className="hover:cursor-pointer"
-            onClick={() => handleProjectClick(record)}
-          >
-            <div
-              className="truncate"
-              style={{ maxWidth: "100%" }}
-              title={record.name}
-            >
-              {record.name}
-            </div>
-          </span>
-        </>
+        <div
+          className="ml-2 truncate hover:cursor-pointer"
+          style={{ maxWidth: "100%" }}
+          // title={record.company}
+          onClick={() => handleProjectClick(record)}
+        >
+          {formatNumber(record.price)}
+        </div>
       ),
     },
     {
@@ -135,20 +126,14 @@ function FleaMarketListAll() {
       dataIndex: "shares",
       key: "shares",
       render: (text, record) => (
-        <>
-          <span
-            className="hover:cursor-pointer"
-            onClick={() => handleProjectClick(record)}
-          >
-            <div
-              className="truncate"
-              style={{ maxWidth: "100%" }}
-              title={record.name}
-            >
-              {record.name}
-            </div>
-          </span>
-        </>
+        <div
+          className="ml-2 truncate hover:cursor-pointer"
+          style={{ maxWidth: "100%" }}
+          // title={record.company}
+          onClick={() => handleProjectClick(record)}
+        >
+          {formatNumber(record.shares)}
+        </div>
       ),
     },
 
@@ -157,20 +142,14 @@ function FleaMarketListAll() {
       dataIndex: "timeInvested",
       key: "timeInvested",
       render: (text, record) => (
-        <>
-          <span
-            className="hover:cursor-pointer"
-            onClick={() => handleProjectClick(record)}
-          >
-            <div
-              className="truncate"
-              style={{ maxWidth: "100%" }}
-              title={record.name}
-            >
-              {record.name}
-            </div>
-          </span>
-        </>
+        <div
+          className="ml-2 truncate hover:cursor-pointer"
+          style={{ maxWidth: "100%" }}
+          // title={record.company}
+          onClick={() => handleProjectClick(record)}
+        >
+          {record.timeInvested}
+        </div>
       ),
     },
     {
@@ -178,20 +157,14 @@ function FleaMarketListAll() {
       dataIndex: "amountInvested",
       key: "amountInvested",
       render: (text, record) => (
-        <>
-          <span
-            className="hover:cursor-pointer"
-            onClick={() => handleProjectClick(record)}
-          >
-            <div
-              className="truncate"
-              style={{ maxWidth: "100%" }}
-              title={record.name}
-            >
-              {record.name}
-            </div>
-          </span>
-        </>
+        <div
+          className="ml-2 truncate hover:cursor-pointer"
+          style={{ maxWidth: "100%" }}
+          // title={record.company}
+          onClick={() => handleProjectClick(record)}
+        >
+          {formatNumber(record.amountInvested)}
+        </div>
       ),
     },
   ];
@@ -217,6 +190,14 @@ function FleaMarketListAll() {
           </div>
         </div>
       </div>
+      {isDetailModalOpen && (
+        <FleaMarketDetail
+          isDetailModalOpen={isDetailModalOpen}
+          setIsDetailModalOpen={setIsDetailModalOpen}
+          SelectedID={SelectedID}
+          setSelectedID={setSelectedID}
+        />
+      )}
     </div>
   );
 }

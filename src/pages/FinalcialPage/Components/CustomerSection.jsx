@@ -10,6 +10,9 @@ import {
   setCustomerGrowthData,
   calculateYearlyAverage,
   calculateCustomerGrowth,
+  transformCustomerData,
+  generateCustomerTableData,
+  setCustomerTableData,
 } from "../../../features/CustomerSlice";
 import {
   calculateChannelRevenue,
@@ -37,7 +40,7 @@ const CustomerSection = ({
   handleSubmit,
 }) => {
   const dispatch = useDispatch();
-  const { customerInputs, customerGrowthData } = useSelector(
+  const { customerInputs, customerGrowthData, customerTableData } = useSelector(
     (state) => state.customer
   );
 
@@ -110,138 +113,151 @@ const CustomerSection = ({
       tempCustomerInputs,
       numberOfMonths
     );
-    setTempCustomerGrowthData(calculatedData);
-  }, [tempCustomerInputs, numberOfMonths]);
 
-  const transformedCustomerTableData = {};
-  tempCustomerGrowthData.forEach((channelData) => {
-    channelData.forEach((data) => {
-      const customerInput = tempCustomerInputs.find(
-        (input) => input.channelName === data.channelName
-      );
-      if (customerInput) {
-        if (!transformedCustomerTableData[data.channelName]) {
-          transformedCustomerTableData[data.channelName] = {
-            key: data.channelName,
-            channelName: data.channelName,
-          };
-        }
-        if (
-          data.month >= customerInput.beginMonth &&
-          data.month <= customerInput.endMonth
-        ) {
-          transformedCustomerTableData[data.channelName][`month${data.month}`] =
-            parseFloat(data.customers)?.toFixed(0);
-        } else {
-          transformedCustomerTableData[data.channelName][`month${data.month}`] =
-            "0.00";
-        }
-      }
-    });
-  });
+    const calculateTransformedCustomerTableData = transformCustomerData(
+      calculatedData,
+      tempCustomerInputs
+    );
 
-  const customerTableData = Object.values(transformedCustomerTableData)
-    .filter((data) =>
-      renderCustomerForm === "all"
-        ? true
-        : tempCustomerInputs.find(
-            (input) =>
-              input.id == renderCustomerForm &&
-              input.channelName === data.channelName
-          )
-    )
-    .map((curr) => {
-      const customerInput = tempCustomerInputs.find(
-        (input) => input.channelName === curr.channelName
-      );
+    const calculateCustomerTableData = generateCustomerTableData(
+      calculateTransformedCustomerTableData,
+      tempCustomerInputs,
+      numberOfMonths,
+      renderCustomerForm
+    );
+    dispatch(setCustomerTableData(calculateCustomerTableData));
+  }, [tempCustomerInputs, numberOfMonths, renderCustomerForm]);
 
-      const startRow = {
-        key: `${curr.channelName}-start`,
-        channelName: `${curr.channelName} (Existing)`,
-      };
-      const beginRow = {
-        key: `${curr.channelName}-begin`,
-        channelName: `${curr.channelName} (Begin)`,
-      };
-      const churnRow = {
-        key: `${curr.channelName}-churn`,
-        channelName: `${curr.channelName} (Churn)`,
-      };
-      const endRow = {
-        ...curr,
-        key: `${curr.channelName}-end`,
-        channelName: `${curr.channelName} (End)`,
-      };
-      const channelAddRow = {
-        key: `${curr.channelName}-add`,
-        channelName: `${curr.channelName} (Add)`,
-      };
+  // const transformedCustomerTableData = {};
 
-      let currentCustomers = parseFloat(customerInput.customersPerMonth);
-      for (let i = 1; i <= numberOfMonths; i++) {
-        if (i >= customerInput.beginMonth && i <= customerInput.endMonth) {
-          if (customerInput.customerGrowthFrequency === "Monthly") {
-            currentCustomers *=
-              1 + parseFloat(customerInput.growthPerMonth) / 100;
-          } else {
-            let frequency = 12; // Default to Annually
-            if (customerInput.customerGrowthFrequency === "Quarterly")
-              frequency = 3;
-            else if (customerInput.customerGrowthFrequency === "Semi-Annually")
-              frequency = 6;
+  // tempCustomerGrowthData.forEach((channelData) => {
+  //   channelData.forEach((data) => {
+  //     const customerInput = tempCustomerInputs.find(
+  //       (input) => input.channelName === data.channelName
+  //     );
+  //     if (customerInput) {
+  //       if (!transformedCustomerTableData[data.channelName]) {
+  //         transformedCustomerTableData[data.channelName] = {
+  //           key: data.channelName,
+  //           channelName: data.channelName,
+  //         };
+  //       }
+  //       if (
+  //         data.month >= customerInput.beginMonth &&
+  //         data.month <= customerInput.endMonth
+  //       ) {
+  //         transformedCustomerTableData[data.channelName][`month${data.month}`] =
+  //           parseFloat(data.customers)?.toFixed(0);
+  //       } else {
+  //         transformedCustomerTableData[data.channelName][`month${data.month}`] =
+  //           "0";
+  //       }
+  //     }
+  //   });
+  // });
 
-            if (
-              i === customerInput.beginMonth ||
-              (i > customerInput.beginMonth &&
-                (i - customerInput.beginMonth) % frequency === 0)
-            ) {
-              if (i !== customerInput.beginMonth) {
-                currentCustomers *=
-                  1 + parseFloat(customerInput.growthPerMonth) / 100;
-              }
-            }
-          }
-          channelAddRow[`month${i}`] = formatNumber(
-            currentCustomers.toFixed(0)
-          );
-        } else {
-          channelAddRow[`month${i}`] = "0.00";
-        }
-        startRow[`month${i}`] = "0.00";
-        beginRow[`month${i}`] = "0.00";
-        churnRow[`month${i}`] = "0.00";
-      }
+  // const customerTableData = Object.values(transformedCustomerTableData)
+  //   .filter((data) =>
+  //     renderCustomerForm === "all"
+  //       ? true
+  //       : tempCustomerInputs.find(
+  //           (input) =>
+  //             input.id == renderCustomerForm &&
+  //             input.channelName === data.channelName
+  //         )
+  //   )
+  //   .map((curr) => {
+  //     const customerInput = tempCustomerInputs.find(
+  //       (input) => input.channelName === curr.channelName
+  //     );
 
-      if (customerInput) {
-        startRow[`month${customerInput.beginMonth}`] = formatNumber(
-          parseFloat(customerInput.beginCustomer).toFixed(0)
-        );
-        beginRow[`month${customerInput.beginMonth}`] =
-          startRow[`month${customerInput.beginMonth}`];
+  //     const startRow = {
+  //       key: `${curr.channelName}-start`,
+  //       channelName: `${curr.channelName} (Existing)`,
+  //     };
+  //     const beginRow = {
+  //       key: `${curr.channelName}-begin`,
+  //       channelName: `${curr.channelName} (Begin)`,
+  //     };
+  //     const churnRow = {
+  //       key: `${curr.channelName}-churn`,
+  //       channelName: `${curr.channelName} (Churn)`,
+  //     };
+  //     const endRow = {
+  //       ...curr,
+  //       key: `${curr.channelName}-end`,
+  //       channelName: `${curr.channelName} (End)`,
+  //     };
+  //     const channelAddRow = {
+  //       key: `${curr.channelName}-add`,
+  //       channelName: `${curr.channelName} (Add)`,
+  //     };
 
-        for (let i = customerInput.beginMonth; i <= numberOfMonths; i++) {
-          if (i > customerInput.beginMonth) {
-            beginRow[`month${i}`] = formatNumber(endRow[`month${i - 1}`]); // Set Begin row of month i to End row of month i-1
-          }
-          endRow[`month${i}`] = formatNumber(endRow[`month${i}`]);
-          const beginValue = beginRow[`month${i}`] || 0; // Begin value for the current month
-          const addValue = parseNumber(channelAddRow[`month${i}`]) || 0; // Add value for the current month
-          const churnValue = (
-            parseNumber(beginValue) *
-            (customerInput.churnRate / 100)
-          ).toFixed(0); // Calculate churn value
-          churnRow[`month${i}`] = churnValue; // Assign churn value to Churn row of the current month
-          endRow[`month${i}`] = formatNumber(
-            parseNumber(beginValue) +
-              parseNumber(addValue) -
-              parseNumber(churnValue)
-          ); // Update End row to Begin + Add - Churn
-        }
-      }
+  //     let currentCustomers = parseFloat(customerInput.customersPerMonth);
+  //     for (let i = 1; i <= numberOfMonths; i++) {
+  //       if (i >= customerInput.beginMonth && i <= customerInput.endMonth) {
+  //         if (customerInput.customerGrowthFrequency === "Monthly") {
+  //           currentCustomers *=
+  //             1 + parseFloat(customerInput.growthPerMonth) / 100;
+  //         } else {
+  //           let frequency = 12; // Default to Annually
+  //           if (customerInput.customerGrowthFrequency === "Quarterly")
+  //             frequency = 3;
+  //           else if (customerInput.customerGrowthFrequency === "Semi-Annually")
+  //             frequency = 6;
 
-      return [startRow, beginRow, channelAddRow, churnRow, endRow];
-    })
-    .flat(); // Flatten the array of arrays to a single array
+  //           if (
+  //             i === customerInput.beginMonth ||
+  //             (i > customerInput.beginMonth &&
+  //               (i - customerInput.beginMonth) % frequency === 0)
+  //           ) {
+  //             if (i !== customerInput.beginMonth) {
+  //               currentCustomers *=
+  //                 1 + parseFloat(customerInput.growthPerMonth) / 100;
+  //             }
+  //           }
+  //         }
+  //         channelAddRow[`month${i}`] = formatNumber(
+  //           currentCustomers.toFixed(0)
+  //         );
+  //       } else {
+  //         channelAddRow[`month${i}`] = "0";
+  //       }
+  //       startRow[`month${i}`] = "0";
+  //       beginRow[`month${i}`] = "0";
+  //       churnRow[`month${i}`] = "0";
+  //     }
+
+  //     if (customerInput) {
+  //       startRow[`month${customerInput.beginMonth}`] = formatNumber(
+  //         parseFloat(customerInput.beginCustomer).toFixed(0)
+  //       );
+  //       beginRow[`month${customerInput.beginMonth}`] =
+  //         startRow[`month${customerInput.beginMonth}`];
+
+  //       for (let i = customerInput.beginMonth; i <= numberOfMonths; i++) {
+  //         if (i > customerInput.beginMonth) {
+  //           beginRow[`month${i}`] = formatNumber(endRow[`month${i - 1}`]); // Set Begin row of month i to End row of month i-1
+  //         }
+  //         endRow[`month${i}`] = formatNumber(endRow[`month${i}`]);
+  //         const beginValue = beginRow[`month${i}`] || 0; // Begin value for the current month
+  //         const addValue = parseNumber(channelAddRow[`month${i}`]) || 0; // Add value for the current month
+  //         const churnValue = (
+  //           parseNumber(beginValue) *
+  //           (customerInput.churnRate / 100)
+  //         ).toFixed(0); // Calculate churn value
+  //         churnRow[`month${i}`] = churnValue; // Assign churn value to Churn row of the current month
+  //         endRow[`month${i}`] = formatNumber(
+  //           parseNumber(beginValue) +
+  //             parseNumber(addValue) -
+  //             parseNumber(churnValue)
+  //         ); // Update End row to Begin + Add - Churn
+  //       }
+  //     }
+
+  //     return [startRow, beginRow, channelAddRow, churnRow, endRow];
+  //   })
+  //   .flat(); // Flatten the array of arrays to a single array
 
   const months = [
     "01",
@@ -353,8 +369,6 @@ const CustomerSection = ({
             newInputData.customerInputs = tempCustomerInputs;
             newInputData.yearlyAverageCustomers = averages;
             newInputData.yearlySales = yearlySale;
-
-            console.log("yearlySale", yearlySale);
 
             const { error: updateError } = await supabase
               .from("finance")

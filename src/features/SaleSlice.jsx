@@ -180,7 +180,7 @@ export const calculateYearlySales = (tempRevenueData) => {
         sum += parseFloat(data[j]);
       }
     });
-    yearlySales.push(sum.toFixed(2));
+    yearlySales.push(sum.toFixed(0));
   }
   return yearlySales;
 };

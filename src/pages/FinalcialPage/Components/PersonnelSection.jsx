@@ -93,7 +93,7 @@ const PersonnelSection = ({
       const rowData = { key: item.jobTitle, jobTitle: item.jobTitle };
       item.monthlyCosts.forEach((monthData) => {
         rowData[`month${monthData.month}`] = formatNumber(
-          monthData.cost?.toFixed(2)
+          monthData.cost?.toFixed(0)
         ); // Adjust formatting as needed
       });
       return rowData;

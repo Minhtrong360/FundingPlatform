@@ -496,10 +496,10 @@ function BalanceSheetSection({ numberOfMonths }) {
     {
       key: "Paid in Capital",
       values: Array.from({ length: numberOfMonths }, (_, i) => {
-        const currentValue = i === 0 ? startingPaidInCapital.toFixed(2) : "0";
+        const currentValue = i === 0 ? startingPaidInCapital.toFixed(0) : "0";
         const currentValueFloat = parseFloat(currentValue);
         const capitalArrValue = capitalArr[i] || 0; // If capitalArr doesn't have value at index i, default to 0
-        return (currentValueFloat + capitalArrValue).toFixed(2);
+        return (currentValueFloat + capitalArrValue).toFixed(0);
       }).map((value) => parseFloat(value)),
     },
     {
@@ -543,7 +543,7 @@ function BalanceSheetSection({ numberOfMonths }) {
     ...item.values?.reduce(
       (acc, value, i) => ({
         ...acc,
-        [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+        [`Month ${i + 1}`]: formatNumber(value?.toFixed(0)),
       }),
       {}
     ),
@@ -777,7 +777,7 @@ function BalanceSheetSection({ numberOfMonths }) {
       return {
         metric: data.metric,
         ...filteredData,
-        yearTotal: formatNumber(yearTotal.toFixed(2)), // Adding Year Total to each row
+        yearTotal: formatNumber(yearTotal.toFixed(0)), // Adding Year Total to each row
       };
     });
   };
@@ -816,13 +816,13 @@ function BalanceSheetSection({ numberOfMonths }) {
       parseNumber(totalAssets); // Efficiency ratio for fixed assets usage
 
     return {
-      // currentRatio: currentRatio.toFixed(2),
-      debtToEquityRatio: debtToEquityRatio.toFixed(2),
-      assetToEquityRatio: assetToEquityRatio.toFixed(2),
-      // quickRatio: quickRatio.toFixed(2),
-      liabilitiesToAssetsRatio: liabilitiesToAssetsRatio.toFixed(2),
-      equityRatio: equityRatio.toFixed(2),
-      fixedAssetTurnoverRatio: fixedAssetTurnoverRatio.toFixed(2),
+      // currentRatio: currentRatio.toFixed(0),
+      debtToEquityRatio: debtToEquityRatio.toFixed(0),
+      assetToEquityRatio: assetToEquityRatio.toFixed(0),
+      // quickRatio: quickRatio.toFixed(0),
+      liabilitiesToAssetsRatio: liabilitiesToAssetsRatio.toFixed(0),
+      equityRatio: equityRatio.toFixed(0),
+      fixedAssetTurnoverRatio: fixedAssetTurnoverRatio.toFixed(0),
     };
   };
 

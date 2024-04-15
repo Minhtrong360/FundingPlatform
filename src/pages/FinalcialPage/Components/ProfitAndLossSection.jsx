@@ -206,7 +206,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     ...item.values?.reduce(
       (acc, value, i) => ({
         ...acc,
-        [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+        [`Month ${i + 1}`]: formatNumber(value?.toFixed(0)),
       }),
       {}
     ),
@@ -572,7 +572,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
         title: "Year Total",
         dataIndex: "yearTotal",
         key: "yearTotal",
-        render: (text) => formatNumber(text?.toFixed(2)), // Optional: formatting the number if needed
+        render: (text) => formatNumber(text?.toFixed(0)), // Optional: formatting the number if needed
       },
     ];
 
@@ -882,7 +882,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
                         <div className="mt-1">
                           <div className="flex flex-col xl:flex-row xl:items-center items-start gap-2">
                             <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 my-2">
-                              {ratios[key].toFixed(2)}
+                              {ratios[key].toFixed(0)}
                             </h3>
                           </div>
                           <p className="text-sm text-gray-600 mt-4">

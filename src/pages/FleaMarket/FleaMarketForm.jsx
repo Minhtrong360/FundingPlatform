@@ -15,6 +15,9 @@ import { useEffect, useState } from "react";
 import { formatNumber, parseNumber } from "../../features/CostSlice";
 import axios from "axios";
 import { Navigate, useNavigate } from "react-router-dom";
+import industries from "../../components/Industries";
+import countries from "../../components/Country";
+import SelectField from "../../components/SelectField";
 
 export default function FleaMarketForm({
   isAddNewModalOpen,
@@ -41,16 +44,9 @@ export default function FleaMarketForm({
     companyLogo: "",
   });
 
-  console.log("formData", formData);
-
   const handleChange = (e) => {
     const { id, value } = e.target;
-    if (id === "amountInvested") {
-      setFormData((prevState) => ({
-        ...prevState,
-        amountInvested: parseNumber(formData.amountInvested),
-      }));
-    }
+
     setFormData((prevState) => ({
       ...prevState,
       [id]: value,
@@ -133,10 +129,69 @@ export default function FleaMarketForm({
       return null;
     }
   };
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const {
+      name,
+      company,
+      companyLogo,
+      website,
+      industry,
+      country,
+      phone,
+      shares,
+      price,
+      proof,
+      timeInvested,
+      amountInvested,
+    } = formData;
+
+    // Kiểm tra xem các trường đã được điền đầy đủ chưa
+    if (
+      !name ||
+      !company ||
+      !companyLogo ||
+      !website ||
+      !industry ||
+      !country ||
+      !phone ||
+      !shares ||
+      !price ||
+      !proof ||
+      !timeInvested ||
+      !amountInvested
+    ) {
+      // Tìm trường đầu tiên mà thiếu dữ liệu
+      const missingField = !name
+        ? "Name"
+        : !company
+        ? "Company"
+        : !companyLogo
+        ? "Company Logo"
+        : !website
+        ? "Website"
+        : !industry
+        ? "Industry"
+        : !country
+        ? "Country"
+        : !phone
+        ? "Phone Number"
+        : !shares
+        ? "Number of Shares"
+        : !price
+        ? "Price"
+        : !proof
+        ? "Proof Documents"
+        : !timeInvested
+        ? "Time Invested"
+        : "Amount Invested";
+
+      // Hiển thị thông báo lỗi với trường đang thiếu dữ liệu
+      message.error(`Please fill in the "${missingField}" field.`);
+      return;
+    }
+
     try {
       let proofUrl = formData.proof;
       if (proofUrl && proofUrl.startsWith("data:image")) {
@@ -171,6 +226,9 @@ export default function FleaMarketForm({
 
       formData.proof = proofUrl;
       formData.companyLogo = companyLogoUrl;
+      formData.shares = parseNumber(formData.shares);
+      formData.price = parseNumber(formData.price);
+      formData.amountInvested = parseNumber(formData.amountInvested);
 
       if (SelectedID) {
         // If SelectedID exists, update the existing record
@@ -261,8 +319,6 @@ export default function FleaMarketForm({
           throw error;
         }
 
-        console.log("fleaMarketData", fleaMarketData);
-
         setFormData({
           ...formData,
           name: fleaMarketData.name,
@@ -272,8 +328,8 @@ export default function FleaMarketForm({
           country: fleaMarketData.country,
           phone: fleaMarketData.phone,
           shares: fleaMarketData.shares,
-          proof: fleaMarketData.proof,
           price: fleaMarketData.price,
+          proof: fleaMarketData.proof,
           total: fleaMarketData.total,
           timeInvested: fleaMarketData.timeInvested,
           amountInvested: fleaMarketData.amountInvested,
@@ -284,7 +340,9 @@ export default function FleaMarketForm({
       }
     };
 
-    fetchFleaMarketData();
+    if (SelectedID) {
+      fetchFleaMarketData();
+    }
   }, [SelectedID]);
 
   const handleCancel = () => {
@@ -394,29 +452,37 @@ export default function FleaMarketForm({
                 />
               </div>
             </div>
+
             <div className="space-y-2">
               <label htmlFor="industry">Industry</label>
               <div className="flex items-center">
                 <FactoryIcon className="mr-2" />
-                <Input
+                <SelectField
                   id="industry"
-                  placeholder="Enter your industry"
-                  required
+                  name="industry"
+                  additional={{ width: "100%" }}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   value={formData.industry}
                   onChange={handleChange}
+                  required
+                  options={industries} // Thay thế bằng danh sách các tùy chọn bạn muốn
                 />
               </div>
             </div>
+
             <div className="space-y-2">
               <label htmlFor="country">Country</label>
               <div className="flex items-center">
                 <FlagIcon className="mr-2" />
-                <Input
+                <SelectField
                   id="country"
-                  placeholder="Enter your country"
-                  required
+                  name="country"
+                  additional={{ width: "100%" }}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   value={formData.country}
                   onChange={handleChange}
+                  required
+                  options={countries} // Thay thế bằng danh sách các tùy chọn bạn muốn
                 />
               </div>
             </div>
@@ -438,19 +504,16 @@ export default function FleaMarketForm({
               <label htmlFor="role">Role</label>
               <div className="flex items-center">
                 <UserIcon className="mr-2" />
-                <Select
+                <SelectField
                   id="role"
+                  name="role"
+                  additional={{ width: "100%" }}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   value={formData.role}
-                  onValueChange={(value) => handleRollSelect(value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select your role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="seller">Seller</SelectItem>
-                    <SelectItem value="buyer">Buyer</SelectItem>
-                  </SelectContent>
-                </Select>
+                  onChange={handleChange}
+                  required
+                  options={["Buyer", "Seller"]} // Thay thế bằng danh sách các tùy chọn bạn muốn
+                />
               </div>
             </div>
             <div className="space-y-2">
@@ -463,7 +526,6 @@ export default function FleaMarketForm({
                   id="shares"
                   placeholder="Enter number of shares"
                   required
-                  type="text"
                 />
               </div>
             </div>
@@ -477,7 +539,6 @@ export default function FleaMarketForm({
                   id="price"
                   placeholder="Enter price per share"
                   required
-                  type="text"
                 />
               </div>
             </div>

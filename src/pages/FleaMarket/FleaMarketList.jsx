@@ -18,6 +18,8 @@ import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
 import FleaMarketForm from "./FleaMarketForm";
 import { formatNumber } from "../../features/CostSlice";
+import InputField from "../../components/InputField";
+import FleaMarketDetail from "./FleaMarketDetail";
 
 function FleaMarketList() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -28,6 +30,11 @@ function FleaMarketList() {
   const navigate = useNavigate();
   const [needPremium, setNeedPremium] = useState(false);
   const [fleaMarketData, setFleaMarketData] = useState([]);
+  const [isAddNewModalOpen, setIsAddNewModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+
+  const [email, setEmail] = useState("elonmusk@gmail.com");
 
   const { user } = useAuth();
 
@@ -44,16 +51,13 @@ function FleaMarketList() {
         }
         setFleaMarketData(data);
       } catch (error) {
-        console.error("Error fetching Flea Market data:", error.message);
+        console.log("Error fetching Flea Market data:", error);
       }
     };
 
     // Call the function to fetch data when component mounts
     fetchFleaMarketData();
-  }, []);
-
-  const [isAddNewModalOpen, setIsAddNewModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  }, [isEditModalOpen, isAssignModalOpen, isAddNewModalOpen, user?.email]);
 
   const handleClickAddNew = () => {
     if (!needPremium) {
@@ -64,13 +68,14 @@ function FleaMarketList() {
   };
 
   const handleEdit = (fleaMarket) => {
-    console.log("fleaMarket", fleaMarket);
     setIsEditModalOpen(true);
     setSelectedID(fleaMarket?.id);
   };
 
-  const handleAssign = () => {
-    console.log("assign");
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const handleProjectClick = (fleaMarket) => {
+    setSelectedID(fleaMarket.id);
+    setIsDetailModalOpen(true);
   };
 
   const columns = [
@@ -79,7 +84,11 @@ function FleaMarketList() {
       dataIndex: "company",
       key: "company",
       render: (text, record) => (
-        <Row align="middle">
+        <Row
+          align="middle"
+          className="hover:cursor-pointer"
+          onClick={() => handleProjectClick(record)}
+        >
           <Avatar
             shape="square"
             size={32}
@@ -96,23 +105,94 @@ function FleaMarketList() {
         </Row>
       ),
     },
-    { title: "Country", dataIndex: "country", key: "country" },
+    {
+      title: "Country",
+      dataIndex: "country",
+      key: "country",
+      render: (text, record) => (
+        <div
+          className="ml-2 truncate hover:cursor-pointer"
+          style={{ maxWidth: "100%" }}
+          // title={record.company}
+          onClick={() => handleProjectClick(record)}
+        >
+          {record.country}
+        </div>
+      ),
+    },
 
-    { title: "Industry", dataIndex: "industry", key: "industry" },
+    {
+      title: "Industry",
+      dataIndex: "industry",
+      key: "industry",
+      render: (text, record) => (
+        <div
+          className="ml-2 truncate hover:cursor-pointer"
+          style={{ maxWidth: "100%" }}
+          // title={record.company}
+          onClick={() => handleProjectClick(record)}
+        >
+          {record.industry}
+        </div>
+      ),
+    },
 
-    { title: "Price", dataIndex: "price", key: "price" },
-    { title: "Shares", dataIndex: "shares", key: "shares" },
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      render: (text, record) => (
+        <div
+          className="ml-2 truncate hover:cursor-pointer"
+          style={{ maxWidth: "100%" }}
+          // title={record.company}
+          onClick={() => handleProjectClick(record)}
+        >
+          {formatNumber(record.price)}
+        </div>
+      ),
+    },
+    {
+      title: "Shares",
+      dataIndex: "shares",
+      key: "shares",
+      render: (text, record) => (
+        <div
+          className="ml-2 truncate hover:cursor-pointer"
+          style={{ maxWidth: "100%" }}
+          // title={record.company}
+          onClick={() => handleProjectClick(record)}
+        >
+          {formatNumber(record.shares)}
+        </div>
+      ),
+    },
 
-    { title: "Time Invested", dataIndex: "timeInvested", key: "timeInvested" },
+    {
+      title: "Time Invested",
+      dataIndex: "timeInvested",
+      key: "timeInvested",
+      render: (text, record) => (
+        <div
+          className="ml-2 truncate hover:cursor-pointer"
+          style={{ maxWidth: "100%" }}
+          // title={record.company}
+          onClick={() => handleProjectClick(record)}
+        >
+          {record.timeInvested}
+        </div>
+      ),
+    },
     {
       title: "Amount Invested",
       dataIndex: "amountInvested",
       key: "amountInvested",
       render: (text, record) => (
         <div
-          className="ml-2 truncate"
+          className="ml-2 truncate hover:cursor-pointer"
           style={{ maxWidth: "100%" }}
-          title={record.company}
+          // title={record.company}
+          onClick={() => handleProjectClick(record)}
         >
           {formatNumber(record.amountInvested)}
         </div>
@@ -146,7 +226,7 @@ function FleaMarketList() {
                   </Menu.Item>
                   <Menu.Item key="assign">
                     <div
-                      onClick={() => handleAssign(record)}
+                      onClick={() => handleAssign(record.id)}
                       style={{ fontSize: "12px" }}
                     >
                       Assign
@@ -164,8 +244,9 @@ function FleaMarketList() {
       ),
     },
   ];
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [SelectedID, setSelectedID] = useState();
+  const [SelectedID, setSelectedID] = useState("");
   const handleDelete = async (projectId) => {
     // Hiển thị modal xác nhận xóa
     setIsDeleteModalOpen(true);
@@ -202,7 +283,60 @@ function FleaMarketList() {
       setIsDeleteModalOpen(false);
     }
   };
-  console.log("SelectedID", SelectedID);
+
+  const handleAssign = async (projectId) => {
+    setIsAssignModalOpen(true);
+
+    setSelectedID(projectId);
+  };
+
+  const handleConfirmAssign = async () => {
+    try {
+      // Kiểm tra kết nối internet
+      if (!navigator.onLine) {
+        message.error("No internet access.");
+        return;
+      }
+
+      // Tìm id của user dựa trên email nhập vào
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("id")
+        .eq("email", email);
+
+      if (userError) {
+        console.log("Error fetching user data:", userError);
+        message.error(userError.message);
+        return;
+      }
+
+      if (!userData.length > 0) {
+        message.error(`User with email ${email} not found.`);
+        return;
+      }
+
+      const { error: updateError } = await supabase
+        .from("fleamarket")
+        .update({ email: email })
+        .eq("id", SelectedID);
+
+      if (updateError) {
+        console.log("Error updating flea-market data:", updateError);
+        message.error(updateError.message);
+        return;
+      }
+
+      message.success("Assign project successfully");
+      setSelectedID("");
+      setEmail("elonmusk@gmail.com");
+    } catch (error) {
+      console.log("Error assign:", error);
+      message.error(error.message);
+    } finally {
+      setIsAssignModalOpen(false);
+    }
+  };
+
   return (
     <div className=" bg-white darkBg antialiased !p-0 ">
       <div id="exampleWrapper">
@@ -268,6 +402,7 @@ function FleaMarketList() {
                 <FleaMarketForm
                   isAddNewModalOpen={isAddNewModalOpen}
                   setIsAddNewModalOpen={setIsAddNewModalOpen}
+                  setSelectedID={setSelectedID}
                 />
               )}
 
@@ -307,6 +442,52 @@ function FleaMarketList() {
                 >
                   Are you sure you want to delete this project?
                 </Modal>
+              )}
+
+              {isAssignModalOpen && (
+                <Modal
+                  title="Assign project"
+                  visible={isAssignModalOpen}
+                  onOk={handleConfirmAssign}
+                  onCancel={() => setIsAssignModalOpen(false)}
+                  okText="Assign"
+                  cancelText="Cancel"
+                  cancelButtonProps={{
+                    style: {
+                      borderRadius: "0.375rem",
+                      cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                    },
+                  }}
+                  okButtonProps={{
+                    style: {
+                      background: "#2563EB",
+                      borderColor: "#2563EB",
+                      color: "#fff",
+                      borderRadius: "0.375rem",
+                      cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                    },
+                  }}
+                  centered={true}
+                >
+                  <InputField
+                    label="Assign this project to:"
+                    id="email"
+                    name="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    type="text"
+                    required
+                  />
+                </Modal>
+              )}
+
+              {isDetailModalOpen && (
+                <FleaMarketDetail
+                  isDetailModalOpen={isDetailModalOpen}
+                  setIsDetailModalOpen={setIsDetailModalOpen}
+                  SelectedID={SelectedID}
+                  setSelectedID={setSelectedID}
+                />
               )}
             </main>
           </div>

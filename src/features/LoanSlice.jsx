@@ -117,20 +117,20 @@ export const transformLoanDataForTable = (
 
   for (let monthIndex = 1; monthIndex <= numberOfMonths; monthIndex++) {
     const monthKey = `Month ${monthIndex}`;
-    loanAmountRow[monthKey] = "0.00";
-    paymentRow[monthKey] = "0.00";
-    principalRow[monthKey] = "0.00";
-    interestRow[monthKey] = "0.00";
-    balanceRow[monthKey] = "0.00";
+    loanAmountRow[monthKey] = "0";
+    paymentRow[monthKey] = "0";
+    principalRow[monthKey] = "0";
+    interestRow[monthKey] = "0";
+    balanceRow[monthKey] = "0";
   }
 
   loanData.loanDataPerMonth.forEach((monthData) => {
     const monthKey = `Month ${monthData.month}`;
-    loanAmountRow[monthKey] = formatNumber(monthData.loanAmount?.toFixed(2));
-    paymentRow[monthKey] = formatNumber(monthData.payment?.toFixed(2));
-    principalRow[monthKey] = formatNumber(monthData.principal?.toFixed(2));
-    interestRow[monthKey] = formatNumber(monthData.interest?.toFixed(2));
-    balanceRow[monthKey] = formatNumber(monthData.balance?.toFixed(2));
+    loanAmountRow[monthKey] = formatNumber(monthData.loanAmount?.toFixed(0));
+    paymentRow[monthKey] = formatNumber(monthData.payment?.toFixed(0));
+    principalRow[monthKey] = formatNumber(monthData.principal?.toFixed(0));
+    interestRow[monthKey] = formatNumber(monthData.interest?.toFixed(0));
+    balanceRow[monthKey] = formatNumber(monthData.balance?.toFixed(0));
   });
 
   loanTableData.push(
@@ -155,7 +155,7 @@ export const transformLoanDataForTable = (
   };
   for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
     cfLoansRow[`Month ${monthIndex + 1}`] = formatNumber(
-      cfLoansSum[monthIndex]?.toFixed(2)
+      cfLoansSum[monthIndex]?.toFixed(0)
     );
   }
   loanTableData.push(cfLoansRow);
@@ -181,7 +181,7 @@ export const transformLoanDataForTable = (
       return total;
     }, 0);
     totalRemainingBalanceRow[monthKey] = formatNumber(
-      totalBalanceForMonth.toFixed(2)
+      totalBalanceForMonth.toFixed(0)
     );
   }
 

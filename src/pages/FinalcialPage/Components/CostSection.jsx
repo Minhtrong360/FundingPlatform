@@ -96,7 +96,7 @@ const CostSection = ({
           };
         }
         transformedCustomerTableData[rowKey][`month${monthData.month}`] =
-          formatNumber(parseFloat(monthData.cost)?.toFixed(2));
+          formatNumber(parseFloat(monthData.cost)?.toFixed(0));
       });
     });
 

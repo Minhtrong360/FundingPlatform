@@ -48,7 +48,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
                               yearlyAverageCustomers[0]) *
                               100) /
                             yearlyAverageCustomers[0]
-                          ).toFixed(2)
+                          ).toFixed(0)
                         )
                       : 0}
                     %
@@ -91,7 +91,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
                           (
                             ((yearlySales[1] - yearlySales[0]) * 100) /
                             yearlySales[0]
-                          )?.toFixed(2)
+                          )?.toFixed(0)
                         )
                       : 0}
                     %
@@ -134,7 +134,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
                           (
                             ((yearlySales[1] - yearlySales[0]) * 100) /
                             yearlySales[0]
-                          )?.toFixed(2)
+                          )?.toFixed(0)
                         )
                       : 0}
                     %

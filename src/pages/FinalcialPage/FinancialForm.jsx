@@ -17,7 +17,7 @@ import { supabase } from "../../supabase";
 import AlertMsg from "../../components/AlertMsg";
 import ProgressBar from "../../components/ProgressBar";
 import Gemini from "./Components/Gemini";
-// import GPTAnalyzer from "./Components/GPTAnalyzer";
+import GPTAnalyzer from "./Components/GPTAnalyzer";
 import MetricsFM from "../MetricsFM";
 import ProfitAndLossSection from "./Components/ProfitAndLossSection";
 // import * as XLSX from "xlsx";
@@ -643,7 +643,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               setSpinning={setSpinning}
             />
           </div>
-
+          <div className=" m-10 flex items-center justify-center">
+            <GPTAnalyzer />
+          </div>
           <div className="my-4 ">
             {/* <div className="rounded-lg bg-green-500 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">
               <button onClick={startTour}>

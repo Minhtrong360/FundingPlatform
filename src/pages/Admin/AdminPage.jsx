@@ -25,7 +25,7 @@ const { TabPane } = Tabs;
 
 function Dashboard({ dataSource }) {
   const [chartData, setChartData] = useState([]);
- 
+ console.log(dataSource)
   useEffect(() => {
     const processData = () => {
       let months = {};
@@ -280,6 +280,12 @@ function AdminPage() {
     }
   };
 
+  const [filteredData, setFilteredData] = useState([]);
+  useEffect(() => {
+    // Cập nhật filteredData khi dataSource thay đổi
+    setFilteredData(dataSource);
+  }, [dataSource]);
+
   const columns = [
     {
       title: "No",
@@ -319,7 +325,15 @@ function AdminPage() {
             onChange={(e) => {
               setSelectedKeys(e.target.value ? [e.target.value] : []);
             }}
-            onPressEnter={() => confirm()}
+            onPressEnter={() => {confirm() ;
+              const filtered = dataSource?.filter((record) =>
+              record?.name
+                ?.toLowerCase()
+                .includes(selectedKeys[0]?.toLowerCase())
+            );
+            setFilteredData(filtered);
+            }
+            }
             style={{
               width: 188,
               marginBottom: 8,
@@ -335,6 +349,8 @@ function AdminPage() {
               onClick={() => {
                 clearFilters();
                 confirm(); 
+               
+            setFilteredData(dataSource);
               }}
               size="small"
               style={{ width: 90, fontSize: "12px" }}
@@ -416,7 +432,17 @@ function AdminPage() {
             onChange={(e) => {
               setSelectedKeys(e.target.value ? [e.target.value] : []);
             }}
-            onPressEnter={() => confirm()}
+            onPressEnter={() => {
+              console.log(selectedKeys)
+              confirm() ;
+              const filtered = dataSource?.filter((record) =>
+              record?.user_email
+                ?.toLowerCase()
+                .includes(selectedKeys[0]?.toLowerCase())
+            );
+            setFilteredData(filtered);
+            }
+            }
             style={{
               width: 188,
               marginBottom: 8,
@@ -432,6 +458,8 @@ function AdminPage() {
               onClick={() => {
                 clearFilters();
                 confirm(); 
+               
+            setFilteredData(dataSource);
               }}
               size="small"
               style={{ width: 90, fontSize: "12px" }}
@@ -497,7 +525,9 @@ function AdminPage() {
                     }
                   }
                   setSelectedKeys(keys);
-                  confirm(); // Confirm the filter change immediately
+                  confirm(); 
+                  const filtered = dataSource.filter((record) => keys.some(key => record.required && record.verified && option.includes(key)));
+                  setFilteredData(filtered);// Confirm the filter change immediately
                 }}
               >
                 {option === "accepted" ? "Accepted" : option === "waiting" ? "Waiting" : "Not Required"}
@@ -506,7 +536,8 @@ function AdminPage() {
           ))}
           <Button  onClick={() => {
             clearFilters();
-            confirm(); // Confirm the filter clearing immediately
+            confirm(); 
+            setFilteredData(dataSource);// Confirm the filter clearing immediately
           }} size="small" style={{ width: 90 }}>
             Reset
           </Button>
@@ -563,7 +594,9 @@ function AdminPage() {
                     }
                   }
                   setSelectedKeys(keys);
-                  confirm(); // Confirm the filter change immediately
+                  confirm(); 
+                  const filtered = dataSource.filter((record) => keys.some(key => record.status.includes(key)));
+                  setFilteredData(filtered);// Confirm the filter change immediately
                 }}
               >
                 {option === "public" ? "Public" : option === "private" ? "Private" : "Stealth"}
@@ -572,7 +605,8 @@ function AdminPage() {
           ))}
           <Button  onClick={() => {
             clearFilters();
-            confirm(); // Confirm the filter clearing immediately
+            confirm();
+            setFilteredData(dataSource); // Confirm the filter clearing immediately
           }} size="small" style={{ width: 90 }}>
             Reset
           </Button>
@@ -602,7 +636,9 @@ function AdminPage() {
         const handleReset = () => {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
-          confirm(); // Confirm the filter clearing immediately
+          confirm();
+          setFilteredData(dataSource);
+           // Confirm the filter clearing immediately
         };
     
         return (
@@ -623,7 +659,12 @@ function AdminPage() {
                       }
                     }
                     setSelectedKeys(keys);
-                    confirm(); // Confirm the filter change immediately
+                    confirm();
+                    const filtered = dataSource.filter((record) => {
+                      // Convert option to boolean and compare with record.verified
+                      return record.verified === (option === "true");
+                    });
+                    setFilteredData(filtered);
                   }}
                 >
                   {option === "true" ? "Yes" : "No"}
@@ -677,6 +718,7 @@ function AdminPage() {
       clearFilters();
       setSelectedKeys([]); // Reset selected keys
       confirm(); // Confirm the filter clearing immediately
+      setFilteredData(dataSource);
     };
 
     return (
@@ -703,7 +745,18 @@ function AdminPage() {
                   }
                 }
                 setSelectedKeys(keys);
-                confirm(); // Confirm the filter change immediately
+                confirm();
+                const filtered = dataSource.filter((record) => {
+                  const [min, max] = option.split("-");
+                  const amount = parseFloat(record.target_amount);
+                  if (max) {
+                    return amount >= parseFloat(min) && amount <= parseFloat(max);
+                  } else {
+                    return amount > parseFloat(min);
+                  }
+                });
+                setFilteredData(filtered);
+                 // Confirm the filter change immediately
               }}
             >
               {option}
@@ -758,6 +811,7 @@ function AdminPage() {
       clearFilters();
       setSelectedKeys([]); // Reset selected keys
       confirm(); // Confirm the filter clearing immediately
+      setFilteredData(dataSource);
     };
 
     return (
@@ -785,6 +839,16 @@ function AdminPage() {
                 }
                 setSelectedKeys(keys);
                 confirm(); // Confirm the filter change immediately
+                // const filtered = dataSource.filter((record) => {
+                //   const [min, max] = option.split("-");
+                //   const size = parseFloat(record.ticket_size);
+                //   if (max) {
+                //     return size >= parseFloat(min) && size <= parseFloat(max);
+                //   } else {
+                //     return size > parseFloat(min);
+                //   }
+                // });
+                // setFilteredData(filtered);
               }}
             >
               {option}
@@ -837,6 +901,7 @@ function AdminPage() {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
           confirm(); // Confirm the filter clearing immediately
+          setFilteredData(dataSource);
         };
     
         return (
@@ -864,6 +929,11 @@ function AdminPage() {
                     }
                     setSelectedKeys(keys);
                     confirm(); // Confirm the filter change immediately
+                    const filtered = dataSource.filter((record) => {
+                      // Check if the offer_type contains the selected option
+                      return record.offer_type.includes(option);
+                  });
+                  setFilteredData(filtered);
                   }}
                 >
                   {option}
@@ -930,6 +1000,7 @@ function AdminPage() {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
           confirm(); // Confirm the filter clearing immediately
+          setFilteredData(dataSource);
         };
     
         return (
@@ -957,6 +1028,24 @@ function AdminPage() {
                     }
                     setSelectedKeys(keys);
                     confirm(); // Confirm the filter change immediately
+                    const filtered = dataSource.filter((record) => {
+                      const raised = parseFloat(record.amountRaised);
+                      switch (option) {
+                          case "0-100":
+                              return raised >= 0 && raised <= 100000;
+                          case "100-500":
+                              return raised > 100000 && raised <= 500000;
+                          case "500-1000":
+                              return raised > 500000 && raised <= 1000000;
+                          case "1000-5000":
+                              return raised > 1000000 && raised <= 5000000;
+                          case ">5000":
+                              return raised > 5000000;
+                          default:
+                              return false;
+                      }
+                  });
+                  setFilteredData(filtered);
                   }}
                 >
                   {option}
@@ -996,7 +1085,15 @@ function AdminPage() {
             onChange={(e) => {
               setSelectedKeys(e.target.value ? [e.target.value] : []);
             }}
-            onPressEnter={() => confirm()}
+            onPressEnter={() => {confirm() ;
+              const filtered = dataSource?.filter((record) =>
+              record?.country
+                ?.toLowerCase()
+                .includes(selectedKeys[0]?.toLowerCase())
+            );
+            setFilteredData(filtered);
+            }
+            }
             style={{
               width: 188,
               marginBottom: 8,
@@ -1012,6 +1109,7 @@ function AdminPage() {
               onClick={() => {
                 clearFilters();
                 confirm(); 
+                setFilteredData(dataSource);
               }}
               size="small"
               style={{ width: 90, fontSize: "12px" }}
@@ -1070,6 +1168,8 @@ function AdminPage() {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
           confirm(); // Confirm the filter clearing immediately
+          setFilteredData(dataSource);
+          // Confirm the filter clearing immediately
         };
     
         return (
@@ -1100,6 +1200,11 @@ function AdminPage() {
                     }
                     setSelectedKeys(keys);
                     confirm(); // Confirm the filter change immediately
+                    const filtered = dataSource.filter((record) => {
+                      // Check if the revenueStatus contains the selected option
+                      return record.revenueStatus.includes(option);
+                  });
+                  setFilteredData(filtered);
                   }}
                 >
                   {option}
@@ -1140,6 +1245,7 @@ function AdminPage() {
       clearFilters();
       setSelectedKeys([]); // Reset selected keys
       confirm(); // Confirm the filter clearing immediately
+      setFilteredData(dataSource);
     };
 
     return (
@@ -1167,7 +1273,9 @@ function AdminPage() {
                   }
                 }
                 setSelectedKeys(keys);
-                confirm(); // Confirm the filter change immediately
+                confirm(); 
+                const filtered = dataSource.filter((record) => keys.some(key => record.round.includes(key)));
+                setFilteredData(filtered);// Confirm the filter change immediately
               }}
             >
               {option}
@@ -1244,6 +1352,7 @@ function AdminPage() {
       clearFilters();
       setSelectedKeys([]); // Reset selected keys
       confirm(); // Confirm the filter clearing immediately
+      setFilteredData(dataSource);
     };
 
     return (
@@ -1286,7 +1395,10 @@ function AdminPage() {
                   }
                 }
                 setSelectedKeys(keys);
-                confirm(); // Confirm the filter change immediately
+                confirm();
+                const filtered = dataSource.filter((record) => keys.some(key => record.industry.includes(key)));
+                setFilteredData(filtered);
+                // Confirm the filter change immediately
               }}
             >
               {option}
@@ -1299,8 +1411,8 @@ function AdminPage() {
       </div>
     );
   }
-}
-,
+    }
+    ,
     {
       title: "Keywords",
       dataIndex: "keyWords",
@@ -1370,7 +1482,15 @@ function AdminPage() {
             onChange={(e) => {
               setSelectedKeys(e.target.value ? [e.target.value] : []);
             }}
-            onPressEnter={() => confirm()}
+            onPressEnter={() => {confirm() ;
+              const filtered = dataSource?.filter((record) =>
+              record?.name
+                ?.toLowerCase()
+                .includes(selectedKeys[0]?.toLowerCase())
+            );
+            setFilteredData(filtered);
+            }
+            }
             style={{
               width: 188,
               marginBottom: 8,
@@ -1386,6 +1506,7 @@ function AdminPage() {
               onClick={() => {
                 clearFilters();
                 confirm(); 
+                setFilteredData(dataSource);
               }}
               size="small"
               style={{ width: 90, fontSize: "12px" }}
@@ -1425,7 +1546,12 @@ function AdminPage() {
               if (!dates) {
                 clearFilters();
               } else {
-                confirm(); // Confirm the filter immediately
+              confirm() ;
+              // const filtered = dataSource?.filter((record) => {
+              //   const date = moment(record.created_at);
+              //   return date >= moment(range[0][0]) && date <= moment(range[0][1]);
+              // });
+              // setFilteredData(filtered);
               }
             }}
             style={{ marginBottom: 8, display: 'block' }}
@@ -1433,6 +1559,7 @@ function AdminPage() {
           <Button onClick={() => {
             clearFilters();
             confirm(); 
+            setFilteredData(dataSource);
           }} size="small" style={{ width: 90 }}>
             Reset
           </Button>
@@ -1628,7 +1755,7 @@ function AdminPage() {
                     </div>
                   </div>
                   <div className="w-2/3 flex items-center mt-10">
-                      <Dashboard dataSource={dataSource} />
+                      <Dashboard dataSource={filteredData} />
                       </div>
                 </div>
               </section>

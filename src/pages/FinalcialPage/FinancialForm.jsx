@@ -17,10 +17,10 @@ import { supabase } from "../../supabase";
 import AlertMsg from "../../components/AlertMsg";
 import ProgressBar from "../../components/ProgressBar";
 import Gemini from "./Components/Gemini";
-// import GPTAnalyzer from "./Components/GPTAnalyzer";
+import GPTAnalyzer from "./Components/GPTAnalyzer";
 import MetricsFM from "../MetricsFM";
 import ProfitAndLossSection from "./Components/ProfitAndLossSection";
-// import * as XLSX from "xlsx";
+import * as XLSX from "xlsx";
 import BalanceSheetSection from "./Components/BalanceSheetSection";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { useDispatch, useSelector } from "react-redux";
@@ -40,9 +40,12 @@ import {
 import {
   calculateCustomerGrowth,
   calculateYearlyAverage,
+  generateCustomerTableData,
   setCustomerGrowthData,
   setCustomerInputs,
+  setCustomerTableData,
   setYearlyAverageCustomers,
+  transformCustomerData,
 } from "../../features/CustomerSlice";
 import {
   calculateChannelRevenue,
@@ -82,7 +85,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     cutMonth,
   } = useSelector((state) => state.durationSelect);
 
-  const { yearlyAverageCustomers } = useSelector((state) => state.customer);
+  const { yearlyAverageCustomers, customerTableData } = useSelector(
+    (state) => state.customer
+  );
   const { yearlySales } = useSelector((state) => state.sales);
 
   const [numberOfMonths, setNumberOfMonths] = useState(0);
@@ -516,6 +521,34 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   //   );
   // };
 
+  // Download JSON
+
+  // Chuẩn bị file cần down
+
+  useEffect(() => {
+    const calculatedData = calculateCustomerGrowth(
+      customerInputs,
+      numberOfMonths
+    );
+
+    const calculateTransformedCustomerTableData = transformCustomerData(
+      calculatedData,
+      customerInputs
+    );
+
+    const calculateCustomerTableData = generateCustomerTableData(
+      calculateTransformedCustomerTableData,
+      customerInputs,
+      numberOfMonths,
+      "all"
+    );
+    dispatch(setCustomerTableData(calculateCustomerTableData));
+  }, [customerInputs, numberOfMonths]);
+
+  const downloadJSON = () => {};
+
+  // Kết thúc down JSON
+
   const [activeTab, setActiveTab] = useState("overview");
 
   const handleTabChange = (tabName) => {
@@ -643,7 +676,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               setSpinning={setSpinning}
             />
           </div>
-
+          <div>
+            <GPTAnalyzer customerTableData={customerTableData} />
+          </div>
           <div className="my-4 ">
             {/* <div className="rounded-lg bg-green-500 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">
               <button onClick={startTour}>
@@ -840,6 +875,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       )}
 
       {/* <button onClick={downloadExcel} className="download-excel-button">
+        Download Excel
+      </button> */}
+      {/* <button onClick={downloadJSON} className="download-excel-button">
         Download Excel
       </button> */}
     </div>

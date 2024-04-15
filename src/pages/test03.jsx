@@ -1345,11 +1345,11 @@ const Z = ({ currentUser, setCurrentUser }) => {
           data.month <= customerInput.endMonth
         ) {
           transformedCustomerTableData[data.channelName][`month${data.month}`] =
-            parseFloat(data.customers)?.toFixed(2);
+            parseFloat(data.customers)?.toFixed(0);
         } else {
           // Set value to 0 if outside the range
           transformedCustomerTableData[data.channelName][`month${data.month}`] =
-            "0.00";
+            "0";
         }
       }
     });
@@ -1359,7 +1359,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     (row) => {
       for (let month = 1; month <= numberOfMonths; month++) {
         if (!row.hasOwnProperty(`month${month}`)) {
-          row[`month${month}`] = "0.00";
+          row[`month${month}`] = "0";
         }
       }
       return row;
@@ -1665,17 +1665,17 @@ const Z = ({ currentUser, setCurrentUser }) => {
       console.log("channelRevenue", channelRevenue);
       channelRevenue.forEach((value, index) => {
         if (index + 1 >= begin && index + 1 <= end) {
-          revenueRow[`month${index + 1}`] = parseFloat(value)?.toFixed(2);
+          revenueRow[`month${index + 1}`] = parseFloat(value)?.toFixed(0);
           revenueDeductionRow[`month${index + 1}`] = parseFloat(
             channelrevenueDeduction[index]
-          )?.toFixed(2);
+          )?.toFixed(0);
           cogsRow[`month${index + 1}`] = parseFloat(channelCOGS[index]).toFixed(
             2
           );
         } else {
-          revenueRow[`month${index + 1}`] = "0.00";
-          revenueDeductionRow[`month${index + 1}`] = "0.00";
-          cogsRow[`month${index + 1}`] = "0.00";
+          revenueRow[`month${index + 1}`] = "0";
+          revenueDeductionRow[`month${index + 1}`] = "0";
+          cogsRow[`month${index + 1}`] = "0";
         }
       });
 
@@ -1697,7 +1697,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
         [];
       netRevenueArray.forEach((value, index) => {
         // ...existing code...
-        netRevenueRow[`month${index + 1}`] = parseFloat(value)?.toFixed(2);
+        netRevenueRow[`month${index + 1}`] = parseFloat(value)?.toFixed(0);
       });
 
       const grossProfitRow = {
@@ -1719,7 +1719,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
         ] || [];
       grossProfitArray.forEach((value, index) => {
         // ...existing code...
-        grossProfitRow[`month${index + 1}`] = parseFloat(value)?.toFixed(2);
+        grossProfitRow[`month${index + 1}`] = parseFloat(value)?.toFixed(0);
       });
       console.log("revenueRow", revenueRow);
 
@@ -1898,7 +1898,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
           };
         }
         transformedCustomerTableData[rowKey][`month${monthData.month}`] =
-          parseFloat(monthData.cost)?.toFixed(2);
+          parseFloat(monthData.cost)?.toFixed(0);
       });
     });
 
@@ -2068,7 +2068,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     const transformedCustomerTableData = personnelCostData.map((item) => {
       const rowData = { key: item.jobTitle, jobTitle: item.jobTitle };
       item.monthlyCosts.forEach((monthData) => {
-        rowData[`month${monthData.month}`] = monthData.cost?.toFixed(2); // Adjust formatting as needed
+        rowData[`month${monthData.month}`] = monthData.cost?.toFixed(0); // Adjust formatting as needed
       });
       return rowData;
     });
@@ -2288,19 +2288,19 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
       for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
         if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
-          assetCostRow[`month${monthIndex + 1}`] = assetCost?.toFixed(2); // Using Asset Cost
+          assetCostRow[`month${monthIndex + 1}`] = assetCost?.toFixed(0); // Using Asset Cost
           depreciationRow[`month${monthIndex + 1}`] =
-            investment.depreciationArray[monthIndex]?.toFixed(2);
+            investment.depreciationArray[monthIndex]?.toFixed(0);
           accumulatedDepreciationRow[`month${monthIndex + 1}`] =
-            investment.accumulatedDepreciation[monthIndex]?.toFixed(2);
+            investment.accumulatedDepreciation[monthIndex]?.toFixed(0);
           bookValueRow[`month${monthIndex + 1}`] = (
             assetCost - investment.accumulatedDepreciation[monthIndex]
-          )?.toFixed(2);
+          )?.toFixed(0);
         } else {
-          assetCostRow[`month${monthIndex + 1}`] = "0.00";
-          depreciationRow[`month${monthIndex + 1}`] = "0.00";
-          accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0.00";
-          bookValueRow[`month${monthIndex + 1}`] = "0.00";
+          assetCostRow[`month${monthIndex + 1}`] = "0";
+          depreciationRow[`month${monthIndex + 1}`] = "0";
+          accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0";
+          bookValueRow[`month${monthIndex + 1}`] = "0";
         }
       }
 
@@ -2489,20 +2489,20 @@ const Z = ({ currentUser, setCurrentUser }) => {
       // Initialize all rows with default values
       for (let monthIndex = 1; monthIndex <= numberOfMonths; monthIndex++) {
         const monthKey = `Month ${monthIndex}`;
-        loanAmountRow[monthKey] = "0.00";
-        paymentRow[monthKey] = "0.00";
-        principalRow[monthKey] = "0.00";
-        interestRow[monthKey] = "0.00";
-        balanceRow[monthKey] = "0.00";
+        loanAmountRow[monthKey] = "0";
+        paymentRow[monthKey] = "0";
+        principalRow[monthKey] = "0";
+        interestRow[monthKey] = "0";
+        balanceRow[monthKey] = "0";
       }
 
       loan.loanDataPerMonth.forEach((monthData) => {
         const monthKey = `Month ${monthData.month}`;
-        loanAmountRow[monthKey] = monthData.loanAmount?.toFixed(2);
-        paymentRow[monthKey] = monthData.payment?.toFixed(2);
-        principalRow[monthKey] = monthData.principal?.toFixed(2);
-        interestRow[monthKey] = monthData.interest?.toFixed(2);
-        balanceRow[monthKey] = monthData.balance?.toFixed(2);
+        loanAmountRow[monthKey] = monthData.loanAmount?.toFixed(0);
+        paymentRow[monthKey] = monthData.payment?.toFixed(0);
+        principalRow[monthKey] = monthData.principal?.toFixed(0);
+        interestRow[monthKey] = monthData.interest?.toFixed(0);
+        balanceRow[monthKey] = monthData.balance?.toFixed(0);
       });
 
       loanTableData.push(
@@ -2749,7 +2749,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
     ].map((item, index) => ({
       metric: item.key,
       ...item.values.reduce(
-        (acc, value, i) => ({ ...acc, [`Month ${i + 1}`]: value?.toFixed(2) }),
+        (acc, value, i) => ({ ...acc, [`Month ${i + 1}`]: value?.toFixed(0) }),
         {}
       ),
     }));
@@ -2772,31 +2772,31 @@ const Z = ({ currentUser, setCurrentUser }) => {
     const chartSeries = [
       {
         name: "Total Revenue",
-        data: totalRevenue.map((value) => parseFloat(value?.toFixed(2))),
+        data: totalRevenue.map((value) => parseFloat(value?.toFixed(0))),
       },
       {
         name: "Total Costs",
-        data: totalCosts.map((value) => parseFloat(value?.toFixed(2))),
+        data: totalCosts.map((value) => parseFloat(value?.toFixed(0))),
       },
       {
         name: "Total Personnel Costs",
-        data: totalPersonnelCosts.map((value) => parseFloat(value?.toFixed(2))),
+        data: totalPersonnelCosts.map((value) => parseFloat(value?.toFixed(0))),
       },
       {
         name: "Total Investment Depreciation",
         data: totalInvestmentDepreciation.map((value) =>
-          parseFloat(value?.toFixed(2))
+          parseFloat(value?.toFixed(0))
         ),
       },
       {
         name: "Total Interest Payments",
         data: totalInterestPayments.map((value) =>
-          parseFloat(value?.toFixed(2))
+          parseFloat(value?.toFixed(0))
         ),
       },
       {
         name: "Net Income",
-        data: netIncome.map((value) => parseFloat(value.toFixed(2))),
+        data: netIncome.map((value) => parseFloat(value.toFixed(0))),
       },
     ];
 
@@ -2831,7 +2831,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
       tooltip: {
         enabled: true,
         y: {
-          formatter: (val) => `$${val?.toFixed(2)}`,
+          formatter: (val) => `$${val?.toFixed(0)}`,
         },
       },
     };

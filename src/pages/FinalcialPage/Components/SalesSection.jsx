@@ -214,33 +214,33 @@ const SalesSection = ({
             channelProductKey
           ].forEach((value, index) => {
             transformedRevenueTableData[revenueRowKey][`month${index + 1}`] =
-              formatNumber(parseFloat(value)?.toFixed(2));
+              formatNumber(parseFloat(value)?.toFixed(0));
           });
           calculatedChannelRevenue.DeductionByChannelAndProduct[
             channelProductKey
           ].forEach((value, index) => {
             transformedRevenueTableData[revenueDeductionRowKey][
               `month${index + 1}`
-            ] = formatNumber(parseFloat(value)?.toFixed(2));
+            ] = formatNumber(parseFloat(value)?.toFixed(0));
           });
           calculatedChannelRevenue.cogsByChannelAndProduct[
             channelProductKey
           ].forEach((value, index) => {
             transformedRevenueTableData[cogsRowKey][`month${index + 1}`] =
-              formatNumber(parseFloat(value)?.toFixed(2));
+              formatNumber(parseFloat(value)?.toFixed(0));
           });
           calculatedChannelRevenue.netRevenueByChannelAndProduct[
             channelProductKey
           ].forEach((value, index) => {
             transformedRevenueTableData[netRevenueRowKey][`month${index + 1}`] =
-              formatNumber(parseFloat(value)?.toFixed(2));
+              formatNumber(parseFloat(value)?.toFixed(0));
           });
           calculatedChannelRevenue.grossProfitByChannelAndProduct[
             channelProductKey
           ].forEach((value, index) => {
             transformedRevenueTableData[grossProfitRowKey][
               `month${index + 1}`
-            ] = formatNumber(parseFloat(value)?.toFixed(2));
+            ] = formatNumber(parseFloat(value)?.toFixed(0));
           });
         }
       }

@@ -125,6 +125,13 @@ function AdminPage() {
     }
   };
 
+  const [filteredData, setFilteredData] = useState([]);
+
+  useEffect(() => {
+    // Cập nhật filteredData khi dataSource thay đổi
+    setFilteredData(dataSource);
+  }, [dataSource]);
+
   const columns = [
     {
       title: "No",
@@ -177,7 +184,16 @@ function AdminPage() {
           <Space>
             <Button
               type="primary"
-              onClick={() => confirm()}
+              onClick={() => {
+                confirm();
+                // Lưu kết quả filter vào state filteredData
+                const filtered = dataSource?.filter((record) =>
+                  record?.name
+                    ?.toLowerCase()
+                    .includes(selectedKeys[0]?.toLowerCase())
+                );
+                setFilteredData(filtered);
+              }}
               icon={<SearchOutlined />}
               size="small"
               style={{ width: 90, fontSize: "12px" }}

@@ -40,7 +40,7 @@ const { Option } = Select;
 
 //       return {
 //         month,
-//         compoundInterest: compoundInterest.toFixed(2),
+//         compoundInterest: compoundInterest.toFixed(0),
 //       };
 //     });
 
@@ -168,7 +168,7 @@ const { Option } = Select;
 //       for (let i = 0; i < months; i++) {
 //         data.push({
 //           Month: i + 1,
-//           Customers: currentCustomer.toFixed(2),
+//           Customers: currentCustomer.toFixed(0),
 //         });
 //         currentCustomer *= 1 + growthRate;
 //       }
@@ -278,7 +278,7 @@ const CustomerGrowthComponent = ({
     for (let i = 0; i < months; i++) {
       data.push({
         Month: i + 1,
-        Customers: currentCustomer.toFixed(2),
+        Customers: currentCustomer.toFixed(0),
       });
       currentCustomer *= 1 + growthRate;
     }
@@ -415,7 +415,7 @@ function GeneralForm() {
           >
             Starting Cash Balance
           </label>
-          <Input id="starting-cash" placeholder="0.00" />
+          <Input id="starting-cash" placeholder="0" />
         </div>
         <div>
           <label
@@ -561,7 +561,7 @@ function CustomerInput({
 //           </div>
 //           <div className="grid grid-cols-2 gap-4">
 //             <span className="font-medium">Monthly Spend</span>
-//             <Input className="col-start-2" placeholder="$0.00" />
+//             <Input className="col-start-2" placeholder="$0" />
 //           </div>
 //         </div>
 //       </section>

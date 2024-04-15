@@ -3,13 +3,15 @@ import { Input, Button, Typography, Alert } from "antd";
 
 const { Text } = Typography;
 
-const GPTAnalyzer = ({ setChatbotResponse }) => {
+const GPTAnalyzer = ({ customerTableData }) => {
   const [inputValue, setInputValue] = useState("");
   const [responseResult, setResponseResult] = useState("");
   const [error, setError] = useState(null);
 
   const handleAnalyze = async () => {
     try {
+      console.log("customerTableData", customerTableData);
+
       const response = await fetch(
         "https://news-fetcher-8k6m.onrender.com/analyze", // Replace with actual backend URL
         {
@@ -18,27 +20,26 @@ const GPTAnalyzer = ({ setChatbotResponse }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            user_input: `${inputValue}. Give some red flags from this financial statement data and always back up reasons with specific numbers, figures.`,
+            user_input: `${customerTableData}. Array "customerTableData" này nói về cái chi, hãy giải thích cho tôi với.`,
           }),
         }
       );
 
-      console.log("2", response);
       const data = await response.json();
-      console.log("3", data);
 
       if (data.error) {
         throw new Error(data.error);
       }
       const cleanedResponseText = data?.response?.replace(/json|`/g, "");
-      setResponseResult(data.response);
-      console.log("response", responseResult);
+      setResponseResult(cleanedResponseText);
 
       setError(null);
     } catch (error) {
       console.log("Error sending message:", error);
     }
   };
+
+  console.log("responseResult", responseResult);
 
   return (
     <div className="mx-auto max-w-3xl">

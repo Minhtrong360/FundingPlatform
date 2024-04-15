@@ -15,6 +15,9 @@ import { useEffect, useState } from "react";
 import { formatNumber, parseNumber } from "../../features/CostSlice";
 import axios from "axios";
 import { Navigate, useNavigate } from "react-router-dom";
+import industries from "../../components/Industries";
+import countries from "../../components/Country";
+import SelectField from "../../components/SelectField";
 
 export default function FleaMarketForm({
   isAddNewModalOpen,
@@ -449,29 +452,37 @@ export default function FleaMarketForm({
                 />
               </div>
             </div>
+
             <div className="space-y-2">
               <label htmlFor="industry">Industry</label>
               <div className="flex items-center">
                 <FactoryIcon className="mr-2" />
-                <Input
+                <SelectField
                   id="industry"
-                  placeholder="Enter your industry"
-                  required
+                  name="industry"
+                  additional={{ width: "100%" }}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   value={formData.industry}
                   onChange={handleChange}
+                  required
+                  options={industries} // Thay thế bằng danh sách các tùy chọn bạn muốn
                 />
               </div>
             </div>
+
             <div className="space-y-2">
               <label htmlFor="country">Country</label>
               <div className="flex items-center">
                 <FlagIcon className="mr-2" />
-                <Input
+                <SelectField
                   id="country"
-                  placeholder="Enter your country"
-                  required
+                  name="country"
+                  additional={{ width: "100%" }}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   value={formData.country}
                   onChange={handleChange}
+                  required
+                  options={countries} // Thay thế bằng danh sách các tùy chọn bạn muốn
                 />
               </div>
             </div>
@@ -493,19 +504,16 @@ export default function FleaMarketForm({
               <label htmlFor="role">Role</label>
               <div className="flex items-center">
                 <UserIcon className="mr-2" />
-                <Select
+                <SelectField
                   id="role"
+                  name="role"
+                  additional={{ width: "100%" }}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   value={formData.role}
-                  onValueChange={(value) => handleRollSelect(value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select your role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="seller">Seller</SelectItem>
-                    <SelectItem value="buyer">Buyer</SelectItem>
-                  </SelectContent>
-                </Select>
+                  onChange={handleChange}
+                  required
+                  options={["Buyer", "Seller"]} // Thay thế bằng danh sách các tùy chọn bạn muốn
+                />
               </div>
             </div>
             <div className="space-y-2">

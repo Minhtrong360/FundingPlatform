@@ -42,7 +42,7 @@ import NewDetailPage from "../pages/FounderGitbook/NewDetailPage.jsx";
 import FinancialList from "../pages/FinalcialPage/FinancialList.jsx";
 import FleaMarketList from "../pages/FleaMarket/FleaMarketList.jsx";
 import FleaMarketListAll from "../pages/FleaMarket/FleaMarketListAll.jsx";
-import FleaMarketDetail from "../pages/FleaMarket/FleaMarketDetail.jsx";
+
 function Router() {
   return (
     <>
@@ -75,14 +75,6 @@ function Router() {
             </AuthRequire>
           }
         />
-        {/* <Route
-          path="/Flea-Market/:id"
-          element={
-            <AuthRequire message="Sign in required!">
-              <FleaMarketDetail />
-            </AuthRequire>
-          }
-        /> */}
 
         <Route
           path="/user-info"

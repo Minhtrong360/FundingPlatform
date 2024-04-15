@@ -12,7 +12,7 @@ import {
   getCurrencyLabelByKey,
 } from "../../features/DurationSlice";
 import { Switch, Space } from "antd";
-import { Input, Button , InputNumber} from "antd";
+import { Input, Button , InputNumber,Checkbox} from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { DatePicker } from "antd";
 import moment from "moment";
@@ -260,17 +260,12 @@ function AdminPage() {
             }}
           />
           <Space>
+           
             <Button
-              type="primary"
-              onClick={() => confirm()}
-              icon={<SearchOutlined />}
-              size="small"
-              style={{ width: 90, fontSize: "12px" }}
-            >
-              Search
-            </Button>
-            <Button
-              onClick={() => clearFilters()}
+              onClick={() => {
+                clearFilters();
+                confirm(); 
+              }}
               size="small"
               style={{ width: 90, fontSize: "12px" }}
             >
@@ -298,26 +293,23 @@ function AdminPage() {
       align: "center",
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
         <div style={{ padding: 8 }}>
-         <RangePicker
-          value={selectedKeys[0] ? [moment(selectedKeys[0][0]), moment(selectedKeys[0][1])] : []}
-          onChange={dates => {
-            const range = dates ? [[dates[0].startOf('day').format('YYYY-MM-DD'), dates[1].endOf('day').format('YYYY-MM-DD')]] : [];
-            setSelectedKeys(range);
-            if (!dates) {
-              clearFilters();
-            }
-          }}
-          style={{ marginBottom: 8, display: 'block' }}
-        />
-          <Button
-            type="primary"
-            onClick={() => confirm()}
-            size="small"
-            style={{ width: 90, marginRight: 8 }}
-          >
-            Filter
-          </Button>
-          <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
+          <RangePicker
+            value={selectedKeys[0] ? [moment(selectedKeys[0][0]), moment(selectedKeys[0][1])] : []}
+            onChange={dates => {
+              const range = dates ? [[dates[0].startOf('day').format('YYYY-MM-DD'), dates[1].endOf('day').format('YYYY-MM-DD')]] : [];
+              setSelectedKeys(range);
+              if (!dates) {
+                clearFilters();
+              } else {
+                confirm(); // Confirm the filter immediately
+              }
+            }}
+            style={{ marginBottom: 8, display: 'block' }}
+          />
+          <Button onClick={() => {
+            clearFilters();
+            confirm(); 
+          }} size="small" style={{ width: 90 }}>
             Reset
           </Button>
         </div>
@@ -341,6 +333,49 @@ function AdminPage() {
           {text}
         </div>
       ),
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder={`Search Company Name`}
+            value={selectedKeys[0]}
+            onChange={(e) => {
+              setSelectedKeys(e.target.value ? [e.target.value] : []);
+            }}
+            onPressEnter={() => confirm()}
+            style={{
+              width: 188,
+              marginBottom: 8,
+              display: "block",
+              fontSize: "12px",
+              paddingTop: "2px",
+              paddingBottom: "2px",
+            }}
+          />
+          <Space>
+           
+            <Button
+              onClick={() => {
+                clearFilters();
+                confirm(); 
+              }}
+              size="small"
+              style={{ width: 90, fontSize: "12px" }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        record.user_email.toString().toLowerCase().includes(value.toLowerCase()),
     },
     {
       title: "Required verification",
@@ -349,8 +384,8 @@ function AdminPage() {
         <div
           onClick={() => handleProjectClick(record)}
           className={`w-[5em] 
-            ${record.required ? "text-blue-600" : " text-black-500"}
-            focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md   py-1 text-center `}
+                ${record.required ? "text-blue-600" : " text-black-500"}
+                focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md   py-1 text-center `}
         >
           {record.required && record.verified
             ? "Accepted"
@@ -374,7 +409,41 @@ function AdminPage() {
             return !record.required;
         }
       },
-    },
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+        <div style={{ padding: 8 }}>
+          
+          {["accepted", "waiting", "notRequired"].map((option) => (
+            <div className="mb-2" key={option} style={{ marginTop: 8 }}>
+              <Checkbox
+                checked={selectedKeys.includes(option)}
+                onChange={(e) => {
+                  const keys = [...selectedKeys];
+                  if (e.target.checked) {
+                    keys.push(option);
+                  } else {
+                    const index = keys.indexOf(option);
+                    if (index !== -1) {
+                      keys.splice(index, 1);
+                    }
+                  }
+                  setSelectedKeys(keys);
+                  confirm(); // Confirm the filter change immediately
+                }}
+              >
+                {option === "accepted" ? "Accepted" : option === "waiting" ? "Waiting" : "Not Required"}
+              </Checkbox>
+            </div>
+          ))}
+          <Button  onClick={() => {
+            clearFilters();
+            confirm(); // Confirm the filter clearing immediately
+          }} size="small" style={{ width: 90 }}>
+            Reset
+          </Button>
+        </div>
+      ),
+    }
+    ,
     {
       title: "Status",
       key: "status",
@@ -405,7 +474,40 @@ function AdminPage() {
         { text: "Private", value: "private" },
         { text: "Stealth", value: "stealth" }
       ],
-      onFilter: (value, record) => record.status === value
+      onFilter: (value, record) => record.status === value,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+        <div style={{ padding: 8 }}>
+          
+          {["public", "private", "stealth"].map((option) => (
+            <div className="mb-2" key={option} style={{ marginTop: 8 }}>
+              <Checkbox
+                checked={selectedKeys.includes(option)}
+                onChange={(e) => {
+                  const keys = [...selectedKeys];
+                  if (e.target.checked) {
+                    keys.push(option);
+                  } else {
+                    const index = keys.indexOf(option);
+                    if (index !== -1) {
+                      keys.splice(index, 1);
+                    }
+                  }
+                  setSelectedKeys(keys);
+                  confirm(); // Confirm the filter change immediately
+                }}
+              >
+                {option === "public" ? "Public" : option === "private" ? "Private" : "Stealth"}
+              </Checkbox>
+            </div>
+          ))}
+          <Button  onClick={() => {
+            clearFilters();
+            confirm(); // Confirm the filter clearing immediately
+          }} size="small" style={{ width: 90 }}>
+            Reset
+          </Button>
+        </div>
+      ),
     },
     {
       title: "Verified Status",
@@ -425,69 +527,208 @@ function AdminPage() {
         { text: "Yes", value: true },
         { text: "No", value: false }
       ],
-      onFilter: (value, record) => record.verified === value
-    },
-    {
-      title: "Target Amount",
-      dataIndex: "target_amount",
-      key: "target_amount",
-      render: (text, record) => (
-        <div
-          className=" whitespace-nowrap hover:cursor-pointer"
-          onClick={() => handleProjectClick(record)}
-        >
-          {formatNumber(text)}
-        </div>
-      ),
-      filters: [
-        { text: "0-100", value: "0-100000" },
-        { text: "100-500", value: "100000-500000" },
-        { text: "500K-1M", value: "500000-1000000" },
-        { text: "1M-5M", value: "1000000-5000000" },
-        { text: ">5M", value: ">5000000" }
-      ],
-      onFilter: (value, record) => {
-        const amount = parseFloat(record.target_amount);
-        switch (value) {
-          case "0-100000": return amount >= 0 && amount <= 100000;
-          case "100000-500000": return amount > 100000 && amount <= 500000;
-          case "500000-1000000": return amount > 500000 && amount <= 1000000;
-          case "1000000-5000000": return amount > 1000000 && amount <= 5000000;
-          case ">5000000": return amount > 5000000;
-        }
+      onFilter: (value, record) => record.verified === value,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+        const handleReset = () => {
+          clearFilters();
+          setSelectedKeys([]); // Reset selected keys
+          confirm(); // Confirm the filter clearing immediately
+        };
+    
+        return (
+          <div className="mb-2" style={{ padding: 8 }}>
+            
+            {["true", "false"].map((option) => (
+              <div key={option} style={{ marginTop: 8 }}>
+                <Checkbox
+                  checked={selectedKeys.includes(option)}
+                  onChange={(e) => {
+                    const keys = [...selectedKeys];
+                    if (e.target.checked) {
+                      keys.push(option);
+                    } else {
+                      const index = keys.indexOf(option);
+                      if (index !== -1) {
+                        keys.splice(index, 1);
+                      }
+                    }
+                    setSelectedKeys(keys);
+                    confirm(); // Confirm the filter change immediately
+                  }}
+                >
+                  {option === "true" ? "Yes" : "No"}
+                </Checkbox>
+              </div>
+            ))}
+            <Button onClick={handleReset} size="small" style={{ width: 90 }}>
+              Reset
+            </Button>
+          </div>
+        );
       }
-    },
-    {
-      title: "Ticket Size",
-      dataIndex: "ticket_size",
-      key: "ticket_size",
-      render: (text, record) => (
-        <div
-          className=" whitespace-nowrap hover:cursor-pointer"
-          onClick={() => handleProjectClick(record)}
-        >
-          {formatNumber(text)}
-        </div>
-      ),
-      sorter: (a, b) => a.ticket_size - b.ticket_size,
-      filters: [
-        { text: "0-1000", value: "0-100" },
-        { text: "1000-5000", value: "100-500" },
-        { text: "5000-10000", value: "500-1000" },
-        { text: "1000-50000", value: "1000-5000" },
-        { text: ">50000", value: ">5000" }
-      ],
-      onFilter: (value, record) => {
-        const size = parseFloat(record.ticket_size);
-        switch (value) {
-          case "0-100": return size >= 0 && size <= 1000;
-          case "100-500": return size > 1000 && size <= 5000;
-          case "500-1000": return size > 5000 && size <= 10000;
-          case "1000-5000": return size > 10000 && size <= 50000;
-          case ">5000": return size > 50000;
-        }
-      }
-    },
+    }
+,    
+{
+  title: "Target Amount",
+  dataIndex: "target_amount",
+  key: "target_amount",
+  render: (text, record) => (
+    <div
+      className="whitespace-nowrap hover:cursor-pointer"
+      onClick={() => handleProjectClick(record)}
+    >
+      {formatNumber(text)}
+    </div>
+  ),
+  filters: [
+    { text: "0-100", value: "0-100000" },
+    { text: "100-500", value: "100000-500000" },
+    { text: "500K-1M", value: "500000-1000000" },
+    { text: "1M-5M", value: "1000000-5000000" },
+    { text: ">5M", value: ">5000000" }
+  ],
+  onFilter: (value, record) => {
+    const amount = parseFloat(record.target_amount);
+    switch (value) {
+      case "0-100000":
+        return amount >= 0 && amount <= 100000;
+      case "100000-500000":
+        return amount > 100000 && amount <= 500000;
+      case "500000-1000000":
+        return amount > 500000 && amount <= 1000000;
+      case "1000000-5000000":
+        return amount > 1000000 && amount <= 5000000;
+      case ">5000000":
+        return amount > 5000000;
+    }
+  },
+  filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+    const handleReset = () => {
+      clearFilters();
+      setSelectedKeys([]); // Reset selected keys
+      confirm(); // Confirm the filter clearing immediately
+    };
+
+    return (
+      <div className="mb-2" style={{ padding: 8 }}>
+       
+        {[
+          "0-100000",
+          "100000-500000",
+          "500000-1000000",
+          "1000000-5000000",
+          ">5000000"
+        ].map((option) => (
+          <div key={option} style={{ marginTop: 8 }}>
+            <Checkbox
+              checked={selectedKeys.includes(option)}
+              onChange={(e) => {
+                const keys = [...selectedKeys];
+                if (e.target.checked) {
+                  keys.push(option);
+                } else {
+                  const index = keys.indexOf(option);
+                  if (index !== -1) {
+                    keys.splice(index, 1);
+                  }
+                }
+                setSelectedKeys(keys);
+                confirm(); // Confirm the filter change immediately
+              }}
+            >
+              {option}
+            </Checkbox>
+          </div>
+        ))}
+         <Button onClick={handleReset} size="small" style={{ width: 90 }}>
+          Reset
+        </Button>
+      </div>
+    );
+  }
+}
+,
+{
+  title: "Ticket Size",
+  dataIndex: "ticket_size",
+  key: "ticket_size",
+  render: (text, record) => (
+    <div
+      className="whitespace-nowrap hover:cursor-pointer"
+      onClick={() => handleProjectClick(record)}
+    >
+      {formatNumber(text)}
+    </div>
+  ),
+  sorter: (a, b) => a.ticket_size - b.ticket_size,
+  filters: [
+    { text: "0-1000", value: "0-100" },
+    { text: "1000-5000", value: "100-500" },
+    { text: "5000-10000", value: "500-1000" },
+    { text: "1000-50000", value: "1000-5000" },
+    { text: ">50000", value: ">5000" }
+  ],
+  onFilter: (value, record) => {
+    const size = parseFloat(record.ticket_size);
+    switch (value) {
+      case "0-100":
+        return size >= 0 && size <= 1000;
+      case "100-500":
+        return size > 1000 && size <= 5000;
+      case "500-1000":
+        return size > 5000 && size <= 10000;
+      case "1000-5000":
+        return size > 10000 && size <= 50000;
+      case ">5000":
+        return size > 50000;
+    }
+  },
+  filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+    const handleReset = () => {
+      clearFilters();
+      setSelectedKeys([]); // Reset selected keys
+      confirm(); // Confirm the filter clearing immediately
+    };
+
+    return (
+      <div style={{ padding: 8 }}>
+       
+        {[
+          "0-100",
+          "100-500",
+          "500-1000",
+          "1000-5000",
+          ">5000"
+        ].map((option) => (
+          <div className="mb-2" key={option} style={{ marginTop: 8 }}>
+            <Checkbox
+              checked={selectedKeys.includes(option)}
+              onChange={(e) => {
+                const keys = [...selectedKeys];
+                if (e.target.checked) {
+                  keys.push(option);
+                } else {
+                  const index = keys.indexOf(option);
+                  if (index !== -1) {
+                    keys.splice(index, 1);
+                  }
+                }
+                setSelectedKeys(keys);
+                confirm(); // Confirm the filter change immediately
+              }}
+            >
+              {option}
+            </Checkbox>
+          </div>
+        ))}
+         <Button onClick={handleReset} size="small" style={{ width: 90 }}>
+          Reset
+        </Button>
+      </div>
+    );
+  }
+}
+,
     {
       title: "No. Ticket",
       dataIndex: "no_ticket",
@@ -507,7 +748,7 @@ function AdminPage() {
       key: "offer_type",
       render: (text, record) => (
         <div
-          className=" whitespace-nowrap hover:cursor-pointer"
+          className="whitespace-nowrap hover:cursor-pointer"
           onClick={() => handleProjectClick(record)}
         >
           {text}
@@ -520,8 +761,53 @@ function AdminPage() {
         { text: "Convertible", value: "Convertible" },
         { text: "Non-Profit", value: "Non-Profit" }
       ],
-      onFilter: (value, record) => record.offer_type === value
-    },
+      onFilter: (value, record) => record.offer_type === value,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+        const handleReset = () => {
+          clearFilters();
+          setSelectedKeys([]); // Reset selected keys
+          confirm(); // Confirm the filter clearing immediately
+        };
+    
+        return (
+          <div style={{ padding: 8 }}>
+           
+            {[
+              "M&A",
+              "Investment",
+              "Lending",
+              "Convertible",
+              "Non-Profit"
+            ].map((option) => (
+              <div className="mb-2" key={option} style={{ marginTop: 8 }}>
+                <Checkbox
+                  checked={selectedKeys.includes(option)}
+                  onChange={(e) => {
+                    const keys = [...selectedKeys];
+                    if (e.target.checked) {
+                      keys.push(option);
+                    } else {
+                      const index = keys.indexOf(option);
+                      if (index !== -1) {
+                        keys.splice(index, 1);
+                      }
+                    }
+                    setSelectedKeys(keys);
+                    confirm(); // Confirm the filter change immediately
+                  }}
+                >
+                  {option}
+                </Checkbox>
+              </div>
+            ))}
+             <Button onClick={handleReset} size="small" style={{ width: 90 }}>
+              Reset
+            </Button>
+          </div>
+        );
+      }
+    }
+,    
     {
       title: "Offer",
       dataIndex: "offer",
@@ -541,7 +827,7 @@ function AdminPage() {
       key: "amountRaised",
       render: (text, record) => (
         <div
-          className=" whitespace-nowrap hover:cursor-pointer"
+          className="whitespace-nowrap hover:cursor-pointer"
           onClick={() => handleProjectClick(record)}
         >
           {formatNumber(text)}
@@ -557,14 +843,64 @@ function AdminPage() {
       onFilter: (value, record) => {
         const raised = parseFloat(record.amountRaised);
         switch (value) {
-          case "0-100": return raised >= 0 && raised <= 100000;
-          case "100-500": return raised > 100000 && raised <= 500000;
-          case "500-1000": return raised > 500000 && raised <= 1000000;
-          case "1000-5000": return raised > 1000000 && raised <= 5000000;
-          case ">5000": return raised > 5000000;
+          case "0-100":
+            return raised >= 0 && raised <= 100000;
+          case "100-500":
+            return raised > 100000 && raised <= 500000;
+          case "500-1000":
+            return raised > 500000 && raised <= 1000000;
+          case "1000-5000":
+            return raised > 1000000 && raised <= 5000000;
+          case ">5000":
+            return raised > 5000000;
         }
-    },
-    },
+      },
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+        const handleReset = () => {
+          clearFilters();
+          setSelectedKeys([]); // Reset selected keys
+          confirm(); // Confirm the filter clearing immediately
+        };
+    
+        return (
+          <div style={{ padding: 8 }}>
+            
+            {[
+              "0-100",
+              "100-500",
+              "500-1000",
+              "1000-5000",
+              ">5000"
+            ].map((option) => (
+              <div className="mb-2" key={option} style={{ marginTop: 8 }}>
+                <Checkbox
+                  checked={selectedKeys.includes(option)}
+                  onChange={(e) => {
+                    const keys = [...selectedKeys];
+                    if (e.target.checked) {
+                      keys.push(option);
+                    } else {
+                      const index = keys.indexOf(option);
+                      if (index !== -1) {
+                        keys.splice(index, 1);
+                      }
+                    }
+                    setSelectedKeys(keys);
+                    confirm(); // Confirm the filter change immediately
+                  }}
+                >
+                  {option}
+                </Checkbox>
+              </div>
+            ))}
+            <Button onClick={handleReset} size="small" style={{ width: 90 }}>
+              Reset
+            </Button>
+          </div>
+        );
+      }
+    }
+,    
     {
       title: "Country",
       dataIndex: "country",
@@ -577,6 +913,50 @@ function AdminPage() {
           {text}
         </div>
       ),
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder={`Search Country`}
+            value={selectedKeys[0]}
+            onChange={(e) => {
+              setSelectedKeys(e.target.value ? [e.target.value] : []);
+            }}
+            onPressEnter={() => confirm()}
+            style={{
+              width: 188,
+              marginBottom: 8,
+              display: "block",
+              fontSize: "12px",
+              paddingTop: "2px",
+              paddingBottom: "2px",
+            }}
+          />
+          <Space>
+           
+            <Button
+              onClick={() => {
+                clearFilters();
+                confirm(); 
+              }}
+              size="small"
+              style={{ width: 90, fontSize: "12px" }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        record.country.toString().toLowerCase().includes(value.toLowerCase()),
+
     },
     {
       title: "Established",
@@ -598,13 +978,12 @@ function AdminPage() {
       key: "revenueStatus",
       render: (text, record) => (
         <div
-          className=" whitespace-nowrap hover:cursor-pointer"
+          className="whitespace-nowrap hover:cursor-pointer"
           onClick={() => handleProjectClick(record)}
         >
           {text}
         </div>
       ),
-      
       filters: [
         { text: "$0 - $10k", value: "$0 - $10k" },
         { text: "$10k - $50k", value: "$10k - $50k" },
@@ -614,33 +993,125 @@ function AdminPage() {
         { text: "$1M - $5M", value: "$1M - $5M" },
         { text: ">$5M", value: ">$5M" },
         { text: "Non-Profit", value: "Non-Profit" },
-        
-        
       ],
-      onFilter: (value, record) => record.revenueStatus === value
-    },
-    {
-      title: "Round",
-      dataIndex: "round",
-      key: "round",
-      render: (text, record) => (
-        <div
-          className=" whitespace-nowrap hover:cursor-pointer"
-          onClick={() => handleProjectClick(record)}
-        >
-          {text}
-        </div>
-      ),
-      filters: [
-        { text: "Seed", value: "Seed" },
-        { text: "Pre-seed", value: "Pre-seed" },
-        { text: "Series A", value: "Series A" },
-        { text: "Series B", value: "Series B" },
-        { text: "Series C", value: "Series C" },
-        { text: "Non-Profit", value: "Non-Profit" },
-      ],
-      onFilter: (value, record) => record.round === value
-    },
+      onFilter: (value, record) => record.revenueStatus === value,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+        const handleReset = () => {
+          clearFilters();
+          setSelectedKeys([]); // Reset selected keys
+          confirm(); // Confirm the filter clearing immediately
+        };
+    
+        return (
+          <div style={{ padding: 8 }}>
+           
+            {[
+              "$0 - $10k",
+              "$10k - $50k",
+              "$50k - $100k",
+              "$100k - $500k",
+              "$500k - $1M",
+              "$1M - $5M",
+              ">$5M",
+              "Non-Profit"
+            ].map((option) => (
+              <div className="mb-2" key={option} style={{ marginTop: 8 }}>
+                <Checkbox
+                  checked={selectedKeys.includes(option)}
+                  onChange={(e) => {
+                    const keys = [...selectedKeys];
+                    if (e.target.checked) {
+                      keys.push(option);
+                    } else {
+                      const index = keys.indexOf(option);
+                      if (index !== -1) {
+                        keys.splice(index, 1);
+                      }
+                    }
+                    setSelectedKeys(keys);
+                    confirm(); // Confirm the filter change immediately
+                  }}
+                >
+                  {option}
+                </Checkbox>
+              </div>
+            ))}
+             <Button onClick={handleReset} size="small" style={{ width: 90 }}>
+              Reset
+            </Button>
+          </div>
+        );
+      }
+    }
+,    
+{
+  title: "Round",
+  dataIndex: "round",
+  key: "round",
+  render: (text, record) => (
+    <div
+      className="whitespace-nowrap hover:cursor-pointer"
+      onClick={() => handleProjectClick(record)}
+    >
+      {text}
+    </div>
+  ),
+  filters: [
+    { text: "Seed", value: "Seed" },
+    { text: "Pre-seed", value: "Pre-seed" },
+    { text: "Series A", value: "Series A" },
+    { text: "Series B", value: "Series B" },
+    { text: "Series C", value: "Series C" },
+    { text: "Non-Profit", value: "Non-Profit" },
+  ],
+  onFilter: (value, record) => record.round === value,
+  filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+    const handleReset = () => {
+      clearFilters();
+      setSelectedKeys([]); // Reset selected keys
+      confirm(); // Confirm the filter clearing immediately
+    };
+
+    return (
+      <div style={{ padding: 8 }}>
+       
+        {[
+          "Seed",
+          "Pre-seed",
+          "Series A",
+          "Series B",
+          "Series C",
+          "Non-Profit"
+        ].map((option) => (
+          <div className="mb-2" key={option} style={{ marginTop: 8 }}>
+            <Checkbox
+              checked={selectedKeys.includes(option)}
+              onChange={(e) => {
+                const keys = [...selectedKeys];
+                if (e.target.checked) {
+                  keys.push(option);
+                } else {
+                  const index = keys.indexOf(option);
+                  if (index !== -1) {
+                    keys.splice(index, 1);
+                  }
+                }
+                setSelectedKeys(keys);
+                confirm(); // Confirm the filter change immediately
+              }}
+            >
+              {option}
+            </Checkbox>
+          </div>
+        ))}
+         <Button onClick={handleReset} size="small" style={{ width: 90 }}>
+          Reset
+        </Button>
+      </div>
+    );
+  }
+}
+,
     {
       title: "Website",
       dataIndex: "website",
@@ -653,54 +1124,113 @@ function AdminPage() {
           {text}
         </div>
       ),
+
     },
     {
-      title: "Industry",
-      dataIndex: "industry",
-      key: "industry",
-      render: (text, record) => (
-        <div
-          className=" whitespace-nowrap hover:cursor-pointer"
-          onClick={() => handleProjectClick(record)}
+  title: "Industry",
+  dataIndex: "industry",
+  key: "industry",
+  render: (text, record) => (
+    <div
+      className="whitespace-nowrap hover:cursor-pointer"
+      onClick={() => handleProjectClick(record)}
+    >
+      {record?.industry?.map((industry, index) => (
+        <Badge
+          key={index}
+          className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black  inline-flex justify-center items-center gap-x-1 px-2 py-1 text-xs  text-center   rounded-3xl "
         >
-          {record?.industry?.map((industry, index) => (
-            <Badge
-              key={index}
-              className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black  inline-flex justify-center items-center gap-x-1 px-2 py-1 text-xs  text-center   rounded-3xl "
+          {industry}
+        </Badge>
+      ))}
+    </div>
+  ),
+  filters: [
+    { text: "Technology", value: "Technology" }, 
+    { text:"E-commerce", value: "E-commerce" }, 
+    { text:"Healthtech", value: "Healthtech" }, 
+    { text:"Fintech", value: "Fintech" }, 
+    { text:"Food & Beverage", value: "Food & Beverage" }, 
+    { text:"Edtech", value: "Edtech" }, 
+    { text:"Cleantech", value: "Cleantech" }, 
+    { text:"AI & ML", value: "AI & ML" }, 
+    { text:"Cybersecurity", value: "Cybersecurity" }, 
+    { text:"PropTech", value: "PropTech" }, 
+    { text:"Travel & Hospitality", value: "Travel & Hospitality" }, 
+    { text:"Fashion & Apparel", value: "Fashion & Apparel" }, 
+    { text:"IoT", value: "IoT" }, 
+    { text:"Biotech", value: "Biotech" }, 
+    { text:"Social Media", value: "Social Media" }, 
+    { text:"Entertainment", value: "Entertainment" }, 
+    { text:"Gaming", value: "Gaming" }, 
+    { text:"Eco-friendly", value: "Eco-friendly" }, 
+    { text:"Transportation", value: "Transportation" }, 
+    { text:"Fitness & Wellness", value: "Fitness & Wellness" }, 
+    { text:"Agtech", value: "Agtech" },
+  ],
+  onFilter: (value, record) => record.industry.includes(value),
+  filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+    const handleReset = () => {
+      clearFilters();
+      setSelectedKeys([]); // Reset selected keys
+      confirm(); // Confirm the filter clearing immediately
+    };
+
+    return (
+      <div style={{ padding: 8 }}>
+       
+        {[
+          "Technology", 
+          "E-commerce", 
+          "Healthtech", 
+          "Fintech", 
+          "Food & Beverage", 
+          "Edtech", 
+          "Cleantech", 
+          "AI & ML", 
+          "Cybersecurity", 
+          "PropTech", 
+          "Travel & Hospitality", 
+          "Fashion & Apparel", 
+          "IoT", 
+          "Biotech", 
+          "Social Media", 
+          "Entertainment", 
+          "Gaming", 
+          "Eco-friendly", 
+          "Transportation", 
+          "Fitness & Wellness", 
+          "Agtech"
+        ].map((option) => (
+          <div className="mb-2" key={option} style={{ marginTop: 8 }}>
+            <Checkbox
+              checked={selectedKeys.includes(option)}
+              onChange={(e) => {
+                const keys = [...selectedKeys];
+                if (e.target.checked) {
+                  keys.push(option);
+                } else {
+                  const index = keys.indexOf(option);
+                  if (index !== -1) {
+                    keys.splice(index, 1);
+                  }
+                }
+                setSelectedKeys(keys);
+                confirm(); // Confirm the filter change immediately
+              }}
             >
-              {industry}
-            </Badge>
-          ))}
-        </div>
-      ),
-      filters: [
-        { text: "Technology", value: "Technology" }, 
-        { text:"E-commerce", value: "E-commerce" }, 
-        { text:"Healthtech", value: "Healthtech" }, 
-        { text:"Fintech", value: "Fintech" }, 
-        { text:"Food & Beverage", value: "Food & Beverage" }, 
-        { text:"Edtech", value: "Edtech" }, 
-        { text:"Cleantech", value: "Cleantech" }, 
-        { text:"AI & ML", value: "AI & ML" }, 
-        { text:"Cybersecurity", value: "Cybersecurity" }, 
-        { text:"PropTech", value: "PropTech" }, 
-        { text:"Travel & Hospitality", value: "Travel & Hospitality" }, 
-        { text:"Fashion & Apparel", value: "Fashion & Apparel" }, 
-        { text:"IoT", value: "IoT" }, 
-        { text:"Biotech", value: "Biotech" }, 
-        { text:"Social Media", value: "Social Media" }, 
-        { text:"Entertainment", value: "Entertainment" }, 
-        { text:"Gaming", value: "Gaming" }, 
-        { text:"Eco-friendly", value: "Eco-friendly" }, 
-        { text:"Transportation", value: "Transportation" }, 
-        { text:"Fitness & Wellness", value: "Fitness & Wellness" }, 
-        { text:"Agtech", value: "Agtech" },
-        
-         
-     
-      ],
-      onFilter: (value, record) => record.industry.includes(value)
-    },
+              {option}
+            </Checkbox>
+          </div>
+        ))}
+         <Button onClick={handleReset} size="small" style={{ width: 90 }}>
+          Reset
+        </Button>
+      </div>
+    );
+  }
+}
+,
     {
       title: "Keywords",
       dataIndex: "keyWords",
@@ -757,7 +1287,52 @@ function AdminPage() {
           </span>
         </>
       ),
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder={`Search Name`}
+            value={selectedKeys[0]}
+            onChange={(e) => {
+              setSelectedKeys(e.target.value ? [e.target.value] : []);
+            }}
+            onPressEnter={() => confirm()}
+            style={{
+              width: 188,
+              marginBottom: 8,
+              display: "block",
+              fontSize: "12px",
+              paddingTop: "2px",
+              paddingBottom: "2px",
+            }}
+          />
+          <Space>
+           
+            <Button
+              onClick={() => {
+                clearFilters();
+                confirm(); 
+              }}
+              size="small"
+              style={{ width: 90, fontSize: "12px" }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        record.name.toString().toLowerCase().includes(value.toLowerCase()),
     },
+
+ 
     {
       title: "Date",
       dataIndex: "created_at",
@@ -770,6 +1345,35 @@ function AdminPage() {
           {formatDate(record.created_at)}
         </span>
       ),
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+        <div style={{ padding: 8 }}>
+          <RangePicker
+            value={selectedKeys[0] ? [moment(selectedKeys[0][0]), moment(selectedKeys[0][1])] : []}
+            onChange={dates => {
+              const range = dates ? [[dates[0].startOf('day').format('YYYY-MM-DD'), dates[1].endOf('day').format('YYYY-MM-DD')]] : [];
+              setSelectedKeys(range);
+              if (!dates) {
+                clearFilters();
+              } else {
+                confirm(); // Confirm the filter immediately
+              }
+            }}
+            style={{ marginBottom: 8, display: 'block' }}
+          />
+          <Button onClick={() => {
+            clearFilters();
+            confirm(); 
+          }} size="small" style={{ width: 90 }}>
+            Reset
+          </Button>
+        </div>
+      ),
+      onFilter: (value, record) => {
+        const [start, end] = value;
+        const date = moment(record.created_at);
+        return date >= moment(start) && date <= moment(end);
+      }
+    
     },
     {
       title: "Owner",

@@ -12,17 +12,272 @@ import {
   getCurrencyLabelByKey,
 } from "../../features/DurationSlice";
 import { Switch, Space } from "antd";
-import { Input, Button } from "antd";
+import { Input, Button, InputNumber, Checkbox } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { DatePicker } from "antd";
 import moment from "moment";
 import { formatNumber } from "../../features/CostSlice";
-
+import Chart from "react-apexcharts";
+const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
+
+// Updated Dashboard component in AdminPage to include an ApexChart for all table data
+
+function Dashboard({ dataSource }) {
+  const [chartData, setChartData] = useState([]);
+  console.log(dataSource);
+  useEffect(() => {
+    const processData = () => {
+      let months = {};
+      let customers = {};
+      let status = {};
+      let verified = {};
+      let targetAmount = {};
+      let ticketSize = {};
+      let offerType = {};
+      let amountRaised = {};
+      let country = {};
+      let yearEstablished = {};
+      let revenueRange = {};
+      let round = {};
+      let industry = {};
+
+      dataSource.forEach((item) => {
+        // Count projects per month
+        const month = moment(item.created_at).format("MMM YYYY");
+        months[month] = (months[month] || 0) + 1;
+
+        // Count projects per customer
+        customers[item.user_email] = (customers[item.user_email] || 0) + 1;
+
+        // Count projects by status
+        status[item.status] = (status[item.status] || 0) + 1;
+
+        // Count projects by verified status
+        verified[item.verified ? "Verified" : "Not Verified"] =
+          (verified[item.verified ? "Verified" : "Not Verified"] || 0) + 1;
+
+        // Count projects by target amount ranges
+        const amountRanges = ["0-100K", "100K-500K", "500K-1M", "1M-5M", ">5M"];
+        amountRanges.forEach((range) => {
+          if (!targetAmount[range]) targetAmount[range] = 0;
+          const amount = parseFloat(item.target_amount);
+          switch (range) {
+            case "0-100K":
+              if (amount <= 100000) targetAmount[range]++;
+              break;
+            case "100K-500K":
+              if (amount > 100000 && amount <= 500000) targetAmount[range]++;
+              break;
+            case "500K-1M":
+              if (amount > 500000 && amount <= 1000000) targetAmount[range]++;
+              break;
+            case "1M-5M":
+              if (amount > 1000000 && amount <= 5000000) targetAmount[range]++;
+              break;
+            case ">5M":
+              if (amount > 5000000) targetAmount[range]++;
+              break;
+          }
+        });
+
+        // Count projects by ticket size ranges
+        const ticketRanges = [
+          "0-1000",
+          "1001-5000",
+          "5001-10000",
+          "10001-50000",
+          ">50000",
+        ];
+        ticketRanges.forEach((range) => {
+          if (!ticketSize[range]) ticketSize[range] = 0;
+          const size = parseFloat(item.ticket_size);
+          switch (range) {
+            case "0-1000":
+              if (size <= 1000) ticketSize[range]++;
+              break;
+            case "1001-5000":
+              if (size > 1000 && size <= 5000) ticketSize[range]++;
+              break;
+            case "5001-10000":
+              if (size > 5000 && size <= 10000) ticketSize[range]++;
+              break;
+            case "10001-50000":
+              if (size > 10000 && size <= 50000) ticketSize[range]++;
+              break;
+            case ">50000":
+              if (size > 50000) ticketSize[range]++;
+              break;
+          }
+        });
+
+        // Count projects by offer type
+        offerType[item.offer_type] = (offerType[item.offer_type] || 0) + 1;
+
+        // Count projects by amount raised ranges
+        amountRanges.forEach((range) => {
+          if (!amountRaised[range]) amountRaised[range] = 0;
+          const raised = parseFloat(item.amountRaised);
+          switch (range) {
+            case "0-100K":
+              if (raised <= 100000) amountRaised[range]++;
+              break;
+            case "100K-500K":
+              if (raised > 100000 && raised <= 500000) amountRaised[range]++;
+              break;
+            case "500K-1M":
+              if (raised > 500000 && raised <= 1000000) amountRaised[range]++;
+              break;
+            case "1M-5M":
+              if (raised > 1000000 && raised <= 5000000) amountRaised[range]++;
+              break;
+            case ">5M":
+              if (raised > 5000000) amountRaised[range]++;
+              break;
+          }
+        });
+
+        // Count projects by country
+        country[item.country] = (country[item.country] || 0) + 1;
+
+        // Count projects by year established
+        yearEstablished[item.operationTime] =
+          (yearEstablished[item.operationTime] || 0) + 1;
+
+        // Count projects by revenue range
+        revenueRange[item.revenueStatus] =
+          (revenueRange[item.revenueStatus] || 0) + 1;
+
+        // Count projects by round
+        round[item.round] = (round[item.round] || 0) + 1;
+
+        // Count projects by industry
+        item.industry.forEach((ind) => {
+          industry[ind] = (industry[ind] || 0) + 1;
+        });
+        // console.log("Processing item:", item);
+      });
+
+      const sortedCustomers = Object.entries(customers)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10);
+
+      setChartData([
+        {
+          name: "Projects by Month",
+          data: Object.values(months),
+          categories: Object.keys(months),
+          type: "bar",
+        },
+        {
+          name: "Top 10 Customers",
+          data: sortedCustomers.map((c) => c[1]),
+          categories: sortedCustomers.map((c) => c[0]),
+          type: "bar",
+        },
+        {
+          name: "Projects by Status",
+          data: Object.values(status),
+          categories: Object.keys(status),
+          type: "pie",
+        },
+        {
+          name: "Projects by Verified Status",
+          data: Object.values(verified),
+          categories: Object.keys(verified),
+          type: "pie",
+        },
+        {
+          name: "Projects by Target Amount",
+          data: Object.values(targetAmount),
+          categories: Object.keys(targetAmount),
+          type: "bar",
+        },
+        {
+          name: "Projects by Ticket Size",
+          data: Object.values(ticketSize),
+          categories: Object.keys(ticketSize),
+          type: "bar",
+        },
+        {
+          name: "Projects by Offer Type",
+          data: Object.values(offerType),
+          categories: Object.keys(offerType),
+          type: "bar",
+        },
+        {
+          name: "Projects by Amount Raised",
+          data: Object.values(amountRaised),
+          categories: Object.keys(amountRaised),
+          type: "bar",
+        },
+        {
+          name: "Projects by Country",
+          data: Object.values(country),
+          categories: Object.keys(country),
+          type: "bar",
+        },
+        {
+          name: "Projects by Year Established",
+          data: Object.values(yearEstablished),
+          categories: Object.keys(yearEstablished),
+          type: "bar",
+        },
+        {
+          name: "Projects by Revenue Range",
+          data: Object.values(revenueRange),
+          categories: Object.keys(revenueRange),
+          type: "bar",
+        },
+        {
+          name: "Projects by Round",
+          data: Object.values(round),
+          categories: Object.keys(round),
+          type: "bar",
+        },
+        {
+          name: "Projects by Industry",
+          data: Object.values(industry),
+          categories: Object.keys(industry),
+          type: "bar",
+        },
+      ]);
+      // After processing data, log results for verification
+      // console.log("Months:", months);
+      // console.log("Customers:", customers);
+      // console.log("Target Amount:", targetAmount);
+      // Log other data similarly
+    };
+
+    processData();
+  }, [dataSource]);
+
+  return (
+    <div className="flex flex-wrap justify-center items-center ">
+      {chartData.map((chart, index) => (
+        <div key={index} className="w-full sm:w-1/3 p-2">
+          <Chart
+            key={index}
+            options={{
+              chart: { type: chart.type, height: 350 },
+              labels: chart.categories,
+              xaxis: { categories: chart.categories },
+              title: { text: chart.name },
+            }}
+            series={chart.type === "pie" ? chart.data : [{ data: chart.data }]}
+            type={chart.type}
+            height={350}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function AdminPage() {
   const { user } = useAuth();
   const [userData, setUserData] = useState([]);
+  const [dataSource, setDataSource] = useState([]);
 
   useEffect(() => {
     async function fetchUsers() {
@@ -42,8 +297,6 @@ function AdminPage() {
 
     fetchUsers();
   }, [user]); // Sử dụng một lần khi component được render
-
-  const [dataSource, setDataSource] = useState([]);
 
   useEffect(() => {
     async function fetchProjects() {
@@ -126,7 +379,6 @@ function AdminPage() {
   };
 
   const [filteredData, setFilteredData] = useState([]);
-
   useEffect(() => {
     // Cập nhật filteredData khi dataSource thay đổi
     setFilteredData(dataSource);
@@ -171,7 +423,15 @@ function AdminPage() {
             onChange={(e) => {
               setSelectedKeys(e.target.value ? [e.target.value] : []);
             }}
-            onPressEnter={() => confirm()}
+            onPressEnter={() => {
+              confirm();
+              const filtered = dataSource?.filter((record) =>
+                record?.name
+                  ?.toLowerCase()
+                  .includes(selectedKeys[0]?.toLowerCase())
+              );
+              setFilteredData(filtered);
+            }}
             style={{
               width: 188,
               marginBottom: 8,
@@ -183,25 +443,12 @@ function AdminPage() {
           />
           <Space>
             <Button
-              type="primary"
               onClick={() => {
+                clearFilters();
                 confirm();
-                // Lưu kết quả filter vào state filteredData
-                const filtered = dataSource?.filter((record) =>
-                  record?.name
-                    ?.toLowerCase()
-                    .includes(selectedKeys[0]?.toLowerCase())
-                );
-                setFilteredData(filtered);
+
+                setFilteredData(dataSource);
               }}
-              icon={<SearchOutlined />}
-              size="small"
-              style={{ width: 90, fontSize: "12px" }}
-            >
-              Search
-            </Button>
-            <Button
-              onClick={() => clearFilters()}
               size="small"
               style={{ width: 90, fontSize: "12px" }}
             >
@@ -227,39 +474,53 @@ function AdminPage() {
       ellipsis: true,
       width: "10%",
       align: "center",
-      filterDropdown: ({ setSelectedKeys, confirm, clearFilters }) => (
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
         <div style={{ padding: 8 }}>
-          <Space direction="vertical">
-            <DatePicker.RangePicker
-              onChange={(value) => setSelectedKeys(value ? [value] : [])}
-              style={{ width: 188, marginBottom: 8, display: "block" }}
-              format="DD/MM/YYYY" // Add this line
-            />
-          </Space>
-          <Space>
-            <Button
-              type="primary"
-              onClick={() => confirm()}
-              size="small"
-              style={{ width: 90 }}
-            >
-              Search
-            </Button>
-            <Button
-              onClick={() => clearFilters()}
-              size="small"
-              style={{ width: 90 }}
-            >
-              Reset
-            </Button>
-          </Space>
+          <RangePicker
+            value={
+              selectedKeys[0]
+                ? [moment(selectedKeys[0][0]), moment(selectedKeys[0][1])]
+                : []
+            }
+            onChange={(dates) => {
+              const range = dates
+                ? [
+                    [
+                      dates[0].startOf("day").format("YYYY-MM-DD"),
+                      dates[1].endOf("day").format("YYYY-MM-DD"),
+                    ],
+                  ]
+                : [];
+              setSelectedKeys(range);
+              if (!dates) {
+                clearFilters();
+              } else {
+                confirm(); // Confirm the filter immediately
+              }
+            }}
+            style={{ marginBottom: 8, display: "block" }}
+          />
+          <Button
+            onClick={() => {
+              clearFilters();
+              confirm();
+            }}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
         </div>
       ),
       onFilter: (value, record) => {
-        if (!value) return true;
         const [start, end] = value;
-        const createdAt = moment(record.created_at);
-        return createdAt.isBetween(start, end, "day", "[]");
+        const date = moment(record.created_at);
+        return date >= moment(start) && date <= moment(end);
       },
     },
     {
@@ -274,6 +535,62 @@ function AdminPage() {
           {text}
         </div>
       ),
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder={`Search Company Name`}
+            value={selectedKeys[0]}
+            onChange={(e) => {
+              setSelectedKeys(e.target.value ? [e.target.value] : []);
+            }}
+            onPressEnter={() => {
+              console.log(selectedKeys);
+              confirm();
+              const filtered = dataSource?.filter((record) =>
+                record?.user_email
+                  ?.toLowerCase()
+                  .includes(selectedKeys[0]?.toLowerCase())
+              );
+              setFilteredData(filtered);
+            }}
+            style={{
+              width: 188,
+              marginBottom: 8,
+              display: "block",
+              fontSize: "12px",
+              paddingTop: "2px",
+              paddingBottom: "2px",
+            }}
+          />
+          <Space>
+            <Button
+              onClick={() => {
+                clearFilters();
+                confirm();
+
+                setFilteredData(dataSource);
+              }}
+              size="small"
+              style={{ width: 90, fontSize: "12px" }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        record.user_email
+          .toString()
+          .toLowerCase()
+          .includes(value.toLowerCase()),
     },
     {
       title: "Required verification",
@@ -282,14 +599,84 @@ function AdminPage() {
         <div
           onClick={() => handleProjectClick(record)}
           className={`w-[5em] 
-            ${record.required ? "text-blue-600" : " text-black-500"}
-            focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md   py-1 text-center `}
+                ${record.required ? "text-blue-600" : " text-black-500"}
+                focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md   py-1 text-center `}
         >
           {record.required && record.verified
             ? "Accepted"
             : record.required
             ? "Waiting..."
             : "No required"}
+        </div>
+      ),
+      filters: [
+        { text: "Accepted", value: "accepted" },
+        { text: "Waiting", value: "waiting" },
+        { text: "Not Required", value: "notRequired" },
+      ],
+      onFilter: (value, record) => {
+        switch (value) {
+          case "accepted":
+            return record.required && record.verified;
+          case "waiting":
+            return record.required && !record.verified;
+          case "notRequired":
+            return !record.required;
+        }
+      },
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          {["accepted", "waiting", "notRequired"].map((option) => (
+            <div className="mb-2" key={option} style={{ marginTop: 8 }}>
+              <Checkbox
+                checked={selectedKeys.includes(option)}
+                onChange={(e) => {
+                  const keys = [...selectedKeys];
+                  if (e.target.checked) {
+                    keys.push(option);
+                  } else {
+                    const index = keys.indexOf(option);
+                    if (index !== -1) {
+                      keys.splice(index, 1);
+                    }
+                  }
+                  setSelectedKeys(keys);
+                  confirm();
+                  const filtered = dataSource.filter((record) =>
+                    keys.some(
+                      (key) =>
+                        record.required &&
+                        record.verified &&
+                        option.includes(key)
+                    )
+                  );
+                  setFilteredData(filtered); // Confirm the filter change immediately
+                }}
+              >
+                {option === "accepted"
+                  ? "Accepted"
+                  : option === "waiting"
+                  ? "Waiting"
+                  : "Not Required"}
+              </Checkbox>
+            </div>
+          ))}
+          <Button
+            onClick={() => {
+              clearFilters();
+              confirm();
+              setFilteredData(dataSource); // Confirm the filter clearing immediately
+            }}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
         </div>
       ),
     },
@@ -318,6 +705,62 @@ function AdminPage() {
           </button>
         </div>
       ),
+      filters: [
+        { text: "Public", value: "public" },
+        { text: "Private", value: "private" },
+        { text: "Stealth", value: "stealth" },
+      ],
+      onFilter: (value, record) => record.status === value,
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          {["public", "private", "stealth"].map((option) => (
+            <div className="mb-2" key={option} style={{ marginTop: 8 }}>
+              <Checkbox
+                checked={selectedKeys.includes(option)}
+                onChange={(e) => {
+                  const keys = [...selectedKeys];
+                  if (e.target.checked) {
+                    keys.push(option);
+                  } else {
+                    const index = keys.indexOf(option);
+                    if (index !== -1) {
+                      keys.splice(index, 1);
+                    }
+                  }
+                  setSelectedKeys(keys);
+                  confirm();
+                  const filtered = dataSource.filter((record) =>
+                    keys.some((key) => record.status.includes(key))
+                  );
+                  setFilteredData(filtered); // Confirm the filter change immediately
+                }}
+              >
+                {option === "public"
+                  ? "Public"
+                  : option === "private"
+                  ? "Private"
+                  : "Stealth"}
+              </Checkbox>
+            </div>
+          ))}
+          <Button
+            onClick={() => {
+              clearFilters();
+              confirm();
+              setFilteredData(dataSource); // Confirm the filter clearing immediately
+            }}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
+        </div>
+      ),
     },
     {
       title: "Verified Status",
@@ -333,6 +776,60 @@ function AdminPage() {
           />
         </Space>
       ),
+      filters: [
+        { text: "Yes", value: true },
+        { text: "No", value: false },
+      ],
+      onFilter: (value, record) => record.verified === value,
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => {
+        const handleReset = () => {
+          clearFilters();
+          setSelectedKeys([]); // Reset selected keys
+          confirm();
+          setFilteredData(dataSource);
+          // Confirm the filter clearing immediately
+        };
+
+        return (
+          <div className="mb-2" style={{ padding: 8 }}>
+            {["true", "false"].map((option) => (
+              <div key={option} style={{ marginTop: 8 }}>
+                <Checkbox
+                  checked={selectedKeys.includes(option)}
+                  onChange={(e) => {
+                    const keys = [...selectedKeys];
+                    if (e.target.checked) {
+                      keys.push(option);
+                    } else {
+                      const index = keys.indexOf(option);
+                      if (index !== -1) {
+                        keys.splice(index, 1);
+                      }
+                    }
+                    setSelectedKeys(keys);
+                    confirm();
+                    const filtered = dataSource.filter((record) => {
+                      // Convert option to boolean and compare with record.verified
+                      return record.verified === (option === "true");
+                    });
+                    setFilteredData(filtered);
+                  }}
+                >
+                  {option === "true" ? "Yes" : "No"}
+                </Checkbox>
+              </div>
+            ))}
+            <Button onClick={handleReset} size="small" style={{ width: 90 }}>
+              Reset
+            </Button>
+          </div>
+        );
+      },
     },
     {
       title: "Target Amount",
@@ -340,12 +837,96 @@ function AdminPage() {
       key: "target_amount",
       render: (text, record) => (
         <div
-          className=" whitespace-nowrap hover:cursor-pointer"
+          className="whitespace-nowrap hover:cursor-pointer"
           onClick={() => handleProjectClick(record)}
         >
           {formatNumber(text)}
         </div>
       ),
+      filters: [
+        { text: "0-100", value: "0-100000" },
+        { text: "100-500", value: "100000-500000" },
+        { text: "500K-1M", value: "500000-1000000" },
+        { text: "1M-5M", value: "1000000-5000000" },
+        { text: ">5M", value: ">5000000" },
+      ],
+      onFilter: (value, record) => {
+        const amount = parseFloat(record.target_amount);
+        switch (value) {
+          case "0-100000":
+            return amount >= 0 && amount <= 100000;
+          case "100000-500000":
+            return amount > 100000 && amount <= 500000;
+          case "500000-1000000":
+            return amount > 500000 && amount <= 1000000;
+          case "1000000-5000000":
+            return amount > 1000000 && amount <= 5000000;
+          case ">5000000":
+            return amount > 5000000;
+        }
+      },
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => {
+        const handleReset = () => {
+          clearFilters();
+          setSelectedKeys([]); // Reset selected keys
+          confirm(); // Confirm the filter clearing immediately
+          setFilteredData(dataSource);
+        };
+
+        return (
+          <div className="mb-2" style={{ padding: 8 }}>
+            {[
+              "0-100000",
+              "100000-500000",
+              "500000-1000000",
+              "1000000-5000000",
+              ">5000000",
+            ].map((option) => (
+              <div key={option} style={{ marginTop: 8 }}>
+                <Checkbox
+                  checked={selectedKeys.includes(option)}
+                  onChange={(e) => {
+                    const keys = [...selectedKeys];
+                    if (e.target.checked) {
+                      keys.push(option);
+                    } else {
+                      const index = keys.indexOf(option);
+                      if (index !== -1) {
+                        keys.splice(index, 1);
+                      }
+                    }
+                    setSelectedKeys(keys);
+                    confirm();
+                    const filtered = dataSource.filter((record) => {
+                      const [min, max] = option.split("-");
+                      const amount = parseFloat(record.target_amount);
+                      if (max) {
+                        return (
+                          amount >= parseFloat(min) && amount <= parseFloat(max)
+                        );
+                      } else {
+                        return amount > parseFloat(min);
+                      }
+                    });
+                    setFilteredData(filtered);
+                    // Confirm the filter change immediately
+                  }}
+                >
+                  {option}
+                </Checkbox>
+              </div>
+            ))}
+            <Button onClick={handleReset} size="small" style={{ width: 90 }}>
+              Reset
+            </Button>
+          </div>
+        );
+      },
     },
     {
       title: "Ticket Size",
@@ -353,12 +934,90 @@ function AdminPage() {
       key: "ticket_size",
       render: (text, record) => (
         <div
-          className=" whitespace-nowrap hover:cursor-pointer"
+          className="whitespace-nowrap hover:cursor-pointer"
           onClick={() => handleProjectClick(record)}
         >
           {formatNumber(text)}
         </div>
       ),
+      sorter: (a, b) => a.ticket_size - b.ticket_size,
+      filters: [
+        { text: "0-1000", value: "0-100" },
+        { text: "1000-5000", value: "100-500" },
+        { text: "5000-10000", value: "500-1000" },
+        { text: "1000-50000", value: "1000-5000" },
+        { text: ">50000", value: ">5000" },
+      ],
+      onFilter: (value, record) => {
+        const size = parseFloat(record.ticket_size);
+        switch (value) {
+          case "0-100":
+            return size >= 0 && size <= 1000;
+          case "100-500":
+            return size > 1000 && size <= 5000;
+          case "500-1000":
+            return size > 5000 && size <= 10000;
+          case "1000-5000":
+            return size > 10000 && size <= 50000;
+          case ">5000":
+            return size > 50000;
+        }
+      },
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => {
+        const handleReset = () => {
+          clearFilters();
+          setSelectedKeys([]); // Reset selected keys
+          confirm(); // Confirm the filter clearing immediately
+          setFilteredData(dataSource);
+        };
+
+        return (
+          <div style={{ padding: 8 }}>
+            {["0-100", "100-500", "500-1000", "1000-5000", ">5000"].map(
+              (option) => (
+                <div className="mb-2" key={option} style={{ marginTop: 8 }}>
+                  <Checkbox
+                    checked={selectedKeys.includes(option)}
+                    onChange={(e) => {
+                      const keys = [...selectedKeys];
+                      if (e.target.checked) {
+                        keys.push(option);
+                      } else {
+                        const index = keys.indexOf(option);
+                        if (index !== -1) {
+                          keys.splice(index, 1);
+                        }
+                      }
+                      setSelectedKeys(keys);
+                      confirm(); // Confirm the filter change immediately
+                      // const filtered = dataSource.filter((record) => {
+                      //   const [min, max] = option.split("-");
+                      //   const size = parseFloat(record.ticket_size);
+                      //   if (max) {
+                      //     return size >= parseFloat(min) && size <= parseFloat(max);
+                      //   } else {
+                      //     return size > parseFloat(min);
+                      //   }
+                      // });
+                      // setFilteredData(filtered);
+                    }}
+                  >
+                    {option}
+                  </Checkbox>
+                </div>
+              )
+            )}
+            <Button onClick={handleReset} size="small" style={{ width: 90 }}>
+              Reset
+            </Button>
+          </div>
+        );
+      },
     },
     {
       title: "No. Ticket",
@@ -379,12 +1038,70 @@ function AdminPage() {
       key: "offer_type",
       render: (text, record) => (
         <div
-          className=" whitespace-nowrap hover:cursor-pointer"
+          className="whitespace-nowrap hover:cursor-pointer"
           onClick={() => handleProjectClick(record)}
         >
           {text}
         </div>
       ),
+      filters: [
+        { text: "M&A", value: "M&A" },
+        { text: "Investment", value: "Investment" },
+        { text: "Lending", value: "Lending" },
+        { text: "Convertible", value: "Convertible" },
+        { text: "Non-Profit", value: "Non-Profit" },
+      ],
+      onFilter: (value, record) => record.offer_type === value,
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => {
+        const handleReset = () => {
+          clearFilters();
+          setSelectedKeys([]); // Reset selected keys
+          confirm(); // Confirm the filter clearing immediately
+          setFilteredData(dataSource);
+        };
+
+        return (
+          <div style={{ padding: 8 }}>
+            {["M&A", "Investment", "Lending", "Convertible", "Non-Profit"].map(
+              (option) => (
+                <div className="mb-2" key={option} style={{ marginTop: 8 }}>
+                  <Checkbox
+                    checked={selectedKeys.includes(option)}
+                    onChange={(e) => {
+                      const keys = [...selectedKeys];
+                      if (e.target.checked) {
+                        keys.push(option);
+                      } else {
+                        const index = keys.indexOf(option);
+                        if (index !== -1) {
+                          keys.splice(index, 1);
+                        }
+                      }
+                      setSelectedKeys(keys);
+                      confirm(); // Confirm the filter change immediately
+                      const filtered = dataSource.filter((record) => {
+                        // Check if the offer_type contains the selected option
+                        return record.offer_type.includes(option);
+                      });
+                      setFilteredData(filtered);
+                    }}
+                  >
+                    {option}
+                  </Checkbox>
+                </div>
+              )
+            )}
+            <Button onClick={handleReset} size="small" style={{ width: 90 }}>
+              Reset
+            </Button>
+          </div>
+        );
+      },
     },
     {
       title: "Offer",
@@ -405,12 +1122,97 @@ function AdminPage() {
       key: "amountRaised",
       render: (text, record) => (
         <div
-          className=" whitespace-nowrap hover:cursor-pointer"
+          className="whitespace-nowrap hover:cursor-pointer"
           onClick={() => handleProjectClick(record)}
         >
           {formatNumber(text)}
         </div>
       ),
+      filters: [
+        { text: "0-100K", value: "0-100" },
+        { text: "100K-500K", value: "100-500" },
+        { text: "500K-1M", value: "500-1000" },
+        { text: "1M-5M", value: "1000-5000" },
+        { text: ">5M", value: ">5000" },
+      ],
+      onFilter: (value, record) => {
+        const raised = parseFloat(record.amountRaised);
+        switch (value) {
+          case "0-100":
+            return raised >= 0 && raised <= 100000;
+          case "100-500":
+            return raised > 100000 && raised <= 500000;
+          case "500-1000":
+            return raised > 500000 && raised <= 1000000;
+          case "1000-5000":
+            return raised > 1000000 && raised <= 5000000;
+          case ">5000":
+            return raised > 5000000;
+        }
+      },
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => {
+        const handleReset = () => {
+          clearFilters();
+          setSelectedKeys([]); // Reset selected keys
+          confirm(); // Confirm the filter clearing immediately
+          setFilteredData(dataSource);
+        };
+
+        return (
+          <div style={{ padding: 8 }}>
+            {["0-100", "100-500", "500-1000", "1000-5000", ">5000"].map(
+              (option) => (
+                <div className="mb-2" key={option} style={{ marginTop: 8 }}>
+                  <Checkbox
+                    checked={selectedKeys.includes(option)}
+                    onChange={(e) => {
+                      const keys = [...selectedKeys];
+                      if (e.target.checked) {
+                        keys.push(option);
+                      } else {
+                        const index = keys.indexOf(option);
+                        if (index !== -1) {
+                          keys.splice(index, 1);
+                        }
+                      }
+                      setSelectedKeys(keys);
+                      confirm(); // Confirm the filter change immediately
+                      const filtered = dataSource.filter((record) => {
+                        const raised = parseFloat(record.amountRaised);
+                        switch (option) {
+                          case "0-100":
+                            return raised >= 0 && raised <= 100000;
+                          case "100-500":
+                            return raised > 100000 && raised <= 500000;
+                          case "500-1000":
+                            return raised > 500000 && raised <= 1000000;
+                          case "1000-5000":
+                            return raised > 1000000 && raised <= 5000000;
+                          case ">5000":
+                            return raised > 5000000;
+                          default:
+                            return false;
+                        }
+                      });
+                      setFilteredData(filtered);
+                    }}
+                  >
+                    {option}
+                  </Checkbox>
+                </div>
+              )
+            )}
+            <Button onClick={handleReset} size="small" style={{ width: 90 }}>
+              Reset
+            </Button>
+          </div>
+        );
+      },
     },
     {
       title: "Country",
@@ -424,6 +1226,57 @@ function AdminPage() {
           {text}
         </div>
       ),
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder={`Search Country`}
+            value={selectedKeys[0]}
+            onChange={(e) => {
+              setSelectedKeys(e.target.value ? [e.target.value] : []);
+            }}
+            onPressEnter={() => {
+              confirm();
+              const filtered = dataSource?.filter((record) =>
+                record?.country
+                  ?.toLowerCase()
+                  .includes(selectedKeys[0]?.toLowerCase())
+              );
+              setFilteredData(filtered);
+            }}
+            style={{
+              width: 188,
+              marginBottom: 8,
+              display: "block",
+              fontSize: "12px",
+              paddingTop: "2px",
+              paddingBottom: "2px",
+            }}
+          />
+          <Space>
+            <Button
+              onClick={() => {
+                clearFilters();
+                confirm();
+                setFilteredData(dataSource);
+              }}
+              size="small"
+              style={{ width: 90, fontSize: "12px" }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        record.country.toString().toLowerCase().includes(value.toLowerCase()),
     },
     {
       title: "Established",
@@ -444,12 +1297,81 @@ function AdminPage() {
       key: "revenueStatus",
       render: (text, record) => (
         <div
-          className=" whitespace-nowrap hover:cursor-pointer"
+          className="whitespace-nowrap hover:cursor-pointer"
           onClick={() => handleProjectClick(record)}
         >
           {text}
         </div>
       ),
+      filters: [
+        { text: "$0 - $10k", value: "$0 - $10k" },
+        { text: "$10k - $50k", value: "$10k - $50k" },
+        { text: "$50k - $100k", value: "$50k - $100k" },
+        { text: "$100k - $500k", value: "$100k - $500k" },
+        { text: "$500k - $1M", value: "$500k - $1M" },
+        { text: "$1M - $5M", value: "$1M - $5M" },
+        { text: ">$5M", value: ">$5M" },
+        { text: "Non-Profit", value: "Non-Profit" },
+      ],
+      onFilter: (value, record) => record.revenueStatus === value,
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => {
+        const handleReset = () => {
+          clearFilters();
+          setSelectedKeys([]); // Reset selected keys
+          confirm(); // Confirm the filter clearing immediately
+          setFilteredData(dataSource);
+          // Confirm the filter clearing immediately
+        };
+
+        return (
+          <div style={{ padding: 8 }}>
+            {[
+              "$0 - $10k",
+              "$10k - $50k",
+              "$50k - $100k",
+              "$100k - $500k",
+              "$500k - $1M",
+              "$1M - $5M",
+              ">$5M",
+              "Non-Profit",
+            ].map((option) => (
+              <div className="mb-2" key={option} style={{ marginTop: 8 }}>
+                <Checkbox
+                  checked={selectedKeys.includes(option)}
+                  onChange={(e) => {
+                    const keys = [...selectedKeys];
+                    if (e.target.checked) {
+                      keys.push(option);
+                    } else {
+                      const index = keys.indexOf(option);
+                      if (index !== -1) {
+                        keys.splice(index, 1);
+                      }
+                    }
+                    setSelectedKeys(keys);
+                    confirm(); // Confirm the filter change immediately
+                    const filtered = dataSource.filter((record) => {
+                      // Check if the revenueStatus contains the selected option
+                      return record.revenueStatus.includes(option);
+                    });
+                    setFilteredData(filtered);
+                  }}
+                >
+                  {option}
+                </Checkbox>
+              </div>
+            ))}
+            <Button onClick={handleReset} size="small" style={{ width: 90 }}>
+              Reset
+            </Button>
+          </div>
+        );
+      },
     },
     {
       title: "Round",
@@ -457,12 +1379,75 @@ function AdminPage() {
       key: "round",
       render: (text, record) => (
         <div
-          className=" whitespace-nowrap hover:cursor-pointer"
+          className="whitespace-nowrap hover:cursor-pointer"
           onClick={() => handleProjectClick(record)}
         >
           {text}
         </div>
       ),
+      filters: [
+        { text: "Seed", value: "Seed" },
+        { text: "Pre-seed", value: "Pre-seed" },
+        { text: "Series A", value: "Series A" },
+        { text: "Series B", value: "Series B" },
+        { text: "Series C", value: "Series C" },
+        { text: "Non-Profit", value: "Non-Profit" },
+      ],
+      onFilter: (value, record) => record.round === value,
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => {
+        const handleReset = () => {
+          clearFilters();
+          setSelectedKeys([]); // Reset selected keys
+          confirm(); // Confirm the filter clearing immediately
+          setFilteredData(dataSource);
+        };
+
+        return (
+          <div style={{ padding: 8 }}>
+            {[
+              "Seed",
+              "Pre-seed",
+              "Series A",
+              "Series B",
+              "Series C",
+              "Non-Profit",
+            ].map((option) => (
+              <div className="mb-2" key={option} style={{ marginTop: 8 }}>
+                <Checkbox
+                  checked={selectedKeys.includes(option)}
+                  onChange={(e) => {
+                    const keys = [...selectedKeys];
+                    if (e.target.checked) {
+                      keys.push(option);
+                    } else {
+                      const index = keys.indexOf(option);
+                      if (index !== -1) {
+                        keys.splice(index, 1);
+                      }
+                    }
+                    setSelectedKeys(keys);
+                    confirm();
+                    const filtered = dataSource.filter((record) =>
+                      keys.some((key) => record.round.includes(key))
+                    );
+                    setFilteredData(filtered); // Confirm the filter change immediately
+                  }}
+                >
+                  {option}
+                </Checkbox>
+              </div>
+            ))}
+            <Button onClick={handleReset} size="small" style={{ width: 90 }}>
+              Reset
+            </Button>
+          </div>
+        );
+      },
     },
     {
       title: "Website",
@@ -483,7 +1468,7 @@ function AdminPage() {
       key: "industry",
       render: (text, record) => (
         <div
-          className=" whitespace-nowrap hover:cursor-pointer"
+          className="whitespace-nowrap hover:cursor-pointer"
           onClick={() => handleProjectClick(record)}
         >
           {record?.industry?.map((industry, index) => (
@@ -496,6 +1481,100 @@ function AdminPage() {
           ))}
         </div>
       ),
+      filters: [
+        { text: "Technology", value: "Technology" },
+        { text: "E-commerce", value: "E-commerce" },
+        { text: "Healthtech", value: "Healthtech" },
+        { text: "Fintech", value: "Fintech" },
+        { text: "Food & Beverage", value: "Food & Beverage" },
+        { text: "Edtech", value: "Edtech" },
+        { text: "Cleantech", value: "Cleantech" },
+        { text: "AI & ML", value: "AI & ML" },
+        { text: "Cybersecurity", value: "Cybersecurity" },
+        { text: "PropTech", value: "PropTech" },
+        { text: "Travel & Hospitality", value: "Travel & Hospitality" },
+        { text: "Fashion & Apparel", value: "Fashion & Apparel" },
+        { text: "IoT", value: "IoT" },
+        { text: "Biotech", value: "Biotech" },
+        { text: "Social Media", value: "Social Media" },
+        { text: "Entertainment", value: "Entertainment" },
+        { text: "Gaming", value: "Gaming" },
+        { text: "Eco-friendly", value: "Eco-friendly" },
+        { text: "Transportation", value: "Transportation" },
+        { text: "Fitness & Wellness", value: "Fitness & Wellness" },
+        { text: "Agtech", value: "Agtech" },
+      ],
+      onFilter: (value, record) => record.industry.includes(value),
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => {
+        const handleReset = () => {
+          clearFilters();
+          setSelectedKeys([]); // Reset selected keys
+          confirm(); // Confirm the filter clearing immediately
+          setFilteredData(dataSource);
+        };
+
+        return (
+          <div style={{ padding: 8 }}>
+            {[
+              "Technology",
+              "E-commerce",
+              "Healthtech",
+              "Fintech",
+              "Food & Beverage",
+              "Edtech",
+              "Cleantech",
+              "AI & ML",
+              "Cybersecurity",
+              "PropTech",
+              "Travel & Hospitality",
+              "Fashion & Apparel",
+              "IoT",
+              "Biotech",
+              "Social Media",
+              "Entertainment",
+              "Gaming",
+              "Eco-friendly",
+              "Transportation",
+              "Fitness & Wellness",
+              "Agtech",
+            ].map((option) => (
+              <div className="mb-2" key={option} style={{ marginTop: 8 }}>
+                <Checkbox
+                  checked={selectedKeys.includes(option)}
+                  onChange={(e) => {
+                    const keys = [...selectedKeys];
+                    if (e.target.checked) {
+                      keys.push(option);
+                    } else {
+                      const index = keys.indexOf(option);
+                      if (index !== -1) {
+                        keys.splice(index, 1);
+                      }
+                    }
+                    setSelectedKeys(keys);
+                    confirm();
+                    const filtered = dataSource.filter((record) =>
+                      keys.some((key) => record.industry.includes(key))
+                    );
+                    setFilteredData(filtered);
+                    // Confirm the filter change immediately
+                  }}
+                >
+                  {option}
+                </Checkbox>
+              </div>
+            ))}
+            <Button onClick={handleReset} size="small" style={{ width: 90 }}>
+              Reset
+            </Button>
+          </div>
+        );
+      },
     },
     {
       title: "Keywords",
@@ -553,7 +1632,59 @@ function AdminPage() {
           </span>
         </>
       ),
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder={`Search Name`}
+            value={selectedKeys[0]}
+            onChange={(e) => {
+              setSelectedKeys(e.target.value ? [e.target.value] : []);
+            }}
+            onPressEnter={() => {
+              confirm();
+              const filtered = dataSource?.filter((record) =>
+                record?.name
+                  ?.toLowerCase()
+                  .includes(selectedKeys[0]?.toLowerCase())
+              );
+              setFilteredData(filtered);
+            }}
+            style={{
+              width: 188,
+              marginBottom: 8,
+              display: "block",
+              fontSize: "12px",
+              paddingTop: "2px",
+              paddingBottom: "2px",
+            }}
+          />
+          <Space>
+            <Button
+              onClick={() => {
+                clearFilters();
+                confirm();
+                setFilteredData(dataSource);
+              }}
+              size="small"
+              style={{ width: 90, fontSize: "12px" }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        record.name.toString().toLowerCase().includes(value.toLowerCase()),
     },
+
     {
       title: "Date",
       dataIndex: "created_at",
@@ -566,6 +1697,60 @@ function AdminPage() {
           {formatDate(record.created_at)}
         </span>
       ),
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <RangePicker
+            value={
+              selectedKeys[0]
+                ? [moment(selectedKeys[0][0]), moment(selectedKeys[0][1])]
+                : []
+            }
+            onChange={(dates) => {
+              const range = dates
+                ? [
+                    [
+                      dates[0].startOf("day").format("YYYY-MM-DD"),
+                      dates[1].endOf("day").format("YYYY-MM-DD"),
+                    ],
+                  ]
+                : [];
+              setSelectedKeys(range);
+              if (!dates) {
+                clearFilters();
+              } else {
+                confirm();
+                // const filtered = dataSource?.filter((record) => {
+                //   const date = moment(record.created_at);
+                //   return date >= moment(range[0][0]) && date <= moment(range[0][1]);
+                // });
+                // setFilteredData(filtered);
+              }
+            }}
+            style={{ marginBottom: 8, display: "block" }}
+          />
+          <Button
+            onClick={() => {
+              clearFilters();
+              confirm();
+              setFilteredData(dataSource);
+            }}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
+        </div>
+      ),
+      onFilter: (value, record) => {
+        const [start, end] = value;
+        const date = moment(record.created_at);
+        return date >= moment(start) && date <= moment(end);
+      },
     },
     {
       title: "Owner",
@@ -746,6 +1931,9 @@ function AdminPage() {
                         />
                       </div>
                     </div>
+                  </div>
+                  <div className="w-2/3 flex items-center mt-10">
+                    <Dashboard dataSource={filteredData} />
                   </div>
                 </div>
               </section>

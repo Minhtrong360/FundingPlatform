@@ -23,92 +23,162 @@ const { TabPane } = Tabs;
 
 // Updated Dashboard component in AdminPage to include an ApexChart for all table data
 
-function Dashboard({ data }) {
-  // Initialize filteredData to an empty array if data is not provided
-  const [filteredData, setFilteredData] = useState(data || []);
-  const [chartData, setChartData] = useState({
-    options: {
-      chart: {
-        height: 350,
-        type: 'bar',
-      },
-      plotOptions: {
-        bar: {
-          horizontal: false,
-        }
-      },
-      xaxis: {
-        categories: [],
-      },
-      yaxis: {
-        title: {
-          text: 'Values'
-        }
-      }
-    },
-    series: [{
-      name: 'Amount Raised',
-      data: []
-    }]
-  });
-
+function Dashboard({ dataSource }) {
+  const [chartData, setChartData] = useState([]);
+ 
   useEffect(() => {
-    // Only proceed if filteredData is an array and has elements
-    if (Array.isArray(filteredData) && filteredData.length > 0) {
-      // Aggregate data for chart
-      const countrySums = filteredData.reduce((acc, item) => {
-        acc[item.country] = (acc[item.country] || 0) + item.amountRaised;
-        return acc;
-      }, {});
+    const processData = () => {
+      let months = {};
+      let customers = {};
+      let status = {};
+      let verified = {};
+      let targetAmount = {};
+      let ticketSize = {};
+      let offerType = {};
+      let amountRaised = {};
+      let country = {};
+      let yearEstablished = {};
+      let revenueRange = {};
+      let round = {};
+      let industry = {};
 
-      const statusCounts = filteredData.reduce((acc, item) => {
-        acc[item.status] = (acc[item.status] || 0) + 1;
-        return acc;
-      }, {});
+      dataSource.forEach((item) => {
+        // Count projects per month
+        const month = moment(item.created_at).format('MMM YYYY');
+        months[month] = (months[month] || 0) + 1;
 
-      // Prepare series and categories for the chart
-      const countryCategories = Object.keys(countrySums);
-      const countrySeries = Object.values(countrySums);
-      const statusCategories = Object.keys(statusCounts);
-      const statusSeries = Object.values(statusCounts);
+        // Count projects per customer
+        customers[item.user_email] = (customers[item.user_email] || 0) + 1;
 
-      setChartData(prev => ({
-        ...prev,
-        options: {
-          ...prev.options,
-          xaxis: {
-            categories: countryCategories.concat(statusCategories),
-          },
-        },
-        series: [{
-          name: 'Amount Raised',
-          data: countrySeries.concat(statusSeries.map(s => s * 10000)) // Adjust if necessary
-        }]
-      }));
-    }
-  }, [filteredData]);
+        // Count projects by status
+        status[item.status] = (status[item.status] || 0) + 1;
+
+        // Count projects by verified status
+        verified[item.verified ? 'Verified' : 'Not Verified'] = (verified[item.verified ? 'Verified' : 'Not Verified'] || 0) + 1;
+
+        // Count projects by target amount ranges
+        const amountRanges = ['0-100K', '100K-500K', '500K-1M', '1M-5M', '>5M'];
+        amountRanges.forEach(range => {
+          if (!targetAmount[range]) targetAmount[range] = 0;
+          const amount = parseFloat(item.target_amount);
+          switch (range) {
+            case '0-100K': if (amount <= 100000) targetAmount[range]++; break;
+            case '100K-500K': if (amount > 100000 && amount <= 500000) targetAmount[range]++; break;
+            case '500K-1M': if (amount > 500000 && amount <= 1000000) targetAmount[range]++; break;
+            case '1M-5M': if (amount > 1000000 && amount <= 5000000) targetAmount[range]++; break;
+            case '>5M': if (amount > 5000000) targetAmount[range]++; break;
+          }
+        });
+
+        // Count projects by ticket size ranges
+        const ticketRanges = ['0-1000', '1001-5000', '5001-10000', '10001-50000', '>50000'];
+        ticketRanges.forEach(range => {
+          if (!ticketSize[range]) ticketSize[range] = 0;
+          const size = parseFloat(item.ticket_size);
+          switch (range) {
+            case '0-1000': if (size <= 1000) ticketSize[range]++; break;
+            case '1001-5000': if (size > 1000 && size <= 5000) ticketSize[range]++; break;
+            case '5001-10000': if (size > 5000 && size <= 10000) ticketSize[range]++; break;
+            case '10001-50000': if (size > 10000 && size <= 50000) ticketSize[range]++; break;
+            case '>50000': if (size > 50000) ticketSize[range]++; break;
+          }
+        });
+
+        // Count projects by offer type
+        offerType[item.offer_type] = (offerType[item.offer_type] || 0) + 1;
+
+        // Count projects by amount raised ranges
+        amountRanges.forEach(range => {
+          if (!amountRaised[range]) amountRaised[range] = 0;
+          const raised = parseFloat(item.amountRaised);
+          switch (range) {
+            case '0-100K': if (raised <= 100000) amountRaised[range]++; break;
+            case '100K-500K': if (raised > 100000 && raised <= 500000) amountRaised[range]++; break;
+            case '500K-1M': if (raised > 500000 && raised <= 1000000) amountRaised[range]++; break;
+            case '1M-5M': if (raised > 1000000 && raised <= 5000000) amountRaised[range]++; break;
+            case '>5M': if (raised > 5000000) amountRaised[range]++; break;
+          }
+        });
+
+        // Count projects by country
+        country[item.country] = (country[item.country] || 0) + 1;
+
+        // Count projects by year established
+        yearEstablished[item.operationTime] = (yearEstablished[item.operationTime] || 0) + 1;
+
+        // Count projects by revenue range
+        revenueRange[item.revenueStatus] = (revenueRange[item.revenueStatus] || 0) + 1;
+
+        // Count projects by round
+        round[item.round] = (round[item.round] || 0) + 1;
+
+        // Count projects by industry
+        item.industry.forEach(ind => {
+          industry[ind] = (industry[ind] || 0) + 1;
+        });
+        // console.log("Processing item:", item);
+      });
+
+      const sortedCustomers = Object.entries(customers).sort((a, b) => b[1] - a[1]).slice(0, 10);
+
+      setChartData([
+        { name: "Projects by Month", data: Object.values(months), categories: Object.keys(months), type: 'bar' },
+        { name: "Top 10 Customers", data: sortedCustomers.map(c => c[1]), categories: sortedCustomers.map(c => c[0]), type: 'bar' },
+        { name: "Projects by Status", data: Object.values(status), categories: Object.keys(status), type: 'pie' },
+        { name: "Projects by Verified Status", data: Object.values(verified), categories: Object.keys(verified), type: 'pie' },
+        { name: "Projects by Target Amount", data: Object.values(targetAmount), categories: Object.keys(targetAmount), type: 'bar' },
+        { name: "Projects by Ticket Size", data: Object.values(ticketSize), categories: Object.keys(ticketSize), type: 'bar' },
+        { name: "Projects by Offer Type", data: Object.values(offerType), categories: Object.keys(offerType), type: 'bar' },
+        { name: "Projects by Amount Raised", data: Object.values(amountRaised), categories: Object.keys(amountRaised), type: 'bar' },
+        { name: "Projects by Country", data: Object.values(country), categories: Object.keys(country), type: 'bar' },
+        { name: "Projects by Year Established", data: Object.values(yearEstablished), categories: Object.keys(yearEstablished), type: 'bar' },
+        { name: "Projects by Revenue Range", data: Object.values(revenueRange), categories: Object.keys(revenueRange), type: 'bar' },
+        { name: "Projects by Round", data: Object.values(round), categories: Object.keys(round), type: 'bar' },
+        { name: "Projects by Industry", data: Object.values(industry), categories: Object.keys(industry), type: 'bar' }
+      ]);
+      // After processing data, log results for verification
+      // console.log("Months:", months);
+      // console.log("Customers:", customers);
+      // console.log("Target Amount:", targetAmount);
+      // Log other data similarly
+
+    };
+
+    processData();
+  }, [dataSource]);
 
   return (
-    <div>
-      <button onClick={() => setFilteredData(data || [])}>Reset Filter</button>
-      {chartData.series[0].data.length > 0 && (
+    <div className="flex flex-wrap justify-center items-center ">
+    {chartData.map((chart, index) => (
+      <div key={index} className="w-full sm:w-1/3 p-2">
         <Chart
-          options={chartData.options}
-          series={chartData.series}
-          type="bar"
+          key={index}
+          options={{
+            chart: { type: chart.type, height: 350 },
+            labels: chart.categories,
+            xaxis: { categories: chart.categories },
+            title: { text: chart.name },
+          }}
+          series={chart.type === 'pie' ? chart.data : [{ data: chart.data }]}
+          type={chart.type}
           height={350}
         />
-      )}
-    </div>
-  );
+      </div>
+    ))}
+  </div>
+);
 }
+
+
 
 
 
 function AdminPage() {
   const { user } = useAuth();
   const [userData, setUserData] = useState([]);
-  
+  const [dataSource, setDataSource] = useState([]);
+
+
   useEffect(() => {
     async function fetchUsers() {
       // Thực hiện truy vấn để lấy danh sách người dùng với điều kiện trường email
@@ -128,7 +198,7 @@ function AdminPage() {
     fetchUsers();
   }, [user]); // Sử dụng một lần khi component được render
 
-  const [dataSource, setDataSource] = useState([]);
+
 
   useEffect(() => {
     async function fetchProjects() {
@@ -1552,11 +1622,14 @@ function AdminPage() {
                           scroll={{ x: "max-content" }}
                           bordered
                         />
-                        <Dashboard  />
+                        
                       </div>
-
+                      
                     </div>
                   </div>
+                  <div className="w-2/3 flex items-center mt-10">
+                      <Dashboard dataSource={dataSource} />
+                      </div>
                 </div>
               </section>
             </TabPane>

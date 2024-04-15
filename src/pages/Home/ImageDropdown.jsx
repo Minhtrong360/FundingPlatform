@@ -230,7 +230,7 @@ const ImageDropdown = () => {
             onClick={(e) => handleClickFleaMarket(e)}
           >
             <ShopOutlined />
-            Flea-Market List
+            Angel's Share
           </button>
 
           <button

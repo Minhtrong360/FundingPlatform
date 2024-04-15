@@ -7,6 +7,9 @@ import { useLocation } from "react-router-dom";
 import ImageDropdown from "./ImageDropdown";
 import NavbarItem from "./NavbarItem";
 import { useAuth } from "../../context/AuthContext";
+import { ShopOutlined } from '@ant-design/icons';
+import { CalculatorOutlined } from '@ant-design/icons';
+import { RocketOutlined } from '@ant-design/icons';
 
 const NavbarButton = ({ children, onClick, className }) => {
   return (
@@ -174,19 +177,19 @@ const Header = ({ position }) => {
                 onClick={() => navigate(`/financials`)}
                 isActive={loginPart.includes("financials")}
               >
-                Financial Model ✨
+                Financial Model <CalculatorOutlined />
               </NavbarItem>
               <NavbarItem
                 onClick={() => navigate(`/startups`)}
                 isActive={loginPart.includes("startups")}
               >
-                Profile Listing 🚀
+                Profile Listing <RocketOutlined />
               </NavbarItem>
               <NavbarItem
                 onClick={() => navigate(`/Flea-Market/info`)}
                 isActive={loginPart.includes("Flea-Market")}
               >
-                Flea Market
+                Angel's Share <ShopOutlined />
               </NavbarItem>
 
               <NavbarItem

@@ -1,24 +1,14 @@
 import { useEffect, useState } from "react";
-import { Avatar, Button, Modal, Row, Table, Tooltip, message } from "antd";
-import SideBar from "../../components/SideBar";
-import AlertMsg from "../../components/AlertMsg";
-import { useNavigate } from "react-router-dom";
-import { PlusOutlined, UserOutlined } from "@ant-design/icons";
+import { Avatar, Row, Table } from "antd";
+
+import { UserOutlined } from "@ant-design/icons";
 import { supabase } from "../../supabase";
-import { useAuth } from "../../context/AuthContext";
-import FleaMarketForm from "./FleaMarketForm";
+
 import Header from "../Home/Header";
 import { formatNumber } from "../../features/CostSlice";
 import FleaMarketDetail from "./FleaMarketDetail";
 
 function FleaMarketListAll() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  const navigate = useNavigate();
-
   const [fleaMarketData, setFleaMarketData] = useState([]);
 
   useEffect(() => {

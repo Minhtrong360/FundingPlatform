@@ -1,20 +1,11 @@
-import { Avatar, Modal, message } from "antd";
+import { Modal, message } from "antd";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../components/ui/Select";
 import { Input } from "../../components/ui/Input";
-import { Button } from "../../components/ui/Button";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import { useEffect, useState } from "react";
 import { formatNumber, parseNumber } from "../../features/CostSlice";
 import axios from "axios";
-import { Navigate, useNavigate } from "react-router-dom";
 import industries from "../../components/Industries";
 import countries from "../../components/Country";
 import SelectField from "../../components/SelectField";
@@ -31,16 +22,16 @@ export default function FleaMarketForm({
     company: "",
     email: user?.email,
     website: "",
-    industry: "",
-    country: "",
+    industry: "AI & ML",
+    country: "Vietnam",
     phone: "",
     role: "seller",
-    shares: "",
+    shares: 0,
     proof: "",
-    price: "",
+    price: 0,
     total: "",
-    timeInvested: "",
-    amountInvested: "",
+    timeInvested: new Date().getFullYear(),
+    amountInvested: 0,
     companyLogo: "",
   });
 
@@ -350,6 +341,26 @@ export default function FleaMarketForm({
     setIsAddNewModalOpen(false);
   };
 
+  const [years, setYears] = useState([]);
+
+  useEffect(() => {
+    // Hàm để tạo danh sách các năm từ năm bắt đầu đến năm hiện tại
+    const generateYears = () => {
+      const currentYear = new Date().getFullYear();
+
+      const startYear = 1900; // Bạn có thể thay đổi năm bắt đầu tại đây
+      const yearsArray = [];
+      for (let year = startYear; year <= currentYear; year++) {
+        yearsArray.push(year.toString());
+      }
+      return yearsArray;
+    };
+
+    // Gọi hàm generateYears để tạo danh sách các năm và cập nhật state
+    const yearsList = generateYears();
+    setYears(yearsList);
+  }, []);
+
   return (
     <Modal
       title="Add new Flea-Market project"
@@ -571,12 +582,15 @@ export default function FleaMarketForm({
               <label htmlFor="timeInvested">Time Invested</label>
               <div className="flex items-center">
                 <ClockIcon className="mr-2" />
-                <Input
+                <SelectField
+                  id="timeInvested"
+                  name="timeInvested"
+                  additional={{ width: "100%" }}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   value={formData.timeInvested}
                   onChange={handleChange}
-                  id="timeInvested"
-                  placeholder="Enter time invested"
                   required
+                  options={years} // Thay thế bằng danh sách các tùy chọn bạn muốn
                 />
               </div>
             </div>

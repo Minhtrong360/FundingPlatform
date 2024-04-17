@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   Avatar,
-  Button,
   Dropdown,
   Menu,
   Modal,
@@ -12,7 +11,6 @@ import {
 } from "antd";
 import SideBar from "../../components/SideBar";
 import AlertMsg from "../../components/AlertMsg";
-import { useNavigate } from "react-router-dom";
 import { PlusOutlined, UserOutlined } from "@ant-design/icons";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
@@ -20,6 +18,8 @@ import FleaMarketForm from "./FleaMarketForm";
 import { formatNumber } from "../../features/CostSlice";
 import InputField from "../../components/InputField";
 import FleaMarketDetail from "./FleaMarketDetail";
+import PricingWithLemon from "../Home/Components/PricingWithLemon";
+import ReactModal from "react-modal";
 
 function FleaMarketList() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -27,7 +27,6 @@ function FleaMarketList() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const navigate = useNavigate();
   const [needPremium, setNeedPremium] = useState(false);
   const [fleaMarketData, setFleaMarketData] = useState([]);
   const [isAddNewModalOpen, setIsAddNewModalOpen] = useState(false);
@@ -36,7 +35,7 @@ function FleaMarketList() {
 
   const [email, setEmail] = useState("elonmusk@gmail.com");
 
-  const { user } = useAuth();
+  const { user, subscribed } = useAuth();
 
   useEffect(() => {
     // Function to fetch Flea Market data from Supabase
@@ -59,11 +58,20 @@ function FleaMarketList() {
     fetchFleaMarketData();
   }, [isEditModalOpen, isAssignModalOpen, isAddNewModalOpen, user?.email]);
 
+  useEffect(() => {
+    if (fleaMarketData.length >= 2 && !subscribed) {
+      setNeedPremium(true);
+    } else {
+      setNeedPremium(false);
+    }
+  }, [fleaMarketData.length, subscribed]);
+
+  const [isPricingOpen, setIsPricingOpen] = useState(false); // State để kiểm soát modal Pricing
   const handleClickAddNew = () => {
     if (!needPremium) {
       setIsAddNewModalOpen(true);
     } else {
-      navigate("/pricing");
+      setIsPricingOpen(true);
     }
   };
 
@@ -489,6 +497,42 @@ function FleaMarketList() {
                   setSelectedID={setSelectedID}
                 />
               )}
+
+              <ReactModal
+                isOpen={isPricingOpen}
+                onRequestClose={() => setIsPricingOpen(false)}
+                ariaHideApp={false}
+                style={{
+                  overlay: {
+                    backgroundColor: "gray", // Màu nền overlay
+                    position: "fixed", // Để nền overlay cố định
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    zIndex: 9998, // Chỉ số z để đảm bảo nó hiển thị trên cùng
+                  },
+                  content: {
+                    border: "none", // Để ẩn border của nội dung Modal
+                    background: "none", // Để ẩn background của nội dung Modal
+                    // margin: "auto", // Để căn giữa
+                  },
+                }}
+              >
+                <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
+                  <div className="relative p-5 bg-white w-full  m-auto flex-col flex rounded-md">
+                    <PricingWithLemon />
+                    <div className="mt-4 flex items-center gap-10">
+                      <button
+                        className="max-w-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+                        onClick={() => setIsPricingOpen(false)}
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </ReactModal>
             </main>
           </div>
         </div>

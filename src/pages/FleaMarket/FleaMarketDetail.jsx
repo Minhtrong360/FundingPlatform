@@ -1,8 +1,11 @@
-import { Button, Modal, Tooltip } from "antd";
+import { Button, Modal, Tooltip, message } from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../../supabase";
 import { formatNumber } from "../../features/CostSlice";
+import { useAuth } from "../../context/AuthContext";
+import PricingWithLemon from "../Home/Components/PricingWithLemon";
+import ReactModal from "react-modal";
 
 export default function FleaMarketDetail({
   isDetailModalOpen,
@@ -41,8 +44,23 @@ export default function FleaMarketDetail({
   }, [SelectedID]);
 
   const [showContactDetails, setShowContactDetails] = useState(false);
-  const handleSubmit = () => {
-    setShowContactDetails((prevShowContactDetails) => !prevShowContactDetails);
+  const { subscribed } = useAuth();
+
+  const [isPricingOpen, setIsPricingOpen] = useState(false); // State để kiểm soát modal Pricing
+
+  const handleContact = () => {
+    console.log("1");
+    if (subscribed) {
+      console.log("2");
+      setShowContactDetails(true);
+    } else {
+      console.log("3");
+      setIsPricingOpen(true);
+    }
+  };
+
+  const handleHide = () => {
+    setShowContactDetails(false);
   };
 
   const handleOpenClick = (link) => {
@@ -53,7 +71,7 @@ export default function FleaMarketDetail({
     <Modal
       title="Flea-Market project detail"
       visible={isDetailModalOpen}
-      onOk={handleSubmit}
+      onOk={showContactDetails ? handleHide : handleContact}
       onCancel={handleCancel}
       okText={showContactDetails ? "Hide" : "Contact"}
       cancelText="Cancel"
@@ -65,19 +83,22 @@ export default function FleaMarketDetail({
       }}
       okButtonProps={{
         style: {
-          background: "#2563EB",
-          borderColor: "#2563EB",
+          background: showContactDetails || subscribed ? "#2563EB" : "#E5E7EB",
 
-          color: "#fff",
+          color: showContactDetails || subscribed ? "#fff" : "#111827",
           borderRadius: "0.375rem",
           cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
         },
+        title:
+          !showContactDetails && !subscribed
+            ? `You need to subscribe to contact the seller. "Click" to subscribe.`
+            : null,
       }}
       centered={true}
     >
       <div
         key="1"
-        className="bg-white p-6 mx-auto rounded-lg shadow-md max-w-md relative"
+        className="bg-white p-6 mx-auto rounded-lg shadow-md max-w-md relative "
       >
         <img
           alt="Company logo"
@@ -208,6 +229,41 @@ export default function FleaMarketDetail({
           </div>
         </div>
       </div>
+      <ReactModal
+        isOpen={isPricingOpen}
+        onRequestClose={() => setIsPricingOpen(false)}
+        ariaHideApp={false}
+        style={{
+          overlay: {
+            backgroundColor: "gray", // Màu nền overlay
+            position: "fixed", // Để nền overlay cố định
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 9998, // Chỉ số z để đảm bảo nó hiển thị trên cùng
+          },
+          content: {
+            border: "none", // Để ẩn border của nội dung Modal
+            background: "none", // Để ẩn background của nội dung Modal
+            // margin: "auto", // Để căn giữa
+          },
+        }}
+      >
+        <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
+          <div className="relative p-5 bg-white w-full  m-auto flex-col flex rounded-md">
+            <PricingWithLemon />
+            <div className="mt-4 flex items-center gap-10">
+              <button
+                className="max-w-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+                onClick={() => setIsPricingOpen(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </ReactModal>
     </Modal>
   );
 }

@@ -18,6 +18,7 @@ import { DatePicker } from "antd";
 import moment from "moment";
 import { formatNumber } from "../../features/CostSlice";
 import Chart from "react-apexcharts";
+import industries from "../../components/Industries";
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
 
@@ -25,7 +26,7 @@ const { TabPane } = Tabs;
 
 function Dashboard({ dataSource }) {
   const [chartData, setChartData] = useState([]);
-  console.log(dataSource);
+  console.log("dataSource", dataSource);
   useEffect(() => {
     const processData = () => {
       let months = {};
@@ -67,16 +68,16 @@ function Dashboard({ dataSource }) {
               if (amount <= 100000) targetAmount[range]++;
               break;
             case "100K-500K":
-              if (amount > 100000 && amount <= 500000) targetAmount[range]++;
+              if (amount >= 100000 && amount <= 500000) targetAmount[range]++;
               break;
             case "500K-1M":
-              if (amount > 500000 && amount <= 1000000) targetAmount[range]++;
+              if (amount >= 500000 && amount <= 1000000) targetAmount[range]++;
               break;
             case "1M-5M":
-              if (amount > 1000000 && amount <= 5000000) targetAmount[range]++;
+              if (amount >= 1000000 && amount <= 5000000) targetAmount[range]++;
               break;
             case ">5M":
-              if (amount > 5000000) targetAmount[range]++;
+              if (amount >= 5000000) targetAmount[range]++;
               break;
           }
         });
@@ -425,12 +426,16 @@ function AdminPage() {
             }}
             onPressEnter={() => {
               confirm();
-              const filtered = dataSource?.filter((record) =>
-                record?.name
-                  ?.toLowerCase()
-                  .includes(selectedKeys[0]?.toLowerCase())
-              );
-              setFilteredData(filtered);
+              if (selectedKeys.length > 0) {
+                const filtered = dataSource?.filter((record) =>
+                  record?.name
+                    ?.toLowerCase()
+                    .includes(selectedKeys[0]?.toLowerCase())
+                );
+                setFilteredData(filtered);
+              } else {
+                setFilteredData(dataSource);
+              }
             }}
             style={{
               width: 188,
@@ -549,14 +554,18 @@ function AdminPage() {
               setSelectedKeys(e.target.value ? [e.target.value] : []);
             }}
             onPressEnter={() => {
-              console.log(selectedKeys);
               confirm();
-              const filtered = dataSource?.filter((record) =>
-                record?.user_email
-                  ?.toLowerCase()
-                  .includes(selectedKeys[0]?.toLowerCase())
-              );
-              setFilteredData(filtered);
+              if (selectedKeys.length > 0) {
+                const filtered = dataSource?.filter((record) =>
+                  record?.user_email
+                    ?.toLowerCase()
+                    .includes(selectedKeys[0]?.toLowerCase())
+                );
+
+                setFilteredData(filtered);
+              } else {
+                setFilteredData(dataSource);
+              }
             }}
             style={{
               width: 188,
@@ -647,15 +656,61 @@ function AdminPage() {
                   }
                   setSelectedKeys(keys);
                   confirm();
-                  const filtered = dataSource.filter((record) =>
-                    keys.some(
-                      (key) =>
-                        record.required &&
-                        record.verified &&
-                        option.includes(key)
-                    )
-                  );
-                  setFilteredData(filtered); // Confirm the filter change immediately
+
+                  console.log("keys", keys);
+
+                  if (keys.length > 0) {
+                    const filtered = dataSource.filter((record) => {
+                      if (keys.length === 1) {
+                        const key = keys[0];
+                        if (key === "accepted") {
+                          return record.required && record.verified;
+                        } else if (key === "waiting") {
+                          return record.required && !record.verified;
+                        } else if (key === "notRequired") {
+                          return !record.required;
+                        }
+                      } else if (keys.length === 2) {
+                        const key1 = keys[0];
+                        const key2 = keys[1];
+                        if (
+                          (key1 === "accepted" && key2 === "waiting") ||
+                          (key1 === "waiting" && key2 === "accepted")
+                        ) {
+                          return (
+                            record.required &&
+                            (record.verified || !record.verified)
+                          );
+                        } else if (
+                          (key1 === "accepted" && key2 === "notRequired") ||
+                          (key1 === "notRequired" && key2 === "accepted")
+                        ) {
+                          return (
+                            (record.required && record.verified) ||
+                            !record.required
+                          );
+                        } else if (
+                          (key1 === "waiting" && key2 === "notRequired") ||
+                          (key1 === "notRequired" && key2 === "waiting")
+                        ) {
+                          return (
+                            (record.required && !record.verified) ||
+                            !record.required
+                          );
+                        }
+                      }
+                      if (keys.length === 3) {
+                        return (
+                          record.required || record.verified || !record.required
+                        );
+                      }
+
+                      return false;
+                    });
+                    setFilteredData(filtered); // Confirm the filter change immediately
+                  } else {
+                    setFilteredData(dataSource);
+                  }
                 }}
               >
                 {option === "accepted"
@@ -734,10 +789,14 @@ function AdminPage() {
                   }
                   setSelectedKeys(keys);
                   confirm();
-                  const filtered = dataSource.filter((record) =>
-                    keys.some((key) => record.status.includes(key))
-                  );
-                  setFilteredData(filtered); // Confirm the filter change immediately
+                  if (keys.length > 0) {
+                    const filtered = dataSource.filter((record) =>
+                      keys.some((key) => record.status.includes(key))
+                    );
+                    setFilteredData(filtered); // Confirm the filter change immediately
+                  } else {
+                    setFilteredData(dataSource);
+                  }
                 }}
               >
                 {option === "public"
@@ -771,7 +830,7 @@ function AdminPage() {
             className="text-black"
             checkedChildren="Yes"
             unCheckedChildren="No"
-            value={record.verified}
+            checked={record.verified}
             onClick={() => handleVerifyToggle(record)}
           />
         </Space>
@@ -797,40 +856,59 @@ function AdminPage() {
 
         return (
           <div className="mb-2" style={{ padding: 8 }}>
-            {["true", "false"].map((option) => (
-              <div key={option} style={{ marginTop: 8 }}>
-                <Checkbox
-                  checked={selectedKeys.includes(option)}
-                  onChange={(e) => {
-                    const keys = [...selectedKeys];
-                    if (e.target.checked) {
-                      keys.push(option);
-                    } else {
-                      const index = keys.indexOf(option);
-                      if (index !== -1) {
-                        keys.splice(index, 1);
-                      }
-                    }
-                    setSelectedKeys(keys);
-                    confirm();
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <Checkbox
+                className="my-1"
+                checked={selectedKeys.includes(true)}
+                onChange={(e) => {
+                  const keys = e.target.checked ? [true] : [];
+                  setSelectedKeys(keys);
+                  confirm();
+                  if (keys.length > 0) {
                     const filtered = dataSource.filter((record) => {
-                      // Convert option to boolean and compare with record.verified
-                      return record.verified === (option === "true");
+                      return record.verified === true;
                     });
                     setFilteredData(filtered);
-                  }}
-                >
-                  {option === "true" ? "Yes" : "No"}
-                </Checkbox>
-              </div>
-            ))}
-            <Button onClick={handleReset} size="small" style={{ width: 90 }}>
+                  } else {
+                    setFilteredData(dataSource);
+                  }
+                }}
+              >
+                Yes
+              </Checkbox>
+              <Checkbox
+                className="my-1"
+                checked={selectedKeys.includes(false)}
+                onChange={(e) => {
+                  const keys = e.target.checked ? [false] : [];
+                  setSelectedKeys(keys);
+                  confirm();
+                  if (keys.length > 0) {
+                    const filtered = dataSource.filter((record) => {
+                      return record.verified === false;
+                    });
+                    setFilteredData(filtered);
+                  } else {
+                    setFilteredData(dataSource);
+                  }
+                }}
+              >
+                No
+              </Checkbox>
+            </div>
+            <Button
+              className="my-1"
+              onClick={handleReset}
+              size="small"
+              style={{ width: 90 }}
+            >
               Reset
             </Button>
           </div>
         );
       },
     },
+
     {
       title: "Target Amount",
       dataIndex: "target_amount",
@@ -856,13 +934,13 @@ function AdminPage() {
           case "0-100000":
             return amount >= 0 && amount <= 100000;
           case "100000-500000":
-            return amount > 100000 && amount <= 500000;
+            return amount >= 100000 && amount <= 500000;
           case "500000-1000000":
-            return amount > 500000 && amount <= 1000000;
+            return amount >= 500000 && amount <= 1000000;
           case "1000000-5000000":
-            return amount > 1000000 && amount <= 5000000;
+            return amount >= 1000000 && amount <= 5000000;
           case ">5000000":
-            return amount > 5000000;
+            return amount >= 5000000;
         }
       },
       filterDropdown: ({
@@ -902,18 +980,30 @@ function AdminPage() {
                     }
                     setSelectedKeys(keys);
                     confirm();
-                    const filtered = dataSource.filter((record) => {
-                      const [min, max] = option.split("-");
-                      const amount = parseFloat(record.target_amount);
-                      if (max) {
-                        return (
-                          amount >= parseFloat(min) && amount <= parseFloat(max)
-                        );
-                      } else {
-                        return amount > parseFloat(min);
-                      }
-                    });
-                    setFilteredData(filtered);
+
+                    if (keys.length > 0) {
+                      const filtered = dataSource.filter((record) => {
+                        return keys.some((key) => {
+                          let [min, max] = key.split("-");
+                          if (!max) {
+                            min = 5000000;
+                          }
+
+                          const amount = parseFloat(record.target_amount);
+                          if (max) {
+                            return (
+                              amount >= parseFloat(min) &&
+                              amount <= parseFloat(max)
+                            );
+                          } else {
+                            return amount >= parseFloat(min);
+                          }
+                        });
+                      });
+                      setFilteredData(filtered);
+                    } else {
+                      setFilteredData(dataSource);
+                    }
                     // Confirm the filter change immediately
                   }}
                 >
@@ -942,25 +1032,25 @@ function AdminPage() {
       ),
       sorter: (a, b) => a.ticket_size - b.ticket_size,
       filters: [
-        { text: "0-1000", value: "0-100" },
-        { text: "1000-5000", value: "100-500" },
-        { text: "5000-10000", value: "500-1000" },
-        { text: "1000-50000", value: "1000-5000" },
-        { text: ">50000", value: ">5000" },
+        { text: "0-1000", value: "0-1000" },
+        { text: "1000-5000", value: "1000-5000" },
+        { text: "5000-10000", value: "5000-10000" },
+        { text: "1000-50000", value: "10000-50000" },
+        { text: ">50000", value: ">50000" },
       ],
       onFilter: (value, record) => {
         const size = parseFloat(record.ticket_size);
         switch (value) {
-          case "0-100":
+          case "0-1000":
             return size >= 0 && size <= 1000;
-          case "100-500":
-            return size > 1000 && size <= 5000;
-          case "500-1000":
-            return size > 5000 && size <= 10000;
           case "1000-5000":
-            return size > 10000 && size <= 50000;
-          case ">5000":
-            return size > 50000;
+            return size >= 1000 && size <= 5000;
+          case "5000-10000":
+            return size >= 5000 && size <= 10000;
+          case "10000-50000":
+            return size >= 10000 && size <= 50000;
+          case ">50000":
+            return size >= 50000;
         }
       },
       filterDropdown: ({
@@ -978,7 +1068,7 @@ function AdminPage() {
 
         return (
           <div style={{ padding: 8 }}>
-            {["0-100", "100-500", "500-1000", "1000-5000", ">5000"].map(
+            {["0-1000", "1000-5000", "5000-10000", "10000-50000", ">50000"].map(
               (option) => (
                 <div className="mb-2" key={option} style={{ marginTop: 8 }}>
                   <Checkbox
@@ -994,17 +1084,30 @@ function AdminPage() {
                         }
                       }
                       setSelectedKeys(keys);
-                      confirm(); // Confirm the filter change immediately
-                      // const filtered = dataSource.filter((record) => {
-                      //   const [min, max] = option.split("-");
-                      //   const size = parseFloat(record.ticket_size);
-                      //   if (max) {
-                      //     return size >= parseFloat(min) && size <= parseFloat(max);
-                      //   } else {
-                      //     return size > parseFloat(min);
-                      //   }
-                      // });
-                      // setFilteredData(filtered);
+                      confirm();
+
+                      if (keys.length > 0) {
+                        const filtered = dataSource.filter((record) => {
+                          return keys.some((key) => {
+                            let [min, max] = key.split("-");
+                            if (!max) {
+                              min = 50000;
+                            }
+                            const amount = parseFloat(record.ticket_size);
+                            if (max) {
+                              return (
+                                amount >= parseFloat(min) &&
+                                amount <= parseFloat(max)
+                              );
+                            } else {
+                              return amount >= parseFloat(min);
+                            }
+                          });
+                        });
+                        setFilteredData(filtered);
+                      } else {
+                        setFilteredData(dataSource);
+                      }
                     }}
                   >
                     {option}
@@ -1084,11 +1187,14 @@ function AdminPage() {
                       }
                       setSelectedKeys(keys);
                       confirm(); // Confirm the filter change immediately
-                      const filtered = dataSource.filter((record) => {
-                        // Check if the offer_type contains the selected option
-                        return record.offer_type.includes(option);
-                      });
-                      setFilteredData(filtered);
+                      if (keys.length > 0) {
+                        const filtered = dataSource.filter((record) =>
+                          keys.some((key) => record.offer_type.includes(key))
+                        );
+                        setFilteredData(filtered); // Confirm the filter change immediately
+                      } else {
+                        setFilteredData(dataSource);
+                      }
                     }}
                   >
                     {option}
@@ -1129,25 +1235,25 @@ function AdminPage() {
         </div>
       ),
       filters: [
-        { text: "0-100K", value: "0-100" },
-        { text: "100K-500K", value: "100-500" },
-        { text: "500K-1M", value: "500-1000" },
-        { text: "1M-5M", value: "1000-5000" },
-        { text: ">5M", value: ">5000" },
+        { text: "0-100", value: "0-100000" },
+        { text: "100-500", value: "100000-500000" },
+        { text: "500K-1M", value: "500000-1000000" },
+        { text: "1M-5M", value: "1000000-5000000" },
+        { text: ">5M", value: ">5000000" },
       ],
       onFilter: (value, record) => {
-        const raised = parseFloat(record.amountRaised);
+        const amount = parseFloat(record.amountRaised);
         switch (value) {
-          case "0-100":
-            return raised >= 0 && raised <= 100000;
-          case "100-500":
-            return raised > 100000 && raised <= 500000;
-          case "500-1000":
-            return raised > 500000 && raised <= 1000000;
-          case "1000-5000":
-            return raised > 1000000 && raised <= 5000000;
-          case ">5000":
-            return raised > 5000000;
+          case "0-100000":
+            return amount >= 0 && amount <= 100000;
+          case "100000-500000":
+            return amount >= 100000 && amount <= 500000;
+          case "500000-1000000":
+            return amount >= 500000 && amount <= 1000000;
+          case "1000000-5000000":
+            return amount >= 1000000 && amount <= 5000000;
+          case ">5000000":
+            return amount >= 5000000;
         }
       },
       filterDropdown: ({
@@ -1164,49 +1270,59 @@ function AdminPage() {
         };
 
         return (
-          <div style={{ padding: 8 }}>
-            {["0-100", "100-500", "500-1000", "1000-5000", ">5000"].map(
-              (option) => (
-                <div className="mb-2" key={option} style={{ marginTop: 8 }}>
-                  <Checkbox
-                    checked={selectedKeys.includes(option)}
-                    onChange={(e) => {
-                      const keys = [...selectedKeys];
-                      if (e.target.checked) {
-                        keys.push(option);
-                      } else {
-                        const index = keys.indexOf(option);
-                        if (index !== -1) {
-                          keys.splice(index, 1);
-                        }
+          <div className="mb-2" style={{ padding: 8 }}>
+            {[
+              "0-100000",
+              "100000-500000",
+              "500000-1000000",
+              "1000000-5000000",
+              ">5000000",
+            ].map((option) => (
+              <div key={option} style={{ marginTop: 8 }}>
+                <Checkbox
+                  checked={selectedKeys.includes(option)}
+                  onChange={(e) => {
+                    const keys = [...selectedKeys];
+                    if (e.target.checked) {
+                      keys.push(option);
+                    } else {
+                      const index = keys.indexOf(option);
+                      if (index !== -1) {
+                        keys.splice(index, 1);
                       }
-                      setSelectedKeys(keys);
-                      confirm(); // Confirm the filter change immediately
+                    }
+                    setSelectedKeys(keys);
+                    confirm();
+
+                    if (keys.length > 0) {
                       const filtered = dataSource.filter((record) => {
-                        const raised = parseFloat(record.amountRaised);
-                        switch (option) {
-                          case "0-100":
-                            return raised >= 0 && raised <= 100000;
-                          case "100-500":
-                            return raised > 100000 && raised <= 500000;
-                          case "500-1000":
-                            return raised > 500000 && raised <= 1000000;
-                          case "1000-5000":
-                            return raised > 1000000 && raised <= 5000000;
-                          case ">5000":
-                            return raised > 5000000;
-                          default:
-                            return false;
-                        }
+                        return keys.some((key) => {
+                          let [min, max] = key.split("-");
+                          if (!max) {
+                            min = 5000000;
+                          }
+                          const amount = parseFloat(record.amountRaised);
+                          if (max) {
+                            return (
+                              amount >= parseFloat(min) &&
+                              amount <= parseFloat(max)
+                            );
+                          } else {
+                            return amount >= parseFloat(min);
+                          }
+                        });
                       });
                       setFilteredData(filtered);
-                    }}
-                  >
-                    {option}
-                  </Checkbox>
-                </div>
-              )
-            )}
+                    } else {
+                      setFilteredData(dataSource);
+                    }
+                    // Confirm the filter change immediately
+                  }}
+                >
+                  {option}
+                </Checkbox>
+              </div>
+            ))}
             <Button onClick={handleReset} size="small" style={{ width: 90 }}>
               Reset
             </Button>
@@ -1241,12 +1357,16 @@ function AdminPage() {
             }}
             onPressEnter={() => {
               confirm();
-              const filtered = dataSource?.filter((record) =>
-                record?.country
-                  ?.toLowerCase()
-                  .includes(selectedKeys[0]?.toLowerCase())
-              );
-              setFilteredData(filtered);
+              if (selectedKeys.length > 0) {
+                const filtered = dataSource?.filter((record) =>
+                  record?.country
+                    ?.toLowerCase()
+                    .includes(selectedKeys[0]?.toLowerCase())
+                );
+                setFilteredData(filtered);
+              } else {
+                setFilteredData(dataSource);
+              }
             }}
             style={{
               width: 188,
@@ -1355,11 +1475,14 @@ function AdminPage() {
                     }
                     setSelectedKeys(keys);
                     confirm(); // Confirm the filter change immediately
-                    const filtered = dataSource.filter((record) => {
-                      // Check if the revenueStatus contains the selected option
-                      return record.revenueStatus.includes(option);
-                    });
-                    setFilteredData(filtered);
+                    if (keys.length > 0) {
+                      const filtered = dataSource.filter((record) =>
+                        keys.some((key) => record.revenueStatus.includes(key))
+                      );
+                      setFilteredData(filtered); // Confirm the filter change immediately
+                    } else {
+                      setFilteredData(dataSource);
+                    }
                   }}
                 >
                   {option}
@@ -1432,10 +1555,14 @@ function AdminPage() {
                     }
                     setSelectedKeys(keys);
                     confirm();
-                    const filtered = dataSource.filter((record) =>
-                      keys.some((key) => record.round.includes(key))
-                    );
-                    setFilteredData(filtered); // Confirm the filter change immediately
+                    if (keys.length > 0) {
+                      const filtered = dataSource.filter((record) =>
+                        keys.some((key) => record.round.includes(key))
+                      );
+                      setFilteredData(filtered); // Confirm the filter change immediately
+                    } else {
+                      setFilteredData(dataSource);
+                    }
                   }}
                 >
                   {option}
@@ -1520,29 +1647,7 @@ function AdminPage() {
 
         return (
           <div style={{ padding: 8 }}>
-            {[
-              "Technology",
-              "E-commerce",
-              "Healthtech",
-              "Fintech",
-              "Food & Beverage",
-              "Edtech",
-              "Cleantech",
-              "AI & ML",
-              "Cybersecurity",
-              "PropTech",
-              "Travel & Hospitality",
-              "Fashion & Apparel",
-              "IoT",
-              "Biotech",
-              "Social Media",
-              "Entertainment",
-              "Gaming",
-              "Eco-friendly",
-              "Transportation",
-              "Fitness & Wellness",
-              "Agtech",
-            ].map((option) => (
+            {industries.map((option) => (
               <div className="mb-2" key={option} style={{ marginTop: 8 }}>
                 <Checkbox
                   checked={selectedKeys.includes(option)}
@@ -1558,11 +1663,14 @@ function AdminPage() {
                     }
                     setSelectedKeys(keys);
                     confirm();
-                    const filtered = dataSource.filter((record) =>
-                      keys.some((key) => record.industry.includes(key))
-                    );
-                    setFilteredData(filtered);
-                    // Confirm the filter change immediately
+                    if (keys.length > 0) {
+                      const filtered = dataSource.filter((record) =>
+                        keys.some((key) => record.industry.includes(key))
+                      );
+                      setFilteredData(filtered); // Confirm the filter change immediately
+                    } else {
+                      setFilteredData(dataSource);
+                    }
                   }}
                 >
                   {option}

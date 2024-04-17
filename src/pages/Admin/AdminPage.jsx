@@ -380,10 +380,133 @@ function AdminPage() {
   };
 
   const [filteredData, setFilteredData] = useState([]);
+  const [filters, setFilters] = useState({});
+
+  const applyFilters = () => {
+    console.log("applyFilters");
+    let filtered = [...dataSource];
+    console.log("filters", filters);
+    Object.keys(filters).forEach((key) => {
+      if (filters[key].length > 0) {
+        if (key === "requiredVerification") {
+          filtered = filtered.filter((record) => {
+            if (filters[key].length === 1) {
+              const filterKey = filters[key][0];
+              if (filterKey === "accepted") {
+                return record.required && record.verified;
+              } else if (filterKey === "waiting") {
+                return record.required && !record.verified;
+              } else if (filterKey === "notRequired") {
+                return !record.required;
+              }
+            } else if (filters[key].length === 2) {
+              const key1 = filters[key][0];
+              const key2 = filters[key][1];
+              if (
+                (key1 === "accepted" && key2 === "waiting") ||
+                (key1 === "waiting" && key2 === "accepted")
+              ) {
+                return record.required && (record.verified || !record.verified);
+              } else if (
+                (key1 === "accepted" && key2 === "notRequired") ||
+                (key1 === "notRequired" && key2 === "accepted")
+              ) {
+                return (record.required && record.verified) || !record.required;
+              } else if (
+                (key1 === "waiting" && key2 === "notRequired") ||
+                (key1 === "notRequired" && key2 === "waiting")
+              ) {
+                return (
+                  (record.required && !record.verified) || !record.required
+                );
+              }
+            }
+            if (filters[key].length === 3) {
+              return record.required || record.verified || !record.required;
+            }
+
+            return false;
+          });
+        } else if (key === "verified") {
+          filtered = filtered.filter(
+            (record) => record.verified === filters[key][0]
+          );
+        } else if (key === "target_amount") {
+          filtered = filtered.filter((record) => {
+            return filters[key].some((filterKey) => {
+              let [min, max] = filterKey.split("-");
+              if (!max) {
+                min = 5000000;
+              }
+
+              const amount = parseFloat(record.target_amount);
+              if (max) {
+                return amount >= parseFloat(min) && amount <= parseFloat(max);
+              } else {
+                return amount >= parseFloat(min);
+              }
+            });
+          });
+        } else if (key === "ticket_size") {
+          filtered = filtered.filter((record) => {
+            return filters[key].some((filterKey) => {
+              let [min, max] = filterKey.split("-");
+              if (!max) {
+                min = 50000;
+              }
+              const amount = parseFloat(record.ticket_size);
+              if (max) {
+                return amount >= parseFloat(min) && amount <= parseFloat(max);
+              } else {
+                return amount >= parseFloat(min);
+              }
+            });
+          });
+        } else if (
+          key === "offer_type" ||
+          key === "revenueStatus" ||
+          key === "status" ||
+          key === "round" ||
+          key === "industry"
+        ) {
+          filtered = filtered.filter((record) =>
+            filters[key].some((filterKey) => record[key].includes(filterKey))
+          );
+        } else if (key === "amountRaised") {
+          filtered = filtered.filter((record) => {
+            return filters[key].some((filterKey) => {
+              let [min, max] = filterKey.split("-");
+              if (!max) {
+                min = 5000000;
+              }
+              const amount = parseFloat(record.amountRaised);
+              if (max) {
+                return amount >= parseFloat(min) && amount <= parseFloat(max);
+              } else {
+                return amount >= parseFloat(min);
+              }
+            });
+          });
+        } else {
+          console.log("filters[key].length > 0", filters[key][0]);
+          filtered = filtered.filter((item) =>
+            item[key].toLowerCase().includes(filters[key][0].toLowerCase())
+          );
+        }
+      }
+    });
+    setFilteredData(filtered);
+  };
+  console.log("filteredData", filteredData);
+
+  const handleFilterChange = (key, values) => {
+    const newFilters = { ...filters, [key]: values };
+    setFilters(newFilters);
+  };
+
   useEffect(() => {
-    // Cập nhật filteredData khi dataSource thay đổi
-    setFilteredData(dataSource);
-  }, [dataSource]);
+    applyFilters();
+  }, [dataSource, filters]);
 
   const columns = [
     {
@@ -419,23 +542,25 @@ function AdminPage() {
       }) => (
         <div style={{ padding: 8 }}>
           <Input
+            autoFocus
             placeholder={`Search Name`}
             value={selectedKeys[0]}
             onChange={(e) => {
               setSelectedKeys(e.target.value ? [e.target.value] : []);
             }}
             onPressEnter={() => {
+              handleFilterChange("name", selectedKeys);
               confirm();
-              if (selectedKeys.length > 0) {
-                const filtered = dataSource?.filter((record) =>
-                  record?.name
-                    ?.toLowerCase()
-                    .includes(selectedKeys[0]?.toLowerCase())
-                );
-                setFilteredData(filtered);
-              } else {
-                setFilteredData(dataSource);
-              }
+              // if (selectedKeys.length > 0) {
+              //   const filtered = dataSource?.filter((record) =>
+              //     record?.name
+              //       ?.toLowerCase()
+              //       .includes(selectedKeys[0]?.toLowerCase())
+              //   );
+              //   setFilteredData(filtered);
+              // } else {
+              //   setFilteredData(dataSource);
+              // }
             }}
             style={{
               width: 188,
@@ -450,9 +575,10 @@ function AdminPage() {
             <Button
               onClick={() => {
                 clearFilters();
+                handleFilterChange("name", []);
                 confirm();
 
-                setFilteredData(dataSource);
+                // setFilteredData(dataSource);
               }}
               size="small"
               style={{ width: 90, fontSize: "12px" }}
@@ -554,18 +680,19 @@ function AdminPage() {
               setSelectedKeys(e.target.value ? [e.target.value] : []);
             }}
             onPressEnter={() => {
+              handleFilterChange("user_email", selectedKeys);
               confirm();
-              if (selectedKeys.length > 0) {
-                const filtered = dataSource?.filter((record) =>
-                  record?.user_email
-                    ?.toLowerCase()
-                    .includes(selectedKeys[0]?.toLowerCase())
-                );
+              // if (selectedKeys.length > 0) {
+              //   const filtered = dataSource?.filter((record) =>
+              //     record?.user_email
+              //       ?.toLowerCase()
+              //       .includes(selectedKeys[0]?.toLowerCase())
+              //   );
 
-                setFilteredData(filtered);
-              } else {
-                setFilteredData(dataSource);
-              }
+              //   setFilteredData(filtered);
+              // } else {
+              //   setFilteredData(dataSource);
+              // }
             }}
             style={{
               width: 188,
@@ -580,9 +707,10 @@ function AdminPage() {
             <Button
               onClick={() => {
                 clearFilters();
+                handleFilterChange("user_email", []);
                 confirm();
 
-                setFilteredData(dataSource);
+                // setFilteredData(dataSource);
               }}
               size="small"
               style={{ width: 90, fontSize: "12px" }}
@@ -655,62 +783,61 @@ function AdminPage() {
                     }
                   }
                   setSelectedKeys(keys);
+                  handleFilterChange("requiredVerification", keys);
                   confirm();
 
-                  console.log("keys", keys);
+                  // if (keys.length > 0) {
+                  //   const filtered = dataSource.filter((record) => {
+                  //     if (keys.length === 1) {
+                  //       const key = keys[0];
+                  //       if (key === "accepted") {
+                  //         return record.required && record.verified;
+                  //       } else if (key === "waiting") {
+                  //         return record.required && !record.verified;
+                  //       } else if (key === "notRequired") {
+                  //         return !record.required;
+                  //       }
+                  //     } else if (keys.length === 2) {
+                  //       const key1 = keys[0];
+                  //       const key2 = keys[1];
+                  //       if (
+                  //         (key1 === "accepted" && key2 === "waiting") ||
+                  //         (key1 === "waiting" && key2 === "accepted")
+                  //       ) {
+                  //         return (
+                  //           record.required &&
+                  //           (record.verified || !record.verified)
+                  //         );
+                  //       } else if (
+                  //         (key1 === "accepted" && key2 === "notRequired") ||
+                  //         (key1 === "notRequired" && key2 === "accepted")
+                  //       ) {
+                  //         return (
+                  //           (record.required && record.verified) ||
+                  //           !record.required
+                  //         );
+                  //       } else if (
+                  //         (key1 === "waiting" && key2 === "notRequired") ||
+                  //         (key1 === "notRequired" && key2 === "waiting")
+                  //       ) {
+                  //         return (
+                  //           (record.required && !record.verified) ||
+                  //           !record.required
+                  //         );
+                  //       }
+                  //     }
+                  //     if (keys.length === 3) {
+                  //       return (
+                  //         record.required || record.verified || !record.required
+                  //       );
+                  //     }
 
-                  if (keys.length > 0) {
-                    const filtered = dataSource.filter((record) => {
-                      if (keys.length === 1) {
-                        const key = keys[0];
-                        if (key === "accepted") {
-                          return record.required && record.verified;
-                        } else if (key === "waiting") {
-                          return record.required && !record.verified;
-                        } else if (key === "notRequired") {
-                          return !record.required;
-                        }
-                      } else if (keys.length === 2) {
-                        const key1 = keys[0];
-                        const key2 = keys[1];
-                        if (
-                          (key1 === "accepted" && key2 === "waiting") ||
-                          (key1 === "waiting" && key2 === "accepted")
-                        ) {
-                          return (
-                            record.required &&
-                            (record.verified || !record.verified)
-                          );
-                        } else if (
-                          (key1 === "accepted" && key2 === "notRequired") ||
-                          (key1 === "notRequired" && key2 === "accepted")
-                        ) {
-                          return (
-                            (record.required && record.verified) ||
-                            !record.required
-                          );
-                        } else if (
-                          (key1 === "waiting" && key2 === "notRequired") ||
-                          (key1 === "notRequired" && key2 === "waiting")
-                        ) {
-                          return (
-                            (record.required && !record.verified) ||
-                            !record.required
-                          );
-                        }
-                      }
-                      if (keys.length === 3) {
-                        return (
-                          record.required || record.verified || !record.required
-                        );
-                      }
-
-                      return false;
-                    });
-                    setFilteredData(filtered); // Confirm the filter change immediately
-                  } else {
-                    setFilteredData(dataSource);
-                  }
+                  //     return false;
+                  //   });
+                  //   setFilteredData(filtered); // Confirm the filter change immediately
+                  // } else {
+                  //   setFilteredData(dataSource);
+                  // }
                 }}
               >
                 {option === "accepted"
@@ -724,8 +851,10 @@ function AdminPage() {
           <Button
             onClick={() => {
               clearFilters();
+              handleFilterChange("requiredVerification", []);
+
               confirm();
-              setFilteredData(dataSource); // Confirm the filter clearing immediately
+              // setFilteredData(dataSource); // Confirm the filter clearing immediately
             }}
             size="small"
             style={{ width: 90 }}
@@ -788,15 +917,16 @@ function AdminPage() {
                     }
                   }
                   setSelectedKeys(keys);
+                  handleFilterChange("status", keys);
                   confirm();
-                  if (keys.length > 0) {
-                    const filtered = dataSource.filter((record) =>
-                      keys.some((key) => record.status.includes(key))
-                    );
-                    setFilteredData(filtered); // Confirm the filter change immediately
-                  } else {
-                    setFilteredData(dataSource);
-                  }
+                  // if (keys.length > 0) {
+                  //   const filtered = dataSource.filter((record) =>
+                  //     keys.some((key) => record.status.includes(key))
+                  //   );
+                  //   setFilteredData(filtered); // Confirm the filter change immediately
+                  // } else {
+                  //   setFilteredData(dataSource);
+                  // }
                 }}
               >
                 {option === "public"
@@ -810,8 +940,9 @@ function AdminPage() {
           <Button
             onClick={() => {
               clearFilters();
+              handleFilterChange("status", []);
               confirm();
-              setFilteredData(dataSource); // Confirm the filter clearing immediately
+              // setFilteredData(dataSource); // Confirm the filter clearing immediately
             }}
             size="small"
             style={{ width: 90 }}
@@ -849,8 +980,10 @@ function AdminPage() {
         const handleReset = () => {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
+          handleFilterChange("verified", []);
+
           confirm();
-          setFilteredData(dataSource);
+          // setFilteredData(dataSource);
           // Confirm the filter clearing immediately
         };
 
@@ -863,15 +996,16 @@ function AdminPage() {
                 onChange={(e) => {
                   const keys = e.target.checked ? [true] : [];
                   setSelectedKeys(keys);
+                  handleFilterChange("verified", keys);
                   confirm();
-                  if (keys.length > 0) {
-                    const filtered = dataSource.filter((record) => {
-                      return record.verified === true;
-                    });
-                    setFilteredData(filtered);
-                  } else {
-                    setFilteredData(dataSource);
-                  }
+                  // if (keys.length > 0) {
+                  //   const filtered = dataSource.filter((record) => {
+                  //     return record.verified === true;
+                  //   });
+                  //   setFilteredData(filtered);
+                  // } else {
+                  //   setFilteredData(dataSource);
+                  // }
                 }}
               >
                 Yes
@@ -882,15 +1016,17 @@ function AdminPage() {
                 onChange={(e) => {
                   const keys = e.target.checked ? [false] : [];
                   setSelectedKeys(keys);
+                  handleFilterChange("verified", keys);
+
                   confirm();
-                  if (keys.length > 0) {
-                    const filtered = dataSource.filter((record) => {
-                      return record.verified === false;
-                    });
-                    setFilteredData(filtered);
-                  } else {
-                    setFilteredData(dataSource);
-                  }
+                  // if (keys.length > 0) {
+                  //   const filtered = dataSource.filter((record) => {
+                  //     return record.verified === false;
+                  //   });
+                  //   setFilteredData(filtered);
+                  // } else {
+                  //   setFilteredData(dataSource);
+                  // }
                 }}
               >
                 No
@@ -952,8 +1088,9 @@ function AdminPage() {
         const handleReset = () => {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
+          handleFilterChange("target_amount", []);
           confirm(); // Confirm the filter clearing immediately
-          setFilteredData(dataSource);
+          // setFilteredData(dataSource);
         };
 
         return (
@@ -979,31 +1116,32 @@ function AdminPage() {
                       }
                     }
                     setSelectedKeys(keys);
+                    handleFilterChange("target_amount", keys);
                     confirm();
 
-                    if (keys.length > 0) {
-                      const filtered = dataSource.filter((record) => {
-                        return keys.some((key) => {
-                          let [min, max] = key.split("-");
-                          if (!max) {
-                            min = 5000000;
-                          }
+                    // if (keys.length > 0) {
+                    //   const filtered = dataSource.filter((record) => {
+                    //     return keys.some((key) => {
+                    //       let [min, max] = key.split("-");
+                    //       if (!max) {
+                    //         min = 5000000;
+                    //       }
 
-                          const amount = parseFloat(record.target_amount);
-                          if (max) {
-                            return (
-                              amount >= parseFloat(min) &&
-                              amount <= parseFloat(max)
-                            );
-                          } else {
-                            return amount >= parseFloat(min);
-                          }
-                        });
-                      });
-                      setFilteredData(filtered);
-                    } else {
-                      setFilteredData(dataSource);
-                    }
+                    //       const amount = parseFloat(record.target_amount);
+                    //       if (max) {
+                    //         return (
+                    //           amount >= parseFloat(min) &&
+                    //           amount <= parseFloat(max)
+                    //         );
+                    //       } else {
+                    //         return amount >= parseFloat(min);
+                    //       }
+                    //     });
+                    //   });
+                    //   setFilteredData(filtered);
+                    // } else {
+                    //   setFilteredData(dataSource);
+                    // }
                     // Confirm the filter change immediately
                   }}
                 >
@@ -1062,8 +1200,9 @@ function AdminPage() {
         const handleReset = () => {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
+          handleFilterChange("ticket_size", []);
           confirm(); // Confirm the filter clearing immediately
-          setFilteredData(dataSource);
+          // setFilteredData(dataSource);
         };
 
         return (
@@ -1084,30 +1223,31 @@ function AdminPage() {
                         }
                       }
                       setSelectedKeys(keys);
+                      handleFilterChange("ticket_size", keys);
                       confirm();
 
-                      if (keys.length > 0) {
-                        const filtered = dataSource.filter((record) => {
-                          return keys.some((key) => {
-                            let [min, max] = key.split("-");
-                            if (!max) {
-                              min = 50000;
-                            }
-                            const amount = parseFloat(record.ticket_size);
-                            if (max) {
-                              return (
-                                amount >= parseFloat(min) &&
-                                amount <= parseFloat(max)
-                              );
-                            } else {
-                              return amount >= parseFloat(min);
-                            }
-                          });
-                        });
-                        setFilteredData(filtered);
-                      } else {
-                        setFilteredData(dataSource);
-                      }
+                      // if (keys.length > 0) {
+                      //   const filtered = dataSource.filter((record) => {
+                      //     return keys.some((key) => {
+                      //       let [min, max] = key.split("-");
+                      //       if (!max) {
+                      //         min = 50000;
+                      //       }
+                      //       const amount = parseFloat(record.ticket_size);
+                      //       if (max) {
+                      //         return (
+                      //           amount >= parseFloat(min) &&
+                      //           amount <= parseFloat(max)
+                      //         );
+                      //       } else {
+                      //         return amount >= parseFloat(min);
+                      //       }
+                      //     });
+                      //   });
+                      //   setFilteredData(filtered);
+                      // } else {
+                      //   setFilteredData(dataSource);
+                      // }
                     }}
                   >
                     {option}
@@ -1164,8 +1304,9 @@ function AdminPage() {
         const handleReset = () => {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
+          handleFilterChange("offer_type", []);
           confirm(); // Confirm the filter clearing immediately
-          setFilteredData(dataSource);
+          // setFilteredData(dataSource);
         };
 
         return (
@@ -1186,15 +1327,17 @@ function AdminPage() {
                         }
                       }
                       setSelectedKeys(keys);
+                      handleFilterChange("offer_type", keys);
+
                       confirm(); // Confirm the filter change immediately
-                      if (keys.length > 0) {
-                        const filtered = dataSource.filter((record) =>
-                          keys.some((key) => record.offer_type.includes(key))
-                        );
-                        setFilteredData(filtered); // Confirm the filter change immediately
-                      } else {
-                        setFilteredData(dataSource);
-                      }
+                      // if (keys.length > 0) {
+                      //   const filtered = dataSource.filter((record) =>
+                      //     keys.some((key) => record.offer_type.includes(key))
+                      //   );
+                      //   setFilteredData(filtered); // Confirm the filter change immediately
+                      // } else {
+                      //   setFilteredData(dataSource);
+                      // }
                     }}
                   >
                     {option}
@@ -1265,8 +1408,9 @@ function AdminPage() {
         const handleReset = () => {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
+          handleFilterChange("amountRaised", []);
           confirm(); // Confirm the filter clearing immediately
-          setFilteredData(dataSource);
+          // setFilteredData(dataSource);
         };
 
         return (
@@ -1292,30 +1436,32 @@ function AdminPage() {
                       }
                     }
                     setSelectedKeys(keys);
+                    handleFilterChange("amountRaised", keys);
+
                     confirm();
 
-                    if (keys.length > 0) {
-                      const filtered = dataSource.filter((record) => {
-                        return keys.some((key) => {
-                          let [min, max] = key.split("-");
-                          if (!max) {
-                            min = 5000000;
-                          }
-                          const amount = parseFloat(record.amountRaised);
-                          if (max) {
-                            return (
-                              amount >= parseFloat(min) &&
-                              amount <= parseFloat(max)
-                            );
-                          } else {
-                            return amount >= parseFloat(min);
-                          }
-                        });
-                      });
-                      setFilteredData(filtered);
-                    } else {
-                      setFilteredData(dataSource);
-                    }
+                    // if (keys.length > 0) {
+                    //   const filtered = dataSource.filter((record) => {
+                    //     return keys.some((key) => {
+                    //       let [min, max] = key.split("-");
+                    //       if (!max) {
+                    //         min = 5000000;
+                    //       }
+                    //       const amount = parseFloat(record.amountRaised);
+                    //       if (max) {
+                    //         return (
+                    //           amount >= parseFloat(min) &&
+                    //           amount <= parseFloat(max)
+                    //         );
+                    //       } else {
+                    //         return amount >= parseFloat(min);
+                    //       }
+                    //     });
+                    //   });
+                    //   setFilteredData(filtered);
+                    // } else {
+                    //   setFilteredData(dataSource);
+                    // }
                     // Confirm the filter change immediately
                   }}
                 >
@@ -1356,6 +1502,7 @@ function AdminPage() {
               setSelectedKeys(e.target.value ? [e.target.value] : []);
             }}
             onPressEnter={() => {
+              handleFilterChange("country", selectedKeys);
               confirm();
               if (selectedKeys.length > 0) {
                 const filtered = dataSource?.filter((record) =>
@@ -1381,8 +1528,10 @@ function AdminPage() {
             <Button
               onClick={() => {
                 clearFilters();
+                handleFilterChange("country", []);
+
                 confirm();
-                setFilteredData(dataSource);
+                // setFilteredData(dataSource);
               }}
               size="small"
               style={{ width: 90, fontSize: "12px" }}
@@ -1443,8 +1592,9 @@ function AdminPage() {
         const handleReset = () => {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
+          handleFilterChange("revenueStatus", []);
           confirm(); // Confirm the filter clearing immediately
-          setFilteredData(dataSource);
+          // setFilteredData(dataSource);
           // Confirm the filter clearing immediately
         };
 
@@ -1474,15 +1624,16 @@ function AdminPage() {
                       }
                     }
                     setSelectedKeys(keys);
+                    handleFilterChange("revenueStatus", keys);
                     confirm(); // Confirm the filter change immediately
-                    if (keys.length > 0) {
-                      const filtered = dataSource.filter((record) =>
-                        keys.some((key) => record.revenueStatus.includes(key))
-                      );
-                      setFilteredData(filtered); // Confirm the filter change immediately
-                    } else {
-                      setFilteredData(dataSource);
-                    }
+                    // if (keys.length > 0) {
+                    //   const filtered = dataSource.filter((record) =>
+                    //     keys.some((key) => record.revenueStatus.includes(key))
+                    //   );
+                    //   setFilteredData(filtered); // Confirm the filter change immediately
+                    // } else {
+                    //   setFilteredData(dataSource);
+                    // }
                   }}
                 >
                   {option}
@@ -1526,8 +1677,9 @@ function AdminPage() {
         const handleReset = () => {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
+          handleFilterChange("round", []);
           confirm(); // Confirm the filter clearing immediately
-          setFilteredData(dataSource);
+          // setFilteredData(dataSource);
         };
 
         return (
@@ -1554,15 +1706,17 @@ function AdminPage() {
                       }
                     }
                     setSelectedKeys(keys);
+                    handleFilterChange("round", keys);
+
                     confirm();
-                    if (keys.length > 0) {
-                      const filtered = dataSource.filter((record) =>
-                        keys.some((key) => record.round.includes(key))
-                      );
-                      setFilteredData(filtered); // Confirm the filter change immediately
-                    } else {
-                      setFilteredData(dataSource);
-                    }
+                    // if (keys.length > 0) {
+                    //   const filtered = dataSource.filter((record) =>
+                    //     keys.some((key) => record.round.includes(key))
+                    //   );
+                    //   setFilteredData(filtered); // Confirm the filter change immediately
+                    // } else {
+                    //   setFilteredData(dataSource);
+                    // }
                   }}
                 >
                   {option}
@@ -1641,8 +1795,9 @@ function AdminPage() {
         const handleReset = () => {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
+          handleFilterChange("industry", []);
           confirm(); // Confirm the filter clearing immediately
-          setFilteredData(dataSource);
+          // setFilteredData(dataSource);
         };
 
         return (
@@ -1662,15 +1817,17 @@ function AdminPage() {
                       }
                     }
                     setSelectedKeys(keys);
+                    handleFilterChange("industry", keys);
+
                     confirm();
-                    if (keys.length > 0) {
-                      const filtered = dataSource.filter((record) =>
-                        keys.some((key) => record.industry.includes(key))
-                      );
-                      setFilteredData(filtered); // Confirm the filter change immediately
-                    } else {
-                      setFilteredData(dataSource);
-                    }
+                    // if (keys.length > 0) {
+                    //   const filtered = dataSource.filter((record) =>
+                    //     keys.some((key) => record.industry.includes(key))
+                    //   );
+                    //   setFilteredData(filtered); // Confirm the filter change immediately
+                    // } else {
+                    //   setFilteredData(dataSource);
+                    // }
                   }}
                 >
                   {option}

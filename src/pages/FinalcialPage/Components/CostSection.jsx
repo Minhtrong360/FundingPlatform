@@ -13,6 +13,7 @@ import {
   setCostInputs,
   setCostData,
   calculateCostData,
+  transformCostDataForTable,
 } from "../../../features/CostSlice";
 
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
@@ -82,26 +83,6 @@ const CostSection = ({
   // Function to calculate cost data
 
   // Function to transform cost data for table
-  const transformCostDataForTable = () => {
-    const transformedCustomerTableData = {};
-    const calculatedCostData = calculateCostData(tempCostInput, numberOfMonths);
-
-    calculatedCostData?.forEach((costItem) => {
-      const rowKey = `${costItem.costName}`;
-      costItem.monthlyCosts.forEach((monthData) => {
-        if (!transformedCustomerTableData[rowKey]) {
-          transformedCustomerTableData[rowKey] = {
-            key: rowKey,
-            costName: rowKey,
-          };
-        }
-        transformedCustomerTableData[rowKey][`month${monthData.month}`] =
-          formatNumber(parseFloat(monthData.cost)?.toFixed(0));
-      });
-    });
-
-    return Object.values(transformedCustomerTableData);
-  };
 
   // useEffect to update cost data when cost inputs or number of months change
   useEffect(() => {
@@ -498,7 +479,7 @@ const CostSection = ({
         <Table
           className="overflow-auto my-8"
           size="small"
-          dataSource={transformCostDataForTable()}
+          dataSource={transformCostDataForTable(tempCostInput, numberOfMonths)}
           columns={costColumns}
           pagination={false}
           bordered

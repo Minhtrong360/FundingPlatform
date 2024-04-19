@@ -26,7 +26,7 @@ const LoanSection = ({
   const dispatch = useDispatch();
   const { loanInputs } = useSelector((state) => state.loan);
   const [tempLoanInputs, setTempLoanInputs] = useState(loanInputs);
-  const [renderLoanForm, setRenderLoanForm] = useState(loanInputs[0]?.id);
+  const [renderLoanForm, setRenderLoanForm] = useState("all");
 
   const [loanChart, setLoanChart] = useState({
     options: {
@@ -69,7 +69,7 @@ const LoanSection = ({
 
   useEffect(() => {
     setTempLoanInputs(loanInputs);
-    setRenderLoanForm(loanInputs[0]?.id);
+    setRenderLoanForm("all");
   }, [loanInputs]);
 
   const addNewLoanInput = () => {
@@ -265,6 +265,7 @@ const LoanSection = ({
               value={renderLoanForm}
               onChange={handleSelectChange}
             >
+              <option value="all">All</option>
               {tempLoanInputs.map((input) => (
                 <option key={input?.id} value={input?.id}>
                   {input.loanName}
@@ -409,6 +410,9 @@ const LoanSection = ({
           columns={loanColumns}
           pagination={false}
           bordered
+          rowClassName={(record) =>
+            record.key === record.type ? "font-bold" : ""
+          }
         />
         <h3 className="text-2xl font-semibold my-8">Loan Data</h3>
         <Chart

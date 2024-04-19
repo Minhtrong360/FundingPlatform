@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { formatNumber } from "./CostSlice";
 
 export const personnelSlice = createSlice({
   name: "personnel",
@@ -26,6 +27,7 @@ export const personnelSlice = createSlice({
       },
     ],
     personnelCostData: [],
+    personnelTableData: [],
   },
   reducers: {
     setPersonnelInputs: (state, action) => {
@@ -33,6 +35,9 @@ export const personnelSlice = createSlice({
     },
     setPersonnelCostData: (state, action) => {
       state.personnelCostData = action.payload;
+    },
+    setPersonnelTableData: (state, action) => {
+      state.personnelTableData = action.payload;
     },
   },
 });
@@ -90,7 +95,24 @@ export const calculatePersonnelCostData = (
   return allPersonnelCosts;
 };
 
-export const { setPersonnelInputs, setPersonnelCostData, setIsSaved } =
-  personnelSlice.actions;
+export const transformPersonnelCostDataForTable = (tempPersonnelCostData) => {
+  const transformedCustomerTableData = tempPersonnelCostData.map((item) => {
+    const rowData = { key: item.jobTitle, jobTitle: item.jobTitle };
+    item.monthlyCosts?.forEach((monthData) => {
+      rowData[`month${monthData.month}`] = formatNumber(
+        monthData.cost?.toFixed(0)
+      ); // Adjust formatting as needed
+    });
+    return rowData;
+  });
+  return transformedCustomerTableData;
+};
+
+export const {
+  setPersonnelInputs,
+  setPersonnelCostData,
+  setIsSaved,
+  setPersonnelTableData,
+} = personnelSlice.actions;
 
 export default personnelSlice.reducer;

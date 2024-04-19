@@ -32,13 +32,11 @@ const InvestmentSection = ({
 
   const [tempInvestmentData, setTempInvestmentData] = useState(investmentData);
 
-  const [renderInvestmentForm, setRenderInvestmentForm] = useState(
-    investmentInputs[0]?.id
-  );
+  const [renderInvestmentForm, setRenderInvestmentForm] = useState("all");
 
   useEffect(() => {
     setTempInvestmentInputs(investmentInputs);
-    setRenderInvestmentForm(investmentInputs[0]?.id);
+    setRenderInvestmentForm("all");
   }, [investmentInputs]);
 
   const addNewInvestmentInput = () => {
@@ -143,7 +141,7 @@ const InvestmentSection = ({
       fixed: "left",
       title: <div>Type</div>,
       dataIndex: "type",
-      key: "type",
+      key: "key",
     },
     ...Array.from({ length: numberOfMonths }, (_, i) => {
       const monthIndex = (startingMonth + i - 1) % 12;
@@ -297,6 +295,7 @@ const InvestmentSection = ({
               value={renderInvestmentForm}
               onChange={handleSelectChange}
             >
+              <option value="all">All</option>
               {tempInvestmentInputs.map((input) => (
                 <option key={input?.id} value={input?.id}>
                   {input.purchaseName}
@@ -447,6 +446,9 @@ const InvestmentSection = ({
           columns={investmentColumns}
           pagination={false}
           bordered
+          rowClassName={(record) =>
+            record.key === record.type ? "font-bold" : ""
+          }
         />
         <h3 className="text-2xl font-semibold my-8">Investment Chart</h3>
         <Chart

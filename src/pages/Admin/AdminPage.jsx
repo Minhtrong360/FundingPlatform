@@ -26,7 +26,6 @@ const { TabPane } = Tabs;
 
 function Dashboard({ dataSource }) {
   const [chartData, setChartData] = useState([]);
-  console.log("dataSource", dataSource);
   useEffect(() => {
     const processData = () => {
       let months = {};
@@ -363,7 +362,8 @@ function AdminPage() {
     const { error } = await supabase
       .from("projects")
       .update({ verified: !project.verified })
-      .eq("id", project.id);
+      .eq("id", project.project_id);
+
     if (error) {
       console.error("Error updating project:", error.message);
       message.error(error.message);
@@ -383,9 +383,7 @@ function AdminPage() {
   const [filters, setFilters] = useState({});
 
   const applyFilters = () => {
-    console.log("applyFilters");
     let filtered = [...dataSource];
-    console.log("filters", filters);
     Object.keys(filters).forEach((key) => {
       if (filters[key].length > 0) {
         if (key === "requiredVerification") {
@@ -488,7 +486,6 @@ function AdminPage() {
             });
           });
         } else {
-          console.log("filters[key].length > 0", filters[key][0]);
           filtered = filtered.filter((item) =>
             item[key].toLowerCase().includes(filters[key][0].toLowerCase())
           );
@@ -497,7 +494,6 @@ function AdminPage() {
     });
     setFilteredData(filtered);
   };
-  console.log("filteredData", filteredData);
 
   const handleFilterChange = (key, values) => {
     const newFilters = { ...filters, [key]: values };

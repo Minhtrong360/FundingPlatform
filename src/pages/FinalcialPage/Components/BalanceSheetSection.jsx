@@ -825,7 +825,7 @@ function BalanceSheetSection({ numberOfMonths }) {
       fixedAssetTurnoverRatio: fixedAssetTurnoverRatio.toFixed(0),
     };
   };
-
+  // console.log("balance sheet", positionDataWithNetIncome2);
   return (
     <div className="border-t-2">
       <h2 className="text-2xl font-semibold my-4">Balance Sheet</h2>

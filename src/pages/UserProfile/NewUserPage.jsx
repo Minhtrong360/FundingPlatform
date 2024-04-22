@@ -368,7 +368,6 @@ function NewUserPage() {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
-  console.log("userData", userData);
   const [years, setYears] = useState([]);
 
   useEffect(() => {

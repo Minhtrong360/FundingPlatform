@@ -2131,11 +2131,7 @@ function AdminPage() {
             className="hover:cursor-pointer text-left"
             // onClick={() => handleClientClick(record)}
           >
-            <div
-              className="truncate"
-              style={{ maxWidth: "100%" }}
-              title={record.full_name}
-            >
+            <div className="truncate" style={{ maxWidth: "100%" }}>
               {record.full_name ? record.full_name : "No provided"}
             </div>
           </span>
@@ -2191,7 +2187,10 @@ function AdminPage() {
         <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
       ),
       onFilter: (value, record) =>
-        record.full_name.toString().toLowerCase().includes(value.toLowerCase()),
+        record.full_name
+          ?.toString()
+          .toLowerCase()
+          .includes(value.toLowerCase()),
     },
     {
       title: "Email",
@@ -2205,11 +2204,7 @@ function AdminPage() {
             className="hover:cursor-pointer text-left"
             // onClick={() => handleClientClick(record)}
           >
-            <div
-              className="truncate"
-              style={{ maxWidth: "100%" }}
-              title={record.email}
-            >
+            <div className="truncate" style={{ maxWidth: "100%" }}>
               {record.email}
             </div>
           </span>
@@ -2265,7 +2260,7 @@ function AdminPage() {
         <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
       ),
       onFilter: (value, record) =>
-        record.email.toString().toLowerCase().includes(value.toLowerCase()),
+        record.email?.toString().toLowerCase().includes(value.toLowerCase()),
     },
     {
       title: "Date",
@@ -2342,11 +2337,7 @@ function AdminPage() {
             className="hover:cursor-pointer text-left"
             // onClick={() => handleClientClick(record)}
           >
-            <div
-              className="truncate"
-              style={{ maxWidth: "100%" }}
-              title={record.roll}
-            >
+            <div className="truncate" style={{ maxWidth: "100%" }}>
               {record.roll ? record.roll : "No provided"}
             </div>
           </span>
@@ -2365,11 +2356,7 @@ function AdminPage() {
             className="hover:cursor-pointer text-left"
             // onClick={() => handleClientClick(record)}
           >
-            <div
-              className="truncate"
-              style={{ maxWidth: "100%" }}
-              title={record.plan}
-            >
+            <div className="truncate" style={{ maxWidth: "100%" }}>
               {record.plan}
             </div>
           </span>
@@ -2425,7 +2412,7 @@ function AdminPage() {
         <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
       ),
       onFilter: (value, record) =>
-        record.plan.toString().toLowerCase().includes(value.toLowerCase()),
+        record.plan?.toString().toLowerCase().includes(value.toLowerCase()),
     },
     {
       title: "Plan status",
@@ -2439,11 +2426,7 @@ function AdminPage() {
             className="hover:cursor-pointer text-left"
             // onClick={() => handleClientClick(record)}
           >
-            <div
-              className="truncate"
-              style={{ maxWidth: "100%" }}
-              title={record.subscription_status}
-            >
+            <div className="truncate" style={{ maxWidth: "100%" }}>
               {record.subscription_status
                 ? capitalizeFirstLetter(record.subscription_status)
                 : "No subscription"}
@@ -2464,11 +2447,7 @@ function AdminPage() {
             className="hover:cursor-pointer text-left"
             // onClick={() => handleClientClick(record)}
           >
-            <div
-              className="truncate"
-              style={{ maxWidth: "100%" }}
-              title={record.code}
-            >
+            <div className="truncate" style={{ maxWidth: "100%" }}>
               {record.code ? record.code : "No code"}
             </div>
           </span>
@@ -2524,7 +2503,7 @@ function AdminPage() {
         <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
       ),
       onFilter: (value, record) =>
-        record.code.toString().toLowerCase().includes(value.toLowerCase()),
+        record.code?.toString().toLowerCase().includes(value.toLowerCase()),
     },
     {
       title: "Action",

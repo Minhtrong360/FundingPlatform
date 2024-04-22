@@ -35,11 +35,20 @@ export default function NewDetailPage() {
           throw projectError;
         }
         setCurrentProject(projectData);
+
+        const { data: userData } = await supabase
+          .from("users")
+          .select("*")
+          .eq("email", user.email)
+          .single(); // user.email là giá trị email của người dùng
+
         if (
-          projectData.status === "private" &&
+          (projectData.status === "private" ||
+            projectData.status === "stealth") &&
           projectData.user_id !== user?.id &&
           !projectData.invited_user?.includes(user.email) &&
-          !projectData.collabs?.includes(user.email)
+          !projectData.collabs?.includes(user.email) &&
+          userData?.admin !== true
         ) {
           setViewError(true);
           setIsLoading(false); // Người dùng không được phép xem, ngừng hiển thị loading
@@ -95,8 +104,6 @@ export default function NewDetailPage() {
     );
   }
   const position = "notFixed";
-
-  console.log("fullScreen", fullScreen);
 
   return (
     <div className="min-h-screen bg-white">

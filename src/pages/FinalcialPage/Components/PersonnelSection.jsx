@@ -7,6 +7,7 @@ import {
   setPersonnelInputs,
   setPersonnelCostData,
   calculatePersonnelCostData,
+  transformPersonnelCostDataForTable,
 } from "../../../features/PersonnelSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "../../../context/AuthContext";
@@ -88,19 +89,6 @@ const PersonnelSection = ({
     setTempPersonnelInputs(newInputs);
   };
 
-  const transformPersonnelCostDataForTable = () => {
-    const transformedCustomerTableData = tempPersonnelCostData.map((item) => {
-      const rowData = { key: item.jobTitle, jobTitle: item.jobTitle };
-      item.monthlyCosts.forEach((monthData) => {
-        rowData[`month${monthData.month}`] = formatNumber(
-          monthData.cost?.toFixed(0)
-        ); // Adjust formatting as needed
-      });
-      return rowData;
-    });
-    return transformedCustomerTableData;
-  };
-
   //PersonnelUseEffect
   useEffect(() => {
     const calculatedData = calculatePersonnelCostData(
@@ -120,7 +108,9 @@ const PersonnelSection = ({
 
   //PersonnelCostTableData
 
-  const personnelCostTableData = transformPersonnelCostDataForTable();
+  const personnelCostTableData = transformPersonnelCostDataForTable(
+    tempPersonnelCostData
+  );
 
   //PersonnelColumns
   const months = [

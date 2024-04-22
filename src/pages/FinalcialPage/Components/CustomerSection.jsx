@@ -51,15 +51,13 @@ const CustomerSection = ({
 
   useEffect(() => {
     setTempCustomerInputs(customerInputs);
-    setRenderCustomerForm(customerInputs[0]?.id);
+    setRenderCustomerForm("all");
   }, [customerInputs]);
 
   const [tempCustomerGrowthData, setTempCustomerGrowthData] =
     useState(customerGrowthData);
 
-  const [renderCustomerForm, setRenderCustomerForm] = useState(
-    tempCustomerInputs[0]?.id
-  );
+  const [renderCustomerForm, setRenderCustomerForm] = useState("all");
 
   const handleAddNewCustomer = () => {
     const maxId = Math.max(...tempCustomerInputs.map((input) => input?.id));
@@ -125,139 +123,11 @@ const CustomerSection = ({
       numberOfMonths,
       renderCustomerForm
     );
+
     dispatch(setCustomerTableData(calculateCustomerTableData));
+
+    setTempCustomerGrowthData(calculatedData);
   }, [tempCustomerInputs, numberOfMonths, renderCustomerForm]);
-
-  // const transformedCustomerTableData = {};
-
-  // tempCustomerGrowthData.forEach((channelData) => {
-  //   channelData.forEach((data) => {
-  //     const customerInput = tempCustomerInputs.find(
-  //       (input) => input.channelName === data.channelName
-  //     );
-  //     if (customerInput) {
-  //       if (!transformedCustomerTableData[data.channelName]) {
-  //         transformedCustomerTableData[data.channelName] = {
-  //           key: data.channelName,
-  //           channelName: data.channelName,
-  //         };
-  //       }
-  //       if (
-  //         data.month >= customerInput.beginMonth &&
-  //         data.month <= customerInput.endMonth
-  //       ) {
-  //         transformedCustomerTableData[data.channelName][`month${data.month}`] =
-  //           parseFloat(data.customers)?.toFixed(0);
-  //       } else {
-  //         transformedCustomerTableData[data.channelName][`month${data.month}`] =
-  //           "0";
-  //       }
-  //     }
-  //   });
-  // });
-
-  // const customerTableData = Object.values(transformedCustomerTableData)
-  //   .filter((data) =>
-  //     renderCustomerForm === "all"
-  //       ? true
-  //       : tempCustomerInputs.find(
-  //           (input) =>
-  //             input.id == renderCustomerForm &&
-  //             input.channelName === data.channelName
-  //         )
-  //   )
-  //   .map((curr) => {
-  //     const customerInput = tempCustomerInputs.find(
-  //       (input) => input.channelName === curr.channelName
-  //     );
-
-  //     const startRow = {
-  //       key: `${curr.channelName}-start`,
-  //       channelName: `${curr.channelName} (Existing)`,
-  //     };
-  //     const beginRow = {
-  //       key: `${curr.channelName}-begin`,
-  //       channelName: `${curr.channelName} (Begin)`,
-  //     };
-  //     const churnRow = {
-  //       key: `${curr.channelName}-churn`,
-  //       channelName: `${curr.channelName} (Churn)`,
-  //     };
-  //     const endRow = {
-  //       ...curr,
-  //       key: `${curr.channelName}-end`,
-  //       channelName: `${curr.channelName} (End)`,
-  //     };
-  //     const channelAddRow = {
-  //       key: `${curr.channelName}-add`,
-  //       channelName: `${curr.channelName} (Add)`,
-  //     };
-
-  //     let currentCustomers = parseFloat(customerInput.customersPerMonth);
-  //     for (let i = 1; i <= numberOfMonths; i++) {
-  //       if (i >= customerInput.beginMonth && i <= customerInput.endMonth) {
-  //         if (customerInput.customerGrowthFrequency === "Monthly") {
-  //           currentCustomers *=
-  //             1 + parseFloat(customerInput.growthPerMonth) / 100;
-  //         } else {
-  //           let frequency = 12; // Default to Annually
-  //           if (customerInput.customerGrowthFrequency === "Quarterly")
-  //             frequency = 3;
-  //           else if (customerInput.customerGrowthFrequency === "Semi-Annually")
-  //             frequency = 6;
-
-  //           if (
-  //             i === customerInput.beginMonth ||
-  //             (i > customerInput.beginMonth &&
-  //               (i - customerInput.beginMonth) % frequency === 0)
-  //           ) {
-  //             if (i !== customerInput.beginMonth) {
-  //               currentCustomers *=
-  //                 1 + parseFloat(customerInput.growthPerMonth) / 100;
-  //             }
-  //           }
-  //         }
-  //         channelAddRow[`month${i}`] = formatNumber(
-  //           currentCustomers.toFixed(0)
-  //         );
-  //       } else {
-  //         channelAddRow[`month${i}`] = "0";
-  //       }
-  //       startRow[`month${i}`] = "0";
-  //       beginRow[`month${i}`] = "0";
-  //       churnRow[`month${i}`] = "0";
-  //     }
-
-  //     if (customerInput) {
-  //       startRow[`month${customerInput.beginMonth}`] = formatNumber(
-  //         parseFloat(customerInput.beginCustomer).toFixed(0)
-  //       );
-  //       beginRow[`month${customerInput.beginMonth}`] =
-  //         startRow[`month${customerInput.beginMonth}`];
-
-  //       for (let i = customerInput.beginMonth; i <= numberOfMonths; i++) {
-  //         if (i > customerInput.beginMonth) {
-  //           beginRow[`month${i}`] = formatNumber(endRow[`month${i - 1}`]); // Set Begin row of month i to End row of month i-1
-  //         }
-  //         endRow[`month${i}`] = formatNumber(endRow[`month${i}`]);
-  //         const beginValue = beginRow[`month${i}`] || 0; // Begin value for the current month
-  //         const addValue = parseNumber(channelAddRow[`month${i}`]) || 0; // Add value for the current month
-  //         const churnValue = (
-  //           parseNumber(beginValue) *
-  //           (customerInput.churnRate / 100)
-  //         ).toFixed(0); // Calculate churn value
-  //         churnRow[`month${i}`] = churnValue; // Assign churn value to Churn row of the current month
-  //         endRow[`month${i}`] = formatNumber(
-  //           parseNumber(beginValue) +
-  //             parseNumber(addValue) -
-  //             parseNumber(churnValue)
-  //         ); // Update End row to Begin + Add - Churn
-  //       }
-  //     }
-
-  //     return [startRow, beginRow, channelAddRow, churnRow, endRow];
-  //   })
-  //   .flat(); // Flatten the array of arrays to a single array
 
   const months = [
     "01",
@@ -280,7 +150,7 @@ const CustomerSection = ({
   const customerColumns = [
     {
       fixed: "left",
-      title: <div>Channel_Name</div>,
+      title: <div>Channel Name</div>,
       dataIndex: "channelName",
       key: "channelName",
       width: 500,
@@ -327,7 +197,6 @@ const CustomerSection = ({
   };
   const channelInputs = useSelector((state) => state.sales.channelInputs);
 
-  const { user } = useAuth();
   const { id } = useParams();
   useEffect(() => {
     const saveData = async () => {
@@ -637,6 +506,9 @@ const CustomerSection = ({
             columns={customerColumns}
             pagination={false}
             bordered
+            rowClassName={(record) =>
+              record.key === record.channelName ? "font-bold" : ""
+            }
           />
         </div>
         <h3 className="text-2xl font-semibold my-8">Customer Chart</h3>

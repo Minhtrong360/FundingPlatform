@@ -6,7 +6,17 @@ import { useNavigate } from "react-router-dom";
 // import { toast } from "react-toastify";
 
 import Header from "../Home/Header";
-import { Badge, message, Table, Tabs, Tooltip } from "antd";
+import {
+  Badge,
+  Dropdown,
+  Menu,
+  message,
+  Modal,
+  Radio,
+  Table,
+  Tabs,
+  Tooltip,
+} from "antd";
 import {
   formatDate,
   getCurrencyLabelByKey,
@@ -19,6 +29,7 @@ import moment from "moment";
 import { formatNumber } from "../../features/CostSlice";
 import Chart from "react-apexcharts";
 import industries from "../../components/Industries";
+import SideBar from "../../components/SideBar";
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
 
@@ -26,7 +37,6 @@ const { TabPane } = Tabs;
 
 function Dashboard({ dataSource }) {
   const [chartData, setChartData] = useState([]);
-  console.log("dataSource", dataSource);
   useEffect(() => {
     const processData = () => {
       let months = {};
@@ -254,23 +264,35 @@ function Dashboard({ dataSource }) {
   }, [dataSource]);
 
   return (
-    <div className="flex flex-wrap justify-center items-center ">
-      {chartData.map((chart, index) => (
-        <div key={index} className="w-full sm:w-1/3 p-2">
-          <Chart
-            key={index}
-            options={{
-              chart: { type: chart.type, height: 350 },
-              labels: chart.categories,
-              xaxis: { categories: chart.categories },
-              title: { text: chart.name },
-            }}
-            series={chart.type === "pie" ? chart.data : [{ data: chart.data }]}
-            type={chart.type}
-            height={350}
-          />
-        </div>
-      ))}
+    <div className="w-[90%] flex flex-col gap-8 md:p-8 p-0 bg-white">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {chartData.map((chart, index) => (
+          <div key={index} className="p-4 border rounded-lg">
+            <h2 className="text-lg font-semibold mb-4">{chart.name}</h2>
+            <Chart
+              options={{
+                chart: {
+                  type: chart.type,
+                  height: 350,
+                  toolbar: { show: false },
+                },
+                labels: chart.categories,
+                xaxis: {
+                  categories: chart.categories,
+                  labels: { show: false },
+                },
+                legend: { position: chart.type === "pie" ? "bottom" : "top" },
+              }}
+              series={
+                chart.type === "pie" ? chart.data : [{ data: chart.data }]
+              }
+              type={chart.type}
+              height={350}
+              className="w-full h-48"
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -279,6 +301,8 @@ function AdminPage() {
   const { user } = useAuth();
   const [userData, setUserData] = useState([]);
   const [dataSource, setDataSource] = useState([]);
+  const [dataClientSource, setDataClientSource] = useState([]);
+  const [selectedClient, setSelectedClient] = useState();
 
   useEffect(() => {
     async function fetchUsers() {
@@ -298,6 +322,23 @@ function AdminPage() {
 
     fetchUsers();
   }, [user]); // Sử dụng một lần khi component được render
+
+  useEffect(() => {
+    async function fetchClients() {
+      // Thực hiện truy vấn để lấy danh sách người dùng với điều kiện trường email
+      const { data, error } = await supabase.from("users").select("*");
+
+      if (error) {
+        console.error("Error fetching users:", error.message);
+      } else {
+        // Sắp xếp data theo created_at từ mới nhất đến cũ nhất
+        data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        setDataClientSource(data);
+      }
+    }
+
+    fetchClients();
+  }, [selectedClient]); // Sử dụng một lần khi component được render
 
   useEffect(() => {
     async function fetchProjects() {
@@ -363,7 +404,8 @@ function AdminPage() {
     const { error } = await supabase
       .from("projects")
       .update({ verified: !project.verified })
-      .eq("id", project.id);
+      .eq("id", project.project_id);
+
     if (error) {
       console.error("Error updating project:", error.message);
       message.error(error.message);
@@ -380,36 +422,167 @@ function AdminPage() {
   };
 
   const [filteredData, setFilteredData] = useState([]);
+  const [filters, setFilters] = useState({});
+
+  const applyFilters = () => {
+    let filtered = [...dataSource];
+    Object.keys(filters).forEach((key) => {
+      if (filters[key].length > 0) {
+        if (key === "requiredVerification") {
+          filtered = filtered.filter((record) => {
+            if (filters[key].length === 1) {
+              const filterKey = filters[key][0];
+              if (filterKey === "accepted") {
+                return record.required && record.verified;
+              } else if (filterKey === "waiting") {
+                return record.required && !record.verified;
+              } else if (filterKey === "notRequired") {
+                return !record.required;
+              }
+            } else if (filters[key].length === 2) {
+              const key1 = filters[key][0];
+              const key2 = filters[key][1];
+              if (
+                (key1 === "accepted" && key2 === "waiting") ||
+                (key1 === "waiting" && key2 === "accepted")
+              ) {
+                return record.required && (record.verified || !record.verified);
+              } else if (
+                (key1 === "accepted" && key2 === "notRequired") ||
+                (key1 === "notRequired" && key2 === "accepted")
+              ) {
+                return (record.required && record.verified) || !record.required;
+              } else if (
+                (key1 === "waiting" && key2 === "notRequired") ||
+                (key1 === "notRequired" && key2 === "waiting")
+              ) {
+                return (
+                  (record.required && !record.verified) || !record.required
+                );
+              }
+            }
+            if (filters[key].length === 3) {
+              return record.required || record.verified || !record.required;
+            }
+
+            return false;
+          });
+        } else if (key === "verified") {
+          filtered = filtered.filter(
+            (record) => record.verified === filters[key][0]
+          );
+        } else if (key === "target_amount") {
+          filtered = filtered.filter((record) => {
+            return filters[key].some((filterKey) => {
+              let [min, max] = filterKey.split("-");
+              if (!max) {
+                min = 5000000;
+              }
+
+              const amount = parseFloat(record.target_amount);
+              if (max) {
+                return amount >= parseFloat(min) && amount <= parseFloat(max);
+              } else {
+                return amount >= parseFloat(min);
+              }
+            });
+          });
+        } else if (key === "ticket_size") {
+          filtered = filtered.filter((record) => {
+            return filters[key].some((filterKey) => {
+              let [min, max] = filterKey.split("-");
+              if (!max) {
+                min = 50000;
+              }
+              const amount = parseFloat(record.ticket_size);
+              if (max) {
+                return amount >= parseFloat(min) && amount <= parseFloat(max);
+              } else {
+                return amount >= parseFloat(min);
+              }
+            });
+          });
+        } else if (
+          key === "offer_type" ||
+          key === "revenueStatus" ||
+          key === "status" ||
+          key === "round" ||
+          key === "industry"
+        ) {
+          filtered = filtered.filter((record) =>
+            filters[key].some((filterKey) => record[key].includes(filterKey))
+          );
+        } else if (key === "amountRaised") {
+          filtered = filtered.filter((record) => {
+            return filters[key].some((filterKey) => {
+              let [min, max] = filterKey.split("-");
+              if (!max) {
+                min = 5000000;
+              }
+              const amount = parseFloat(record.amountRaised);
+              if (max) {
+                return amount >= parseFloat(min) && amount <= parseFloat(max);
+              } else {
+                return amount >= parseFloat(min);
+              }
+            });
+          });
+        } else {
+          filtered = filtered.filter((item) =>
+            item[key].toLowerCase().includes(filters[key][0].toLowerCase())
+          );
+        }
+      }
+    });
+    setFilteredData(filtered);
+  };
+
+  const handleFilterChange = (key, values) => {
+    const newFilters = { ...filters, [key]: values };
+    setFilters(newFilters);
+  };
+
   useEffect(() => {
-    // Cập nhật filteredData khi dataSource thay đổi
-    setFilteredData(dataSource);
-  }, [dataSource]);
+    applyFilters();
+  }, [dataSource, filters]);
 
   const columns = [
     {
       title: "No",
       key: "index",
+      align: "center",
       render: (text, record, index) => (
-        <div
-          className={`  hover:cursor-pointer`}
+        <span
+          className={`  hover:cursor-pointer text-left`}
+          style={{ maxWidth: "100%" }}
           onClick={() => handleProjectClick(record)}
         >
           {index + 1}
-        </div>
+        </span>
       ),
     },
 
     {
       title: "Company name",
       dataIndex: "name",
+      width: "25%",
       key: "name",
+      align: "center",
       render: (text, record) => (
-        <div
-          className={`flex items-center  hover:cursor-pointer`}
-          onClick={() => handleProjectClick(record)}
-        >
-          {text}
-        </div>
+        <>
+          <span
+            className="hover:cursor-pointer text-left"
+            onClick={() => handleProjectClick(record)}
+          >
+            <div
+              className="truncate"
+              style={{ maxWidth: "100%" }}
+              title={record.name}
+            >
+              {record.name}
+            </div>
+          </span>
+        </>
       ),
       filterDropdown: ({
         setSelectedKeys,
@@ -419,23 +592,15 @@ function AdminPage() {
       }) => (
         <div style={{ padding: 8 }}>
           <Input
+            autoFocus
             placeholder={`Search Name`}
             value={selectedKeys[0]}
             onChange={(e) => {
               setSelectedKeys(e.target.value ? [e.target.value] : []);
             }}
             onPressEnter={() => {
+              handleFilterChange("name", selectedKeys);
               confirm();
-              if (selectedKeys.length > 0) {
-                const filtered = dataSource?.filter((record) =>
-                  record?.name
-                    ?.toLowerCase()
-                    .includes(selectedKeys[0]?.toLowerCase())
-                );
-                setFilteredData(filtered);
-              } else {
-                setFilteredData(dataSource);
-              }
             }}
             style={{
               width: 188,
@@ -450,9 +615,10 @@ function AdminPage() {
             <Button
               onClick={() => {
                 clearFilters();
+                handleFilterChange("name", []);
                 confirm();
 
-                setFilteredData(dataSource);
+                // setFilteredData(dataSource);
               }}
               size="small"
               style={{ width: 90, fontSize: "12px" }}
@@ -473,12 +639,14 @@ function AdminPage() {
       title: "Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (text, record) => (
-        <div onClick={() => handleProjectClick(record)}>{formatDate(text)}</div>
-      ),
-      ellipsis: true,
-      width: "10%",
+
       align: "center",
+      render: (text, record) => (
+        <span onClick={() => handleProjectClick(record)}>
+          {formatDate(text)}
+        </span>
+      ),
+
       filterDropdown: ({
         setSelectedKeys,
         selectedKeys,
@@ -532,9 +700,10 @@ function AdminPage() {
       title: "Customer",
       dataIndex: "user_email",
       key: "user_email",
+      align: "center",
       render: (text, record) => (
         <div
-          className=" whitespace-nowrap hover:cursor-pointer"
+          className=" whitespace-nowrap hover:cursor-pointer text-left"
           onClick={() => handleProjectClick(record)}
         >
           {text}
@@ -554,18 +723,8 @@ function AdminPage() {
               setSelectedKeys(e.target.value ? [e.target.value] : []);
             }}
             onPressEnter={() => {
+              handleFilterChange("user_email", selectedKeys);
               confirm();
-              if (selectedKeys.length > 0) {
-                const filtered = dataSource?.filter((record) =>
-                  record?.user_email
-                    ?.toLowerCase()
-                    .includes(selectedKeys[0]?.toLowerCase())
-                );
-
-                setFilteredData(filtered);
-              } else {
-                setFilteredData(dataSource);
-              }
             }}
             style={{
               width: 188,
@@ -580,9 +739,10 @@ function AdminPage() {
             <Button
               onClick={() => {
                 clearFilters();
+                handleFilterChange("user_email", []);
                 confirm();
 
-                setFilteredData(dataSource);
+                // setFilteredData(dataSource);
               }}
               size="small"
               style={{ width: 90, fontSize: "12px" }}
@@ -604,6 +764,7 @@ function AdminPage() {
     {
       title: "Required verification",
       key: "required",
+      align: "center",
       render: (text, record) => (
         <div
           onClick={() => handleProjectClick(record)}
@@ -655,62 +816,8 @@ function AdminPage() {
                     }
                   }
                   setSelectedKeys(keys);
+                  handleFilterChange("requiredVerification", keys);
                   confirm();
-
-                  console.log("keys", keys);
-
-                  if (keys.length > 0) {
-                    const filtered = dataSource.filter((record) => {
-                      if (keys.length === 1) {
-                        const key = keys[0];
-                        if (key === "accepted") {
-                          return record.required && record.verified;
-                        } else if (key === "waiting") {
-                          return record.required && !record.verified;
-                        } else if (key === "notRequired") {
-                          return !record.required;
-                        }
-                      } else if (keys.length === 2) {
-                        const key1 = keys[0];
-                        const key2 = keys[1];
-                        if (
-                          (key1 === "accepted" && key2 === "waiting") ||
-                          (key1 === "waiting" && key2 === "accepted")
-                        ) {
-                          return (
-                            record.required &&
-                            (record.verified || !record.verified)
-                          );
-                        } else if (
-                          (key1 === "accepted" && key2 === "notRequired") ||
-                          (key1 === "notRequired" && key2 === "accepted")
-                        ) {
-                          return (
-                            (record.required && record.verified) ||
-                            !record.required
-                          );
-                        } else if (
-                          (key1 === "waiting" && key2 === "notRequired") ||
-                          (key1 === "notRequired" && key2 === "waiting")
-                        ) {
-                          return (
-                            (record.required && !record.verified) ||
-                            !record.required
-                          );
-                        }
-                      }
-                      if (keys.length === 3) {
-                        return (
-                          record.required || record.verified || !record.required
-                        );
-                      }
-
-                      return false;
-                    });
-                    setFilteredData(filtered); // Confirm the filter change immediately
-                  } else {
-                    setFilteredData(dataSource);
-                  }
                 }}
               >
                 {option === "accepted"
@@ -724,8 +831,10 @@ function AdminPage() {
           <Button
             onClick={() => {
               clearFilters();
+              handleFilterChange("requiredVerification", []);
+
               confirm();
-              setFilteredData(dataSource); // Confirm the filter clearing immediately
+              // setFilteredData(dataSource); // Confirm the filter clearing immediately
             }}
             size="small"
             style={{ width: 90 }}
@@ -738,11 +847,12 @@ function AdminPage() {
     {
       title: "Status",
       key: "status",
+      align: "center",
       render: (text, record) => (
         <div className="">
           <button
             onClick={() => handleProjectClick(record)}
-            className={`w-[5em]  ${
+            className={`w-[5em] text-left ${
               record?.status === "public"
                 ? "bg-blue-600 text-white"
                 : record?.status === "private"
@@ -788,15 +898,16 @@ function AdminPage() {
                     }
                   }
                   setSelectedKeys(keys);
+                  handleFilterChange("status", keys);
                   confirm();
-                  if (keys.length > 0) {
-                    const filtered = dataSource.filter((record) =>
-                      keys.some((key) => record.status.includes(key))
-                    );
-                    setFilteredData(filtered); // Confirm the filter change immediately
-                  } else {
-                    setFilteredData(dataSource);
-                  }
+                  // if (keys.length > 0) {
+                  //   const filtered = dataSource.filter((record) =>
+                  //     keys.some((key) => record.status.includes(key))
+                  //   );
+                  //   setFilteredData(filtered); // Confirm the filter change immediately
+                  // } else {
+                  //   setFilteredData(dataSource);
+                  // }
                 }}
               >
                 {option === "public"
@@ -810,8 +921,9 @@ function AdminPage() {
           <Button
             onClick={() => {
               clearFilters();
+              handleFilterChange("status", []);
               confirm();
-              setFilteredData(dataSource); // Confirm the filter clearing immediately
+              // setFilteredData(dataSource); // Confirm the filter clearing immediately
             }}
             size="small"
             style={{ width: 90 }}
@@ -824,10 +936,11 @@ function AdminPage() {
     {
       title: "Verified Status",
       key: "Verified",
+      align: "center",
       render: (text, record) => (
         <Space direction="vertical">
           <Switch
-            className="text-black"
+            className="text-black "
             checkedChildren="Yes"
             unCheckedChildren="No"
             checked={record.verified}
@@ -849,8 +962,10 @@ function AdminPage() {
         const handleReset = () => {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
+          handleFilterChange("verified", []);
+
           confirm();
-          setFilteredData(dataSource);
+          // setFilteredData(dataSource);
           // Confirm the filter clearing immediately
         };
 
@@ -863,15 +978,8 @@ function AdminPage() {
                 onChange={(e) => {
                   const keys = e.target.checked ? [true] : [];
                   setSelectedKeys(keys);
+                  handleFilterChange("verified", keys);
                   confirm();
-                  if (keys.length > 0) {
-                    const filtered = dataSource.filter((record) => {
-                      return record.verified === true;
-                    });
-                    setFilteredData(filtered);
-                  } else {
-                    setFilteredData(dataSource);
-                  }
                 }}
               >
                 Yes
@@ -882,15 +990,17 @@ function AdminPage() {
                 onChange={(e) => {
                   const keys = e.target.checked ? [false] : [];
                   setSelectedKeys(keys);
+                  handleFilterChange("verified", keys);
+
                   confirm();
-                  if (keys.length > 0) {
-                    const filtered = dataSource.filter((record) => {
-                      return record.verified === false;
-                    });
-                    setFilteredData(filtered);
-                  } else {
-                    setFilteredData(dataSource);
-                  }
+                  // if (keys.length > 0) {
+                  //   const filtered = dataSource.filter((record) => {
+                  //     return record.verified === false;
+                  //   });
+                  //   setFilteredData(filtered);
+                  // } else {
+                  //   setFilteredData(dataSource);
+                  // }
                 }}
               >
                 No
@@ -913,9 +1023,10 @@ function AdminPage() {
       title: "Target Amount",
       dataIndex: "target_amount",
       key: "target_amount",
+      align: "center",
       render: (text, record) => (
         <div
-          className="whitespace-nowrap hover:cursor-pointer"
+          className="whitespace-nowrap hover:cursor-pointer text-right"
           onClick={() => handleProjectClick(record)}
         >
           {formatNumber(text)}
@@ -952,8 +1063,9 @@ function AdminPage() {
         const handleReset = () => {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
+          handleFilterChange("target_amount", []);
           confirm(); // Confirm the filter clearing immediately
-          setFilteredData(dataSource);
+          // setFilteredData(dataSource);
         };
 
         return (
@@ -979,32 +1091,8 @@ function AdminPage() {
                       }
                     }
                     setSelectedKeys(keys);
+                    handleFilterChange("target_amount", keys);
                     confirm();
-
-                    if (keys.length > 0) {
-                      const filtered = dataSource.filter((record) => {
-                        return keys.some((key) => {
-                          let [min, max] = key.split("-");
-                          if (!max) {
-                            min = 5000000;
-                          }
-
-                          const amount = parseFloat(record.target_amount);
-                          if (max) {
-                            return (
-                              amount >= parseFloat(min) &&
-                              amount <= parseFloat(max)
-                            );
-                          } else {
-                            return amount >= parseFloat(min);
-                          }
-                        });
-                      });
-                      setFilteredData(filtered);
-                    } else {
-                      setFilteredData(dataSource);
-                    }
-                    // Confirm the filter change immediately
                   }}
                 >
                   {option}
@@ -1022,9 +1110,10 @@ function AdminPage() {
       title: "Ticket Size",
       dataIndex: "ticket_size",
       key: "ticket_size",
+      align: "center",
       render: (text, record) => (
         <div
-          className="whitespace-nowrap hover:cursor-pointer"
+          className="whitespace-nowrap hover:cursor-pointer text-right"
           onClick={() => handleProjectClick(record)}
         >
           {formatNumber(text)}
@@ -1062,8 +1151,9 @@ function AdminPage() {
         const handleReset = () => {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
+          handleFilterChange("ticket_size", []);
           confirm(); // Confirm the filter clearing immediately
-          setFilteredData(dataSource);
+          // setFilteredData(dataSource);
         };
 
         return (
@@ -1084,30 +1174,8 @@ function AdminPage() {
                         }
                       }
                       setSelectedKeys(keys);
+                      handleFilterChange("ticket_size", keys);
                       confirm();
-
-                      if (keys.length > 0) {
-                        const filtered = dataSource.filter((record) => {
-                          return keys.some((key) => {
-                            let [min, max] = key.split("-");
-                            if (!max) {
-                              min = 50000;
-                            }
-                            const amount = parseFloat(record.ticket_size);
-                            if (max) {
-                              return (
-                                amount >= parseFloat(min) &&
-                                amount <= parseFloat(max)
-                              );
-                            } else {
-                              return amount >= parseFloat(min);
-                            }
-                          });
-                        });
-                        setFilteredData(filtered);
-                      } else {
-                        setFilteredData(dataSource);
-                      }
                     }}
                   >
                     {option}
@@ -1126,9 +1194,10 @@ function AdminPage() {
       title: "No. Ticket",
       dataIndex: "no_ticket",
       key: "no_ticket",
+      align: "center",
       render: (text, record) => (
         <div
-          className=" whitespace-nowrap hover:cursor-pointer"
+          className=" whitespace-nowrap hover:cursor-pointer text-right"
           onClick={() => handleProjectClick(record)}
         >
           {formatNumber(text)}
@@ -1139,9 +1208,10 @@ function AdminPage() {
       title: "Offer Type",
       dataIndex: "offer_type",
       key: "offer_type",
+      align: "center",
       render: (text, record) => (
         <div
-          className="whitespace-nowrap hover:cursor-pointer"
+          className="whitespace-nowrap hover:cursor-pointer text-left"
           onClick={() => handleProjectClick(record)}
         >
           {text}
@@ -1164,8 +1234,9 @@ function AdminPage() {
         const handleReset = () => {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
+          handleFilterChange("offer_type", []);
           confirm(); // Confirm the filter clearing immediately
-          setFilteredData(dataSource);
+          // setFilteredData(dataSource);
         };
 
         return (
@@ -1186,15 +1257,9 @@ function AdminPage() {
                         }
                       }
                       setSelectedKeys(keys);
+                      handleFilterChange("offer_type", keys);
+
                       confirm(); // Confirm the filter change immediately
-                      if (keys.length > 0) {
-                        const filtered = dataSource.filter((record) =>
-                          keys.some((key) => record.offer_type.includes(key))
-                        );
-                        setFilteredData(filtered); // Confirm the filter change immediately
-                      } else {
-                        setFilteredData(dataSource);
-                      }
                     }}
                   >
                     {option}
@@ -1213,22 +1278,26 @@ function AdminPage() {
       title: "Offer",
       dataIndex: "offer",
       key: "offer",
+      align: "center",
       render: (text, record) => (
-        <div
-          className=" whitespace-nowrap hover:cursor-pointer"
-          onClick={() => handleProjectClick(record)}
-        >
-          {formatNumber(text)}
-        </div>
+        <Tooltip title={text}>
+          <div
+            className=" whitespace-nowrap hover:cursor-pointer md:max-w-xl max-w-xs truncate text-left"
+            onClick={() => handleProjectClick(record)}
+          >
+            {formatNumber(text)}
+          </div>
+        </Tooltip>
       ),
     },
     {
       title: "Amount Raised",
       dataIndex: "amountRaised",
       key: "amountRaised",
+      align: "center",
       render: (text, record) => (
         <div
-          className="whitespace-nowrap hover:cursor-pointer"
+          className="whitespace-nowrap hover:cursor-pointer text-right"
           onClick={() => handleProjectClick(record)}
         >
           {formatNumber(text)}
@@ -1265,8 +1334,9 @@ function AdminPage() {
         const handleReset = () => {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
+          handleFilterChange("amountRaised", []);
           confirm(); // Confirm the filter clearing immediately
-          setFilteredData(dataSource);
+          // setFilteredData(dataSource);
         };
 
         return (
@@ -1292,31 +1362,9 @@ function AdminPage() {
                       }
                     }
                     setSelectedKeys(keys);
-                    confirm();
+                    handleFilterChange("amountRaised", keys);
 
-                    if (keys.length > 0) {
-                      const filtered = dataSource.filter((record) => {
-                        return keys.some((key) => {
-                          let [min, max] = key.split("-");
-                          if (!max) {
-                            min = 5000000;
-                          }
-                          const amount = parseFloat(record.amountRaised);
-                          if (max) {
-                            return (
-                              amount >= parseFloat(min) &&
-                              amount <= parseFloat(max)
-                            );
-                          } else {
-                            return amount >= parseFloat(min);
-                          }
-                        });
-                      });
-                      setFilteredData(filtered);
-                    } else {
-                      setFilteredData(dataSource);
-                    }
-                    // Confirm the filter change immediately
+                    confirm();
                   }}
                 >
                   {option}
@@ -1334,6 +1382,7 @@ function AdminPage() {
       title: "Country",
       dataIndex: "country",
       key: "country",
+      align: "center",
       render: (text, record) => (
         <div
           className=" whitespace-nowrap hover:cursor-pointer"
@@ -1356,6 +1405,7 @@ function AdminPage() {
               setSelectedKeys(e.target.value ? [e.target.value] : []);
             }}
             onPressEnter={() => {
+              handleFilterChange("country", selectedKeys);
               confirm();
               if (selectedKeys.length > 0) {
                 const filtered = dataSource?.filter((record) =>
@@ -1381,8 +1431,10 @@ function AdminPage() {
             <Button
               onClick={() => {
                 clearFilters();
+                handleFilterChange("country", []);
+
                 confirm();
-                setFilteredData(dataSource);
+                // setFilteredData(dataSource);
               }}
               size="small"
               style={{ width: 90, fontSize: "12px" }}
@@ -1402,6 +1454,7 @@ function AdminPage() {
       title: "Established",
       dataIndex: "operationTime",
       key: "operationTime",
+      align: "center",
       render: (text, record) => (
         <div
           className=" whitespace-nowrap hover:cursor-pointer"
@@ -1415,6 +1468,7 @@ function AdminPage() {
       title: "Revenue Range",
       dataIndex: "revenueStatus",
       key: "revenueStatus",
+      align: "center",
       render: (text, record) => (
         <div
           className="whitespace-nowrap hover:cursor-pointer"
@@ -1443,8 +1497,9 @@ function AdminPage() {
         const handleReset = () => {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
+          handleFilterChange("revenueStatus", []);
           confirm(); // Confirm the filter clearing immediately
-          setFilteredData(dataSource);
+          // setFilteredData(dataSource);
           // Confirm the filter clearing immediately
         };
 
@@ -1474,15 +1529,8 @@ function AdminPage() {
                       }
                     }
                     setSelectedKeys(keys);
+                    handleFilterChange("revenueStatus", keys);
                     confirm(); // Confirm the filter change immediately
-                    if (keys.length > 0) {
-                      const filtered = dataSource.filter((record) =>
-                        keys.some((key) => record.revenueStatus.includes(key))
-                      );
-                      setFilteredData(filtered); // Confirm the filter change immediately
-                    } else {
-                      setFilteredData(dataSource);
-                    }
                   }}
                 >
                   {option}
@@ -1500,6 +1548,7 @@ function AdminPage() {
       title: "Round",
       dataIndex: "round",
       key: "round",
+      align: "center",
       render: (text, record) => (
         <div
           className="whitespace-nowrap hover:cursor-pointer"
@@ -1526,8 +1575,9 @@ function AdminPage() {
         const handleReset = () => {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
+          handleFilterChange("round", []);
           confirm(); // Confirm the filter clearing immediately
-          setFilteredData(dataSource);
+          // setFilteredData(dataSource);
         };
 
         return (
@@ -1554,15 +1604,9 @@ function AdminPage() {
                       }
                     }
                     setSelectedKeys(keys);
+                    handleFilterChange("round", keys);
+
                     confirm();
-                    if (keys.length > 0) {
-                      const filtered = dataSource.filter((record) =>
-                        keys.some((key) => record.round.includes(key))
-                      );
-                      setFilteredData(filtered); // Confirm the filter change immediately
-                    } else {
-                      setFilteredData(dataSource);
-                    }
                   }}
                 >
                   {option}
@@ -1580,33 +1624,40 @@ function AdminPage() {
       title: "Website",
       dataIndex: "website",
       key: "website",
+      align: "center",
+
       render: (text, record) => (
-        <div
-          className=" whitespace-nowrap hover:cursor-pointer"
-          onClick={() => handleProjectClick(record)}
-        >
-          {text}
-        </div>
+        <Tooltip title={text}>
+          <div
+            className=" whitespace-nowrap hover:cursor-pointer md:max-w-sm max-w-sm truncate text-left"
+            onClick={() => handleProjectClick(record)}
+          >
+            {text}
+          </div>
+        </Tooltip>
       ),
     },
     {
-      title: "Industry",
+      title: (
+        <span className="flex justify-center items-center">Industry </span>
+      ),
       dataIndex: "industry",
       key: "industry",
+
       render: (text, record) => (
-        <div
-          className="whitespace-nowrap hover:cursor-pointer"
+        <span
+          className="whitespace-nowrap hover:cursor-pointer md:max-w-sm max-w-sm truncate" // Căn trái nội dung
           onClick={() => handleProjectClick(record)}
         >
           {record?.industry?.map((industry, index) => (
             <Badge
               key={index}
-              className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black  inline-flex justify-center items-center gap-x-1 px-2 py-1 text-xs  text-center   rounded-3xl "
+              className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black  inline-flex justify-start items-start gap-x-1 px-2 py-1 text-xs  text-center   rounded-3xl "
             >
               {industry}
             </Badge>
           ))}
-        </div>
+        </span>
       ),
       filters: [
         { text: "Technology", value: "Technology" },
@@ -1641,8 +1692,9 @@ function AdminPage() {
         const handleReset = () => {
           clearFilters();
           setSelectedKeys([]); // Reset selected keys
+          handleFilterChange("industry", []);
           confirm(); // Confirm the filter clearing immediately
-          setFilteredData(dataSource);
+          // setFilteredData(dataSource);
         };
 
         return (
@@ -1662,15 +1714,9 @@ function AdminPage() {
                       }
                     }
                     setSelectedKeys(keys);
+                    handleFilterChange("industry", keys);
+
                     confirm();
-                    if (keys.length > 0) {
-                      const filtered = dataSource.filter((record) =>
-                        keys.some((key) => record.industry.includes(key))
-                      );
-                      setFilteredData(filtered); // Confirm the filter change immediately
-                    } else {
-                      setFilteredData(dataSource);
-                    }
                   }}
                 >
                   {option}
@@ -1685,12 +1731,15 @@ function AdminPage() {
       },
     },
     {
-      title: "Keywords",
+      title: (
+        <span className="flex justify-center items-center">Key words </span>
+      ),
       dataIndex: "keyWords",
       key: "keyWords",
+
       render: (text, record) => (
-        <div
-          className=" whitespace-nowrap hover:cursor-pointer"
+        <span
+          className=" whitespace-nowrap hover:cursor-pointer md:max-w-sm max-w-sm truncate"
           onClick={() => handleProjectClick(record)}
         >
           {record?.keyWords &&
@@ -1702,10 +1751,75 @@ function AdminPage() {
                 {keyWord.trim()}
               </Badge>
             ))}
-        </div>
+        </span>
+      ),
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      key: "action",
+      align: "center",
+
+      render: (text, record) => (
+        <Button
+          onClick={() => handleDelete(record.project_id)}
+          style={{ fontSize: "12px" }}
+          className="hover:cursor-pointer bg-red-500 text-white"
+        >
+          Delete
+        </Button>
       ),
     },
   ];
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [SelectedID, setSelectedID] = useState();
+
+  const handleDelete = async (projectId) => {
+    // Hiển thị modal xác nhận xóa
+    setIsDeleteModalOpen(true);
+    // Lưu projectId của dự án cần xóa
+    setSelectedID(projectId);
+  };
+
+  // Hàm xác nhận xóa dự án
+  const confirmDelete = async () => {
+    try {
+      if (!navigator.onLine) {
+        message.error("No internet access.");
+        return;
+      }
+      const { error } = await supabase
+        .from("projects")
+        .delete()
+        .eq("id", SelectedID);
+
+      if (error) {
+        console.error("Error deleting project:", error);
+      } else {
+        const updatedProjectsCopy = dataSource.filter(
+          (project) => project.project_id !== SelectedID
+        );
+        setDataSource(updatedProjectsCopy);
+
+        message.success("Deleted project.");
+      }
+    } catch (error) {
+      message.error(error.message);
+      console.error("Error deleting project:", error);
+    } finally {
+      // Đóng modal sau khi xóa hoặc xảy ra lỗi
+      setIsDeleteModalOpen(false);
+      setSelectedID("");
+    }
+  };
+
+  // Hàm hủy bỏ xóa dự án
+  const cancelDelete = () => {
+    // Đóng modal và không làm gì cả
+    setIsDeleteModalOpen(false);
+    setSelectedID("");
+  };
 
   const handleFinanceClick = async (finance) => {
     navigate(`/financials/${finance.id}`);
@@ -1723,11 +1837,12 @@ function AdminPage() {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      width: "25%",
+      width: "20%",
+      align: "center",
       render: (text, record) => (
         <>
           <span
-            className="hover:cursor-pointer"
+            className="hover:cursor-pointer text-left"
             onClick={() => handleFinanceClick(record)}
           >
             <div
@@ -1797,6 +1912,7 @@ function AdminPage() {
       title: "Date",
       dataIndex: "created_at",
       key: "created_at",
+      align: "center",
       render: (text, record) => (
         <span
           className="hover:cursor-pointer"
@@ -1864,11 +1980,12 @@ function AdminPage() {
       title: "Owner",
       dataIndex: "user_email",
       key: "user_email",
-      width: "25%",
+      width: "20",
+      align: "center",
       render: (text, record) => (
         <>
           <span
-            className="hover:cursor-pointer"
+            className="hover:cursor-pointer text-left"
             onClick={() => handleFinanceClick(record)}
           >
             <div
@@ -1886,6 +2003,7 @@ function AdminPage() {
       title: "Industry",
       dataIndex: "industry",
       key: "industry",
+      align: "center",
       render: (text, record) => (
         <>
           <button onClick={() => handleFinanceClick(record)}>
@@ -1900,6 +2018,7 @@ function AdminPage() {
       title: "Duration",
       dataIndex: "selectedDuration",
       key: "selectedDuration",
+      align: "center",
       render: (text, record) => (
         <div
           onClick={() => handleFinanceClick(record)}
@@ -1915,6 +2034,7 @@ function AdminPage() {
       title: "Start year",
       dataIndex: "startYear",
       key: "startYear",
+      align: "center",
       render: (text, record) => (
         <div
           onClick={() => handleFinanceClick(record)}
@@ -1937,6 +2057,7 @@ function AdminPage() {
       title: "Customer",
       dataIndex: "customer",
       key: "customer",
+      align: "center",
       render: (text, record) => (
         <Tooltip title="Customer of 1st year">
           <div
@@ -1955,6 +2076,7 @@ function AdminPage() {
       dataIndex: "Revenue",
       key: "Revenue",
 
+      align: "center",
       render: (text, record) => (
         <Tooltip title="Revenue of 1st year">
           <div
@@ -1970,21 +2092,565 @@ function AdminPage() {
         </Tooltip>
       ),
     },
-    // {
-    //   title: "Action",
-    //   dataIndex: "action",
-    //   key: "action",
-    //   render: (text, record) => (
-    //     <Button
-    //       onClick={() => handleDelete(record.id)}
-    //       style={{ fontSize: "12px" }}
-    //       className="hover:cursor-pointer bg-red-500 text-white"
-    //     >
-    //       Delete
-    //     </Button>
-    //   ),
-    // },
+    {
+      title: "Action",
+      dataIndex: "action",
+      key: "action",
+      align: "center",
+
+      render: (text, record) => (
+        <Button
+          onClick={() => handleFinancialDelete(record.id)}
+          style={{ fontSize: "12px" }}
+          className="hover:cursor-pointer bg-red-500 text-white"
+        >
+          Delete
+        </Button>
+      ),
+    },
   ];
+
+  console.log("dataClientSource", dataClientSource);
+  const clientColumns = [
+    {
+      title: "No",
+      dataIndex: "index",
+      key: "index",
+      align: "center",
+      render: (text, record, index) => <span>{index + 1}</span>,
+    },
+    {
+      title: "Full name",
+      dataIndex: "full_name",
+      key: "full_name",
+      width: "20%",
+      align: "center",
+      render: (text, record) => (
+        <Tooltip title={record.full_name}>
+          <span
+            className="hover:cursor-pointer text-left"
+            onClick={() => handleFinanceClick(record)}
+          >
+            <div
+              className="truncate"
+              style={{ maxWidth: "100%" }}
+              title={record.full_name}
+            >
+              {record.full_name ? record.full_name : "No provided"}
+            </div>
+          </span>
+        </Tooltip>
+      ),
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder={`Search Name`}
+            value={selectedKeys[0]}
+            onChange={(e) => {
+              setSelectedKeys(e.target.value ? [e.target.value] : []);
+            }}
+            onPressEnter={() => {
+              confirm();
+              const filtered = dataClientSource?.filter((record) =>
+                record?.full_name
+                  ?.toLowerCase()
+                  .includes(selectedKeys[0]?.toLowerCase())
+              );
+              setFilteredData(filtered);
+            }}
+            style={{
+              width: 188,
+              marginBottom: 8,
+              display: "block",
+              fontSize: "12px",
+              paddingTop: "2px",
+              paddingBottom: "2px",
+            }}
+          />
+          <Space>
+            <Button
+              onClick={() => {
+                clearFilters();
+                confirm();
+                setFilteredData(dataClientSource);
+              }}
+              size="small"
+              style={{ width: 90, fontSize: "12px" }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        record.full_name.toString().toLowerCase().includes(value.toLowerCase()),
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      width: "20%",
+      align: "center",
+      render: (text, record) => (
+        <Tooltip title={record.email}>
+          <span
+            className="hover:cursor-pointer text-left"
+            onClick={() => handleFinanceClick(record)}
+          >
+            <div
+              className="truncate"
+              style={{ maxWidth: "100%" }}
+              title={record.email}
+            >
+              {record.email}
+            </div>
+          </span>
+        </Tooltip>
+      ),
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder={`Search Name`}
+            value={selectedKeys[0]}
+            onChange={(e) => {
+              setSelectedKeys(e.target.value ? [e.target.value] : []);
+            }}
+            onPressEnter={() => {
+              confirm();
+              const filtered = dataClientSource?.filter((record) =>
+                record?.email
+                  ?.toLowerCase()
+                  .includes(selectedKeys[0]?.toLowerCase())
+              );
+              setFilteredData(filtered);
+            }}
+            style={{
+              width: 188,
+              marginBottom: 8,
+              display: "block",
+              fontSize: "12px",
+              paddingTop: "2px",
+              paddingBottom: "2px",
+            }}
+          />
+          <Space>
+            <Button
+              onClick={() => {
+                clearFilters();
+                confirm();
+                setFilteredData(dataClientSource);
+              }}
+              size="small"
+              style={{ width: 90, fontSize: "12px" }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        record.email.toString().toLowerCase().includes(value.toLowerCase()),
+    },
+    {
+      title: "Date",
+      dataIndex: "created_at",
+      key: "created_at",
+
+      align: "center",
+      render: (text, record) => (
+        <span onClick={() => handleProjectClick(record)}>
+          {formatDate(text)}
+        </span>
+      ),
+
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <RangePicker
+            value={
+              selectedKeys[0]
+                ? [moment(selectedKeys[0][0]), moment(selectedKeys[0][1])]
+                : []
+            }
+            onChange={(dates) => {
+              const range = dates
+                ? [
+                    [
+                      dates[0].startOf("day").format("YYYY-MM-DD"),
+                      dates[1].endOf("day").format("YYYY-MM-DD"),
+                    ],
+                  ]
+                : [];
+              setSelectedKeys(range);
+              if (!dates) {
+                clearFilters();
+              } else {
+                confirm(); // Confirm the filter immediately
+              }
+            }}
+            style={{ marginBottom: 8, display: "block" }}
+          />
+          <Button
+            onClick={() => {
+              clearFilters();
+              confirm();
+            }}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
+        </div>
+      ),
+      onFilter: (value, record) => {
+        const [start, end] = value;
+        const date = moment(record.created_at);
+        return date >= moment(start) && date <= moment(end);
+      },
+    },
+    {
+      title: "Roll",
+      dataIndex: "roll",
+      key: "roll",
+
+      align: "center",
+      render: (text, record) => (
+        <Tooltip title={record.roll}>
+          <span
+            className="hover:cursor-pointer text-left"
+            onClick={() => handleFinanceClick(record)}
+          >
+            <div
+              className="truncate"
+              style={{ maxWidth: "100%" }}
+              title={record.roll}
+            >
+              {record.roll ? record.roll : "No provided"}
+            </div>
+          </span>
+        </Tooltip>
+      ),
+    },
+    {
+      title: "Plan",
+      dataIndex: "plan",
+      key: "plan",
+
+      align: "center",
+      render: (text, record) => (
+        <Tooltip title={record.plan}>
+          <span
+            className="hover:cursor-pointer text-left"
+            onClick={() => handleFinanceClick(record)}
+          >
+            <div
+              className="truncate"
+              style={{ maxWidth: "100%" }}
+              title={record.plan}
+            >
+              {record.plan}
+            </div>
+          </span>
+        </Tooltip>
+      ),
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder={`Search Name`}
+            value={selectedKeys[0]}
+            onChange={(e) => {
+              setSelectedKeys(e.target.value ? [e.target.value] : []);
+            }}
+            onPressEnter={() => {
+              confirm();
+              const filtered = dataClientSource?.filter((record) =>
+                record?.plan
+                  ?.toLowerCase()
+                  .includes(selectedKeys[0]?.toLowerCase())
+              );
+              setFilteredData(filtered);
+            }}
+            style={{
+              width: 188,
+              marginBottom: 8,
+              display: "block",
+              fontSize: "12px",
+              paddingTop: "2px",
+              paddingBottom: "2px",
+            }}
+          />
+          <Space>
+            <Button
+              onClick={() => {
+                clearFilters();
+                confirm();
+                setFilteredData(dataClientSource);
+              }}
+              size="small"
+              style={{ width: 90, fontSize: "12px" }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        record.plan.toString().toLowerCase().includes(value.toLowerCase()),
+    },
+    {
+      title: "Free Code",
+      dataIndex: "code",
+      key: "code",
+
+      align: "center",
+      render: (text, record) => (
+        <Tooltip title={record.code}>
+          <span
+            className="hover:cursor-pointer text-left"
+            onClick={() => handleFinanceClick(record)}
+          >
+            <div
+              className="truncate"
+              style={{ maxWidth: "100%" }}
+              title={record.code}
+            >
+              {record.code ? record.code : "No code"}
+            </div>
+          </span>
+        </Tooltip>
+      ),
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder={`Search Name`}
+            value={selectedKeys[0]}
+            onChange={(e) => {
+              setSelectedKeys(e.target.value ? [e.target.value] : []);
+            }}
+            onPressEnter={() => {
+              confirm();
+              const filtered = dataClientSource?.filter((record) =>
+                record?.code
+                  ?.toLowerCase()
+                  .includes(selectedKeys[0]?.toLowerCase())
+              );
+              setFilteredData(filtered);
+            }}
+            style={{
+              width: 188,
+              marginBottom: 8,
+              display: "block",
+              fontSize: "12px",
+              paddingTop: "2px",
+              paddingBottom: "2px",
+            }}
+          />
+          <Space>
+            <Button
+              onClick={() => {
+                clearFilters();
+                confirm();
+                setFilteredData(dataClientSource);
+              }}
+              size="small"
+              style={{ width: 90, fontSize: "12px" }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        record.code.toString().toLowerCase().includes(value.toLowerCase()),
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      key: "action",
+      align: "center",
+      render: (text, record) => (
+        <Dropdown
+          className="flex items-center justify-center"
+          overlay={
+            <Menu>
+              <>
+                <Menu.Item key="Edit Plan">
+                  <div
+                    onClick={() => handleUpgradePlan(record)}
+                    style={{ fontSize: "12px" }}
+                  >
+                    Upgrade plan
+                  </div>
+                </Menu.Item>
+                <Menu.Item key="delete">
+                  <div
+                    onClick={() => handleClientDelete(record.id)}
+                    style={{ fontSize: "12px" }}
+                  >
+                    Delete
+                  </div>
+                </Menu.Item>
+              </>
+            </Menu>
+          }
+        >
+          <div className="bg-blue-600 rounded-md text-white py-1 hover:cursor-pointer">
+            Action
+          </div>
+        </Dropdown>
+      ),
+    },
+  ];
+
+  const [isUpgradePlanModalOpen, setIsUpgradePlanModalOpen] = useState(false);
+  const [isDeleteClientModalOpen, setIsDeleteClientModalOpen] = useState(false);
+
+  const [clientStatus, setClientStatus] = useState("");
+
+  const handleUpgradePlan = (client) => {
+    setIsUpgradePlanModalOpen(true); // Mở modal
+    setSelectedClient(client); // Truyền thông tin client
+  };
+
+  console.log("selectedClient", selectedClient);
+  console.log("clientStatus", clientStatus);
+  useEffect(() => {
+    setClientStatus(selectedClient?.plan);
+  }, [selectedClient]);
+
+  const confirmUpgrade = async () => {
+    try {
+      const { error } = await supabase
+        .from("users")
+        .update({ plan: clientStatus })
+        .eq("id", selectedClient.id);
+
+      if (error) {
+        console.error("Error fetching users:", error.message);
+      } else {
+        message.success(`Upgraded client's plan successfully.`);
+      }
+    } catch (error) {
+      message.error(error);
+    } finally {
+      setSelectedClient("");
+      setIsUpgradePlanModalOpen(false);
+    }
+  };
+
+  const handleClientDelete = async (clientId) => {
+    // Hiển thị modal xác nhận xóa
+    setIsDeleteClientModalOpen(true);
+    // Lưu projectId của dự án cần xóa
+    setSelectedID(clientId);
+  };
+
+  const confirmClientDelete = async () => {
+    try {
+      if (!navigator.onLine) {
+        message.error("No internet access.");
+        return;
+      }
+      const { error } = await supabase
+        .from("users")
+        .delete()
+        .eq("id", SelectedID);
+
+      if (error) {
+        console.error("Error deleting project:", error);
+      } else {
+        const updatedClientsCopy = dataClientSource.filter(
+          (client) => client.id !== SelectedID
+        );
+        setDataClientSource(updatedClientsCopy);
+
+        message.success("Deleted client.");
+      }
+    } catch (error) {
+      message.error(error.message);
+      console.error("Error deleting client:", error);
+    } finally {
+      // Đóng modal sau khi xóa hoặc xảy ra lỗi
+      setIsDeleteClientModalOpen(false);
+      setSelectedID("");
+    }
+  };
+
+  const [isDeleteFinModalOpen, setIsDeleteFinModalOpen] = useState(false);
+
+  const handleFinancialDelete = async (projectId) => {
+    // Hiển thị modal xác nhận xóa
+    setIsDeleteFinModalOpen(true);
+    // Lưu projectId của dự án cần xóa
+    setSelectedID(projectId);
+  };
+
+  const confirmFinDelete = async () => {
+    try {
+      if (!navigator.onLine) {
+        message.error("No internet access.");
+        return;
+      }
+      const { error } = await supabase
+        .from("finance")
+        .delete()
+        .eq("id", SelectedID);
+
+      if (error) {
+        console.error("Error deleting project:", error);
+      } else {
+        const updatedProjectsCopy = dataFinanceSource.filter(
+          (finance) => finance.id !== SelectedID
+        );
+        setDataFinanceSource(updatedProjectsCopy);
+
+        message.success("Deleted financial project.");
+      }
+    } catch (error) {
+      message.error(error.message);
+      console.error("Error deleting project:", error);
+    } finally {
+      // Đóng modal sau khi xóa hoặc xảy ra lỗi
+      setIsDeleteFinModalOpen(false);
+      setSelectedID("");
+    }
+  };
 
   const [dataFinanceSource, setDataFinanceSource] = useState([]);
 
@@ -2011,54 +2677,96 @@ function AdminPage() {
   }, [user.id]);
   const [activeTab, setActiveTab] = useState("fundraising");
 
-  return (
-    <main className="w-full my-28">
-      <Header />
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
-      {userData.admin === true && (
-        <div className="flex justify-center mx-auto">
-          <Tabs
-            activeKey={activeTab}
-            onChange={(key) => setActiveTab(key)}
-            style={{ display: "flex", justifyContent: "center" }}
-          >
-            <TabPane tab="Fundraising projects" key="fundraising">
-              <section className="container px-4 mx-auto mt-8">
-                <div className="flex flex-col">
-                  <div className="mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                    <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-                      <div className="overflow-hidden md:rounded-md">
-                        <Table
-                          columns={columns}
-                          dataSource={dataSource}
-                          pagination={false}
-                          rowKey="id"
-                          size="small"
-                          scroll={{ x: "max-content" }}
-                          bordered
-                        />
+  const handleTabChange = (tabName) => {
+    setActiveTab(tabName);
+  };
+
+  return (
+    <div className=" bg-white darkBg antialiased !p-0 ">
+      <div id="exampleWrapper">
+        <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+
+        <div
+          className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0 "
+          onClick={() => setIsSidebarOpen(false)}
+        >
+          <div className="p-4 border-2 border-gray-200 border-dashed rounded-md darkBorderGray min-h-[96vh]">
+            <div className="overflow-x-auto whitespace-nowrap border-t-2 border-b-2 border-yellow-300 text-sm">
+              <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
+                <li
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                    activeTab === "fundraising" ? "bg-yellow-300 font-bold" : ""
+                  }`}
+                  onClick={() => handleTabChange("fundraising")}
+                >
+                  Fundraising profiles
+                </li>
+
+                <li
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                    activeTab === "financial" ? "bg-yellow-300 font-bold" : ""
+                  }`}
+                  onClick={() => handleTabChange("financial")}
+                >
+                  Financial profiles
+                </li>
+
+                <li
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                    activeTab === "client" ? "bg-yellow-300 font-bold" : ""
+                  }`}
+                  onClick={() => handleTabChange("client")}
+                >
+                  Client profiles
+                </li>
+              </ul>
+            </div>
+            {activeTab === "fundraising" && (
+              <main className="w-full min-h-[92.5vh]">
+                <section className="container px-4 mx-auto mt-14">
+                  <div className="flex flex-col mb-8">
+                    <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                      <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
+                        <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
+                          <Table
+                            columns={columns}
+                            dataSource={dataSource}
+                            pagination={{
+                              position: ["bottomLeft"],
+                            }}
+                            rowKey="id"
+                            size="small"
+                            bordered
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div className="w-2/3 flex items-center mt-10">
-                    <Dashboard dataSource={filteredData} />
-                  </div>
+                </section>
+                <div className="w-full flex items-center justify-center mt-10">
+                  <Dashboard dataSource={filteredData} />
                 </div>
-              </section>
-            </TabPane>
-            <TabPane tab="Financial projects" key="financial">
-              <section className="container px-4 mx-auto mt-8">
-                <div className="flex flex-col">
-                  <div className="mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+              </main>
+            )}
+            {activeTab === "financial" && (
+              <section className="container px-4 mx-auto mt-14">
+                <div className="flex flex-col mb-8">
+                  <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-                      <div className="overflow-hidden md:rounded-md">
+                      <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
                         <Table
                           columns={financialColumns}
                           dataSource={dataFinanceSource}
-                          pagination={false}
+                          pagination={{
+                            position: ["bottomLeft"],
+                          }}
                           rowKey="id"
                           size="small"
-                          scroll={{ x: "max-content" }}
                           bordered
                         />
                       </div>
@@ -2066,10 +2774,32 @@ function AdminPage() {
                   </div>
                 </div>
               </section>
-            </TabPane>
-          </Tabs>
+            )}
+            {activeTab === "client" && (
+              <section className="container px-4 mx-auto mt-14">
+                <div className="flex flex-col mb-8">
+                  <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                    <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
+                      <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
+                        <Table
+                          columns={clientColumns}
+                          dataSource={dataClientSource}
+                          pagination={{
+                            position: ["bottomLeft"],
+                          }}
+                          rowKey="id"
+                          size="small"
+                          bordered
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
+          </div>
         </div>
-      )}
+      </div>
       {userData.admin === false && (
         <AnnouncePage
           title="Admin Page"
@@ -2077,7 +2807,158 @@ function AdminPage() {
           describe="Only for admin"
         />
       )}
-    </main>
+
+      {isDeleteModalOpen && (
+        <Modal
+          title="Confirm Delete"
+          visible={isDeleteModalOpen}
+          onOk={confirmDelete}
+          onCancel={cancelDelete}
+          okText="Delete"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#f5222d",
+              borderColor: "#f5222d",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          centered={true}
+        >
+          Are you sure you want to delete this project?
+        </Modal>
+      )}
+
+      {isDeleteFinModalOpen && (
+        <Modal
+          title="Confirm Delete"
+          visible={isDeleteFinModalOpen}
+          onOk={confirmFinDelete}
+          onCancel={() => {
+            setIsDeleteFinModalOpen(false);
+            setSelectedID("");
+          }}
+          okText="Delete"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#f5222d",
+              borderColor: "#f5222d",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          centered={true}
+        >
+          Are you sure you want to delete this project?
+        </Modal>
+      )}
+
+      {isUpgradePlanModalOpen && (
+        <Modal
+          title="Upgrade client's plan"
+          visible={isUpgradePlanModalOpen}
+          onOk={confirmUpgrade}
+          onCancel={() => {
+            setIsUpgradePlanModalOpen(false);
+            setSelectedClient("");
+          }}
+          okText="Upgrade"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#2563EB",
+              borderColor: "#2563EB",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          centered={true}
+        >
+          <>
+            <label className="block mt-2">
+              <input
+                type="text"
+                name="Client email"
+                placeholder=""
+                value={selectedClient.email}
+                className="block w-full px-4 py-3 text-sm text-gray-800 border-gray-200 rounded-md"
+                disabled
+              />
+            </label>
+
+            <div className="mt-4">
+              <div className="mt-4">
+                <Radio.Group
+                  onChange={(e) => setClientStatus(e.target.value)}
+                  value={clientStatus}
+                >
+                  <Radio value="Free">Free</Radio>
+
+                  <Radio value="FundFlow Premium">FundFlow Premium</Radio>
+
+                  <Radio value="FundFlow Platinum">FundFlow Platinum</Radio>
+                </Radio.Group>
+              </div>
+            </div>
+          </>
+        </Modal>
+      )}
+
+      {isDeleteClientModalOpen && (
+        <Modal
+          title="Confirm Delete Client"
+          visible={isDeleteClientModalOpen}
+          onOk={confirmClientDelete}
+          onCancel={() => {
+            setIsDeleteClientModalOpen(false);
+            setSelectedID("");
+          }}
+          okText="Delete"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#f5222d",
+              borderColor: "#f5222d",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          centered={true}
+        >
+          Are you sure you want to delete this user?
+        </Modal>
+      )}
+    </div>
   );
 }
 

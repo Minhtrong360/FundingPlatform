@@ -1,16 +1,160 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input, Button, Typography, Alert } from "antd";
+import {
+  calculateCustomerGrowth,
+  generateCustomerTableData,
+  setCustomerTableData,
+  transformCustomerData,
+} from "../../../features/CustomerSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  calculateChannelRevenue,
+  setRevenueTableData,
+  transformRevenueDataForTable,
+} from "../../../features/SaleSlice";
+import {
+  setCostTableData,
+  transformCostDataForTable,
+} from "../../../features/CostSlice";
+import {
+  calculatePersonnelCostData,
+  setPersonnelTableData,
+  transformPersonnelCostDataForTable,
+} from "../../../features/PersonnelSlice";
+import {
+  calculateInvestmentData,
+  setInvestmentTableData,
+  transformInvestmentDataForTable,
+} from "../../../features/InvestmentSlice";
+import {
+  setLoanTableData,
+  transformLoanDataForTable,
+} from "../../../features/LoanSlice";
+import {
+  setFundraisingTableData,
+  transformFundraisingDataForTable,
+} from "../../../features/FundraisingSlice";
 
 const { Text } = Typography;
 
-const GPTAnalyzer = ({ customerTableData }) => {
+const GPTAnalyzer = ({ numberOfMonths }) => {
   const [inputValue, setInputValue] = useState("");
   const [responseResult, setResponseResult] = useState("");
   const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+
+  const { customerInputs, customerTableData } = useSelector(
+    (state) => state.customer
+  );
+  const { channelInputs, revenueTableData } = useSelector(
+    (state) => state.sales
+  );
+  const { costInputs, costTableData } = useSelector((state) => state.cost);
+  const { personnelInputs, personnelTableData } = useSelector(
+    (state) => state.personnel
+  );
+  const { investmentInputs, investmentTableData } = useSelector(
+    (state) => state.investment
+  );
+  const { loanInputs, loanTableData } = useSelector((state) => state.loan);
+  const { fundraisingInputs, fundraisingTableData } = useSelector(
+    (state) => state.fundraising
+  );
+
+  useEffect(() => {
+    const calculatedData = calculateCustomerGrowth(
+      customerInputs,
+      numberOfMonths
+    );
+
+    const calculateTransformedCustomerTableData = transformCustomerData(
+      calculatedData,
+      customerInputs
+    );
+
+    const calculateCustomerTableData = generateCustomerTableData(
+      calculateTransformedCustomerTableData,
+      customerInputs,
+      numberOfMonths,
+      "all"
+    );
+    dispatch(setCustomerTableData(calculateCustomerTableData));
+
+    const calculatedChannelRevenue = dispatch(
+      calculateChannelRevenue(
+        numberOfMonths,
+        calculatedData,
+        customerInputs,
+        channelInputs
+      )
+    );
+    const calculateRevenueTableData = transformRevenueDataForTable(
+      calculatedChannelRevenue,
+      channelInputs,
+      "all"
+    );
+    dispatch(setRevenueTableData(calculateRevenueTableData));
+
+    const calculateCostTableData = transformCostDataForTable(
+      costInputs,
+      numberOfMonths
+    );
+    dispatch(setCostTableData(calculateCostTableData));
+
+    const calculatedCostData = calculatePersonnelCostData(
+      personnelInputs,
+      numberOfMonths
+    );
+
+    const personnelCostTableData =
+      transformPersonnelCostDataForTable(calculatedCostData);
+
+    dispatch(setPersonnelTableData(personnelCostTableData));
+
+    const calculatedInvestmentData = calculateInvestmentData(
+      investmentInputs,
+      numberOfMonths
+    );
+    const investmentTableData = transformInvestmentDataForTable(
+      investmentInputs,
+      "all",
+      calculatedInvestmentData,
+      numberOfMonths
+    );
+    dispatch(setInvestmentTableData(investmentTableData));
+
+    const calculateLoanTableData = transformLoanDataForTable(
+      loanInputs,
+      "all",
+      numberOfMonths
+    );
+
+    dispatch(setLoanTableData(calculateLoanTableData));
+
+    const calculateFundTableData = transformFundraisingDataForTable(
+      fundraisingInputs,
+      numberOfMonths
+    );
+    dispatch(setFundraisingTableData(calculateFundTableData));
+  }, [
+    customerInputs,
+    channelInputs,
+    costInputs,
+    personnelInputs,
+    investmentInputs,
+    loanInputs,
+    numberOfMonths,
+  ]);
 
   const handleAnalyze = async () => {
     try {
       console.log("customerTableData", customerTableData);
+      console.log("revenueTableData", revenueTableData);
+      console.log("costTableData", costTableData);
+      console.log("personnelTableData", personnelTableData);
+      console.log("investmentTableData", investmentTableData);
+      console.log("loanTableData", loanTableData);
+      console.log("fundraisingTableData", fundraisingTableData);
 
       const response = await fetch(
         "https://news-fetcher-8k6m.onrender.com/analyze", // Replace with actual backend URL
@@ -38,8 +182,6 @@ const GPTAnalyzer = ({ customerTableData }) => {
       console.log("Error sending message:", error);
     }
   };
-
-  console.log("responseResult", responseResult);
 
   return (
     <div className="mx-auto max-w-6xl">

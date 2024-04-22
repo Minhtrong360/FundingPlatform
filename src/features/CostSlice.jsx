@@ -34,6 +34,7 @@ const initialState = {
     },
   ],
   costData: [],
+  costTableData: [],
 };
 
 const costSlice = createSlice({
@@ -45,6 +46,9 @@ const costSlice = createSlice({
     },
     setCostData(state, action) {
       state.costData = action.payload;
+    },
+    setCostTableData(state, action) {
+      state.costTableData = action.payload;
     },
   },
 });
@@ -116,6 +120,28 @@ export const calculateCostData = (tempCostInput, numberOfMonths) => {
   return allCosts;
 };
 
-export const { setCostInputs, setCostData, setIsSaved } = costSlice.actions;
+export const transformCostDataForTable = (tempCostInput, numberOfMonths) => {
+  const transformedCustomerTableData = {};
+  const calculatedCostData = calculateCostData(tempCostInput, numberOfMonths);
+
+  calculatedCostData?.forEach((costItem) => {
+    const rowKey = `${costItem.costName}`;
+    costItem.monthlyCosts.forEach((monthData) => {
+      if (!transformedCustomerTableData[rowKey]) {
+        transformedCustomerTableData[rowKey] = {
+          key: rowKey,
+          costName: rowKey,
+        };
+      }
+      transformedCustomerTableData[rowKey][`month${monthData.month}`] =
+        formatNumber(parseFloat(monthData.cost)?.toFixed(0));
+    });
+  });
+
+  return Object.values(transformedCustomerTableData);
+};
+
+export const { setCostInputs, setCostData, setIsSaved, setCostTableData } =
+  costSlice.actions;
 
 export default costSlice.reducer;

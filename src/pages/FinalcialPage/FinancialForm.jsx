@@ -52,7 +52,9 @@ import {
   calculateYearlySales,
   setChannelInputs,
   setChannelNames,
+  setRevenueTableData,
   setYearlySales,
+  transformRevenueDataForTable,
 } from "../../features/SaleSlice";
 import FundraisingSection from "./Components/FundraisingSections";
 import { setCostInputs } from "../../features/CostSlice";
@@ -85,9 +87,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     cutMonth,
   } = useSelector((state) => state.durationSelect);
 
-  const { yearlyAverageCustomers, customerTableData } = useSelector(
-    (state) => state.customer
-  );
+  const { yearlyAverageCustomers } = useSelector((state) => state.customer);
   const { yearlySales } = useSelector((state) => state.sales);
 
   const [numberOfMonths, setNumberOfMonths] = useState(0);
@@ -525,26 +525,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
   // Chuẩn bị file cần down
 
-  useEffect(() => {
-    const calculatedData = calculateCustomerGrowth(
-      customerInputs,
-      numberOfMonths
-    );
-
-    const calculateTransformedCustomerTableData = transformCustomerData(
-      calculatedData,
-      customerInputs
-    );
-
-    const calculateCustomerTableData = generateCustomerTableData(
-      calculateTransformedCustomerTableData,
-      customerInputs,
-      numberOfMonths,
-      "all"
-    );
-    dispatch(setCustomerTableData(calculateCustomerTableData));
-  }, [customerInputs, numberOfMonths]);
-
   const downloadJSON = () => {};
 
   // Kết thúc down JSON
@@ -677,7 +657,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             />
           </div>
           {/* <div>
-            <GPTAnalyzer customerTableData={customerTableData} />
+            <GPTAnalyzer numberOfMonths={numberOfMonths} />
           </div> */}
           <div className="my-4 ">
             {/* <div className="rounded-lg bg-green-500 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">

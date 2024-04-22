@@ -84,6 +84,7 @@ function ProjectList({ projects }) {
     } finally {
       // Đóng modal sau khi xóa hoặc xảy ra lỗi
       setIsDeleteModalOpen(false);
+      setSelectedID("");
     }
   };
 
@@ -248,6 +249,7 @@ function ProjectList({ projects }) {
   const cancelDelete = () => {
     // Đóng modal và không làm gì cả
     setIsDeleteModalOpen(false);
+    setSelectedID("");
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);

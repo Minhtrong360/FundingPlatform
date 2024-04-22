@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "../../../components/ui/Button";
 import { supabase } from "../../../supabase";
-import { StarOutlined } from "@ant-design/icons";
+import { StarOutlined, UserOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import LoadingButtonClick from "../../../components/LoadingButtonClick";
@@ -211,11 +211,20 @@ function Author({ company }) {
           <>
             <div className="flex items-center space-x-4">
               <div className="avatar-container">
-                <Avatar
-                  id="avatar"
-                  src={currentUser?.avatar}
-                  className="avatar"
-                />
+                {currentUser?.avatar ? (
+                  <Avatar
+                    id="avatar"
+                    src={currentUser?.avatar}
+                    className="avatar"
+                  />
+                ) : (
+                  <Avatar
+                    style={{
+                      verticalAlign: "middle",
+                    }}
+                    size="large"
+                  />
+                )}
               </div>
 
               <div>

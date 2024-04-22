@@ -54,14 +54,14 @@ const Card = ({
               <img
                 className=" h-full w-full  absolute top-0 start-0 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out "
                 src={imageUrl}
-                alt="Company Description"
+                alt="Company Avatar"
                 onClick={() => navigate(`/founder/${project_id}`)}
               />
             ) : (
               <img
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-in-out"
                 src={imageUrl}
-                alt="Company Description"
+                alt="Company Avatar"
               />
             )}
           </>

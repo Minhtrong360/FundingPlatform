@@ -388,15 +388,13 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen }) => {
             </div>
           ),
         }),
-    ...(isOwner || isDemo
-      ? {
-          "Sample PitchDeck": (
-            <div>
-              <Sample />
-            </div>
-          ),
-        }
-      : {}),
+
+    "Sample PitchDeck": (
+      <div>
+        <Sample />
+      </div>
+    ),
+
     "Data Room": (
       <div>
         {" "}

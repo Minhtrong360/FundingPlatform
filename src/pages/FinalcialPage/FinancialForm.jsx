@@ -656,9 +656,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               setSpinning={setSpinning}
             />
           </div>
-          <div>
+          {/* <div>
             <GPTAnalyzer numberOfMonths={numberOfMonths} />
-          </div>
+          </div> */}
           <div className="my-4 ">
             {/* <div className="rounded-lg bg-green-500 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">
               <button onClick={startTour}>

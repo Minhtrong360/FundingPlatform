@@ -403,13 +403,19 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen }) => {
     ),
   };
 
+  console.log("editor", editor);
+
   return (
-    <div className="container  mx-auto px-4 flex flex-col lg:flex-row">
+    <div
+      className={`container mx-auto px-4 flex flex-col lg:flex-row ${
+        fullScreen === true ? "justify-center items-center" : ""
+      }`}
+    >
       {isLoading ? (
         <LoadingButtonClick isLoading={isLoading} />
       ) : (
         <>
-          {fullScreen === false ? (
+          {fullScreen === false && (
             <>
               <aside className="w-full md:max-w-[200px] py-8">
                 <div className="sticky top-8 space-y-4">
@@ -436,14 +442,13 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen }) => {
                 {tabContents[activeTab]}
               </div>
             </>
-          ) : (
-            <div className="mt-4 flex items-center justify-center flex-nowrap">
-              <BlockNoteView
-                editor={editor}
-                theme={"light"}
-                className="w-full lg:w-8/12"
-              />
-            </div>
+          )}
+          {fullScreen === true && (
+            <BlockNoteView
+              editor={editor}
+              theme={"light"}
+              className="w-full lg:w-8/12 my-12"
+            />
           )}
         </>
       )}

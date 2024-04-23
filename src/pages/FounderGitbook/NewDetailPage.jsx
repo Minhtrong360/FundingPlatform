@@ -137,7 +137,12 @@ export default function NewDetailPage() {
           </div>
         </div>
       ) : (
-        <MyTab blocks={blocks} setBlocks={setBlocks} company={company} />
+        <MyTab
+          blocks={blocks}
+          setBlocks={setBlocks}
+          company={company}
+          fullScreen={fullScreen}
+        />
       )}
     </div>
   );

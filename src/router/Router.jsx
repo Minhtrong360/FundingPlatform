@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigation } from "react-router-dom";
 import HomePage from "../pages/Home/HomePage";
 
 import SignUp from "../pages/SignUp/SignUp";
@@ -96,7 +96,7 @@ function Router() {
           path="/founder/:id"
           element={
             <AuthRequire message="Sign in required!">
-              <NewDetailPage />
+              <NewDetailPage location={location} />
             </AuthRequire>
           }
         />
@@ -197,7 +197,7 @@ function Router() {
         <Route
           key={location.key}
           path="/startups"
-          element={<NewProjectPosts />}
+          element={<NewProjectPosts location={location} />}
         />
 
         <Route key={location.key} path="/pricing" element={<PricingPage />} />

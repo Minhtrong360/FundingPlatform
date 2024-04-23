@@ -23,12 +23,11 @@ import { useAuth } from "../../../context/AuthContext";
 import LoadingButtonClick from "../../../components/LoadingButtonClick";
 import FilesList from "../FilesList";
 
-const MyTab = ({ blocks, setBlocks, company, fullScreen }) => {
+const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
   const [activeTab, setActiveTab] = useState("Your Profile");
   const [youtubeLink, setYoutubeLink] = useState("Add wanted youtube url");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [currentProject, setCurrentProject] = useState("");
   const YouTubeLinkBlock = createReactBlockSpec(
     {
       type: "youtubeLink",
@@ -187,45 +186,17 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen }) => {
   };
   useEffect(() => {
     // Hàm để lấy dữ liệu Markdown từ cơ sở dữ liệu
-    async function fetchMarkdown() {
-      try {
-        if (!navigator.onLine) {
-          // Không có kết nối Internet
-          message.error("No internet access.");
-          return;
-        }
-        if (params) {
-          // Kiểm tra xem project có tồn tại không
-          const { data, error } = await supabase
-            .from("projects")
-            .select("*")
-            .match({ id: params.id })
-            .single();
-          setCurrentProject(data);
-          if (error) {
-            console.log(error.message);
-          } else {
-            // Nếu có dữ liệu Markdown trong cơ sở dữ liệu, cập nhật giá trị của markdown
-            if (data && data.markdown) {
-              editor.replaceBlocks(
-                editor.topLevelBlocks,
-                JSON.parse(data.markdown)
-              );
-            }
-          }
-        }
-        setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu
-      } catch (error) {
-        console.log(error.message);
 
-        setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu (có lỗi)
-      }
+    // Nếu có dữ liệu Markdown trong cơ sở dữ liệu, cập nhật giá trị của markdown
+    if (currentProject && currentProject.markdown) {
+      editor.replaceBlocks(
+        editor.topLevelBlocks,
+        JSON.parse(currentProject.markdown)
+      );
     }
 
     // Gọi hàm để lấy Markdown khi component được mount
-
-    fetchMarkdown();
-  }, []);
+  }, [currentProject]);
 
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
@@ -402,8 +373,6 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen }) => {
       </div>
     ),
   };
-
-  console.log("editor", editor);
 
   return (
     <div

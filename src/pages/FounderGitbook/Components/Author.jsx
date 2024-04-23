@@ -5,7 +5,7 @@ import { StarOutlined, UserOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import LoadingButtonClick from "../../../components/LoadingButtonClick";
-import { Avatar } from "antd";
+import { Avatar, Tooltip } from "antd";
 import { formatDate } from "../../../features/DurationSlice";
 
 const InterestButton = React.memo(({ onClick, isLiked, likeCount }) => (
@@ -210,13 +210,9 @@ function Author({ company }) {
         ) : (
           <>
             <div className="flex items-center space-x-4">
-              <div className="avatar-container">
+              <div>
                 {currentUser?.avatar ? (
-                  <Avatar
-                    id="avatar"
-                    src={currentUser?.avatar}
-                    className="avatar"
-                  />
+                  <Avatar id="avatar" src={currentUser?.avatar} />
                 ) : (
                   <Avatar
                     style={{
@@ -227,13 +223,19 @@ function Author({ company }) {
                 )}
               </div>
 
-              <div>
-                <h4 className="font-bold">
+              <Tooltip
+                title={
+                  currentUser?.full_name
+                    ? currentUser?.full_name
+                    : currentUser?.email
+                }
+              >
+                <h4 className="font-bold truncate max-w-[150px] md:max-w-full">
                   {currentUser?.full_name
                     ? currentUser?.full_name
                     : currentUser?.email}
                 </h4>
-              </div>
+              </Tooltip>
             </div>
 
             <div className="mt-4">

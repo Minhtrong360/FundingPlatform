@@ -48,6 +48,13 @@ export default function NewDetailPage({ location }) {
     );
   }, [company, location.key]);
 
+  useEffect(() => {
+    sessionStorage.setItem(
+      "currentProjectDetailPage",
+      JSON.stringify(currentProject)
+    ); // Cache companies data
+  }, [currentProject]);
+
   const fetchData = async () => {
     try {
       const { data: projectData, error: projectError } = await supabase

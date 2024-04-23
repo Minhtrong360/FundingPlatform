@@ -63,9 +63,10 @@ const NewProjectPosts = ({ location }) => {
   const fetchCompanies = async () => {
     setIsLoading(true);
     try {
+      // Fetch projects including their verified status and status, avoiding stealth status projects
       const { data: projects, error: projectsError } = await supabase
         .from("projects")
-        .select("id")
+        .select("id, verified, status") // Get verified status and status along with id
         .neq("status", "stealth");
 
       if (projectsError) {
@@ -75,6 +76,7 @@ const NewProjectPosts = ({ location }) => {
 
       const projectIds = projects.map((project) => project.id);
 
+      // Fetch companies based on project ids
       const { data: fetchedCompanies, error: companiesError } = await supabase
         .from("company")
         .select("*")
@@ -86,11 +88,21 @@ const NewProjectPosts = ({ location }) => {
         return;
       }
 
-      // Fetch verified status for each company and update its object
-      for (const company of fetchedCompanies) {
-        const verifiedStatus = await fetchVerifiedStatus(company.project_id);
-        company.verifiedStatus = verifiedStatus;
-      }
+      // Create maps to store verified status and status for quick lookup
+      const verifiedStatusMap = new Map();
+      const statusMap = new Map();
+
+      projects.forEach((project) => {
+        verifiedStatusMap.set(project.id, project.verified);
+        statusMap.set(project.id, project.status);
+      });
+
+      // Attach verified status and status directly to each company object
+      fetchedCompanies.forEach((company) => {
+        company.verifiedStatus =
+          verifiedStatusMap.get(company.project_id) || false;
+        company.status = statusMap.get(company.project_id) || "Unknown"; // Default to "Unknown" if no status found
+      });
 
       setCompanies(fetchedCompanies);
     } catch (error) {
@@ -101,6 +113,8 @@ const NewProjectPosts = ({ location }) => {
     }
   };
 
+  console.log("companies", companies);
+
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
     setPage(1);
@@ -109,26 +123,6 @@ const NewProjectPosts = ({ location }) => {
   const handleIndustryChange = (industry) => {
     setSelectedIndustry(industry);
     setPage(1);
-  };
-
-  const fetchVerifiedStatus = async (companyId) => {
-    try {
-      const { data, error } = await supabase
-        .from("projects")
-        .select("verified")
-        .eq("id", companyId)
-        .single();
-
-      if (error) {
-        console.error("Error fetching verified status:", error.message);
-        return null;
-      } else {
-        return data.verified;
-      }
-    } catch (error) {
-      console.log("Error fetching verified status:", error.message);
-      return null;
-    }
   };
 
   const getMinMaxFromLabel = (label) => {
@@ -294,6 +288,8 @@ const NewProjectPosts = ({ location }) => {
                           imageUrl={company.card_url}
                           buttonText="More"
                           project_id={company.project_id}
+                          verified={company.verifiedStatus}
+                          status={company.status}
                         />
                       ) : (
                         <div className="w-[30vw] h-[55vh]"></div>

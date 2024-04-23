@@ -2129,7 +2129,7 @@ function AdminPage() {
         <Tooltip title={record.full_name}>
           <span
             className="hover:cursor-pointer text-left"
-            onClick={() => handleFinanceClick(record)}
+            // onClick={() => handleClientClick(record)}
           >
             <div
               className="truncate"
@@ -2203,7 +2203,7 @@ function AdminPage() {
         <Tooltip title={record.email}>
           <span
             className="hover:cursor-pointer text-left"
-            onClick={() => handleFinanceClick(record)}
+            // onClick={() => handleClientClick(record)}
           >
             <div
               className="truncate"
@@ -2274,7 +2274,9 @@ function AdminPage() {
 
       align: "center",
       render: (text, record) => (
-        <span onClick={() => handleProjectClick(record)}>
+        <span
+        // onClick={() => handleClientClick(record)}
+        >
           {formatDate(text)}
         </span>
       ),
@@ -2338,7 +2340,7 @@ function AdminPage() {
         <Tooltip title={record.roll}>
           <span
             className="hover:cursor-pointer text-left"
-            onClick={() => handleFinanceClick(record)}
+            // onClick={() => handleClientClick(record)}
           >
             <div
               className="truncate"
@@ -2361,7 +2363,7 @@ function AdminPage() {
         <Tooltip title={record.plan}>
           <span
             className="hover:cursor-pointer text-left"
-            onClick={() => handleFinanceClick(record)}
+            // onClick={() => handleClientClick(record)}
           >
             <div
               className="truncate"
@@ -2426,6 +2428,31 @@ function AdminPage() {
         record.plan.toString().toLowerCase().includes(value.toLowerCase()),
     },
     {
+      title: "Plan status",
+      dataIndex: "subscription_status",
+      key: "subscription_status",
+
+      align: "center",
+      render: (text, record) => (
+        <Tooltip title={record.subscription_status}>
+          <span
+            className="hover:cursor-pointer text-left"
+            // onClick={() => handleClientClick(record)}
+          >
+            <div
+              className="truncate"
+              style={{ maxWidth: "100%" }}
+              title={record.subscription_status}
+            >
+              {record.subscription_status
+                ? capitalizeFirstLetter(record.subscription_status)
+                : "No subscription"}
+            </div>
+          </span>
+        </Tooltip>
+      ),
+    },
+    {
       title: "Free Code",
       dataIndex: "code",
       key: "code",
@@ -2435,7 +2462,7 @@ function AdminPage() {
         <Tooltip title={record.code}>
           <span
             className="hover:cursor-pointer text-left"
-            onClick={() => handleFinanceClick(record)}
+            // onClick={() => handleClientClick(record)}
           >
             <div
               className="truncate"
@@ -2538,27 +2565,38 @@ function AdminPage() {
     },
   ];
 
+  const capitalizeFirstLetter = (str) => {
+    if (!str) return ""; // Bảo vệ trường hợp giá trị null hoặc undefined
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
   const [isUpgradePlanModalOpen, setIsUpgradePlanModalOpen] = useState(false);
   const [isDeleteClientModalOpen, setIsDeleteClientModalOpen] = useState(false);
 
   const [clientStatus, setClientStatus] = useState("");
+  const [subscriptionStatus, setSubscriptionStatus] = useState("");
 
   const handleUpgradePlan = (client) => {
     setIsUpgradePlanModalOpen(true); // Mở modal
     setSelectedClient(client); // Truyền thông tin client
   };
 
-  console.log("selectedClient", selectedClient);
-  console.log("clientStatus", clientStatus);
   useEffect(() => {
     setClientStatus(selectedClient?.plan);
   }, [selectedClient]);
+  useEffect(() => {
+    if (clientStatus === "Free") {
+      setSubscriptionStatus("cancelled");
+    } else {
+      setSubscriptionStatus("active");
+    }
+  }, [clientStatus]);
 
   const confirmUpgrade = async () => {
     try {
       const { error } = await supabase
         .from("users")
-        .update({ plan: clientStatus })
+        .update({ plan: clientStatus, subscription_status: subscriptionStatus })
         .eq("id", selectedClient.id);
 
       if (error) {

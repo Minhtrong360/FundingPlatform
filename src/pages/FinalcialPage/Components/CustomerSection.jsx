@@ -268,7 +268,7 @@ const CustomerSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:border-r-2 border-r-0 lg:border-b-0 border-b-2">
+      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
         <section aria-labelledby="customers-heading" className="mb-8">
           <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Examples:  Online, Offline, Social Media, Email Marketing, Referrals, Direct Sales, Subscription...">
             <h2
@@ -303,7 +303,7 @@ const CustomerSection = ({
             .map((input) => (
               <div
                 key={input?.id}
-                className="bg-white rounded-md shadow p-6 border my-4"
+                className="bg-white rounded-md shadow-xl p-6 border my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
@@ -498,7 +498,7 @@ const CustomerSection = ({
         <div className="mb-8">
           <h3 className="text-2xl font-semibold">Customer Table</h3>
           <Table
-            className="overflow-auto  my-8 "
+            className="overflow-auto  my-8  shadow-xl rounded-md"
             size="small"
             dataSource={customerTableData}
             columns={customerColumns}
@@ -512,7 +512,7 @@ const CustomerSection = ({
         <h3 className="text-2xl font-semibold my-8">Customer Chart</h3>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col ">
+          <Card className="flex flex-col shadow-xl">
             <Chart
               options={customerGrowthChart.options}
               series={customerGrowthChart.series}
@@ -527,3 +527,8 @@ const CustomerSection = ({
 };
 
 export default CustomerSection;
+
+<div className="w-full h-full flex flex-col lg:flex-row">
+  <div className="w-full lg:w-1/4 sm:p-4 p-0 "></div>
+  <div className="w-full lg:w-3/4 sm:p-4 p-0 "></div>
+</div>;

@@ -594,11 +594,9 @@ function CompanySetting() {
   const canClick = false;
 
   return (
-    <div className="grid sm:grid-cols-1 lg:grid-cols-4 gap-6">
-      {" "}
-      {/* Sử dụng lg:grid-cols-3 để chia thành 3 cột, trong đó Company component chiếm 1/3 và các div còn lại chiếm 2/3 */}
-      <LoadingButtonClick isLoading={isLoading} />
-      <div className="flex-1 lg:col-span-1">
+    <div className="w-full h-full flex flex-col lg:flex-row">
+  <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
+  
         <Company
           isLoading={isLoading}
           handleSubmit={handleSubmit}
@@ -608,8 +606,15 @@ function CompanySetting() {
           handleIndustryChange={handleIndustryChange}
         />
         <AlertMsg />
-      </div>
-      <div className="flex-1 lg:col-span-3">
+  
+  </div>
+  <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
+  <div className="">
+      {" "}
+      {/* Sử dụng lg:grid-cols-3 để chia thành 3 cột, trong đó Company component chiếm 1/3 và các div còn lại chiếm 2/3 */}
+      <LoadingButtonClick isLoading={isLoading} />
+      
+      <div className="">
         {" "}
         {/* Sử dụng lg:col-span-2 để các div còn lại chiếm 2/3 */}
         <div className="flex flex-col">
@@ -627,10 +632,10 @@ function CompanySetting() {
             canClick={canClick}
           /> */}
 
-          <div className="text-4xl text-blue-600 font-bold leading-tight sm:px-6 lg:px-8 sm:mt-8 mt-4 px-4">
+          {/* <div className="text-4xl text-blue-600 font-bold leading-tight sm:px-6 lg:px-8 sm:mt-8 mt-4 px-4">
             {" "}
             Preview
-          </div>
+          </div> */}
           {/* <hr className="" /> */}
           <ProfileInfo company={formData} canClick={canClick} />
 
@@ -651,6 +656,10 @@ function CompanySetting() {
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+    
   );
 }
 

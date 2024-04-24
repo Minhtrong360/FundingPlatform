@@ -275,7 +275,7 @@ const InvestmentSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:border-r-2 border-r-0 lg:border-b-0 border-b-2">
+      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
         <section aria-labelledby="investment-heading" className="mb-8">
           <h2
             className="text-2xl font-semibold mb-8 flex items-center"
@@ -309,7 +309,7 @@ const InvestmentSection = ({
             .map((input) => (
               <div
                 key={input?.id}
-                className="bg-white rounded-md shadow p-6 border my-4"
+                className="bg-white rounded-md shadow-xl p-6 border my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
@@ -435,7 +435,7 @@ const InvestmentSection = ({
       <div className="w-full lg:w-3/4 sm:p-4 p-0">
         <h3 className="text-2xl font-semibold mb-4">Investment Table</h3>
         <Table
-          className="overflow-auto my-8"
+          className="overflow-auto my-8 rounded-md shadow-xl"
           size="small"
           dataSource={transformInvestmentDataForTable(
             tempInvestmentInputs,
@@ -452,7 +452,7 @@ const InvestmentSection = ({
         />
         <h3 className="text-2xl font-semibold my-8">Investment Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col ">
+          <Card className="flex flex-col shadow-xl">
             <Chart
               options={investmentChart.options}
               series={investmentChart.series}

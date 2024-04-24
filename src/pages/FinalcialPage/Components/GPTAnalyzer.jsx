@@ -715,6 +715,18 @@ const GPTAnalyzer = ({ numberOfMonths }) => {
     loanInputs,
     numberOfMonths,
   ]);
+  const formattedData = customerTableData
+    .map((entry) => {
+      const channelData = Object.entries(entry)
+        .filter(([key]) => key.startsWith("month"))
+        .map(([key, value]) => `${key}: ${value}`)
+        .join(", ");
+      return `${entry.channelName}: ${channelData}`;
+    })
+    .join("\n\n");
+
+  const userInput = `Analyzing, warning and recommendations for the following data of The TableData :\n${formattedData}`;
+  console.log(userInput);
 
   const handleAnalyze = async () => {
     try {

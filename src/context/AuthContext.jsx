@@ -14,24 +14,20 @@ const AuthContext = createContext({});
 
 export const useAuth = () => useContext(AuthContext);
 
-const login = async (email, password, setLoading) => {
+const login = async (email, password) => {
   try {
     if (!navigator.onLine) {
       // Không có kết nối Internet
       message.error("No internet access.");
       return;
     }
-    setLoading(true);
     const { user, session, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    setLoading(false);
-
     return { user, session, error };
   } catch (error) {
-    setLoading(false);
     console.log("Login error:", error.message);
     throw error;
   }
@@ -39,23 +35,19 @@ const login = async (email, password, setLoading) => {
 
 const signOut = () => supabase.auth.signOut();
 
-const loginWithGG = async (setLoading) => {
+const loginWithGG = async () => {
   try {
     if (!navigator.onLine) {
       // Không có kết nối Internet
       message.error("No internet access.");
       return;
     }
-    setLoading(true);
     const { user, session, error } = await supabase.auth.signInWithOAuth({
       provider: ["google"],
     });
 
-    setLoading(false);
-
     return { user, session, error };
   } catch (error) {
-    setLoading(false);
     console.log("Google login error:", error.message);
     throw error;
   }
@@ -90,6 +82,7 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const [subscribed, setSubscribed] = useState(false);
+  const [admin, setAdmin] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -138,10 +131,16 @@ const AuthProvider = ({ children }) => {
         currentUser[0]?.plan === undefined ||
         currentUser[0]?.subscription_status === "canceled" ||
         currentUser[0]?.subscription_status === "cancelled"
-      )
+      ) {
         setSubscribed(false);
-    } else {
-      setSubscribed(true);
+      } else {
+        setSubscribed(true);
+      }
+      if (currentUser[0].admin === true) {
+        setAdmin(true);
+      } else {
+        setAdmin(false);
+      }
     }
   }, [currentUser]);
 
@@ -151,6 +150,7 @@ const AuthProvider = ({ children }) => {
         auth,
         user,
         subscribed,
+        admin,
         login: (email, password) => login(email, password, setLoading),
         signOut,
         loginWithGG: () => loginWithGG(setLoading),

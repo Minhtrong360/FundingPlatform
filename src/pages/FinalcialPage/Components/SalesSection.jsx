@@ -7,7 +7,7 @@ import {
 } from "../../../components/ui/Select";
 import { Input } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
-import { Table, Tooltip, message } from "antd";
+import { Card, Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -579,12 +579,16 @@ const SalesSection = ({
           }
         />
         <h3 className="text-2xl font-semibold my-8">Revenue Chart</h3>
-        <Chart
-          options={revenue.options}
-          series={revenue.series}
-          type="bar"
-          height={350}
-        />
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card className="flex flex-col ">
+            <Chart
+              options={revenue.options}
+              series={revenue.series}
+              type="bar"
+              height={350}
+            />
+          </Card>
+        </div>
       </div>
     </div>
   );

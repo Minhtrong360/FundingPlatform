@@ -36,12 +36,12 @@ const Login = () => {
       } else {
         const redirectTo = location?.state?.from?.pathname || "/";
         navigate(redirectTo);
+        window.location.reload(); // Tải lại trang sau khi navigate
       }
     } catch (error) {
       console.log("HandleSignIn error:", error.message);
       message.error(error.message);
     } finally {
-      window.location.reload(); // Tải lại trang sau khi navigate
       setLoading(false);
     }
   };
@@ -54,7 +54,6 @@ const Login = () => {
 
   return (
     <div className="darkBgBlue bg-gray-100 flex h-screen items-center py-16">
-      <AlertMsg />
       <main className="w-full max-w-md mx-auto p-6">
         <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm darkBgBlue darkBorderGray">
           <div className="p-4 sm:p-7">
@@ -79,14 +78,10 @@ const Login = () => {
                 type="button"
                 className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
               >
-                {loading ? (
-                  <SpinnerBtn />
-                ) : (
-                  <>
-                    <GoogleOutlined />
-                    Sign up with Google
-                  </>
-                )}
+                <>
+                  <GoogleOutlined />
+                  Sign up with Google
+                </>
               </button>
 
               <div className="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-1 before:border-t before:border-gray-200 before:mr-6 after:flex-1 after:border-t after:border-gray-200 after:ml-6 darkBeforeBorderGray darkAfterBorderGray">

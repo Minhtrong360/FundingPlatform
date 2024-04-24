@@ -318,6 +318,7 @@ function FinancialList() {
   };
 
   const [needPremium, setNeedPremium] = useState(false);
+  
   useEffect(() => {
     if (finances.length >= 4 && !subscribed) {
       setNeedPremium(true);

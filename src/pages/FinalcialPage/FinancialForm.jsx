@@ -179,6 +179,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         type: "bar",
         height: 350,
       },
+
       xaxis: {
         categories: Array.from(
           { length: numberOfMonths },

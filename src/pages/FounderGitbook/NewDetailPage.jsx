@@ -11,71 +11,100 @@ import Author from "./Components/Author";
 import MyTab from "./Components/MyTab";
 import { useParams } from "react-router";
 
-export default function NewDetailPage() {
-  const [company, setCompany] = useState([]);
+export default function NewDetailPage({ location }) {
+  const [company, setCompany] = useState(
+    JSON.parse(sessionStorage.getItem("companyDetailPage")) || []
+  );
   const [viewError, setViewError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentProject, setCurrentProject] = useState("");
+  const [currentProject, setCurrentProject] = useState(
+    JSON.parse(sessionStorage.getItem("currentProjectDetailPage")) || []
+  );
   const [blocks, setBlocks] = useState([]);
   const [fullScreen, setFullScreen] = useState(false);
 
   const params = useParams();
   const { user } = useAuth();
 
+  const locationKey = JSON.parse(
+    sessionStorage.getItem("locationKeyDetailPage")
+  );
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data: projectData, error: projectError } = await supabase
-          .from("projects")
+    if (locationKey !== location?.key || !company.length) {
+      // Check if companies are already loaded
+      fetchData();
+    } else {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    sessionStorage.setItem("companyDetailPage", JSON.stringify(company)); // Cache companies data
+
+    sessionStorage.setItem(
+      "locationKeyDetailPage",
+      JSON.stringify(location.key)
+    );
+  }, [company, location.key]);
+
+  useEffect(() => {
+    sessionStorage.setItem(
+      "currentProjectDetailPage",
+      JSON.stringify(currentProject)
+    ); // Cache companies data
+  }, [currentProject]);
+
+  const fetchData = async () => {
+    try {
+      const { data: projectData, error: projectError } = await supabase
+        .from("projects")
+        .select("*")
+        .eq("id", params?.id)
+        .single();
+
+      if (projectError) {
+        throw projectError;
+      }
+      setCurrentProject(projectData);
+
+      const { data: userData } = await supabase
+        .from("users")
+        .select("*")
+        .eq("email", user.email)
+        .single(); // user.email là giá trị email của người dùng
+
+      if (
+        (projectData.status === "private" ||
+          projectData.status === "stealth") &&
+        projectData.user_id !== user?.id &&
+        !projectData.invited_user?.includes(user.email) &&
+        !projectData.collabs?.includes(user.email) &&
+        userData?.admin !== true
+      ) {
+        setViewError(true);
+        setIsLoading(false); // Người dùng không được phép xem, ngừng hiển thị loading
+      } else {
+        setViewError(false);
+        const { data: companyData, error: companyError } = await supabase
+          .from("company")
           .select("*")
-          .eq("id", params?.id)
+          .eq("project_id", params?.id)
           .single();
 
-        if (projectError) {
-          throw projectError;
+        if (companyError) {
+          throw companyError;
         }
-        setCurrentProject(projectData);
 
-        const { data: userData } = await supabase
-          .from("users")
-          .select("*")
-          .eq("email", user.email)
-          .single(); // user.email là giá trị email của người dùng
-
-        if (
-          (projectData.status === "private" ||
-            projectData.status === "stealth") &&
-          projectData.user_id !== user?.id &&
-          !projectData.invited_user?.includes(user.email) &&
-          !projectData.collabs?.includes(user.email) &&
-          userData?.admin !== true
-        ) {
-          setViewError(true);
-          setIsLoading(false); // Người dùng không được phép xem, ngừng hiển thị loading
-        } else {
-          setViewError(false);
-          const { data: companyData, error: companyError } = await supabase
-            .from("company")
-            .select("*")
-            .eq("project_id", params?.id)
-            .single();
-
-          if (companyError) {
-            throw companyError;
-          }
-
-          setCompany(companyData);
-          setIsLoading(false); // Dữ liệu đã tải xong, ngừng hiển thị loading
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-
-        setIsLoading(false); // Có lỗi xảy ra, ngừng hiển thị loading
+        setCompany(companyData);
+        setIsLoading(false); // Dữ liệu đã tải xong, ngừng hiển thị loading
       }
-    };
+    } catch (error) {
+      console.error("Error fetching data:", error);
 
-    fetchData();
-  }, [params?.id, user?.email, user?.id]);
+      setIsLoading(false); // Có lỗi xảy ra, ngừng hiển thị loading
+    }
+  };
 
   if (viewError) {
     return (
@@ -108,7 +137,7 @@ export default function NewDetailPage() {
   return (
     <div className="min-h-screen bg-white">
       <button
-        className={`w-[100px] fixed bottom-5 sm:left-5 right-5 p-2 rounded-md ${
+        className={`w-[100px] fixed bottom-5 lg:left-5 right-5 p-2 rounded-md ${
           fullScreen ? "bg-gray-300" : "bg-blue-600 text-white"
         } z-50 text-sm`}
         onClick={() => setFullScreen((prev) => !prev)}
@@ -131,13 +160,20 @@ export default function NewDetailPage() {
               setBlocks={setBlocks}
               company={company}
               fullScreen={fullScreen}
+              currentProject={currentProject}
             />
 
             <Author company={company} />
           </div>
         </div>
       ) : (
-        <MyTab blocks={blocks} setBlocks={setBlocks} company={company} />
+        <MyTab
+          blocks={blocks}
+          setBlocks={setBlocks}
+          company={company}
+          fullScreen={fullScreen}
+          currentProject={currentProject}
+        />
       )}
     </div>
   );

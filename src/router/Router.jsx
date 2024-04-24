@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigation } from "react-router-dom";
 import HomePage from "../pages/Home/HomePage";
 
 import SignUp from "../pages/SignUp/SignUp";
@@ -42,8 +42,12 @@ import NewDetailPage from "../pages/FounderGitbook/NewDetailPage.jsx";
 import FinancialList from "../pages/FinalcialPage/FinancialList.jsx";
 import FleaMarketList from "../pages/FleaMarket/FleaMarketList.jsx";
 import FleaMarketListAll from "../pages/FleaMarket/FleaMarketListAll.jsx";
+import AdminRequired from "./AdminRequired.jsx";
+import GPTAnalyzer from "../pages/FinalcialPage/Components/GPTAnalyzer.jsx";
 
 function Router() {
+  const location = useLocation();
+
   return (
     <>
       <Routes>
@@ -51,6 +55,7 @@ function Router() {
         <Route index element={<HomePage />} />
 
         <Route
+          key={location.key}
           path="/founder"
           element={
             <AuthRequire message="Sign in required!">
@@ -60,6 +65,7 @@ function Router() {
         />
 
         <Route
+          key={location.key}
           path="/Flea-Market"
           element={
             <AuthRequire message="Sign in required!">
@@ -68,6 +74,7 @@ function Router() {
           }
         />
         <Route
+          key={location.key}
           path="/Flea-Market/info"
           element={
             <AuthRequire message="Sign in required!">
@@ -77,6 +84,7 @@ function Router() {
         />
 
         <Route
+          key={location.key}
           path="/user-info"
           element={
             <AuthRequire message="Sign in required!">
@@ -86,14 +94,16 @@ function Router() {
         />
 
         <Route
+          key={location.key}
           path="/founder/:id"
           element={
             <AuthRequire message="Sign in required!">
-              <NewDetailPage />
+              <NewDetailPage location={location} />
             </AuthRequire>
           }
         />
         <Route
+          key={location.key}
           path="/notifications"
           element={
             <AuthRequire message="Sign in required!">
@@ -103,10 +113,11 @@ function Router() {
         />
 
         {/* <Route path="/fundraising" element={<FundraisingRecords />} />   */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/confirmed" element={<Confirmed />} />
+        <Route key={location.key} path="/login" element={<Login />} />
+        <Route key={location.key} path="/signup" element={<SignUp />} />
+        <Route key={location.key} path="/confirmed" element={<Confirmed />} />
         <Route
+          key={location.key}
           path="/dashboard"
           element={
             <AuthRequire message="Sign in required!">
@@ -114,12 +125,25 @@ function Router() {
             </AuthRequire>
           }
         />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/update-password" element={<UpdatePassword />} />
-        {/* <Route path="/content" element={<ChatBotTest />} /> */}
-        <Route path="/success" element={<PaymentSuccess />} />
-        <Route path="*" element={<NotFoundPage />} />
         <Route
+          key={location.key}
+          path="/forgot-password"
+          element={<ForgotPassword />}
+        />
+        <Route
+          key={location.key}
+          path="/update-password"
+          element={<UpdatePassword />}
+        />
+        {/* <Route  key={location.key} path="/content" element={<ChatBotTest />} /> */}
+        <Route
+          key={location.key}
+          path="/success"
+          element={<PaymentSuccess />}
+        />
+        <Route key={location.key} path="*" element={<NotFoundPage />} />
+        <Route
+          key={location.key}
           path="/company/:id"
           element={
             <AuthRequire message="Sign in required!">
@@ -129,10 +153,15 @@ function Router() {
         />
         {/* <Route path="/linkedin" element={<LinkedInLoginComponent />} /> */}
 
-        <Route path="/trials" element={<Trial />} />
-        <Route path="/terms" element={<TermsAndConditions />} />
+        <Route key={location.key} path="/trials" element={<Trial />} />
+        <Route
+          key={location.key}
+          path="/terms"
+          element={<TermsAndConditions />}
+        />
 
         <Route
+          key={location.key}
           path="/financials/:id"
           element={
             <AuthRequire message="Sign in required!">
@@ -144,6 +173,7 @@ function Router() {
         />
 
         <Route
+          key={location.key}
           path="/financials"
           element={
             <AuthRequire message="Sign in required!">
@@ -154,6 +184,7 @@ function Router() {
           }
         />
         <Route
+          key={location.key}
           path="/announce"
           element={
             <AnnouncePage
@@ -163,19 +194,37 @@ function Router() {
             />
           }
         />
-        <Route path="/news" element={<News />} />
-        <Route path="/news/:id" element={<DetailBlog />} />
-        <Route path="/startups" element={<NewProjectPosts />} />
+        <Route key={location.key} path="/news" element={<News />} />
+        <Route key={location.key} path="/news/:id" element={<DetailBlog />} />
+        <Route
+          key={location.key}
+          path="/startups"
+          element={<NewProjectPosts location={location} />}
+        />
 
-        <Route path="/pricing" element={<PricingPage />} />
-        <Route path="/admin" element={<AdminPage />} />
-        {/* <Route path="/example" element={<StaticNews />} /> */}
-        <Route path="/FAQ" element={<FAQ />} />
-        {/* <Route path="/brochure" element={<Brochure />} /> */}
-        <Route path="/mytabs" element={<NewDetailPage />} />
-        {/* <Route path="/app" element={<App />} /> */}
-        {/* <Route path="/tour" element={<TourComponent />} /> */}
-        {/* <Route path="/loading" element={<ProgressBar isLoading={true} />} /> */}
+        <Route key={location.key} path="/pricing" element={<PricingPage />} />
+        <Route
+          key={location.key}
+          path="/admin"
+          element={
+            <AuthRequire message="Sign in required!">
+              <AdminRequired>
+                <AdminPage />
+              </AdminRequired>
+            </AuthRequire>
+          }
+        />
+        {/* <Route  key={location.key} path="/example" element={<StaticNews />} /> */}
+        <Route key={location.key} path="/FAQ" element={<FAQ />} />
+        {/* <Route  key={location.key} path="/brochure" element={<Brochure />} /> */}
+        <Route key={location.key} path="/mytabs" element={<NewDetailPage />} />
+        {/* <Route  key={location.key} path="/app" element={<App />} /> */}
+        {/* <Route  key={location.key} path="/tour" element={<TourComponent />} /> */}
+        <Route
+          key={location.key}
+          path="/GPT"
+          element={<GPTAnalyzer numberOfMonths={36} />}
+        />
       </Routes>
     </>
   );

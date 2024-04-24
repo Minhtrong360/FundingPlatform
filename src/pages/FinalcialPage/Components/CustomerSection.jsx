@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
-import { Table, Tooltip, message } from "antd";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import { Card, Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -21,7 +20,6 @@ import {
 } from "../../../features/SaleSlice";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { supabase } from "../../../supabase";
-import { useAuth } from "../../../context/AuthContext";
 import {
   Select,
   SelectTrigger,
@@ -512,12 +510,17 @@ const CustomerSection = ({
           />
         </div>
         <h3 className="text-2xl font-semibold my-8">Customer Chart</h3>
-        <Chart
-          options={customerGrowthChart.options}
-          series={customerGrowthChart.series}
-          type="bar"
-          height={350}
-        />
+
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card className="flex flex-col ">
+            <Chart
+              options={customerGrowthChart.options}
+              series={customerGrowthChart.series}
+              type="bar"
+              height={350}
+            />
+          </Card>
+        </div>
       </div>
     </div>
   );

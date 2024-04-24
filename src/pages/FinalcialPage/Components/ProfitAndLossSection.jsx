@@ -831,7 +831,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
         />
       )}
 
-      <div className="w-full md:w-[20%] mb-5">
+      <div className="w-full md:w-[20%] my-5">
         <SelectField
           label="Select Cut Month:"
           id="Select Cut Month:"

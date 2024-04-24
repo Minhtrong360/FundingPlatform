@@ -7,7 +7,7 @@ import {
 } from "../../../components/ui/Select";
 import { Input } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
-import { Table, Tooltip, message } from "antd";
+import { Card, Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 import {
   setCostInputs,
@@ -485,12 +485,16 @@ const CostSection = ({
           bordered
         />
         <h3 className="text-2xl font-semibold my-8">Cost Chart</h3>
-        <Chart
-          options={costChart.options}
-          series={costChart.series}
-          type="bar"
-          height={350}
-        />
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card className="flex flex-col ">
+            <Chart
+              options={costChart.options}
+              series={costChart.series}
+              type="bar"
+              height={350}
+            />
+          </Card>
+        </div>
       </div>
     </div>
   );

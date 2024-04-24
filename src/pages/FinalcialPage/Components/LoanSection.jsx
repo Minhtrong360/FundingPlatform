@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
-import { Table, message } from "antd";
+import { Card, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -415,12 +415,17 @@ const LoanSection = ({
           }
         />
         <h3 className="text-2xl font-semibold my-8">Loan Data</h3>
-        <Chart
-          options={loanChart.options}
-          series={loanChart.series}
-          type="bar"
-          height={350}
-        />
+
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card className="flex flex-col ">
+            <Chart
+              options={loanChart.options}
+              series={loanChart.series}
+              type="bar"
+              height={350}
+            />
+          </Card>
+        </div>
       </div>
     </div>
   );

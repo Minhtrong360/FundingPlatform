@@ -44,7 +44,7 @@ const CustomChart = ({
   };
   return (
     <div className="grid md:grid-cols-2 gap-6">
-      <Card title={title}>
+      <Card title={title} className="shadow-xl">
         <Chart
           options={{
             ...chartOptions,

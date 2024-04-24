@@ -102,268 +102,274 @@ function Company({
   }, []);
 
   return (
-    <>
-      <div className="max-w-xl mx-auto overflow-auto h-screen">
-        <div className="max-w-[85rem] px-4 py-8 mx-auto ">
-          <AlertMsg />
+    <div className="h-5/6">
+      <div className="shadow-xl rounded-md border h-5/6 mt-4 overflow-auto sticky ml-4 mr-4 md:ml-0 md:mr-0 mb-2">
+        <div className="max-w-xl mx-auto h-screen">
+          <div className="max-w-[85rem] px-4 py-8 mx-auto ">
+            <AlertMsg />
 
-          <div className="max-w-xl mx-auto">
-            <div className="text-left">
-              <p className="mt-1 text-gray-800 font-semibold darkTextGray">
-                Please fill basic information below.
-              </p>
-            </div>
+            <div className="max-w-xl mx-auto">
+              <div className="text-left">
+                <p className="mt-1 text-gray-800 font-semibold darkTextGray">
+                  Please fill basic information below.
+                </p>
+              </div>
 
-            <div className="mt-12">
-              <form onSubmit={handleSubmit}>
-                <div className="grid gap-4 lg:gap-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+              <div className="mt-12">
+                <form onSubmit={handleSubmit}>
+                  <div className="grid gap-4 lg:gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                      <InputField
+                        label="Company name"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        type="text"
+                        required
+                      />
+                      <SelectField
+                        label="Country"
+                        id="country"
+                        name="country"
+                        value={formData.country}
+                        onChange={handleInputChange}
+                        required
+                        options={countries} // Thay thế bằng danh sách các tùy chọn bạn muốn
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                      <InputField
+                        label="Target amount"
+                        id="target-amount"
+                        name="target_amount"
+                        value={formatNumber(formData.target_amount)}
+                        onChange={handleInputChange}
+                        type="text"
+                        required
+                      />
+                      <SelectField
+                        label="Type offering"
+                        id="type-offering"
+                        name="offer_type"
+                        options={typeOfferingOptions}
+                        value={formData.offer_type}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                      <InputField
+                        label="Min ticket size"
+                        id="min-ticket-size"
+                        name="ticket_size"
+                        value={formatNumber(formData.ticket_size)}
+                        onChange={handleInputChange}
+                        type="text"
+                        required
+                      />
+                      <InputField
+                        label="No. ticket"
+                        id="no-ticket"
+                        name="no_ticket"
+                        value={formData.no_ticket}
+                        type="number"
+                        readOnly // Đặt readOnly để ngăn người dùng chỉnh sửa trường này thủ công
+                      />
+                    </div>
+
+                    <SelectField
+                      label="Annual revenue last year"
+                      id="revenueStatus"
+                      name="revenueStatus"
+                      value={formData.revenueStatus}
+                      onChange={handleInputChange}
+                      required
+                      options={[
+                        "$0 - $10k",
+                        "$10k - $50k",
+                        "$50k - $100k",
+                        "$100k - $500k",
+                        "$500k - $1M",
+                        "$1M - $5M",
+                        ">$5M",
+                        "Non-Profit",
+                      ]}
+                    />
+
+                    <MultiSelectField
+                      label="Industry"
+                      id="industry"
+                      name="industry"
+                      OPTIONS={industries}
+                      selectedItems={formData.industry}
+                      setSelectedItems={handleIndustryChange}
+                      required
+                    />
+
                     <InputField
-                      label="Company name"
-                      id="name"
-                      name="name"
-                      value={formData.name}
+                      label="Keywords"
+                      title="Keywords should be separated by comma (,)"
+                      id="keyWords"
+                      name="keyWords"
+                      value={formData.keyWords}
                       onChange={handleInputChange}
                       type="text"
                       required
+                    />
+
+                    <InputField
+                      label="Offer"
+                      id="offer"
+                      name="offer"
+                      value={formData.offer}
+                      onChange={handleInputChange}
+                      type="text"
+                      required
+                    />
+                    <div>
+                      <InputField
+                        label="Company logo"
+                        id="project_url"
+                        name="project_url"
+                        value={formData.project_url}
+                        onChange={handleInputChange}
+                        type="text"
+                        required
+                      />
+                      {/* Add file input for project image */}
+                      <span className="py-1 px-2 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60">
+                        {" "}
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleProjectImageUpload}
+                        className="py-1 px-2 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60"
+                      />
+                    </div>
+
+                    <div>
+                      <InputField
+                        label="Profile Image link"
+                        id="card_url"
+                        name="card_url"
+                        value={formData.card_url}
+                        onChange={handleInputChange}
+                        type="text"
+                        required
+                      />
+                      <span className="py-1 px-2 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60">
+                        {" "}
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleCardImageUpload}
+                        className="py-1 px-2 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60"
+                      />
+                      {/* Display the card image */}
+                    </div>
+
+                    <InputField
+                      label="Website"
+                      id="website"
+                      name="website"
+                      value={formData.website}
+                      onChange={handleInputChange}
+                      type="text"
+                      required
+                    />
+
+                    <InputField
+                      label="Calendly"
+                      id="calendly"
+                      name="calendly"
+                      value={formData.calendly}
+                      onChange={handleInputChange}
+                      type="text"
+                    />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                      <SelectField
+                        label="Team size"
+                        id="teamSize"
+                        name="teamSize"
+                        value={formData.teamSize}
+                        onChange={handleInputChange}
+                        type="text"
+                        options={["1-10", "11-50", "51-200", "201-500", ">500"]}
+                        required
+                      />
+
+                      <InputField
+                        label="Raised before"
+                        id="amountRaised"
+                        name="amountRaised"
+                        value={formatNumber(formData.amountRaised)}
+                        onChange={handleInputChange}
+                        type="text"
+                        required
+                      />
+                    </div>
+
+                    <SelectField
+                      label="Founded year"
+                      id="operationTime"
+                      name="operationTime"
+                      value={formData.operationTime}
+                      onChange={handleInputChange}
+                      options={years}
+                      type="text"
                     />
                     <SelectField
-                      label="Country"
-                      id="country"
-                      name="country"
-                      value={formData.country}
+                      label="Round"
+                      id="round"
+                      name="round"
+                      options={[
+                        "Pre-seed",
+                        "Seed",
+                        "Series A",
+                        "Series B",
+                        "Series C",
+                        "Non-Profit",
+                      ]}
+                      value={formData.round}
+                      onChange={handleInputChange}
+                      type="text"
+                    />
+
+                    <TextAreaField
+                      label="Company description"
+                      id="company-description"
+                      name="description"
+                      value={formData.description}
                       onChange={handleInputChange}
                       required
-                      options={countries} // Thay thế bằng danh sách các tùy chọn bạn muốn
+                      maxLength={700} // Giới hạn 700 ký tự
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                    <InputField
-                      label="Target amount"
-                      id="target-amount"
-                      name="target_amount"
-                      value={formatNumber(formData.target_amount)}
-                      onChange={handleInputChange}
-                      type="text"
-                      required
-                    />
-                    <SelectField
-                      label="Type offering"
-                      id="type-offering"
-                      name="offer_type"
-                      options={typeOfferingOptions}
-                      value={formData.offer_type}
-                      onChange={handleInputChange}
-                      required
-                    />
+                  <div className="mt-6 grid">
+                    
                   </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                    <InputField
-                      label="Min ticket size"
-                      id="min-ticket-size"
-                      name="ticket_size"
-                      value={formatNumber(formData.ticket_size)}
-                      onChange={handleInputChange}
-                      type="text"
-                      required
-                    />
-                    <InputField
-                      label="No. ticket"
-                      id="no-ticket"
-                      name="no_ticket"
-                      value={formData.no_ticket}
-                      type="number"
-                      readOnly // Đặt readOnly để ngăn người dùng chỉnh sửa trường này thủ công
-                    />
-                  </div>
-
-                  <SelectField
-                    label="Annual revenue last year"
-                    id="revenueStatus"
-                    name="revenueStatus"
-                    value={formData.revenueStatus}
-                    onChange={handleInputChange}
-                    required
-                    options={[
-                      "$0 - $10k",
-                      "$10k - $50k",
-                      "$50k - $100k",
-                      "$100k - $500k",
-                      "$500k - $1M",
-                      "$1M - $5M",
-                      ">$5M",
-                      "Non-Profit",
-                    ]}
-                  />
-
-                  <MultiSelectField
-                    label="Industry"
-                    id="industry"
-                    name="industry"
-                    OPTIONS={industries}
-                    selectedItems={formData.industry}
-                    setSelectedItems={handleIndustryChange}
-                    required
-                  />
-
-                  <InputField
-                    label="Keywords"
-                    title="Keywords should be separated by comma (,)"
-                    id="keyWords"
-                    name="keyWords"
-                    value={formData.keyWords}
-                    onChange={handleInputChange}
-                    type="text"
-                    required
-                  />
-
-                  <InputField
-                    label="Offer"
-                    id="offer"
-                    name="offer"
-                    value={formData.offer}
-                    onChange={handleInputChange}
-                    type="text"
-                    required
-                  />
-                  <div>
-                    <InputField
-                      label="Company logo"
-                      id="project_url"
-                      name="project_url"
-                      value={formData.project_url}
-                      onChange={handleInputChange}
-                      type="text"
-                      required
-                    />
-                    {/* Add file input for project image */}
-                    <span className="py-1 px-2 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60">
-                      {" "}
-                    </span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleProjectImageUpload}
-                      className="py-1 px-2 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60"
-                    />
-                  </div>
-
-                  <div>
-                    <InputField
-                      label="Profile Image link"
-                      id="card_url"
-                      name="card_url"
-                      value={formData.card_url}
-                      onChange={handleInputChange}
-                      type="text"
-                      required
-                    />
-                    <span className="py-1 px-2 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60">
-                      {" "}
-                    </span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleCardImageUpload}
-                      className="py-1 px-2 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-60"
-                    />
-                    {/* Display the card image */}
-                  </div>
-
-                  <InputField
-                    label="Website"
-                    id="website"
-                    name="website"
-                    value={formData.website}
-                    onChange={handleInputChange}
-                    type="text"
-                    required
-                  />
-
-                  <InputField
-                    label="Calendly"
-                    id="calendly"
-                    name="calendly"
-                    value={formData.calendly}
-                    onChange={handleInputChange}
-                    type="text"
-                  />
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                    <SelectField
-                      label="Team size"
-                      id="teamSize"
-                      name="teamSize"
-                      value={formData.teamSize}
-                      onChange={handleInputChange}
-                      type="text"
-                      options={["1-10", "11-50", "51-200", "201-500", ">500"]}
-                      required
-                    />
-
-                    <InputField
-                      label="Raised before"
-                      id="amountRaised"
-                      name="amountRaised"
-                      value={formatNumber(formData.amountRaised)}
-                      onChange={handleInputChange}
-                      type="text"
-                      required
-                    />
-                  </div>
-
-                  <SelectField
-                    label="Founded year"
-                    id="operationTime"
-                    name="operationTime"
-                    value={formData.operationTime}
-                    onChange={handleInputChange}
-                    options={years}
-                    type="text"
-                  />
-                  <SelectField
-                    label="Round"
-                    id="round"
-                    name="round"
-                    options={[
-                      "Pre-seed",
-                      "Seed",
-                      "Series A",
-                      "Series B",
-                      "Series C",
-                      "Non-Profit",
-                    ]}
-                    value={formData.round}
-                    onChange={handleInputChange}
-                    type="text"
-                  />
-
-                  <TextAreaField
-                    label="Company description"
-                    id="company-description"
-                    name="description"
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    required
-                    maxLength={700} // Giới hạn 700 ký tự
-                  />
-                </div>
-
-                <div className="mt-6 grid">
-                  <button
-                    type="submit"
-                    className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600"
-                  >
-                    Submit
-                  </button>
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
           </div>
         </div>
+      
       </div>
-    </>
+      
+      <button
+        type="submit"
+        onClick={handleSubmit}
+        className="shadow-lg w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600 mt-2"
+      >
+          Submit
+      </button>
+  </div>
   );
 }
 

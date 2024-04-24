@@ -759,8 +759,7 @@ function NewUserPage() {
                   )}
 
                   <div className="text-xs italic text-blue-600">
-                    * For "FundFlow Premium" FREE, please fill in the code and
-                    wait for uor Admin upgrade your plan. Thanks!
+                    * SPECIAL CODE
                   </div>
                   <div className="mt-4">
                     <InputField

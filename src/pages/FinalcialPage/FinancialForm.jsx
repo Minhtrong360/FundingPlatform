@@ -176,8 +176,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     options: {
       chart: {
         id: "customer-growth-chart",
-        type: "bar",
+        type: "area",
         height: 350,
+        stacked: false,
       },
 
       xaxis: {
@@ -206,10 +207,26 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
+      fill: {
+        type: "gradient",
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.7,
+          opacityTo: 0.9,
+          stops: [0, 90, 100],
+        },
+      },
+      colors: [
+        "#00A2FF",
+        "#14F584",
+        "#FFB303",
+        "#5C39FF",
+        "#D738FF",
+        "#FF841F",
+      ],
       dataLabels: { enabled: false },
-      stroke: { curve: "stepline" },
-      markers: { size: 1 },
+      // stroke: { curve: "stepline" },
+      // markers: { size: 1 },
     },
     series: [],
   });
@@ -767,7 +784,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             <div>
               {activeTab === "overview" && (
                 <div className="w-full h-full flex flex-col lg:flex-row ">
-                  <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:border-r-2 border-r-0 lg:border-b-0 border-b-2">
+                  {/* <div className="w-full lg:w-1/4 sm:p-4 p-0 "> */}
+                  <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
                     <DurationSelect handleSubmit={handleSubmit} />
                   </div>
 

@@ -218,7 +218,7 @@ export default function ProfileInfo({
     <div
       key="1"
       className={`max-w-7xl ${
-        canClick === false ? "mt-8 " : "mx-auto sm:mt-28 mt-16"
+        canClick === false ? "mt-4 " : "mx-auto sm:mt-26 mt-16"
       } px-4 sm:px-6 lg:px-8 `}
     >
       {showConfirmation && (
@@ -282,7 +282,7 @@ export default function ProfileInfo({
               ? company?.description
               : "In the bustling heart of Silicon Valley, nestled among the towering tech giants, lies a beacon of innovation and sustainability: VoltDrive Electric. Founded by visionary engineer, Emily Rodriguez, VoltDrive is not just an electric car company; it's a revolution on wheels. At VoltDrive, every day begins with a dedication to a greener, cleaner future. Their state-of-the-art manufacturing facility, powered entirely by renewable energy, is a testament to their commitment to sustainability. The sleek, modern architecture of the building mirrors the company's ethos: merging cutting-edge technology with eco-conscious design."}
           </p>
-          <div className="mt-6 flex gap-4">
+          <div className="mt-4 flex gap-4">
             {canClick === false ? (
               <Tooltip
                 title={
@@ -317,10 +317,10 @@ export default function ProfileInfo({
               </Tooltip>
             )}
           </div>
-          <div className="mt-8">
+          <div className="mt-4">
             <div className="text-black font-semibold">Industry:</div>
 
-            <div className=" mt-4  ">
+            <div className=" mt-2  ">
               {company?.industry.length > 0 ? (
                 company?.industry?.map((industry, index) => (
                   <Badge
@@ -375,7 +375,7 @@ export default function ProfileInfo({
           )}
         </div>
       </div>
-      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 transform scale-90">
+      <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 transform scale-90">
         <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border ">
           <div className="text-xl font-semibold">
             $

@@ -456,7 +456,7 @@ const AllChartSections = ({
     <div className="flex flex-col">
       <main className="flex flex-1 flex-col gap-4 mt-4 mb-4 md:gap-8 ">
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col">
+          <Card className="flex flex-col shadow-xl">
             <div>
               <div className="text-base">Total User</div>
               <p className="text-sm sm:text-3xl font-bold text-black my-2">
@@ -464,13 +464,13 @@ const AllChartSections = ({
               </p>
             </div>
             <Chart
-              type="bar"
+              type="area"
               series={customerGrowthChart.series}
               options={customerGrowthChart.options}
               height={300}
             />
           </Card>
-          <Card className="flex flex-col">
+          <Card className="flex flex-col shadow-xl">
             <div>
               <div className="text-base">Total Revenue</div>
               <p className="text-sm sm:text-3xl font-bold text-black my-2">

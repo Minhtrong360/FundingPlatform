@@ -113,8 +113,6 @@ const NewProjectPosts = ({ location }) => {
     }
   };
 
-  console.log("companies", companies);
-
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
     setPage(1);

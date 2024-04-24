@@ -10,7 +10,14 @@ const formatNumber = (value) => {
   return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
-export default function InputField({ label, id, title, ...rest }) {
+export default function InputField({
+  label,
+  id,
+  title,
+  changePassword,
+  setIsChangePasswordModalOpen,
+  ...rest
+}) {
   // Kiểm tra nếu 'name' là 'targetAmount', 'typeOffering' hoặc 'minTicketSize'
   if (
     rest.name === "targetAmount" ||
@@ -28,9 +35,27 @@ export default function InputField({ label, id, title, ...rest }) {
   return (
     <div>
       <Tooltip title={title}>
-        <label htmlFor={id} className="block mb-2 text-sm darkTextWhite">
-          {label}
-        </label>
+        {changePassword ? (
+          <div className="flex items-center justify-between">
+            <div>
+              <label htmlFor={id} className="block mb-2 text-sm darkTextWhite">
+                {label}
+              </label>
+            </div>
+            <div>
+              <label
+                className="block mb-2 text-sm darkTextWhite italic text-blue-600 hover:cursor-pointer"
+                onClick={() => setIsChangePasswordModalOpen(true)}
+              >
+                Change password
+              </label>
+            </div>
+          </div>
+        ) : (
+          <label htmlFor={id} className="block mb-2 text-sm darkTextWhite">
+            {label}
+          </label>
+        )}
       </Tooltip>
 
       <input

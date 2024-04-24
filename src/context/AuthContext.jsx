@@ -90,6 +90,7 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const [subscribed, setSubscribed] = useState(false);
+  const [admin, setAdmin] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -138,10 +139,16 @@ const AuthProvider = ({ children }) => {
         currentUser[0]?.plan === undefined ||
         currentUser[0]?.subscription_status === "canceled" ||
         currentUser[0]?.subscription_status === "cancelled"
-      )
+      ) {
         setSubscribed(false);
-    } else {
-      setSubscribed(true);
+      } else {
+        setSubscribed(true);
+      }
+      if (currentUser[0].admin === true) {
+        setAdmin(true);
+      } else {
+        setAdmin(false);
+      }
     }
   }, [currentUser]);
 
@@ -151,6 +158,7 @@ const AuthProvider = ({ children }) => {
         auth,
         user,
         subscribed,
+        admin,
         login: (email, password) => login(email, password, setLoading),
         signOut,
         loginWithGG: () => loginWithGG(setLoading),

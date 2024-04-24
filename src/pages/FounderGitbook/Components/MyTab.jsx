@@ -186,17 +186,44 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
   };
   useEffect(() => {
     // Hàm để lấy dữ liệu Markdown từ cơ sở dữ liệu
+    async function fetchMarkdown() {
+      try {
+        if (!navigator.onLine) {
+          // Không có kết nối Internet
+          message.error("No internet access.");
+          return;
+        }
+        if (params) {
+          // Kiểm tra xem project có tồn tại không
+          const { data, error } = await supabase
+            .from("projects")
+            .select("markdown")
+            .match({ id: params.id })
+            .single();
+          if (error) {
+            console.log(error.message);
+          } else {
+            // Nếu có dữ liệu Markdown trong cơ sở dữ liệu, cập nhật giá trị của markdown
+            if (data && data.markdown) {
+              editor.replaceBlocks(
+                editor.topLevelBlocks,
+                JSON.parse(data.markdown)
+              );
+            }
+          }
+        }
+        setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu
+      } catch (error) {
+        console.log(error.message);
 
-    // Nếu có dữ liệu Markdown trong cơ sở dữ liệu, cập nhật giá trị của markdown
-    if (currentProject && currentProject.markdown) {
-      editor.replaceBlocks(
-        editor.topLevelBlocks,
-        JSON.parse(currentProject.markdown)
-      );
+        setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu (có lỗi)
+      }
     }
 
     // Gọi hàm để lấy Markdown khi component được mount
-  }, [currentProject]);
+
+    fetchMarkdown();
+  }, []);
 
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
@@ -255,10 +282,6 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
     }
   };
 
-  const isOwner =
-    user?.id === currentProject?.user_id ||
-    currentProject?.collabs?.includes(user.email);
-
   const isDemo =
     params.id === "3ec3f142-f33c-4977-befd-30d4ce2b764d" ? true : false;
 
@@ -287,14 +310,20 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
 
                 <div className="mt-2">
                   {company?.keyWords &&
-                    company.keyWords.split(",").map((keyWord, index) => (
-                      <Badge
-                        key={index}
-                        className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
-                      >
-                        {keyWord.trim()}
-                      </Badge>
-                    ))}
+                    company.keyWords.split(",").map((keyWord, index) => {
+                      const trimmedKeyword = keyWord.trim(); // Loại bỏ khoảng trắng ở đầu và cuối
+                      if (trimmedKeyword) {
+                        return (
+                          <Badge
+                            key={index}
+                            className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
+                          >
+                            {trimmedKeyword}
+                          </Badge>
+                        );
+                      }
+                      return null; // Loại bỏ từ khóa nếu chỉ còn khoảng trắng
+                    })}
                 </div>
               </div>
               {user?.id === currentProject?.user_id ||

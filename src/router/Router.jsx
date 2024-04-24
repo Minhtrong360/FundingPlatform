@@ -42,10 +42,11 @@ import NewDetailPage from "../pages/FounderGitbook/NewDetailPage.jsx";
 import FinancialList from "../pages/FinalcialPage/FinancialList.jsx";
 import FleaMarketList from "../pages/FleaMarket/FleaMarketList.jsx";
 import FleaMarketListAll from "../pages/FleaMarket/FleaMarketListAll.jsx";
+import AdminRequired from "./AdminRequired.jsx";
 
 function Router() {
   const location = useLocation();
-  console.log("location", location);
+
   return (
     <>
       <Routes>
@@ -201,7 +202,17 @@ function Router() {
         />
 
         <Route key={location.key} path="/pricing" element={<PricingPage />} />
-        <Route key={location.key} path="/admin" element={<AdminPage />} />
+        <Route
+          key={location.key}
+          path="/admin"
+          element={
+            <AuthRequire message="Sign in required!">
+              <AdminRequired>
+                <AdminPage />
+              </AdminRequired>
+            </AuthRequire>
+          }
+        />
         {/* <Route  key={location.key} path="/example" element={<StaticNews />} /> */}
         <Route key={location.key} path="/FAQ" element={<FAQ />} />
         {/* <Route  key={location.key} path="/brochure" element={<Brochure />} /> */}

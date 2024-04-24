@@ -76,7 +76,7 @@ function Author({ company }) {
     }
 
     fetchUserData();
-  }, [id, user]);
+  }, []);
 
   const [likedCount, setLikedCount] = useState(projectData?.liked.length);
 

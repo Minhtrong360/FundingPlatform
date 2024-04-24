@@ -106,8 +106,6 @@ export default function NewDetailPage({ location }) {
     }
   };
 
-  fetchData();
-
   if (viewError) {
     return (
       <div>

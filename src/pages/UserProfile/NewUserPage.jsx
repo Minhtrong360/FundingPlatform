@@ -1,5 +1,5 @@
 import { CardContent } from "@mui/material";
-import { Avatar, Card, Tooltip, message } from "antd";
+import { Avatar, Card, Modal, Tooltip, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
@@ -388,6 +388,53 @@ function NewUserPage() {
     setYears(yearsList);
   }, []);
 
+  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] =
+    useState(false);
+
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const handleNewPasswordChange = (event) => {
+    setNewPassword(event.target.value);
+  };
+
+  const handleConfirmPasswordChange = (event) => {
+    setConfirmPassword(event.target.value);
+  };
+
+  const confirmSave = async (event) => {
+    event.preventDefault();
+    setIsLoading(true); // Bắt đầu loading
+    if (newPassword === confirmPassword) {
+      try {
+        if (!navigator.onLine) {
+          // Không có kết nối Internet
+          message.error("No internet access.");
+          return;
+        }
+        const { error } = await supabase.auth.updateUser({
+          password: newPassword,
+        });
+
+        if (error) {
+          console.log("error supabase", error);
+          message.error(error.message);
+        } else {
+          message.success("Password updated successfully.");
+
+          setIsChangePasswordModalOpen(false);
+        }
+      } catch (error) {
+        message.error(error.message);
+      }
+    } else {
+      message.error("Passwords do not match.");
+    }
+    setIsLoading(false);
+  };
+
+  const changePassword = true;
+
   return (
     <>
       {isLoading ? (
@@ -486,6 +533,10 @@ function NewUserPage() {
                           value={userData.email}
                           type="text"
                           disabled
+                          changePassword={changePassword}
+                          setIsChangePasswordModalOpen={
+                            setIsChangePasswordModalOpen
+                          }
                         />
                       </div>
                       <div className="mt-4">
@@ -838,6 +889,50 @@ function NewUserPage() {
             </div>
           </form>
         </div>
+      )}
+      {isChangePasswordModalOpen && (
+        <Modal
+          title="Change Password"
+          visible={isChangePasswordModalOpen}
+          onOk={confirmSave}
+          onCancel={() => setIsChangePasswordModalOpen(false)}
+          okText="Save"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#f5222d",
+              borderColor: "#f5222d",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          centered={true}
+        >
+          <div className="grid gap-y-4">
+            <InputField
+              label="New password"
+              type="password"
+              name="newPassword"
+              value={newPassword}
+              onChange={handleNewPasswordChange}
+            />
+            <InputField
+              label="Confirm password"
+              type="password"
+              name="confirmPassword"
+              value={confirmPassword}
+              onChange={handleConfirmPasswordChange}
+            />
+            <LoadingButtonClick isLoading={isLoading} />
+          </div>
+        </Modal>
       )}
     </>
   );

@@ -269,6 +269,7 @@ function FinancialList() {
     } finally {
       // Đóng modal sau khi xóa hoặc xảy ra lỗi
       setIsDeleteModalOpen(false);
+      setSelectedID("");
     }
   };
 
@@ -343,7 +344,10 @@ function FinancialList() {
                   title="Confirm Delete"
                   visible={isDeleteModalOpen}
                   onOk={confirmDelete}
-                  onCancel={() => setIsDeleteModalOpen(false)}
+                  onCancel={() => {
+                    setIsDeleteModalOpen(false);
+                    setSelectedID("");
+                  }}
                   okText="Delete"
                   cancelText="Cancel"
                   cancelButtonProps={{

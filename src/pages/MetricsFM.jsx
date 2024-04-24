@@ -17,7 +17,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Map over cardData array */}
 
-        <div className="flex flex-col bg-white border shadow-sm rounded-xl">
+        <div className="flex flex-col bg-white border shadow-lg rounded-xl ">
           <div className="p-4 md:p-5">
             <div className="flex items-center gap-x-2">
               <p className="text-xs uppercase tracking-wide text-gray-500">
@@ -60,7 +60,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
           </div>
         </div>
 
-        <div className="flex flex-col bg-white border shadow-sm rounded-xl">
+        <div className="flex flex-col bg-white border shadow-lg rounded-xl">
           <div className="p-4 md:p-5">
             <div className="flex items-center gap-x-2">
               <p className="text-xs uppercase tracking-wide text-gray-500">
@@ -103,7 +103,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
           </div>
         </div>
 
-        <div className="flex flex-col bg-white border shadow-sm rounded-xl">
+        <div className="flex flex-col bg-white border shadow-lg rounded-xl">
           <div className="p-4 md:p-5">
             <div className="flex items-center gap-x-2">
               <p className="text-xs uppercase tracking-wide text-gray-500">

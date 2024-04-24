@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { formatNumber } from "./CostSlice";
 
 const initialState = {
   channelInputs: [
@@ -40,6 +41,7 @@ const initialState = {
   netRevenueData: [],
   grossProfitData: [],
   yearlySales: [],
+  revenueTableData: [],
 };
 
 const saleSlice = createSlice({
@@ -70,6 +72,9 @@ const saleSlice = createSlice({
     setYearlySales(state, action) {
       state.yearlySales = action.payload;
     },
+    setRevenueTableData(state, action) {
+      state.revenueTableData = action.payload;
+    },
   },
 });
 
@@ -83,6 +88,7 @@ export const {
   setGrossProfitData,
   setIsSaved,
   setYearlySales,
+  setRevenueTableData,
 } = saleSlice.actions;
 
 export const calculateChannelRevenue =
@@ -183,6 +189,98 @@ export const calculateYearlySales = (tempRevenueData) => {
     yearlySales.push(sum.toFixed(0));
   }
   return yearlySales;
+};
+
+export const transformRevenueDataForTable = (
+  calculatedChannelRevenue,
+  tempChannelInputs,
+  renderChannelForm
+) => {
+  const allTransformedData = [];
+
+  Object.keys(calculatedChannelRevenue.revenueByChannelAndProduct).forEach(
+    (channelProductKey) => {
+      const [selectedChannel, selectedProduct] = channelProductKey.split(" - ");
+      if (
+        (selectedChannel ==
+          tempChannelInputs.find((input) => input.id == renderChannelForm)
+            ?.selectedChannel &&
+          selectedProduct ==
+            tempChannelInputs.find((input) => input.id == renderChannelForm)
+              ?.productName) ||
+        renderChannelForm == "all"
+      ) {
+        const transformedRevenueTableData = {};
+        const revenueRowKey = `Revenue`;
+        const revenueDeductionRowKey = `Deductions`;
+        const cogsRowKey = `COGS`;
+        const netRevenueRowKey = `Net Revenue`;
+        const grossProfitRowKey = `Gross Profit`;
+        const productName = `Product Name`;
+
+        transformedRevenueTableData[productName] = {
+          key: channelProductKey,
+          channelName: channelProductKey,
+        };
+        transformedRevenueTableData[revenueRowKey] = {
+          key: `${revenueRowKey} - ${selectedProduct}`,
+          channelName: revenueRowKey,
+        };
+        transformedRevenueTableData[revenueDeductionRowKey] = {
+          key: `${revenueDeductionRowKey} - ${selectedProduct}`,
+          channelName: revenueDeductionRowKey,
+        };
+        transformedRevenueTableData[netRevenueRowKey] = {
+          key: `${netRevenueRowKey} - ${selectedProduct}`,
+          channelName: netRevenueRowKey,
+        };
+        transformedRevenueTableData[cogsRowKey] = {
+          key: `${cogsRowKey} - ${selectedProduct}`,
+          channelName: cogsRowKey,
+        };
+        transformedRevenueTableData[grossProfitRowKey] = {
+          key: `${grossProfitRowKey} - ${selectedProduct}`,
+          channelName: grossProfitRowKey,
+        };
+
+        calculatedChannelRevenue.revenueByChannelAndProduct[
+          channelProductKey
+        ].forEach((value, index) => {
+          transformedRevenueTableData[revenueRowKey][`month${index + 1}`] =
+            formatNumber(parseFloat(value)?.toFixed(0));
+        });
+        calculatedChannelRevenue.DeductionByChannelAndProduct[
+          channelProductKey
+        ].forEach((value, index) => {
+          transformedRevenueTableData[revenueDeductionRowKey][
+            `month${index + 1}`
+          ] = formatNumber(parseFloat(value)?.toFixed(0));
+        });
+        calculatedChannelRevenue.cogsByChannelAndProduct[
+          channelProductKey
+        ].forEach((value, index) => {
+          transformedRevenueTableData[cogsRowKey][`month${index + 1}`] =
+            formatNumber(parseFloat(value)?.toFixed(0));
+        });
+        calculatedChannelRevenue.netRevenueByChannelAndProduct[
+          channelProductKey
+        ].forEach((value, index) => {
+          transformedRevenueTableData[netRevenueRowKey][`month${index + 1}`] =
+            formatNumber(parseFloat(value)?.toFixed(0));
+        });
+        calculatedChannelRevenue.grossProfitByChannelAndProduct[
+          channelProductKey
+        ].forEach((value, index) => {
+          transformedRevenueTableData[grossProfitRowKey][`month${index + 1}`] =
+            formatNumber(parseFloat(value)?.toFixed(0));
+        });
+
+        allTransformedData.push(Object.values(transformedRevenueTableData));
+      }
+    }
+  );
+
+  return allTransformedData.flat();
 };
 
 export default saleSlice.reducer;

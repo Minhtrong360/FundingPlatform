@@ -651,11 +651,16 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   };
 
   return (
-    <div className="border-t-2">
+    <div className="w-full h-full flex flex-col lg:flex-row">
+  <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
+  <h2 className="text-2xl font-semibold my-4">Analysis</h2>
+  </div>
+  <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
+  <div className="">
       <h2 className="text-2xl font-semibold my-4">Profit and Loss Statement</h2>
       {/* <pre>{JSON.stringify(tableData, null, 2)}</pre> */}
       <Table
-        className="overflow-auto my-8"
+        className="overflow-auto my-8 rounded-md shadow-xl"
         size="small"
         bordered
         dataSource={transposedData}
@@ -848,7 +853,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
         <div key={index}>
           <h3>{year.year}</h3>
           <Table
-            className="overflow-auto my-8"
+            className="overflow-auto my-8 rounded-md shadow-xl"
             size="small"
             dataSource={getDataSourceForYear(year.months)}
             columns={generateTableColumns(year)}
@@ -917,7 +922,11 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           </div> */}
         </div>
       ))}
-    </div>
+  </div>
+  </div>
+</div>
+
+   
   );
 };
 

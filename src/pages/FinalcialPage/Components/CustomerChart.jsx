@@ -44,7 +44,7 @@ const CustomChart = ({
   };
   return (
     <Col span={24} md={24} className="my-5">
-      <Card title={title}>
+      <Card title={title} className="shadow-xl border p-2 rounded-md">
         <Chart
           options={{
             ...chartOptions,

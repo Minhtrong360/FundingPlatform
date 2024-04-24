@@ -32,13 +32,11 @@ const InvestmentSection = ({
 
   const [tempInvestmentData, setTempInvestmentData] = useState(investmentData);
 
-  const [renderInvestmentForm, setRenderInvestmentForm] = useState(
-    investmentInputs[0]?.id
-  );
+  const [renderInvestmentForm, setRenderInvestmentForm] = useState("all");
 
   useEffect(() => {
     setTempInvestmentInputs(investmentInputs);
-    setRenderInvestmentForm(investmentInputs[0]?.id);
+    setRenderInvestmentForm("all");
   }, [investmentInputs]);
 
   const addNewInvestmentInput = () => {
@@ -143,7 +141,7 @@ const InvestmentSection = ({
       fixed: "left",
       title: <div>Type</div>,
       dataIndex: "type",
-      key: "type",
+      key: "key",
     },
     ...Array.from({ length: numberOfMonths }, (_, i) => {
       const monthIndex = (startingMonth + i - 1) % 12;
@@ -277,7 +275,7 @@ const InvestmentSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:border-r-2 border-r-0 lg:border-b-0 border-b-2">
+      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
         <section aria-labelledby="investment-heading" className="mb-8">
           <h2
             className="text-2xl font-semibold mb-8 flex items-center"
@@ -297,6 +295,7 @@ const InvestmentSection = ({
               value={renderInvestmentForm}
               onChange={handleSelectChange}
             >
+              <option value="all">All</option>
               {tempInvestmentInputs.map((input) => (
                 <option key={input?.id} value={input?.id}>
                   {input.purchaseName}
@@ -310,7 +309,7 @@ const InvestmentSection = ({
             .map((input) => (
               <div
                 key={input?.id}
-                className="bg-white rounded-md shadow p-6 border my-4"
+                className="bg-white rounded-md shadow-xl p-6 border my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
@@ -436,7 +435,7 @@ const InvestmentSection = ({
       <div className="w-full lg:w-3/4 sm:p-4 p-0">
         <h3 className="text-2xl font-semibold mb-4">Investment Table</h3>
         <Table
-          className="overflow-auto my-8"
+          className="overflow-auto my-8 rounded-md shadow-xl"
           size="small"
           dataSource={transformInvestmentDataForTable(
             tempInvestmentInputs,
@@ -447,9 +446,13 @@ const InvestmentSection = ({
           columns={investmentColumns}
           pagination={false}
           bordered
+          rowClassName={(record) =>
+            record.key === record.type ? "font-bold" : ""
+          }
         />
         <h3 className="text-2xl font-semibold my-8">Investment Chart</h3>
         <Chart
+        className="rounded-md shadow-xl border p-2 "
           options={investmentChart.options}
           series={investmentChart.series}
           type="bar"

@@ -20,6 +20,8 @@ import {
   setYearlySales,
   calculateChannelRevenue,
   calculateYearlySales,
+  transformRevenueDataForTable,
+  setRevenueTableData,
 } from "../../../features/SaleSlice";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { supabase } from "../../../supabase";
@@ -45,6 +47,7 @@ const SalesSection = ({
     cogsData,
     netRevenueData,
     grossProfitData,
+    revenueTableData,
   } = useSelector((state) => state.sales);
   const { customerInputs, customerGrowthData } = useSelector(
     (state) => state.customer
@@ -61,14 +64,12 @@ const SalesSection = ({
 
   useEffect(() => {
     setTempChannelInputs(channelInputs);
-    setRenderChannelForm(channelInputs[0]?.id);
+    setRenderChannelForm("all");
   }, [channelInputs]);
 
   //RevenueFunctions
 
-  const [renderChannelForm, setRenderChannelForm] = useState(
-    channelInputs[0]?.id
-  );
+  const [renderChannelForm, setRenderChannelForm] = useState("all");
   const addNewChannelInput = () => {
     const maxId = Math.max(...tempChannelInputs.map((input) => input?.id));
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
@@ -130,7 +131,22 @@ const SalesSection = ({
     dispatch(setGrossProfitData(grossProfitByChannelAndProduct));
     const sales = calculateYearlySales(tempRevenueData);
     dispatch(setYearlySales(sales));
-  }, [customerGrowthData, channelInputs, numberOfMonths]);
+    const calculatedChannelRevenue = dispatch(
+      calculateChannelRevenue(
+        numberOfMonths,
+        customerGrowthData,
+        customerInputs,
+        channelInputs
+      )
+    );
+    const calculateRevenueTableData = transformRevenueDataForTable(
+      calculatedChannelRevenue,
+      channelInputs,
+      renderChannelForm
+    );
+
+    dispatch(setRevenueTableData(calculateRevenueTableData));
+  }, [customerGrowthData, channelInputs, numberOfMonths, renderChannelForm]);
 
   useEffect(() => {
     const {
@@ -152,13 +168,6 @@ const SalesSection = ({
     setTempCogsData(cogsByChannelAndProduct);
     setTempNetRevenueData(netRevenueByChannelAndProduct);
     setTempGrossProfitData(grossProfitByChannelAndProduct);
-  }, [customerGrowthData, tempChannelInputs, numberOfMonths]);
-
-  //RevenueTable
-
-  const transformRevenueDataForTable = () => {
-    const transformedRevenueTableData = {};
-
     const calculatedChannelRevenue = dispatch(
       calculateChannelRevenue(
         numberOfMonths,
@@ -167,89 +176,21 @@ const SalesSection = ({
         tempChannelInputs
       )
     );
-
-    Object.keys(calculatedChannelRevenue.revenueByChannelAndProduct).forEach(
-      (channelProductKey) => {
-        const [selectedChannel, selectedProduct] =
-          channelProductKey.split(" - ");
-        if (
-          selectedChannel ==
-            tempChannelInputs.find((input) => input.id == renderChannelForm)
-              ?.selectedChannel &&
-          selectedProduct ==
-            tempChannelInputs.find((input) => input.id == renderChannelForm)
-              ?.productName
-        ) {
-          const revenueRowKey = `Revenue`;
-          const revenueDeductionRowKey = `Deductions`;
-          const cogsRowKey = `COGS`;
-          const netRevenueRowKey = `Net Revenue`;
-          const grossProfitRowKey = `Gross Profit`;
-
-          transformedRevenueTableData[revenueRowKey] = {
-            key: revenueRowKey,
-            channelName: revenueRowKey,
-          };
-          transformedRevenueTableData[revenueDeductionRowKey] = {
-            key: revenueDeductionRowKey,
-            channelName: revenueDeductionRowKey,
-          };
-
-          transformedRevenueTableData[netRevenueRowKey] = {
-            key: netRevenueRowKey,
-            channelName: netRevenueRowKey,
-          };
-
-          transformedRevenueTableData[cogsRowKey] = {
-            key: cogsRowKey,
-            channelName: cogsRowKey,
-          };
-
-          transformedRevenueTableData[grossProfitRowKey] = {
-            key: grossProfitRowKey,
-            channelName: grossProfitRowKey,
-          };
-
-          calculatedChannelRevenue.revenueByChannelAndProduct[
-            channelProductKey
-          ].forEach((value, index) => {
-            transformedRevenueTableData[revenueRowKey][`month${index + 1}`] =
-              formatNumber(parseFloat(value)?.toFixed(0));
-          });
-          calculatedChannelRevenue.DeductionByChannelAndProduct[
-            channelProductKey
-          ].forEach((value, index) => {
-            transformedRevenueTableData[revenueDeductionRowKey][
-              `month${index + 1}`
-            ] = formatNumber(parseFloat(value)?.toFixed(0));
-          });
-          calculatedChannelRevenue.cogsByChannelAndProduct[
-            channelProductKey
-          ].forEach((value, index) => {
-            transformedRevenueTableData[cogsRowKey][`month${index + 1}`] =
-              formatNumber(parseFloat(value)?.toFixed(0));
-          });
-          calculatedChannelRevenue.netRevenueByChannelAndProduct[
-            channelProductKey
-          ].forEach((value, index) => {
-            transformedRevenueTableData[netRevenueRowKey][`month${index + 1}`] =
-              formatNumber(parseFloat(value)?.toFixed(0));
-          });
-          calculatedChannelRevenue.grossProfitByChannelAndProduct[
-            channelProductKey
-          ].forEach((value, index) => {
-            transformedRevenueTableData[grossProfitRowKey][
-              `month${index + 1}`
-            ] = formatNumber(parseFloat(value)?.toFixed(0));
-          });
-        }
-      }
+    const calculateRevenueTableData = transformRevenueDataForTable(
+      calculatedChannelRevenue,
+      tempChannelInputs,
+      renderChannelForm
     );
 
-    return Object.values(transformedRevenueTableData);
-  };
+    dispatch(setRevenueTableData(calculateRevenueTableData));
+  }, [
+    customerGrowthData,
+    tempChannelInputs,
+    numberOfMonths,
+    renderChannelForm,
+  ]);
 
-  const revenueTableData = transformRevenueDataForTable();
+  //RevenueTable
 
   const handleActualChange = (value, record, field) => {};
 
@@ -339,10 +280,27 @@ const SalesSection = ({
 
           dispatch(setYearlySales(sales));
 
+          const calculatedChannelRevenue = dispatch(
+            calculateChannelRevenue(
+              numberOfMonths,
+              customerGrowthData,
+              customerInputs,
+              tempChannelInputs
+            )
+          );
+
+          const calculateRevenueTableData = transformRevenueDataForTable(
+            calculatedChannelRevenue,
+            tempChannelInputs,
+            renderChannelForm
+          );
+          dispatch(setRevenueTableData(calculateRevenueTableData));
+
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
             .select("*")
             .eq("id", id);
+
           if (selectError) {
             throw selectError;
           }
@@ -382,7 +340,7 @@ const SalesSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:border-r-2 border-r-0 lg:border-b-0 border-b-2">
+      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
         <section aria-labelledby="sales-heading" className="mb-8">
           <h2
             className="text-2xl font-semibold mb-8 flex items-center"
@@ -402,6 +360,7 @@ const SalesSection = ({
               value={renderChannelForm}
               onChange={handleChannelChange}
             >
+              <option value="all">All</option>
               {tempChannelInputs.map((input) => (
                 <option key={input?.id} value={input?.id}>
                   {`${input.productName} - ${input.selectedChannel}`}
@@ -415,7 +374,7 @@ const SalesSection = ({
             .map((input, index) => (
               <div
                 key={input.id}
-                className="bg-white rounded-md shadow p-6 border my-4"
+                className="bg-white rounded-md shadow-xl p-6 border my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">
@@ -609,15 +568,19 @@ const SalesSection = ({
       <div className="w-full lg:w-3/4 sm:p-4 p-0">
         <h3 className="text-2xl font-semibold mb-4">Revenue by Product</h3>
         <Table
-          className="overflow-auto my-8"
+          className="overflow-auto my-8 rounded-md shadow-xl"
           size="small"
           dataSource={revenueTableData}
           columns={revenueColumns}
           pagination={false}
           bordered
+          rowClassName={(record) =>
+            record.key === record.channelName ? "font-bold" : ""
+          }
         />
         <h3 className="text-2xl font-semibold my-8">Revenue Chart</h3>
         <Chart
+        className="shadow-xl border p-2 rounded-md"
           options={revenue.options}
           series={revenue.series}
           type="bar"

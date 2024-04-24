@@ -26,7 +26,7 @@ const LoanSection = ({
   const dispatch = useDispatch();
   const { loanInputs } = useSelector((state) => state.loan);
   const [tempLoanInputs, setTempLoanInputs] = useState(loanInputs);
-  const [renderLoanForm, setRenderLoanForm] = useState(loanInputs[0]?.id);
+  const [renderLoanForm, setRenderLoanForm] = useState("all");
 
   const [loanChart, setLoanChart] = useState({
     options: {
@@ -69,7 +69,7 @@ const LoanSection = ({
 
   useEffect(() => {
     setTempLoanInputs(loanInputs);
-    setRenderLoanForm(loanInputs[0]?.id);
+    setRenderLoanForm("all");
   }, [loanInputs]);
 
   const addNewLoanInput = () => {
@@ -245,7 +245,7 @@ const LoanSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:border-r-2 border-r-0 lg:border-b-0 border-b-2">
+      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
         <section aria-labelledby="loan-heading" className="mb-8">
           <h2
             className="text-2xl font-semibold mb-8 flex items-center"
@@ -265,6 +265,7 @@ const LoanSection = ({
               value={renderLoanForm}
               onChange={handleSelectChange}
             >
+              <option value="all">All</option>
               {tempLoanInputs.map((input) => (
                 <option key={input?.id} value={input?.id}>
                   {input.loanName}
@@ -278,7 +279,7 @@ const LoanSection = ({
             .map((input) => (
               <div
                 key={input?.id}
-                className="bg-white rounded-md shadow p-6 border my-4"
+                className="bg-white rounded-md shadow-xl p-6 border my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">Loan Name:</span>
@@ -399,7 +400,7 @@ const LoanSection = ({
       <div className="w-full lg:w-3/4 sm:p-4 p-0">
         <h3 className="text-2xl font-semibold mb-4">Loan Data</h3>
         <Table
-          className="overflow-auto my-8"
+          className="overflow-auto my-8 rounded-md shadow-xl"
           size="small"
           dataSource={transformLoanDataForTable(
             tempLoanInputs,
@@ -409,9 +410,13 @@ const LoanSection = ({
           columns={loanColumns}
           pagination={false}
           bordered
+          rowClassName={(record) =>
+            record.key === record.type ? "font-bold" : ""
+          }
         />
         <h3 className="text-2xl font-semibold my-8">Loan Data</h3>
         <Chart
+        className="p-2 rounded-md shadow-xl border"
           options={loanChart.options}
           series={loanChart.series}
           type="bar"

@@ -683,11 +683,16 @@ function CashFlowSection({ numberOfMonths }) {
   };
 
   return (
-    <div className="border-t-2">
+    <div className="w-full h-full flex flex-col lg:flex-row">
+  <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
+    <h2 className="text-2xl font-semibold my-4">Analysis</h2>
+  </div>
+  <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
+  <div className="">
       <h2 className="text-2xl font-semibold my-4">Cash Flow</h2>
 
       <Table
-        className="overflow-x-auto my-8"
+        className="overflow-x-auto my-8 rounded-md shadow-xl"
         size="small"
         dataSource={positionDataWithNetIncome}
         columns={positionColumns}
@@ -795,7 +800,7 @@ function CashFlowSection({ numberOfMonths }) {
         <div key={index}>
           <h3>{year.year}</h3>
           <Table
-            className="overflow-auto my-8"
+            className="overflow-auto my-8 rounded-md shadow-xl"
             size="small"
             dataSource={getDataSourceForYearCashFlow(year.months)}
             columns={generateCashFlowTableColumns(year)}
@@ -926,6 +931,10 @@ function CashFlowSection({ numberOfMonths }) {
         </div>
       ))}
     </div>
+  </div>
+</div>
+
+   
   );
 }
 

@@ -51,6 +51,7 @@ function NewUserPage() {
     amountRaised: "",
     operationTime: "",
     round: "",
+    code: "",
   });
   const handleIndustryChange = (selectedItems) => {
     setUserData({
@@ -119,6 +120,7 @@ function NewUserPage() {
             amountRaised: data.amountRaised || "",
             operationTime: data.operationTime || "2024",
             round: data.round || "Pre-seed",
+            code: data.code || "",
           });
         }
       } catch (error) {
@@ -282,6 +284,7 @@ function NewUserPage() {
           amountRaised: userData.amountRaised,
           operationTime: userData.operationTime,
           round: userData.round,
+          code: userData.code,
         })
         .eq("id", user.id);
 
@@ -543,7 +546,8 @@ function NewUserPage() {
                   {userData.roll === "Investor" && (
                     <>
                       <div className="text-xs italic text-blue-600">
-                        * For better startups matching, please fill in the following information.
+                        * For better startups matching, please fill in the
+                        following information.
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div className="flex flex-col">
@@ -703,37 +707,19 @@ function NewUserPage() {
                     </>
                   )}
 
-                  {/* {userData.type === "Institutional" &&
-                    userData.roll === "Investor" && (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div className="flex flex-col">
-                          <div className="mt-4">
-                            <InputField
-                              label="Institutional name"
-                              id="institutionalName"
-                              name="institutionalName"
-                              value={userData.institutionalName}
-                              onChange={handleInputChange}
-                              type="text"
-                              required
-                            />
-                          </div>
-                        </div>
-                        <div className="flex flex-col">
-                          <div className="mt-4">
-                            <InputField
-                              label="Institutional Website"
-                              id="institutionalWebsite"
-                              name="institutionalWebsite"
-                              value={userData.institutionalWebsite}
-                              onChange={handleInputChange}
-                              type="text"
-                              required
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    )} */}
+                  <div className="text-xs italic text-blue-600">
+                    * SPECIAL CODE
+                  </div>
+                  <div className="mt-4">
+                    <InputField
+                      label="FundFlow Premium code"
+                      id="code"
+                      name="code"
+                      value={formatNumber(userData.code)}
+                      onChange={handleInputChange}
+                      type="text"
+                    />
+                  </div>
                   <div>
                     <label
                       htmlFor="hs-about-hire-us-2"
@@ -750,40 +736,6 @@ function NewUserPage() {
                       onChange={handleInputChange}
                     ></textarea>
                   </div>
-
-                  {/* <div className="mt-4">
-                    <h3 className="text-sm mt-4">Social Profile</h3>
-                    <div className="flex items-center mt-2">
-                      <FacebookIcon />
-                      <input
-                        id="facebook"
-                        name="facebook"
-                        value={userData.facebook}
-                        onChange={handleInputChange}
-                        className="ml-4 py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                      />
-                    </div>
-                    <div className="flex items-center mt-4">
-                      <TwitterIcon />
-                      <input
-                        id="twitter"
-                        name="twitter"
-                        value={userData.twitter}
-                        onChange={handleInputChange}
-                        className="ml-4 py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                      />
-                    </div>
-                    <div className="flex items-center mt-4">
-                      <LinkedinIcon />
-                      <input
-                        id="linkedin"
-                        name="linkedin"
-                        value={userData.linkedin}
-                        onChange={handleInputChange}
-                        className="ml-4 py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                      />
-                    </div>
-                  </div> */}
 
                   <div className="grid grid-cols-1 gap-4 lg:gap-6 mt-6 ">
                     <button

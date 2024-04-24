@@ -51,15 +51,13 @@ const CustomerSection = ({
 
   useEffect(() => {
     setTempCustomerInputs(customerInputs);
-    setRenderCustomerForm(customerInputs[0]?.id);
+    setRenderCustomerForm("all");
   }, [customerInputs]);
 
   const [tempCustomerGrowthData, setTempCustomerGrowthData] =
     useState(customerGrowthData);
 
-  const [renderCustomerForm, setRenderCustomerForm] = useState(
-    tempCustomerInputs[0]?.id
-  );
+  const [renderCustomerForm, setRenderCustomerForm] = useState("all");
 
   const handleAddNewCustomer = () => {
     const maxId = Math.max(...tempCustomerInputs.map((input) => input?.id));
@@ -125,139 +123,11 @@ const CustomerSection = ({
       numberOfMonths,
       renderCustomerForm
     );
+
     dispatch(setCustomerTableData(calculateCustomerTableData));
+
+    setTempCustomerGrowthData(calculatedData);
   }, [tempCustomerInputs, numberOfMonths, renderCustomerForm]);
-
-  // const transformedCustomerTableData = {};
-
-  // tempCustomerGrowthData.forEach((channelData) => {
-  //   channelData.forEach((data) => {
-  //     const customerInput = tempCustomerInputs.find(
-  //       (input) => input.channelName === data.channelName
-  //     );
-  //     if (customerInput) {
-  //       if (!transformedCustomerTableData[data.channelName]) {
-  //         transformedCustomerTableData[data.channelName] = {
-  //           key: data.channelName,
-  //           channelName: data.channelName,
-  //         };
-  //       }
-  //       if (
-  //         data.month >= customerInput.beginMonth &&
-  //         data.month <= customerInput.endMonth
-  //       ) {
-  //         transformedCustomerTableData[data.channelName][`month${data.month}`] =
-  //           parseFloat(data.customers)?.toFixed(0);
-  //       } else {
-  //         transformedCustomerTableData[data.channelName][`month${data.month}`] =
-  //           "0";
-  //       }
-  //     }
-  //   });
-  // });
-
-  // const customerTableData = Object.values(transformedCustomerTableData)
-  //   .filter((data) =>
-  //     renderCustomerForm === "all"
-  //       ? true
-  //       : tempCustomerInputs.find(
-  //           (input) =>
-  //             input.id == renderCustomerForm &&
-  //             input.channelName === data.channelName
-  //         )
-  //   )
-  //   .map((curr) => {
-  //     const customerInput = tempCustomerInputs.find(
-  //       (input) => input.channelName === curr.channelName
-  //     );
-
-  //     const startRow = {
-  //       key: `${curr.channelName}-start`,
-  //       channelName: `${curr.channelName} (Existing)`,
-  //     };
-  //     const beginRow = {
-  //       key: `${curr.channelName}-begin`,
-  //       channelName: `${curr.channelName} (Begin)`,
-  //     };
-  //     const churnRow = {
-  //       key: `${curr.channelName}-churn`,
-  //       channelName: `${curr.channelName} (Churn)`,
-  //     };
-  //     const endRow = {
-  //       ...curr,
-  //       key: `${curr.channelName}-end`,
-  //       channelName: `${curr.channelName} (End)`,
-  //     };
-  //     const channelAddRow = {
-  //       key: `${curr.channelName}-add`,
-  //       channelName: `${curr.channelName} (Add)`,
-  //     };
-
-  //     let currentCustomers = parseFloat(customerInput.customersPerMonth);
-  //     for (let i = 1; i <= numberOfMonths; i++) {
-  //       if (i >= customerInput.beginMonth && i <= customerInput.endMonth) {
-  //         if (customerInput.customerGrowthFrequency === "Monthly") {
-  //           currentCustomers *=
-  //             1 + parseFloat(customerInput.growthPerMonth) / 100;
-  //         } else {
-  //           let frequency = 12; // Default to Annually
-  //           if (customerInput.customerGrowthFrequency === "Quarterly")
-  //             frequency = 3;
-  //           else if (customerInput.customerGrowthFrequency === "Semi-Annually")
-  //             frequency = 6;
-
-  //           if (
-  //             i === customerInput.beginMonth ||
-  //             (i > customerInput.beginMonth &&
-  //               (i - customerInput.beginMonth) % frequency === 0)
-  //           ) {
-  //             if (i !== customerInput.beginMonth) {
-  //               currentCustomers *=
-  //                 1 + parseFloat(customerInput.growthPerMonth) / 100;
-  //             }
-  //           }
-  //         }
-  //         channelAddRow[`month${i}`] = formatNumber(
-  //           currentCustomers.toFixed(0)
-  //         );
-  //       } else {
-  //         channelAddRow[`month${i}`] = "0";
-  //       }
-  //       startRow[`month${i}`] = "0";
-  //       beginRow[`month${i}`] = "0";
-  //       churnRow[`month${i}`] = "0";
-  //     }
-
-  //     if (customerInput) {
-  //       startRow[`month${customerInput.beginMonth}`] = formatNumber(
-  //         parseFloat(customerInput.beginCustomer).toFixed(0)
-  //       );
-  //       beginRow[`month${customerInput.beginMonth}`] =
-  //         startRow[`month${customerInput.beginMonth}`];
-
-  //       for (let i = customerInput.beginMonth; i <= numberOfMonths; i++) {
-  //         if (i > customerInput.beginMonth) {
-  //           beginRow[`month${i}`] = formatNumber(endRow[`month${i - 1}`]); // Set Begin row of month i to End row of month i-1
-  //         }
-  //         endRow[`month${i}`] = formatNumber(endRow[`month${i}`]);
-  //         const beginValue = beginRow[`month${i}`] || 0; // Begin value for the current month
-  //         const addValue = parseNumber(channelAddRow[`month${i}`]) || 0; // Add value for the current month
-  //         const churnValue = (
-  //           parseNumber(beginValue) *
-  //           (customerInput.churnRate / 100)
-  //         ).toFixed(0); // Calculate churn value
-  //         churnRow[`month${i}`] = churnValue; // Assign churn value to Churn row of the current month
-  //         endRow[`month${i}`] = formatNumber(
-  //           parseNumber(beginValue) +
-  //             parseNumber(addValue) -
-  //             parseNumber(churnValue)
-  //         ); // Update End row to Begin + Add - Churn
-  //       }
-  //     }
-
-  //     return [startRow, beginRow, channelAddRow, churnRow, endRow];
-  //   })
-  //   .flat(); // Flatten the array of arrays to a single array
 
   const months = [
     "01",
@@ -280,7 +150,7 @@ const CustomerSection = ({
   const customerColumns = [
     {
       fixed: "left",
-      title: <div>Channel_Name</div>,
+      title: <div>Channel Name</div>,
       dataIndex: "channelName",
       key: "channelName",
       width: 500,
@@ -327,7 +197,6 @@ const CustomerSection = ({
   };
   const channelInputs = useSelector((state) => state.sales.channelInputs);
 
-  const { user } = useAuth();
   const { id } = useParams();
   useEffect(() => {
     const saveData = async () => {
@@ -401,7 +270,7 @@ const CustomerSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:border-r-2 border-r-0 lg:border-b-0 border-b-2">
+      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
         <section aria-labelledby="customers-heading" className="mb-8">
           <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Examples:  Online, Offline, Social Media, Email Marketing, Referrals, Direct Sales, Subscription...">
             <h2
@@ -436,7 +305,7 @@ const CustomerSection = ({
             .map((input) => (
               <div
                 key={input?.id}
-                className="bg-white rounded-md shadow p-6 border my-4"
+                className="bg-white rounded-md shadow-xl p-6 border my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">
@@ -631,16 +500,20 @@ const CustomerSection = ({
         <div className="mb-8">
           <h3 className="text-2xl font-semibold">Customer Table</h3>
           <Table
-            className="overflow-auto  my-8 "
+            className="overflow-auto  my-8  shadow-xl rounded-md"
             size="small"
             dataSource={customerTableData}
             columns={customerColumns}
             pagination={false}
             bordered
+            rowClassName={(record) =>
+              record.key === record.channelName ? "font-bold" : ""
+            }
           />
         </div>
         <h3 className="text-2xl font-semibold my-8">Customer Chart</h3>
         <Chart
+        className="shadow-xl border rounded-md p-2"
           options={customerGrowthChart.options}
           series={customerGrowthChart.series}
           type="bar"
@@ -652,3 +525,12 @@ const CustomerSection = ({
 };
 
 export default CustomerSection;
+
+<div className="w-full h-full flex flex-col lg:flex-row">
+  <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
+
+  </div>
+  <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
+
+  </div>
+</div>

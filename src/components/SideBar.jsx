@@ -7,7 +7,11 @@ import {
   ProfileOutlined,
   ShopOutlined,
   UserOutlined,
+  UserSwitchOutlined,
 } from "@ant-design/icons";
+import { useAuth } from "../context/AuthContext";
+import { message } from "antd";
+import { supabase } from "../supabase";
 
 function SideBar({ toggleSidebar, isSidebarOpen }) {
   const navigate = useNavigate();
@@ -22,6 +26,55 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
   const handleItemClick = (route) => {
     navigate(route);
   };
+
+  const { user } = useAuth();
+  const [userData, setUserData] = useState({
+    full_name: "",
+    email: "",
+    plan: "",
+    subscribe: "",
+    company: "",
+    company_website: "",
+    detail: "",
+    roll: "Founder",
+    avatar: null,
+    notification_count: 0,
+  });
+
+  useEffect(() => {
+    // Tạo một async function để lấy thông tin người dùng từ Supabase
+    async function fetchUserData() {
+      try {
+        if (!navigator.onLine) {
+          // Không có kết nối Internet
+          message.error("No internet access.");
+          return;
+        }
+
+        // Thực hiện truy vấn để lấy thông tin người dùng theo id (điều này cần được thay đổi dựa trên cấu trúc dữ liệu của bạn trong Supabase)
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("id", user.id) // Thay "id" bằng trường id thực tế trong cơ sở dữ liệu của bạn
+          .single(); // Sử dụng .single() để lấy một bản ghi duy nhất
+
+        if (error) {
+          throw error;
+        }
+
+        // Cập nhật state userData với thông tin người dùng đã lấy được
+        if (data) {
+          setUserData(data);
+        }
+      } catch (error) {
+        message.error(error.message);
+        console.error("Error fetching user data:", error);
+      }
+    }
+
+    // Gọi hàm fetchUserData khi component được mount
+    fetchUserData();
+  }, [user.id]); // Sử dụng user.id làm phần tử phụ thuộc để useEffect được gọi lại khi user.id thay đổi
 
   return (
     <div>
@@ -90,6 +143,16 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             <HomeOutlined />
             <span className="sidebar-text">Home</span>
           </button>
+          {userData.admin && (
+            <button
+              style={{ minWidth: "100%" }}
+              className="mt-2  w-full p-2 group flex items-center rounded-md text-sm  sidebar-button hover:bg-gray-300"
+              onClick={() => navigate("/admin")}
+            >
+              <UserSwitchOutlined />
+              <span className="sidebar-text">Admin Dashboard</span>
+            </button>
+          )}
           <button
             className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm ${
               selectedItem?.includes("/user-info")

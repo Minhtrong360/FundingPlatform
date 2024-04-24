@@ -7,6 +7,7 @@ import {
   setPersonnelInputs,
   setPersonnelCostData,
   calculatePersonnelCostData,
+  transformPersonnelCostDataForTable,
 } from "../../../features/PersonnelSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "../../../context/AuthContext";
@@ -88,19 +89,6 @@ const PersonnelSection = ({
     setTempPersonnelInputs(newInputs);
   };
 
-  const transformPersonnelCostDataForTable = () => {
-    const transformedCustomerTableData = tempPersonnelCostData.map((item) => {
-      const rowData = { key: item.jobTitle, jobTitle: item.jobTitle };
-      item.monthlyCosts.forEach((monthData) => {
-        rowData[`month${monthData.month}`] = formatNumber(
-          monthData.cost?.toFixed(0)
-        ); // Adjust formatting as needed
-      });
-      return rowData;
-    });
-    return transformedCustomerTableData;
-  };
-
   //PersonnelUseEffect
   useEffect(() => {
     const calculatedData = calculatePersonnelCostData(
@@ -120,7 +108,9 @@ const PersonnelSection = ({
 
   //PersonnelCostTableData
 
-  const personnelCostTableData = transformPersonnelCostDataForTable();
+  const personnelCostTableData = transformPersonnelCostDataForTable(
+    tempPersonnelCostData
+  );
 
   //PersonnelColumns
   const months = [
@@ -272,7 +262,7 @@ const PersonnelSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:border-r-2 border-r-0 lg:border-b-0 border-b-2">
+      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
         <section aria-labelledby="personnel-heading" className="mb-8">
           <h2
             className="text-2xl font-semibold mb-8 flex items-center"
@@ -305,7 +295,7 @@ const PersonnelSection = ({
             .map((input) => (
               <div
                 key={input?.id}
-                className="bg-white rounded-md shadow p-6 border my-4"
+                className="bg-white rounded-md shadow-xl p-6 border my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">Job Title</span>
@@ -469,7 +459,7 @@ const PersonnelSection = ({
       <div className="w-full lg:w-3/4 sm:p-4 p-0">
         <h3 className="text-2xl font-semibold mb-4">Personnel Cost Table</h3>
         <Table
-          className="overflow-auto my-8"
+          className="overflow-auto my-8 rounded-md shadow-xl"
           size="small"
           dataSource={personnelCostTableData}
           columns={personnelCostColumns}
@@ -478,6 +468,7 @@ const PersonnelSection = ({
         />
         <h3 className="text-2xl font-semibold my-8">Personnel Cost Chart</h3>
         <Chart
+        className="rounded-md shadow-xl border p-2"
           options={personnelChart.options}
           series={personnelChart.series}
           type="bar"

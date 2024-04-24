@@ -827,11 +827,16 @@ function BalanceSheetSection({ numberOfMonths }) {
   };
   // console.log("balance sheet", positionDataWithNetIncome2);
   return (
-    <div className="border-t-2">
+    <div className="w-full h-full flex flex-col lg:flex-row">
+  <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
+  <h2 className="text-2xl font-semibold my-4">Analysis</h2>
+  </div>
+  <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
+  <div className="">
       <h2 className="text-2xl font-semibold my-4">Balance Sheet</h2>
 
       <Table
-        className="overflow-auto my-8"
+        className="overflow-auto my-8 rounded-md shadow-xl"
         size="small"
         dataSource={positionDataWithNetIncome2}
         columns={positionColumns1}
@@ -937,7 +942,7 @@ function BalanceSheetSection({ numberOfMonths }) {
         <div key={index}>
           <h3>{year.year}</h3>
           <Table
-            className="overflow-auto my-8"
+            className="overflow-auto my-8 rounded-md shadow-xl"
             size="small"
             dataSource={getDataSourceForYearBalanceSheet(year.months)}
             columns={generateBalanceSheetTableColumns(year)}
@@ -986,6 +991,10 @@ function BalanceSheetSection({ numberOfMonths }) {
         </div>
       ))}
     </div>
+  </div>
+</div>
+
+    
   );
 }
 

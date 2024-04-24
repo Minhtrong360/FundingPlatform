@@ -44,10 +44,10 @@ export default function InputField({
             </div>
             <div>
               <label
-                className="block mb-2 text-sm darkTextWhite italic text-blue-600 hover:cursor-pointer"
+                className="block mb-2 text-xs darkTextWhite italic text-blue-600 hover:cursor-pointer"
                 onClick={() => setIsChangePasswordModalOpen(true)}
               >
-                Change password
+                * Change password
               </label>
             </div>
           </div>

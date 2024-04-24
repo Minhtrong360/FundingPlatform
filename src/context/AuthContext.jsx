@@ -14,24 +14,20 @@ const AuthContext = createContext({});
 
 export const useAuth = () => useContext(AuthContext);
 
-const login = async (email, password, setLoading) => {
+const login = async (email, password) => {
   try {
     if (!navigator.onLine) {
       // Không có kết nối Internet
       message.error("No internet access.");
       return;
     }
-    setLoading(true);
     const { user, session, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    setLoading(false);
-
     return { user, session, error };
   } catch (error) {
-    setLoading(false);
     console.log("Login error:", error.message);
     throw error;
   }
@@ -39,23 +35,19 @@ const login = async (email, password, setLoading) => {
 
 const signOut = () => supabase.auth.signOut();
 
-const loginWithGG = async (setLoading) => {
+const loginWithGG = async () => {
   try {
     if (!navigator.onLine) {
       // Không có kết nối Internet
       message.error("No internet access.");
       return;
     }
-    setLoading(true);
     const { user, session, error } = await supabase.auth.signInWithOAuth({
       provider: ["google"],
     });
 
-    setLoading(false);
-
     return { user, session, error };
   } catch (error) {
-    setLoading(false);
     console.log("Google login error:", error.message);
     throw error;
   }

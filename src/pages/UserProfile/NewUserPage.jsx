@@ -421,7 +421,8 @@ function NewUserPage() {
           message.error(error.message);
         } else {
           message.success("Password updated successfully.");
-
+          setNewPassword("");
+          setConfirmPassword("");
           setIsChangePasswordModalOpen(false);
         }
       } catch (error) {
@@ -906,8 +907,8 @@ function NewUserPage() {
           }}
           okButtonProps={{
             style: {
-              background: "#f5222d",
-              borderColor: "#f5222d",
+              background: "#2563EB",
+              borderColor: "#2563EB",
               color: "#fff",
               borderRadius: "0.375rem",
               cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua

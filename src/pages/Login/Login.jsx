@@ -34,9 +34,9 @@ const Login = () => {
       if (error) {
         message.error(error.message);
       } else {
+        // window.location.reload(); // Tải lại trang sau khi navigate
         const redirectTo = location?.state?.from?.pathname || "/";
         navigate(redirectTo);
-        window.location.reload(); // Tải lại trang sau khi navigate
       }
     } catch (error) {
       console.log("HandleSignIn error:", error.message);

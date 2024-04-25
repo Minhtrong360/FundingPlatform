@@ -30,6 +30,8 @@ export default function NewDetailPage({ location }) {
     sessionStorage.getItem("locationKeyDetailPage")
   );
 
+  console.log("isLoading", isLoading);
+
   useEffect(() => {
     if (locationKey !== location?.key || !company.length) {
       // Check if companies are already loaded
@@ -103,6 +105,8 @@ export default function NewDetailPage({ location }) {
       console.error("Error fetching data:", error);
 
       setIsLoading(false); // Có lỗi xảy ra, ngừng hiển thị loading
+    } finally {
+      setIsLoading(false); // Có lỗi xảy ra, ngừng hiển thị loading
     }
   };
 
@@ -136,6 +140,8 @@ export default function NewDetailPage({ location }) {
 
   return (
     <div className="min-h-screen bg-white">
+      <LoadingButtonClick isLoading={isLoading} />
+
       <button
         className={`w-[100px] fixed bottom-5 lg:left-5 right-5 p-2 rounded-md ${
           fullScreen ? "bg-gray-300" : "bg-blue-600 text-white"

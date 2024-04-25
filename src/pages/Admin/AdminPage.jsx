@@ -30,6 +30,7 @@ import { formatNumber } from "../../features/CostSlice";
 import Chart from "react-apexcharts";
 import industries from "../../components/Industries";
 import SideBar from "../../components/SideBar";
+import LoadingButtonClick from "../../components/LoadingButtonClick";
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
 
@@ -299,46 +300,34 @@ function Dashboard({ dataSource }) {
 
 function AdminPage() {
   const { user } = useAuth();
-  const [userData, setUserData] = useState([]);
   const [dataSource, setDataSource] = useState([]);
   const [dataClientSource, setDataClientSource] = useState([]);
   const [selectedClient, setSelectedClient] = useState();
-
-  useEffect(() => {
-    async function fetchUsers() {
-      // Thực hiện truy vấn để lấy danh sách người dùng với điều kiện trường email
-      const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("email", user.email)
-        .single(); // user.email là giá trị email của người dùng
-
-      if (error) {
-        console.error("Error fetching users:", error.message);
-      } else {
-        setUserData(data);
-      }
-    }
-
-    fetchUsers();
-  }, [user]); // Sử dụng một lần khi component được render
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchClients() {
-      // Thực hiện truy vấn để lấy danh sách người dùng với điều kiện trường email
-      const { data, error } = await supabase.from("users").select("*");
+      setIsLoading(true);
+      try {
+        // Thực hiện truy vấn để lấy danh sách người dùng với điều kiện trường email
+        const { data, error } = await supabase.from("users").select("*");
 
-      if (error) {
-        console.error("Error fetching users:", error.message);
-      } else {
-        // Sắp xếp data theo created_at từ mới nhất đến cũ nhất
-        data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-        setDataClientSource(data);
+        if (error) {
+          console.error("Error fetching users:", error.message);
+        } else {
+          // Sắp xếp data theo created_at từ mới nhất đến cũ nhất
+          data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+          setDataClientSource(data);
+        }
+      } catch (error) {
+        message.error(error);
+      } finally {
+        setIsLoading(false);
       }
     }
 
     fetchClients();
-  }, [selectedClient]); // Sử dụng một lần khi component được render
+  }, []); // Sử dụng một lần khi component được render
 
   useEffect(() => {
     async function fetchProjects() {
@@ -388,6 +377,9 @@ function AdminPage() {
         }
       } catch (error) {
         console.error("Error fetching projects:", error.message);
+        message.error(error);
+      } finally {
+        setIsLoading(false);
       }
     }
 
@@ -2673,23 +2665,31 @@ function AdminPage() {
   useEffect(() => {
     // Tải danh sách finance từ Supabase dựa trên user.id
     const loadFinances = async () => {
-      const { data, error } = await supabase.from("finance").select("*");
+      setIsLoading(true);
+      try {
+        const { data, error } = await supabase.from("finance").select("*");
 
-      if (error) {
-        message.error(error.message);
-        console.error("Lỗi khi tải danh sách finance:", error.message);
-      } else {
-        // Chuyển đổi inputData của mỗi đối tượng từ chuỗi JSON thành đối tượng JavaScript
-        let transformedData = data.map((item) => ({
-          ...item,
-          inputData: JSON.parse(item.inputData),
-        }));
+        if (error) {
+          message.error(error.message);
+          console.error("Lỗi khi tải danh sách finance:", error.message);
+        } else {
+          // Chuyển đổi inputData của mỗi đối tượng từ chuỗi JSON thành đối tượng JavaScript
+          let transformedData = data.map((item) => ({
+            ...item,
+            inputData: JSON.parse(item.inputData),
+          }));
 
-        transformedData.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at)
-        );
+          transformedData.sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
 
-        setDataFinanceSource(transformedData);
+          setDataFinanceSource(transformedData);
+        }
+      } catch (error) {
+        console.error("Error fetching Financial data", error.message);
+        message.error(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -2706,9 +2706,12 @@ function AdminPage() {
     setActiveTab(tabName);
   };
 
+  console.log("isLoading", isLoading);
+
   return (
     <>
       <div className=" bg-white darkBg antialiased !p-0 ">
+        <LoadingButtonClick isLoading={isLoading} />
         <div id="exampleWrapper">
           <SideBar
             isSidebarOpen={isSidebarOpen}

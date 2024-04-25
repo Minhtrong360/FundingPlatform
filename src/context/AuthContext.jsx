@@ -15,20 +15,24 @@ const AuthContext = createContext({});
 
 export const useAuth = () => useContext(AuthContext);
 
-const login = async (email, password) => {
+const login = async (email, password, setLoading) => {
   try {
     if (!navigator.onLine) {
       // Không có kết nối Internet
       message.error("No internet access.");
       return;
     }
+    setLoading(true);
     const { user, session, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
+    setLoading(false);
+
     return { user, session, error };
   } catch (error) {
+    setLoading(false);
     console.log("Login error:", error.message);
     throw error;
   }
@@ -36,19 +40,23 @@ const login = async (email, password) => {
 
 const signOut = () => supabase.auth.signOut();
 
-const loginWithGG = async () => {
+const loginWithGG = async (setLoading) => {
   try {
     if (!navigator.onLine) {
       // Không có kết nối Internet
       message.error("No internet access.");
       return;
     }
+    setLoading(true);
     const { user, session, error } = await supabase.auth.signInWithOAuth({
       provider: ["google"],
     });
 
+    setLoading(false);
+
     return { user, session, error };
   } catch (error) {
+    setLoading(false);
     console.log("Google login error:", error.message);
     throw error;
   }
@@ -79,6 +87,7 @@ export function displayCommonElements(array1, array2) {
 const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(false);
   const [user, setUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
 
   const [subscribed, setSubscribed] = useState(false);
@@ -100,20 +109,7 @@ const AuthProvider = ({ children }) => {
         .eq("id", currentUser?.id);
 
       if (userSupabase) {
-        if (
-          userSupabase[0]?.plan === "Free" ||
-          userSupabase[0]?.plan === null ||
-          userSupabase[0]?.plan === undefined ||
-          userSupabase[0]?.subscription_status === "canceled" ||
-          userSupabase[0]?.subscription_status === "cancelled"
-        )
-          setSubscribed(false);
-        else setSubscribed(true);
-        if (userSupabase[0].admin) {
-          setAdmin(true);
-        } else {
-          setAdmin(false);
-        }
+        setCurrentUser(userSupabase);
       }
 
       setLoading(false);
@@ -126,38 +122,36 @@ const AuthProvider = ({ children }) => {
       } else if (event === "SIGNED_IN") {
         setUser(session.user);
         setAuth(true);
-        let { data: userSupabase } = await supabase
-          .from("users")
-          .select("*")
-          .eq("id", session.user?.id);
-
-        if (userSupabase) {
-          if (
-            userSupabase[0]?.plan === "Free" ||
-            userSupabase[0]?.plan === null ||
-            userSupabase[0]?.plan === undefined ||
-            userSupabase[0]?.subscription_status === "canceled" ||
-            userSupabase[0]?.subscription_status === "cancelled"
-          )
-            setSubscribed(false);
-          else setSubscribed(true);
-          if (userSupabase[0].admin) {
-            setAdmin(true);
-          } else {
-            setAdmin(false);
-          }
-        }
       } else if (event === "SIGNED_OUT") {
         setAuth(false);
         setUser(null);
-        setSubscribed(false);
-        setAdmin(false);
       }
     });
     return () => {
       data.subscription.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      if (
+        currentUser[0]?.plan === "Free" ||
+        currentUser[0]?.plan === null ||
+        currentUser[0]?.plan === undefined ||
+        currentUser[0]?.subscription_status === "canceled" ||
+        currentUser[0]?.subscription_status === "cancelled"
+      ) {
+        setSubscribed(false);
+      } else {
+        setSubscribed(true);
+      }
+      if (currentUser[0]?.admin === true) {
+        setAdmin(true);
+      } else {
+        setAdmin(false);
+      }
+    }
+  }, [currentUser]);
 
   return (
     <AuthContext.Provider
@@ -166,9 +160,9 @@ const AuthProvider = ({ children }) => {
         user,
         subscribed,
         admin,
-        login: (email, password) => login(email, password),
+        login: (email, password) => login(email, password, setLoading),
         signOut,
-        loginWithGG: () => loginWithGG(),
+        loginWithGG: () => loginWithGG(setLoading),
         displayCommonElements,
       }}
     >

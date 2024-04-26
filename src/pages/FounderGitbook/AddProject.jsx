@@ -112,6 +112,10 @@ const Modal = ({
         );
         return;
       }
+      // if (!projectName) {
+      //   setCreatingError("Project name is required")
+      //   return;
+      // }
       // Tạo một dự án mới và lưu vào Supabase
       const { data, error } = await supabase
         .from("projects")
@@ -154,7 +158,7 @@ const Modal = ({
         <h3 className="text-md font-medium leading-6 text-gray-800 capitalize">
           Project Name
         </h3>
-        <form className="mt-2">
+        <form className="mt-2" onSubmit={isEditing ? handleSave : handleCreate}>
           <label className="block mt-2">
             <input
               type="text"
@@ -163,6 +167,7 @@ const Modal = ({
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
               className="block w-full px-4 py-3 text-sm text-gray-800 border-gray-200 rounded-md"
+              required
             />
           </label>
 
@@ -229,8 +234,7 @@ const Modal = ({
               Cancel
             </button>
             <button
-              type="button"
-              onClick={isEditing ? handleSave : handleCreate}
+              type="submit"
               className={`w-20 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
             >
               {isEditing ? "Save" : "Create"}
@@ -251,8 +255,8 @@ export default function AddProject({
   setSelectedProject,
   myProjects,
 }) {
-  const { userData: currentUser } = useAuth();
-
+  const { currentUser: userFromDB } = useAuth();
+  let currentUser = userFromDB[0];
   useEffect(() => {
     if (currentUser && updatedProjects) {
       const hasProjectWithCurrentUser = updatedProjects.some(

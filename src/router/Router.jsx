@@ -183,7 +183,7 @@ function Router() {
             </AuthRequire>
           }
         />
-        <Route
+        {/* <Route
           key={location.key}
           path="/announce"
           element={
@@ -193,7 +193,7 @@ function Router() {
               describe="14-day free trial available."
             />
           }
-        />
+        /> */}
         <Route key={location.key} path="/news" element={<News />} />
         <Route key={location.key} path="/news/:id" element={<DetailBlog />} />
         <Route

@@ -10,8 +10,6 @@ import {
   UserSwitchOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../context/AuthContext";
-import { message } from "antd";
-import { supabase } from "../supabase";
 
 function SideBar({ toggleSidebar, isSidebarOpen }) {
   const navigate = useNavigate();
@@ -27,10 +25,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
     navigate(route);
   };
 
-  const { userData: userDataBD } = useAuth();
-  const [userData, setUserData] = useState(userDataBD);
-
-  // console.log("userData", userData);
+  const { currentUser } = useAuth();
 
   return (
     <div>
@@ -99,10 +94,14 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             <HomeOutlined />
             <span className="sidebar-text">Home</span>
           </button>
-          {userData.admin && (
+          {currentUser[0].admin && (
             <button
               style={{ minWidth: "100%" }}
-              className="mt-2  w-full p-2 group flex items-center rounded-md text-sm  sidebar-button hover:bg-gray-300"
+              className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm ${
+                selectedItem?.includes("/admin")
+                  ? "bg-gray-300 "
+                  : "text-gray-900 darkTextWhite"
+              } sidebar-button hover:bg-gray-300`}
               onClick={() => navigate("/admin")}
             >
               <UserSwitchOutlined />

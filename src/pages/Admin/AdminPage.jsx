@@ -2707,8 +2707,6 @@ function AdminPage() {
     setActiveTab(tabName);
   };
 
-  console.log("isLoading", isLoading);
-
   return (
     <>
       <div className=" bg-white darkBg antialiased !p-0 ">

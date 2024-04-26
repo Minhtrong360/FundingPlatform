@@ -67,8 +67,6 @@ function FinancialList() {
     navigate(`/financials/${finance.id}`);
   };
 
-  console.log("finances", finances);
-
   const columns = [
     {
       title: "No",
@@ -291,7 +289,10 @@ function FinancialList() {
 
   const confirmAddNew = async () => {
     try {
-      console.log("add");
+      if (!name) {
+        message.warning("Project name is required.");
+        return;
+      }
       // Tạo một dự án mới và lưu vào Supabase
       const { data, error } = await supabase
         .from("finance")
@@ -304,7 +305,6 @@ function FinancialList() {
           },
         ])
         .select();
-      console.log("data", data);
       if (error) {
         message.error(error.message);
         console.log("Error creating project:", error);
@@ -314,11 +314,10 @@ function FinancialList() {
 
         setFinances([data[0], ...finances]);
         message.success("Created financial project successfully.");
+        setIsAddNewModalOpen(false);
       }
     } catch (error) {
       message.log(error);
-    } finally {
-      setIsAddNewModalOpen(false);
     }
   };
 

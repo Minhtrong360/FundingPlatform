@@ -34,7 +34,9 @@ const Modal = ({
     }
   }, [selectedProject]);
 
-  const handleSave = async () => {
+  const handleSave = async (e) => {
+    e.preventDefault();
+
     try {
       // Kiểm tra nếu là dự án riêng tư và người dùng không đáp ứng điều kiện
       if (projectStatus === "private" && isPrivateDisabled) {
@@ -102,7 +104,8 @@ const Modal = ({
     }
   }, [currentUser]);
 
-  const handleCreate = async () => {
+  const handleCreate = async (e) => {
+    e.preventDefault();
     try {
       // Check if it's a private project and the user doesn't meet the conditions
       if (projectStatus === "private" && isPrivateDisabled) {
@@ -112,11 +115,7 @@ const Modal = ({
         );
         return;
       }
-      // if (!projectName) {
-      //   setCreatingError("Project name is required")
-      //   return;
-      // }
-      // Tạo một dự án mới và lưu vào Supabase
+
       const { data, error } = await supabase
         .from("projects")
         .insert([
@@ -257,6 +256,7 @@ export default function AddProject({
 }) {
   const { currentUser: userFromDB } = useAuth();
   let currentUser = userFromDB[0];
+
   useEffect(() => {
     if (currentUser && updatedProjects) {
       const hasProjectWithCurrentUser = updatedProjects.some(

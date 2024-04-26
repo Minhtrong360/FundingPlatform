@@ -30,8 +30,6 @@ export default function NewDetailPage({ location }) {
     sessionStorage.getItem("locationKeyDetailPage")
   );
 
-  console.log("isLoading", isLoading);
-
   useEffect(() => {
     if (locationKey !== location?.key || !company.length) {
       // Check if companies are already loaded

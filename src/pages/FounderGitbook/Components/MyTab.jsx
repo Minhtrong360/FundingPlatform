@@ -23,10 +23,29 @@ import { useAuth } from "../../../context/AuthContext";
 import LoadingButtonClick from "../../../components/LoadingButtonClick";
 import FilesList from "../FilesList";
 
+import * as Y from "yjs";
+import YPartyKitProvider from "y-partykit/provider";
+
 const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
   const [activeTab, setActiveTab] = useState("Your Profile");
   const [youtubeLink, setYoutubeLink] = useState("Add wanted youtube url");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { currentUser } = useAuth();
+  let userData = currentUser[0];
+
+  // Tạo một tài liệu Y.js mới
+  const doc = new Y.Doc();
+
+  // Thiết lập nhà cung cấp WebRTC với một ID duy nhất cho tài liệu
+  // const provider = new WebrtcProvider(currentProject.id, doc);
+  const provider = new YPartyKitProvider(
+    "blocknote-dev.yousefed.partykit.dev",
+    // use a unique name as a "room" for your application:
+    currentProject.id,
+    doc
+  );
+
+  // Lấy fragment XML để lưu trữ dữ liệu của Block Note
 
   const YouTubeLinkBlock = createReactBlockSpec(
     {
@@ -143,6 +162,18 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
     }
   }
 
+  // useEffect(() => {
+  //   // Cleanup function to disconnect and destroy Yjs instances
+  //   return () => {
+  //     if (provider) {
+  //       provider.disconnect();
+  //     }
+  //     if (doc) {
+  //       doc.destroy();
+  //     }
+  //   };
+  // }, []);
+
   const editor = useBlockNote({
     blockSpecs: blockSpecs,
     uploadFile: uploadToCustomDatabase,
@@ -150,11 +181,31 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
       ...getDefaultReactSlashMenuItems(blockSchema),
       insertYouTubeLink,
     ],
+
+    collaboration: {
+      // The Yjs Provider responsible for transporting updates:
+      provider,
+      // Where to store BlockNote data in the Y.Doc:
+      fragment: doc.getXmlFragment("document-store"),
+      user: {
+        name: userData.email, // Thay đổi tùy vào người dùng hiện tại
+        color: "#2563EB", // Cung cấp một màu sắc đại diện cho người dùng
+      },
+    },
+
     onEditorContentChange: function (editor) {
       setBlocks(editor.topLevelBlocks);
       // setIsSaved(false); // Đánh dấu là chưa lưu khi có sự thay đổi
     },
   });
+
+  // useEffect(() => {
+  //   return () => {
+  //     provider.disconnect(); // Ngắt kết nối khi component unmount
+  //     ydoc.destroy(); // Hủy tài liệu Y.Doc để giải phóng bộ nhớ
+  //   };
+  // }, []);
+
   const handleInsertYouTubeLink = () => {
     if (youtubeLink.trim() !== "") {
       // Parse the video ID from the YouTube link using a regular expression

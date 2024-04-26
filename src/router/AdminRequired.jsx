@@ -3,7 +3,6 @@ import AnnouncePage from "../components/AnnouncePage";
 
 function AdminRequired({ children, message }) {
   const { admin } = useAuth();
-
   if (!admin) {
     return (
       <AnnouncePage

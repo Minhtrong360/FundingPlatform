@@ -116,6 +116,9 @@ const AuthProvider = ({ children }) => {
       } else if (event === "SIGNED_OUT") {
         setAuth(false);
         setUser(null);
+        setAdmin(false);
+        setSubscribed(false);
+        setCurrentUser(null);
       }
     });
     return () => {
@@ -150,6 +153,7 @@ const AuthProvider = ({ children }) => {
         auth,
         user,
         subscribed,
+        currentUser,
         admin,
         login: (email, password) => login(email, password, setLoading),
         signOut,

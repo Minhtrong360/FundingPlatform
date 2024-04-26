@@ -2694,7 +2694,8 @@ function AdminPage() {
     };
 
     loadFinances();
-  }, [user.id]);
+  }, []);
+
   const [activeTab, setActiveTab] = useState("fundraising");
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

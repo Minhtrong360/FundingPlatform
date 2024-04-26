@@ -27,6 +27,7 @@ function FinancialList() {
 
   useEffect(() => {
     // Tải danh sách finance từ Supabase dựa trên user.id
+
     const loadFinances = async () => {
       const { data, error } = await supabase
         .from("finance")
@@ -46,9 +47,10 @@ function FinancialList() {
         setFinances(transformedData);
       }
     };
-
-    loadFinances();
-  }, [user.id]);
+    if (user) {
+      loadFinances();
+    }
+  }, [user]);
 
   useEffect(() => {
     const sortedProjects = [...finances].sort((a, b) => {
@@ -64,6 +66,8 @@ function FinancialList() {
   const handleProjectClick = async (finance) => {
     navigate(`/financials/${finance.id}`);
   };
+
+  console.log("finances", finances);
 
   const columns = [
     {
@@ -278,15 +282,16 @@ function FinancialList() {
 
   const [isPricingOpen, setIsPricingOpen] = useState(false); // State để kiểm soát modal Pricing
   const handleClickAddNew = () => {
-    if (!needPremium) {
-      setIsAddNewModalOpen(true);
-    } else {
-      setIsPricingOpen(true);
-    }
+    // if (!needPremium) {
+    setIsAddNewModalOpen(true);
+    // } else {
+    //   setIsPricingOpen(true);
+    // }
   };
 
   const confirmAddNew = async () => {
     try {
+      console.log("add");
       // Tạo một dự án mới và lưu vào Supabase
       const { data, error } = await supabase
         .from("finance")
@@ -299,10 +304,10 @@ function FinancialList() {
           },
         ])
         .select();
-
+      console.log("data", data);
       if (error) {
         message.error(error.message);
-        console.error("Error creating project:", error);
+        console.log("Error creating project:", error);
         // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
       } else {
         // Tạo dự án thành công, đóng modal sau khi tạo
@@ -311,21 +316,21 @@ function FinancialList() {
         message.success("Created financial project successfully.");
       }
     } catch (error) {
-      message.error(error);
+      message.log(error);
     } finally {
       setIsAddNewModalOpen(false);
     }
   };
 
-  const [needPremium, setNeedPremium] = useState(false);
-  
-  useEffect(() => {
-    if (finances.length >= 4 && !subscribed) {
-      setNeedPremium(true);
-    } else {
-      setNeedPremium(false);
-    }
-  }, [finances.length]);
+  // const [needPremium, setNeedPremium] = useState(false);
+
+  // useEffect(() => {
+  //   if (finances.length >= 4 && !subscribed) {
+  //     setNeedPremium(true);
+  //   } else {
+  //     setNeedPremium(false);
+  //   }
+  // }, [finances.length]);
 
   return (
     <div className=" bg-white darkBg antialiased !p-0 ">
@@ -449,7 +454,7 @@ function FinancialList() {
                   <h2 className="text-xl font-semibold ">
                     My Financial Projects
                   </h2>
-                  {needPremium ? (
+                  {/* {needPremium ? (
                     <Tooltip
                       title={`You need to upgrade your plan to create more financial projects. 'Click' to update your plan!`}
                       color="gray"
@@ -463,17 +468,17 @@ function FinancialList() {
                         Add new
                       </button>
                     </Tooltip>
-                  ) : (
-                    <>
-                      <button
-                        className={`text-white bg-blue-600 "hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
-                        onClick={handleClickAddNew}
-                      >
-                        <PlusOutlined className="mr-1" />
-                        Add new
-                      </button>
-                    </>
-                  )}
+                  ) : ( */}
+                  <>
+                    <button
+                      className={`text-white bg-blue-600 "hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
+                      onClick={handleClickAddNew}
+                    >
+                      <PlusOutlined className="mr-1" />
+                      Add new
+                    </button>
+                  </>
+                  {/* )} */}
                 </div>
                 <div className="flex flex-col mb-8">
                   <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

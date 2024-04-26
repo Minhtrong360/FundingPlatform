@@ -80,6 +80,9 @@ const FounderGitbook = () => {
     }
   }, [user]);
 
+  console.log("user", user);
+  console.log("projects", projects);
+
   return (
     <div className=" bg-white darkBg antialiased !p-0">
       <div id="exampleWrapper">

@@ -65,6 +65,7 @@ import { setFundraisingInputs } from "../../features/FundraisingSlice";
 import CashFlowSection from "./Components/CashFlowSection";
 import { message } from "antd";
 import { useParams } from "react-router-dom";
+import Groq from "./Components/Groq";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
@@ -227,6 +228,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       dataLabels: { enabled: false },
       // stroke: { curve: "stepline" },
       // markers: { size: 1 },
+      // markers: { size: 1 },
     },
     series: [],
   });
@@ -235,7 +237,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const { channelInputs } = useSelector((state) => state.sales);
   const [revenue, setRevenue] = useState({
     options: {
-      chart: { id: "revenue-chart", type: "bar", height: 350, stacked: true }, // Set type to "bar" and stacked to true
+      chart: { id: "revenue-chart", type: "bar", height: 350, stacked: true }, 
+      colors: ['#00A2FF', '#14F584', '#FFB303', '#5C39FF', '#D738FF', '#FF841F'],// Set type to "bar" and stacked to true
       xaxis: {
         categories: Array.from(
           { length: numberOfMonths },
@@ -674,6 +677,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               setSpinning={setSpinning}
             />
           </div>
+          {/* <div>
+            <Groq />
+          </div> */}
           {/* <div>
             <GPTAnalyzer numberOfMonths={numberOfMonths} />
           </div> */}

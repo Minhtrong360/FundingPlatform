@@ -441,7 +441,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             message.success("Updated successfully.");
           }
         } else {
-          message.error("Bạn không có quyền cập nhật bản ghi này.");
+          message.error("You do not have permission to update this record.");
         }
       } else {
         // Thêm bản ghi mới
@@ -688,8 +688,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               <button onClick={startTour}>
                 <QuestionCircleOutlined />
               </button>
-            </div> */}
-            <div className="overflow-x-auto whitespace-nowrap border-t-2 border-b-2 border-yellow-300 text-sm">
+            </div> */}  
+            <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
               <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
                 <li
                   className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${

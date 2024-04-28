@@ -454,7 +454,7 @@ const AllChartSections = ({
   const { currency } = useSelector((state) => state.durationSelect);
   return (
     <div className="flex flex-col">
-      <main className="flex flex-1 flex-col gap-4 mt-4 mb-4 md:gap-8 ">
+      <main className="flex flex-1 flex-col gap-4  mb-4 md:gap-8 ">
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col shadow-xl">
             <div>

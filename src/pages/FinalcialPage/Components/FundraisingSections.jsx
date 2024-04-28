@@ -256,7 +256,7 @@ const FundraisingSection = ({
       <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
         <section aria-labelledby="fundraising-heading" className="mb-8">
           <h2
-            className="text-2xl font-semibold mb-8 flex items-center"
+            className="text-lg font-semibold mb-8 flex items-center"
             id="fundraising-heading"
           >
             Fundraising
@@ -425,13 +425,13 @@ const FundraisingSection = ({
               className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
               onClick={handleSave}
             >
-              Save changes
+              Save
             </button>
           </div>
         </section>
       </div>
       <div className="w-full lg:w-3/4 sm:p-4 p-0">
-        <h3 className="text-2xl font-semibold mb-4">Fundraising Table</h3>
+        <h3 className="text-lg font-semibold mb-4">Fundraising Table</h3>
         <Table
           className="overflow-auto my-8 rounded-md shadow-xl"
           size="small"
@@ -443,7 +443,7 @@ const FundraisingSection = ({
           bordered
           pagination={false}
         />
-        <h3 className="text-2xl font-semibold my-8">Fundraising Chart</h3>
+        <h3 className="text-lg font-semibold my-8">Fundraising Chart</h3>
 
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col shadow-xl">

@@ -272,7 +272,7 @@ const CustomerSection = ({
         <section aria-labelledby="customers-heading" className="mb-8">
           <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Examples:  Online, Offline, Social Media, Email Marketing, Referrals, Direct Sales, Subscription...">
             <h2
-              className="text-2xl font-semibold mb-8 flex items-center"
+              className="text-lg font-semibold mb-8 flex items-center"
               id="customers-heading"
             >
               Customer channel{" "}
@@ -489,14 +489,14 @@ const CustomerSection = ({
               className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
               onClick={handleSave}
             >
-              Save changes
+              Save
             </button>
           </div>
         </section>
       </div>
       <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
         <div className="mb-8">
-          <h3 className="text-2xl font-semibold">Customer Table</h3>
+          <h3 className="text-lg font-semibold">Customer Table</h3>
           <Table
             className="overflow-auto  my-8  shadow-xl rounded-md"
             size="small"
@@ -509,7 +509,7 @@ const CustomerSection = ({
             }
           />
         </div>
-        <h3 className="text-2xl font-semibold my-8">Customer Chart</h3>
+        <h3 className="text-lg font-semibold my-8">Customer Chart</h3>
 
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col shadow-xl">

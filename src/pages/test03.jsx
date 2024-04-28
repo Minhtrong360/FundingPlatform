@@ -83,7 +83,7 @@ const DurationSelect = ({
   return (
     <section aria-labelledby="duration-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-8 flex items-center"
+        className="text-lg font-semibold mb-8 flex items-center"
         id="duration-heading"
       >
         Duration and Initial Setup
@@ -276,7 +276,7 @@ const CustomerSection = ({
     <section aria-labelledby="customers-heading" className="mb-8">
       <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Here's a list of common customer channels that startups often utilize: Website, Social Media,Email Marketing, Referral Programs, Events and Networking, Direct Sales, Subscription.">
         <h2
-          className="text-2xl font-semibold mb-8 flex items-center"
+          className="text-lg font-semibold mb-8 flex items-center"
           id="customers-heading"
         >
           1. Identify your customer{" "}
@@ -391,7 +391,7 @@ const SalesSection = ({
   return (
     <section aria-labelledby="sales-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-8 flex items-center"
+        className="text-lg font-semibold mb-8 flex items-center"
         id="sales-heading"
       >
         Sales Section
@@ -548,7 +548,7 @@ const CostSection = ({
   return (
     <section aria-labelledby="costs-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-8 flex items-center"
+        className="text-lg font-semibold mb-8 flex items-center"
         id="costs-heading"
       >
         Costs
@@ -694,7 +694,7 @@ const PersonnelSection = ({
   return (
     <section aria-labelledby="personnel-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-8 flex items-center"
+        className="text-lg font-semibold mb-8 flex items-center"
         id="personnel-heading"
       >
         Personnel
@@ -799,7 +799,7 @@ const InvestmentSection = ({
   return (
     <section aria-labelledby="investment-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-8 flex items-center"
+        className="text-lg font-semibold mb-8 flex items-center"
         id="investment-heading"
       >
         Investment
@@ -908,7 +908,7 @@ const LoanSection = ({
   return (
     <section aria-labelledby="loan-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-8 flex items-center"
+        className="text-lg font-semibold mb-8 flex items-center"
         id="loan-heading"
       >
         Loan
@@ -2842,7 +2842,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
 
     return (
       <div>
-        <h2 className="text-2xl font-semibold mb-4">
+        <h2 className="text-lg font-semibold mb-4">
           Profit and Loss Statement
         </h2>
         <Table
@@ -2971,7 +2971,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 columns={customerColumns}
                 pagination={false}
               />
-              <h3 className="text-2xl font-semibold my-8">Customer Chart</h3>
+              <h3 className="text-lg font-semibold my-8">Customer Chart</h3>
               <Chart
                 options={customerGrowthChart.options}
                 series={customerGrowthChart.series}
@@ -2993,7 +2993,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
               />
             </div>
             <div className="w-full lg:w-3/4 sm:p-4 p-0">
-              <h3 className="text-2xl font-semibold mb-4">
+              <h3 className="text-lg font-semibold mb-4">
                 Revenue Data by Channel and Product
               </h3>
               <Table
@@ -3002,7 +3002,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 columns={revenueColumns}
                 pagination={false}
               />
-              <h3 className="text-2xl font-semibold my-8">
+              <h3 className="text-lg font-semibold my-8">
                 Gross Profit Data by Channel and Product
               </h3>
               <Chart
@@ -3025,14 +3025,14 @@ const Z = ({ currentUser, setCurrentUser }) => {
               />
             </div>
             <div className="w-full lg:w-3/4 sm:p-4 p-0">
-              <h3 className="text-2xl font-semibold mb-4">Cost Table</h3>
+              <h3 className="text-lg font-semibold mb-4">Cost Table</h3>
               <Table
                 className="overflow-auto my-8"
                 dataSource={costTableData}
                 columns={costColumns}
                 pagination={false}
               />
-              <h3 className="text-2xl font-semibold my-8">Cost Chart</h3>
+              <h3 className="text-lg font-semibold my-8">Cost Chart</h3>
               <Chart
                 options={costChart.options}
                 series={costChart.series}
@@ -3053,7 +3053,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
               />
             </div>
             <div className="w-full lg:w-3/4 sm:p-4 p-0">
-              <h3 className="text-2xl font-semibold mb-4">
+              <h3 className="text-lg font-semibold mb-4">
                 Personnel Cost Table
               </h3>
               <Table
@@ -3062,7 +3062,7 @@ const Z = ({ currentUser, setCurrentUser }) => {
                 columns={personnelCostColumns}
                 pagination={false}
               />
-              <h3 className="text-2xl font-semibold my-8">
+              <h3 className="text-lg font-semibold my-8">
                 Personnel Cost Chart
               </h3>
               <Chart
@@ -3086,14 +3086,14 @@ const Z = ({ currentUser, setCurrentUser }) => {
               />
             </div>
             <div className="w-full lg:w-3/4 sm:p-4 p-0">
-              <h3 className="text-2xl font-semibold mb-4">Investment Table</h3>
+              <h3 className="text-lg font-semibold mb-4">Investment Table</h3>
               <Table
                 className="overflow-auto my-8"
                 dataSource={transformInvestmentDataForTable()}
                 columns={investmentColumns}
                 pagination={false}
               />
-              <h3 className="text-2xl font-semibold my-8">Investment Chart</h3>
+              <h3 className="text-lg font-semibold my-8">Investment Chart</h3>
               <Chart
                 options={investmentChart.options}
                 series={investmentChart.series}
@@ -3114,14 +3114,14 @@ const Z = ({ currentUser, setCurrentUser }) => {
               />
             </div>
             <div className="w-full lg:w-3/4 sm:p-4 p-0">
-              <h3 className="text-2xl font-semibold mb-4">Loan Data</h3>
+              <h3 className="text-lg font-semibold mb-4">Loan Data</h3>
               <Table
                 className="overflow-auto my-8"
                 dataSource={transformLoanDataForTable()}
                 columns={loanColumns}
                 pagination={false}
               />
-              <h3 className="text-2xl font-semibold my-8">Loan Data</h3>
+              <h3 className="text-lg font-semibold my-8">Loan Data</h3>
               <Chart
                 options={loanChart.options}
                 series={loanChart.series}

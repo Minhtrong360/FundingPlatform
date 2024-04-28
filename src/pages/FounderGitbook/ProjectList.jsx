@@ -601,7 +601,7 @@ function ProjectList({ projects }) {
       )}
 
       <section className="container px-4 mx-auto">
-        <h2 className="text-xl font-semibold mb-4">My Projects</h2>
+        <h2 className="text-lg font-semibold mb-4">My Projects</h2>
         <div className="flex flex-col mb-8">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
@@ -619,7 +619,7 @@ function ProjectList({ projects }) {
           </div>
         </div>
 
-        <h2 className="text-xl font-semibold mb-4 mt-12">
+        <h2 className="text-lg font-semibold mb-4 mt-12">
           Projects Shared With Me
         </h2>
         <div className="flex flex-col">

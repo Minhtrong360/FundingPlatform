@@ -111,7 +111,7 @@ const DurationSelect = ({ handleSubmit }) => {
   return (
     <section aria-labelledby="duration-heading" className="mb-8">
       <h2
-        className="text-2xl font-semibold mb-8 flex items-center"
+        className="text-lg font-semibold mb-8 flex items-center"
         id="duration-heading"
       >
         General Setup
@@ -336,10 +336,10 @@ const DurationSelect = ({ handleSubmit }) => {
       </div>
 
       <button
-        className="bg-blue-600 text-white py-2 px-2 rounded mt-8 text-sm flex items-center"
+        className="bg-blue-600 text-white px-4 py-2 rounded mt-8 text-sm flex items-center"
         onClick={handleSubmit}
       >
-        Save changes
+        Save
       </button>
     </section>
   );

@@ -261,7 +261,7 @@ const Gemini = ({
     <div className=" mx-auto w-full">
       <div className="input-container p-4">
         <h2 className="text-3xl sm:text-5xl font-semibold text-gray-800 darkTextGray mb-6 text-center">
-          Build your financial model with AI
+          Financial model with AI
         </h2>
         <form onSubmit={handleSendMessage} className="flex justify-center">
           <div className="sm:w-[50%] w-[100%] relative z-10 flex space-x-3 p-3 bg-white border rounded-md shadow-lg shadow-gray-100 darkBgBlue darkBorderGray darkShadowGray">

@@ -119,7 +119,7 @@ const Modal = ({ isOpen, onClose, setIsPricingOpen }) => {
               placeholder=""
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
-              className="block w-full px-4 py-3 text-sm text-gray-200 border-gray-200 rounded-md"
+              className="block w-full px-4 py-3 text-sm text-gray-200 border-gray-300 rounded-md"
             />
           </label>
 
@@ -158,7 +158,7 @@ const Modal = ({ isOpen, onClose, setIsPricingOpen }) => {
             <button
               type="button"
               onClick={onClose}
-              className="text-black bg-white hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-md text-sm px-3 py-2 text-center border border-gray-200"
+              className="text-black bg-white hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-md text-sm px-3 py-2 text-center border border-gray-300"
             >
               Cancel
             </button>

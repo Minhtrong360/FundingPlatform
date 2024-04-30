@@ -278,7 +278,7 @@ const PersonnelSection = ({
             ></label>
             <select
               id="selectedChannel"
-              className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+              className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
               value={renderPersonnelForm}
               onChange={handleSelectChange}
             >
@@ -300,7 +300,7 @@ const PersonnelSection = ({
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">Job Title</span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     placeholder="Enter Job Title"
                     value={input.jobTitle}
                     onChange={(e) =>
@@ -317,7 +317,7 @@ const PersonnelSection = ({
                     Salary/month
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     placeholder="Enter Salary per Month"
                     value={formatNumber(input.salaryPerMonth)}
                     onChange={(e) =>
@@ -334,7 +334,7 @@ const PersonnelSection = ({
                     Growth rate (%)
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     placeholder="Growth rate"
                     value={formatNumber(input.increasePerYear)}
                     onChange={(e) =>
@@ -350,7 +350,7 @@ const PersonnelSection = ({
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">Frequency:</span>
                   <Select
-                    className="border-gray-200"
+                    className="border-gray-300"
                     onValueChange={(value) =>
                       handlePersonnelInputChange(
                         input?.id,
@@ -362,7 +362,7 @@ const PersonnelSection = ({
                   >
                     <SelectTrigger
                       id={`select-growthSalaryFrequency-${input?.id}`}
-                      className="border-solid border-[1px] border-gray-200"
+                      className="border-solid border-[1px] border-gray-300"
                     >
                       <SelectValue placeholder="Select Growth Frequency" />
                     </SelectTrigger>
@@ -382,7 +382,7 @@ const PersonnelSection = ({
                     No. of hires
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     placeholder="Enter Number of Hires"
                     value={formatNumber(input.numberOfHires)}
                     onChange={(e) =>
@@ -399,7 +399,7 @@ const PersonnelSection = ({
                     Job begin month
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     placeholder="Enter Job Begin Month"
                     value={input.jobBeginMonth}
                     onChange={(e) =>
@@ -416,7 +416,7 @@ const PersonnelSection = ({
                     Job ending month
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     placeholder="Enter Job Ending Month"
                     value={input.jobEndMonth}
                     onChange={(e) =>

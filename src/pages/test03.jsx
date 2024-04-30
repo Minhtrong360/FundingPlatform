@@ -107,7 +107,7 @@ const DurationSelect = ({
             <Select onValueChange={setStartMonth} value={startMonth}>
               <SelectTrigger
                 id="start-month"
-                className="border-solid border-[1px] border-gray-200"
+                className="border-solid border-[1px] border-gray-300"
               >
                 <SelectValue />
               </SelectTrigger>
@@ -128,7 +128,7 @@ const DurationSelect = ({
             <Select onValueChange={setStartYear} value={startYear}>
               <SelectTrigger
                 id="start-year"
-                className="border-solid border-[1px] border-gray-200"
+                className="border-solid border-[1px] border-gray-300"
               >
                 <SelectValue />
               </SelectTrigger>
@@ -149,7 +149,7 @@ const DurationSelect = ({
             <Select onValueChange={(value) => setSelectedDuration(value)}>
               <SelectTrigger
                 id="start-date-year"
-                className="border-solid border-[1px] border-gray-200"
+                className="border-solid border-[1px] border-gray-300"
               >
                 <SelectValue placeholder={selectedDuration} />
               </SelectTrigger>
@@ -177,7 +177,7 @@ const DurationSelect = ({
           <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center">Status :</span>
             <Select onValueChange={(value) => setStatus(value)} value={status}>
-              <SelectTrigger className="border-solid border-[1px] border-gray-200">
+              <SelectTrigger className="border-solid border-[1px] border-gray-300">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent position="popper">
@@ -194,7 +194,7 @@ const DurationSelect = ({
             <Select onValueChange={setIndustry} value={industry}>
               <SelectTrigger
                 id="industry"
-                className="border-solid border-[1px] border-gray-200"
+                className="border-solid border-[1px] border-gray-300"
               >
                 <SelectValue />
               </SelectTrigger>
@@ -238,7 +238,7 @@ const DurationSelect = ({
               onValueChange={(value) => setCurrency(value)}
               value={currency}
             >
-              <SelectTrigger className="border-solid border-[1px] border-gray-200">
+              <SelectTrigger className="border-solid border-[1px] border-gray-300">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent position="popper">
@@ -475,7 +475,7 @@ const SalesSection = ({
             >
               <SelectTrigger
                 id={`select-channel-${index}`}
-                className="border-solid border-[1px] border-gray-200"
+                className="border-solid border-[1px] border-gray-300"
               >
                 <SelectValue placeholder="Select Channel" />
               </SelectTrigger>
@@ -648,7 +648,7 @@ const CostSection = ({
             >
               <SelectTrigger
                 id={`select-costType-${index}`}
-                className="border-solid border-[1px] border-gray-200"
+                className="border-solid border-[1px] border-gray-300"
               >
                 <SelectValue placeholder="Select Cost Type" />
               </SelectTrigger>

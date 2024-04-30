@@ -166,7 +166,7 @@ function FleaMarketListAll() {
         <div className="flex flex-col mb-8">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-              <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
+              <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
                 <Table
                   columns={columns}
                   dataSource={fleaMarketData}

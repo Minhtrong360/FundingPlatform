@@ -848,9 +848,9 @@ function BalanceSheetSection({ numberOfMonths }) {
         <Select
           onValueChange={(value) => handleChartSelect(value)}
           value={selectedChart}
-          className="border-solid border-[1px] border-gray-200 "
+          className="border-solid border-[1px] border-gray-300 "
         >
-          <SelectTrigger className="border-solid border-[1px] border-gray-200 w-full lg:w-[20%]">
+          <SelectTrigger className="border-solid border-[1px] border-gray-300 w-full lg:w-[20%]">
             <SelectValue />
           </SelectTrigger>
 

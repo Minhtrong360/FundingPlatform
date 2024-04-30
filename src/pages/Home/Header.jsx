@@ -107,7 +107,7 @@ const Header = ({ position }) => {
       <nav
         className={`${
           position === "notFixed" ? "absolute" : "fixed "
-        } z-50 top-0 start-0 bg-white darkBg w-full  border-b border-gray-200 darkBorderGray transition-transform duration-100 ease-in-out ${
+        } z-50 top-0 start-0 bg-white darkBg w-full  border-b border-gray-300 darkBorderGray transition-transform duration-100 ease-in-out ${
           !isVisible ? "-translate-y-full" : "translate-y-0"
         }`}
       >

@@ -127,13 +127,13 @@ const HeroSignUp = () => {
                       <button
                         onClick={(e) => signInWitGG(e)}
                         type="button"
-                        className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
+                        className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
                       >
                         <GoogleOutlined />
                         Sign up with Google
                       </button>
 
-                      <div className="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-200 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-200 after:ms-6 darkTextGray darkBeforeBorderGray darkAfterBoderGray">
+                      <div className="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-[1_1_0%] before:border-t before:border-gray-300 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-300 after:ms-6 darkTextGray darkBeforeBorderGray darkAfterBoderGray">
                         Or
                       </div>
 
@@ -149,7 +149,7 @@ const HeroSignUp = () => {
                           <input
                             type="text"
                             id="fullName"
-                            className="peer p-4 block w-full border-gray-200 rounded-md text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
+                            className="peer p-4 block w-full border-gray-300 rounded-md text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
                             placeholder="Doe"
                             value={fullName}
                             onChange={(e) => setFullName(e.target.value)}
@@ -168,7 +168,7 @@ const HeroSignUp = () => {
                           <input
                             type="email"
                             id="email"
-                            className="peer p-4 block w-full border-gray-200 rounded-md text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
+                            className="peer p-4 block w-full border-gray-300 rounded-md text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
                             placeholder="you@email.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -187,7 +187,7 @@ const HeroSignUp = () => {
                           <input
                             type="password"
                             id="password"
-                            className="peer p-4 block w-full border-gray-200 rounded-md text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
+                            className="peer p-4 block w-full border-gray-300 rounded-md text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
                             placeholder="********"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -203,7 +203,7 @@ const HeroSignUp = () => {
                             id="remember-me"
                             name="remember-me"
                             type="checkbox"
-                            className="shrink-0 border-gray-200 rounded text-blue-600 focus:ring-blue-500 darkBgBlue darkBorderGray"
+                            className="shrink-0 border-gray-300 rounded text-blue-600 focus:ring-blue-500 darkBgBlue darkBorderGray"
                             checked={rememberMe}
                             onChange={(e) => setRememberMe(e.target.checked)}
                             required

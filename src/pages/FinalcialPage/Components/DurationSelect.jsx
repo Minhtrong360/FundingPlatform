@@ -123,7 +123,7 @@ const DurationSelect = ({ handleSubmit }) => {
           </Tooltip>
 
           <Input
-            className="border-gray-200"
+            className="border-gray-300"
             value={financialProjectName}
             onChange={(e) => dispatch(setFinancialProjectName(e.target.value))}
             type="text"
@@ -143,7 +143,7 @@ const DurationSelect = ({ handleSubmit }) => {
           >
             <SelectTrigger
               id="start-month"
-              className="border-solid border-[1px] border-gray-200"
+              className="border-solid border-[1px] border-gray-300"
             >
               <SelectValue />
             </SelectTrigger>
@@ -171,7 +171,7 @@ const DurationSelect = ({ handleSubmit }) => {
           >
             <SelectTrigger
               id="start-year"
-              className="border-solid border-[1px] border-gray-200"
+              className="border-solid border-[1px] border-gray-300"
             >
               <SelectValue />
             </SelectTrigger>
@@ -198,7 +198,7 @@ const DurationSelect = ({ handleSubmit }) => {
           >
             <SelectTrigger
               id="start-date-year"
-              className="border-solid border-[1px] border-gray-200"
+              className="border-solid border-[1px] border-gray-300"
             >
               <SelectValue placeholder={selectedDuration} />
             </SelectTrigger>
@@ -220,7 +220,7 @@ const DurationSelect = ({ handleSubmit }) => {
             </span>
           </Tooltip>
           <Input
-            className="border-gray-200"
+            className="border-gray-300"
             value={formatNumber(startingCashBalance)}
             onChange={(e) =>
               dispatch(setStartingCashBalance(parseNumber(e.target.value)))
@@ -236,7 +236,7 @@ const DurationSelect = ({ handleSubmit }) => {
             onValueChange={(value) => dispatch(setStatus(value))}
             value={status}
           >
-            <SelectTrigger className="border-solid border-[1px] border-gray-200">
+            <SelectTrigger className="border-solid border-[1px] border-gray-300">
               <SelectValue />
             </SelectTrigger>
             <SelectContent position="popper">
@@ -262,7 +262,7 @@ const DurationSelect = ({ handleSubmit }) => {
           >
             <SelectTrigger
               id="industry"
-              className="border-solid border-[1px] border-gray-200"
+              className="border-solid border-[1px] border-gray-300"
             >
               <SelectValue />
             </SelectTrigger>
@@ -285,7 +285,7 @@ const DurationSelect = ({ handleSubmit }) => {
             <span className="flex items-center text-sm">Income Tax(%) :</span>
           </Tooltip>
           <Input
-            className="border-gray-200"
+            className="border-gray-300"
             type="text"
             value={formatNumber(incomeTax)}
             onChange={(e) =>
@@ -297,7 +297,7 @@ const DurationSelect = ({ handleSubmit }) => {
           <div className="grid grid-cols-2 gap-4 mb-3">
             <span className=" flex items-center text-sm">Payroll Tax (%):</span>
             <Input
-              className="border-gray-200"
+              className="border-gray-300"
               type="text"
               placeholder="0"
               // value={formatNumber(payrollTax)}
@@ -317,7 +317,7 @@ const DurationSelect = ({ handleSubmit }) => {
             onValueChange={(value) => dispatch(setCurrency(value))}
             value={currency}
           >
-            <SelectTrigger className="border-solid border-[1px] border-gray-200">
+            <SelectTrigger className="border-solid border-[1px] border-gray-300">
               <SelectValue />
             </SelectTrigger>
             <SelectContent position="popper">

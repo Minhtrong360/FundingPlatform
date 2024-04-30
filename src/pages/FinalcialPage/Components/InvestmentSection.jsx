@@ -292,7 +292,7 @@ const InvestmentSection = ({
             ></label>
             <select
               id="selectedChannel"
-              className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+              className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
               value={renderInvestmentForm}
               onChange={handleSelectChange}
             >
@@ -317,7 +317,7 @@ const InvestmentSection = ({
                     Name of Purchase
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={input.purchaseName}
                     onChange={(e) =>
                       handleInvestmentInputChange(
@@ -331,7 +331,7 @@ const InvestmentSection = ({
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">Asset Cost</span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={formatNumber(input.assetCost)}
                     onChange={(e) =>
                       handleInvestmentInputChange(
@@ -345,7 +345,7 @@ const InvestmentSection = ({
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">Quantity:</span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     type="text"
                     min="1"
                     value={formatNumber(input.quantity)}
@@ -363,7 +363,7 @@ const InvestmentSection = ({
                     Purchase Month
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={input.purchaseMonth}
                     onChange={(e) =>
                       handleInvestmentInputChange(
@@ -379,7 +379,7 @@ const InvestmentSection = ({
                     Residual Value
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={input.residualValue}
                     onChange={(e) =>
                       handleInvestmentInputChange(
@@ -395,7 +395,7 @@ const InvestmentSection = ({
                     Useful Lifetime (Months)
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={formatNumber(input.usefulLifetime)}
                     onChange={(e) =>
                       handleInvestmentInputChange(

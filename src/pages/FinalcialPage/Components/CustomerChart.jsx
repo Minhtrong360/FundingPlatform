@@ -71,7 +71,7 @@ const CustomChart = ({
             },
           ]}
           type="area"
-          height={300}
+          height={350}
         />
       </Card>
     </div>

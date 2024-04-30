@@ -33,7 +33,7 @@ const NotificationItem = ({ notification, isLiked }) => {
   };
 
   return (
-    <div className="flex justify-between items-start px-4 py-2 border-b border-gray-200">
+    <div className="flex justify-between items-start px-4 py-2 border-b border-gray-300">
       <div className="flex-1">
         <p className="text-sm font-semibold text-gray-800">Message</p>
         <p className="text-sm text-gray-600 mt-4">
@@ -51,7 +51,7 @@ const NotificationItem = ({ notification, isLiked }) => {
         {Object.keys(parsedContent).map((key, index) => (
           <span
             key={index}
-            className="mr-3 ant-tag bg-bg-gray-50 border border-gray-200 text-black mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center rounded-md"
+            className="mr-3 ant-tag bg-bg-gray-50 border border-gray-300 text-black mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center rounded-md"
           >
             <span
               className="font-semibold text-sm hover:cursor-pointer"
@@ -114,7 +114,7 @@ const NotificationsPage = () => {
       <Header />
       <div className="min-h-screen bg-gray-100 p-8 mt-24 lg:w-[50vw] w-full mx-auto">
         <div className="bg-white shadow overflow-hidden sm:rounded-md">
-          <h1 className="text-xl font-semibold text-gray-900 p-4 border-b border-gray-200">
+          <h1 className="text-xl font-semibold text-gray-900 p-4 border-b border-gray-300">
             Notifications
           </h1>
           {notifications && (

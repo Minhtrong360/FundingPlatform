@@ -169,7 +169,7 @@ const HeroSection = ({
                 key={index}
                 title={`Industry: ${industry}`}
                 color={"geekblue"}
-                className="  bg-gray-50 border border-gray-200 text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
+                className="  bg-gray-50 border border-gray-300 text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
               >
                 {industry}
               </Tag>

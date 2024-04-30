@@ -152,7 +152,7 @@ const Search = ({
               </div>
             </form>
             {suggestions.length > 0 && (
-              <ul className=" mt-2 top-full left-0 right-0 z-50 bg-white border border-gray-200 rounded-md shadow-lg max-h-96 overflow-y-auto">
+              <ul className=" mt-2 top-full left-0 right-0 z-50 bg-white border border-gray-300 rounded-md shadow-lg max-h-96 overflow-y-auto">
                 {suggestions.map((company, index) => (
                   <li
                     key={index}

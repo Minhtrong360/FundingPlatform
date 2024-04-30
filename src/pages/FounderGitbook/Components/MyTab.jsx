@@ -367,7 +367,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
                         return (
                           <Badge
                             key={index}
-                            className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
+                            className="mx-2 bg-yellow-300 border border-gray-300 truncate text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
                           >
                             {trimmedKeyword}
                           </Badge>

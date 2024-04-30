@@ -36,7 +36,7 @@ export default function ArticleBrief({ result }) {
               type="text"
               value={result.url}
               onChange="disabled"
-              className="flex-1 block h-10 px-4 mx-1 text-sm text-gray-700 bg-white border border-gray-200 rounded-md darkBg darkTextGray darkBorderGray focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 darkFocusBorder focus:outline-none focus:ring"
+              className="flex-1 block h-10 px-4 mx-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md darkBg darkTextGray darkBorderGray focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 darkFocusBorder focus:outline-none focus:ring"
             />
             <button
               onClick={handleExportClick}

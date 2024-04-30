@@ -776,7 +776,7 @@ const GPTAnalyzer = ({ numberOfMonths }) => {
         <div className="space-y-4">
           <div className="space-y-2">
             <input
-              className=" m-2 px-4 block w-full h-full border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 "
+              className=" m-2 px-4 block w-full h-full border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500 "
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}

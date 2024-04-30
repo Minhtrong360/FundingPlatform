@@ -32,7 +32,7 @@ const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-white darkBg fixed w-full z-20 top-0 start-0 border-b border-gray-200 darkBorderGray">
+    <nav className="bg-white darkBg fixed w-full z-20 top-0 start-0 border-b border-gray-300 darkBorderGray">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="#" className="flex items-center space-x-3 rtl:space-x-reverse">
           <span className="self-center text-3xl font-semibold whitespace-nowrap darkTextWhite">
@@ -179,7 +179,7 @@ const Search = () => {
           </div>
           <div className="mt-2 sm:mt-4">
             <a
-              className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
+              className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border border-gray-300 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
               href="#"
             >
               <svg
@@ -195,7 +195,7 @@ const Search = () => {
               Business
             </a>
             <a
-              className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
+              className="m-1 py-3 px-4 inline-flex items-center gap-x-2 text-sm rounded-md border border-gray-300 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
               href="#"
             >
               <svg
@@ -218,7 +218,7 @@ const Search = () => {
 };
 
 const Card = ({ title, description, imageUrl, buttonText, buttonLink }) => (
-  <div className="max-w-sm bg-white border border-gray-200 rounded-md shadow darkBgBlue darkBorderGray">
+  <div className="max-w-sm bg-white border border-gray-300 rounded-md shadow darkBgBlue darkBorderGray">
     <a href={buttonLink}>
       <img className="rounded-t-lg" src={imageUrl} alt={title} />
     </a>

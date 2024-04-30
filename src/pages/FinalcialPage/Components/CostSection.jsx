@@ -291,7 +291,7 @@ const CostSection = ({
             ></label>
             <select
               id="selectedChannel"
-              className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+              className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
               value={renderCostForm}
               onChange={handleSelectChange}
             >
@@ -313,7 +313,7 @@ const CostSection = ({
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">Cost Name:</span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={input.costName}
                     onChange={(e) =>
                       handleCostInputChange(
@@ -329,7 +329,7 @@ const CostSection = ({
                     Cost Value:
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     type="text"
                     value={formatNumber(input.costValue)}
                     onChange={(e) =>
@@ -346,7 +346,7 @@ const CostSection = ({
                     Growth Percentage (%):
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     type="text"
                     value={formatNumber(input.growthPercentage)}
                     onChange={(e) =>
@@ -362,7 +362,7 @@ const CostSection = ({
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">Frequency:</span>
                   <Select
-                    className="border-gray-200"
+                    className="border-gray-300"
                     onValueChange={(value) =>
                       handleCostInputChange(input?.id, "growthFrequency", value)
                     }
@@ -370,7 +370,7 @@ const CostSection = ({
                   >
                     <SelectTrigger
                       id={`select-growthFrequency-${input?.id}`}
-                      className="border-solid border-[1px] border-gray-200"
+                      className="border-solid border-[1px] border-gray-300"
                     >
                       <SelectValue placeholder="Select Growth Frequency" />
                     </SelectTrigger>
@@ -390,7 +390,7 @@ const CostSection = ({
                     Begin Month:
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     type="number"
                     min="1"
                     max="12"
@@ -407,7 +407,7 @@ const CostSection = ({
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">End Month:</span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     type="number"
                     min="1"
                     max="12"
@@ -424,7 +424,7 @@ const CostSection = ({
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">Cost Type:</span>
                   <Select
-                    className="border-gray-200"
+                    className="border-gray-300"
                     onValueChange={(value) =>
                       handleCostInputChange(input?.id, "costType", value)
                     }
@@ -432,7 +432,7 @@ const CostSection = ({
                   >
                     <SelectTrigger
                       id={`select-costType-${input?.id}`}
-                      className="border-solid border-[1px] border-gray-200"
+                      className="border-solid border-[1px] border-gray-300"
                     >
                       <SelectValue placeholder="Select Cost Type" />
                     </SelectTrigger>

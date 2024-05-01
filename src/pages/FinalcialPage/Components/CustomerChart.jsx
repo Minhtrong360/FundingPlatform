@@ -31,6 +31,8 @@ const CustomChart = ({
           fontWeight: "600",
         },
       },
+      tickAmount: 12,
+      
       labels: {
         rotate: -45,
         rotateAlways: false,
@@ -41,6 +43,10 @@ const CustomChart = ({
           cssClass: "apexcharts-xaxis-label",
         },
       },
+    },
+    stroke: {
+      width: 1, // Set the stroke width to 1
+      curve: "smooth", // Set the curve of the line, making it smooth
     },
     yaxis: { title: { text: "Amount ($)" } },
     // stroke: { curve: "smooth" },

@@ -247,12 +247,20 @@ const SalesSection = ({
   //RevenueChart
 
   useEffect(() => {
-    if (revenue.charts?.length > 0) {
+    if (Array.isArray(tempRevenueData)) {
       const salesChartsData = tempRevenueData.map((channelData) => ({
         name: channelData[0]?.channelName || "Unknown Channel",
         data: channelData.map((data) => data.revenue),
       }));
-
+  
+      const totalSalesData = salesChartsData.reduce((acc, channel) => {
+        channel.data.forEach((amount, index) => {
+          if (!acc[index]) acc[index] = 0;
+          acc[index] += amount;
+        });
+        return acc;
+      }, Array(numberOfMonths).fill(0));
+  
       setRevenue((prevState) => ({
         ...prevState,
         series: salesChartsData,
@@ -273,6 +281,24 @@ const SalesSection = ({
             },
             series: salesChartsData
           },
+          // Total sales chart for all channels
+          {
+            options: {
+              ...prevState.options,
+              chart: {
+                ...prevState.options.chart,
+                id: 'totalSales',
+              },
+              title: {
+                ...prevState.options.title,
+                text: 'Total Sales'
+              },
+            },
+            series: [{
+              name: 'Total',
+              data: totalSalesData,
+            }]
+          },
           // Individual charts for each channel
           ...salesChartsData.map(channelSeries => ({
             options: {
@@ -291,7 +317,9 @@ const SalesSection = ({
         ],
       }));
     }
-  }, [tempRevenueData, numberOfMonths, revenue.charts]);
+  }, [tempRevenueData, numberOfMonths]);
+  
+
 
 
 
@@ -626,13 +654,14 @@ const SalesSection = ({
         />
         <h3 className="text-lg font-semibold my-8">Revenue Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
-        <Card className="flex flex-col shadow-xl">
+        <Card className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
   <Chart
     options={{
       ...revenue.options,
       chart: {
         ...revenue.options.chart,
         id: 'totalSales',
+        stacked: true, // Enable stacking for the total sales visualization
       },
       title: {
         ...revenue.options.title,
@@ -643,7 +672,7 @@ const SalesSection = ({
         tickAmount: 12, // Ensure x-axis has 12 ticks
       },
       stroke: {
-        width: 2, // Set the stroke width to 1
+        width: 2, // Set the stroke width to 2
       },
     }}
     series={[{
@@ -654,6 +683,7 @@ const SalesSection = ({
     height={350}
   />
 </Card>
+
 
 {revenue.series.map((seriesItem, index) => (
   <Card key={index} className="flex flex-col shadow-xl">

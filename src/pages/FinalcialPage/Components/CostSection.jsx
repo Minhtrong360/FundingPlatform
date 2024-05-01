@@ -486,14 +486,23 @@ const CostSection = ({
         />
         <h3 className="text-lg font-semibold my-8">Cost Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col shadow-xl">
-            <Chart
-              options={costChart.options}
-              series={costChart.series}
-              type="bar"
-              height={350}
-            />
-          </Card>
+          <Card className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
+  <Chart
+    options={{
+      ...costChart.options,
+      xaxis: {
+        ...costChart.options.xaxis,
+        tickAmount: 12, // Set the number of ticks on the x-axis to 12
+      },
+      stroke: {
+        width: 2, // Set the stroke width to 2
+      },
+    }}
+    series={costChart.series}
+    type="area"
+    height={350}
+  />
+</Card>
         </div>
       </div>
     </div>

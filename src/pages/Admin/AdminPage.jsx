@@ -599,7 +599,7 @@ function AdminPage() {
           style={{ maxWidth: "100%" }}
           onClick={() => handleProjectClick(record)}
         >
-          {index + 1}
+          {dataSource?.indexOf(record) + 1}
         </span>
       ),
     },
@@ -1873,7 +1873,9 @@ function AdminPage() {
       dataIndex: "index",
       key: "index",
       align: "center",
-      render: (text, record, index) => <span>{index + 1}</span>,
+      render: (text, record, index) => (
+        <span>{dataFinanceSource?.indexOf(record) + 1}</span>
+      ),
     },
     {
       title: "Name",
@@ -2158,7 +2160,9 @@ function AdminPage() {
       dataIndex: "index",
       key: "index",
       align: "center",
-      render: (text, record, index) => <span>{index + 1}</span>,
+      render: (text, record, index) => (
+        <span>{dataClientSource?.indexOf(record) + 1}</span>
+      ),
     },
     {
       title: "Full name",

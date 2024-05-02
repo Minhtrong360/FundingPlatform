@@ -333,7 +333,7 @@ const CustomerSection = ({
               chart: {
                 ...prevState.options.chart,
                 id: "allChannels",
-                stacked: true,
+                stacked: false,
               },
               title: {
                 ...prevState.options.title,

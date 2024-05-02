@@ -240,7 +240,7 @@ const FundraisingSection = ({
         name: item.name,
         data: Object.keys(item)
           .filter((key) => key.startsWith("month"))
-          .map((key) => parseFloat(item[key])),
+          .map((key) => parseNumber(item[key])),
       };
       seriesData.push(seriesItem);
     });

@@ -273,7 +273,7 @@ const SalesSection = ({
               chart: {
                 ...prevState.options.chart,
                 id: "allChannels",
-                stacked: true,
+                stacked: false,
               },
               title: {
                 ...prevState.options.title,
@@ -659,7 +659,7 @@ const SalesSection = ({
                 chart: {
                   ...revenue.options.chart,
                   id: "totalSales",
-                  stacked: true, // Enable stacking for the total sales visualization
+                  stacked: false, // Enable stacking for the total sales visualization
                 },
                 title: {
                   ...revenue.options.title,

@@ -260,13 +260,185 @@ function ProjectList({ projects }) {
     setSelectedProject(record); // Truyền thông tin dự án được chọn
   };
 
-  const columns = [
+  const myColumns = [
     {
       title: "No",
       dataIndex: "index",
       key: "index",
       align: "center",
-      render: (text, record, index) => <span>{index + 1}</span>,
+      render: (text, record, index) => (
+        <span>{myProjects?.indexOf(record) + 1}</span>
+      ),
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      width: "25%",
+      render: (text, record) => (
+        <>
+          <span
+            className="hover:cursor-pointer"
+            onClick={() => handleProjectClick(record)}
+          >
+            <div
+              className="truncate"
+              style={{ maxWidth: "100%" }}
+              title={record.name}
+            >
+              {record.name}
+            </div>
+          </span>
+        </>
+      ),
+    },
+    {
+      title: "Date",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (text, record) => (
+        <span
+          className="hover:cursor-pointer"
+          onClick={() => handleProjectClick(record)}
+        >
+          {formatDate(record.created_at)}
+        </span>
+      ),
+    },
+    {
+      title: "Customer",
+      dataIndex: "user_email",
+      key: "user_email",
+      width: "25%",
+      render: (text, record) => (
+        <>
+          <span
+            className="hover:cursor-pointer"
+            onClick={() => handleProjectClick(record)}
+          >
+            <div
+              className="truncate"
+              style={{ maxWidth: "100%" }}
+              title={record.user_email}
+            >
+              {record.user_email}
+            </div>
+          </span>
+        </>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (text, record) => (
+        <>
+          <button
+            onClick={() => handleProjectClick(record)}
+            className={`w-[5em] ${
+              record?.status === "public"
+                ? "bg-blue-600 text-white"
+                : record?.status === "private"
+                ? "bg-red-600 text-white"
+                : record?.status === "stealth"
+                ? "bg-yellow-300 text-black"
+                : ""
+            }   focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+            style={{ fontSize: "12px" }}
+          >
+            {record.status === "public"
+              ? "Public"
+              : record.status === "private"
+              ? "Private"
+              : "Stealth"}
+          </button>
+        </>
+      ),
+    },
+    {
+      title: "Action/Roles",
+      dataIndex: "action",
+      key: "action",
+      render: (text, record) => (
+        <>
+          {record.user_id === user.id ? (
+            <Dropdown
+              overlay={
+                <Menu>
+                  <>
+                    <Menu.Item key="Edit Project">
+                      <div
+                        onClick={() => handleEdit(record)}
+                        style={{ fontSize: "12px" }}
+                      >
+                        Edit Project
+                      </div>
+                    </Menu.Item>
+                    <Menu.Item key="delete">
+                      <div
+                        onClick={() => handleDelete(record.id)}
+                        style={{ fontSize: "12px" }}
+                      >
+                        Delete Project
+                      </div>
+                    </Menu.Item>
+                    <Menu.Item key="assign">
+                      <div
+                        onClick={() => handleAssign(record.id)}
+                        style={{ fontSize: "12px" }}
+                      >
+                        Assign
+                      </div>
+                    </Menu.Item>
+
+                    {record.user_id === user.id ? (
+                      <Menu.Item key="invite">
+                        <div
+                          onClick={() => handleInvite(record.id)}
+                          style={{ fontSize: "12px" }}
+                        >
+                          Invite
+                        </div>
+                      </Menu.Item>
+                    ) : (
+                      ""
+                    )}
+                  </>
+                </Menu>
+              }
+            >
+              <div className="w-[6rem] bg-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus cursor-pointer">
+                Action
+              </div>
+            </Dropdown>
+          ) : (
+            <div
+              onClick={() => handleProjectClick(record)}
+              className={`w-[6rem] bg-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus cursor-pointer`}
+            >
+              {record.invited_user?.includes(user.email) &&
+              record.collabs?.includes(user.email)
+                ? "Collaboration"
+                : record.invited_user?.includes(user.email)
+                ? "View only"
+                : record.collabs?.includes(user.email)
+                ? "Collaboration"
+                : "Default Label"}
+            </div>
+          )}
+        </>
+      ),
+    },
+  ];
+  const sharedColumns = [
+    {
+      title: "No",
+      dataIndex: "index",
+      key: "index",
+      align: "center",
+      render: (text, record, index) => (
+        <span>{sharedProjects?.indexOf(record) + 1}</span>
+      ),
     },
     {
       title: "Name",
@@ -606,9 +778,11 @@ function ProjectList({ projects }) {
             <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
               <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
                 <Table
-                  columns={columns}
+                  columns={myColumns}
                   dataSource={myProjects}
-                  pagination={false}
+                  pagination={{
+                    position: ["bottomLeft"],
+                  }}
                   rowKey="id"
                   size="small"
                   bordered
@@ -626,9 +800,11 @@ function ProjectList({ projects }) {
             <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
               <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
                 <Table
-                  columns={columns}
+                  columns={sharedColumns}
                   dataSource={sharedProjects}
-                  pagination={false}
+                  pagination={{
+                    position: ["bottomLeft"],
+                  }}
                   rowKey="id"
                   size="small"
                   bordered

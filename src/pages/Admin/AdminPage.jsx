@@ -276,40 +276,66 @@ function Dashboard({ dataSource }) {
                   type: chart.type,
                   height: 350,
                   toolbar: { show: false },
+                  animations: {
+                    enabled: true,
+                    easing: "easeinout",
+                    speed: 800,
+                    animateGradually: {
+                      enabled: true,
+                      delay: 150,
+                    },
+                    dynamicAnimation: {
+                      enabled: true,
+                      speed: 350,
+                    },
+                  },
                 },
-                colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0'],
+                colors: ["#008FFB", "#00E396", "#FEB019", "#FF4560", "#775DD0"],
+                fill: {
+                  type: "gradient",
+                  gradient: {
+                    shade: "dark",
+                    type: "horizontal",
+                    shadeIntensity: 0.5,
+                    opacityFrom: 0.85,
+                    opacityTo: 0.85,
+                    stops: [0, 100],
+                  },
+                },
                 labels: chart.categories,
                 xaxis: {
                   categories: chart.categories,
-                  labels: { show: false }
+                  labels: { show: false },
                 },
                 tooltip: {
                   enabled: true,
                   y: {
                     formatter: function (val) {
                       return `${val}`; // Customize based on your data type
-                    }
-                  }
+                    },
+                  },
                 },
                 legend: {
-                  position: chart.type === 'pie' ? 'bottom' : 'top',
+                  position: chart.type === "pie" ? "bottom" : "top",
                   onItemClick: {
-                    toggleDataSeries: true
-                  }
+                    toggleDataSeries: true,
+                  },
                 },
-                responsive: [{
-                  breakpoint: 480,
-                  options: {
-                    legend: {
-                      position: 'bottom',
-                      offsetX: -10,
-                      offsetY: 0
-                    }
-                  }
-                }]
+                responsive: [
+                  {
+                    breakpoint: 480,
+                    options: {
+                      legend: {
+                        position: "bottom",
+                        offsetX: -10,
+                        offsetY: 0,
+                      },
+                    },
+                  },
+                ],
               }}
               series={
-                chart.type === 'pie' ? chart.data : [{ data: chart.data }]
+                chart.type === "pie" ? chart.data : [{ data: chart.data }]
               }
               type={chart.type}
               height={350}
@@ -318,7 +344,7 @@ function Dashboard({ dataSource }) {
           </div>
         ))}
       </div>
-    </div>  
+    </div>
   );
 }
 

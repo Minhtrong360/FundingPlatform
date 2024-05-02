@@ -6,7 +6,7 @@ import {
   SelectItem,
 } from "../../../components/ui/Select";
 import { Button } from "antd";
-import { EditOutlined } from '@ant-design/icons';
+import { EditOutlined } from "@ant-design/icons";
 
 import { Input } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
@@ -194,7 +194,6 @@ const SalesSection = ({
   ]);
 
   //RevenueTable
-  
 
   const handleActualChange = (value, record, field) => {};
 
@@ -252,7 +251,7 @@ const SalesSection = ({
         name: channelData[0]?.channelName || "Unknown Channel",
         data: channelData.map((data) => data.revenue),
       }));
-  
+
       const totalSalesData = salesChartsData.reduce((acc, channel) => {
         channel.data.forEach((amount, index) => {
           if (!acc[index]) acc[index] = 0;
@@ -260,7 +259,9 @@ const SalesSection = ({
         });
         return acc;
       }, Array(numberOfMonths).fill(0));
-  
+
+      console.log("salesChartsData", salesChartsData);
+
       setRevenue((prevState) => ({
         ...prevState,
         series: salesChartsData,
@@ -271,15 +272,15 @@ const SalesSection = ({
               ...prevState.options,
               chart: {
                 ...prevState.options.chart,
-                id: 'allChannels',
-                stacked: false,
+                id: "allChannels",
+                stacked: true,
               },
               title: {
                 ...prevState.options.title,
-                text: 'All Sales Channels'
+                text: "All Channels",
               },
             },
-            series: salesChartsData
+            series: salesChartsData,
           },
           // Total sales chart for all channels
           {
@@ -287,46 +288,39 @@ const SalesSection = ({
               ...prevState.options,
               chart: {
                 ...prevState.options.chart,
-                id: 'totalSales',
-                type: 'area',
-                stacked: false,
-
+                id: "totalSales",
               },
               title: {
                 ...prevState.options.title,
-                text: 'Total Sales'
+                text: "Total Sales",
               },
             },
-            series: [{
-              name: 'Total',
-              data: totalSalesData,
-            }]
+            series: [
+              {
+                name: "Total",
+                data: totalSalesData,
+              },
+            ],
           },
           // Individual charts for each channel
-          ...salesChartsData.map(channelSeries => ({
+          ...salesChartsData.map((channelSeries) => ({
             options: {
               ...prevState.options,
               chart: {
                 ...prevState.options.chart,
                 id: channelSeries.name,
-          
               },
               title: {
                 ...prevState.options.title,
-                text: channelSeries.name
+                text: channelSeries.name,
               },
             },
-            series: [channelSeries]
+            series: [channelSeries],
           })),
         ],
       }));
     }
   }, [tempRevenueData, numberOfMonths]);
-  
-
-
-
-
 
   const handleSave = () => {
     setIsSaved(true);
@@ -658,81 +652,68 @@ const SalesSection = ({
         />
         <h3 className="text-lg font-semibold my-8">Revenue Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
-    <Card className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
-  <Chart
-    options={{
-      ...revenue.options,
-      chart: {
-        ...revenue.options.chart,
-        id: 'totalSales',
-        type: 'area',
-        stacked: false, // Enable stacking for the total sales visualization
-      },
-      title: {
-        ...revenue.options.title,
-        text: 'Total Sales',
-      },
-      xaxis: {
-        ...revenue.options.xaxis,
-        tickAmount: 12, // Ensure x-axis has 12 ticks
-      },
-      stroke: {
-        width: 2, // Set the stroke width to 2
-      },
-    }}
-    series={[
-      {
-        name: 'Total Sales',
-        data: revenue.series.reduce(
-          (acc, curr) =>
-            acc.map((el, i) => el + (curr.data[i] || 0)),
-          Array(numberOfMonths).fill(0)
-        ),
-      },
-      ...revenue.series.map((seriesItem) => ({
-        name: seriesItem.name,
-        data: seriesItem.data,
-      })),
-    ]}
-    type="area"
-    height={350}
-  />
-</Card>
+          <Card className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
+            <Chart
+              options={{
+                ...revenue.options,
+                chart: {
+                  ...revenue.options.chart,
+                  id: "totalSales",
+                  stacked: true, // Enable stacking for the total sales visualization
+                },
+                title: {
+                  ...revenue.options.title,
+                  text: "Total Sales",
+                },
+                xaxis: {
+                  ...revenue.options.xaxis,
+                  tickAmount: 12, // Ensure x-axis has 12 ticks
+                },
+                stroke: {
+                  width: 2, // Set the stroke width to 2
+                },
+              }}
+              series={[
+                {
+                  name: "Total Sales",
+                  data: revenue.series.reduce(
+                    (acc, curr) => acc.map((el, i) => el + (curr.data[i] || 0)),
+                    Array(numberOfMonths).fill(0)
+                  ),
+                },
+              ]}
+              type="area"
+              height={350}
+            />
+          </Card>
 
-
-
-{revenue.series.map((seriesItem, index) => (
-  <Card key={index} className="flex flex-col shadow-xl">
-    <Chart
-      options={{
-        ...revenue.options,
-        chart: {
-          ...revenue.options.chart,
-          id: seriesItem.name,
-        },
-        title: {
-          ...revenue.options.title,
-          text: seriesItem.name,
-        },
-        xaxis: {
-          ...revenue.options.xaxis,
-          tickAmount: 12, // Ensure x-axis has 12 ticks
-        },
-        stroke: {
-          width: 2, // Set the stroke width to 1
-        },  
-      }}
-      series={[seriesItem]}
-      type="area"
-      height={350}
-    />
-  </Card>
-  
-))}
-
-
-
-
+          {revenue.series.map((seriesItem, index) => (
+            <Card key={index} className="flex flex-col shadow-xl">
+              <Chart
+                options={{
+                  ...revenue.options,
+                  chart: {
+                    ...revenue.options.chart,
+                    id: seriesItem.name,
+                  },
+                  title: {
+                    ...revenue.options.title,
+                    text: seriesItem.name,
+                  },
+                  xaxis: {
+                    ...revenue.options.xaxis,
+                    tickAmount: 12, // Ensure x-axis has 12 ticks
+                  },
+                  stroke: {
+                    width: 2, // Set the stroke width to 1
+                  },
+                }}
+                series={[seriesItem]}
+                type="area"
+                height={350}
+              />
+            </Card>
+          ))}
         </div>
       </div>
     </div>

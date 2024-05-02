@@ -5,7 +5,7 @@ import ReactModal from "react-modal";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import { useNavigate } from "react-router-dom";
-import { Button, Modal, Table, Tooltip, message } from "antd";
+import { Button, Dropdown, Menu, Modal, Table, Tooltip, message } from "antd";
 import {
   formatDate,
   getCurrencyLabelByKey,
@@ -14,6 +14,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import InputField from "../../components/InputField";
 import PricingWithLemon from "../Home/Components/PricingWithLemon";
 import { formatNumber } from "../../features/CostSlice";
+import apiService from "../../app/apiService";
 // import { toast } from "react-toastify";
 
 function FinancialList() {
@@ -24,6 +25,8 @@ function FinancialList() {
 
   const [finances, setFinances] = useState([]);
   const { user, subscribed } = useAuth();
+
+  console.log("finances", finances);
 
   useEffect(() => {
     // Tải danh sách finance từ Supabase dựa trên user.id
@@ -44,22 +47,18 @@ function FinancialList() {
           inputData: JSON.parse(item.inputData),
         }));
 
-        setFinances(transformedData);
+        const sortedProjects = [...transformedData].sort((a, b) => {
+          const dateA = new Date(a.created_at);
+          const dateB = new Date(b.created_at);
+          return dateB - dateA;
+        });
+        setFinances(sortedProjects);
       }
     };
     if (user) {
       loadFinances();
     }
   }, [user]);
-
-  useEffect(() => {
-    const sortedProjects = [...finances].sort((a, b) => {
-      const dateA = new Date(a.created_at);
-      const dateB = new Date(b.created_at);
-      return dateB - dateA;
-    });
-    setFinances(sortedProjects);
-  }, [finances.length]);
 
   const navigate = useNavigate();
 
@@ -220,21 +219,104 @@ function FinancialList() {
         </Tooltip>
       ),
     },
+    // {
+    //   title: "Action",
+    //   dataIndex: "action",
+    //   key: "action",
+    //   render: (text, record) => (
+    //     <Button
+    //       onClick={() => handleDelete(record.id)}
+    //       style={{ fontSize: "12px" }}
+    //       className="hover:cursor-pointer bg-red-500 text-white"
+    //     >
+    //       Delete
+    //     </Button>
+    //   ),
+    // },
     {
-      title: "Action",
+      title: "Action/Roles",
       dataIndex: "action",
       key: "action",
       render: (text, record) => (
-        <Button
-          onClick={() => handleDelete(record.id)}
-          style={{ fontSize: "12px" }}
-          className="hover:cursor-pointer bg-red-500 text-white"
-        >
-          Delete
-        </Button>
+        <>
+          {record.user_id === user.id ? (
+            <Dropdown
+              overlay={
+                <Menu>
+                  <>
+                    <Menu.Item key="delete">
+                      <div
+                        onClick={() => handleDelete(record.id)}
+                        style={{ fontSize: "12px" }}
+                      >
+                        Delete Project
+                      </div>
+                    </Menu.Item>
+                    <Menu.Item key="assign">
+                      <div
+                        onClick={() => handleAssign(record.id)}
+                        style={{ fontSize: "12px" }}
+                      >
+                        Assign
+                      </div>
+                    </Menu.Item>
+
+                    {record.user_id === user.id ? (
+                      <Menu.Item key="invite">
+                        <div
+                          onClick={() => handleInvite(record.id)}
+                          style={{ fontSize: "12px" }}
+                        >
+                          Invite
+                        </div>
+                      </Menu.Item>
+                    ) : (
+                      ""
+                    )}
+                  </>
+                </Menu>
+              }
+            >
+              <div className="w-[6rem] bg-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus cursor-pointer">
+                Action
+              </div>
+            </Dropdown>
+          ) : (
+            <div
+              onClick={() => handleProjectClick(record)}
+              className={`w-[6rem] bg-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus cursor-pointer`}
+            >
+              {record.invited_user?.includes(user.email) &&
+              record.collabs?.includes(user.email)
+                ? "Collaboration"
+                : record.invited_user?.includes(user.email)
+                ? "View only"
+                : record.collabs?.includes(user.email)
+                ? "Collaboration"
+                : "Default Label"}
+            </div>
+          )}
+        </>
       ),
     },
   ];
+
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+
+  const handleAssign = async (projectId) => {
+    setIsAssignModalOpen(true);
+
+    setSelectedID(projectId);
+  };
+
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+
+  const handleInvite = async (projectId) => {
+    setIsInviteModalOpen(true);
+
+    setSelectedID(projectId);
+  };
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [SelectedID, setSelectedID] = useState();
   const handleDelete = async (projectId) => {
@@ -321,15 +403,169 @@ function FinancialList() {
     }
   };
 
-  // const [needPremium, setNeedPremium] = useState(false);
+  const [email, setEmail] = useState("elonmusk@gmail.com");
 
-  // useEffect(() => {
-  //   if (finances.length >= 4 && !subscribed) {
-  //     setNeedPremium(true);
-  //   } else {
-  //     setNeedPremium(false);
-  //   }
-  // }, [finances.length]);
+  const handleConfirmAssign = async () => {
+    try {
+      // Kiểm tra kết nối internet
+      if (!navigator.onLine) {
+        message.error("No internet access.");
+        return;
+      }
+
+      // Tìm id của user dựa trên email nhập vào
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("id")
+        .eq("email", email);
+
+      if (userError) {
+        console.log("Error fetching user data:", userError);
+        message.error(userError.message);
+        return;
+      }
+
+      if (!userData.length > 0) {
+        message.error(`User with email ${email} not found.`);
+        return;
+      }
+
+      const userId = userData[0].id;
+
+      const { data: projectData, error: projectError } = await supabase
+        .from("finance")
+        .select("*")
+        .eq("id", SelectedID);
+
+      if (projectError) {
+        console.log("Error fetching project data:", projectError);
+        message.error(projectError.message);
+        return;
+      }
+
+      if (!projectData.length > 0) {
+        console.log("Project not found.");
+        message.error("Project not found.");
+        return;
+      }
+
+      const { error: updateError } = await supabase
+        .from("finance")
+        .update({ user_id: userId, user_email: email })
+        .eq("id", SelectedID);
+
+      if (updateError) {
+        console.log("Error updating project data:", updateError);
+        message.error(updateError.message);
+        return;
+      }
+
+      message.success("Assign project successfully");
+      const updatedProjectsCopy = finances?.filter(
+        (finance) => finance.id !== SelectedID
+      );
+      setFinances(updatedProjectsCopy);
+    } catch (error) {
+      console.log("Error inviting user:", error);
+      message.error(error.message);
+    } finally {
+      setIsAssignModalOpen(false);
+    }
+  };
+
+  const [invited_type, setInvited_type] = useState("View only");
+  const [inviteEmail, setInviteEmail] = useState("elonmusk@gmail.com");
+
+  const handleConfirmInvite = async () => {
+    try {
+      if (!navigator.onLine) {
+        message.error("No internet access.");
+        return;
+      }
+
+      const { data: projectData, error: fileError } = await supabase
+        .from("finance")
+        .select("*")
+        .eq("id", SelectedID)
+        .single();
+
+      if (fileError) {
+        console.log("Error fetching project data:", fileError);
+        message.error(fileError);
+        return;
+      }
+
+      if (!projectData) {
+        console.log("File with ID not found.");
+        message.error("File with ID not found.");
+        return;
+      }
+
+      const currentInvitedUsers = projectData.invited_user || [];
+      const currentCollabs = projectData.collabs || [];
+
+      if (
+        invited_type === "View only" &&
+        currentInvitedUsers.includes(inviteEmail)
+      ) {
+        message.warning(`User with email ${inviteEmail} is already invited.`);
+        return;
+      }
+
+      if (
+        invited_type === "Collaborate" &&
+        currentCollabs.includes(inviteEmail)
+      ) {
+        message.warning(
+          `User with email ${inviteEmail} is already invited as collaborator.`
+        );
+        return;
+      }
+
+      if (invited_type === "View only") {
+        currentInvitedUsers.push(inviteEmail);
+      } else if (invited_type === "Collaborate") {
+        currentCollabs.push(inviteEmail);
+      }
+
+      await apiService.post("/invite/project", {
+        target_email: inviteEmail,
+        project_name: projectData.name,
+        owner_email: projectData.user_email,
+        project_id: projectData.id,
+        invited_type: invited_type,
+      });
+
+      const updateData =
+        invited_type === "View only"
+          ? { invited_user: currentInvitedUsers }
+          : { collabs: currentCollabs };
+
+      const { error: updateError } = await supabase
+        .from("finance")
+        .update(updateData)
+        .eq("id", SelectedID);
+
+      if (updateError) {
+        console.log("Error updating file data:", updateError);
+        message.error(updateError);
+      } else {
+        console.log(`Successfully invited user with email: ${inviteEmail}`);
+        message.success("Invited user successfully");
+      }
+    } catch (error) {
+      console.log("Error inviting user:", error);
+      message.error(error.message);
+    } finally {
+      setIsInviteModalOpen(false);
+    }
+  };
+
+  const myProjects = finances.filter((project) => project.user_id === user.id);
+
+  const sharedProjects = finances.filter(
+    (project) => project.user_id !== user.id
+  );
 
   return (
     <div className=" bg-white darkBg antialiased !p-0 ">
@@ -412,6 +648,108 @@ function FinancialList() {
                   />
                 </Modal>
               )}
+
+              {isAssignModalOpen && (
+                <Modal
+                  title="Assign project"
+                  visible={isAssignModalOpen}
+                  onOk={handleConfirmAssign}
+                  onCancel={() => setIsAssignModalOpen(false)}
+                  okText="Assign"
+                  cancelText="Cancel"
+                  cancelButtonProps={{
+                    style: {
+                      borderRadius: "0.375rem",
+                      cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                    },
+                  }}
+                  okButtonProps={{
+                    style: {
+                      background: "#2563EB",
+                      borderColor: "#2563EB",
+                      color: "#fff",
+                      borderRadius: "0.375rem",
+                      cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                    },
+                  }}
+                  centered={true}
+                >
+                  <InputField
+                    label="Assign this project to:"
+                    id="email"
+                    name="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    type="text"
+                    required
+                  />
+                </Modal>
+              )}
+
+              {isInviteModalOpen && (
+                <Modal
+                  title="Invite user"
+                  visible={isInviteModalOpen}
+                  onOk={handleConfirmInvite}
+                  onCancel={() => setIsInviteModalOpen(false)}
+                  okText="Invite"
+                  cancelText="Cancel"
+                  cancelButtonProps={{
+                    style: {
+                      borderRadius: "0.375rem",
+                      cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                    },
+                  }}
+                  okButtonProps={{
+                    style: {
+                      background: "#2563EB",
+                      borderColor: "#2563EB",
+                      color: "#fff",
+                      borderRadius: "0.375rem",
+                      cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                    },
+                  }}
+                  centered={true}
+                >
+                  <InputField
+                    label="Invite this email to watch/collaborate your profile"
+                    id="inviteEmail"
+                    name="inviteEmail"
+                    value={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.value)}
+                    type="text"
+                    required
+                  />
+                  <div className="mt-5">
+                    <label className="inline-flex items-center">
+                      <input
+                        type="radio"
+                        name="invitedType"
+                        value="View only"
+                        checked={invited_type === "View only"} // Cập nhật giá trị checked dựa trên giá trị state
+                        onChange={() => setInvited_type("View only")} // Cập nhật loại dự án khi người dùng thay đổi lựa chọn
+                      />
+                      <span className="ml-2 text-gray-700 text-sm">
+                        View only
+                      </span>
+                    </label>
+
+                    <label className="inline-flex items-center ml-6">
+                      <input
+                        type="radio"
+                        name="invitedType"
+                        value="Collaborate"
+                        checked={invited_type === "Collaborate"} // Cập nhật giá trị checked dựa trên giá trị state
+                        onChange={() => setInvited_type("Collaborate")} // Cập nhật loại dự án khi người dùng thay đổi lựa chọn
+                      />
+                      <span className="ml-2 text-gray-700 text-sm">
+                        Collaborate
+                      </span>
+                    </label>
+                  </div>
+                </Modal>
+              )}
+
               <ReactModal
                 isOpen={isPricingOpen}
                 onRequestClose={() => setIsPricingOpen(false)}
@@ -448,36 +786,19 @@ function FinancialList() {
                 </div>
               </ReactModal>
 
-              <section className="container px-4 mx-auto mt-14">
+              <section className="container px-4 mx-auto">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-semibold ">
-                    My Financial Projects
+                  <h2 className="text-lg font-semibold text-center flex justify-center items-center">
+                    My Projects
                   </h2>
-                  {/* {needPremium ? (
-                    <Tooltip
-                      title={`You need to upgrade your plan to create more financial projects. 'Click' to update your plan!`}
-                      color="gray"
-                      zIndex={20000}
-                    >
-                      <button
-                        className={`text-white opacity-50 bg-gray-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
-                        onClick={handleClickAddNew}
-                      >
-                        <PlusOutlined className="mr-1" />
-                        Add new
-                      </button>
-                    </Tooltip>
-                  ) : ( */}
-                  <>
-                    <button
-                      className={`text-white bg-blue-600 "hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
-                      onClick={handleClickAddNew}
-                    >
-                      <PlusOutlined className="mr-1" />
-                      Add new
-                    </button>
-                  </>
-                  {/* )} */}
+
+                  <button
+                    className={`text-white bg-blue-600 "hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
+                    onClick={handleClickAddNew}
+                  >
+                    <PlusOutlined className="mr-1" />
+                    Add new
+                  </button>
                 </div>
                 <div className="flex flex-col mb-8">
                   <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -485,7 +806,27 @@ function FinancialList() {
                       <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
                         <Table
                           columns={columns}
-                          dataSource={finances}
+                          dataSource={myProjects}
+                          pagination={false}
+                          rowKey="id"
+                          size="small"
+                          bordered
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <h2 className="text-lg font-semibold mb-4 mt-12">
+                  Projects Shared With Me
+                </h2>
+                <div className="flex flex-col">
+                  <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                    <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
+                      <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
+                        <Table
+                          columns={columns}
+                          dataSource={sharedProjects}
                           pagination={false}
                           rowKey="id"
                           size="small"

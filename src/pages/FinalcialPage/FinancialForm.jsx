@@ -237,8 +237,15 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const { channelInputs } = useSelector((state) => state.sales);
   const [revenue, setRevenue] = useState({
     options: {
-      chart: { id: "revenue-chart", type: "bar", height: 350, stacked: true }, 
-      colors: ['#00A2FF', '#14F584', '#FFB303', '#5C39FF', '#D738FF', '#FF841F'],// Set type to "bar" and stacked to true
+      chart: { id: "revenue-chart", type: "bar", height: 350, stacked: true },
+      colors: [
+        "#00A2FF",
+        "#14F584",
+        "#FFB303",
+        "#5C39FF",
+        "#D738FF",
+        "#FF841F",
+      ], // Set type to "bar" and stacked to true
       xaxis: {
         categories: Array.from(
           { length: numberOfMonths },
@@ -326,48 +333,219 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     loadData().then((inputData) => {
       if (inputData) {
         // Set your state here
-
         dispatch(
           setFinancialProjectName(
             inputData.financialProjectName || financialProjectName
           )
         );
+        dispatch(setSelectedDuration(inputData.selectedDuration || "3 years"));
+
+        dispatch(setStartingCashBalance(inputData.startingCashBalance || 0));
+        dispatch(setStatus(inputData.status || "active"));
+        dispatch(setIndustry(inputData.industry || "Technology"));
+        dispatch(setIncomeTax(inputData.incomeTax || 0));
+        dispatch(setPayrollTax(inputData.payrollTax || 0));
+        dispatch(setCurrency(inputData.currency || "USD"));
+        dispatch(setCutMonth(inputData.cutMonth || 4));
         dispatch(
-          setSelectedDuration(inputData.selectedDuration || selectedDuration)
+          setStartMonth(inputData.startMonth || new Date().getMonth() + 1)
         );
+        dispatch(setStartYear(inputData.startYear || new Date().getFullYear()));
 
         dispatch(
-          setStartingCashBalance(
-            inputData.startingCashBalance || startingCashBalance
+          setCustomerInputs(
+            inputData.customerInputs || [
+              {
+                id: 1,
+                customersPerMonth: 300,
+                growthPerMonth: 1,
+                customerGrowthFrequency: "Monthly",
+                channelName: "Online",
+                beginMonth: 1,
+                endMonth: 36,
+                beginCustomer: 0,
+                churnRate: 0,
+                acquisitionCost: 0, // Default value for acquisition cost
+              },
+              {
+                id: 2,
+                customersPerMonth: 400,
+                growthPerMonth: 2,
+                customerGrowthFrequency: "Monthly",
+                channelName: "Offline",
+                beginMonth: 1,
+                endMonth: 36,
+                beginCustomer: 0,
+                churnRate: 0,
+                acquisitionCost: 0, // Default value for acquisition cost
+              },
+            ]
           )
         );
-        dispatch(setStatus(inputData.status || status));
-        dispatch(setIndustry(inputData.industry || industry));
-        dispatch(setIncomeTax(inputData.incomeTax || incomeTax));
-        dispatch(setPayrollTax(inputData.payrollTax || payrollTax));
-        dispatch(setCurrency(inputData.currency || currency));
-        dispatch(setCutMonth(inputData.cutMonth || cutMonth));
-        dispatch(setStartMonth(inputData.startMonth || startMonth));
-        dispatch(setStartYear(inputData.startYear || startYear));
+        dispatch(
+          setChannelInputs(
+            inputData.channelInputs || [
+              {
+                id: 1,
+                productName: "Coffee",
+                price: 4,
+                multiples: 1,
+                deductionPercentage: 5,
+                cogsPercentage: 30,
+                selectedChannel: "Offline",
+                channelAllocation: 0.4,
+              },
+              {
+                id: 2,
+                productName: "Cake",
+                price: 8,
+                multiples: 1,
+                deductionPercentage: 4,
+                cogsPercentage: 35,
+                selectedChannel: "Offline",
+                channelAllocation: 0.3,
+              },
+              {
+                id: 3,
+                productName: "Coffee Bag",
+                price: 6,
+                multiples: 1,
+                deductionPercentage: 6,
+                cogsPercentage: 25,
+                selectedChannel: "Online",
+                channelAllocation: 0.6,
+              },
+            ]
+          )
+        );
+        dispatch(
+          setCostInputs(
+            inputData.costInputs || [
+              {
+                id: 1,
+                costName: "Website",
+                costValue: 1000,
+                growthPercentage: 5,
+                beginMonth: 1,
+                endMonth: 6,
+                growthFrequency: "Monthly",
+                costType: "Sales, Marketing Cost",
+              },
+              {
+                id: 2,
+                costName: "Marketing",
+                costValue: 500,
+                growthPercentage: 10,
+                beginMonth: 1,
+                endMonth: 36,
+                growthFrequency: "Annually",
+                costType: "Sales, Marketing Cost",
+              },
+              {
+                id: 3,
+                costName: "Rent",
+                costValue: 1000,
+                growthPercentage: 4,
+                beginMonth: 1,
+                endMonth: 36,
+                growthFrequency: "Annually",
+                costType: "General Administrative Cost",
+              },
+            ]
+          )
+        );
+        dispatch(
+          setPersonnelInputs(
+            inputData.personnelInputs || [
+              {
+                id: 1,
+                jobTitle: "Cashier",
+                salaryPerMonth: 800,
+                increasePerYear: 10,
+                growthSalaryFrequency: "Annually",
+                numberOfHires: 2,
+                jobBeginMonth: 1,
+                jobEndMonth: 36,
+              },
+              {
+                id: 2,
+                jobTitle: "Manager",
+                salaryPerMonth: 2000,
+                increasePerYear: 10,
+                growthSalaryFrequency: "Annually",
+                numberOfHires: 1,
+                jobBeginMonth: 1,
+                jobEndMonth: 36,
+              },
+            ]
+          )
+        );
+        dispatch(
+          setInvestmentInputs(
+            inputData.investmentInputs || [
+              {
+                id: 1,
+                purchaseName: "Coffee machine",
+                assetCost: 8000,
+                quantity: 1,
+                purchaseMonth: 2,
+                residualValue: 0,
+                usefulLifetime: 36,
+              },
 
-        dispatch(setCustomerInputs(inputData.customerInputs || customerInputs));
-        dispatch(setChannelInputs(inputData.channelInputs || channelInputs));
-        dispatch(setCostInputs(inputData.costInputs || costInputs));
-        dispatch(
-          setPersonnelInputs(inputData.personnelInputs || personnelInputs)
+              {
+                id: 2,
+                purchaseName: "Table",
+                assetCost: 200,
+                quantity: 10,
+                purchaseMonth: 1,
+                residualValue: 0,
+                usefulLifetime: 36,
+              },
+            ]
+          )
         );
         dispatch(
-          setInvestmentInputs(inputData.investmentInputs || investmentInputs)
+          setLoanInputs(
+            inputData.loanInputs || [
+              {
+                id: 1,
+                loanName: "Banking loan",
+                loanAmount: "30000",
+                interestRate: "6",
+                loanBeginMonth: "1",
+                loanEndMonth: "36",
+              },
+              {
+                id: 2,
+                loanName: "Startup loan",
+                loanAmount: "20000",
+                interestRate: "3",
+                loanBeginMonth: "1",
+                loanEndMonth: "36",
+              },
+            ]
+          )
         );
-        dispatch(setLoanInputs(inputData.loanInputs || loanInputs));
         dispatch(
-          setFundraisingInputs(inputData.fundraisingInputs || fundraisingInputs)
+          setFundraisingInputs(
+            inputData.fundraisingInputs || [
+              {
+                id: 1,
+                name: "",
+                fundraisingAmount: 0,
+                fundraisingType: "Common Stock",
+                fundraisingBeginMonth: 1,
+                equityOffered: 0,
+              },
+            ]
+          )
         );
       }
     });
 
     setTemIsLoading(false);
-  }, [user]);
+  }, [id]);
 
   useEffect(() => {
     const calculatedData = calculateCustomerGrowth(
@@ -688,7 +866,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               <button onClick={startTour}>
                 <QuestionCircleOutlined />
               </button>
-            </div> */}  
+            </div> */}
             <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
               <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
                 <li

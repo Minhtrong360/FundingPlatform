@@ -144,7 +144,6 @@ function ProjectList({ projects }) {
         return;
       }
 
-      console.log(`Successfully invited user with email: ${email}`);
       message.success("Assign project successfully");
       const updatedProjectsCopy = updatedProjects?.filter(
         (project) => project.id !== SelectedID
@@ -215,7 +214,7 @@ function ProjectList({ projects }) {
       await apiService.post("/invite/project", {
         target_email: inviteEmail,
         project_name: projectData.name,
-        owner_email: user.email,
+        owner_email: projectData.user_email,
         project_id: projectData.id,
         invited_type: invited_type,
       });

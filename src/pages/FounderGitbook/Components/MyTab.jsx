@@ -34,16 +34,16 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
   let userData = currentUser[0];
 
   // Tạo một tài liệu Y.js mới
-  const doc = new Y.Doc();
+  // const doc = new Y.Doc();
 
   // Thiết lập nhà cung cấp WebRTC với một ID duy nhất cho tài liệu
   // const provider = new WebrtcProvider(currentProject.id, doc);
-  const provider = new YPartyKitProvider(
-    "blocknote-dev.yousefed.partykit.dev",
-    // use a unique name as a "room" for your application:
-    currentProject.id,
-    doc
-  );
+  // const provider = new YPartyKitProvider(
+  //   "BeeKrowd@2024",
+  //   // use a unique name as a "room" for your application:
+  //   currentProject.id,
+  //   doc
+  // );
 
   // Lấy fragment XML để lưu trữ dữ liệu của Block Note
 
@@ -182,16 +182,16 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
       insertYouTubeLink,
     ],
 
-    collaboration: {
-      // The Yjs Provider responsible for transporting updates:
-      provider,
-      // Where to store BlockNote data in the Y.Doc:
-      fragment: doc.getXmlFragment("document-store"),
-      user: {
-        name: userData.email, // Thay đổi tùy vào người dùng hiện tại
-        color: "#2563EB", // Cung cấp một màu sắc đại diện cho người dùng
-      },
-    },
+    // collaboration: {
+    //   // The Yjs Provider responsible for transporting updates:
+    //   provider,
+    //   // Where to store BlockNote data in the Y.Doc:
+    //   fragment: doc.getXmlFragment("document-store"),
+    //   user: {
+    //     name: userData.email, // Thay đổi tùy vào người dùng hiện tại
+    //     color: "#2563EB", // Cung cấp một màu sắc đại diện cho người dùng
+    //   },
+    // },
 
     onEditorContentChange: function (editor) {
       setBlocks(editor.topLevelBlocks);
@@ -291,36 +291,34 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
         return;
       }
 
-      if (params) {
-        setIsLoading(true);
+      setIsLoading(true);
 
-        const { data: projectData } = await supabase
+      const { data: projectData } = await supabase
+        .from("projects")
+        .select("*")
+        .match({ id: params.id })
+        .single();
+
+      if (
+        projectData &&
+        (projectData.user_id === user.id ||
+          projectData.collabs.includes(user.email))
+      ) {
+        const { error } = await supabase
           .from("projects")
-          .select("*")
-          .match({ id: params.id })
-          .single();
+          .update({ markdown: blocks })
+          .match({ id: params.id });
 
-        if (
-          projectData &&
-          (projectData.user_id === user.id ||
-            projectData.collabs.includes(user.email))
-        ) {
-          const { error } = await supabase
-            .from("projects")
-            .update({ markdown: blocks })
-            .match({ id: params.id });
-
-          if (error) {
-            message.error(error.message);
-          } else {
-            setIsLoading(false);
-            message.success("Saved successfully.");
-            // Reset isSaved to false after 1 second
-          }
+        if (error) {
+          message.error(error.message);
         } else {
-          message.error("You do not have permission to save this project.");
           setIsLoading(false);
+          message.success("Saved successfully.");
+          // Reset isSaved to false after 1 second
         }
+      } else {
+        message.error("You do not have permission to save this project.");
+        setIsLoading(false);
       }
     } catch (error) {
       // Xử lý lỗi mạng
@@ -382,6 +380,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
                 <button
                   className="mt-8 hover:cursor-pointer py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
                   onClick={handleSave}
+                  type="button"
                 >
                   Save profile
                 </button>

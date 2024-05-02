@@ -17,6 +17,7 @@ function Company({
   handleIndustryChange,
   typeOfferingOptions,
 }) {
+  console.log("formData", formData);
   const [projectImageUrl, setProjectImageUrl] = useState(formData.project_url); // State to store project image URL
   const [cardImageUrl, setCardImageUrl] = useState(formData.card_url); // State to store card image URL
 
@@ -234,7 +235,11 @@ function Company({
                         label="Company logo"
                         id="project_url"
                         name="project_url"
-                        value={formData.project_url}
+                        value={
+                          formData.project_url.length > 30
+                            ? formData.project_url.substring(0, 30) + "..."
+                            : formData.project_url
+                        }
                         onChange={handleInputChange}
                         type="text"
                         required
@@ -256,7 +261,11 @@ function Company({
                         label="Profile Image link"
                         id="card_url"
                         name="card_url"
-                        value={formData.card_url}
+                        value={
+                          formData.card_url.length > 30
+                            ? formData.card_url.substring(0, 30) + "..."
+                            : formData.card_url
+                        }
                         onChange={handleInputChange}
                         type="text"
                         required
@@ -351,25 +360,22 @@ function Company({
                     />
                   </div>
 
-                  <div className="mt-6 grid">
-                    
-                  </div>
+                  <div className="mt-6 grid"></div>
                 </form>
               </div>
             </div>
           </div>
         </div>
-      
       </div>
-      
+
       <button
         type="submit"
         onClick={handleSubmit}
         className="shadow-lg w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600 mt-2"
       >
-          Submit
+        Submit
       </button>
-  </div>
+    </div>
   );
 }
 

@@ -7,9 +7,9 @@ import { useLocation } from "react-router-dom";
 import ImageDropdown from "./ImageDropdown";
 import NavbarItem from "./NavbarItem";
 import { useAuth } from "../../context/AuthContext";
-import { ShopOutlined } from '@ant-design/icons';
-import { CalculatorOutlined } from '@ant-design/icons';
-import { RocketOutlined } from '@ant-design/icons';
+import { ShopOutlined } from "@ant-design/icons";
+import { CalculatorOutlined } from "@ant-design/icons";
+import { RocketOutlined } from "@ant-design/icons";
 
 const NavbarButton = ({ children, onClick, className }) => {
   return (
@@ -177,19 +177,26 @@ const Header = ({ position }) => {
                 onClick={() => navigate(`/financials`)}
                 isActive={loginPart.includes("financials")}
               >
-                Financial Model <CalculatorOutlined />
+                <span style={{ display: "flex", alignItems: "center" }}>
+                  Financial Model
+                  <CalculatorOutlined className="ml-[5px]" />
+                </span>
               </NavbarItem>
               <NavbarItem
                 onClick={() => navigate(`/startups`)}
                 isActive={loginPart.includes("startups")}
               >
-                Profile Listing <RocketOutlined />
+                <span style={{ display: "flex", alignItems: "center" }}>
+                  Profile Listing <RocketOutlined className="ml-[5px]" />
+                </span>
               </NavbarItem>
               <NavbarItem
                 onClick={() => navigate(`/Flea-Market/info`)}
                 isActive={loginPart.includes("Flea-Market")}
               >
-                Angel's Share <ShopOutlined />
+                <span style={{ display: "flex", alignItems: "center" }}>
+                  Angel's Share <ShopOutlined className="ml-[5px]" />
+                </span>
               </NavbarItem>
 
               <NavbarItem

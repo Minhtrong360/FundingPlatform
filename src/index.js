@@ -12,19 +12,19 @@ import { Provider } from "react-redux";
 import store from "./app/store.jsx";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-const stripePromise = loadStripe(process.env.REACT_APP_PUBLISHABLE_KEY);
+// const stripePromise = loadStripe(process.env.REACT_APP_PUBLISHABLE_KEY);
 root.render(
   <Provider store={store}>
     <AuthProvider>
-      <Elements stripe={stripePromise}>
-        <BrowserRouter>
-          {/* <ThemeProvider> */}
-          <ImageCropProvider>
-            <Router />
-          </ImageCropProvider>
-          {/* </ThemeProvider> */}
-        </BrowserRouter>
-      </Elements>
+      {/* <Elements stripe={stripePromise}> */}
+      <BrowserRouter>
+        {/* <ThemeProvider> */}
+        <ImageCropProvider>
+          <Router />
+        </ImageCropProvider>
+        {/* </ThemeProvider> */}
+      </BrowserRouter>
+      {/* </Elements> */}
     </AuthProvider>
   </Provider>
 );

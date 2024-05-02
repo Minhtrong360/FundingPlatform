@@ -16,54 +16,21 @@ import { LogoutOutlined } from "@ant-design/icons";
 
 const ImageDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, signOut } = useAuth();
-  const [userData, setUserData] = useState({
-    full_name: "",
-    email: "",
-    plan: "",
-    subscribe: "",
-    company: "",
-    company_website: "",
-    detail: "",
-    roll: "Founder",
-    avatar: null,
-    notification_count: 0,
-  });
-
-  useEffect(() => {
-    // Tạo một async function để lấy thông tin người dùng từ Supabase
-    async function fetchUserData() {
-      try {
-        if (!navigator.onLine) {
-          // Không có kết nối Internet
-          message.error("No internet access.");
-          return;
-        }
-
-        // Thực hiện truy vấn để lấy thông tin người dùng theo id (điều này cần được thay đổi dựa trên cấu trúc dữ liệu của bạn trong Supabase)
-        const { data, error } = await supabase
-          .from("users")
-          .select("*")
-          .eq("id", user.id) // Thay "id" bằng trường id thực tế trong cơ sở dữ liệu của bạn
-          .single(); // Sử dụng .single() để lấy một bản ghi duy nhất
-
-        if (error) {
-          throw error;
-        }
-
-        // Cập nhật state userData với thông tin người dùng đã lấy được
-        if (data) {
-          setUserData(data);
-        }
-      } catch (error) {
-        message.error(error.message);
-        console.error("Error fetching user data:", error);
-      }
-    }
-
-    // Gọi hàm fetchUserData khi component được mount
-    fetchUserData();
-  }, [user.id]); // Sử dụng user.id làm phần tử phụ thuộc để useEffect được gọi lại khi user.id thay đổi
+  const { user, signOut, currentUser } = useAuth();
+  const userData = currentUser
+    ? currentUser[0]
+    : {
+        full_name: "",
+        email: "",
+        plan: "",
+        subscribe: "",
+        company: "",
+        company_website: "",
+        detail: "",
+        roll: "Founder",
+        avatar: null,
+        notification_count: 0,
+      };
 
   const navigate = useNavigate();
 

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
-import { Table, Tooltip, message } from "antd";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import { Card, Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -21,7 +20,6 @@ import {
 } from "../../../features/SaleSlice";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { supabase } from "../../../supabase";
-import { useAuth } from "../../../context/AuthContext";
 import {
   Select,
   SelectTrigger,
@@ -512,13 +510,17 @@ const CustomerSection = ({
           />
         </div>
         <h3 className="text-2xl font-semibold my-8">Customer Chart</h3>
-        <Chart
-        className="shadow-xl border rounded-md p-2"
-          options={customerGrowthChart.options}
-          series={customerGrowthChart.series}
-          type="bar"
-          height={350}
-        />
+
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card className="flex flex-col shadow-xl">
+            <Chart
+              options={customerGrowthChart.options}
+              series={customerGrowthChart.series}
+              type="bar"
+              height={350}
+            />
+          </Card>
+        </div>
       </div>
     </div>
   );
@@ -527,10 +529,6 @@ const CustomerSection = ({
 export default CustomerSection;
 
 <div className="w-full h-full flex flex-col lg:flex-row">
-  <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
-
-  </div>
-  <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
-
-  </div>
-</div>
+  <div className="w-full lg:w-1/4 sm:p-4 p-0 "></div>
+  <div className="w-full lg:w-3/4 sm:p-4 p-0 "></div>
+</div>;

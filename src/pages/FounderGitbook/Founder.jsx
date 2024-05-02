@@ -78,7 +78,7 @@ const FounderGitbook = () => {
     if (user) {
       fetchProjects();
     }
-  }, [user]);
+  }, []);
 
   return (
     <div className=" bg-white darkBg antialiased !p-0">

@@ -34,7 +34,9 @@ const Modal = ({
     }
   }, [selectedProject]);
 
-  const handleSave = async () => {
+  const handleSave = async (e) => {
+    e.preventDefault();
+
     try {
       // Kiểm tra nếu là dự án riêng tư và người dùng không đáp ứng điều kiện
       if (projectStatus === "private" && isPrivateDisabled) {
@@ -90,11 +92,11 @@ const Modal = ({
   useEffect(() => {
     // Check if the user doesn't meet the conditions to create a private project
     if (
-      currentUser.plan === "Free" ||
-      currentUser.plan === null ||
-      currentUser.plan === undefined ||
-      currentUser.subscription_status === "canceled" ||
-      currentUser.subscription_status === "cancelled"
+      currentUser?.plan === "Free" ||
+      currentUser?.plan === null ||
+      currentUser?.plan === undefined ||
+      currentUser?.subscription_status === "canceled" ||
+      currentUser?.subscription_status === "cancelled"
     ) {
       setIsPrivateDisabled(true);
     } else {
@@ -102,7 +104,8 @@ const Modal = ({
     }
   }, [currentUser]);
 
-  const handleCreate = async () => {
+  const handleCreate = async (e) => {
+    e.preventDefault();
     try {
       // Check if it's a private project and the user doesn't meet the conditions
       if (projectStatus === "private" && isPrivateDisabled) {
@@ -112,7 +115,7 @@ const Modal = ({
         );
         return;
       }
-      // Tạo một dự án mới và lưu vào Supabase
+
       const { data, error } = await supabase
         .from("projects")
         .insert([
@@ -154,7 +157,7 @@ const Modal = ({
         <h3 className="text-md font-medium leading-6 text-gray-800 capitalize">
           Project Name
         </h3>
-        <form className="mt-2">
+        <form className="mt-2" onSubmit={isEditing ? handleSave : handleCreate}>
           <label className="block mt-2">
             <input
               type="text"
@@ -163,6 +166,7 @@ const Modal = ({
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
               className="block w-full px-4 py-3 text-sm text-gray-800 border-gray-200 rounded-md"
+              required
             />
           </label>
 
@@ -229,8 +233,7 @@ const Modal = ({
               Cancel
             </button>
             <button
-              type="button"
-              onClick={isEditing ? handleSave : handleCreate}
+              type="submit"
               className={`w-20 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
             >
               {isEditing ? "Save" : "Create"}
@@ -251,52 +254,21 @@ export default function AddProject({
   setSelectedProject,
   myProjects,
 }) {
-  const { user } = useAuth();
-  const [currentUser, setCurrentUser] = useState(null);
+  const { currentUser: userFromDB } = useAuth();
+  let currentUser = userFromDB[0];
 
-  useEffect(() => {
-    // Import Supabase client và thiết lập nó
-
-    const fetchCurrentUser = async () => {
-      try {
-        if (!navigator.onLine) {
-          // Không có kết nối Internet
-          message.error("No internet access.");
-          return;
-        }
-        let { data: users, error } = await supabase
-          .from("users")
-          .select("*")
-
-          // Filters
-          .eq("id", user.id);
-
-        if (error) {
-          throw error;
-        }
-
-        setCurrentUser(users[0]);
-      } catch (error) {
-        console.error("Error fetching projects:", error);
-      }
-    };
-
-    if (user) {
-      fetchCurrentUser();
-    }
-  }, [user]);
   useEffect(() => {
     if (currentUser && updatedProjects) {
       const hasProjectWithCurrentUser = updatedProjects.some(
-        (project) => project.user_id === currentUser.id
+        (project) => project.user_id === currentUser?.id
       );
       const isFreeUser =
-        currentUser.plan === "Free" ||
-        currentUser.plan === null ||
-        currentUser.plan === undefined;
+        currentUser?.plan === "Free" ||
+        currentUser?.plan === null ||
+        currentUser?.plan === undefined;
       const isSubscriptionInactive =
-        currentUser.subscription_status === "canceled" ||
-        currentUser.subscription_status === "cancelled";
+        currentUser?.subscription_status === "canceled" ||
+        currentUser?.subscription_status === "cancelled";
 
       if (
         hasProjectWithCurrentUser &&

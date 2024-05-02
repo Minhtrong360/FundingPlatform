@@ -23,12 +23,11 @@ import { useAuth } from "../../../context/AuthContext";
 import LoadingButtonClick from "../../../components/LoadingButtonClick";
 import FilesList from "../FilesList";
 
-const MyTab = ({ blocks, setBlocks, company, fullScreen }) => {
+const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
   const [activeTab, setActiveTab] = useState("Your Profile");
   const [youtubeLink, setYoutubeLink] = useState("Add wanted youtube url");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [currentProject, setCurrentProject] = useState("");
   const YouTubeLinkBlock = createReactBlockSpec(
     {
       type: "youtubeLink",
@@ -198,10 +197,9 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen }) => {
           // Kiểm tra xem project có tồn tại không
           const { data, error } = await supabase
             .from("projects")
-            .select("*")
+            .select("markdown")
             .match({ id: params.id })
             .single();
-          setCurrentProject(data);
           if (error) {
             console.log(error.message);
           } else {
@@ -284,10 +282,6 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen }) => {
     }
   };
 
-  const isOwner =
-    user?.id === currentProject?.user_id ||
-    currentProject?.collabs?.includes(user.email);
-
   const isDemo =
     params.id === "3ec3f142-f33c-4977-befd-30d4ce2b764d" ? true : false;
 
@@ -316,14 +310,20 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen }) => {
 
                 <div className="mt-2">
                   {company?.keyWords &&
-                    company.keyWords.split(",").map((keyWord, index) => (
-                      <Badge
-                        key={index}
-                        className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
-                      >
-                        {keyWord.trim()}
-                      </Badge>
-                    ))}
+                    company.keyWords.split(",").map((keyWord, index) => {
+                      const trimmedKeyword = keyWord.trim(); // Loại bỏ khoảng trắng ở đầu và cuối
+                      if (trimmedKeyword) {
+                        return (
+                          <Badge
+                            key={index}
+                            className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
+                          >
+                            {trimmedKeyword}
+                          </Badge>
+                        );
+                      }
+                      return null; // Loại bỏ từ khóa nếu chỉ còn khoảng trắng
+                    })}
                 </div>
               </div>
               {user?.id === currentProject?.user_id ||
@@ -404,12 +404,16 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen }) => {
   };
 
   return (
-    <div className="container  mx-auto px-4 flex flex-col lg:flex-row">
+    <div
+      className={`container mx-auto px-4 flex flex-col lg:flex-row ${
+        fullScreen === true ? "justify-center items-center" : ""
+      }`}
+    >
       {isLoading ? (
         <LoadingButtonClick isLoading={isLoading} />
       ) : (
         <>
-          {fullScreen === false ? (
+          {fullScreen === false && (
             <>
               <aside className="w-full md:max-w-[200px] py-8">
                 <div className="sticky top-8 space-y-4">
@@ -436,14 +440,13 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen }) => {
                 {tabContents[activeTab]}
               </div>
             </>
-          ) : (
-            <div className="mt-4 flex items-center justify-center flex-nowrap">
-              <BlockNoteView
-                editor={editor}
-                theme={"light"}
-                className="w-full lg:w-8/12"
-              />
-            </div>
+          )}
+          {fullScreen === true && (
+            <BlockNoteView
+              editor={editor}
+              theme={"light"}
+              className="w-full lg:w-8/12 my-12"
+            />
           )}
         </>
       )}

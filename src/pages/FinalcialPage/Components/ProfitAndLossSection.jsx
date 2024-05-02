@@ -48,7 +48,6 @@ import { calculateProfitAndLoss } from "../../../features/ProfitAndLossSlice";
 import CustomChart from "./CustomerChart";
 import SelectField from "../../../components/SelectField";
 import { setCutMonth } from "../../../features/DurationSlice";
-import { InfoCircleOutlined } from "@ant-design/icons";
 
 const ProfitAndLossSection = ({ numberOfMonths }) => {
   const dispatch = useDispatch();
@@ -211,6 +210,8 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       {}
     ),
   }));
+
+  console.log("transposedData", transposedData);
 
   const months = [
     "01",
@@ -835,7 +836,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
         />
       )}
 
-      <div className="w-full md:w-[20%] mb-5">
+      <div className="w-full md:w-[20%] my-5">
         <SelectField
           label="Select Cut Month:"
           id="Select Cut Month:"

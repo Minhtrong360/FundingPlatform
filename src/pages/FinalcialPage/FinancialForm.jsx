@@ -179,6 +179,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         id: "customer-growth-chart",
         type: "area",
         height: 350,
+        stacked: false,
       },
       
       // fill: {
@@ -190,7 +191,15 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       //     stops: [0, 90, 100]
       //   }
       // },
-      colors: ['#00A2FF', '#14F584','#FFB303', '#5C39FF',  '#D738FF', '#FF841F'],
+      // colors: ['#00A2FF', '#14F584','#FFB303', '#5C39FF',  '#D738FF', '#FF841F'],
+      colors: [
+        "#00A2FF",
+        "#14F584",
+        "#FFB303",
+        "#5C39FF",
+        "#D738FF",
+        "#FF841F",
+      ],
   
       xaxis: {
         categories: Array.from(
@@ -218,7 +227,16 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
-      // fill: { type: "solid" },
+      // fill: {
+      //   type: "gradient",
+      //   gradient: {
+      //     shadeIntensity: 1,
+      //     opacityFrom: 0.7,
+      //     opacityTo: 0.9,
+      //     stops: [0, 90, 100],
+      //   },
+      // },
+     
       dataLabels: { enabled: false },
       // stroke: { curve: "stepline" },
       // markers: { size: 1 },

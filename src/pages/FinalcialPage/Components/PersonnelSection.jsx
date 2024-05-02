@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
-import { Table, Tooltip, message } from "antd";
+import { Card, Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import {
@@ -468,13 +468,16 @@ const PersonnelSection = ({
           bordered
         />
         <h3 className="text-2xl font-semibold my-8">Personnel Cost Chart</h3>
-        <Chart
-        className="rounded-md shadow-xl border p-2"
-          options={personnelChart.options}
-          series={personnelChart.series}
-          type="bar"
-          height={350}
-        />
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card className="flex flex-col shadow-xl">
+            <Chart
+              options={personnelChart.options}
+              series={personnelChart.series}
+              type="bar"
+              height={350}
+            />
+          </Card>
+        </div>
       </div>
     </div>
   );

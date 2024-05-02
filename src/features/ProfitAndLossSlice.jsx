@@ -1,14 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { formatNumber, parseNumber } from "./CostSlice";
 
-const initialState = {};
+const initialState = {
+  transposedData: [],
+};
 
 const profitAndLossSlice = createSlice({
   name: "profitAndLoss",
   initialState,
   reducers: {
-    setFundraisingTableData(state, action) {
-      state.fundraisingTableData = action.payload;
+    setTransposedData(state, action) {
+      state.transposedData = action.payload;
     },
   },
 });
@@ -143,6 +145,6 @@ export const calculateProfitAndLoss = (
   };
 };
 
-export const { setFundraisingTableData } = profitAndLossSlice.actions;
+export const { setTransposedData } = profitAndLossSlice.actions;
 
 export default profitAndLossSlice.reducer;

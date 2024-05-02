@@ -10,8 +10,11 @@ import { message } from "antd";
 import HeroStartup from "./HeroStartup";
 import regions from "../../components/Regions";
 
-const NewProjectPosts = () => {
-  const [companies, setCompanies] = useState([]);
+const NewProjectPosts = ({ location }) => {
+  const [companies, setCompanies] = useState(
+    JSON.parse(sessionStorage.getItem("companies")) || []
+  );
+
   const [page, setPage] = useState(1);
   const itemsPerPage = 6;
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,53 +28,90 @@ const NewProjectPosts = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentTab, setCurrentTab] = useState("verified");
 
-  const [companiesToRender, setCompaniesToRender] = useState([]);
-  const [verifiedCompanies, setVerifiedCompanies] = useState([]);
-  const [unverifiedCompanies, setUnverifiedCompanies] = useState([]);
+  const [companiesToRender, setCompaniesToRender] = useState(
+    JSON.parse(sessionStorage.getItem("companiesToRender")) || []
+  );
+
   const [visibleItemCount, setVisibleItemCount] = useState(itemsPerPage);
 
+  const locationKey = JSON.parse(sessionStorage.getItem("locationKey"));
+
   useEffect(() => {
-    const fetchCompanies = async () => {
-      try {
-        const { data: projects, error: projectsError } = await supabase
-          .from("projects")
-          .select("id")
-          .neq("status", "stealth");
-
-        if (projectsError) {
-          message.error(projectsError.message);
-          console.error(
-            "Error fetching projects from Supabase:",
-            projectsError
-          );
-          return;
-        }
-
-        const projectIds = projects.map((project) => project.id);
-
-        const { data: companies, error: companiesError } = await supabase
-          .from("company")
-          .select("*")
-          .in("project_id", projectIds)
-          .order("created_at", { ascending: false });
-
-        if (companiesError) {
-          message.error(companiesError.message);
-          console.error(
-            "Error fetching companies from Supabase:",
-            companiesError
-          );
-          return;
-        }
-
-        setCompanies(companies);
-      } catch (error) {
-        console.error("Error fetching data from Supabase:", error);
-      }
-    };
-
-    fetchCompanies();
+    if (locationKey !== location?.key || !companies.length) {
+      // Check if companies are already loaded
+      fetchCompanies();
+    } else {
+      setIsLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    sessionStorage.setItem("companies", JSON.stringify(companies)); // Cache companies data
+
+    sessionStorage.setItem("locationKey", JSON.stringify(location.key));
+  }, [companies, location.key]);
+
+  useEffect(() => {
+    if (companiesToRender.length > 0) {
+      sessionStorage.setItem(
+        "companiesToRender",
+        JSON.stringify(companiesToRender)
+      );
+    }
+  }, [companiesToRender]);
+
+  const fetchCompanies = async () => {
+    setIsLoading(true);
+    try {
+      // Fetch projects including their verified status and status, avoiding stealth status projects
+      const { data: projects, error: projectsError } = await supabase
+        .from("projects")
+        .select("id, verified, status") // Get verified status and status along with id
+        .neq("status", "stealth");
+
+      if (projectsError) {
+        message.error(projectsError.message);
+        return;
+      }
+
+      const projectIds = projects.map((project) => project.id);
+
+      // Fetch companies based on project ids
+      const { data: fetchedCompanies, error: companiesError } = await supabase
+        .from("company")
+        .select("*")
+        .in("project_id", projectIds)
+        .order("created_at", { ascending: false });
+
+      if (companiesError) {
+        message.error(companiesError.message);
+        return;
+      }
+
+      // Create maps to store verified status and status for quick lookup
+      const verifiedStatusMap = new Map();
+      const statusMap = new Map();
+
+      projects.forEach((project) => {
+        verifiedStatusMap.set(project.id, project.verified);
+        statusMap.set(project.id, project.status);
+      });
+
+      // Attach verified status and status directly to each company object
+      fetchedCompanies.forEach((company) => {
+        company.verifiedStatus =
+          verifiedStatusMap.get(company.project_id) || false;
+        company.status = statusMap.get(company.project_id) || "Unknown"; // Default to "Unknown" if no status found
+      });
+
+      setCompanies(fetchedCompanies);
+    } catch (error) {
+      message.error("An error occurred while fetching companies.");
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
@@ -82,64 +122,6 @@ const NewProjectPosts = () => {
     setSelectedIndustry(industry);
     setPage(1);
   };
-
-  const fetchVerifiedStatus = async (companyId) => {
-    try {
-      const { data, error } = await supabase
-        .from("projects")
-        .select("verified")
-        .eq("id", companyId)
-        .single();
-
-      if (error) {
-        console.error("Error fetching verified status:", error.message);
-        return null;
-      } else {
-        return data.verified;
-      }
-    } catch (error) {
-      console.log("Error fetching verified status:", error.message);
-      return null;
-    }
-  };
-
-  const divideCompaniesByVerifiedStatus = async (companies) => {
-    const verifiedCompanies = [];
-    const unverifiedCompanies = [];
-
-    for (const company of companies) {
-      const verifiedStatus = await fetchVerifiedStatus(company.project_id);
-
-      if (verifiedStatus) {
-        verifiedCompanies.push(company);
-      } else {
-        unverifiedCompanies.push(company);
-      }
-    }
-
-    return { verifiedCompanies, unverifiedCompanies };
-  };
-
-  useEffect(() => {
-    const divideCompanies = async () => {
-      setIsLoading(true);
-      try {
-        const { verifiedCompanies, unverifiedCompanies } =
-          await divideCompaniesByVerifiedStatus(companies);
-        setVerifiedCompanies(verifiedCompanies);
-        setUnverifiedCompanies(unverifiedCompanies);
-      } catch (error) {
-        console.log(
-          "Error dividing companies by verified status:",
-          error.message
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    divideCompanies();
-  }, [companies]);
 
   const getMinMaxFromLabel = (label) => {
     const target = targetAmountArray.find((item) => item.label === label);
@@ -165,13 +147,13 @@ const NewProjectPosts = () => {
   };
 
   useEffect(() => {
-    let data = [];
+    let data = companies;
+
     if (currentTab === "verified") {
-      data = verifiedCompanies;
-    } else if (currentTab === "All") {
-      data = companies;
-    } else {
-      data = unverifiedCompanies;
+      data = data.filter((company) => company?.verifiedStatus === true);
+    }
+    if (currentTab === "unverified") {
+      data = data.filter((company) => company?.verifiedStatus === false);
     }
 
     if (searchTerm) {
@@ -188,7 +170,7 @@ const NewProjectPosts = () => {
         )
       );
     }
-    console.log("data", data);
+
     if (targetAmount) {
       const { min, max } = getMinMaxFromLabel(targetAmount);
       data = data.filter(
@@ -220,8 +202,6 @@ const NewProjectPosts = () => {
     page,
     searchTerm,
     selectedIndustry,
-    verifiedCompanies,
-    unverifiedCompanies,
     visibleItemCount,
     targetAmount,
     revenueRange,
@@ -297,7 +277,7 @@ const NewProjectPosts = () => {
               <>
                 <div className="mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
                   {companiesToRender.map((company, index) => (
-                    <div key={index} className="group flex justify-center">
+                    <div key={company.id} className="group flex justify-center">
                       {company ? (
                         <Card
                           key={company.id}
@@ -306,6 +286,8 @@ const NewProjectPosts = () => {
                           imageUrl={company.card_url}
                           buttonText="More"
                           project_id={company.project_id}
+                          verified={company.verifiedStatus}
+                          status={company.status}
                         />
                       ) : (
                         <div className="w-[30vw] h-[55vh]"></div>

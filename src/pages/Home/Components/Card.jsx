@@ -10,40 +10,10 @@ const Card = ({
   buttonText,
   project_id,
   canClick,
-  formData,
-  setFormData,
+  verified,
+  status,
 }) => {
   const navigate = useNavigate();
-  const [project, setProject] = useState(null);
-
-  useEffect(() => {
-    const fetchProject = async () => {
-      if (!project_id) return;
-
-      try {
-        const { data, error } = await supabase
-          .from("projects")
-          .select("*")
-          .eq("id", project_id)
-          .single();
-
-        if (error) {
-          throw error;
-        }
-
-        setProject(data);
-      } catch (error) {
-        console.error("Error fetching project:", error.message);
-      }
-    };
-
-    fetchProject();
-  }, [project_id]);
-
-  // Fallback project_id if not provided
-  if (!project_id) {
-    project_id = "3ec3f142-f33c-4977-befd-30d4ce2b764d";
-  }
 
   return (
     <div className="flex flex-col h-full max-w-sm bg-white border rounded-md shadow-md transition-all duration-300  hover:shadow-lg cursor-pointer">
@@ -69,7 +39,7 @@ const Card = ({
           <div className=" h-full w-full  absolute top-0 start-0 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out "></div>
         )}
 
-        {project?.verified && (
+        {verified && (
           <span className="absolute top-0 right-0 bg-yellow-300 text-gray-800 text-sm font-bold py-1.5 px-3 rounded-bl-lg">
             Verified profile
           </span>
@@ -107,15 +77,15 @@ const Card = ({
           )}
           <Tag
             className={` ${
-              project?.status === "public"
+              status === "public"
                 ? "bg-yellow-300 text-black"
                 : "bg-bg-gray-50 border border-gray-200 text-black"
             } mt-1 inline-flex items-center px-3 py-1 text-sm font-medium text-center   rounded-3xl`}
             onClick={() => navigate(`/founder/${project_id}`)}
           >
-            {project?.status === "public"
+            {status === "public"
               ? "Public"
-              : project?.status === "private"
+              : status === "private"
               ? "Private"
               : "Stealth"}
           </Tag>

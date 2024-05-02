@@ -8,6 +8,8 @@ import InvestmentSlice from "../features/InvestmentSlice";
 import LoanSlice from "../features/LoanSlice";
 import FundraisingSlice from "../features/FundraisingSlice";
 import ProfitAndLossSlice from "../features/ProfitAndLossSlice";
+import CashFlowSlice from "../features/CashFlowSlice";
+import BalanceSheetSlice from "../features/BalanceSheetSlice";
 
 const rootReducer = {
   durationSelect: DurationSlice,
@@ -19,6 +21,8 @@ const rootReducer = {
   loan: LoanSlice,
   fundraising: FundraisingSlice,
   profitAndLoss: ProfitAndLossSlice,
+  cashFlow: CashFlowSlice,
+  balanceSheet: BalanceSheetSlice,
 };
 const store = configureStore({
   reducer: rootReducer,

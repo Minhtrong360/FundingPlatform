@@ -7,7 +7,7 @@ import {
 } from "../../../components/ui/Select";
 import { Input as FundraisingInput } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
-import { Table, Tooltip, message } from "antd";
+import { Card, Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -444,13 +444,17 @@ const FundraisingSection = ({
           pagination={false}
         />
         <h3 className="text-2xl font-semibold my-8">Fundraising Chart</h3>
-        <Chart
-        className="rounded-md shadow-xl border p-2"
-          options={fundraisingChart.options}
-          series={fundraisingChart.series}
-          type="bar"
-          height={350}
-        />
+
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card className="flex flex-col shadow-xl">
+            <Chart
+              options={fundraisingChart.options}
+              series={fundraisingChart.series}
+              type="bar"
+              height={350}
+            />
+          </Card>
+        </div>
       </div>
     </div>
   );

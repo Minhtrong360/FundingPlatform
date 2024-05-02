@@ -28,6 +28,8 @@ import {
   SelectItem,
 } from "../../../components/ui/Select";
 import { useParams } from "react-router-dom";
+import { Tabs } from "antd";
+const { TabPane } = Tabs;
 
 const CustomerSection = ({
   numberOfMonths,
@@ -37,6 +39,10 @@ const CustomerSection = ({
   setCustomerGrowthChart,
   handleSubmit,
 }) => {
+  const [activeTab, setActiveTab] = useState("table");
+   const handleTabChange = (key) => {
+    setActiveTab(key);
+  };
   const dispatch = useDispatch();
   const { customerInputs, customerGrowthData, customerTableData } = useSelector(
     (state) => state.customer
@@ -189,7 +195,7 @@ const CustomerSection = ({
             chart: {
               ...prevState.options.chart,
               id: 'allChannels',
-              stacked: true
+              stacked: false
             },
             title: {
               ...prevState.options.title,
@@ -217,7 +223,20 @@ const CustomerSection = ({
     }));
   }, [tempCustomerGrowthData, numberOfMonths]);
   
+  const [channelContributionData, setChannelContributionData] = useState([]);
+
+  useEffect(() => {
+    // Function to calculate yearly contribution of each channel
+    const calculateChannelContribution = () => {
+      const yearlyContribution = tempCustomerInputs.reduce((acc, channel) => {
+        acc[channel.channelName] = channel.customersPerMonth * numberOfMonths;
+        return acc;
+      }, {});
+      setChannelContributionData(yearlyContribution);
+    };
   
+    calculateChannelContribution();
+  }, [tempCustomerInputs, numberOfMonths]);
   
 
   const handleSelectChange = (event) => {
@@ -351,7 +370,7 @@ const CustomerSection = ({
               chart: {
                 ...prevState.options.chart,
                 id: 'allChannels',
-                stacked: true
+                stacked: false,
               },
               title: {
                 ...prevState.options.title,
@@ -373,6 +392,7 @@ const CustomerSection = ({
               chart: {
                 ...prevState.options.chart,
                 id: 'yearlyTotal',
+                type: 'bar',
                 stacked: false, // Set as non-stacked for total visualization
                 toolbar: {
                   show: true
@@ -411,7 +431,7 @@ const CustomerSection = ({
             }, {
               name: 'Yearly Growth Rate (%)',
               data: yearlyGrowthRates, // Yearly growth rates
-              type: 'line' // Differentiating the chart type for growth rates
+              type: 'bar' // Differentiating the chart type for growth rates
             }]
           },
           // New chart for displaying total yearly sales per channel
@@ -421,6 +441,7 @@ const CustomerSection = ({
               chart: {
                 ...prevState.options.chart,
                 id: 'channelYearlyTotals',
+                type: 'bar',
                 stacked: false, // Non-stacked visualization
                 toolbar: {
                   show: true
@@ -722,12 +743,29 @@ const CustomerSection = ({
     },
   }}
   series={chart.series}
-  type="area"
+  type={chart.options.chart.type}
   height={350}
 
 />
     </Card>
+    
   ))}
+ <Card className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
+  <Chart
+    options={{
+      chart: {
+        type: "pie", // Set chart type to pie
+      },
+      labels: Object.keys(channelContributionData), // Labels for pie chart
+      dataLabels: {
+        enabled: true, // Enable data labels
+      },
+    }}
+    series={Object.values(channelContributionData)} // Series data for pie chart
+    type="pie"
+    height={350}
+  />
+</Card>
 </div>
       </div>
     </div>

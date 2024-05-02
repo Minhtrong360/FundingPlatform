@@ -276,32 +276,8 @@ function Dashboard({ dataSource }) {
                   type: chart.type,
                   height: 350,
                   toolbar: { show: false },
-                  animations: {
-                    enabled: true,
-                    easing: 'easeinout',
-                    speed: 800,
-                    animateGradually: {
-                      enabled: true,
-                      delay: 150
-                    },
-                    dynamicAnimation: {
-                      enabled: true,
-                      speed: 350
-                    }
-                  }
                 },
                 colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0'],
-                fill: {
-                  type: 'gradient',
-                  gradient: {
-                    shade: 'dark',
-                    type: 'horizontal',
-                    shadeIntensity: 0.5,
-                    opacityFrom: 0.85,
-                    opacityTo: 0.85,
-                    stops: [0, 100]
-                  }
-                },
                 labels: chart.categories,
                 xaxis: {
                   categories: chart.categories,

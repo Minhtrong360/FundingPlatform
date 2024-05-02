@@ -145,7 +145,7 @@ const CostSection = ({
   // State for cost chart
   const [costChart, setCostChart] = useState({
     options: {
-      chart: { id: "cost-chart", type: "bar", height: 350 },
+      chart: { id: "cost-chart", type: "bars", height: 350 },
       xaxis: {
         categories: Array.from(
           { length: numberOfMonths },
@@ -174,10 +174,10 @@ const CostSection = ({
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
-      dataLabels: { enabled: false },
-      stroke: { curve: "smooth" },
-      markers: { size: 1 },
+fill: { type: "solid" },
+dataLabels: { enabled: false },
+stroke: { width: 2 }, // Change stroke width to 2
+markers: { size: 1 },
     },
     series: [],
   });
@@ -486,24 +486,63 @@ const CostSection = ({
         />
         <h3 className="text-lg font-semibold my-8">Cost Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
-  <Chart
-    options={{
-      ...costChart.options,
-      xaxis: {
-        ...costChart.options.xaxis,
-        tickAmount: 12, // Set the number of ticks on the x-axis to 12
-      },
-      stroke: {
-        width: 2, // Set the stroke width to 2
-      },
-    }}
-    series={costChart.series}
-    type="area"
-    height={350}
-  />
-</Card>
-        </div>
+  {/* Original chart that renders all series */}
+  <Card className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
+    <Chart
+      options={{
+        ...costChart.options,
+        xaxis: {
+          ...costChart.options.xaxis,
+          tickAmount: 12, // Set the number of ticks on the x-axis to 12
+        },
+        stroke: {
+          width: 2, // Set the stroke width to 2
+        },
+      }}
+      series={costChart.series}
+      type="area"
+      height={350}
+    />
+  </Card>
+  
+  {/* Additional charts for each series */}
+  {costChart.series.map((seriesItem) => (
+    <Card
+      key={seriesItem.name}
+      className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
+    >
+      <Chart
+        options={{
+          ...costChart.options,
+          xaxis: {
+            ...costChart.options.xaxis,
+            tickAmount: 12, // Adjusted for individual series charts
+          },
+          stroke: {
+            width: 2, // Consistent stroke width for all charts
+          },
+          chart: {
+            ...costChart.options.chart,
+            id: seriesItem.name + '-individual', // Unique ID for each chart
+          },
+          title: {
+            text: seriesItem.name,
+            align: 'center',
+            style: {
+              color: '#333',
+              fontSize: '16px',
+              fontWeight: 'bold',
+              fontFamily: 'Inter, sans-serif',
+            },
+          },
+        }}
+        series={[seriesItem]}
+        type="area"
+        height={350}
+      />
+    </Card>
+  ))}
+</div>
       </div>
     </div>
   );

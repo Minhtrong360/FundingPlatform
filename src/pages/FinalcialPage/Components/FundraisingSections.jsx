@@ -256,7 +256,7 @@ const FundraisingSection = ({
       <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
         <section aria-labelledby="fundraising-heading" className="mb-8">
           <h2
-            className="text-2xl font-semibold mb-8 flex items-center"
+            className="text-lg font-semibold mb-8 flex items-center"
             id="fundraising-heading"
           >
             Fundraising
@@ -269,7 +269,7 @@ const FundraisingSection = ({
             ></label>
             <select
               id="selectedFundraising"
-              className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+              className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
               value={selectedFundraisingId}
               onChange={handleSelectChange}
             >
@@ -293,7 +293,7 @@ const FundraisingSection = ({
                     Fundraising Name:
                   </span>
                   <FundraisingInput
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={input.name}
                     onChange={(e) =>
                       handleFundraisingInputChange(
@@ -310,7 +310,7 @@ const FundraisingSection = ({
                     Equity offered (%):
                   </span>
                   <FundraisingInput
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     type="number"
                     min={0}
                     max={100}
@@ -330,7 +330,7 @@ const FundraisingSection = ({
                     Fundraising Amount:
                   </span>
                   <FundraisingInput
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={formatNumber(input.fundraisingAmount)}
                     onChange={(e) =>
                       handleFundraisingInputChange(
@@ -346,7 +346,7 @@ const FundraisingSection = ({
                     Fundraising Type:
                   </span>
                   <FundraisingSelect
-                    className="border-gray-200"
+                    className="border-gray-300"
                     onValueChange={(value) =>
                       handleFundraisingInputChange(
                         input?.id,
@@ -358,7 +358,7 @@ const FundraisingSection = ({
                   >
                     <FundraisingSelectTrigger
                       id={`select-fundraisingType-${input?.id}`}
-                      className="border-solid border-[1px] border-gray-200"
+                      className="border-solid border-[1px] border-gray-300"
                     >
                       <FundraisingSelectValue placeholder="Select Fundraising Type" />
                     </FundraisingSelectTrigger>
@@ -389,7 +389,7 @@ const FundraisingSection = ({
                     Month Fundraising Begins:
                   </span>
                   <FundraisingInput
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     type="number"
                     min="1"
                     max="12"
@@ -425,13 +425,13 @@ const FundraisingSection = ({
               className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
               onClick={handleSave}
             >
-              Save changes
+              Save
             </button>
           </div>
         </section>
       </div>
       <div className="w-full lg:w-3/4 sm:p-4 p-0">
-        <h3 className="text-2xl font-semibold mb-4">Fundraising Table</h3>
+        <h3 className="text-lg font-semibold mb-4">Fundraising Table</h3>
         <Table
           className="overflow-auto my-8 rounded-md shadow-xl"
           size="small"
@@ -443,7 +443,7 @@ const FundraisingSection = ({
           bordered
           pagination={false}
         />
-        <h3 className="text-2xl font-semibold my-8">Fundraising Chart</h3>
+        <h3 className="text-lg font-semibold my-8">Fundraising Chart</h3>
 
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col shadow-xl">

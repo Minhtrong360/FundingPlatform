@@ -5,6 +5,9 @@ import {
   SelectContent,
   SelectItem,
 } from "../../../components/ui/Select";
+import { Button } from "antd";
+import { EditOutlined } from '@ant-design/icons';
+
 import { Input } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
 import { Card, Table, Tooltip, message } from "antd";
@@ -191,6 +194,7 @@ const SalesSection = ({
   ]);
 
   //RevenueTable
+  
 
   const handleActualChange = (value, record, field) => {};
 
@@ -243,16 +247,82 @@ const SalesSection = ({
   //RevenueChart
 
   useEffect(() => {
-    const seriesData = Object.entries(tempRevenueData).map(([key, data]) => {
-      return { name: key, data };
-    });
-
-    setRevenue((prevState) => ({ ...prevState, series: seriesData }));
+    if (Array.isArray(tempRevenueData)) {
+      const salesChartsData = tempRevenueData.map((channelData) => ({
+        name: channelData[0]?.channelName || "Unknown Channel",
+        data: channelData.map((data) => data.revenue),
+      }));
+  
+      const totalSalesData = salesChartsData.reduce((acc, channel) => {
+        channel.data.forEach((amount, index) => {
+          if (!acc[index]) acc[index] = 0;
+          acc[index] += amount;
+        });
+        return acc;
+      }, Array(numberOfMonths).fill(0));
+  
+      setRevenue((prevState) => ({
+        ...prevState,
+        series: salesChartsData,
+        charts: [
+          // Stacked bar chart for all channels
+          {
+            options: {
+              ...prevState.options,
+              chart: {
+                ...prevState.options.chart,
+                id: 'allChannels',
+                stacked: true
+              },
+              title: {
+                ...prevState.options.title,
+                text: 'All Channels'
+              },
+            },
+            series: salesChartsData
+          },
+          // Total sales chart for all channels
+          {
+            options: {
+              ...prevState.options,
+              chart: {
+                ...prevState.options.chart,
+                id: 'totalSales',
+              },
+              title: {
+                ...prevState.options.title,
+                text: 'Total Sales'
+              },
+            },
+            series: [{
+              name: 'Total',
+              data: totalSalesData,
+            }]
+          },
+          // Individual charts for each channel
+          ...salesChartsData.map(channelSeries => ({
+            options: {
+              ...prevState.options,
+              chart: {
+                ...prevState.options.chart,
+                id: channelSeries.name
+              },
+              title: {
+                ...prevState.options.title,
+                text: channelSeries.name
+              },
+            },
+            series: [channelSeries]
+          })),
+        ],
+      }));
+    }
   }, [tempRevenueData, numberOfMonths]);
+  
 
-  const handleChannelChange = (event) => {
-    setRenderChannelForm(event.target.value);
-  };
+
+
+
 
   const handleSave = () => {
     setIsSaved(true);
@@ -338,12 +408,16 @@ const SalesSection = ({
     dispatch(setYearlySales(sales));
   }, [tempRevenueData, numberOfMonths, isSaved]);
 
+  const handleChannelChange = (event) => {
+    setRenderChannelForm(event.target.value);
+  };
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
         <section aria-labelledby="sales-heading" className="mb-8">
           <h2
-            className="text-2xl font-semibold mb-8 flex items-center"
+            className="text-lg font-semibold mb-8 flex items-center"
             id="sales-heading"
           >
             Sales Section
@@ -356,7 +430,7 @@ const SalesSection = ({
             ></label>
             <select
               id="selectedChannel"
-              className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+              className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
               value={renderChannelForm}
               onChange={handleChannelChange}
             >
@@ -381,7 +455,7 @@ const SalesSection = ({
                     Product Name:
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={input.productName}
                     onChange={(e) =>
                       handleChannelInputChange(
@@ -395,7 +469,7 @@ const SalesSection = ({
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">Price:</span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={formatNumber(input.price)}
                     onChange={(e) =>
                       handleChannelInputChange(
@@ -410,7 +484,7 @@ const SalesSection = ({
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">Multiples:</span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={formatNumber(input.multiples)}
                     onChange={(e) =>
                       handleChannelInputChange(
@@ -428,7 +502,7 @@ const SalesSection = ({
                       Rev. Deductions (%):
                     </span>
                     <Input
-                      className="col-start-2 border-gray-200"
+                      className="col-start-2 border-gray-300"
                       value={formatNumber(input.deductionPercentage)}
                       onChange={(e) =>
                         handleChannelInputChange(
@@ -444,7 +518,7 @@ const SalesSection = ({
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">COGS (%):</span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={formatNumber(input.cogsPercentage)}
                     onChange={(e) =>
                       handleChannelInputChange(
@@ -461,7 +535,7 @@ const SalesSection = ({
                     Sales Channel:
                   </span>
                   <Select
-                    className="border-gray-200"
+                    className="border-gray-300"
                     onValueChange={(value) =>
                       handleChannelInputChange(
                         input.id,
@@ -477,7 +551,7 @@ const SalesSection = ({
                   >
                     <SelectTrigger
                       id={`select-channel-${index}`}
-                      className="border-solid border-[1px] border-gray-200"
+                      className="border-solid border-[1px] border-gray-300"
                     >
                       <SelectValue placeholder="Select Channel" />
                     </SelectTrigger>
@@ -496,7 +570,7 @@ const SalesSection = ({
                     Channel Allocation (%):
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     type="number"
                     min={0}
                     max={100}
@@ -516,7 +590,7 @@ const SalesSection = ({
                     Days get paid:
                   </span>
                   <Select
-                    className="border-gray-200"
+                    className="border-gray-300"
                     onValueChange={(value) =>
                       handleChannelInputChange(input.id, "daysGetPaid", value)
                     }
@@ -525,7 +599,7 @@ const SalesSection = ({
                   >
                     <SelectTrigger
                       id={`select-days-get-paid-${index}`}
-                      className="border-solid border-[1px] border-gray-200"
+                      className="border-solid border-[1px] border-gray-300"
                     >
                       <SelectValue placeholder="Select Days" />
                     </SelectTrigger>
@@ -560,13 +634,13 @@ const SalesSection = ({
               className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
               onClick={handleSave}
             >
-              Save changes
+              Save
             </button>
           </div>
         </section>
       </div>
       <div className="w-full lg:w-3/4 sm:p-4 p-0">
-        <h3 className="text-2xl font-semibold mb-4">Revenue by Product</h3>
+        <h3 className="text-lg font-semibold mb-4">Revenue by Product</h3>
         <Table
           className="overflow-auto my-8 rounded-md shadow-xl"
           size="small"
@@ -578,16 +652,70 @@ const SalesSection = ({
             record.key === record.channelName ? "font-bold" : ""
           }
         />
-        <h3 className="text-2xl font-semibold my-8">Revenue Chart</h3>
+        <h3 className="text-lg font-semibold my-8">Revenue Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col shadow-xl">
-            <Chart
-              options={revenue.options}
-              series={revenue.series}
-              type="bar"
-              height={350}
-            />
-          </Card>
+        <Card className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
+  <Chart
+    options={{
+      ...revenue.options,
+      chart: {
+        ...revenue.options.chart,
+        id: 'totalSales',
+        stacked: true, // Enable stacking for the total sales visualization
+      },
+      title: {
+        ...revenue.options.title,
+        text: 'Total Sales',
+      },
+      xaxis: {
+        ...revenue.options.xaxis,
+        tickAmount: 12, // Ensure x-axis has 12 ticks
+      },
+      stroke: {
+        width: 2, // Set the stroke width to 2
+      },
+    }}
+    series={[{
+      name: 'Total Sales',
+      data: revenue.series.reduce((acc, curr) => acc.map((el, i) => el + (curr.data[i] || 0)), Array(numberOfMonths).fill(0)),
+    }]}
+    type="area"
+    height={350}
+  />
+</Card>
+
+
+{revenue.series.map((seriesItem, index) => (
+  <Card key={index} className="flex flex-col shadow-xl">
+    <Chart
+      options={{
+        ...revenue.options,
+        chart: {
+          ...revenue.options.chart,
+          id: seriesItem.name,
+        },
+        title: {
+          ...revenue.options.title,
+          text: seriesItem.name,
+        },
+        xaxis: {
+          ...revenue.options.xaxis,
+          tickAmount: 12, // Ensure x-axis has 12 ticks
+        },
+        stroke: {
+          width: 2, // Set the stroke width to 1
+        },  
+      }}
+      series={[seriesItem]}
+      type="area"
+      height={350}
+    />
+  </Card>
+))}
+
+
+
+
         </div>
       </div>
     </div>

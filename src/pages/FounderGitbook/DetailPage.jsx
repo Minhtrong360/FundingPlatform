@@ -116,7 +116,7 @@ const DetailPage = () => {
           className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0 "
           onClick={() => setIsSidebarOpen(false)}
         >
-          <div className="p-0 sm:p-4 border-0 border-gray-200 border-dashed sm:border-2 rounded-md darkBorderGray">
+          <div className="p-0 sm:p-4 border-0 border-gray-300 border-dashed sm:border-2 rounded-md darkBorderGray">
             <HeroSection
               formData={company}
               title={company.name}

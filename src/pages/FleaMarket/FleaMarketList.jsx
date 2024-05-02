@@ -354,7 +354,7 @@ function FleaMarketList() {
           className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0 "
           onClick={() => setIsSidebarOpen(false)}
         >
-          <div className="p-4 border-2 border-gray-200 border-dashed rounded-md darkBorderGray min-h-[96vh]">
+          <div className="p-4 border-gray-300 border-dashed rounded-md darkBorderGray min-h-[96vh]">
             <main className="w-full min-h-[92.5vh]">
               <AlertMsg />
 
@@ -392,7 +392,7 @@ function FleaMarketList() {
                 <div className="flex flex-col mb-8">
                   <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-                      <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
+                      <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
                         <Table
                           columns={columns}
                           dataSource={fleaMarketData}

@@ -248,7 +248,7 @@ const LoanSection = ({
       <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
         <section aria-labelledby="loan-heading" className="mb-8">
           <h2
-            className="text-2xl font-semibold mb-8 flex items-center"
+            className="text-lg font-semibold mb-8 flex items-center"
             id="loan-heading"
           >
             Loan
@@ -261,7 +261,7 @@ const LoanSection = ({
             ></label>
             <select
               id="selectedChannel"
-              className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+              className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
               value={renderLoanForm}
               onChange={handleSelectChange}
             >
@@ -285,7 +285,7 @@ const LoanSection = ({
                   <span className="flex items-center text-sm">Loan Name:</span>
                   <Input
                     required
-                    className="border p-2 rounded border-gray-200"
+                    className="border p-2 rounded border-gray-300"
                     value={input.loanName}
                     onChange={(e) =>
                       handleLoanInputChange(
@@ -303,7 +303,7 @@ const LoanSection = ({
                   </span>
                   <Input
                     required
-                    className="border p-2 rounded border-gray-200"
+                    className="border p-2 rounded border-gray-300"
                     value={formatNumber(input.loanAmount)}
                     onChange={(e) =>
                       handleLoanInputChange(
@@ -321,7 +321,7 @@ const LoanSection = ({
                   </span>
                   <Input
                     required
-                    className="border p-2 rounded border-gray-200"
+                    className="border p-2 rounded border-gray-300"
                     value={formatNumber(input.interestRate)}
                     onChange={(e) =>
                       handleLoanInputChange(
@@ -340,7 +340,7 @@ const LoanSection = ({
                   <Input
                     required
                     type="number"
-                    className="border p-2 rounded border-gray-200"
+                    className="border p-2 rounded border-gray-300"
                     value={input.loanBeginMonth}
                     onChange={(e) =>
                       handleLoanInputChange(
@@ -359,7 +359,7 @@ const LoanSection = ({
                   <Input
                     required
                     type="number"
-                    className="border p-2 rounded border-gray-200"
+                    className="border p-2 rounded border-gray-300"
                     value={input.loanEndMonth}
                     onChange={(e) =>
                       handleLoanInputChange(
@@ -392,13 +392,13 @@ const LoanSection = ({
               className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
               onClick={handleSave}
             >
-              Save changes
+              Save
             </button>
           </div>
         </section>
       </div>
       <div className="w-full lg:w-3/4 sm:p-4 p-0">
-        <h3 className="text-2xl font-semibold mb-4">Loan Data</h3>
+        <h3 className="text-lg font-semibold mb-4">Loan Data</h3>
         <Table
           className="overflow-auto my-8 rounded-md shadow-xl"
           size="small"
@@ -414,7 +414,7 @@ const LoanSection = ({
             record.key === record.type ? "font-bold" : ""
           }
         />
-        <h3 className="text-2xl font-semibold my-8">Loan Data</h3>
+        <h3 className="text-lg font-semibold my-8">Loan Data</h3>
 
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col shadow-xl">

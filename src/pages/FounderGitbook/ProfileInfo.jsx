@@ -325,7 +325,7 @@ export default function ProfileInfo({
                 company?.industry?.map((industry, index) => (
                   <Badge
                     key={index}
-                    className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
+                    className="mx-2 bg-yellow-300 border border-gray-300 truncate text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
                   >
                     {industry}
                   </Badge>
@@ -333,7 +333,7 @@ export default function ProfileInfo({
               ) : (
                 <Badge
                   key={1}
-                  className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
+                  className="mx-2 bg-yellow-300 border border-gray-300 truncate text-black mt-4  inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm  text-center   rounded-3xl "
                 >
                   Technology
                 </Badge>
@@ -376,7 +376,7 @@ export default function ProfileInfo({
         </div>
       </div>
       <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 transform scale-90">
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border ">
+        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border ">
           <div className="text-xl font-semibold">
             $
             {company?.target_amount
@@ -385,7 +385,7 @@ export default function ProfileInfo({
           </div>
           <div className="text-black mt-2">Target amount</div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
+        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
           <div className="text-xl font-semibold">
             $
             {company?.ticket_size
@@ -394,13 +394,13 @@ export default function ProfileInfo({
           </div>
           <div className="text-black mt-2">Min ticket size</div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
+        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
           <div className="text-xl font-semibold">
             {company?.revenueStatus ? company?.revenueStatus : "0k-10k"}
           </div>
           <div className="text-black mt-2">Revenue range</div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
+        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
           <div className="text-xl font-semibold">
             {" "}
             $
@@ -410,25 +410,25 @@ export default function ProfileInfo({
           </div>
           <div className="text-black mt-2">Raised before</div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
+        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
           <div className="text-xl font-semibold">
             {company?.teamSize ? company?.teamSize : "1-10"}+
           </div>
           <div className="text-black mt-2">Team size</div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
+        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
           <div className="text-xl font-semibold">Round</div>
           <div className="text-black mt-2">
             {company?.round ? company?.round : "Pre-seed"}
           </div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
+        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
           <div className="text-xl font-semibold">Established</div>
           <div className="text-black mt-2">
             {company?.operationTime ? company?.operationTime : "2024"}
           </div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
+        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
           <Tooltip title={company?.offer}>
             <div className="text-xl font-semibold">Offer</div>
             <div className="text-black mt-2 truncate">
@@ -436,13 +436,13 @@ export default function ProfileInfo({
             </div>
           </Tooltip>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
+        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
           <div className="text-xl font-semibold">Type</div>
           <div className="text-black mt-2">
             {company?.offer_type ? company?.offer_type : "Investment"}
           </div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-200 border">
+        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
           <Tooltip title={company?.website}>
             <div className="text-xl font-semibold ">Website</div>
             <div

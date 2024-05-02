@@ -11,7 +11,17 @@ const CustomChart = ({
   title,
 }) => {
   const chartOptions = {
-    chart: { id: "profit-and-loss-chart", type: "line", height: 350 },
+    chart: { id: "profit-and-loss-chart", type: "area", height: 350 },
+    // fill: {
+    //   type: "gradient",
+    //   gradient: {
+    //     shadeIntensity: 1,
+    //     opacityFrom: 0.7,
+    //     opacityTo: 0.9,
+    //     stops: [0, 90, 100]
+    //   }
+    // },
+    colors: ['#00A2FF', '#14F584', '#FFB303', '#5C39FF', '#D738FF', '#FF841F'],
     xaxis: {
       categories: Array.from({ length: numberOfMonths }, (_, i) => `${i + 1}`),
       title: {
@@ -21,6 +31,8 @@ const CustomChart = ({
           fontWeight: "600",
         },
       },
+      tickAmount: 12,
+      
       labels: {
         rotate: -45,
         rotateAlways: false,
@@ -32,9 +44,14 @@ const CustomChart = ({
         },
       },
     },
+    stroke: {
+      width: 1, // Set the stroke width to 1
+      curve: "smooth", // Set the curve of the line, making it smooth
+    },
     yaxis: { title: { text: "Amount ($)" } },
-    stroke: { curve: "smooth" },
-    legend: { position: "top" },
+    // stroke: { curve: "smooth" },
+   
+    // legend: { position: "top" },
     tooltip: {
       enabled: true,
       y: {
@@ -49,6 +66,8 @@ const CustomChart = ({
           options={{
             ...chartOptions,
             chart: { ...chartOptions.chart, id: id },
+            dataLabels: { enabled: false },
+            colors: ['#00A2FF', '#14F584', '#FFB303', '#5C39FF', '#D738FF', '#FF841F'],
             yaxis: { title: { text: yaxisTitle } },
           }}
           series={[
@@ -58,7 +77,7 @@ const CustomChart = ({
             },
           ]}
           type="area"
-          height={300}
+          height={350}
         />
       </Card>
     </div>

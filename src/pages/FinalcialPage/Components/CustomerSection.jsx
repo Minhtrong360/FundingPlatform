@@ -177,12 +177,48 @@ const CustomerSection = ({
         data: channelData.map((data) => data.customers),
       };
     });
-
+  
     setCustomerGrowthChart((prevState) => ({
       ...prevState,
       series: seriesData,
+      charts: [
+        // Stacked bar chart for all channels
+        {
+          options: {
+            ...prevState.options,
+            chart: {
+              ...prevState.options.chart,
+              id: 'allChannels',
+              stacked: true
+            },
+            title: {
+              ...prevState.options.title,
+              text: 'All Channels'
+            },
+          },
+          series: seriesData
+        },
+        // Individual charts for each channel
+        ...seriesData.map(channelSeries => ({
+          options: {
+            ...prevState.options,
+            chart: {
+              ...prevState.options.chart,
+              id: channelSeries.name
+            },
+            title: {
+              ...prevState.options.title,
+              text: channelSeries.name
+            },
+          },
+          series: [channelSeries]
+        })),
+      ],
     }));
   }, [tempCustomerGrowthData, numberOfMonths]);
+  
+  
+  
 
   const handleSelectChange = (event) => {
     setRenderCustomerForm(event.target.value);
@@ -259,20 +295,180 @@ const CustomerSection = ({
   }, [isSaved]);
 
   useEffect(() => {
-    const averages = calculateYearlyAverage(
-      tempCustomerGrowthData,
-      numberOfMonths
-    );
-    dispatch(setYearlyAverageCustomers(averages));
-  }, [tempCustomerGrowthData, numberOfMonths, isSaved]);
-
+    const seriesData = tempCustomerGrowthData.map((channelData) => {
+      return {
+        name: channelData[0]?.channelName || "Unknown Channel",
+        data: channelData.map((data) => parseInt(data.customers, 10)),
+      };
+    });
+  
+    // Calculate total customers per month for all channels
+    const totalCustomersPerMonth = seriesData.reduce((acc, channel) => {
+      channel.data.forEach((customers, index) => {
+        if (!acc[index]) {
+          acc[index] = 0;
+        }
+        acc[index] += customers;
+      });
+      return acc;
+    }, []);
+  
+    setCustomerGrowthChart((prevState) => {
+      const yearlyTotalData = [];
+      for (let i = 0; i < totalCustomersPerMonth.length; i += 12) {
+        const yearlyTotal = totalCustomersPerMonth.slice(i, i + 12).reduce((sum, current) => sum + current, 0);
+        yearlyTotalData.push(yearlyTotal);
+      }
+    
+      const yearlyGrowthRates = yearlyTotalData.map((total, index, arr) => {
+        if (index === 0) return 0; // No growth rate for the first year
+        return ((total - arr[index - 1]) / arr[index - 1]) * 100; // Growth rate calculation
+      });
+    
+      // Calculate yearly totals for each channel
+      const channelYearlyTotals = seriesData.map(channel => {
+        return {
+          name: channel.name,
+          data: []
+        };
+      });
+    
+      for (let i = 0; i < totalCustomersPerMonth.length; i += 12) {
+        seriesData.forEach((channel, index) => {
+          const yearlyTotal = channel.data.slice(i, i + 12).reduce((sum, current) => sum + current, 0);
+          channelYearlyTotals[index].data.push(yearlyTotal);
+        });
+      }
+    
+      return {
+        ...prevState,
+        series: seriesData,
+        charts: [
+          // Stacked bar chart for all channels including total customers
+          {
+            options: {
+              ...prevState.options,
+              chart: {
+                ...prevState.options.chart,
+                id: 'allChannels',
+                stacked: true
+              },
+              title: {
+                ...prevState.options.title,
+                text: 'All Channels'
+              },
+            },
+            series: [
+              ...seriesData,
+              {
+                name: 'Total',
+                data: totalCustomersPerMonth,
+              }
+            ],
+          },
+          // New chart for yearly total and growth rate with separate y-axes
+          {
+            options: {
+              ...prevState.options,
+              chart: {
+                ...prevState.options.chart,
+                id: 'yearlyTotal',
+                stacked: false, // Set as non-stacked for total visualization
+                toolbar: {
+                  show: true
+                }
+              },
+              title: {
+                ...prevState.options.title,
+                text: 'Yearly Total and Growth Rate'
+              },
+              xaxis: {
+                ...prevState.options.xaxis,
+                categories: Array.from({ length: yearlyTotalData.length }, (_, index) => `Year ${index + 1}`) // Creating categories for each year
+              },
+              yaxis: [{
+                title: {
+                  text: 'Yearly Total'
+                },
+                seriesName: 'Yearly Total',
+                labels: {
+                  formatter: (value) => `${value.toFixed(0)}`, // No decimals for total
+                }
+              }, {
+                opposite: true,
+                title: {
+                  text: 'Yearly Growth Rate (%)'
+                },
+                seriesName: 'Yearly Growth Rate (%)',
+                labels: {
+                  formatter: (value) => `${value.toFixed(2)}%`,
+                }
+              }],
+            },
+            series: [{
+              name: 'Yearly Total',
+              data: yearlyTotalData // Yearly total data
+            }, {
+              name: 'Yearly Growth Rate (%)',
+              data: yearlyGrowthRates, // Yearly growth rates
+              type: 'line' // Differentiating the chart type for growth rates
+            }]
+          },
+          // New chart for displaying total yearly sales per channel
+          {
+            options: {
+              ...prevState.options,
+              chart: {
+                ...prevState.options.chart,
+                id: 'channelYearlyTotals',
+                stacked: false, // Non-stacked visualization
+                toolbar: {
+                  show: true
+                }
+              },
+              title: {
+                ...prevState.options.title,
+                text: 'Total Yearly Customers by Channel'
+              },
+              xaxis: {
+                ...prevState.options.xaxis,
+                categories: Array.from({ length: yearlyTotalData.length }, (_, index) => `Year ${index + 1}`) // Creating categories for each year
+              },
+            },
+            series: channelYearlyTotals // Yearly totals per channel
+          },
+          // Individual charts for each channel
+          ...seriesData.map(channelSeries => ({
+            options: {
+              ...prevState.options,
+              chart: {
+                ...prevState.options.chart,
+                id: channelSeries.name
+              },
+              title: {
+                ...prevState.options.title,
+                text: channelSeries.name
+              },
+            },
+            series: [channelSeries]
+          })),
+        ],
+      };
+    });
+    
+    
+    
+  }, [tempCustomerGrowthData, numberOfMonths]);
+  
+  
+  
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
         <section aria-labelledby="customers-heading" className="mb-8">
           <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Examples:  Online, Offline, Social Media, Email Marketing, Referrals, Direct Sales, Subscription...">
             <h2
-              className="text-2xl font-semibold mb-8 flex items-center"
+              className="text-lg font-semibold mb-8 flex items-center"
               id="customers-heading"
             >
               Customer channel{" "}
@@ -285,7 +481,7 @@ const CustomerSection = ({
             ></label>
             <select
               id="selectedChannel"
-              className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+              className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
               value={renderCustomerForm}
               onChange={handleSelectChange}
             >
@@ -310,7 +506,7 @@ const CustomerSection = ({
                     Channel Name:
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={input.channelName}
                     onChange={(e) =>
                       handleInputChange(
@@ -326,7 +522,7 @@ const CustomerSection = ({
                     Existing Customer:
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     type="text"
                     value={formatNumber(input.beginCustomer)}
                     onChange={(e) =>
@@ -343,7 +539,7 @@ const CustomerSection = ({
                     Adding (First month)
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={formatNumber(input.customersPerMonth)}
                     onChange={(e) =>
                       handleInputChange(
@@ -361,7 +557,7 @@ const CustomerSection = ({
                     Growth rate (%):
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={formatNumber(input.growthPerMonth)}
                     onChange={(e) =>
                       handleInputChange(
@@ -377,7 +573,7 @@ const CustomerSection = ({
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">Frequency:</span>
                   <Select
-                    className="border-gray-200"
+                    className="border-gray-300"
                     onValueChange={(value) =>
                       handleInputChange(
                         input?.id,
@@ -389,7 +585,7 @@ const CustomerSection = ({
                   >
                     <SelectTrigger
                       id={`select-customerGrowthFrequency-${input?.id}`}
-                      className="border-solid border-[1px] border-gray-200"
+                      className="border-solid border-[1px] border-gray-300"
                     >
                       <SelectValue placeholder="Select Growth Frequency" />
                     </SelectTrigger>
@@ -409,7 +605,7 @@ const CustomerSection = ({
                     Begin Month:
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     type="number"
                     min={1}
                     value={input.beginMonth}
@@ -421,7 +617,7 @@ const CustomerSection = ({
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">End Month:</span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     type="number"
                     min={1}
                     value={input.endMonth}
@@ -436,7 +632,7 @@ const CustomerSection = ({
                     Churn rate (%):
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     type="text"
                     value={formatNumber(input.churnRate)}
                     onChange={(e) =>
@@ -453,7 +649,7 @@ const CustomerSection = ({
                     Acquisition cost:
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     type="text"
                     value={input.acquisitionCost}
                     onChange={(e) =>
@@ -489,14 +685,14 @@ const CustomerSection = ({
               className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
               onClick={handleSave}
             >
-              Save changes
+              Save
             </button>
           </div>
         </section>
       </div>
       <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
         <div className="mb-8">
-          <h3 className="text-2xl font-semibold">Customer Table</h3>
+          <h3 className="text-lg font-semibold">Customer Table</h3>
           <Table
             className="overflow-auto  my-8  shadow-xl rounded-md"
             size="small"
@@ -509,26 +705,33 @@ const CustomerSection = ({
             }
           />
         </div>
-        <h3 className="text-2xl font-semibold my-8">Customer Chart</h3>
+        <h3 className="text-lg font-semibold my-8">Customer Chart</h3>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col shadow-xl">
-            <Chart
-              options={customerGrowthChart.options}
-              series={customerGrowthChart.series}
-              type="bar"
-              height={350}
-            />
-          </Card>
-        </div>
+  {customerGrowthChart.charts?.map((chart, index) => (
+    <Card key={index} className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
+      <Chart
+  options={{
+    ...chart.options,
+    xaxis: {
+      ...chart.options.xaxis,
+      tickAmount: 12, // Set the number of ticks on the x-axis to 12
+    },
+    stroke: {
+      width: 2, // Set the stroke width to 1
+    },
+  }}
+  series={chart.series}
+  type="area"
+  height={350}
+
+/>
+    </Card>
+  ))}
+</div>
       </div>
     </div>
   );
 };
 
 export default CustomerSection;
-
-<div className="w-full h-full flex flex-col lg:flex-row">
-  <div className="w-full lg:w-1/4 sm:p-4 p-0 "></div>
-  <div className="w-full lg:w-3/4 sm:p-4 p-0 "></div>
-</div>;

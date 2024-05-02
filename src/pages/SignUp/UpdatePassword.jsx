@@ -19,7 +19,7 @@ const InputField = ({ label, type, name, value, onChange }) => {
         name={name}
         value={value}
         onChange={onChange}
-        className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextGray darkFocus"
+        className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextGray darkFocus"
         required
       />
     </div>
@@ -92,7 +92,7 @@ const UpdatePassword = () => {
   return (
     <main className="w-full max-w-md mx-auto p-6">
       <AlertMsg />
-      <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm darkBgBlue darkBorderGray">
+      <div className="mt-7 bg-white border border-gray-300 rounded-xl shadow-sm darkBgBlue darkBorderGray">
         <div className="p-4 sm:p-7">
           <form onSubmit={handleSubmit} className="mt-5">
             <h1 className="text-center mb-4 block text-2xl font-semibold text-gray-800 darkTextWhite">

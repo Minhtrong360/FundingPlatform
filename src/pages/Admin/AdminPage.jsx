@@ -276,16 +276,64 @@ function Dashboard({ dataSource }) {
                   type: chart.type,
                   height: 350,
                   toolbar: { show: false },
+                  animations: {
+                    enabled: true,
+                    easing: 'easeinout',
+                    speed: 800,
+                    animateGradually: {
+                      enabled: true,
+                      delay: 150
+                    },
+                    dynamicAnimation: {
+                      enabled: true,
+                      speed: 350
+                    }
+                  }
+                },
+                colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0'],
+                fill: {
+                  type: 'gradient',
+                  gradient: {
+                    shade: 'dark',
+                    type: 'horizontal',
+                    shadeIntensity: 0.5,
+                    opacityFrom: 0.85,
+                    opacityTo: 0.85,
+                    stops: [0, 100]
+                  }
                 },
                 labels: chart.categories,
                 xaxis: {
                   categories: chart.categories,
-                  labels: { show: false },
+                  labels: { show: false }
                 },
-                legend: { position: chart.type === "pie" ? "bottom" : "top" },
+                tooltip: {
+                  enabled: true,
+                  y: {
+                    formatter: function (val) {
+                      return `${val}`; // Customize based on your data type
+                    }
+                  }
+                },
+                legend: {
+                  position: chart.type === 'pie' ? 'bottom' : 'top',
+                  onItemClick: {
+                    toggleDataSeries: true
+                  }
+                },
+                responsive: [{
+                  breakpoint: 480,
+                  options: {
+                    legend: {
+                      position: 'bottom',
+                      offsetX: -10,
+                      offsetY: 0
+                    }
+                  }
+                }]
               }}
               series={
-                chart.type === "pie" ? chart.data : [{ data: chart.data }]
+                chart.type === 'pie' ? chart.data : [{ data: chart.data }]
               }
               type={chart.type}
               height={350}
@@ -294,7 +342,7 @@ function Dashboard({ dataSource }) {
           </div>
         ))}
       </div>
-    </div>
+    </div>  
   );
 }
 
@@ -1644,7 +1692,7 @@ function AdminPage() {
           {record?.industry?.map((industry, index) => (
             <Badge
               key={index}
-              className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black  inline-flex justify-start items-start gap-x-1 px-2 py-1 text-xs  text-center   rounded-3xl "
+              className="mx-2 bg-yellow-300 border border-gray-300 truncate text-black  inline-flex justify-start items-start gap-x-1 px-2 py-1 text-xs  text-center   rounded-3xl "
             >
               {industry}
             </Badge>
@@ -1738,7 +1786,7 @@ function AdminPage() {
             record.keyWords.split(",").map((keyWord, index) => (
               <Badge
                 key={index}
-                className="mx-2 bg-yellow-300 border border-gray-200 truncate text-black inline-flex justify-center items-center gap-x-1 px-2 py-1 text-xs text-center rounded-3xl"
+                className="mx-2 bg-yellow-300 border border-gray-300 truncate text-black inline-flex justify-center items-center gap-x-1 px-2 py-1 text-xs text-center rounded-3xl"
               >
                 {keyWord.trim()}
               </Badge>
@@ -2721,8 +2769,8 @@ function AdminPage() {
             className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0 "
             onClick={() => setIsSidebarOpen(false)}
           >
-            <div className="p-4 border-2 border-gray-200 border-dashed rounded-md darkBorderGray min-h-[96vh]">
-              <div className="overflow-x-auto whitespace-nowrap border-t-2 border-b-2 border-yellow-300 text-sm">
+            <div className="p-4 border-gray-300 rounded-md darkBorderGray min-h-[96vh]">
+              <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
                 <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
                   <li
                     className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
@@ -2760,7 +2808,7 @@ function AdminPage() {
                     <div className="flex flex-col mb-8">
                       <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-                          <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
+                          <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
                             <Table
                               columns={columns}
                               dataSource={dataSource}
@@ -2786,7 +2834,7 @@ function AdminPage() {
                   <div className="flex flex-col mb-8">
                     <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                       <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-                        <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
+                        <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
                           <Table
                             columns={financialColumns}
                             dataSource={dataFinanceSource}
@@ -2808,7 +2856,7 @@ function AdminPage() {
                   <div className="flex flex-col mb-8">
                     <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                       <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-                        <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
+                        <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
                           <Table
                             columns={clientColumns}
                             dataSource={dataClientSource}
@@ -2925,7 +2973,7 @@ function AdminPage() {
                   name="Client email"
                   placeholder=""
                   value={selectedClient.email}
-                  className="block w-full px-4 py-3 text-sm text-gray-800 border-gray-200 rounded-md"
+                  className="block w-full px-4 py-3 text-sm text-gray-800 border-gray-300 rounded-md"
                   disabled
                 />
               </label>

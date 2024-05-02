@@ -21,7 +21,7 @@ function BlogPost({ articles, blogs }) {
           {/* {articles.map((article, index) => (
             <div
               key={index}
-              className="my-28 border border-gray-200 rounded-md shadow hover:border-transparent hover:shadow-lg transition-all duration-300 "
+              className="my-28 border border-gray-300 rounded-md shadow hover:border-transparent hover:shadow-lg transition-all duration-300 "
             >
               <div className="lg:-mx-6 lg:flex lg:items-center px-4 py-4 ">
                 <img
@@ -82,7 +82,7 @@ function BlogPost({ articles, blogs }) {
           {blogs?.map((blog, index) => (
             <div
               key={index}
-              className="my-28 border border-gray-200 rounded-lg shadow hover:border-transparent hover:shadow-lg transition-all duration-300 "
+              className="my-28 border border-gray-300 rounded-lg shadow hover:border-transparent hover:shadow-lg transition-all duration-300 "
             >
               <div className="lg:-mx-6 lg:flex lg:items-center px-4 py-4 ">
                 <img

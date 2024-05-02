@@ -22,6 +22,7 @@ const CustomChart = ({
     //   }
     // },
     colors: ['#00A2FF', '#14F584', '#FFB303', '#5C39FF', '#D738FF', '#FF841F'],
+    dataLabels: { enabled: false },
     xaxis: {
       categories: Array.from({ length: numberOfMonths }, (_, i) => `${i + 1}`),
       title: {

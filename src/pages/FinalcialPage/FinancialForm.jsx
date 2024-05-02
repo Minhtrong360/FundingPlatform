@@ -190,7 +190,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       //     stops: [0, 90, 100]
       //   }
       // },
-      colors: ['#00A2FF', '#14F584', '#FFB303', '#5C39FF', '#D738FF', '#FF841F'],
+      colors: ['#00A2FF', '#14F584','#FFB303', '#5C39FF',  '#D738FF', '#FF841F'],
   
       xaxis: {
         categories: Array.from(
@@ -231,7 +231,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [revenue, setRevenue] = useState({
     options: {
       chart: { id: "revenue-chart", type: "bar", height: 350, stacked: true }, 
-      colors: ['#00A2FF', '#14F584', '#FFB303', '#5C39FF', '#D738FF', '#FF841F'],// Set type to "bar" and stacked to true
+      colors: ['#00A2FF', '#14F584', '#FFB303', '#5C39FF',  '#FF841F'],// Set type to "bar" and stacked to true
       xaxis: {
         categories: Array.from(
           { length: numberOfMonths },

@@ -162,6 +162,7 @@ const PersonnelSection = ({
   const [personnelChart, setPersonnelChart] = useState({
     options: {
       chart: { id: "personnel-chart", type: "bar", height: 350 },
+      colors: ['#00A2FF', '#14F584', '#FFB303', '#5C39FF', '#D738FF', '#FF841F'],
       xaxis: {
         categories: Array.from(
           { length: numberOfMonths },
@@ -191,9 +192,9 @@ const PersonnelSection = ({
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
+      // fill: { type: "solid" },
       dataLabels: { enabled: false },
-      stroke: { curve: "smooth" },
+      // stroke: { curve: "smooth" },
       markers: { size: 1 },
     },
     series: [],

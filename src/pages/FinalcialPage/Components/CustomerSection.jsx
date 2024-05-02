@@ -37,7 +37,6 @@ const CustomerSection = ({
   setCustomerGrowthChart,
   handleSubmit,
 }) => {
-  console.log("customerGrowthChart", customerGrowthChart);
   const dispatch = useDispatch();
   const { customerInputs, customerGrowthData, customerTableData } = useSelector(
     (state) => state.customer
@@ -59,6 +58,12 @@ const CustomerSection = ({
   const [renderCustomerForm, setRenderCustomerForm] = useState("all");
 
   const handleAddNewCustomer = () => {
+    const channelNames = tempCustomerInputs.map((input) => input.channelName);
+    if (channelNames.includes("New channel")) {
+      message.warning("Please input another channel name.");
+      return;
+    }
+
     const maxId = Math.max(...tempCustomerInputs.map((input) => input?.id));
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
     const newCustomer = {
@@ -171,72 +176,37 @@ const CustomerSection = ({
     }),
   ];
 
-  useEffect(() => {
-    const seriesData = tempCustomerGrowthData.map((channelData) => {
-      return {
-        name: channelData[0]?.channelName || "Unknown Channel",
-        data: channelData.map((data) => data.customers),
-      };
-    });
-
-    console.log("seriesData", seriesData);
-    console.log("customerTableData", customerTableData);
-
-    setCustomerGrowthChart((prevState) => ({
-      ...prevState,
-      series: seriesData,
-      charts: [
-        // Stacked bar chart for all channels
-        {
-          options: {
-            ...prevState.options,
-            chart: {
-              ...prevState.options.chart,
-              id: "allChannels",
-              stacked: true,
-            },
-            title: {
-              ...prevState.options.title,
-              text: "All Channels",
-            },
-          },
-          series: seriesData,
-        },
-        // Individual charts for each channel
-        ...seriesData.map((channelSeries) => ({
-          options: {
-            ...prevState.options,
-            chart: {
-              ...prevState.options.chart,
-              id: channelSeries.name,
-            },
-            title: {
-              ...prevState.options.title,
-              text: channelSeries.name,
-            },
-          },
-          series: [channelSeries],
-        })),
-      ],
-    }));
-  }, [tempCustomerGrowthData, numberOfMonths]);
-
   const handleSelectChange = (event) => {
     setRenderCustomerForm(event.target.value);
   };
 
   const handleSave = () => {
     setIsSaved(true);
-
-    message.success("Data saved successfully!");
   };
   const channelInputs = useSelector((state) => state.sales.channelInputs);
 
   const { id } = useParams();
+
+  // Define the useEffect hook
   useEffect(() => {
     const saveData = async () => {
       try {
         if (isSaved) {
+          // Check if there are duplicate channel names
+          const channelNames = tempCustomerInputs.map(
+            (input) => input.channelName
+          );
+          const duplicateChannel = channelNames.find(
+            (name, index) => channelNames.indexOf(name) !== index
+          );
+
+          if (duplicateChannel) {
+            message.warning(
+              `Please change the channel name: "${duplicateChannel}" before saving.`
+            );
+            return;
+          }
+
           dispatch(setCustomerInputs(tempCustomerInputs));
           const { revenueByChannelAndProduct } = dispatch(
             calculateChannelRevenue(
@@ -282,6 +252,8 @@ const CustomerSection = ({
 
             if (updateError) {
               throw updateError;
+            } else {
+              message.success("Data saved successfully!");
             }
           }
         }
@@ -292,6 +264,7 @@ const CustomerSection = ({
       }
     };
 
+    // Call the saveData function
     saveData();
   }, [isSaved]);
 
@@ -299,6 +272,10 @@ const CustomerSection = ({
     const seriesData = tempCustomerGrowthData.map((channelData) => {
       return {
         name: channelData[0]?.channelName || "Unknown Channel",
+        dataBegin: channelData.map((data) => parseInt(data.begin, 10)),
+        dataAdd: channelData.map((data) => parseInt(data.add, 10)),
+        dataChurn: channelData.map((data) => parseInt(data.churn, 10)),
+        dataEnd: channelData.map((data) => parseInt(data.end, 10)),
         data: channelData.map((data) => parseInt(data.customers, 10)),
       };
     });
@@ -467,7 +444,24 @@ const CustomerSection = ({
                 text: channelSeries.name,
               },
             },
-            series: [channelSeries],
+            series: [
+              {
+                name: "Begin",
+                data: channelSeries.dataBegin, // Yearly total data
+              },
+              {
+                name: "Add",
+                data: channelSeries.dataAdd, // Yearly total data
+              },
+              {
+                name: "Churn",
+                data: channelSeries.dataChurn, // Yearly total data
+              },
+              {
+                name: "End",
+                data: channelSeries.dataEnd, // Yearly total data
+              },
+            ],
           })),
         ],
       };

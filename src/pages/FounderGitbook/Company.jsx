@@ -17,6 +17,7 @@ function Company({
   handleIndustryChange,
   typeOfferingOptions,
 }) {
+  console.log("formData", formData);
   const [projectImageUrl, setProjectImageUrl] = useState(formData.project_url); // State to store project image URL
   const [cardImageUrl, setCardImageUrl] = useState(formData.card_url); // State to store card image URL
 
@@ -234,7 +235,11 @@ function Company({
                         label="Company logo"
                         id="project_url"
                         name="project_url"
-                        value={formData.project_url}
+                        value={
+                          formData.project_url.length > 30
+                            ? formData.project_url.substring(0, 30) + "..."
+                            : formData.project_url
+                        }
                         onChange={handleInputChange}
                         type="text"
                         required
@@ -256,7 +261,11 @@ function Company({
                         label="Profile Image link"
                         id="card_url"
                         name="card_url"
-                        value={formData.card_url}
+                        value={
+                          formData.card_url.length > 30
+                            ? formData.card_url.substring(0, 30) + "..."
+                            : formData.card_url
+                        }
                         onChange={handleInputChange}
                         type="text"
                         required

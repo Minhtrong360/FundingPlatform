@@ -37,6 +37,7 @@ const CustomerSection = ({
   setCustomerGrowthChart,
   handleSubmit,
 }) => {
+  console.log("customerGrowthChart", customerGrowthChart);
   const dispatch = useDispatch();
   const { customerInputs, customerGrowthData, customerTableData } = useSelector(
     (state) => state.customer
@@ -177,7 +178,10 @@ const CustomerSection = ({
         data: channelData.map((data) => data.customers),
       };
     });
-  
+
+    console.log("seriesData", seriesData);
+    console.log("customerTableData", customerTableData);
+
     setCustomerGrowthChart((prevState) => ({
       ...prevState,
       series: seriesData,
@@ -188,37 +192,34 @@ const CustomerSection = ({
             ...prevState.options,
             chart: {
               ...prevState.options.chart,
-              id: 'allChannels',
-              stacked: true
+              id: "allChannels",
+              stacked: true,
             },
             title: {
               ...prevState.options.title,
-              text: 'All Channels'
+              text: "All Channels",
             },
           },
-          series: seriesData
+          series: seriesData,
         },
         // Individual charts for each channel
-        ...seriesData.map(channelSeries => ({
+        ...seriesData.map((channelSeries) => ({
           options: {
             ...prevState.options,
             chart: {
               ...prevState.options.chart,
-              id: channelSeries.name
+              id: channelSeries.name,
             },
             title: {
               ...prevState.options.title,
-              text: channelSeries.name
+              text: channelSeries.name,
             },
           },
-          series: [channelSeries]
+          series: [channelSeries],
         })),
       ],
     }));
   }, [tempCustomerGrowthData, numberOfMonths]);
-  
-  
-  
 
   const handleSelectChange = (event) => {
     setRenderCustomerForm(event.target.value);
@@ -301,7 +302,7 @@ const CustomerSection = ({
         data: channelData.map((data) => parseInt(data.customers, 10)),
       };
     });
-  
+
     // Calculate total customers per month for all channels
     const totalCustomersPerMonth = seriesData.reduce((acc, channel) => {
       channel.data.forEach((customers, index) => {
@@ -312,34 +313,38 @@ const CustomerSection = ({
       });
       return acc;
     }, []);
-  
+
     setCustomerGrowthChart((prevState) => {
       const yearlyTotalData = [];
       for (let i = 0; i < totalCustomersPerMonth.length; i += 12) {
-        const yearlyTotal = totalCustomersPerMonth.slice(i, i + 12).reduce((sum, current) => sum + current, 0);
+        const yearlyTotal = totalCustomersPerMonth
+          .slice(i, i + 12)
+          .reduce((sum, current) => sum + current, 0);
         yearlyTotalData.push(yearlyTotal);
       }
-    
+
       const yearlyGrowthRates = yearlyTotalData.map((total, index, arr) => {
         if (index === 0) return 0; // No growth rate for the first year
         return ((total - arr[index - 1]) / arr[index - 1]) * 100; // Growth rate calculation
       });
-    
+
       // Calculate yearly totals for each channel
-      const channelYearlyTotals = seriesData.map(channel => {
+      const channelYearlyTotals = seriesData.map((channel) => {
         return {
           name: channel.name,
-          data: []
+          data: [],
         };
       });
-    
+
       for (let i = 0; i < totalCustomersPerMonth.length; i += 12) {
         seriesData.forEach((channel, index) => {
-          const yearlyTotal = channel.data.slice(i, i + 12).reduce((sum, current) => sum + current, 0);
+          const yearlyTotal = channel.data
+            .slice(i, i + 12)
+            .reduce((sum, current) => sum + current, 0);
           channelYearlyTotals[index].data.push(yearlyTotal);
         });
       }
-    
+
       return {
         ...prevState,
         series: seriesData,
@@ -350,20 +355,20 @@ const CustomerSection = ({
               ...prevState.options,
               chart: {
                 ...prevState.options.chart,
-                id: 'allChannels',
-                stacked: true
+                id: "allChannels",
+                stacked: true,
               },
               title: {
                 ...prevState.options.title,
-                text: 'All Channels'
+                text: "All Channels",
               },
             },
             series: [
               ...seriesData,
               {
-                name: 'Total',
+                name: "Total",
                 data: totalCustomersPerMonth,
-              }
+              },
             ],
           },
           // New chart for yearly total and growth rate with separate y-axes
@@ -372,47 +377,56 @@ const CustomerSection = ({
               ...prevState.options,
               chart: {
                 ...prevState.options.chart,
-                id: 'yearlyTotal',
+                id: "yearlyTotal",
                 stacked: false, // Set as non-stacked for total visualization
                 toolbar: {
-                  show: true
-                }
+                  show: true,
+                },
               },
               title: {
                 ...prevState.options.title,
-                text: 'Yearly Total and Growth Rate'
+                text: "Yearly Total and Growth Rate",
               },
               xaxis: {
                 ...prevState.options.xaxis,
-                categories: Array.from({ length: yearlyTotalData.length }, (_, index) => `Year ${index + 1}`) // Creating categories for each year
+                categories: Array.from(
+                  { length: yearlyTotalData.length },
+                  (_, index) => `Year ${index + 1}`
+                ), // Creating categories for each year
               },
-              yaxis: [{
-                title: {
-                  text: 'Yearly Total'
+              yaxis: [
+                {
+                  title: {
+                    text: "Yearly Total",
+                  },
+                  seriesName: "Yearly Total",
+                  labels: {
+                    formatter: (value) => `${value.toFixed(0)}`, // No decimals for total
+                  },
                 },
-                seriesName: 'Yearly Total',
-                labels: {
-                  formatter: (value) => `${value.toFixed(0)}`, // No decimals for total
-                }
-              }, {
-                opposite: true,
-                title: {
-                  text: 'Yearly Growth Rate (%)'
+                {
+                  opposite: true,
+                  title: {
+                    text: "Yearly Growth Rate (%)",
+                  },
+                  seriesName: "Yearly Growth Rate (%)",
+                  labels: {
+                    formatter: (value) => `${value.toFixed(2)}%`,
+                  },
                 },
-                seriesName: 'Yearly Growth Rate (%)',
-                labels: {
-                  formatter: (value) => `${value.toFixed(2)}%`,
-                }
-              }],
+              ],
             },
-            series: [{
-              name: 'Yearly Total',
-              data: yearlyTotalData // Yearly total data
-            }, {
-              name: 'Yearly Growth Rate (%)',
-              data: yearlyGrowthRates, // Yearly growth rates
-              type: 'line' // Differentiating the chart type for growth rates
-            }]
+            series: [
+              {
+                name: "Yearly Total",
+                data: yearlyTotalData, // Yearly total data
+              },
+              {
+                name: "Yearly Growth Rate (%)",
+                data: yearlyGrowthRates, // Yearly growth rates
+                type: "line", // Differentiating the chart type for growth rates
+              },
+            ],
           },
           // New chart for displaying total yearly sales per channel
           {
@@ -420,48 +434,46 @@ const CustomerSection = ({
               ...prevState.options,
               chart: {
                 ...prevState.options.chart,
-                id: 'channelYearlyTotals',
+                id: "channelYearlyTotals",
                 stacked: false, // Non-stacked visualization
                 toolbar: {
-                  show: true
-                }
+                  show: true,
+                },
               },
               title: {
                 ...prevState.options.title,
-                text: 'Total Yearly Customers by Channel'
+                text: "Total Yearly Customers by Channel",
               },
               xaxis: {
                 ...prevState.options.xaxis,
-                categories: Array.from({ length: yearlyTotalData.length }, (_, index) => `Year ${index + 1}`) // Creating categories for each year
+                categories: Array.from(
+                  { length: yearlyTotalData.length },
+                  (_, index) => `Year ${index + 1}`
+                ), // Creating categories for each year
               },
             },
-            series: channelYearlyTotals // Yearly totals per channel
+            series: channelYearlyTotals, // Yearly totals per channel
           },
           // Individual charts for each channel
-          ...seriesData.map(channelSeries => ({
+          ...seriesData.map((channelSeries) => ({
             options: {
               ...prevState.options,
               chart: {
                 ...prevState.options.chart,
-                id: channelSeries.name
+                id: channelSeries.name,
               },
               title: {
                 ...prevState.options.title,
-                text: channelSeries.name
+                text: channelSeries.name,
               },
             },
-            series: [channelSeries]
+            series: [channelSeries],
           })),
         ],
       };
     });
-    
-    
-    
   }, [tempCustomerGrowthData, numberOfMonths]);
-  
-  
-  
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
@@ -708,27 +720,29 @@ const CustomerSection = ({
         <h3 className="text-lg font-semibold my-8">Customer Chart</h3>
 
         <div className="grid md:grid-cols-2 gap-6">
-  {customerGrowthChart.charts?.map((chart, index) => (
-    <Card key={index} className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
-      <Chart
-  options={{
-    ...chart.options,
-    xaxis: {
-      ...chart.options.xaxis,
-      tickAmount: 12, // Set the number of ticks on the x-axis to 12
-    },
-    stroke: {
-      width: 2, // Set the stroke width to 1
-    },
-  }}
-  series={chart.series}
-  type="area"
-  height={350}
-
-/>
-    </Card>
-  ))}
-</div>
+          {customerGrowthChart.charts?.map((chart, index) => (
+            <Card
+              key={index}
+              className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
+            >
+              <Chart
+                options={{
+                  ...chart.options,
+                  xaxis: {
+                    ...chart.options.xaxis,
+                    tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                  },
+                  stroke: {
+                    width: 2, // Set the stroke width to 1
+                  },
+                }}
+                series={chart.series}
+                type="area"
+                height={350}
+              />
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );

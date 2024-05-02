@@ -5,7 +5,11 @@ import AlertMsg from "../../components/AlertMsg";
 // import { toast } from "react-toastify";
 
 import SpinnerBtn from "../../components/SpinnerBtn";
-import { GoogleOutlined } from "@ant-design/icons";
+import {
+  EyeInvisibleOutlined,
+  EyeOutlined,
+  GoogleOutlined,
+} from "@ant-design/icons";
 import { message } from "antd";
 
 const Login = () => {
@@ -51,6 +55,8 @@ const Login = () => {
     e.preventDefault();
     await loginWithGG();
   };
+
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="darkBgBlue bg-gray-100 flex h-screen items-center py-16">
@@ -124,15 +130,28 @@ const Login = () => {
                         Forgot password?
                       </button>
                     </div>
-                    <input
-                      type="password"
-                      id="password"
-                      name="password"
-                      className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm darkBgBlue darkBorderGray darkTextGray"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        id="password"
+                        name="password"
+                        className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm darkBgBlue darkBorderGray darkTextGray"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                      />
+                      <button
+                        type="button"
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 focus:outline-none"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <EyeInvisibleOutlined />
+                        ) : (
+                          <EyeOutlined />
+                        )}
+                      </button>
+                    </div>
                   </div>
 
                   <div className="flex items-center">

@@ -6,25 +6,7 @@ import AlertMsg from "../../components/AlertMsg";
 
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { message } from "antd";
-
-const InputField = ({ label, type, name, value, onChange }) => {
-  return (
-    <div>
-      <label htmlFor={name} className="block text-sm mb-2 darkTextWhite">
-        {label}
-      </label>
-      <input
-        type={type}
-        id={name}
-        name={name}
-        value={value}
-        onChange={onChange}
-        className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextGray darkFocus"
-        required
-      />
-    </div>
-  );
-};
+import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 
 const SubmitButton = ({ text, onClick, isLoading }) => {
   return (
@@ -32,7 +14,7 @@ const SubmitButton = ({ text, onClick, isLoading }) => {
       type="submit"
       onClick={onClick}
       disabled={isLoading}
-      className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
+      className="mt-6 w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
     >
       {text}
     </button>
@@ -89,6 +71,9 @@ const UpdatePassword = () => {
     setIsLoading(false);
   };
 
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   return (
     <main className="w-full max-w-md mx-auto p-6">
       <AlertMsg />
@@ -99,24 +84,69 @@ const UpdatePassword = () => {
               Update Password
             </h1>
 
-            <div className="grid gap-y-4">
-              <InputField
-                label="New password"
-                type="password"
-                name="newPassword"
-                value={newPassword}
-                onChange={handleNewPasswordChange}
-              />
-              <InputField
-                label="Confirm password"
-                type="password"
-                name="confirmPassword"
-                value={confirmPassword}
-                onChange={handleConfirmPasswordChange}
-              />
-              <LoadingButtonClick isLoading={isLoading} />
-              <SubmitButton onClick={handleSubmit} text="Save" />
+            <div>
+              <div className="flex justify-between items-center">
+                <label
+                  htmlFor="newPassword"
+                  className="block text-sm mb-2 darkTextWhite"
+                >
+                  New password
+                </label>
+              </div>
+              <div className="relative">
+                <input
+                  type={showNewPassword ? "text" : "password"}
+                  id="newPassword"
+                  name="newPassword"
+                  className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm darkBgBlue darkBorderGray darkTextGray"
+                  value={newPassword}
+                  onChange={handleNewPasswordChange}
+                  required
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 focus:outline-none"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                >
+                  {showNewPassword ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+                </button>
+              </div>
             </div>
+
+            <div>
+              <div className="flex justify-between items-center mt-4">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm mb-2 darkTextWhite"
+                >
+                  Confirm password
+                </label>
+              </div>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm darkBgBlue darkBorderGray darkTextGray"
+                  value={confirmPassword}
+                  onChange={handleConfirmPasswordChange}
+                  required
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 focus:outline-none"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? (
+                    <EyeInvisibleOutlined />
+                  ) : (
+                    <EyeOutlined />
+                  )}
+                </button>
+              </div>
+            </div>
+            <LoadingButtonClick isLoading={isLoading} />
+            <SubmitButton onClick={handleSubmit} text="Save" />
           </form>
         </div>
       </div>

@@ -417,14 +417,23 @@ const LoanSection = ({
         <h3 className="text-lg font-semibold my-8">Loan Data</h3>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col shadow-xl">
-            <Chart
-              options={loanChart.options}
-              series={loanChart.series}
-              type="bar"
-              height={350}
-            />
-          </Card>
+         <Card className="flex flex-col shadow-xl">
+  <Chart
+    options={{
+      ...loanChart.options,
+      xaxis: {
+        ...loanChart.options.xaxis,
+        tickAmount: 12, // Set the number of ticks on the x-axis to 12
+      },
+    }}
+    series={loanChart.series}
+    type="area"
+    height={350}
+  />
+</Card>
+
+
+
         </div>
       </div>
     </div>

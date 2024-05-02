@@ -157,6 +157,26 @@ const FundraisingSection = ({
     },
     series: [],
   });
+  
+  useEffect(() => {
+    const transformedData = transformFundraisingDataForTable(
+      tempFundraisingInputs,
+      numberOfMonths
+    );
+  
+    const seriesData = transformedData.map((item) => ({
+      name: item.name,
+      data: Object.keys(item)
+        .filter((key) => key.startsWith("month"))
+        .map((key) => parseFloat(item[key])),
+    }));
+  
+    setFundraisingChart((prevChart) => ({
+      ...prevChart,
+      series: seriesData,
+    }));
+  }, [tempFundraisingInputs, numberOfMonths]);
+  
 
   const handleSelectChange = (event) => {
     const selectedId = event.target.value;
@@ -170,6 +190,75 @@ const FundraisingSection = ({
 
   const { user } = useAuth();
   const { id } = useParams();
+
+  const [tableChart, setTableChart] = useState({
+    options: {
+      chart: {
+        id: "table-chart",
+        type: "bar",
+        height: 350,
+      },
+      xaxis: {
+        categories: [],
+        title: {
+          text: "Fundraising Activities",
+          style: {
+            fontFamily: "Inter, sans-serif",
+            fontWeight: "600",
+          },
+        },
+      },
+      yaxis: {
+        labels: {
+          formatter: function (val) {
+            return Math.floor(val);
+          },
+        },
+        title: {
+          text: "Fundraising Amount ($)",
+          style: {
+            fontFamily: "Inter, sans-serif",
+            fontWeight: "600",
+          },
+        },
+      },
+      legend: { position: "bottom", horizontalAlign: "right" },
+      fill: { type: "solid" },
+      dataLabels: { enabled: false },
+      stroke: { curve: "smooth" },
+      markers: { size: 1 },
+    },
+    series: [],
+  });
+  
+  useEffect(() => {
+    const transformedData = transformFundraisingDataForTable(
+      tempFundraisingInputs,
+      numberOfMonths
+    );
+
+    const seriesData = [];
+
+    transformedData.forEach((item) => {
+      const seriesItem = {
+        name: item.name,
+        data: Object.keys(item)
+          .filter((key) => key.startsWith("month"))
+          .map((key) => parseFloat(item[key])),
+      };
+      seriesData.push(seriesItem);
+    });
+    console.log(seriesData);
+    setFundraisingChart((prevChart) => ({
+      ...prevChart,
+      series: seriesData.map(item => ({
+        name: item.name,
+        data: item.data.map(val => ({ y: val }))
+      })),
+    }));
+  }, [tempFundraisingInputs]);
+
+
   useEffect(() => {
     const saveData = async () => {
       try {
@@ -243,13 +332,16 @@ const FundraisingSection = ({
           .map((key) => parseFloat(item[key])),
       };
       seriesData.push(seriesItem);
+      
+    
     });
-
+    console.log(seriesData);
     setFundraisingChart((prevChart) => ({
       ...prevChart,
       series: seriesData,
     }));
   }, [tempFundraisingInputs]);
+  
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
@@ -447,13 +539,19 @@ const FundraisingSection = ({
 
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col shadow-xl">
-            <Chart
-              options={fundraisingChart.options}
-              series={fundraisingChart.series}
-              type="bar"
-              height={350}
-            />
-          </Card>
+  <Chart
+    options={{
+      ...fundraisingChart.options,
+      xaxis: {
+        ...fundraisingChart.options.xaxis,
+        tickAmount: 12, // Set the number of ticks on the x-axis to 12
+      },
+    }}
+    series={fundraisingChart.series}
+    type="bar"
+    height={350}
+  />
+</Card>
         </div>
       </div>
     </div>

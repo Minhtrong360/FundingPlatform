@@ -28,8 +28,6 @@ import {
   SelectItem,
 } from "../../../components/ui/Select";
 import { useParams } from "react-router-dom";
-import { Tabs } from "antd";
-const { TabPane } = Tabs;
 
 const CustomerSection = ({
   numberOfMonths,
@@ -39,10 +37,6 @@ const CustomerSection = ({
   setCustomerGrowthChart,
   handleSubmit,
 }) => {
-  const [activeTab, setActiveTab] = useState("table");
-   const handleTabChange = (key) => {
-    setActiveTab(key);
-  };
   const dispatch = useDispatch();
   const { customerInputs, customerGrowthData, customerTableData } = useSelector(
     (state) => state.customer
@@ -733,11 +727,11 @@ const CustomerSection = ({
                     tickAmount: 12, // Set the number of ticks on the x-axis to 12
                   },
                   stroke: {
-                    width: 2, // Set the stroke width to 1
+                    width: 1, // Set the stroke width to 1
                   },
                 }}
                 series={chart.series}
-                type="area"
+                type="bar"
                 height={350}
               />
             </Card>

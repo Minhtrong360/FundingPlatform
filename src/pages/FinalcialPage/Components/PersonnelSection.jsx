@@ -190,9 +190,9 @@
           },
         },
         legend: { position: "bottom", horizontalAlign: "right" },
-        fill: { type: "solid" },
+        // fill: { type: "solid" },
         dataLabels: { enabled: false },
-        stroke: { curve: "smooth" },
+        stroke: { curve: "smooth" , width: 1 },
         markers: { size: 1 },
       },
       series: [],
@@ -471,7 +471,7 @@
                   ...personnelChart.options,
                   chart: { id: 'combined-personnel-chart', type: 'area', height: 350 },
                   stroke: {
-                    width: 2,
+                    width: 1,
                   },
                   xaxis: {
                     ...personnelChart.options.xaxis,
@@ -490,7 +490,7 @@
                     ...personnelChart.options,
                     chart: { id: `personnel-chart-${index}`, type: 'area', height: 350 },
                     stroke: {
-                      width: 2,
+                      width: 1,
                     },
                     xaxis: {
                       ...personnelChart.options.xaxis,

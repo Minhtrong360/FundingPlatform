@@ -174,9 +174,9 @@ const CostSection = ({
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
-fill: { type: "solid" },
+// fill: { type: "solid" },
 dataLabels: { enabled: false },
-stroke: { width: 2 }, // Change stroke width to 2
+stroke: { width: 1 }, // Change stroke width to 2
 markers: { size: 1 },
     },
     series: [],
@@ -496,7 +496,7 @@ markers: { size: 1 },
           tickAmount: 12, // Set the number of ticks on the x-axis to 12
         },
         stroke: {
-          width: 2, // Set the stroke width to 2
+          width: 1, // Set the stroke width to 2
         },
       }}
       series={costChart.series}
@@ -519,7 +519,7 @@ markers: { size: 1 },
             tickAmount: 12, // Adjusted for individual series charts
           },
           stroke: {
-            width: 2, // Consistent stroke width for all charts
+            width: 1, // Consistent stroke width for all charts
           },
           chart: {
             ...costChart.options.chart,

@@ -32,7 +32,8 @@ const Groq = () => {
       console.log(assistantResponse)
        // Replace newline characters with <br> tags
       const formattedAssistantResponse = assistantResponse.replace(/\n/g, '<br>');
-      setMessages([...messages,{ role: "user", content: input }, { role: "assistant", content: formattedAssistantResponse }]);
+      // setMessages([...messages,{ role: "user", content: input }, { role: "assistant", content: formattedAssistantResponse }]);
+      setMessages([...messages, { role: "assistant", content: formattedAssistantResponse }]);
       setInput("");
     } catch (error) {
       console.error("Error:", error);
@@ -40,7 +41,7 @@ const Groq = () => {
   };
 
   return (
-    <div>
+    <div className="w-3/4 h-96 flex flex-col rounded-md shadow-lg border p-4 overflow-auto">
       {/* Chat history */}
       {messages.map((message, index) => (
         <div className="border p-2 rounded m-4 shadow-lg" key={index}>
@@ -63,7 +64,7 @@ const Groq = () => {
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-4"
         onClick={handleSubmit}
       >
-        Send
+        Analyst
       </button>
     </div>
   );

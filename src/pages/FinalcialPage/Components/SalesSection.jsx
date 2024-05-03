@@ -670,7 +670,7 @@ const SalesSection = ({
                   tickAmount: 12, // Ensure x-axis has 12 ticks
                 },
                 stroke: {
-                  width: 2, // Set the stroke width to 2
+                  width: 1, // Set the stroke width to 2
                 },
               }}
               series={[
@@ -686,6 +686,51 @@ const SalesSection = ({
               height={350}
             />
           </Card>
+<<<<<<< HEAD
+=======
+          <Card className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
+          <Chart
+            options={{
+              labels: ['Team A', 'Team B', 'Team C', 'Team D'], // Labels for the pie chart
+              colors: ['#00A2FF', '#14F584', '#FFB303', '#DBFE01', '#FF474C','#D84FE4'], // Colors for each section
+              
+              plotOptions: {
+                pie: {
+                  startAngle: -90,
+                  endAngle: 270
+                }
+              },
+              fill: {
+                type: 'gradient',
+                gradient: {
+                  type: 'vertical',
+               
+                  gradientToColors: undefined,
+                  inverseColors: true,
+                  opacityFrom: 0.9,
+                  opacityTo: 1, // Set the opacity at the end of the gradient to 0.5
+                },
+
+                
+              },
+              responsive: [{
+                breakpoint: 480,
+                options: {
+                  chart: {
+                    width: 200
+                  },
+                  legend: {
+                    position: 'bottom'
+                  }
+                }
+              }]
+            }}
+            series={[44, 55, 13, 43]} // Data for each section
+            type="donut"
+            height={350}
+          />
+          </Card>
+>>>>>>> ec7e26e7b472cae3ba5c5d04fbf7fe1d4d64992f
 
           {revenue.series.map((seriesItem, index) => (
             <Card key={index} className="flex flex-col shadow-xl">
@@ -705,7 +750,7 @@ const SalesSection = ({
                     tickAmount: 12, // Ensure x-axis has 12 ticks
                   },
                   stroke: {
-                    width: 2, // Set the stroke width to 1
+                    width: 1, // Set the stroke width to 1
                   },
                 }}
                 series={[seriesItem]}

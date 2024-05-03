@@ -209,22 +209,25 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       },
       legend: { position: "bottom", horizontalAlign: "right" },
       fill: {
-        type: "gradient",
+        type: 'gradient',
         gradient: {
-          shadeIntensity: 1,
-          opacityFrom: 0.7,
-          opacityTo: 0.9,
-          stops: [0, 90, 100],
+          shade: 'light',
+          type: 'vertical',
+          shadeIntensity: 0.25,
+          gradientToColors: undefined,
+          inverseColors: true,
+          opacityFrom: 0.85,
+          opacityTo: 0.5,
+         
         },
       },
-      colors: [
-        "#00A2FF",
-        "#14F584",
-        "#FFB303",
-        "#5C39FF",
-        "#D738FF",
-        "#FF841F",
-      ],
+      plotOptions: {
+        bar: {
+          borderRadius: 2, // Set the border radius to 10
+        },
+      },
+     
+      colors: ['#00A2FF', '#14F584', '#FFB303', '#DBFE01', '#FF474C','#D84FE4'],
       dataLabels: { enabled: false },
       // stroke: { curve: "stepline" },
       // markers: { size: 1 },

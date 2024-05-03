@@ -727,11 +727,11 @@ const CustomerSection = ({
                     tickAmount: 12, // Set the number of ticks on the x-axis to 12
                   },
                   stroke: {
-                    width: 2, // Set the stroke width to 1
+                    width: 1, // Set the stroke width to 1
                   },
                 }}
                 series={chart.series}
-                type="area"
+                type="bar"
                 height={350}
               />
             </Card>

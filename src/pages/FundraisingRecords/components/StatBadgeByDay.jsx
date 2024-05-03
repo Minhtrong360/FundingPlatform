@@ -121,9 +121,28 @@ const StatBadgeByDay = ({ ggData, setIsLoading }) => {
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shade: 'light',
+          type: 'vertical',
+          shadeIntensity: 0.25,
+          gradientToColors: undefined,
+          inverseColors: true,
+          opacityFrom: 0.85,
+          opacityTo: 0.5,
+         
+        },
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 2, // Set the border radius to 10
+        },
+      },
+     
+      colors: [ '#DBFE01','#00A2FF', '#14F584', '#FFB303', '#D738FF', '#FF474C'],
       dataLabels: { enabled: false },
-      stroke: { curve: "straight" },
+      stroke: { curve: "straight", width: 1 },
       markers: { size: 1 },
     },
     series: [],

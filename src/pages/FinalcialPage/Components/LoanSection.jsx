@@ -59,9 +59,28 @@ const LoanSection = ({
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shade: 'light',
+          type: 'vertical',
+          shadeIntensity: 0.25,
+          gradientToColors: undefined,
+          inverseColors: true,
+          opacityFrom: 0.85,
+          opacityTo: 0.5,
+         
+        },
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 2, // Set the border radius to 10
+        },
+      },
+      stroke: { width: 1 },
+      colors: ['#00A2FF', '#14F584', '#FFB303', '#DBFE01', '#FF474C','#D84FE4'],
       dataLabels: { enabled: false },
-      stroke: { curve: "smooth" },
+     
       markers: { size: 1 },
     },
     series: [],
@@ -414,7 +433,7 @@ const LoanSection = ({
             record.key === record.type ? "font-bold" : ""
           }
         />
-        <h3 className="text-lg font-semibold my-8">Loan Data</h3>
+        <h3 className="text-lg font-semibold my-8">Loan Chart</h3>
 
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col shadow-xl">

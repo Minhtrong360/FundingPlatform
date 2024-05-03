@@ -26,8 +26,6 @@ function FinancialList() {
   const [finances, setFinances] = useState([]);
   const { user, subscribed } = useAuth();
 
-  console.log("finances", finances);
-
   useEffect(() => {
     // Tải danh sách finance từ Supabase dựa trên user.id
 
@@ -66,13 +64,251 @@ function FinancialList() {
     navigate(`/financials/${finance.id}`);
   };
 
-  const columns = [
+  const myProjectColumns = [
     {
       title: "No",
       dataIndex: "index",
       key: "index",
       align: "center",
-      render: (text, record, index) => <span>{index + 1}</span>,
+      render: (text, record, index) => (
+        <span>{myProjects?.indexOf(record) + 1}</span>
+      ),
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      width: "25%",
+      render: (text, record) => (
+        <>
+          <span
+            className="hover:cursor-pointer"
+            onClick={() => handleProjectClick(record)}
+          >
+            <div
+              className="truncate"
+              style={{ maxWidth: "100%" }}
+              title={record.name}
+            >
+              {record.name}
+            </div>
+          </span>
+        </>
+      ),
+    },
+    {
+      title: "Date",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (text, record) => (
+        <span
+          className="hover:cursor-pointer"
+          onClick={() => handleProjectClick(record)}
+        >
+          {formatDate(record.created_at)}
+        </span>
+      ),
+    },
+    {
+      title: "Owner",
+      dataIndex: "user_email",
+      key: "user_email",
+      width: "25%",
+      render: (text, record) => (
+        <>
+          <span
+            className="hover:cursor-pointer"
+            onClick={() => handleProjectClick(record)}
+          >
+            <div
+              className="truncate"
+              style={{ maxWidth: "100%" }}
+              title={record.user_email}
+            >
+              {record.user_email}
+            </div>
+          </span>
+        </>
+      ),
+    },
+    {
+      title: "Industry",
+      dataIndex: "industry",
+      key: "industry",
+      render: (text, record) => (
+        <>
+          <button onClick={() => handleProjectClick(record)}>
+            {record?.inputData?.industry
+              ? record?.inputData?.industry
+              : "Waiting for setup"}
+          </button>
+        </>
+      ),
+    },
+    {
+      title: "Duration",
+      dataIndex: "selectedDuration",
+      key: "selectedDuration",
+      render: (text, record) => (
+        <div
+          onClick={() => handleProjectClick(record)}
+          className="flex justify-end items-end hover:cursor-pointer"
+        >
+          {record?.inputData?.selectedDuration
+            ? record?.inputData?.selectedDuration
+            : "Waiting for setup"}
+        </div>
+      ),
+    },
+    {
+      title: "Start year",
+      dataIndex: "startYear",
+      key: "startYear",
+      render: (text, record) => (
+        <div
+          onClick={() => handleProjectClick(record)}
+          className="flex justify-end items-end hover:cursor-pointer"
+        >
+          {record?.inputData?.startMonth && record?.inputData?.startYear ? (
+            <>
+              {record?.inputData?.startMonth < 10
+                ? `0${record?.inputData?.startMonth}`
+                : record?.inputData?.startMonth}{" "}
+              - {record?.inputData?.startYear}
+            </>
+          ) : (
+            "Waiting for setup"
+          )}
+        </div>
+      ),
+    },
+    {
+      title: "Customer",
+      dataIndex: "customer",
+      key: "customer",
+      render: (text, record) => (
+        <Tooltip title="Customer of 1st year">
+          <div
+            onClick={() => handleProjectClick(record)}
+            className="flex justify-end items-end hover:cursor-pointer"
+          >
+            {record?.inputData?.yearlyAverageCustomers
+              ? formatNumber(record?.inputData?.yearlyAverageCustomers[0])
+              : "Waiting for setup"}
+          </div>
+        </Tooltip>
+      ),
+    },
+    {
+      title: "Revenue",
+      dataIndex: "Revenue",
+      key: "Revenue",
+
+      render: (text, record) => (
+        <Tooltip title="Revenue of 1st year">
+          <div
+            className="flex justify-end items-end hover:cursor-pointer"
+            onClick={() => handleProjectClick(record)}
+          >
+            {record?.inputData?.yearlySales
+              ? `${getCurrencyLabelByKey(
+                  record?.inputData?.currency
+                )}${formatNumber(record?.inputData?.yearlySales[0])}`
+              : "Waiting for setup"}
+          </div>
+        </Tooltip>
+      ),
+    },
+    // {
+    //   title: "Action",
+    //   dataIndex: "action",
+    //   key: "action",
+    //   render: (text, record) => (
+    //     <Button
+    //       onClick={() => handleDelete(record.id)}
+    //       style={{ fontSize: "12px" }}
+    //       className="hover:cursor-pointer bg-red-500 text-white"
+    //     >
+    //       Delete
+    //     </Button>
+    //   ),
+    // },
+    {
+      title: "Action/Roles",
+      dataIndex: "action",
+      key: "action",
+      render: (text, record) => (
+        <>
+          {record.user_id === user.id ? (
+            <Dropdown
+              overlay={
+                <Menu>
+                  <>
+                    <Menu.Item key="delete">
+                      <div
+                        onClick={() => handleDelete(record.id)}
+                        style={{ fontSize: "12px" }}
+                      >
+                        Delete Project
+                      </div>
+                    </Menu.Item>
+                    <Menu.Item key="assign">
+                      <div
+                        onClick={() => handleAssign(record.id)}
+                        style={{ fontSize: "12px" }}
+                      >
+                        Assign
+                      </div>
+                    </Menu.Item>
+
+                    {record.user_id === user.id ? (
+                      <Menu.Item key="invite">
+                        <div
+                          onClick={() => handleInvite(record.id)}
+                          style={{ fontSize: "12px" }}
+                        >
+                          Invite
+                        </div>
+                      </Menu.Item>
+                    ) : (
+                      ""
+                    )}
+                  </>
+                </Menu>
+              }
+            >
+              <div className="w-[6rem] bg-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus cursor-pointer">
+                Action
+              </div>
+            </Dropdown>
+          ) : (
+            <div
+              onClick={() => handleProjectClick(record)}
+              className={`w-[6rem] bg-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus cursor-pointer`}
+            >
+              {record.invited_user?.includes(user.email) &&
+              record.collabs?.includes(user.email)
+                ? "Collaboration"
+                : record.invited_user?.includes(user.email)
+                ? "View only"
+                : record.collabs?.includes(user.email)
+                ? "Collaboration"
+                : "Default Label"}
+            </div>
+          )}
+        </>
+      ),
+    },
+  ];
+  const sharedProjectColumns = [
+    {
+      title: "No",
+      dataIndex: "index",
+      key: "index",
+      align: "center",
+      render: (text, record, index) => (
+        <span>{sharedProjects?.indexOf(record) + 1}</span>
+      ),
     },
     {
       title: "Name",
@@ -805,9 +1041,11 @@ function FinancialList() {
                     <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
                       <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
                         <Table
-                          columns={columns}
+                          columns={myProjectColumns}
                           dataSource={myProjects}
-                          pagination={false}
+                          pagination={{
+                            position: ["bottomLeft"],
+                          }}
                           rowKey="id"
                           size="small"
                           bordered
@@ -825,9 +1063,11 @@ function FinancialList() {
                     <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
                       <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
                         <Table
-                          columns={columns}
+                          columns={sharedProjectColumns}
                           dataSource={sharedProjects}
-                          pagination={false}
+                          pagination={{
+                            position: ["bottomLeft"],
+                          }}
                           rowKey="id"
                           size="small"
                           bordered

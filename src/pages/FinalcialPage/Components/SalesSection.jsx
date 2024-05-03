@@ -681,41 +681,6 @@ const SalesSection = ({
         />
         <h3 className="text-lg font-semibold my-8">Revenue Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
-          {/* <Card className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
-            <Chart
-              options={{
-                ...revenue.options,
-                chart: {
-                  ...revenue.options.chart,
-                  id: "totalSales",
-                  stacked: false, // Enable stacking for the total sales visualization
-                },
-                title: {
-                  ...revenue.options.title,
-                  text: "Total Sales",
-                },
-                xaxis: {
-                  ...revenue.options.xaxis,
-                  tickAmount: 12, // Ensure x-axis has 12 ticks
-                },
-                stroke: {
-                  width: 2, // Set the stroke width to 2
-                },
-              }}
-              series={[
-                {
-                  name: "Total Sales",
-                  data: revenue.series.reduce(
-                    (acc, curr) => acc.map((el, i) => el + (curr.data[i] || 0)),
-                    Array(numberOfMonths).fill(0)
-                  ),
-                },
-              ]}
-              type="area"
-              height={350}
-            />
-          </Card> */}
-
           {revenue.charts?.map((chart, index) => (
             <Card
               key={index}

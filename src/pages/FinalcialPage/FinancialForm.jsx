@@ -238,14 +238,15 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [revenue, setRevenue] = useState({
     options: {
       chart: { id: "revenue-chart", type: "bar", height: 350, stacked: true },
+
       colors: [
         "#00A2FF",
         "#14F584",
         "#FFB303",
-        "#5C39FF",
-        "#D738FF",
-        "#FF841F",
-      ], // Set type to "bar" and stacked to true
+        "#DBFE01",
+        "#FF474C",
+        "#D84FE4",
+      ],
       xaxis: {
         categories: Array.from(
           { length: numberOfMonths },

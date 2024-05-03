@@ -292,6 +292,49 @@ const InvestmentSection = ({
     dispatch(setInvestmentTableData(tableData));
   }, []);
 
+  const [newChartSeries, setNewChartSeries] = useState([]);
+
+  useEffect(() => {
+    const newSeriesData = tempInvestmentData.map((investment) => {
+      return { name: investment.purchaseName, data: investment.newChartData };
+    });
+
+    setNewChartSeries(newSeriesData);
+  }, [tempInvestmentData, numberOfMonths]);
+
+  const newChartOptions = {
+    chart: { id: "new-chart", type: "line", height: 350 },
+    xaxis: {
+      categories: Array.from({ length: numberOfMonths }, (_, i) => `${i + 1}`),
+      title: {
+        text: "Month",
+        style: {
+          fontFamily: "Inter, sans-serif",
+          fontWeight: "600",
+        },
+      },
+    },
+    yaxis: {
+      labels: {
+        formatter: function (val) {
+          return Math.floor(val);
+        },
+      },
+      title: {
+        text: "New Chart Y-Axis",
+        style: {
+          fontFamily: "Inter, sans-serif",
+          fontWeight: "600",
+        },
+      },
+    },
+    legend: { position: "bottom", horizontalAlign: "right" },
+    fill: { type: "solid" },
+    dataLabels: { enabled: false },
+    stroke: { curve: "smooth" },
+    markers: { size: 1 },
+  };
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
@@ -473,12 +516,43 @@ const InvestmentSection = ({
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col shadow-xl">
             <Chart
-              options={investmentChart.options}
+              options={{
+                ...investmentChart.options,
+                xaxis: {
+                  ...investmentChart.options.xaxis,
+                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                },
+              }}
               series={investmentChart.series}
               type="bar"
               height={350}
             />
           </Card>
+
+          {investmentChart.series.map((series, index) => (
+            <Card key={index} className="flex flex-col shadow-xl mb-4">
+              <Chart
+                options={{
+                  ...newChartOptions,
+                  chart: {
+                    id: `new-chart-${index}`,
+                    type: "line",
+                    height: 350,
+                  },
+                  stroke: {
+                    width: 2,
+                  },
+                  xaxis: {
+                    ...newChartOptions.xaxis,
+                    tickAmount: 12,
+                  },
+                }}
+                series={[series]}
+                type="area"
+                height={350}
+              />
+            </Card>
+          ))}
         </div>
       </div>
     </div>

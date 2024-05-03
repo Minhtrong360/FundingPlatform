@@ -181,26 +181,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         height: 350,
         stacked: false,
       },
-      
-      // fill: {
-      //   type: "gradient",
-      //   gradient: {
-      //     shadeIntensity: 1,
-      //     opacityFrom: 0.7,
-      //     opacityTo: 0.9,
-      //     stops: [0, 90, 100]
-      //   }
-      // },
-      // colors: ['#00A2FF', '#14F584','#FFB303', '#5C39FF',  '#D738FF', '#FF841F'],
-      colors: [
-        "#00A2FF",
-        "#14F584",
-        "#FFB303",
-        "#5C39FF",
-        "#D738FF",
-        "#FF841F",
-      ],
-  
+
       xaxis: {
         categories: Array.from(
           { length: numberOfMonths },
@@ -236,9 +217,18 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       //     stops: [0, 90, 100],
       //   },
       // },
-     
+      colors: [
+        "#00A2FF",
+        "#14F584",
+        "#FFB303",
+      
+        "#D738FF",
+        "#FF841F",
+        "#5C39FF",
+      ],
       dataLabels: { enabled: false },
       // stroke: { curve: "stepline" },
+      // markers: { size: 1 },
       // markers: { size: 1 },
     },
     series: [],
@@ -452,7 +442,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             message.success("Updated successfully.");
           }
         } else {
-          message.error("Bạn không có quyền cập nhật bản ghi này.");
+          message.error("You do not have permission to update this record.");
         }
       } else {
         // Thêm bản ghi mới
@@ -699,8 +689,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               <button onClick={startTour}>
                 <QuestionCircleOutlined />
               </button>
-            </div> */}
-            <div className="overflow-x-auto whitespace-nowrap border-t-2 border-b-2 border-yellow-300 text-sm">
+            </div> */}  
+            <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
               <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
                 <li
                   className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${

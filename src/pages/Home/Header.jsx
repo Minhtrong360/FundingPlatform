@@ -7,6 +7,9 @@ import { useLocation } from "react-router-dom";
 import ImageDropdown from "./ImageDropdown";
 import NavbarItem from "./NavbarItem";
 import { useAuth } from "../../context/AuthContext";
+import { ShopOutlined } from '@ant-design/icons';
+import { CalculatorOutlined } from '@ant-design/icons';
+import { RocketOutlined } from '@ant-design/icons';
 
 const NavbarButton = ({ children, onClick, className }) => {
   return (
@@ -104,7 +107,7 @@ const Header = ({ position }) => {
       <nav
         className={`${
           position === "notFixed" ? "absolute" : "fixed "
-        } z-50 top-0 start-0 bg-white darkBg w-full  border-b border-gray-200 darkBorderGray transition-transform duration-100 ease-in-out ${
+        } z-50 top-0 start-0 bg-white darkBg w-full  border-b border-gray-300 darkBorderGray transition-transform duration-100 ease-in-out ${
           !isVisible ? "-translate-y-full" : "translate-y-0"
         }`}
       >
@@ -174,19 +177,19 @@ const Header = ({ position }) => {
                 onClick={() => navigate(`/financials`)}
                 isActive={loginPart.includes("financials")}
               >
-                Financial Model ✨
+                Financial Model <CalculatorOutlined />
               </NavbarItem>
               <NavbarItem
                 onClick={() => navigate(`/startups`)}
                 isActive={loginPart.includes("startups")}
               >
-                Profile Listing 🚀
+                Profile Listing <RocketOutlined />
               </NavbarItem>
               <NavbarItem
                 onClick={() => navigate(`/Flea-Market/info`)}
                 isActive={loginPart.includes("Flea-Market")}
               >
-                Flea Market
+                Angel's Share <ShopOutlined />
               </NavbarItem>
 
               <NavbarItem

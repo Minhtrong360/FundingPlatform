@@ -57,7 +57,7 @@ const TermSection = ({ title, content }) => {
         <h1 className="font-semibold text-gray-700 darkTextWhite">{title}</h1>
         <span className="text-gray-400 bg-gray-200 rounded-full"></span>
       </div>
-      <hr className="border-gray-200 darkBorderGray" />
+      <hr className="border-gray-300 darkBorderGray" />
       <p className="p-8 text-sm text-gray-500 darkTextGray">{content}</p>
     </div>
   );

@@ -274,12 +274,14 @@ const InvestmentSection = ({
     dispatch(setInvestmentTableData(tableData));
   }, []);
 
+  
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
         <section aria-labelledby="investment-heading" className="mb-8">
           <h2
-            className="text-2xl font-semibold mb-8 flex items-center"
+            className="text-lg font-semibold mb-8 flex items-center"
             id="investment-heading"
           >
             Investment
@@ -292,7 +294,7 @@ const InvestmentSection = ({
             ></label>
             <select
               id="selectedChannel"
-              className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+              className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
               value={renderInvestmentForm}
               onChange={handleSelectChange}
             >
@@ -317,7 +319,7 @@ const InvestmentSection = ({
                     Name of Purchase
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={input.purchaseName}
                     onChange={(e) =>
                       handleInvestmentInputChange(
@@ -331,7 +333,7 @@ const InvestmentSection = ({
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">Asset Cost</span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={formatNumber(input.assetCost)}
                     onChange={(e) =>
                       handleInvestmentInputChange(
@@ -345,7 +347,7 @@ const InvestmentSection = ({
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">Quantity:</span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     type="text"
                     min="1"
                     value={formatNumber(input.quantity)}
@@ -363,7 +365,7 @@ const InvestmentSection = ({
                     Purchase Month
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={input.purchaseMonth}
                     onChange={(e) =>
                       handleInvestmentInputChange(
@@ -379,7 +381,7 @@ const InvestmentSection = ({
                     Residual Value
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={input.residualValue}
                     onChange={(e) =>
                       handleInvestmentInputChange(
@@ -395,7 +397,7 @@ const InvestmentSection = ({
                     Useful Lifetime (Months)
                   </span>
                   <Input
-                    className="col-start-2 border-gray-200"
+                    className="col-start-2 border-gray-300"
                     value={formatNumber(input.usefulLifetime)}
                     onChange={(e) =>
                       handleInvestmentInputChange(
@@ -428,13 +430,13 @@ const InvestmentSection = ({
               className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
               onClick={handleSave}
             >
-              Save changes
+              Save
             </button>
           </div>
         </section>
       </div>
       <div className="w-full lg:w-3/4 sm:p-4 p-0">
-        <h3 className="text-2xl font-semibold mb-4">Investment Table</h3>
+        <h3 className="text-lg font-semibold mb-4">Investment Table</h3>
         <Table
           className="overflow-auto my-8 rounded-md shadow-xl"
           size="small"
@@ -451,7 +453,7 @@ const InvestmentSection = ({
             record.key === record.type ? "font-bold" : ""
           }
         />
-        <h3 className="text-2xl font-semibold my-8">Investment Chart</h3>
+        <h3 className="text-lg font-semibold my-8">Investment Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col shadow-xl">
             <Chart

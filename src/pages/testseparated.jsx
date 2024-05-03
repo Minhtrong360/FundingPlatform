@@ -1018,7 +1018,7 @@ export default function MyTabs() {
                 <h5 className="font-bold text-gray-700">Joined</h5>
                 <p className="text-sm text-gray-500">September 20, 2024</p>
               </div>
-              <Button className="border border-gray-200  w-full mt-4">
+              <Button className="border border-gray-300  w-full mt-4">
                 
 
                   Show interest &nbsp; <StarOutlined />

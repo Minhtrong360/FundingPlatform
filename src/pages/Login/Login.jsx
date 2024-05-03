@@ -55,7 +55,7 @@ const Login = () => {
   return (
     <div className="darkBgBlue bg-gray-100 flex h-screen items-center py-16">
       <main className="w-full max-w-md mx-auto p-6">
-        <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm darkBgBlue darkBorderGray">
+        <div className="mt-7 bg-white border border-gray-300 rounded-xl shadow-sm darkBgBlue darkBorderGray">
           <div className="p-4 sm:p-7">
             <div className="text-center">
               <h1 className="block text-2xl font-semibold text-gray-800 darkTextWhite">
@@ -76,7 +76,7 @@ const Login = () => {
               <button
                 onClick={(e) => signInWitGG(e)}
                 type="button"
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
+                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
               >
                 <>
                   <GoogleOutlined />
@@ -84,7 +84,7 @@ const Login = () => {
                 </>
               </button>
 
-              <div className="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-1 before:border-t before:border-gray-200 before:mr-6 after:flex-1 after:border-t after:border-gray-200 after:ml-6 darkBeforeBorderGray darkAfterBorderGray">
+              <div className="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-1 before:border-t before:border-gray-300 before:mr-6 after:flex-1 after:border-t after:border-gray-300 after:ml-6 darkBeforeBorderGray darkAfterBorderGray">
                 Or
               </div>
 
@@ -101,7 +101,7 @@ const Login = () => {
                       type="email"
                       id="email"
                       name="email"
-                      className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm darkBgBlue darkBorderGray darkTextGray"
+                      className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm darkBgBlue darkBorderGray darkTextGray"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -128,7 +128,7 @@ const Login = () => {
                       type="password"
                       id="password"
                       name="password"
-                      className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm darkBgBlue darkBorderGray darkTextGray"
+                      className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm darkBgBlue darkBorderGray darkTextGray"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
@@ -140,7 +140,7 @@ const Login = () => {
                       id="remember-me"
                       name="remember-me"
                       type="checkbox"
-                      className="shrink-0 border-gray-200 rounded text-blue-600 focus:ring-blue-500 darkBgBlue darkBorderGray"
+                      className="shrink-0 border-gray-300 rounded text-blue-600 focus:ring-blue-500 darkBgBlue darkBorderGray"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
                     />

@@ -654,11 +654,11 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
   <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
-  <h2 className="text-2xl font-semibold my-4">Analysis</h2>
+  <h2 className="text-lg font-semibold my-4">Analysis</h2>
   </div>
   <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
   <div className="">
-      <h2 className="text-2xl font-semibold my-4">Profit and Loss Statement</h2>
+      <h2 className="text-lg font-semibold my-4">Profit and Loss Statement</h2>
       {/* <pre>{JSON.stringify(tableData, null, 2)}</pre> */}
       <Table
         className="overflow-auto my-8 rounded-md shadow-xl"
@@ -680,9 +680,9 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
         <Select
           onValueChange={(value) => handleChartSelect(value)}
           value={selectedChart}
-          className="border-solid border-[1px] border-gray-200"
+          className="border-solid border-[1px] border-gray-300"
         >
-          <SelectTrigger className="border-solid border-[1px] border-gray-200 w-full lg:w-[20%]">
+          <SelectTrigger className="border-solid border-[1px] border-gray-300 w-full lg:w-[20%]">
             <SelectValue />
           </SelectTrigger>
 

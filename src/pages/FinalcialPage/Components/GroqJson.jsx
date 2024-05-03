@@ -1,16 +1,22 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+
+
 
 const GroqJS = ({datasrc}) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
   const handleSubmit = async () => {
     try {
      
       // Create a new message object for the user input
       // 
       
-      const newMessage = { role: "user", content: "questions" + "\n" + JSON.stringify(datasrc) };
+      const newMessage = { role: "user", content: `Given month1 is ${startMonth}/${startYear}. Use month1 as a index to get month and year from month1 to month36. 
+      Based on information below, answer these request: 1. What is month2 Month/Year. 2. What is month10 Month/Year 3. What is total revenue of July, August and September 2025.` + "\n" + JSON.stringify(datasrc) };
       console.log("Input sent to backend:", JSON.stringify({messages}));
     // Update the messages state by adding the new message
       setMessages([...messages, newMessage]);
@@ -78,7 +84,7 @@ const GroqJS = ({datasrc}) => {
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-4"
         onClick={handleSubmit}
       >
-        Analyst
+        Analyze
       </button>
     </div>
   );

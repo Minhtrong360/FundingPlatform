@@ -699,7 +699,7 @@ const SalesSection = ({
                 }
               },
               fill: {
-                type: 'gradient',
+                type: 'solid',
                 gradient: {
                   type: 'vertical',
                
@@ -724,7 +724,7 @@ const SalesSection = ({
               }]
             }}
             series={[44, 55, 13, 43]} // Data for each section
-            type="donut"
+            type="pie"
             height={350}
           />
           </Card>

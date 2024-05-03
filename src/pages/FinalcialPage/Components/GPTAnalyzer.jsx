@@ -214,7 +214,7 @@ const GPTAnalyzer = ({ numberOfMonths }) => {
       ...item.values?.reduce(
         (acc, value, i) => ({
           ...acc,
-          [`Month ${i + 1}`]: formatNumber(value?.toFixed(0)),
+          [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
         }),
         {}
       ),
@@ -457,7 +457,7 @@ const GPTAnalyzer = ({ numberOfMonths }) => {
       ...item.values?.reduce(
         (acc, value, i) => ({
           ...acc,
-          [`Month ${i + 1}`]: formatNumber(value?.toFixed(0)),
+          [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
         }),
         {}
       ),
@@ -652,10 +652,10 @@ const GPTAnalyzer = ({ numberOfMonths }) => {
       {
         key: "Paid in Capital",
         values: Array.from({ length: numberOfMonths }, (_, i) => {
-          const currentValue = i === 0 ? startingPaidInCapital.toFixed(0) : "0";
+          const currentValue = i === 0 ? startingPaidInCapital.toFixed(2) : "0";
           const currentValueFloat = parseFloat(currentValue);
           const capitalArrValue = capitalArr[i] || 0; // If capitalArr doesn't have value at index i, default to 0
-          return (currentValueFloat + capitalArrValue).toFixed(0);
+          return (currentValueFloat + capitalArrValue).toFixed(2);
         }).map((value) => parseFloat(value)),
       },
       {
@@ -699,7 +699,7 @@ const GPTAnalyzer = ({ numberOfMonths }) => {
       ...item.values?.reduce(
         (acc, value, i) => ({
           ...acc,
-          [`Month ${i + 1}`]: formatNumber(value?.toFixed(0)),
+          [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
         }),
         {}
       ),

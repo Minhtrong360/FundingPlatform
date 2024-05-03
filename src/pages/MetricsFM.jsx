@@ -12,7 +12,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
   const { currency } = useSelector((state) => state.durationSelect);
 
   return (
-    <div className="sm:max-w-[85rem] max-w-full px-0 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+    <div className="sm:max-w-[85rem] max-w-full px-0 py-10 lg:py-14 mx-auto">
       {/* Grid */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Map over cardData array */}
@@ -48,7 +48,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
                               yearlyAverageCustomers[0]) *
                               100) /
                             yearlyAverageCustomers[0]
-                          ).toFixed(0)
+                          ).toFixed(2)
                         )
                       : 0}
                     %
@@ -91,7 +91,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
                           (
                             ((yearlySales[1] - yearlySales[0]) * 100) /
                             yearlySales[0]
-                          )?.toFixed(0)
+                          )?.toFixed(2)
                         )
                       : 0}
                     %
@@ -134,7 +134,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
                           (
                             ((yearlySales[1] - yearlySales[0]) * 100) /
                             yearlySales[0]
-                          )?.toFixed(0)
+                          )?.toFixed(2)
                         )
                       : 0}
                     %

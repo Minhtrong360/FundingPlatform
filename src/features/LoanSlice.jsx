@@ -137,11 +137,11 @@ export const transformLoanDataForTable = (
 
     loanData.loanDataPerMonth?.forEach((monthData) => {
       const monthKey = `Month ${monthData.month}`;
-      loanAmountRow[monthKey] = formatNumber(monthData.loanAmount?.toFixed(0));
-      paymentRow[monthKey] = formatNumber(monthData.payment?.toFixed(0));
-      principalRow[monthKey] = formatNumber(monthData.principal?.toFixed(0));
-      interestRow[monthKey] = formatNumber(monthData.interest?.toFixed(0));
-      balanceRow[monthKey] = formatNumber(monthData.balance?.toFixed(0));
+      loanAmountRow[monthKey] = formatNumber(monthData.loanAmount?.toFixed(2));
+      paymentRow[monthKey] = formatNumber(monthData.payment?.toFixed(2));
+      principalRow[monthKey] = formatNumber(monthData.principal?.toFixed(2));
+      interestRow[monthKey] = formatNumber(monthData.interest?.toFixed(2));
+      balanceRow[monthKey] = formatNumber(monthData.balance?.toFixed(2));
     });
 
     loanTableData.push(
@@ -170,7 +170,7 @@ export const transformLoanDataForTable = (
   };
   for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
     cfLoansRow[`Month ${monthIndex + 1}`] = formatNumber(
-      cfLoansSum[monthIndex]?.toFixed(0)
+      cfLoansSum[monthIndex]?.toFixed(2)
     );
   }
   loanTableData.push(cfLoansRow);
@@ -196,7 +196,7 @@ export const transformLoanDataForTable = (
       return total;
     }, 0);
     totalRemainingBalanceRow[monthKey] = formatNumber(
-      totalBalanceForMonth?.toFixed(0)
+      totalBalanceForMonth?.toFixed(2)
     );
   }
 

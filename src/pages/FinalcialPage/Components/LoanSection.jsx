@@ -69,7 +69,6 @@ const LoanSection = ({
 
   useEffect(() => {
     setTempLoanInputs(loanInputs);
-    setRenderLoanForm("all");
   }, [loanInputs]);
 
   const addNewLoanInput = () => {
@@ -88,9 +87,20 @@ const LoanSection = ({
   };
 
   const removeLoanInput = (id) => {
-    const newInputs = tempLoanInputs.filter((input) => input?.id != id);
-    setTempLoanInputs(newInputs);
-    setRenderLoanForm(newInputs[0]?.id);
+    const indexToRemove = tempLoanInputs.findIndex((input) => input?.id === id);
+    if (indexToRemove !== -1) {
+      const newInputs = [
+        ...tempLoanInputs.slice(0, indexToRemove),
+        ...tempLoanInputs.slice(indexToRemove + 1),
+      ];
+      const prevInputId =
+        indexToRemove === 0
+          ? newInputs[0]?.id
+          : newInputs[indexToRemove - 1]?.id;
+
+      setTempLoanInputs(newInputs);
+      setRenderLoanForm(prevInputId);
+    }
   };
 
   const handleLoanInputChange = (id, field, value) => {

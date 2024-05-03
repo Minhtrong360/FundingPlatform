@@ -49,7 +49,6 @@ const CustomerSection = ({
 
   useEffect(() => {
     setTempCustomerInputs(customerInputs);
-    setRenderCustomerForm("all");
   }, [customerInputs]);
 
   const [tempCustomerGrowthData, setTempCustomerGrowthData] =
@@ -83,10 +82,22 @@ const CustomerSection = ({
   };
 
   const removeCustomerInput = (id) => {
-    const newInputs = tempCustomerInputs.filter((input) => input?.id != id);
+    const indexToRemove = tempCustomerInputs.findIndex(
+      (input) => input?.id === id
+    );
+    if (indexToRemove !== -1) {
+      const newInputs = [
+        ...tempCustomerInputs.slice(0, indexToRemove),
+        ...tempCustomerInputs.slice(indexToRemove + 1),
+      ];
+      const prevInputId =
+        indexToRemove === 0
+          ? newInputs[0]?.id
+          : newInputs[indexToRemove - 1]?.id;
 
-    setTempCustomerInputs(newInputs);
-    setRenderCustomerForm(newInputs[0]?.id);
+      setTempCustomerInputs(newInputs);
+      setRenderCustomerForm(prevInputId);
+    }
   };
 
   const handleInputChange = (id, field, value) => {

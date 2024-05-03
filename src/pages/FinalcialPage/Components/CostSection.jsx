@@ -40,7 +40,6 @@ const CostSection = ({
 
   useEffect(() => {
     setTempCostInput(costInputs);
-    setRenderCostForm(costInputs[0]?.id);
   }, [costInputs]);
 
   const addNewCostInput = () => {
@@ -61,10 +60,20 @@ const CostSection = ({
   };
 
   const removeCostInput = (id) => {
-    const newInputs = tempCostInput.filter((input) => input?.id != id);
+    const indexToRemove = tempCostInput.findIndex((input) => input?.id === id);
+    if (indexToRemove !== -1) {
+      const newInputs = [
+        ...tempCostInput.slice(0, indexToRemove),
+        ...tempCostInput.slice(indexToRemove + 1),
+      ];
+      const prevInputId =
+        indexToRemove === 0
+          ? newInputs[0]?.id
+          : newInputs[indexToRemove - 1]?.id;
 
-    setTempCostInput(newInputs);
-    setRenderCostForm(newInputs[0]?.id);
+      setTempCostInput(newInputs);
+      setRenderCostForm(prevInputId);
+    }
   };
 
   const handleCostInputChange = (id, field, value) => {
@@ -191,7 +200,26 @@ const CostSection = ({
       };
     });
 
-    setCostChart((prevState) => ({ ...prevState, series: seriesData }));
+    const totalCostPerMonth = seriesData.reduce((acc, channel) => {
+      channel.data.forEach((customers, index) => {
+        if (!acc[index]) {
+          acc[index] = 0;
+        }
+        acc[index] += customers;
+      });
+      return acc;
+    }, []);
+
+    setCostChart((prevState) => ({
+      ...prevState,
+      series: [
+        ...seriesData,
+        {
+          name: "Total",
+          data: totalCostPerMonth,
+        },
+      ],
+    }));
   }, [tempCostData, numberOfMonths]);
 
   // Function to handle select change
@@ -232,7 +260,6 @@ const CostSection = ({
   };
 
   // useEffect to update cost inputs when data is saved
-  const { user } = useAuth();
   const { id } = useParams();
   useEffect(() => {
     const saveData = async () => {
@@ -487,22 +514,22 @@ const CostSection = ({
         <h3 className="text-lg font-semibold my-8">Cost Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
-  <Chart
-    options={{
-      ...costChart.options,
-      xaxis: {
-        ...costChart.options.xaxis,
-        tickAmount: 12, // Set the number of ticks on the x-axis to 12
-      },
-      stroke: {
-        width: 2, // Set the stroke width to 2
-      },
-    }}
-    series={costChart.series}
-    type="area"
-    height={350}
-  />
-</Card>
+            <Chart
+              options={{
+                ...costChart.options,
+                xaxis: {
+                  ...costChart.options.xaxis,
+                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                },
+                stroke: {
+                  width: 2, // Set the stroke width to 2
+                },
+              }}
+              series={costChart.series}
+              type="area"
+              height={350}
+            />
+          </Card>
         </div>
       </div>
     </div>

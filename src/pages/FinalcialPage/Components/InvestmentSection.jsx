@@ -36,7 +36,6 @@ const InvestmentSection = ({
 
   useEffect(() => {
     setTempInvestmentInputs(investmentInputs);
-    setRenderInvestmentForm("all");
   }, [investmentInputs]);
 
   const addNewInvestmentInput = () => {
@@ -56,10 +55,22 @@ const InvestmentSection = ({
   };
 
   const removeInvestmentInput = (id) => {
-    const newInputs = tempInvestmentInputs.filter((input) => input?.id != id);
+    const indexToRemove = tempInvestmentInputs.findIndex(
+      (input) => input?.id === id
+    );
+    if (indexToRemove !== -1) {
+      const newInputs = [
+        ...tempInvestmentInputs.slice(0, indexToRemove),
+        ...tempInvestmentInputs.slice(indexToRemove + 1),
+      ];
+      const prevInputId =
+        indexToRemove === 0
+          ? newInputs[0]?.id
+          : newInputs[indexToRemove - 1]?.id;
 
-    setTempInvestmentInputs(newInputs);
-    setRenderInvestmentForm(newInputs[0]?.id);
+      setTempInvestmentInputs(newInputs);
+      setRenderInvestmentForm(prevInputId);
+    }
   };
 
   const handleInvestmentInputChange = (id, field, value) => {
@@ -163,7 +174,14 @@ const InvestmentSection = ({
   const [investmentChart, setInvestmentChart] = useState({
     options: {
       chart: { id: "investment-chart", type: "area", height: 350 },
-      colors: ['#00A2FF', '#14F584', '#FFB303', '#5C39FF', '#D738FF', '#FF841F'],
+      colors: [
+        "#00A2FF",
+        "#14F584",
+        "#FFB303",
+        "#5C39FF",
+        "#D738FF",
+        "#FF841F",
+      ],
       xaxis: {
         categories: Array.from(
           { length: numberOfMonths },

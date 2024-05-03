@@ -67,7 +67,6 @@ const SalesSection = ({
 
   useEffect(() => {
     setTempChannelInputs(channelInputs);
-    setRenderChannelForm("all");
   }, [channelInputs]);
 
   //RevenueFunctions
@@ -92,10 +91,22 @@ const SalesSection = ({
   };
 
   const removeChannelInput = (id) => {
-    const newInputs = tempChannelInputs.filter((input) => input?.id != id);
+    const indexToRemove = tempChannelInputs.findIndex(
+      (input) => input?.id === id
+    );
+    if (indexToRemove !== -1) {
+      const newInputs = [
+        ...tempChannelInputs.slice(0, indexToRemove),
+        ...tempChannelInputs.slice(indexToRemove + 1),
+      ];
+      const prevInputId =
+        indexToRemove === 0
+          ? newInputs[0]?.id
+          : newInputs[indexToRemove - 1]?.id;
 
-    setTempChannelInputs(newInputs);
-    setRenderChannelForm(newInputs[0]?.id);
+      setTempChannelInputs(newInputs);
+      setRenderChannelForm(prevInputId);
+    }
   };
 
   const handleChannelInputChange = (id, field, value) => {
@@ -166,6 +177,7 @@ const SalesSection = ({
         tempChannelInputs
       )
     );
+
     setTempRevenueData(revenueByChannelAndProduct);
     setTempRevenueDeductionData(DeductionByChannelAndProduct);
     setTempCogsData(cogsByChannelAndProduct);
@@ -194,8 +206,6 @@ const SalesSection = ({
   ]);
 
   //RevenueTable
-
-  const handleActualChange = (value, record, field) => {};
 
   //RevenueColumns
   const months = [
@@ -246,11 +256,25 @@ const SalesSection = ({
   //RevenueChart
 
   useEffect(() => {
-    if (Array.isArray(tempRevenueData)) {
-      const salesChartsData = tempRevenueData.map((channelData) => ({
-        name: channelData[0]?.channelName || "Unknown Channel",
-        data: channelData.map((data) => data.revenue),
-      }));
+    if (tempRevenueData) {
+      const salesChartsData = Object.entries(tempRevenueData)
+        .map(([key, data]) => {
+          if (!data) return null; // Ensure data is not undefined
+
+          const dataDeductions = tempRevenueDeductionData[key] || [];
+          const dataNetRevenue = tempNetRevenueData[key] || [];
+          const dataCOGS = tempCogsData[key] || [];
+          const dataGrossProfit = tempGrossProfitData[key] || [];
+          return {
+            name: key,
+            data, // Ensure this is always an array
+            dataDeductions,
+            dataNetRevenue,
+            dataCOGS,
+            dataGrossProfit,
+          };
+        })
+        .filter((chart) => chart !== null); // Remove any null entries
 
       const totalSalesData = salesChartsData.reduce((acc, channel) => {
         channel.data.forEach((amount, index) => {
@@ -260,13 +284,10 @@ const SalesSection = ({
         return acc;
       }, Array(numberOfMonths).fill(0));
 
-      console.log("salesChartsData", salesChartsData);
-
       setRevenue((prevState) => ({
         ...prevState,
         series: salesChartsData,
         charts: [
-          // Stacked bar chart for all channels
           {
             options: {
               ...prevState.options,
@@ -280,29 +301,14 @@ const SalesSection = ({
                 text: "All Channels",
               },
             },
-            series: salesChartsData,
-          },
-          // Total sales chart for all channels
-          {
-            options: {
-              ...prevState.options,
-              chart: {
-                ...prevState.options.chart,
-                id: "totalSales",
-              },
-              title: {
-                ...prevState.options.title,
-                text: "Total Sales",
-              },
-            },
             series: [
+              ...salesChartsData,
               {
                 name: "Total",
                 data: totalSalesData,
               },
             ],
           },
-          // Individual charts for each channel
           ...salesChartsData.map((channelSeries) => ({
             options: {
               ...prevState.options,
@@ -315,7 +321,28 @@ const SalesSection = ({
                 text: channelSeries.name,
               },
             },
-            series: [channelSeries],
+            series: [
+              {
+                name: "Revenue",
+                data: channelSeries.data,
+              },
+              {
+                name: "Deductions",
+                data: channelSeries.dataDeductions,
+              },
+              {
+                name: "Net Revenue",
+                data: channelSeries.dataNetRevenue,
+              },
+              {
+                name: "COGS",
+                data: channelSeries.dataCOGS,
+              },
+              {
+                name: "Gross Profit",
+                data: channelSeries.dataGrossProfit,
+              },
+            ],
           })),
         ],
       }));
@@ -409,6 +436,8 @@ const SalesSection = ({
   const handleChannelChange = (event) => {
     setRenderChannelForm(event.target.value);
   };
+
+  console.log("revenue", revenue);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
@@ -652,7 +681,7 @@ const SalesSection = ({
         />
         <h3 className="text-lg font-semibold my-8">Revenue Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
+          {/* <Card className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
             <Chart
               options={{
                 ...revenue.options,
@@ -685,30 +714,26 @@ const SalesSection = ({
               type="area"
               height={350}
             />
-          </Card>
+          </Card> */}
 
-          {revenue.series.map((seriesItem, index) => (
-            <Card key={index} className="flex flex-col shadow-xl">
+          {revenue.charts?.map((chart, index) => (
+            <Card
+              key={index}
+              className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
+            >
               <Chart
                 options={{
-                  ...revenue.options,
-                  chart: {
-                    ...revenue.options.chart,
-                    id: seriesItem.name,
-                  },
-                  title: {
-                    ...revenue.options.title,
-                    text: seriesItem.name,
-                  },
+                  ...chart.options,
+
                   xaxis: {
-                    ...revenue.options.xaxis,
+                    ...chart.options.xaxis,
                     tickAmount: 12, // Ensure x-axis has 12 ticks
                   },
                   stroke: {
                     width: 2, // Set the stroke width to 1
                   },
                 }}
-                series={[seriesItem]}
+                series={chart.series}
                 type="area"
                 height={350}
               />

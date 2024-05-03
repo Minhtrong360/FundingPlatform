@@ -207,7 +207,27 @@ const PersonnelSection = ({
       };
     });
 
-    setPersonnelChart((prevState) => ({ ...prevState, series: seriesData }));
+    // Calculate total personnel cost per month for all channels
+    const totalPersonnelCostPerMonth = seriesData.reduce((acc, channel) => {
+      channel.data.forEach((customers, index) => {
+        if (!acc[index]) {
+          acc[index] = 0;
+        }
+        acc[index] += customers;
+      });
+      return acc;
+    }, []);
+
+    setPersonnelChart((prevState) => ({
+      ...prevState,
+      series: [
+        ...seriesData,
+        {
+          name: "Total",
+          data: totalPersonnelCostPerMonth,
+        },
+      ],
+    }));
   }, [tempPersonnelCostData, numberOfMonths]);
 
   const handleSelectChange = (event) => {

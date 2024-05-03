@@ -100,11 +100,23 @@ export const transformPersonnelCostDataForTable = (tempPersonnelCostData) => {
     const rowData = { key: item.jobTitle, jobTitle: item.jobTitle };
     item.monthlyCosts?.forEach((monthData) => {
       rowData[`month${monthData.month}`] = formatNumber(
-        monthData.cost?.toFixed(0)
+        monthData.cost?.toFixed(2)
       ); // Adjust formatting as needed
     });
     return rowData;
   });
+  const totalRow = { key: "Total", jobTitle: "Total" };
+  tempPersonnelCostData[0]?.monthlyCosts.forEach((monthData, index) => {
+    let totalMonthlyCost = 0;
+    tempPersonnelCostData.forEach((item) => {
+      const cost = item.monthlyCosts[index].cost || 0;
+      totalMonthlyCost += cost;
+    });
+    totalRow[`month${monthData.month}`] = formatNumber(
+      totalMonthlyCost.toFixed(2)
+    ); // Adjust formatting as needed
+  });
+  transformedCustomerTableData.push(totalRow);
   return transformedCustomerTableData;
 };
 

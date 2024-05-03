@@ -37,7 +37,6 @@ const FundraisingSection = ({
 
   useEffect(() => {
     setTempFundraisingInputs(fundraisingInputs);
-    setSelectedFundraisingId(fundraisingInputs[0]?.id);
   }, [fundraisingInputs]);
 
   const addNewFundraisingInput = () => {
@@ -56,9 +55,22 @@ const FundraisingSection = ({
   };
 
   const removeFundraisingInput = (id) => {
-    const newInputs = tempFundraisingInputs.filter((input) => input?.id !== id);
-    setTempFundraisingInputs(newInputs);
-    setSelectedFundraisingId(newInputs[0]?.id);
+    const indexToRemove = tempFundraisingInputs.findIndex(
+      (input) => input?.id === id
+    );
+    if (indexToRemove !== -1) {
+      const newInputs = [
+        ...tempFundraisingInputs.slice(0, indexToRemove),
+        ...tempFundraisingInputs.slice(indexToRemove + 1),
+      ];
+      const prevInputId =
+        indexToRemove === 0
+          ? newInputs[0]?.id
+          : newInputs[indexToRemove - 1]?.id;
+
+      setTempFundraisingInputs(newInputs);
+      setSelectedFundraisingId(prevInputId);
+    }
   };
 
   const handleFundraisingInputChange = (id, field, value) => {

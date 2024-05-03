@@ -152,7 +152,7 @@ const FundraisingSection = ({
       legend: { position: "bottom", horizontalAlign: "right" },
       fill: { type: "solid" },
       dataLabels: { enabled: false },
-      stroke: { curve: "smooth" },
+      stroke: { curve: "smooth", width: 1 },
       markers: { size: 1 },
     },
     series: [],

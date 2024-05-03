@@ -48,7 +48,7 @@ import { calculateProfitAndLoss } from "../../../features/ProfitAndLossSlice";
 import CustomChart from "./CustomerChart";
 import SelectField from "../../../components/SelectField";
 import { setCutMonth } from "../../../features/DurationSlice";
-
+import GroqJS from "./GroqJson";
 const ProfitAndLossSection = ({ numberOfMonths }) => {
   const dispatch = useDispatch();
   const { cutMonth } = useSelector((state) => state.durationSelect);
@@ -655,6 +655,9 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     <div className="w-full h-full flex flex-col lg:flex-row">
   <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
   <h2 className="text-lg font-semibold my-4">Analysis</h2>
+  <div className="mb-8 mt-8">
+          <GroqJS datasrc={transposedData} />
+   </div>
   </div>
   <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
   <div className="">

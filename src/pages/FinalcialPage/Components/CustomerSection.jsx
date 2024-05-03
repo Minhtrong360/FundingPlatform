@@ -28,6 +28,8 @@ import {
   SelectItem,
 } from "../../../components/ui/Select";
 import { useParams } from "react-router-dom";
+import GroqJS from "./GroqJson";
+
 
 const CustomerSection = ({
   numberOfMonths,
@@ -41,7 +43,7 @@ const CustomerSection = ({
   const { customerInputs, customerGrowthData, customerTableData } = useSelector(
     (state) => state.customer
   );
-
+  console.log(customerTableData)
   const { startMonth, startYear } = useSelector(
     (state) => state.durationSelect
   );
@@ -694,9 +696,11 @@ const CustomerSection = ({
               Save
             </button>
           </div>
+          
         </section>
       </div>
       <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
+        
         <div className="mb-8">
           <h3 className="text-lg font-semibold">Customer Table</h3>
           <Table

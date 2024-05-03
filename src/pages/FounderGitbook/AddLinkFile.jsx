@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 // import { toast } from "react-toastify";
-import PricingSection from "../Home/Pricing";
+// import PricingSection from "../Home/Pricing";
 import ReactModal from "react-modal";
 import Spinner from "../../components/Spinner";
 import { Tooltip, message } from "antd";
+import PricingWithLemon from "../Home/Components/PricingWithLemon";
 
 const Modal = ({
   isOpen,
@@ -51,7 +52,7 @@ const Modal = ({
         <h3 className="text-lg font-medium leading-6 text-gray-800 capitalize">
           Project Name: {currentProject.name}
         </h3>
-        
+
         <form className="mt-4">
           <label className="block mt-3">
             <input
@@ -276,7 +277,7 @@ export default function AddLinkFile({
       >
         <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
           <div className="relative p-8 bg-white w-full  m-auto flex-col flex rounded-md">
-            <PricingSection />
+            <PricingWithLemon />
             <div className="mt-4 flex items-center gap-10">
               <button
                 className="max-w-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"

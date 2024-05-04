@@ -45,6 +45,7 @@ import CustomChart from "./CustomerChart";
 import SelectField from "../../../components/SelectField";
 import { setCutMonth } from "../../../features/DurationSlice";
 import { InfoCircleOutlined } from "@ant-design/icons";
+import GroqJS from "./GroqJson";
 
 function CashFlowSection({ numberOfMonths }) {
   const dispatch = useDispatch();
@@ -685,7 +686,7 @@ function CashFlowSection({ numberOfMonths }) {
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
-        <h2 className="text-lg font-semibold my-4">Analysis</h2>
+        <GroqJS />{" "}
       </div>
       <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
         <div className="">

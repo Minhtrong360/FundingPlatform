@@ -121,7 +121,7 @@ const StatBadgeByDay = ({ ggData, setIsLoading }) => {
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
+      fill: { type: "gradient" },
       dataLabels: { enabled: false },
       stroke: { curve: "straight" },
       markers: { size: 1 },

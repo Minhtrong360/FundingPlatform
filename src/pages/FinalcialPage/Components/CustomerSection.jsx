@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Input } from "../../../components/ui/Input";
 import { Card, Table, Tooltip, message } from "antd";
 import Chart from "react-apexcharts";
@@ -29,7 +29,8 @@ import {
 } from "../../../components/ui/Select";
 import { useParams } from "react-router-dom";
 
-const CustomerSection = ({
+const CustomerSection = React.memo(
+({
   numberOfMonths,
   isSaved,
   setIsSaved,
@@ -751,6 +752,7 @@ const CustomerSection = ({
       </div>
     </div>
   );
-};
+}
+);
 
 export default CustomerSection;

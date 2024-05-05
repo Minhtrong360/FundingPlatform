@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Input } from "../../../components/ui/Input";
 import { Card, Table, message } from "antd";
 import Chart from "react-apexcharts";
@@ -30,7 +30,7 @@ const LoanSection = ({
 
   const [loanChart, setLoanChart] = useState({
     options: {
-      chart: { id: "loan-chart", type: "line", height: 350 },
+      chart: { id: "loan-chart", type: "area", height: 350 },
       xaxis: {
         categories: Array.from(
           { length: numberOfMonths },
@@ -59,9 +59,9 @@ const LoanSection = ({
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
+      fill: { type: "gradient" },
       dataLabels: { enabled: false },
-      stroke: { curve: "smooth" },
+      stroke: { curve: "straight" },
       markers: { size: 1 },
     },
     series: [],
@@ -72,8 +72,7 @@ const LoanSection = ({
   }, [loanInputs]);
 
   const addNewLoanInput = () => {
-    const maxId = Math.max(...tempLoanInputs.map((input) => input?.id));
-    const newId = maxId !== -Infinity ? maxId + 1 : 1;
+    const newId = tempLoanInputs.length > 0 ? Math.max(...tempLoanInputs.map(input => input.id)) + 1 : 1;
     const newLoan = {
       id: newId,
       loanName: "New loan",
@@ -85,6 +84,76 @@ const LoanSection = ({
     setTempLoanInputs([...tempLoanInputs, newLoan]);
     setRenderLoanForm(newId.toString());
   };
+  
+  const seriesData = useMemo(() => calculateLoanData(tempLoanInputs).flatMap((loan) => {
+    return [
+      {
+        name: `${loan.loanName} - Payment`,
+        data: loan.loanDataPerMonth.map((month) => month.payment),
+      },
+      {
+        name: `${loan.loanName} - Principal`,
+        data: loan.loanDataPerMonth.map((month) => month.principal),
+      },
+      {
+        name: `${loan.loanName} - Interest`,
+        data: loan.loanDataPerMonth.map((month) => month.interest),
+      },
+      {
+        name: `${loan.loanName} - Remaining Balance`,
+        data: loan.loanDataPerMonth.map((month) => month.balance),
+      },
+    ];
+  }), [tempLoanInputs, numberOfMonths]);
+  
+  useEffect(() => {
+    setLoanChart(prevState => ({ ...prevState, series: seriesData }));
+  }, [seriesData]);
+  
+  const handleSave = () => {
+    setIsSaved(true);
+    message.success("Data saved successfully!");
+  };
+  
+  useEffect(() => {
+    const saveData = async () => {
+      try {
+        if (isSaved) {
+          dispatch(setLoanInputs(tempLoanInputs));
+          dispatch(setLoanTableData(tableData));
+  
+          const { data: existingData, error: selectError } = await supabase
+            .from("finance")
+            .select("*")
+            .eq("id", id);
+          if (selectError) {
+            throw selectError;
+          }
+  
+          if (existingData && existingData.length > 0) {
+            const newInputData = JSON.parse(existingData[0].inputData);
+  
+            newInputData.loanInputs = tempLoanInputs;
+  
+            const { error: updateError } = await supabase
+              .from("finance")
+              .update({ inputData: newInputData })
+              .eq("id", existingData[0]?.id)
+              .select();
+  
+            if (updateError) {
+              throw updateError;
+            }
+          }
+        }
+      } catch (error) {
+        message.error(error);
+      } finally {
+        setIsSaved(false);
+      }
+    };
+    saveData();
+  }, [isSaved]);
 
   const removeLoanInput = (id) => {
     const indexToRemove = tempLoanInputs.findIndex((input) => input?.id === id);
@@ -196,10 +265,11 @@ const LoanSection = ({
     setRenderLoanForm(event.target.value);
   };
 
-  const handleSave = () => {
+  const handleLoanSave = () => {
     setIsSaved(true);
     message.success("Data saved successfully!");
   };
+  
 
   const tableData = transformLoanDataForTable(
     tempLoanInputs,
@@ -399,11 +469,11 @@ const LoanSection = ({
             </button>
 
             <button
-              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
-              onClick={handleSave}
-            >
-              Save
-            </button>
+  className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
+  onClick={handleLoanSave}
+>
+  Save
+</button>
           </div>
         </section>
       </div>
@@ -427,10 +497,13 @@ const LoanSection = ({
         <h3 className="text-lg font-semibold my-8">Loan Data</h3>
 
         <div className="grid md:grid-cols-2 gap-6">
-         <Card className="flex flex-col shadow-xl">
+        <Card className="flex flex-col shadow-xl">
   <Chart
     options={{
       ...loanChart.options,
+      stroke: {
+        width: 2, // Set the stroke width to 2
+      },
       xaxis: {
         ...loanChart.options.xaxis,
         tickAmount: 12, // Set the number of ticks on the x-axis to 12

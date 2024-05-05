@@ -154,7 +154,7 @@ const CostSection = ({
   // State for cost chart
   const [costChart, setCostChart] = useState({
     options: {
-      chart: { id: "cost-chart", type: "bar", height: 350 },
+      chart: { id: "cost-chart", type: "are", height: 350 },
       xaxis: {
         categories: Array.from(
           { length: numberOfMonths },
@@ -183,7 +183,7 @@ const CostSection = ({
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
+      fill: { type: "gradient" },
       dataLabels: { enabled: false },
       stroke: { curve: "smooth" },
       markers: { size: 1 },

@@ -210,7 +210,7 @@ const InvestmentSection = ({
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
+      fill: { type: "gradient" },
       dataLabels: { enabled: false },
       stroke: { curve: "smooth" },
       markers: { size: 1 },
@@ -329,7 +329,7 @@ const InvestmentSection = ({
       },
     },
     legend: { position: "bottom", horizontalAlign: "right" },
-    fill: { type: "solid" },
+    fill: { type: "gradient" },
     dataLabels: { enabled: false },
     stroke: { curve: "smooth" },
     markers: { size: 1 },
@@ -515,19 +515,22 @@ const InvestmentSection = ({
         <h3 className="text-lg font-semibold my-8">Investment Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col shadow-xl">
-            <Chart
-              options={{
-                ...investmentChart.options,
-                xaxis: {
-                  ...investmentChart.options.xaxis,
-                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
-                },
-              }}
-              series={investmentChart.series}
-              type="bar"
-              height={350}
-            />
-          </Card>
+  <Chart
+    options={{
+      ...investmentChart.options,
+      stroke: {
+        width: 2, // Set the stroke width to 2
+      },
+      xaxis: {
+        ...investmentChart.options.xaxis,
+        tickAmount: 12, // Set the number of ticks on the x-axis to 12
+      },
+    }}
+    series={investmentChart.series}
+    type="area"
+    height={350}
+  />
+</Card>
 
           {investmentChart.series.map((series, index) => (
             <Card key={index} className="flex flex-col shadow-xl mb-4">
@@ -536,7 +539,7 @@ const InvestmentSection = ({
                   ...newChartOptions,
                   chart: {
                     id: `new-chart-${index}`,
-                    type: "line",
+                    type: "area",
                     height: 350,
                   },
                   stroke: {

@@ -7,6 +7,7 @@ const GroqJS = ({ datasrc }) => {
   const { startMonth, startYear } = useSelector(
     (state) => state.durationSelect
   );
+  console.log("datasrc", datasrc);
   const handleSubmit = async () => {
     try {
       // Create a new message object for the user input

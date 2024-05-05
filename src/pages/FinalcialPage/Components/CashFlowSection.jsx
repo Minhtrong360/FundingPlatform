@@ -126,7 +126,7 @@ function CashFlowSection({ numberOfMonths }) {
   );
 
   useEffect(() => {
-    const calculatedData = calculateLoanData(loanInputs);
+    const calculatedData = calculateLoanData(loanInputs, numberOfMonths);
     dispatch(setLoanData(calculatedData));
   }, [loanInputs, numberOfMonths]);
 

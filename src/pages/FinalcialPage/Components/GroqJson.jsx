@@ -16,8 +16,10 @@ const GroqJS = ({ datasrc }) => {
       const newMessage = {
         role: "user",
         content:
-          `Given month1 is ${startMonth}/${startYear}. Use month1 as a index to get month and year from month1 to month36. 
-      Based on information below, answer these request: 1. What is month2 Month/Year. 2. What is month10 Month/Year 3. What is total revenue of July, August and September 2025.` +
+          `1. All answers are short and using bullet points.
+          2. Analyze figures and numbers vertically and horizontally. 
+          3. Show remarkable changes, red flags, insights based on quantitative reasonings. 
+          4. Give a score out of 10 for the data below` +
           "\n" +
           JSON.stringify(datasrc),
       };

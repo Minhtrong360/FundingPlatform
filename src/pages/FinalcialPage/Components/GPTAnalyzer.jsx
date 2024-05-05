@@ -161,7 +161,7 @@ const GPTAnalyzer = ({ numberOfMonths }) => {
     dispatch(setFundraisingTableData(calculateFundTableData));
     // Chỉ dành cho ProfitAndLoss
     const calculatedCostData = calculateCostData(costInputs, numberOfMonths);
-    const calculatedLoanData = calculateLoanData(loanInputs);
+    const calculatedLoanData = calculateLoanData(loanInputs, numberOfMonths);
     const {
       totalRevenue,
       totalDeductions,

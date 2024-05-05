@@ -129,7 +129,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   );
 
   useEffect(() => {
-    const calculatedData = calculateLoanData(loanInputs);
+    const calculatedData = calculateLoanData(loanInputs, numberOfMonths);
     dispatch(setLoanData(calculatedData));
   }, [loanInputs, numberOfMonths]);
 
@@ -553,7 +553,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     return years;
   };
 
-
   const years = divideMonthsIntoYears();
 
   // Function to generate table columns dynamically based on months in a year
@@ -656,7 +655,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
-      <GroqJS datasrc={transposedData} />
+        <GroqJS datasrc={transposedData} />
       </div>
       <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
         <div className="">
@@ -673,7 +672,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             pagination={false}
           />
 
-          
           {/* <Chart
         options={chartOptions}
         series={chartSeries}
@@ -749,7 +747,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
               </SelectContent>
             </Select>
           </div>
-          
 
           {/* Các biểu đồ */}
 
@@ -844,7 +841,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
               title="Total Interest Payments Over Time"
             />
           )}
-          
 
           <div className="w-full md:w-[20%] my-5">
             <SelectField
@@ -859,7 +855,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
               })).map((option) => option.label)} // Chỉ trả về mảng các label
             />
           </div>
-          
 
           {years.map((year, index) => (
             <div key={index}>
@@ -934,9 +929,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           </div> */}
             </div>
           ))}
-          
         </div>
-        
       </div>
     </div>
   );

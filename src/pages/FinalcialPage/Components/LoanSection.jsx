@@ -186,7 +186,7 @@ const LoanSection = ({
   };
 
   useEffect(() => {
-    const calculatedData = calculateLoanData(loanInputs);
+    const calculatedData = calculateLoanData(loanInputs, numberOfMonths);
     dispatch(setLoanData(calculatedData));
     dispatch(setLoanTableData(tableData));
   }, [loanInputs, numberOfMonths, renderLoanForm]);
@@ -237,7 +237,14 @@ const LoanSection = ({
   ];
 
   useEffect(() => {
-    const seriesData = calculateLoanData(tempLoanInputs).flatMap((loan) => {
+    const seriesData = calculateLoanData(
+      tempLoanInputs,
+      numberOfMonths
+    ).flatMap((loan) => {
+      console.log(
+        "calculateLoanData",
+        calculateLoanData(tempLoanInputs, numberOfMonths)
+      );
       return [
         {
           name: `${loan.loanName} - Payment`,
@@ -497,26 +504,20 @@ const LoanSection = ({
         <h3 className="text-lg font-semibold my-8">Loan Data</h3>
 
         <div className="grid md:grid-cols-2 gap-6">
-        <Card className="flex flex-col shadow-xl">
-  <Chart
-    options={{
-      ...loanChart.options,
-      stroke: {
-        width: 2, // Set the stroke width to 2
-      },
-      xaxis: {
-        ...loanChart.options.xaxis,
-        tickAmount: 12, // Set the number of ticks on the x-axis to 12
-      },
-    }}
-    series={loanChart.series}
-    type="area"
-    height={350}
-  />
-</Card>
-
-
-
+          <Card className="flex flex-col shadow-xl">
+            <Chart
+              options={{
+                ...loanChart.options,
+                xaxis: {
+                  ...loanChart.options.xaxis,
+                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                },
+              }}
+              series={loanChart.series}
+              type="area"
+              height={350}
+            />
+          </Card>
         </div>
       </div>
     </div>

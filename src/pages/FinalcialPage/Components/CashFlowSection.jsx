@@ -126,7 +126,7 @@ function CashFlowSection({ numberOfMonths }) {
   );
 
   useEffect(() => {
-    const calculatedData = calculateLoanData(loanInputs);
+    const calculatedData = calculateLoanData(loanInputs, numberOfMonths);
     dispatch(setLoanData(calculatedData));
   }, [loanInputs, numberOfMonths]);
 
@@ -686,7 +686,7 @@ function CashFlowSection({ numberOfMonths }) {
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
-        <GroqJS />{" "}
+        <GroqJS datasrc={positionDataWithNetIncome} />{" "}
       </div>
       <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
         <div className="">

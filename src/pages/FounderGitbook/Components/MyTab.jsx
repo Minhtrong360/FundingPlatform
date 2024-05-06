@@ -23,7 +23,7 @@ import { useAuth } from "../../../context/AuthContext";
 import LoadingButtonClick from "../../../components/LoadingButtonClick";
 import FilesList from "../FilesList";
 
-// import * as Y from "yjs";
+import * as Y from "yjs";
 import YPartyKitProvider from "y-partykit/provider";
 
 const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {

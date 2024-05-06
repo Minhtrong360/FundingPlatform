@@ -28,8 +28,6 @@ import {
   SelectItem,
 } from "../../../components/ui/Select";
 import { useParams } from "react-router-dom";
-import GroqJS from "./GroqJson";
-
 
 const CustomerSection = ({
   numberOfMonths,
@@ -43,7 +41,7 @@ const CustomerSection = ({
   const { customerInputs, customerGrowthData, customerTableData } = useSelector(
     (state) => state.customer
   );
-  console.log(customerTableData)
+
   const { startMonth, startYear } = useSelector(
     (state) => state.durationSelect
   );
@@ -51,7 +49,6 @@ const CustomerSection = ({
 
   useEffect(() => {
     setTempCustomerInputs(customerInputs);
-    setRenderCustomerForm("all");
   }, [customerInputs]);
 
   const [tempCustomerGrowthData, setTempCustomerGrowthData] =
@@ -85,10 +82,22 @@ const CustomerSection = ({
   };
 
   const removeCustomerInput = (id) => {
-    const newInputs = tempCustomerInputs.filter((input) => input?.id != id);
+    const indexToRemove = tempCustomerInputs.findIndex(
+      (input) => input?.id === id
+    );
+    if (indexToRemove !== -1) {
+      const newInputs = [
+        ...tempCustomerInputs.slice(0, indexToRemove),
+        ...tempCustomerInputs.slice(indexToRemove + 1),
+      ];
+      const prevInputId =
+        indexToRemove === 0
+          ? newInputs[0]?.id
+          : newInputs[indexToRemove - 1]?.id;
 
-    setTempCustomerInputs(newInputs);
-    setRenderCustomerForm(newInputs[0]?.id);
+      setTempCustomerInputs(newInputs);
+      setRenderCustomerForm(prevInputId);
+    }
   };
 
   const handleInputChange = (id, field, value) => {
@@ -696,11 +705,9 @@ const CustomerSection = ({
               Save
             </button>
           </div>
-          
         </section>
       </div>
       <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
-        
         <div className="mb-8">
           <h3 className="text-lg font-semibold">Customer Table</h3>
           <Table
@@ -731,11 +738,11 @@ const CustomerSection = ({
                     tickAmount: 12, // Set the number of ticks on the x-axis to 12
                   },
                   stroke: {
-                    width: 1, // Set the stroke width to 1
+                    width: 2, // Set the stroke width to 1
                   },
                 }}
                 series={chart.series}
-                type="bar"
+                type="area"
                 height={350}
               />
             </Card>

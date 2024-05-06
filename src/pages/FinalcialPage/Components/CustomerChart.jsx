@@ -11,28 +11,17 @@ const CustomChart = ({
   title,
 }) => {
   const chartOptions = {
-    chart: { id: "profit-and-loss-chart", type: "bar", height: 350 },
-    fill: {
-      type: 'gradient',
-      gradient: {
-        shade: 'light',
-        type: 'vertical',
-        shadeIntensity: 0.25,
-        gradientToColors: undefined,
-        inverseColors: true,
-        opacityFrom: 0.85,
-        opacityTo: 0.5,
-       
-      },
-    },
-    plotOptions: {
-      bar: {
-        borderRadius: 2, // Set the border radius to 10
-      },
-    },
-    stroke: { width: 1 },
-    colors: ['#00A2FF', '#14F584', '#FFB303', '#DBFE01', '#FF474C','#D84FE4'],
-    dataLabels: { enabled: false },
+    chart: { id: "profit-and-loss-chart", type: "area", height: 350 },
+    // fill: {
+    //   type: "gradient",
+    //   gradient: {
+    //     shadeIntensity: 1,
+    //     opacityFrom: 0.7,
+    //     opacityTo: 0.9,
+    //     stops: [0, 90, 100]
+    //   }
+    // },
+    colors: ['#00A2FF', '#14F584', '#FFB303', '#5C39FF', '#D738FF', '#FF841F'],
     xaxis: {
       categories: Array.from({ length: numberOfMonths }, (_, i) => `${i + 1}`),
       title: {
@@ -55,9 +44,14 @@ const CustomChart = ({
         },
       },
     },
-   
+    stroke: {
+      width: 1, // Set the stroke width to 1
+      curve: "smooth", // Set the curve of the line, making it smooth
+    },
     yaxis: { title: { text: "Amount ($)" } },
-    
+    // stroke: { curve: "smooth" },
+   
+    // legend: { position: "top" },
     tooltip: {
       enabled: true,
       y: {
@@ -73,7 +67,7 @@ const CustomChart = ({
             ...chartOptions,
             chart: { ...chartOptions.chart, id: id },
             dataLabels: { enabled: false },
-            // colors: ['#00A2FF', '#14F584', '#FFB303', '#5C39FF', '#D738FF', '#FF841F'],
+            colors: ['#00A2FF', '#14F584', '#FFB303', '#5C39FF', '#D738FF', '#FF841F'],
             yaxis: { title: { text: yaxisTitle } },
           }}
           series={[
@@ -82,7 +76,7 @@ const CustomChart = ({
               data: RenderData.map((value) => parseFloat(value.toFixed(0))),
             },
           ]}
-          type="bar"
+          type="area"
           height={350}
         />
       </Card>

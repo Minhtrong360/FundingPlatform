@@ -44,6 +44,7 @@ import FleaMarketList from "../pages/FleaMarket/FleaMarketList.jsx";
 import FleaMarketListAll from "../pages/FleaMarket/FleaMarketListAll.jsx";
 import AdminRequired from "./AdminRequired.jsx";
 import GPTAnalyzer from "../pages/FinalcialPage/Components/GPTAnalyzer.jsx";
+import MarketResearch from "../pages/MarketResearch_Evaluation/MarketResearch.jsx";
 
 function Router() {
   const location = useLocation();
@@ -225,7 +226,9 @@ function Router() {
           path="/GPT"
           element={<GPTAnalyzer numberOfMonths={36} />}
         />
+        <Route key={location.key} path="/marketresearch" element={<MarketResearch />} />
       </Routes>
+      
     </>
   );
 }

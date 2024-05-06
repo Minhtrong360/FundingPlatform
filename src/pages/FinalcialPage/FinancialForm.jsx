@@ -209,25 +209,22 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       },
       legend: { position: "bottom", horizontalAlign: "right" },
       fill: {
-        type: 'gradient',
+        type: "gradient",
         gradient: {
-          shade: 'light',
-          type: 'vertical',
-          shadeIntensity: 0.25,
-          gradientToColors: undefined,
-          inverseColors: true,
-          opacityFrom: 0.85,
-          opacityTo: 0.5,
-         
+          shadeIntensity: 1,
+          opacityFrom: 0.7,
+          opacityTo: 0.9,
+          stops: [0, 90, 100],
         },
       },
-      plotOptions: {
-        bar: {
-          borderRadius: 2, // Set the border radius to 10
-        },
-      },
-     
-      colors: ['#00A2FF', '#14F584', '#FFB303', '#DBFE01', '#FF474C','#D84FE4'],
+      colors: [
+        "#00A2FF",
+        "#14F584",
+        "#FFB303",
+        "#5C39FF",
+        "#D738FF",
+        "#FF841F",
+      ],
       dataLabels: { enabled: false },
       // stroke: { curve: "stepline" },
       // markers: { size: 1 },
@@ -241,14 +238,15 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [revenue, setRevenue] = useState({
     options: {
       chart: { id: "revenue-chart", type: "bar", height: 350, stacked: true },
+
       colors: [
         "#00A2FF",
         "#14F584",
         "#FFB303",
-        "#5C39FF",
-        "#D738FF",
-        "#FF841F",
-      ], // Set type to "bar" and stacked to true
+        "#DBFE01",
+        "#FF474C",
+        "#D84FE4",
+      ],
       xaxis: {
         categories: Array.from(
           { length: numberOfMonths },

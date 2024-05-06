@@ -127,7 +127,7 @@ function BalanceSheetSection({ numberOfMonths }) {
   );
 
   useEffect(() => {
-    const calculatedData = calculateLoanData(loanInputs);
+    const calculatedData = calculateLoanData(loanInputs, numberOfMonths);
     dispatch(setLoanData(calculatedData));
   }, [loanInputs, numberOfMonths]);
 
@@ -309,7 +309,7 @@ function BalanceSheetSection({ numberOfMonths }) {
   }, []);
 
   useEffect(() => {
-    if (warningMessages && isMounted) {
+    if (warningMessages.length > 0 && isMounted) {
       message.warning(warningMessages[0]);
     }
   }, [isMounted]);
@@ -498,10 +498,10 @@ function BalanceSheetSection({ numberOfMonths }) {
     {
       key: "Paid in Capital",
       values: Array.from({ length: numberOfMonths }, (_, i) => {
-        const currentValue = i === 0 ? startingPaidInCapital.toFixed(0) : "0";
+        const currentValue = i === 0 ? startingPaidInCapital.toFixed(2) : "0";
         const currentValueFloat = parseFloat(currentValue);
         const capitalArrValue = capitalArr[i] || 0; // If capitalArr doesn't have value at index i, default to 0
-        return (currentValueFloat + capitalArrValue).toFixed(0);
+        return (currentValueFloat + capitalArrValue).toFixed(2);
       }).map((value) => parseFloat(value)),
     },
     {
@@ -545,7 +545,7 @@ function BalanceSheetSection({ numberOfMonths }) {
     ...item.values?.reduce(
       (acc, value, i) => ({
         ...acc,
-        [`Month ${i + 1}`]: formatNumber(value?.toFixed(0)),
+        [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
       }),
       {}
     ),
@@ -779,7 +779,7 @@ function BalanceSheetSection({ numberOfMonths }) {
       return {
         metric: data.metric,
         ...filteredData,
-        yearTotal: formatNumber(yearTotal.toFixed(0)), // Adding Year Total to each row
+        yearTotal: formatNumber(yearTotal.toFixed(2)), // Adding Year Total to each row
       };
     });
   };
@@ -818,148 +818,139 @@ function BalanceSheetSection({ numberOfMonths }) {
       parseNumber(totalAssets); // Efficiency ratio for fixed assets usage
 
     return {
-      // currentRatio: currentRatio.toFixed(0),
-      debtToEquityRatio: debtToEquityRatio.toFixed(0),
-      assetToEquityRatio: assetToEquityRatio.toFixed(0),
-      // quickRatio: quickRatio.toFixed(0),
-      liabilitiesToAssetsRatio: liabilitiesToAssetsRatio.toFixed(0),
-      equityRatio: equityRatio.toFixed(0),
-      fixedAssetTurnoverRatio: fixedAssetTurnoverRatio.toFixed(0),
+      // currentRatio: currentRatio.toFixed(2),
+      debtToEquityRatio: debtToEquityRatio.toFixed(2),
+      assetToEquityRatio: assetToEquityRatio.toFixed(2),
+      // quickRatio: quickRatio.toFixed(2),
+      liabilitiesToAssetsRatio: liabilitiesToAssetsRatio.toFixed(2),
+      equityRatio: equityRatio.toFixed(2),
+      fixedAssetTurnoverRatio: fixedAssetTurnoverRatio.toFixed(2),
     };
   };
   console.log("balance sheet", positionDataWithNetIncome2);
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-  <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
-  <h2 className="text-lg font-semibold my-4">Analysis</h2>
-  <div className="mb-8 mt-8">
-          <GroqJS datasrc={positionDataWithNetIncome2} />
-   </div>
-   <div className="mb-8 mt-8">
-          <Perflexity />
-   </div>
-   {/* <div className="mb-8 mt-8">
-          <Groq />
-   </div> */}
-  </div>
-  <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
-  <div className="">
-      <h2 className="text-lg font-semibold my-4">Balance Sheet</h2>
-
-      <Table
-        className="overflow-auto my-8 rounded-md shadow-xl"
-        size="small"
-        dataSource={positionDataWithNetIncome2}
-        columns={positionColumns1}
-        pagination={false}
-        bordered
-      />
-
-      <div className=" gap-4 mb-3">
-        <Select
-          onValueChange={(value) => handleChartSelect(value)}
-          value={selectedChart}
-          className="border-solid border-[1px] border-gray-300 "
-        >
-          <SelectTrigger className="border-solid border-[1px] border-gray-300 w-full lg:w-[20%]">
-            <SelectValue />
-          </SelectTrigger>
-
-          <SelectContent position="popper">
-            <SelectItem
-              className="hover:cursor-pointer"
-              value="total-assets-chart"
-            >
-              Total Asset
-            </SelectItem>
-            <SelectItem
-              className="hover:cursor-pointer"
-              value="cash-flow-chart"
-            >
-              Cash
-            </SelectItem>
-            <SelectItem
-              className="hover:cursor-pointer"
-              value="total-liabilities-chart"
-            >
-              Total Liabilities
-            </SelectItem>
-            <SelectItem
-              className="hover:cursor-pointer"
-              value="total-shareholders-equity-chart"
-            >
-              Total Shareholders Equity
-            </SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
+        <GroqJS dataSource={positionDataWithNetIncome2} />
       </div>
+      <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
+        <div className="">
+          <h2 className="text-lg font-semibold my-4">Balance Sheet</h2>
 
-      {selectedChart === "cash-flow-chart" && (
-        <CustomChart
-          numberOfMonths={numberOfMonths}
-          id="cash-flow-chart"
-          yaxisTitle="Cash Flow ($)"
-          seriesTitle="Net Cash Change"
-          RenderData={netCashChanges}
-          title="Cash Flow Overview"
-        />
-      )}
-      {selectedChart === "total-assets-chart" && (
-        <CustomChart
-          numberOfMonths={numberOfMonths}
-          id="total-assets-chart"
-          yaxisTitle="Total Assets ($)"
-          seriesTitle="Total Assets"
-          RenderData={totalAssets}
-          title="Total Assets Over Time"
-        />
-      )}
-      {selectedChart === "total-liabilities-chart" && (
-        <CustomChart
-          numberOfMonths={numberOfMonths}
-          id="total-liabilities-chart"
-          yaxisTitle="Total Liabilities ($)"
-          seriesTitle="Total Liabilities"
-          RenderData={totalLiabilities}
-          title="Total Liabilities Over Time"
-        />
-      )}
-      {selectedChart === "total-shareholders-equity-chart" && (
-        <CustomChart
-          numberOfMonths={numberOfMonths}
-          id="total-shareholders-equity-chart"
-          yaxisTitle="Total Shareholders Equity ($)"
-          seriesTitle="Total Shareholders Equity"
-          RenderData={totalShareholdersEquity}
-          title="Total Shareholders Equity Over Time"
-        />
-      )}
-
-      <div className="w-full md:w-[20%] my-5">
-        <SelectField
-          label="Select Cut Month:"
-          id="Select Cut Month:"
-          name="Select Cut Month:"
-          value={cutMonth}
-          onChange={handleCutMonthChange}
-          options={Array.from({ length: 12 }, (_, index) => ({
-            label: `${index + 1}`,
-            value: `${index + 1}`,
-          })).map((option) => option.label)} // Chỉ trả về mảng các label
-        />
-      </div>
-
-      {divideMonthsIntoYearsForBalanceSheet().map((year, index) => (
-        <div key={index}>
-          <h3>{year.year}</h3>
           <Table
             className="overflow-auto my-8 rounded-md shadow-xl"
             size="small"
-            dataSource={getDataSourceForYearBalanceSheet(year.months)}
-            columns={generateBalanceSheetTableColumns(year)}
+            dataSource={positionDataWithNetIncome2}
+            columns={positionColumns1}
             pagination={false}
+            bordered
           />
-          {/* <div>
+
+          <div className=" gap-4 mb-3">
+            <Select
+              onValueChange={(value) => handleChartSelect(value)}
+              value={selectedChart}
+              className="border-solid border-[1px] border-gray-300 "
+            >
+              <SelectTrigger className="border-solid border-[1px] border-gray-300 w-full lg:w-[20%]">
+                <SelectValue />
+              </SelectTrigger>
+
+              <SelectContent position="popper">
+                <SelectItem
+                  className="hover:cursor-pointer"
+                  value="total-assets-chart"
+                >
+                  Total Asset
+                </SelectItem>
+                <SelectItem
+                  className="hover:cursor-pointer"
+                  value="cash-flow-chart"
+                >
+                  Cash
+                </SelectItem>
+                <SelectItem
+                  className="hover:cursor-pointer"
+                  value="total-liabilities-chart"
+                >
+                  Total Liabilities
+                </SelectItem>
+                <SelectItem
+                  className="hover:cursor-pointer"
+                  value="total-shareholders-equity-chart"
+                >
+                  Total Shareholders Equity
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {selectedChart === "cash-flow-chart" && (
+            <CustomChart
+              numberOfMonths={numberOfMonths}
+              id="cash-flow-chart"
+              yaxisTitle="Cash Flow ($)"
+              seriesTitle="Net Cash Change"
+              RenderData={netCashChanges}
+              title="Cash Flow Overview"
+            />
+          )}
+          {selectedChart === "total-assets-chart" && (
+            <CustomChart
+              numberOfMonths={numberOfMonths}
+              id="total-assets-chart"
+              yaxisTitle="Total Assets ($)"
+              seriesTitle="Total Assets"
+              RenderData={totalAssets}
+              title="Total Assets Over Time"
+            />
+          )}
+          {selectedChart === "total-liabilities-chart" && (
+            <CustomChart
+              numberOfMonths={numberOfMonths}
+              id="total-liabilities-chart"
+              yaxisTitle="Total Liabilities ($)"
+              seriesTitle="Total Liabilities"
+              RenderData={totalLiabilities}
+              title="Total Liabilities Over Time"
+            />
+          )}
+          {selectedChart === "total-shareholders-equity-chart" && (
+            <CustomChart
+              numberOfMonths={numberOfMonths}
+              id="total-shareholders-equity-chart"
+              yaxisTitle="Total Shareholders Equity ($)"
+              seriesTitle="Total Shareholders Equity"
+              RenderData={totalShareholdersEquity}
+              title="Total Shareholders Equity Over Time"
+            />
+          )}
+
+          <div className="w-full md:w-[20%] my-5">
+            <SelectField
+              label="Select Cut Month:"
+              id="Select Cut Month:"
+              name="Select Cut Month:"
+              value={cutMonth}
+              onChange={handleCutMonthChange}
+              options={Array.from({ length: 12 }, (_, index) => ({
+                label: `${index + 1}`,
+                value: `${index + 1}`,
+              })).map((option) => option.label)} // Chỉ trả về mảng các label
+            />
+          </div>
+
+          {divideMonthsIntoYearsForBalanceSheet().map((year, index) => (
+            <div key={index}>
+              <h3>{year.year}</h3>
+              <Table
+                className="overflow-auto my-8 rounded-md shadow-xl"
+                size="small"
+                dataSource={getDataSourceForYearBalanceSheet(year.months)}
+                columns={generateBalanceSheetTableColumns(year)}
+                pagination={false}
+              />
+              {/* <div>
             <h4>Financial Ratios for {year.year}</h4>
             {(() => {
               const dataSourceForYear = getDataSourceForYearBalanceSheet(
@@ -999,13 +990,11 @@ function BalanceSheetSection({ numberOfMonths }) {
               );
             })()}
           </div> */}
+            </div>
+          ))}
         </div>
-      ))}
+      </div>
     </div>
-  </div>
-</div>
-
-    
   );
 }
 

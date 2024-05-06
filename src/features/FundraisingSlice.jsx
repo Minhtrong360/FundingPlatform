@@ -82,11 +82,11 @@ export const transformFundraisingDataForTable = (
       if (monthData.month === fundraisingItem.fundraisingBeginMonth) {
         transformedFundraisingTableData[rowKey][`month${monthData.month}`] =
           formatNumber(
-            parseFloat(fundraisingItem.fundraisingAmount)?.toFixed(0)
+            parseFloat(fundraisingItem.fundraisingAmount)?.toFixed(2)
           );
       } else {
         transformedFundraisingTableData[rowKey][`month${monthData.month}`] =
-          formatNumber(parseFloat(monthData.fundraising)?.toFixed(0));
+          formatNumber(parseFloat(monthData.fundraising)?.toFixed(2));
       }
     });
   });
@@ -112,62 +112,69 @@ export const transformFundraisingDataForTable = (
     let accumulatedPreferredStock = 0;
     let accumulatedPaidInCapital = 0;
 
+    const monthDataMap = new Map(); // Use a map to store month data for each fundraising type
+
     Object.values(transformedFundraisingTableData).forEach((item) => {
       const amount = parseNumber(item[`month${month}`]) || 0;
       totalFundingRow[`month${month}`] = formatNumber(
-        (parseNumber(totalFundingRow[`month${month}`]) + amount).toFixed(0)
+        (parseNumber(totalFundingRow[`month${month}`]) + amount).toFixed(2)
       );
 
-      if (item.fundraisingType === "Common Stock") {
+      if (!monthDataMap.has(item.fundraisingType)) {
+        monthDataMap.set(item.fundraisingType, 0);
+      }
+      monthDataMap.set(
+        item.fundraisingType,
+        monthDataMap.get(item.fundraisingType) + amount
+      );
+    });
+
+    // Update rows for each fundraising type
+    monthDataMap.forEach((amount, fundraisingType) => {
+      if (fundraisingType === "Common Stock") {
         increasedCommonStockRow[`month${month}`] = formatNumber(
           (
-            parseFloat(increasedCommonStockRow[`month${month}`]) + amount
-          ).toFixed(0)
+            parseNumber(increasedCommonStockRow[`month${month}`]) + amount
+          ).toFixed(2)
         );
         accumulatedCommonStock += amount;
-      } else if (item.fundraisingType === "Preferred Stock") {
+      } else if (fundraisingType === "Preferred Stock") {
         increasedPreferredStockRow[`month${month}`] = formatNumber(
           (
-            parseFloat(increasedPreferredStockRow[`month${month}`]) + amount
-          ).toFixed(0)
+            parseNumber(increasedPreferredStockRow[`month${month}`]) + amount
+          ).toFixed(2)
         );
         accumulatedPreferredStock += amount;
-      } else if (item.fundraisingType === "Paid in Capital") {
+      } else if (fundraisingType === "Paid in Capital") {
         increasedPaidInCapitalRow[`month${month}`] = formatNumber(
           (
-            parseFloat(increasedPaidInCapitalRow[`month${month}`]) + amount
-          ).toFixed(0)
+            parseNumber(increasedPaidInCapitalRow[`month${month}`]) + amount
+          ).toFixed(2)
         );
         accumulatedPaidInCapital += amount;
       }
     });
 
-    // Update accumulatedPreferredStockRow
+    // Update accumulated rows
     let accumulatedPreferredStockTotal = 0;
+    let accumulatedCommonStockTotal = 0;
+    let accumulatedPaidInCapitalTotal = 0;
     for (let i = 1; i <= month; i++) {
       accumulatedPreferredStockTotal +=
         parseNumber(increasedPreferredStockRow[`month${i}`]) || 0;
-    }
-    accumulatedPreferredStockRow[`month${month}`] = formatNumber(
-      accumulatedPreferredStockTotal.toFixed(0)
-    );
-
-    let accumulatedCommonStockTotal = 0;
-    for (let i = 1; i <= month; i++) {
       accumulatedCommonStockTotal +=
         parseNumber(increasedCommonStockRow[`month${i}`]) || 0;
-    }
-    accumulatedCommonStockRow[`month${month}`] = formatNumber(
-      accumulatedCommonStockTotal.toFixed(0)
-    );
-
-    let accumulatedPaidInCapitalTotal = 0;
-    for (let i = 1; i <= month; i++) {
       accumulatedPaidInCapitalTotal +=
         parseNumber(increasedPaidInCapitalRow[`month${i}`]) || 0;
     }
+    accumulatedPreferredStockRow[`month${month}`] = formatNumber(
+      accumulatedPreferredStockTotal.toFixed(2)
+    );
+    accumulatedCommonStockRow[`month${month}`] = formatNumber(
+      accumulatedCommonStockTotal.toFixed(2)
+    );
     accumulatedPaidInCapitalRow[`month${month}`] = formatNumber(
-      accumulatedPaidInCapitalTotal.toFixed(0)
+      accumulatedPaidInCapitalTotal.toFixed(2)
     );
   }
 

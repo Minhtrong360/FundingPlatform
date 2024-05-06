@@ -134,10 +134,22 @@ export const transformCostDataForTable = (tempCostInput, numberOfMonths) => {
         };
       }
       transformedCustomerTableData[rowKey][`month${monthData.month}`] =
-        formatNumber(parseFloat(monthData.cost)?.toFixed(0));
+        formatNumber(parseFloat(monthData.cost)?.toFixed(2));
     });
   });
-
+  // Add total row
+  const totalRow = { key: "Total", costName: "Total" };
+  for (let month = 1; month <= numberOfMonths; month++) {
+    let totalMonthlyCost = 0;
+    calculatedCostData.forEach((costItem) => {
+      const cost =
+        costItem.monthlyCosts.find((data) => data.month === month)?.cost || 0;
+      totalMonthlyCost += cost;
+    });
+    totalRow[`month${month}`] = formatNumber(totalMonthlyCost.toFixed(2)); // Adjust formatting as needed
+  }
+  transformedCustomerTableData["Total"] = totalRow;
+  console.log("transformedCustomerTableData", transformedCustomerTableData);
   return Object.values(transformedCustomerTableData);
 };
 

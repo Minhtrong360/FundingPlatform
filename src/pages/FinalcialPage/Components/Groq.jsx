@@ -3,7 +3,9 @@ import React, { useState } from "react";
 const Groq = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-
+  const clearMessages = () => {
+    setMessages([]);
+  };
   const handleSubmit = async () => {
     try {
       console.log("Input sent to backend:", JSON.stringify({messages}));
@@ -21,7 +23,7 @@ const Groq = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ messages: [...messages, newMessage] }),
+        body: JSON.stringify({ messages: [ newMessage] }),
       });
 
       if (!response.ok) {
@@ -42,8 +44,9 @@ const Groq = () => {
   };
 
   return (
-    <div className="w-full h-96 flex flex-col rounded-md shadow-lg border p-4 overflow-auto">
+    <div className="w-full max-h-[500px] flex flex-col rounded-md shadow-lg border p-4">
       {/* Chat history */}
+      <div className="overflow-auto ">
       {messages.map((message, index) => (
         <div className="border p-2 rounded m-4 shadow-lg" key={index}>
           {message.role === "user" ? (
@@ -53,7 +56,7 @@ const Groq = () => {
           )}
         </div>
       ))}
-
+    </div>
       {/* Chat input */}
       <input
         className="border p-2 rounded m-4 shadow-lg"
@@ -62,11 +65,13 @@ const Groq = () => {
         onChange={(e) => setInput(e.target.value)}
       />
       <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-4"
+        className="max-w-[200px] bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-4"
         onClick={handleSubmit}
       >
-        Analyst
+        Send
       </button>
+      <button  className="max-w-[200px] bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded m-4"
+       onClick={clearMessages}>Clear </button>
     </div>
   );
 };

@@ -59,28 +59,9 @@ const LoanSection = ({
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
-      fill: {
-        type: 'gradient',
-        gradient: {
-          shade: 'light',
-          type: 'vertical',
-          shadeIntensity: 0.25,
-          gradientToColors: undefined,
-          inverseColors: true,
-          opacityFrom: 0.85,
-          opacityTo: 0.5,
-         
-        },
-      },
-      plotOptions: {
-        bar: {
-          borderRadius: 2, // Set the border radius to 10
-        },
-      },
-      stroke: { width: 1 },
-      colors: ['#00A2FF', '#14F584', '#FFB303', '#DBFE01', '#FF474C','#D84FE4'],
+      fill: { type: "solid" },
       dataLabels: { enabled: false },
-     
+      stroke: { curve: "smooth" },
       markers: { size: 1 },
     },
     series: [],
@@ -88,7 +69,6 @@ const LoanSection = ({
 
   useEffect(() => {
     setTempLoanInputs(loanInputs);
-    setRenderLoanForm("all");
   }, [loanInputs]);
 
   const addNewLoanInput = () => {
@@ -107,9 +87,20 @@ const LoanSection = ({
   };
 
   const removeLoanInput = (id) => {
-    const newInputs = tempLoanInputs.filter((input) => input?.id != id);
-    setTempLoanInputs(newInputs);
-    setRenderLoanForm(newInputs[0]?.id);
+    const indexToRemove = tempLoanInputs.findIndex((input) => input?.id === id);
+    if (indexToRemove !== -1) {
+      const newInputs = [
+        ...tempLoanInputs.slice(0, indexToRemove),
+        ...tempLoanInputs.slice(indexToRemove + 1),
+      ];
+      const prevInputId =
+        indexToRemove === 0
+          ? newInputs[0]?.id
+          : newInputs[indexToRemove - 1]?.id;
+
+      setTempLoanInputs(newInputs);
+      setRenderLoanForm(prevInputId);
+    }
   };
 
   const handleLoanInputChange = (id, field, value) => {
@@ -126,7 +117,7 @@ const LoanSection = ({
   };
 
   useEffect(() => {
-    const calculatedData = calculateLoanData(loanInputs);
+    const calculatedData = calculateLoanData(loanInputs, numberOfMonths);
     dispatch(setLoanData(calculatedData));
     dispatch(setLoanTableData(tableData));
   }, [loanInputs, numberOfMonths, renderLoanForm]);
@@ -177,7 +168,14 @@ const LoanSection = ({
   ];
 
   useEffect(() => {
-    const seriesData = calculateLoanData(tempLoanInputs).flatMap((loan) => {
+    const seriesData = calculateLoanData(
+      tempLoanInputs,
+      numberOfMonths
+    ).flatMap((loan) => {
+      console.log(
+        "calculateLoanData",
+        calculateLoanData(tempLoanInputs, numberOfMonths)
+      );
       return [
         {
           name: `${loan.loanName} - Payment`,
@@ -433,14 +431,20 @@ const LoanSection = ({
             record.key === record.type ? "font-bold" : ""
           }
         />
-        <h3 className="text-lg font-semibold my-8">Loan Chart</h3>
+        <h3 className="text-lg font-semibold my-8">Loan Data</h3>
 
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col shadow-xl">
             <Chart
-              options={loanChart.options}
+              options={{
+                ...loanChart.options,
+                xaxis: {
+                  ...loanChart.options.xaxis,
+                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                },
+              }}
               series={loanChart.series}
-              type="bar"
+              type="area"
               height={350}
             />
           </Card>

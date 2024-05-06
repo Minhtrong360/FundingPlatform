@@ -41,31 +41,44 @@ const loanSlice = createSlice({
   },
 });
 
-export const calculateLoanData = (tempLoanInputs) => {
+export const calculateLoanData = (tempLoanInputs, numberOfMonths) => {
   return tempLoanInputs?.map((loan) => {
     const monthlyRate = parseFloat(loan.interestRate) / 100 / 12;
-    const loanAmount = parseFloat(loan.loanAmount);
-    const loanDuration =
-      parseInt(loan.loanEndMonth, 10) - parseInt(loan.loanBeginMonth, 10) + 1;
+    const loanBeginMonth = parseInt(loan.loanBeginMonth, 10);
+    const loanEndMonth = parseInt(loan.loanEndMonth, 10);
 
-    const monthlyPayment =
-      (loanAmount * monthlyRate) /
-      (1 - Math.pow(1 + monthlyRate, -loanDuration));
-
-    let remainingBalance = loanAmount;
     const loanDataPerMonth = [];
 
-    for (let month = 1; month <= loanDuration; month++) {
-      const interestForMonth = remainingBalance * monthlyRate;
-      const principalForMonth = monthlyPayment - interestForMonth;
-      remainingBalance -= principalForMonth;
+    for (let month = 1; month <= numberOfMonths; month++) {
+      let payment = 0;
+      let principal = 0;
+      let interest = 0;
+      let balance = 0;
+      let loanAmount = 0;
+
+      if (month >= loanBeginMonth && month <= loanEndMonth) {
+        const monthInLoan = month - loanBeginMonth + 1;
+        loanAmount = parseFloat(loan.loanAmount);
+
+        payment =
+          (loanAmount * monthlyRate) /
+          (1 - Math.pow(1 + monthlyRate, -loanEndMonth + loanBeginMonth));
+
+        interest = (loanAmount - principal) * monthlyRate;
+        principal = payment - interest;
+        balance = loanAmount - principal;
+
+        if (balance < 0) {
+          balance = 0;
+        }
+      }
 
       loanDataPerMonth.push({
-        month: month + parseInt(loan.loanBeginMonth, 10) - 1,
-        payment: monthlyPayment,
-        principal: principalForMonth,
-        interest: interestForMonth,
-        balance: remainingBalance,
+        month: month,
+        payment: payment,
+        principal: principal,
+        interest: interest,
+        balance: balance,
         loanAmount: loanAmount,
       });
     }
@@ -95,7 +108,7 @@ export const transformLoanDataForTable = (
     filteredLoans.push(selectedLoan);
   }
 
-  const loanDataArray = calculateLoanData(filteredLoans);
+  const loanDataArray = calculateLoanData(filteredLoans, numberOfMonths);
 
   filteredLoans?.forEach((loan, index) => {
     const loanData = loanDataArray[index];
@@ -137,11 +150,11 @@ export const transformLoanDataForTable = (
 
     loanData.loanDataPerMonth?.forEach((monthData) => {
       const monthKey = `Month ${monthData.month}`;
-      loanAmountRow[monthKey] = formatNumber(monthData.loanAmount?.toFixed(0));
-      paymentRow[monthKey] = formatNumber(monthData.payment?.toFixed(0));
-      principalRow[monthKey] = formatNumber(monthData.principal?.toFixed(0));
-      interestRow[monthKey] = formatNumber(monthData.interest?.toFixed(0));
-      balanceRow[monthKey] = formatNumber(monthData.balance?.toFixed(0));
+      loanAmountRow[monthKey] = formatNumber(monthData.loanAmount?.toFixed(2));
+      paymentRow[monthKey] = formatNumber(monthData.payment?.toFixed(2));
+      principalRow[monthKey] = formatNumber(monthData.principal?.toFixed(2));
+      interestRow[monthKey] = formatNumber(monthData.interest?.toFixed(2));
+      balanceRow[monthKey] = formatNumber(monthData.balance?.toFixed(2));
     });
 
     loanTableData.push(
@@ -170,7 +183,7 @@ export const transformLoanDataForTable = (
   };
   for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
     cfLoansRow[`Month ${monthIndex + 1}`] = formatNumber(
-      cfLoansSum[monthIndex]?.toFixed(0)
+      cfLoansSum[monthIndex]?.toFixed(2)
     );
   }
   loanTableData.push(cfLoansRow);
@@ -183,7 +196,7 @@ export const transformLoanDataForTable = (
   for (let monthIndex = 1; monthIndex <= numberOfMonths; monthIndex++) {
     const monthKey = `Month ${monthIndex}`;
     const totalBalanceForMonth = tempLoanInputs?.reduce((total, input) => {
-      const loanData = calculateLoanData(tempLoanInputs)?.find(
+      const loanData = calculateLoanData(tempLoanInputs, numberOfMonths)?.find(
         (loan) => loan.loanName === input.loanName
       );
       const monthData = loanData?.loanDataPerMonth.find(
@@ -196,7 +209,7 @@ export const transformLoanDataForTable = (
       return total;
     }, 0);
     totalRemainingBalanceRow[monthKey] = formatNumber(
-      totalBalanceForMonth?.toFixed(0)
+      totalBalanceForMonth?.toFixed(2)
     );
   }
 

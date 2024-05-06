@@ -691,26 +691,22 @@ const SalesSection = ({
             options={{
               labels: ['Team A', 'Team B', 'Team C', 'Team D'], // Labels for the pie chart
               colors: ['#00A2FF', '#14F584', '#FFB303', '#DBFE01', '#FF474C','#D84FE4'], // Colors for each section
-              
-              plotOptions: {
-                pie: {
-                  startAngle: -90,
-                  endAngle: 270
-                }
-              },
-              fill: {
-                type: 'gradient',
-                gradient: {
-                  type: 'vertical',
-               
-                  gradientToColors: undefined,
-                  inverseColors: true,
-                  opacityFrom: 0.9,
-                  opacityTo: 1, // Set the opacity at the end of the gradient to 0.5
+              dataLabels: {
+                enabled: true,
+                formatter: function (val) {
+                  return val.toFixed(2) + "%";
                 },
-
+                style: {
+                  color: 'black' // Set the text color to black
+                },
                 
               },
+              plotOptions: {
+                pie: {
+                  customScale: 0.8
+                }
+              },
+             
               responsive: [{
                 breakpoint: 480,
                 options: {

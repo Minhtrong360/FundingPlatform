@@ -15,7 +15,8 @@ const Groq = () => {
 
     // Log the updated messages array
     console.log("Input sent to backend:", [...messages, newMessage]);
-      const response = await fetch("https://news-fetcher-8k6m.onrender.com/chat", {
+      // const response = await fetch("https://news-fetcher-8k6m.onrender.com/chat", {
+        const response = await fetch("http://localhost:8000/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,8 +33,8 @@ const Groq = () => {
       console.log(assistantResponse)
        // Replace newline characters with <br> tags
       const formattedAssistantResponse = assistantResponse.replace(/\n/g, '<br>');
-      // setMessages([...messages,{ role: "user", content: input }, { role: "assistant", content: formattedAssistantResponse }]);
-      setMessages([...messages, { role: "assistant", content: formattedAssistantResponse }]);
+      setMessages([...messages,{ role: "user", content: input }, { role: "assistant", content: formattedAssistantResponse }]);
+      // setMessages([...messages, { role: "assistant", content: formattedAssistantResponse }]);
       setInput("");
     } catch (error) {
       console.error("Error:", error);
@@ -41,7 +42,7 @@ const Groq = () => {
   };
 
   return (
-    <div className="w-3/4 h-96 flex flex-col rounded-md shadow-lg border p-4 overflow-auto">
+    <div className="w-full h-96 flex flex-col rounded-md shadow-lg border p-4 overflow-auto">
       {/* Chat history */}
       {messages.map((message, index) => (
         <div className="border p-2 rounded m-4 shadow-lg" key={index}>

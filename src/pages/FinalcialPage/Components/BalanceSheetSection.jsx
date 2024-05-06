@@ -46,7 +46,8 @@ import SelectField from "../../../components/SelectField";
 import { setCutMonth } from "../../../features/DurationSlice";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import GroqJS from "./GroqJson";
-
+import Groq from "./Groq"
+import Perflexity from "./Perflexity";
 function BalanceSheetSection({ numberOfMonths }) {
   const dispatch = useDispatch();
   const { cutMonth } = useSelector((state) => state.durationSelect);
@@ -826,7 +827,7 @@ function BalanceSheetSection({ numberOfMonths }) {
       fixedAssetTurnoverRatio: fixedAssetTurnoverRatio.toFixed(2),
     };
   };
-  // console.log("balance sheet", positionDataWithNetIncome2);
+  console.log("balance sheet", positionDataWithNetIncome2);
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full lg:w-1/4 sm:p-4 p-0 ">

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Groq = () => {
+const Perflexity = ({prompt,button}) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const clearMessages = () => {
@@ -10,7 +10,7 @@ const Groq = () => {
     try {
       console.log("Input sent to backend:", JSON.stringify({messages}));
       // Create a new message object for the user input
-      const newMessage = { role: "user", content: input };
+      const newMessage = { role: "user", content: prompt };
     
     // Update the messages state by adding the new message
       setMessages([...messages, newMessage]);
@@ -18,7 +18,7 @@ const Groq = () => {
     // Log the updated messages array
     console.log("Input sent to backend:", [...messages, newMessage]);
       // const response = await fetch("https://news-fetcher-8k6m.onrender.com/chat", {
-        const response = await fetch("http://localhost:8000/chat", {
+        const response = await fetch("http://localhost:8000/research", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,36 +44,49 @@ const Groq = () => {
   };
 
   return (
-    <div className="w-full max-h-[500px] flex flex-col rounded-md shadow-lg border p-4">
+    <div className="w-full max-h-[500px] flex flex-col rounded-md shadow-lg border p-4 mt-4 mb-4">
       {/* Chat history */}
       <div className="overflow-auto ">
-      {messages.map((message, index) => (
+      {/* {messages.map((message, index) => (
         <div className="border p-2 rounded m-4 shadow-lg" key={index}>
           {message.role === "user" ? (
-            <div>👨‍💻 {message.content}</div>
+            // <div>👨‍💻 {message.content}</div>
+            <div className="border-transparent"></div>
           ) : (
             <div dangerouslySetInnerHTML={{ __html: message.content }} />
           )}
         </div>
-      ))}
-    </div>
+      ))} */}
+     {messages.map((message, index) => (
+    <>
+        {message.role !== "user" && (
+            <div className="border p-2 rounded m-4 shadow-lg" key={index}>
+                <div dangerouslySetInnerHTML={{ __html: message.content }} />
+            </div>
+        )}
+    </>
+))}
+
+
+
+       </div>
       {/* Chat input */}
-      <input
+      {/* <input
         className="border p-2 rounded m-4 shadow-lg"
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
-      />
+      /> */}
       <button
-        className="max-w-[200px] bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-4"
+        className=" max-w-[100px] bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-4"
         onClick={handleSubmit}
       >
-        Send
+        {button}
       </button>
-      <button  className="max-w-[200px] bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded m-4"
+      <button  className="max-w-[100px] bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded m-4"
        onClick={clearMessages}>Clear </button>
     </div>
   );
 };
 
-export default Groq;
+export default Perflexity;

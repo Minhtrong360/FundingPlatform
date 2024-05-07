@@ -743,7 +743,7 @@ const CustomerSection = React.memo(
                   },
                 }}
                 series={chart.series}
-                type="area"
+                type="bar"
                 height={350}
               />
             </Card>

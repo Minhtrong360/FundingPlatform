@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
-import { Card, Table, Tooltip, message } from "antd";
+import { Card, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,7 +11,6 @@ import {
   setInvestmentTableData,
   transformInvestmentDataForTable,
 } from "../../../features/InvestmentSlice";
-import { useAuth } from "../../../context/AuthContext";
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
 
@@ -23,7 +22,7 @@ const InvestmentSection = ({
 
   handleSubmit,
 }) => {
-  const { investmentInputs, investmentData, investmentTableData } = useSelector(
+  const { investmentInputs, investmentData } = useSelector(
     (state) => state.investment
   );
   const dispatch = useDispatch();
@@ -32,7 +31,9 @@ const InvestmentSection = ({
 
   const [tempInvestmentData, setTempInvestmentData] = useState(investmentData);
 
-  const [renderInvestmentForm, setRenderInvestmentForm] = useState("all");
+  const [renderInvestmentForm, setRenderInvestmentForm] = useState(
+    investmentInputs[0]?.id
+  );
 
   useEffect(() => {
     setTempInvestmentInputs(investmentInputs);
@@ -116,6 +117,7 @@ const InvestmentSection = ({
       tempInvestmentInputs,
       numberOfMonths
     );
+
     setTempInvestmentData(calculatedData);
     const tableData = transformInvestmentDataForTable(
       tempInvestmentInputs,
@@ -173,14 +175,15 @@ const InvestmentSection = ({
 
   const [investmentChart, setInvestmentChart] = useState({
     options: {
-      chart: { id: "investment-chart", type: "area", height: 350 },
+      chart: { id: "revenue-chart", type: "bar", height: 350, stacked: false },
+
       colors: [
         "#00A2FF",
         "#14F584",
         "#FFB303",
-        "#5C39FF",
-        "#D738FF",
-        "#FF841F",
+        "#DBFE01",
+        "#FF474C",
+        "#D84FE4",
       ],
       xaxis: {
         categories: Array.from(
@@ -202,7 +205,7 @@ const InvestmentSection = ({
           },
         },
         title: {
-          text: "Investment ($)",
+          text: "Amount ($)",
           style: {
             fontFamily: "Inter, sans-serif",
             fontWeight: "600",
@@ -210,20 +213,88 @@ const InvestmentSection = ({
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "gradient" },
       dataLabels: { enabled: false },
-      stroke: { curve: "smooth" },
-      markers: { size: 1 },
+      plotOptions: {
+        bar: { horizontal: false },
+      },
     },
     series: [],
   });
 
   useEffect(() => {
     const seriesData = tempInvestmentData.map((investment) => {
-      return { name: investment.purchaseName, data: investment.bookValue };
+      return {
+        name: investment.purchaseName,
+        data: investment.bookValue,
+        dataBookValue: investment.bookValue,
+        dataAccumulatedDepreciation: investment.accumulatedDepreciation,
+        dataAssetValue: investment.assetValue,
+        dataDepreciationArray: investment.depreciationArray,
+      };
     });
 
-    setInvestmentChart((prevState) => ({ ...prevState, series: seriesData }));
+    const totalSalesData = seriesData.reduce((acc, channel) => {
+      channel.data.forEach((amount, index) => {
+        if (!acc[index]) acc[index] = 0;
+        acc[index] += amount;
+      });
+      return acc;
+    }, Array(numberOfMonths).fill(0));
+
+    setInvestmentChart((prevState) => ({
+      ...prevState,
+      series: seriesData,
+      charts: [
+        {
+          options: {
+            ...prevState.options,
+            chart: {
+              ...prevState.options.chart,
+              id: "allInvestments",
+              stacked: false,
+            },
+            title: {
+              ...prevState.options.title,
+              text: "All Investments",
+            },
+          },
+          series: [
+            ...seriesData,
+            {
+              name: "Total",
+              data: totalSalesData,
+            },
+          ],
+        },
+        ...seriesData.map((channelSeries) => ({
+          options: {
+            ...prevState.options,
+            chart: {
+              ...prevState.options.chart,
+              id: channelSeries.name,
+            },
+            title: {
+              ...prevState.options.title,
+              text: channelSeries.name,
+            },
+          },
+          series: [
+            {
+              name: "Depreciation",
+              data: channelSeries.dataDepreciationArray,
+            },
+            {
+              name: "Accumulated Depre.",
+              data: channelSeries.dataAccumulatedDepreciation,
+            },
+            {
+              name: "Book Value",
+              data: channelSeries.dataBookValue,
+            },
+          ],
+        })),
+      ],
+    }));
   }, [tempInvestmentData, numberOfMonths]);
 
   const handleSelectChange = (event) => {
@@ -234,7 +305,6 @@ const InvestmentSection = ({
     setIsSaved(true);
     message.success("Data saved successfully!");
   };
-  const { user } = useAuth();
   const { id } = useParams();
   useEffect(() => {
     const saveData = async () => {
@@ -292,16 +362,6 @@ const InvestmentSection = ({
     dispatch(setInvestmentTableData(tableData));
   }, []);
 
-  const [newChartSeries, setNewChartSeries] = useState([]);
-
-  useEffect(() => {
-    const newSeriesData = tempInvestmentData.map((investment) => {
-      return { name: investment.purchaseName, data: investment.newChartData };
-    });
-
-    setNewChartSeries(newSeriesData);
-  }, [tempInvestmentData, numberOfMonths]);
-
   const newChartOptions = {
     chart: { id: "new-chart", type: "line", height: 350 },
     xaxis: {
@@ -321,7 +381,7 @@ const InvestmentSection = ({
         },
       },
       title: {
-        text: "New Chart Y-Axis",
+        text: "Value ($)",
         style: {
           fontFamily: "Inter, sans-serif",
           fontWeight: "600",
@@ -329,7 +389,7 @@ const InvestmentSection = ({
       },
     },
     legend: { position: "bottom", horizontalAlign: "right" },
-    fill: { type: "gradient" },
+    fill: { type: "solid" },
     dataLabels: { enabled: false },
     stroke: { curve: "smooth" },
     markers: { size: 1 },
@@ -514,43 +574,24 @@ const InvestmentSection = ({
         />
         <h3 className="text-lg font-semibold my-8">Investment Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col shadow-xl">
-  <Chart
-    options={{
-      ...investmentChart.options,
-      stroke: {
-        width: 2, // Set the stroke width to 2
-      },
-      xaxis: {
-        ...investmentChart.options.xaxis,
-        tickAmount: 12, // Set the number of ticks on the x-axis to 12
-      },
-    }}
-    series={investmentChart.series}
-    type="area"
-    height={350}
-  />
-</Card>
-
-          {investmentChart.series.map((series, index) => (
-            <Card key={index} className="flex flex-col shadow-xl mb-4">
+          {investmentChart?.charts?.map((series, index) => (
+            <Card
+              key={index}
+              className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
+            >
               <Chart
                 options={{
-                  ...newChartOptions,
-                  chart: {
-                    id: `new-chart-${index}`,
-                    type: "area",
-                    height: 350,
+                  ...series.options,
+
+                  xaxis: {
+                    ...series.options.xaxis,
+                    tickAmount: 12, // Ensure x-axis has 12 ticks
                   },
                   stroke: {
-                    width: 2,
-                  },
-                  xaxis: {
-                    ...newChartOptions.xaxis,
-                    tickAmount: 12,
+                    width: 2, // Set the stroke width to 1
                   },
                 }}
-                series={[series]}
+                series={series.series}
                 type="area"
                 height={350}
               />

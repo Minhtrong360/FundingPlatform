@@ -5,8 +5,6 @@ import {
   SelectContent,
   SelectItem,
 } from "../../../components/ui/Select";
-import { Button } from "antd";
-import { EditOutlined } from "@ant-design/icons";
 
 import { Input } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
@@ -71,7 +69,9 @@ const SalesSection = ({
 
   //RevenueFunctions
 
-  const [renderChannelForm, setRenderChannelForm] = useState("all");
+  const [renderChannelForm, setRenderChannelForm] = useState(
+    channelInputs[0]?.id
+  );
   const addNewChannelInput = () => {
     const maxId = Math.max(...tempChannelInputs.map((input) => input?.id));
     const newId = maxId !== -Infinity ? maxId + 1 : 1;

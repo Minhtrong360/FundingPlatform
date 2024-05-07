@@ -237,7 +237,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const { channelInputs } = useSelector((state) => state.sales);
   const [revenue, setRevenue] = useState({
     options: {
-      chart: { id: "revenue-chart", type: "bar", height: 350, stacked: true },
+      chart: { id: "revenue-chart", type: "bar", height: 350, stacked: false },
 
       colors: [
         "#00A2FF",

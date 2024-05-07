@@ -212,8 +212,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     ),
   }));
 
-  console.log("transposedData", transposedData);
-
   const months = [
     "01",
     "02",

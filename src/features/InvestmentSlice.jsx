@@ -76,11 +76,12 @@ export const calculateInvestmentData = (
     for (let i = 0; i < numberOfMonths; i++) {
       if (i >= purchaseMonth - 1 && i < purchaseMonth - 1 + usefulLifetime) {
         assetValue[i] = assetCost;
-        bookValue[i] = assetValue[i] - accumulatedDepreciation[i];
+        bookValue[i] = Math.abs(assetValue[i] - accumulatedDepreciation[i]); // Kẹp giá trị tuyệt đối cho bookValue
       }
     }
 
     return {
+      purchaseName: investment.purchaseName,
       assetValue,
       depreciationArray,
       accumulatedDepreciation,
@@ -160,16 +161,23 @@ export const transformInvestmentDataForTable = (
         accumulatedDepreciationRow[`month${monthIndex + 1}`] = formatNumber(
           investmentData.accumulatedDepreciation[monthIndex]?.toFixed(2)
         );
-        bookValueRow[`month${monthIndex + 1}`] = formatNumber(
-          (
-            assetCost - investmentData.accumulatedDepreciation[monthIndex]
-          )?.toFixed(2)
-        );
+        if (
+          assetCost - investmentData.accumulatedDepreciation[monthIndex] <
+          0
+        ) {
+          bookValueRow[`month${monthIndex + 1}`] = "0.00";
+        } else {
+          bookValueRow[`month${monthIndex + 1}`] = formatNumber(
+            (
+              assetCost - investmentData.accumulatedDepreciation[monthIndex]
+            )?.toFixed(2)
+          );
+        }
       } else {
-        assetCostRow[`month${monthIndex + 1}`] = "0";
-        depreciationRow[`month${monthIndex + 1}`] = "0";
-        accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0";
-        bookValueRow[`month${monthIndex + 1}`] = "0";
+        assetCostRow[`month${monthIndex + 1}`] = "0.00";
+        depreciationRow[`month${monthIndex + 1}`] = "0.00";
+        accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0.00";
+        bookValueRow[`month${monthIndex + 1}`] = "0.00";
       }
     }
 

@@ -110,11 +110,12 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
           beginValue *
           (customerInput.churnRate / 100)
         ).toFixed(0); // Calculate churn value
+
         beginValue += currentCustomers - parseFloat(churnValue); // Update beginValue for the calculation of the next month
 
         monthlyCustomers.push({
           month: month,
-          customers: beginValue.toFixed(0),
+          customers: beginValue.toFixed(0) > 0 ? beginValue.toFixed(0) : 0,
           begin:
             month === customerInput.beginMonth
               ? parseFloat(customerInput.beginCustomer).toFixed(0)
@@ -124,7 +125,7 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
 
           add: currentCustomers.toFixed(0),
           churn: churnValue,
-          end: beginValue.toFixed(0),
+          end: beginValue.toFixed(0) > 0 ? beginValue.toFixed(0) : 0,
           channelName: customerInput.channelName,
         });
       } else {

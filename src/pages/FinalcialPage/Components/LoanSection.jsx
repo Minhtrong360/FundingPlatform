@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
 import { Card, Table, message } from "antd";
 import Chart from "react-apexcharts";
@@ -26,11 +26,20 @@ const LoanSection = ({
   const dispatch = useDispatch();
   const { loanInputs } = useSelector((state) => state.loan);
   const [tempLoanInputs, setTempLoanInputs] = useState(loanInputs);
-  const [renderLoanForm, setRenderLoanForm] = useState("all");
+  const [renderLoanForm, setRenderLoanForm] = useState(loanInputs[0]?.id);
 
   const [loanChart, setLoanChart] = useState({
     options: {
-      chart: { id: "loan-chart", type: "area", height: 350 },
+      chart: { id: "revenue-chart", type: "bar", height: 350, stacked: false },
+
+      colors: [
+        "#00A2FF",
+        "#14F584",
+        "#FFB303",
+        "#DBFE01",
+        "#FF474C",
+        "#D84FE4",
+      ],
       xaxis: {
         categories: Array.from(
           { length: numberOfMonths },
@@ -59,10 +68,10 @@ const LoanSection = ({
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "gradient" },
       dataLabels: { enabled: false },
-      stroke: { curve: "straight" },
-      markers: { size: 1 },
+      plotOptions: {
+        bar: { horizontal: false },
+      },
     },
     series: [],
   });
@@ -72,7 +81,8 @@ const LoanSection = ({
   }, [loanInputs]);
 
   const addNewLoanInput = () => {
-    const newId = tempLoanInputs.length > 0 ? Math.max(...tempLoanInputs.map(input => input.id)) + 1 : 1;
+    const maxId = Math.max(...tempLoanInputs.map((input) => input?.id));
+    const newId = maxId !== -Infinity ? maxId + 1 : 1;
     const newLoan = {
       id: newId,
       loanName: "New loan",
@@ -84,76 +94,6 @@ const LoanSection = ({
     setTempLoanInputs([...tempLoanInputs, newLoan]);
     setRenderLoanForm(newId.toString());
   };
-  
-  const seriesData = useMemo(() => calculateLoanData(tempLoanInputs).flatMap((loan) => {
-    return [
-      {
-        name: `${loan.loanName} - Payment`,
-        data: loan.loanDataPerMonth.map((month) => month.payment),
-      },
-      {
-        name: `${loan.loanName} - Principal`,
-        data: loan.loanDataPerMonth.map((month) => month.principal),
-      },
-      {
-        name: `${loan.loanName} - Interest`,
-        data: loan.loanDataPerMonth.map((month) => month.interest),
-      },
-      {
-        name: `${loan.loanName} - Remaining Balance`,
-        data: loan.loanDataPerMonth.map((month) => month.balance),
-      },
-    ];
-  }), [tempLoanInputs, numberOfMonths]);
-  
-  useEffect(() => {
-    setLoanChart(prevState => ({ ...prevState, series: seriesData }));
-  }, [seriesData]);
-  
-  const handleSave = () => {
-    setIsSaved(true);
-    message.success("Data saved successfully!");
-  };
-  
-  useEffect(() => {
-    const saveData = async () => {
-      try {
-        if (isSaved) {
-          dispatch(setLoanInputs(tempLoanInputs));
-          dispatch(setLoanTableData(tableData));
-  
-          const { data: existingData, error: selectError } = await supabase
-            .from("finance")
-            .select("*")
-            .eq("id", id);
-          if (selectError) {
-            throw selectError;
-          }
-  
-          if (existingData && existingData.length > 0) {
-            const newInputData = JSON.parse(existingData[0].inputData);
-  
-            newInputData.loanInputs = tempLoanInputs;
-  
-            const { error: updateError } = await supabase
-              .from("finance")
-              .update({ inputData: newInputData })
-              .eq("id", existingData[0]?.id)
-              .select();
-  
-            if (updateError) {
-              throw updateError;
-            }
-          }
-        }
-      } catch (error) {
-        message.error(error);
-      } finally {
-        setIsSaved(false);
-      }
-    };
-    saveData();
-  }, [isSaved]);
 
   const removeLoanInput = (id) => {
     const indexToRemove = tempLoanInputs.findIndex((input) => input?.id === id);
@@ -237,46 +177,98 @@ const LoanSection = ({
   ];
 
   useEffect(() => {
-    const seriesData = calculateLoanData(
-      tempLoanInputs,
-      numberOfMonths
-    ).flatMap((loan) => {
-      console.log(
-        "calculateLoanData",
-        calculateLoanData(tempLoanInputs, numberOfMonths)
-      );
-      return [
-        {
-          name: `${loan.loanName} - Payment`,
-          data: loan.loanDataPerMonth.map((month) => month.payment),
-        },
-        {
-          name: `${loan.loanName} - Principal`,
-          data: loan.loanDataPerMonth.map((month) => month.principal),
-        },
-        {
-          name: `${loan.loanName} - Interest`,
-          data: loan.loanDataPerMonth.map((month) => month.interest),
-        },
-        {
-          name: `${loan.loanName} - Remaining Balance`,
+    const seriesData = calculateLoanData(tempLoanInputs, numberOfMonths).reduce(
+      (acc, loan) => {
+        acc.push({
+          name: loan.loanName,
           data: loan.loanDataPerMonth.map((month) => month.balance),
-        },
-      ];
-    });
+          dataPayment: loan.loanDataPerMonth.map((month) => month.payment),
+          dataPrincipal: loan.loanDataPerMonth.map((month) => month.principal),
+          dataInterest: loan.loanDataPerMonth.map((month) => month.interest),
+          dataRemainingBalance: loan.loanDataPerMonth.map(
+            (month) => month.balance
+          ),
+        });
+        return acc;
+      },
+      []
+    );
+    const totalLoanData = seriesData.reduce((acc, channel) => {
+      channel.data.forEach((amount, index) => {
+        if (!acc[index]) acc[index] = 0;
+        acc[index] += amount;
+      });
+      return acc;
+    }, Array(numberOfMonths).fill(0));
 
-    setLoanChart((prevState) => ({ ...prevState, series: seriesData }));
+    setLoanChart((prevState) => ({
+      ...prevState,
+      series: seriesData,
+      charts: [
+        {
+          options: {
+            ...prevState.options,
+            chart: {
+              ...prevState.options.chart,
+              id: "allLoans",
+              stacked: false,
+            },
+            title: {
+              ...prevState.options.title,
+              text: "All Remaining Loans",
+            },
+          },
+          series: [
+            ...seriesData,
+            {
+              name: "Total",
+              data: totalLoanData,
+            },
+          ],
+        },
+        ...seriesData.map((channelSeries) => ({
+          options: {
+            ...prevState.options,
+            chart: {
+              ...prevState.options.chart,
+              id: channelSeries.name,
+            },
+            title: {
+              ...prevState.options.title,
+              text: channelSeries.name,
+            },
+          },
+          series: [
+            {
+              name: "Payment",
+              data: channelSeries.dataPayment,
+            },
+            {
+              name: "Principal",
+              data: channelSeries.dataPrincipal,
+            },
+            {
+              name: "Interest",
+              data: channelSeries.dataInterest,
+            },
+            {
+              name: "Remaining Balance",
+              data: channelSeries.dataRemainingBalance,
+            },
+          ],
+        })),
+      ],
+    }));
   }, [tempLoanInputs, numberOfMonths]);
 
   const handleSelectChange = (event) => {
     setRenderLoanForm(event.target.value);
   };
 
-  const handleLoanSave = () => {
+  const handleSave = () => {
     setIsSaved(true);
     message.success("Data saved successfully!");
   };
-  
 
   const tableData = transformLoanDataForTable(
     tempLoanInputs,
@@ -476,11 +468,11 @@ const LoanSection = ({
             </button>
 
             <button
-  className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
-  onClick={handleLoanSave}
->
-  Save
-</button>
+              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
+              onClick={handleSave}
+            >
+              Save
+            </button>
           </div>
         </section>
       </div>
@@ -504,20 +496,29 @@ const LoanSection = ({
         <h3 className="text-lg font-semibold my-8">Loan Data</h3>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col shadow-xl">
-            <Chart
-              options={{
-                ...loanChart.options,
-                xaxis: {
-                  ...loanChart.options.xaxis,
-                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
-                },
-              }}
-              series={loanChart.series}
-              type="area"
-              height={350}
-            />
-          </Card>
+          {loanChart?.charts?.map((series, index) => (
+            <Card
+              key={index}
+              className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
+            >
+              <Chart
+                options={{
+                  ...series.options,
+
+                  xaxis: {
+                    ...series.options.xaxis,
+                    tickAmount: 12, // Ensure x-axis has 12 ticks
+                  },
+                  stroke: {
+                    width: 2, // Set the stroke width to 1
+                  },
+                }}
+                series={series.series}
+                type="area"
+                height={350}
+              />
+            </Card>
+          ))}
         </div>
       </div>
     </div>

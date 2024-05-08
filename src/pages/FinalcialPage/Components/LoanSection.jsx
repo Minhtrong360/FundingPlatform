@@ -332,8 +332,55 @@ const LoanSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
+      <div className="w-full lg:w-3/4 sm:p-4 p-0">
+        <h3 className="text-lg font-semibold mb-8">Loan Chart</h3>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          {loanChart?.charts?.map((series, index) => (
+            <Card
+              key={index}
+              className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
+            >
+              <Chart
+                options={{
+                  ...series.options,
+
+                  xaxis: {
+                    ...series.options.xaxis,
+                    tickAmount: 12, // Ensure x-axis has 12 ticks
+                  },
+                  stroke: {
+                    width: 2, // Set the stroke width to 1
+                  },
+                }}
+                series={series.series}
+                type="area"
+                height={350}
+              />
+            </Card>
+          ))}
+        </div>
+
+        <h3 className="text-lg font-semibold my-4">Loan Data</h3>
+        <Table
+          className="overflow-auto my-8 rounded-md"
+          size="small"
+          dataSource={transformLoanDataForTable(
+            tempLoanInputs,
+            renderLoanForm,
+            numberOfMonths
+          )}
+          columns={loanColumns}
+          pagination={false}
+          bordered
+          rowClassName={(record) =>
+            record.key === record.type ? "font-bold" : ""
+          }
+        />
+      </div>
+
       <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
-        <section aria-labelledby="loan-heading" className="mb-8">
+        <section aria-labelledby="loan-heading" className="mb-8 sticky top-8">
           <h2
             className="text-lg font-semibold mb-8 flex items-center"
             id="loan-heading"
@@ -483,51 +530,6 @@ const LoanSection = ({
             </button>
           </div>
         </section>
-      </div>
-      <div className="w-full lg:w-3/4 sm:p-4 p-0">
-        <h3 className="text-lg font-semibold mb-4">Loan Data</h3>
-        <Table
-          className="overflow-auto my-8 rounded-md"
-          size="small"
-          dataSource={transformLoanDataForTable(
-            tempLoanInputs,
-            renderLoanForm,
-            numberOfMonths
-          )}
-          columns={loanColumns}
-          pagination={false}
-          bordered
-          rowClassName={(record) =>
-            record.key === record.type ? "font-bold" : ""
-          }
-        />
-        <h3 className="text-lg font-semibold my-8">Loan Chart</h3>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          {loanChart?.charts?.map((series, index) => (
-            <Card
-              key={index}
-              className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
-            >
-              <Chart
-                options={{
-                  ...series.options,
-
-                  xaxis: {
-                    ...series.options.xaxis,
-                    tickAmount: 12, // Ensure x-axis has 12 ticks
-                  },
-                  stroke: {
-                    width: 2, // Set the stroke width to 1
-                  },
-                }}
-                series={series.series}
-                type="area"
-                height={350}
-              />
-            </Card>
-          ))}
-        </div>
       </div>
     </div>
   );

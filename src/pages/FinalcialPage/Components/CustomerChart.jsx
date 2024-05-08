@@ -11,22 +11,30 @@ const CustomChart = ({
   title,
 }) => {
   const chartOptions = {
-    chart: { id: "profit-and-loss-chart", type: "area", height: 350 },
-     fill: {
-        type: "gradient",
-        
-        gradient: {
-          shade: "light",
-          shadeIntensity: 0.5,
-          opacityFrom: 0.8,
-          opacityTo: 0.5,
-          stops: [0, 90, 100],
-        },
+    chart: {
+      zoom: {
+        enabled: false, // Disable zooming
       },
-     
-    colors: ['#00A2FF', '#14F584', '#FFB303', '#DBFE01', '#FF474C','#D84FE4'],
+      toolbar: {
+        show: false, // Hide the toolbar
+      },
+      id: "customer-growth-chart",
+      type: "area",
+      height: 350,
+      stacked: false,
+    },
+
     xaxis: {
-      categories: Array.from({ length: numberOfMonths }, (_, i) => `${i + 1}`),
+      axisTicks: {
+        show: false, // Hide x-axis ticks
+      },
+      labels: {
+        show: false, // Hide x-axis labels
+      },
+      categories: Array.from(
+        { length: numberOfMonths },
+        (_, i) => `Month ${i + 1}`
+      ),
       title: {
         text: "Month",
         style: {
@@ -34,33 +42,38 @@ const CustomChart = ({
           fontWeight: "600",
         },
       },
-      tickAmount: 12,
-      
+    },
+    yaxis: {
+      axisBorder: {
+        show: true, // Show y-axis line
+      },
       labels: {
-        rotate: -45,
-        rotateAlways: false,
-        hideOverlappingLabels: true,
-        trim: true,
-        minHeight: 100,
-        style: {
-          cssClass: "apexcharts-xaxis-label",
+        show: false, // Hide y-axis labels
+        formatter: function (val) {
+          return Math.floor(val);
         },
       },
-    },
-    stroke: {
-      width: 1, // Set the stroke width to 1
-      curve: "smooth", // Set the curve of the line, making it smooth
-    },
-    yaxis: { title: { text: "Amount ($)" } },
-    // stroke: { curve: "smooth" },
-   
-    // legend: { position: "top" },
-    tooltip: {
-      enabled: true,
-      y: {
-        formatter: (val) => `$${val?.toFixed(0)}`,
+      title: { text: "Customers" },
+      style: {
+        fontFamily: "Inter, sans-serif",
+        fontWeight: "600",
       },
     },
+    legend: { position: "bottom", horizontalAlign: "right" },
+    fill: {
+      type: "gradient",
+
+      gradient: {
+        shade: "light",
+        shadeIntensity: 0.75,
+        opacityFrom: 0.8,
+        opacityTo: 0.5,
+        stops: [0, 90, 100],
+      },
+    },
+
+    colors: ["#00A2FF", "#14F584", "#FFB303", "#DBFE01", "#FF474C", "#D84FE4"],
+    dataLabels: { enabled: false },
   };
   return (
     <div className="grid md:grid-cols-2 gap-6">
@@ -70,7 +83,14 @@ const CustomChart = ({
             ...chartOptions,
             chart: { ...chartOptions.chart, id: id },
             dataLabels: { enabled: false },
-            colors: ['#00A2FF', '#14F584', '#FFB303', '#DBFE01', '#FF474C','#D84FE4'],
+            colors: [
+              "#00A2FF",
+              "#14F584",
+              "#FFB303",
+              "#DBFE01",
+              "#FF474C",
+              "#D84FE4",
+            ],
             yaxis: { title: { text: yaxisTitle } },
           }}
           series={[

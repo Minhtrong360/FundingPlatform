@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../../supabase";
-import image from "../Home/Components/founder&Business.jpg";
+// import image from "../Home/Components/founder&Business.jpg";
 import Header from "../Home/Header";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { Avatar } from "antd";

@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation, useNavigation } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import HomePage from "../pages/Home/HomePage";
 
 import SignUp from "../pages/SignUp/SignUp";
@@ -29,7 +29,7 @@ import Confirmed from "../pages/SignUp/Confirmed";
 import AdminPage from "../pages/Admin/AdminPage";
 
 import PermissionRequired from "./PermissionRequired";
-import AnnouncePage from "../components/AnnouncePage";
+// import AnnouncePage from "../components/AnnouncePage";
 import PricingPage from "../pages/Home/Components/PricingPage";
 import FAQ from "../pages/Home/Components/FAQ";
 import DetailBlog from "../pages/News/DetailBlog";
@@ -226,9 +226,12 @@ function Router() {
           path="/GPT"
           element={<GPTAnalyzer numberOfMonths={36} />}
         />
-        <Route key={location.key} path="/marketresearch" element={<MarketResearch />} />
+        <Route
+          key={location.key}
+          path="/marketresearch"
+          element={<MarketResearch />}
+        />
       </Routes>
-      
     </>
   );
 }

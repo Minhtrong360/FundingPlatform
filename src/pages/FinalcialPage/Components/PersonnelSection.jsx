@@ -292,8 +292,43 @@ const PersonnelSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
+      <div className="w-full lg:w-3/4 sm:p-4 p-0">
+        <h3 className="text-lg font-semibold mb-8">Personnel Cost Chart</h3>
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card className="flex flex-col shadow-xl">
+            <Chart
+              options={{
+                ...personnelChart.options,
+                stroke: {
+                  width: 2, // Set the stroke width to 2
+                },
+                xaxis: {
+                  ...personnelChart.options.xaxis,
+                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                },
+              }}
+              series={personnelChart.series}
+              type="area"
+              height={350}
+            />
+          </Card>
+        </div>
+        <h3 className="text-lg font-semibold my-4">Personnel Cost Table</h3>
+        <Table
+          className="overflow-auto my-8 rounded-md"
+          size="small"
+          dataSource={personnelCostTableData}
+          columns={personnelCostColumns}
+          pagination={false}
+          bordered
+        />
+      </div>
+
       <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
-        <section aria-labelledby="personnel-heading" className="mb-8">
+        <section
+          aria-labelledby="personnel-heading"
+          className="mb-8 sticky top-8"
+        >
           <h2
             className="text-lg font-semibold mb-8 flex items-center"
             id="personnel-heading"
@@ -485,37 +520,6 @@ const PersonnelSection = ({
             </button>
           </div>
         </section>
-      </div>
-      <div className="w-full lg:w-3/4 sm:p-4 p-0">
-        <h3 className="text-lg font-semibold mb-4">Personnel Cost Table</h3>
-        <Table
-          className="overflow-auto my-8 rounded-md"
-          size="small"
-          dataSource={personnelCostTableData}
-          columns={personnelCostColumns}
-          pagination={false}
-          bordered
-        />
-        <h3 className="text-lg font-semibold my-8">Personnel Cost Chart</h3>
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col shadow-xl">
-            <Chart
-              options={{
-                ...personnelChart.options,
-                stroke: {
-                  width: 2, // Set the stroke width to 2
-                },
-                xaxis: {
-                  ...personnelChart.options.xaxis,
-                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
-                },
-              }}
-              series={personnelChart.series}
-              type="area"
-              height={350}
-            />
-          </Card>
-        </div>
       </div>
     </div>
   );

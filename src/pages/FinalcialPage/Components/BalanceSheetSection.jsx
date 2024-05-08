@@ -830,22 +830,8 @@ function BalanceSheetSection({ numberOfMonths }) {
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
-        <GroqJS datasrc={positionDataWithNetIncome2} />
-      </div>
       <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
         <div className="">
-          <h2 className="text-lg font-semibold my-4">Balance Sheet</h2>
-
-          <Table
-            className="overflow-auto my-8 rounded-md"
-            size="small"
-            dataSource={positionDataWithNetIncome2}
-            columns={positionColumns1}
-            pagination={false}
-            bordered
-          />
-
           <div className=" gap-4 mb-3">
             <Select
               onValueChange={(value) => handleChartSelect(value)}
@@ -926,6 +912,17 @@ function BalanceSheetSection({ numberOfMonths }) {
             />
           )}
 
+          <h2 className="text-lg font-semibold my-8">Balance Sheet</h2>
+
+          <Table
+            className="overflow-auto my-8 rounded-md"
+            size="small"
+            dataSource={positionDataWithNetIncome2}
+            columns={positionColumns1}
+            pagination={false}
+            bordered
+          />
+
           <div className="w-full md:w-[20%] my-5">
             <SelectField
               label="Select Cut Month:"
@@ -956,6 +953,12 @@ function BalanceSheetSection({ numberOfMonths }) {
             ))}
           </Tabs>
         </div>
+      </div>
+
+      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
+        <section className="mb-8 sticky top-8">
+          <GroqJS datasrc={positionDataWithNetIncome2} />
+        </section>
       </div>
     </div>
   );

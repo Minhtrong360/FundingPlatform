@@ -149,7 +149,6 @@ export const transformCostDataForTable = (tempCostInput, numberOfMonths) => {
     totalRow[`month${month}`] = formatNumber(totalMonthlyCost.toFixed(2)); // Adjust formatting as needed
   }
   transformedCustomerTableData["Total"] = totalRow;
-  console.log("transformedCustomerTableData", transformedCustomerTableData);
   return Object.values(transformedCustomerTableData);
 };
 

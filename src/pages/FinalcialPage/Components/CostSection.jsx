@@ -7,7 +7,7 @@ import {
 } from "../../../components/ui/Select";
 import { Input } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
-import { Card, Table, Tooltip, message } from "antd";
+import { Card, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import {
   setCostInputs,
@@ -19,7 +19,7 @@ import {
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { supabase } from "../../../supabase";
-import { useAuth } from "../../../context/AuthContext";
+// import { useAuth } from "../../../context/AuthContext";
 import { useParams } from "react-router-dom";
 
 const CostSection = ({
@@ -310,8 +310,40 @@ const CostSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
+      <div className="w-full lg:w-3/4 sm:p-4 p-0">
+        <h3 className="text-lg font-semibold mb-8">Cost Chart</h3>
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
+            <Chart
+              options={{
+                ...costChart.options,
+                xaxis: {
+                  ...costChart.options.xaxis,
+                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                },
+                stroke: {
+                  width: 2, // Set the stroke width to 2
+                },
+              }}
+              series={costChart.series}
+              type="area"
+              height={350}
+            />
+          </Card>
+        </div>
+        <h3 className="text-lg font-semibold my-4">Cost Table</h3>
+        <Table
+          className="overflow-auto my-8 rounded-md"
+          size="small"
+          dataSource={transformCostDataForTable(tempCostInput, numberOfMonths)}
+          columns={costColumns}
+          pagination={false}
+          bordered
+        />
+      </div>
+
       <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
-        <section aria-labelledby="costs-heading" className="mb-8">
+        <section aria-labelledby="costs-heading" className="mb-8 sticky top-8">
           <h2
             className="text-lg font-semibold mb-8 flex items-center"
             id="costs-heading"
@@ -508,37 +540,6 @@ const CostSection = ({
             </button>
           </div>
         </section>
-      </div>
-      <div className="w-full lg:w-3/4 sm:p-4 p-0">
-        <h3 className="text-lg font-semibold mb-4">Cost Table</h3>
-        <Table
-          className="overflow-auto my-8 rounded-md"
-          size="small"
-          dataSource={transformCostDataForTable(tempCostInput, numberOfMonths)}
-          columns={costColumns}
-          pagination={false}
-          bordered
-        />
-        <h3 className="text-lg font-semibold my-8">Cost Chart</h3>
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
-            <Chart
-              options={{
-                ...costChart.options,
-                xaxis: {
-                  ...costChart.options.xaxis,
-                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
-                },
-                stroke: {
-                  width: 2, // Set the stroke width to 2
-                },
-              }}
-              series={costChart.series}
-              type="area"
-              height={350}
-            />
-          </Card>
-        </div>
       </div>
     </div>
   );

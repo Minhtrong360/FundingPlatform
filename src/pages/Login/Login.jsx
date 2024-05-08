@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import AlertMsg from "../../components/AlertMsg";
+// import AlertMsg from "../../components/AlertMsg";
 // import { toast } from "react-toastify";
 
 import SpinnerBtn from "../../components/SpinnerBtn";

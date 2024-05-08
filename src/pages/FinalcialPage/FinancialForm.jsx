@@ -1023,9 +1023,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               {activeTab === "overview" && (
                 <div className="w-full h-full flex flex-col lg:flex-row ">
                   {/* <div className="w-full lg:w-1/4 sm:p-4 p-0 "> */}
-                  <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
-                    <DurationSelect handleSubmit={handleSubmit} />
-                  </div>
 
                   <div className="w-full lg:w-3/4 sm:p-4 p-0">
                     <MetricsFM
@@ -1033,6 +1030,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                       revenue={revenue}
                       numberOfMonths={numberOfMonths}
                     />
+                  </div>
+                  <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
+                    <DurationSelect handleSubmit={handleSubmit} />
                   </div>
                 </div>
               )}

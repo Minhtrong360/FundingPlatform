@@ -692,22 +692,8 @@ function CashFlowSection({ numberOfMonths }) {
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
-        <GroqJS datasrc={positionDataWithNetIncome} />{" "}
-      </div>
       <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
         <div className="">
-          <h2 className="text-lg font-semibold my-4">Cash Flow</h2>
-
-          <Table
-            className="overflow-x-auto my-8 rounded-md shadow-xl"
-            size="small"
-            dataSource={positionDataWithNetIncome}
-            columns={positionColumns}
-            pagination={false}
-            bordered
-          />
-
           <div className=" gap-4 mb-3">
             <Select
               onValueChange={(value) => handleChartSelect(value)}
@@ -790,6 +776,17 @@ function CashFlowSection({ numberOfMonths }) {
             />
           )}
 
+          <h2 className="text-lg font-semibold my-8">Cash Flow</h2>
+
+          <Table
+            className="overflow-x-auto my-8 rounded-md shadow-xl"
+            size="small"
+            dataSource={positionDataWithNetIncome}
+            columns={positionColumns}
+            pagination={false}
+            bordered
+          />
+
           <div className="w-full md:w-[20%] my-5">
             <SelectField
               label="Select Cut Month:"
@@ -822,6 +819,12 @@ function CashFlowSection({ numberOfMonths }) {
             ))}
           </Tabs>
         </div>
+      </div>
+
+      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
+        <section className="mb-8 sticky top-8">
+          <GroqJS datasrc={positionDataWithNetIncome} />{" "}
+        </section>
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ import {
 } from "../../../components/ui/Select";
 import { Input as FundraisingInput } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
-import { Card, Table, Tooltip, message } from "antd";
+import { Card, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -199,48 +199,7 @@ const FundraisingSection = ({
     message.success("Data saved successfully!");
   };
 
-  const { user } = useAuth();
   const { id } = useParams();
-
-  const [tableChart, setTableChart] = useState({
-    options: {
-      chart: {
-        id: "table-chart",
-        type: "bar",
-        height: 350,
-      },
-      xaxis: {
-        categories: [],
-        title: {
-          text: "Fundraising Activities",
-          style: {
-            fontFamily: "Inter, sans-serif",
-            fontWeight: "600",
-          },
-        },
-      },
-      yaxis: {
-        labels: {
-          formatter: function (val) {
-            return Math.floor(val);
-          },
-        },
-        title: {
-          text: "Fundraising Amount ($)",
-          style: {
-            fontFamily: "Inter, sans-serif",
-            fontWeight: "600",
-          },
-        },
-      },
-      legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "gradient" },
-      dataLabels: { enabled: false },
-      stroke: { curve: "smooth" },
-      markers: { size: 1 },
-    },
-    series: [],
-  });
 
   useEffect(() => {
     const saveData = async () => {
@@ -324,8 +283,45 @@ const FundraisingSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
+      <div className="w-full lg:w-3/4 sm:p-4 p-0">
+        <h3 className="text-lg font-semibold mb-8">Fundraising Chart</h3>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card className="flex flex-col shadow-xl">
+            <Chart
+              options={{
+                ...fundraisingChart.options,
+                xaxis: {
+                  ...fundraisingChart.options.xaxis,
+                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                },
+              }}
+              series={fundraisingChart.series}
+              type="bar"
+              height={350}
+            />
+          </Card>
+        </div>
+
+        <h3 className="text-lg font-semibold my-4">Fundraising Table</h3>
+        <Table
+          className="overflow-auto my-8 rounded-md"
+          size="small"
+          dataSource={transformFundraisingDataForTable(
+            tempFundraisingInputs,
+            numberOfMonths
+          )}
+          columns={fundraisingColumns}
+          bordered
+          pagination={false}
+        />
+      </div>
+
       <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
-        <section aria-labelledby="fundraising-heading" className="mb-8">
+        <section
+          aria-labelledby="fundraising-heading"
+          className="mb-8 sticky top-8"
+        >
           <h2
             className="text-lg font-semibold mb-8 flex items-center"
             id="fundraising-heading"
@@ -500,38 +496,6 @@ const FundraisingSection = ({
             </button>
           </div>
         </section>
-      </div>
-      <div className="w-full lg:w-3/4 sm:p-4 p-0">
-        <h3 className="text-lg font-semibold mb-4">Fundraising Table</h3>
-        <Table
-          className="overflow-auto my-8 rounded-md"
-          size="small"
-          dataSource={transformFundraisingDataForTable(
-            tempFundraisingInputs,
-            numberOfMonths
-          )}
-          columns={fundraisingColumns}
-          bordered
-          pagination={false}
-        />
-        <h3 className="text-lg font-semibold my-8">Fundraising Chart</h3>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col shadow-xl">
-            <Chart
-              options={{
-                ...fundraisingChart.options,
-                xaxis: {
-                  ...fundraisingChart.options.xaxis,
-                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
-                },
-              }}
-              series={fundraisingChart.series}
-              type="bar"
-              height={350}
-            />
-          </Card>
-        </div>
       </div>
     </div>
   );

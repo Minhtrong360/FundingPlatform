@@ -5,7 +5,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useAuth } from "../../context/AuthContext";
 // import { toast } from "react-toastify";
 import { supabase } from "../../supabase";
-import { message } from "antd";
+// import { message } from "antd";
 import { ShopOutlined, UserOutlined } from "@ant-design/icons";
 import { BellOutlined } from "@ant-design/icons";
 import { UserSwitchOutlined } from "@ant-design/icons";

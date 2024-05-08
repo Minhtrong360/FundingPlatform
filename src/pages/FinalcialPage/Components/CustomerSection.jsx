@@ -1,6 +1,14 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Input } from "../../../components/ui/Input";
-import { Card, Table, Tooltip, message } from "antd";
+import {
+  Button,
+  Card,
+  FloatButton,
+  Modal,
+  Table,
+  Tooltip,
+  message,
+} from "antd";
 import Chart from "react-apexcharts";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -28,6 +36,7 @@ import {
   SelectItem,
 } from "../../../components/ui/Select";
 import { useParams } from "react-router-dom";
+import { FileOutlined } from "@ant-design/icons";
 
 const CustomerSection = React.memo(
   ({
@@ -150,7 +159,7 @@ const CustomerSection = React.memo(
       dispatch(setCustomerTableData(calculateCustomerTableData));
 
       setTempCustomerGrowthData(calculatedData);
-    }, [tempCustomerInputs, numberOfMonths, renderCustomerForm]);
+    }, [tempCustomerInputs, renderCustomerForm]);
 
     const months = [
       "01",
@@ -487,12 +496,59 @@ const CustomerSection = React.memo(
       });
     }, [tempCustomerGrowthData]);
 
-    const [activeTab, setActiveTab] = useState("table");
+    const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 
     return (
       <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
-          <section aria-labelledby="customers-heading" className="mb-8">
+        <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
+          <h3 className="text-lg font-semibold mb-8">Customer Chart</h3>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {customerGrowthChart.charts?.map((chart, index) => (
+              <Card
+                key={index}
+                className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
+              >
+                <Chart
+                  options={{
+                    ...chart.options,
+                    xaxis: {
+                      ...chart.options.xaxis,
+                      tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                    },
+                    stroke: {
+                      width: 2, // Set the stroke width to 1
+                    },
+                  }}
+                  series={chart.series}
+                  type="bar"
+                  height={350}
+                />
+              </Card>
+            ))}
+          </div>
+
+          <div className="my-8">
+            <h3 className="text-lg font-semibold">Customer Table</h3>
+            <Table
+              className="overflow-auto  my-8 rounded-md"
+              size="small"
+              dataSource={customerTableData}
+              columns={customerColumns}
+              pagination={false}
+              bordered
+              rowClassName={(record) =>
+                record.key === record.channelName ? "font-bold" : ""
+              }
+            />
+          </div>
+        </div>
+
+        <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:block hidden">
+          <section
+            aria-labelledby="customers-heading"
+            className="mb-8 sticky top-8"
+          >
             <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Examples:  Online, Offline, Social Media, Email Marketing, Referrals, Direct Sales, Subscription...">
               <h2
                 className="text-lg font-semibold mb-8 flex items-center"
@@ -725,48 +781,286 @@ const CustomerSection = React.memo(
             </div>
           </section>
         </div>
-        <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
-          <div className="mb-8">
-            <h3 className="text-lg font-semibold">Customer Table</h3>
-            <Table
-              className="overflow-auto  my-8 rounded-md"
-              size="small"
-              dataSource={customerTableData}
-              columns={customerColumns}
-              pagination={false}
-              bordered
-              rowClassName={(record) =>
-                record.key === record.channelName ? "font-bold" : ""
-              }
-            />
-          </div>
-          <h3 className="text-lg font-semibold my-8">Customer Chart</h3>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {customerGrowthChart.charts?.map((chart, index) => (
-              <Card
-                key={index}
-                className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
-              >
-                <Chart
-                  options={{
-                    ...chart.options,
-                    xaxis: {
-                      ...chart.options.xaxis,
-                      tickAmount: 12, // Set the number of ticks on the x-axis to 12
-                    },
-                    stroke: {
-                      width: 2, // Set the stroke width to 1
-                    },
-                  }}
-                  series={chart.series}
-                  type="bar"
-                  height={350}
-                />
-              </Card>
-            ))}
-          </div>
+        <div className="lg:hidden block">
+          <FloatButton
+            tooltip={<div>Input values</div>}
+            style={{
+              position: "fixed",
+              bottom: "30px",
+              right: "30px",
+            }}
+          >
+            <Button type="primary" shape="circle" icon={<FileOutlined />} />
+          </FloatButton>
         </div>
+
+        {isInputFormOpen && (
+          <Modal
+            title="Customer channel"
+            visible={isInputFormOpen}
+            onOk={handleSave}
+            onCancel={() => setIsInputFormOpen(false)}
+            okText="Save change"
+            cancelText="Cancel"
+            cancelButtonProps={{
+              style: {
+                borderRadius: "0.375rem",
+                cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              },
+            }}
+            okButtonProps={{
+              style: {
+                background: "#f5222d",
+                borderColor: "#f5222d",
+                color: "#fff",
+                borderRadius: "0.375rem",
+                cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              },
+            }}
+            centered={true}
+          >
+            <section
+              aria-labelledby="customers-heading"
+              className="mb-8 sticky top-8"
+            >
+              <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Examples:  Online, Offline, Social Media, Email Marketing, Referrals, Direct Sales, Subscription...">
+                <h2
+                  className="text-lg font-semibold mb-8 flex items-center"
+                  id="customers-heading"
+                >
+                  Customer channel{" "}
+                </h2>
+              </Tooltip>
+              <div>
+                <label
+                  htmlFor="selectedChannel"
+                  className="block my-4 text-base  darkTextWhite"
+                ></label>
+                <select
+                  id="selectedChannel"
+                  className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                  value={renderCustomerForm}
+                  onChange={handleSelectChange}
+                >
+                  <option value="all">All</option>
+                  {tempCustomerInputs.map((input) => (
+                    <option key={input?.id} value={input?.id}>
+                      {input.channelName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {tempCustomerInputs
+                .filter((input) => input?.id == renderCustomerForm)
+                .map((input) => (
+                  <div
+                    key={input?.id}
+                    className="bg-white rounded-md p-6 border my-4"
+                  >
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className=" flex items-center text-sm">
+                        Channel Name:
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        value={input.channelName}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "channelName",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className=" flex items-center text-sm">
+                        Existing Customer:
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        type="text"
+                        value={formatNumber(input.beginCustomer)}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "beginCustomer",
+                            parseNumber(e.target.value)
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className="flex items-center text-sm">
+                        Adding (First month)
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        value={formatNumber(input.customersPerMonth)}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "customersPerMonth",
+                            parseNumber(e.target.value)
+                          )
+                        }
+                        type="text"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className=" flex items-center text-sm">
+                        Growth rate (%):
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        value={formatNumber(input.growthPerMonth)}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "growthPerMonth",
+                            parseNumber(e.target.value)
+                          )
+                        }
+                        type="text"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className="flex items-center text-sm">
+                        Frequency:
+                      </span>
+                      <Select
+                        className="border-gray-300"
+                        onValueChange={(value) =>
+                          handleInputChange(
+                            input?.id,
+                            "customerGrowthFrequency",
+                            value
+                          )
+                        }
+                        value={input.customerGrowthFrequency}
+                      >
+                        <SelectTrigger
+                          id={`select-customerGrowthFrequency-${input?.id}`}
+                          className="border-solid border-[1px] border-gray-300"
+                        >
+                          <SelectValue placeholder="Select Growth Frequency" />
+                        </SelectTrigger>
+                        <SelectContent position="popper">
+                          <SelectItem value="Monthly">Monthly</SelectItem>
+                          <SelectItem value="Quarterly">Quarterly</SelectItem>
+                          <SelectItem value="Semi-Annually">
+                            Semi-Annually
+                          </SelectItem>
+                          <SelectItem value="Annually">Annually</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className=" flex items-center text-sm">
+                        Begin Month:
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        type="number"
+                        min={1}
+                        value={input.beginMonth}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "beginMonth",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className=" flex items-center text-sm">
+                        End Month:
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        type="number"
+                        min={1}
+                        value={input.endMonth}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "endMonth",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className=" flex items-center text-sm">
+                        Churn rate (%):
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        type="text"
+                        value={formatNumber(input.churnRate)}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "churnRate",
+                            parseNumber(e.target.value)
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className=" flex items-center text-sm">
+                        Acquisition cost:
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        type="text"
+                        value={input.acquisitionCost}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "acquisitionCost",
+                            e.target.value
+                          )
+                        }
+                        disabled
+                      />
+                    </div>
+                    <div className="flex justify-end items-center">
+                      <button
+                        className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
+                        onClick={() => removeCustomerInput(input.id)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))}
+
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <button
+                  className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
+                  onClick={handleAddNewCustomer}
+                >
+                  Add new
+                </button>
+
+                <button
+                  className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
+                  onClick={handleSave}
+                >
+                  Save
+                </button>
+              </div>
+            </section>
+          </Modal>
+        )}
       </div>
     );
   }

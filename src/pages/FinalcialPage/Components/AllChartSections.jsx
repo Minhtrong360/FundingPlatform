@@ -836,50 +836,6 @@ const AllChartSections = ({
             />
           )}
         </div>
-
-        {/* <div>
-          <div className=" gap-4 mb-3">
-            <Select
-              onValueChange={(value) => handleMonthSelect(value)}
-              value={selectedMonth.toString()}
-              className="border-solid border-[1px] border-gray-200"
-            >
-              <SelectTrigger className="border-solid border-[1px] border-gray-200 md:w-[20%] w-full">
-                <SelectValue />
-              </SelectTrigger>
-
-              <SelectContent position="popper">
-                {[...Array(numberOfMonths)].map((_, index) => (
-                  <SelectItem
-                    className="hover:cursor-pointer"
-                    key={index}
-                    value={(index + 1).toString()}
-                  >
-                    {`Month ${index + 1}`}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-0">
-            {renderCard("Total Revenue", totalRevenue)}
-            {renderCard("Total Costs", totalCosts)}
-            {renderCard("Net Income", netIncome)}
-            {renderCard("Gross Profit", grossProfit)}
-            {renderCard("EBITDA", ebitda)}
-            {renderCard("Earnings Before Tax", earningsBeforeTax)}
-            {renderCard("Income Tax", incomeTax)}
-            {renderCard("Total Investment Depre.", totalInvestmentDepreciation)}
-            {renderCard("Total Interest Payments", totalInterestPayments)}
-            {renderCard("Net Cash Changes", netCashChanges)}
-            {renderCard("Total Principal", totalPrincipal)}
-            {renderCard("Cash Begin Balances", cashBeginBalances)}
-            {renderCard("Cash End Balances", cashEndBalances)}
-            {renderCard("Total Assets", totalAssets)}
-            {renderCard("Total Liabilities", totalLiabilities)}
-            {renderCard("Total Shareholders Equity", totalShareholdersEquity)}
-          </div>
-        </div> */}
       </main>
     </div>
   );

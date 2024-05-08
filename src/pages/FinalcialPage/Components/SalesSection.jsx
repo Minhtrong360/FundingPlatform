@@ -353,7 +353,6 @@ const SalesSection = ({
     setIsSaved(true);
     message.success("Data saved successfully!");
   };
-  const { user } = useAuth();
   const { id } = useParams();
   useEffect(() => {
     const saveData = async () => {
@@ -437,12 +436,52 @@ const SalesSection = ({
     setRenderChannelForm(event.target.value);
   };
 
-  console.log("revenue", revenue);
-
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
+      <div className="w-full lg:w-3/4 sm:p-4 p-0">
+        <h3 className="text-lg font-semibold mb-8">Revenue Chart</h3>
+        <div className="grid md:grid-cols-2 gap-6">
+          {revenue.charts?.map((chart, index) => (
+            <Card
+              key={index}
+              className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
+            >
+              <Chart
+                options={{
+                  ...chart.options,
+
+                  xaxis: {
+                    ...chart.options.xaxis,
+                    tickAmount: 12, // Ensure x-axis has 12 ticks
+                  },
+                  stroke: {
+                    width: 2, // Set the stroke width to 1
+                  },
+                }}
+                series={chart.series}
+                type="area"
+                height={350}
+              />
+            </Card>
+          ))}
+        </div>
+
+        <h3 className="text-lg font-semibold my-4">Revenue by Product</h3>
+        <Table
+          className="overflow-auto my-8 rounded-md"
+          size="small"
+          dataSource={revenueTableData}
+          columns={revenueColumns}
+          pagination={false}
+          bordered
+          rowClassName={(record) =>
+            record.key === record.channelName ? "font-bold" : ""
+          }
+        />
+      </div>
+
       <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
-        <section aria-labelledby="sales-heading" className="mb-8">
+        <section aria-labelledby="sales-heading" className="mb-8 sticky top-8">
           <h2
             className="text-lg font-semibold mb-8 flex items-center"
             id="sales-heading"
@@ -665,46 +704,6 @@ const SalesSection = ({
             </button>
           </div>
         </section>
-      </div>
-      <div className="w-full lg:w-3/4 sm:p-4 p-0">
-        <h3 className="text-lg font-semibold mb-4">Revenue by Product</h3>
-        <Table
-          className="overflow-auto my-8 rounded-md"
-          size="small"
-          dataSource={revenueTableData}
-          columns={revenueColumns}
-          pagination={false}
-          bordered
-          rowClassName={(record) =>
-            record.key === record.channelName ? "font-bold" : ""
-          }
-        />
-        <h3 className="text-lg font-semibold my-8">Revenue Chart</h3>
-        <div className="grid md:grid-cols-2 gap-6">
-          {revenue.charts?.map((chart, index) => (
-            <Card
-              key={index}
-              className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
-            >
-              <Chart
-                options={{
-                  ...chart.options,
-
-                  xaxis: {
-                    ...chart.options.xaxis,
-                    tickAmount: 12, // Ensure x-axis has 12 ticks
-                  },
-                  stroke: {
-                    width: 2, // Set the stroke width to 1
-                  },
-                }}
-                series={chart.series}
-                type="area"
-                height={350}
-              />
-            </Card>
-          ))}
-        </div>
       </div>
     </div>
   );

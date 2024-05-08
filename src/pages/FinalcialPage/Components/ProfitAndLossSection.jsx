@@ -652,31 +652,8 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
-        <GroqJS datasrc={transposedData} />
-      </div>
       <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
-        <div className="">
-          <h2 className="text-lg font-semibold my-4">
-            Profit and Loss Statement
-          </h2>
-          {/* <pre>{JSON.stringify(tableData, null, 2)}</pre> */}
-          <Table
-            className="overflow-auto my-8 rounded-md"
-            size="small"
-            bordered
-            dataSource={transposedData}
-            columns={columns}
-            pagination={false}
-          />
-
-          {/* <Chart
-        options={chartOptions}
-        series={chartSeries}
-        type="bar"
-        height={350}
-      /> */}
-
+        <div>
           <div className=" gap-4 mb-3">
             <Select
               onValueChange={(value) => handleChartSelect(value)}
@@ -745,6 +722,13 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
               </SelectContent>
             </Select>
           </div>
+
+          {/* <Chart
+        options={chartOptions}
+        series={chartSeries}
+        type="bar"
+        height={350}
+      /> */}
 
           {/* Các biểu đồ */}
 
@@ -840,6 +824,19 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             />
           )}
 
+          <h2 className="text-lg font-semibold my-8">
+            Profit and Loss Statement
+          </h2>
+          {/* <pre>{JSON.stringify(tableData, null, 2)}</pre> */}
+          <Table
+            className="overflow-auto my-8 rounded-md"
+            size="small"
+            bordered
+            dataSource={transposedData}
+            columns={columns}
+            pagination={false}
+          />
+
           <div className="w-full md:w-[20%] my-5">
             <SelectField
               label="Select Cut Month:"
@@ -873,6 +870,12 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             ))}
           </Tabs>
         </div>
+      </div>
+
+      <div className="w-full lg:w-1/4 sm:p-4 p-0">
+        <section className="mb-8 sticky top-8">
+          <GroqJS datasrc={transposedData} />
+        </section>
       </div>
     </div>
   );

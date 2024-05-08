@@ -1,15 +1,15 @@
-import { Tooltip } from "antd";
+// import { Tooltip } from "antd";
 import { useSelector } from "react-redux";
-import { formatNumber } from "../features/CostSlice";
+// import { formatNumber } from "../features/CostSlice";
 import AllChartSections from "./FinalcialPage/Components/AllChartSections";
-import { InfoCircleOutlined } from "@ant-design/icons";
-import { getCurrencyLabelByKey } from "../features/DurationSlice";
+// import { InfoCircleOutlined } from "@ant-design/icons";
+// import { getCurrencyLabelByKey } from "../features/DurationSlice";
 
 const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
   // Define data for each card
   const { yearlyAverageCustomers } = useSelector((state) => state.customer);
   const { yearlySales } = useSelector((state) => state.sales);
-  const { currency } = useSelector((state) => state.durationSelect);
+  // const { currency } = useSelector((state) => state.durationSelect);
 
   return (
     <div className="sm:max-w-[85rem] max-w-full px-0 py-10 lg:py-14 mx-auto">

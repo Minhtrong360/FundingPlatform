@@ -155,6 +155,7 @@ const CostSection = ({
   const [costChart, setCostChart] = useState({
     options: {
       chart: {
+        fontFamily: "Sora, sans-serif",
         id: "cost-chart",
         type: "bar",
         height: 350,
@@ -175,7 +176,12 @@ const CostSection = ({
           show: false,
         },
         labels: {
-          show: false,
+          rotate: 0,
+          show: true,
+          style: {
+            fontFamily: "Sora, sans-serif",
+          
+          },
         },
         categories: Array.from(
           { length: numberOfMonths },
@@ -184,8 +190,8 @@ const CostSection = ({
         title: {
           text: "Month",
           style: {
-            fontFamily: "Inter, sans-serif",
-            fontWeight: "600",
+            fontFamily: "Sora, sans-serif",
+            fontsize: "12px",
           },
         },
       },
@@ -195,7 +201,10 @@ const CostSection = ({
         },
 
         labels: {
-          show: false,
+          show: true,
+          style: {
+            fontFamily: "Sora, sans-serif",
+          },
           formatter: function (val) {
             return Math.floor(val);
           },
@@ -203,12 +212,12 @@ const CostSection = ({
         title: {
           text: "Cost ($)",
           style: {
-            fontFamily: "Inter, sans-serif",
-            fontWeight: "600",
+            fontFamily: "Sora, sans-serif",
+            fontsize: "12px",
           },
         },
       },
-      legend: { position: "bottom", horizontalAlign: "right" },
+      legend: { position: "bottom", horizontalAlign: "right", fontFamily: "Sora, sans-serif" },
       // fill: { type: "solid" },
       dataLabels: { enabled: false },
       stroke: { curve: "smooth", width: 1 },
@@ -339,7 +348,7 @@ const CostSection = ({
                   tickAmount: 12, // Set the number of ticks on the x-axis to 12
                 },
                 stroke: {
-                  width: 2, // Set the stroke width to 2
+                  width: 1, // Set the stroke width to 2
                 },
               }}
               series={costChart.series}

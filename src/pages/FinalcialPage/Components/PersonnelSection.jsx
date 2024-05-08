@@ -167,15 +167,26 @@ const PersonnelSection = ({
         height: 350,
         toolbar: { show: false },
         zoom: { enabled: false },
+        fontFamily: "Sora, sans-serif",
       },
       grid: { show: false },
+      colors: [
+        "#00A2FF",
+        "#14F584",
+        "#FFB303",
+        "#DBFE01",
+        "#FF474C",
+        "#D84FE4",
+      ],
       xaxis: {
         range: 5,
         axisTicks: {
           show: false, // Hide x-axis ticks
         },
         labels: {
-          show: false, // Hide x-axis labels
+          show: true,
+          rotate: 0,
+          style: {fontFamily: "Sora, sans-serif" }, 
         },
         categories: Array.from(
           { length: numberOfMonths },
@@ -184,8 +195,8 @@ const PersonnelSection = ({
         title: {
           text: "Month",
           style: {
-            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-            fontWeight: "600", // Cỡ chữ semibold
+            fontFamily: "Sora, sans-serif", // Sử dụng font chữ Inter
+            fontsize: "12px",
           },
         },
       },
@@ -195,7 +206,8 @@ const PersonnelSection = ({
           show: true, // Hide y-axis border
         },
         labels: {
-          show: false, // Hide y-axis labels
+          show: true,
+          style: { fontFamily: "Sora, sans-serif" }, 
           formatter: function (val) {
             return Math.floor(val); // Format Y-axis labels as integers
           },
@@ -203,12 +215,12 @@ const PersonnelSection = ({
         title: {
           text: "Salary ($)",
           style: {
-            fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-            fontWeight: "600", // Cỡ chữ semibold
+            fontFamily: "Sora, sans-serif", // Sử dụng font chữ Inter
+            fontsize: "12px",
           },
         },
       },
-      legend: { position: "bottom", horizontalAlign: "right" },
+      legend: { position: "bottom", horizontalAlign: "right", fontFamily: "Sora, sans-serif" },
       fill: {
         type: "gradient",
 
@@ -318,7 +330,7 @@ const PersonnelSection = ({
               options={{
                 ...personnelChart.options,
                 stroke: {
-                  width: 2, // Set the stroke width to 2
+                  width: 1, // Set the stroke width to 2
                 },
                 xaxis: {
                   ...personnelChart.options.xaxis,

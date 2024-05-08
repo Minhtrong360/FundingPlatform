@@ -30,7 +30,7 @@ const LoanSection = ({
 
   const [loanChart, setLoanChart] = useState({
     options: {
-      chart: { id: "loan-chart", type: "line", height: 350 },
+      chart: { id: "loan-chart", type: "line", height: 350, fontFamily: "Sora, sans-serif", toolbar: { show: false },zoom: { enabled: false } },
       colors: [
         "#00A2FF",
         "#14F584",
@@ -40,6 +40,18 @@ const LoanSection = ({
         "#D84FE4",
       ],
       xaxis: {
+        labels: {
+          show: true,
+          rotate: 0,
+          style: {
+            fontFamily: "Sora, sans-serif",
+          },
+      
+          
+        },
+        axisTicks: {
+          show: false, // Hide x-axis ticks
+        },
         categories: Array.from(
           { length: numberOfMonths },
           (_, i) => `${i + 1}`
@@ -47,12 +59,15 @@ const LoanSection = ({
         title: {
           text: "Month",
           style: {
-            fontFamily: "Inter, sans-serif",
-            fontWeight: "600",
+            fontFamily: "Sora, sans-serif",
+            fontsize: "12px",
           },
         },
       },
       yaxis: {
+        axisBorder: {
+          show: true, 
+        },
         labels: {
           formatter: function (val) {
             return Math.floor(val);
@@ -61,12 +76,13 @@ const LoanSection = ({
         title: {
           text: "Amount ($)",
           style: {
-            fontFamily: "Inter, sans-serif",
-            fontWeight: "600",
+            fontFamily: "Sora, sans-serif",
+            fontsize: "12px",
           },
         },
       },
-      legend: { position: "bottom", horizontalAlign: "right" },
+      grid: { show: false },
+      legend: { position: "bottom", horizontalAlign: "right", fontFamily: "Sora, sans-serif" },
       fill: {
         type: "gradient",
         gradient: {
@@ -78,8 +94,8 @@ const LoanSection = ({
         },
       },
       dataLabels: { enabled: false },
-      stroke: { width: 2 },
-      markers: { size: 1 },
+      stroke: { width: 1 },
+      
     },
     series: [],
   });
@@ -350,7 +366,7 @@ const LoanSection = ({
                     tickAmount: 12, // Ensure x-axis has 12 ticks
                   },
                   stroke: {
-                    width: 2, // Set the stroke width to 1
+                    width: 1, // Set the stroke width to 1
                   },
                 }}
                 series={series.series}

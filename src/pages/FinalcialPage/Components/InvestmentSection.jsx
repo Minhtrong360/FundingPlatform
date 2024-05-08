@@ -181,7 +181,9 @@ const InvestmentSection = ({
         height: 350,
         zoom: { enabled: false },
         toolbar: { show: false },
+        fontFamily: "Sora, sans-serif",
       },
+      grid: { show: false },
       colors: [
         "#00A2FF",
         "#14F584",
@@ -195,7 +197,9 @@ const InvestmentSection = ({
           show: false, // Hide x-axis ticks
         },
         labels: {
-          show: false, // Hide x-axis labels
+          show: true,
+          style: {fontFamily: "Sora, sans-serif"},
+          rotate: 0, 
         },
         categories: Array.from(
           { length: numberOfMonths },
@@ -203,25 +207,27 @@ const InvestmentSection = ({
         ),
         title: {
           text: "Month",
-          style: {},
+          style: {fontFamily: "Sora, sans-serif", fontsize: "12px"},
         },
       },
       yaxis: {
         axisBorder: {
-          show: true, // Show y-axis line
+          show: true, 
         },
         labels: {
-          show: false,
+          show: true,
+          style: { fontFamily: "Sora, sans-serif" },
+          rotate: 0,
           formatter: function (val) {
             return Math.floor(val);
           },
         },
         title: {
           text: "Amount ($)",
-          style: {},
+          style: { fontFamily: "Sora, sans-serif", fontsize: "12px" },
         },
       },
-      legend: { position: "bottom", horizontalAlign: "right" },
+      legend: { position: "bottom", horizontalAlign: "right",fontFamily: "Sora, sans-serif" },
       fill: {
         type: "gradient",
         gradient: {
@@ -232,7 +238,7 @@ const InvestmentSection = ({
           stops: [0, 90, 100],
         },
       },
-      grid: { show: false },
+      
       dataLabels: { enabled: false },
       stroke: { width: 1 },
       // markers: { size: 1 },
@@ -654,67 +660,7 @@ const InvestmentSection = ({
           </div>
         </section>
       </div>
-      <div className="w-full lg:w-3/4 sm:p-4 p-0">
-        <h3 className="text-lg font-semibold mb-4">Investment Table</h3>
-        <Table
-          className="overflow-auto my-8 rounded-md shadow-xl"
-          size="small"
-          dataSource={transformInvestmentDataForTable(
-            tempInvestmentInputs,
-            renderInvestmentForm,
-            tempInvestmentData,
-            numberOfMonths
-          )}
-          columns={investmentColumns}
-          pagination={false}
-          bordered
-          rowClassName={(record) =>
-            record.key === record.type ? "font-bold" : ""
-          }
-        />
-        <h3 className="text-lg font-semibold my-8">Investment Chart</h3>
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col shadow-xl">
-            <Chart
-              options={{
-                ...investmentChart.options,
-                xaxis: {
-                  ...investmentChart.options.xaxis,
-                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
-                },
-              }}
-              series={investmentChart.series}
-              type="bar"
-              height={350}
-            />
-          </Card>
-
-          {investmentChart.series.map((series, index) => (
-            <Card key={index} className="flex flex-col shadow-xl mb-4">
-              <Chart
-                options={{
-                  ...newChartOptions,
-                  chart: {
-                    id: `new-chart-${index}`,
-                    type: "area",
-                    height: 350,
-                  },
-                  stroke: {
-                    width: 1,
-                  },
-                  xaxis: {
-                    ...newChartOptions.xaxis,
-                    tickAmount: 12,
-                  },
-                }}
-                series={[series]}
-                type="area"
-                height={350}
-              />
-            </Card>
-          ))}
-        </div>
-      </div>
+      
     </div>
   );
 };

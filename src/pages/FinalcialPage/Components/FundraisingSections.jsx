@@ -133,7 +133,8 @@ const FundraisingSection = ({
 
   const [fundraisingChart, setFundraisingChart] = useState({
     options: {
-      chart: { id: "fundraising-chart", type: "bar", height: 350 },
+      chart: { id: "fundraising-chart", type: "bar", height: 350, toolbar: { show: false }, zoom: { enabled: false } },
+      grid: { show: false },
       colors: [
         "#00A2FF",
         "#14F584",
@@ -143,6 +144,15 @@ const FundraisingSection = ({
         "#D84FE4",
       ],
       xaxis: {
+        axisTicks: {
+          show: false, // Hide x-axis ticks
+        },
+        labels: {
+          style: {
+            fontFamily: "Sora, sans-serif",
+          },
+          rotate: 0,
+        },
         categories: Array.from(
           { length: numberOfMonths },
           (_, i) => `${i + 1}`
@@ -150,13 +160,19 @@ const FundraisingSection = ({
         title: {
           text: "Month",
           style: {
-            fontFamily: "Inter, sans-serif",
-            fontWeight: "600",
+            fontFamily: "Sora, sans-serif",
+            fontsize: "12px",
           },
         },
       },
       yaxis: {
+        axisBorder: {
+          show: true, 
+        },
         labels: {
+          style: {
+            fontFamily: "Sora, sans-serif",
+          },
           formatter: function (val) {
             return Math.floor(val);
           },
@@ -164,12 +180,12 @@ const FundraisingSection = ({
         title: {
           text: "Fundraising Amount ($)",
           style: {
-            fontFamily: "Inter, sans-serif",
-            fontWeight: "600",
+            fontFamily: "Sora, sans-serif",
+            fontsize: "12px",
           },
         },
       },
-      legend: { position: "bottom", horizontalAlign: "right" },
+      legend: { position: "bottom", horizontalAlign: "right", fontFamily: "Sora, sans-serif" },
       fill: {
         type: "gradient",
 
@@ -182,9 +198,9 @@ const FundraisingSection = ({
         },
       },
       dataLabels: { enabled: false },
-      stroke: { width: 2, curve: "smooth" },
+      stroke: { width: 1, curve: "smooth" },
 
-      markers: { size: 1 },
+      // markers: { size: 1 },
     },
     series: [],
   });

@@ -1,8 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import Card from "./Card";
-import videoSrc from "../Components/UpscaleVideo.mp4";
-import video2 from "../Components/fm_demo03.mp4";
-import video3 from "../Components/fm_demo04.mp4";
 
 import { useAuth } from "../../../context/AuthContext";
 

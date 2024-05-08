@@ -485,7 +485,7 @@ const CustomerSection = React.memo(
           ],
         };
       });
-    }, [tempCustomerGrowthData, numberOfMonths]);
+    }, [tempCustomerGrowthData]);
 
     const [activeTab, setActiveTab] = useState("table");
 
@@ -727,77 +727,44 @@ const CustomerSection = React.memo(
         </div>
         <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
           <div className="mb-8">
-            <ul className="flex" role="tablist">
-              <li className="mr-6">
-                <button
-                  className={`text-lg ${
-                    activeTab === "table" ? "font-bold" : ""
-                  } focus:outline-none`}
-                  role="tab"
-                  aria-selected={activeTab === "table"}
-                  onClick={() => setActiveTab("table")}
-                >
-                  Customer Table
-                </button>
-              </li>
-              <li>
-                <button
-                  className={`text-lg ${
-                    activeTab === "chart" ? "font-semibold" : ""
-                  } focus:outline-none`}
-                  role="tab"
-                  aria-selected={activeTab === "chart"}
-                  onClick={() => setActiveTab("chart")}
-                >
-                  Customer Chart
-                </button>
-              </li>
-            </ul>
-            {activeTab === "table" && (
-              <div className="mt-4">
-                {/* <h3 className="text-lg font-semibold">Customer Table</h3> */}
-                <Table
-                  className="overflow-auto my-8 shadow-xl rounded-md"
-                  size="small"
-                  dataSource={customerTableData}
-                  columns={customerColumns}
-                  pagination={false}
-                  bordered
-                  rowClassName={(record) =>
-                    record.key === record.channelName ? "font-bold" : ""
-                  }
+            <h3 className="text-lg font-semibold">Customer Table</h3>
+            <Table
+              className="overflow-auto  my-8  shadow-xl rounded-md"
+              size="small"
+              dataSource={customerTableData}
+              columns={customerColumns}
+              pagination={false}
+              bordered
+              rowClassName={(record) =>
+                record.key === record.channelName ? "font-bold" : ""
+              }
+            />
+          </div>
+          <h3 className="text-lg font-semibold my-8">Customer Chart</h3>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {customerGrowthChart.charts?.map((chart, index) => (
+              <Card
+                key={index}
+                className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
+              >
+                <Chart
+                  options={{
+                    ...chart.options,
+                    xaxis: {
+                      ...chart.options.xaxis,
+                      tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                    },
+                    stroke: {
+                      width: 2, // Set the stroke width to 1
+                    },
+                  }}
+                  series={chart.series}
+                  type="bar"
+                  height={350}
                 />
-              </div>
-            )}
-            {activeTab === "chart" && (
-              <div className="mt-4">
-                {/* <h3 className="text-lg font-semibold">Customer Chart</h3> */}
-                <div className="grid md:grid-cols-2 gap-6">
-                  {customerGrowthChart.charts?.map((chart, index) => (
-                    <Card
-                      key={index}
-                      className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
-                    >
-                      <Chart
-                        options={{
-                          ...chart.options,
-                          xaxis: {
-                            ...chart.options.xaxis,
-                            tickAmount: 12,
-                          },
-                          stroke: {
-                            width: 2,
-                          },
-                        }}
-                        series={chart.series}
-                        type="area"
-                        height={350}
-                      />
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )}
+              </Card>
+            ))}
           </div>
         </div>
       </div>

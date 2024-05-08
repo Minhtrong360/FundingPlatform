@@ -1,7 +1,6 @@
 // import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
-import img from "../Components/UpscaleVideo.mp4";
 
 const HeroSection = () => {
   const { user, subscribed } = useAuth();

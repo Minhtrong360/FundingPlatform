@@ -8,7 +8,15 @@ import {
 
 import { Input } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
-import { Card, Table, Tooltip, message } from "antd";
+import {
+  Button,
+  Card,
+  FloatButton,
+  Modal,
+  Table,
+  Tooltip,
+  message,
+} from "antd";
 import Chart from "react-apexcharts";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -28,6 +36,7 @@ import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { supabase } from "../../../supabase";
 import { useAuth } from "../../../context/AuthContext";
 import { useParams } from "react-router-dom";
+import { FileOutlined } from "@ant-design/icons";
 
 const SalesSection = ({
   numberOfMonths,
@@ -432,9 +441,11 @@ const SalesSection = ({
     dispatch(setYearlySales(sales));
   }, [tempRevenueData, numberOfMonths, isSaved]);
 
-  const handleChannelChange = (event) => {
-    setRenderChannelForm(event.target.value);
+  const handleChannelChange = (value) => {
+    setRenderChannelForm(value);
   };
+
+  const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
@@ -480,7 +491,7 @@ const SalesSection = ({
         />
       </div>
 
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
+      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:block hidden">
         <section aria-labelledby="sales-heading" className="mb-8 sticky top-8">
           <h2
             className="text-lg font-semibold mb-8 flex items-center"
@@ -494,19 +505,25 @@ const SalesSection = ({
               htmlFor="selectedChannel"
               className="block my-4 text-base darkTextWhite"
             ></label>
-            <select
+
+            <Select
               id="selectedChannel"
               className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
               value={renderChannelForm}
-              onChange={handleChannelChange}
+              onValueChange={(value) => handleChannelChange(value)}
             >
-              <option value="all">All</option>
-              {tempChannelInputs.map((input) => (
-                <option key={input?.id} value={input?.id}>
-                  {`${input.productName} - ${input.selectedChannel}`}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="border-solid border-[1px] border-gray-300">
+                <SelectValue placeholder="All" />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectItem value="all">All</SelectItem>
+                {tempChannelInputs.map((input) => (
+                  <SelectItem key={input?.id} value={input?.id}>
+                    {`${input.productName} - ${input.selectedChannel}`}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {tempChannelInputs
@@ -678,7 +695,15 @@ const SalesSection = ({
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="flex justify-end items-center">
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <button
+                    className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
+                    onClick={addNewChannelInput}
+                  >
+                    Add new
+                  </button>
                   <button
                     className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
                     onClick={() => removeChannelInput(input.id)}
@@ -688,23 +713,298 @@ const SalesSection = ({
                 </div>
               </div>
             ))}
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <button
-              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
-              onClick={addNewChannelInput}
-            >
-              Add new
-            </button>
-
-            <button
-              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
-              onClick={handleSave}
-            >
-              Save
-            </button>
-          </div>
         </section>
       </div>
+
+      <div className="lg:hidden block">
+        <FloatButton
+          tooltip={<div>Input values</div>}
+          style={{
+            position: "fixed",
+            bottom: "30px",
+            right: "30px",
+          }}
+          onClick={() => {
+            setIsInputFormOpen(true);
+          }}
+        >
+          <Button type="primary" shape="circle" icon={<FileOutlined />} />
+        </FloatButton>
+      </div>
+
+      {isInputFormOpen && (
+        <Modal
+          // title="Customer channel"
+          visible={isInputFormOpen}
+          onOk={() => {
+            handleSave();
+            setIsInputFormOpen(false);
+          }}
+          onCancel={() => {
+            setTempChannelInputs(channelInputs);
+            setIsInputFormOpen(false);
+          }}
+          okText="Save change"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#2563EB",
+              borderColor: "#2563EB",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          centered={true}
+          zIndex={50}
+        >
+          <section
+            aria-labelledby="sales-heading"
+            className="mb-8 sticky top-8"
+          >
+            <h2
+              className="text-lg font-semibold mb-8 flex items-center"
+              id="sales-heading"
+            >
+              Sales Section
+            </h2>
+
+            <div>
+              <label
+                htmlFor="selectedChannel"
+                className="block my-4 text-base darkTextWhite"
+              ></label>
+
+              <Select
+                id="selectedChannel"
+                className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                value={renderChannelForm}
+                onValueChange={(value) => handleChannelChange(value)}
+              >
+                <SelectTrigger className="border-solid border-[1px] border-gray-300">
+                  <SelectValue placeholder="All" />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  <SelectItem value="all">All</SelectItem>
+                  {tempChannelInputs.map((input) => (
+                    <SelectItem key={input?.id} value={input?.id}>
+                      {`${input.productName} - ${input.selectedChannel}`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {tempChannelInputs.length > 0 &&
+              tempChannelInputs
+                .filter((input) => input?.id == renderChannelForm)
+                .map((input, index) => (
+                  <div
+                    key={input.id}
+                    className="bg-white rounded-md p-6 border my-4"
+                  >
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className="flex items-center text-sm">
+                        Product Name:
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        value={input.productName}
+                        onChange={(e) =>
+                          handleChannelInputChange(
+                            input.id,
+                            "productName",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className="flex items-center text-sm">Price:</span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        value={formatNumber(input.price)}
+                        onChange={(e) =>
+                          handleChannelInputChange(
+                            input.id,
+                            "price",
+                            parseNumber(e.target.value)
+                          )
+                        }
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className="flex items-center text-sm">
+                        Multiples:
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        value={formatNumber(input.multiples)}
+                        onChange={(e) =>
+                          handleChannelInputChange(
+                            input.id,
+                            "multiples",
+                            parseNumber(e.target.value)
+                          )
+                        }
+                      />
+                    </div>
+
+                    <Tooltip title="Revenue deductions like transaction fees, commission fee... ">
+                      <div className="grid grid-cols-2 gap-4 mb-3">
+                        <span className="flex items-center text-sm">
+                          Rev. Deductions (%):
+                        </span>
+                        <Input
+                          className="col-start-2 border-gray-300"
+                          value={formatNumber(input.deductionPercentage)}
+                          onChange={(e) =>
+                            handleChannelInputChange(
+                              input.id,
+                              "deductionPercentage",
+                              parseNumber(e.target.value)
+                            )
+                          }
+                        />
+                      </div>
+                    </Tooltip>
+
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className="flex items-center text-sm">
+                        COGS (%):
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        value={formatNumber(input.cogsPercentage)}
+                        onChange={(e) =>
+                          handleChannelInputChange(
+                            input.id,
+                            "cogsPercentage",
+                            parseNumber(e.target.value)
+                          )
+                        }
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className="flex items-center text-sm">
+                        Sales Channel:
+                      </span>
+                      <Select
+                        className="border-gray-300"
+                        onValueChange={(value) =>
+                          handleChannelInputChange(
+                            input.id,
+                            "selectedChannel",
+                            value
+                          )
+                        }
+                        value={
+                          input.selectedChannel !== null
+                            ? input.selectedChannel
+                            : ""
+                        }
+                      >
+                        <SelectTrigger
+                          id={`select-channel-${index}`}
+                          className="border-solid border-[1px] border-gray-300"
+                        >
+                          <SelectValue placeholder="Select Channel" />
+                        </SelectTrigger>
+                        <SelectContent position="popper">
+                          {channelNames.map((channelName, channelIndex) => (
+                            <SelectItem key={channelIndex} value={channelName}>
+                              {channelName}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className="flex items-center text-sm">
+                        Channel Allocation (%):
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        type="number"
+                        min={0}
+                        max={100}
+                        value={formatNumber(input.channelAllocation * 100)}
+                        onChange={(e) =>
+                          handleChannelInputChange(
+                            input.id,
+                            "channelAllocation",
+                            parseNumber(e.target.value) / 100
+                          )
+                        }
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className="flex items-center text-sm">
+                        Days get paid:
+                      </span>
+                      <Select
+                        className="border-gray-300"
+                        onValueChange={(value) =>
+                          handleChannelInputChange(
+                            input.id,
+                            "daysGetPaid",
+                            value
+                          )
+                        }
+                        value={
+                          input.daysGetPaid !== null ? input.daysGetPaid : ""
+                        }
+                        disabled
+                      >
+                        <SelectTrigger
+                          id={`select-days-get-paid-${index}`}
+                          className="border-solid border-[1px] border-gray-300"
+                        >
+                          <SelectValue placeholder="Select Days" />
+                        </SelectTrigger>
+                        <SelectContent position="popper">
+                          {[0, 15, 30, 45, 60, 75, 90, 105, 120].map((days) => (
+                            <SelectItem key={days} value={days}>
+                              {days} days
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <button
+                        className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
+                        onClick={addNewChannelInput}
+                      >
+                        Add new
+                      </button>
+                      <button
+                        className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
+                        onClick={() => removeChannelInput(input.id)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))}
+          </section>
+        </Modal>
+      )}
     </div>
   );
 };

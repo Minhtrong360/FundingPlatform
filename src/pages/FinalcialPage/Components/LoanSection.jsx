@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
-import { Card, Table, message } from "antd";
+import { Button, Card, FloatButton, Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,6 +14,7 @@ import {
 import { useAuth } from "../../../context/AuthContext";
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
+import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
 
 const LoanSection = ({
   numberOfMonths,
@@ -330,6 +331,8 @@ const LoanSection = ({
     dispatch(setLoanTableData(tableData));
   }, []);
 
+  const [isInputFormOpen, setIsInputFormOpen] = useState(false);
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full lg:w-3/4 sm:p-4 p-0">
@@ -379,7 +382,7 @@ const LoanSection = ({
         />
       </div>
 
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
+      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:block hidden">
         <section aria-labelledby="loan-heading" className="mb-8 sticky top-8">
           <h2
             className="text-lg font-semibold mb-8 flex items-center"
@@ -531,6 +534,203 @@ const LoanSection = ({
           </div>
         </section>
       </div>
+
+      <div className="lg:hidden block">
+        <FloatButton
+          tooltip={<div>Input values</div>}
+          style={{
+            position: "fixed",
+            bottom: "30px",
+            right: "30px",
+          }}
+          onClick={() => {
+            setIsInputFormOpen(true);
+          }}
+        >
+          <Button type="primary" shape="circle" icon={<FileOutlined />} />
+        </FloatButton>
+      </div>
+
+      {isInputFormOpen && (
+        <Modal
+          // title="Customer channel"
+          visible={isInputFormOpen}
+          onOk={() => {
+            handleSave();
+            setIsInputFormOpen(false);
+          }}
+          onCancel={() => {
+            setTempLoanInputs(loanInputs);
+            setRenderLoanForm(loanInputs[0]?.id);
+            setIsInputFormOpen(false);
+          }}
+          okText="Save change"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#2563EB",
+              borderColor: "#2563EB",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          centered={true}
+          zIndex={50}
+        >
+          <section aria-labelledby="loan-heading" className="mb-8 sticky top-8">
+            <h2
+              className="text-lg font-semibold mb-8 flex items-center"
+              id="loan-heading"
+            >
+              Loan{" "}
+              <span className="flex justify-center items-center">
+                <PlusCircleOutlined
+                  className="ml-2 text-blue-500"
+                  size="large"
+                  style={{ fontSize: "24px" }}
+                  onClick={addNewLoanInput}
+                />
+              </span>
+            </h2>
+
+            <div>
+              <label
+                htmlFor="selectedChannel"
+                className="block my-4 text-base  darkTextWhite"
+              ></label>
+              <select
+                id="selectedChannel"
+                className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                value={renderLoanForm}
+                onChange={handleSelectChange}
+              >
+                <option value="all">All</option>
+                {tempLoanInputs.map((input) => (
+                  <option key={input?.id} value={input?.id}>
+                    {input.loanName}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {tempLoanInputs
+              .filter((input) => input?.id == renderLoanForm)
+              .map((input) => (
+                <div
+                  key={input?.id}
+                  className="bg-white rounded-md p-6 border my-4"
+                >
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className="flex items-center text-sm">
+                      Loan Name:
+                    </span>
+                    <Input
+                      required
+                      className="border p-2 rounded border-gray-300"
+                      value={input.loanName}
+                      onChange={(e) =>
+                        handleLoanInputChange(
+                          input?.id,
+                          "loanName",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className="flex items-center text-sm">
+                      Loan Amount:
+                    </span>
+                    <Input
+                      required
+                      className="border p-2 rounded border-gray-300"
+                      value={formatNumber(input.loanAmount)}
+                      onChange={(e) =>
+                        handleLoanInputChange(
+                          input?.id,
+                          "loanAmount",
+                          parseNumber(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className="flex items-center text-sm">
+                      Interest Rate (%):
+                    </span>
+                    <Input
+                      required
+                      className="border p-2 rounded border-gray-300"
+                      value={formatNumber(input.interestRate)}
+                      onChange={(e) =>
+                        handleLoanInputChange(
+                          input?.id,
+                          "interestRate",
+                          parseNumber(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className="flex items-center text-sm">
+                      Month Loan Begins:
+                    </span>
+                    <Input
+                      required
+                      type="number"
+                      className="border p-2 rounded border-gray-300"
+                      value={input.loanBeginMonth}
+                      onChange={(e) =>
+                        handleLoanInputChange(
+                          input?.id,
+                          "loanBeginMonth",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className="flex items-center text-sm">
+                      Month Loan Ends:
+                    </span>
+                    <Input
+                      required
+                      type="number"
+                      className="border p-2 rounded border-gray-300"
+                      value={input.loanEndMonth}
+                      onChange={(e) =>
+                        handleLoanInputChange(
+                          input?.id,
+                          "loanEndMonth",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="flex justify-end items-center">
+                    <button
+                      className="bg-red-500 text-white py-2 px-4 rounded"
+                      onClick={() => removeLoanInput(input?.id)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+          </section>
+        </Modal>
+      )}
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
-import { Card, Table, message } from "antd";
+import { Button, Card, FloatButton, Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,6 +13,7 @@ import {
 } from "../../../features/InvestmentSlice";
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
+import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
 
 const InvestmentSection = ({
   numberOfMonths,
@@ -381,16 +382,6 @@ const InvestmentSection = ({
     dispatch(setInvestmentTableData(tableData));
   }, []);
 
-  const [newChartSeries, setNewChartSeries] = useState([]);
-
-  useEffect(() => {
-    const newSeriesData = tempInvestmentData.map((investment) => {
-      return { name: investment.purchaseName, data: investment.newChartData };
-    });
-
-    setNewChartSeries(newSeriesData);
-  }, [tempInvestmentData, numberOfMonths]);
-
   const newChartOptions = {
     chart: {
       id: "new-chart",
@@ -445,6 +436,8 @@ const InvestmentSection = ({
     stroke: { curve: "smooth", width: 1 },
   };
 
+  const [isInputFormOpen, setIsInputFormOpen] = useState(false);
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full lg:w-3/4 sm:p-4 p-0">
@@ -494,7 +487,7 @@ const InvestmentSection = ({
         />
       </div>
 
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
+      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:block hidden">
         <section
           aria-labelledby="investment-heading"
           className="mb-8 sticky top-8"
@@ -654,67 +647,213 @@ const InvestmentSection = ({
           </div>
         </section>
       </div>
-      <div className="w-full lg:w-3/4 sm:p-4 p-0">
-        <h3 className="text-lg font-semibold mb-4">Investment Table</h3>
-        <Table
-          className="overflow-auto my-8 rounded-md shadow-xl"
-          size="small"
-          dataSource={transformInvestmentDataForTable(
-            tempInvestmentInputs,
-            renderInvestmentForm,
-            tempInvestmentData,
-            numberOfMonths
-          )}
-          columns={investmentColumns}
-          pagination={false}
-          bordered
-          rowClassName={(record) =>
-            record.key === record.type ? "font-bold" : ""
-          }
-        />
-        <h3 className="text-lg font-semibold my-8">Investment Chart</h3>
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col shadow-xl">
-            <Chart
-              options={{
-                ...investmentChart.options,
-                xaxis: {
-                  ...investmentChart.options.xaxis,
-                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
-                },
-              }}
-              series={investmentChart.series}
-              type="bar"
-              height={350}
-            />
-          </Card>
 
-          {investmentChart.series.map((series, index) => (
-            <Card key={index} className="flex flex-col shadow-xl mb-4">
-              <Chart
-                options={{
-                  ...newChartOptions,
-                  chart: {
-                    id: `new-chart-${index}`,
-                    type: "area",
-                    height: 350,
-                  },
-                  stroke: {
-                    width: 1,
-                  },
-                  xaxis: {
-                    ...newChartOptions.xaxis,
-                    tickAmount: 12,
-                  },
-                }}
-                series={[series]}
-                type="area"
-                height={350}
-              />
-            </Card>
-          ))}
-        </div>
+      <div className="lg:hidden block">
+        <FloatButton
+          tooltip={<div>Input values</div>}
+          style={{
+            position: "fixed",
+            bottom: "30px",
+            right: "30px",
+          }}
+          onClick={() => {
+            setIsInputFormOpen(true);
+          }}
+        >
+          <Button type="primary" shape="circle" icon={<FileOutlined />} />
+        </FloatButton>
       </div>
+
+      {isInputFormOpen && (
+        <Modal
+          // title="Customer channel"
+          visible={isInputFormOpen}
+          onOk={() => {
+            handleSave();
+            setIsInputFormOpen(false);
+          }}
+          onCancel={() => {
+            setTempInvestmentInputs(investmentInputs);
+            setRenderInvestmentForm(investmentInputs[0]?.id);
+            setIsInputFormOpen(false);
+          }}
+          okText="Save change"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#2563EB",
+              borderColor: "#2563EB",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          centered={true}
+          zIndex={50}
+        >
+          <section
+            aria-labelledby="investment-heading"
+            className="mb-8 sticky top-8"
+          >
+            <h2
+              className="text-lg font-semibold mb-8 flex items-center"
+              id="investment-heading"
+            >
+              Investment{" "}
+              <span className="flex justify-center items-center">
+                <PlusCircleOutlined
+                  className="ml-2 text-blue-500"
+                  size="large"
+                  style={{ fontSize: "24px" }}
+                  onClick={addNewInvestmentInput}
+                />
+              </span>
+            </h2>
+
+            <div>
+              <label
+                htmlFor="selectedChannel"
+                className="block my-4 text-base  darkTextWhite"
+              ></label>
+              <select
+                id="selectedChannel"
+                className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                value={renderInvestmentForm}
+                onChange={handleSelectChange}
+              >
+                <option value="all">All</option>
+                {tempInvestmentInputs.map((input) => (
+                  <option key={input?.id} value={input?.id}>
+                    {input.purchaseName}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {tempInvestmentInputs
+              .filter((input) => input?.id == renderInvestmentForm)
+              .map((input) => (
+                <div
+                  key={input?.id}
+                  className="bg-white rounded-md p-6 border my-4"
+                >
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className=" flex items-center text-sm">
+                      Name of Purchase
+                    </span>
+                    <Input
+                      className="col-start-2 border-gray-300"
+                      value={input.purchaseName}
+                      onChange={(e) =>
+                        handleInvestmentInputChange(
+                          input?.id,
+                          "purchaseName",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className=" flex items-center text-sm">
+                      Asset Cost
+                    </span>
+                    <Input
+                      className="col-start-2 border-gray-300"
+                      value={formatNumber(input.assetCost)}
+                      onChange={(e) =>
+                        handleInvestmentInputChange(
+                          input?.id,
+                          "assetCost",
+                          parseNumber(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className=" flex items-center text-sm">
+                      Quantity:
+                    </span>
+                    <Input
+                      className="col-start-2 border-gray-300"
+                      type="text"
+                      min="1"
+                      value={formatNumber(input.quantity)}
+                      onChange={(e) =>
+                        handleInvestmentInputChange(
+                          input?.id,
+                          "quantity",
+                          parseNumber(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className=" flex items-center text-sm">
+                      Purchase Month
+                    </span>
+                    <Input
+                      className="col-start-2 border-gray-300"
+                      value={input.purchaseMonth}
+                      onChange={(e) =>
+                        handleInvestmentInputChange(
+                          input?.id,
+                          "purchaseMonth",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className=" flex items-center text-sm">
+                      Residual Value
+                    </span>
+                    <Input
+                      className="col-start-2 border-gray-300"
+                      value={input.residualValue}
+                      onChange={(e) =>
+                        handleInvestmentInputChange(
+                          input?.id,
+                          "residualValue",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className=" flex items-center text-sm">
+                      Useful Lifetime (Months)
+                    </span>
+                    <Input
+                      className="col-start-2 border-gray-300"
+                      value={formatNumber(input.usefulLifetime)}
+                      onChange={(e) =>
+                        handleInvestmentInputChange(
+                          input?.id,
+                          "usefulLifetime",
+                          parseNumber(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="flex justify-end items-center">
+                    <button
+                      className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
+                      onClick={() => removeInvestmentInput(input?.id)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+          </section>
+        </Modal>
+      )}
     </div>
   );
 };

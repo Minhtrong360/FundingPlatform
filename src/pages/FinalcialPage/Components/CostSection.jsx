@@ -7,7 +7,7 @@ import {
 } from "../../../components/ui/Select";
 import { Input } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
-import { Card, Table, message } from "antd";
+import { Button, Card, FloatButton, Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import {
   setCostInputs,
@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { supabase } from "../../../supabase";
 // import { useAuth } from "../../../context/AuthContext";
 import { useParams } from "react-router-dom";
+import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
 
 const CostSection = ({
   numberOfMonths,
@@ -325,6 +326,8 @@ const CostSection = ({
     saveData();
   }, [isSaved]);
 
+  const [isInputFormOpen, setIsInputFormOpen] = useState(false);
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full lg:w-3/4 sm:p-4 p-0">
@@ -359,7 +362,7 @@ const CostSection = ({
         />
       </div>
 
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
+      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:block hidden">
         <section aria-labelledby="costs-heading" className="mb-8 sticky top-8">
           <h2
             className="text-lg font-semibold mb-8 flex items-center"
@@ -558,6 +561,262 @@ const CostSection = ({
           </div>
         </section>
       </div>
+
+      <div className="lg:hidden block">
+        <FloatButton
+          tooltip={<div>Input values</div>}
+          style={{
+            position: "fixed",
+            bottom: "30px",
+            right: "30px",
+          }}
+          onClick={() => {
+            setIsInputFormOpen(true);
+          }}
+        >
+          <Button type="primary" shape="circle" icon={<FileOutlined />} />
+        </FloatButton>
+      </div>
+
+      {isInputFormOpen && (
+        <Modal
+          // title="Customer channel"
+          visible={isInputFormOpen}
+          onOk={() => {
+            handleSave();
+            setIsInputFormOpen(false);
+          }}
+          onCancel={() => {
+            setTempCostInput(costInputs);
+            setIsInputFormOpen(false);
+          }}
+          okText="Save change"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#2563EB",
+              borderColor: "#2563EB",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          centered={true}
+          zIndex={50}
+        >
+          <section
+            aria-labelledby="costs-heading"
+            className="mb-8 sticky top-8"
+          >
+            <h2
+              className="text-lg font-semibold mb-8 flex items-center"
+              id="costs-heading"
+            >
+              Costs
+              <span className="flex justify-center items-center">
+                <PlusCircleOutlined
+                  className="ml-2 text-blue-500"
+                  size="large"
+                  style={{ fontSize: "24px" }}
+                  onClick={addNewCostInput}
+                />
+              </span>
+            </h2>
+
+            <div>
+              <label
+                htmlFor="selectedChannel"
+                className="block my-4 text-base  darkTextWhite"
+              ></label>
+              <select
+                id="selectedChannel"
+                className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                value={renderCostForm}
+                onChange={handleSelectChange}
+              >
+                {tempCostInput.map((input) => (
+                  <option key={input?.id} value={input?.id}>
+                    {input.costName}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {tempCostInput
+              .filter((input) => input?.id == renderCostForm)
+              .map((input) => (
+                <div
+                  key={input?.id}
+                  className="bg-white rounded-md p-6 border my-4 "
+                >
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className=" flex items-center text-sm">
+                      Cost Name:
+                    </span>
+                    <Input
+                      className="col-start-2 border-gray-300"
+                      value={input.costName}
+                      onChange={(e) =>
+                        handleCostInputChange(
+                          input?.id,
+                          "costName",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className=" flex items-center text-sm">
+                      Cost Value:
+                    </span>
+                    <Input
+                      className="col-start-2 border-gray-300"
+                      type="text"
+                      value={formatNumber(input.costValue)}
+                      onChange={(e) =>
+                        handleCostInputChange(
+                          input?.id,
+                          "costValue",
+                          parseNumber(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className=" flex items-center text-sm">
+                      Growth Percentage (%):
+                    </span>
+                    <Input
+                      className="col-start-2 border-gray-300"
+                      type="text"
+                      value={formatNumber(input.growthPercentage)}
+                      onChange={(e) =>
+                        handleCostInputChange(
+                          input?.id,
+                          "growthPercentage",
+                          parseNumber(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className="flex items-center text-sm">
+                      Frequency:
+                    </span>
+                    <Select
+                      className="border-gray-300"
+                      onValueChange={(value) =>
+                        handleCostInputChange(
+                          input?.id,
+                          "growthFrequency",
+                          value
+                        )
+                      }
+                      value={input.growthFrequency}
+                    >
+                      <SelectTrigger
+                        id={`select-growthFrequency-${input?.id}`}
+                        className="border-solid border-[1px] border-gray-300"
+                      >
+                        <SelectValue placeholder="Select Growth Frequency" />
+                      </SelectTrigger>
+                      <SelectContent position="popper">
+                        <SelectItem value="Monthly">Monthly</SelectItem>
+                        <SelectItem value="Quarterly">Quarterly</SelectItem>
+                        <SelectItem value="Semi-Annually">
+                          Semi-Annually
+                        </SelectItem>
+                        <SelectItem value="Annually">Annually</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className=" flex items-center text-sm">
+                      Begin Month:
+                    </span>
+                    <Input
+                      className="col-start-2 border-gray-300"
+                      type="number"
+                      min="1"
+                      max="12"
+                      value={input.beginMonth}
+                      onChange={(e) =>
+                        handleCostInputChange(
+                          input?.id,
+                          "beginMonth",
+                          parseInt(e.target.value, 10)
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className=" flex items-center text-sm">
+                      End Month:
+                    </span>
+                    <Input
+                      className="col-start-2 border-gray-300"
+                      type="number"
+                      min="1"
+                      max="12"
+                      value={input.endMonth}
+                      onChange={(e) =>
+                        handleCostInputChange(
+                          input?.id,
+                          "endMonth",
+                          parseInt(e.target.value, 10)
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className=" flex items-center text-sm">
+                      Cost Type:
+                    </span>
+                    <Select
+                      className="border-gray-300"
+                      onValueChange={(value) =>
+                        handleCostInputChange(input?.id, "costType", value)
+                      }
+                      value={input.costType}
+                    >
+                      <SelectTrigger
+                        id={`select-costType-${input?.id}`}
+                        className="border-solid border-[1px] border-gray-300"
+                      >
+                        <SelectValue placeholder="Select Cost Type" />
+                      </SelectTrigger>
+                      <SelectContent position="popper">
+                        <SelectItem value="Sales, Marketing Cost">
+                          Sales, Marketing
+                        </SelectItem>
+                        <SelectItem value="General Administrative Cost">
+                          General Administrative
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex justify-end items-center">
+                    <button
+                      className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
+                      onClick={() => removeCostInput(input?.id)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+          </section>
+        </Modal>
+      )}
     </div>
   );
 };

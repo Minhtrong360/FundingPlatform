@@ -7,7 +7,7 @@ import {
 } from "../../../components/ui/Select";
 import { Input as FundraisingInput } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
-import { Card, Table, message } from "antd";
+import { Button, Card, FloatButton, Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,6 +19,7 @@ import {
 import { useAuth } from "../../../context/AuthContext";
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
+import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
 
 const FundraisingSection = ({
   numberOfMonths,
@@ -281,6 +282,8 @@ const FundraisingSection = ({
     }));
   }, [tempFundraisingInputs]);
 
+  const [isInputFormOpen, setIsInputFormOpen] = useState(false);
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full lg:w-3/4 sm:p-4 p-0">
@@ -317,7 +320,7 @@ const FundraisingSection = ({
         />
       </div>
 
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
+      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:block hidden">
         <section
           aria-labelledby="fundraising-heading"
           className="mb-8 sticky top-8"
@@ -497,6 +500,229 @@ const FundraisingSection = ({
           </div>
         </section>
       </div>
+
+      <div className="lg:hidden block">
+        <FloatButton
+          tooltip={<div>Input values</div>}
+          style={{
+            position: "fixed",
+            bottom: "30px",
+            right: "30px",
+          }}
+          onClick={() => {
+            setIsInputFormOpen(true);
+          }}
+        >
+          <Button type="primary" shape="circle" icon={<FileOutlined />} />
+        </FloatButton>
+      </div>
+
+      {isInputFormOpen && (
+        <Modal
+          // title="Customer channel"
+          visible={isInputFormOpen}
+          onOk={() => {
+            handleSave();
+            setIsInputFormOpen(false);
+          }}
+          onCancel={() => {
+            setTempFundraisingInputs(fundraisingInputs);
+            setSelectedFundraisingId(fundraisingInputs[0]?.id);
+            setIsInputFormOpen(false);
+          }}
+          okText="Save change"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#2563EB",
+              borderColor: "#2563EB",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          centered={true}
+          zIndex={50}
+        >
+          <section
+            aria-labelledby="fundraising-heading"
+            className="mb-8 sticky top-8"
+          >
+            <h2
+              className="text-lg font-semibold mb-8 flex items-center"
+              id="fundraising-heading"
+            >
+              Fundraising{" "}
+              <span className="flex justify-center items-center">
+                <PlusCircleOutlined
+                  className="ml-2 text-blue-500"
+                  size="large"
+                  style={{ fontSize: "24px" }}
+                  onClick={addNewFundraisingInput}
+                />
+              </span>
+            </h2>
+
+            <div>
+              <label
+                htmlFor="selectedFundraising"
+                className="block my-4 text-base  darkTextWhite"
+              ></label>
+              <select
+                id="selectedFundraising"
+                className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                value={selectedFundraisingId}
+                onChange={handleSelectChange}
+              >
+                {tempFundraisingInputs.map((input) => (
+                  <option key={input?.id} value={input?.id}>
+                    {input.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {tempFundraisingInputs
+              .filter((input) => input?.id == selectedFundraisingId)
+              .map((input) => (
+                <div
+                  key={input?.id}
+                  className="bg-white rounded-md p-6 border my-4 "
+                >
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className=" flex items-center text-sm">
+                      Fundraising Name:
+                    </span>
+                    <FundraisingInput
+                      className="col-start-2 border-gray-300"
+                      value={input.name}
+                      onChange={(e) =>
+                        handleFundraisingInputChange(
+                          input?.id,
+                          "name",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className=" flex items-center text-sm">
+                      Equity offered (%):
+                    </span>
+                    <FundraisingInput
+                      className="col-start-2 border-gray-300"
+                      type="number"
+                      min={0}
+                      max={100}
+                      value={formatNumber(input.equityOffered)}
+                      onChange={(e) =>
+                        handleFundraisingInputChange(
+                          input?.id,
+                          "equityOffered",
+                          parseNumber(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className=" flex items-center text-sm">
+                      Fundraising Amount:
+                    </span>
+                    <FundraisingInput
+                      className="col-start-2 border-gray-300"
+                      value={formatNumber(input.fundraisingAmount)}
+                      onChange={(e) =>
+                        handleFundraisingInputChange(
+                          input?.id,
+                          "fundraisingAmount",
+                          parseNumber(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className=" flex items-center text-sm">
+                      Fundraising Type:
+                    </span>
+                    <FundraisingSelect
+                      className="border-gray-300"
+                      onValueChange={(value) =>
+                        handleFundraisingInputChange(
+                          input?.id,
+                          "fundraisingType",
+                          value
+                        )
+                      }
+                      value={input.fundraisingType}
+                    >
+                      <FundraisingSelectTrigger
+                        id={`select-fundraisingType-${input?.id}`}
+                        className="border-solid border-[1px] border-gray-300"
+                      >
+                        <FundraisingSelectValue placeholder="Select Fundraising Type" />
+                      </FundraisingSelectTrigger>
+                      <FundraisingSelectContent position="popper">
+                        <FundraisingSelectItem
+                          value="Common Stock"
+                          className="hover:cursor-pointer"
+                        >
+                          Common Stock
+                        </FundraisingSelectItem>
+                        <FundraisingSelectItem
+                          value="Preferred Stock"
+                          className="hover:cursor-pointer"
+                        >
+                          Preferred Stock
+                        </FundraisingSelectItem>
+                        <FundraisingSelectItem
+                          value="Paid in Capital"
+                          className="hover:cursor-pointer"
+                        >
+                          Paid in Capital
+                        </FundraisingSelectItem>
+                      </FundraisingSelectContent>
+                    </FundraisingSelect>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className=" flex items-center text-sm">
+                      Month Fundraising Begins:
+                    </span>
+                    <FundraisingInput
+                      className="col-start-2 border-gray-300"
+                      type="number"
+                      min="1"
+                      max="12"
+                      value={input.fundraisingBeginMonth}
+                      onChange={(e) =>
+                        handleFundraisingInputChange(
+                          input?.id,
+                          "fundraisingBeginMonth",
+                          parseInt(e.target.value, 10)
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="flex justify-end items-center">
+                    <button
+                      className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
+                      onClick={() => removeFundraisingInput(input?.id)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+          </section>
+        </Modal>
+      )}
     </div>
   );
 };

@@ -36,7 +36,7 @@ import {
   SelectItem,
 } from "../../../components/ui/Select";
 import { useParams } from "react-router-dom";
-import { FileOutlined } from "@ant-design/icons";
+import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
 
 const CustomerSection = React.memo(
   ({
@@ -92,6 +92,7 @@ const CustomerSection = React.memo(
       setTempCustomerInputs([...tempCustomerInputs, newCustomer]);
       setRenderCustomerForm(newId.toString());
     };
+    console.log("RenderCustomerForm", renderCustomerForm);
 
     const removeCustomerInput = (id) => {
       const indexToRemove = tempCustomerInputs.findIndex(
@@ -204,8 +205,8 @@ const CustomerSection = React.memo(
       }),
     ];
 
-    const handleSelectChange = (event) => {
-      setRenderCustomerForm(event.target.value);
+    const handleSelectChange = (value) => {
+      setRenderCustomerForm(value);
     };
 
     const handleSave = () => {
@@ -566,7 +567,7 @@ const CustomerSection = React.memo(
                 id="selectedChannel"
                 className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
                 value={renderCustomerForm}
-                onChange={handleSelectChange}
+                onValueChange={(value) => handleSelectChange(value)}
               >
                 <SelectTrigger className="border-solid border-[1px] border-gray-300">
                   <SelectValue placeholder="All" />
@@ -575,7 +576,7 @@ const CustomerSection = React.memo(
                   <SelectItem value="all">All</SelectItem>
                   {tempCustomerInputs.map((input) => (
                     <SelectItem key={input?.id} value={input?.id}>
-                      {input.channelName}
+                      {input?.channelName}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -807,8 +808,14 @@ const CustomerSection = React.memo(
           <Modal
             // title="Customer channel"
             visible={isInputFormOpen}
-            onOk={handleSave}
-            onCancel={() => setIsInputFormOpen(false)}
+            onOk={() => {
+              handleSave();
+              setIsInputFormOpen(false);
+            }}
+            onCancel={() => {
+              setTempCustomerInputs(customerInputs);
+              setIsInputFormOpen(false);
+            }}
             okText="Save change"
             cancelText="Cancel"
             cancelButtonProps={{
@@ -834,13 +841,24 @@ const CustomerSection = React.memo(
               className="mb-8 sticky top-8"
             >
               <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Examples:  Online, Offline, Social Media, Email Marketing, Referrals, Direct Sales, Subscription...">
-                <h2
-                  className="text-lg font-semibold mb-8 flex items-center"
-                  id="customers-heading"
-                >
-                  Customer channel{" "}
-                </h2>
+                <div className="flex items-center">
+                  <h2
+                    className="text-lg font-semibold mb-8 flex items-center"
+                    id="customers-heading"
+                  >
+                    Customer channel
+                    <span className="flex justify-center items-center">
+                      <PlusCircleOutlined
+                        className="ml-2 text-blue-500"
+                        size="large"
+                        style={{ fontSize: "24px" }}
+                        onClick={handleAddNewCustomer}
+                      />
+                    </span>
+                  </h2>
+                </div>
               </Tooltip>
+
               <div>
                 <label
                   htmlFor="selectedChannel"
@@ -850,7 +868,7 @@ const CustomerSection = React.memo(
                   id="selectedChannel"
                   className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
                   value={renderCustomerForm}
-                  onChange={handleSelectChange}
+                  onValueChange={(value) => handleSelectChange(value)}
                 >
                   <SelectTrigger className="border-solid border-[1px] border-gray-300">
                     <SelectValue placeholder="All" />
@@ -1046,18 +1064,7 @@ const CustomerSection = React.memo(
                         disabled
                       />
                     </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <button
-                        className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
-                        onClick={handleAddNewCustomer}
-                      >
-                        Add new
-                      </button>
+                    <div className="flex justify-end items-center">
                       <button
                         className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
                         onClick={() => removeCustomerInput(input.id)}

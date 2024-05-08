@@ -1,4 +1,4 @@
-import { Row, Table, Tooltip, message } from "antd";
+import { Row, Table, Tabs, Tooltip, message } from "antd";
 import {
   Select,
   SelectTrigger,
@@ -524,16 +524,15 @@ function CashFlowSection({ numberOfMonths }) {
     dispatch(setCutMonth(Number(e.target.value)));
   };
 
+  console.log(cutMonth);
+
   const divideMonthsIntoYearsForCashFlow = () => {
     const years = [];
     const startingMonthIndex = startMonth - 1;
     const startingYear = startYear;
 
-    if (cutMonth - 1 > 0) {
-      const firstYearMonths = Array.from(
-        { length: cutMonth - 1 },
-        (_, i) => i + 1
-      );
+    if (cutMonth > 0) {
+      const firstYearMonths = Array.from({ length: cutMonth }, (_, i) => i + 1);
       const firstYearTextMonths = firstYearMonths.map((month) => {
         const monthIndex = (startingMonthIndex + month - 1) % 12;
         const year =
@@ -547,14 +546,14 @@ function CashFlowSection({ numberOfMonths }) {
       });
     }
 
-    const remainingMonthsAfterFirstYear = numberOfMonths - (cutMonth - 1);
+    const remainingMonthsAfterFirstYear = numberOfMonths - cutMonth;
     const fullYearsCount = Math.floor(remainingMonthsAfterFirstYear / 12);
     const remainingMonthsInLastYear = remainingMonthsAfterFirstYear % 12;
 
     for (let i = 0; i < fullYearsCount; i++) {
       const yearMonths = Array.from(
         { length: 12 },
-        (_, idx) => idx + 1 + (cutMonth - 1) + i * 12
+        (_, idx) => idx + 1 + cutMonth + i * 12
       );
       const yearTextMonths = yearMonths.map((month) => {
         const monthIndex = (startingMonthIndex + month - 1) % 12;
@@ -572,7 +571,7 @@ function CashFlowSection({ numberOfMonths }) {
     if (remainingMonthsInLastYear > 0) {
       const lastYearMonths = Array.from(
         { length: remainingMonthsInLastYear },
-        (_, idx) => idx + 1 + (cutMonth - 1) + fullYearsCount * 12
+        (_, idx) => idx + 1 + cutMonth + fullYearsCount * 12
       );
       const lastYearTextMonths = lastYearMonths.map((month) => {
         const monthIndex = (startingMonthIndex + month - 1) % 12;
@@ -589,6 +588,11 @@ function CashFlowSection({ numberOfMonths }) {
 
     return years;
   };
+
+  console.log(
+    "divideMonthsIntoYearsForCashFlow",
+    divideMonthsIntoYearsForCashFlow()
+  );
 
   const getDataSourceForYearCashFlow = (months) => {
     const monthKeys = months.map((month) => `Month ${month}`);
@@ -682,6 +686,9 @@ function CashFlowSection({ numberOfMonths }) {
       cashFlowMargin: formatNumber(cashFlowMargin.toFixed(2)),
     };
   };
+
+  const [activeTab, setActiveTab] = useState(0); // State to track active tab
+  const { TabPane } = Tabs; // Destructure TabPane from Tabs
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
@@ -797,142 +804,23 @@ function CashFlowSection({ numberOfMonths }) {
             />
           </div>
 
-          {divideMonthsIntoYearsForCashFlow().map((year, index) => (
-            <div key={index}>
-              <h3>{year.year}</h3>
-              <Table
-                className="overflow-auto my-8 rounded-md shadow-xl"
-                size="small"
-                dataSource={getDataSourceForYearCashFlow(year.months)}
-                columns={generateCashFlowTableColumns(year)}
-                pagination={false}
-                bordered
-              />
-              <div>
-                <h4>Financial Ratios for {year.year}</h4>
-                <ul>
-                  {/* Assuming calculateCashFlowRatios returns ratios for the specific year */}
-                  {(() => {
-                    const dataSourceForYear = getDataSourceForYearCashFlow(
-                      year.months
-                    );
-                    const ratios = calculateCashFlowRatios(dataSourceForYear);
-                    return (
-                      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                        <div className="flex flex-col bg-white border shadow-lg rounded-xl m-8 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
-                          <div className="p-4 md:p-5">
-                            <div className="flex items-center gap-x-2">
-                              <p className="text-xs uppercase tracking-wide text-gray-500">
-                                Operating Cash Flow Ratio:
-                              </p>
-                              <Tooltip
-                                title={`This is the Operating Cash Flow Ratio.`}
-                              >
-                                <InfoCircleOutlined />
-                              </Tooltip>
-                            </div>
-
-                            <div className="mt-1">
-                              <div className="flex flex-col xl:flex-row xl:items-center items-start gap-2">
-                                <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 my-2">
-                                  {ratios.operatingCashFlowRatio}
-                                </h3>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex flex-col bg-white border shadow-lg rounded-xl m-8 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
-                          <div className="p-4 md:p-5">
-                            <div className="flex items-center gap-x-2">
-                              <p className="text-xs uppercase tracking-wide text-gray-500">
-                                Free Cash Flow:
-                              </p>
-                              <Tooltip title={`This is the Free Cash Flow.`}>
-                                <InfoCircleOutlined />
-                              </Tooltip>
-                            </div>
-
-                            <div className="mt-1">
-                              <div className="flex flex-col xl:flex-row xl:items-center items-start gap-2">
-                                <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 my-2">
-                                  {ratios.freeCashFlow}
-                                </h3>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex flex-col bg-white border shadow-lg rounded-xl m-8 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
-                          <div className="p-4 md:p-5">
-                            <div className="flex items-center gap-x-2">
-                              <p className="text-xs uppercase tracking-wide text-gray-500">
-                                Cash Conversion Cycle:
-                              </p>
-                              <Tooltip
-                                title={`This is the Cash Conversion Cycle.`}
-                              >
-                                <InfoCircleOutlined />
-                              </Tooltip>
-                            </div>
-
-                            <div className="mt-1">
-                              <div className="flex flex-col xl:flex-row xl:items-center items-start gap-2">
-                                <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 my-2">
-                                  {ratios.cashConversionCycle}
-                                </h3>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex flex-col bg-white border shadow-lg rounded-xl m-8 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
-                          <div className="p-4 md:p-5">
-                            <div className="flex items-center gap-x-2">
-                              <p className="text-xs uppercase tracking-wide text-gray-500">
-                                Cash Flow to Debt Ratio:
-                              </p>
-                              <Tooltip
-                                title={`This is the Cash Flow to Debt Ratio.`}
-                              >
-                                <InfoCircleOutlined />
-                              </Tooltip>
-                            </div>
-
-                            <div className="mt-1">
-                              <div className="flex flex-col xl:flex-row xl:items-center items-start gap-2">
-                                <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 my-2">
-                                  {ratios.cashFlowToDebtRatio}
-                                </h3>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex flex-col bg-white border shadow-lg rounded-xl m-8 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
-                          <div className="p-4 md:p-5">
-                            <div className="flex items-center gap-x-2">
-                              <p className="text-xs uppercase tracking-wide text-gray-500">
-                                Cash Flow Margin:
-                              </p>
-                              <Tooltip title={`This is the Cash Flow Margin.`}>
-                                <InfoCircleOutlined />
-                              </Tooltip>
-                            </div>
-
-                            <div className="mt-1">
-                              <div className="flex flex-col xl:flex-row xl:items-center items-start gap-2">
-                                <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 my-2">
-                                  {ratios.cashFlowMargin}
-                                </h3>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })()}
-                </ul>
-              </div>
-            </div>
-          ))}
+          <Tabs
+            activeKey={activeTab.toString()}
+            onChange={(key) => setActiveTab(parseInt(key))}
+          >
+            {divideMonthsIntoYearsForCashFlow().map((year, index) => (
+              <TabPane tab={year.year} key={index}>
+                <Table
+                  className="overflow-auto my-8 rounded-md shadow-xl"
+                  size="small"
+                  dataSource={getDataSourceForYearCashFlow(year.months)}
+                  columns={generateCashFlowTableColumns(year)}
+                  pagination={false}
+                  bordered
+                />
+              </TabPane>
+            ))}
+          </Tabs>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { Table, Tooltip, message } from "antd";
+import { Table, Tabs, Tooltip, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -679,11 +679,8 @@ function BalanceSheetSection({ numberOfMonths }) {
     const startingMonthIndex = startMonth - 1;
     const startingYear = startYear;
 
-    if (cutMonth - 1 > 0) {
-      const firstYearMonths = Array.from(
-        { length: cutMonth - 1 },
-        (_, i) => i + 1
-      );
+    if (cutMonth > 0) {
+      const firstYearMonths = Array.from({ length: cutMonth }, (_, i) => i + 1);
       const firstYearTextMonths = firstYearMonths.map((month) => {
         const monthIndex = (startingMonthIndex + month - 1) % 12;
         const year =
@@ -697,14 +694,14 @@ function BalanceSheetSection({ numberOfMonths }) {
       });
     }
 
-    const remainingMonthsAfterFirstYear = numberOfMonths - (cutMonth - 1);
+    const remainingMonthsAfterFirstYear = numberOfMonths - cutMonth;
     const fullYearsCount = Math.floor(remainingMonthsAfterFirstYear / 12);
     const remainingMonthsInLastYear = remainingMonthsAfterFirstYear % 12;
 
     for (let i = 0; i < fullYearsCount; i++) {
       const yearMonths = Array.from(
         { length: 12 },
-        (_, idx) => idx + 1 + (cutMonth - 1) + i * 12
+        (_, idx) => idx + 1 + cutMonth + i * 12
       );
       const yearTextMonths = yearMonths.map((month) => {
         const monthIndex = (startingMonthIndex + month - 1) % 12;
@@ -722,7 +719,7 @@ function BalanceSheetSection({ numberOfMonths }) {
     if (remainingMonthsInLastYear > 0) {
       const lastYearMonths = Array.from(
         { length: remainingMonthsInLastYear },
-        (_, idx) => idx + 1 + (cutMonth - 1) + fullYearsCount * 12
+        (_, idx) => idx + 1 + cutMonth + fullYearsCount * 12
       );
       const lastYearTextMonths = lastYearMonths.map((month) => {
         const monthIndex = (startingMonthIndex + month - 1) % 12;
@@ -827,6 +824,10 @@ function BalanceSheetSection({ numberOfMonths }) {
       fixedAssetTurnoverRatio: fixedAssetTurnoverRatio.toFixed(2),
     };
   };
+
+  const [activeTab, setActiveTab] = useState(0); // State to track active tab
+  const { TabPane } = Tabs; // Destructure TabPane from Tabs
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
@@ -938,18 +939,32 @@ function BalanceSheetSection({ numberOfMonths }) {
               })).map((option) => option.label)} // Chỉ trả về mảng các label
             />
           </div>
+          <Tabs
+            activeKey={activeTab.toString()}
+            onChange={(key) => setActiveTab(parseInt(key))}
+          >
+            {divideMonthsIntoYearsForBalanceSheet().map((year, index) => (
+              <TabPane tab={year.year} key={index.toString()}>
+                <Table
+                  className="overflow-auto my-8 rounded-md shadow-xl"
+                  size="small"
+                  dataSource={getDataSourceForYearBalanceSheet(year.months)}
+                  columns={generateBalanceSheetTableColumns(year)}
+                  pagination={false}
+                />
+              </TabPane>
+            ))}
+          </Tabs>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-          {divideMonthsIntoYearsForBalanceSheet().map((year, index) => (
-            <div key={index}>
-              <h3>{year.year}</h3>
-              <Table
-                className="overflow-auto my-8 rounded-md shadow-xl"
-                size="small"
-                dataSource={getDataSourceForYearBalanceSheet(year.months)}
-                columns={generateBalanceSheetTableColumns(year)}
-                pagination={false}
-              />
-              {/* <div>
+export default BalanceSheetSection;
+
+{
+  /* <div>
             <h4>Financial Ratios for {year.year}</h4>
             {(() => {
               const dataSourceForYear = getDataSourceForYearBalanceSheet(
@@ -988,13 +1003,5 @@ function BalanceSheetSection({ numberOfMonths }) {
                 </div>
               );
             })()}
-          </div> */}
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+          </div> */
 }
-
-export default BalanceSheetSection;

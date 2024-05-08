@@ -459,7 +459,7 @@ const AllChartSections = ({
           <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border-1 border-gray-300 rounded-md">
             <div>
               <div className="text-base">Total User</div>
-              <p className="text-sm sm:text-5xl font-bold text-black my-2">
+              <p className="text-base lg:text-5xl font-bold text-black my-2">
                 {formatNumber(Math.round(sumArray(yearlyAverageCustomers)))}
               </p>
             </div>
@@ -493,7 +493,7 @@ const AllChartSections = ({
           <Card className="flex fleflex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-mdx-col">
             <div>
               <div className="text-base">Total Revenue</div>
-              <p className="text-sm sm:text-5xl font-bold text-black my-2">
+              <p className="text-base lg:text-5xl font-bold text-black my-2">
                 {getCurrencyLabelByKey(currency)}&nbsp;
                 {formatNumber(Math.round(sumArray(yearlySales)))}
               </p>

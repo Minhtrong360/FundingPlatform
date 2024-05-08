@@ -22,7 +22,7 @@ import {
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import currencyLists from "../../../components/Currency";
 
-const DurationSelect = ({ handleSubmit }) => {
+const DurationSelect = ({ handleSubmit, isInputFormOpen }) => {
   const dispatch = useDispatch();
   const {
     selectedDuration,
@@ -334,14 +334,16 @@ const DurationSelect = ({ handleSubmit }) => {
           </Select>
         </div>
       </div>
-      <div className="flex justify-end">
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded mt-8 text-sm flex items-center"
-          onClick={handleSubmit}
-        >
-          Save
-        </button>
-      </div>
+      {isInputFormOpen !== "Ok" && (
+        <div className="flex justify-end">
+          <button
+            className="bg-blue-600 text-white px-4 py-2 rounded mt-8 text-sm flex items-center"
+            onClick={handleSubmit}
+          >
+            Save
+          </button>
+        </div>
+      )}
     </section>
   );
 };

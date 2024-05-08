@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { saveAs } from "file-saver";
 import Joyride, { STATUS, CallBackProps, Step } from "react-joyride";
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import { FileOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 
 import DurationSelect from "./Components/DurationSelect";
 import CustomerSection from "./Components/CustomerSection";
@@ -63,7 +63,7 @@ import { setInvestmentInputs } from "../../features/InvestmentSlice";
 import { setLoanInputs } from "../../features/LoanSlice";
 import { setFundraisingInputs } from "../../features/FundraisingSlice";
 import CashFlowSection from "./Components/CashFlowSection";
-import { message } from "antd";
+import { Button, FloatButton, Modal, message } from "antd";
 import { useParams } from "react-router-dom";
 import Groq from "./Components/Groq";
 
@@ -829,6 +829,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     setRun(true);
   };
 
+  const [isInputFormOpen, setIsInputFormOpen] = useState(false);
+
   return (
     <div className="min-h-screen">
       {/* <div>
@@ -1056,9 +1058,66 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                       numberOfMonths={numberOfMonths}
                     />
                   </div>
-                  <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
+                  <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:block hidden">
                     <DurationSelect handleSubmit={handleSubmit} />
                   </div>
+                  <div className="lg:hidden block">
+                    <FloatButton
+                      tooltip={<div>Input values</div>}
+                      style={{
+                        position: "fixed",
+                        bottom: "30px",
+                        right: "30px",
+                      }}
+                      onClick={() => {
+                        setIsInputFormOpen(true);
+                      }}
+                    >
+                      <Button
+                        type="primary"
+                        shape="circle"
+                        icon={<FileOutlined />}
+                      />
+                    </FloatButton>
+                  </div>
+
+                  {isInputFormOpen && (
+                    <Modal
+                      // title="Customer channel"
+                      visible={isInputFormOpen}
+                      onOk={() => {
+                        handleSubmit();
+                        setIsInputFormOpen(false);
+                      }}
+                      onCancel={() => {
+                        setIsInputFormOpen(false);
+                      }}
+                      okText="Save"
+                      cancelText="Close"
+                      cancelButtonProps={{
+                        style: {
+                          borderRadius: "0.375rem",
+                          cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                        },
+                      }}
+                      okButtonProps={{
+                        style: {
+                          background: "#2563EB",
+                          borderColor: "#2563EB",
+                          color: "#fff",
+                          borderRadius: "0.375rem",
+                          cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                        },
+                      }}
+                      centered={true}
+                      zIndex={50}
+                    >
+                      <DurationSelect
+                        handleSubmit={handleSubmit}
+                        isInputFormOpen="Ok"
+                      />
+                    </Modal>
+                  )}
                 </div>
               )}
               {activeTab === "customer" && (

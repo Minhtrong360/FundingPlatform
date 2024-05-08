@@ -11,10 +11,10 @@ const CustomChart = ({
   title,
 }) => {
   const chartOptions = {
-    chart: { id: "profit-and-loss-chart", type: "area", height: 350 },
+    chart: { id: "profit-and-loss-chart", type: "area", height: 350, toolbar: { show: false }, zoom: { enabled: false }},
+    grid: { show: false },
      fill: {
         type: "gradient",
-        
         gradient: {
           shade: "light",
           shadeIntensity: 0.5,
@@ -26,6 +26,7 @@ const CustomChart = ({
      
     colors: ['#00A2FF', '#14F584', '#FFB303', '#DBFE01', '#FF474C','#D84FE4'],
     xaxis: {
+      
       categories: Array.from({ length: numberOfMonths }, (_, i) => `${i + 1}`),
       title: {
         text: "Month",

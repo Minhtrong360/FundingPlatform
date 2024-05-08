@@ -161,8 +161,16 @@ const PersonnelSection = ({
   //PersonnelChart
   const [personnelChart, setPersonnelChart] = useState({
     options: {
-      chart: { id: "personnel-chart", type: "bar", height: 350 },
+      chart: { id: "personnel-chart", type: "bar", height: 350, toolbar: { show: false }, zoom: { enabled: false } },
+      grid: { show: false },
       xaxis: {
+        range:5,
+        axisTicks: {
+          show: false, // Hide x-axis ticks
+        },
+        labels: {
+          show: false, // Hide x-axis labels
+        },
         categories: Array.from(
           { length: numberOfMonths },
           (_, i) => `${i + 1}`
@@ -177,7 +185,11 @@ const PersonnelSection = ({
       },
       // title: { text: 'Personnel Cost Data', align: 'left' },
       yaxis: {
+        axisboder: {
+          show: true, // Hide y-axis border
+        },
         labels: {
+          show: false, // Hide y-axis labels
           formatter: function (val) {
             return Math.floor(val); // Format Y-axis labels as integers
           },
@@ -203,8 +215,9 @@ const PersonnelSection = ({
         },
       },
       dataLabels: { enabled: false },
-      stroke: {  width: 2, },
-      markers: { size: 1 },
+      stroke: {  width: 1, },
+      // markers: { size: 1 },
+
     },
     series: [],
   });

@@ -173,9 +173,15 @@ const InvestmentSection = ({
 
   const [investmentChart, setInvestmentChart] = useState({
     options: {
-      chart: { id: "investment-chart", type: "area", height: 350 },
+      chart: { id: "investment-chart", type: "area", height: 350, zoom: { enabled: false }, toolbar: { show: false } },
       colors: ['#00A2FF', '#14F584', '#FFB303', '#DBFE01', '#FF474C','#D84FE4'],
       xaxis: {
+        axisTicks: {
+          show: false, // Hide x-axis ticks
+        },
+        labels: {
+          show: false, // Hide x-axis labels
+        },
         categories: Array.from(
           { length: numberOfMonths },
           (_, i) => `${i + 1}`
@@ -183,13 +189,16 @@ const InvestmentSection = ({
         title: {
           text: "Month",
           style: {
-            fontFamily: "Inter, sans-serif",
-            fontWeight: "600",
+            
           },
         },
       },
       yaxis: {
+        axisBorder: {
+          show: true, // Show y-axis line
+        },
         labels: {
+          show: false,
           formatter: function (val) {
             return Math.floor(val);
           },
@@ -197,8 +206,7 @@ const InvestmentSection = ({
         title: {
           text: "Investment ($)",
           style: {
-            fontFamily: "Inter, sans-serif",
-            fontWeight: "600",
+           
           },
         },
       },
@@ -213,9 +221,10 @@ const InvestmentSection = ({
           stops: [0, 90, 100],
         },
       },
+      grid: { show: false },
       dataLabels: { enabled: false },
-      stroke: {  width: 2, },
-      markers: { size: 1 },
+      stroke: {  width: 1, },
+      // markers: { size: 1 },
     },
     series: [],
   });
@@ -305,19 +314,40 @@ const InvestmentSection = ({
   }, [tempInvestmentData, numberOfMonths]);
 
   const newChartOptions = {
-    chart: { id: "new-chart", type: "line", height: 350 },
+    chart: { id: "new-chart", type: "area", height: 350, toolbar: { show: false }, zoom: { enabled: false } },
+    grid: { show: false },
+    
+    fill: {
+      type: "gradient",
+      gradient: {
+        shade: "light",
+        shadeIntensity: 0.75,
+        opacityFrom: 0.8,
+        opacityTo: 0.5,
+        stops: [0, 90, 100],
+      },
+    },
     xaxis: {
+      axisTicks: {
+        show: false, // Hide x-axis ticks
+      },
+      labels: {
+        show: false, // Hide x-axis labels
+      },
       categories: Array.from({ length: numberOfMonths }, (_, i) => `${i + 1}`),
       title: {
         text: "Month",
         style: {
-          fontFamily: "Inter, sans-serif",
-          fontWeight: "600",
+     
         },
       },
     },
     yaxis: {
+      axisBorder: {
+        show: true, // Show y-axis line
+      },
       labels: {
+        show: false,
         formatter: function (val) {
           return Math.floor(val);
         },
@@ -325,16 +355,15 @@ const InvestmentSection = ({
       title: {
         text: "New Chart Y-Axis",
         style: {
-          fontFamily: "Inter, sans-serif",
-          fontWeight: "600",
+       
         },
       },
     },
     legend: { position: "bottom", horizontalAlign: "right" },
-    fill: { type: "solid" },
+   
     dataLabels: { enabled: false },
-    stroke: { curve: "smooth" },
-    markers: { size: 1 },
+    stroke: { curve: "smooth", width: 1, },
+    
   };
 
   return (
@@ -538,11 +567,11 @@ const InvestmentSection = ({
                   ...newChartOptions,
                   chart: {
                     id: `new-chart-${index}`,
-                    type: "line",
+                    type: "area",
                     height: 350,
                   },
                   stroke: {
-                    width: 2,
+                    width: 1,
                   },
                   xaxis: {
                     ...newChartOptions.xaxis,

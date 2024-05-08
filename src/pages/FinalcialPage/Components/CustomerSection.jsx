@@ -742,7 +742,7 @@ const CustomerSection = ({
                   },
                 }}
                 series={chart.series}
-                type="bar"
+                type="area"
                 height={350}
               />
             </Card>

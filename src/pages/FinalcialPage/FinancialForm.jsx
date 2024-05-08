@@ -180,9 +180,32 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         type: "area",
         height: 350,
         stacked: false,
+        zoom: {
+          enabled: false, 
+        },
+        toolbar: {
+          show: false, 
+        },
+        animations: {
+          enabled: false, 
+        },
       },
 
       xaxis: {
+        range:5,
+        axisTicks: {
+          show: false, 
+        },
+        labels: {
+          show: true, 
+            style: {
+              
+              fontSize: "12px",
+              fontFamily: "Sora, sans-serif",
+              fontWeight: "600",
+            },
+      
+        },
         categories: Array.from(
           { length: numberOfMonths },
           (_, i) => `Month ${i + 1}`
@@ -190,20 +213,26 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         title: {
           text: "Month",
           style: {
-            fontFamily: "Inter, sans-serif",
-            fontWeight: "600",
+          
           },
         },
       },
       yaxis: {
+        
+          axisBorder: {
+            show: true, // Show y-axis line
+          },
+          
+            
         labels: {
+          show: true,
           formatter: function (val) {
             return Math.floor(val);
           },
         },
         title: { text: "Number of Customers" },
         style: {
-          fontFamily: "Inter, sans-serif",
+          fontFamily: "Sora, sans-serif",
           fontWeight: "600",
         },
       },
@@ -219,7 +248,11 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           stops: [0, 90, 100],
         },
       },
+      grid: {
+        show: false,
+      },
      
+        
       colors: ['#00A2FF', '#14F584', '#FFB303', '#DBFE01', '#FF474C','#D84FE4'],
       dataLabels: { enabled: false },
       
@@ -231,8 +264,15 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const { channelInputs } = useSelector((state) => state.sales);
   const [revenue, setRevenue] = useState({
     options: {
-      chart: { id: "revenue-chart", type: "bar", height: 350, stacked: true },
-      
+      chart: { id: "revenue-chart", type: "bar", height: 350, stacked: true, zoom: {
+        enabled: false, // Disable zooming
+      },
+      toolbar: {
+        show: false, // Hide the toolbar
+      } },
+      grid : {
+        show : false
+      },
       colors: ['#00A2FF', '#14F584', '#FFB303', '#DBFE01', '#FF474C','#D84FE4'],
       fill: {
         type: "gradient",
@@ -246,6 +286,18 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         },
       },
       xaxis: {
+        axisTicks: {
+          show: false, // Hide x-axis ticks
+        },
+        labels: {
+          show: true, // Hide x-axis labels
+          style: {
+            fontSize: '12px',
+            fontFamily: 'Sora, sans-serif',
+            fontWeight: 400,
+            cssClass: 'apexcharts-xaxis-label',
+          }
+        },
         categories: Array.from(
           { length: numberOfMonths },
           (_, i) => `${i + 1}`
@@ -253,13 +305,23 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         title: {
           text: "Month",
           style: {
-            fontFamily: "Inter, sans-serif",
-            fontWeight: "600",
+            style: {
+              color: undefined,
+              fontSize: '12px',
+              fontFamily: 'Sora, sans-serif',
+              fontWeight: 600,
+              cssClass: 'apexcharts-xaxis-title',
+          },
           },
         },
       },
       yaxis: {
+        axisBorder: {
+          show: true, // Show y-axis line
+        },
+       
         labels: {
+          show: false,
           formatter: function (val) {
             return Math.floor(val);
           },
@@ -267,7 +329,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         title: {
           text: "Amount ($)",
           style: {
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Sora, sans-serif",
             fontWeight: "600",
           },
         },

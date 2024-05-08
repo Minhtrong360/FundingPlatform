@@ -21,6 +21,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { supabase } from "../../../supabase";
 // import { useAuth } from "../../../context/AuthContext";
 import { useParams } from "react-router-dom";
+import { PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined } from "@ant-design/icons";
 import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
 
 const CostSection = ({
@@ -342,7 +345,7 @@ const CostSection = ({
                   tickAmount: 12, // Set the number of ticks on the x-axis to 12
                 },
                 stroke: {
-                  width: 2, // Set the stroke width to 2
+                  width: 1, // Set the stroke width to 2
                 },
               }}
               series={costChart.series}
@@ -534,31 +537,51 @@ const CostSection = ({
                   </Select>
                 </div>
 
-                <div className="flex justify-end items-center">
+                <div className="flex justify-between items-center">
                   <button
-                    className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
+                    className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4 flex items-center"
                     onClick={() => removeCostInput(input?.id)}
                   >
+                    <DeleteOutlined
+                      style={{
+                        fontSize: "12px",
+                        color: "#FFFFFF",
+                        marginRight: "4px",
+                      }}
+                    />
                     Remove
+                  </button>
+
+                  <button
+                    className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 "
+                    onClick={addNewCostInput}
+                  >
+                    <PlusOutlined
+                      style={{
+                        fontSize: "12px",
+                        color: "#FFFFFF",
+                        marginRight: "4px",
+                      }}
+                    />
+                    Add
+                  </button>
+
+                  <button
+                    className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 flex items-center"
+                    onClick={handleSave}
+                  >
+                    <CheckCircleOutlined
+                      style={{
+                        fontSize: "12px",
+                        color: "#FFFFFF",
+                        marginRight: "4px",
+                      }}
+                    />
+                    Save
                   </button>
                 </div>
               </div>
             ))}
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <button
-              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
-              onClick={addNewCostInput}
-            >
-              Add new
-            </button>
-
-            <button
-              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
-              onClick={handleSave}
-            >
-              Save
-            </button>
-          </div>
         </section>
       </div>
 

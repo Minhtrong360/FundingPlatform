@@ -183,7 +183,7 @@ const FundraisingSection = ({
         },
       },
       dataLabels: { enabled: false },
-      stroke: { width: 2, curve: "smooth" },
+      stroke: { width: 1, curve: "smooth" },
 
       markers: { size: 1 },
     },
@@ -473,7 +473,7 @@ const FundraisingSection = ({
                     }
                   />
                 </div>
-                <div className="flex justify-end items-center">
+                <div className="flex justify-center items-center">
                   <button
                     className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
                     onClick={() => removeFundraisingInput(input?.id)}

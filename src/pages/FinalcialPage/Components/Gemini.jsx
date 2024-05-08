@@ -264,7 +264,7 @@ const Gemini = ({
           Financial model with AI
         </h2>
         <form onSubmit={handleSendMessage} className="flex justify-center">
-          <div className="sm:w-[50%] w-[100%] relative z-10 flex space-x-3 p-3 bg-white border rounded-md shadow-lg shadow-gray-100 darkBgBlue darkBorderGray darkShadowGray">
+          <div className="sm:w-[50%] w-[100%] relative z-10 flex space-x-3 p-3 bg-white border rounded-md  darkBgBlue darkBorderGray darkShadowGray">
             <div className="flex-[1_0_0%]">
               <input
                 type="text"

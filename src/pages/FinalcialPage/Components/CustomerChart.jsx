@@ -75,7 +75,7 @@ const CustomChart = ({
   };
   return (
     <div className="grid md:grid-cols-2 gap-6">
-      <Card title={title} className="shadow-xl">
+      <Card title={title}>
         <Chart
           options={{
             ...chartOptions,
@@ -89,6 +89,9 @@ const CustomChart = ({
               "#FF474C",
               "#D84FE4",
             ],
+            stroke : {
+              width: 1,
+            },
             yaxis: { title: { text: yaxisTitle } },
           }}
           series={[

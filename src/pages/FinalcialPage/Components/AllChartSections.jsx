@@ -526,7 +526,7 @@ const AllChartSections = ({
           <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
             <div>
               <div className="text-base">Total Cost</div>
-              <p className="text-sm sm:text-3xl font-bold text-black my-2">
+              <p className="text-sm sm:text-5xl font-bold text-black my-2">
                 {getCurrencyLabelByKey(currency)}&nbsp;
                 {formatNumber(Math.round(sumArray(totalCosts)))}
               </p>

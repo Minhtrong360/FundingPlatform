@@ -121,7 +121,7 @@ const Search = ({
           </h3>
           <div className="mt-7 sm:mt-12 mx-auto max-w-xl relative">
             <form onSubmit={handleSearchSubmit}>
-              <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-md shadow-lg shadow-gray-100 darkBgBlue darkBorderGray darkShadowGray">
+              <div className="relative z-10 flex space-x-3 p-3 bg-white border rounded-md  darkBgBlue darkBorderGray darkShadowGray">
                 <div className="flex-[1_0_0%]">
                   <input
                     type="text"

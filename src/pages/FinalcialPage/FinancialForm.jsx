@@ -186,14 +186,29 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         type: "area",
         height: 350,
         stacked: false,
+        zoom: {
+          enabled: false,
+        },
+        toolbar: {
+          show: false,
+        },
+        animations: {
+          enabled: false,
+        },
       },
 
       xaxis: {
+        range: 5,
         axisTicks: {
-          show: false, // Hide x-axis ticks
+          show: false,
         },
         labels: {
-          show: false, // Hide x-axis labels
+          show: true,
+          style: {
+            fontSize: "12px",
+            fontFamily: "Sora, sans-serif",
+            fontWeight: "600",
+          },
         },
         categories: Array.from(
           { length: numberOfMonths },
@@ -201,25 +216,23 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         ),
         title: {
           text: "Month",
-          style: {
-            fontFamily: "Inter, sans-serif",
-            fontWeight: "600",
-          },
+          style: {},
         },
       },
       yaxis: {
         axisBorder: {
           show: true, // Show y-axis line
         },
+
         labels: {
-          show: false, // Hide y-axis labels
+          show: true,
           formatter: function (val) {
             return Math.floor(val);
           },
         },
         title: { text: "Customers" },
         style: {
-          fontFamily: "Inter, sans-serif",
+          fontFamily: "Sora, sans-serif",
           fontWeight: "600",
         },
       },
@@ -234,6 +247,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           opacityTo: 0.5,
           stops: [0, 90, 100],
         },
+      },
+      grid: {
+        show: false,
       },
 
       colors: [
@@ -253,23 +269,20 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const { channelInputs } = useSelector((state) => state.sales);
   const [revenue, setRevenue] = useState({
     options: {
-      toolbar: {
-        show: false, // Hide the toolbar
-      },
-      grid: {
-        show: false,
-      },
       chart: {
+        id: "revenue-chart",
+        type: "bar",
+        height: 350,
+        stacked: true,
         zoom: {
           enabled: false, // Disable zooming
         },
         toolbar: {
           show: false, // Hide the toolbar
         },
-        id: "revenue-chart",
-        type: "bar",
-        height: 350,
-        stacked: true,
+      },
+      grid: {
+        show: false,
       },
       colors: [
         "#00A2FF",
@@ -295,7 +308,13 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           show: false, // Hide x-axis ticks
         },
         labels: {
-          show: false, // Hide x-axis labels
+          show: true, // Hide x-axis labels
+          style: {
+            fontSize: "12px",
+            fontFamily: "Sora, sans-serif",
+            fontWeight: 400,
+            cssClass: "apexcharts-xaxis-label",
+          },
         },
         categories: Array.from(
           { length: numberOfMonths },
@@ -304,8 +323,13 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         title: {
           text: "Month",
           style: {
-            fontFamily: "Inter, sans-serif",
-            fontWeight: "600",
+            style: {
+              color: undefined,
+              fontSize: "12px",
+              fontFamily: "Sora, sans-serif",
+              fontWeight: 600,
+              cssClass: "apexcharts-xaxis-title",
+            },
           },
         },
       },
@@ -313,8 +337,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         axisBorder: {
           show: true, // Show y-axis line
         },
+
         labels: {
-          show: false, // Hide y-axis labels
+          show: false,
           formatter: function (val) {
             return Math.floor(val);
           },
@@ -322,7 +347,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         title: {
           text: "Customers",
           style: {
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Sora, sans-serif",
             fontWeight: "600",
           },
         },

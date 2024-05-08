@@ -2,8 +2,7 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap');
-
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap");
 body {
   margin: 0;
   font-family: "Sora", sans-serif;
@@ -165,6 +164,50 @@ code {
   font-family: "Sora", sans-serif;
 }
 
+/* ::-webkit-scrollbar {
+  width: 5px; 
+  height: 5px;
+  background-color: #f5f5f5;
+}
+
+/* Thumb style */
+::-webkit-scrollbar-thumb {
+  background-color: #8b8686;
+  border-radius: 10px;
+}
+
+::-moz-scrollbar {
+  width: 5px;
+  height: 10px;
+  background-color: #f5f5f5;
+}
+
+/* Mozilla Firefox scrollbar */
+/* Initial state: Hide scrollbar */
+::-moz-scrollbar {
+  width: 0;
+  height: 0;
+  background-color: transparent;
+}
+
+/* Thumb style */
+::-moz-scrollbar-thumb {
+  background-color: #8b8686;
+  border-radius: 10px;
+}
+
+::-ms-scrollbar {
+  width: 5px;
+  height: 10px;
+  background-color: #f5f5f5;
+}
+
+::-ms-scrollbar-thumb {
+  background-color: #8b8686;
+  border-radius: 10px;
+}
+*/
+
 /* Initial state: Hide scrollbar */
 ::-webkit-scrollbar {
   width: 0;
@@ -174,7 +217,7 @@ code {
 
 /* Thumb style */
 ::-webkit-scrollbar-thumb {
-  background-color: #8b8686;
+  background-color: #bfbfbf;
   border-radius: 10px;
 }
 
@@ -226,7 +269,6 @@ code {
   height: 10px; /* Adjust height as needed */
   background-color: #f5f5f5;
 }
-
 
 .ant-tabs-tab:hover {
   cursor: poSora;

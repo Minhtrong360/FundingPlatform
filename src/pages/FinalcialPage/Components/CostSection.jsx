@@ -154,7 +154,13 @@ const CostSection = ({
   // State for cost chart
   const [costChart, setCostChart] = useState({
     options: {
-      chart: { id: "cost-chart", type: "bar", height: 350 },
+      chart: {
+        id: "cost-chart",
+        type: "bar",
+        height: 350,
+        toolbar: { show: false },
+        zoom: { enabled: false },
+      },
       colors: [
         "#00A2FF",
         "#14F584",
@@ -163,7 +169,14 @@ const CostSection = ({
         "#FF474C",
         "#D84FE4",
       ],
+      grid: { show: false },
       xaxis: {
+        axisTicks: {
+          show: false,
+        },
+        labels: {
+          show: false,
+        },
         categories: Array.from(
           { length: numberOfMonths },
           (_, i) => `${i + 1}`
@@ -177,7 +190,12 @@ const CostSection = ({
         },
       },
       yaxis: {
+        axisBorder: {
+          show: true, // Show y-axis line
+        },
+
         labels: {
+          show: false,
           formatter: function (val) {
             return Math.floor(val);
           },
@@ -193,8 +211,7 @@ const CostSection = ({
       legend: { position: "bottom", horizontalAlign: "right" },
       // fill: { type: "solid" },
       dataLabels: { enabled: false },
-      stroke: { curve: "smooth" },
-      markers: { size: 1 },
+      stroke: { curve: "smooth", width: 1 },
     },
     series: [],
   });

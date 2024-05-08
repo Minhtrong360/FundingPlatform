@@ -12,29 +12,27 @@ const CustomChart = ({
 }) => {
   const chartOptions = {
     chart: {
-      zoom: {
-        enabled: false, // Disable zooming
-      },
-      toolbar: {
-        show: false, // Hide the toolbar
-      },
-      id: "customer-growth-chart",
+      id: "profit-and-loss-chart",
       type: "area",
       height: 350,
-      stacked: false,
+      toolbar: { show: false },
+      zoom: { enabled: false },
+    },
+    grid: { show: false },
+    fill: {
+      type: "gradient",
+      gradient: {
+        shade: "light",
+        shadeIntensity: 0.5,
+        opacityFrom: 0.8,
+        opacityTo: 0.5,
+        stops: [0, 90, 100],
+      },
     },
 
+    colors: ["#00A2FF", "#14F584", "#FFB303", "#DBFE01", "#FF474C", "#D84FE4"],
     xaxis: {
-      axisTicks: {
-        show: false, // Hide x-axis ticks
-      },
-      labels: {
-        show: false, // Hide x-axis labels
-      },
-      categories: Array.from(
-        { length: numberOfMonths },
-        (_, i) => `Month ${i + 1}`
-      ),
+      categories: Array.from({ length: numberOfMonths }, (_, i) => `${i + 1}`),
       title: {
         text: "Month",
         style: {

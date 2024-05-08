@@ -2,11 +2,11 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-@import url('https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap');
 
 body {
   margin: 0;
-  font-family: "Jura", sans-serif;
+  font-family: "Sora", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -43,7 +43,7 @@ code {
 
   .bn-default-styles p {
     font-size: 14px !important;
-    font-family: Jura, sans-serif !important;
+    font-family: Sora, sans-serif !important;
     font-weight: 400 !important;
     color: #1a202c !important;
     line-height: 1.2 !important;
@@ -76,7 +76,7 @@ code {
 }
 
 .ant-table-cell {
-  font-family: "Jura", sans-serif;
+  font-family: "Sora", sans-serif;
   font-size: "16px";
   color: black;
 }
@@ -111,15 +111,15 @@ code {
 
 .ant-select-selection-placeholder {
   font-size: 14px;
-  font-family: "Jura", sans-serif;
+  font-family: "Sora", sans-serif;
 }
 
 .ant-card {
-  font-family: "Jura", sans-serif;
+  font-family: "Sora", sans-serif;
 }
 
 .ant-switch {
-  font-family: "Jura", sans-serif;
+  font-family: "Sora", sans-serif;
   background-color: gray; /* Đặt lại màu nền cho button */
   border-color: inherit; /* Đặt lại màu viền cho button */
   opacity: 1; /* Đặt lại độ trong suốt */
@@ -140,7 +140,7 @@ code {
 }
 
 .ant-switch {
-  font-family: "Jura", sans-serif;
+  font-family: "Sora", sans-serif;
   background-color: gray; /* Đặt lại màu nền cho button */
   border-color: inherit; /* Đặt lại màu viền cho button */
   opacity: 1; /* Đặt lại độ trong suốt */
@@ -162,49 +162,79 @@ code {
 
 .ant-tabs-tab-btn {
   font-size: 12px;
-  font-family: "Jura", sans-serif;
+  font-family: "Sora", sans-serif;
 }
 
+/* Initial state: Hide scrollbar */
 ::-webkit-scrollbar {
-  width: 5px; /* Decreased width */
-  height: 5px;
-  background-color: #f5f5f5;
+  width: 0;
+  height: 0;
+  background-color: transparent;
 }
 
+/* Thumb style */
 ::-webkit-scrollbar-thumb {
   background-color: #8b8686;
   border-radius: 10px;
 }
 
-::-moz-scrollbar {
-  width: 5px; /* Decreased width */
-  height: 10px;
+/* On hover, show the scrollbar */
+:hover::-webkit-scrollbar {
+  width: 5px; /* Adjust width as needed */
+  height: 5px; /* Adjust height as needed */
   background-color: #f5f5f5;
 }
 
+/* Mozilla Firefox scrollbar */
+/* Initial state: Hide scrollbar */
+::-moz-scrollbar {
+  width: 0;
+  height: 0;
+  background-color: transparent;
+}
+
+/* Thumb style */
 ::-moz-scrollbar-thumb {
   background-color: #8b8686;
   border-radius: 10px;
 }
 
-::-ms-scrollbar {
-  width: 5px; /* Decreased width */
-  height: 10px;
+/* On hover, show the scrollbar */
+:hover::-moz-scrollbar {
+  width: 5px; /* Adjust width as needed */
+  height: 10px; /* Adjust height as needed */
   background-color: #f5f5f5;
 }
 
+/* Microsoft Edge (EdgeHTML) scrollbar */
+/* Initial state: Hide scrollbar */
+::-ms-scrollbar {
+  width: 0;
+  height: 0;
+  background-color: transparent;
+}
+
+/* Thumb style */
 ::-ms-scrollbar-thumb {
   background-color: #8b8686;
   border-radius: 10px;
 }
 
+/* On hover, show the scrollbar */
+:hover::-ms-scrollbar {
+  width: 5px; /* Adjust width as needed */
+  height: 10px; /* Adjust height as needed */
+  background-color: #f5f5f5;
+}
+
+
 .ant-tabs-tab:hover {
-  cursor: poJura;
+  cursor: poSora;
 }
 
 .bn-default-styles p {
   font-size: 18px !important;
-  font-family: Jura, sans-serif !important;
+  font-family: Sora, sans-serif !important;
   font-weight: 400 !important;
   color: #1a202c !important;
   line-height: 1.6 !important;
@@ -243,11 +273,11 @@ code {
 }
 
 .ant-modal {
-  font-family: Jura, sans-serif !important;
+  font-family: Sora, sans-serif !important;
 }
 
 .ant-btn {
-  font-family: Jura, sans-serif !important;
+  font-family: Sora, sans-serif !important;
 }
 
 .ant-tabs-nav-wrap {

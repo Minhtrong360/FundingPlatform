@@ -838,7 +838,7 @@ function BalanceSheetSection({ numberOfMonths }) {
           <h2 className="text-lg font-semibold my-4">Balance Sheet</h2>
 
           <Table
-            className="overflow-auto my-8 rounded-md shadow-xl"
+            className="overflow-auto my-8 rounded-md"
             size="small"
             dataSource={positionDataWithNetIncome2}
             columns={positionColumns1}

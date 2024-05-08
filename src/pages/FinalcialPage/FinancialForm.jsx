@@ -176,6 +176,12 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [customerGrowthChart, setCustomerGrowthChart] = useState({
     options: {
       chart: {
+        zoom: {
+          enabled: false, // Disable zooming
+        },
+        toolbar: {
+          show: false, // Hide the toolbar
+        },
         id: "customer-growth-chart",
         type: "area",
         height: 350,
@@ -183,6 +189,12 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       },
 
       xaxis: {
+        axisTicks: {
+          show: false, // Hide x-axis ticks
+        },
+        labels: {
+          show: false, // Hide x-axis labels
+        },
         categories: Array.from(
           { length: numberOfMonths },
           (_, i) => `Month ${i + 1}`
@@ -196,12 +208,16 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         },
       },
       yaxis: {
+        axisBorder: {
+          show: true, // Show y-axis line
+        },
         labels: {
+          show: false, // Hide y-axis labels
           formatter: function (val) {
             return Math.floor(val);
           },
         },
-        title: { text: "Number of Customers" },
+        title: { text: "Customers" },
         style: {
           fontFamily: "Inter, sans-serif",
           fontWeight: "600",
@@ -237,8 +253,24 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const { channelInputs } = useSelector((state) => state.sales);
   const [revenue, setRevenue] = useState({
     options: {
-      chart: { id: "revenue-chart", type: "bar", height: 350, stacked: true },
-
+      toolbar: {
+        show: false, // Hide the toolbar
+      },
+      grid: {
+        show: false,
+      },
+      chart: {
+        zoom: {
+          enabled: false, // Disable zooming
+        },
+        toolbar: {
+          show: false, // Hide the toolbar
+        },
+        id: "revenue-chart",
+        type: "bar",
+        height: 350,
+        stacked: true,
+      },
       colors: [
         "#00A2FF",
         "#14F584",
@@ -259,9 +291,15 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         },
       },
       xaxis: {
+        axisTicks: {
+          show: false, // Hide x-axis ticks
+        },
+        labels: {
+          show: false, // Hide x-axis labels
+        },
         categories: Array.from(
           { length: numberOfMonths },
-          (_, i) => `${i + 1}`
+          (_, i) => `Month ${i + 1}`
         ),
         title: {
           text: "Month",
@@ -272,13 +310,17 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         },
       },
       yaxis: {
+        axisBorder: {
+          show: true, // Show y-axis line
+        },
         labels: {
+          show: false, // Hide y-axis labels
           formatter: function (val) {
             return Math.floor(val);
           },
         },
         title: {
-          text: "Amount ($)",
+          text: "Customers",
           style: {
             fontFamily: "Inter, sans-serif",
             fontWeight: "600",

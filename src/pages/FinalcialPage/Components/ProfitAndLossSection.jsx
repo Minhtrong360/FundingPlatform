@@ -662,7 +662,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           </h2>
           {/* <pre>{JSON.stringify(tableData, null, 2)}</pre> */}
           <Table
-            className="overflow-auto my-8 rounded-md shadow-xl"
+            className="overflow-auto my-8 rounded-md"
             size="small"
             bordered
             dataSource={transposedData}

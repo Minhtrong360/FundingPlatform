@@ -526,7 +526,7 @@ const CustomerSection = React.memo(
               .map((input) => (
                 <div
                   key={input?.id}
-                  className="bg-white rounded-md shadow-xl p-6 border my-4"
+                  className="bg-white rounded-md p-6 border my-4"
                 >
                   <div className="grid grid-cols-2 gap-4 mb-3">
                     <span className=" flex items-center text-sm">
@@ -729,7 +729,7 @@ const CustomerSection = React.memo(
           <div className="mb-8">
             <h3 className="text-lg font-semibold">Customer Table</h3>
             <Table
-              className="overflow-auto  my-8  shadow-xl rounded-md"
+              className="overflow-auto  my-8 rounded-md"
               size="small"
               dataSource={customerTableData}
               columns={customerColumns}
@@ -746,7 +746,7 @@ const CustomerSection = React.memo(
             {customerGrowthChart.charts?.map((chart, index) => (
               <Card
                 key={index}
-                className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
+                className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
               >
                 <Chart
                   options={{

@@ -174,14 +174,7 @@ const InvestmentSection = ({
   const [investmentChart, setInvestmentChart] = useState({
     options: {
       chart: { id: "investment-chart", type: "area", height: 350 },
-      colors: [
-        "#00A2FF",
-        "#14F584",
-        "#FFB303",
-        "#5C39FF",
-        "#D738FF",
-        "#FF841F",
-      ],
+      colors: ['#00A2FF', '#14F584', '#FFB303', '#DBFE01', '#FF474C','#D84FE4'],
       xaxis: {
         categories: Array.from(
           { length: numberOfMonths },
@@ -210,9 +203,18 @@ const InvestmentSection = ({
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "solid" },
+      fill: {
+        type: "gradient",
+        gradient: {
+          shade: "light",
+          shadeIntensity: 0.75,
+          opacityFrom: 0.8,
+          opacityTo: 0.5,
+          stops: [0, 90, 100],
+        },
+      },
       dataLabels: { enabled: false },
-      stroke: { curve: "smooth" },
+      stroke: {  width: 2, },
       markers: { size: 1 },
     },
     series: [],

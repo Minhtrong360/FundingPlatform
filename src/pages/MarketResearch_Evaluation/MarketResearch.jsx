@@ -1,8 +1,8 @@
-import { Tabs, Form, Input  } from 'antd';
+import { Tabs, Form, Input, Tag  } from 'antd';
 import { useState } from 'react';
 import Perflexity from '../FinalcialPage/Components/Perflexity';
 import Groq from '../FinalcialPage/Components/Groq';
-
+import PF from '../FinalcialPage/Components/Groq';
 const { TabPane } = Tabs;
 
 export default function MarketResearch() {
@@ -22,7 +22,7 @@ export default function MarketResearch() {
     return `Market information for ${industry} ${year} ${region} ${specificPrompt}. Return only figures and quantitative data in bullet points. Include links for sources at the end.`;
   };
   const generatePromptV = () => {
-    return `Search revenue multiples for ${industryV} ${yearV} ${bussinessmodel} ${ai} ${arr} ${teamsize} . Calculate the estimated valuation by using ${arr} and multiples. Return the final valuation and links for sources.`;
+    return `Search revenue multiples for ${industryV} ${yearV} ${bussinessmodel} ${ai} ${arr} ${teamsize} . Calculate the estimated valuation by using ${arr} and multiples. Return the final valuation and source links.`;
   };
 
   return (
@@ -75,9 +75,14 @@ export default function MarketResearch() {
                 />
               </div>
             </div>
-          
+            <div className="block mb-1" >
+            <Tag>{industry} </Tag>
+            <Tag>{year}</Tag>
+            <Tag>{region}</Tag>
+            <Tag>{specificPrompt}</Tag>
+            </div>
             <Perflexity prompt={generatePromptMK()} button={"Research"}/>
-            
+            {/* <PF /> */}
           </div>
         </TabPane>
         <TabPane tab="Valuation" key="2">
@@ -146,9 +151,9 @@ export default function MarketResearch() {
                 />
               </div>
             </div>
-          
-            <Perflexity prompt={generatePromptV()} button={"Valuation"}/>
             
+            <Perflexity prompt={generatePromptV()} button={"Valuation"}/>
+           
           </div>
         </TabPane>
       </Tabs>

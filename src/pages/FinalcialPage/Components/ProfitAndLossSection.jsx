@@ -664,7 +664,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           </h2>
           {/* <pre>{JSON.stringify(tableData, null, 2)}</pre> */}
           <Table
-            className="overflow-auto my-8 rounded-md shadow-xl"
+            className="overflow-auto my-8 rounded-md"
             size="small"
             bordered
             dataSource={transposedData}
@@ -860,7 +860,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             <div key={index}>
               <h3>{year.year}</h3>
               <Table
-                className="overflow-auto my-8 rounded-md shadow-xl"
+                className="overflow-auto my-8 rounded-md"
                 size="small"
                 dataSource={getDataSourceForYear(year.months)}
                 columns={generateTableColumns(year)}

@@ -456,7 +456,7 @@ const AllChartSections = ({
     <div className="flex flex-col">
       <main className="flex flex-1 flex-col gap-4  mb-4 md:gap-8 ">
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-400 rounded-md">
+          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border-1 border-gray-300 rounded-md">
             <div>
               <div className="text-base">Total User</div>
               <p className="text-sm sm:text-5xl font-bold text-black my-2">
@@ -490,7 +490,7 @@ const AllChartSections = ({
               height={300}
             />
           </Card>
-          <Card className="flex fleflex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-400 rounded-mdx-col">
+          <Card className="flex fleflex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-mdx-col">
             <div>
               <div className="text-base">Total Revenue</div>
               <p className="text-sm sm:text-5xl font-bold text-black my-2">
@@ -523,7 +523,7 @@ const AllChartSections = ({
             />
           </Card>
 
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-400 rounded-md">
+          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
             <div>
               <div className="text-base">Total Cost</div>
               <p className="text-sm sm:text-3xl font-bold text-black my-2">
@@ -562,9 +562,9 @@ const AllChartSections = ({
             <Select
               onValueChange={(value) => handleChartSelect(value)}
               value={selectedChart}
-              className="border-solid border-[1px] border-gray-400"
+              className="border-solid border-[1px] border-gray-200"
             >
-              <SelectTrigger className="border-solid border-[1px] border-gray-400 md:w-[20%] w-full">
+              <SelectTrigger className="border-solid border-[1px] border-gray-200 md:w-[20%] w-full">
                 <SelectValue />
               </SelectTrigger>
 
@@ -842,9 +842,9 @@ const AllChartSections = ({
             <Select
               onValueChange={(value) => handleMonthSelect(value)}
               value={selectedMonth.toString()}
-              className="border-solid border-[1px] border-gray-400"
+              className="border-solid border-[1px] border-gray-200"
             >
-              <SelectTrigger className="border-solid border-[1px] border-gray-400 md:w-[20%] w-full">
+              <SelectTrigger className="border-solid border-[1px] border-gray-200 md:w-[20%] w-full">
                 <SelectValue />
               </SelectTrigger>
 

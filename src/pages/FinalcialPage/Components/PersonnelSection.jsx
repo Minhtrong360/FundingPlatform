@@ -315,7 +315,7 @@ const PersonnelSection = ({
             .map((input) => (
               <div
                 key={input?.id}
-                className="bg-white rounded-md shadow-xl p-6 border my-4"
+                className="bg-white rounded-md p-6 border my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className=" flex items-center text-sm">Job Title</span>
@@ -479,7 +479,7 @@ const PersonnelSection = ({
       <div className="w-full lg:w-3/4 sm:p-4 p-0">
         <h3 className="text-lg font-semibold mb-4">Personnel Cost Table</h3>
         <Table
-          className="overflow-auto my-8 rounded-md shadow-xl"
+          className="overflow-auto my-8 rounded-md"
           size="small"
           dataSource={personnelCostTableData}
           columns={personnelCostColumns}

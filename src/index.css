@@ -165,38 +165,68 @@ code {
   font-family: "Sora", sans-serif;
 }
 
+/* Initial state: Hide scrollbar */
 ::-webkit-scrollbar {
-  width: 5px; /* Decreased width */
-  height: 5px;
-  background-color: #f5f5f5;
+  width: 0;
+  height: 0;
+  background-color: transparent;
 }
 
+/* Thumb style */
 ::-webkit-scrollbar-thumb {
   background-color: #8b8686;
   border-radius: 10px;
 }
 
-::-moz-scrollbar {
-  width: 5px; /* Decreased width */
-  height: 10px;
+/* On hover, show the scrollbar */
+:hover::-webkit-scrollbar {
+  width: 5px; /* Adjust width as needed */
+  height: 5px; /* Adjust height as needed */
   background-color: #f5f5f5;
 }
 
+/* Mozilla Firefox scrollbar */
+/* Initial state: Hide scrollbar */
+::-moz-scrollbar {
+  width: 0;
+  height: 0;
+  background-color: transparent;
+}
+
+/* Thumb style */
 ::-moz-scrollbar-thumb {
   background-color: #8b8686;
   border-radius: 10px;
 }
 
-::-ms-scrollbar {
-  width: 5px; /* Decreased width */
-  height: 10px;
+/* On hover, show the scrollbar */
+:hover::-moz-scrollbar {
+  width: 5px; /* Adjust width as needed */
+  height: 10px; /* Adjust height as needed */
   background-color: #f5f5f5;
 }
 
+/* Microsoft Edge (EdgeHTML) scrollbar */
+/* Initial state: Hide scrollbar */
+::-ms-scrollbar {
+  width: 0;
+  height: 0;
+  background-color: transparent;
+}
+
+/* Thumb style */
 ::-ms-scrollbar-thumb {
   background-color: #8b8686;
   border-radius: 10px;
 }
+
+/* On hover, show the scrollbar */
+:hover::-ms-scrollbar {
+  width: 5px; /* Adjust width as needed */
+  height: 10px; /* Adjust height as needed */
+  background-color: #f5f5f5;
+}
+
 
 .ant-tabs-tab:hover {
   cursor: poSora;

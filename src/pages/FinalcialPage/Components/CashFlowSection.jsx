@@ -801,7 +801,7 @@ function CashFlowSection({ numberOfMonths }) {
             <div key={index}>
               <h3>{year.year}</h3>
               <Table
-                className="overflow-auto my-8 rounded-md shadow-xl"
+                className="overflow-auto my-8 rounded-md"
                 size="small"
                 dataSource={getDataSourceForYearCashFlow(year.months)}
                 columns={generateCashFlowTableColumns(year)}

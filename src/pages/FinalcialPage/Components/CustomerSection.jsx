@@ -517,7 +517,7 @@ const CustomerSection = React.memo(
                       tickAmount: 12, // Set the number of ticks on the x-axis to 12
                     },
                     stroke: {
-                      width: 2, // Set the stroke width to 1
+                      width: 1, // Set the stroke width to 1
                     },
                   }}
                   series={chart.series}
@@ -758,7 +758,7 @@ const CustomerSection = React.memo(
                       disabled
                     />
                   </div>
-                  <div className="flex justify-end items-center">
+                  <div className="flex justify-center items-center">
                     <button
                       className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
                       onClick={() => removeCustomerInput(input.id)}

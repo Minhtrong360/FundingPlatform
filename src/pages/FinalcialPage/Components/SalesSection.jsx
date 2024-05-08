@@ -455,7 +455,7 @@ const SalesSection = ({
                     tickAmount: 12, // Ensure x-axis has 12 ticks
                   },
                   stroke: {
-                    width: 2, // Set the stroke width to 1
+                    width: 1, // Set the stroke width to 1
                   },
                 }}
                 series={chart.series}
@@ -678,7 +678,7 @@ const SalesSection = ({
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="flex justify-end items-center">
+                <div className="flex justify-center items-center">
                   <button
                     className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
                     onClick={() => removeChannelInput(input.id)}

@@ -790,7 +790,7 @@ const GPTAnalyzer = ({ numberOfMonths }) => {
           >
             Analyze
           </button>
-          <div className="max-w-4xl mx-auto p-4 bg-white border rounded-md shadow-lg shadow-gray-100">
+          <div className="max-w-4xl mx-auto p-4 bg-white border rounded-md ">
             {responseResult && (
               <div>
                 <div>Analysis Result:</div>

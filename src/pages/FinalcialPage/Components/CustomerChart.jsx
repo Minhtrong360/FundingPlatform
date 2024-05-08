@@ -12,6 +12,7 @@ const CustomChart = ({
 }) => {
   const chartOptions = {
     chart: {
+      fontFamily: "Sora, sans-serif",
       id: "profit-and-loss-chart",
       type: "area",
       height: 350,
@@ -19,26 +20,37 @@ const CustomChart = ({
       zoom: { enabled: false },
     },
     grid: { show: false },
-    fill: {
-      type: "gradient",
-      gradient: {
-        shade: "light",
-        shadeIntensity: 0.5,
-        opacityFrom: 0.8,
-        opacityTo: 0.5,
-        stops: [0, 90, 100],
-      },
-    },
-
+    // fill: {
+    //   type: "gradient",
+    //   gradient: {
+    //     shade: "light",
+    //     shadeIntensity: 0.5,
+    //     opacityFrom: 0.8,
+    //     opacityTo: 0.5,
+    //     stops: [0, 90, 100],
+    //   },
+    // },
+    
     colors: ["#00A2FF", "#14F584", "#FFB303", "#DBFE01", "#FF474C", "#D84FE4"],
     xaxis: {
       categories: Array.from({ length: numberOfMonths }, (_, i) => `${i + 1}`),
+      axisTicks: {
+        show: false, // Hide x-axis ticks
+      },
+      labels: {
+        rotate:0,
+        style: {
+          
+          fontFamily: "Sora, sans-serif",
+        },
+      },
       title: {
         text: "Month",
         style: {
-          fontFamily: "Inter, sans-serif",
-          fontWeight: "600",
+          fontSize: "12px",
+          fontFamily: "Sora, sans-serif",
         },
+      
       },
     },
     yaxis: {
@@ -46,18 +58,24 @@ const CustomChart = ({
         show: true, // Show y-axis line
       },
       labels: {
-        show: false, // Hide y-axis labels
+        style: {
+          fontFamily: "Sora, sans-serif",
+        },
+        show: true, // Hide y-axis labels
         formatter: function (val) {
           return Math.floor(val);
         },
       },
-      title: { text: "Customers" },
+      title: { text: "Customers",
       style: {
-        fontFamily: "Inter, sans-serif",
-        fontWeight: "600",
-      },
+        
+        fontSize: "12px",
+        fontFamily: "Sora, sans-serif",
+      }
+       },
+     
     },
-    legend: { position: "bottom", horizontalAlign: "right" },
+    legend: { position: "bottom", horizontalAlign: "right", fontFamily: "Sora, sans-serif" },
     fill: {
       type: "gradient",
 
@@ -69,8 +87,8 @@ const CustomChart = ({
         stops: [0, 90, 100],
       },
     },
-
-    colors: ["#00A2FF", "#14F584", "#FFB303", "#DBFE01", "#FF474C", "#D84FE4"],
+    stroke: { curve: "smooth", width:1 },
+    // colors: ["#00A2FF", "#14F584", "#FFB303", "#DBFE01", "#FF474C", "#D84FE4"],
     dataLabels: { enabled: false },
   };
   return (
@@ -81,6 +99,7 @@ const CustomChart = ({
             ...chartOptions,
             chart: { ...chartOptions.chart, id: id },
             dataLabels: { enabled: false },
+            
             colors: [
               "#00A2FF",
               "#14F584",

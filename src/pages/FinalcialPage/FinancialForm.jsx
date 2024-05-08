@@ -176,6 +176,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [customerGrowthChart, setCustomerGrowthChart] = useState({
     options: {
       chart: {
+        fontFamily: 'Sora, sans-serif',
         zoom: {
           enabled: false, // Disable zooming
         },
@@ -186,28 +187,21 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         type: "area",
         height: 350,
         stacked: false,
-        zoom: {
-          enabled: false,
-        },
-        toolbar: {
-          show: false,
-        },
+        
         animations: {
           enabled: false,
         },
       },
 
       xaxis: {
-        range: 5,
+        range: 6,
         axisTicks: {
           show: false,
         },
         labels: {
           show: true,
           style: {
-            fontSize: "12px",
             fontFamily: "Sora, sans-serif",
-            fontWeight: "600",
           },
         },
         categories: Array.from(
@@ -216,7 +210,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         ),
         title: {
           text: "Month",
-          style: {},
+          style: {
+            fontFamily: "Sora, sans-serif",
+            fontSize: "12px",
+          },
         },
       },
       yaxis: {
@@ -225,18 +222,21 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         },
 
         labels: {
+          style: {
+            fontFamily: "Sora, sans-serif"
+          },
           show: true,
           formatter: function (val) {
             return Math.floor(val);
           },
         },
-        title: { text: "Customers" },
-        style: {
+        title: { text: "Customers" ,style: {
           fontFamily: "Sora, sans-serif",
-          fontWeight: "600",
+          fontSize: "12px",
+        }},
         },
-      },
-      legend: { position: "bottom", horizontalAlign: "right" },
+      
+      legend: { position: "bottom", horizontalAlign: "right",fontFamily: "Sora, sans-serif" },
       fill: {
         type: "gradient",
 
@@ -261,6 +261,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         "#D84FE4",
       ],
       dataLabels: { enabled: false },
+      
     },
     series: [],
   });
@@ -270,6 +271,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [revenue, setRevenue] = useState({
     options: {
       chart: {
+        fontFamily: "Sora, sans-serif",
         id: "revenue-chart",
         type: "bar",
         height: 350,
@@ -280,6 +282,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         toolbar: {
           show: false, // Hide the toolbar
         },
+        animation : {
+          enabled: false,
+        }
       },
       grid: {
         show: false,
@@ -292,9 +297,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         "#FF474C",
         "#D84FE4",
       ],
+      legend: { position: "bottom", horizontalAlign: "right", fontFamily: "Sora, sans-serif" },
       fill: {
         type: "gradient",
-
         gradient: {
           shade: "light",
           shadeIntensity: 0.75,
@@ -308,12 +313,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           show: false, // Hide x-axis ticks
         },
         labels: {
-          show: true, // Hide x-axis labels
-          style: {
-            fontSize: "12px",
+          show: true, 
+          rotate: 0,
+          style: {   
             fontFamily: "Sora, sans-serif",
-            fontWeight: 400,
-            cssClass: "apexcharts-xaxis-label",
           },
         },
         categories: Array.from(
@@ -323,13 +326,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         title: {
           text: "Month",
           style: {
-            style: {
-              color: undefined,
-              fontSize: "12px",
-              fontFamily: "Sora, sans-serif",
-              fontWeight: 600,
-              cssClass: "apexcharts-xaxis-title",
-            },
+        
+            fontSize: "12px",
+              fontFamily: "Sora, sans-serif", 
           },
         },
       },
@@ -339,7 +338,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         },
 
         labels: {
-          show: false,
+          show: true,
+          style: {
+            fontFamily: "Sora, sans-serif",
+          },
           formatter: function (val) {
             return Math.floor(val);
           },
@@ -347,16 +349,16 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         title: {
           text: "Customers",
           style: {
+            fontSize: "12px",
             fontFamily: "Sora, sans-serif",
-            fontWeight: "600",
+           
           },
         },
       },
-      legend: { position: "bottom", horizontalAlign: "right" },
+      
       dataLabels: { enabled: false },
-      plotOptions: {
-        bar: { horizontal: false },
-      },
+
+      
     },
     series: [],
   });

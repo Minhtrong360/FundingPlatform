@@ -182,7 +182,9 @@ const InvestmentSection = ({
         height: 350,
         zoom: { enabled: false },
         toolbar: { show: false },
+        fontFamily: "Sora, sans-serif",
       },
+      grid: { show: false },
       colors: [
         "#00A2FF",
         "#14F584",
@@ -196,7 +198,9 @@ const InvestmentSection = ({
           show: false, // Hide x-axis ticks
         },
         labels: {
-          show: false, // Hide x-axis labels
+          show: true,
+          style: { fontFamily: "Sora, sans-serif" },
+          rotate: 0,
         },
         categories: Array.from(
           { length: numberOfMonths },
@@ -204,25 +208,31 @@ const InvestmentSection = ({
         ),
         title: {
           text: "Month",
-          style: {},
+          style: { fontFamily: "Sora, sans-serif", fontsize: "12px" },
         },
       },
       yaxis: {
         axisBorder: {
-          show: true, // Show y-axis line
+          show: true,
         },
         labels: {
-          show: false,
+          show: true,
+          style: { fontFamily: "Sora, sans-serif" },
+          rotate: 0,
           formatter: function (val) {
             return Math.floor(val);
           },
         },
         title: {
           text: "Amount ($)",
-          style: {},
+          style: { fontFamily: "Sora, sans-serif", fontsize: "12px" },
         },
       },
-      legend: { position: "bottom", horizontalAlign: "right" },
+      legend: {
+        position: "bottom",
+        horizontalAlign: "right",
+        fontFamily: "Sora, sans-serif",
+      },
       fill: {
         type: "gradient",
         gradient: {
@@ -233,7 +243,7 @@ const InvestmentSection = ({
           stops: [0, 90, 100],
         },
       },
-      grid: { show: false },
+
       dataLabels: { enabled: false },
       stroke: { width: 1 },
       // markers: { size: 1 },

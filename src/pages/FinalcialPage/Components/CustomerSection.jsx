@@ -386,7 +386,7 @@ const CustomerSection = React.memo(
                   id: "yearlyTotal",
                   stacked: false, // Set as non-stacked for total visualization
                   toolbar: {
-                    show: true,
+                    show: false,
                   },
                 },
                 title: {
@@ -443,7 +443,7 @@ const CustomerSection = React.memo(
                   id: "channelYearlyTotals",
                   stacked: false, // Non-stacked visualization
                   toolbar: {
-                    show: true,
+                    show: false,
                   },
                 },
                 title: {

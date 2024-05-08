@@ -12,16 +12,19 @@ const CustomChart = ({
 }) => {
   const chartOptions = {
     chart: { id: "profit-and-loss-chart", type: "area", height: 350 },
-    // fill: {
-    //   type: "gradient",
-    //   gradient: {
-    //     shadeIntensity: 1,
-    //     opacityFrom: 0.7,
-    //     opacityTo: 0.9,
-    //     stops: [0, 90, 100]
-    //   }
-    // },
-    colors: ['#00A2FF', '#14F584', '#FFB303', '#5C39FF', '#D738FF', '#FF841F'],
+     fill: {
+        type: "gradient",
+        
+        gradient: {
+          shade: "light",
+          shadeIntensity: 0.5,
+          opacityFrom: 0.8,
+          opacityTo: 0.5,
+          stops: [0, 90, 100],
+        },
+      },
+     
+    colors: ['#00A2FF', '#14F584', '#FFB303', '#DBFE01', '#FF474C','#D84FE4'],
     xaxis: {
       categories: Array.from({ length: numberOfMonths }, (_, i) => `${i + 1}`),
       title: {
@@ -67,7 +70,7 @@ const CustomChart = ({
             ...chartOptions,
             chart: { ...chartOptions.chart, id: id },
             dataLabels: { enabled: false },
-            colors: ['#00A2FF', '#14F584', '#FFB303', '#5C39FF', '#D738FF', '#FF841F'],
+            colors: ['#00A2FF', '#14F584', '#FFB303', '#DBFE01', '#FF474C','#D84FE4'],
             yaxis: { title: { text: yaxisTitle } },
           }}
           series={[

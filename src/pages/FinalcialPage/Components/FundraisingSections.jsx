@@ -134,6 +134,14 @@ const FundraisingSection = ({
   const [fundraisingChart, setFundraisingChart] = useState({
     options: {
       chart: { id: "fundraising-chart", type: "bar", height: 350 },
+      colors: [
+        "#00A2FF",
+        "#14F584",
+        "#FFB303",
+        "#DBFE01",
+        "#FF474C",
+        "#D84FE4",
+      ],
       xaxis: {
         categories: Array.from(
           { length: numberOfMonths },
@@ -162,9 +170,20 @@ const FundraisingSection = ({
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "gradient" },
+      fill: {
+        type: "gradient",
+
+        gradient: {
+          shade: "light",
+          shadeIntensity: 0.75,
+          opacityFrom: 0.8,
+          opacityTo: 0.5,
+          stops: [0, 90, 100],
+        },
+      },
       dataLabels: { enabled: false },
-      stroke: { curve: "smooth" },
+      stroke: { width: 2, curve: "smooth" },
+
       markers: { size: 1 },
     },
     series: [],

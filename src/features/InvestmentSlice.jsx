@@ -56,27 +56,22 @@ export const calculateInvestmentData = (
 
     const depreciationPerMonth = (assetCost - residualValue) / usefulLifetime;
     const depreciationArray = new Array(numberOfMonths).fill(0);
+    let accumulatedDepreciation = new Array(numberOfMonths).fill(0);
 
     for (let i = 0; i < numberOfMonths; i++) {
       if (i >= purchaseMonth - 1 && i < purchaseMonth - 1 + usefulLifetime) {
         depreciationArray[i] = depreciationPerMonth;
+        accumulatedDepreciation[i] =
+          (i > 0 ? accumulatedDepreciation[i - 1] : 0) + depreciationPerMonth;
       }
     }
-
-    const accumulatedDepreciation = depreciationArray.reduce(
-      (acc, val, index) => {
-        acc[index] = (acc[index - 1] || 0) + val;
-        return acc;
-      },
-      []
-    );
 
     const assetValue = new Array(numberOfMonths).fill(0);
     const bookValue = new Array(numberOfMonths).fill(0);
     for (let i = 0; i < numberOfMonths; i++) {
       if (i >= purchaseMonth - 1 && i < purchaseMonth - 1 + usefulLifetime) {
         assetValue[i] = assetCost;
-        bookValue[i] = Math.abs(assetValue[i] - accumulatedDepreciation[i]); // Kẹp giá trị tuyệt đối cho bookValue
+        bookValue[i] = Math.abs(assetValue[i] - accumulatedDepreciation[i]);
       }
     }
 

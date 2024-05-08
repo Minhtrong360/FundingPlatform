@@ -210,34 +210,15 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       legend: { position: "bottom", horizontalAlign: "right" },
       fill: {
         type: "gradient",
+
         gradient: {
-          shadeIntensity: 1,
-          opacityFrom: 0.7,
-          opacityTo: 0.9,
+          shade: "light",
+          shadeIntensity: 0.75,
+          opacityFrom: 0.8,
+          opacityTo: 0.5,
           stops: [0, 90, 100],
         },
       },
-      colors: [
-        "#00A2FF",
-        "#14F584",
-        "#FFB303",
-        "#5C39FF",
-        "#D738FF",
-        "#FF841F",
-      ],
-      dataLabels: { enabled: false },
-      // stroke: { curve: "stepline" },
-      // markers: { size: 1 },
-      // markers: { size: 1 },
-    },
-    series: [],
-  });
-
-  //RevenueState
-  const { channelInputs } = useSelector((state) => state.sales);
-  const [revenue, setRevenue] = useState({
-    options: {
-      chart: { id: "revenue-chart", type: "bar", height: 350, stacked: false },
 
       colors: [
         "#00A2FF",
@@ -247,6 +228,36 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         "#FF474C",
         "#D84FE4",
       ],
+      dataLabels: { enabled: false },
+    },
+    series: [],
+  });
+
+  //RevenueState
+  const { channelInputs } = useSelector((state) => state.sales);
+  const [revenue, setRevenue] = useState({
+    options: {
+      chart: { id: "revenue-chart", type: "bar", height: 350, stacked: true },
+
+      colors: [
+        "#00A2FF",
+        "#14F584",
+        "#FFB303",
+        "#DBFE01",
+        "#FF474C",
+        "#D84FE4",
+      ],
+      fill: {
+        type: "gradient",
+
+        gradient: {
+          shade: "light",
+          shadeIntensity: 0.75,
+          opacityFrom: 0.8,
+          opacityTo: 0.5,
+          stops: [0, 90, 100],
+        },
+      },
       xaxis: {
         categories: Array.from(
           { length: numberOfMonths },

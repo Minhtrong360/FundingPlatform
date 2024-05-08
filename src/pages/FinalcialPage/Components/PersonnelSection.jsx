@@ -191,9 +191,19 @@ const PersonnelSection = ({
         },
       },
       legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "gradient" },
+      fill: {
+        type: "gradient",
+
+        gradient: {
+          shade: "light",
+          shadeIntensity: 0.75,
+          opacityFrom: 0.8,
+          opacityTo: 0.5,
+          stops: [0, 90, 100],
+        },
+      },
       dataLabels: { enabled: false },
-      stroke: { curve: "smooth" },
+      stroke: { width: 2 },
       markers: { size: 1 },
     },
     series: [],
@@ -489,22 +499,22 @@ const PersonnelSection = ({
         <h3 className="text-lg font-semibold my-8">Personnel Cost Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col shadow-xl">
-  <Chart
-    options={{
-      ...personnelChart.options,
-      stroke: {
-        width: 2, // Set the stroke width to 2
-      },
-      xaxis: {
-        ...personnelChart.options.xaxis,
-        tickAmount: 12, // Set the number of ticks on the x-axis to 12
-      },
-    }}
-    series={personnelChart.series}
-    type="area"
-    height={350}
-  />
-</Card>
+            <Chart
+              options={{
+                ...personnelChart.options,
+                stroke: {
+                  width: 2, // Set the stroke width to 2
+                },
+                xaxis: {
+                  ...personnelChart.options.xaxis,
+                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                },
+              }}
+              series={personnelChart.series}
+              type="area"
+              height={350}
+            />
+          </Card>
         </div>
       </div>
     </div>

@@ -562,19 +562,24 @@ const CustomerSection = React.memo(
                 htmlFor="selectedChannel"
                 className="block my-4 text-base  darkTextWhite"
               ></label>
-              <select
+              <Select
                 id="selectedChannel"
                 className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
                 value={renderCustomerForm}
                 onChange={handleSelectChange}
               >
-                <option value="all">All</option>
-                {tempCustomerInputs.map((input) => (
-                  <option key={input?.id} value={input?.id}>
-                    {input.channelName}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger className="border-solid border-[1px] border-gray-300">
+                  <SelectValue placeholder="All" />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  <SelectItem value="all">All</SelectItem>
+                  {tempCustomerInputs.map((input) => (
+                    <SelectItem key={input?.id} value={input?.id}>
+                      {input.channelName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {tempCustomerInputs
@@ -790,6 +795,9 @@ const CustomerSection = React.memo(
               bottom: "30px",
               right: "30px",
             }}
+            onClick={() => {
+              setIsInputFormOpen(true);
+            }}
           >
             <Button type="primary" shape="circle" icon={<FileOutlined />} />
           </FloatButton>
@@ -797,7 +805,7 @@ const CustomerSection = React.memo(
 
         {isInputFormOpen && (
           <Modal
-            title="Customer channel"
+            // title="Customer channel"
             visible={isInputFormOpen}
             onOk={handleSave}
             onCancel={() => setIsInputFormOpen(false)}
@@ -811,14 +819,15 @@ const CustomerSection = React.memo(
             }}
             okButtonProps={{
               style: {
-                background: "#f5222d",
-                borderColor: "#f5222d",
+                background: "#2563EB",
+                borderColor: "#2563EB",
                 color: "#fff",
                 borderRadius: "0.375rem",
                 cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
               },
             }}
             centered={true}
+            zIndex={50}
           >
             <section
               aria-labelledby="customers-heading"
@@ -837,19 +846,24 @@ const CustomerSection = React.memo(
                   htmlFor="selectedChannel"
                   className="block my-4 text-base  darkTextWhite"
                 ></label>
-                <select
+                <Select
                   id="selectedChannel"
                   className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
                   value={renderCustomerForm}
                   onChange={handleSelectChange}
                 >
-                  <option value="all">All</option>
-                  {tempCustomerInputs.map((input) => (
-                    <option key={input?.id} value={input?.id}>
-                      {input.channelName}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="border-solid border-[1px] border-gray-300">
+                    <SelectValue placeholder="All" />
+                  </SelectTrigger>
+                  <SelectContent position="popper">
+                    <SelectItem value="all">All</SelectItem>
+                    {tempCustomerInputs.map((input) => (
+                      <SelectItem key={input?.id} value={input?.id}>
+                        {input.channelName}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               {tempCustomerInputs
@@ -1032,7 +1046,18 @@ const CustomerSection = React.memo(
                         disabled
                       />
                     </div>
-                    <div className="flex justify-end items-center">
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <button
+                        className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
+                        onClick={handleAddNewCustomer}
+                      >
+                        Add new
+                      </button>
                       <button
                         className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
                         onClick={() => removeCustomerInput(input.id)}
@@ -1043,7 +1068,7 @@ const CustomerSection = React.memo(
                   </div>
                 ))}
 
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
+              {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <button
                   className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
                   onClick={handleAddNewCustomer}
@@ -1057,7 +1082,7 @@ const CustomerSection = React.memo(
                 >
                   Save
                 </button>
-              </div>
+              </div> */}
             </section>
           </Modal>
         )}

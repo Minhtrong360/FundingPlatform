@@ -456,10 +456,10 @@ const AllChartSections = ({
     <div className="flex flex-col">
       <main className="flex flex-1 flex-col gap-4  mb-4 md:gap-8 ">
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
+          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-400 rounded-md">
             <div>
               <div className="text-base">Total User</div>
-              <p className="text-sm sm:text-3xl font-bold text-black my-2">
+              <p className="text-sm sm:text-5xl font-bold text-black my-2">
                 {formatNumber(Math.round(sumArray(yearlyAverageCustomers)))}
               </p>
             </div>
@@ -468,6 +468,17 @@ const AllChartSections = ({
               series={customerGrowthChart.series}
               options={{
                 ...customerGrowthChart.options,
+                grid: {
+                  show: false,
+                },
+                chart: {
+                  zoom: {
+                    enabled: false, // Disable zooming
+                  },
+                  toolbar: {
+                    show: false, // Hide the toolbar
+                  },
+                },
                 xaxis: {
                   ...customerGrowthChart.options.xaxis,
                   tickAmount: 12, // Adjust this value to change the number of ticks on the x-axis
@@ -479,16 +490,24 @@ const AllChartSections = ({
               height={300}
             />
           </Card>
-          <Card className="flex fleflex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-mdx-col">
+          <Card className="flex fleflex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-400 rounded-mdx-col">
             <div>
               <div className="text-base">Total Revenue</div>
-              <p className="text-sm sm:text-3xl font-bold text-black my-2">
+              <p className="text-sm sm:text-5xl font-bold text-black my-2">
                 {getCurrencyLabelByKey(currency)}&nbsp;
                 {formatNumber(Math.round(sumArray(yearlySales)))}
               </p>
             </div>
             <Chart
               options={{
+                chart: {
+                  zoom: {
+                    enabled: false, // Disable zooming
+                  },
+                  toolbar: {
+                    show: false, // Hide the toolbar
+                  },
+                },
                 ...revenue.options,
                 xaxis: {
                   ...revenue.options.xaxis,
@@ -504,7 +523,7 @@ const AllChartSections = ({
             />
           </Card>
 
-          <Card className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
+          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-400 rounded-md">
             <div>
               <div className="text-base">Total Cost</div>
               <p className="text-sm sm:text-3xl font-bold text-black my-2">
@@ -514,6 +533,12 @@ const AllChartSections = ({
             </div>
             <Chart
               options={{
+                zoom: {
+                  enabled: false, // Disable zooming
+                },
+                toolbar: {
+                  show: false, // Hide the toolbar
+                },
                 ...revenue.options,
                 xaxis: {
                   ...revenue.options.xaxis,
@@ -537,9 +562,9 @@ const AllChartSections = ({
             <Select
               onValueChange={(value) => handleChartSelect(value)}
               value={selectedChart}
-              className="border-solid border-[1px] border-gray-300"
+              className="border-solid border-[1px] border-gray-400"
             >
-              <SelectTrigger className="border-solid border-[1px] border-gray-300 md:w-[20%] w-full">
+              <SelectTrigger className="border-solid border-[1px] border-gray-400 md:w-[20%] w-full">
                 <SelectValue />
               </SelectTrigger>
 
@@ -817,9 +842,9 @@ const AllChartSections = ({
             <Select
               onValueChange={(value) => handleMonthSelect(value)}
               value={selectedMonth.toString()}
-              className="border-solid border-[1px] border-gray-300"
+              className="border-solid border-[1px] border-gray-400"
             >
-              <SelectTrigger className="border-solid border-[1px] border-gray-300 md:w-[20%] w-full">
+              <SelectTrigger className="border-solid border-[1px] border-gray-400 md:w-[20%] w-full">
                 <SelectValue />
               </SelectTrigger>
 

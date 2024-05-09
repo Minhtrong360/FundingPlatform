@@ -702,7 +702,7 @@ function CashFlowSection({ numberOfMonths }) {
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
+      <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
         <div className="">
           <div className=" gap-4 mb-3">
             <Select
@@ -710,7 +710,7 @@ function CashFlowSection({ numberOfMonths }) {
               value={selectedChart}
               className="border-solid border-[1px] border-gray-300"
             >
-              <SelectTrigger className="border-solid border-[1px] border-gray-300 w-full lg:w-[20%]">
+              <SelectTrigger className="bg-white border-solid border-[1px] border-gray-300 w-full lg:w-[20%]">
                 <SelectValue />
               </SelectTrigger>
 
@@ -789,7 +789,7 @@ function CashFlowSection({ numberOfMonths }) {
           <h2 className="text-lg font-semibold my-8">Cash Flow</h2>
 
           <Table
-            className="overflow-x-auto my-8 rounded-md shadow-xl"
+            className="bg-white overflow-x-auto my-8 rounded-md shadow-xl"
             size="small"
             dataSource={positionDataWithNetIncome}
             columns={positionColumns}
@@ -818,7 +818,7 @@ function CashFlowSection({ numberOfMonths }) {
             {divideMonthsIntoYearsForCashFlow().map((year, index) => (
               <TabPane tab={year.year} key={index}>
                 <Table
-                  className="overflow-auto my-8 rounded-md shadow-xl"
+                  className="bg-white overflow-auto my-8 rounded-md shadow-xl"
                   size="small"
                   dataSource={getDataSourceForYearCashFlow(year.months)}
                   columns={generateCashFlowTableColumns(year)}
@@ -831,13 +831,13 @@ function CashFlowSection({ numberOfMonths }) {
         </div>
       </div>
 
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:block hidden">
-        <section className="mb-8 sticky top-8">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
+        <section className="mb-8 sticky top-8 bg-white">
           <GroqJS datasrc={positionDataWithNetIncome} />
         </section>
       </div>
 
-      <div className="lg:hidden block">
+      <div className="xl:hidden block">
         <FloatButton
           tooltip={<div>Input values</div>}
           style={{

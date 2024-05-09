@@ -595,8 +595,7 @@ function CompanySetting() {
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-  <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
-  
+      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
         <Company
           isLoading={isLoading}
           handleSubmit={handleSubmit}
@@ -606,19 +605,17 @@ function CompanySetting() {
           handleIndustryChange={handleIndustryChange}
         />
         <AlertMsg />
-  
-  </div>
-  <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
-  <div className="">
-      {" "}
-      {/* Sử dụng lg:grid-cols-3 để chia thành 3 cột, trong đó Company component chiếm 1/3 và các div còn lại chiếm 2/3 */}
-      <LoadingButtonClick isLoading={isLoading} />
-      
-      <div className="">
-        {" "}
-        {/* Sử dụng lg:col-span-2 để các div còn lại chiếm 2/3 */}
-        <div className="flex flex-col">
-          {/* <HeroSection
+      </div>
+      <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
+        <div className="">
+          {" "}
+          {/* Sử dụng lg:grid-cols-3 để chia thành 3 cột, trong đó Company component chiếm 1/3 và các div còn lại chiếm 2/3 */}
+          <LoadingButtonClick isLoading={isLoading} />
+          <div className="">
+            {" "}
+            {/* Sử dụng lg:col-span-2 để các div còn lại chiếm 2/3 */}
+            <div className="flex flex-col">
+              {/* <HeroSection
             formData={formData}
             title={formData.name}
             description={formData.description}
@@ -632,16 +629,16 @@ function CompanySetting() {
             canClick={canClick}
           /> */}
 
-          {/* <div className="text-4xl text-blue-600 font-bold leading-tight sm:px-6 lg:px-8 sm:mt-8 mt-4 px-4">
+              {/* <div className="text-4xl text-blue-600 font-bold leading-tight sm:px-6 lg:px-8 sm:mt-8 mt-4 px-4">
             {" "}
             Preview
           </div> */}
-          {/* <hr className="" /> */}
-          <ProfileInfo company={formData} canClick={canClick} />
+              {/* <hr className="" /> */}
+              <ProfileInfo company={formData} canClick={canClick} />
 
-          {/* <hr className="mt-16 border-dashed border-gray-400" /> */}
+              {/* <hr className="mt-16 border-dashed border-gray-400" /> */}
 
-          {/* <div className="mt-11 px-4 sm:px-6 lg:px-8">
+              {/* <div className="mt-11 px-4 sm:px-6 lg:px-8">
             <Card
               title={formData.name}
               description={formData.description}
@@ -653,13 +650,11 @@ function CompanySetting() {
               setFormData={setFormData}
             />
           </div> */}
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
-
-    
   );
 }
 

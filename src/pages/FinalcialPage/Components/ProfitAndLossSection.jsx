@@ -654,7 +654,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
+      <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
         <div>
           <div className=" gap-4 mb-3">
             <Select
@@ -662,7 +662,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
               value={selectedChart}
               className="border-solid border-[1px] border-gray-300"
             >
-              <SelectTrigger className="border-solid border-[1px] border-gray-300 w-full lg:w-[20%]">
+              <SelectTrigger className="bg-white border-solid border-[1px] border-gray-300 w-full lg:w-[20%]">
                 <SelectValue />
               </SelectTrigger>
 
@@ -831,7 +831,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           </h2>
           {/* <pre>{JSON.stringify(tableData, null, 2)}</pre> */}
           <Table
-            className="overflow-auto my-8 rounded-md"
+            className="overflow-auto my-8 rounded-md bg-white"
             size="small"
             bordered
             dataSource={transposedData}
@@ -862,7 +862,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
               <TabPane tab={year.year} key={index.toString()}>
                 {/* Display table for the selected year */}
                 <Table
-                  className="overflow-auto my-8 rounded-md shadow-xl"
+                  className="bg-white overflow-auto my-8 rounded-md shadow-xl"
                   size="small"
                   dataSource={getDataSourceForYear(year.months)}
                   columns={generateTableColumns(year)}
@@ -874,13 +874,13 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
         </div>
       </div>
 
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:block hidden">
-        <section className="mb-8 sticky top-8">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
+        <section className="mb-8 sticky top-8 bg-white">
           <GroqJS datasrc={transposedData} />
         </section>
       </div>
 
-      <div className="lg:hidden block">
+      <div className="xl:hidden block">
         <FloatButton
           tooltip={<div>Input values</div>}
           style={{

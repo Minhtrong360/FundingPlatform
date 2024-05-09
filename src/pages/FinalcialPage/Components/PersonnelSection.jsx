@@ -29,6 +29,9 @@ import {
 } from "../../../components/ui/Select";
 import { useParams } from "react-router-dom";
 import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined } from "@ant-design/icons";
 
 const PersonnelSection = ({
   numberOfMonths,
@@ -195,12 +198,13 @@ const PersonnelSection = ({
         labels: {
           show: true,
           rotate: 0,
-          style: {fontFamily: "Sora, sans-serif" }, 
+          style: { fontFamily: "Sora, sans-serif" },
         },
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `${i + 1}`
-        ),
+        categories: Array.from({ length: numberOfMonths }, (_, i) => {
+          const monthIndex = (startingMonth + i - 1) % 12;
+          const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+          return `${months[monthIndex]}/${year}`;
+        }),
         title: {
           text: "Month",
           style: {
@@ -216,9 +220,9 @@ const PersonnelSection = ({
         },
         labels: {
           show: true,
-          style: { fontFamily: "Sora, sans-serif" }, 
+          style: { fontFamily: "Sora, sans-serif" },
           formatter: function (val) {
-            return Math.floor(val); // Format Y-axis labels as integers
+            return formatNumber(Math.floor(val)); // Format Y-axis labels as integers
           },
         },
         title: {
@@ -229,7 +233,11 @@ const PersonnelSection = ({
           },
         },
       },
-      legend: { position: "bottom", horizontalAlign: "right", fontFamily: "Sora, sans-serif" },
+      legend: {
+        position: "bottom",
+        horizontalAlign: "right",
+        fontFamily: "Sora, sans-serif",
+      },
       fill: {
         type: "gradient",
 
@@ -331,12 +339,112 @@ const PersonnelSection = ({
 
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 
+  const [chartStartMonth, setChartStartMonth] = useState(1);
+  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+
+  useEffect(() => {
+    const filteredSeries = tempPersonnelCostData.map((personnel) => ({
+      name: personnel.jobTitle,
+      data: personnel.monthlyCosts
+        .slice(chartStartMonth - 1, chartEndMonth)
+        .map((month) => month.cost),
+    }));
+
+    const totalPersonnelCostPerMonth = filteredSeries.reduce((acc, channel) => {
+      channel.data.forEach((cost, index) => {
+        if (!acc[index]) acc[index] = 0;
+        acc[index] += cost;
+      });
+      return acc;
+    }, []);
+
+    setPersonnelChart((prevState) => ({
+      ...prevState,
+      options: {
+        ...prevState.options,
+        xaxis: {
+          ...prevState.options.xaxis,
+          categories: Array.from(
+            { length: chartEndMonth - chartStartMonth + 1 },
+            (_, i) => {
+              const monthIndex =
+                (startingMonth + chartStartMonth - 1 + i - 1) % 12;
+              const year =
+                startingYear +
+                Math.floor((startingMonth + chartStartMonth - 1 + i - 1) / 12);
+              return `${months[monthIndex]}/${year}`;
+            }
+          ),
+        },
+      },
+      series: [
+        ...filteredSeries,
+        { name: "Total", data: totalPersonnelCostPerMonth },
+      ],
+    }));
+  }, [tempPersonnelCostData, chartStartMonth, chartEndMonth]);
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-3/4 sm:p-4 p-0">
+      <div className="w-full xl:w-3/4 sm:p-4 p-0">
         <h3 className="text-lg font-semibold mb-8">Personnel Cost Chart</h3>
+
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col shadow-xl">
+            <div className="flex justify-between items-center my-4">
+              <div className="min-w-[10vw]">
+                <label htmlFor="startMonthSelect">Start Month:</label>
+                <select
+                  id="startMonthSelect"
+                  value={chartStartMonth}
+                  onChange={(e) =>
+                    setChartStartMonth(
+                      Math.max(1, Math.min(e.target.value, chartEndMonth))
+                    )
+                  }
+                  className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                >
+                  {Array.from({ length: numberOfMonths }, (_, i) => {
+                    const monthIndex = (startingMonth + i - 1) % 12;
+                    const year =
+                      startingYear + Math.floor((startingMonth + i - 1) / 12);
+                    return (
+                      <option key={i + 1} value={i + 1}>
+                        {`${months[monthIndex]}/${year}`}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+              <div className="min-w-[10vw]">
+                <label htmlFor="endMonthSelect">End Month:</label>
+                <select
+                  id="endMonthSelect"
+                  value={chartEndMonth}
+                  onChange={(e) =>
+                    setChartEndMonth(
+                      Math.max(
+                        chartStartMonth,
+                        Math.min(e.target.value, numberOfMonths)
+                      )
+                    )
+                  }
+                  className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                >
+                  {Array.from({ length: numberOfMonths }, (_, i) => {
+                    const monthIndex = (startingMonth + i - 1) % 12;
+                    const year =
+                      startingYear + Math.floor((startingMonth + i - 1) / 12);
+                    return (
+                      <option key={i + 1} value={i + 1}>
+                        {`${months[monthIndex]}/${year}`}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+            </div>
+
             <Chart
               options={{
                 ...personnelChart.options,
@@ -345,7 +453,7 @@ const PersonnelSection = ({
                 },
                 xaxis: {
                   ...personnelChart.options.xaxis,
-                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                  // tickAmount: 12, // Set the number of ticks on the x-axis to 12
                 },
               }}
               series={personnelChart.series}
@@ -356,7 +464,7 @@ const PersonnelSection = ({
         </div>
         <h3 className="text-lg font-semibold my-4">Personnel Cost Table</h3>
         <Table
-          className="overflow-auto my-8 rounded-md"
+          className="overflow-auto my-8 rounded-md bg-white"
           size="small"
           dataSource={personnelCostTableData}
           columns={personnelCostColumns}
@@ -365,7 +473,7 @@ const PersonnelSection = ({
         />
       </div>
 
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:block hidden">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section
           aria-labelledby="personnel-heading"
           className="mb-8 sticky top-8"
@@ -534,35 +642,55 @@ const PersonnelSection = ({
                     }
                   />
                 </div>
-                <div className="flex justify-center items-center">
-                  <button
-                    className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
-                    onClick={() => removePersonnelInput(input.id)}
-                  >
-                    Remove
-                  </button>
-                </div>
               </div>
             ))}
 
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <button
-              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
-              onClick={addNewPersonnelInput}
+              className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4"
+              onClick={() => removePersonnelInput(renderPersonnelForm)}
             >
-              Add new
+              <DeleteOutlined
+                style={{
+                  fontSize: "12px",
+                  color: "#FFFFFF",
+                  marginRight: "4px",
+                }}
+              />
+              Remove
             </button>
 
             <button
-              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
+              onClick={addNewPersonnelInput}
+            >
+              <PlusOutlined
+                style={{
+                  fontSize: "12px",
+                  color: "#FFFFFF",
+                  marginRight: "4px",
+                }}
+              />
+              Add
+            </button>
+
+            <button
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
               onClick={handleSave}
             >
+              <CheckCircleOutlined
+                style={{
+                  fontSize: "12px",
+                  color: "#FFFFFF",
+                  marginRight: "4px",
+                }}
+              />
               Save
             </button>
           </div>
         </section>
       </div>
-      <div className="lg:hidden block">
+      <div className="xl:hidden block">
         <FloatButton
           tooltip={<div>Input values</div>}
           style={{
@@ -792,7 +920,7 @@ const PersonnelSection = ({
                   </div>
                   <div className="flex justify-end items-center">
                     <button
-                      className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
+                      className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4"
                       onClick={() => removePersonnelInput(input.id)}
                     >
                       Remove

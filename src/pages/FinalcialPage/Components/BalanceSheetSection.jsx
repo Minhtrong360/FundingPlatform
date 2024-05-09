@@ -839,7 +839,7 @@ function BalanceSheetSection({ numberOfMonths }) {
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
+      <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
         <div className="">
           <div className=" gap-4 mb-3">
             <Select
@@ -847,7 +847,7 @@ function BalanceSheetSection({ numberOfMonths }) {
               value={selectedChart}
               className="border-solid border-[1px] border-gray-300 "
             >
-              <SelectTrigger className="border-solid border-[1px] border-gray-300 w-full lg:w-[20%]">
+              <SelectTrigger className="bg-white border-solid border-[1px] border-gray-300 w-full lg:w-[20%]">
                 <SelectValue />
               </SelectTrigger>
 
@@ -924,7 +924,7 @@ function BalanceSheetSection({ numberOfMonths }) {
           <h2 className="text-lg font-semibold my-8">Balance Sheet</h2>
 
           <Table
-            className="overflow-auto my-8 rounded-md"
+            className="overflow-auto my-8 rounded-md bg-white"
             size="small"
             dataSource={positionDataWithNetIncome2}
             columns={positionColumns1}
@@ -952,7 +952,7 @@ function BalanceSheetSection({ numberOfMonths }) {
             {divideMonthsIntoYearsForBalanceSheet().map((year, index) => (
               <TabPane tab={year.year} key={index.toString()}>
                 <Table
-                  className="overflow-auto my-8 rounded-md shadow-xl"
+                  className="bg-white overflow-auto my-8 rounded-md shadow-xl"
                   size="small"
                   dataSource={getDataSourceForYearBalanceSheet(year.months)}
                   columns={generateBalanceSheetTableColumns(year)}
@@ -964,13 +964,13 @@ function BalanceSheetSection({ numberOfMonths }) {
         </div>
       </div>
 
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:block hidden">
-        <section className="mb-8 sticky top-8">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
+        <section className="mb-8 sticky top-8 bg-white">
           <GroqJS datasrc={positionDataWithNetIncome2} />
         </section>
       </div>
 
-      <div className="lg:hidden block">
+      <div className="xl:hidden block">
         <FloatButton
           tooltip={<div>Input values</div>}
           style={{

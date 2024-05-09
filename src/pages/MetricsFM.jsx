@@ -12,7 +12,7 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
   // const { currency } = useSelector((state) => state.durationSelect);
 
   return (
-    <div className="sm:max-w-[85rem] max-w-full px-0 py-10 lg:py-14 mx-auto">
+    <div className="sm:max-w-[85rem] max-w-full px-0  mx-auto">
       {/* Grid */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Map over cardData array */}

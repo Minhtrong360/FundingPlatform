@@ -57,7 +57,7 @@ import {
   transformRevenueDataForTable,
 } from "../../features/SaleSlice";
 import FundraisingSection from "./Components/FundraisingSections";
-import { setCostInputs } from "../../features/CostSlice";
+import { formatNumber, setCostInputs } from "../../features/CostSlice";
 import { setPersonnelInputs } from "../../features/PersonnelSlice";
 import { setInvestmentInputs } from "../../features/InvestmentSlice";
 import { setLoanInputs } from "../../features/LoanSlice";
@@ -132,7 +132,14 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       dispatch(setCurrency("USD"));
       dispatch(setCutMonth(data.DurationSelect.cutMonth));
       if (data.CustomerSection)
-        dispatch(setCustomerInputs(data.CustomerSection.customerInputs));
+        dispatch(
+          setCustomerInputs(
+            data.CustomerSection.customerInputs.map((input) => ({
+              ...input,
+              customerGrowthFrequency: "Annually",
+            }))
+          )
+        );
       if (data.SalesSection)
         dispatch(setChannelInputs(data.SalesSection.channelInputs));
       if (data.CostSection)
@@ -141,11 +148,19 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             data.CostSection.costInputs.map((input) => ({
               ...input,
               costType: "General Administrative Cost",
+              growthFrequency: "Annually",
             }))
           )
         );
       if (data.PersonnelSection)
-        dispatch(setPersonnelInputs(data.PersonnelSection.personnelInputs));
+        dispatch(
+          setPersonnelInputs(
+            data.PersonnelSection.personnelInputs.map((input) => ({
+              ...input,
+              growthSalaryFrequency: "Annually",
+            }))
+          )
+        );
       if (data.InvestmentSection)
         dispatch(setInvestmentInputs(data.InvestmentSection.investmentInputs));
       if (data.LoanSection)
@@ -170,13 +185,27 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   }, [chatbotResponse]);
 
   //CustomerState
+  const months = [
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
+  ];
 
   const { customerInputs } = useSelector((state) => state.customer);
 
   const [customerGrowthChart, setCustomerGrowthChart] = useState({
     options: {
       chart: {
-        fontFamily: 'Sora, sans-serif',
+        fontFamily: "Sora, sans-serif",
         zoom: {
           enabled: false, // Disable zooming
         },
@@ -187,32 +216,33 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         type: "area",
         height: 350,
         stacked: false,
-        
+
         animations: {
           enabled: false,
         },
       },
 
       xaxis: {
-        range: 6,
         axisTicks: {
-          show: false,
+          show: false, // Hide x-axis ticks
         },
         labels: {
           show: true,
+          rotate: 0,
           style: {
             fontFamily: "Sora, sans-serif",
           },
         },
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `Month ${i + 1}`
-        ),
+        categories: Array.from({ length: numberOfMonths }, (_, i) => {
+          const monthIndex = (startMonth + i - 1) % 12;
+          const year = startYear + Math.floor((startMonth + i - 1) / 12);
+          return `${months[monthIndex]}/${year}`;
+        }),
         title: {
           text: "Month",
           style: {
-            fontFamily: "Sora, sans-serif",
             fontSize: "12px",
+            fontFamily: "Sora, sans-serif",
           },
         },
       },
@@ -223,20 +253,27 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
         labels: {
           style: {
-            fontFamily: "Sora, sans-serif"
+            fontFamily: "Sora, sans-serif",
           },
           show: true,
           formatter: function (val) {
-            return Math.floor(val);
+            return formatNumber(Math.floor(val));
           },
         },
-        title: { text: "Customers" ,style: {
-          fontFamily: "Sora, sans-serif",
-          fontSize: "12px",
-        }},
+        title: {
+          text: "Customers",
+          style: {
+            fontFamily: "Sora, sans-serif",
+            fontSize: "12px",
+          },
         },
-      
-      legend: { position: "bottom", horizontalAlign: "right",fontFamily: "Sora, sans-serif" },
+      },
+
+      legend: {
+        position: "bottom",
+        horizontalAlign: "right",
+        fontFamily: "Sora, sans-serif",
+      },
       fill: {
         type: "gradient",
 
@@ -261,7 +298,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         "#D84FE4",
       ],
       dataLabels: { enabled: false },
-      
     },
     series: [],
   });
@@ -282,9 +318,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         toolbar: {
           show: false, // Hide the toolbar
         },
-        animation : {
+        animation: {
           enabled: false,
-        }
+        },
       },
       grid: {
         show: false,
@@ -297,7 +333,11 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         "#FF474C",
         "#D84FE4",
       ],
-      legend: { position: "bottom", horizontalAlign: "right", fontFamily: "Sora, sans-serif" },
+      legend: {
+        position: "bottom",
+        horizontalAlign: "right",
+        fontFamily: "Sora, sans-serif",
+      },
       fill: {
         type: "gradient",
         gradient: {
@@ -313,22 +353,22 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           show: false, // Hide x-axis ticks
         },
         labels: {
-          show: true, 
+          show: true,
           rotate: 0,
-          style: {   
+          style: {
             fontFamily: "Sora, sans-serif",
           },
         },
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `Month ${i + 1}`
-        ),
+        categories: Array.from({ length: numberOfMonths }, (_, i) => {
+          const monthIndex = (startMonth + i - 1) % 12;
+          const year = startYear + Math.floor((startMonth + i - 1) / 12);
+          return `${months[monthIndex]}/${year}`;
+        }),
         title: {
           text: "Month",
           style: {
-        
             fontSize: "12px",
-              fontFamily: "Sora, sans-serif", 
+            fontFamily: "Sora, sans-serif",
           },
         },
       },
@@ -343,22 +383,19 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             fontFamily: "Sora, sans-serif",
           },
           formatter: function (val) {
-            return Math.floor(val);
+            return formatNumber(Math.floor(val));
           },
         },
         title: {
-          text: "Customers",
+          text: "Amount ($)",
           style: {
             fontSize: "12px",
             fontFamily: "Sora, sans-serif",
-           
           },
         },
       },
-      
-      dataLabels: { enabled: false },
 
-      
+      dataLabels: { enabled: false },
     },
     series: [],
   });
@@ -1048,22 +1085,28 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               </ul>
             </div>
 
-            <div>
+            <div className="bg-gray-100">
               {activeTab === "overview" && (
                 <div className="w-full h-full flex flex-col lg:flex-row ">
                   {/* <div className="w-full lg:w-1/4 sm:p-4 p-0 "> */}
 
-                  <div className="w-full lg:w-3/4 sm:p-4 p-0">
+                  <div className="w-full xl:w-3/4 sm:p-4 p-0">
+                    <h2
+                      className="text-lg font-semibold mb-7 flex items-center"
+                      id="duration-heading"
+                    >
+                      Overview
+                    </h2>
                     <MetricsFM
                       customerGrowthChart={customerGrowthChart}
                       revenue={revenue}
                       numberOfMonths={numberOfMonths}
                     />
                   </div>
-                  <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:block hidden">
+                  <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
                     <DurationSelect handleSubmit={handleSubmit} />
                   </div>
-                  <div className="lg:hidden block">
+                  <div className="xl:hidden block">
                     <FloatButton
                       tooltip={<div>Input values</div>}
                       style={{

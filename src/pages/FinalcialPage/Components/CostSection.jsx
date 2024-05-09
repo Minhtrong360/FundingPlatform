@@ -186,10 +186,11 @@ const CostSection = ({
             fontFamily: "Sora, sans-serif",
           },
         },
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `${i + 1}`
-        ),
+        categories: Array.from({ length: numberOfMonths }, (_, i) => {
+          const monthIndex = (startingMonth + i - 1) % 12;
+          const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+          return `${months[monthIndex]}/${year}`;
+        }),
         title: {
           text: "Month",
           style: {
@@ -209,7 +210,7 @@ const CostSection = ({
             fontFamily: "Sora, sans-serif",
           },
           formatter: function (val) {
-            return Math.floor(val);
+            return formatNumber(Math.floor(val));
           },
         },
         title: {
@@ -345,7 +346,7 @@ const CostSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-3/4 sm:p-4 p-0">
+      <div className="w-full xl:w-3/4 sm:p-4 p-0">
         <h3 className="text-lg font-semibold mb-8">Cost Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
@@ -354,7 +355,7 @@ const CostSection = ({
                 ...costChart.options,
                 xaxis: {
                   ...costChart.options.xaxis,
-                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                  // tickAmount: 6, // Set the number of ticks on the x-axis to 12
                 },
                 stroke: {
                   width: 1, // Set the stroke width to 2
@@ -368,7 +369,7 @@ const CostSection = ({
         </div>
         <h3 className="text-lg font-semibold my-4">Cost Table</h3>
         <Table
-          className="overflow-auto my-8 rounded-md"
+          className="overflow-auto my-8 rounded-md bg-white"
           size="small"
           dataSource={transformCostDataForTable(tempCostInput, numberOfMonths)}
           columns={costColumns}
@@ -377,7 +378,7 @@ const CostSection = ({
         />
       </div>
 
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:block hidden">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section aria-labelledby="costs-heading" className="mb-8 sticky top-8">
           <h2
             className="text-lg font-semibold mb-8 flex items-center"
@@ -553,7 +554,7 @@ const CostSection = ({
         </section>
         <div className="flex justify-between items-center">
           <button
-            className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4 flex items-center"
+            className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4 flex items-center"
             onClick={() => removeCostInput(renderCostForm)}
           >
             <DeleteOutlined
@@ -567,7 +568,7 @@ const CostSection = ({
           </button>
 
           <button
-            className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 "
+            className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4 "
             onClick={addNewCostInput}
           >
             <PlusOutlined
@@ -581,7 +582,7 @@ const CostSection = ({
           </button>
 
           <button
-            className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 flex items-center"
+            className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4 flex items-center"
             onClick={handleSave}
           >
             <CheckCircleOutlined
@@ -596,7 +597,7 @@ const CostSection = ({
         </div>
       </div>
 
-      <div className="lg:hidden block">
+      <div className="xl:hidden block">
         <FloatButton
           tooltip={<div>Input values</div>}
           style={{
@@ -840,7 +841,7 @@ const CostSection = ({
 
                   <div className="flex justify-end items-center">
                     <button
-                      className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
+                      className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4"
                       onClick={() => removeCostInput(input?.id)}
                     >
                       Remove

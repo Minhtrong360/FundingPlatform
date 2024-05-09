@@ -1033,7 +1033,7 @@ function FinancialList() {
                     onClick={handleClickAddNew}
                   >
                     <PlusOutlined className="mr-1" />
-                    Add new
+                    Add
                   </button>
                 </div>
                 <div className="flex flex-col mb-8">

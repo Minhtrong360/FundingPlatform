@@ -37,6 +37,9 @@ import { supabase } from "../../../supabase";
 import { useAuth } from "../../../context/AuthContext";
 import { useParams } from "react-router-dom";
 import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined } from "@ant-design/icons";
 
 const SalesSection = ({
   numberOfMonths,
@@ -305,6 +308,31 @@ const SalesSection = ({
                 id: "allChannels",
                 stacked: false,
               },
+              xaxis: {
+                axisTicks: {
+                  show: false,
+                },
+                labels: {
+                  rotate: 0,
+                  show: true,
+                  style: {
+                    fontFamily: "Sora, sans-serif",
+                  },
+                },
+                categories: Array.from({ length: numberOfMonths }, (_, i) => {
+                  const monthIndex = (startingMonth + i - 1) % 12;
+                  const year =
+                    startingYear + Math.floor((startingMonth + i - 1) / 12);
+                  return `${months[monthIndex]}/${year}`;
+                }),
+                title: {
+                  text: "Month",
+                  style: {
+                    fontFamily: "Sora, sans-serif",
+                    fontsize: "12px",
+                  },
+                },
+              },
               title: {
                 ...prevState.options.title,
                 text: "All Channels",
@@ -324,6 +352,31 @@ const SalesSection = ({
               chart: {
                 ...prevState.options.chart,
                 id: channelSeries.name,
+              },
+              xaxis: {
+                axisTicks: {
+                  show: false,
+                },
+                labels: {
+                  rotate: 0,
+                  show: true,
+                  style: {
+                    fontFamily: "Sora, sans-serif",
+                  },
+                },
+                categories: Array.from({ length: numberOfMonths }, (_, i) => {
+                  const monthIndex = (startingMonth + i - 1) % 12;
+                  const year =
+                    startingYear + Math.floor((startingMonth + i - 1) / 12);
+                  return `${months[monthIndex]}/${year}`;
+                }),
+                title: {
+                  text: "Month",
+                  style: {
+                    fontFamily: "Sora, sans-serif",
+                    fontsize: "12px",
+                  },
+                },
               },
               title: {
                 ...prevState.options.title,
@@ -449,7 +502,7 @@ const SalesSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-3/4 sm:p-4 p-0">
+      <div className="w-full xl:w-3/4 sm:p-4 p-0">
         <h3 className="text-lg font-semibold mb-8">Revenue Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
           {revenue.charts?.map((chart, index) => (
@@ -463,7 +516,7 @@ const SalesSection = ({
 
                   xaxis: {
                     ...chart.options.xaxis,
-                    tickAmount: 12, // Ensure x-axis has 12 ticks
+                    // tickAmount: 6, // Ensure x-axis has 12 ticks
                   },
                   stroke: {
                     width: 1, // Set the stroke width to 1
@@ -479,7 +532,7 @@ const SalesSection = ({
 
         <h3 className="text-lg font-semibold my-4">Revenue by Product</h3>
         <Table
-          className="overflow-auto my-8 rounded-md"
+          className="overflow-auto my-8 rounded-md bg-white"
           size="small"
           dataSource={revenueTableData}
           columns={revenueColumns}
@@ -491,7 +544,7 @@ const SalesSection = ({
         />
       </div>
 
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:block hidden">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section aria-labelledby="sales-heading" className="mb-8 sticky top-8">
           <h2
             className="text-lg font-semibold mb-8 flex items-center"
@@ -689,35 +742,55 @@ const SalesSection = ({
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="flex justify-center items-center">
-                  <button
-                    className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
-                    onClick={() => removeChannelInput(input.id)}
-                  >
-                    Remove
-                  </button>
-                </div>
               </div>
             ))}
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <button
-              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
-              onClick={addNewChannelInput}
+              className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4"
+              onClick={() => removeChannelInput(renderChannelForm)}
             >
-              Add new
+              <DeleteOutlined
+                style={{
+                  fontSize: "12px",
+                  color: "#FFFFFF",
+                  marginRight: "4px",
+                }}
+              />
+              Remove
             </button>
 
             <button
-              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
+              onClick={addNewChannelInput}
+            >
+              <PlusOutlined
+                style={{
+                  fontSize: "12px",
+                  color: "#FFFFFF",
+                  marginRight: "4px",
+                }}
+              />
+              Add
+            </button>
+
+            <button
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
               onClick={handleSave}
             >
+              <CheckCircleOutlined
+                style={{
+                  fontSize: "12px",
+                  color: "#FFFFFF",
+                  marginRight: "4px",
+                }}
+              />
               Save
             </button>
           </div>
         </section>
       </div>
 
-      <div className="lg:hidden block">
+      <div className="xl:hidden block">
         <FloatButton
           tooltip={<div>Input values</div>}
           style={{
@@ -992,7 +1065,7 @@ const SalesSection = ({
                     </div>
                     <div className="flex justify-end items-center">
                       <button
-                        className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
+                        className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4"
                         onClick={() => removeChannelInput(input.id)}
                       >
                         Remove

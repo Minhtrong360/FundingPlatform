@@ -14,6 +14,9 @@ import {
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
 import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined } from "@ant-design/icons";
 
 const InvestmentSection = ({
   numberOfMonths,
@@ -202,10 +205,11 @@ const InvestmentSection = ({
           style: { fontFamily: "Sora, sans-serif" },
           rotate: 0,
         },
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `${i + 1}`
-        ),
+        categories: Array.from({ length: numberOfMonths }, (_, i) => {
+          const monthIndex = (startingMonth + i - 1) % 12;
+          const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+          return `${months[monthIndex]}/${year}`;
+        }),
         title: {
           text: "Month",
           style: { fontFamily: "Sora, sans-serif", fontsize: "12px" },
@@ -220,7 +224,7 @@ const InvestmentSection = ({
           style: { fontFamily: "Sora, sans-serif" },
           rotate: 0,
           formatter: function (val) {
-            return Math.floor(val);
+            return formatNumber(Math.floor(val));
           },
         },
         title: {
@@ -450,7 +454,7 @@ const InvestmentSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-3/4 sm:p-4 p-0">
+      <div className="w-full xl:w-3/4 sm:p-4 p-0">
         <h3 className="text-lg font-semibold mb-8">Investment Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
           {investmentChart?.charts?.map((series, index) => (
@@ -464,7 +468,7 @@ const InvestmentSection = ({
 
                   xaxis: {
                     ...series.options.xaxis,
-                    tickAmount: 12, // Ensure x-axis has 12 ticks
+                    // tickAmount: 6, // Ensure x-axis has 12 ticks
                   },
                   stroke: {
                     width: 1, // Set the stroke width to 1
@@ -480,7 +484,7 @@ const InvestmentSection = ({
 
         <h3 className="text-lg font-semibold my-4">Investment Table</h3>
         <Table
-          className="overflow-auto my-8 rounded-md"
+          className="overflow-auto my-8 rounded-md bg-white"
           size="small"
           dataSource={transformInvestmentDataForTable(
             tempInvestmentInputs,
@@ -497,7 +501,7 @@ const InvestmentSection = ({
         />
       </div>
 
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:block hidden">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section
           aria-labelledby="investment-heading"
           className="mb-8 sticky top-8"
@@ -630,35 +634,55 @@ const InvestmentSection = ({
                     }
                   />
                 </div>
-                <div className="flex justify-center items-center">
-                  <button
-                    className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
-                    onClick={() => removeInvestmentInput(input?.id)}
-                  >
-                    Remove
-                  </button>
-                </div>
               </div>
             ))}
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <button
-              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
-              onClick={addNewInvestmentInput}
+              className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4"
+              onClick={() => removeInvestmentInput(renderInvestmentForm)}
             >
-              Add new
+              <DeleteOutlined
+                style={{
+                  fontSize: "12px",
+                  color: "#FFFFFF",
+                  marginRight: "4px",
+                }}
+              />
+              Remove
             </button>
 
             <button
-              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
+              onClick={addNewInvestmentInput}
+            >
+              <PlusOutlined
+                style={{
+                  fontSize: "12px",
+                  color: "#FFFFFF",
+                  marginRight: "4px",
+                }}
+              />
+              Add
+            </button>
+
+            <button
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
               onClick={handleSave}
             >
+              <CheckCircleOutlined
+                style={{
+                  fontSize: "12px",
+                  color: "#FFFFFF",
+                  marginRight: "4px",
+                }}
+              />
               Save
             </button>
           </div>
         </section>
       </div>
 
-      <div className="lg:hidden block">
+      <div className="xl:hidden block">
         <FloatButton
           tooltip={<div>Input values</div>}
           style={{
@@ -853,7 +877,7 @@ const InvestmentSection = ({
                   </div>
                   <div className="flex justify-end items-center">
                     <button
-                      className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
+                      className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4"
                       onClick={() => removeInvestmentInput(input?.id)}
                     >
                       Remove

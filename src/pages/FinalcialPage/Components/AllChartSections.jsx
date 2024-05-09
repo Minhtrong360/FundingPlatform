@@ -89,9 +89,12 @@ const AllChartSections = ({
     dispatch(setCogsData(cogsByChannelAndProduct));
   }, [customerGrowthData, channelInputs, numberOfMonths]);
 
-  const { incomeTax: incomeTaxRate, startingCashBalance } = useSelector(
-    (state) => state.durationSelect
-  );
+  const {
+    incomeTax: incomeTaxRate,
+    startingCashBalance,
+    startMonth,
+    startYear,
+  } = useSelector((state) => state.durationSelect);
 
   const { costData, costInputs } = useSelector((state) => state.cost);
 
@@ -452,6 +455,21 @@ const AllChartSections = ({
   );
 
   const { currency } = useSelector((state) => state.durationSelect);
+  const months = [
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
+  ];
+
   return (
     <div className="flex flex-col">
       <main className="flex flex-1 flex-col gap-4  mb-4 md:gap-8 ">
@@ -481,7 +499,12 @@ const AllChartSections = ({
                 },
                 xaxis: {
                   ...customerGrowthChart.options.xaxis,
-                  tickAmount: 12, // Adjust this value to change the number of ticks on the x-axis
+                  categories: Array.from({ length: numberOfMonths }, (_, i) => {
+                    const monthIndex = (startMonth + i - 1) % 12;
+                    const year =
+                      startYear + Math.floor((startMonth + i - 1) / 12);
+                    return `${months[monthIndex]}/${year}`;
+                  }),
                 },
                 stroke: {
                   width: 1, // Set the stroke width to 1
@@ -511,7 +534,12 @@ const AllChartSections = ({
                 ...revenue.options,
                 xaxis: {
                   ...revenue.options.xaxis,
-                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                  categories: Array.from({ length: numberOfMonths }, (_, i) => {
+                    const monthIndex = (startMonth + i - 1) % 12;
+                    const year =
+                      startYear + Math.floor((startMonth + i - 1) / 12);
+                    return `${months[monthIndex]}/${year}`;
+                  }),
                 },
                 stroke: {
                   width: 1, // Set the stroke width to 1
@@ -522,7 +550,6 @@ const AllChartSections = ({
               height={300}
             />
           </Card>
-
           <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
             <div>
               <div className="text-base">Total Cost</div>
@@ -542,7 +569,6 @@ const AllChartSections = ({
                 ...revenue.options,
                 xaxis: {
                   ...revenue.options.xaxis,
-                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
                 },
                 stroke: {
                   width: 1, // Set the stroke width to 1
@@ -564,7 +590,7 @@ const AllChartSections = ({
               value={selectedChart}
               className="border-solid border-[1px] border-gray-200"
             >
-              <SelectTrigger className="border-solid border-[1px] border-gray-200 md:w-[20%] w-full">
+              <SelectTrigger className="bg-white border-solid border-[1px] border-gray-200 md:w-[20%] w-full">
                 <SelectValue />
               </SelectTrigger>
 

@@ -20,6 +20,9 @@ import { useAuth } from "../../../context/AuthContext";
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
 import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined } from "@ant-design/icons";
 
 const FundraisingSection = ({
   numberOfMonths,
@@ -134,7 +137,13 @@ const FundraisingSection = ({
 
   const [fundraisingChart, setFundraisingChart] = useState({
     options: {
-      chart: { id: "fundraising-chart", type: "bar", height: 350, toolbar: { show: false }, zoom: { enabled: false } },
+      chart: {
+        id: "fundraising-chart",
+        type: "bar",
+        height: 350,
+        toolbar: { show: false },
+        zoom: { enabled: false },
+      },
       grid: { show: false },
       colors: [
         "#00A2FF",
@@ -154,10 +163,11 @@ const FundraisingSection = ({
           },
           rotate: 0,
         },
-        categories: Array.from(
-          { length: numberOfMonths },
-          (_, i) => `${i + 1}`
-        ),
+        categories: Array.from({ length: numberOfMonths }, (_, i) => {
+          const monthIndex = (startingMonth + i - 1) % 12;
+          const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+          return `${months[monthIndex]}/${year}`;
+        }),
         title: {
           text: "Month",
           style: {
@@ -168,14 +178,14 @@ const FundraisingSection = ({
       },
       yaxis: {
         axisBorder: {
-          show: true, 
+          show: true,
         },
         labels: {
           style: {
             fontFamily: "Sora, sans-serif",
           },
           formatter: function (val) {
-            return Math.floor(val);
+            return formatNumber(Math.floor(val));
           },
         },
         title: {
@@ -186,7 +196,11 @@ const FundraisingSection = ({
           },
         },
       },
-      legend: { position: "bottom", horizontalAlign: "right", fontFamily: "Sora, sans-serif" },
+      legend: {
+        position: "bottom",
+        horizontalAlign: "right",
+        fontFamily: "Sora, sans-serif",
+      },
       fill: {
         type: "gradient",
 
@@ -302,7 +316,7 @@ const FundraisingSection = ({
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-3/4 sm:p-4 p-0">
+      <div className="w-full xl:w-3/4 sm:p-4 p-0">
         <h3 className="text-lg font-semibold mb-8">Fundraising Chart</h3>
 
         <div className="grid md:grid-cols-2 gap-6">
@@ -312,7 +326,7 @@ const FundraisingSection = ({
                 ...fundraisingChart.options,
                 xaxis: {
                   ...fundraisingChart.options.xaxis,
-                  tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                  // tickAmount: 6, // Set the number of ticks on the x-axis to 12
                 },
               }}
               series={fundraisingChart.series}
@@ -324,7 +338,7 @@ const FundraisingSection = ({
 
         <h3 className="text-lg font-semibold my-4">Fundraising Table</h3>
         <Table
-          className="overflow-auto my-8 rounded-md"
+          className="overflow-auto my-8 rounded-md bg-white"
           size="small"
           dataSource={transformFundraisingDataForTable(
             tempFundraisingInputs,
@@ -336,7 +350,7 @@ const FundraisingSection = ({
         />
       </div>
 
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:block hidden">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section
           aria-labelledby="fundraising-heading"
           className="mb-8 sticky top-8"
@@ -489,35 +503,56 @@ const FundraisingSection = ({
                     }
                   />
                 </div>
-                <div className="flex justify-center items-center">
-                  <button
-                    className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
-                    onClick={() => removeFundraisingInput(input?.id)}
-                  >
-                    Remove
-                  </button>
-                </div>
               </div>
             ))}
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <button
-              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
-              onClick={addNewFundraisingInput}
+              className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4"
+              onClick={() => removeFundraisingInput(selectedFundraisingId)}
             >
-              Add new
+              {" "}
+              <DeleteOutlined
+                style={{
+                  fontSize: "12px",
+                  color: "#FFFFFF",
+                  marginRight: "4px",
+                }}
+              />
+              Remove
             </button>
 
             <button
-              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
+              onClick={addNewFundraisingInput}
+            >
+              <PlusOutlined
+                style={{
+                  fontSize: "12px",
+                  color: "#FFFFFF",
+                  marginRight: "4px",
+                }}
+              />
+              Add
+            </button>
+
+            <button
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
               onClick={handleSave}
             >
+              <CheckCircleOutlined
+                style={{
+                  fontSize: "12px",
+                  color: "#FFFFFF",
+                  marginRight: "4px",
+                }}
+              />
               Save
             </button>
           </div>
         </section>
       </div>
 
-      <div className="lg:hidden block">
+      <div className="xl:hidden block">
         <FloatButton
           tooltip={<div>Input values</div>}
           style={{
@@ -728,7 +763,7 @@ const FundraisingSection = ({
                   </div>
                   <div className="flex justify-end items-center">
                     <button
-                      className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
+                      className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4"
                       onClick={() => removeFundraisingInput(input?.id)}
                     >
                       Remove

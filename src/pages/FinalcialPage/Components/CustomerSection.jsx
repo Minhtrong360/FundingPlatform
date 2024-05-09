@@ -36,7 +36,13 @@ import {
   SelectItem,
 } from "../../../components/ui/Select";
 import { useParams } from "react-router-dom";
-import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import {
+  CheckCircleOutlined,
+  DeleteOutlined,
+  FileOutlined,
+  PlusCircleOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 
 const CustomerSection = React.memo(
   ({
@@ -92,11 +98,10 @@ const CustomerSection = React.memo(
       setTempCustomerInputs([...tempCustomerInputs, newCustomer]);
       setRenderCustomerForm(newId.toString());
     };
-    console.log("RenderCustomerForm", renderCustomerForm);
 
     const removeCustomerInput = (id) => {
       const indexToRemove = tempCustomerInputs.findIndex(
-        (input) => input?.id === id
+        (input) => input?.id == id
       );
       if (indexToRemove !== -1) {
         const newInputs = [
@@ -205,8 +210,8 @@ const CustomerSection = React.memo(
       }),
     ];
 
-    const handleSelectChange = (value) => {
-      setRenderCustomerForm(value);
+    const handleSelectChange = (event) => {
+      setRenderCustomerForm(event.target.value);
     };
 
     const handleSave = () => {
@@ -364,6 +369,32 @@ const CustomerSection = React.memo(
                   id: "allChannels",
                   stacked: false,
                 },
+                xaxis: {
+                  axisTicks: {
+                    show: false, // Hide x-axis ticks
+                  },
+                  labels: {
+                    show: true,
+                    rotate: 0,
+                    style: {
+                      fontFamily: "Sora, sans-serif",
+                    },
+                  },
+                  categories: Array.from({ length: numberOfMonths }, (_, i) => {
+                    const monthIndex = (startMonth + i - 1) % 12;
+                    const year =
+                      startYear + Math.floor((startMonth + i - 1) / 12);
+                    return `${months[monthIndex]}/${year}`;
+                  }),
+                  title: {
+                    text: "Month",
+                    style: {
+                      fontSize: "12px",
+                      fontFamily: "Sora, sans-serif",
+                    },
+                  },
+                },
+
                 title: {
                   ...prevState.options.title,
                   text: "All Channels",
@@ -397,7 +428,10 @@ const CustomerSection = React.memo(
                   ...prevState.options.xaxis,
                   categories: Array.from(
                     { length: yearlyTotalData.length },
-                    (_, index) => `Year ${index + 1}`
+                    (_, i) => {
+                      const year = startYear + i;
+                      return `${year}`;
+                    }
                   ), // Creating categories for each year
                 },
                 yaxis: [
@@ -407,7 +441,7 @@ const CustomerSection = React.memo(
                     },
                     seriesName: "Yearly Total",
                     labels: {
-                      formatter: (value) => `${value.toFixed(0)}`, // No decimals for total
+                      formatter: (value) => `${formatNumber(value.toFixed(0))}`, // No decimals for total
                     },
                   },
                   {
@@ -454,8 +488,11 @@ const CustomerSection = React.memo(
                   ...prevState.options.xaxis,
                   categories: Array.from(
                     { length: yearlyTotalData.length },
-                    (_, index) => `Year ${index + 1}`
-                  ), // Creating categories for each year
+                    (_, i) => {
+                      const year = startYear + i;
+                      return `${year}`;
+                    }
+                  ),
                 },
               },
               series: channelYearlyTotals, // Yearly totals per channel
@@ -467,6 +504,31 @@ const CustomerSection = React.memo(
                 chart: {
                   ...prevState.options.chart,
                   id: channelSeries.name,
+                },
+                xaxis: {
+                  axisTicks: {
+                    show: false, // Hide x-axis ticks
+                  },
+                  labels: {
+                    show: true,
+                    rotate: 0,
+                    style: {
+                      fontFamily: "Sora, sans-serif",
+                    },
+                  },
+                  categories: Array.from({ length: numberOfMonths }, (_, i) => {
+                    const monthIndex = (startMonth + i - 1) % 12;
+                    const year =
+                      startYear + Math.floor((startMonth + i - 1) / 12);
+                    return `${months[monthIndex]}/${year}`;
+                  }),
+                  title: {
+                    text: "Month",
+                    style: {
+                      fontSize: "12px",
+                      fontFamily: "Sora, sans-serif",
+                    },
+                  },
                 },
                 title: {
                   ...prevState.options.title,
@@ -499,9 +561,10 @@ const CustomerSection = React.memo(
 
     const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 
+    console.log("tempCustomerInputs", tempCustomerInputs);
     return (
       <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full lg:w-3/4 sm:p-4 p-0 ">
+        <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
           <h3 className="text-lg font-semibold mb-8">Customer Chart</h3>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -515,7 +578,7 @@ const CustomerSection = React.memo(
                     ...chart.options,
                     xaxis: {
                       ...chart.options.xaxis,
-                      tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                      // tickAmount: 12, // Set the number of ticks on the x-axis to 12
                     },
                     stroke: {
                       width: 1, // Set the stroke width to 1
@@ -529,23 +592,21 @@ const CustomerSection = React.memo(
             ))}
           </div>
 
-          <div className="my-8">
-            <h3 className="text-lg font-semibold">Customer Table</h3>
-            <Table
-              className="overflow-auto  my-8 rounded-md"
-              size="small"
-              dataSource={customerTableData}
-              columns={customerColumns}
-              pagination={false}
-              bordered
-              rowClassName={(record) =>
-                record.key === record.channelName ? "font-bold" : ""
-              }
-            />
-          </div>
+          <h3 className="text-lg font-semibold my-4">Customer Table</h3>
+          <Table
+            className="bg-white overflow-auto  my-8 rounded-md"
+            size="small"
+            dataSource={customerTableData}
+            columns={customerColumns}
+            pagination={false}
+            bordered
+            rowClassName={(record) =>
+              record.key === record.channelName ? "font-bold" : ""
+            }
+          />
         </div>
 
-        <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:block hidden">
+        <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
           <section
             aria-labelledby="customers-heading"
             className="mb-8 sticky top-8"
@@ -558,29 +619,24 @@ const CustomerSection = React.memo(
                 Customer channel{" "}
               </h2>
             </Tooltip>
+
             <div>
               <label
                 htmlFor="selectedChannel"
                 className="block my-4 text-base  darkTextWhite"
               ></label>
-              <Select
+              <select
                 id="selectedChannel"
                 className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
                 value={renderCustomerForm}
-                onValueChange={(value) => handleSelectChange(value)}
+                onChange={handleSelectChange}
               >
-                <SelectTrigger className="border-solid border-[1px] border-gray-300">
-                  <SelectValue placeholder="All" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  <SelectItem value="all">All</SelectItem>
-                  {tempCustomerInputs.map((input) => (
-                    <SelectItem key={input?.id} value={input?.id}>
-                      {input?.channelName}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                {tempCustomerInputs.map((input) => (
+                  <option key={input?.id} value={input?.id}>
+                    {input?.channelName}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {tempCustomerInputs
@@ -759,36 +815,57 @@ const CustomerSection = React.memo(
                       disabled
                     />
                   </div>
-                  <div className="flex justify-center items-center">
-                    <button
-                      className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
-                      onClick={() => removeCustomerInput(input.id)}
-                    >
-                      Remove
-                    </button>
-                  </div>
                 </div>
               ))}
 
             <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div className="flex justify-center items-center">
+                <button
+                  className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4"
+                  onClick={() => removeCustomerInput(renderCustomerForm)}
+                >
+                  <DeleteOutlined
+                    style={{
+                      fontSize: "12px",
+                      color: "#FFFFFF",
+                      marginRight: "4px",
+                    }}
+                  />
+                  Remove
+                </button>
+              </div>
               <button
-                className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
+                className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
                 onClick={handleAddNewCustomer}
               >
-                Add new
+                <PlusOutlined
+                  style={{
+                    fontSize: "12px",
+                    color: "#FFFFFF",
+                    marginRight: "4px",
+                  }}
+                />
+                Add
               </button>
 
               <button
-                className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
+                className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
                 onClick={handleSave}
               >
+                <CheckCircleOutlined
+                  style={{
+                    fontSize: "12px",
+                    color: "#FFFFFF",
+                    marginRight: "4px",
+                  }}
+                />
                 Save
               </button>
             </div>
           </section>
         </div>
 
-        <div className="lg:hidden block">
+        <div className="xl:hidden block">
           <FloatButton
             tooltip={<div>Input values</div>}
             style={{
@@ -1066,7 +1143,7 @@ const CustomerSection = React.memo(
                     </div>
                     <div className="flex justify-end items-center">
                       <button
-                        className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
+                        className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4"
                         onClick={() => removeCustomerInput(input.id)}
                       >
                         Remove
@@ -1077,14 +1154,14 @@ const CustomerSection = React.memo(
 
               {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <button
-                  className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
+                  className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
                   onClick={handleAddNewCustomer}
                 >
                   Add new
                 </button>
 
                 <button
-                  className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
+                  className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
                   onClick={handleSave}
                 >
                   Save

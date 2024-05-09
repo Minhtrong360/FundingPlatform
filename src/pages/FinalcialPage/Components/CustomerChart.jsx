@@ -1,6 +1,8 @@
 import React from "react";
 import Chart from "react-apexcharts";
 import { Col, Card } from "antd";
+import { formatNumber } from "../../../features/CostSlice";
+import { useSelector } from "react-redux";
 
 const CustomChart = ({
   numberOfMonths,
@@ -10,6 +12,27 @@ const CustomChart = ({
   RenderData,
   title,
 }) => {
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+
+  const months = [
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
+  ];
+
+  const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  const startingYear = startYear; // Năm bắt đầu từ 24
   const chartOptions = {
     chart: {
       fontFamily: "Sora, sans-serif",
@@ -30,17 +53,22 @@ const CustomChart = ({
     //     stops: [0, 90, 100],
     //   },
     // },
-    
+
     colors: ["#00A2FF", "#14F584", "#FFB303", "#DBFE01", "#FF474C", "#D84FE4"],
     xaxis: {
-      categories: Array.from({ length: numberOfMonths }, (_, i) => `${i + 1}`),
+      categories: Array.from({ length: numberOfMonths }, (_, i) => {
+        const monthIndex = (startingMonth + i - 1) % 12;
+        const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+        return `${months[monthIndex]}/${year}`;
+      }),
+      // tickAmount: 6, // Set the number of ticks on the x-axis to 12
+
       axisTicks: {
         show: false, // Hide x-axis ticks
       },
       labels: {
-        rotate:0,
+        rotate: 0,
         style: {
-          
           fontFamily: "Sora, sans-serif",
         },
       },
@@ -50,7 +78,6 @@ const CustomChart = ({
           fontSize: "12px",
           fontFamily: "Sora, sans-serif",
         },
-      
       },
     },
     yaxis: {
@@ -63,19 +90,22 @@ const CustomChart = ({
         },
         show: true, // Hide y-axis labels
         formatter: function (val) {
-          return Math.floor(val);
+          return formatNumber(Math.floor(val));
         },
       },
-      title: { text: "Customers",
-      style: {
-        
-        fontSize: "12px",
-        fontFamily: "Sora, sans-serif",
-      }
-       },
-     
+      title: {
+        text: "Customers",
+        style: {
+          fontSize: "12px",
+          fontFamily: "Sora, sans-serif",
+        },
+      },
     },
-    legend: { position: "bottom", horizontalAlign: "right", fontFamily: "Sora, sans-serif" },
+    legend: {
+      position: "bottom",
+      horizontalAlign: "right",
+      fontFamily: "Sora, sans-serif",
+    },
     fill: {
       type: "gradient",
 
@@ -87,7 +117,7 @@ const CustomChart = ({
         stops: [0, 90, 100],
       },
     },
-    stroke: { curve: "smooth", width:1 },
+    stroke: { curve: "smooth", width: 1 },
     // colors: ["#00A2FF", "#14F584", "#FFB303", "#DBFE01", "#FF474C", "#D84FE4"],
     dataLabels: { enabled: false },
   };
@@ -99,7 +129,7 @@ const CustomChart = ({
             ...chartOptions,
             chart: { ...chartOptions.chart, id: id },
             dataLabels: { enabled: false },
-            
+
             colors: [
               "#00A2FF",
               "#14F584",
@@ -108,10 +138,21 @@ const CustomChart = ({
               "#FF474C",
               "#D84FE4",
             ],
-            stroke : {
+            stroke: {
               width: 1,
             },
-            yaxis: { title: { text: yaxisTitle } },
+            yaxis: {
+              title: { text: yaxisTitle },
+              labels: {
+                style: {
+                  fontFamily: "Sora, sans-serif",
+                },
+                show: true, // Hide y-axis labels
+                formatter: function (val) {
+                  return formatNumber(Math.floor(val));
+                },
+              },
+            },
           }}
           series={[
             {

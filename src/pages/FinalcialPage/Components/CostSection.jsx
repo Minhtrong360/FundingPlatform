@@ -184,7 +184,6 @@ const CostSection = ({
           show: true,
           style: {
             fontFamily: "Sora, sans-serif",
-          
           },
         },
         categories: Array.from(
@@ -221,7 +220,11 @@ const CostSection = ({
           },
         },
       },
-      legend: { position: "bottom", horizontalAlign: "right", fontFamily: "Sora, sans-serif" },
+      legend: {
+        position: "bottom",
+        horizontalAlign: "right",
+        fontFamily: "Sora, sans-serif",
+      },
       // fill: { type: "solid" },
       dataLabels: { enabled: false },
       stroke: { curve: "smooth", width: 1 },
@@ -545,53 +548,52 @@ const CostSection = ({
                     </SelectContent>
                   </Select>
                 </div>
-
-                <div className="flex justify-between items-center">
-                  <button
-                    className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4 flex items-center"
-                    onClick={() => removeCostInput(input?.id)}
-                  >
-                    <DeleteOutlined
-                      style={{
-                        fontSize: "12px",
-                        color: "#FFFFFF",
-                        marginRight: "4px",
-                      }}
-                    />
-                    Remove
-                  </button>
-
-                  <button
-                    className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 "
-                    onClick={addNewCostInput}
-                  >
-                    <PlusOutlined
-                      style={{
-                        fontSize: "12px",
-                        color: "#FFFFFF",
-                        marginRight: "4px",
-                      }}
-                    />
-                    Add
-                  </button>
-
-                  <button
-                    className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 flex items-center"
-                    onClick={handleSave}
-                  >
-                    <CheckCircleOutlined
-                      style={{
-                        fontSize: "12px",
-                        color: "#FFFFFF",
-                        marginRight: "4px",
-                      }}
-                    />
-                    Save
-                  </button>
-                </div>
               </div>
             ))}
         </section>
+        <div className="flex justify-between items-center">
+          <button
+            className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4 flex items-center"
+            onClick={() => removeCostInput(renderCostForm)}
+          >
+            <DeleteOutlined
+              style={{
+                fontSize: "12px",
+                color: "#FFFFFF",
+                marginRight: "4px",
+              }}
+            />
+            Remove
+          </button>
+
+          <button
+            className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 "
+            onClick={addNewCostInput}
+          >
+            <PlusOutlined
+              style={{
+                fontSize: "12px",
+                color: "#FFFFFF",
+                marginRight: "4px",
+              }}
+            />
+            Add
+          </button>
+
+          <button
+            className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 flex items-center"
+            onClick={handleSave}
+          >
+            <CheckCircleOutlined
+              style={{
+                fontSize: "12px",
+                color: "#FFFFFF",
+                marginRight: "4px",
+              }}
+            />
+            Save
+          </button>
+        </div>
       </div>
 
       <div className="lg:hidden block">

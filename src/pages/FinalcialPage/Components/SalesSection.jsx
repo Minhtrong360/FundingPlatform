@@ -36,7 +36,7 @@ import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { supabase } from "../../../supabase";
 import { useAuth } from "../../../context/AuthContext";
 import { useParams } from "react-router-dom";
-import { FileOutlined } from "@ant-design/icons";
+import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
 
 const SalesSection = ({
   numberOfMonths,
@@ -466,7 +466,7 @@ const SalesSection = ({
                     tickAmount: 12, // Ensure x-axis has 12 ticks
                   },
                   stroke: {
-                    width: 2, // Set the stroke width to 1
+                    width: 1, // Set the stroke width to 1
                   },
                 }}
                 series={chart.series}
@@ -505,25 +505,19 @@ const SalesSection = ({
               htmlFor="selectedChannel"
               className="block my-4 text-base darkTextWhite"
             ></label>
-
-            <Select
+            <select
               id="selectedChannel"
               className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
               value={renderChannelForm}
-              onValueChange={(value) => handleChannelChange(value)}
+              onChange={handleChannelChange}
             >
-              <SelectTrigger className="border-solid border-[1px] border-gray-300">
-                <SelectValue placeholder="All" />
-              </SelectTrigger>
-              <SelectContent position="popper">
-                <SelectItem value="all">All</SelectItem>
-                {tempChannelInputs.map((input) => (
-                  <SelectItem key={input?.id} value={input?.id}>
-                    {`${input.productName} - ${input.selectedChannel}`}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              <option value="all">All</option>
+              {tempChannelInputs.map((input) => (
+                <option key={input?.id} value={input?.id}>
+                  {`${input.productName} - ${input.selectedChannel}`}
+                </option>
+              ))}
+            </select>
           </div>
 
           {tempChannelInputs
@@ -695,15 +689,7 @@ const SalesSection = ({
                     </SelectContent>
                   </Select>
                 </div>
-                <div
-                  style={{ display: "flex", justifyContent: "space-between" }}
-                >
-                  <button
-                    className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
-                    onClick={addNewChannelInput}
-                  >
-                    Add new
-                  </button>
+                <div className="flex justify-center items-center">
                   <button
                     className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
                     onClick={() => removeChannelInput(input.id)}
@@ -713,6 +699,21 @@ const SalesSection = ({
                 </div>
               </div>
             ))}
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <button
+              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
+              onClick={addNewChannelInput}
+            >
+              Add new
+            </button>
+
+            <button
+              className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4"
+              onClick={handleSave}
+            >
+              Save
+            </button>
+          </div>
         </section>
       </div>
 
@@ -772,7 +773,15 @@ const SalesSection = ({
               className="text-lg font-semibold mb-8 flex items-center"
               id="sales-heading"
             >
-              Sales Section
+              Sales Section{" "}
+              <span className="flex justify-center items-center">
+                <PlusCircleOutlined
+                  className="ml-2 text-blue-500"
+                  size="large"
+                  style={{ fontSize: "24px" }}
+                  onClick={addNewChannelInput}
+                />
+              </span>
             </h2>
 
             <div>
@@ -981,18 +990,7 @@ const SalesSection = ({
                         </SelectContent>
                       </Select>
                     </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <button
-                        className="bg-blue-600 text-white py-2 px-4 text-sm rounded mt-4 mr-4"
-                        onClick={addNewChannelInput}
-                      >
-                        Add new
-                      </button>
+                    <div className="flex justify-end items-center">
                       <button
                         className="bg-red-600 text-white py-2 px-4 rounded text-sm mt-4"
                         onClick={() => removeChannelInput(input.id)}

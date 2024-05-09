@@ -1,4 +1,12 @@
-import { Table, Tabs, Tooltip, message } from "antd";
+import {
+  Button,
+  FloatButton,
+  Modal,
+  Table,
+  Tabs,
+  Tooltip,
+  message,
+} from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -44,7 +52,7 @@ import { calculateProfitAndLoss } from "../../../features/ProfitAndLossSlice";
 import CustomChart from "./CustomerChart";
 import SelectField from "../../../components/SelectField";
 import { setCutMonth } from "../../../features/DurationSlice";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import { FileOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import GroqJS from "./GroqJson";
 import Groq from "./Groq";
 import Perflexity from "./Perflexity";
@@ -827,6 +835,7 @@ function BalanceSheetSection({ numberOfMonths }) {
 
   const [activeTab, setActiveTab] = useState(0); // State to track active tab
   const { TabPane } = Tabs; // Destructure TabPane from Tabs
+  const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
@@ -923,7 +932,7 @@ function BalanceSheetSection({ numberOfMonths }) {
             bordered
           />
 
-          <div className="w-full md:w-[20%] my-5">
+          <div className="w-full lg:w-[20%] md:w-[50%] my-5">
             <SelectField
               label="Select Cut Month:"
               id="Select Cut Month:"
@@ -955,11 +964,58 @@ function BalanceSheetSection({ numberOfMonths }) {
         </div>
       </div>
 
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
+      <div className="w-full lg:w-1/4 sm:p-4 p-0 lg:block hidden">
         <section className="mb-8 sticky top-8">
           <GroqJS datasrc={positionDataWithNetIncome2} />
         </section>
       </div>
+
+      <div className="lg:hidden block">
+        <FloatButton
+          tooltip={<div>Input values</div>}
+          style={{
+            position: "fixed",
+            bottom: "30px",
+            right: "30px",
+          }}
+          onClick={() => {
+            setIsInputFormOpen(true);
+          }}
+        >
+          <Button type="primary" shape="circle" icon={<FileOutlined />} />
+        </FloatButton>
+      </div>
+
+      {isInputFormOpen && (
+        <Modal
+          // title="Customer channel"
+          visible={isInputFormOpen}
+          onCancel={() => {
+            setIsInputFormOpen(false);
+          }}
+          cancelText="Close"
+          cancelButtonProps={{
+            style: {
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          okButtonProps={{
+            style: {
+              display: "none",
+              background: "#2563EB",
+              borderColor: "#2563EB",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          centered={true}
+          zIndex={50}
+        >
+          <GroqJS datasrc={positionDataWithNetIncome2} />
+        </Modal>
+      )}
     </div>
   );
 }

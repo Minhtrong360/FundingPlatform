@@ -470,7 +470,7 @@ const AllChartSections = ({
     "12",
   ];
   const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+  const [chartEndMonth, setChartEndMonth] = useState(6);
 
   return (
     <div className="flex flex-col">

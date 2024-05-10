@@ -145,7 +145,7 @@ const FundraisingSection = ({
         zoom: { enabled: false },
         animations: {
           enabled: false,
-        }
+        },
       },
       grid: { show: false },
       colors: [
@@ -292,7 +292,7 @@ const FundraisingSection = ({
     dispatch(setFundraisingTableData(tableData));
   }, []);
   const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+  const [chartEndMonth, setChartEndMonth] = useState(6);
 
   useEffect(() => {
     const transformedData = transformFundraisingDataForTable(
@@ -345,7 +345,7 @@ const FundraisingSection = ({
         <h3 className="text-lg font-semibold mb-8">Fundraising Chart</h3>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col shadow-xl">
+          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
             <div className="flex justify-between items-center">
               <div className="min-w-[10vw]">
                 <label htmlFor="startMonthSelect">Start Month:</label>

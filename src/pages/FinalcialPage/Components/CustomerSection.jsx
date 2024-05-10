@@ -303,7 +303,7 @@ const CustomerSection = React.memo(
     }, [isSaved]);
 
     const [chartStartMonth, setChartStartMonth] = useState(1);
-    const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+    const [chartEndMonth, setChartEndMonth] = useState(6);
 
     useEffect(() => {
       const startIdx = chartStartMonth - 1; // Chỉ số bắt đầu cho mảng, dựa trên chartStartMonth
@@ -352,7 +352,17 @@ const CustomerSection = React.memo(
       });
 
       // Calculate total customers per month for all channels
-      const totalCustomersPerMonth = seriesData2.reduce((acc, channel) => {
+      const totalCustomersPerMonth = seriesData.reduce((acc, channel) => {
+        channel.data.forEach((customers, index) => {
+          if (!acc[index]) {
+            acc[index] = 0;
+          }
+          acc[index] += customers;
+        });
+        return acc;
+      }, []);
+      // Calculate total customers per month for all channels
+      const totalCustomersPerMonth2 = seriesData2.reduce((acc, channel) => {
         channel.data.forEach((customers, index) => {
           if (!acc[index]) {
             acc[index] = 0;
@@ -372,7 +382,7 @@ const CustomerSection = React.memo(
       }));
 
       // Tính tổng cho năm đầu tiên từ tháng bắt đầu đến hết năm
-      const firstYearTotal = totalCustomersPerMonth
+      const firstYearTotal = totalCustomersPerMonth2
         .slice(startIndex, monthsInFirstYear)
         .reduce((sum, current) => sum + current, 0);
       yearlyTotalData.push(firstYearTotal);
@@ -387,8 +397,8 @@ const CustomerSection = React.memo(
       startIndex += monthsInFirstYear;
 
       // Tính tổng cho các năm tiếp theo, mỗi lần tính cho 12 tháng
-      while (startIndex < totalCustomersPerMonth.length) {
-        const yearlyTotal = totalCustomersPerMonth
+      while (startIndex < totalCustomersPerMonth2.length) {
+        const yearlyTotal = totalCustomersPerMonth2
           .slice(startIndex, startIndex + 12)
           .reduce((sum, current) => sum + current, 0);
         yearlyTotalData.push(yearlyTotal);

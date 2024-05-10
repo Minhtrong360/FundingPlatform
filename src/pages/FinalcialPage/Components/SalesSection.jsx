@@ -267,7 +267,7 @@ const SalesSection = ({
 
   //RevenueChart
   const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+  const [chartEndMonth, setChartEndMonth] = useState(6);
 
   useEffect(() => {
     if (tempRevenueData) {

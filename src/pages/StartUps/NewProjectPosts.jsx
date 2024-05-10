@@ -244,9 +244,9 @@ const NewProjectPosts = ({ location }) => {
   ];
 
   return (
-    <div className="max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto my-12">
+    <div className="px-4 sm:px-6 lg:px-8 mx-auto my-12">
       <Header />
-      <div className="max-w-[85rem] px-3 py-2 sm:px-6 lg:px-8 lg:py-1 mx-auto">
+      <div className="px-3 py-2 sm:px-6 lg:px-8 lg:py-1 mx-auto">
         <HeroStartup />
         <Search
           onSearch={handleSearch}
@@ -275,7 +275,7 @@ const NewProjectPosts = ({ location }) => {
               </div>
             ) : (
               <>
-                <div className="mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
+                <div className="mx-auto max-w-[85rem] mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
                   {companiesToRender.map((company, index) => (
                     <div key={company.id} className="group flex justify-center">
                       {company ? (

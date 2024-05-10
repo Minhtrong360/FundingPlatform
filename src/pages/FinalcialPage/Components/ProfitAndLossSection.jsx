@@ -874,7 +874,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
         </div>
       </div>
 
-      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
         <section className="mb-8 sticky top-8 bg-white">
           <GroqJS datasrc={transposedData} />
         </section>

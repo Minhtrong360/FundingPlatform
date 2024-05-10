@@ -1103,7 +1103,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                       numberOfMonths={numberOfMonths}
                     />
                   </div>
-                 <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-8 border-white">
+                  <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block border-r-8 border-l-8 border-white">
                     <DurationSelect handleSubmit={handleSubmit} />
                   </div>
                   <div className="xl:hidden block">

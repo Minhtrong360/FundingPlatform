@@ -512,6 +512,11 @@ const SalesSection = ({
             >
               <Chart
                 options={{
+                  chart: {
+                    animations: {
+                      enabled: false,
+                    },
+                  },
                   ...chart.options,
 
                   xaxis: {

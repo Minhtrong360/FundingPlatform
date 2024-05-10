@@ -24,8 +24,8 @@ const HeroStartup = () => {
       {" "}
       {/* Add margin-top */}
       <div className="container sm:px-6 px-0 py-16 mx-auto text-center">
-        <div className="max-w-2xl mx-auto">
-          <h1 className="block text-3xl font-extrabold leading-relaxed text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl">
+        <div className="max-w-3xl mx-auto">
+        <h1 className="block text-3xl font-extrabold leading-relaxed text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl" style={{ lineHeight: '1.5' }}>
             <span className="text-blue-600 bg-yellow-300 h-6">
               Profile listing
             </span>{" "}
@@ -55,17 +55,16 @@ const HeroStartup = () => {
           </div>
         </div>
 
-        <div className="flex justify-center mt-10">
-          <div className="flex justify-center items-center w-full   mt-8 rounded-xl ">
+        <div className="flex justify-center items-center w-full mt-8 rounded-xl">
             <div
-              className="relative w-full md:w-4/5 overflow-hidden shadow-2xl rounded-xl border border-gray-300"
-              style={{ paddingTop: "56.25%" }}
+              className="relative w-full md:w-2/3 lg:w-2/3"
+              style={{ paddingTop: "41%" }}
             >
               <p>
                 <iframe
                   title="YouTube video player"
-                  className="absolute top-0 left-0 right-0 w-full h-full shadow-2xl border border-gray-300 rounded-xl"
-                  src="https://www.youtube.com/embed/lW6wAq-meH0?si=h_xONinfVSYADpFc&amp;controls=0&autoplay=1&mute=1&loop=1&playlist=lW6wAq-meH0"
+                  className="absolute top-0 left-0 right-0 w-full h-full"
+                  src="https://www.youtube.com/embed/OTuhZIlpDZg?si=HFGd7RDtQJEH0dCp&amp;controls=0&autoplay=1&mute=1&loop=1&playlist=OTuhZIlpDZg"
                   width="100%"
                   height="100%"
                   allowFullScreen
@@ -73,7 +72,7 @@ const HeroStartup = () => {
                 ></iframe>
               </p>
             </div>
-          </div>
+          
         </div>
       </div>
     </section>

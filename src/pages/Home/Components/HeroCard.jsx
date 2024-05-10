@@ -36,7 +36,10 @@ const HeroCard = () => {
         {/* Grid */}
         <div className="grid lg:grid-cols-7 lg:gap-x-8 xl:gap-x-12 lg:items-center md:mt-64">
           <div className="lg:col-span-3">
-            <h1 className="block text-3xl font-extrabold leading-relaxed text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl">
+            <h1
+              className="block text-3xl font-extrabold leading-relaxed text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl"
+              style={{ lineHeight: "1.5" }}
+            >
               It can't be{" "}
               <span className="text-blue-600 bg-yellow-300 h-6">
                 easier & faster
@@ -62,16 +65,16 @@ const HeroCard = () => {
 
           {/* Video */}
           <div className="lg:col-span-4 mt-10 order-2 lg:order-1">
-            <div className="flex justify-center items-center w-full   mt-8 rounded-xl">
+            <div className="flex justify-center items-center w-full mt-8 rounded-xl">
               <div
-                className="relative w-full md:w-4/5 overflow-hidden shadow-2xl rounded-xl border border-gray-300"
-                style={{ paddingTop: "56.25%" }}
+                className="relative w-full md:w-full overflow-hidden shadow-2xl rounded-xl border border-gray-300"
+                style={{ paddingTop: "61%" }}
               >
                 <p>
                   <iframe
                     title="YouTube video player"
                     className="absolute top-0 left-0 right-0 w-full h-full shadow-2xl border border-gray-300 rounded-xl"
-                    src="https://www.youtube.com/embed/bSZRgmHuZAY?si=-Bq1EI6BpePgDtz7&amp;controls=0&autoplay=1&mute=1&loop=1&playlist=bSZRgmHuZAY"
+                    src="https://www.youtube.com/embed/SJ76sr7SZoY?si=elzZli62aCAr7PbA&amp;controls=0&autoplay=1&mute=1&loop=1&playlist=SJ76sr7SZoY"
                     width="100%"
                     height="100%"
                     allowFullScreen
@@ -91,27 +94,30 @@ const HeroCard = () => {
           {/* Video */}
           <div className="lg:col-span-4 order-2 lg:order-1">
             <div className="flex justify-center items-center w-full   mt-8 rounded-xl">
-              <div
-                className="relative w-full md:w-4/5 overflow-hidden shadow-2xl rounded-xl border border-gray-300"
-                style={{ paddingTop: "56.25%" }}
-              >
-                <p>
-                  <iframe
-                    title="YouTube video player"
-                    className="absolute top-0 left-0 right-0 w-full h-full shadow-2xl border border-gray-300 rounded-xl"
-                    src="https://www.youtube.com/embed/DYk03iWpfpM?si=98bILLnafaMlVosF&amp;controls=0&autoplay=1&mute=1&loop=1&playlist=DYk03iWpfpM"
-                    width="100%"
-                    height="100%"
-                    allowFullScreen
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  ></iframe>
-                </p>
-              </div>
+            <div
+  className="relative w-full md:w-full overflow-hidden shadow-2xl rounded-xl border border-gray-300"
+  style={{ paddingTop: "61%" }}
+>
+  <p>
+    <iframe
+      title="YouTube video player"
+      className="absolute top-0 left-0 right-0 w-full h-full shadow-2xl border border-gray-300 rounded-xl"
+      src="https://www.youtube.com/embed/iIILCOQyxw4?si=oxRP3UtJ231hSRU0&amp;controls=0&autoplay=1&mute=1&loop=1&playlist=iIILCOQyxw4"
+      width="100%"
+      height="100%"
+      allowFullScreen
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    ></iframe>
+  </p>
+</div>
             </div>
           </div>
 
           <div className="lg:col-span-3 order-1 lg:order-2 mt-24">
-            <h1 className="block text-3xl font-extrabold text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl">
+            <h1
+              className="block text-3xl font-extrabold text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl"
+              style={{ lineHeight: "1.5" }}
+            >
               Insightful{" "}
               <span className="text-blue-600 bg-yellow-300 h-6">
                 charts, ratios

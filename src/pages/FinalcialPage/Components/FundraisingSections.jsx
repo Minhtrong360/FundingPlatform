@@ -139,7 +139,7 @@ const FundraisingSection = ({
     options: {
       chart: {
         id: "fundraising-chart",
-        type: "bar",
+        type: "area",
         height: 350,
         toolbar: { show: false },
         zoom: { enabled: false },
@@ -330,7 +330,7 @@ const FundraisingSection = ({
                 },
               }}
               series={fundraisingChart.series}
-              type="bar"
+              type="area"
               height={350}
             />
           </Card>

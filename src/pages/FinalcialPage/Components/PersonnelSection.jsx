@@ -191,7 +191,6 @@ const PersonnelSection = ({
         "#D84FE4",
       ],
       xaxis: {
-        range: 5,
         axisTicks: {
           show: false, // Hide x-axis ticks
         },

@@ -340,8 +340,19 @@ const CustomerSection = React.memo(
         };
       });
 
+      const seriesData2 = tempCustomerGrowthData.map((channelData) => {
+        return {
+          name: channelData[0]?.channelName || "Unknown Channel",
+          dataBegin: channelData.map((data) => parseInt(data.begin, 10)),
+          dataAdd: channelData.map((data) => parseInt(data.add, 10)),
+          dataChurn: channelData.map((data) => parseInt(data.churn, 10)),
+          dataEnd: channelData.map((data) => parseInt(data.end, 10)),
+          data: channelData.map((data) => parseInt(data.customers, 10)),
+        };
+      });
+
       // Calculate total customers per month for all channels
-      const totalCustomersPerMonth = seriesData.reduce((acc, channel) => {
+      const totalCustomersPerMonth = seriesData2.reduce((acc, channel) => {
         channel.data.forEach((customers, index) => {
           if (!acc[index]) {
             acc[index] = 0;
@@ -355,12 +366,23 @@ const CustomerSection = React.memo(
       let startIndex = 0; // Bắt đầu từ phần tử đầu tiên trong mảng
       const monthsInFirstYear = 12 - (startMonth - 1); // Số tháng còn lại trong năm đầu từ tháng bắt đầu
 
+      const channelYearlyTotals = seriesData2.map((channel) => ({
+        name: channel.name,
+        data: [],
+      }));
+
       // Tính tổng cho năm đầu tiên từ tháng bắt đầu đến hết năm
       const firstYearTotal = totalCustomersPerMonth
         .slice(startIndex, monthsInFirstYear)
         .reduce((sum, current) => sum + current, 0);
       yearlyTotalData.push(firstYearTotal);
 
+      seriesData2.forEach((channel, index) => {
+        const firstYearTotal = channel.data
+          .slice(startIndex, monthsInFirstYear)
+          .reduce((sum, current) => sum + current, 0);
+        channelYearlyTotals[index].data.push(firstYearTotal);
+      });
       // Cập nhật startIndex cho năm tiếp theo
       startIndex += monthsInFirstYear;
 
@@ -370,6 +392,14 @@ const CustomerSection = React.memo(
           .slice(startIndex, startIndex + 12)
           .reduce((sum, current) => sum + current, 0);
         yearlyTotalData.push(yearlyTotal);
+
+        seriesData2.forEach((channel, index) => {
+          const yearlyTotal = channel.data
+            .slice(startIndex, startIndex + 12)
+            .reduce((sum, current) => sum + current, 0);
+          channelYearlyTotals[index].data.push(yearlyTotal);
+        });
+
         startIndex += 12;
       }
 
@@ -377,36 +407,6 @@ const CustomerSection = React.memo(
         if (index === 0) return 0; // Không có tỷ lệ tăng trưởng cho năm đầu tiên
         return ((total - arr[index - 1]) / arr[index - 1]) * 100; // Tính toán tỷ lệ tăng trưởng
       });
-
-      const channelYearlyTotals = seriesData.map((channel) => ({
-        name: channel.name,
-        data: [],
-      }));
-
-      // Tính tổng cho năm đầu tiên từ tháng bắt đầu đến hết năm
-      seriesData.forEach((channel, channelIndex) => {
-        const firstYearTotal = channel.data
-          .slice(startIndex, monthsInFirstYear)
-          .reduce((sum, current) => sum + current, 0);
-        channelYearlyTotals[channelIndex].data.push(firstYearTotal);
-      });
-      console.log("seriesData", seriesData);
-      console.log("channelYearlyTotals 1", channelYearlyTotals);
-
-      // Cập nhật startIndex cho năm tiếp theo
-      startIndex += monthsInFirstYear;
-
-      // Tính tổng cho các năm tiếp theo, mỗi lần tính cho 12 tháng
-      while (startIndex < totalCustomersPerMonth.length) {
-        seriesData.forEach((channel, channelIndex) => {
-          const yearlyTotal = channel.data
-            .slice(startIndex, startIndex + 12)
-            .reduce((sum, current) => sum + current, 0);
-          channelYearlyTotals[channelIndex].data.push(yearlyTotal);
-        });
-        startIndex += 12;
-      }
-      console.log("channelYearlyTotals", channelYearlyTotals);
 
       setCustomerGrowthChart((prevState) => {
         return {
@@ -455,6 +455,61 @@ const CustomerSection = React.memo(
               ],
             },
 
+            // Individual charts for each channel
+            ...seriesData.map((channelSeries) => ({
+              options: {
+                ...prevState.options,
+                chart: {
+                  ...prevState.options.chart,
+                  id: channelSeries.name,
+                },
+                xaxis: {
+                  axisTicks: {
+                    show: false, // Hide x-axis ticks
+                  },
+                  labels: {
+                    show: true,
+                    rotate: 0,
+                    style: {
+                      fontFamily: "Sora, sans-serif",
+                    },
+                  },
+                  categories: filteredCategories,
+
+                  title: {
+                    text: "Month",
+                    style: {
+                      fontSize: "12px",
+                      fontFamily: "Sora, sans-serif",
+                    },
+                  },
+                },
+                title: {
+                  ...prevState.options.title,
+                  text: channelSeries.name,
+                },
+              },
+              series: [
+                {
+                  name: "Begin",
+                  data: channelSeries.dataBegin, // Yearly total data
+                },
+                {
+                  name: "Add",
+                  data: channelSeries.dataAdd, // Yearly total data
+                },
+                {
+                  name: "Churn",
+                  data: channelSeries.dataChurn, // Yearly total data
+                },
+                {
+                  name: "End",
+                  data: channelSeries.dataEnd, // Yearly total data
+                },
+              ],
+            })),
+          ],
+          chartsNoFilter: [
             // New chart for yearly total and growth rate with separate y-axes
             {
               options: {
@@ -534,7 +589,7 @@ const CustomerSection = React.memo(
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
-                    { length: yearlyTotalData.length },
+                    { length: channelYearlyTotals[0].data.length },
                     (_, i) => {
                       const year = startYear + i;
                       return `${year}`;
@@ -544,66 +599,13 @@ const CustomerSection = React.memo(
               },
               series: channelYearlyTotals, // Yearly totals per channel
             },
-            // Individual charts for each channel
-            ...seriesData.map((channelSeries) => ({
-              options: {
-                ...prevState.options,
-                chart: {
-                  ...prevState.options.chart,
-                  id: channelSeries.name,
-                },
-                xaxis: {
-                  axisTicks: {
-                    show: false, // Hide x-axis ticks
-                  },
-                  labels: {
-                    show: true,
-                    rotate: 0,
-                    style: {
-                      fontFamily: "Sora, sans-serif",
-                    },
-                  },
-                  categories: filteredCategories,
-
-                  title: {
-                    text: "Month",
-                    style: {
-                      fontSize: "12px",
-                      fontFamily: "Sora, sans-serif",
-                    },
-                  },
-                },
-                title: {
-                  ...prevState.options.title,
-                  text: channelSeries.name,
-                },
-              },
-              series: [
-                {
-                  name: "Begin",
-                  data: channelSeries.dataBegin, // Yearly total data
-                },
-                {
-                  name: "Add",
-                  data: channelSeries.dataAdd, // Yearly total data
-                },
-                {
-                  name: "Churn",
-                  data: channelSeries.dataChurn, // Yearly total data
-                },
-                {
-                  name: "End",
-                  data: channelSeries.dataEnd, // Yearly total data
-                },
-              ],
-            })),
           ],
         };
       });
     }, [tempCustomerGrowthData, chartStartMonth, chartEndMonth]);
 
     const [isInputFormOpen, setIsInputFormOpen] = useState(false);
-    console.log("customerGrowthChart", customerGrowthChart);
+
     return (
       <div className="w-full h-full flex flex-col lg:flex-row">
         <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
@@ -670,6 +672,28 @@ const CustomerSection = React.memo(
                     </select>
                   </div>
                 </div>
+                <Chart
+                  options={{
+                    ...chart.options,
+                    xaxis: {
+                      ...chart.options.xaxis,
+                      // tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                    },
+                    stroke: {
+                      width: 1, // Set the stroke width to 1
+                    },
+                  }}
+                  series={chart.series}
+                  type="bar"
+                  height={350}
+                />
+              </Card>
+            ))}
+            {customerGrowthChart.chartsNoFilter?.map((chart, index) => (
+              <Card
+                key={index}
+                className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
+              >
                 <Chart
                   options={{
                     ...chart.options,

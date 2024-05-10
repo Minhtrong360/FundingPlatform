@@ -164,8 +164,8 @@ code {
   font-family: "Sora", sans-serif;
 }
 
- ::-webkit-scrollbar {
-  width: 0px; 
+::-webkit-scrollbar {
+  width: 0px;
   height: 0px;
   background-color: transparent;
 }
@@ -208,12 +208,7 @@ code {
 }
 */
 
-/* Initial state: Hide scrollbar */
-::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-  background-color: transparent;
-}
+
 
 /* Thumb style */
 ::-webkit-scrollbar-thumb {

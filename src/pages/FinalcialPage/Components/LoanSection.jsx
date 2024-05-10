@@ -213,31 +213,61 @@ const LoanSection = ({
     series: [],
   });
 
+  const [chartStartMonth, setChartStartMonth] = useState(1);
+  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+
   useEffect(() => {
-    const seriesData = calculateLoanData(tempLoanInputs, numberOfMonths).reduce(
-      (acc, loan) => {
-        acc.push({
-          name: loan.loanName,
-          data: loan.loanDataPerMonth.map((month) => month.balance),
-          dataPayment: loan.loanDataPerMonth.map((month) => month.payment),
-          dataPrincipal: loan.loanDataPerMonth.map((month) => month.principal),
-          dataInterest: loan.loanDataPerMonth.map((month) => month.interest),
-          dataRemainingBalance: loan.loanDataPerMonth.map(
-            (month) => month.balance
-          ),
-        });
-        return acc;
-      },
-      []
+    const filteredMonths = Array.from(
+      { length: chartEndMonth - chartStartMonth + 1 },
+      (_, i) => {
+        const monthIndex = (startingMonth + chartStartMonth + i - 2) % 12;
+        const year =
+          startingYear +
+          Math.floor((startingMonth + chartStartMonth + i - 2) / 12);
+        return `${months[monthIndex]}/${year}`;
+      }
     );
+
+    const seriesData = calculateLoanData(tempLoanInputs, numberOfMonths).map(
+      (loan) => {
+        // Khởi tạo mảng dữ liệu rỗng với giá trị là 0 cho mỗi tháng
+        const data = Array(filteredMonths.length).fill(0);
+        const dataPayment = Array(filteredMonths.length).fill(0);
+        const dataPrincipal = Array(filteredMonths.length).fill(0);
+        const dataInterest = Array(filteredMonths.length).fill(0);
+        const dataRemainingBalance = Array(filteredMonths.length).fill(0);
+
+        // Cập nhật mảng dữ liệu với thông tin thực tế từ loanDataPerMonth
+        loan.loanDataPerMonth
+          .slice(chartStartMonth - 1, chartEndMonth)
+          .forEach((monthData, index) => {
+            data[index] = monthData.balance;
+            dataPayment[index] = monthData.payment;
+            dataPrincipal[index] = monthData.principal;
+            dataInterest[index] = monthData.interest;
+            dataRemainingBalance[index] = monthData.balance;
+          });
+
+        return {
+          name: loan.loanName,
+          data,
+          dataPayment,
+          dataPrincipal,
+          dataInterest,
+          dataRemainingBalance,
+        };
+      }
+    );
+
+    // Tính toán tổng số liệu cho tất cả các khoản vay
     const totalLoanData = seriesData.reduce((acc, channel) => {
       channel.data.forEach((amount, index) => {
-        if (!acc[index]) acc[index] = 0;
-        acc[index] += amount;
+        acc[index] = (acc[index] || 0) + amount;
       });
       return acc;
-    }, Array(numberOfMonths).fill(0));
+    }, Array(filteredMonths.length).fill(0));
 
+    // Cập nhật state của biểu đồ với dữ liệu mới
     setLoanChart((prevState) => ({
       ...prevState,
       series: seriesData,
@@ -245,6 +275,10 @@ const LoanSection = ({
         {
           options: {
             ...prevState.options,
+            xaxis: {
+              ...prevState.options.xaxis,
+              categories: filteredMonths,
+            },
             chart: {
               ...prevState.options.chart,
               id: "allLoans",
@@ -266,6 +300,10 @@ const LoanSection = ({
         ...seriesData.map((channelSeries) => ({
           options: {
             ...prevState.options,
+            xaxis: {
+              ...prevState.options.xaxis,
+              categories: filteredMonths,
+            },
             chart: {
               ...prevState.options.chart,
               id: channelSeries.name,
@@ -296,8 +334,14 @@ const LoanSection = ({
         })),
       ],
     }));
-  }, [tempLoanInputs, numberOfMonths]);
-
+  }, [
+    tempLoanInputs,
+    chartStartMonth,
+    chartEndMonth,
+    startingMonth,
+    startingYear,
+    numberOfMonths,
+  ]);
   const handleSelectChange = (event) => {
     setRenderLoanForm(event.target.value);
   };
@@ -313,7 +357,6 @@ const LoanSection = ({
     numberOfMonths
   );
 
-  const { user } = useAuth();
   const { id } = useParams();
   useEffect(() => {
     const saveData = async () => {
@@ -372,6 +415,59 @@ const LoanSection = ({
               key={index}
               className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
             >
+              <div className="flex justify-between items-center">
+                <div className="min-w-[10vw]">
+                  <label htmlFor="startMonthSelect">Start Month:</label>
+                  <select
+                    id="startMonthSelect"
+                    value={chartStartMonth}
+                    onChange={(e) =>
+                      setChartStartMonth(
+                        Math.max(1, Math.min(e.target.value, chartEndMonth))
+                      )
+                    }
+                    className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                  >
+                    {Array.from({ length: numberOfMonths }, (_, i) => {
+                      const monthIndex = (startingMonth + i - 1) % 12;
+                      const year =
+                        startingYear + Math.floor((startingMonth + i - 1) / 12);
+                      return (
+                        <option key={i + 1} value={i + 1}>
+                          {`${months[monthIndex]}/${year}`}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+                <div className="min-w-[10vw]">
+                  <label htmlFor="endMonthSelect">End Month:</label>
+                  <select
+                    id="endMonthSelect"
+                    value={chartEndMonth}
+                    onChange={(e) =>
+                      setChartEndMonth(
+                        Math.max(
+                          chartStartMonth,
+                          Math.min(e.target.value, numberOfMonths)
+                        )
+                      )
+                    }
+                    className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                  >
+                    {Array.from({ length: numberOfMonths }, (_, i) => {
+                      const monthIndex = (startingMonth + i - 1) % 12;
+                      const year =
+                        startingYear + Math.floor((startingMonth + i - 1) / 12);
+                      return (
+                        <option key={i + 1} value={i + 1}>
+                          {`${months[monthIndex]}/${year}`}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+              </div>
               <Chart
                 options={{
                   ...series.options,

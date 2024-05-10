@@ -266,27 +266,52 @@ const SalesSection = ({
   ];
 
   //RevenueChart
+  const [chartStartMonth, setChartStartMonth] = useState(1);
+  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
 
   useEffect(() => {
     if (tempRevenueData) {
+      const startIdx = chartStartMonth - 1; // Chỉ số bắt đầu, tính từ 0
+      const endIdx = chartEndMonth; // Chỉ số kết thúc, không bao gồm
+
+      // Cập nhật categories cho trục x để phản ánh chỉ khoảng từ chartStartMonth đến chartEndMonth
+      const filteredCategories = Array.from(
+        { length: endIdx - startIdx },
+        (_, i) => {
+          const monthIndex = (startingMonth + startIdx + i - 1) % 12;
+          const year =
+            startingYear + Math.floor((startingMonth + startIdx + i - 1) / 12);
+          return `${months[monthIndex]}/${year}`;
+        }
+      );
+
       const salesChartsData = Object.entries(tempRevenueData)
         .map(([key, data]) => {
-          if (!data) return null; // Ensure data is not undefined
+          if (!data) return null;
 
-          const dataDeductions = tempRevenueDeductionData[key] || [];
-          const dataNetRevenue = tempNetRevenueData[key] || [];
-          const dataCOGS = tempCogsData[key] || [];
-          const dataGrossProfit = tempGrossProfitData[key] || [];
+          const dataDeductions = (tempRevenueDeductionData[key] || []).slice(
+            startIdx,
+            endIdx
+          );
+          const dataNetRevenue = (tempNetRevenueData[key] || []).slice(
+            startIdx,
+            endIdx
+          );
+          const dataCOGS = (tempCogsData[key] || []).slice(startIdx, endIdx);
+          const dataGrossProfit = (tempGrossProfitData[key] || []).slice(
+            startIdx,
+            endIdx
+          );
           return {
             name: key,
-            data, // Ensure this is always an array
+            data: data.slice(startIdx, endIdx),
             dataDeductions,
             dataNetRevenue,
             dataCOGS,
             dataGrossProfit,
           };
         })
-        .filter((chart) => chart !== null); // Remove any null entries
+        .filter((chart) => chart !== null);
 
       const totalSalesData = salesChartsData.reduce((acc, channel) => {
         channel.data.forEach((amount, index) => {
@@ -294,7 +319,7 @@ const SalesSection = ({
           acc[index] += amount;
         });
         return acc;
-      }, Array(numberOfMonths).fill(0));
+      }, Array(endIdx - startIdx).fill(0));
 
       setRevenue((prevState) => ({
         ...prevState,
@@ -319,17 +344,12 @@ const SalesSection = ({
                     fontFamily: "Sora, sans-serif",
                   },
                 },
-                categories: Array.from({ length: numberOfMonths }, (_, i) => {
-                  const monthIndex = (startingMonth + i - 1) % 12;
-                  const year =
-                    startingYear + Math.floor((startingMonth + i - 1) / 12);
-                  return `${months[monthIndex]}/${year}`;
-                }),
+                categories: filteredCategories,
                 title: {
                   text: "Month",
                   style: {
+                    fontSize: "12px",
                     fontFamily: "Sora, sans-serif",
-                    fontsize: "12px",
                   },
                 },
               },
@@ -339,7 +359,10 @@ const SalesSection = ({
               },
             },
             series: [
-              ...salesChartsData,
+              ...salesChartsData.map((channel) => ({
+                name: channel.name,
+                data: channel.data,
+              })),
               {
                 name: "Total",
                 data: totalSalesData,
@@ -364,17 +387,12 @@ const SalesSection = ({
                     fontFamily: "Sora, sans-serif",
                   },
                 },
-                categories: Array.from({ length: numberOfMonths }, (_, i) => {
-                  const monthIndex = (startingMonth + i - 1) % 12;
-                  const year =
-                    startingYear + Math.floor((startingMonth + i - 1) / 12);
-                  return `${months[monthIndex]}/${year}`;
-                }),
+                categories: filteredCategories,
                 title: {
                   text: "Month",
                   style: {
+                    fontSize: "12px",
                     fontFamily: "Sora, sans-serif",
-                    fontsize: "12px",
                   },
                 },
               },
@@ -409,7 +427,15 @@ const SalesSection = ({
         ],
       }));
     }
-  }, [tempRevenueData, numberOfMonths]);
+  }, [
+    tempRevenueData,
+    numberOfMonths,
+    chartStartMonth,
+    chartEndMonth,
+    startingMonth,
+    startingYear,
+    months,
+  ]);
 
   const handleSave = () => {
     setIsSaved(true);
@@ -510,6 +536,59 @@ const SalesSection = ({
               key={index}
               className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
             >
+              <div className="flex justify-between items-center">
+                <div className="min-w-[10vw]">
+                  <label htmlFor="startMonthSelect">Start Month:</label>
+                  <select
+                    id="startMonthSelect"
+                    value={chartStartMonth}
+                    onChange={(e) =>
+                      setChartStartMonth(
+                        Math.max(1, Math.min(e.target.value, chartEndMonth))
+                      )
+                    }
+                    className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                  >
+                    {Array.from({ length: numberOfMonths }, (_, i) => {
+                      const monthIndex = (startingMonth + i - 1) % 12;
+                      const year =
+                        startingYear + Math.floor((startingMonth + i - 1) / 12);
+                      return (
+                        <option key={i + 1} value={i + 1}>
+                          {`${months[monthIndex]}/${year}`}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+                <div className="min-w-[10vw]">
+                  <label htmlFor="endMonthSelect">End Month:</label>
+                  <select
+                    id="endMonthSelect"
+                    value={chartEndMonth}
+                    onChange={(e) =>
+                      setChartEndMonth(
+                        Math.max(
+                          chartStartMonth,
+                          Math.min(e.target.value, numberOfMonths)
+                        )
+                      )
+                    }
+                    className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                  >
+                    {Array.from({ length: numberOfMonths }, (_, i) => {
+                      const monthIndex = (startingMonth + i - 1) % 12;
+                      const year =
+                        startingYear + Math.floor((startingMonth + i - 1) / 12);
+                      return (
+                        <option key={i + 1} value={i + 1}>
+                          {`${months[monthIndex]}/${year}`}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+              </div>
               <Chart
                 options={{
                   ...chart.options,

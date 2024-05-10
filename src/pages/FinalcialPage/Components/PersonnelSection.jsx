@@ -191,7 +191,6 @@ const PersonnelSection = ({
         "#D84FE4",
       ],
       xaxis: {
-        range: 5,
         axisTicks: {
           show: false, // Hide x-axis ticks
         },
@@ -256,37 +255,6 @@ const PersonnelSection = ({
     series: [],
   });
 
-  useEffect(() => {
-    const seriesData = tempPersonnelCostData.map((personnel) => {
-      return {
-        name: personnel.jobTitle,
-        data: personnel.monthlyCosts.map((month) => month.cost),
-      };
-    });
-
-    // Calculate total personnel cost per month for all channels
-    const totalPersonnelCostPerMonth = seriesData.reduce((acc, channel) => {
-      channel.data.forEach((customers, index) => {
-        if (!acc[index]) {
-          acc[index] = 0;
-        }
-        acc[index] += customers;
-      });
-      return acc;
-    }, []);
-
-    setPersonnelChart((prevState) => ({
-      ...prevState,
-      series: [
-        ...seriesData,
-        {
-          name: "Total",
-          data: totalPersonnelCostPerMonth,
-        },
-      ],
-    }));
-  }, [tempPersonnelCostData, numberOfMonths]);
-
   const handleSelectChange = (event) => {
     setRenderPersonnelForm(event.target.value);
   };
@@ -295,7 +263,6 @@ const PersonnelSection = ({
     setIsSaved(true);
     message.success("Data saved successfully!");
   };
-  const { user } = useAuth();
   const { id } = useParams();
   useEffect(() => {
     const saveData = async () => {
@@ -391,7 +358,7 @@ const PersonnelSection = ({
 
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col shadow-xl">
-            <div className="flex justify-between items-center my-4">
+            <div className="flex justify-between items-center">
               <div className="min-w-[10vw]">
                 <label htmlFor="startMonthSelect">Start Month:</label>
                 <select

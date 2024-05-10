@@ -302,15 +302,41 @@ const CustomerSection = React.memo(
       saveData();
     }, [isSaved]);
 
+    const [chartStartMonth, setChartStartMonth] = useState(1);
+    const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+
     useEffect(() => {
+      const startIdx = chartStartMonth - 1; // Chỉ số bắt đầu cho mảng, dựa trên chartStartMonth
+      const endIdx = chartEndMonth; // Chỉ số kết thúc cho mảng, dựa trên chartEndMonth
+
+      const filteredCategories = Array.from(
+        { length: endIdx - startIdx },
+        (_, i) => {
+          const monthIndex = (startMonth + startIdx + i - 1) % 12;
+          const year =
+            startYear + Math.floor((startMonth + startIdx + i - 1) / 12);
+          return `${months[monthIndex]}/${year}`;
+        }
+      );
+
       const seriesData = tempCustomerGrowthData.map((channelData) => {
         return {
           name: channelData[0]?.channelName || "Unknown Channel",
-          dataBegin: channelData.map((data) => parseInt(data.begin, 10)),
-          dataAdd: channelData.map((data) => parseInt(data.add, 10)),
-          dataChurn: channelData.map((data) => parseInt(data.churn, 10)),
-          dataEnd: channelData.map((data) => parseInt(data.end, 10)),
-          data: channelData.map((data) => parseInt(data.customers, 10)),
+          dataBegin: channelData
+            .slice(startIdx, endIdx)
+            .map((data) => parseInt(data.begin, 10)),
+          dataAdd: channelData
+            .slice(startIdx, endIdx)
+            .map((data) => parseInt(data.add, 10)),
+          dataChurn: channelData
+            .slice(startIdx, endIdx)
+            .map((data) => parseInt(data.churn, 10)),
+          dataEnd: channelData
+            .slice(startIdx, endIdx)
+            .map((data) => parseInt(data.end, 10)),
+          data: channelData
+            .slice(startIdx, endIdx)
+            .map((data) => parseInt(data.customers, 10)),
         };
       });
 
@@ -325,42 +351,68 @@ const CustomerSection = React.memo(
         return acc;
       }, []);
 
-      setCustomerGrowthChart((prevState) => {
-        const yearlyTotalData = [];
-        for (let i = 0; i < totalCustomersPerMonth.length; i += 12) {
-          const yearlyTotal = totalCustomersPerMonth
-            .slice(i, i + 12)
+      const yearlyTotalData = [];
+      let startIndex = 0; // Bắt đầu từ phần tử đầu tiên trong mảng
+      const monthsInFirstYear = 12 - (startMonth - 1); // Số tháng còn lại trong năm đầu từ tháng bắt đầu
+
+      // Tính tổng cho năm đầu tiên từ tháng bắt đầu đến hết năm
+      const firstYearTotal = totalCustomersPerMonth
+        .slice(startIndex, monthsInFirstYear)
+        .reduce((sum, current) => sum + current, 0);
+      yearlyTotalData.push(firstYearTotal);
+
+      // Cập nhật startIndex cho năm tiếp theo
+      startIndex += monthsInFirstYear;
+
+      // Tính tổng cho các năm tiếp theo, mỗi lần tính cho 12 tháng
+      while (startIndex < totalCustomersPerMonth.length) {
+        const yearlyTotal = totalCustomersPerMonth
+          .slice(startIndex, startIndex + 12)
+          .reduce((sum, current) => sum + current, 0);
+        yearlyTotalData.push(yearlyTotal);
+        startIndex += 12;
+      }
+
+      const yearlyGrowthRates = yearlyTotalData.map((total, index, arr) => {
+        if (index === 0) return 0; // Không có tỷ lệ tăng trưởng cho năm đầu tiên
+        return ((total - arr[index - 1]) / arr[index - 1]) * 100; // Tính toán tỷ lệ tăng trưởng
+      });
+
+      const channelYearlyTotals = seriesData.map((channel) => ({
+        name: channel.name,
+        data: [],
+      }));
+
+      // Tính tổng cho năm đầu tiên từ tháng bắt đầu đến hết năm
+      seriesData.forEach((channel, channelIndex) => {
+        const firstYearTotal = channel.data
+          .slice(startIndex, monthsInFirstYear)
+          .reduce((sum, current) => sum + current, 0);
+        channelYearlyTotals[channelIndex].data.push(firstYearTotal);
+      });
+      console.log("seriesData", seriesData);
+      console.log("channelYearlyTotals 1", channelYearlyTotals);
+
+      // Cập nhật startIndex cho năm tiếp theo
+      startIndex += monthsInFirstYear;
+
+      // Tính tổng cho các năm tiếp theo, mỗi lần tính cho 12 tháng
+      while (startIndex < totalCustomersPerMonth.length) {
+        seriesData.forEach((channel, channelIndex) => {
+          const yearlyTotal = channel.data
+            .slice(startIndex, startIndex + 12)
             .reduce((sum, current) => sum + current, 0);
-          yearlyTotalData.push(yearlyTotal);
-        }
-
-        const yearlyGrowthRates = yearlyTotalData.map((total, index, arr) => {
-          if (index === 0) return 0; // No growth rate for the first year
-          return ((total - arr[index - 1]) / arr[index - 1]) * 100; // Growth rate calculation
+          channelYearlyTotals[channelIndex].data.push(yearlyTotal);
         });
+        startIndex += 12;
+      }
+      console.log("channelYearlyTotals", channelYearlyTotals);
 
-        // Calculate yearly totals for each channel
-        const channelYearlyTotals = seriesData.map((channel) => {
-          return {
-            name: channel.name,
-            data: [],
-          };
-        });
-
-        for (let i = 0; i < totalCustomersPerMonth.length; i += 12) {
-          seriesData.forEach((channel, index) => {
-            const yearlyTotal = channel.data
-              .slice(i, i + 12)
-              .reduce((sum, current) => sum + current, 0);
-            channelYearlyTotals[index].data.push(yearlyTotal);
-          });
-        }
-
+      setCustomerGrowthChart((prevState) => {
         return {
           ...prevState,
           series: seriesData,
           charts: [
-            // Stacked bar chart for all channels including total customers
             {
               options: {
                 ...prevState.options,
@@ -371,7 +423,7 @@ const CustomerSection = React.memo(
                 },
                 xaxis: {
                   axisTicks: {
-                    show: false, // Hide x-axis ticks
+                    show: false,
                   },
                   labels: {
                     show: true,
@@ -380,12 +432,7 @@ const CustomerSection = React.memo(
                       fontFamily: "Sora, sans-serif",
                     },
                   },
-                  categories: Array.from({ length: numberOfMonths }, (_, i) => {
-                    const monthIndex = (startMonth + i - 1) % 12;
-                    const year =
-                      startYear + Math.floor((startMonth + i - 1) / 12);
-                    return `${months[monthIndex]}/${year}`;
-                  }),
+                  categories: filteredCategories,
                   title: {
                     text: "Month",
                     style: {
@@ -394,7 +441,6 @@ const CustomerSection = React.memo(
                     },
                   },
                 },
-
                 title: {
                   ...prevState.options.title,
                   text: "All Channels",
@@ -408,6 +454,7 @@ const CustomerSection = React.memo(
                 },
               ],
             },
+
             // New chart for yearly total and growth rate with separate y-axes
             {
               options: {
@@ -492,7 +539,7 @@ const CustomerSection = React.memo(
                       const year = startYear + i;
                       return `${year}`;
                     }
-                  ),
+                  ), // Creating categories for each year
                 },
               },
               series: channelYearlyTotals, // Yearly totals per channel
@@ -516,12 +563,8 @@ const CustomerSection = React.memo(
                       fontFamily: "Sora, sans-serif",
                     },
                   },
-                  categories: Array.from({ length: numberOfMonths }, (_, i) => {
-                    const monthIndex = (startMonth + i - 1) % 12;
-                    const year =
-                      startYear + Math.floor((startMonth + i - 1) / 12);
-                    return `${months[monthIndex]}/${year}`;
-                  }),
+                  categories: filteredCategories,
+
                   title: {
                     text: "Month",
                     style: {
@@ -557,11 +600,10 @@ const CustomerSection = React.memo(
           ],
         };
       });
-    }, [tempCustomerGrowthData]);
+    }, [tempCustomerGrowthData, chartStartMonth, chartEndMonth]);
 
     const [isInputFormOpen, setIsInputFormOpen] = useState(false);
-
-    console.log("tempCustomerInputs", tempCustomerInputs);
+    console.log("customerGrowthChart", customerGrowthChart);
     return (
       <div className="w-full h-full flex flex-col lg:flex-row">
         <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
@@ -573,6 +615,61 @@ const CustomerSection = React.memo(
                 key={index}
                 className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
               >
+                <div className="flex justify-between items-center">
+                  <div className="min-w-[10vw]">
+                    <label htmlFor="startMonthSelect">Start Month:</label>
+                    <select
+                      id="startMonthSelect"
+                      value={chartStartMonth}
+                      onChange={(e) =>
+                        setChartStartMonth(
+                          Math.max(1, Math.min(e.target.value, chartEndMonth))
+                        )
+                      }
+                      className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                    >
+                      {Array.from({ length: numberOfMonths }, (_, i) => {
+                        const monthIndex = (startingMonth + i - 1) % 12;
+                        const year =
+                          startingYear +
+                          Math.floor((startingMonth + i - 1) / 12);
+                        return (
+                          <option key={i + 1} value={i + 1}>
+                            {`${months[monthIndex]}/${year}`}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                  <div className="min-w-[10vw]">
+                    <label htmlFor="endMonthSelect">End Month:</label>
+                    <select
+                      id="endMonthSelect"
+                      value={chartEndMonth}
+                      onChange={(e) =>
+                        setChartEndMonth(
+                          Math.max(
+                            chartStartMonth,
+                            Math.min(e.target.value, numberOfMonths)
+                          )
+                        )
+                      }
+                      className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                    >
+                      {Array.from({ length: numberOfMonths }, (_, i) => {
+                        const monthIndex = (startingMonth + i - 1) % 12;
+                        const year =
+                          startingYear +
+                          Math.floor((startingMonth + i - 1) / 12);
+                        return (
+                          <option key={i + 1} value={i + 1}>
+                            {`${months[monthIndex]}/${year}`}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                </div>
                 <Chart
                   options={{
                     ...chart.options,
@@ -631,6 +728,8 @@ const CustomerSection = React.memo(
                 value={renderCustomerForm}
                 onChange={handleSelectChange}
               >
+                <option value="all">All</option>
+
                 {tempCustomerInputs.map((input) => (
                   <option key={input?.id} value={input?.id}>
                     {input?.channelName}

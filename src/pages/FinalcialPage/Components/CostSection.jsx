@@ -233,37 +233,6 @@ const CostSection = ({
     series: [],
   });
 
-  // useEffect to update cost chart data
-  useEffect(() => {
-    const seriesData = tempCostData.map((item) => {
-      return {
-        name: item.costName,
-        data: item.monthlyCosts.map((cost) => cost.cost),
-      };
-    });
-
-    const totalCostPerMonth = seriesData.reduce((acc, channel) => {
-      channel.data.forEach((customers, index) => {
-        if (!acc[index]) {
-          acc[index] = 0;
-        }
-        acc[index] += customers;
-      });
-      return acc;
-    }, []);
-
-    setCostChart((prevState) => ({
-      ...prevState,
-      series: [
-        ...seriesData,
-        {
-          name: "Total",
-          data: totalCostPerMonth,
-        },
-      ],
-    }));
-  }, [tempCostData, numberOfMonths]);
-
   // Function to handle select change
   const handleSelectChange = (event) => {
     const selectedId = event.target.value;
@@ -343,6 +312,58 @@ const CostSection = ({
   }, [isSaved]);
 
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
+  const [chartStartMonth, setChartStartMonth] = useState(1);
+  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+
+  // useEffect to update cost chart data
+  useEffect(() => {
+    const seriesData = tempCostData.map((item) => {
+      return {
+        name: item.costName,
+        data: item.monthlyCosts
+          .slice(chartStartMonth - 1, chartEndMonth)
+          .map((cost) => cost.cost),
+      };
+    });
+
+    const totalCostPerMonth = seriesData.reduce((acc, channel) => {
+      channel.data.forEach((customers, index) => {
+        if (!acc[index]) {
+          acc[index] = 0;
+        }
+        acc[index] += customers;
+      });
+      return acc;
+    }, []);
+
+    setCostChart((prevState) => ({
+      ...prevState,
+      options: {
+        ...prevState.options,
+        xaxis: {
+          ...prevState.options.xaxis,
+          categories: Array.from(
+            { length: chartEndMonth - chartStartMonth + 1 },
+            (_, i) => {
+              const monthIndex =
+                (startingMonth + chartStartMonth - 1 + i - 1) % 12;
+              const year =
+                startingYear +
+                Math.floor((startingMonth + chartStartMonth - 1 + i - 1) / 12);
+              return `${months[monthIndex]}/${year}`;
+            }
+          ),
+        },
+      },
+      series: [
+        ...seriesData,
+        {
+          name: "Total",
+          data: totalCostPerMonth,
+        },
+      ],
+    }));
+  }, [tempCostData, chartStartMonth, chartEndMonth]);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
@@ -350,6 +371,59 @@ const CostSection = ({
         <h3 className="text-lg font-semibold mb-8">Cost Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
+            <div className="flex justify-between items-center">
+              <div className="min-w-[10vw]">
+                <label htmlFor="startMonthSelect">Start Month:</label>
+                <select
+                  id="startMonthSelect"
+                  value={chartStartMonth}
+                  onChange={(e) =>
+                    setChartStartMonth(
+                      Math.max(1, Math.min(e.target.value, chartEndMonth))
+                    )
+                  }
+                  className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                >
+                  {Array.from({ length: numberOfMonths }, (_, i) => {
+                    const monthIndex = (startingMonth + i - 1) % 12;
+                    const year =
+                      startingYear + Math.floor((startingMonth + i - 1) / 12);
+                    return (
+                      <option key={i + 1} value={i + 1}>
+                        {`${months[monthIndex]}/${year}`}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+              <div className="min-w-[10vw]">
+                <label htmlFor="endMonthSelect">End Month:</label>
+                <select
+                  id="endMonthSelect"
+                  value={chartEndMonth}
+                  onChange={(e) =>
+                    setChartEndMonth(
+                      Math.max(
+                        chartStartMonth,
+                        Math.min(e.target.value, numberOfMonths)
+                      )
+                    )
+                  }
+                  className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                >
+                  {Array.from({ length: numberOfMonths }, (_, i) => {
+                    const monthIndex = (startingMonth + i - 1) % 12;
+                    const year =
+                      startingYear + Math.floor((startingMonth + i - 1) / 12);
+                    return (
+                      <option key={i + 1} value={i + 1}>
+                        {`${months[monthIndex]}/${year}`}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+            </div>
             <Chart
               options={{
                 ...costChart.options,

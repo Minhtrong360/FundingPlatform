@@ -204,17 +204,17 @@ const FundraisingSection = ({
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-      fill: {
-        type: "gradient",
+      // fill: {
+      //   type: "gradient",
 
-        gradient: {
-          shade: "light",
-          shadeIntensity: 0.5,
-          opacityFrom: 0.85,
-          opacityTo: 0.65,
-          stops: [0, 90, 100],
-        },
-      },
+      //   gradient: {
+      //     shade: "light",
+      //     shadeIntensity: 0.5,
+      //     opacityFrom: 0.85,
+      //     opacityTo: 0.65,
+      //     stops: [0, 90, 100],
+      //   },
+      // },
       dataLabels: { enabled: false },
       stroke: { width: 1, curve: "smooth" },
 
@@ -345,7 +345,7 @@ const FundraisingSection = ({
         <h3 className="text-lg font-semibold mb-8">Fundraising Chart</h3>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col shadow-xl">
+          <Card className="flex flex-col ">
             <div className="flex justify-between items-center">
               <div className="min-w-[10vw]">
                 <label htmlFor="startMonthSelect">Start Month:</label>

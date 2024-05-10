@@ -139,7 +139,7 @@ const FundraisingSection = ({
     options: {
       chart: {
         id: "fundraising-chart",
-        type: "bar",
+        type: "area",
         height: 350,
         toolbar: { show: false },
         zoom: { enabled: false },
@@ -291,6 +291,8 @@ const FundraisingSection = ({
 
     dispatch(setFundraisingTableData(tableData));
   }, []);
+  const [chartStartMonth, setChartStartMonth] = useState(1);
+  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
 
   useEffect(() => {
     const transformedData = transformFundraisingDataForTable(
@@ -303,17 +305,37 @@ const FundraisingSection = ({
     transformedData.forEach((item) => {
       const seriesItem = {
         name: item.name,
+        // Lọc và lấy dữ liệu từ chartStartMonth đến chartEndMonth
         data: Object.keys(item)
           .filter((key) => key.startsWith("month"))
-          .map((key) => parseNumber(item[key])),
+          .slice(chartStartMonth - 1, chartEndMonth) // slice để lấy khoảng tháng cần thiết
+          .map((key) => (item[key] ? parseNumber(item[key]) : 0)), // Sử dụng parseNumber và đảm bảo rằng nếu không có dữ liệu thì trả về 0
       };
       seriesData.push(seriesItem);
     });
+
     setFundraisingChart((prevChart) => ({
       ...prevChart,
+      options: {
+        ...prevChart.options,
+        xaxis: {
+          ...prevChart.options.xaxis,
+          categories: Array.from(
+            { length: chartEndMonth - chartStartMonth + 1 },
+            (_, i) => {
+              const monthIndex =
+                (startingMonth + chartStartMonth - 1 + i - 1) % 12;
+              const year =
+                startingYear +
+                Math.floor((startingMonth + chartStartMonth - 1 + i - 1) / 12);
+              return `${months[monthIndex]}/${year}`;
+            }
+          ),
+        },
+      },
       series: seriesData,
     }));
-  }, [tempFundraisingInputs]);
+  }, [tempFundraisingInputs, chartStartMonth, chartEndMonth, numberOfMonths]);
 
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 
@@ -324,6 +346,59 @@ const FundraisingSection = ({
 
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col shadow-xl">
+            <div className="flex justify-between items-center">
+              <div className="min-w-[10vw]">
+                <label htmlFor="startMonthSelect">Start Month:</label>
+                <select
+                  id="startMonthSelect"
+                  value={chartStartMonth}
+                  onChange={(e) =>
+                    setChartStartMonth(
+                      Math.max(1, Math.min(e.target.value, chartEndMonth))
+                    )
+                  }
+                  className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                >
+                  {Array.from({ length: numberOfMonths }, (_, i) => {
+                    const monthIndex = (startingMonth + i - 1) % 12;
+                    const year =
+                      startingYear + Math.floor((startingMonth + i - 1) / 12);
+                    return (
+                      <option key={i + 1} value={i + 1}>
+                        {`${months[monthIndex]}/${year}`}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+              <div className="min-w-[10vw]">
+                <label htmlFor="endMonthSelect">End Month:</label>
+                <select
+                  id="endMonthSelect"
+                  value={chartEndMonth}
+                  onChange={(e) =>
+                    setChartEndMonth(
+                      Math.max(
+                        chartStartMonth,
+                        Math.min(e.target.value, numberOfMonths)
+                      )
+                    )
+                  }
+                  className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                >
+                  {Array.from({ length: numberOfMonths }, (_, i) => {
+                    const monthIndex = (startingMonth + i - 1) % 12;
+                    const year =
+                      startingYear + Math.floor((startingMonth + i - 1) / 12);
+                    return (
+                      <option key={i + 1} value={i + 1}>
+                        {`${months[monthIndex]}/${year}`}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+            </div>
             <Chart
               options={{
                 ...fundraisingChart.options,
@@ -333,7 +408,7 @@ const FundraisingSection = ({
                 },
               }}
               series={fundraisingChart.series}
-              type="bar"
+              type="area"
               height={350}
             />
           </Card>
@@ -353,7 +428,7 @@ const FundraisingSection = ({
         />
       </div>
 
-      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
         <section
           aria-labelledby="fundraising-heading"
           className="mb-8 sticky top-8"

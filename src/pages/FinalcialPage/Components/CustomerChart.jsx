@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import Chart from "react-apexcharts";
-import { Col, Card } from "antd";
+import { Card } from "antd";
 import { formatNumber } from "../../../features/CostSlice";
 import { useSelector } from "react-redux";
 
@@ -31,12 +31,27 @@ const CustomChart = ({
     "12",
   ];
 
-  const startingMonth = startMonth; // Tháng bắt đầu từ 1
-  const startingYear = startYear; // Năm bắt đầu từ 24
+  const [chartStartMonth, setChartStartMonth] = useState(1);
+  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+
+  const xaxisCategories = Array.from(
+    { length: chartEndMonth - chartStartMonth + 1 },
+    (_, i) => {
+      const monthIndex = (startMonth + chartStartMonth + i - 2) % 12;
+      const year =
+        startYear + Math.floor((startMonth + chartStartMonth + i - 2) / 12);
+      return `${months[monthIndex]}/${year}`;
+    }
+  );
+
+  const filteredData = RenderData.slice(chartStartMonth - 1, chartEndMonth).map(
+    (value) => parseFloat(value.toFixed(0))
+  );
+
   const chartOptions = {
     chart: {
       fontFamily: "Sora, sans-serif",
-      id: "profit-and-loss-chart",
+      id,
       type: "area",
       height: 350,
       toolbar: { show: false },
@@ -59,49 +74,26 @@ const CustomChart = ({
 
     colors: ["#00A2FF", "#14F584", "#FFB303", "#DBFE01", "#FF474C", "#D84FE4"],
     xaxis: {
-      categories: Array.from({ length: numberOfMonths }, (_, i) => {
-        const monthIndex = (startingMonth + i - 1) % 12;
-        const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
-        return `${months[monthIndex]}/${year}`;
-      }),
-      // tickAmount: 6, // Set the number of ticks on the x-axis to 12
-
-      axisTicks: {
-        show: false, // Hide x-axis ticks
-      },
+      categories: xaxisCategories,
+      axisTicks: { show: false },
       labels: {
         rotate: 0,
-        style: {
-          fontFamily: "Sora, sans-serif",
-        },
+        style: { fontFamily: "Sora, sans-serif" },
       },
       title: {
         text: "Month",
-        style: {
-          fontSize: "12px",
-          fontFamily: "Sora, sans-serif",
-        },
+        style: { fontSize: "12px", fontFamily: "Sora, sans-serif" },
       },
     },
     yaxis: {
-      axisBorder: {
-        show: true, // Show y-axis line
-      },
+      axisBorder: { show: true },
       labels: {
-        style: {
-          fontFamily: "Sora, sans-serif",
-        },
-        show: true, // Hide y-axis labels
-        formatter: function (val) {
-          return formatNumber(Math.floor(val));
-        },
+        formatter: (val) => formatNumber(Math.floor(val)),
+        style: { fontFamily: "Sora, sans-serif" },
       },
       title: {
-        text: "Customers",
-        style: {
-          fontSize: "12px",
-          fontFamily: "Sora, sans-serif",
-        },
+        text: yaxisTitle,
+        style: { fontSize: "12px", fontFamily: "Sora, sans-serif" },
       },
     },
     legend: {
@@ -121,48 +113,68 @@ const CustomChart = ({
     //   },
     // },
     stroke: { curve: "smooth", width: 1 },
-    // colors: ["#00A2FF", "#14F584", "#FFB303", "#DBFE01", "#FF474C", "#D84FE4"],
     dataLabels: { enabled: false },
   };
+
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <Card title={title}>
+        <div className="flex justify-between items-center">
+          <div className="min-w-[10vw]">
+            <label htmlFor="startMonthSelect">Start Month:</label>
+            <select
+              id="startMonthSelect"
+              value={chartStartMonth}
+              onChange={(e) =>
+                setChartStartMonth(
+                  Math.max(1, Math.min(parseInt(e.target.value), chartEndMonth))
+                )
+              }
+              className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500"
+            >
+              {Array.from({ length: numberOfMonths }, (_, i) => {
+                const monthIndex = (startMonth + i - 1) % 12;
+                const year = startYear + Math.floor((startMonth + i - 1) / 12);
+                return (
+                  <option
+                    key={i + 1}
+                    value={i + 1}
+                  >{`${months[monthIndex]}/${year}`}</option>
+                );
+              })}
+            </select>
+          </div>
+          <div className="min-w-[10vw]">
+            <label htmlFor="endMonthSelect">End Month:</label>
+            <select
+              id="endMonthSelect"
+              value={chartEndMonth}
+              onChange={(e) =>
+                setChartEndMonth(
+                  Math.max(
+                    chartStartMonth,
+                    Math.min(parseInt(e.target.value), numberOfMonths)
+                  )
+                )
+              }
+              className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500"
+            >
+              {Array.from({ length: numberOfMonths }, (_, i) => {
+                const monthIndex = (startMonth + i - 1) % 12;
+                const year = startYear + Math.floor((startMonth + i - 1) / 12);
+                return (
+                  <option
+                    key={i + 1}
+                    value={i + 1}
+                  >{`${months[monthIndex]}/${year}`}</option>
+                );
+              })}
+            </select>
+          </div>
+        </div>
         <Chart
-          options={{
-            ...chartOptions,
-            chart: { ...chartOptions.chart, id: id },
-            dataLabels: { enabled: false },
-
-            colors: [
-              "#00A2FF",
-              "#14F584",
-              "#FFB303",
-              "#DBFE01",
-              "#FF474C",
-              "#D84FE4",
-            ],
-            stroke: {
-              width: 1,
-            },
-            yaxis: {
-              title: { text: yaxisTitle },
-              labels: {
-                style: {
-                  fontFamily: "Sora, sans-serif",
-                },
-                show: true, // Hide y-axis labels
-                formatter: function (val) {
-                  return formatNumber(Math.floor(val));
-                },
-              },
-            },
-          }}
-          series={[
-            {
-              name: seriesTitle,
-              data: RenderData.map((value) => parseFloat(value.toFixed(0))),
-            },
-          ]}
+          options={chartOptions}
+          series={[{ name: seriesTitle, data: filteredData }]}
           type="area"
           height={350}
         />

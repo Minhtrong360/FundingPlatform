@@ -469,6 +469,8 @@ const AllChartSections = ({
     "11",
     "12",
   ];
+  const [chartStartMonth, setChartStartMonth] = useState(1);
+  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
 
   return (
     <div className="flex flex-col">
@@ -481,6 +483,7 @@ const AllChartSections = ({
                 {formatNumber(Math.round(sumArray(yearlyAverageCustomers)))}
               </p>
             </div>
+
             <Chart
               type="area"
               series={customerGrowthChart.series}

@@ -88,7 +88,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
         </style>
         <div className="mt-16 mx-auto flex flex-col items-start h-full px-3 py-4 space-y-2 overflow-y-auto">
           <button
-            className="mt-2  w-full p-2 group flex items-center rounded-md text-sm  sidebar-button hover:bg-gray-300"
+            className="mt-2  w-full p-2 group flex items-center rounded-md text-sm  sidebar-button hover:bg-gray-200"
             onClick={() => navigate("/")}
           >
             <HomeOutlined />
@@ -101,7 +101,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
                 selectedItem?.includes("/admin")
                   ? "bg-gray-300 "
                   : "text-gray-900 darkTextWhite"
-              } sidebar-button hover:bg-gray-300`}
+              } sidebar-button hover:bg-gray-200`}
               onClick={() => navigate("/admin")}
             >
               <UserSwitchOutlined />
@@ -113,7 +113,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
               selectedItem?.includes("/user-info")
                 ? "bg-gray-300 "
                 : "text-gray-900 darkTextWhite"
-            } sidebar-button hover:bg-gray-300`}
+            } sidebar-button hover:bg-gray-200`}
             onClick={() => handleItemClick("/user-info")}
           >
             <UserOutlined />
@@ -124,7 +124,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
               selectedItem?.includes("/dashboard")
                 ? "bg-gray-300 "
                 : "text-gray-900 darkTextWhite"
-            } sidebar-button hover:bg-gray-300 `}
+            } sidebar-button hover:bg-gray-200 `}
             onClick={() => handleItemClick("/dashboard")}
           >
             <DashboardOutlined />
@@ -135,7 +135,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
               selectedItem?.includes("/financials")
                 ? "bg-gray-300 "
                 : "text-gray-900 darkTextWhite"
-            } sidebar-button hover:bg-gray-300`}
+            } sidebar-button hover:bg-gray-200`}
             onClick={() => handleItemClick("/financials")}
           >
             <DollarCircleOutlined />
@@ -146,7 +146,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
               selectedItem?.includes("/founder")
                 ? "bg-gray-300"
                 : "text-gray-900 darkTextWhite"
-            } sidebar-button hover:bg-gray-300`}
+            } sidebar-button hover:bg-gray-200`}
             onClick={() => handleItemClick("/founder")}
           >
             <ProfileOutlined />
@@ -157,7 +157,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
               selectedItem?.includes("/Flea-Market")
                 ? "bg-gray-300"
                 : "text-gray-900 darkTextWhite"
-            } sidebar-button hover:bg-gray-300`}
+            } sidebar-button hover:bg-gray-200`}
             onClick={() => handleItemClick("/Flea-Market")}
           >
             <ShopOutlined />

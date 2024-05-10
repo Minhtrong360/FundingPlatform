@@ -255,15 +255,42 @@ const InvestmentSection = ({
     series: [],
   });
 
+  const [chartStartMonth, setChartStartMonth] = useState(1);
+  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+
   useEffect(() => {
+    const filteredMonths = Array.from(
+      { length: chartEndMonth - chartStartMonth + 1 },
+      (_, i) => {
+        const monthIndex = (startingMonth + chartStartMonth + i - 2) % 12;
+        const year =
+          startingYear +
+          Math.floor((startingMonth + chartStartMonth + i - 2) / 12);
+        return `${months[monthIndex]}/${year}`;
+      }
+    );
+
     const seriesData = tempInvestmentData.map((investment) => {
+      const filteredData = investment.bookValue.slice(
+        chartStartMonth - 1,
+        chartEndMonth
+      );
       return {
         name: investment.purchaseName,
-        data: investment.bookValue,
-        dataBookValue: investment.bookValue,
-        dataAccumulatedDepreciation: investment.accumulatedDepreciation,
-        dataAssetValue: investment.assetValue,
-        dataDepreciationArray: investment.depreciationArray,
+        data: filteredData,
+        dataBookValue: filteredData,
+        dataAccumulatedDepreciation: investment.accumulatedDepreciation.slice(
+          chartStartMonth - 1,
+          chartEndMonth
+        ),
+        dataAssetValue: investment.assetValue.slice(
+          chartStartMonth - 1,
+          chartEndMonth
+        ),
+        dataDepreciationArray: investment.depreciationArray.slice(
+          chartStartMonth - 1,
+          chartEndMonth
+        ),
       };
     });
 
@@ -273,7 +300,7 @@ const InvestmentSection = ({
         acc[index] += amount;
       });
       return acc;
-    }, Array(numberOfMonths).fill(0));
+    }, Array(chartEndMonth - chartStartMonth + 1).fill(0));
 
     setInvestmentChart((prevState) => ({
       ...prevState,
@@ -282,6 +309,10 @@ const InvestmentSection = ({
         {
           options: {
             ...prevState.options,
+            xaxis: {
+              ...prevState.options.xaxis,
+              categories: filteredMonths,
+            },
             chart: {
               ...prevState.options.chart,
               id: "allInvestments",
@@ -303,6 +334,10 @@ const InvestmentSection = ({
         ...seriesData.map((channelSeries) => ({
           options: {
             ...prevState.options,
+            xaxis: {
+              ...prevState.options.xaxis,
+              categories: filteredMonths,
+            },
             chart: {
               ...prevState.options.chart,
               id: channelSeries.name,
@@ -329,7 +364,15 @@ const InvestmentSection = ({
         })),
       ],
     }));
-  }, [tempInvestmentData, numberOfMonths]);
+  }, [
+    tempInvestmentData,
+    chartStartMonth,
+    chartEndMonth,
+    startingMonth,
+    startingYear,
+  ]);
+
+  console.log("investmentChart", investmentChart);
 
   const handleSelectChange = (event) => {
     setRenderInvestmentForm(event.target.value);
@@ -396,60 +439,6 @@ const InvestmentSection = ({
     dispatch(setInvestmentTableData(tableData));
   }, []);
 
-  const newChartOptions = {
-    chart: {
-      id: "new-chart",
-      type: "area",
-      height: 350,
-      toolbar: { show: false },
-      zoom: { enabled: false },
-    },
-    grid: { show: false },
-
-    fill: {
-      type: "gradient",
-      gradient: {
-        shade: "light",
-        shadeIntensity: 0.5,
-        opacityFrom: 0.85,
-        opacityTo: 0.65,
-        stops: [0, 90, 100],
-      },
-    },
-    xaxis: {
-      axisTicks: {
-        show: false, // Hide x-axis ticks
-      },
-      labels: {
-        show: false, // Hide x-axis labels
-      },
-      categories: Array.from({ length: numberOfMonths }, (_, i) => `${i + 1}`),
-      title: {
-        text: "Month",
-        style: {},
-      },
-    },
-    yaxis: {
-      axisBorder: {
-        show: true, // Show y-axis line
-      },
-      labels: {
-        show: false,
-        formatter: function (val) {
-          return Math.floor(val);
-        },
-      },
-      title: {
-        text: "New Chart Y-Axis",
-        style: {},
-      },
-    },
-    legend: { position: "bottom", horizontalAlign: "right" },
-
-    dataLabels: { enabled: false },
-    stroke: { curve: "smooth", width: 1 },
-  };
-
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 
   return (
@@ -462,6 +451,60 @@ const InvestmentSection = ({
               key={index}
               className="flex flex-col shadow-xl transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
             >
+              <div className="flex justify-between items-center">
+                <div className="min-w-[10vw]">
+                  <label htmlFor="startMonthSelect">Start Month:</label>
+                  <select
+                    id="startMonthSelect"
+                    value={chartStartMonth}
+                    onChange={(e) =>
+                      setChartStartMonth(
+                        Math.max(1, Math.min(e.target.value, chartEndMonth))
+                      )
+                    }
+                    className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                  >
+                    {Array.from({ length: numberOfMonths }, (_, i) => {
+                      const monthIndex = (startingMonth + i - 1) % 12;
+                      const year =
+                        startingYear + Math.floor((startingMonth + i - 1) / 12);
+                      return (
+                        <option key={i + 1} value={i + 1}>
+                          {`${months[monthIndex]}/${year}`}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+                <div className="min-w-[10vw]">
+                  <label htmlFor="endMonthSelect">End Month:</label>
+                  <select
+                    id="endMonthSelect"
+                    value={chartEndMonth}
+                    onChange={(e) =>
+                      setChartEndMonth(
+                        Math.max(
+                          chartStartMonth,
+                          Math.min(e.target.value, numberOfMonths)
+                        )
+                      )
+                    }
+                    className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                  >
+                    {Array.from({ length: numberOfMonths }, (_, i) => {
+                      const monthIndex = (startingMonth + i - 1) % 12;
+                      const year =
+                        startingYear + Math.floor((startingMonth + i - 1) / 12);
+                      return (
+                        <option key={i + 1} value={i + 1}>
+                          {`${months[monthIndex]}/${year}`}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+              </div>
+
               <Chart
                 options={{
                   ...series.options,
@@ -501,7 +544,7 @@ const InvestmentSection = ({
         />
       </div>
 
-      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
         <section
           aria-labelledby="investment-heading"
           className="mb-8 sticky top-8"

@@ -297,6 +297,11 @@ function Dashboard({ dataSource }) {
                     colors: ["#000000"],
                   },
                 },
+                plotOptions: {
+                  bar: {
+                    borderRadius: 2,
+                  },
+                },
                 fill:
                   chart.type === "bar"
                     ? {

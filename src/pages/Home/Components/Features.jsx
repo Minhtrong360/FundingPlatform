@@ -37,52 +37,52 @@ function ComponentsFeatures() {
       className="bg-white text-gray-800 p-12 grid grid-cols-2 lg:grid-cols-4 gap-8"
     >
       <div className="space-y-4">
-        <ClockCircleOutlined className="h-12 w-12 text-black" />
+        <ClockCircleOutlined  style={{ fontSize: '32px' }} className="h-12 w-12 text-black" />
         <h3 className="text-xl font-semibold text-blue-600">
           Real-Time Reporting
         </h3>
         <p>Always work with accurate numbers as things change rapidly.</p>
       </div>
       <div className="space-y-4">
-        <TeamOutlined className="h-12 w-12 text-black" />
+        <TeamOutlined style={{ fontSize: '32px' }} className="h-12 w-12 text-black" />
         <h3 className="text-xl font-semibold text-blue-600">
           Seamless Collaboration
         </h3>
         <p>Foster collaboration to drive the business forward.</p>
       </div>
       <div className="space-y-4">
-        <FundProjectionScreenOutlined className="h-12 w-12 text-black" />
+        <FundProjectionScreenOutlined style={{ fontSize: '32px' }} className="h-12 w-12 text-black" />
         <h3 className="text-xl font-semibold text-blue-600">
           Model Any Scenario
         </h3>
         <p>Create multiple plans for potential outcomes.</p>
       </div>
       <div className="space-y-4">
-        <ArrowUpOutlined className="h-12 w-12 text-black" />
+        <ArrowUpOutlined style={{ fontSize: '32px' }} className="h-12 w-12 text-black" />
         <h3 className="text-xl font-semibold text-blue-600">
           Increased Confidence
         </h3>
         <p>Grow your business on a strong foundation.</p>
       </div>
       <div className="space-y-4">
-        <ControlOutlined className="h-12 w-12 text-black" />
+        <ControlOutlined style={{ fontSize: '32px' }} className="h-12 w-12 text-black" />
         <h3 className="text-xl font-semibold text-blue-600">Greater Control</h3>
         <p>Make decisions founded on real-world data.</p>
       </div>
       <div className="space-y-4">
-        <BulbOutlined className="h-12 w-12 text-black" />
+        <BulbOutlined style={{ fontSize: '32px' }} className="h-12 w-12 text-black" />
         <h3 className="text-xl font-semibold text-blue-600">
           Accelerate Experience
         </h3>
         <p>Tap into financial experience to drive value.</p>
       </div>
       <div className="space-y-4">
-        <DollarCircleOutlined className="h-12 w-12 text-black" />
+        <DollarCircleOutlined style={{ fontSize: '32px' }} className="h-12 w-12 text-black" />
         <h3 className="text-xl font-semibold text-blue-600">Reduce Costs</h3>
         <p>Invest in driving the business forward.</p>
       </div>
       <div className="space-y-4">
-        <SolutionOutlined className="h-12 w-12 text-black" />
+        <SolutionOutlined style={{ fontSize: '32px' }} className="h-12 w-12 text-black" />
         <h3 className="text-xl font-semibold text-blue-600">Hiring Clarity</h3>
         <p>Clear picture of who to hire and when.</p>
       </div>

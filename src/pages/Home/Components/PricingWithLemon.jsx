@@ -12,18 +12,18 @@ const PricingCard = ({ plan, onClick }) => {
   // const navigate = useNavigate();
   const price_0 = [
     "Free forever",
-    "01 business profile (Public mode)",
-    "Business Profile listing (Public mode)",
+    "01 profile (Public mode)",
+    "Profile listing (Public mode)",
     "Invite collaborators (Profile editing)",
     "Data room file upload (Public mode)",
   ];
 
   const price_10 = [
     "14-day free trial",
-    "Financial Model feature access",
+    "Financial Model with AI access",
     "Unlimited business profiles",
     "Private Data room (access control)",
-    "Private project listing (access control)",
+    "Private listing (access control)",
   ];
 
   const price_50 = [

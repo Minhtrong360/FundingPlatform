@@ -198,12 +198,12 @@ const Header = ({ position }) => {
                   Angel's Share <ShopOutlined className="ml-[5px]" />
                 </span>
               </NavbarItem>
-              <NavbarItem
+              {/* <NavbarItem
                 onClick={() => navigate(`/marketresearch`)}
                 isActive={loginPart === "/"}
               >
                 Market Research
-              </NavbarItem>
+              </NavbarItem> */}
 
               {/* <NavbarItem
                 href="https://beekrowd.gitbook.io/beekrowd-financial-model-guide"

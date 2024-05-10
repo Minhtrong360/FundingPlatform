@@ -165,6 +165,9 @@ const CostSection = ({
         height: 350,
         toolbar: { show: false },
         zoom: { enabled: false },
+        animations: {
+          enabled: false,
+        }
       },
       colors: [
         "#00A2FF",

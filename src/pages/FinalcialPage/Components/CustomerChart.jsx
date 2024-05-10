@@ -56,7 +56,23 @@ const CustomChart = ({
       height: 350,
       toolbar: { show: false },
       zoom: { enabled: false },
+      animations: {
+        enabled: false,
+      }
     },
+    grid: { show: false },
+    // fill: {
+    //   type: "gradient",
+    //   gradient: {
+    //     shade: "light",
+    //     shadeIntensity: 0.5,
+    //     opacityFrom: 0.85,
+    //     opacityTo: 0.65,
+    //     stops: [0, 90, 100],
+    //   },
+    // },
+
+    colors: ["#00A2FF", "#14F584", "#FFB303", "#DBFE01", "#FF474C", "#D84FE4"],
     xaxis: {
       categories: xaxisCategories,
       axisTicks: { show: false },
@@ -80,17 +96,22 @@ const CustomChart = ({
         style: { fontSize: "12px", fontFamily: "Sora, sans-serif" },
       },
     },
-    colors: ["#00A2FF", "#14F584", "#FFB303", "#DBFE01", "#FF474C", "#D84FE4"],
-    fill: {
-      type: "gradient",
-      gradient: {
-        shade: "light",
-        shadeIntensity: 0.75,
-        opacityFrom: 0.8,
-        opacityTo: 0.5,
-        stops: [0, 90, 100],
-      },
+    legend: {
+      position: "bottom",
+      horizontalAlign: "right",
+      fontFamily: "Sora, sans-serif",
     },
+    // fill: {
+    //   type: "gradient",
+
+    //   gradient: {
+    //     shade: "light",
+    //     shadeIntensity: 0.5,
+    //     opacityFrom: 0.85,
+    //     opacityTo: 0.65,
+    //     stops: [0, 90, 100],
+    //   },
+    // },
     stroke: { curve: "smooth", width: 1 },
     dataLabels: { enabled: false },
   };

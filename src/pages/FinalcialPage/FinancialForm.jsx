@@ -274,17 +274,17 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-      fill: {
-        type: "gradient",
+      // fill: {
+      //   type: "gradient",
 
-        gradient: {
-          shade: "light",
-          shadeIntensity: 0.75,
-          opacityFrom: 0.8,
-          opacityTo: 0.5,
-          stops: [0, 90, 100],
-        },
-      },
+      //   gradient: {
+      //     shade: "light",
+      //     shadeIntensity: 0.5,
+      //     opacityFrom: 0.75,
+      //     opacityTo: 0.65,
+      //     stops: [0, 90, 100],
+      //   },
+      // },
       grid: {
         show: false,
       },
@@ -298,6 +298,12 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         "#D84FE4",
       ],
       dataLabels: { enabled: false },
+      plotOptions: {
+        bar: {
+          borderRadius: 2,
+          // columnWidth: '50%',
+        },
+      },
     },
     series: [],
   });
@@ -338,16 +344,16 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-      fill: {
-        type: "gradient",
-        gradient: {
-          shade: "light",
-          shadeIntensity: 0.75,
-          opacityFrom: 0.8,
-          opacityTo: 0.5,
-          stops: [0, 90, 100],
-        },
-      },
+      // fill: {
+      //   type: "gradient",
+      //   gradient: {
+      //     shade: "light",
+      //     shadeIntensity: 0.5,
+      //     opacityFrom: 0.75,
+      //     opacityTo: 0.65,
+      //     stops: [0, 90, 100],
+      //   },
+      // },
       xaxis: {
         axisTicks: {
           show: false, // Hide x-axis ticks

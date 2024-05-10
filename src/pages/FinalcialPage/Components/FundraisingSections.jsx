@@ -143,6 +143,9 @@ const FundraisingSection = ({
         height: 350,
         toolbar: { show: false },
         zoom: { enabled: false },
+        animations: {
+          enabled: false,
+        }
       },
       grid: { show: false },
       colors: [
@@ -206,9 +209,9 @@ const FundraisingSection = ({
 
         gradient: {
           shade: "light",
-          shadeIntensity: 0.75,
-          opacityFrom: 0.8,
-          opacityTo: 0.5,
+          shadeIntensity: 0.5,
+          opacityFrom: 0.85,
+          opacityTo: 0.65,
           stops: [0, 90, 100],
         },
       },

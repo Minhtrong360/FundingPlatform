@@ -141,6 +141,9 @@ const LoanSection = ({
         fontFamily: "Sora, sans-serif",
         toolbar: { show: false },
         zoom: { enabled: false },
+        animations: {
+          enabled: false,
+        }
       },
       colors: [
         "#00A2FF",
@@ -197,16 +200,16 @@ const LoanSection = ({
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-      fill: {
-        type: "gradient",
-        gradient: {
-          shade: "light",
-          shadeIntensity: 0.75,
-          opacityFrom: 0.8,
-          opacityTo: 0.5,
-          stops: [0, 90, 100],
-        },
-      },
+      // fill: {
+      //   type: "gradient",
+      //   gradient: {
+      //     shade: "light",
+      //     shadeIntensity: 0.5,
+      //     opacityFrom: 0.85,
+      //     opacityTo: 0.65,
+      //     stops: [0, 90, 100],
+      //   },
+      // },
       dataLabels: { enabled: false },
       stroke: { width: 1 },
     },

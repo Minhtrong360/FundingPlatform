@@ -420,6 +420,19 @@ const CustomerSection = React.memo(
                   ...prevState.options.chart,
                   id: "allChannels",
                   stacked: false,
+                  animated: false,
+                },
+
+                fill: {
+                  type: "gradient",
+
+                  gradient: {
+                    shade: "light",
+                    shadeIntensity: 0.5,
+                    opacityFrom: 0.75,
+                    opacityTo: 0.65,
+                    stops: [0, 90, 100],
+                  },
                 },
                 xaxis: {
                   axisTicks: {
@@ -444,6 +457,10 @@ const CustomerSection = React.memo(
                 title: {
                   ...prevState.options.title,
                   text: "All Channels",
+                  style: {
+                    fontSize: "12px",
+                    fontFamily: "Sora, sans-serif",
+                  },
                 },
               },
               series: [
@@ -526,6 +543,17 @@ const CustomerSection = React.memo(
                   ...prevState.options.title,
                   text: "Yearly Total and Growth Rate",
                 },
+                fill: {
+                  type: "gradient",
+
+                  gradient: {
+                    shade: "light",
+                    shadeIntensity: 0.5,
+                    opacityFrom: 0.75,
+                    opacityTo: 0.65,
+                    stops: [0, 90, 100],
+                  },
+                },
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
@@ -585,6 +613,17 @@ const CustomerSection = React.memo(
                 title: {
                   ...prevState.options.title,
                   text: "Total Yearly Customers by Channel",
+                },
+                fill: {
+                  type: "gradient",
+
+                  gradient: {
+                    shade: "light",
+                    shadeIntensity: 0.5,
+                    opacityFrom: 0.75,
+                    opacityTo: 0.65,
+                    stops: [0, 90, 100],
+                  },
                 },
                 xaxis: {
                   ...prevState.options.xaxis,
@@ -675,6 +714,17 @@ const CustomerSection = React.memo(
                 <Chart
                   options={{
                     ...chart.options,
+                    fill: {
+                      type: "gradient",
+
+                      gradient: {
+                        shade: "light",
+                        shadeIntensity: 0.5,
+                        opacityFrom: 0.75,
+                        opacityTo: 0.65,
+                        stops: [0, 90, 100],
+                      },
+                    },
                     xaxis: {
                       ...chart.options.xaxis,
                       // tickAmount: 12, // Set the number of ticks on the x-axis to 12
@@ -689,6 +739,7 @@ const CustomerSection = React.memo(
                 />
               </Card>
             ))}
+
             {customerGrowthChart.chartsNoFilter?.map((chart, index) => (
               <Card
                 key={index}

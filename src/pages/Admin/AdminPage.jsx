@@ -34,7 +34,7 @@ import LoadingButtonClick from "../../components/LoadingButtonClick";
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
 
-// Updated Dashboard component in AdminPage to include an ApexChart for all table data
+
 
 function Dashboard({ dataSource }) {
   const [chartData, setChartData] = useState([]);
@@ -273,10 +273,46 @@ function Dashboard({ dataSource }) {
             <Chart
               options={{
                 chart: {
+                  fontFamily: "Sora, sans-serif",
+                  zoom: {
+                    enabled: false, // Disable zooming
+                  },
+                  toolbar: {
+                    show: false, // Hide the toolbar
+                  },
                   type: chart.type,
                   height: 350,
-                  toolbar: { show: false },
+                  animations: {
+                    enabled: false,
+                  },
+                 
                 },
+                grid: {
+                  show: false,
+                },
+                dataLabels: {
+                  enabled: true,
+              
+                  style: {
+                    fontSize: '12px',
+                    fontFamily: 'Sora, sans-serif',
+                    fontWeight: 'bold',
+                    colors: ['#000000'],
+                },
+                },
+                fill: chart.type === "bar" ? {
+                  
+                    type: "gradient",
+            
+                    gradient: {
+                      shade: "light",
+                      shadeIntensity: 0.5,
+                      opacityFrom: 0.75,
+                      opacityTo: 0.65,
+                      stops: [0, 90, 100],
+                    },
+                 
+                }:{},
                 colors: [
                   "#00A2FF",
                   "#14F584",
@@ -285,19 +321,29 @@ function Dashboard({ dataSource }) {
                   "#FF474C",
                   "#D84FE4",
                 ],
-                fill: {
-                  type: "gradient",
-                  gradient: {
-                    shade: "light",
-                    type: "vertical",
-                    opacityFrom: 1,
-                    opacityTo: 0.85,
-                  },
-                },
+                
+               
                 labels: chart.categories,
                 xaxis: {
                   categories: chart.categories,
-                  labels: { show: false },
+                
+                  axisTicks: {
+                    show: false, // Hide x-axis ticks
+                  },
+                  labels: {
+                    show: false,
+                    rotate: 0,
+                    style: {
+                      fontFamily: "Sora, sans-serif",
+                    },
+                  },
+                  title: {
+                   
+                    style: {
+                      fontSize: "12px",
+                      fontFamily: "Sora, sans-serif",
+                    },
+                  },
                 },
                 tooltip: {
                   enabled: true,
@@ -307,6 +353,9 @@ function Dashboard({ dataSource }) {
                     },
                   },
                 },
+                stroke: chart.type === "bar" ? {
+                  curve: "smooth",width:1
+                }:{},
                 legend: {
                   position: chart.type === "pie" ? "bottom" : "top",
                   onItemClick: {
@@ -329,6 +378,7 @@ function Dashboard({ dataSource }) {
               series={
                 chart.type === "pie" ? chart.data : [{ data: chart.data }]
               }
+             
               type={chart.type}
               height={350}
               className="w-full h-48"

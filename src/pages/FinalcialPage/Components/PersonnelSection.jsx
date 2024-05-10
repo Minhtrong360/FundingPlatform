@@ -180,6 +180,9 @@ const PersonnelSection = ({
         toolbar: { show: false },
         zoom: { enabled: false },
         fontFamily: "Sora, sans-serif",
+        animations: {
+          enabled: false,
+        }
       },
       grid: { show: false },
       colors: [
@@ -238,17 +241,14 @@ const PersonnelSection = ({
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-      fill: {
-        type: "gradient",
-
-        gradient: {
-          shade: "light",
-          shadeIntensity: 0.75,
-          opacityFrom: 0.8,
-          opacityTo: 0.5,
-          stops: [0, 90, 100],
-        },
-      },
+      type: 'gradient',
+      // gradient: {
+      //     shadeIntensity: 1,
+      //     inverseColors: false,
+      //     opacityFrom: 0.45,
+      //     opacityTo: 0.05,
+      //     stops: [20, 100, 100, 100]
+      //   },
       dataLabels: { enabled: false },
       stroke: { width: 1 },
       // markers: { size: 1 },

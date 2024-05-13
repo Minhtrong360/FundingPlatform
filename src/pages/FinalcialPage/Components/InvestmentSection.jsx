@@ -256,7 +256,7 @@ const InvestmentSection = ({
   });
 
   const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+  const [chartEndMonth, setChartEndMonth] = useState(6);
 
   useEffect(() => {
     const filteredMonths = Array.from(
@@ -372,8 +372,6 @@ const InvestmentSection = ({
     startingYear,
   ]);
 
-  console.log("investmentChart", investmentChart);
-
   const handleSelectChange = (event) => {
     setRenderInvestmentForm(event.target.value);
   };
@@ -449,7 +447,7 @@ const InvestmentSection = ({
           {investmentChart?.charts?.map((series, index) => (
             <Card
               key={index}
-              className="flex flex-col  transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
+              className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
             >
               <div className="flex justify-between items-center">
                 <div className="min-w-[10vw]">

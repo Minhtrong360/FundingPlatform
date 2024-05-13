@@ -182,7 +182,7 @@ const PersonnelSection = ({
         fontFamily: "Sora, sans-serif",
         animations: {
           enabled: false,
-        }
+        },
       },
       grid: { show: false },
       colors: [
@@ -240,7 +240,7 @@ const PersonnelSection = ({
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-      type: 'gradient',
+      type: "gradient",
       // gradient: {
       //     shadeIntensity: 1,
       //     inverseColors: false,
@@ -307,7 +307,7 @@ const PersonnelSection = ({
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 
   const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+  const [chartEndMonth, setChartEndMonth] = useState(6);
 
   useEffect(() => {
     const filteredSeries = tempPersonnelCostData.map((personnel) => ({
@@ -357,7 +357,7 @@ const PersonnelSection = ({
         <h3 className="text-lg font-semibold mb-8">Personnel Cost Chart</h3>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col ">
+          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
             <div className="flex justify-between items-center">
               <div className="min-w-[10vw]">
                 <label htmlFor="startMonthSelect">Start Month:</label>

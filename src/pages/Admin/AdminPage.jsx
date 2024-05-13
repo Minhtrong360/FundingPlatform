@@ -34,8 +34,6 @@ import LoadingButtonClick from "../../components/LoadingButtonClick";
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
 
-
-
 function Dashboard({ dataSource }) {
   const [chartData, setChartData] = useState([]);
   useEffect(() => {
@@ -285,26 +283,39 @@ function Dashboard({ dataSource }) {
                   animations: {
                     enabled: false,
                   },
-                 
                 },
                 grid: {
                   show: false,
                 },
                 dataLabels: {
                   enabled: true,
-              
+
                   style: {
-                    fontSize: '12px',
-                    fontFamily: 'Sora, sans-serif',
-                    fontWeight: 'bold',
-                    colors: ['#000000'],
-                },
+                    fontSize: "12px",
+                    fontFamily: "Sora, sans-serif",
+                    fontWeight: "bold",
+                    colors: ["#000000"],
+                  },
                 },
                 plotOptions: {
                   bar: {
                     borderRadius: 2,
                   },
                 },
+                fill:
+                  chart.type === "bar"
+                    ? {
+                        type: "gradient",
+
+                        gradient: {
+                          shade: "light",
+                          shadeIntensity: 0.5,
+                          opacityFrom: 0.75,
+                          opacityTo: 0.65,
+                          stops: [0, 90, 100],
+                        },
+                      }
+                    : {},
                 colors: [
                   "#00A2FF",
                   "#14F584",
@@ -312,27 +323,13 @@ function Dashboard({ dataSource }) {
                   "#DBFE01",
                   "#FF474C",
                   "#D84FE4",
-                  
                 ],
-                fill: chart.type === "bar" ? {
-                  
-                    type: "gradient",
-            
-                    gradient: {
-                      shade: "light",
-                      shadeIntensity: 0.5,
-                      opacityFrom: 0.75,
-                      opacityTo: 0.65,
-                      stops: [0, 90, 100],
-                    },
-                 
-                }:{},
 
                 labels: chart.categories,
                 
                 xaxis: {
                   categories: chart.categories,
-                
+
                   axisTicks: {
                     show: false, // Hide x-axis ticks
                   },
@@ -344,24 +341,20 @@ function Dashboard({ dataSource }) {
                     },
                   },
                   title: {
-                   
                     style: {
                       fontSize: "12px",
                       fontFamily: "Sora, sans-serif",
                     },
                   },
                 },
-                tooltip: {
-                  enabled: true,
-                  y: {
-                    formatter: function (val) {
-                      return `${val}`; // Customize based on your data type
-                    },
-                  },
-                },
-                stroke: chart.type === "bar" ? {
-                  curve: "smooth",width:1
-                }:{},
+
+                stroke:
+                  chart.type === "bar"
+                    ? {
+                        curve: "smooth",
+                        width: 1,
+                      }
+                    : {},
                 legend: {
                   position: chart.type === "pie" ? "bottom" : "top",
                   onItemClick: {
@@ -382,9 +375,10 @@ function Dashboard({ dataSource }) {
                 ],
               }}
               series={
-                chart.type === "pie" ? chart.data : [{ data: chart.data }]
+                chart.type === "pie"
+                  ? chart.data
+                  : [{ data: chart.data, name: "Quantity" }]
               }
-             
               type={chart.type}
               height={350}
               className="w-full h-48"

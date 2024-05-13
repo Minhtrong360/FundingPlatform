@@ -167,7 +167,7 @@ const CostSection = ({
         zoom: { enabled: false },
         animations: {
           enabled: false,
-        }
+        },
       },
       colors: [
         "#00A2FF",
@@ -316,7 +316,7 @@ const CostSection = ({
 
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
   const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+  const [chartEndMonth, setChartEndMonth] = useState(6);
 
   // useEffect to update cost chart data
   useEffect(() => {
@@ -628,50 +628,51 @@ const CostSection = ({
                 </div>
               </div>
             ))}
+
+          <div className="flex justify-between items-center">
+            <button
+              className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4 flex items-center"
+              onClick={() => removeCostInput(renderCostForm)}
+            >
+              <DeleteOutlined
+                style={{
+                  fontSize: "12px",
+                  color: "#FFFFFF",
+                  marginRight: "4px",
+                }}
+              />
+              Remove
+            </button>
+
+            <button
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4 "
+              onClick={addNewCostInput}
+            >
+              <PlusOutlined
+                style={{
+                  fontSize: "12px",
+                  color: "#FFFFFF",
+                  marginRight: "4px",
+                }}
+              />
+              Add
+            </button>
+
+            <button
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4 flex items-center"
+              onClick={handleSave}
+            >
+              <CheckCircleOutlined
+                style={{
+                  fontSize: "12px",
+                  color: "#FFFFFF",
+                  marginRight: "4px",
+                }}
+              />
+              Save
+            </button>
+          </div>
         </section>
-        <div className="flex justify-between items-center">
-          <button
-            className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4 flex items-center"
-            onClick={() => removeCostInput(renderCostForm)}
-          >
-            <DeleteOutlined
-              style={{
-                fontSize: "12px",
-                color: "#FFFFFF",
-                marginRight: "4px",
-              }}
-            />
-            Remove
-          </button>
-
-          <button
-            className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4 "
-            onClick={addNewCostInput}
-          >
-            <PlusOutlined
-              style={{
-                fontSize: "12px",
-                color: "#FFFFFF",
-                marginRight: "4px",
-              }}
-            />
-            Add
-          </button>
-
-          <button
-            className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4 flex items-center"
-            onClick={handleSave}
-          >
-            <CheckCircleOutlined
-              style={{
-                fontSize: "12px",
-                color: "#FFFFFF",
-                marginRight: "4px",
-              }}
-            />
-            Save
-          </button>
-        </div>
       </div>
 
       <div className="xl:hidden block">

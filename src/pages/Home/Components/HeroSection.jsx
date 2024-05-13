@@ -38,13 +38,16 @@ const HeroSection = () => {
       {/* Add margin-top */}
       <div className="container px-6 py-16 mx-auto text-center">
         <div className="max-w-3xl mx-auto">
-        <h1 className="block text-3xl font-extrabold leading-relaxed text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl" style={{ lineHeight: '1.5' }}>
-  Build your{" "}
-  <span className="text-blue-600 bg-yellow-300 h-6">
-    Financial Planning & Analysis
-  </span>{" "}
-  under 5' with AI.
-</h1>
+          <h1
+            className="block text-3xl font-extrabold leading-relaxed text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl"
+            style={{ lineHeight: "1.5" }}
+          >
+            Build your{" "}
+            <span className="text-blue-600 bg-yellow-300 h-6">
+              Financial Planning & Analysis
+            </span>{" "}
+            under 5' with AI.
+          </h1>
           <p className="mt-6 text-lg text-gray-800">
             Craft an effective fundraising profile and compelling financial
             model on an AI-powered platform.

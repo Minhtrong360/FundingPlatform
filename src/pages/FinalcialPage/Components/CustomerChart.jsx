@@ -32,7 +32,7 @@ const CustomChart = ({
   ];
 
   const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+  const [chartEndMonth, setChartEndMonth] = useState(6);
 
   const xaxisCategories = Array.from(
     { length: chartEndMonth - chartStartMonth + 1 },
@@ -58,7 +58,7 @@ const CustomChart = ({
       zoom: { enabled: false },
       animations: {
         enabled: false,
-      }
+      },
     },
     grid: { show: false },
     // fill: {
@@ -117,8 +117,11 @@ const CustomChart = ({
   };
 
   return (
-    <div className="grid md:grid-cols-2 gap-6">
-      <Card title={title}>
+    <div className="grid md:grid-cols-2 gap-6 mt-6">
+      <Card
+        title={title}
+        className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
+      >
         <div className="flex justify-between items-center">
           <div className="min-w-[10vw]">
             <label htmlFor="startMonthSelect">Start Month:</label>

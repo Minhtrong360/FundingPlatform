@@ -171,6 +171,7 @@ const AllChartSections = ({
     totalRevenue,
     grossProfit,
     totalCosts,
+    totalPersonnelCosts,
     totalInvestmentDepreciation,
     totalInterestPayments,
     totalPrincipal,
@@ -469,8 +470,59 @@ const AllChartSections = ({
     "11",
     "12",
   ];
-  const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+  // const [chartStartMonth, setChartStartMonth] = useState(1);
+  // const [chartEndMonth, setChartEndMonth] = useState(6);
+
+  // const bsTotalInvestmentArray = investmentTableData.find(
+  //   (item) => item.key === "BS Total investment"
+  // );
+  // const bsTotalInvestmentValues = Object.values(bsTotalInvestmentArray)
+  //   .slice(2)
+  //   .map((value) => parseFloat(value.replace(",", "")));
+
+  // const seriesData = calculateLoanData(loanInputs, numberOfMonths).map(
+  //   (loan) => {
+  //     // Khởi tạo mảng dữ liệu rỗng với giá trị là 0 cho mỗi tháng
+  //     const data = Array(numberOfMonths).fill(0);
+  //     const dataPayment = Array(numberOfMonths).fill(0);
+  //     const dataPrincipal = Array(numberOfMonths).fill(0);
+  //     const dataInterest = Array(numberOfMonths).fill(0);
+  //     const dataRemainingBalance = Array(numberOfMonths).fill(0);
+
+  //     // Cập nhật mảng dữ liệu với thông tin thực tế từ loanDataPerMonth
+  //     loan?.loanDataPerMonth.forEach((monthData, index) => {
+  //       data[index] = monthData.balance;
+  //       dataPayment[index] = monthData.payment;
+  //       dataPrincipal[index] = monthData.principal;
+  //       dataInterest[index] = monthData.interest;
+  //       dataRemainingBalance[index] = monthData.balance;
+  //     });
+
+  //     return {
+  //       name: loan.loanName,
+  //       data,
+  //       dataPayment,
+  //       dataPrincipal,
+  //       dataInterest,
+  //       dataRemainingBalance,
+  //     };
+  //   }
+  // );
+
+  // const totalLoanData = seriesData.reduce((acc, channel) => {
+  //   channel.data.forEach((amount, index) => {
+  //     acc[index] = (acc[index] || 0) + amount;
+  //   });
+  //   return acc;
+  // }, Array(numberOfMonths).fill(0));
+
+  // const totalFunding = fundraisingTableData.find(
+  //   (item) => item.key === "Total funding"
+  // );
+
+  // const bsTotalFundingValues = Object.values(totalFunding)
+  //   .slice(2)
+  //   .map((value) => parseFloat(value.replace(",", "")));
 
   return (
     <div className="flex flex-col">
@@ -516,7 +568,7 @@ const AllChartSections = ({
               height={300}
             />
           </Card>
-          <Card className="flex fleflex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-mdx-col">
+          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-mdx-col">
             <div>
               <div className="text-base">Total Revenue</div>
               <p className="text-base lg:text-5xl font-bold text-black my-2">
@@ -577,11 +629,127 @@ const AllChartSections = ({
                   width: 1, // Set the stroke width to 1
                 },
               }}
-              series={[{ data: totalCosts }]} // Replace 'revenue.series' with appropriate data structure
+              series={[{ data: totalCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
               type="area"
               height={300}
             />
           </Card>
+          {/* <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
+            <div>
+              <div className="text-base">Total Personnel Cost</div>
+              <p className="text-sm sm:text-5xl font-bold text-black my-2">
+                {getCurrencyLabelByKey(currency)}&nbsp;
+                {formatNumber(Math.round(sumArray(totalPersonnelCosts)))}
+              </p>
+            </div>
+            <Chart
+              options={{
+                zoom: {
+                  enabled: false, // Disable zooming
+                },
+                toolbar: {
+                  show: false, // Hide the toolbar
+                },
+                ...revenue.options,
+                xaxis: {
+                  ...revenue.options.xaxis,
+                },
+                stroke: {
+                  width: 1, // Set the stroke width to 1
+                },
+              }}
+              series={[{ data: totalPersonnelCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
+              type="area"
+              height={300}
+            />
+          </Card>
+          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
+            <div>
+              <div className="text-base">Total Investment</div>
+              <p className="text-sm sm:text-5xl font-bold text-black my-2">
+                {getCurrencyLabelByKey(currency)}&nbsp;
+                {formatNumber(Math.round(sumArray(bsTotalInvestmentValues)))}
+              </p>
+            </div>
+            <Chart
+              options={{
+                zoom: {
+                  enabled: false, // Disable zooming
+                },
+                toolbar: {
+                  show: false, // Hide the toolbar
+                },
+                ...revenue.options,
+                xaxis: {
+                  ...revenue.options.xaxis,
+                },
+                stroke: {
+                  width: 1, // Set the stroke width to 1
+                },
+              }}
+              series={[{ data: bsTotalInvestmentValues, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
+              type="area"
+              height={300}
+            />
+          </Card>
+          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
+            <div>
+              <div className="text-base">Total Remaining Loan</div>
+              <p className="text-sm sm:text-5xl font-bold text-black my-2">
+                {getCurrencyLabelByKey(currency)}&nbsp;
+                {formatNumber(Math.round(sumArray(totalLoanData)))}
+              </p>
+            </div>
+            <Chart
+              options={{
+                zoom: {
+                  enabled: false, // Disable zooming
+                },
+                toolbar: {
+                  show: false, // Hide the toolbar
+                },
+                ...revenue.options,
+                xaxis: {
+                  ...revenue.options.xaxis,
+                },
+                stroke: {
+                  width: 1, // Set the stroke width to 1
+                },
+              }}
+              series={[{ data: totalLoanData, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
+              type="area"
+              height={300}
+            />
+          </Card>
+          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
+            <div>
+              <div className="text-base">Total Fundraising</div>
+              <p className="text-sm sm:text-5xl font-bold text-black my-2">
+                {getCurrencyLabelByKey(currency)}&nbsp;
+                {formatNumber(Math.round(sumArray(bsTotalFundingValues)))}
+              </p>
+            </div>
+            <Chart
+              options={{
+                zoom: {
+                  enabled: false, // Disable zooming
+                },
+                toolbar: {
+                  show: false, // Hide the toolbar
+                },
+                ...revenue.options,
+                xaxis: {
+                  ...revenue.options.xaxis,
+                },
+                stroke: {
+                  width: 1, // Set the stroke width to 1
+                },
+              }}
+              series={[{ data: bsTotalFundingValues, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
+              type="bar"
+              height={300}
+            />
+          </Card> */}
         </div>
 
         {/* Các biểu đồ */}

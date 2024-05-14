@@ -118,7 +118,11 @@ const Header = ({ position }) => {
           >
             BeeKrowd
           </button>
-          <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+          <div
+            className={`flex ${
+              screenWidth > 820 ? "order-2" : ""
+            } space-x-3 rtl:space-x-reverse`}
+          >
             {/* Conditionally render the Login button or user avatar */}
             {user ? (
               <>
@@ -136,7 +140,9 @@ const Header = ({ position }) => {
             <button
               data-collapse-toggle="navbar-sticky"
               type="button"
-              className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-md md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 darkTextGray darkHoverBgBlue darkFocus"
+              className={`inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-md ${
+                screenWidth > 820 ? "hidden" : "block"
+              } hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 darkTextGray darkHoverBgBlue darkFocus`}
               aria-controls="navbar-sticky"
               aria-expanded={isOpen}
               onClick={handleBurgerBtn}
@@ -161,12 +167,21 @@ const Header = ({ position }) => {
           </div>
 
           <div
-            className={`items-center justify-between w-full md:flex md:w-auto md:order-1 ${
-              isOpen ? "block" : "hidden"
-            }`}
+            className={`items-center justify-between
+            ${screenWidth > 820 ? "order-1 w-auto" : "w-full"}
+           
+             ${isOpen ? "block" : "hidden"}`}
             id="navbar-sticky"
+            style={screenWidth > 820 ? { display: "flex" } : {}}
           >
-            <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-md bg-gray-50 md:space-x-4 lg:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white darkBgBlue md:darkBg darkBorderGray">
+            <ul
+              className={`${
+                screenWidth > 820
+                  ? "flex-row mt-0 p-0 border-0 bg-white"
+                  : "flex-col mt-4 p-4 border-gray-100 bg-gray-50"
+              } flex font-medium border rounded-md  md:space-x-4 lg:space-x-8 rtl:space-x-reverse  darkBgBlue md:darkBg darkBorderGray`}
+              // style={screenWidth > 820 ? { display: "flex" } : {}}
+            >
               <NavbarItem
                 onClick={() => navigate(`/`)}
                 isActive={loginPart === "/"}

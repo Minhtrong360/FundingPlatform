@@ -473,14 +473,14 @@ const AllChartSections = ({
   const [chartStartMonth, setChartStartMonth] = useState(1);
   const [chartEndMonth, setChartEndMonth] = useState(6);
 
-  console.log("investmentTableData", investmentTableData);
-
   const bsTotalInvestmentArray = investmentTableData?.find(
     (item) => item.key === "BS Total investment"
   );
-  const bsTotalInvestmentValues = Object.values(bsTotalInvestmentArray)
-    .slice(2)
-    .map((value) => parseFloat(value.replace(",", "")));
+  const bsTotalInvestmentValues = bsTotalInvestmentArray
+    ? Object.values(bsTotalInvestmentArray)
+        .slice(2)
+        .map((value) => parseFloat(value.replace(",", "")))
+    : [];
 
   const seriesData = calculateLoanData(loanInputs, numberOfMonths).map(
     (loan) => {
@@ -522,9 +522,11 @@ const AllChartSections = ({
     (item) => item.key === "Total funding"
   );
 
-  const bsTotalFundingValues = Object.values(totalFunding)
-    .slice(2)
-    .map((value) => parseFloat(value.replace(",", "")));
+  const bsTotalFundingValues = totalFunding
+    ? Object.values(totalFunding)
+        .slice(2)
+        .map((value) => parseFloat(value.replace(",", "")))
+    : [];
 
   return (
     <div className="flex flex-col">

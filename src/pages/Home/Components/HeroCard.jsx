@@ -64,19 +64,18 @@ const HeroCard = () => {
           </div>
 
           {/* Video */}
-          <div className="lg:col-span-4 mt-10 order-2 lg:order-1">
-            <div className="flex justify-center items-center w-full mt-8 rounded-xl">
+
+          <div className=" flex justify-center items-center h-full mt-8 ">
+            <div className="w-full lg:w-2/3">
               <div
-                className="relative w-full md:w-full overflow-hidden shadow-2xl rounded-xl border border-gray-300"
-                style={{ paddingTop: "61%" }}
+                className="relative w-full overflow-hidden shadow-lg "
+                style={{ paddingTop: "56.25%", paddingBottom: "6.25%" }}
               >
                 <p>
                   <iframe
                     title="YouTube video player"
-                    className="absolute top-0 left-0 right-0 w-full h-full shadow-2xl border border-gray-300 rounded-xl"
+                    className="absolute top-0 left-0 right-0 w-full h-full "
                     src="https://www.youtube.com/embed/SJ76sr7SZoY?si=elzZli62aCAr7PbA&amp;controls=0&autoplay=1&mute=1&loop=1&playlist=SJ76sr7SZoY"
-                    width="100%"
-                    height="100%"
                     allowFullScreen
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   ></iframe>
@@ -93,23 +92,23 @@ const HeroCard = () => {
         <div className="grid lg:grid-cols-7 lg:gap-x-8 xl:gap-x-12 lg:items-center mt-16 md:mt-64">
           {/* Video */}
           <div className="lg:col-span-4 order-2 lg:order-1">
-            <div className="flex justify-center items-center w-full   mt-8 rounded-xl">
-            <div
-  className="relative w-full md:w-full overflow-hidden shadow-2xl rounded-xl border border-gray-300"
-  style={{ paddingTop: "61%" }}
->
-  <p>
-    <iframe
-      title="YouTube video player"
-      className="absolute top-0 left-0 right-0 w-full h-full shadow-2xl border border-gray-300 rounded-xl"
-      src="https://www.youtube.com/embed/iIILCOQyxw4?si=oxRP3UtJ231hSRU0&amp;controls=0&autoplay=1&mute=1&loop=1&playlist=iIILCOQyxw4"
-      width="100%"
-      height="100%"
-      allowFullScreen
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    ></iframe>
-  </p>
-</div>
+            <div className=" flex justify-center items-center h-full mt-8 ">
+              <div className="w-full lg:w-2/3">
+                <div
+                  className="relative w-full overflow-hidden shadow-lg "
+                  style={{ paddingTop: "56.25%", paddingBottom: "6.25%" }}
+                >
+                  <p>
+                    <iframe
+                      title="YouTube video player"
+                      className="absolute top-0 left-0 right-0 w-full h-full "
+                      src="https://www.youtube.com/embed/iIILCOQyxw4?si=oxRP3UtJ231hSRU0&amp;controls=0&autoplay=1&mute=1&loop=1&playlist=iIILCOQyxw4"
+                      allowFullScreen
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    ></iframe>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 

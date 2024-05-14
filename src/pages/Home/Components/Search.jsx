@@ -279,10 +279,23 @@ const Search = ({
             </div>
 
             <div
-              className="lg:hidden flex items-center justify-center"
+              className="hidden sm:flex lg:hidden items-center justify-center"
               onClick={() => setIsOpen(true)}
             >
               <PlusCircleOutlined style={{ fontSize: "20px" }} />
+            </div>
+
+            <div
+              className="sm:hidden flex items-center justify-center"
+              onClick={() => setIsOpen(true)}
+              style={{
+                position: "fixed",
+                bottom: "30px",
+                right: "30px",
+                zIndex: "100",
+              }}
+            >
+              <PlusCircleOutlined style={{ fontSize: "30px" }} />
             </div>
 
             {isOpen && (

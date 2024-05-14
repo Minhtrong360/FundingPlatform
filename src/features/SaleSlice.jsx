@@ -196,6 +196,7 @@ export const transformRevenueDataForTable = (
   tempChannelInputs,
   renderChannelForm
 ) => {
+  console.log("renderChannelForm", renderChannelForm);
   const allTransformedData = [];
 
   Object.keys(calculatedChannelRevenue.revenueByChannelAndProduct).forEach(

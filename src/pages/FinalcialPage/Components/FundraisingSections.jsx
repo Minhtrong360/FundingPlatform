@@ -425,6 +425,9 @@ const FundraisingSection = ({
           columns={fundraisingColumns}
           bordered
           pagination={false}
+          rowClassName={(record) =>
+            record.key === "Total funding" ? "font-bold" : ""
+          }
         />
       </div>
 

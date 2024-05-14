@@ -535,7 +535,7 @@ const AllChartSections = ({
           <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border-1 border-gray-300 rounded-md">
             <div>
               <div className="text-base">Total User</div>
-              <p className="text-base lg:text-5xl font-bold text-black my-2">
+              <p className="text-base lg:text-[3vw] font-bold text-black my-2">
                 {formatNumber(Math.round(sumArray(yearlyAverageCustomers)))}
               </p>
             </div>
@@ -575,7 +575,7 @@ const AllChartSections = ({
           <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-mdx-col">
             <div>
               <div className="text-base">Total Revenue</div>
-              <p className="text-base lg:text-5xl font-bold text-black my-2">
+              <p className="text-base lg:text-[3vw] font-bold text-black my-2">
                 {getCurrencyLabelByKey(currency)}&nbsp;
                 {formatNumber(Math.round(sumArray(yearlySales)))}
               </p>
@@ -612,7 +612,7 @@ const AllChartSections = ({
           <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
             <div>
               <div className="text-base">Total Cost</div>
-              <p className="text-sm sm:text-5xl font-bold text-black my-2">
+              <p className="text-base lg:text-[3vw] font-bold text-black my-2">
                 {getCurrencyLabelByKey(currency)}&nbsp;
                 {formatNumber(Math.round(sumArray(totalCosts)))}
               </p>
@@ -641,7 +641,7 @@ const AllChartSections = ({
           <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
             <div>
               <div className="text-base">Total Personnel Cost</div>
-              <p className="text-sm sm:text-5xl font-bold text-black my-2">
+              <p className="text-base lg:text-[3vw] font-bold text-black my-2">
                 {getCurrencyLabelByKey(currency)}&nbsp;
                 {formatNumber(Math.round(sumArray(totalPersonnelCosts)))}
               </p>
@@ -670,9 +670,9 @@ const AllChartSections = ({
           <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
             <div>
               <div className="text-base">Total Investment</div>
-              <p className="text-sm sm:text-5xl font-bold text-black my-2">
+              <p className="text-base lg:text-[3vw] font-bold text-black my-2">
                 {getCurrencyLabelByKey(currency)}&nbsp;
-                {formatNumber(Math.round(sumArray(bsTotalInvestmentValues)))}
+                {formatNumber(Math.round(sumArray(cfInvestmentsArray)))}
               </p>
             </div>
             <Chart
@@ -698,10 +698,10 @@ const AllChartSections = ({
           </Card>
           <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
             <div>
-              <div className="text-base">Total Remaining Loan</div>
-              <p className="text-sm sm:text-5xl font-bold text-black my-2">
+              <div className="text-base">Total Loan</div>
+              <p className="text-base lg:text-[3vw] font-bold text-black my-2">
                 {getCurrencyLabelByKey(currency)}&nbsp;
-                {formatNumber(Math.round(sumArray(totalLoanData)))}
+                {formatNumber(Math.round(sumArray(cfLoanArray)))}
               </p>
             </div>
             <Chart
@@ -716,6 +716,28 @@ const AllChartSections = ({
                 xaxis: {
                   ...revenue.options.xaxis,
                 },
+                yaxis: {
+                  axisBorder: {
+                    show: true, // Show y-axis line
+                  },
+
+                  labels: {
+                    show: true,
+                    style: {
+                      fontFamily: "Sora, sans-serif",
+                    },
+                    formatter: function (val) {
+                      return formatNumber(Math.floor(val));
+                    },
+                  },
+                  title: {
+                    text: "Remaining Loan ($)",
+                    style: {
+                      fontSize: "12px",
+                      fontFamily: "Sora, sans-serif",
+                    },
+                  },
+                },
                 stroke: {
                   width: 1, // Set the stroke width to 1
                 },
@@ -728,7 +750,7 @@ const AllChartSections = ({
           <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
             <div>
               <div className="text-base">Total Fundraising</div>
-              <p className="text-sm sm:text-5xl font-bold text-black my-2">
+              <p className="text-base lg:text-[3vw] font-bold text-black my-2">
                 {getCurrencyLabelByKey(currency)}&nbsp;
                 {formatNumber(Math.round(sumArray(bsTotalFundingValues)))}
               </p>

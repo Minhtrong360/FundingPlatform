@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { formatNumber } from "./CostSlice";
+import { formatNumber, parseNumber } from "./CostSlice";
 
 const initialState = {
   channelInputs: [
@@ -196,8 +196,33 @@ export const transformRevenueDataForTable = (
   tempChannelInputs,
   renderChannelForm
 ) => {
-  console.log("renderChannelForm", renderChannelForm);
   const allTransformedData = [];
+  const totalRow = { key: "Total", channelName: "Total" };
+
+  // Aggregate totals for all channels and products
+  const aggregateTotals = () => {
+    const aggregatedData = {
+      revenue: {},
+      deductions: {},
+      cogs: {},
+      netRevenue: {},
+      grossProfit: {},
+    };
+    Object.keys(calculatedChannelRevenue.revenueByChannelAndProduct).forEach(
+      (channelProductKey) => {
+        calculatedChannelRevenue.revenueByChannelAndProduct[
+          channelProductKey
+        ].forEach((value, index) => {
+          aggregatedData.revenue[`month${index + 1}`] =
+            (aggregatedData.revenue[`month${index + 1}`] || 0) +
+            parseNumber(value);
+        });
+      }
+    );
+    return aggregatedData;
+  };
+
+  const totalAggregatedData = aggregateTotals();
 
   Object.keys(calculatedChannelRevenue.revenueByChannelAndProduct).forEach(
     (channelProductKey) => {
@@ -247,9 +272,18 @@ export const transformRevenueDataForTable = (
         calculatedChannelRevenue.revenueByChannelAndProduct[
           channelProductKey
         ].forEach((value, index) => {
+          const formattedValue = formatNumber(parseFloat(value)?.toFixed(2));
           transformedRevenueTableData[revenueRowKey][`month${index + 1}`] =
-            formatNumber(parseFloat(value)?.toFixed(2));
+            formattedValue;
+
+          totalRow[`month${index + 1}`] = formatNumber(
+            (
+              parseNumber(totalRow[`month${index + 1}`] || 0) +
+              parseNumber(formattedValue)
+            ).toFixed(2)
+          );
         });
+
         calculatedChannelRevenue.DeductionByChannelAndProduct[
           channelProductKey
         ].forEach((value, index) => {
@@ -280,6 +314,15 @@ export const transformRevenueDataForTable = (
       }
     }
   );
+
+  // Assign total aggregated data to totalRow
+  Object.keys(totalAggregatedData.revenue).forEach((monthKey) => {
+    totalRow[monthKey] = formatNumber(
+      totalAggregatedData.revenue[monthKey].toFixed(2)
+    );
+  });
+
+  allTransformedData.push(totalRow);
 
   return allTransformedData.flat();
 };

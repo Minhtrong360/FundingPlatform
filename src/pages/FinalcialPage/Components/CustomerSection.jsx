@@ -421,7 +421,13 @@ const CustomerSection = React.memo(
       setCustomerGrowthChart((prevState) => {
         return {
           ...prevState,
-          series: seriesData,
+          series: [
+            ...seriesData,
+            {
+              name: "Total",
+              data: totalCustomersPerMonth,
+            },
+          ],
           charts: [
             {
               options: {
@@ -654,8 +660,6 @@ const CustomerSection = React.memo(
     }, [tempCustomerGrowthData, chartStartMonth, chartEndMonth]);
 
     const [isInputFormOpen, setIsInputFormOpen] = useState(false);
-
-    console.log("customerTableData", customerTableData);
 
     return (
       <div className="w-full h-full flex flex-col lg:flex-row">

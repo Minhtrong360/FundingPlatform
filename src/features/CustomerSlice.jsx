@@ -291,10 +291,12 @@ export function generateCustomerTableData(
   };
 
   for (let i = 1; i <= numberOfMonths; i++) {
-    totalRow[`month${i}`] = allRows
-      .filter((row) => row.key.includes("-end"))
-      .reduce((sum, row) => sum + parseNumber(row[`month${i}`]), 0)
-      .toFixed(0);
+    totalRow[`month${i}`] = formatNumber(
+      allRows
+        .filter((row) => row.key.includes("-end"))
+        .reduce((sum, row) => sum + parseNumber(row[`month${i}`]), 0)
+        .toFixed(0)
+    );
   }
 
   allRows.push(totalRow);

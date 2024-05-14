@@ -323,7 +323,13 @@ const SalesSection = ({
 
       setRevenue((prevState) => ({
         ...prevState,
-        series: salesChartsData,
+        series: [
+          ...salesChartsData.map((channel) => ({
+            name: channel.name,
+            data: channel.data,
+          })),
+          { name: "Total", data: totalSalesData },
+        ],
         charts: [
           {
             options: {

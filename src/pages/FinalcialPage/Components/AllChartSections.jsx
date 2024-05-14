@@ -470,61 +470,59 @@ const AllChartSections = ({
     "11",
     "12",
   ];
-  const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(6);
+  // const [chartStartMonth, setChartStartMonth] = useState(1);
+  // const [chartEndMonth, setChartEndMonth] = useState(6);
 
-  console.log("investmentTableData", investmentTableData);
+  // const bsTotalInvestmentArray = investmentTableData.find(
+  //   (item) => item.key === "BS Total investment"
+  // );
+  // const bsTotalInvestmentValues = Object.values(bsTotalInvestmentArray)
+  //   .slice(2)
+  //   .map((value) => parseFloat(value.replace(",", "")));
 
-  const bsTotalInvestmentArray = investmentTableData?.find(
-    (item) => item.key === "BS Total investment"
-  );
-  const bsTotalInvestmentValues = Object.values(bsTotalInvestmentArray)
-    .slice(2)
-    .map((value) => parseFloat(value.replace(",", "")));
+  // const seriesData = calculateLoanData(loanInputs, numberOfMonths).map(
+  //   (loan) => {
+  //     // Khởi tạo mảng dữ liệu rỗng với giá trị là 0 cho mỗi tháng
+  //     const data = Array(numberOfMonths).fill(0);
+  //     const dataPayment = Array(numberOfMonths).fill(0);
+  //     const dataPrincipal = Array(numberOfMonths).fill(0);
+  //     const dataInterest = Array(numberOfMonths).fill(0);
+  //     const dataRemainingBalance = Array(numberOfMonths).fill(0);
 
-  const seriesData = calculateLoanData(loanInputs, numberOfMonths).map(
-    (loan) => {
-      // Khởi tạo mảng dữ liệu rỗng với giá trị là 0 cho mỗi tháng
-      const data = Array(numberOfMonths).fill(0);
-      const dataPayment = Array(numberOfMonths).fill(0);
-      const dataPrincipal = Array(numberOfMonths).fill(0);
-      const dataInterest = Array(numberOfMonths).fill(0);
-      const dataRemainingBalance = Array(numberOfMonths).fill(0);
+  //     // Cập nhật mảng dữ liệu với thông tin thực tế từ loanDataPerMonth
+  //     loan?.loanDataPerMonth.forEach((monthData, index) => {
+  //       data[index] = monthData.balance;
+  //       dataPayment[index] = monthData.payment;
+  //       dataPrincipal[index] = monthData.principal;
+  //       dataInterest[index] = monthData.interest;
+  //       dataRemainingBalance[index] = monthData.balance;
+  //     });
 
-      // Cập nhật mảng dữ liệu với thông tin thực tế từ loanDataPerMonth
-      loan?.loanDataPerMonth.forEach((monthData, index) => {
-        data[index] = monthData.balance;
-        dataPayment[index] = monthData.payment;
-        dataPrincipal[index] = monthData.principal;
-        dataInterest[index] = monthData.interest;
-        dataRemainingBalance[index] = monthData.balance;
-      });
+  //     return {
+  //       name: loan.loanName,
+  //       data,
+  //       dataPayment,
+  //       dataPrincipal,
+  //       dataInterest,
+  //       dataRemainingBalance,
+  //     };
+  //   }
+  // );
 
-      return {
-        name: loan.loanName,
-        data,
-        dataPayment,
-        dataPrincipal,
-        dataInterest,
-        dataRemainingBalance,
-      };
-    }
-  );
+  // const totalLoanData = seriesData.reduce((acc, channel) => {
+  //   channel.data.forEach((amount, index) => {
+  //     acc[index] = (acc[index] || 0) + amount;
+  //   });
+  //   return acc;
+  // }, Array(numberOfMonths).fill(0));
 
-  const totalLoanData = seriesData.reduce((acc, channel) => {
-    channel.data.forEach((amount, index) => {
-      acc[index] = (acc[index] || 0) + amount;
-    });
-    return acc;
-  }, Array(numberOfMonths).fill(0));
+  // const totalFunding = fundraisingTableData.find(
+  //   (item) => item.key === "Total funding"
+  // );
 
-  const totalFunding = fundraisingTableData.find(
-    (item) => item.key === "Total funding"
-  );
-
-  const bsTotalFundingValues = Object.values(totalFunding)
-    .slice(2)
-    .map((value) => parseFloat(value.replace(",", "")));
+  // const bsTotalFundingValues = Object.values(totalFunding)
+  //   .slice(2)
+  //   .map((value) => parseFloat(value.replace(",", "")));
 
   return (
     <div className="flex flex-col">
@@ -636,7 +634,7 @@ const AllChartSections = ({
               height={300}
             />
           </Card>
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
+          {/* <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
             <div>
               <div className="text-base">Total Personnel Cost</div>
               <p className="text-sm sm:text-5xl font-bold text-black my-2">
@@ -751,7 +749,7 @@ const AllChartSections = ({
               type="bar"
               height={300}
             />
-          </Card>
+          </Card> */}
         </div>
 
         {/* Các biểu đồ */}

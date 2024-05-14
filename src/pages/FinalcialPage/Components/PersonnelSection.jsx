@@ -437,6 +437,7 @@ const PersonnelSection = ({
           columns={personnelCostColumns}
           pagination={false}
           bordered
+          rowClassName={(record) => (record.key === "Total" ? "font-bold" : "")}
         />
       </div>
 

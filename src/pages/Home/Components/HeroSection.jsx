@@ -77,20 +77,40 @@ const HeroSection = () => {
           </div>
         </div>
 
-        <div className="flex justify-center items-center w-full mt-8 rounded-xl">
-          <div
-            className="relative w-full md:w-2/3 lg:w-2/3"
-            style={{ paddingTop: "41%" }}
-          >
-            <iframe
-              title="YouTube video player"
-              className="absolute top-0 left-0 right-0 w-full h-full"
-              src="https://www.youtube.com/embed/MOgNese4KUQ?si=NmaKwUNT-No0OgUs&amp;controls=0&autoplay=1&mute=1&loop=1&playlist=MOgNese4KUQ"
-              allowFullScreen
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            ></iframe>
+        <div className=" flex justify-center items-center h-full mt-8 ">
+          <div className="w-full max-w-[90vw] md:max-w-[800px]">
+            <div
+              className="relative w-full overflow-hidden shadow-lg "
+              style={{ paddingTop: "56.25%", paddingBottom: "6.25%" }}
+            >
+              <p>
+                <iframe
+                  title="YouTube video player"
+                  className="absolute top-0 left-0 right-0 w-full h-full "
+                  src="https://www.youtube.com/embed/MOgNese4KUQ?si=NmaKwUNT-No0OgUs&amp;controls=0&autoplay=1&mute=1&loop=1&playlist=MOgNese4KUQ"
+                  allowFullScreen
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                ></iframe>
+              </p>
+            </div>
           </div>
         </div>
+
+        {/* <div className="flex justify-center items-center w-full mt-8 rounded-xl">
+        <div
+              className="relative w-full md:w-2/3 lg:w-2/3"
+              style={{ paddingTop: "41%" }}
+            >
+              <iframe
+                title="YouTube video player"
+                className="absolute top-0 left-0 right-0 w-full h-full"
+                src="https://www.youtube.com/embed/MOgNese4KUQ?si=NmaKwUNT-No0OgUs&amp;controls=0&autoplay=1&mute=1&loop=1&playlist=MOgNese4KUQ"
+                allowFullScreen
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              ></iframe>
+            </div>
+        </div> */}
       </div>
     </section>
   );

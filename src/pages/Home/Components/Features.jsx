@@ -7,10 +7,14 @@ import {
   BulbOutlined,
   DollarCircleOutlined,
   SolutionOutlined,
+  ArrowRightOutlined,
+  ArrowLeftOutlined,
 } from "@ant-design/icons";
 import FsB from "./founder&Business.jpg";
 import BsI from "./B&I.jpg";
 import VCs from "./VCs.jpg";
+import { Carousel } from "antd";
+import { useMediaQuery } from "react-responsive";
 
 function Features() {
   return (
@@ -40,86 +44,181 @@ function Features() {
 }
 export default Features;
 
-function ComponentsFeatures() {
+const ComponentsFeatures = () => {
+  const isDesktop = useMediaQuery({ minWidth: 768 });
+
   return (
-    <div
-      key="1"
-      className="bg-white text-gray-800 p-12 grid grid-cols-2 lg:grid-cols-4 gap-8"
-    >
-      <div className="space-y-4">
-        <ClockCircleOutlined
-          style={{ fontSize: "32px" }}
-          className="h-12 w-12 text-black"
-        />
-        <h3 className="text-xl font-semibold text-blue-600">
-          Real-Time Reporting
-        </h3>
-        <p>Always work with accurate numbers as things change rapidly.</p>
-      </div>
-      <div className="space-y-4">
-        <TeamOutlined
-          style={{ fontSize: "32px" }}
-          className="h-12 w-12 text-black"
-        />
-        <h3 className="text-xl font-semibold text-blue-600">
-          Seamless Collaboration
-        </h3>
-        <p>Foster collaboration to drive the business forward.</p>
-      </div>
-      <div className="space-y-4">
-        <FundProjectionScreenOutlined
-          style={{ fontSize: "32px" }}
-          className="h-12 w-12 text-black"
-        />
-        <h3 className="text-xl font-semibold text-blue-600">
-          Model Any Scenario
-        </h3>
-        <p>Create multiple plans for potential outcomes.</p>
-      </div>
-      <div className="space-y-4">
-        <ArrowUpOutlined
-          style={{ fontSize: "32px" }}
-          className="h-12 w-12 text-black"
-        />
-        <h3 className="text-xl font-semibold text-blue-600">
-          Increased Confidence
-        </h3>
-        <p>Grow your business on a strong foundation.</p>
-      </div>
-      <div className="space-y-4">
-        <ControlOutlined
-          style={{ fontSize: "32px" }}
-          className="h-12 w-12 text-black"
-        />
-        <h3 className="text-xl font-semibold text-blue-600">Greater Control</h3>
-        <p>Make decisions founded on real-world data.</p>
-      </div>
-      <div className="space-y-4">
-        <BulbOutlined
-          style={{ fontSize: "32px" }}
-          className="h-12 w-12 text-black"
-        />
-        <h3 className="text-xl font-semibold text-blue-600">
-          Accelerate Experience
-        </h3>
-        <p>Tap into financial experience to drive value.</p>
-      </div>
-      <div className="space-y-4">
-        <DollarCircleOutlined
-          style={{ fontSize: "32px" }}
-          className="h-12 w-12 text-black"
-        />
-        <h3 className="text-xl font-semibold text-blue-600">Reduce Costs</h3>
-        <p>Invest in driving the business forward.</p>
-      </div>
-      <div className="space-y-4">
-        <SolutionOutlined
-          style={{ fontSize: "32px" }}
-          className="h-12 w-12 text-black"
-        />
-        <h3 className="text-xl font-semibold text-blue-600">Hiring Clarity</h3>
-        <p>Clear picture of who to hire and when.</p>
-      </div>
+    <div className="bg-white text-gray-800 p-4 md:p-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {isDesktop ? (
+        <>
+          <div className="space-y-4">
+            <ClockCircleOutlined
+              style={{ fontSize: "32px" }}
+              className="h-12 w-12 text-black"
+            />
+            <h3 className="text-xl font-semibold text-blue-600">
+              Automated analysis
+            </h3>
+            <p>
+              Automate the analysis of vast amounts of financial data, enabling
+              quicker and more accurate forecasting.
+            </p>
+          </div>
+          <div className="space-y-4">
+            <TeamOutlined
+              style={{ fontSize: "32px" }}
+              className="h-12 w-12 text-black"
+            />
+            <h3 className="text-xl font-semibold text-blue-600">
+              One-click auto reporting
+            </h3>
+            <p>
+              Facilitates the generation of financial reports, such as
+              profit-and-loss statements and balance sheets, with minimal human
+              intervention.
+            </p>
+          </div>
+          <div className="space-y-4">
+            <FundProjectionScreenOutlined
+              style={{ fontSize: "32px" }}
+              className="h-12 w-12 text-black"
+            />
+            <h3 className="text-xl font-semibold text-blue-600">
+              All-in-one Command center
+            </h3>
+            <p>
+              Facilitate seamless collaboration among team members and
+              integration with other business.
+            </p>
+          </div>
+          <div className="space-y-4">
+            <ArrowUpOutlined
+              style={{ fontSize: "32px" }}
+              className="h-12 w-12 text-black"
+            />
+            <h3 className="text-xl font-semibold text-blue-600">
+              Real-time insights & Anomaly detection
+            </h3>
+            <p>
+              Provide real-time insights into financial performance,
+              highlighting data anomalies and discrepancies as they occur.
+            </p>
+          </div>
+          <div className="space-y-4">
+            <ControlOutlined
+              style={{ fontSize: "32px" }}
+              className="h-12 w-12 text-black"
+            />
+            <h3 className="text-xl font-semibold text-blue-600">
+              Scenario analysis & Risk management
+            </h3>
+            <p>
+              Enhances the capability of FP&A software to perform complex
+              scenario analysis and their outcomes.
+            </p>
+          </div>
+          <div className="space-y-4">
+            <BulbOutlined
+              style={{ fontSize: "32px" }}
+              className="h-12 w-12 text-black"
+            />
+            <h3 className="text-xl font-semibold text-blue-600">
+              Financials related queries
+            </h3>
+            <p>
+              AI-powered FP&A can address financial queries effectively,
+              enhancing accuracy, efficiency, and strategic decision-making.
+            </p>
+          </div>
+        </>
+      ) : (
+        <Carousel
+          arrows
+          nextArrow={<ArrowRightOutlined />}
+          prevArrow={<ArrowLeftOutlined />}
+          infinite={false}
+        >
+          <div className="space-y-4">
+            <ClockCircleOutlined
+              style={{ fontSize: "32px" }}
+              className="h-12 w-12 text-black"
+            />
+            <h3 className="text-xl font-semibold text-blue-600">
+              Automated analysis
+            </h3>
+            <p>
+              Automate the analysis of vast amounts of financial data, enabling
+              quicker and more accurate forecasting.
+            </p>
+          </div>
+          <div className="space-y-4">
+            <TeamOutlined
+              style={{ fontSize: "32px" }}
+              className="h-12 w-12 text-black"
+            />
+            <h3 className="text-xl font-semibold text-blue-600">
+              One-click auto reporting
+            </h3>
+            <p>
+              Facilitates the generation of financial reports, such as
+              profit-and-loss statements and balance sheets, with minimal human
+              intervention.
+            </p>
+          </div>
+          <div className="space-y-4">
+            <FundProjectionScreenOutlined
+              style={{ fontSize: "32px" }}
+              className="h-12 w-12 text-black"
+            />
+            <h3 className="text-xl font-semibold text-blue-600">
+              All-in-one Command center
+            </h3>
+            <p>
+              Facilitate seamless collaboration among team members and
+              integration with other business.
+            </p>
+          </div>
+          <div className="space-y-4">
+            <ArrowUpOutlined
+              style={{ fontSize: "32px" }}
+              className="h-12 w-12 text-black"
+            />
+            <h3 className="text-xl font-semibold text-blue-600">
+              Real-time insights & Anomaly detection
+            </h3>
+            <p>
+              Provide real-time insights into financial performance,
+              highlighting data anomalies and discrepancies as they occur.
+            </p>
+          </div>
+          <div className="space-y-4">
+            <ControlOutlined
+              style={{ fontSize: "32px" }}
+              className="h-12 w-12 text-black"
+            />
+            <h3 className="text-xl font-semibold text-blue-600">
+              Scenario analysis & Risk management
+            </h3>
+            <p>
+              Enhances the capability of FP&A software to perform complex
+              scenario analysis and their outcomes.
+            </p>
+          </div>
+          <div className="space-y-4">
+            <BulbOutlined
+              style={{ fontSize: "32px" }}
+              className="h-12 w-12 text-black"
+            />
+            <h3 className="text-xl font-semibold text-blue-600">
+              Financials related queries
+            </h3>
+            <p>
+              AI-powered FP&A can address financial queries effectively,
+              enhancing accuracy, efficiency, and strategic decision-making.
+            </p>
+          </div>
+        </Carousel>
+      )}
     </div>
   );
-}
+};

@@ -36,7 +36,7 @@ const HeroSection = () => {
     <section className="bg-white mt-12">
       {" "}
       {/* Add margin-top */}
-      <div className="container px-6 py-16 mx-auto text-center">
+      <div className="px-6 py-16 mx-auto text-center">
         <div className="max-w-3xl mx-auto">
           <h1
             className="block text-3xl font-extrabold leading-relaxed text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl"
@@ -76,30 +76,29 @@ const HeroSection = () => {
             </a> */}
           </div>
         </div>
-        
+
         <div className=" flex justify-center items-center h-full mt-8 ">
-        <div className="w-full max-w-[90vw] md:max-w-[800px]">
-               <div
-                 className="relative w-full overflow-hidden shadow-lg "
-                 style={{ paddingTop: "56.25%", paddingBottom: "6.25%" }}
-               >
-                 <p>
-                   <iframe
-                     title="YouTube video player"
-                     className="absolute top-0 left-0 right-0 w-full h-full "
-                     src="https://www.youtube.com/embed/MOgNese4KUQ?si=NmaKwUNT-No0OgUs&amp;controls=0&autoplay=1&mute=1&loop=1&playlist=MOgNese4KUQ"
-                   
-                     allowFullScreen
-                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                   ></iframe>
-                 </p>
-               </div>
-             </div>
-             </div>
+          <div className="w-full lg:w-2/3">
+            <div
+              className="relative w-full overflow-hidden shadow-lg "
+              style={{ paddingTop: "56.25%", paddingBottom: "6.25%" }}
+            >
+              <p>
+                <iframe
+                  title="YouTube video player"
+                  className="absolute top-0 left-0 right-0 w-full h-full "
+                  src="https://www.youtube.com/embed/MOgNese4KUQ?si=NmaKwUNT-No0OgUs&amp;controls=0&autoplay=1&mute=1&loop=1&playlist=MOgNese4KUQ"
+                  allowFullScreen
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                ></iframe>
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* <div className="flex justify-center items-center w-full mt-8 rounded-xl">
         <div
-              className="relative w-full md:w-2/3 lg:w-2/3"
+              className="relative w-full lg:w-2/3"
               style={{ paddingTop: "41%" }}
             >
               <iframe

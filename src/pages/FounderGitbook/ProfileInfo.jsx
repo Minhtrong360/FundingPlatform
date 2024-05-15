@@ -403,10 +403,7 @@ export default function ProfileInfo({
         <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
           <div className="text-xl font-semibold">
             {" "}
-            $
-            {company?.amountRaised
-              ? formatNumber(company?.amountRaised)
-              : "100,000"}
+            ${company?.amountRaised ? formatNumber(company?.amountRaised) : "0"}
           </div>
           <div className="text-black mt-2">Raised before</div>
         </div>

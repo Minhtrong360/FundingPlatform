@@ -302,6 +302,14 @@ function Dashboard({ dataSource }) {
                     borderRadius: 2,
                   },
                 },
+                colors: [
+                  "#00A2FF",
+                  "#14F584",
+                  "#FFB303",
+                  "#DBFE01",
+                  "#FF474C",
+                  "#D84FE4",
+                ],
                 fill:
                   chart.type === "bar"
                     ? {
@@ -316,17 +324,9 @@ function Dashboard({ dataSource }) {
                         },
                       }
                     : {},
-                colors: [
-                  "#00A2FF",
-                  "#14F584",
-                  "#FFB303",
-                  "#DBFE01",
-                  "#FF474C",
-                  "#D84FE4",
-                ],
 
                 labels: chart.categories,
-                
+
                 xaxis: {
                   categories: chart.categories,
 

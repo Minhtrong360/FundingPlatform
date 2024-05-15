@@ -452,6 +452,7 @@ const CostSection = ({
           columns={costColumns}
           pagination={false}
           bordered
+          rowClassName={(record) => (record.key === "Total" ? "font-bold" : "")}
         />
       </div>
 

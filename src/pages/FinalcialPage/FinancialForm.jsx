@@ -697,13 +697,33 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     const seriesData = calculatedData.map((channelData) => {
       return {
         name: channelData[0]?.channelName || "Unknown Channel",
-        data: channelData.map((data) => data.customers),
+        dataBegin: channelData.map((data) => parseInt(data.begin, 10)),
+        dataAdd: channelData.map((data) => parseInt(data.add, 10)),
+        dataChurn: channelData.map((data) => parseInt(data.churn, 10)),
+        dataEnd: channelData.map((data) => parseInt(data.end, 10)),
+        data: channelData.map((data) => parseInt(data.customers, 10)),
       };
     });
 
+    const totalCustomersPerMonth = seriesData.reduce((acc, channel) => {
+      channel.data.forEach((customers, index) => {
+        if (!acc[index]) {
+          acc[index] = 0;
+        }
+        acc[index] += customers;
+      });
+      return acc;
+    }, []);
+
     setCustomerGrowthChart((prevState) => ({
       ...prevState,
-      series: seriesData,
+      series: [
+        ...seriesData,
+        {
+          name: "Total",
+          data: totalCustomersPerMonth,
+        },
+      ],
     }));
 
     const seriesSaleData = Object.entries(revenueByChannelAndProduct).map(
@@ -712,7 +732,18 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       }
     );
 
-    setRevenue((prevState) => ({ ...prevState, series: seriesSaleData }));
+    const totalSalesData = seriesSaleData.reduce((acc, channel) => {
+      channel.data.forEach((amount, index) => {
+        if (!acc[index]) acc[index] = 0;
+        acc[index] += amount;
+      });
+      return acc;
+    }, Array(numberOfMonths).fill(0));
+
+    setRevenue((prevState) => ({
+      ...prevState,
+      series: [...seriesSaleData, { name: "Total", data: totalSalesData }],
+    }));
   }, [numberOfMonths, customerInputs, channelInputs]);
 
   const saveOrUpdateFinanceData = async (inputData) => {

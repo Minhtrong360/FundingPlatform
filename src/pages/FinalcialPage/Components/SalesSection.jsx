@@ -5,9 +5,8 @@ import {
   SelectContent,
   SelectItem,
 } from "../../../components/ui/Select";
-
 import { Input } from "../../../components/ui/Input";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Button,
   Card,
@@ -36,17 +35,18 @@ import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { supabase } from "../../../supabase";
 import { useAuth } from "../../../context/AuthContext";
 import { useParams } from "react-router-dom";
-import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { PlusOutlined } from "@ant-design/icons";
-import { DeleteOutlined } from "@ant-design/icons";
-import { CheckCircleOutlined } from "@ant-design/icons";
+import {
+  FileOutlined,
+  PlusCircleOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+  CheckCircleOutlined,
+} from "@ant-design/icons";
 
 const SalesSection = ({
   numberOfMonths,
-
   isSaved,
   setIsSaved,
-
   revenue,
   setRevenue,
   handleSubmit,
@@ -66,6 +66,8 @@ const SalesSection = ({
     (state) => state.customer
   );
 
+  console.log("revenueTableData", revenueTableData);
+
   const [tempChannelInputs, setTempChannelInputs] = useState(channelInputs);
   const [tempRevenueData, setTempRevenueData] = useState(revenueData);
   const [tempRevenueDeductionData, setTempRevenueDeductionData] =
@@ -74,16 +76,132 @@ const SalesSection = ({
   const [tempNetRevenueData, setTempNetRevenueData] = useState(netRevenueData);
   const [tempGrossProfitData, setTempGrossProfitData] =
     useState(grossProfitData);
+  const [renderChannelForm, setRenderChannelForm] = useState(
+    channelInputs[0]?.id
+  );
+  const [isInputFormOpen, setIsInputFormOpen] = useState(false);
+
+  // Avoid using unoptimized anonymous functions inside useEffect
+  const calculateAndDispatchRevenueData = useCallback(() => {
+    const {
+      revenueByChannelAndProduct,
+      DeductionByChannelAndProduct,
+      cogsByChannelAndProduct,
+      netRevenueByChannelAndProduct,
+      grossProfitByChannelAndProduct,
+    } = dispatch(
+      calculateChannelRevenue(
+        numberOfMonths,
+        customerGrowthData,
+        customerInputs,
+        tempChannelInputs
+      )
+    );
+
+    setTempRevenueData(revenueByChannelAndProduct);
+    setTempRevenueDeductionData(DeductionByChannelAndProduct);
+    setTempCogsData(cogsByChannelAndProduct);
+    setTempNetRevenueData(netRevenueByChannelAndProduct);
+    setTempGrossProfitData(grossProfitByChannelAndProduct);
+
+    const calculateRevenueTableData = transformRevenueDataForTable(
+      {
+        revenueByChannelAndProduct,
+        DeductionByChannelAndProduct,
+        cogsByChannelAndProduct,
+        netRevenueByChannelAndProduct,
+        grossProfitByChannelAndProduct,
+      },
+      tempChannelInputs,
+      renderChannelForm
+    );
+    dispatch(setRevenueTableData(calculateRevenueTableData));
+  }, [
+    numberOfMonths,
+    customerGrowthData,
+    customerInputs,
+    tempChannelInputs,
+    renderChannelForm,
+    dispatch,
+  ]);
 
   useEffect(() => {
     setTempChannelInputs(channelInputs);
   }, [channelInputs]);
 
-  //RevenueFunctions
+  useEffect(() => {
+    calculateAndDispatchRevenueData();
+  }, [
+    customerGrowthData,
+    tempChannelInputs,
+    numberOfMonths,
+    renderChannelForm,
+    calculateAndDispatchRevenueData,
+  ]);
 
-  const [renderChannelForm, setRenderChannelForm] = useState(
-    channelInputs[0]?.id
-  );
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (isSaved) {
+      const saveData = async () => {
+        try {
+          dispatch(setChannelInputs(tempChannelInputs));
+          dispatch(setRevenueData(tempRevenueData));
+          dispatch(setRevenueDeductionData(tempRevenueDeductionData));
+          dispatch(setCogsData(tempCogsData));
+          dispatch(setNetRevenueData(tempNetRevenueData));
+          dispatch(setGrossProfitData(tempGrossProfitData));
+
+          const sales = calculateYearlySales(tempRevenueData);
+          dispatch(setYearlySales(sales));
+
+          const { data: existingData, error: selectError } = await supabase
+            .from("finance")
+            .select("*")
+            .eq("id", id);
+
+          if (selectError) {
+            throw selectError;
+          }
+
+          if (existingData && existingData.length > 0) {
+            const newInputData = JSON.parse(existingData[0].inputData);
+            newInputData.channelInputs = tempChannelInputs;
+            newInputData.yearlySales = sales;
+
+            const { error: updateError } = await supabase
+              .from("finance")
+              .update({ inputData: newInputData })
+              .eq("id", existingData[0]?.id)
+              .select();
+
+            if (updateError) {
+              throw updateError;
+            }
+          }
+          message.success("Data saved successfully!");
+        } catch (error) {
+          message.error(error.message);
+        } finally {
+          setIsSaved(false);
+        }
+      };
+
+      saveData();
+    }
+  }, [
+    isSaved,
+    tempChannelInputs,
+    tempRevenueData,
+    tempRevenueDeductionData,
+    tempCogsData,
+    tempNetRevenueData,
+    tempGrossProfitData,
+    id,
+    dispatch,
+    setIsSaved,
+  ]);
+
   const addNewChannelInput = () => {
     const maxId = Math.max(...tempChannelInputs.map((input) => input?.id));
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
@@ -115,7 +233,6 @@ const SalesSection = ({
         indexToRemove === 0
           ? newInputs[0]?.id
           : newInputs[indexToRemove - 1]?.id;
-
       setTempChannelInputs(newInputs);
       setRenderChannelForm(prevInputId);
     }
@@ -124,102 +241,16 @@ const SalesSection = ({
   const handleChannelInputChange = (id, field, value) => {
     const newInputs = tempChannelInputs.map((input) => {
       if (input?.id === id) {
-        return {
-          ...input,
-          [field]: value,
-        };
+        return { ...input, [field]: value };
       }
       return input;
     });
     setTempChannelInputs(newInputs);
   };
 
-  useEffect(() => {
-    const {
-      revenueByChannelAndProduct,
-      DeductionByChannelAndProduct,
-      cogsByChannelAndProduct,
-      netRevenueByChannelAndProduct,
-      grossProfitByChannelAndProduct,
-    } = dispatch(
-      calculateChannelRevenue(
-        numberOfMonths,
-        customerGrowthData,
-        customerInputs,
-        channelInputs
-      )
-    );
+  const [chartStartMonth, setChartStartMonth] = useState(1);
+  const [chartEndMonth, setChartEndMonth] = useState(6);
 
-    dispatch(setRevenueData(revenueByChannelAndProduct));
-    dispatch(setRevenueDeductionData(DeductionByChannelAndProduct));
-    dispatch(setCogsData(cogsByChannelAndProduct));
-    dispatch(setNetRevenueData(netRevenueByChannelAndProduct));
-    dispatch(setGrossProfitData(grossProfitByChannelAndProduct));
-    const sales = calculateYearlySales(tempRevenueData);
-    dispatch(setYearlySales(sales));
-    const calculatedChannelRevenue = dispatch(
-      calculateChannelRevenue(
-        numberOfMonths,
-        customerGrowthData,
-        customerInputs,
-        channelInputs
-      )
-    );
-    const calculateRevenueTableData = transformRevenueDataForTable(
-      calculatedChannelRevenue,
-      channelInputs,
-      renderChannelForm
-    );
-
-    dispatch(setRevenueTableData(calculateRevenueTableData));
-  }, [customerGrowthData, channelInputs, numberOfMonths, renderChannelForm]);
-
-  useEffect(() => {
-    const {
-      revenueByChannelAndProduct,
-      DeductionByChannelAndProduct,
-      cogsByChannelAndProduct,
-      netRevenueByChannelAndProduct,
-      grossProfitByChannelAndProduct,
-    } = dispatch(
-      calculateChannelRevenue(
-        numberOfMonths,
-        customerGrowthData,
-        customerInputs,
-        tempChannelInputs
-      )
-    );
-
-    setTempRevenueData(revenueByChannelAndProduct);
-    setTempRevenueDeductionData(DeductionByChannelAndProduct);
-    setTempCogsData(cogsByChannelAndProduct);
-    setTempNetRevenueData(netRevenueByChannelAndProduct);
-    setTempGrossProfitData(grossProfitByChannelAndProduct);
-    const calculatedChannelRevenue = dispatch(
-      calculateChannelRevenue(
-        numberOfMonths,
-        customerGrowthData,
-        customerInputs,
-        tempChannelInputs
-      )
-    );
-    const calculateRevenueTableData = transformRevenueDataForTable(
-      calculatedChannelRevenue,
-      tempChannelInputs,
-      renderChannelForm
-    );
-
-    dispatch(setRevenueTableData(calculateRevenueTableData));
-  }, [
-    customerGrowthData,
-    tempChannelInputs,
-    numberOfMonths,
-    renderChannelForm,
-  ]);
-
-  //RevenueTable
-
-  //RevenueColumns
   const months = [
     "01",
     "02",
@@ -237,44 +268,13 @@ const SalesSection = ({
   const { startMonth, startYear } = useSelector(
     (state) => state.durationSelect
   );
-
-  const startingMonth = startMonth; // Tháng bắt đầu từ 1
-  const startingYear = startYear; // Năm bắt đầu từ 24
-
-  const revenueColumns = [
-    {
-      fixed: "left",
-      title: <div>Revenue Table</div>,
-      dataIndex: "channelName",
-      key: "channelName",
-    },
-    ...Array.from({ length: numberOfMonths }, (_, i) => {
-      const monthIndex = (startingMonth + i - 1) % 12;
-      const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
-      return {
-        title: `${months[monthIndex]}/${year}`,
-        dataIndex: `month${i + 1}`,
-        key: `month${i + 1}`,
-        align: "right",
-        onCell: (record) => ({
-          style: {
-            borderRight: "1px solid #f0f0f0", // Add border right style
-          },
-        }),
-      };
-    }),
-  ];
-
-  //RevenueChart
-  const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(6);
+  const startingMonth = startMonth;
+  const startingYear = startYear;
 
   useEffect(() => {
     if (tempRevenueData) {
-      const startIdx = chartStartMonth - 1; // Chỉ số bắt đầu, tính từ 0
-      const endIdx = chartEndMonth; // Chỉ số kết thúc, không bao gồm
-
-      // Cập nhật categories cho trục x để phản ánh chỉ khoảng từ chartStartMonth đến chartEndMonth
+      const startIdx = chartStartMonth - 1;
+      const endIdx = chartEndMonth;
       const filteredCategories = Array.from(
         { length: endIdx - startIdx },
         (_, i) => {
@@ -323,7 +323,13 @@ const SalesSection = ({
 
       setRevenue((prevState) => ({
         ...prevState,
-        series: salesChartsData,
+        series: [
+          ...salesChartsData.map((channel) => ({
+            name: channel.name,
+            data: channel.data,
+          })),
+          { name: "Total", data: totalSalesData },
+        ],
         charts: [
           {
             options: {
@@ -334,94 +340,53 @@ const SalesSection = ({
                 stacked: false,
               },
               xaxis: {
-                axisTicks: {
-                  show: false,
-                },
+                axisTicks: { show: false },
                 labels: {
                   rotate: 0,
                   show: true,
-                  style: {
-                    fontFamily: "Sora, sans-serif",
-                  },
+                  style: { fontFamily: "Sora, sans-serif" },
                 },
                 categories: filteredCategories,
                 title: {
                   text: "Month",
-                  style: {
-                    fontSize: "12px",
-                    fontFamily: "Sora, sans-serif",
-                  },
+                  style: { fontSize: "12px", fontFamily: "Sora, sans-serif" },
                 },
               },
-              title: {
-                ...prevState.options.title,
-                text: "All Channels",
-              },
+              title: { ...prevState.options.title, text: "All Channels" },
             },
             series: [
               ...salesChartsData.map((channel) => ({
                 name: channel.name,
                 data: channel.data,
               })),
-              {
-                name: "Total",
-                data: totalSalesData,
-              },
+              { name: "Total", data: totalSalesData },
             ],
           },
           ...salesChartsData.map((channelSeries) => ({
             options: {
               ...prevState.options,
-              chart: {
-                ...prevState.options.chart,
-                id: channelSeries.name,
-              },
+              chart: { ...prevState.options.chart, id: channelSeries.name },
               xaxis: {
-                axisTicks: {
-                  show: false,
-                },
+                axisTicks: { show: false },
                 labels: {
                   rotate: 0,
                   show: true,
-                  style: {
-                    fontFamily: "Sora, sans-serif",
-                  },
+                  style: { fontFamily: "Sora, sans-serif" },
                 },
                 categories: filteredCategories,
                 title: {
                   text: "Month",
-                  style: {
-                    fontSize: "12px",
-                    fontFamily: "Sora, sans-serif",
-                  },
+                  style: { fontSize: "12px", fontFamily: "Sora, sans-serif" },
                 },
               },
-              title: {
-                ...prevState.options.title,
-                text: channelSeries.name,
-              },
+              title: { ...prevState.options.title, text: channelSeries.name },
             },
             series: [
-              {
-                name: "Revenue",
-                data: channelSeries.data,
-              },
-              {
-                name: "Deductions",
-                data: channelSeries.dataDeductions,
-              },
-              {
-                name: "Net Revenue",
-                data: channelSeries.dataNetRevenue,
-              },
-              {
-                name: "COGS",
-                data: channelSeries.dataCOGS,
-              },
-              {
-                name: "Gross Profit",
-                data: channelSeries.dataGrossProfit,
-              },
+              { name: "Revenue", data: channelSeries.data },
+              { name: "Deductions", data: channelSeries.dataDeductions },
+              { name: "Net Revenue", data: channelSeries.dataNetRevenue },
+              { name: "COGS", data: channelSeries.dataCOGS },
+              { name: "Gross Profit", data: channelSeries.dataGrossProfit },
             ],
           })),
         ],
@@ -434,97 +399,44 @@ const SalesSection = ({
     chartEndMonth,
     startingMonth,
     startingYear,
-    months,
+    tempRevenueDeductionData,
+    tempNetRevenueData,
+    tempCogsData,
+    tempGrossProfitData,
+    setRevenue,
   ]);
 
   const handleSave = () => {
     setIsSaved(true);
-    message.success("Data saved successfully!");
-  };
-  const { id } = useParams();
-  useEffect(() => {
-    const saveData = async () => {
-      try {
-        if (isSaved) {
-          dispatch(setChannelInputs(tempChannelInputs));
-
-          dispatch(setRevenueData(tempRevenueData));
-
-          dispatch(setRevenueDeductionData(tempRevenueDeductionData));
-
-          dispatch(setCogsData(tempCogsData));
-
-          dispatch(setNetRevenueData(tempNetRevenueData));
-
-          dispatch(setGrossProfitData(tempGrossProfitData));
-
-          const sales = calculateYearlySales(tempRevenueData);
-
-          dispatch(setYearlySales(sales));
-
-          const calculatedChannelRevenue = dispatch(
-            calculateChannelRevenue(
-              numberOfMonths,
-              customerGrowthData,
-              customerInputs,
-              tempChannelInputs
-            )
-          );
-
-          const calculateRevenueTableData = transformRevenueDataForTable(
-            calculatedChannelRevenue,
-            tempChannelInputs,
-            renderChannelForm
-          );
-          dispatch(setRevenueTableData(calculateRevenueTableData));
-
-          const { data: existingData, error: selectError } = await supabase
-            .from("finance")
-            .select("*")
-            .eq("id", id);
-
-          if (selectError) {
-            throw selectError;
-          }
-
-          if (existingData && existingData.length > 0) {
-            const newInputData = JSON.parse(existingData[0].inputData);
-
-            newInputData.channelInputs = tempChannelInputs;
-
-            newInputData.yearlySales = sales;
-
-            const { error: updateError } = await supabase
-              .from("finance")
-              .update({ inputData: newInputData })
-              .eq("id", existingData[0]?.id)
-              .select();
-
-            if (updateError) {
-              throw updateError;
-            }
-          }
-        }
-      } catch (error) {
-        message.error(error);
-      } finally {
-        setIsSaved(false);
-      }
-    };
-
-    saveData();
-  }, [isSaved]);
-
-  useEffect(() => {
-    const sales = calculateYearlySales(tempRevenueData);
-    dispatch(setYearlySales(sales));
-  }, [tempRevenueData, numberOfMonths, isSaved]);
-
-  const handleChannelChange = (value) => {
-    setRenderChannelForm(value);
   };
 
-  const [isInputFormOpen, setIsInputFormOpen] = useState(false);
+  const handleChannelChange = (e) => {
+    setRenderChannelForm(e.target.value);
+  };
+
+  const revenueColumns = [
+    {
+      fixed: "left",
+      title: <div>Revenue Table</div>,
+      dataIndex: "channelName",
+      key: "channelName",
+    },
+    ...Array.from({ length: numberOfMonths }, (_, i) => {
+      const monthIndex = (startingMonth + i - 1) % 12;
+      const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+      return {
+        title: `${months[monthIndex]}/${year}`,
+        dataIndex: `month${i + 1}`,
+        key: `month${i + 1}`,
+        align: "right",
+        onCell: (record) => ({
+          style: {
+            borderRight: "1px solid #f0f0f0", // Add border right style
+          },
+        }),
+      };
+    }),
+  ];
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
@@ -591,20 +503,10 @@ const SalesSection = ({
               </div>
               <Chart
                 options={{
-                  chart: {
-                    animations: {
-                      enabled: false,
-                    },
-                  },
+                  chart: { animations: { enabled: false } },
                   ...chart.options,
-
-                  xaxis: {
-                    ...chart.options.xaxis,
-                    // tickAmount: 6, // Ensure x-axis has 12 ticks
-                  },
-                  stroke: {
-                    width: 1, // Set the stroke width to 1
-                  },
+                  xaxis: { ...chart.options.xaxis },
+                  stroke: { width: 1 },
                 }}
                 series={chart.series}
                 type="area"
@@ -877,11 +779,7 @@ const SalesSection = ({
       <div className="xl:hidden block">
         <FloatButton
           tooltip={<div>Input values</div>}
-          style={{
-            position: "fixed",
-            bottom: "30px",
-            right: "30px",
-          }}
+          style={{ position: "fixed", bottom: "30px", right: "30px" }}
           onClick={() => {
             setIsInputFormOpen(true);
           }}
@@ -892,7 +790,6 @@ const SalesSection = ({
 
       {isInputFormOpen && (
         <Modal
-          // title="Customer channel"
           visible={isInputFormOpen}
           onOk={() => {
             handleSave();
@@ -905,10 +802,7 @@ const SalesSection = ({
           okText="Save change"
           cancelText="Cancel"
           cancelButtonProps={{
-            style: {
-              borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-            },
+            style: { borderRadius: "0.375rem", cursor: "pointer" },
           }}
           okButtonProps={{
             style: {
@@ -916,7 +810,7 @@ const SalesSection = ({
               borderColor: "#2563EB",
               color: "#fff",
               borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              cursor: "pointer",
             },
           }}
           centered={true}

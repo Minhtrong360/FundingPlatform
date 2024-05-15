@@ -411,7 +411,13 @@ const CustomerSection = React.memo(
       setCustomerGrowthChart((prevState) => {
         return {
           ...prevState,
-          series: seriesData,
+          series: [
+            ...seriesData,
+            {
+              name: "Total",
+              data: totalCustomersPerMonth,
+            },
+          ],
           charts: [
             {
               options: {

@@ -22,7 +22,6 @@ function Features() {
       <div className="max-w-2xl mx-auto text-center mb-10 lg:mb-14">
         <h3
           id="platform"
-          style={{ lineHeight: "1.5" }}
           className="block text-3xl font-extrabold text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl darkTextWhite"
         >
           A{" "}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
 import {
   Button,
@@ -13,7 +13,6 @@ import Chart from "react-apexcharts";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setCustomerInputs,
-  setYearlyAverageCustomers,
   setCustomerGrowthData,
   calculateYearlyAverage,
   calculateCustomerGrowth,
@@ -51,7 +50,6 @@ const CustomerSection = React.memo(
     setIsSaved,
     customerGrowthChart,
     setCustomerGrowthChart,
-    handleSubmit,
   }) => {
     const dispatch = useDispatch();
     const { customerInputs, customerGrowthData, customerTableData } =
@@ -1341,22 +1339,6 @@ const CustomerSection = React.memo(
                     </div>
                   </div>
                 ))}
-
-              {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <button
-                  className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
-                  onClick={handleAddNewCustomer}
-                >
-                  Add new
-                </button>
-
-                <button
-                  className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
-                  onClick={handleSave}
-                >
-                  Save
-                </button>
-              </div> */}
             </section>
           </Modal>
         )}

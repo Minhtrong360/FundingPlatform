@@ -6,7 +6,7 @@ import ProjectList from "./ProjectList";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
 import SideBar from "../../components/SideBar";
-// import { toast } from "react-toastify";
+
 import { message } from "antd";
 
 const FounderGitbook = () => {

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useAuth } from "../../context/AuthContext";
-// import { toast } from "react-toastify";
+
 import { supabase } from "../../supabase";
 // import { message } from "antd";
 import { ShopOutlined, UserOutlined } from "@ant-design/icons";

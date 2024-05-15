@@ -1,8 +1,5 @@
 import { useState } from "react";
 import { supabase } from "../supabase";
-// import { toast } from "react-toastify";
-
-import apiService from "../app/apiService";
 
 import ReactModal from "react-modal";
 import { message } from "antd";
@@ -91,7 +88,9 @@ const Modal = ({
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
       <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
-        <p className="mt-2 text-lg text-gray-800 ">Assign the admin role of this project to:</p>
+        <p className="mt-2 text-lg text-gray-800 ">
+          Assign the admin role of this project to:
+        </p>
         <form className="mt-4">
           <label className="block mt-3">
             <input

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AlertMsg from "../../components/AlertMsg";
+
 import SideBar from "../../components/SideBar";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
@@ -44,7 +44,6 @@ function FinancialPage() {
 
   return (
     <div className=" bg-white darkBg antialiased !p-0">
-      <AlertMsg />
       <div id="exampleWrapper">
         <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
         <div

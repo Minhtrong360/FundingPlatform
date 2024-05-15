@@ -294,10 +294,6 @@ export default function FleaMarketForm({
     setFormData({ ...formData, companyLogo: companyLogo });
   }, [companyLogo]);
 
-  const handleRollSelect = (value) => {
-    setFormData({ ...formData, role: value });
-  };
-
   useEffect(() => {
     const fetchFleaMarketData = async () => {
       try {

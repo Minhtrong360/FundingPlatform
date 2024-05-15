@@ -18,14 +18,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
 
-const InvestmentSection = ({
-  numberOfMonths,
-
-  isSaved,
-  setIsSaved,
-
-  handleSubmit,
-}) => {
+const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const { investmentInputs, investmentData } = useSelector(
     (state) => state.investment
   );
@@ -237,17 +230,6 @@ const InvestmentSection = ({
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-      // fill: {
-      //   type: "gradient",
-      //   gradient: {
-      //     shade: "light",
-      //     shadeIntensity: 0.5,
-      //     opacityFrom: 0.85,
-      //     opacityTo: 0.65,
-      //     stops: [0, 90, 100],
-      //   },
-      // },
-
       dataLabels: { enabled: false },
       stroke: { width: 1 },
       // markers: { size: 1 },

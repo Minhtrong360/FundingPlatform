@@ -1,14 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
-import {
-  Button,
-  Card,
-  FloatButton,
-  Modal,
-  Table,
-  Tooltip,
-  message,
-} from "antd";
+import { Button, Card, FloatButton, Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import {
@@ -18,7 +10,6 @@ import {
   transformPersonnelCostDataForTable,
 } from "../../../features/PersonnelSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useAuth } from "../../../context/AuthContext";
 import { supabase } from "../../../supabase";
 import {
   Select,
@@ -241,16 +232,9 @@ const PersonnelSection = ({
         fontFamily: "Sora, sans-serif",
       },
       type: "gradient",
-      // gradient: {
-      //     shadeIntensity: 1,
-      //     inverseColors: false,
-      //     opacityFrom: 0.45,
-      //     opacityTo: 0.05,
-      //     stops: [20, 100, 100, 100]
-      //   },
+
       dataLabels: { enabled: false },
       stroke: { width: 1 },
-      // markers: { size: 1 },
     },
     series: [],
   });

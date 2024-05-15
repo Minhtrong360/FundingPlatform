@@ -11,7 +11,6 @@ import {
   setLoanTableData,
   transformLoanDataForTable,
 } from "../../../features/LoanSlice";
-import { useAuth } from "../../../context/AuthContext";
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
 import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
@@ -19,14 +18,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
 
-const LoanSection = ({
-  numberOfMonths,
-
-  isSaved,
-  setIsSaved,
-
-  handleSubmit,
-}) => {
+const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const dispatch = useDispatch();
   const { loanInputs } = useSelector((state) => state.loan);
   const [tempLoanInputs, setTempLoanInputs] = useState(loanInputs);
@@ -200,16 +192,7 @@ const LoanSection = ({
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-      // fill: {
-      //   type: "gradient",
-      //   gradient: {
-      //     shade: "light",
-      //     shadeIntensity: 0.5,
-      //     opacityFrom: 0.85,
-      //     opacityTo: 0.65,
-      //     stops: [0, 90, 100],
-      //   },
-      // },
+
       dataLabels: { enabled: false },
       stroke: { width: 1 },
     },

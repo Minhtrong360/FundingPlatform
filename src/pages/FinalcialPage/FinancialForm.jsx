@@ -13,12 +13,9 @@ import LoanSection from "./Components/LoanSection";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 
-// import { toast } from "react-toastify";
-import AlertMsg from "../../components/AlertMsg";
 import ProgressBar from "../../components/ProgressBar";
 import Gemini from "./Components/Gemini";
-import GPTAnalyzer from "./Components/GPTAnalyzer";
-import MetricsFM from "../MetricsFM";
+import MetricsFM from "./Components/MetricsFM";
 import ProfitAndLossSection from "./Components/ProfitAndLossSection";
 import * as XLSX from "xlsx";
 import BalanceSheetSection from "./Components/BalanceSheetSection";
@@ -40,21 +37,16 @@ import {
 import {
   calculateCustomerGrowth,
   calculateYearlyAverage,
-  generateCustomerTableData,
   setCustomerGrowthData,
   setCustomerInputs,
-  setCustomerTableData,
   setYearlyAverageCustomers,
-  transformCustomerData,
 } from "../../features/CustomerSlice";
 import {
   calculateChannelRevenue,
   calculateYearlySales,
   setChannelInputs,
   setChannelNames,
-  setRevenueTableData,
   setYearlySales,
-  transformRevenueDataForTable,
 } from "../../features/SaleSlice";
 import FundraisingSection from "./Components/FundraisingSections";
 import { formatNumber, setCostInputs } from "../../features/CostSlice";
@@ -65,7 +57,6 @@ import { setFundraisingInputs } from "../../features/FundraisingSlice";
 import CashFlowSection from "./Components/CashFlowSection";
 import { Button, FloatButton, Modal, message } from "antd";
 import { useParams } from "react-router-dom";
-import Groq from "./Components/Groq";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
@@ -274,17 +265,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-      // fill: {
-      //   type: "gradient",
 
-      //   gradient: {
-      //     shade: "light",
-      //     shadeIntensity: 0.5,
-      //     opacityFrom: 0.75,
-      //     opacityTo: 0.65,
-      //     stops: [0, 90, 100],
-      //   },
-      // },
       grid: {
         show: false,
       },
@@ -344,16 +325,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-      // fill: {
-      //   type: "gradient",
-      //   gradient: {
-      //     shade: "light",
-      //     shadeIntensity: 0.5,
-      //     opacityFrom: 0.75,
-      //     opacityTo: 0.65,
-      //     stops: [0, 90, 100],
-      //   },
-      // },
+
       xaxis: {
         axisTicks: {
           show: false, // Hide x-axis ticks
@@ -996,7 +968,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         />
       </div> */}
 
-      <AlertMsg />
       {spinning ? (
         <ProgressBar spinning={spinning} isLoading={isLoading} />
       ) : (
@@ -1012,12 +983,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               setSpinning={setSpinning}
             />
           </div>
-          {/* <div>
-            <Groq />
-          </div> */}
-          {/* <div>
-            <GPTAnalyzer numberOfMonths={numberOfMonths} />
-          </div> */}
+
           <div className="my-4 ">
             {/* <div className="rounded-lg bg-green-500 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">
               <button onClick={startTour}>

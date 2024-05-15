@@ -1,9 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-// import { toast } from "react-toastify";
 import { useAuth } from "../../../context/AuthContext";
-import AlertMsg from "../../../components/AlertMsg";
 import LoadingButtonClick from "../../../components/LoadingButtonClick";
 import { message } from "antd";
 
@@ -229,7 +227,6 @@ const PricingWithLemon = () => {
 
   return (
     <div className="max-w-[85rem] mx-auto px-3 py-20 sm:px-6 lg:px-8 lg:py-14 md:mt-28">
-      <AlertMsg />
       <LoadingButtonClick isLoading={isLoading} />
       <div className="text-center mb-10 lg:mb-14">
         <h2

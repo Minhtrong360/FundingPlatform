@@ -33,7 +33,6 @@ import {
 } from "../../../features/SaleSlice";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { supabase } from "../../../supabase";
-import { useAuth } from "../../../context/AuthContext";
 import { useParams } from "react-router-dom";
 import {
   FileOutlined,
@@ -49,7 +48,6 @@ const SalesSection = ({
   setIsSaved,
   revenue,
   setRevenue,
-  handleSubmit,
 }) => {
   const dispatch = useDispatch();
   const {

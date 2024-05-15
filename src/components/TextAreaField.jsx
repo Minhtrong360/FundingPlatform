@@ -1,9 +1,7 @@
-import { message } from "antd";
 import React, { useEffect, useState } from "react";
 
 export default function TextAreaField({ label, id, value, onChange, ...rest }) {
   const [characterCount, setCharacterCount] = useState(value.length); // State cho số ký tự
-  const [error, setError] = useState(""); // State cho thông báo lỗi
 
   useEffect(() => {
     setCharacterCount(value.length);

@@ -45,7 +45,7 @@ import {
   setRevenueData,
   setRevenueDeductionData,
 } from "../../../features/SaleSlice";
-import CustomChart from "./CustomerChart";
+import CustomChart from "./CustomChart";
 import { getCurrencyLabelByKey } from "../../../features/DurationSlice";
 
 const AllChartSections = ({
@@ -426,35 +426,6 @@ const AllChartSections = ({
     setSelectedChart(value);
   };
 
-  const [selectedMonth, setSelectedMonth] = useState(1);
-
-  const handleMonthSelect = (value) => {
-    setSelectedMonth(parseInt(value));
-  };
-
-  const renderCard = (title, value) => (
-    <div className="flex flex-col bg-white border shadow-lg rounded-xl m-4 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
-      <div className="p-4 md:p-5">
-        <div className="flex items-center gap-x-2">
-          <p className="text-xs uppercase tracking-wide text-gray-800">
-            {title}
-          </p>
-        </div>
-
-        <div className="mt-1 flex items-center gap-x-2">
-          <div className="flex flex-col xl:flex-row xl:items-center items-start w-full">
-            <h3 className="text-sm sm:text-3xl font-bold text-gray-800 my-2">
-              {formatNumber(Math.round(value[selectedMonth - 1]))}
-            </h3>
-          </div>
-        </div>
-        <div className="flex flex-col xl:flex-row xl:items-center items-start w-full">
-          {/* <p className="text-base text-gray-800 ">Month: {selectedMonth}</p> */}
-        </div>
-      </div>
-    </div>
-  );
-
   const { currency } = useSelector((state) => state.durationSelect);
   const months = [
     "01",
@@ -470,8 +441,6 @@ const AllChartSections = ({
     "11",
     "12",
   ];
-  const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(6);
 
   const bsTotalInvestmentArray = investmentTableData?.find(
     (item) => item.key === "BS Total investment"

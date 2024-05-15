@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import ReactModal from "react-modal";
-// import { toast } from "react-toastify";
-import AlertMsg from "../../components/AlertMsg";
+
 import { Tooltip, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { Radio } from "antd";
@@ -152,7 +151,6 @@ const Modal = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-      <AlertMsg />
       <div className="relative p-5 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
         <h3 className="text-md font-medium leading-6 text-gray-800 capitalize">
           Project Name

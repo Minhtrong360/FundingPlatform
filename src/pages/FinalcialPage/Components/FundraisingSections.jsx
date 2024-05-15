@@ -16,7 +16,6 @@ import {
   setFundraisingTableData,
   transformFundraisingDataForTable,
 } from "../../../features/FundraisingSlice";
-import { useAuth } from "../../../context/AuthContext";
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
 import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
@@ -204,17 +203,7 @@ const FundraisingSection = ({
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-      // fill: {
-      //   type: "gradient",
 
-      //   gradient: {
-      //     shade: "light",
-      //     shadeIntensity: 0.5,
-      //     opacityFrom: 0.85,
-      //     opacityTo: 0.65,
-      //     stops: [0, 90, 100],
-      //   },
-      // },
       dataLabels: { enabled: false },
       stroke: { width: 1, curve: "smooth" },
 

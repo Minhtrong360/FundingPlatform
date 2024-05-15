@@ -1,5 +1,4 @@
 import { Tooltip } from "antd";
-import { title } from "process";
 import React from "react";
 
 // Hàm format số với định dạng 100,000

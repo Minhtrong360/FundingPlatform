@@ -19,7 +19,6 @@ import {
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { supabase } from "../../../supabase";
-// import { useAuth } from "../../../context/AuthContext";
 import { useParams } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";

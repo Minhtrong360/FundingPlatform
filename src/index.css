@@ -280,17 +280,6 @@ code {
   color: unset;
 }
 
-.bn-inline-content {
-   font-family: "Sora", sans-serif;
-}
-
-.bn-default-styles {
-   font-family: "Sora", sans-serif;
-}
-
-.bn-container .bn-editor * {
-  font-family: "Sora", sans-serif;
-}
-.mantine-1sdsjwa .ProseMirror {
-  font-family: "Sora", sans-serif;
+* {
+  font-family: 'Sora', sans-serif !important;
 }

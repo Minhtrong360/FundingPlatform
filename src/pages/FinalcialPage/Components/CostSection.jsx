@@ -64,7 +64,7 @@ const CostSection = ({
   };
 
   const removeCostInput = (id) => {
-    const indexToRemove = tempCostInput.findIndex((input) => input?.id === id);
+    const indexToRemove = tempCostInput.findIndex((input) => input?.id == id);
     if (indexToRemove !== -1) {
       const newInputs = [
         ...tempCostInput.slice(0, indexToRemove),

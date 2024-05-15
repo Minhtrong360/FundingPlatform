@@ -66,8 +66,6 @@ const SalesSection = ({
     (state) => state.customer
   );
 
-  console.log("revenueTableData", revenueTableData);
-
   const [tempChannelInputs, setTempChannelInputs] = useState(channelInputs);
   const [tempRevenueData, setTempRevenueData] = useState(revenueData);
   const [tempRevenueDeductionData, setTempRevenueDeductionData] =
@@ -222,7 +220,7 @@ const SalesSection = ({
 
   const removeChannelInput = (id) => {
     const indexToRemove = tempChannelInputs.findIndex(
-      (input) => input?.id === id
+      (input) => input?.id == id
     );
     if (indexToRemove !== -1) {
       const newInputs = [

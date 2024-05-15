@@ -25,6 +25,33 @@ import FilesList from "../FilesList";
 
 import * as Y from "yjs";
 import YPartyKitProvider from "y-partykit/provider";
+import Spinner from "../../../components/Spinner";
+
+function LoaderIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <line x1="12" x2="12" y1="2" y2="6" />
+      <line x1="12" x2="12" y1="18" y2="22" />
+      <line x1="4.93" x2="7.76" y1="4.93" y2="7.76" />
+      <line x1="16.24" x2="19.07" y1="16.24" y2="19.07" />
+      <line x1="2" x2="6" y1="12" y2="12" />
+      <line x1="18" x2="22" y1="12" y2="12" />
+      <line x1="4.93" x2="7.76" y1="19.07" y2="16.24" />
+      <line x1="16.24" x2="19.07" y1="7.76" y2="4.93" />
+    </svg>
+  );
+}
 
 const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
   const [activeTab, setActiveTab] = useState("Your Profile");
@@ -378,11 +405,21 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
               {user?.id === currentProject?.user_id ||
               currentProject?.collabs?.includes(user.email) ? (
                 <button
-                  className="mt-8 hover:cursor-pointer py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                  className={`min-w-[110px] mt-8 hover:cursor-pointer py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent ${
+                    isLoading
+                      ? "bg-gray-600 disabled:opacity-50 disabled:pointer-events-none"
+                      : "bg-blue-600 text-white hover:bg-blue-700"
+                  }  `}
                   onClick={handleSave}
                   type="button"
                 >
-                  Save profile
+                  {isLoading ? (
+                    <div className="animate-spin h-5 w-5 text-white">
+                      <LoaderIcon className="h-full w-full" />
+                    </div>
+                  ) : (
+                    "Save profile"
+                  )}
                 </button>
               ) : null}
               <Modal
@@ -459,46 +496,40 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
         fullScreen === true ? "justify-center items-center" : ""
       }`}
     >
-      {isLoading ? (
-        <LoadingButtonClick isLoading={isLoading} />
-      ) : (
+      {fullScreen === false && (
         <>
-          {fullScreen === false && (
-            <>
-              <aside className="w-full md:max-w-[200px] py-8">
-                <div className="sticky top-8 space-y-4">
-                  <nav className="space-y-1">
-                    {/* Navbar */}
-                    {Object.keys(tabContents).map((tab) => (
-                      <div
-                        key={tab}
-                        className={` cursor-pointer ${
-                          activeTab === tab
-                            ? "flex items-left px-3 py-2 text-sm font-medium text-blue-600 bg-blue-100 rounded-md"
-                            : "flex items-left px-3 py-2 text-gray-600"
-                        }`}
-                        onClick={() => handleTabChange(tab)}
-                      >
-                        {tab}
-                      </div>
-                    ))}
-                  </nav>
-                </div>
-              </aside>
-              <div className="w-full  py-8 px-0 md:pl-8">
-                {/* Content */}
-                {tabContents[activeTab]}
-              </div>
-            </>
-          )}
-          {fullScreen === true && (
-            <BlockNoteView
-              editor={editor}
-              theme={"light"}
-              className="w-full lg:w-8/12 my-12"
-            />
-          )}
+          <aside className="w-full md:max-w-[200px] py-8">
+            <div className="sticky top-8 space-y-4">
+              <nav className="space-y-1">
+                {/* Navbar */}
+                {Object.keys(tabContents).map((tab) => (
+                  <div
+                    key={tab}
+                    className={` cursor-pointer ${
+                      activeTab === tab
+                        ? "flex items-left px-3 py-2 text-sm font-medium text-blue-600 bg-blue-100 rounded-md"
+                        : "flex items-left px-3 py-2 text-gray-600"
+                    }`}
+                    onClick={() => handleTabChange(tab)}
+                  >
+                    {tab}
+                  </div>
+                ))}
+              </nav>
+            </div>
+          </aside>
+          <div className="w-full  py-8 px-0 md:pl-8">
+            {/* Content */}
+            {tabContents[activeTab]}
+          </div>
         </>
+      )}
+      {fullScreen === true && (
+        <BlockNoteView
+          editor={editor}
+          theme={"light"}
+          className="w-full lg:w-8/12 my-12"
+        />
       )}
     </div>
   );

@@ -60,7 +60,7 @@ const FundraisingSection = ({
 
   const removeFundraisingInput = (id) => {
     const indexToRemove = tempFundraisingInputs.findIndex(
-      (input) => input?.id === id
+      (input) => input?.id == id
     );
     if (indexToRemove !== -1) {
       const newInputs = [

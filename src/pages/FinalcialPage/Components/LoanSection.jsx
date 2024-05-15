@@ -52,7 +52,7 @@ const LoanSection = ({
   };
 
   const removeLoanInput = (id) => {
-    const indexToRemove = tempLoanInputs.findIndex((input) => input?.id === id);
+    const indexToRemove = tempLoanInputs.findIndex((input) => input?.id == id);
     if (indexToRemove !== -1) {
       const newInputs = [
         ...tempLoanInputs.slice(0, indexToRemove),

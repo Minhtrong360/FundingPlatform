@@ -61,7 +61,7 @@ const InvestmentSection = ({
 
   const removeInvestmentInput = (id) => {
     const indexToRemove = tempInvestmentInputs.findIndex(
-      (input) => input?.id === id
+      (input) => input?.id == id
     );
     if (indexToRemove !== -1) {
       const newInputs = [

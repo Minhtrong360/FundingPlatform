@@ -138,27 +138,41 @@ export default function NewDetailPage({ location }) {
 
   return (
     <div className="min-h-screen bg-white">
-      <LoadingButtonClick isLoading={isLoading} />
+      {isLoading ? (
+        <LoadingButtonClick isLoading={isLoading} />
+      ) : (
+        <>
+          <button
+            className={`w-[100px] fixed bottom-5 lg:left-5 right-5 p-2 rounded-md ${
+              fullScreen ? "bg-gray-300" : "bg-blue-600 text-white"
+            } z-50 text-sm`}
+            onClick={() => setFullScreen((prev) => !prev)}
+          >
+            Full screen
+          </button>
+          {fullScreen === false ? (
+            <div>
+              <Header position={position} />
+              <ProfileInfo
+                company={company}
+                currentProject={currentProject}
+                setCurrentProject={setCurrentProject}
+                blocks={blocks}
+              />
 
-      <button
-        className={`w-[100px] fixed bottom-5 lg:left-5 right-5 p-2 rounded-md ${
-          fullScreen ? "bg-gray-300" : "bg-blue-600 text-white"
-        } z-50 text-sm`}
-        onClick={() => setFullScreen((prev) => !prev)}
-      >
-        Full screen
-      </button>
-      {fullScreen === false ? (
-        <div>
-          <Header position={position} />
-          <ProfileInfo
-            company={company}
-            currentProject={currentProject}
-            setCurrentProject={setCurrentProject}
-            blocks={blocks}
-          />
+              <div className="mt-4 xl:container w-full mx-auto sm:px-4 pl-8 flex flex-col lg:flex-row">
+                <MyTab
+                  blocks={blocks}
+                  setBlocks={setBlocks}
+                  company={company}
+                  fullScreen={fullScreen}
+                  currentProject={currentProject}
+                />
 
-          <div className="mt-4 xl:container w-full mx-auto sm:px-4 pl-8 flex flex-col lg:flex-row">
+                <Author company={company} />
+              </div>
+            </div>
+          ) : (
             <MyTab
               blocks={blocks}
               setBlocks={setBlocks}
@@ -166,18 +180,8 @@ export default function NewDetailPage({ location }) {
               fullScreen={fullScreen}
               currentProject={currentProject}
             />
-
-            <Author company={company} />
-          </div>
-        </div>
-      ) : (
-        <MyTab
-          blocks={blocks}
-          setBlocks={setBlocks}
-          company={company}
-          fullScreen={fullScreen}
-          currentProject={currentProject}
-        />
+          )}
+        </>
       )}
     </div>
   );

@@ -61,16 +61,6 @@ const CustomChart = ({
       },
     },
     grid: { show: false },
-    // fill: {
-    //   type: "gradient",
-    //   gradient: {
-    //     shade: "light",
-    //     shadeIntensity: 0.5,
-    //     opacityFrom: 0.85,
-    //     opacityTo: 0.65,
-    //     stops: [0, 90, 100],
-    //   },
-    // },
 
     colors: ["#00A2FF", "#14F584", "#FFB303", "#DBFE01", "#FF474C", "#D84FE4"],
     xaxis: {
@@ -86,6 +76,7 @@ const CustomChart = ({
       },
     },
     yaxis: {
+      min: 0,
       axisBorder: { show: true },
       labels: {
         formatter: (val) => formatNumber(Math.floor(val)),
@@ -101,18 +92,8 @@ const CustomChart = ({
       horizontalAlign: "right",
       fontFamily: "Sora, sans-serif",
     },
-    // fill: {
-    //   type: "gradient",
 
-    //   gradient: {
-    //     shade: "light",
-    //     shadeIntensity: 0.5,
-    //     opacityFrom: 0.85,
-    //     opacityTo: 0.65,
-    //     stops: [0, 90, 100],
-    //   },
-    // },
-    stroke: { curve: "smooth", width: 1 },
+    stroke: { curve: "straight", width: 1 },
     dataLabels: { enabled: false },
   };
 
@@ -120,7 +101,7 @@ const CustomChart = ({
     <div className="grid md:grid-cols-2 gap-6 mt-6">
       <Card
         title={title}
-        className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
+        className="flex flex-col transition duration-500  rounded-2xl"
       >
         <div className="flex justify-between items-center">
           <div className="min-w-[10vw]">

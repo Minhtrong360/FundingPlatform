@@ -10,7 +10,7 @@ import {
   message,
 } from "antd";
 import SideBar from "../../components/SideBar";
-import AlertMsg from "../../components/AlertMsg";
+
 import { PlusOutlined, UserOutlined } from "@ant-design/icons";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
@@ -356,8 +356,6 @@ function FleaMarketList() {
         >
           <div className="p-4 border-gray-300 border-dashed rounded-md darkBorderGray min-h-[96vh]">
             <main className="w-full min-h-[92.5vh]">
-              <AlertMsg />
-
               <section className="container px-4 mx-auto mt-14">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-semibold ">

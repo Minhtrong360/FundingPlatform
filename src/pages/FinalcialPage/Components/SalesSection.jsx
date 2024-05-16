@@ -33,7 +33,6 @@ import {
 } from "../../../features/SaleSlice";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { supabase } from "../../../supabase";
-import { useAuth } from "../../../context/AuthContext";
 import { useParams } from "react-router-dom";
 import {
   FileOutlined,
@@ -42,6 +41,7 @@ import {
   DeleteOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons";
+import { useAuth } from "../../../context/AuthContext";
 
 const SalesSection = ({
   numberOfMonths,
@@ -49,7 +49,6 @@ const SalesSection = ({
   setIsSaved,
   revenue,
   setRevenue,
-  handleSubmit,
 }) => {
   const dispatch = useDispatch();
   const {
@@ -138,21 +137,12 @@ const SalesSection = ({
   ]);
 
   const { id } = useParams();
+  const { user } = useAuth();
 
   useEffect(() => {
     if (isSaved) {
       const saveData = async () => {
         try {
-          dispatch(setChannelInputs(tempChannelInputs));
-          dispatch(setRevenueData(tempRevenueData));
-          dispatch(setRevenueDeductionData(tempRevenueDeductionData));
-          dispatch(setCogsData(tempCogsData));
-          dispatch(setNetRevenueData(tempNetRevenueData));
-          dispatch(setGrossProfitData(tempGrossProfitData));
-
-          const sales = calculateYearlySales(tempRevenueData);
-          dispatch(setYearlySales(sales));
-
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
             .select("*")
@@ -163,6 +153,26 @@ const SalesSection = ({
           }
 
           if (existingData && existingData.length > 0) {
+            const { user_email, collabs } = existingData[0];
+
+            // Check if user.email matches user_email or is included in collabs
+            if (user.email !== user_email && !collabs?.includes(user.email)) {
+              message.error(
+                "You do not have permission to update this record."
+              );
+              return;
+            }
+
+            dispatch(setChannelInputs(tempChannelInputs));
+            dispatch(setRevenueData(tempRevenueData));
+            dispatch(setRevenueDeductionData(tempRevenueDeductionData));
+            dispatch(setCogsData(tempCogsData));
+            dispatch(setNetRevenueData(tempNetRevenueData));
+            dispatch(setGrossProfitData(tempGrossProfitData));
+
+            const sales = calculateYearlySales(tempRevenueData);
+            dispatch(setYearlySales(sales));
+
             const newInputData = JSON.parse(existingData[0].inputData);
             newInputData.channelInputs = tempChannelInputs;
             newInputData.yearlySales = sales;
@@ -311,6 +321,25 @@ const SalesSection = ({
         })
         .filter((chart) => chart !== null);
 
+      const salesChartsData2 = Object.entries(tempRevenueData)
+        .map(([key, data]) => {
+          if (!data) return null;
+
+          const dataDeductions = tempRevenueDeductionData[key] || [];
+          const dataNetRevenue = tempNetRevenueData[key] || [];
+          const dataCOGS = tempCogsData[key] || [];
+          const dataGrossProfit = tempGrossProfitData[key] || [];
+          return {
+            name: key,
+            data: data,
+            dataDeductions,
+            dataNetRevenue,
+            dataCOGS,
+            dataGrossProfit,
+          };
+        })
+        .filter((chart) => chart !== null);
+
       const totalSalesData = salesChartsData.reduce((acc, channel) => {
         channel.data.forEach((amount, index) => {
           if (!acc[index]) acc[index] = 0;
@@ -318,15 +347,22 @@ const SalesSection = ({
         });
         return acc;
       }, Array(endIdx - startIdx).fill(0));
+      const totalSalesData2 = salesChartsData2.reduce((acc, channel) => {
+        channel.data.forEach((amount, index) => {
+          if (!acc[index]) acc[index] = 0;
+          acc[index] += amount;
+        });
+        return acc;
+      }, Array(numberOfMonths).fill(0));
 
       setRevenue((prevState) => ({
         ...prevState,
         series: [
-          ...salesChartsData.map((channel) => ({
+          ...salesChartsData2.map((channel) => ({
             name: channel.name,
             data: channel.data,
           })),
-          { name: "Total", data: totalSalesData },
+          { name: "Total", data: totalSalesData2 },
         ],
         charts: [
           {
@@ -401,7 +437,6 @@ const SalesSection = ({
     tempNetRevenueData,
     tempCogsData,
     tempGrossProfitData,
-    setRevenue,
   ]);
 
   const handleSave = () => {
@@ -444,7 +479,7 @@ const SalesSection = ({
           {revenue.charts?.map((chart, index) => (
             <Card
               key={index}
-              className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
+              className="flex flex-col transition duration-500  rounded-2xl"
             >
               <div className="flex justify-between items-center">
                 <div className="min-w-[10vw]">
@@ -504,7 +539,7 @@ const SalesSection = ({
                   chart: { animations: { enabled: false } },
                   ...chart.options,
                   xaxis: { ...chart.options.xaxis },
-                  stroke: { width: 1 },
+                  stroke: { width: 1, curve: "straight" },
                 }}
                 series={chart.series}
                 type="area"

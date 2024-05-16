@@ -270,7 +270,6 @@ code {
 .ant-carousel .slick-next {
   color: unset;
   font-size: unset;
- 
 }
 
 .ant-carousel .slick-prev:hover,
@@ -281,5 +280,5 @@ code {
 }
 
 * {
-  font-family: 'Sora', sans-serif !important;
+  font-family: "Sora", sans-serif !important;
 }

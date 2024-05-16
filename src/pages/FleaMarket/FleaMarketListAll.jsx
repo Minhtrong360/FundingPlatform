@@ -72,7 +72,6 @@ function FleaMarketListAll() {
         <div
           className="ml-2 truncate hover:cursor-pointer"
           style={{ maxWidth: "100%" }}
-          // title={record.company}
           onClick={() => handleProjectClick(record)}
         >
           {record.country}
@@ -88,7 +87,6 @@ function FleaMarketListAll() {
         <div
           className="ml-2 truncate hover:cursor-pointer"
           style={{ maxWidth: "100%" }}
-          // title={record.company}
           onClick={() => handleProjectClick(record)}
         >
           {record.industry}
@@ -104,7 +102,6 @@ function FleaMarketListAll() {
         <div
           className="ml-2 truncate hover:cursor-pointer"
           style={{ maxWidth: "100%" }}
-          // title={record.company}
           onClick={() => handleProjectClick(record)}
         >
           {formatNumber(record.price)}
@@ -119,7 +116,6 @@ function FleaMarketListAll() {
         <div
           className="ml-2 truncate hover:cursor-pointer"
           style={{ maxWidth: "100%" }}
-          // title={record.company}
           onClick={() => handleProjectClick(record)}
         >
           {formatNumber(record.shares)}
@@ -135,7 +131,6 @@ function FleaMarketListAll() {
         <div
           className="ml-2 truncate hover:cursor-pointer"
           style={{ maxWidth: "100%" }}
-          // title={record.company}
           onClick={() => handleProjectClick(record)}
         >
           {record.timeInvested}
@@ -150,7 +145,6 @@ function FleaMarketListAll() {
         <div
           className="ml-2 truncate hover:cursor-pointer"
           style={{ maxWidth: "100%" }}
-          // title={record.company}
           onClick={() => handleProjectClick(record)}
         >
           {formatNumber(record.amountInvested)}

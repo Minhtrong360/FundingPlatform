@@ -45,7 +45,7 @@ import {
   setRevenueData,
   setRevenueDeductionData,
 } from "../../../features/SaleSlice";
-import CustomChart from "./CustomerChart";
+import CustomChart from "./CustomChart";
 import { getCurrencyLabelByKey } from "../../../features/DurationSlice";
 
 const AllChartSections = ({
@@ -426,35 +426,6 @@ const AllChartSections = ({
     setSelectedChart(value);
   };
 
-  const [selectedMonth, setSelectedMonth] = useState(1);
-
-  const handleMonthSelect = (value) => {
-    setSelectedMonth(parseInt(value));
-  };
-
-  const renderCard = (title, value) => (
-    <div className="flex flex-col bg-white border shadow-lg rounded-xl m-4 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
-      <div className="p-4 md:p-5">
-        <div className="flex items-center gap-x-2">
-          <p className="text-xs uppercase tracking-wide text-gray-800">
-            {title}
-          </p>
-        </div>
-
-        <div className="mt-1 flex items-center gap-x-2">
-          <div className="flex flex-col xl:flex-row xl:items-center items-start w-full">
-            <h3 className="text-sm sm:text-3xl font-bold text-gray-800 my-2">
-              {formatNumber(Math.round(value[selectedMonth - 1]))}
-            </h3>
-          </div>
-        </div>
-        <div className="flex flex-col xl:flex-row xl:items-center items-start w-full">
-          {/* <p className="text-base text-gray-800 ">Month: {selectedMonth}</p> */}
-        </div>
-      </div>
-    </div>
-  );
-
   const { currency } = useSelector((state) => state.durationSelect);
   const months = [
     "01",
@@ -470,8 +441,6 @@ const AllChartSections = ({
     "11",
     "12",
   ];
-  const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(6);
 
   const bsTotalInvestmentArray = investmentTableData?.find(
     (item) => item.key === "BS Total investment"
@@ -532,7 +501,7 @@ const AllChartSections = ({
     <div className="flex flex-col">
       <main className="flex flex-1 flex-col gap-4  mb-4 md:gap-8 ">
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border-1 border-gray-300 rounded-md">
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
             <div>
               <div className="text-base">Total User</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -565,14 +534,12 @@ const AllChartSections = ({
                     return `${months[monthIndex]}/${year}`;
                   }),
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               height={300}
             />
-          </Card>
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-mdx-col">
+          </div>
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
             <div>
               <div className="text-base">Total Revenue</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -600,16 +567,14 @@ const AllChartSections = ({
                     return `${months[monthIndex]}/${year}`;
                   }),
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={revenue.series}
               type="area"
               height={300}
             />
-          </Card>
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
+          </div>
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
             <div>
               <div className="text-base">Total Cost</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -629,16 +594,14 @@ const AllChartSections = ({
                 xaxis: {
                   ...revenue.options.xaxis,
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={[{ data: totalCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
               type="area"
               height={300}
             />
-          </Card>
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
+          </div>
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
             <div>
               <div className="text-base">Total Personnel Cost</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -658,16 +621,14 @@ const AllChartSections = ({
                 xaxis: {
                   ...revenue.options.xaxis,
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={[{ data: totalPersonnelCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
               type="area"
               height={300}
             />
-          </Card>
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
+          </div>
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
             <div>
               <div className="text-base">Total Investment</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -687,16 +648,14 @@ const AllChartSections = ({
                 xaxis: {
                   ...revenue.options.xaxis,
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={[{ data: bsTotalInvestmentValues, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
               type="area"
               height={300}
             />
-          </Card>
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
+          </div>
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
             <div>
               <div className="text-base">Total Loan</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -738,16 +697,14 @@ const AllChartSections = ({
                     },
                   },
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={[{ data: totalLoanData, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
               type="area"
               height={300}
             />
-          </Card>
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
+          </div>
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
             <div>
               <div className="text-base">Total Fundraising</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -767,15 +724,13 @@ const AllChartSections = ({
                 xaxis: {
                   ...revenue.options.xaxis,
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={[{ data: bsTotalFundingValues, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
               type="bar"
               height={300}
             />
-          </Card>
+          </div>
         </div>
 
         {/* Các biểu đồ */}

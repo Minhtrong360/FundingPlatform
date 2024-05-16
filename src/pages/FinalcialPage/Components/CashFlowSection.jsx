@@ -1,13 +1,4 @@
-import {
-  Button,
-  FloatButton,
-  Modal,
-  Row,
-  Table,
-  Tabs,
-  Tooltip,
-  message,
-} from "antd";
+import { Button, FloatButton, Modal, Table, Tabs } from "antd";
 import {
   Select,
   SelectTrigger,
@@ -50,10 +41,10 @@ import {
   setFundraisingTableData,
   transformFundraisingDataForTable,
 } from "../../../features/FundraisingSlice";
-import CustomChart from "./CustomerChart";
+import CustomChart from "./CustomChart";
 import SelectField from "../../../components/SelectField";
 import { setCutMonth } from "../../../features/DurationSlice";
-import { FileOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { FileOutlined } from "@ant-design/icons";
 import GroqJS from "./GroqJson";
 
 function CashFlowSection({ numberOfMonths }) {
@@ -442,7 +433,7 @@ function CashFlowSection({ numberOfMonths }) {
       render: (text, record) => ({
         children: (
           <div className={" md:whitespace-nowrap "}>
-            <a
+            <div
               style={{
                 fontWeight:
                   record.metric === "CF Operations" ||
@@ -460,19 +451,10 @@ function CashFlowSection({ numberOfMonths }) {
               }}
             >
               {text}
-            </a>
+            </div>
           </div>
         ),
       }),
-
-      // onCell: (_, index)  => ({
-      //   style: {
-      //     // borderRight: "1px solid #f0f0f0",
-      //     props: {
-      //       colSpan: (index === 0 || index === 7 || index === 9) ? 36 : 1,
-      //     },
-      //   },
-      // }),
     },
     ...Array.from({ length: numberOfMonths }, (_, i) => {
       const monthIndex = (startingMonth + i - 1) % 12;
@@ -532,8 +514,6 @@ function CashFlowSection({ numberOfMonths }) {
   const handleCutMonthChange = (e) => {
     dispatch(setCutMonth(Number(e.target.value)));
   };
-
-  console.log(cutMonth);
 
   const divideMonthsIntoYearsForCashFlow = () => {
     const years = [];
@@ -598,11 +578,6 @@ function CashFlowSection({ numberOfMonths }) {
     return years;
   };
 
-  console.log(
-    "divideMonthsIntoYearsForCashFlow",
-    divideMonthsIntoYearsForCashFlow()
-  );
-
   const getDataSourceForYearCashFlow = (months) => {
     const monthKeys = months.map((month) => `Month ${month}`);
 
@@ -648,52 +623,6 @@ function CashFlowSection({ numberOfMonths }) {
       },
     ];
     return columns;
-  };
-
-  const calculateCashFlowRatios = (dataSource) => {
-    const findYearTotalByKey = (key) => {
-      const item = dataSource.find((data) => data.metric === key);
-      return item ? item.yearTotal : 0;
-    };
-
-    // Assuming Operating Cash Flow (OCF), Capital Expenditure (CAPEX), and Net Income are available from the data source
-    const operatingCashFlow = findYearTotalByKey("CF Operations");
-    const capitalExpenditure = Math.abs(findYearTotalByKey("CF Investments")); // CAPEX is expected to be a negative number, so we take its absolute
-    const netIncome = findYearTotalByKey("Net Income");
-
-    // Operating Cash Flow Ratio = OCF / Current Liabilities
-    // Note: Current Liabilities value would need to be available; placeholder value used here
-    const currentLiabilities = findYearTotalByKey("Decrease (Increase) in AP"); // Assuming this as a proxy for current liabilities
-
-    const operatingCashFlowRatio = currentLiabilities
-      ? operatingCashFlow / currentLiabilities
-      : 0;
-
-    // Free Cash Flow (FCF) = Operating Cash Flow - Capital Expenditures
-    const freeCashFlow = operatingCashFlow - capitalExpenditure;
-
-    // Cash Conversion Cycle (CCC) is a more complex calculation involving Receivables Turnover, Payables Turnover, and Inventory Turnover
-    // Placeholder values for demonstration; actual calculation would require detailed data
-    const cashConversionCycle = 0; // Placeholder for Cash Conversion Cycle calculation
-
-    // Cash Flow to Debt Ratio = Operating Cash Flow / Total Debt
-    // Note: Total Debt value would need to be available; placeholder value used here
-    const totalDebt = findYearTotalByKey("Total Principal"); // Assuming this as a proxy for total debt
-
-    const cashFlowToDebtRatio = totalDebt ? operatingCashFlow / totalDebt : 0;
-
-    // Cash Flow Margin = Free Cash Flow / Net Sales
-    // Note: Net Sales value would need to be available; placeholder value used here
-    const netSales = findYearTotalByKey("Net +/- in Cash"); // Assuming this as a proxy for net sales
-    const cashFlowMargin = netSales ? freeCashFlow / netSales : 0;
-
-    return {
-      operatingCashFlowRatio: formatNumber(operatingCashFlowRatio.toFixed(2)),
-      freeCashFlow: formatNumber(freeCashFlow.toFixed(2)),
-      cashConversionCycle: formatNumber(cashConversionCycle.toFixed(2)), // This is a placeholder; actual calculation would differ
-      cashFlowToDebtRatio: formatNumber(cashFlowToDebtRatio.toFixed(2)),
-      cashFlowMargin: formatNumber(cashFlowMargin.toFixed(2)),
-    };
   };
 
   const [activeTab, setActiveTab] = useState(0); // State to track active tab

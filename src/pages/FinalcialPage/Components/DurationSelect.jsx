@@ -116,7 +116,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen }) => {
       >
         General Setup
       </h2>
-      <div className="bg-white rounded-md p-6 border">
+      <div className="bg-white rounded-2xl p-6 ">
         <div className="grid grid-cols-2 gap-4 mb-3">
           <Tooltip title="Enter the name of your business">
             <span className=" flex items-center text-sm">Business name :</span>
@@ -293,21 +293,6 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen }) => {
             }
           />
         </div>
-        {/* <Tooltip title="Input the payroll tax, e.g. 10">
-          <div className="grid grid-cols-2 gap-4 mb-3">
-            <span className=" flex items-center text-sm">Payroll Tax (%):</span>
-            <Input
-              className="border-gray-300"
-              type="text"
-              placeholder="0"
-              // value={formatNumber(payrollTax)}
-              // onChange={(e) =>
-              //   dispatch(setPayrollTax(parseNumber(e.target.value)))
-              // }
-              disabled
-            />
-          </div>
-        </Tooltip> */}
 
         <div className="grid grid-cols-2 gap-4 mb-3">
           <Tooltip title="Select the currency, e.g. USD">

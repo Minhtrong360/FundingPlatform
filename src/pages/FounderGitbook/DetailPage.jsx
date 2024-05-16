@@ -11,13 +11,11 @@ import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import FilesList from "./FilesList";
 import SideBar from "../../components/SideBar";
-import AlertMsg from "../../components/AlertMsg";
+
 import AnnouncePage from "../../components/AnnouncePage";
 
 import HeroSection from "./HeroSection";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
-import MyTabs from "../testseparated";
-
 
 const DetailPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -107,7 +105,6 @@ const DetailPage = () => {
 
   return (
     <div className=" bg-white darkBg antialiased !p-0">
-      <AlertMsg />
       <LoadingButtonClick isLoading={isLoading} />
       <div id="exampleWrapper">
         <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />

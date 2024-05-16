@@ -11,22 +11,15 @@ import {
   setLoanTableData,
   transformLoanDataForTable,
 } from "../../../features/LoanSlice";
-import { useAuth } from "../../../context/AuthContext";
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
 import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
+import { useAuth } from "../../../context/AuthContext";
 
-const LoanSection = ({
-  numberOfMonths,
-
-  isSaved,
-  setIsSaved,
-
-  handleSubmit,
-}) => {
+const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const dispatch = useDispatch();
   const { loanInputs } = useSelector((state) => state.loan);
   const [tempLoanInputs, setTempLoanInputs] = useState(loanInputs);
@@ -200,18 +193,9 @@ const LoanSection = ({
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-      // fill: {
-      //   type: "gradient",
-      //   gradient: {
-      //     shade: "light",
-      //     shadeIntensity: 0.5,
-      //     opacityFrom: 0.85,
-      //     opacityTo: 0.65,
-      //     stops: [0, 90, 100],
-      //   },
-      // },
+
       dataLabels: { enabled: false },
-      stroke: { width: 1 },
+      stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
     },
     series: [],
   });
@@ -351,7 +335,6 @@ const LoanSection = ({
 
   const handleSave = () => {
     setIsSaved(true);
-    message.success("Data saved successfully!");
   };
 
   const tableData = transformLoanDataForTable(
@@ -361,13 +344,11 @@ const LoanSection = ({
   );
 
   const { id } = useParams();
+  const { user } = useAuth();
   useEffect(() => {
     const saveData = async () => {
       try {
         if (isSaved) {
-          dispatch(setLoanInputs(tempLoanInputs));
-          dispatch(setLoanTableData(tableData));
-
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
             .select("*")
@@ -377,6 +358,18 @@ const LoanSection = ({
           }
 
           if (existingData && existingData.length > 0) {
+            const { user_email, collabs } = existingData[0];
+
+            // Check if user.email matches user_email or is included in collabs
+            if (user.email !== user_email && !collabs?.includes(user.email)) {
+              message.error(
+                "You do not have permission to update this record."
+              );
+              return;
+            }
+
+            dispatch(setLoanInputs(tempLoanInputs));
+            dispatch(setLoanTableData(tableData));
             const newInputData = JSON.parse(existingData[0].inputData);
 
             newInputData.loanInputs = tempLoanInputs;
@@ -389,6 +382,8 @@ const LoanSection = ({
 
             if (updateError) {
               throw updateError;
+            } else {
+              message.success("Data saved successfully!");
             }
           }
         }
@@ -416,7 +411,7 @@ const LoanSection = ({
           {loanChart?.charts?.map((series, index) => (
             <Card
               key={index}
-              className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
+              className="flex flex-col transition duration-500  rounded-2xl"
             >
               <div className="flex justify-between items-center">
                 <div className="min-w-[10vw]">
@@ -481,6 +476,7 @@ const LoanSection = ({
                   },
                   stroke: {
                     width: 1, // Set the stroke width to 1
+                    curve: "straight", // Set the stroke curve to straight
                   },
                 }}
                 series={series.series}

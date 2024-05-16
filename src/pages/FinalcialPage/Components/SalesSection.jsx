@@ -309,6 +309,25 @@ const SalesSection = ({
         })
         .filter((chart) => chart !== null);
 
+      const salesChartsData2 = Object.entries(tempRevenueData)
+        .map(([key, data]) => {
+          if (!data) return null;
+
+          const dataDeductions = tempRevenueDeductionData[key] || [];
+          const dataNetRevenue = tempNetRevenueData[key] || [];
+          const dataCOGS = tempCogsData[key] || [];
+          const dataGrossProfit = tempGrossProfitData[key] || [];
+          return {
+            name: key,
+            data: data,
+            dataDeductions,
+            dataNetRevenue,
+            dataCOGS,
+            dataGrossProfit,
+          };
+        })
+        .filter((chart) => chart !== null);
+
       const totalSalesData = salesChartsData.reduce((acc, channel) => {
         channel.data.forEach((amount, index) => {
           if (!acc[index]) acc[index] = 0;
@@ -316,15 +335,22 @@ const SalesSection = ({
         });
         return acc;
       }, Array(endIdx - startIdx).fill(0));
+      const totalSalesData2 = salesChartsData2.reduce((acc, channel) => {
+        channel.data.forEach((amount, index) => {
+          if (!acc[index]) acc[index] = 0;
+          acc[index] += amount;
+        });
+        return acc;
+      }, Array(numberOfMonths).fill(0));
 
       setRevenue((prevState) => ({
         ...prevState,
         series: [
-          ...salesChartsData.map((channel) => ({
+          ...salesChartsData2.map((channel) => ({
             name: channel.name,
             data: channel.data,
           })),
-          { name: "Total", data: totalSalesData },
+          { name: "Total", data: totalSalesData2 },
         ],
         charts: [
           {
@@ -399,7 +425,6 @@ const SalesSection = ({
     tempNetRevenueData,
     tempCogsData,
     tempGrossProfitData,
-    setRevenue,
   ]);
 
   const handleSave = () => {

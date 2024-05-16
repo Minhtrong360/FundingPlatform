@@ -420,10 +420,10 @@ const CustomerSection = React.memo(
         return {
           ...prevState,
           series: [
-            ...seriesData,
+            ...seriesData2,
             {
               name: "Total",
-              data: totalCustomersPerMonth,
+              data: totalCustomersPerMonth2,
             },
           ],
           charts: [
@@ -768,8 +768,7 @@ const CustomerSection = React.memo(
                       // tickAmount: 12, // Set the number of ticks on the x-axis to 12
                     },
                     stroke: {
-                      width: 1,
-                      curve: "straight", // Set the stroke width to 1
+                      width: 1, // Set the stroke width to 1
                     },
                   }}
                   series={chart.series}

@@ -689,6 +689,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
     setCustomerGrowthChart((prevState) => ({
       ...prevState,
+
       series: [
         ...seriesData,
         {

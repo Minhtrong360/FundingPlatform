@@ -205,7 +205,7 @@ const FundraisingSection = ({
       },
 
       dataLabels: { enabled: false },
-      stroke: { width: 1, curve: "straight" },
+      stroke: { width: 1, curve: "smooth" },
 
       // markers: { size: 1 },
     },

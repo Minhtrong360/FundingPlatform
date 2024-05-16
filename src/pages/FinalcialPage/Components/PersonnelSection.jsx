@@ -208,6 +208,7 @@ const PersonnelSection = ({
       },
       // title: { text: 'Personnel Cost Data', align: 'left' },
       yaxis: {
+        min: 0,
         axisboder: {
           show: true, // Hide y-axis border
         },
@@ -234,7 +235,7 @@ const PersonnelSection = ({
       type: "gradient",
 
       dataLabels: { enabled: false },
-      stroke: { width: 1 },
+      stroke: { width: 1, curve: "straight" },
     },
     series: [],
   });
@@ -401,6 +402,7 @@ const PersonnelSection = ({
                 ...personnelChart.options,
                 stroke: {
                   width: 1, // Set the stroke width to 2
+                  curve: "straight",
                 },
                 xaxis: {
                   ...personnelChart.options.xaxis,

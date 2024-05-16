@@ -1122,7 +1122,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               </ul>
             </div>
 
-            <div className="bg-gray-100">
+            <div className="">
               {activeTab === "overview" && (
                 <div className="w-full h-full flex flex-col lg:flex-row ">
                   {/* <div className="w-full lg:w-1/4 sm:p-4 p-0 "> */}
@@ -1140,7 +1140,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                       numberOfMonths={numberOfMonths}
                     />
                   </div>
-                  <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block border-r-8 border-l-8 border-white">
+                  <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block ">
                     <DurationSelect handleSubmit={handleSubmit} />
                   </div>
                   <div className="xl:hidden block">

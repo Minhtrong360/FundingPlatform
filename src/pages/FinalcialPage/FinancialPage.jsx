@@ -43,12 +43,12 @@ function FinancialPage() {
   // 1
 
   return (
-    <div className=" bg-white darkBg antialiased !p-0">
+    <div className=" bg-gray-50 darkBg antialiased !p-0">
       <AlertMsg />
       <div id="exampleWrapper">
         <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
         <div
-          className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0 "
+          className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0  "
           onClick={() => setIsSidebarOpen(false)}
         >
           <div className="p-4 border-gray-300 border-dashed rounded-md darkBorderGray">

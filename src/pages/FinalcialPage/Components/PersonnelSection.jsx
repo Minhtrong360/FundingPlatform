@@ -357,7 +357,7 @@ const PersonnelSection = ({
         <h3 className="text-lg font-semibold mb-8">Personnel Cost Chart</h3>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
+          <Card className="flex flex-col transition duration-500  rounded-2xl">
             <div className="flex justify-between items-center">
               <div className="min-w-[10vw]">
                 <label htmlFor="startMonthSelect">Start Month:</label>

@@ -447,7 +447,7 @@ const InvestmentSection = ({
           {investmentChart?.charts?.map((series, index) => (
             <Card
               key={index}
-              className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md"
+              className="flex flex-col transition duration-500  rounded-2xl"
             >
               <div className="flex justify-between items-center">
                 <div className="min-w-[10vw]">

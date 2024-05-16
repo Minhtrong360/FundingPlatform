@@ -840,6 +840,7 @@ function BalanceSheetSection({ numberOfMonths }) {
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
+      
         <div className="">
           <div className=" gap-4 mb-3">
             <Select

@@ -217,6 +217,7 @@ const PersonnelSection = ({
       },
       // title: { text: 'Personnel Cost Data', align: 'left' },
       yaxis: {
+        min: 0,
         axisboder: {
           show: true, // Hide y-axis border
         },

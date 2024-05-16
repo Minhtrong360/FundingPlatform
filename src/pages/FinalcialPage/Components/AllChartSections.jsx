@@ -501,7 +501,7 @@ const AllChartSections = ({
     <div className="flex flex-col">
       <main className="flex flex-1 flex-col gap-4  mb-4 md:gap-8 ">
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border-1 border-gray-300 rounded-md">
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
             <div>
               <div className="text-base">Total User</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -540,8 +540,8 @@ const AllChartSections = ({
               }}
               height={300}
             />
-          </Card>
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-mdx-col">
+          </div>
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
             <div>
               <div className="text-base">Total Revenue</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -577,8 +577,8 @@ const AllChartSections = ({
               type="area"
               height={300}
             />
-          </Card>
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
+          </div>
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
             <div>
               <div className="text-base">Total Cost</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -606,8 +606,8 @@ const AllChartSections = ({
               type="area"
               height={300}
             />
-          </Card>
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
+          </div>
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
             <div>
               <div className="text-base">Total Personnel Cost</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -635,8 +635,8 @@ const AllChartSections = ({
               type="area"
               height={300}
             />
-          </Card>
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
+          </div>
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
             <div>
               <div className="text-base">Total Investment</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -664,8 +664,8 @@ const AllChartSections = ({
               type="area"
               height={300}
             />
-          </Card>
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
+          </div>
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
             <div>
               <div className="text-base">Total Loan</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -715,8 +715,8 @@ const AllChartSections = ({
               type="area"
               height={300}
             />
-          </Card>
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-200 rounded-md">
+          </div>
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
             <div>
               <div className="text-base">Total Fundraising</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -744,7 +744,7 @@ const AllChartSections = ({
               type="bar"
               height={300}
             />
-          </Card>
+          </div>
         </div>
 
         {/* Các biểu đồ */}

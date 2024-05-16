@@ -74,7 +74,7 @@ export default function MarketResearch() {
               <Tag>{specificPrompt}</Tag>
             </div>
             <Perflexity prompt={generatePromptMK()} button={"Research"} />
-            {/* <PF /> */}
+            {/* <DF /> */}
           </div>
         </TabPane>
         <TabPane tab="Valuation" key="2">

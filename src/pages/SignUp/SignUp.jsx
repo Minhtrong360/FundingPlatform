@@ -2,8 +2,7 @@ import { useNavigate } from "react-router";
 import { useState } from "react";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
-// import { toast } from "react-toastify";
-import AlertMsg from "../../components/AlertMsg";
+
 import AnnouncePage from "../../components/AnnouncePage";
 import { GoogleOutlined } from "@ant-design/icons";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
@@ -77,7 +76,6 @@ const HeroSignUp = () => {
 
   return (
     <div className="relative bg-gradient-to-bl via-transparent darkFromBlueViaTransparent">
-      <AlertMsg />
       {resetLink ? (
         <AnnouncePage
           title="Congratulations!"

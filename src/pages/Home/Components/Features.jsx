@@ -5,14 +5,10 @@ import {
   ArrowUpOutlined,
   ControlOutlined,
   BulbOutlined,
-  DollarCircleOutlined,
-  SolutionOutlined,
   ArrowRightOutlined,
   ArrowLeftOutlined,
 } from "@ant-design/icons";
-import FsB from "./founder&Business.jpg";
-import BsI from "./B&I.jpg";
-import VCs from "./VCs.jpg";
+
 import { Carousel } from "antd";
 import { useMediaQuery } from "react-responsive";
 
@@ -22,7 +18,6 @@ function Features() {
       <div className="max-w-2xl mx-auto text-center mb-10 lg:mb-14">
         <h3
           id="platform"
-          style={{ lineHeight: "1.5" }}
           className="block text-3xl font-extrabold text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl darkTextWhite"
         >
           A{" "}
@@ -47,6 +42,13 @@ export default Features;
 const ComponentsFeatures = () => {
   const isDesktop = useMediaQuery({ minWidth: 768 });
 
+  const contentStyle = {
+    height: "160px",
+    color: "#2563EB",
+    lineHeight: "160px",
+    textAlign: "center",
+    background: "#2563EB",
+  };
   return (
     <div className="bg-white text-gray-800 p-4 md:p-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
       {isDesktop ? (
@@ -132,13 +134,8 @@ const ComponentsFeatures = () => {
           </div>
         </>
       ) : (
-        <Carousel
-          arrows
-          nextArrow={<ArrowRightOutlined />}
-          prevArrow={<ArrowLeftOutlined />}
-          infinite={false}
-        >
-          <div className="space-y-4">
+        <Carousel infinite={false}>
+          <div className="space-y-4" style={contentStyle}>
             <ClockCircleOutlined
               style={{ fontSize: "32px" }}
               className="h-12 w-12 text-black"
@@ -151,7 +148,7 @@ const ComponentsFeatures = () => {
               quicker and more accurate forecasting.
             </p>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-4" style={contentStyle}>
             <TeamOutlined
               style={{ fontSize: "32px" }}
               className="h-12 w-12 text-black"
@@ -165,7 +162,7 @@ const ComponentsFeatures = () => {
               intervention.
             </p>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-4" style={contentStyle}>
             <FundProjectionScreenOutlined
               style={{ fontSize: "32px" }}
               className="h-12 w-12 text-black"
@@ -178,7 +175,7 @@ const ComponentsFeatures = () => {
               integration with other business.
             </p>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-4" style={contentStyle}>
             <ArrowUpOutlined
               style={{ fontSize: "32px" }}
               className="h-12 w-12 text-black"
@@ -191,7 +188,7 @@ const ComponentsFeatures = () => {
               highlighting data anomalies and discrepancies as they occur.
             </p>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-4" style={contentStyle}>
             <ControlOutlined
               style={{ fontSize: "32px" }}
               className="h-12 w-12 text-black"
@@ -204,7 +201,7 @@ const ComponentsFeatures = () => {
               scenario analysis and their outcomes.
             </p>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-4" style={contentStyle}>
             <BulbOutlined
               style={{ fontSize: "32px" }}
               className="h-12 w-12 text-black"

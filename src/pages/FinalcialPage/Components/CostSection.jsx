@@ -19,12 +19,12 @@ import {
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { supabase } from "../../../supabase";
-// import { useAuth } from "../../../context/AuthContext";
 import { useParams } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { useAuth } from "../../../context/AuthContext";
 
 const CostSection = ({
   numberOfMonths,
@@ -231,7 +231,7 @@ const CostSection = ({
       },
       // fill: { type: "solid" },
       dataLabels: { enabled: false },
-      stroke: { curve: "smooth", width: 1 },
+      stroke: { curve: "straight", width: 1 },
     },
     series: [],
   });
@@ -270,17 +270,15 @@ const CostSection = ({
   // Function to handle save
   const handleSave = () => {
     setIsSaved(true);
-    message.success("Data saved successfully!");
   };
 
   // useEffect to update cost inputs when data is saved
   const { id } = useParams();
+  const { user } = useAuth();
   useEffect(() => {
     const saveData = async () => {
       try {
         if (isSaved) {
-          dispatch(setCostInputs(tempCostInput));
-
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
             .select("*")
@@ -290,6 +288,18 @@ const CostSection = ({
           }
 
           if (existingData && existingData.length > 0) {
+            const { user_email, collabs } = existingData[0];
+
+            // Check if user.email matches user_email or is included in collabs
+            if (user.email !== user_email && !collabs?.includes(user.email)) {
+              message.error(
+                "You do not have permission to update this record."
+              );
+              return;
+            }
+
+            dispatch(setCostInputs(tempCostInput));
+
             const newInputData = JSON.parse(existingData[0].inputData);
 
             newInputData.costInputs = tempCostInput;
@@ -302,6 +312,8 @@ const CostSection = ({
 
             if (updateError) {
               throw updateError;
+            } else {
+              message.success("Data saved successfully!");
             }
           }
         }
@@ -373,7 +385,7 @@ const CostSection = ({
       <div className="w-full xl:w-3/4 sm:p-4 p-0">
         <h3 className="text-lg font-semibold mb-8">Cost Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-105 border border-gray-300 rounded-md">
+          <Card className="flex flex-col transition duration-500   rounded-2xl">
             <div className="flex justify-between items-center">
               <div className="min-w-[10vw]">
                 <label htmlFor="startMonthSelect">Start Month:</label>
@@ -434,9 +446,7 @@ const CostSection = ({
                   ...costChart.options.xaxis,
                   // tickAmount: 6, // Set the number of ticks on the x-axis to 12
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 2
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={costChart.series}
               type="area"

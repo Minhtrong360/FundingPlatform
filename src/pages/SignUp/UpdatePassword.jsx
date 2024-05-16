@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { supabase } from "../../supabase";
 import { useNavigate } from "react-router";
-import AlertMsg from "../../components/AlertMsg";
-// import { toast } from "react-toastify";
 
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { message } from "antd";
@@ -76,7 +74,6 @@ const UpdatePassword = () => {
 
   return (
     <main className="w-full max-w-md mx-auto p-6">
-      <AlertMsg />
       <div className="mt-7 bg-white border border-gray-300 rounded-xl shadow-sm darkBgBlue darkBorderGray">
         <div className="p-4 sm:p-7">
           <form onSubmit={handleSubmit} className="mt-5">

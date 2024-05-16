@@ -43,7 +43,6 @@ import FinancialList from "../pages/FinalcialPage/FinancialList.jsx";
 import FleaMarketList from "../pages/FleaMarket/FleaMarketList.jsx";
 import FleaMarketListAll from "../pages/FleaMarket/FleaMarketListAll.jsx";
 import AdminRequired from "./AdminRequired.jsx";
-import GPTAnalyzer from "../pages/FinalcialPage/Components/GPTAnalyzer.jsx";
 import MarketResearch from "../pages/MarketResearch_Evaluation/MarketResearch.jsx";
 
 function Router() {
@@ -221,11 +220,7 @@ function Router() {
         <Route key={location.key} path="/mytabs" element={<NewDetailPage />} />
         {/* <Route  key={location.key} path="/app" element={<App />} /> */}
         {/* <Route  key={location.key} path="/tour" element={<TourComponent />} /> */}
-        <Route
-          key={location.key}
-          path="/GPT"
-          element={<GPTAnalyzer numberOfMonths={36} />}
-        />
+
         <Route
           key={location.key}
           path="/marketresearch"

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import AlertMsg from "../../components/AlertMsg";
+
 import SideBar from "../../components/SideBar";
 import ReactModal from "react-modal";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import { useNavigate } from "react-router-dom";
-import { Button, Dropdown, Menu, Modal, Table, Tooltip, message } from "antd";
+import { Dropdown, Menu, Modal, Table, Tooltip, message } from "antd";
 import {
   formatDate,
   getCurrencyLabelByKey,
@@ -15,7 +15,6 @@ import InputField from "../../components/InputField";
 import PricingWithLemon from "../Home/Components/PricingWithLemon";
 import { formatNumber } from "../../features/CostSlice";
 import apiService from "../../app/apiService";
-// import { toast } from "react-toastify";
 
 function FinancialList() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -24,7 +23,7 @@ function FinancialList() {
   };
 
   const [finances, setFinances] = useState([]);
-  const { user, subscribed } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
     // Tải danh sách finance từ Supabase dựa trên user.id
@@ -219,20 +218,7 @@ function FinancialList() {
         </Tooltip>
       ),
     },
-    // {
-    //   title: "Action",
-    //   dataIndex: "action",
-    //   key: "action",
-    //   render: (text, record) => (
-    //     <Button
-    //       onClick={() => handleDelete(record.id)}
-    //       style={{ fontSize: "12px" }}
-    //       className="hover:cursor-pointer bg-red-500 text-white"
-    //     >
-    //       Delete
-    //     </Button>
-    //   ),
-    // },
+
     {
       title: "Action/Roles",
       dataIndex: "action",
@@ -455,20 +441,7 @@ function FinancialList() {
         </Tooltip>
       ),
     },
-    // {
-    //   title: "Action",
-    //   dataIndex: "action",
-    //   key: "action",
-    //   render: (text, record) => (
-    //     <Button
-    //       onClick={() => handleDelete(record.id)}
-    //       style={{ fontSize: "12px" }}
-    //       className="hover:cursor-pointer bg-red-500 text-white"
-    //     >
-    //       Delete
-    //     </Button>
-    //   ),
-    // },
+
     {
       title: "Action/Roles",
       dataIndex: "action",
@@ -598,11 +571,7 @@ function FinancialList() {
 
   const [isPricingOpen, setIsPricingOpen] = useState(false); // State để kiểm soát modal Pricing
   const handleClickAddNew = () => {
-    // if (!needPremium) {
     setIsAddNewModalOpen(true);
-    // } else {
-    //   setIsPricingOpen(true);
-    // }
   };
 
   const confirmAddNew = async () => {
@@ -814,8 +783,6 @@ function FinancialList() {
         >
           <div className="p-4 border-gray-300 border-dashed rounded-md darkBorderGray min-h-[96vh]">
             <main className="w-full min-h-[92.5vh]">
-              <AlertMsg />
-
               {isDeleteModalOpen && (
                 <Modal
                   title="Confirm Delete"

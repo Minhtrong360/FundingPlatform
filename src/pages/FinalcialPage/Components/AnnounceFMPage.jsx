@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import apiService from "../app/apiService";
-import { useAuth } from "../context/AuthContext";
-import { supabase } from "../supabase";
-import LoadingButtonClick from "./LoadingButtonClick";
 import { message } from "antd";
+import { useAuth } from "../../../context/AuthContext";
+import { supabase } from "../../../supabase";
+import apiService from "../../../app/apiService";
+import LoadingButtonClick from "../../../components/LoadingButtonClick";
 
-const AnnouncePage = ({
+const AnnounceFMPage = ({
   title,
   announce,
   describe,
@@ -33,7 +33,7 @@ const AnnouncePage = ({
         if (id) {
           // Kiểm tra xem project có tồn tại không
           const { data, error } = await supabase
-            .from("projects")
+            .from("finance")
             .select("*")
             .match({ id: id })
             .single();
@@ -144,4 +144,4 @@ const AnnouncePage = ({
   );
 };
 
-export default AnnouncePage;
+export default AnnounceFMPage;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
-// import { toast } from "react-toastify";
+
 // import PricingSection from "../Home/Pricing";
 import ReactModal from "react-modal";
 import Spinner from "../../components/Spinner";
@@ -19,8 +19,7 @@ const Modal = ({
   setFileName,
   isPublic,
   setIsPublic,
-  currentUser,
-  setIsPricingOpen,
+
   isPrivateDisabled,
 }) => {
   if (!isOpen) {

@@ -1,32 +1,22 @@
 import { useState, useEffect } from "react";
-import Modal from "react-modal";
 import {
   BlockNoteView,
   createReactBlockSpec,
-  getDefaultReactSlashMenuItems,
   useBlockNote,
 } from "@blocknote/react";
 import "@blocknote/core/style.css";
-
-import { useNavigate } from "react-router-dom";
 
 import {
   defaultBlockSchema,
   defaultBlockSpecs,
   defaultProps,
 } from "@blocknote/core";
-import { YoutubeOutlined } from "@ant-design/icons";
-
-// import { toast } from "react-toastify";
 
 import { message } from "antd";
-import ReactModal from "react-modal";
 import { supabase } from "../../../supabase";
 import LoadingButtonClick from "../../../components/LoadingButtonClick";
 
 export default function Sample() {
-  const [blocks, setBlocks] = useState([]);
-
   const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
 
   const id = "3ec3f142-f33c-4977-befd-30d4ce2b764d";
@@ -183,11 +173,6 @@ export default function Sample() {
   const editor = useBlockNote({
     blockSpecs: blockSpecs,
     uploadFile: uploadToCustomDatabase,
-
-    onEditorContentChange: function (editor) {
-      setBlocks(editor.topLevelBlocks);
-      // setIsSaved(false); // Đánh dấu là chưa lưu khi có sự thay đổi
-    },
   });
 
   // Function to handle inserting YouTube Link block

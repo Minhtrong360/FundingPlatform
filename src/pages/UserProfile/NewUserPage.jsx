@@ -3,7 +3,6 @@ import { Avatar, Card, Modal, Tooltip, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
-// import { toast } from "react-toastify";
 
 import InputField from "../../components/InputField";
 

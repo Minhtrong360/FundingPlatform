@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Joyride, { STATUS, CallBackProps, Step } from "react-joyride";
-import {QuestionCircleOutlined } from "@ant-design/icons";
+import Joyride from "react-joyride";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 function TourComponent() {
   const [isTourRunning, setIsTourRunning] = useState(false);
   const [activeTab, setActiveTab] = useState("customer");
@@ -82,9 +82,9 @@ function TourComponent() {
     <div className="flex items-center justify-center mt-4">
       <div className="rounded-lg bg-blue-600 text-white shadow-lg p-4 mr-4">
         <button onClick={startTour}>
-      <QuestionCircleOutlined />
-      </button>
-       </div> 
+          <QuestionCircleOutlined />
+        </button>
+      </div>
       <div className="w-2/3 rounded-lg bg-white shadow-lg p-4 ">
         <nav className="bg-gray-800 p-4">
           <div className="flex items-center justify-between">
@@ -142,7 +142,6 @@ function TourComponent() {
           showSkipButton
           showProgress
           callback={handleTourStatusChange}
-          
         />
       </div>
     </div>

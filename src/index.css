@@ -270,7 +270,6 @@ code {
 .ant-carousel .slick-next {
   color: unset;
   font-size: unset;
- 
 }
 
 .ant-carousel .slick-prev:hover,
@@ -278,4 +277,20 @@ code {
 .ant-carousel .slick-prev:focus,
 .ant-carousel .slick-next:focus {
   color: unset;
+}
+
+* {
+  font-family: "Sora", sans-serif !important;
+}
+
+.ant-carousel .slick-dots-bottom {
+  bottom: -24px;
+}
+
+.ant-carousel .slick-dots li {
+  background-color: gray;
+}
+
+.ant-carousel .slick-dots li.slick-active button {
+  background-color: #2563eb;
 }

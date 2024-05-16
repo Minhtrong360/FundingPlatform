@@ -1,4 +1,4 @@
-import { Button, Modal, Tooltip, message } from "antd";
+import { Modal, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../../supabase";
@@ -49,12 +49,9 @@ export default function FleaMarketDetail({
   const [isPricingOpen, setIsPricingOpen] = useState(false); // State để kiểm soát modal Pricing
 
   const handleContact = () => {
-    console.log("1");
     if (subscribed) {
-      console.log("2");
       setShowContactDetails(true);
     } else {
-      console.log("3");
       setIsPricingOpen(true);
     }
   };
@@ -113,9 +110,7 @@ export default function FleaMarketDetail({
           <h1 className="text-4xl font-bold text-gray-900 text-center">
             {fleaMarketData.name}
           </h1>
-          {/* <p className="text-gray-500 text-center">
-            New standard in coffee: Specialty coffee brewed like tea in a...
-          </p> */}
+
           <div className="mt-4">
             <div className="flex gap-2 flex-wrap justify-center">
               <span className="bg-gray-200 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">

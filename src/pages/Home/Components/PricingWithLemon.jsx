@@ -1,9 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-// import { toast } from "react-toastify";
 import { useAuth } from "../../../context/AuthContext";
-import AlertMsg from "../../../components/AlertMsg";
 import LoadingButtonClick from "../../../components/LoadingButtonClick";
 import { message } from "antd";
 
@@ -14,8 +12,8 @@ const PricingCard = ({ plan, onClick }) => {
     "Free forever",
     "01 profile (Public mode)",
     "Profile listing (Public mode)",
-    "Invite collaborators (Profile editing)",
-    "Data room file upload (Public mode)",
+    "Invite collaborators",
+    "Data room (Public mode)",
   ];
 
   const price_10 = [
@@ -71,7 +69,9 @@ const PricingCard = ({ plan, onClick }) => {
                   >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  <span className="text-gray-800 darkTextGray">{feature}</span>
+                  <span className="text-gray-800 darkTextGray text-start">
+                    {feature}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -104,7 +104,9 @@ const PricingCard = ({ plan, onClick }) => {
                   >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  <span className="text-gray-800 darkTextGray">{feature}</span>
+                  <span className="text-gray-800 darkTextGray text-start">
+                    {feature}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -135,7 +137,9 @@ const PricingCard = ({ plan, onClick }) => {
                   >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  <span className="text-gray-800 darkTextGray">{feature}</span>
+                  <span className="text-gray-800 darkTextGray text-start">
+                    {feature}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -229,7 +233,6 @@ const PricingWithLemon = () => {
 
   return (
     <div className="max-w-[85rem] mx-auto px-3 py-20 sm:px-6 lg:px-8 lg:py-14 md:mt-28">
-      <AlertMsg />
       <LoadingButtonClick isLoading={isLoading} />
       <div className="text-center mb-10 lg:mb-14">
         <h2

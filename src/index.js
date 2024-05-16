@@ -4,27 +4,17 @@ import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import Router from "./router/Router.jsx";
-// import { Elements } from "@stripe/react-stripe-js";
 import AuthProvider from "./context/AuthContext.jsx";
-// import { loadStripe } from "@stripe/stripe-js";
-import ImageCropProvider from "./components/cropImage/ImageDropProvider.jsx";
 import { Provider } from "react-redux";
 import store from "./app/store.jsx";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-// const stripePromise = loadStripe(process.env.REACT_APP_PUBLISHABLE_KEY);
 root.render(
   <Provider store={store}>
     <AuthProvider>
-      {/* <Elements stripe={stripePromise}> */}
       <BrowserRouter>
-        {/* <ThemeProvider> */}
-        <ImageCropProvider>
-          <Router />
-        </ImageCropProvider>
-        {/* </ThemeProvider> */}
+        <Router />
       </BrowserRouter>
-      {/* </Elements> */}
     </AuthProvider>
   </Provider>
 );

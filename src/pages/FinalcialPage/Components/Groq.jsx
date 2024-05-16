@@ -11,7 +11,7 @@
 //       console.log("Input sent to backend:", JSON.stringify({messages}));
 //       // Create a new message object for the user input
 //       const newMessage = { role: "user", content: input };
-    
+
 //     // Update the messages state by adding the new message
 //       setMessages([...messages, newMessage]);
 
@@ -78,11 +78,8 @@
 
 // export default Groq;
 
-
-
 // import React, { useState, useEffect } from "react";
 // import { Input, Button } from "antd";
-
 
 // const { TextArea } = Input;
 
@@ -146,68 +143,73 @@
 
 //////////////
 ///////////////////////////
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useRef } from "react";
+import { Button, Input } from "antd";
 
-function PF() {
+const { TextArea } = Input;
+
+const DF = () => {
   const [messages, setMessages] = useState([]);
-  const [inputText, setInputText] = useState('');
-  let eventSource = null;
+  const [inputValue, setInputValue] = useState("");
+  const eventSourceRef = useRef(null);
 
-  useEffect(() => { 
-    const fetchData = async () => {
-      try {
-        await axios.post('http://localhost:8000/stream', { messages });
-        const eventSource = new EventSource('http://localhost:8000/stream');
-        
-        eventSource.onmessage = (event) => {
-          const data = JSON.parse(event.data);
-          setMessages(prevMessages => [...prevMessages, { role: 'assistant', content: data }]);
-        };
+  const handleSend = async () => {
+    const newMessages = [...messages, { role: "user", content: inputValue }];
+    setMessages(newMessages);
+    setInputValue("");
 
-        eventSource.onerror = () => {
-          eventSource.close();
-        };
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
+    if (eventSourceRef.current) {
+      eventSourceRef.current.close();
+    }
+
+    const response = await fetch("http://localhost:8000/stream", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ messages: newMessages }),
+    });
+
+    eventSourceRef.current = new EventSource("http://localhost:8000/stream");
+    eventSourceRef.current.onmessage = (event) => {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { role: "assistant", content: event.data },
+      ]);
     };
-
-    fetchData();
-
-    return () => {
-      // Clean up event source
-      if (eventSource) {
-        eventSource.close();
-      }
-    };
-  }, [messages]);
-
-  const handleInputChange = (e) => {
-    setInputText(e.target.value);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessages(prevMessages => [...prevMessages, { role: 'user', content: inputText }]);
-    setInputText('');
   };
 
   return (
-    <div>
-      <div>
-        {messages.map((message, index) => (
-          <div key={index}>
-            {message.role === 'user' ? <p>User: {message.content}</p> : <p>Assistant: {message.content}</p>}
-          </div>
-        ))}
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-md p-4 bg-white rounded shadow-md">
+        <div className="mb-4">
+          <TextArea
+            rows={4}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="Type a message"
+          />
+        </div>
+        <div className="flex justify-end mb-4">
+          <Button type="primary" onClick={handleSend}>
+            Send
+          </Button>
+        </div>
+        <div className="border-t border-gray-200 pt-4">
+          {messages.map((message, index) => (
+            <div
+              key={index}
+              className={`p-2 rounded mb-2 shadow-sm ${
+                message.role === "user" ? "bg-blue-100" : "bg-gray-100"
+              }`}
+            >
+              {message.content}
+            </div>
+          ))}
+        </div>
       </div>
-      <form onSubmit={handleSubmit}>
-        <input type="text" value={inputText} onChange={handleInputChange} />
-        <button type="submit">Send</button>
-      </form>
     </div>
   );
-}
+};
 
-export default PF;
+export default DF;

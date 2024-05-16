@@ -1,19 +1,4 @@
-import { useNavigate } from "react-router-dom";
-import Card from "./Card";
-
-import { useAuth } from "../../../context/AuthContext";
-
 const HeroCard = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const handleClick = () => {
-    if (!user) {
-      navigate("/login");
-    } else {
-      navigate("/financials");
-    }
-  };
-
   const handlePricingClick = () => {
     // Lấy đối tượng ref của phần tử "Financial Product" từ Home component
     const financialProductRef = document.getElementById("pricing"); // Đặt ID tương ứng với ref của bạn

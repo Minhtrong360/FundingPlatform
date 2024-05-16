@@ -17,6 +17,7 @@ import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
+import { useAuth } from "../../../context/AuthContext";
 
 const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const dispatch = useDispatch();
@@ -334,7 +335,6 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
   const handleSave = () => {
     setIsSaved(true);
-    message.success("Data saved successfully!");
   };
 
   const tableData = transformLoanDataForTable(
@@ -344,13 +344,11 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   );
 
   const { id } = useParams();
+  const { user } = useAuth();
   useEffect(() => {
     const saveData = async () => {
       try {
         if (isSaved) {
-          dispatch(setLoanInputs(tempLoanInputs));
-          dispatch(setLoanTableData(tableData));
-
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
             .select("*")
@@ -360,6 +358,18 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           }
 
           if (existingData && existingData.length > 0) {
+            const { user_email, collabs } = existingData[0];
+
+            // Check if user.email matches user_email or is included in collabs
+            if (user.email !== user_email && !collabs?.includes(user.email)) {
+              message.error(
+                "You do not have permission to update this record."
+              );
+              return;
+            }
+
+            dispatch(setLoanInputs(tempLoanInputs));
+            dispatch(setLoanTableData(tableData));
             const newInputData = JSON.parse(existingData[0].inputData);
 
             newInputData.loanInputs = tempLoanInputs;
@@ -372,6 +382,8 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
             if (updateError) {
               throw updateError;
+            } else {
+              message.success("Data saved successfully!");
             }
           }
         }

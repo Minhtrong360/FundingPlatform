@@ -41,6 +41,7 @@ import {
   DeleteOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons";
+import { useAuth } from "../../../context/AuthContext";
 
 const SalesSection = ({
   numberOfMonths,
@@ -136,21 +137,12 @@ const SalesSection = ({
   ]);
 
   const { id } = useParams();
+  const { user } = useAuth();
 
   useEffect(() => {
     if (isSaved) {
       const saveData = async () => {
         try {
-          dispatch(setChannelInputs(tempChannelInputs));
-          dispatch(setRevenueData(tempRevenueData));
-          dispatch(setRevenueDeductionData(tempRevenueDeductionData));
-          dispatch(setCogsData(tempCogsData));
-          dispatch(setNetRevenueData(tempNetRevenueData));
-          dispatch(setGrossProfitData(tempGrossProfitData));
-
-          const sales = calculateYearlySales(tempRevenueData);
-          dispatch(setYearlySales(sales));
-
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
             .select("*")
@@ -161,6 +153,26 @@ const SalesSection = ({
           }
 
           if (existingData && existingData.length > 0) {
+            const { user_email, collabs } = existingData[0];
+
+            // Check if user.email matches user_email or is included in collabs
+            if (user.email !== user_email && !collabs?.includes(user.email)) {
+              message.error(
+                "You do not have permission to update this record."
+              );
+              return;
+            }
+
+            dispatch(setChannelInputs(tempChannelInputs));
+            dispatch(setRevenueData(tempRevenueData));
+            dispatch(setRevenueDeductionData(tempRevenueDeductionData));
+            dispatch(setCogsData(tempCogsData));
+            dispatch(setNetRevenueData(tempNetRevenueData));
+            dispatch(setGrossProfitData(tempGrossProfitData));
+
+            const sales = calculateYearlySales(tempRevenueData);
+            dispatch(setYearlySales(sales));
+
             const newInputData = JSON.parse(existingData[0].inputData);
             newInputData.channelInputs = tempChannelInputs;
             newInputData.yearlySales = sales;

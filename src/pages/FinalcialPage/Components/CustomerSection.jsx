@@ -42,6 +42,7 @@ import {
   PlusCircleOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
+import { useAuth } from "../../../context/AuthContext";
 
 const CustomerSection = React.memo(
   ({
@@ -218,6 +219,7 @@ const CustomerSection = React.memo(
     const channelInputs = useSelector((state) => state.sales.channelInputs);
 
     const { id } = useParams();
+    const { user } = useAuth();
 
     // Define the useEffect hook
     useEffect(() => {
@@ -239,19 +241,6 @@ const CustomerSection = React.memo(
               return;
             }
 
-            dispatch(setCustomerInputs(tempCustomerInputs));
-            const { revenueByChannelAndProduct } = dispatch(
-              calculateChannelRevenue(
-                numberOfMonths,
-                tempCustomerGrowthData,
-                tempCustomerInputs,
-                channelInputs
-              )
-            );
-
-            const yearlySale = calculateYearlySales(revenueByChannelAndProduct);
-            dispatch(setYearlySales(yearlySale));
-
             const { data: existingData, error: selectError } = await supabase
               .from("finance")
               .select("*")
@@ -261,7 +250,32 @@ const CustomerSection = React.memo(
             }
 
             if (existingData && existingData.length > 0) {
-              const newInputData = JSON.parse(existingData[0].inputData);
+              const { user_email, collabs, inputData } = existingData[0];
+
+              // Check if user.email matches user_email or is included in collabs
+              if (user.email !== user_email && !collabs?.includes(user.email)) {
+                message.error(
+                  "You do not have permission to update this record."
+                );
+                return;
+              }
+
+              dispatch(setCustomerInputs(tempCustomerInputs));
+              const { revenueByChannelAndProduct } = dispatch(
+                calculateChannelRevenue(
+                  numberOfMonths,
+                  tempCustomerGrowthData,
+                  tempCustomerInputs,
+                  channelInputs
+                )
+              );
+
+              const yearlySale = calculateYearlySales(
+                revenueByChannelAndProduct
+              );
+              dispatch(setYearlySales(yearlySale));
+
+              const newInputData = JSON.parse(inputData);
 
               const calculatedData = calculateCustomerGrowth(
                 tempCustomerInputs,
@@ -290,7 +304,7 @@ const CustomerSection = React.memo(
             }
           }
         } catch (error) {
-          message.error(error);
+          message.error(error.message);
         } finally {
           setIsSaved(false);
         }

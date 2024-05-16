@@ -17,6 +17,7 @@ import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
+import { useAuth } from "../../../context/AuthContext";
 
 const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const { investmentInputs, investmentData } = useSelector(
@@ -360,22 +361,14 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
   const handleSave = () => {
     setIsSaved(true);
-    message.success("Data saved successfully!");
   };
   const { id } = useParams();
+
+  const { user } = useAuth();
   useEffect(() => {
     const saveData = async () => {
       try {
         if (isSaved) {
-          dispatch(setInvestmentInputs(tempInvestmentInputs));
-          const tableData = transformInvestmentDataForTable(
-            tempInvestmentInputs,
-            renderInvestmentForm,
-            tempInvestmentData,
-            numberOfMonths
-          );
-          dispatch(setInvestmentTableData(tableData));
-
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
             .select("*")
@@ -385,6 +378,25 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           }
 
           if (existingData && existingData.length > 0) {
+            const { user_email, collabs } = existingData[0];
+
+            // Check if user.email matches user_email or is included in collabs
+            if (user.email !== user_email && !collabs?.includes(user.email)) {
+              message.error(
+                "You do not have permission to update this record."
+              );
+              return;
+            }
+
+            dispatch(setInvestmentInputs(tempInvestmentInputs));
+            const tableData = transformInvestmentDataForTable(
+              tempInvestmentInputs,
+              renderInvestmentForm,
+              tempInvestmentData,
+              numberOfMonths
+            );
+            dispatch(setInvestmentTableData(tableData));
+
             const newInputData = JSON.parse(existingData[0].inputData);
 
             newInputData.investmentInputs = tempInvestmentInputs;
@@ -397,6 +409,8 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
             if (updateError) {
               throw updateError;
+            } else {
+              message.success("Data saved successfully!");
             }
           }
         }

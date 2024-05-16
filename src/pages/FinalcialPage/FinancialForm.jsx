@@ -732,7 +732,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         const financeRecord = existingData[0];
 
         // Kiểm tra nếu tác giả của dữ liệu tài chính trùng với userId
-        if (financeRecord.user_id === user.id) {
+        if (
+          financeRecord.user_id === user.id ||
+          financeRecord.collabs?.includes(user.email)
+        ) {
           // Cập nhật bản ghi hiện có
 
           const { error: updateError } = await supabase

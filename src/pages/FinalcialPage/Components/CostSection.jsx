@@ -24,6 +24,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { useAuth } from "../../../context/AuthContext";
 
 const CostSection = ({
   numberOfMonths,
@@ -269,17 +270,15 @@ const CostSection = ({
   // Function to handle save
   const handleSave = () => {
     setIsSaved(true);
-    message.success("Data saved successfully!");
   };
 
   // useEffect to update cost inputs when data is saved
   const { id } = useParams();
+  const { user } = useAuth();
   useEffect(() => {
     const saveData = async () => {
       try {
         if (isSaved) {
-          dispatch(setCostInputs(tempCostInput));
-
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
             .select("*")
@@ -289,6 +288,18 @@ const CostSection = ({
           }
 
           if (existingData && existingData.length > 0) {
+            const { user_email, collabs } = existingData[0];
+
+            // Check if user.email matches user_email or is included in collabs
+            if (user.email !== user_email && !collabs?.includes(user.email)) {
+              message.error(
+                "You do not have permission to update this record."
+              );
+              return;
+            }
+
+            dispatch(setCostInputs(tempCostInput));
+
             const newInputData = JSON.parse(existingData[0].inputData);
 
             newInputData.costInputs = tempCostInput;
@@ -301,6 +312,8 @@ const CostSection = ({
 
             if (updateError) {
               throw updateError;
+            } else {
+              message.success("Data saved successfully!");
             }
           }
         }

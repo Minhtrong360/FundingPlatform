@@ -515,8 +515,6 @@ function CashFlowSection({ numberOfMonths }) {
     dispatch(setCutMonth(Number(e.target.value)));
   };
 
-  console.log(cutMonth);
-
   const divideMonthsIntoYearsForCashFlow = () => {
     const years = [];
     const startingMonthIndex = startMonth - 1;

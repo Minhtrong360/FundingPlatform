@@ -76,6 +76,7 @@ const CustomChart = ({
       },
     },
     yaxis: {
+      min: 0,
       axisBorder: { show: true },
       labels: {
         formatter: (val) => formatNumber(Math.floor(val)),

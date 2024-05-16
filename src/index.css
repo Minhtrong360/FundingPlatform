@@ -282,3 +282,15 @@ code {
 * {
   font-family: "Sora", sans-serif !important;
 }
+
+.ant-carousel .slick-dots-bottom {
+  bottom: -24px;
+}
+
+.ant-carousel .slick-dots li {
+  background-color: gray;
+}
+
+.ant-carousel .slick-dots li.slick-active button {
+  background-color: #2563eb;
+}

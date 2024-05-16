@@ -12,8 +12,8 @@ const PricingCard = ({ plan, onClick }) => {
     "Free forever",
     "01 profile (Public mode)",
     "Profile listing (Public mode)",
-    "Invite collaborators (Profile editing)",
-    "Data room file upload (Public mode)",
+    "Invite collaborators",
+    "Data room (Public mode)",
   ];
 
   const price_10 = [
@@ -69,7 +69,9 @@ const PricingCard = ({ plan, onClick }) => {
                   >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  <span className="text-gray-800 darkTextGray">{feature}</span>
+                  <span className="text-gray-800 darkTextGray text-start">
+                    {feature}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -102,7 +104,9 @@ const PricingCard = ({ plan, onClick }) => {
                   >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  <span className="text-gray-800 darkTextGray">{feature}</span>
+                  <span className="text-gray-800 darkTextGray text-start">
+                    {feature}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -133,7 +137,9 @@ const PricingCard = ({ plan, onClick }) => {
                   >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  <span className="text-gray-800 darkTextGray">{feature}</span>
+                  <span className="text-gray-800 darkTextGray text-start">
+                    {feature}
+                  </span>
                 </li>
               ))}
             </ul>

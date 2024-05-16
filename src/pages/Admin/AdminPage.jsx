@@ -341,7 +341,7 @@ function Dashboard({ dataSource }) {
                 stroke:
                   chart.type === "bar"
                     ? {
-                        curve: "smooth",
+                        curve: "straight",
                         width: 1,
                       }
                     : {},

@@ -502,7 +502,7 @@ const SalesSection = ({
                   chart: { animations: { enabled: false } },
                   ...chart.options,
                   xaxis: { ...chart.options.xaxis },
-                  stroke: { width: 1 },
+                  stroke: { width: 1, curve: "straight" },
                 }}
                 series={chart.series}
                 type="area"

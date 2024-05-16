@@ -744,7 +744,8 @@ const CustomerSection = React.memo(
                       // tickAmount: 12, // Set the number of ticks on the x-axis to 12
                     },
                     stroke: {
-                      width: 1, // Set the stroke width to 1
+                      width: 1,
+                      curve: "straight", // Set the stroke width to 1
                     },
                   }}
                   series={chart.series}
@@ -767,7 +768,8 @@ const CustomerSection = React.memo(
                       // tickAmount: 12, // Set the number of ticks on the x-axis to 12
                     },
                     stroke: {
-                      width: 1, // Set the stroke width to 1
+                      width: 1,
+                      curve: "straight", // Set the stroke width to 1
                     },
                   }}
                   series={chart.series}

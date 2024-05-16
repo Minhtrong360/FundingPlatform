@@ -231,7 +231,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         fontFamily: "Sora, sans-serif",
       },
       dataLabels: { enabled: false },
-      stroke: { width: 1 },
+      stroke: { width: 1, curve: "straight" },
       // markers: { size: 1 },
     },
     series: [],
@@ -494,7 +494,8 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                     // tickAmount: 6, // Ensure x-axis has 12 ticks
                   },
                   stroke: {
-                    width: 1, // Set the stroke width to 1
+                    width: 1,
+                    curve: "straight", // Set the stroke width to 1
                   },
                 }}
                 series={series.series}

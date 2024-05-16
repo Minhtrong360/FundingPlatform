@@ -534,9 +534,7 @@ const AllChartSections = ({
                     return `${months[monthIndex]}/${year}`;
                   }),
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               height={300}
             />
@@ -569,9 +567,7 @@ const AllChartSections = ({
                     return `${months[monthIndex]}/${year}`;
                   }),
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={revenue.series}
               type="area"
@@ -598,9 +594,7 @@ const AllChartSections = ({
                 xaxis: {
                   ...revenue.options.xaxis,
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={[{ data: totalCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
               type="area"
@@ -627,9 +621,7 @@ const AllChartSections = ({
                 xaxis: {
                   ...revenue.options.xaxis,
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={[{ data: totalPersonnelCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
               type="area"
@@ -656,9 +648,7 @@ const AllChartSections = ({
                 xaxis: {
                   ...revenue.options.xaxis,
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={[{ data: bsTotalInvestmentValues, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
               type="area"
@@ -707,9 +697,7 @@ const AllChartSections = ({
                     },
                   },
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={[{ data: totalLoanData, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
               type="area"
@@ -736,9 +724,7 @@ const AllChartSections = ({
                 xaxis: {
                   ...revenue.options.xaxis,
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={[{ data: bsTotalFundingValues, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
               type="bar"

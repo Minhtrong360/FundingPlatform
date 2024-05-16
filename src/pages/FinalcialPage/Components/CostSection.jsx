@@ -230,7 +230,7 @@ const CostSection = ({
       },
       // fill: { type: "solid" },
       dataLabels: { enabled: false },
-      stroke: { curve: "smooth", width: 1 },
+      stroke: { curve: "straight", width: 1 },
     },
     series: [],
   });
@@ -433,9 +433,7 @@ const CostSection = ({
                   ...costChart.options.xaxis,
                   // tickAmount: 6, // Set the number of ticks on the x-axis to 12
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 2
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={costChart.series}
               type="area"

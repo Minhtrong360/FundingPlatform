@@ -194,7 +194,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       },
 
       dataLabels: { enabled: false },
-      stroke: { width: 1 },
+      stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
     },
     series: [],
   });
@@ -464,6 +464,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                   },
                   stroke: {
                     width: 1, // Set the stroke width to 1
+                    curve: "straight", // Set the stroke curve to straight
                   },
                 }}
                 series={series.series}

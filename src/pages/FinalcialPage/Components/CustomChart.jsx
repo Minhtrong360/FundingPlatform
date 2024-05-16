@@ -92,7 +92,7 @@ const CustomChart = ({
       fontFamily: "Sora, sans-serif",
     },
 
-    stroke: { curve: "smooth", width: 1 },
+    stroke: { curve: "straight", width: 1 },
     dataLabels: { enabled: false },
   };
 

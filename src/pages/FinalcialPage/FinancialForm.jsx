@@ -57,7 +57,6 @@ import { setFundraisingInputs } from "../../features/FundraisingSlice";
 import CashFlowSection from "./Components/CashFlowSection";
 import { Button, FloatButton, Modal, message } from "antd";
 import { useParams } from "react-router-dom";
-import AnnouncePage from "../../components/AnnouncePage";
 import AnnounceFMPage from "./Components/AnnounceFMPage";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
@@ -66,6 +65,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [spinning, setSpinning] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [temIsLoading, setTemIsLoading] = useState(true);
+
   //DurationSection
   const {
     selectedDuration,
@@ -423,18 +423,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
     return data.length > 0 ? data : null;
   };
-  const [viewError, setViewError] = useState(false);
-
-  const checkPermission = (projectData, userData) => {
-    if (
-      projectData.user_id !== user?.id &&
-      !projectData.invited_user?.includes(user.email) &&
-      !projectData.collabs?.includes(user.email)
-      //  &&      userData?.admin !== true
-    ) {
-      setViewError(true);
-    }
-  };
 
   useEffect(() => {
     setTemIsLoading(true);
@@ -652,11 +640,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             ]
           )
         );
-      }
-      // Check permissions after loading data
-      const projectData = dataFetched[0];
-      if (projectData) {
-        checkPermission(projectData, currentUser);
       }
 
       setTemIsLoading(false);
@@ -902,20 +885,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   };
 
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
-
-  if (viewError) {
-    return (
-      <div>
-        <LoadingButtonClick isLoading={isLoading} />
-        <AnnounceFMPage
-          title="Permission Required"
-          announce="This is a private project."
-          describe="Send a request to the project owner to get access."
-          sendRequest={true}
-        />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen">

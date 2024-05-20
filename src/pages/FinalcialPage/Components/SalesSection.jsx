@@ -439,7 +439,16 @@ const SalesSection = ({
     tempGrossProfitData,
   ]);
 
+  const [daysOptions, setDaysOptions] = useState([15, 30, 45, 60, 90]);
+
   const handleSave = () => {
+    const updatedChannelInputs = tempChannelInputs.map((input) => {
+      if (!daysOptions.includes(input.daysGetPaid)) {
+        input.daysGetPaid = daysOptions[0];
+      }
+      return input;
+    });
+    setTempChannelInputs(updatedChannelInputs);
     setIsSaved(true);
   };
 
@@ -464,12 +473,72 @@ const SalesSection = ({
         align: "right",
         onCell: (record) => ({
           style: {
-            borderRight: "1px solid #f0f0f0", // Add border right style
+            borderRight: "1px solid #f0f0f0",
           },
         }),
       };
     }),
   ];
+  
+  
+
+  const calculateReceivablesAndCashInflows = (channelInputs, revenueData, daysOptions) => {
+    const receivables = Array(numberOfMonths).fill(0);
+    const cashInflows = Array(numberOfMonths).fill(0);
+  
+    channelInputs.forEach((input) => {
+      const { id, daysGetPaid } = input;
+  
+      if (revenueData[id] && Array.isArray(revenueData[id])) {
+        revenueData[id].forEach((amount, index) => {
+          const receivableMonth = index + Math.ceil(daysGetPaid / 30);
+          if (receivableMonth < numberOfMonths) {
+            receivables[receivableMonth] += amount;
+          }
+  
+          const cashInflowMonth = index + Math.ceil(daysGetPaid / 30) + 1;
+          if (cashInflowMonth < numberOfMonths) {
+            cashInflows[cashInflowMonth] += amount;
+          }
+        });
+      }
+    });
+  
+    return { receivables, cashInflows };
+  };
+  
+  useEffect(() => {
+    const { receivables, cashInflows } = calculateReceivablesAndCashInflows(tempChannelInputs, tempRevenueData, daysOptions);
+  
+    const updatedRevenueTableData = [...revenueTableData];
+  
+    updatedRevenueTableData.push({
+      key: 'receivables',
+      channelName: 'Account Receivables',
+      ...receivables.reduce((acc, amount, idx) => {
+        acc[`month${idx + 1}`] = amount;
+        return acc;
+      }, {}),
+    });
+  
+    updatedRevenueTableData.push({
+      key: 'cashInflows',
+      channelName: 'Cash Inflows',
+      ...cashInflows.reduce((acc, amount, idx) => {
+        acc[`month${idx + 1}`] = amount;
+        return acc;
+      }, {}),
+    });
+  
+    dispatch(setRevenueTableData(updatedRevenueTableData));
+  }, [
+    tempRevenueData,
+    tempChannelInputs,
+    numberOfMonths,
+    daysOptions,
+    dispatch,
+  ]);
+  
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
@@ -551,16 +620,16 @@ const SalesSection = ({
 
         <h3 className="text-lg font-semibold my-4">Revenue by Product</h3>
         <Table
-          className="overflow-auto my-8 rounded-md bg-white"
-          size="small"
-          dataSource={revenueTableData}
-          columns={revenueColumns}
-          pagination={false}
-          bordered
-          rowClassName={(record) =>
-            record.key === record.channelName ? "font-bold" : ""
-          }
-        />
+    className="overflow-auto my-8 rounded-md bg-white"
+    size="small"
+    dataSource={revenueTableData}
+    columns={revenueColumns}
+    pagination={false}
+    bordered
+    rowClassName={(record) =>
+      record.key === 'receivables' || record.key === 'cashInflows' ? 'font-bold' : ''
+    }
+  />
       </div>
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
@@ -739,27 +808,26 @@ const SalesSection = ({
                     Days get paid:
                   </span>
                   <Select
-                    className="border-gray-300"
-                    onValueChange={(value) =>
-                      handleChannelInputChange(input.id, "daysGetPaid", value)
-                    }
-                    value={input.daysGetPaid !== null ? input.daysGetPaid : ""}
-                    disabled
-                  >
-                    <SelectTrigger
-                      id={`select-days-get-paid-${index}`}
-                      className="border-solid border-[1px] border-gray-300"
-                    >
-                      <SelectValue placeholder="Select Days" />
-                    </SelectTrigger>
-                    <SelectContent position="popper">
-                      {[0, 15, 30, 45, 60, 75, 90, 105, 120].map((days) => (
-                        <SelectItem key={days} value={days}>
-                          {days} days
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+      className="border-gray-300"
+      onValueChange={(value) =>
+        handleChannelInputChange(input.id, "daysGetPaid", value)
+      }
+      value={input.daysGetPaid !== null ? input.daysGetPaid : ""}
+    >
+      <SelectTrigger
+        id={`select-days-get-paid-${index}`}
+        className="border-solid border-[1px] border-gray-300"
+      >
+        <SelectValue placeholder="Select Days" />
+      </SelectTrigger>
+      <SelectContent position="popper">
+        {daysOptions.map((days) => (
+          <SelectItem key={days} value={days}>
+            {days} days
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
                 </div>
               </div>
             ))}

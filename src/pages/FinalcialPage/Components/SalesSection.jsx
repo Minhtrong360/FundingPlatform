@@ -222,11 +222,12 @@ const SalesSection = ({
       cogsPercentage: 30,
       selectedChannel: channelNames[0],
       channelAllocation: 0.8,
-      daysGetPaid: 0,
+      daysGetPaid: 15,  // Default to 15 days
     };
     setTempChannelInputs([...tempChannelInputs, newChannel]);
     setRenderChannelForm(newId.toString());
   };
+
 
   const removeChannelInput = (id) => {
     const indexToRemove = tempChannelInputs.findIndex(
@@ -258,6 +259,9 @@ const SalesSection = ({
 
   const [chartStartMonth, setChartStartMonth] = useState(1);
   const [chartEndMonth, setChartEndMonth] = useState(6);
+
+  const [daysToGetPaid, setDaysToGetPaid] = useState(15);
+
 
   const months = [
     "01",
@@ -456,89 +460,127 @@ const SalesSection = ({
     setRenderChannelForm(e.target.value);
   };
 
-  const revenueColumns = [
-    {
-      fixed: "left",
-      title: <div>Revenue Table</div>,
-      dataIndex: "channelName",
-      key: "channelName",
-    },
-    ...Array.from({ length: numberOfMonths }, (_, i) => {
-      const monthIndex = (startingMonth + i - 1) % 12;
-      const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
-      return {
-        title: `${months[monthIndex]}/${year}`,
-        dataIndex: `month${i + 1}`,
-        key: `month${i + 1}`,
-        align: "right",
-        onCell: (record) => ({
-          style: {
-            borderRight: "1px solid #f0f0f0",
-          },
-        }),
-      };
-    }),
-  ];
+  const calculateCashInflowAndReceivables = (revenueData, daysToGetPaid) => {
+    const cashInflowData = {};
+    const receivablesData = {};
   
+    Object.entries(revenueData).forEach(([channel, data]) => {
+      cashInflowData[channel] = [];
+      receivablesData[channel] = [];
   
-
-  const calculateReceivablesAndCashInflows = (channelInputs, revenueData, daysOptions) => {
-    const receivables = Array(numberOfMonths).fill(0);
-    const cashInflows = Array(numberOfMonths).fill(0);
-  
-    channelInputs.forEach((input) => {
-      const { id, daysGetPaid } = input;
-  
-      if (revenueData[id] && Array.isArray(revenueData[id])) {
-        revenueData[id].forEach((amount, index) => {
-          const receivableMonth = index + Math.ceil(daysGetPaid / 30);
-          if (receivableMonth < numberOfMonths) {
-            receivables[receivableMonth] += amount;
-          }
-  
-          const cashInflowMonth = index + Math.ceil(daysGetPaid / 30) + 1;
-          if (cashInflowMonth < numberOfMonths) {
-            cashInflows[cashInflowMonth] += amount;
-          }
-        });
-      }
+      data?.forEach((amount, index) => {
+        if (index < daysToGetPaid / 30) {
+          cashInflowData[channel].push(0);
+          receivablesData[channel].push(amount);
+        } else {
+          cashInflowData[channel].push(amount);
+          receivablesData[channel].push(0);
+        }
+      });
     });
   
-    return { receivables, cashInflows };
+    return { cashInflowData, receivablesData };
   };
   
   useEffect(() => {
-    const { receivables, cashInflows } = calculateReceivablesAndCashInflows(tempChannelInputs, tempRevenueData, daysOptions);
+    if (tempRevenueData) {
+      const { cashInflowData, receivablesData } = calculateCashInflowAndReceivables(
+        tempRevenueData,
+        daysToGetPaid
+      );
   
-    const updatedRevenueTableData = [...revenueTableData];
+      setRevenue((prevState) => ({
+        ...prevState,
+        series: [
+          ...prevState.series,
+          ...Object.entries(cashInflowData).map(([channel, data]) => ({
+            name: `${channel} Cash Inflow`,
+            data,
+          })),
+          ...Object.entries(receivablesData).map(([channel, data]) => ({
+            name: `${channel} Receivables`,
+            data,
+          })),
+        ],
+      }));
+    }
+  }, [tempRevenueData, daysToGetPaid]);
+  useEffect(() => {
+    const { cashInflowData, receivablesData } = calculateCashInflowAndReceivables(
+      tempRevenueData,
+      daysToGetPaid
+    );
   
-    updatedRevenueTableData.push({
-      key: 'receivables',
-      channelName: 'Account Receivables',
-      ...receivables.reduce((acc, amount, idx) => {
-        acc[`month${idx + 1}`] = amount;
-        return acc;
-      }, {}),
-    });
-  
-    updatedRevenueTableData.push({
-      key: 'cashInflows',
-      channelName: 'Cash Inflows',
-      ...cashInflows.reduce((acc, amount, idx) => {
-        acc[`month${idx + 1}`] = amount;
-        return acc;
-      }, {}),
-    });
-  
-    dispatch(setRevenueTableData(updatedRevenueTableData));
-  }, [
-    tempRevenueData,
-    tempChannelInputs,
-    numberOfMonths,
-    daysOptions,
-    dispatch,
-  ]);
-  
+    setRevenue((prevState) => ({
+      ...prevState,
+      series: [
+        ...prevState.series,
+        ...Object.entries(cashInflowData).map(([channel, data]) => ({
+          name: `${channel} Cash Inflow`,
+          data,
+        })),
+        ...Object.entries(receivablesData).map(([channel, data]) => ({
+          name: `${channel} Receivables`,
+          data,
+        })),
+      ],
+    }));
+  }, [tempRevenueData, daysToGetPaid]);
+
+
+
+  const revenueColumns = [
+  {
+    fixed: "left",
+    title: <div>Revenue Table</div>,
+    dataIndex: "channelName",
+    key: "channelName",
+  },
+  ...Array.from({ length: numberOfMonths }, (_, i) => {
+    const monthIndex = (startingMonth + i - 1) % 12;
+    const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+    return {
+      title: `${months[monthIndex]}/${year}`,
+      dataIndex: `month${i + 1}`,
+      key: `month${i + 1}`,
+      align: "right",
+      onCell: (record) => ({
+        style: {
+          borderRight: "1px solid #f0f0f0",
+        },
+      }),
+    };
+  }),
+  {
+    title: "Cash Inflow",
+    dataIndex: "cashInflow",
+    key: "cashInflow",
+    align: "right",
+  },
+  {
+    title: "Receivables",
+    dataIndex: "receivables",
+    key: "receivables",
+    align: "right",
+  },
+];
+
+const updatedRevenueTableData = revenueTableData.map((record) => {
+  const cashInflow = tempRevenueData[record.channelName]?.map((amount, index) =>
+    index < daysToGetPaid / 30 ? 0 : amount
+  ) || [];
+  const receivables = tempRevenueData[record.channelName]?.map((amount, index) =>
+    index < daysToGetPaid / 30 ? amount : 0
+  ) || [];
+
+  return {
+    ...record,
+    cashInflow,
+    receivables,
+  };
+});
+
+
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -627,16 +669,16 @@ const SalesSection = ({
 
         <h3 className="text-lg font-semibold my-4">Revenue by Product</h3>
         <Table
-    className="overflow-auto my-8 rounded-md bg-white"
-    size="small"
-    dataSource={revenueTableData}
-    columns={revenueColumns}
-    pagination={false}
-    bordered
-    rowClassName={(record) =>
-      record.key === 'receivables' || record.key === 'cashInflows' ? 'font-bold' : ''
-    }
-  />
+          className="overflow-auto my-8 rounded-md bg-white"
+          size="small"
+          dataSource={revenueTableData}
+          columns={revenueColumns}
+          pagination={false}
+          bordered
+          rowClassName={(record) =>
+            record.key === record.channelName ? "font-bold" : ""
+          }
+        />
       </div>
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
@@ -815,26 +857,27 @@ const SalesSection = ({
                     Days get paid:
                   </span>
                   <Select
-      className="border-gray-300"
-      onValueChange={(value) =>
-        handleChannelInputChange(input.id, "daysGetPaid", value)
-      }
-      value={input.daysGetPaid !== null ? input.daysGetPaid : ""}
-    >
-      <SelectTrigger
-        id={`select-days-get-paid-${index}`}
-        className="border-solid border-[1px] border-gray-300"
-      >
-        <SelectValue placeholder="Select Days" />
-      </SelectTrigger>
-      <SelectContent position="popper">
-        {daysOptions.map((days) => (
-          <SelectItem key={days} value={days}>
-            {days} days
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+                    className="border-gray-300"
+                    onValueChange={(value) =>
+                      handleChannelInputChange(input.id, "daysGetPaid", value)
+                    }
+                    value={input.daysGetPaid !== null ? input.daysGetPaid : ""}
+                    disabled
+                  >
+                    <SelectTrigger
+                      id={`select-days-get-paid-${index}`}
+                      className="border-solid border-[1px] border-gray-300"
+                    >
+                      <SelectValue placeholder="Select Days" />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      {[0, 15, 30, 45, 60, 75, 90, 105, 120].map((days) => (
+                        <SelectItem key={days} value={days}>
+                          {days} days
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             ))}
@@ -1121,33 +1164,26 @@ const SalesSection = ({
                         Days get paid:
                       </span>
                       <Select
-                        className="border-gray-300"
-                        onValueChange={(value) =>
-                          handleChannelInputChange(
-                            input.id,
-                            "daysGetPaid",
-                            value
-                          )
-                        }
-                        value={
-                          input.daysGetPaid !== null ? input.daysGetPaid : ""
-                        }
-                        disabled
-                      >
-                        <SelectTrigger
-                          id={`select-days-get-paid-${index}`}
-                          className="border-solid border-[1px] border-gray-300"
-                        >
-                          <SelectValue placeholder="Select Days" />
-                        </SelectTrigger>
-                        <SelectContent position="popper">
-                          {[0, 15, 30, 45, 60, 75, 90, 105, 120].map((days) => (
-                            <SelectItem key={days} value={days}>
-                              {days} days
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+  className="border-gray-300"
+  onValueChange={(value) =>
+    handleChannelInputChange(input.id, "daysGetPaid", value)
+  }
+  value={input.daysGetPaid !== null ? input.daysGetPaid : ""}
+>
+  <SelectTrigger
+    id={`select-days-get-paid-${index}`}
+    className="border-solid border-[1px] border-gray-300"
+  >
+    <SelectValue placeholder="Select Days" />
+  </SelectTrigger>
+  <SelectContent position="popper">
+    {daysOptions.map((days) => (
+      <SelectItem key={days} value={days}>
+        {days} days
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
                     </div>
                     <div className="flex justify-end items-center">
                       <button

@@ -57,7 +57,6 @@ import { setFundraisingInputs } from "../../features/FundraisingSlice";
 import CashFlowSection from "./Components/CashFlowSection";
 import { Button, FloatButton, Modal, message } from "antd";
 import { useParams } from "react-router-dom";
-import AnnouncePage from "../../components/AnnouncePage";
 import AnnounceFMPage from "./Components/AnnounceFMPage";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
@@ -66,6 +65,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [spinning, setSpinning] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [temIsLoading, setTemIsLoading] = useState(true);
+
   //DurationSection
   const {
     selectedDuration,
@@ -423,18 +423,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
     return data.length > 0 ? data : null;
   };
-  const [viewError, setViewError] = useState(false);
-
-  const checkPermission = (projectData, userData) => {
-    if (
-      projectData.user_id !== user?.id &&
-      !projectData.invited_user?.includes(user.email) &&
-      !projectData.collabs?.includes(user.email)
-      //  &&      userData?.admin !== true
-    ) {
-      setViewError(true);
-    }
-  };
 
   useEffect(() => {
     setTemIsLoading(true);
@@ -463,200 +451,19 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         );
         dispatch(setStartYear(inputData.startYear || new Date().getFullYear()));
 
+        dispatch(setCustomerInputs(inputData.customerInputs || customerInputs));
+        dispatch(setChannelInputs(inputData.channelInputs || channelInputs));
+        dispatch(setCostInputs(inputData.costInputs || costInputs));
         dispatch(
-          setCustomerInputs(
-            inputData.customerInputs || [
-              {
-                id: 1,
-                customersPerMonth: 300,
-                growthPerMonth: 1,
-                customerGrowthFrequency: "Monthly",
-                channelName: "Online",
-                beginMonth: 1,
-                endMonth: 36,
-                beginCustomer: 0,
-                churnRate: 0,
-                acquisitionCost: 0, // Default value for acquisition cost
-              },
-              {
-                id: 2,
-                customersPerMonth: 400,
-                growthPerMonth: 2,
-                customerGrowthFrequency: "Monthly",
-                channelName: "Offline",
-                beginMonth: 1,
-                endMonth: 36,
-                beginCustomer: 0,
-                churnRate: 0,
-                acquisitionCost: 0, // Default value for acquisition cost
-              },
-            ]
-          )
+          setPersonnelInputs(inputData.personnelInputs || personnelInputs)
         );
         dispatch(
-          setChannelInputs(
-            inputData.channelInputs || [
-              {
-                id: 1,
-                productName: "Coffee",
-                price: 4,
-                multiples: 1,
-                deductionPercentage: 5,
-                cogsPercentage: 30,
-                selectedChannel: "Offline",
-                channelAllocation: 0.4,
-              },
-              {
-                id: 2,
-                productName: "Cake",
-                price: 8,
-                multiples: 1,
-                deductionPercentage: 4,
-                cogsPercentage: 35,
-                selectedChannel: "Offline",
-                channelAllocation: 0.3,
-              },
-              {
-                id: 3,
-                productName: "Coffee Bag",
-                price: 6,
-                multiples: 1,
-                deductionPercentage: 6,
-                cogsPercentage: 25,
-                selectedChannel: "Online",
-                channelAllocation: 0.6,
-              },
-            ]
-          )
+          setInvestmentInputs(inputData.investmentInputs || investmentInputs)
         );
+        dispatch(setLoanInputs(inputData.loanInputs || loanInputs));
         dispatch(
-          setCostInputs(
-            inputData.costInputs || [
-              {
-                id: 1,
-                costName: "Website",
-                costValue: 1000,
-                growthPercentage: 5,
-                beginMonth: 1,
-                endMonth: 6,
-                growthFrequency: "Monthly",
-                costType: "Sales, Marketing Cost",
-              },
-              {
-                id: 2,
-                costName: "Marketing",
-                costValue: 500,
-                growthPercentage: 10,
-                beginMonth: 1,
-                endMonth: 36,
-                growthFrequency: "Annually",
-                costType: "Sales, Marketing Cost",
-              },
-              {
-                id: 3,
-                costName: "Rent",
-                costValue: 1000,
-                growthPercentage: 4,
-                beginMonth: 1,
-                endMonth: 36,
-                growthFrequency: "Annually",
-                costType: "General Administrative Cost",
-              },
-            ]
-          )
+          setFundraisingInputs(inputData.fundraisingInputs || fundraisingInputs)
         );
-        dispatch(
-          setPersonnelInputs(
-            inputData.personnelInputs || [
-              {
-                id: 1,
-                jobTitle: "Cashier",
-                salaryPerMonth: 800,
-                increasePerYear: 10,
-                growthSalaryFrequency: "Annually",
-                numberOfHires: 2,
-                jobBeginMonth: 1,
-                jobEndMonth: 36,
-              },
-              {
-                id: 2,
-                jobTitle: "Manager",
-                salaryPerMonth: 2000,
-                increasePerYear: 10,
-                growthSalaryFrequency: "Annually",
-                numberOfHires: 1,
-                jobBeginMonth: 1,
-                jobEndMonth: 36,
-              },
-            ]
-          )
-        );
-        dispatch(
-          setInvestmentInputs(
-            inputData.investmentInputs || [
-              {
-                id: 1,
-                purchaseName: "Coffee machine",
-                assetCost: 8000,
-                quantity: 1,
-                purchaseMonth: 2,
-                residualValue: 0,
-                usefulLifetime: 36,
-              },
-
-              {
-                id: 2,
-                purchaseName: "Table",
-                assetCost: 200,
-                quantity: 10,
-                purchaseMonth: 1,
-                residualValue: 0,
-                usefulLifetime: 36,
-              },
-            ]
-          )
-        );
-        dispatch(
-          setLoanInputs(
-            inputData.loanInputs || [
-              {
-                id: 1,
-                loanName: "Banking loan",
-                loanAmount: "30000",
-                interestRate: "6",
-                loanBeginMonth: "1",
-                loanEndMonth: "36",
-              },
-              {
-                id: 2,
-                loanName: "Startup loan",
-                loanAmount: "20000",
-                interestRate: "3",
-                loanBeginMonth: "1",
-                loanEndMonth: "36",
-              },
-            ]
-          )
-        );
-        dispatch(
-          setFundraisingInputs(
-            inputData.fundraisingInputs || [
-              {
-                id: 1,
-                name: "",
-                fundraisingAmount: 0,
-                fundraisingType: "Common Stock",
-                fundraisingBeginMonth: 1,
-                equityOffered: 0,
-              },
-            ]
-          )
-        );
-      }
-      // Check permissions after loading data
-      const projectData = dataFetched[0];
-      if (projectData) {
-        checkPermission(projectData, currentUser);
       }
 
       setTemIsLoading(false);
@@ -902,20 +709,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   };
 
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
-
-  if (viewError) {
-    return (
-      <div>
-        <LoadingButtonClick isLoading={isLoading} />
-        <AnnounceFMPage
-          title="Permission Required"
-          announce="This is a private project."
-          describe="Send a request to the project owner to get access."
-          sendRequest={true}
-        />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen">

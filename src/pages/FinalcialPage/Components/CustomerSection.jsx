@@ -43,6 +43,11 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
+import { Checkbox } from "antd";
+import {
+  Modal as AntdModal, // Add AntdModal for larger mode view
+} from "antd";
+import { ResizeObserver } from "rc-resize-observer"; // Add ResizeObserver for responsive handling
 
 const CustomerSection = React.memo(
   ({
@@ -52,6 +57,14 @@ const CustomerSection = React.memo(
     customerGrowthChart,
     setCustomerGrowthChart,
   }) => {
+    const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
+    const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
+
+    const handleChartClick = (chart) => {
+      setSelectedChart(chart);
+      setIsChartModalVisible(true);
+    };
+
     const dispatch = useDispatch();
     const { customerInputs, customerGrowthData, customerTableData } =
       useSelector((state) => state.customer);
@@ -82,6 +95,7 @@ const CustomerSection = React.memo(
 
       const maxId = Math.max(...tempCustomerInputs.map((input) => input?.id));
       const newId = maxId !== -Infinity ? maxId + 1 : 1;
+
       const newCustomer = {
         id: newId,
         customersPerMonth: 100,
@@ -93,7 +107,10 @@ const CustomerSection = React.memo(
         beginCustomer: 0,
         churnRate: 0,
         acquisitionCost: 0, // Default value for acquisition cost
+        adjustmentFactor: 1, // Default value for adjustment factor
+        eventName: "", // Default value for event name
       };
+
       setTempCustomerInputs([...tempCustomerInputs, newCustomer]);
       setRenderCustomerForm(newId.toString());
     };
@@ -117,23 +134,33 @@ const CustomerSection = React.memo(
       }
     };
 
-    const handleInputChange = (id, field, value) => {
-      // Ensure churnRate value is within the range of 0 to 100
+    // Update handleInputChange to handle advanced inputs
+    const handleInputChange = (id, field, value, advancedIndex = null) => {
       if (field === "churnRate") {
         value = Math.max(0, Math.min(100, value)); // Clamp value between 0 and 100
       }
 
       const newInputs = tempCustomerInputs.map((input) => {
         if (input?.id === id) {
-          return {
-            ...input,
-            [field]: value,
-          };
+          if (advancedIndex !== null) {
+            const newAdvancedInputs = input.advancedInputs.map(
+              (advInput, index) => {
+                if (index === advancedIndex) {
+                  return { ...advInput, [field]: value };
+                }
+                return advInput;
+              }
+            );
+            return { ...input, advancedInputs: newAdvancedInputs };
+          }
+          return { ...input, [field]: value };
         }
         return input;
       });
       setTempCustomerInputs(newInputs);
     };
+
+    const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
 
     useEffect(() => {
       const calculatedData = calculateCustomerGrowth(
@@ -141,7 +168,30 @@ const CustomerSection = React.memo(
         numberOfMonths
       );
       dispatch(setCustomerGrowthData(calculatedData));
-    }, [customerInputs, numberOfMonths]);
+    }, [customerInputs, numberOfMonths, showAdvancedInputs]); // Include showAdvancedInputs as a dependency
+
+    useEffect(() => {
+      const calculatedData = calculateCustomerGrowth(
+        tempCustomerInputs,
+        numberOfMonths
+      );
+
+      const calculateTransformedCustomerTableData = transformCustomerData(
+        calculatedData,
+        tempCustomerInputs
+      );
+
+      const calculateCustomerTableData = generateCustomerTableData(
+        calculateTransformedCustomerTableData,
+        tempCustomerInputs,
+        numberOfMonths,
+        renderCustomerForm
+      );
+
+      dispatch(setCustomerTableData(calculateCustomerTableData));
+
+      setTempCustomerGrowthData(calculatedData);
+    }, [tempCustomerInputs, renderCustomerForm, showAdvancedInputs]); // Include showAdvancedInputs as a dependency
 
     useEffect(() => {
       const calculatedData = calculateCustomerGrowth(
@@ -200,11 +250,31 @@ const CustomerSection = React.memo(
           dataIndex: `month${i + 1}`,
           key: `month${i + 1}`,
           align: "right",
-          onCell: (record) => ({
-            style: {
-              borderRight: "1px solid #f0f0f0", // Add border right style
-            },
-          }),
+          render: (text, record) => {
+            const channel = tempCustomerInputs.find(
+              (input) => input.channelName === record.channelName
+            );
+            const month = i + 1;
+            const isInEvent =
+              month >= channel?.eventBeginMonth &&
+              month <= channel?.eventEndMonth;
+            const growthRate = isInEvent
+              ? channel?.localGrowthRate
+              : channel?.growthPerMonth;
+            const eventName = channel?.eventName || "";
+
+            const tooltipTitle = isInEvent
+              ? `Local Growth Rate: ${growthRate}%\nEvent: ${eventName}`
+              : "";
+
+            const cellStyle = isInEvent ? { backgroundColor: "yellow" } : {};
+
+            return (
+              <Tooltip title={tooltipTitle} placement="topLeft">
+                <div style={cellStyle}>{text}</div>
+              </Tooltip>
+            );
+          },
         };
       }),
     ];
@@ -318,8 +388,8 @@ const CustomerSection = React.memo(
     const [chartEndMonth, setChartEndMonth] = useState(6);
 
     useEffect(() => {
-      const startIdx = chartStartMonth - 1; // Chỉ số bắt đầu cho mảng, dựa trên chartStartMonth
-      const endIdx = chartEndMonth; // Chỉ số kết thúc cho mảng, dựa trên chartEndMonth
+      const startIdx = chartStartMonth - 1;
+      const endIdx = chartEndMonth;
 
       const filteredCategories = Array.from(
         { length: endIdx - startIdx },
@@ -363,7 +433,6 @@ const CustomerSection = React.memo(
         };
       });
 
-      // Calculate total customers per month for all channels
       const totalCustomersPerMonth = seriesData.reduce((acc, channel) => {
         channel.data.forEach((customers, index) => {
           if (!acc[index]) {
@@ -373,7 +442,7 @@ const CustomerSection = React.memo(
         });
         return acc;
       }, []);
-      // Calculate total customers per month for all channels
+
       const totalCustomersPerMonth2 = seriesData2.reduce((acc, channel) => {
         channel.data.forEach((customers, index) => {
           if (!acc[index]) {
@@ -385,15 +454,14 @@ const CustomerSection = React.memo(
       }, []);
 
       const yearlyTotalData = [];
-      let startIndex = 0; // Bắt đầu từ phần tử đầu tiên trong mảng
-      const monthsInFirstYear = 12 - (startMonth - 1); // Số tháng còn lại trong năm đầu từ tháng bắt đầu
+      let startIndex = 0;
+      const monthsInFirstYear = 12 - (startMonth - 1);
 
       const channelYearlyTotals = seriesData2.map((channel) => ({
         name: channel.name,
         data: [],
       }));
 
-      // Tính tổng cho năm đầu tiên từ tháng bắt đầu đến hết năm
       const firstYearTotal = totalCustomersPerMonth2
         .slice(startIndex, monthsInFirstYear)
         .reduce((sum, current) => sum + current, 0);
@@ -405,10 +473,9 @@ const CustomerSection = React.memo(
           .reduce((sum, current) => sum + current, 0);
         channelYearlyTotals[index].data.push(firstYearTotal);
       });
-      // Cập nhật startIndex cho năm tiếp theo
+
       startIndex += monthsInFirstYear;
 
-      // Tính tổng cho các năm tiếp theo, mỗi lần tính cho 12 tháng
       while (startIndex < totalCustomersPerMonth2.length) {
         const yearlyTotal = totalCustomersPerMonth2
           .slice(startIndex, startIndex + 12)
@@ -426,8 +493,8 @@ const CustomerSection = React.memo(
       }
 
       const yearlyGrowthRates = yearlyTotalData.map((total, index, arr) => {
-        if (index === 0) return 0; // Không có tỷ lệ tăng trưởng cho năm đầu tiên
-        return ((total - arr[index - 1]) / arr[index - 1]) * 100; // Tính toán tỷ lệ tăng trưởng
+        if (index === 0) return 0;
+        return ((total - arr[index - 1]) / arr[index - 1]) * 100;
       });
 
       setCustomerGrowthChart((prevState) => {
@@ -450,10 +517,8 @@ const CustomerSection = React.memo(
                   stacked: false,
                   animated: false,
                 },
-
                 fill: {
                   type: "gradient",
-
                   gradient: {
                     shade: "light",
                     shadeIntensity: 0.5,
@@ -499,8 +564,6 @@ const CustomerSection = React.memo(
                 },
               ],
             },
-
-            // Individual charts for each channel
             ...seriesData.map((channelSeries) => ({
               options: {
                 ...prevState.options,
@@ -510,7 +573,7 @@ const CustomerSection = React.memo(
                 },
                 xaxis: {
                   axisTicks: {
-                    show: false, // Hide x-axis ticks
+                    show: false,
                   },
                   labels: {
                     show: true,
@@ -520,7 +583,6 @@ const CustomerSection = React.memo(
                     },
                   },
                   categories: filteredCategories,
-
                   title: {
                     text: "Month",
                     style: {
@@ -537,48 +599,46 @@ const CustomerSection = React.memo(
               series: [
                 {
                   name: "Begin",
-                  data: channelSeries.dataBegin, // Yearly total data
+                  data: channelSeries.dataBegin,
                 },
                 {
                   name: "Add",
-                  data: channelSeries.dataAdd, // Yearly total data
+                  data: channelSeries.dataAdd,
                 },
                 {
                   name: "Churn",
-                  data: channelSeries.dataChurn, // Yearly total data
+                  data: channelSeries.dataChurn,
                 },
                 {
                   name: "End",
-                  data: channelSeries.dataEnd, // Yearly total data
+                  data: channelSeries.dataEnd,
                 },
               ],
             })),
           ],
           chartsNoFilter: [
-            // New chart for yearly total and growth rate with separate y-axes
             {
               options: {
                 ...prevState.options,
                 chart: {
                   ...prevState.options.chart,
                   id: "yearlyTotal",
-                  stacked: false, // Set as non-stacked for total visualization
+                  stacked: false,
                   toolbar: {
                     show: false,
                   },
                 },
                 title: {
                   ...prevState.options.title,
-                  text: "Yearly Total and Growth Rate",
+                  text: "Yearly Total",
                 },
                 fill: {
                   type: "gradient",
-
                   gradient: {
                     shade: "light",
                     shadeIntensity: 0.5,
                     opacityFrom: 0.75,
-                    opacityTo: 0.65,
+                    opacityTo: 65,
                     stops: [0, 90, 100],
                   },
                 },
@@ -590,50 +650,83 @@ const CustomerSection = React.memo(
                       const year = startYear + i;
                       return `${year}`;
                     }
-                  ), // Creating categories for each year
+                  ),
                 },
-                yaxis: [
-                  {
-                    title: {
-                      text: "Yearly Total",
-                    },
-                    seriesName: "Yearly Total",
-                    labels: {
-                      formatter: (value) => `${formatNumber(value.toFixed(0))}`, // No decimals for total
-                    },
+                yaxis: {
+                  title: {
+                    text: "Yearly Total",
                   },
-                  {
-                    opposite: true,
-                    title: {
-                      text: "Yearly Growth Rate (%)",
-                    },
-                    seriesName: "Yearly Growth Rate (%)",
-                    labels: {
-                      formatter: (value) => `${value.toFixed(2)}%`,
-                    },
+                  labels: {
+                    formatter: (value) => `${formatNumber(value.toFixed(0))}`,
                   },
-                ],
+                },
               },
               series: [
                 {
                   name: "Yearly Total",
-                  data: yearlyTotalData, // Yearly total data
-                },
-                {
-                  name: "Yearly Growth Rate (%)",
-                  data: yearlyGrowthRates, // Yearly growth rates
-                  type: "line", // Differentiating the chart type for growth rates
+                  data: yearlyTotalData,
                 },
               ],
             },
-            // New chart for displaying total yearly sales per channel
+            {
+              options: {
+                ...prevState.options,
+                chart: {
+                  ...prevState.options.chart,
+                  id: "yearlyGrowthRate",
+                  stacked: false,
+                  toolbar: {
+                    show: false,
+                  },
+                },
+                title: {
+                  ...prevState.options.title,
+                  text: "Yearly Growth Rate",
+                },
+                fill: {
+                  type: "gradient",
+                  gradient: {
+                    shade: "light",
+                    shadeIntensity: 0.5,
+                    opacityFrom: 0.75,
+                    opacityTo: 65,
+                    stops: [0, 90, 100],
+                  },
+                },
+                xaxis: {
+                  ...prevState.options.xaxis,
+                  categories: Array.from(
+                    { length: yearlyGrowthRates.length },
+                    (_, i) => {
+                      const year = startYear + i;
+                      return `${year}`;
+                    }
+                  ),
+                },
+                yaxis: {
+                  title: {
+                    text: "Yearly Growth Rate (%)",
+                  },
+                  labels: {
+                    formatter: (value) => `${value.toFixed(2)}%`,
+                  },
+                },
+              },
+              series: [
+                {
+                  name: "Yearly Growth Rate (%)",
+                  data: yearlyGrowthRates,
+                  type: "line",
+                },
+              ],
+            },
             {
               options: {
                 ...prevState.options,
                 chart: {
                   ...prevState.options.chart,
                   id: "channelYearlyTotals",
-                  stacked: false, // Non-stacked visualization
+                  stacked: false,
                   toolbar: {
                     show: false,
                   },
@@ -644,12 +737,11 @@ const CustomerSection = React.memo(
                 },
                 fill: {
                   type: "gradient",
-
                   gradient: {
                     shade: "light",
                     shadeIntensity: 0.5,
                     opacityFrom: 0.75,
-                    opacityTo: 0.65,
+                    opacityTo: 65,
                     stops: [0, 90, 100],
                   },
                 },
@@ -661,10 +753,10 @@ const CustomerSection = React.memo(
                       const year = startYear + i;
                       return `${year}`;
                     }
-                  ), // Creating categories for each year
+                  ),
                 },
               },
-              series: channelYearlyTotals, // Yearly totals per channel
+              series: channelYearlyTotals,
             },
           ],
         };
@@ -672,6 +764,45 @@ const CustomerSection = React.memo(
     }, [tempCustomerGrowthData, chartStartMonth, chartEndMonth]);
 
     const [isInputFormOpen, setIsInputFormOpen] = useState(false);
+
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+    const confirmDelete = () => {
+      removeCustomerInput(renderCustomerForm);
+      setIsDeleteModalOpen(false);
+    };
+
+    const handleAddAdvancedInput = (id) => {
+      const newInputs = tempCustomerInputs.map((input) => {
+        if (input?.id === id) {
+          const newAdvancedInputs = [
+            ...input.advancedInputs,
+            {
+              localGrowthRate: "",
+              eventBeginMonth: "",
+              eventEndMonth: "",
+              eventName: "",
+            },
+          ];
+          return { ...input, advancedInputs: newAdvancedInputs };
+        }
+        return input;
+      });
+      setTempCustomerInputs(newInputs);
+    };
+
+    const handleRemoveAdvancedInput = (id, index) => {
+      const newInputs = tempCustomerInputs.map((input) => {
+        if (input?.id === id) {
+          const newAdvancedInputs = input.advancedInputs.filter(
+            (advInput, advIndex) => advIndex !== index
+          );
+          return { ...input, advancedInputs: newAdvancedInputs };
+        }
+        return input;
+      });
+      setTempCustomerInputs(newInputs);
+    };
 
     return (
       <div className="w-full h-full flex flex-col lg:flex-row">
@@ -695,7 +826,7 @@ const CustomerSection = React.memo(
                           Math.max(1, Math.min(e.target.value, chartEndMonth))
                         )
                       }
-                      className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                      className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
                     >
                       {Array.from({ length: numberOfMonths }, (_, i) => {
                         const monthIndex = (startingMonth + i - 1) % 12;
@@ -723,7 +854,7 @@ const CustomerSection = React.memo(
                           )
                         )
                       }
-                      className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                      className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
                     >
                       {Array.from({ length: numberOfMonths }, (_, i) => {
                         const monthIndex = (startingMonth + i - 1) % 12;
@@ -739,33 +870,35 @@ const CustomerSection = React.memo(
                     </select>
                   </div>
                 </div>
-                <Chart
-                  options={{
-                    ...chart.options,
-                    fill: {
-                      type: "gradient",
+                <div onClick={() => handleChartClick(chart)}>
+                  <Chart
+                    options={{
+                      ...chart.options,
+                      fill: {
+                        type: "gradient",
 
-                      gradient: {
-                        shade: "light",
-                        shadeIntensity: 0.5,
-                        opacityFrom: 0.75,
-                        opacityTo: 0.65,
-                        stops: [0, 90, 100],
+                        gradient: {
+                          shade: "light",
+                          shadeIntensity: 0.5,
+                          opacityFrom: 0.75,
+                          opacityTo: 0.65,
+                          stops: [0, 90, 100],
+                        },
                       },
-                    },
-                    xaxis: {
-                      ...chart.options.xaxis,
-                      // tickAmount: 12, // Set the number of ticks on the x-axis to 12
-                    },
-                    stroke: {
-                      width: 1,
-                      curve: "straight", // Set the stroke width to 1
-                    },
-                  }}
-                  series={chart.series}
-                  type="bar"
-                  height={350}
-                />
+                      xaxis: {
+                        ...chart.options.xaxis,
+                        // tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                      },
+                      stroke: {
+                        width: 1,
+                        curve: "straight", // Set the stroke width to 1
+                      },
+                    }}
+                    series={chart.series}
+                    type="area"
+                    height={350}
+                  />
+                </div>
               </Card>
             ))}
 
@@ -773,6 +906,7 @@ const CustomerSection = React.memo(
               <Card
                 key={index}
                 className="flex flex-col transition duration-500  rounded-2xl"
+                onClick={() => handleChartClick(chart)}
               >
                 <Chart
                   options={{
@@ -786,12 +920,32 @@ const CustomerSection = React.memo(
                     },
                   }}
                   series={chart.series}
-                  type="bar"
+                  type="area"
                   height={350}
                 />
               </Card>
             ))}
           </div>
+          <AntdModal
+            centered
+            visible={isChartModalVisible}
+            footer={null}
+            onCancel={() => setIsChartModalVisible(false)}
+            width="90%"
+            style={{ top: 20 }}
+          >
+            {selectedChart && (
+              <Chart
+                options={{
+                  ...selectedChart.options,
+                  // ... other options
+                }}
+                series={selectedChart.series}
+                type="area"
+                height={500}
+              />
+            )}
+          </AntdModal>
 
           <h3 className="text-lg font-semibold my-4">Customer Table</h3>
           <Table
@@ -828,7 +982,7 @@ const CustomerSection = React.memo(
               ></label>
               <select
                 id="selectedChannel"
-                className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
                 value={renderCustomerForm}
                 onChange={handleSelectChange}
               >
@@ -847,10 +1001,10 @@ const CustomerSection = React.memo(
               .map((input) => (
                 <div
                   key={input?.id}
-                  className="bg-white rounded-md p-6 border my-4"
+                  className="bg-white rounded-2xl p-6 border my-4"
                 >
                   <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
+                    <span className="flex items-center text-sm">
                       Channel Name:
                     </span>
                     <Input
@@ -866,7 +1020,7 @@ const CustomerSection = React.memo(
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
+                    <span className="flex items-center text-sm">
                       Existing Customer:
                     </span>
                     <Input
@@ -899,9 +1053,8 @@ const CustomerSection = React.memo(
                       type="text"
                     />
                   </div>
-
                   <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
+                    <span className="flex items-center text-sm">
                       Growth rate (%):
                     </span>
                     <Input
@@ -917,7 +1070,6 @@ const CustomerSection = React.memo(
                       type="text"
                     />
                   </div>
-
                   <div className="grid grid-cols-2 gap-4 mb-3">
                     <span className="flex items-center text-sm">
                       Frequency:
@@ -949,9 +1101,8 @@ const CustomerSection = React.memo(
                       </SelectContent>
                     </Select>
                   </div>
-
                   <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
+                    <span className="flex items-center text-sm">
                       Begin Month:
                     </span>
                     <Input
@@ -969,7 +1120,7 @@ const CustomerSection = React.memo(
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
+                    <span className="flex items-center text-sm">
                       End Month:
                     </span>
                     <Input
@@ -982,9 +1133,8 @@ const CustomerSection = React.memo(
                       }
                     />
                   </div>
-
                   <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
+                    <span className="flex items-center text-sm">
                       Churn rate (%):
                     </span>
                     <Input
@@ -1001,7 +1151,7 @@ const CustomerSection = React.memo(
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
+                    <span className="flex items-center text-sm">
                       Acquisition cost:
                     </span>
                     <Input
@@ -1021,11 +1171,105 @@ const CustomerSection = React.memo(
                 </div>
               ))}
 
+            <div className="grid grid-cols-2 gap-4 mb-3 items-center">
+              <Checkbox
+                className="col-span-2"
+                checked={showAdvancedInputs}
+                onChange={(e) => setShowAdvancedInputs(e.target.checked)}
+              >
+                Show Advanced Inputs
+              </Checkbox>
+            </div>
+
+            {showAdvancedInputs &&
+              tempCustomerInputs
+                .filter((input) => input?.id == renderCustomerForm)
+                .map((input) => (
+                  <div
+                    key={input?.id}
+                    className="bg-white rounded-2xl p-6 border my-4"
+                  >
+                    <>
+                      <div className="grid grid-cols-2 gap-4 mb-3">
+                        <span className="flex items-center text-sm">
+                          Event Name:
+                        </span>
+                        <Input
+                          className="col-start-2 border-gray-300"
+                          value={input.eventName}
+                          onChange={(e) =>
+                            handleInputChange(
+                              input?.id,
+                              "eventName",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4 mb-3">
+                        <span className="flex items-center text-sm">
+                          Local Growth Rate:
+                        </span>
+                        <Input
+                          className="col-start-2 border-gray-300"
+                          value={input.localGrowthRate}
+                          onChange={(e) =>
+                            handleInputChange(
+                              input?.id,
+                              "localGrowthRate",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4 mb-3">
+                        <span className="flex items-center text-sm">
+                          Event Begin Month:
+                        </span>
+                        <Input
+                          className="col-start-2 border-gray-300"
+                          type="number"
+                          min={1}
+                          max={12}
+                          value={input.eventBeginMonth}
+                          onChange={(e) =>
+                            handleInputChange(
+                              input?.id,
+                              "eventBeginMonth",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4 mb-3">
+                        <span className="flex items-center text-sm">
+                          Event End Month:
+                        </span>
+                        <Input
+                          className="col-start-2 border-gray-300"
+                          type="number"
+                          min={1}
+                          max={12}
+                          value={input.eventEndMonth}
+                          onChange={(e) =>
+                            handleInputChange(
+                              input?.id,
+                              "eventEndMonth",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+                    </>
+                  </div>
+                ))}
+
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <div className="flex justify-center items-center">
                 <button
-                  className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4"
-                  onClick={() => removeCustomerInput(renderCustomerForm)}
+                  className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
+                  onClick={() => setIsDeleteModalOpen(true)}
                 >
                   <DeleteOutlined
                     style={{
@@ -1038,7 +1282,7 @@ const CustomerSection = React.memo(
                 </button>
               </div>
               <button
-                className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
+                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
                 onClick={handleAddNewCustomer}
               >
                 <PlusOutlined
@@ -1052,7 +1296,7 @@ const CustomerSection = React.memo(
               </button>
 
               <button
-                className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
+                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
                 onClick={handleSave}
               >
                 <CheckCircleOutlined
@@ -1146,7 +1390,7 @@ const CustomerSection = React.memo(
                 ></label>
                 <Select
                   id="selectedChannel"
-                  className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
                   value={renderCustomerForm}
                   onValueChange={(value) => handleSelectChange(value)}
                 >
@@ -1169,7 +1413,7 @@ const CustomerSection = React.memo(
                 .map((input) => (
                   <div
                     key={input?.id}
-                    className="bg-white rounded-md p-6 border my-4"
+                    className="bg-white rounded-2xl p-6 border my-4"
                   >
                     <div className="grid grid-cols-2 gap-4 mb-3">
                       <span className=" flex items-center text-sm">
@@ -1346,8 +1590,8 @@ const CustomerSection = React.memo(
                     </div>
                     <div className="flex justify-end items-center">
                       <button
-                        className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4"
-                        onClick={() => removeCustomerInput(input.id)}
+                        className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
+                        onClick={() => setIsDeleteModalOpen(true)}
                       >
                         Remove
                       </button>
@@ -1355,6 +1599,35 @@ const CustomerSection = React.memo(
                   </div>
                 ))}
             </section>
+          </Modal>
+        )}
+
+        {isDeleteModalOpen && (
+          <Modal
+            title="Confirm Delete"
+            visible={isDeleteModalOpen}
+            onOk={confirmDelete}
+            onCancel={() => setIsDeleteModalOpen(false)}
+            okText="Delete"
+            cancelText="Cancel"
+            cancelButtonProps={{
+              style: {
+                borderRadius: "0.375rem",
+                cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              },
+            }}
+            okButtonProps={{
+              style: {
+                background: "#f5222d",
+                borderColor: "#f5222d",
+                color: "#fff",
+                borderRadius: "0.375rem",
+                cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              },
+            }}
+            centered={true}
+          >
+            Are you sure you want to delete it?
           </Modal>
         )}
       </div>

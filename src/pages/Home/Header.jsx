@@ -194,7 +194,7 @@ const Header = ({ position }) => {
               >
                 <span style={{ display: "flex", alignItems: "center" }}>
                   Financial Model
-                  <CalculatorOutlined className="ml-[5px]" />
+                 
                 </span>
               </NavbarItem>
               <NavbarItem
@@ -202,7 +202,7 @@ const Header = ({ position }) => {
                 isActive={loginPart.includes("startups")}
               >
                 <span style={{ display: "flex", alignItems: "center" }}>
-                  Profile Listing <RocketOutlined className="ml-[5px]" />
+                  Profile Listing
                 </span>
               </NavbarItem>
               <NavbarItem
@@ -210,7 +210,7 @@ const Header = ({ position }) => {
                 isActive={loginPart.includes("Flea-Market")}
               >
                 <span style={{ display: "flex", alignItems: "center" }}>
-                  Angel's Share <ShopOutlined className="ml-[5px]" />
+                  Angel's Share
                 </span>
               </NavbarItem>
               {/* <NavbarItem

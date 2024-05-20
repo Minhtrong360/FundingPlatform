@@ -21,6 +21,7 @@ import {
 } from "../../../components/ui/Select";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import currencyLists from "../../../components/Currency";
+import { CheckCircleOutlined } from "@ant-design/icons";
 
 const DurationSelect = ({ handleSubmit, isInputFormOpen }) => {
   const dispatch = useDispatch();
@@ -322,9 +323,16 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen }) => {
       {isInputFormOpen !== "Ok" && (
         <div className="flex justify-end">
           <button
-            className="bg-blue-600 text-white px-4 py-2 rounded mt-8 text-sm flex items-center"
+            className="bg-blue-600 text-white px-4 py-2 rounded-2xl mt-8 text-sm flex items-center"
             onClick={handleSubmit}
           >
+            <CheckCircleOutlined
+              style={{
+                fontSize: "12px",
+                color: "#FFFFFF",
+                marginRight: "4px",
+              }}
+            />
             Save
           </button>
         </div>

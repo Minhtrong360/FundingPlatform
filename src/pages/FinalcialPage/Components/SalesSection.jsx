@@ -86,6 +86,8 @@ const SalesSection = ({
       cogsByChannelAndProduct,
       netRevenueByChannelAndProduct,
       grossProfitByChannelAndProduct,
+      cashInflowByChannelAndProduct,
+      receivablesByChannelAndProduct,
     } = dispatch(
       calculateChannelRevenue(
         numberOfMonths,
@@ -108,6 +110,8 @@ const SalesSection = ({
         cogsByChannelAndProduct,
         netRevenueByChannelAndProduct,
         grossProfitByChannelAndProduct,
+        cashInflowByChannelAndProduct,
+        receivablesByChannelAndProduct,
       },
       tempChannelInputs,
       renderChannelForm
@@ -123,18 +127,8 @@ const SalesSection = ({
   ]);
 
   useEffect(() => {
-    setTempChannelInputs(channelInputs);
-  }, [channelInputs]);
-
-  useEffect(() => {
     calculateAndDispatchRevenueData();
-  }, [
-    customerGrowthData,
-    tempChannelInputs,
-    numberOfMonths,
-    renderChannelForm,
-    calculateAndDispatchRevenueData,
-  ]);
+  }, [tempChannelInputs, renderChannelForm]);
 
   const { id } = useParams();
   const { user } = useAuth();
@@ -197,18 +191,7 @@ const SalesSection = ({
 
       saveData();
     }
-  }, [
-    isSaved,
-    tempChannelInputs,
-    tempRevenueData,
-    tempRevenueDeductionData,
-    tempCogsData,
-    tempNetRevenueData,
-    tempGrossProfitData,
-    id,
-    dispatch,
-    setIsSaved,
-  ]);
+  }, [isSaved]);
 
   const addNewChannelInput = () => {
     const maxId = Math.max(...tempChannelInputs.map((input) => input?.id));
@@ -222,7 +205,7 @@ const SalesSection = ({
       cogsPercentage: 30,
       selectedChannel: channelNames[0],
       channelAllocation: 0.8,
-      daysGetPaid: 0,
+      daysGetPaid: 0, // Default to 0 day
     };
     setTempChannelInputs([...tempChannelInputs, newChannel]);
     setRenderChannelForm(newId.toString());
@@ -426,20 +409,18 @@ const SalesSection = ({
         ],
       }));
     }
-  }, [
-    tempRevenueData,
-    numberOfMonths,
-    chartStartMonth,
-    chartEndMonth,
-    startingMonth,
-    startingYear,
-    tempRevenueDeductionData,
-    tempNetRevenueData,
-    tempCogsData,
-    tempGrossProfitData,
-  ]);
+  }, [tempRevenueData, chartStartMonth, chartEndMonth]);
+
+  const daysOptions = [0, 15, 30, 45, 60, 90];
 
   const handleSave = () => {
+    const updatedChannelInputs = tempChannelInputs.map((input) => {
+      if (!daysOptions.includes(input.daysGetPaid)) {
+        input.daysGetPaid = daysOptions[0];
+      }
+      return input;
+    });
+    setTempChannelInputs(updatedChannelInputs);
     setIsSaved(true);
   };
 
@@ -464,12 +445,21 @@ const SalesSection = ({
         align: "right",
         onCell: (record) => ({
           style: {
-            borderRight: "1px solid #f0f0f0", // Add border right style
+            borderRight: "1px solid #f0f0f0",
           },
         }),
       };
     }),
   ];
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const confirmDelete = () => {
+    removeChannelInput(renderChannelForm);
+    setIsDeleteModalOpen(false);
+  };
+
+  console.log("1");
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
@@ -492,7 +482,7 @@ const SalesSection = ({
                         Math.max(1, Math.min(e.target.value, chartEndMonth))
                       )
                     }
-                    className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                    className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
                   >
                     {Array.from({ length: numberOfMonths }, (_, i) => {
                       const monthIndex = (startingMonth + i - 1) % 12;
@@ -519,7 +509,7 @@ const SalesSection = ({
                         )
                       )
                     }
-                    className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                    className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
                   >
                     {Array.from({ length: numberOfMonths }, (_, i) => {
                       const monthIndex = (startingMonth + i - 1) % 12;
@@ -579,7 +569,7 @@ const SalesSection = ({
             ></label>
             <select
               id="selectedChannel"
-              className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+              className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
               value={renderChannelForm}
               onChange={handleChannelChange}
             >
@@ -597,7 +587,7 @@ const SalesSection = ({
             .map((input, index) => (
               <div
                 key={input.id}
-                className="bg-white rounded-md p-6 border my-4"
+                className="bg-white rounded-2xl p-6 border my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">
@@ -743,8 +733,7 @@ const SalesSection = ({
                     onValueChange={(value) =>
                       handleChannelInputChange(input.id, "daysGetPaid", value)
                     }
-                    value={input.daysGetPaid !== null ? input.daysGetPaid : ""}
-                    disabled
+                    value={input.daysGetPaid !== null ? input.daysGetPaid : 0}
                   >
                     <SelectTrigger
                       id={`select-days-get-paid-${index}`}
@@ -753,7 +742,7 @@ const SalesSection = ({
                       <SelectValue placeholder="Select Days" />
                     </SelectTrigger>
                     <SelectContent position="popper">
-                      {[0, 15, 30, 45, 60, 75, 90, 105, 120].map((days) => (
+                      {daysOptions.map((days) => (
                         <SelectItem key={days} value={days}>
                           {days} days
                         </SelectItem>
@@ -765,8 +754,8 @@ const SalesSection = ({
             ))}
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <button
-              className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4"
-              onClick={() => removeChannelInput(renderChannelForm)}
+              className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
+              onClick={() => setIsDeleteModalOpen(true)}
             >
               <DeleteOutlined
                 style={{
@@ -779,7 +768,7 @@ const SalesSection = ({
             </button>
 
             <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
               onClick={addNewChannelInput}
             >
               <PlusOutlined
@@ -793,7 +782,7 @@ const SalesSection = ({
             </button>
 
             <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
               onClick={handleSave}
             >
               <CheckCircleOutlined
@@ -876,7 +865,7 @@ const SalesSection = ({
 
               <Select
                 id="selectedChannel"
-                className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
                 value={renderChannelForm}
                 onValueChange={(value) => handleChannelChange(value)}
               >
@@ -900,7 +889,7 @@ const SalesSection = ({
                 .map((input, index) => (
                   <div
                     key={input.id}
-                    className="bg-white rounded-md p-6 border my-4"
+                    className="bg-white rounded-2xl p-6 border my-4"
                   >
                     <div className="grid grid-cols-2 gap-4 mb-3">
                       <span className="flex items-center text-sm">
@@ -1057,7 +1046,6 @@ const SalesSection = ({
                         value={
                           input.daysGetPaid !== null ? input.daysGetPaid : ""
                         }
-                        disabled
                       >
                         <SelectTrigger
                           id={`select-days-get-paid-${index}`}
@@ -1066,7 +1054,7 @@ const SalesSection = ({
                           <SelectValue placeholder="Select Days" />
                         </SelectTrigger>
                         <SelectContent position="popper">
-                          {[0, 15, 30, 45, 60, 75, 90, 105, 120].map((days) => (
+                          {daysOptions.map((days) => (
                             <SelectItem key={days} value={days}>
                               {days} days
                             </SelectItem>
@@ -1076,8 +1064,8 @@ const SalesSection = ({
                     </div>
                     <div className="flex justify-end items-center">
                       <button
-                        className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4"
-                        onClick={() => removeChannelInput(input.id)}
+                        className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
+                        onClick={() => setIsDeleteModalOpen(true)}
                       >
                         Remove
                       </button>
@@ -1085,6 +1073,35 @@ const SalesSection = ({
                   </div>
                 ))}
           </section>
+        </Modal>
+      )}
+
+      {isDeleteModalOpen && (
+        <Modal
+          title="Confirm Delete"
+          visible={isDeleteModalOpen}
+          onOk={confirmDelete}
+          onCancel={() => setIsDeleteModalOpen(false)}
+          okText="Delete"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#f5222d",
+              borderColor: "#f5222d",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          centered={true}
+        >
+          Are you sure you want to delete it?
         </Modal>
       )}
     </div>

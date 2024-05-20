@@ -127,18 +127,8 @@ const SalesSection = ({
   ]);
 
   useEffect(() => {
-    setTempChannelInputs(channelInputs);
-  }, [channelInputs]);
-
-  useEffect(() => {
     calculateAndDispatchRevenueData();
-  }, [
-    customerGrowthData,
-    tempChannelInputs,
-    numberOfMonths,
-    renderChannelForm,
-    calculateAndDispatchRevenueData,
-  ]);
+  }, [tempChannelInputs, renderChannelForm]);
 
   const { id } = useParams();
   const { user } = useAuth();
@@ -251,8 +241,6 @@ const SalesSection = ({
 
   const [chartStartMonth, setChartStartMonth] = useState(1);
   const [chartEndMonth, setChartEndMonth] = useState(6);
-
-  const [daysToGetPaid, setDaysToGetPaid] = useState(15);
 
   const months = [
     "01",
@@ -421,18 +409,7 @@ const SalesSection = ({
         ],
       }));
     }
-  }, [
-    tempRevenueData,
-    numberOfMonths,
-    chartStartMonth,
-    chartEndMonth,
-    startingMonth,
-    startingYear,
-    tempRevenueDeductionData,
-    tempNetRevenueData,
-    tempCogsData,
-    tempGrossProfitData,
-  ]);
+  }, [tempRevenueData, chartStartMonth, chartEndMonth]);
 
   const daysOptions = [0, 15, 30, 45, 60, 90];
 
@@ -481,6 +458,8 @@ const SalesSection = ({
     removeChannelInput(renderChannelForm);
     setIsDeleteModalOpen(false);
   };
+
+  console.log("1");
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">

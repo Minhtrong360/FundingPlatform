@@ -43,6 +43,12 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
+import { Checkbox } from "antd";
+import {
+  Modal as AntdModal, // Add AntdModal for larger mode view
+
+} from "antd";
+import { ResizeObserver } from "rc-resize-observer"; // Add ResizeObserver for responsive handling
 
 const CustomerSection = React.memo(
   ({
@@ -52,6 +58,15 @@ const CustomerSection = React.memo(
     customerGrowthChart,
     setCustomerGrowthChart,
   }) => {
+    const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
+const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
+
+    
+    const handleChartClick = (chart) => {
+      setSelectedChart(chart);
+      setIsChartModalVisible(true);
+    };
+
     const dispatch = useDispatch();
     const { customerInputs, customerGrowthData, customerTableData } =
       useSelector((state) => state.customer);
@@ -82,6 +97,7 @@ const CustomerSection = React.memo(
 
       const maxId = Math.max(...tempCustomerInputs.map((input) => input?.id));
       const newId = maxId !== -Infinity ? maxId + 1 : 1;
+
       const newCustomer = {
         id: newId,
         customersPerMonth: 100,
@@ -93,7 +109,10 @@ const CustomerSection = React.memo(
         beginCustomer: 0,
         churnRate: 0,
         acquisitionCost: 0, // Default value for acquisition cost
+        adjustmentFactor: 1, // Default value for adjustment factor
+        eventName: "", // Default value for event name
       };
+
       setTempCustomerInputs([...tempCustomerInputs, newCustomer]);
       setRenderCustomerForm(newId.toString());
     };
@@ -135,13 +154,38 @@ const CustomerSection = React.memo(
       setTempCustomerInputs(newInputs);
     };
 
+    const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
+
     useEffect(() => {
       const calculatedData = calculateCustomerGrowth(
         customerInputs,
         numberOfMonths
       );
       dispatch(setCustomerGrowthData(calculatedData));
-    }, [customerInputs, numberOfMonths]);
+    }, [customerInputs, numberOfMonths, showAdvancedInputs]); // Include showAdvancedInputs as a dependency
+
+    useEffect(() => {
+      const calculatedData = calculateCustomerGrowth(
+        tempCustomerInputs,
+        numberOfMonths
+      );
+
+      const calculateTransformedCustomerTableData = transformCustomerData(
+        calculatedData,
+        tempCustomerInputs
+      );
+
+      const calculateCustomerTableData = generateCustomerTableData(
+        calculateTransformedCustomerTableData,
+        tempCustomerInputs,
+        numberOfMonths,
+        renderCustomerForm
+      );
+
+      dispatch(setCustomerTableData(calculateCustomerTableData));
+
+      setTempCustomerGrowthData(calculatedData);
+    }, [tempCustomerInputs, renderCustomerForm, showAdvancedInputs]); // Include showAdvancedInputs as a dependency
 
     useEffect(() => {
       const calculatedData = calculateCustomerGrowth(
@@ -184,6 +228,8 @@ const CustomerSection = React.memo(
     const startingMonth = startMonth; // Tháng bắt đầu từ 1
     const startingYear = startYear; // Năm bắt đầu từ 24
 
+    
+
     const customerColumns = [
       {
         fixed: "left",
@@ -200,14 +246,37 @@ const CustomerSection = React.memo(
           dataIndex: `month${i + 1}`,
           key: `month${i + 1}`,
           align: "right",
-          onCell: (record) => ({
-            style: {
-              borderRight: "1px solid #f0f0f0", // Add border right style
-            },
-          }),
+          render: (text, record) => {
+            const channel = tempCustomerInputs.find(input => input.channelName === record.channelName);
+            const month = i + 1;
+            const isInEvent = month >= channel?.eventBeginMonth && month <= channel?.eventEndMonth;
+            const growthRate = isInEvent ? channel?.localGrowthRate : channel?.growthPerMonth;
+            const eventName = channel?.eventName || "";
+    
+            const tooltipTitle = isInEvent
+              ? `Local Growth Rate: ${growthRate}%\nEvent: ${eventName}`
+              : '';
+    
+            const cellStyle = isInEvent
+              ? { backgroundColor: 'yellow' }
+              : {};
+    
+            return (
+              <Tooltip title={tooltipTitle} placement="topLeft">
+                <div style={cellStyle}>{text}</div>
+              </Tooltip>
+            );
+          },
         };
       }),
     ];
+    
+    
+    
+    
+
+    
+    
 
     const handleSelectChange = (event) => {
       setRenderCustomerForm(event.target.value);
@@ -690,6 +759,7 @@ const CustomerSection = React.memo(
               <Card
                 key={index}
                 className="flex flex-col transition duration-500  rounded-2xl"
+                onClick={() => handleChartClick(chart)}
               >
                 <div className="flex justify-between items-center">
                   <div className="min-w-[10vw]">
@@ -770,7 +840,7 @@ const CustomerSection = React.memo(
                     },
                   }}
                   series={chart.series}
-                  type="bar"
+                  type="area"
                   height={350}
                 />
               </Card>
@@ -780,6 +850,7 @@ const CustomerSection = React.memo(
               <Card
                 key={index}
                 className="flex flex-col transition duration-500  rounded-2xl"
+                onClick={() => handleChartClick(chart)}
               >
                 <Chart
                   options={{
@@ -793,12 +864,31 @@ const CustomerSection = React.memo(
                     },
                   }}
                   series={chart.series}
-                  type="bar"
+                  type="area"
                   height={350}
                 />
               </Card>
             ))}
           </div>
+          <AntdModal
+  visible={isChartModalVisible}
+  footer={null}
+  onCancel={() => setIsChartModalVisible(false)}
+  width="90%"
+  style={{ top: 20 }}
+>
+  {selectedChart && (
+    <Chart
+      options={{
+        ...selectedChart.options,
+        // ... other options
+      }}
+      series={selectedChart.series}
+      type="area"
+      height={500}
+    />
+  )}
+</AntdModal>
 
           <h3 className="text-lg font-semibold my-4">Customer Table</h3>
           <Table
@@ -1025,6 +1115,69 @@ const CustomerSection = React.memo(
                       disabled
                     />
                   </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+  <Checkbox
+    className="col-span-2"
+    checked={showAdvancedInputs}
+    onChange={(e) => setShowAdvancedInputs(e.target.checked)}
+  >
+    Show Advanced Inputs
+  </Checkbox>
+</div>
+
+{showAdvancedInputs && (
+  <>
+    <div className="grid grid-cols-2 gap-4 mb-3">
+    <span className="flex items-center text-sm">Local Growth Rate:</span>
+    <Input
+      className="col-start-2 border-gray-300"
+      value={input.localGrowthRate}
+      onChange={(e) =>
+        handleInputChange(input?.id, "localGrowthRate", e.target.value)
+      }
+    />
+  </div>
+
+    <div className="grid grid-cols-2 gap-4 mb-3">
+      <span className="flex items-center text-sm">Event Begin Month:</span>
+      <Input
+        className="col-start-2 border-gray-300"
+        type="number"
+        min={1}
+        max={12}
+        value={input.eventBeginMonth}
+        onChange={(e) =>
+          handleInputChange(input?.id, "eventBeginMonth", e.target.value)
+        }
+      />
+    </div>
+
+    <div className="grid grid-cols-2 gap-4 mb-3">
+      <span className="flex items-center text-sm">Event End Month:</span>
+      <Input
+        className="col-start-2 border-gray-300"
+        type="number"
+        min={1}
+        max={12}
+        value={input.eventEndMonth}
+        onChange={(e) =>
+          handleInputChange(input?.id, "eventEndMonth", e.target.value)
+        }
+      />
+    </div>
+
+    <div className="grid grid-cols-2 gap-4 mb-3">
+      <span className="flex items-center text-sm">Event Name:</span>
+      <Input
+        className="col-start-2 border-gray-300"
+        value={input.eventName}
+        onChange={(e) =>
+          handleInputChange(input?.id, "eventName", e.target.value)
+        }
+      />
+    </div>
+  </>
+)}
                 </div>
               ))}
 

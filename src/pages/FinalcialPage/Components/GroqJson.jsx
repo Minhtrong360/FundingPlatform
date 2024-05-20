@@ -24,10 +24,10 @@ const GroqJS = ({ datasrc }) => {
       };
       console.log("Input sent to backend:", JSON.stringify({ messages }));
       // Update the messages state by adding the new message
-      setMessages([...messages, newMessage]);
+      setMessages([ newMessage]);
 
       // Log the updated messages array
-      console.log("Input sent to backend:", [...messages, newMessage]);
+      console.log("Input sent to backend:", [ newMessage]);
       const response = await fetch(
         "https://news-fetcher-8k6m.onrender.com/chat",
         // const response = await fetch("https://fastapi-example-l5fo.onrender.com/chat",
@@ -36,7 +36,7 @@ const GroqJS = ({ datasrc }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ messages: [...messages, newMessage] }),
+          body: JSON.stringify({ messages: [ newMessage] }),
         }
       );
 
@@ -45,7 +45,8 @@ const GroqJS = ({ datasrc }) => {
       }
 
       const data = await response.json();
-      const assistantResponse = data?.response?.replace(/\*\*/g, "");
+      const assistantResponse = data?.response?.replace(/[#*`]/g, "");
+
       console.log(assistantResponse);
       // Replace newline characters with <br> tags
       const formattedAssistantResponse = assistantResponse.replace(

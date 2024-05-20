@@ -436,6 +436,13 @@ const SalesSection = ({
     }),
   ];
 
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const confirmDelete = () => {
+    removeChannelInput(renderChannelForm);
+    setIsDeleteModalOpen(false);
+  };
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full xl:w-3/4 sm:p-4 p-0">
@@ -457,7 +464,7 @@ const SalesSection = ({
                         Math.max(1, Math.min(e.target.value, chartEndMonth))
                       )
                     }
-                    className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                    className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
                   >
                     {Array.from({ length: numberOfMonths }, (_, i) => {
                       const monthIndex = (startingMonth + i - 1) % 12;
@@ -484,7 +491,7 @@ const SalesSection = ({
                         )
                       )
                     }
-                    className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                    className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
                   >
                     {Array.from({ length: numberOfMonths }, (_, i) => {
                       const monthIndex = (startingMonth + i - 1) % 12;
@@ -528,7 +535,7 @@ const SalesSection = ({
         />
       </div>
 
-      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section aria-labelledby="sales-heading" className="mb-8 sticky top-8">
           <h2
             className="text-lg font-semibold mb-8 flex items-center"
@@ -544,7 +551,7 @@ const SalesSection = ({
             ></label>
             <select
               id="selectedChannel"
-              className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+              className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
               value={renderChannelForm}
               onChange={handleChannelChange}
             >
@@ -562,7 +569,7 @@ const SalesSection = ({
             .map((input, index) => (
               <div
                 key={input.id}
-                className="bg-white rounded-md p-6 border my-4"
+                className="bg-white rounded-2xl p-6 border my-4"
               >
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">
@@ -730,8 +737,8 @@ const SalesSection = ({
             ))}
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <button
-              className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4"
-              onClick={() => removeChannelInput(renderChannelForm)}
+              className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
+              onClick={() => setIsDeleteModalOpen(true)}
             >
               <DeleteOutlined
                 style={{
@@ -744,7 +751,7 @@ const SalesSection = ({
             </button>
 
             <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
               onClick={addNewChannelInput}
             >
               <PlusOutlined
@@ -758,7 +765,7 @@ const SalesSection = ({
             </button>
 
             <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
               onClick={handleSave}
             >
               <CheckCircleOutlined
@@ -841,7 +848,7 @@ const SalesSection = ({
 
               <Select
                 id="selectedChannel"
-                className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
                 value={renderChannelForm}
                 onValueChange={(value) => handleChannelChange(value)}
               >
@@ -865,7 +872,7 @@ const SalesSection = ({
                 .map((input, index) => (
                   <div
                     key={input.id}
-                    className="bg-white rounded-md p-6 border my-4"
+                    className="bg-white rounded-2xl p-6 border my-4"
                   >
                     <div className="grid grid-cols-2 gap-4 mb-3">
                       <span className="flex items-center text-sm">
@@ -1041,8 +1048,8 @@ const SalesSection = ({
                     </div>
                     <div className="flex justify-end items-center">
                       <button
-                        className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4"
-                        onClick={() => removeChannelInput(input.id)}
+                        className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
+                        onClick={() => setIsDeleteModalOpen(true)}
                       >
                         Remove
                       </button>
@@ -1050,6 +1057,35 @@ const SalesSection = ({
                   </div>
                 ))}
           </section>
+        </Modal>
+      )}
+
+      {isDeleteModalOpen && (
+        <Modal
+          title="Confirm Delete"
+          visible={isDeleteModalOpen}
+          onOk={confirmDelete}
+          onCancel={() => setIsDeleteModalOpen(false)}
+          okText="Delete"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#f5222d",
+              borderColor: "#f5222d",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          centered={true}
+        >
+          Are you sure you want to delete it?
         </Modal>
       )}
     </div>

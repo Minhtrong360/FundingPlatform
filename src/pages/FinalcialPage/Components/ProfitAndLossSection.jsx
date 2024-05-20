@@ -94,7 +94,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   const { personnelCostData, personnelInputs } = useSelector(
     (state) => state.personnel
   );
-
+  
   useEffect(() => {
     const calculatedData = calculatePersonnelCostData(
       personnelInputs,
@@ -162,6 +162,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     totalCOGS,
     grossProfit,
     totalCosts,
+  
     totalPersonnelCosts,
     totalInvestmentDepreciation,
     totalInterestPayments,
@@ -182,7 +183,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     incomeTaxRate,
     startingCashBalance
   );
-
+  console.log("personnelCostData",personnelCostData)
   const transposedData = [
     { key: "Revenue" },
     { key: "Total Revenue", values: totalRevenue },
@@ -823,7 +824,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
         </div>
       </div>
 
-      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section className="mb-8 sticky top-8 bg-white">
           <GroqJS datasrc={transposedData} />
         </section>

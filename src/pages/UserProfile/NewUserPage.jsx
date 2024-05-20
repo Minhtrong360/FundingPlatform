@@ -765,7 +765,7 @@ function NewUserPage() {
                       label="FundFlow Premium code"
                       id="code"
                       name="code"
-                      value={formatNumber(userData.code)}
+                      value={userData.code}
                       onChange={handleInputChange}
                       type="text"
                     />

@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { saveAs } from "file-saver";
-import Joyride, { STATUS, CallBackProps, Step } from "react-joyride";
-import { FileOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-
+import { FileOutlined } from "@ant-design/icons";
 import DurationSelect from "./Components/DurationSelect";
 import CustomerSection from "./Components/CustomerSection";
 import SalesSection from "./Components/SalesSection";
@@ -12,14 +9,10 @@ import InvestmentSection from "./Components/InvestmentSection";
 import LoanSection from "./Components/LoanSection";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
-
-// import { toast } from "react-toastify";
-
 import ProgressBar from "../../components/ProgressBar";
 import Gemini from "./Components/Gemini";
 import MetricsFM from "./Components/MetricsFM";
 import ProfitAndLossSection from "./Components/ProfitAndLossSection";
-import * as XLSX from "xlsx";
 import BalanceSheetSection from "./Components/BalanceSheetSection";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { useDispatch, useSelector } from "react-redux";
@@ -39,21 +32,16 @@ import {
 import {
   calculateCustomerGrowth,
   calculateYearlyAverage,
-  generateCustomerTableData,
   setCustomerGrowthData,
   setCustomerInputs,
-  setCustomerTableData,
   setYearlyAverageCustomers,
-  transformCustomerData,
 } from "../../features/CustomerSlice";
 import {
   calculateChannelRevenue,
   calculateYearlySales,
   setChannelInputs,
   setChannelNames,
-  setRevenueTableData,
   setYearlySales,
-  transformRevenueDataForTable,
 } from "../../features/SaleSlice";
 import FundraisingSection from "./Components/FundraisingSections";
 import { formatNumber, setCostInputs } from "../../features/CostSlice";
@@ -66,13 +54,12 @@ import { Button, FloatButton, Modal, message } from "antd";
 import { useParams } from "react-router-dom";
 import AnnounceFMPage from "./Components/AnnounceFMPage";
 
-const FinancialForm = ({ currentUser, setCurrentUser }) => {
+export const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [spinning, setSpinning] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [temIsLoading, setTemIsLoading] = useState(true);
-
   //DurationSection
   const {
     selectedDuration,
@@ -210,10 +197,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           enabled: false, // Disable zooming
         },
         toolbar: {
-          show: true,
-          tools: {
-            download: true,
-          }
+          show: false, // Hide the toolbar
         },
         id: "customer-growth-chart",
         type: "area",
@@ -277,7 +261,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-      
+
       grid: {
         show: false,
       },
@@ -315,10 +299,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           enabled: false, // Disable zooming
         },
         toolbar: {
-          show: true,
-          tools: {
-            download: true,
-          }
+          show: false, // Hide the toolbar
         },
         animations: {
           enabled: false,
@@ -340,7 +321,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-    
+
       xaxis: {
         axisTicks: {
           show: false, // Hide x-axis ticks
@@ -405,18 +386,15 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const { costInputs } = useSelector((state) => state.cost);
 
   //PersonnelState
-
   const { personnelInputs } = useSelector((state) => state.personnel);
 
   //InvestmentState
   const { investmentInputs } = useSelector((state) => state.investment);
 
   //LoanState
-
   const { loanInputs } = useSelector((state) => state.loan);
 
   // Fundraising State
-
   const { fundraisingInputs } = useSelector((state) => state.fundraising);
   // Lưu vào DB
   const { id } = useParams();
@@ -436,11 +414,22 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
     return data.length > 0 ? data : null;
   };
+  const [viewError, setViewError] = useState(false);
+
+  const checkPermission = (projectData, userData) => {
+    if (
+      projectData.user_id !== user?.id &&
+      !projectData.invited_user?.includes(user.email) &&
+      !projectData.collabs?.includes(user.email) &&
+      userData?.admin !== true
+    ) {
+      setViewError(true);
+    }
+  };
 
   useEffect(() => {
     setTemIsLoading(true);
     // Assuming `user` is your user object
-
     loadData().then((dataFetched) => {
       if (JSON.parse(dataFetched[0]?.inputData)) {
         const inputData = JSON.parse(dataFetched[0]?.inputData);
@@ -654,6 +643,11 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           )
         );
       }
+      // Check permissions after loading data
+      const projectData = dataFetched[0];
+      if (projectData) {
+        checkPermission(projectData, currentUser);
+      }
 
       setTemIsLoading(false);
     });
@@ -705,6 +699,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
     setCustomerGrowthChart((prevState) => ({
       ...prevState,
+
       series: [
         ...seriesData,
         {
@@ -747,9 +742,11 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         const financeRecord = existingData[0];
 
         // Kiểm tra nếu tác giả của dữ liệu tài chính trùng với userId
-        if (financeRecord.user_id === user.id) {
+        if (
+          financeRecord.user_id === user.id ||
+          financeRecord.collabs?.includes(user.email)
+        ) {
           // Cập nhật bản ghi hiện có
-
           const { error: updateError } = await supabase
             .from("finance")
             .update({ name: inputData.financialProjectName, inputData })
@@ -819,15 +816,12 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   // Download Excel
   // const downloadExcel = () => {
   //   const workBook = XLSX.utils.book_new();
-
   //   const convertDataToWorksheet = (data) => {
   //     return XLSX.utils.json_to_sheet(data);
   //   };
-
   //   const addSheetToWorkbook = (sheet, sheetName) => {
   //     XLSX.utils.book_append_sheet(workBook, sheet, sheetName);
   //   };
-
   //   // Example data conversion and sheet addition
   //   addSheetToWorkbook(
   //     convertDataToWorksheet(transformCostDataForTable()),
@@ -846,31 +840,24 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   //     "Loans"
   //   );
   //   //addSheetToWorkbook(convertDataToWorksheet(transposedData), 'Profit and Loss');
-
   //   // Write the workbook and trigger download
   //   const wbout = XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
-
   //   function s2ab(s) {
   //     const buf = new ArrayBuffer(s.length);
   //     const view = new Uint8Array(buf);
   //     for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
   //     return buf;
   //   }
-
   //   saveAs(
   //     new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
   //     "financial-data.xlsx"
   //   );
   // };
-
   // Download JSON
-
   // Chuẩn bị file cần down
-
   const downloadJSON = () => {};
 
   // Kết thúc down JSON
-
   const [activeTab, setActiveTab] = useState("overview");
 
   const handleTabChange = (tabName) => {
@@ -895,96 +882,109 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 
+  if (viewError) {
+    return (
+      <div>
+        <LoadingButtonClick isLoading={isLoading} />
+        <AnnounceFMPage
+          title="Permission Required"
+          announce="This is a private project."
+          describe="Send a request to the project owner to get access."
+          sendRequest={true}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen">
       {/* <div>
-        <Joyride
-          steps={[
-            {
-              target: ".cursor-pointer-overview",
-              content:
-                "This is the Overview tab. It provides a summary of your financial data.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-customer",
-              content:
-                "This is the Customer tab. It allows you to manage customer-related data.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-sales",
-              content:
-                "This is the Sales tab. It helps you track your sales performance.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-cost",
-              content:
-                "This is the Cost tab. It helps you analyze your costs and expenses.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-personnel",
-              content:
-                "This is the Personnel tab. It allows you to manage your workforce.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-investment",
-              content:
-                "This is the Investment tab. It helps you track your investments.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-loan",
-              content:
-                "This is the Loan tab. It allows you to manage your loans and debts.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-fundraising",
-              content:
-                "This is the Fundraising tab. It helps you manage fundraising activities.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-profitAndLoss",
-              content:
-                "This is the Profit and Loss tab. It provides insights into your profitability.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-cashFlow",
-              content:
-                "This is the Cash Flow tab. It helps you monitor your cash flow.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-balanceSheet",
-              content:
-                "This is the Balance Sheet tab. It provides an overview of your financial position.",
-              disableBeacon: true,
-            },
-          ]}
-          run={run}
-          continuous
-          scrollToFirstStep
-          showProgress
-          showSkipButton
-          disableOverlayClose
-          disableScrolling
-          disableCloseOnEsc
-          callback={handleJoyrideCallback}
-          styles={{
-            options: {
-              zIndex: 10000,
-            },
-          }}
-        />
-      </div> */}
+              <Joyride
+                steps={[
+                  {
+                    target: ".cursor-pointer-overview",
+                    content:
+                      "This is the Overview tab. It provides a summary of your financial data.",
+                    disableBeacon: true,
+                  },
+                  {
+                    target: ".cursor-pointer-customer",
+                    content:
+                      "This is the Customer tab. It allows you to manage customer-related data.",
+                    disableBeacon: true,
+                  },
+                  {
+                    target: ".cursor-pointer-sales",
+                    content:
+                      "This is the Sales tab. It helps you track your sales performance.",
+                    disableBeacon: true,
+                  },
+                  {
+                    target: ".cursor-pointer-cost",
+                    content:
+                      "This is the Cost tab. It helps you analyze your costs and expenses.",
+                    disableBeacon: true,
+                  },
+                  {
+                    target: ".cursor-pointer-personnel",
+                    content:
+                      "This is the Personnel tab. It allows you to manage your workforce.",
+                    disableBeacon: true,
+                  },
+                  {
+                    target: ".cursor-pointer-investment",
+                    content:
+                      "This is the Investment tab. It helps you track your investments.",
+                    disableBeacon: true,
+                  },
+                  {
+                    target: ".cursor-pointer-loan",
+                    content:
+                      "This is the Loan tab. It allows you to manage your loans and debts.",
+                    disableBeacon: true,
+                  },
+                  {
+                    target: ".cursor-pointer-fundraising",
+                    content:
+                      "This is the Fundraising tab. It helps you manage fundraising activities.",
+                    disableBeacon: true,
+                  },
+                  {
+                    target: ".cursor-pointer-profitAndLoss",
+                    content:
+                      "This is the Profit and Loss tab. It provides insights into your profitability.",
+                    disableBeacon: true,
+                  },
+                  {
+                    target: ".cursor-pointer-cashFlow",
+                    content:
+                      "This is the Cash Flow tab. It helps you monitor your cash flow.",
+                    disableBeacon: true,
+                  },
+                  {
+                    target: ".cursor-pointer-balanceSheet",
+                    content:
+                      "This is the Balance Sheet tab. It provides an overview of your financial position.",
+                    disableBeacon: true,
+                  },
+                ]}
+                run={run}
+                continuous
+                scrollToFirstStep
+                showProgress
+                showSkipButton
+                disableOverlayClose
+                disableScrolling
+                disableCloseOnEsc
+                callback={handleJoyrideCallback}
+                styles={{
+                  options: {
+                    zIndex: 10000,
+                  },
+                }}
+              />
+            </div> */}
 
-     
       {spinning ? (
         <ProgressBar spinning={spinning} isLoading={isLoading} />
       ) : (
@@ -1000,13 +1000,13 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               setSpinning={setSpinning}
             />
           </div>
-          
+
           <div className="my-4 ">
             {/* <div className="rounded-lg bg-green-500 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">
-              <button onClick={startTour}>
-                <QuestionCircleOutlined />
-              </button>
-            </div> */}
+                      <button onClick={startTour}>
+                        <QuestionCircleOutlined />
+                      </button>
+                    </div> */}
             <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
               <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
                 <li
@@ -1261,13 +1261,11 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       )}
 
       {/* <button onClick={downloadExcel} className="download-excel-button">
-        Download Excel
-      </button> */}
+              Download Excel
+            </button> */}
       {/* <button onClick={downloadJSON} className="download-excel-button">
-        Download Excel
-      </button> */}
+              Download Excel
+            </button> */}
     </div>
   );
 };
-
-export default FinancialForm;

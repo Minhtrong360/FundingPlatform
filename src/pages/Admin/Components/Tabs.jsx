@@ -1,19 +1,19 @@
 import {
-  Modal,
+  // Modal,
   Table,
-  DatePicker,
-  Input,
-  Button,
-  message,
-  Dropdown,
-  Menu,
+  // DatePicker,
+  // Input,
+  // Button,
+  // message,
+  // Dropdown,
+  // Menu,
 } from "antd";
-import React, { useState } from "react";
+import React from "react";
 import Dashboard from "./Dashboard";
-import { supabase } from "../../../supabase";
-import { formatDate } from "../../../features/DurationSlice";
-import { PlusOutlined } from "@ant-design/icons";
-import moment from "moment";
+// import { supabase } from "../../../supabase";
+// import { formatDate } from "../../../features/DurationSlice";
+// import { PlusOutlined } from "@ant-design/icons";
+// import moment from "moment";
 
 function Tabs({
   activeTab,
@@ -29,185 +29,185 @@ function Tabs({
   codeData,
   setCodeData,
 }) {
-  const codeColumns = [
-    {
-      title: "No",
-      dataIndex: "index",
-      key: "index",
-      align: "center",
-      render: (text, record, index) => (
-        <span>{codeData?.indexOf(record) + 1}</span>
-      ),
-    },
-    { title: "Code", dataIndex: "code", key: "code" },
-    {
-      title: "Created at",
-      dataIndex: "created_at",
-      key: "created_at",
-      align: "center",
-      render: (text, record) => (
-        <span className="hover:cursor-pointer">
-          {formatDate(record.created_at)}
-        </span>
-      ),
-    },
-    {
-      title: "Expired at",
-      dataIndex: "expired_at",
-      key: "expired_at",
-      align: "center",
-      render: (text, record) => (
-        <span className="hover:cursor-pointer">
-          {formatDate(record.expired_at)}
-        </span>
-      ),
-    },
-    {
-      title: "Number of Used",
-      dataIndex: "number_of_used",
-      key: "number_of_used",
-    },
-    {
-      title: "Action",
-      dataIndex: "action",
-      key: "action",
-      align: "center",
-      render: (text, record) => (
-        <Dropdown
-          className="flex items-center justify-center"
-          overlay={
-            <Menu>
-              <>
-                <Menu.Item key="edit">
-                  <div
-                    onClick={() => openEditModal(record)}
-                    style={{ fontSize: "12px" }}
-                  >
-                    Edit
-                  </div>
-                </Menu.Item>
-                <Menu.Item key="delete">
-                  <div
-                    onClick={() => openDeleteModal(record.id)}
-                    style={{ fontSize: "12px" }}
-                  >
-                    Delete
-                  </div>
-                </Menu.Item>
-              </>
-            </Menu>
-          }
-        >
-          <div className="bg-blue-600 rounded-md max-w-[5rem] text-white py-1 hover:cursor-pointer">
-            Action
-          </div>
-        </Dropdown>
-      ),
-    },
-  ];
+  // const codeColumns = [
+  //   {
+  //     title: "No",
+  //     dataIndex: "index",
+  //     key: "index",
+  //     align: "center",
+  //     render: (text, record, index) => (
+  //       <span>{codeData?.indexOf(record) + 1}</span>
+  //     ),
+  //   },
+  //   { title: "Code", dataIndex: "code", key: "code" },
+  //   {
+  //     title: "Created at",
+  //     dataIndex: "created_at",
+  //     key: "created_at",
+  //     align: "center",
+  //     render: (text, record) => (
+  //       <span className="hover:cursor-pointer">
+  //         {formatDate(record.created_at)}
+  //       </span>
+  //     ),
+  //   },
+  //   {
+  //     title: "Expired at",
+  //     dataIndex: "expired_at",
+  //     key: "expired_at",
+  //     align: "center",
+  //     render: (text, record) => (
+  //       <span className="hover:cursor-pointer">
+  //         {formatDate(record.expired_at)}
+  //       </span>
+  //     ),
+  //   },
+  //   {
+  //     title: "Number of Used",
+  //     dataIndex: "number_of_used",
+  //     key: "number_of_used",
+  //   },
+  //   {
+  //     title: "Action",
+  //     dataIndex: "action",
+  //     key: "action",
+  //     align: "center",
+  //     render: (text, record) => (
+  //       <Dropdown
+  //         className="flex items-center justify-center"
+  //         overlay={
+  //           <Menu>
+  //             <>
+  //               <Menu.Item key="edit">
+  //                 <div
+  //                   onClick={() => openEditModal(record)}
+  //                   style={{ fontSize: "12px" }}
+  //                 >
+  //                   Edit
+  //                 </div>
+  //               </Menu.Item>
+  //               <Menu.Item key="delete">
+  //                 <div
+  //                   onClick={() => openDeleteModal(record.id)}
+  //                   style={{ fontSize: "12px" }}
+  //                 >
+  //                   Delete
+  //                 </div>
+  //               </Menu.Item>
+  //             </>
+  //           </Menu>
+  //         }
+  //       >
+  //         <div className="bg-blue-600 rounded-md max-w-[5rem] text-white py-1 hover:cursor-pointer">
+  //           Action
+  //         </div>
+  //       </Dropdown>
+  //     ),
+  //   },
+  // ];
 
-  const [isAddNewModalOpen, setIsAddNewModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [newCode, setNewCode] = useState("");
-  const [expirationDate, setExpirationDate] = useState(null);
-  const [selectedCode, setSelectedCode] = useState(null);
-  const [codeToDelete, setCodeToDelete] = useState(null);
+  // const [isAddNewModalOpen, setIsAddNewModalOpen] = useState(false);
+  // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  // const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  // const [newCode, setNewCode] = useState("");
+  // const [expirationDate, setExpirationDate] = useState(null);
+  // const [selectedCode, setSelectedCode] = useState(null);
+  // const [codeToDelete, setCodeToDelete] = useState(null);
 
-  const handleAddNewCode = async () => {
-    if (!newCode || !expirationDate) {
-      message.error("Please enter all required fields");
-      return;
-    }
+  // const handleAddNewCode = async () => {
+  //   if (!newCode || !expirationDate) {
+  //     message.error("Please enter all required fields");
+  //     return;
+  //   }
 
-    const { data, error } = await supabase
-      .from("code")
-      .insert([
-        {
-          code: newCode,
-          expired_at: expirationDate.toISOString(),
-        },
-      ])
-      .select();
+  //   const { data, error } = await supabase
+  //     .from("code")
+  //     .insert([
+  //       {
+  //         code: newCode,
+  //         expired_at: expirationDate.format("YYYY-MM-DD"),
+  //       },
+  //     ])
+  //     .select();
 
-    if (error) {
-      message.error("Failed to add new code");
-      console.error(error);
-    } else {
-      message.success("New code added successfully");
-      setCodeData((prev) =>
-        [data[0], ...prev].sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at)
-        )
-      );
-      setIsAddNewModalOpen(false);
-      setNewCode("");
-      setExpirationDate(null);
-    }
-  };
+  //   if (error) {
+  //     message.error("Failed to add new code");
+  //     console.error(error);
+  //   } else {
+  //     message.success("New code added successfully");
+  //     setCodeData((prev) =>
+  //       [data[0], ...prev].sort(
+  //         (a, b) => new Date(b.created_at) - new Date(a.created_at)
+  //       )
+  //     );
+  //     setIsAddNewModalOpen(false);
+  //     setNewCode("");
+  //     setExpirationDate(null);
+  //   }
+  // };
 
-  const handleEditCode = async () => {
-    if (!selectedCode || !newCode || !expirationDate) {
-      message.error("Please enter all required fields");
-      return;
-    }
+  // const handleEditCode = async () => {
+  //   if (!selectedCode || !newCode || !expirationDate) {
+  //     message.error("Please enter all required fields");
+  //     return;
+  //   }
 
-    const { data, error } = await supabase
-      .from("code")
-      .update({
-        code: newCode,
-        expired_at: expirationDate.toISOString(),
-      })
-      .eq("id", selectedCode.id)
-      .select();
+  //   const { data, error } = await supabase
+  //     .from("code")
+  //     .update({
+  //       code: newCode,
+  //       expired_at: expirationDate.format("YYYY-MM-DD"),
+  //     })
+  //     .eq("id", selectedCode.id)
+  //     .select();
 
-    if (error) {
-      message.error("Failed to update code");
-      console.error(error);
-    } else {
-      message.success("Code updated successfully");
-      setCodeData((prev) =>
-        prev
-          .map((item) => (item.id === selectedCode.id ? data[0] : item))
-          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-      );
-      setIsEditModalOpen(false);
-      setNewCode("");
-      setExpirationDate(null);
-    }
-  };
+  //   if (error) {
+  //     message.error("Failed to update code");
+  //     console.error(error);
+  //   } else {
+  //     message.success("Code updated successfully");
+  //     setCodeData((prev) =>
+  //       prev
+  //         .map((item) => (item.id === selectedCode.id ? data[0] : item))
+  //         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+  //     );
+  //     setIsEditModalOpen(false);
+  //     setNewCode("");
+  //     setExpirationDate(null);
+  //   }
+  // };
 
-  const handleDeleteCode = async () => {
-    const { error } = await supabase
-      .from("code")
-      .delete()
-      .eq("id", codeToDelete);
+  // const handleDeleteCode = async () => {
+  //   const { error } = await supabase
+  //     .from("code")
+  //     .delete()
+  //     .eq("id", codeToDelete);
 
-    if (error) {
-      message.error("Failed to delete code");
-      console.error(error);
-    } else {
-      message.success("Code deleted successfully");
-      setCodeData((prev) => prev.filter((item) => item.id !== codeToDelete));
-      setIsDeleteModalOpen(false);
-      setCodeToDelete(null);
-    }
-  };
+  //   if (error) {
+  //     message.error("Failed to delete code");
+  //     console.error(error);
+  //   } else {
+  //     message.success("Code deleted successfully");
+  //     setCodeData((prev) => prev.filter((item) => item.id !== codeToDelete));
+  //     setIsDeleteModalOpen(false);
+  //     setCodeToDelete(null);
+  //   }
+  // };
 
-  const openEditModal = (record) => {
-    console.log("record", record);
-    setSelectedCode(record);
-    setNewCode(record.code);
-    setExpirationDate(record.expired_at ? moment(record.expired_at) : null);
-    setIsEditModalOpen(true);
-  };
+  // const openEditModal = (record) => {
+  //   console.log("record", record);
+  //   setSelectedCode(record);
+  //   setNewCode(record.code);
+  //   setExpirationDate(record.expired_at ? moment(record.expired_at) : null);
+  //   setIsEditModalOpen(true);
+  // };
 
-  console.log("expirationDate", expirationDate);
+  // console.log("expirationDate", expirationDate);
 
-  const openDeleteModal = (id) => {
-    setCodeToDelete(id);
-    setIsDeleteModalOpen(true);
-  };
+  // const openDeleteModal = (id) => {
+  //   setCodeToDelete(id);
+  //   setIsDeleteModalOpen(true);
+  // };
 
   return (
     <div
@@ -241,14 +241,14 @@ function Tabs({
             >
               Client profiles
             </li>
-            <li
+            {/* <li
               className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                 activeTab === "code" ? "bg-yellow-300 font-bold" : ""
               }`}
               onClick={() => handleTabChange("code")}
             >
               Code
-            </li>
+            </li> */}
           </ul>
         </div>
         {activeTab === "fundraising" && (
@@ -322,7 +322,7 @@ function Tabs({
             </div>
           </section>
         )}
-        {activeTab === "code" && (
+        {/* {activeTab === "code" && (
           <section className="container px-4 mx-auto mt-14">
             <div className="flex flex-col mb-8">
               <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -356,9 +356,9 @@ function Tabs({
               </div>
             </div>
           </section>
-        )}
+        )} */}
 
-        <Modal
+        {/* <Modal
           title="Add new Premium Code"
           visible={isAddNewModalOpen}
           onOk={handleAddNewCode}
@@ -511,7 +511,7 @@ function Tabs({
           >
             Are you sure you want to delete it?
           </Modal>
-        )}
+        )} */}
       </div>
     </div>
   );

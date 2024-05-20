@@ -46,7 +46,6 @@ import { useAuth } from "../../../context/AuthContext";
 import { Checkbox } from "antd";
 import {
   Modal as AntdModal, // Add AntdModal for larger mode view
-
 } from "antd";
 import { ResizeObserver } from "rc-resize-observer"; // Add ResizeObserver for responsive handling
 
@@ -59,9 +58,8 @@ const CustomerSection = React.memo(
     setCustomerGrowthChart,
   }) => {
     const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
-const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
+    const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
 
-    
     const handleChartClick = (chart) => {
       setSelectedChart(chart);
       setIsChartModalVisible(true);
@@ -228,8 +226,6 @@ const [selectedChart, setSelectedChart] = useState(null); // New state for selec
     const startingMonth = startMonth; // Tháng bắt đầu từ 1
     const startingYear = startYear; // Năm bắt đầu từ 24
 
-    
-
     const customerColumns = [
       {
         fixed: "left",
@@ -247,20 +243,24 @@ const [selectedChart, setSelectedChart] = useState(null); // New state for selec
           key: `month${i + 1}`,
           align: "right",
           render: (text, record) => {
-            const channel = tempCustomerInputs.find(input => input.channelName === record.channelName);
+            const channel = tempCustomerInputs.find(
+              (input) => input.channelName === record.channelName
+            );
             const month = i + 1;
-            const isInEvent = month >= channel?.eventBeginMonth && month <= channel?.eventEndMonth;
-            const growthRate = isInEvent ? channel?.localGrowthRate : channel?.growthPerMonth;
+            const isInEvent =
+              month >= channel?.eventBeginMonth &&
+              month <= channel?.eventEndMonth;
+            const growthRate = isInEvent
+              ? channel?.localGrowthRate
+              : channel?.growthPerMonth;
             const eventName = channel?.eventName || "";
-    
+
             const tooltipTitle = isInEvent
               ? `Local Growth Rate: ${growthRate}%\nEvent: ${eventName}`
-              : '';
-    
-            const cellStyle = isInEvent
-              ? { backgroundColor: 'yellow' }
-              : {};
-    
+              : "";
+
+            const cellStyle = isInEvent ? { backgroundColor: "yellow" } : {};
+
             return (
               <Tooltip title={tooltipTitle} placement="topLeft">
                 <div style={cellStyle}>{text}</div>
@@ -270,13 +270,6 @@ const [selectedChart, setSelectedChart] = useState(null); // New state for selec
         };
       }),
     ];
-    
-    
-    
-    
-
-    
-    
 
     const handleSelectChange = (event) => {
       setRenderCustomerForm(event.target.value);
@@ -759,7 +752,6 @@ const [selectedChart, setSelectedChart] = useState(null); // New state for selec
               <Card
                 key={index}
                 className="flex flex-col transition duration-500  rounded-2xl"
-                onClick={() => handleChartClick(chart)}
               >
                 <div className="flex justify-between items-center">
                   <div className="min-w-[10vw]">
@@ -816,33 +808,35 @@ const [selectedChart, setSelectedChart] = useState(null); // New state for selec
                     </select>
                   </div>
                 </div>
-                <Chart
-                  options={{
-                    ...chart.options,
-                    fill: {
-                      type: "gradient",
+                <div onClick={() => handleChartClick(chart)}>
+                  <Chart
+                    options={{
+                      ...chart.options,
+                      fill: {
+                        type: "gradient",
 
-                      gradient: {
-                        shade: "light",
-                        shadeIntensity: 0.5,
-                        opacityFrom: 0.75,
-                        opacityTo: 0.65,
-                        stops: [0, 90, 100],
+                        gradient: {
+                          shade: "light",
+                          shadeIntensity: 0.5,
+                          opacityFrom: 0.75,
+                          opacityTo: 0.65,
+                          stops: [0, 90, 100],
+                        },
                       },
-                    },
-                    xaxis: {
-                      ...chart.options.xaxis,
-                      // tickAmount: 12, // Set the number of ticks on the x-axis to 12
-                    },
-                    stroke: {
-                      width: 1,
-                      curve: "straight", // Set the stroke width to 1
-                    },
-                  }}
-                  series={chart.series}
-                  type="area"
-                  height={350}
-                />
+                      xaxis: {
+                        ...chart.options.xaxis,
+                        // tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                      },
+                      stroke: {
+                        width: 1,
+                        curve: "straight", // Set the stroke width to 1
+                      },
+                    }}
+                    series={chart.series}
+                    type="area"
+                    height={350}
+                  />
+                </div>
               </Card>
             ))}
 
@@ -871,24 +865,25 @@ const [selectedChart, setSelectedChart] = useState(null); // New state for selec
             ))}
           </div>
           <AntdModal
-  visible={isChartModalVisible}
-  footer={null}
-  onCancel={() => setIsChartModalVisible(false)}
-  width="90%"
-  style={{ top: 20 }}
->
-  {selectedChart && (
-    <Chart
-      options={{
-        ...selectedChart.options,
-        // ... other options
-      }}
-      series={selectedChart.series}
-      type="area"
-      height={500}
-    />
-  )}
-</AntdModal>
+            centered
+            visible={isChartModalVisible}
+            footer={null}
+            onCancel={() => setIsChartModalVisible(false)}
+            width="90%"
+            style={{ top: 20 }}
+          >
+            {selectedChart && (
+              <Chart
+                options={{
+                  ...selectedChart.options,
+                  // ... other options
+                }}
+                series={selectedChart.series}
+                type="area"
+                height={500}
+              />
+            )}
+          </AntdModal>
 
           <h3 className="text-lg font-semibold my-4">Customer Table</h3>
           <Table
@@ -1116,68 +1111,92 @@ const [selectedChart, setSelectedChart] = useState(null); // New state for selec
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4 mb-3">
-  <Checkbox
-    className="col-span-2"
-    checked={showAdvancedInputs}
-    onChange={(e) => setShowAdvancedInputs(e.target.checked)}
-  >
-    Show Advanced Inputs
-  </Checkbox>
-</div>
+                    <Checkbox
+                      className="col-span-2"
+                      checked={showAdvancedInputs}
+                      onChange={(e) => setShowAdvancedInputs(e.target.checked)}
+                    >
+                      Show Advanced Inputs
+                    </Checkbox>
+                  </div>
 
-{showAdvancedInputs && (
-  <>
-    <div className="grid grid-cols-2 gap-4 mb-3">
-    <span className="flex items-center text-sm">Local Growth Rate:</span>
-    <Input
-      className="col-start-2 border-gray-300"
-      value={input.localGrowthRate}
-      onChange={(e) =>
-        handleInputChange(input?.id, "localGrowthRate", e.target.value)
-      }
-    />
-  </div>
+                  {showAdvancedInputs && (
+                    <>
+                      <div className="grid grid-cols-2 gap-4 mb-3">
+                        <span className="flex items-center text-sm">
+                          Local Growth Rate:
+                        </span>
+                        <Input
+                          className="col-start-2 border-gray-300"
+                          value={input.localGrowthRate}
+                          onChange={(e) =>
+                            handleInputChange(
+                              input?.id,
+                              "localGrowthRate",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
 
-    <div className="grid grid-cols-2 gap-4 mb-3">
-      <span className="flex items-center text-sm">Event Begin Month:</span>
-      <Input
-        className="col-start-2 border-gray-300"
-        type="number"
-        min={1}
-        max={12}
-        value={input.eventBeginMonth}
-        onChange={(e) =>
-          handleInputChange(input?.id, "eventBeginMonth", e.target.value)
-        }
-      />
-    </div>
+                      <div className="grid grid-cols-2 gap-4 mb-3">
+                        <span className="flex items-center text-sm">
+                          Event Begin Month:
+                        </span>
+                        <Input
+                          className="col-start-2 border-gray-300"
+                          type="number"
+                          min={1}
+                          max={12}
+                          value={input.eventBeginMonth}
+                          onChange={(e) =>
+                            handleInputChange(
+                              input?.id,
+                              "eventBeginMonth",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
 
-    <div className="grid grid-cols-2 gap-4 mb-3">
-      <span className="flex items-center text-sm">Event End Month:</span>
-      <Input
-        className="col-start-2 border-gray-300"
-        type="number"
-        min={1}
-        max={12}
-        value={input.eventEndMonth}
-        onChange={(e) =>
-          handleInputChange(input?.id, "eventEndMonth", e.target.value)
-        }
-      />
-    </div>
+                      <div className="grid grid-cols-2 gap-4 mb-3">
+                        <span className="flex items-center text-sm">
+                          Event End Month:
+                        </span>
+                        <Input
+                          className="col-start-2 border-gray-300"
+                          type="number"
+                          min={1}
+                          max={12}
+                          value={input.eventEndMonth}
+                          onChange={(e) =>
+                            handleInputChange(
+                              input?.id,
+                              "eventEndMonth",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
 
-    <div className="grid grid-cols-2 gap-4 mb-3">
-      <span className="flex items-center text-sm">Event Name:</span>
-      <Input
-        className="col-start-2 border-gray-300"
-        value={input.eventName}
-        onChange={(e) =>
-          handleInputChange(input?.id, "eventName", e.target.value)
-        }
-      />
-    </div>
-  </>
-)}
+                      <div className="grid grid-cols-2 gap-4 mb-3">
+                        <span className="flex items-center text-sm">
+                          Event Name:
+                        </span>
+                        <Input
+                          className="col-start-2 border-gray-300"
+                          value={input.eventName}
+                          onChange={(e) =>
+                            handleInputChange(
+                              input?.id,
+                              "eventName",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
 

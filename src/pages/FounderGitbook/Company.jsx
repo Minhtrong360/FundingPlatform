@@ -3,7 +3,7 @@ import SelectField from "../../components/SelectField";
 import TextAreaField from "../../components/TextAreaField";
 
 import countries from "../../components/Country";
-import AlertMsg from "../../components/AlertMsg";
+
 import industries from "../../components/Industries";
 import MultiSelectField from "../../components/MultiSelectField";
 import { useEffect, useState } from "react";
@@ -107,8 +107,6 @@ function Company({
       <div className="shadow-xl rounded-md border h-5/6 mt-4 overflow-auto sticky ml-4 mr-4 md:ml-0 md:mr-0 mb-2">
         <div className="max-w-xl mx-auto h-screen">
           <div className="max-w-[85rem] px-4 py-8 mx-auto ">
-            <AlertMsg />
-
             <div className="max-w-xl mx-auto">
               <div className="text-left">
                 <p className="mt-1 text-gray-800 font-semibold darkTextGray">

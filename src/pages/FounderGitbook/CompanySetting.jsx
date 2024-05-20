@@ -3,13 +3,12 @@ import Company from "./Company"; // Import your Company component
 
 import AnnouncePage from "../../components/AnnouncePage";
 
-// import { toast } from "react-toastify";
 import { supabase } from "../../supabase";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 import LoadingButtonClick from "../../components/LoadingButtonClick";
-import AlertMsg from "../../components/AlertMsg";
+
 // import CompanyTest from "./CompanyTest";
 
 import axios from "axios";
@@ -604,7 +603,6 @@ function CompanySetting() {
           typeOfferingOptions={typeOfferingOptions}
           handleIndustryChange={handleIndustryChange}
         />
-        <AlertMsg />
       </div>
       <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
         <div className="">
@@ -615,41 +613,7 @@ function CompanySetting() {
             {" "}
             {/* Sử dụng lg:col-span-2 để các div còn lại chiếm 2/3 */}
             <div className="flex flex-col">
-              {/* <HeroSection
-            formData={formData}
-            title={formData.name}
-            description={formData.description}
-            button1Text={formData.target_amount}
-            button2Text={formData.ticket_size}
-            button3Text={formData.no_ticket}
-            button4Text={formData.offer}
-            button5Text={formData.offer_type}
-            imageUrl={formData.project_url}
-            setFormData={setFormData}
-            canClick={canClick}
-          /> */}
-
-              {/* <div className="text-4xl text-blue-600 font-bold leading-tight sm:px-6 lg:px-8 sm:mt-8 mt-4 px-4">
-            {" "}
-            Preview
-          </div> */}
-              {/* <hr className="" /> */}
               <ProfileInfo company={formData} canClick={canClick} />
-
-              {/* <hr className="mt-16 border-dashed border-gray-400" /> */}
-
-              {/* <div className="mt-11 px-4 sm:px-6 lg:px-8">
-            <Card
-              title={formData.name}
-              description={formData.description}
-              imageUrl={formData.card_url}
-              buttonText="More"
-              project_id={id}
-              canClick={canClick}
-              formData={formData}
-              setFormData={setFormData}
-            />
-          </div> */}
             </div>
           </div>
         </div>

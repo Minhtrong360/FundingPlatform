@@ -5,14 +5,10 @@ import {
   ArrowUpOutlined,
   ControlOutlined,
   BulbOutlined,
-  DollarCircleOutlined,
-  SolutionOutlined,
   ArrowRightOutlined,
   ArrowLeftOutlined,
 } from "@ant-design/icons";
-import FsB from "./founder&Business.jpg";
-import BsI from "./B&I.jpg";
-import VCs from "./VCs.jpg";
+
 import { Carousel } from "antd";
 import { useMediaQuery } from "react-responsive";
 

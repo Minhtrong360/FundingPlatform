@@ -54,23 +54,18 @@ const CustomChart = ({
       id,
       type: "area",
       height: 350,
-      toolbar: { show: false },
+      toolbar: {
+        show: true,
+        tools: {
+          download: true,
+        }
+      },
       zoom: { enabled: false },
       animations: {
         enabled: false,
       },
     },
     grid: { show: false },
-    // fill: {
-    //   type: "gradient",
-    //   gradient: {
-    //     shade: "light",
-    //     shadeIntensity: 0.5,
-    //     opacityFrom: 0.85,
-    //     opacityTo: 0.65,
-    //     stops: [0, 90, 100],
-    //   },
-    // },
 
     colors: ["#00A2FF", "#14F584", "#FFB303", "#DBFE01", "#FF474C", "#D84FE4"],
     xaxis: {
@@ -86,6 +81,7 @@ const CustomChart = ({
       },
     },
     yaxis: {
+      min: 0,
       axisBorder: { show: true },
       labels: {
         formatter: (val) => formatNumber(Math.floor(val)),
@@ -101,18 +97,8 @@ const CustomChart = ({
       horizontalAlign: "right",
       fontFamily: "Sora, sans-serif",
     },
-    // fill: {
-    //   type: "gradient",
 
-    //   gradient: {
-    //     shade: "light",
-    //     shadeIntensity: 0.5,
-    //     opacityFrom: 0.85,
-    //     opacityTo: 0.65,
-    //     stops: [0, 90, 100],
-    //   },
-    // },
-    stroke: { curve: "smooth", width: 1 },
+    stroke: { curve: "straight", width: 1 },
     dataLabels: { enabled: false },
   };
 

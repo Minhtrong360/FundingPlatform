@@ -1,14 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
-import {
-  Button,
-  Card,
-  FloatButton,
-  Modal,
-  Table,
-  Tooltip,
-  message,
-} from "antd";
+import { Button, Card, FloatButton, Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import {
@@ -18,7 +10,6 @@ import {
   transformPersonnelCostDataForTable,
 } from "../../../features/PersonnelSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useAuth } from "../../../context/AuthContext";
 import { supabase } from "../../../supabase";
 import {
   Select,
@@ -32,6 +23,7 @@ import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
+import { useAuth } from "../../../context/AuthContext";
 
 const PersonnelSection = ({
   numberOfMonths,
@@ -177,7 +169,12 @@ const PersonnelSection = ({
         id: "personnel-chart",
         type: "bar",
         height: 350,
-        toolbar: { show: false },
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          }
+        },
         zoom: { enabled: false },
         fontFamily: "Sora, sans-serif",
         animations: {
@@ -217,6 +214,7 @@ const PersonnelSection = ({
       },
       // title: { text: 'Personnel Cost Data', align: 'left' },
       yaxis: {
+        min: 0,
         axisboder: {
           show: true, // Hide y-axis border
         },
@@ -241,16 +239,9 @@ const PersonnelSection = ({
         fontFamily: "Sora, sans-serif",
       },
       type: "gradient",
-      // gradient: {
-      //     shadeIntensity: 1,
-      //     inverseColors: false,
-      //     opacityFrom: 0.45,
-      //     opacityTo: 0.05,
-      //     stops: [20, 100, 100, 100]
-      //   },
+
       dataLabels: { enabled: false },
-      stroke: { width: 1 },
-      // markers: { size: 1 },
+      stroke: { width: 1, curve: "straight" },
     },
     series: [],
   });
@@ -261,15 +252,13 @@ const PersonnelSection = ({
 
   const handleSave = () => {
     setIsSaved(true);
-    message.success("Data saved successfully!");
   };
   const { id } = useParams();
+  const { user } = useAuth();
   useEffect(() => {
     const saveData = async () => {
       try {
         if (isSaved) {
-          dispatch(setPersonnelInputs(tempPersonnelInputs));
-
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
             .select("*")
@@ -279,6 +268,18 @@ const PersonnelSection = ({
           }
 
           if (existingData && existingData.length > 0) {
+            const { user_email, collabs } = existingData[0];
+
+            // Check if user.email matches user_email or is included in collabs
+            if (user.email !== user_email && !collabs?.includes(user.email)) {
+              message.error(
+                "You do not have permission to update this record."
+              );
+              return;
+            }
+
+            dispatch(setPersonnelInputs(tempPersonnelInputs));
+
             const newInputData = JSON.parse(existingData[0].inputData);
 
             newInputData.personnelInputs = tempPersonnelInputs;
@@ -291,6 +292,8 @@ const PersonnelSection = ({
 
             if (updateError) {
               throw updateError;
+            } else {
+              message.success("Data saved successfully!");
             }
           }
         }
@@ -417,6 +420,7 @@ const PersonnelSection = ({
                 ...personnelChart.options,
                 stroke: {
                   width: 1, // Set the stroke width to 2
+                  curve: "straight",
                 },
                 xaxis: {
                   ...personnelChart.options.xaxis,

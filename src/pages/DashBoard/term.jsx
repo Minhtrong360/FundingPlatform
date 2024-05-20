@@ -14,7 +14,7 @@ const termsContent = [
   {
     title: "3. Payment and Subscription Management",
     content:
-      "a. BeeKrowd uses the services of a third party, Stripe, to manage payment processing and subscription services. By using BeeKrowd's platform, you agree to comply with Stripe's terms and conditions, as applicable.\n\nb. Users can subscribe to different BeeKrowd packages, including Free, Premium, and Platinum, each offering varying features and benefits. Subscription fees are billed monthly through Stripe.",
+      "a. BeeKrowd uses the services of a third party, Lemon Squeezy, to manage payment processing and subscription services. By using BeeKrowd's platform, you agree to comply with Lemon Squeezy's terms and conditions, as applicable.\n\nb. Users can subscribe to different BeeKrowd packages, including Free, Premium, and Platinum, each offering varying features and benefits. Subscription fees are billed monthly through Lemon Squeezy.",
   },
   // Continuing from the previous sections...
 

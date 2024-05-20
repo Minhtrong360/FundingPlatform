@@ -20,12 +20,7 @@ import Sample from "./Sample";
 import { useEffect, useState } from "react";
 import { supabase } from "../../../supabase";
 import { useAuth } from "../../../context/AuthContext";
-import LoadingButtonClick from "../../../components/LoadingButtonClick";
 import FilesList from "../FilesList";
-
-import * as Y from "yjs";
-import YPartyKitProvider from "y-partykit/provider";
-import Spinner from "../../../components/Spinner";
 
 function LoaderIcon(props) {
   return (
@@ -57,22 +52,6 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
   const [activeTab, setActiveTab] = useState("Your Profile");
   const [youtubeLink, setYoutubeLink] = useState("Add wanted youtube url");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { currentUser } = useAuth();
-  let userData = currentUser[0];
-
-  // Tạo một tài liệu Y.js mới
-  // const doc = new Y.Doc();
-
-  // Thiết lập nhà cung cấp WebRTC với một ID duy nhất cho tài liệu
-  // const provider = new WebrtcProvider(currentProject.id, doc);
-  // const provider = new YPartyKitProvider(
-  //   "BeeKrowd@2024",
-  //   // use a unique name as a "room" for your application:
-  //   currentProject.id,
-  //   doc
-  // );
-
-  // Lấy fragment XML để lưu trữ dữ liệu của Block Note
 
   const YouTubeLinkBlock = createReactBlockSpec(
     {
@@ -189,18 +168,6 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
     }
   }
 
-  // useEffect(() => {
-  //   // Cleanup function to disconnect and destroy Yjs instances
-  //   return () => {
-  //     if (provider) {
-  //       provider.disconnect();
-  //     }
-  //     if (doc) {
-  //       doc.destroy();
-  //     }
-  //   };
-  // }, []);
-
   const editor = useBlockNote({
     blockSpecs: blockSpecs,
     uploadFile: uploadToCustomDatabase,
@@ -209,29 +176,10 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
       insertYouTubeLink,
     ],
 
-    // collaboration: {
-    //   // The Yjs Provider responsible for transporting updates:
-    //   provider,
-    //   // Where to store BlockNote data in the Y.Doc:
-    //   fragment: doc.getXmlFragment("document-store"),
-    //   user: {
-    //     name: userData.email, // Thay đổi tùy vào người dùng hiện tại
-    //     color: "#2563EB", // Cung cấp một màu sắc đại diện cho người dùng
-    //   },
-    // },
-
     onEditorContentChange: function (editor) {
       setBlocks(editor.topLevelBlocks);
-      // setIsSaved(false); // Đánh dấu là chưa lưu khi có sự thay đổi
     },
   });
-
-  // useEffect(() => {
-  //   return () => {
-  //     provider.disconnect(); // Ngắt kết nối khi component unmount
-  //     ydoc.destroy(); // Hủy tài liệu Y.Doc để giải phóng bộ nhớ
-  //   };
-  // }, []);
 
   const handleInsertYouTubeLink = () => {
     if (youtubeLink.trim() !== "") {
@@ -492,37 +440,38 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
 
   return (
     <div
-      className={`container mx-auto px-4 flex flex-col lg:flex-row ${
+      className={`container mx-auto px-4 flex flex-col  ${
         fullScreen === true ? "justify-center items-center" : ""
       }`}
     >
       {fullScreen === false && (
-        <>
-          <aside className="w-full md:max-w-[200px] py-8">
-            <div className="sticky top-8 space-y-4">
-              <nav className="space-y-1">
-                {/* Navbar */}
-                {Object.keys(tabContents).map((tab) => (
-                  <div
-                    key={tab}
-                    className={` cursor-pointer ${
-                      activeTab === tab
-                        ? "flex items-left px-3 py-2 text-sm font-medium text-blue-600 bg-blue-100 rounded-md"
-                        : "flex items-left px-3 py-2 text-gray-600"
-                    }`}
-                    onClick={() => handleTabChange(tab)}
-                  >
-                    {tab}
-                  </div>
-                ))}
-              </nav>
-            </div>
-          </aside>
-          <div className="w-full  py-8 px-0 md:pl-8">
-            {/* Content */}
-            {tabContents[activeTab]}
-          </div>
-        </>
+       <>
+       <aside className="sticky z-20 top-0 bg-white">
+         <div className="w-full  py-8 overflow-x-auto">
+           <nav className="flex space-x-4">
+             {/* Navbar */}
+             {Object.keys(tabContents).map((tab) => (
+               <div
+                 key={tab}
+                 className={`cursor-pointer flex items-center px-3 py-2 text-sm font-medium ${
+                   activeTab === tab
+                     ? "text-blue-600 bg-blue-100 rounded-md"
+                     : "text-gray-600"
+                 }`}
+                 onClick={() => handleTabChange(tab)}
+               >
+                 {tab}
+               </div>
+             ))}
+           </nav>
+         </div>
+       </aside>
+       <div className="w-full py-8 px-0 md:pl-8">
+         {/* Content */}
+         {tabContents[activeTab]}
+       </div>
+     </>
+     
       )}
       {fullScreen === true && (
         <BlockNoteView

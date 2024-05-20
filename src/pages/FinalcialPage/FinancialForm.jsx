@@ -14,11 +14,10 @@ import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 
 // import { toast } from "react-toastify";
-import AlertMsg from "../../components/AlertMsg";
+
 import ProgressBar from "../../components/ProgressBar";
 import Gemini from "./Components/Gemini";
-import GPTAnalyzer from "./Components/GPTAnalyzer";
-import MetricsFM from "../MetricsFM";
+import MetricsFM from "./Components/MetricsFM";
 import ProfitAndLossSection from "./Components/ProfitAndLossSection";
 import * as XLSX from "xlsx";
 import BalanceSheetSection from "./Components/BalanceSheetSection";
@@ -210,7 +209,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           enabled: false, // Disable zooming
         },
         toolbar: {
-          show: false, // Hide the toolbar
+          show: true,
+          tools: {
+            download: true,
+          }
         },
         id: "customer-growth-chart",
         type: "area",
@@ -274,17 +276,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-      // fill: {
-      //   type: "gradient",
-
-      //   gradient: {
-      //     shade: "light",
-      //     shadeIntensity: 0.5,
-      //     opacityFrom: 0.75,
-      //     opacityTo: 0.65,
-      //     stops: [0, 90, 100],
-      //   },
-      // },
+      
       grid: {
         show: false,
       },
@@ -322,7 +314,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           enabled: false, // Disable zooming
         },
         toolbar: {
-          show: false, // Hide the toolbar
+          show: true,
+          tools: {
+            download: true,
+          }
         },
         animations: {
           enabled: false,
@@ -344,16 +339,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-      // fill: {
-      //   type: "gradient",
-      //   gradient: {
-      //     shade: "light",
-      //     shadeIntensity: 0.5,
-      //     opacityFrom: 0.75,
-      //     opacityTo: 0.65,
-      //     stops: [0, 90, 100],
-      //   },
-      // },
+    
       xaxis: {
         axisTicks: {
           show: false, // Hide x-axis ticks
@@ -996,7 +982,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         />
       </div> */}
 
-      <AlertMsg />
+     
       {spinning ? (
         <ProgressBar spinning={spinning} isLoading={isLoading} />
       ) : (
@@ -1012,12 +998,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               setSpinning={setSpinning}
             />
           </div>
-          {/* <div>
-            <Groq />
-          </div> */}
-          {/* <div>
-            <GPTAnalyzer numberOfMonths={numberOfMonths} />
-          </div> */}
+          
           <div className="my-4 ">
             {/* <div className="rounded-lg bg-green-500 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">
               <button onClick={startTour}>

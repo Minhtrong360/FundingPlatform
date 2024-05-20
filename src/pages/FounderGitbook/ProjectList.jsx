@@ -3,9 +3,9 @@ import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import AddProject from "./AddProject";
 import { useNavigate } from "react-router-dom";
-import AlertMsg from "../../components/AlertMsg";
+
 // import InvitedUserProject from "../../components/InvitedUserProject";
-// import { toast } from "react-toastify";
+
 // import ProjectGiven from "../../components/ProjectGiven";
 import { Dropdown, Menu, message, Table, Modal } from "antd";
 import { formatDate } from "../../features/DurationSlice";
@@ -632,7 +632,6 @@ function ProjectList({ projects }) {
 
   return (
     <main className="w-full min-h-[92.5vh]">
-      <AlertMsg />
       <div className="flex justify-end mr-5 mb-5 items-end">
         <AddProject
           updatedProjects={updatedProjects}

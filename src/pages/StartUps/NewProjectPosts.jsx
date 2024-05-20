@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Card from "../Home/Components/Card";
 import { supabase } from "../../supabase";
-// import { toast } from "react-toastify";
+
 import Search from "../Home/Components/Search";
 
 import { LinearProgress } from "@mui/material";

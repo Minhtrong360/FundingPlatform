@@ -19,12 +19,12 @@ import {
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { supabase } from "../../../supabase";
-// import { useAuth } from "../../../context/AuthContext";
 import { useParams } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { useAuth } from "../../../context/AuthContext";
 
 const CostSection = ({
   numberOfMonths,
@@ -163,11 +163,17 @@ const CostSection = ({
         id: "cost-chart",
         type: "bar",
         height: 350,
-        toolbar: { show: false },
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          }
+        },
         zoom: { enabled: false },
         animations: {
           enabled: false,
         },
+        
       },
       colors: [
         "#00A2FF",
@@ -231,7 +237,7 @@ const CostSection = ({
       },
       // fill: { type: "solid" },
       dataLabels: { enabled: false },
-      stroke: { curve: "smooth", width: 1 },
+      stroke: { curve: "straight", width: 1 },
     },
     series: [],
   });
@@ -270,17 +276,15 @@ const CostSection = ({
   // Function to handle save
   const handleSave = () => {
     setIsSaved(true);
-    message.success("Data saved successfully!");
   };
 
   // useEffect to update cost inputs when data is saved
   const { id } = useParams();
+  const { user } = useAuth();
   useEffect(() => {
     const saveData = async () => {
       try {
         if (isSaved) {
-          dispatch(setCostInputs(tempCostInput));
-
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
             .select("*")
@@ -290,6 +294,18 @@ const CostSection = ({
           }
 
           if (existingData && existingData.length > 0) {
+            const { user_email, collabs } = existingData[0];
+
+            // Check if user.email matches user_email or is included in collabs
+            if (user.email !== user_email && !collabs?.includes(user.email)) {
+              message.error(
+                "You do not have permission to update this record."
+              );
+              return;
+            }
+
+            dispatch(setCostInputs(tempCostInput));
+
             const newInputData = JSON.parse(existingData[0].inputData);
 
             newInputData.costInputs = tempCostInput;
@@ -302,6 +318,8 @@ const CostSection = ({
 
             if (updateError) {
               throw updateError;
+            } else {
+              message.success("Data saved successfully!");
             }
           }
         }
@@ -434,9 +452,7 @@ const CostSection = ({
                   ...costChart.options.xaxis,
                   // tickAmount: 6, // Set the number of ticks on the x-axis to 12
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 2
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={costChart.series}
               type="area"

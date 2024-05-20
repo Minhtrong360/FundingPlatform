@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
 import {
   Button,
@@ -13,7 +13,6 @@ import Chart from "react-apexcharts";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setCustomerInputs,
-  setYearlyAverageCustomers,
   setCustomerGrowthData,
   calculateYearlyAverage,
   calculateCustomerGrowth,
@@ -43,6 +42,7 @@ import {
   PlusCircleOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
+import { useAuth } from "../../../context/AuthContext";
 
 const CustomerSection = React.memo(
   ({
@@ -51,7 +51,6 @@ const CustomerSection = React.memo(
     setIsSaved,
     customerGrowthChart,
     setCustomerGrowthChart,
-    handleSubmit,
   }) => {
     const dispatch = useDispatch();
     const { customerInputs, customerGrowthData, customerTableData } =
@@ -220,6 +219,7 @@ const CustomerSection = React.memo(
     const channelInputs = useSelector((state) => state.sales.channelInputs);
 
     const { id } = useParams();
+    const { user } = useAuth();
 
     // Define the useEffect hook
     useEffect(() => {
@@ -241,19 +241,6 @@ const CustomerSection = React.memo(
               return;
             }
 
-            dispatch(setCustomerInputs(tempCustomerInputs));
-            const { revenueByChannelAndProduct } = dispatch(
-              calculateChannelRevenue(
-                numberOfMonths,
-                tempCustomerGrowthData,
-                tempCustomerInputs,
-                channelInputs
-              )
-            );
-
-            const yearlySale = calculateYearlySales(revenueByChannelAndProduct);
-            dispatch(setYearlySales(yearlySale));
-
             const { data: existingData, error: selectError } = await supabase
               .from("finance")
               .select("*")
@@ -263,7 +250,32 @@ const CustomerSection = React.memo(
             }
 
             if (existingData && existingData.length > 0) {
-              const newInputData = JSON.parse(existingData[0].inputData);
+              const { user_email, collabs, inputData } = existingData[0];
+
+              // Check if user.email matches user_email or is included in collabs
+              if (user.email !== user_email && !collabs?.includes(user.email)) {
+                message.error(
+                  "You do not have permission to update this record."
+                );
+                return;
+              }
+
+              dispatch(setCustomerInputs(tempCustomerInputs));
+              const { revenueByChannelAndProduct } = dispatch(
+                calculateChannelRevenue(
+                  numberOfMonths,
+                  tempCustomerGrowthData,
+                  tempCustomerInputs,
+                  channelInputs
+                )
+              );
+
+              const yearlySale = calculateYearlySales(
+                revenueByChannelAndProduct
+              );
+              dispatch(setYearlySales(yearlySale));
+
+              const newInputData = JSON.parse(inputData);
 
               const calculatedData = calculateCustomerGrowth(
                 tempCustomerInputs,
@@ -292,7 +304,7 @@ const CustomerSection = React.memo(
             }
           }
         } catch (error) {
-          message.error(error);
+          message.error(error.message);
         } finally {
           setIsSaved(false);
         }
@@ -422,10 +434,10 @@ const CustomerSection = React.memo(
         return {
           ...prevState,
           series: [
-            ...seriesData,
+            ...seriesData2,
             {
               name: "Total",
-              data: totalCustomersPerMonth,
+              data: totalCustomersPerMonth2,
             },
           ],
           charts: [
@@ -746,7 +758,8 @@ const CustomerSection = React.memo(
                       // tickAmount: 12, // Set the number of ticks on the x-axis to 12
                     },
                     stroke: {
-                      width: 1, // Set the stroke width to 1
+                      width: 1,
+                      curve: "straight", // Set the stroke width to 1
                     },
                   }}
                   series={chart.series}
@@ -1341,22 +1354,6 @@ const CustomerSection = React.memo(
                     </div>
                   </div>
                 ))}
-
-              {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <button
-                  className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
-                  onClick={handleAddNewCustomer}
-                >
-                  Add new
-                </button>
-
-                <button
-                  className="bg-blue-600 text-white py-2 px-2 text-sm rounded mt-4"
-                  onClick={handleSave}
-                >
-                  Save
-                </button>
-              </div> */}
             </section>
           </Modal>
         )}

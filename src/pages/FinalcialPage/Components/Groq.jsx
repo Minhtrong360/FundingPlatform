@@ -11,7 +11,7 @@
 //       console.log("Input sent to backend:", JSON.stringify({messages}));
 //       // Create a new message object for the user input
 //       const newMessage = { role: "user", content: input };
-    
+
 //     // Update the messages state by adding the new message
 //       setMessages([...messages, newMessage]);
 
@@ -78,11 +78,8 @@
 
 // export default Groq;
 
-
-
 // import React, { useState, useEffect } from "react";
 // import { Input, Button } from "antd";
-
 
 // const { TextArea } = Input;
 

@@ -65,15 +65,6 @@ const HeroSection = () => {
                   : "14-day free trial"
                 : "Get started"}
             </button>
-            {/* Add spacing for small screens */}
-            {/* <a
-              className="hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
-              onClick={() =>
-                navigate(`/founder/${"3ec3f142-f33c-4977-befd-30d4ce2b764d"}`)
-              }
-            >
-              See demo
-            </a> */}
           </div>
         </div>
 
@@ -95,22 +86,6 @@ const HeroSection = () => {
             </div>
           </div>
         </div>
-
-        {/* <div className="flex justify-center items-center w-full mt-8 rounded-xl">
-        <div
-              className="relative w-full lg:w-2/3"
-              style={{ paddingTop: "41%" }}
-            >
-              <iframe
-                title="YouTube video player"
-                className="absolute top-0 left-0 right-0 w-full h-full"
-                src="https://www.youtube.com/embed/MOgNese4KUQ?si=NmaKwUNT-No0OgUs&amp;controls=0&autoplay=1&mute=1&loop=1&playlist=MOgNese4KUQ"
-                allowFullScreen
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              ></iframe>
-            </div>
-        </div> */}
       </div>
     </section>
   );

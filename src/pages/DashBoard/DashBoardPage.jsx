@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AlertMsg from "../../components/AlertMsg";
+
 import SideBar from "../../components/SideBar";
 
 import FundraisingRecords from "../FundraisingRecords/FundraisingRecords";
@@ -11,7 +11,6 @@ function DashBoardPage() {
   };
   return (
     <div className=" bg-white darkBg antialiased !p-0">
-      <AlertMsg />
       <div id="exampleWrapper">
         <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 

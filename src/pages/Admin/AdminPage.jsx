@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
-import AnnouncePage from "../../components/AnnouncePage";
 import { useNavigate } from "react-router-dom";
-// import { toast } from "react-toastify";
-
-import Header from "../Home/Header";
 import {
   Badge,
   Dropdown,
@@ -32,7 +28,6 @@ import industries from "../../components/Industries";
 import SideBar from "../../components/SideBar";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 const { RangePicker } = DatePicker;
-const { TabPane } = Tabs;
 
 function Dashboard({ dataSource }) {
   const [chartData, setChartData] = useState([]);
@@ -252,11 +247,6 @@ function Dashboard({ dataSource }) {
           type: "bar",
         },
       ]);
-      // After processing data, log results for verification
-      // console.log("Months:", months);
-      // console.log("Customers:", customers);
-      // console.log("Target Amount:", targetAmount);
-      // Log other data similarly
     };
 
     processData();
@@ -276,7 +266,11 @@ function Dashboard({ dataSource }) {
                     enabled: false, // Disable zooming
                   },
                   toolbar: {
-                    show: false, // Hide the toolbar
+                    show: true,
+                  
+                    tools: {
+                      download: true,
+                    }
                   },
                   type: chart.type,
                   height: 350,
@@ -351,7 +345,7 @@ function Dashboard({ dataSource }) {
                 stroke:
                   chart.type === "bar"
                     ? {
-                        curve: "smooth",
+                        curve: "straight",
                         width: 1,
                       }
                     : {},
@@ -391,7 +385,6 @@ function Dashboard({ dataSource }) {
 }
 
 function AdminPage() {
-  const { user } = useAuth();
   const [dataSource, setDataSource] = useState([]);
   const [dataClientSource, setDataClientSource] = useState([]);
   const [selectedClient, setSelectedClient] = useState();
@@ -984,14 +977,6 @@ function AdminPage() {
                   setSelectedKeys(keys);
                   handleFilterChange("status", keys);
                   confirm();
-                  // if (keys.length > 0) {
-                  //   const filtered = dataSource.filter((record) =>
-                  //     keys.some((key) => record.status.includes(key))
-                  //   );
-                  //   setFilteredData(filtered); // Confirm the filter change immediately
-                  // } else {
-                  //   setFilteredData(dataSource);
-                  // }
                 }}
               >
                 {option === "public"
@@ -1007,7 +992,6 @@ function AdminPage() {
               clearFilters();
               handleFilterChange("status", []);
               confirm();
-              // setFilteredData(dataSource); // Confirm the filter clearing immediately
             }}
             size="small"
             style={{ width: 90 }}
@@ -1049,8 +1033,6 @@ function AdminPage() {
           handleFilterChange("verified", []);
 
           confirm();
-          // setFilteredData(dataSource);
-          // Confirm the filter clearing immediately
         };
 
         return (
@@ -1077,14 +1059,6 @@ function AdminPage() {
                   handleFilterChange("verified", keys);
 
                   confirm();
-                  // if (keys.length > 0) {
-                  //   const filtered = dataSource.filter((record) => {
-                  //     return record.verified === false;
-                  //   });
-                  //   setFilteredData(filtered);
-                  // } else {
-                  //   setFilteredData(dataSource);
-                  // }
                 }}
               >
                 No
@@ -1149,7 +1123,6 @@ function AdminPage() {
           setSelectedKeys([]); // Reset selected keys
           handleFilterChange("target_amount", []);
           confirm(); // Confirm the filter clearing immediately
-          // setFilteredData(dataSource);
         };
 
         return (
@@ -1237,7 +1210,6 @@ function AdminPage() {
           setSelectedKeys([]); // Reset selected keys
           handleFilterChange("ticket_size", []);
           confirm(); // Confirm the filter clearing immediately
-          // setFilteredData(dataSource);
         };
 
         return (
@@ -1320,7 +1292,6 @@ function AdminPage() {
           setSelectedKeys([]); // Reset selected keys
           handleFilterChange("offer_type", []);
           confirm(); // Confirm the filter clearing immediately
-          // setFilteredData(dataSource);
         };
 
         return (
@@ -1420,7 +1391,6 @@ function AdminPage() {
           setSelectedKeys([]); // Reset selected keys
           handleFilterChange("amountRaised", []);
           confirm(); // Confirm the filter clearing immediately
-          // setFilteredData(dataSource);
         };
 
         return (
@@ -1583,8 +1553,6 @@ function AdminPage() {
           setSelectedKeys([]); // Reset selected keys
           handleFilterChange("revenueStatus", []);
           confirm(); // Confirm the filter clearing immediately
-          // setFilteredData(dataSource);
-          // Confirm the filter clearing immediately
         };
 
         return (
@@ -1661,7 +1629,6 @@ function AdminPage() {
           setSelectedKeys([]); // Reset selected keys
           handleFilterChange("round", []);
           confirm(); // Confirm the filter clearing immediately
-          // setFilteredData(dataSource);
         };
 
         return (
@@ -1778,7 +1745,6 @@ function AdminPage() {
           setSelectedKeys([]); // Reset selected keys
           handleFilterChange("industry", []);
           confirm(); // Confirm the filter clearing immediately
-          // setFilteredData(dataSource);
         };
 
         return (
@@ -2034,11 +2000,6 @@ function AdminPage() {
                 clearFilters();
               } else {
                 confirm();
-                // const filtered = dataSource?.filter((record) => {
-                //   const date = moment(record.created_at);
-                //   return date >= moment(range[0][0]) && date <= moment(range[0][1]);
-                // });
-                // setFilteredData(filtered);
               }
             }}
             style={{ marginBottom: 8, display: "block" }}
@@ -2214,10 +2175,7 @@ function AdminPage() {
       align: "center",
       render: (text, record) => (
         <Tooltip title={record.full_name}>
-          <span
-            className="hover:cursor-pointer text-left"
-            // onClick={() => handleClientClick(record)}
-          >
+          <span className="hover:cursor-pointer text-left">
             <div className="truncate" style={{ maxWidth: "100%" }}>
               {record.full_name ? record.full_name : "No provided"}
             </div>
@@ -2287,10 +2245,7 @@ function AdminPage() {
       align: "center",
       render: (text, record) => (
         <Tooltip title={record.email}>
-          <span
-            className="hover:cursor-pointer text-left"
-            // onClick={() => handleClientClick(record)}
-          >
+          <span className="hover:cursor-pointer text-left">
             <div className="truncate" style={{ maxWidth: "100%" }}>
               {record.email}
             </div>
@@ -2355,13 +2310,7 @@ function AdminPage() {
       key: "created_at",
 
       align: "center",
-      render: (text, record) => (
-        <span
-        // onClick={() => handleClientClick(record)}
-        >
-          {formatDate(text)}
-        </span>
-      ),
+      render: (text, record) => <span>{formatDate(text)}</span>,
 
       filterDropdown: ({
         setSelectedKeys,
@@ -2420,10 +2369,7 @@ function AdminPage() {
       align: "center",
       render: (text, record) => (
         <Tooltip title={record.roll}>
-          <span
-            className="hover:cursor-pointer text-left"
-            // onClick={() => handleClientClick(record)}
-          >
+          <span className="hover:cursor-pointer text-left">
             <div className="truncate" style={{ maxWidth: "100%" }}>
               {record.roll ? record.roll : "No provided"}
             </div>
@@ -2439,10 +2385,7 @@ function AdminPage() {
       align: "center",
       render: (text, record) => (
         <Tooltip title={record.plan}>
-          <span
-            className="hover:cursor-pointer text-left"
-            // onClick={() => handleClientClick(record)}
-          >
+          <span className="hover:cursor-pointer text-left">
             <div className="truncate" style={{ maxWidth: "100%" }}>
               {record.plan}
             </div>
@@ -2509,10 +2452,7 @@ function AdminPage() {
       align: "center",
       render: (text, record) => (
         <Tooltip title={record.subscription_status}>
-          <span
-            className="hover:cursor-pointer text-left"
-            // onClick={() => handleClientClick(record)}
-          >
+          <span className="hover:cursor-pointer text-left">
             <div className="truncate" style={{ maxWidth: "100%" }}>
               {record.subscription_status
                 ? capitalizeFirstLetter(record.subscription_status)
@@ -2530,10 +2470,7 @@ function AdminPage() {
       align: "center",
       render: (text, record) => (
         <Tooltip title={record.code}>
-          <span
-            className="hover:cursor-pointer text-left"
-            // onClick={() => handleClientClick(record)}
-          >
+          <span className="hover:cursor-pointer text-left">
             <div className="truncate" style={{ maxWidth: "100%" }}>
               {record.code ? record.code : "No code"}
             </div>

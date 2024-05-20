@@ -1,8 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../supabase";
 import SpinnerBtn from "../components/SpinnerBtn";
-// import { toast } from "react-toastify";
-import AlertMsg from "../components/AlertMsg";
 import ReactGA from "react-ga4";
 import { message } from "antd";
 
@@ -161,7 +159,6 @@ const AuthProvider = ({ children }) => {
         displayCommonElements,
       }}
     >
-      <AlertMsg />
       {loading ? <SpinnerBtn /> : children}
     </AuthContext.Provider>
   );

@@ -16,13 +16,13 @@ import {
   setFundraisingTableData,
   transformFundraisingDataForTable,
 } from "../../../features/FundraisingSlice";
-import { useAuth } from "../../../context/AuthContext";
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
 import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
+import { useAuth } from "../../../context/AuthContext";
 
 const FundraisingSection = ({
   numberOfMonths,
@@ -141,7 +141,12 @@ const FundraisingSection = ({
         id: "fundraising-chart",
         type: "area",
         height: 350,
-        toolbar: { show: false },
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          }
+        },
         zoom: { enabled: false },
         animations: {
           enabled: false,
@@ -204,17 +209,7 @@ const FundraisingSection = ({
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-      // fill: {
-      //   type: "gradient",
 
-      //   gradient: {
-      //     shade: "light",
-      //     shadeIntensity: 0.5,
-      //     opacityFrom: 0.85,
-      //     opacityTo: 0.65,
-      //     stops: [0, 90, 100],
-      //   },
-      // },
       dataLabels: { enabled: false },
       stroke: { width: 1, curve: "smooth" },
 
@@ -230,24 +225,15 @@ const FundraisingSection = ({
 
   const handleSave = () => {
     setIsSaved(true);
-    message.success("Data saved successfully!");
   };
 
   const { id } = useParams();
+  const { user } = useAuth();
 
   useEffect(() => {
     const saveData = async () => {
       try {
         if (isSaved) {
-          dispatch(setFundraisingInputs(tempFundraisingInputs));
-
-          const tableData = transformFundraisingDataForTable(
-            tempFundraisingInputs,
-            numberOfMonths
-          );
-
-          dispatch(setFundraisingTableData(tableData));
-
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
             .select("*")
@@ -257,6 +243,25 @@ const FundraisingSection = ({
           }
 
           if (existingData && existingData.length > 0) {
+            const { user_email, collabs } = existingData[0];
+
+            // Check if user.email matches user_email or is included in collabs
+            if (user.email !== user_email && !collabs?.includes(user.email)) {
+              message.error(
+                "You do not have permission to update this record."
+              );
+              return;
+            }
+
+            dispatch(setFundraisingInputs(tempFundraisingInputs));
+
+            const tableData = transformFundraisingDataForTable(
+              tempFundraisingInputs,
+              numberOfMonths
+            );
+
+            dispatch(setFundraisingTableData(tableData));
+
             const newInputData = JSON.parse(existingData[0].inputData);
 
             newInputData.fundraisingInputs = tempFundraisingInputs;
@@ -269,6 +274,8 @@ const FundraisingSection = ({
 
             if (updateError) {
               throw updateError;
+            } else {
+              message.success("Data saved successfully!");
             }
           }
         }

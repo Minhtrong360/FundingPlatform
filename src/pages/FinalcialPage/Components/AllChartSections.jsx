@@ -45,7 +45,7 @@ import {
   setRevenueData,
   setRevenueDeductionData,
 } from "../../../features/SaleSlice";
-import CustomChart from "./CustomerChart";
+import CustomChart from "./CustomChart";
 import { getCurrencyLabelByKey } from "../../../features/DurationSlice";
 
 const AllChartSections = ({
@@ -426,35 +426,6 @@ const AllChartSections = ({
     setSelectedChart(value);
   };
 
-  const [selectedMonth, setSelectedMonth] = useState(1);
-
-  const handleMonthSelect = (value) => {
-    setSelectedMonth(parseInt(value));
-  };
-
-  const renderCard = (title, value) => (
-    <div className="flex flex-col bg-white border shadow-lg rounded-xl m-4 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
-      <div className="p-4 md:p-5">
-        <div className="flex items-center gap-x-2">
-          <p className="text-xs uppercase tracking-wide text-gray-800">
-            {title}
-          </p>
-        </div>
-
-        <div className="mt-1 flex items-center gap-x-2">
-          <div className="flex flex-col xl:flex-row xl:items-center items-start w-full">
-            <h3 className="text-sm sm:text-3xl font-bold text-gray-800 my-2">
-              {formatNumber(Math.round(value[selectedMonth - 1]))}
-            </h3>
-          </div>
-        </div>
-        <div className="flex flex-col xl:flex-row xl:items-center items-start w-full">
-          {/* <p className="text-base text-gray-800 ">Month: {selectedMonth}</p> */}
-        </div>
-      </div>
-    </div>
-  );
-
   const { currency } = useSelector((state) => state.durationSelect);
   const months = [
     "01",
@@ -470,8 +441,6 @@ const AllChartSections = ({
     "11",
     "12",
   ];
-  const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(6);
 
   const bsTotalInvestmentArray = investmentTableData?.find(
     (item) => item.key === "BS Total investment"
@@ -553,7 +522,10 @@ const AllChartSections = ({
                     enabled: false, // Disable zooming
                   },
                   toolbar: {
-                    show: false, // Hide the toolbar
+                    show: true,
+                    tools: {
+                      download: true,
+                    }
                   },
                 },
                 xaxis: {
@@ -565,9 +537,7 @@ const AllChartSections = ({
                     return `${months[monthIndex]}/${year}`;
                   }),
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               height={300}
             />
@@ -587,7 +557,10 @@ const AllChartSections = ({
                     enabled: false, // Disable zooming
                   },
                   toolbar: {
-                    show: false, // Hide the toolbar
+                    show: true,
+                    tools: {
+                      download: true,
+                    }
                   },
                 },
                 ...revenue.options,
@@ -600,9 +573,7 @@ const AllChartSections = ({
                     return `${months[monthIndex]}/${year}`;
                   }),
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={revenue.series}
               type="area"
@@ -629,9 +600,7 @@ const AllChartSections = ({
                 xaxis: {
                   ...revenue.options.xaxis,
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={[{ data: totalCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
               type="area"
@@ -658,9 +627,7 @@ const AllChartSections = ({
                 xaxis: {
                   ...revenue.options.xaxis,
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={[{ data: totalPersonnelCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
               type="area"
@@ -687,9 +654,7 @@ const AllChartSections = ({
                 xaxis: {
                   ...revenue.options.xaxis,
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={[{ data: bsTotalInvestmentValues, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
               type="area"
@@ -738,9 +703,7 @@ const AllChartSections = ({
                     },
                   },
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={[{ data: totalLoanData, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
               type="area"
@@ -767,9 +730,7 @@ const AllChartSections = ({
                 xaxis: {
                   ...revenue.options.xaxis,
                 },
-                stroke: {
-                  width: 1, // Set the stroke width to 1
-                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               series={[{ data: bsTotalFundingValues, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
               type="bar"

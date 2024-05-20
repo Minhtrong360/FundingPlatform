@@ -17,15 +17,9 @@ import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
+import { useAuth } from "../../../context/AuthContext";
 
-const InvestmentSection = ({
-  numberOfMonths,
-
-  isSaved,
-  setIsSaved,
-
-  handleSubmit,
-}) => {
+const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const { investmentInputs, investmentData } = useSelector(
     (state) => state.investment
   );
@@ -184,7 +178,12 @@ const InvestmentSection = ({
         type: "area",
         height: 350,
         zoom: { enabled: false },
-        toolbar: { show: false },
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          }
+        },
         fontFamily: "Sora, sans-serif",
       },
       grid: { show: false },
@@ -237,19 +236,8 @@ const InvestmentSection = ({
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-      // fill: {
-      //   type: "gradient",
-      //   gradient: {
-      //     shade: "light",
-      //     shadeIntensity: 0.5,
-      //     opacityFrom: 0.85,
-      //     opacityTo: 0.65,
-      //     stops: [0, 90, 100],
-      //   },
-      // },
-
       dataLabels: { enabled: false },
-      stroke: { width: 1 },
+      stroke: { width: 1, curve: "straight" },
       // markers: { size: 1 },
     },
     series: [],
@@ -378,22 +366,14 @@ const InvestmentSection = ({
 
   const handleSave = () => {
     setIsSaved(true);
-    message.success("Data saved successfully!");
   };
   const { id } = useParams();
+
+  const { user } = useAuth();
   useEffect(() => {
     const saveData = async () => {
       try {
         if (isSaved) {
-          dispatch(setInvestmentInputs(tempInvestmentInputs));
-          const tableData = transformInvestmentDataForTable(
-            tempInvestmentInputs,
-            renderInvestmentForm,
-            tempInvestmentData,
-            numberOfMonths
-          );
-          dispatch(setInvestmentTableData(tableData));
-
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
             .select("*")
@@ -403,6 +383,25 @@ const InvestmentSection = ({
           }
 
           if (existingData && existingData.length > 0) {
+            const { user_email, collabs } = existingData[0];
+
+            // Check if user.email matches user_email or is included in collabs
+            if (user.email !== user_email && !collabs?.includes(user.email)) {
+              message.error(
+                "You do not have permission to update this record."
+              );
+              return;
+            }
+
+            dispatch(setInvestmentInputs(tempInvestmentInputs));
+            const tableData = transformInvestmentDataForTable(
+              tempInvestmentInputs,
+              renderInvestmentForm,
+              tempInvestmentData,
+              numberOfMonths
+            );
+            dispatch(setInvestmentTableData(tableData));
+
             const newInputData = JSON.parse(existingData[0].inputData);
 
             newInputData.investmentInputs = tempInvestmentInputs;
@@ -415,6 +414,8 @@ const InvestmentSection = ({
 
             if (updateError) {
               throw updateError;
+            } else {
+              message.success("Data saved successfully!");
             }
           }
         }
@@ -512,7 +513,8 @@ const InvestmentSection = ({
                     // tickAmount: 6, // Ensure x-axis has 12 ticks
                   },
                   stroke: {
-                    width: 1, // Set the stroke width to 1
+                    width: 1,
+                    curve: "straight", // Set the stroke width to 1
                   },
                 }}
                 series={series.series}

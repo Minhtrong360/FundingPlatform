@@ -1,12 +1,4 @@
-import {
-  Button,
-  FloatButton,
-  Modal,
-  Table,
-  Tabs,
-  Tooltip,
-  message,
-} from "antd";
+import { Button, FloatButton, Modal, Table, Tabs, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -49,13 +41,132 @@ import {
   transformFundraisingDataForTable,
 } from "../../../features/FundraisingSlice";
 import { calculateProfitAndLoss } from "../../../features/ProfitAndLossSlice";
-import CustomChart from "./CustomerChart";
+import CustomChart from "./CustomChart";
 import SelectField from "../../../components/SelectField";
 import { setCutMonth } from "../../../features/DurationSlice";
-import { FileOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { FileOutlined } from "@ant-design/icons";
 import GroqJS from "./GroqJson";
-import Groq from "./Groq";
-import Perflexity from "./Perflexity";
+
+import Chart from 'react-apexcharts';
+import { DatePicker } from 'antd';
+import moment from 'moment';
+import { grid2Classes } from "@mui/material";
+
+const { RangePicker } = DatePicker;
+
+const BalanceSheetChart = ({ data }) => {
+  const [filteredData, setFilteredData] = useState(data);
+  const [dateRange, setDateRange] = useState([null, null]);
+
+  // Define the chart options
+  const chartOptions = {
+    chart: {
+      type: 'area',
+      height: 350,
+      toolbar: {
+        show: true,
+        tools: {
+          download: true,
+        }
+      },
+      zoom: {
+        autoScaleYaxis: true
+      }
+    },
+    grid: {
+      show: false
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      curve: 'smooth',
+    },
+    xaxis: {
+      type: 'datetime',
+      labels: {
+        
+      }
+    },
+    tooltip: {
+      x: {
+        format: 'MM-yyyy',
+      },
+    },
+  };
+
+  // Prepare the series data
+  const getSeriesData = (data) => data.map(item => {
+    const seriesData = Object.entries(item)
+      .filter(([key]) => key !== 'metric')
+      .map(([key, value]) => {
+        const [month, year] = key.split('-');
+        // Create a Date object with year and month (months are 0-based in JavaScript)
+        const date = new Date(year, month );
+        // Get the time in milliseconds for the date
+        const timeInMillis = date.getTime();
+        // Return an array with the time in milliseconds and the parsed value
+        return [timeInMillis, parseFloat(value.replace(/,/g, ''))];
+      });
+  
+    return {
+      name: item.metric,
+      // Sort the series data based on the timestamp
+      data: seriesData.sort((a, b) => a[0] - b[0]),
+    };
+  });
+  
+  
+  const handleDateChange = (dates) => {
+    if (dates) {
+      const [start, end] = dates;
+      setDateRange([start, end]);
+
+      const filtered = data.map(item => {
+        const filteredValues = Object.entries(item)
+          .filter(([key]) => key !== 'metric')
+          .filter(([key]) => {
+            const [month, year] = key.split('-');
+            const date = new Date(year, month - 1);
+            const startDate = start.toDate();
+            const endDate = end.toDate();
+            const selectedStartDate = new Date(startDate.getFullYear(), startDate.getMonth());
+            const selectedEndDate = new Date(endDate.getFullYear(), endDate.getMonth());
+            return date >= selectedStartDate && date <= selectedEndDate;
+          })
+          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
+        return { metric: item.metric, ...filteredValues };
+      });
+
+      setFilteredData(filtered);
+    } else {
+      setDateRange([null, null]);
+      setFilteredData(data);
+    }
+  };
+  console.log("filteredData",filteredData)
+  const series = getSeriesData(filteredData);
+  console.log("series",series)
+
+  return (
+    <div>
+      <RangePicker 
+        onChange={handleDateChange} 
+        format="MM-YYYY" 
+        picker="month" 
+        value={dateRange} 
+      />
+      <Chart options={chartOptions} series={series} type="bar" height={350} />
+    </div>
+  );
+};
+
+
+
+
+
+
 function BalanceSheetSection({ numberOfMonths }) {
   const dispatch = useDispatch();
   const { cutMonth } = useSelector((state) => state.durationSelect);
@@ -429,6 +540,159 @@ function BalanceSheetSection({ numberOfMonths }) {
   const totalLiabilitiesAndShareholdersEquity = totalLiabilities.map(
     (totalLiability, index) => totalLiability + totalShareholdersEquity[index]
   );
+  
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+  const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  const startingYear = startYear; // Năm bắt đầu từ 24
+
+// const realDate = [];
+
+// for (let i = 0; i < numberOfMonths; i++) {
+//     const monthIndex = (startingMonth + i - 1) % 12;
+//     const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+//     const title = `${monthIndex + 1}/${year}`;
+//     realDate.push(title);
+// }
+const realDate = Array.from({ length: numberOfMonths }, (_, i) => {
+  const monthIndex = (startingMonth + i - 1) % 12;
+  const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+  return `${monthIndex + 1}-${year}`;
+});
+
+
+console.log(realDate);
+const BalenceSheetData = [
+  // {
+  //   key: "Assets",
+  // },
+  // {
+  //   key: " Current Assets",
+  // },
+  // {
+  //   key: "Cash",
+  //   values: cashEndBalances, // Set values to zero
+  // },
+  // {
+  //   key: "Accounts Receivable", // Added Accounts Receivable row
+  //   values: new Array(numberOfMonths).fill(0), // Set values to zero
+  // },
+  // {
+  //   key: "Inventory", // Added Inventory row
+  //   values: new Array(numberOfMonths).fill(0), // Set values to zero
+  // },
+  // {
+  //   key: "Current Assets", // Added Current Assets row
+  //   values: currentAssets,
+  // },
+  // {
+  //   key: "Long-Term Assets",
+  // },
+  // // insert BS Total investment here
+  // { key: "Total Investment", values: totalAssetValue }, // New row for total investment
+
+  // { key: "Total Accumulated Depreciation", values: bsTotalDepreciation },
+
+  // {
+  //   key: "Net Fixed Assets",
+  //   values: bsTotalNetFixedAssets,
+  // },
+
+  // {
+  //   key: "Long term assets",
+  //   values: bsTotalNetFixedAssets,
+  // },
+
+  // {
+  //   key: "Total Assets",
+  //   values: totalAssets,
+  // },
+
+  // {
+  //   key: "Liabilities & Equity",
+  // },
+  // {
+  //   key: "Current Liabilities",
+  // },
+  // {
+  //   key: "Account Payable", // Added Inventory row
+  //   values: new Array(numberOfMonths).fill(0), // Set values to zero
+  // },
+
+  // {
+  //   key: "Long-Term Liabilities",
+  // },
+  // {
+  //   key: "Long term liabilities",
+  //   values: bsTotalRemainingBalance, // New row for long term liabilities
+  // },
+
+  // {
+  //   key: "Total Liabilities", // Added Inventory row
+  //   values: totalLiabilities,
+  // },
+
+  // {
+  //   key: "Shareholders Equity",
+  // },
+  // {
+  //   key: "Paid in Capital",
+  //   values: Array.from({ length: numberOfMonths }, (_, i) => {
+  //     const currentValue = i === 0 ? startingPaidInCapital.toFixed(2) : "0";
+  //     const currentValueFloat = parseFloat(currentValue);
+  //     const capitalArrValue = capitalArr[i] || 0; // If capitalArr doesn't have value at index i, default to 0
+  //     return (currentValueFloat + capitalArrValue).toFixed(2);
+  //   }).map((value) => parseFloat(value)),
+  // },
+  // {
+  //   key: "Common Stock", // Added Inventory row
+  //   values: commonStockArr,
+  // },
+  // {
+  //   key: "Preferred Stock", // Added Inventory row
+  //   values: preferredStockArr,
+  // },
+  // {
+  //   key: "Retain Earnings", // Added Inventory row
+  //   values: netIncome,
+  // },
+
+  // // Calculated the accumulated retained earnings here
+
+  // {
+  //   key: "Accumulated Retain Earnings",
+  //   values: accumulatedRetainEarnings,
+  // },
+
+  // {
+  //   key: "Total Shareholders Equity",
+  //   values: totalShareholdersEquity,
+  // },
+
+  // Add the Total Liabilities and Shareholders Equity here
+
+  {
+    key: "Total Liabilities and Shareholders Equity",
+    values: totalLiabilitiesAndShareholdersEquity,
+  },
+
+  {
+    key: "Total Assets (Double Check)",
+    values: totalAssets,
+  },
+].map((item, index) => ({
+  metric: item.key,
+  ...item.values?.reduce(
+    (acc, value, i) => ({
+      ...acc,
+      [realDate[i]]: formatNumber(value?.toFixed(2)),
+    }),
+    {}
+  ),
+}));
+
+console.log("BalenceSheetData",BalenceSheetData);
 
   const positionDataWithNetIncome2 = [
     {
@@ -558,7 +822,7 @@ function BalanceSheetSection({ numberOfMonths }) {
       {}
     ),
   }));
-
+  // console.log("BLS", positionDataWithNetIncome2)
   const months = [
     "01",
     "02",
@@ -573,12 +837,12 @@ function BalanceSheetSection({ numberOfMonths }) {
     "11",
     "12",
   ];
-  const { startMonth, startYear } = useSelector(
-    (state) => state.durationSelect
-  );
+  // const { startMonth, startYear } = useSelector(
+  //   (state) => state.durationSelect
+  // );
 
-  const startingMonth = startMonth; // Tháng bắt đầu từ 1
-  const startingYear = startYear; // Năm bắt đầu từ 24
+  // const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  // const startingYear = startYear; // Năm bắt đầu từ 24
 
   const positionColumns1 = [
     {
@@ -590,7 +854,7 @@ function BalanceSheetSection({ numberOfMonths }) {
       render: (text, record) => ({
         children: (
           <div className={" md:whitespace-nowrap "}>
-            <a
+            <div
               style={{
                 fontWeight:
                   record.metric === "Current Assets" ||
@@ -613,7 +877,7 @@ function BalanceSheetSection({ numberOfMonths }) {
               }}
             >
               {text}
-            </a>
+            </div>
           </div>
         ),
       }),
@@ -789,50 +1053,6 @@ function BalanceSheetSection({ numberOfMonths }) {
     });
   };
 
-  const calculateBalanceSheetRatios = (dataSource) => {
-    const findYearTotalByKey = (key) => {
-      const item = dataSource.find((data) => data.metric === key);
-      return item ? item.yearTotal : 0;
-    };
-
-    const totalAssets = findYearTotalByKey("Total Assets");
-    const totalLiabilities = findYearTotalByKey("Total Liabilities");
-    const currentAssets = findYearTotalByKey("Current Assets");
-    const currentLiabilities = findYearTotalByKey("Current Liabilities");
-    const totalEquity = findYearTotalByKey("Total Shareholders Equity");
-
-    // Basic financial ratios from balance sheet
-
-    const currentRatio =
-      parseNumber(currentAssets) / parseNumber(currentLiabilities); // Measures liquidity
-    const debtToEquityRatio =
-      parseNumber(totalLiabilities) / parseNumber(totalEquity); // Measures financial leverage
-    const assetToEquityRatio =
-      parseNumber(totalAssets) / parseNumber(totalEquity); // Measures how much assets are financed by owners' interests
-
-    // Additional ratios for a deeper financial analysis
-    const quickRatio =
-      (parseNumber(currentAssets) -
-        parseNumber(findYearTotalByKey("Inventory"))) /
-      parseNumber(currentLiabilities); // Measures immediate liquidity
-    const liabilitiesToAssetsRatio =
-      parseNumber(totalLiabilities) / parseNumber(totalAssets); // Measures the percentage of assets financed by liabilities
-    const equityRatio = parseNumber(totalEquity) / parseNumber(totalAssets); // Measures the proportion of total assets financed by shareholders
-    const fixedAssetTurnoverRatio =
-      parseNumber(findYearTotalByKey("Net Fixed Assets")) /
-      parseNumber(totalAssets); // Efficiency ratio for fixed assets usage
-
-    return {
-      // currentRatio: currentRatio.toFixed(2),
-      debtToEquityRatio: debtToEquityRatio.toFixed(2),
-      assetToEquityRatio: assetToEquityRatio.toFixed(2),
-      // quickRatio: quickRatio.toFixed(2),
-      liabilitiesToAssetsRatio: liabilitiesToAssetsRatio.toFixed(2),
-      equityRatio: equityRatio.toFixed(2),
-      fixedAssetTurnoverRatio: fixedAssetTurnoverRatio.toFixed(2),
-    };
-  };
-
   const [activeTab, setActiveTab] = useState(0); // State to track active tab
   const { TabPane } = Tabs; // Destructure TabPane from Tabs
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
@@ -963,6 +1183,11 @@ function BalanceSheetSection({ numberOfMonths }) {
             ))}
           </Tabs>
         </div>
+
+        {/* <div>
+      <h1>Balance Sheet Data</h1>
+      <BalanceSheetChart data={BalenceSheetData} />
+    </div> */}
       </div>
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
@@ -1022,46 +1247,3 @@ function BalanceSheetSection({ numberOfMonths }) {
 }
 
 export default BalanceSheetSection;
-
-{
-  /* <div>
-            <h4>Financial Ratios for {year.year}</h4>
-            {(() => {
-              const dataSourceForYear = getDataSourceForYearBalanceSheet(
-                year.months
-              );
-              const ratios = calculateBalanceSheetRatios(dataSourceForYear);
-              return (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                  {Object.keys(ratios).map((key, index) => (
-                    <div
-                      key={index}
-                      className="flex flex-col bg-white border shadow-lg rounded-xl m-8 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110"
-                    >
-                      <div className="p-4 md:p-5">
-                        <div className="flex items-center gap-x-2">
-                          <p className="text-xs uppercase tracking-wide text-gray-500">
-                            {key}:
-                          </p>
-                          <Tooltip
-                            title={` ${key.replace(/_/g, " ")}.`}
-                          >
-                            <InfoCircleOutlined />
-                          </Tooltip>
-                        </div>
-
-                        <div className="mt-1">
-                          <div className="flex flex-col xl:flex-row xl:items-center items-start gap-2">
-                            <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 my-2">
-                              {ratios[key]}
-                            </h3>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              );
-            })()}
-          </div> */
-}

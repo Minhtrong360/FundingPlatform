@@ -19,6 +19,7 @@ import {
   transformCustomerData,
   generateCustomerTableData,
   setCustomerTableData,
+  fetchGPTResponse,
 } from "../../../features/CustomerSlice";
 import {
   calculateChannelRevenue,
@@ -57,8 +58,17 @@ const CustomerSection = React.memo(
     customerGrowthChart,
     setCustomerGrowthChart,
   }) => {
+    const [functionType, setFunctionType] = useState("linear"); // New state for function type
+    const [chartNotes, setChartNotes] = useState(""); // New state for chart notes
+
     const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
     const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
+
+    const chartFunctions = [
+      { value: "linear", label: "Linear" },
+      { value: "exponential", label: "Exponential" },
+      { value: "logarithmic", label: "Logarithmic" },
+    ];
 
     const handleChartClick = (chart) => {
       setSelectedChart(chart);
@@ -109,6 +119,7 @@ const CustomerSection = React.memo(
         acquisitionCost: 0, // Default value for acquisition cost
         adjustmentFactor: 1, // Default value for adjustment factor
         eventName: "", // Default value for event name
+        additionalInfo: "", // Default value for additional info
       };
 
       setTempCustomerInputs([...tempCustomerInputs, newCustomer]);
@@ -284,7 +295,7 @@ const CustomerSection = React.memo(
     };
 
     const handleSave = () => {
-      setIsSaved(true);
+      saveData();
     };
     const channelInputs = useSelector((state) => state.sales.channelInputs);
 
@@ -292,97 +303,87 @@ const CustomerSection = React.memo(
     const { user } = useAuth();
 
     // Define the useEffect hook
-    useEffect(() => {
-      const saveData = async () => {
-        try {
-          if (isSaved) {
-            // Check if there are duplicate channel names
-            const channelNames = tempCustomerInputs.map(
-              (input) => input.channelName
-            );
-            const duplicateChannel = channelNames.find(
-              (name, index) => channelNames.indexOf(name) !== index
-            );
 
-            if (duplicateChannel) {
-              message.warning(
-                `Please change the channel name: "${duplicateChannel}" before saving.`
-              );
-              return;
-            }
+    const saveData = async () => {
+      try {
+        // Check if there are duplicate channel names
+        const channelNames = tempCustomerInputs.map(
+          (input) => input.channelName
+        );
+        const duplicateChannel = channelNames.find(
+          (name, index) => channelNames.indexOf(name) !== index
+        );
 
-            const { data: existingData, error: selectError } = await supabase
-              .from("finance")
-              .select("*")
-              .eq("id", id);
-            if (selectError) {
-              throw selectError;
-            }
-
-            if (existingData && existingData.length > 0) {
-              const { user_email, collabs, inputData } = existingData[0];
-
-              // Check if user.email matches user_email or is included in collabs
-              if (user.email !== user_email && !collabs?.includes(user.email)) {
-                message.error(
-                  "You do not have permission to update this record."
-                );
-                return;
-              }
-
-              dispatch(setCustomerInputs(tempCustomerInputs));
-              const { revenueByChannelAndProduct } = dispatch(
-                calculateChannelRevenue(
-                  numberOfMonths,
-                  tempCustomerGrowthData,
-                  tempCustomerInputs,
-                  channelInputs
-                )
-              );
-
-              const yearlySale = calculateYearlySales(
-                revenueByChannelAndProduct
-              );
-              dispatch(setYearlySales(yearlySale));
-
-              const newInputData = JSON.parse(inputData);
-
-              const calculatedData = calculateCustomerGrowth(
-                tempCustomerInputs,
-                numberOfMonths
-              );
-              const averages = calculateYearlyAverage(
-                calculatedData,
-                numberOfMonths
-              );
-
-              newInputData.customerInputs = tempCustomerInputs;
-              newInputData.yearlyAverageCustomers = averages;
-              newInputData.yearlySales = yearlySale;
-
-              const { error: updateError } = await supabase
-                .from("finance")
-                .update({ inputData: newInputData })
-                .eq("id", existingData[0]?.id)
-                .select();
-
-              if (updateError) {
-                throw updateError;
-              } else {
-                message.success("Data saved successfully!");
-              }
-            }
-          }
-        } catch (error) {
-          message.error(error.message);
-        } finally {
-          setIsSaved(false);
+        if (duplicateChannel) {
+          message.warning(
+            `Please change the channel name: "${duplicateChannel}" before saving.`
+          );
+          return;
         }
-      };
 
-      // Call the saveData function
-      saveData();
-    }, [isSaved]);
+        const { data: existingData, error: selectError } = await supabase
+          .from("finance")
+          .select("*")
+          .eq("id", id);
+        if (selectError) {
+          throw selectError;
+        }
+
+        if (existingData && existingData.length > 0) {
+          const { user_email, collabs, inputData } = existingData[0];
+
+          // Check if user.email matches user_email or is included in collabs
+          if (user.email !== user_email && !collabs?.includes(user.email)) {
+            message.error("You do not have permission to update this record.");
+            return;
+          }
+
+          dispatch(setCustomerInputs(tempCustomerInputs));
+          const { revenueByChannelAndProduct } = dispatch(
+            calculateChannelRevenue(
+              numberOfMonths,
+              tempCustomerGrowthData,
+              tempCustomerInputs,
+              channelInputs
+            )
+          );
+
+          const yearlySale = calculateYearlySales(revenueByChannelAndProduct);
+          dispatch(setYearlySales(yearlySale));
+
+          const newInputData = JSON.parse(inputData);
+
+          const calculatedData = calculateCustomerGrowth(
+            tempCustomerInputs,
+            numberOfMonths
+          );
+          const averages = calculateYearlyAverage(
+            calculatedData,
+            numberOfMonths
+          );
+
+          newInputData.customerInputs = tempCustomerInputs;
+          newInputData.yearlyAverageCustomers = averages;
+          newInputData.yearlySales = yearlySale;
+
+          const { error: updateError } = await supabase
+            .from("finance")
+            .update({ inputData: newInputData })
+            .eq("id", existingData[0]?.id)
+            .select();
+
+          if (updateError) {
+            throw updateError;
+          } else {
+            message.success("Data saved successfully!");
+          }
+        }
+      } catch (error) {
+        message.error(error.message);
+      } finally {
+        setIsSaved(false);
+      }
+    };
 
     const [chartStartMonth, setChartStartMonth] = useState(1);
     const [chartEndMonth, setChartEndMonth] = useState(6);
@@ -772,6 +773,42 @@ const CustomerSection = React.memo(
       setIsDeleteModalOpen(false);
     };
 
+    const handleFetchGPT = async () => {
+      try {
+        const customer = tempCustomerInputs.find(
+          (input) => input.id == renderCustomerForm
+        );
+        let responseGPT;
+        if (customer) {
+          responseGPT = await dispatch(
+            fetchGPTResponse(customer.id, customer.additionalInfo)
+          );
+        }
+
+        let gptResponseArray = [];
+        for (let key in responseGPT) {
+          if (Array.isArray(responseGPT[key])) {
+            gptResponseArray = responseGPT[key];
+          }
+        }
+
+        const updatedTempCustomerInputs = tempCustomerInputs.map((input) => {
+          if (input.id === customer.id) {
+            return {
+              ...input,
+              gptResponseArray: gptResponseArray, // assuming responseGPT.payload contains the required data
+            };
+          }
+          return input;
+        });
+
+        setTempCustomerInputs(updatedTempCustomerInputs);
+        setShowAdvancedInputs(false);
+      } catch (error) {
+        console.log("Fetching GPT error:", error);
+      }
+    };
+
     const handleAddAdvancedInput = (id) => {
       const newInputs = tempCustomerInputs.map((input) => {
         if (input?.id === id) {
@@ -927,9 +964,9 @@ const CustomerSection = React.memo(
             ))}
           </div>
           <AntdModal
-            centered
             visible={isChartModalVisible}
             footer={null}
+            centered
             onCancel={() => setIsChartModalVisible(false)}
             width="90%"
             style={{ top: 20 }}
@@ -1150,8 +1187,9 @@ const CustomerSection = React.memo(
                       }
                     />
                   </div>
+
                   <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">
+                    <span className=" flex items-center text-sm">
                       Acquisition cost:
                     </span>
                     <Input
@@ -1168,102 +1206,62 @@ const CustomerSection = React.memo(
                       disabled
                     />
                   </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <Checkbox
+                      className="col-span-2"
+                      checked={showAdvancedInputs}
+                      onChange={(e) => setShowAdvancedInputs(e.target.checked)}
+                    >
+                      Show Advanced Inputs
+                    </Checkbox>
+                  </div>
+
+                  {showAdvancedInputs && (
+                    <Modal
+                      title="Advanced Inputs"
+                      visible={showAdvancedInputs}
+                      onOk={handleFetchGPT}
+                      onCancel={() => setShowAdvancedInputs(false)}
+                      okText="Apply"
+                      cancelText="Cancel"
+                      cancelButtonProps={{
+                        style: {
+                          borderRadius: "0.375rem",
+                          cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                        },
+                      }}
+                      okButtonProps={{
+                        style: {
+                          background: "#2563EB",
+                          borderColor: "#2563EB",
+                          color: "#fff",
+                          borderRadius: "0.375rem",
+                          cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                        },
+                      }}
+                      centered={true}
+                    >
+                      <div className="gap-4 mb-3">
+                        <span className="flex items-center text-sm">
+                          Additional Info:
+                        </span>
+                        <Input
+                          className="col-start-2 border-gray-300"
+                          value={input.additionalInfo}
+                          onChange={(e) =>
+                            handleInputChange(
+                              input?.id,
+                              "additionalInfo",
+                              e.target.value
+                            )
+                          }
+                          rows={4}
+                        />
+                      </div>
+                    </Modal>
+                  )}
                 </div>
               ))}
-
-            <div className="grid grid-cols-2 gap-4 mb-3 items-center">
-              <Checkbox
-                className="col-span-2"
-                checked={showAdvancedInputs}
-                onChange={(e) => setShowAdvancedInputs(e.target.checked)}
-              >
-                Show Advanced Inputs
-              </Checkbox>
-            </div>
-
-            {showAdvancedInputs &&
-              tempCustomerInputs
-                .filter((input) => input?.id == renderCustomerForm)
-                .map((input) => (
-                  <div
-                    key={input?.id}
-                    className="bg-white rounded-2xl p-6 border my-4"
-                  >
-                    <>
-                      <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">
-                          Event Name:
-                        </span>
-                        <Input
-                          className="col-start-2 border-gray-300"
-                          value={input.eventName}
-                          onChange={(e) =>
-                            handleInputChange(
-                              input?.id,
-                              "eventName",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">
-                          Local Growth Rate:
-                        </span>
-                        <Input
-                          className="col-start-2 border-gray-300"
-                          value={input.localGrowthRate}
-                          onChange={(e) =>
-                            handleInputChange(
-                              input?.id,
-                              "localGrowthRate",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">
-                          Event Begin Month:
-                        </span>
-                        <Input
-                          className="col-start-2 border-gray-300"
-                          type="number"
-                          min={1}
-                          max={12}
-                          value={input.eventBeginMonth}
-                          onChange={(e) =>
-                            handleInputChange(
-                              input?.id,
-                              "eventBeginMonth",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">
-                          Event End Month:
-                        </span>
-                        <Input
-                          className="col-start-2 border-gray-300"
-                          type="number"
-                          min={1}
-                          max={12}
-                          value={input.eventEndMonth}
-                          onChange={(e) =>
-                            handleInputChange(
-                              input?.id,
-                              "eventEndMonth",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </div>
-                    </>
-                  </div>
-                ))}
 
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <div className="flex justify-center items-center">
@@ -1467,6 +1465,24 @@ const CustomerSection = React.memo(
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className="flex items-center text-sm">
+                        Adding (Last month)
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        value={formatNumber(input.customersPerMonth)}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "customersPerMonth",
+                            parseNumber(e.target.value)
+                          )
+                        }
+                        type="text"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-3">
                       <span className=" flex items-center text-sm">
                         Growth rate (%):
                       </span>
@@ -1570,6 +1586,24 @@ const CustomerSection = React.memo(
                         }
                       />
                     </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className="flex items-center text-sm">
+                        Additional Info:
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        value={input.additionalInfo}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "additionalInfo",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+
                     <div className="grid grid-cols-2 gap-4 mb-3">
                       <span className=" flex items-center text-sm">
                         Acquisition cost:
@@ -1588,6 +1622,7 @@ const CustomerSection = React.memo(
                         disabled
                       />
                     </div>
+
                     <div className="flex justify-end items-center">
                       <button
                         className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"

@@ -49,7 +49,8 @@ import { Checkbox } from "antd";
 import {
   Modal as AntdModal, // Add AntdModal for larger mode view
 } from "antd";
-import { ResizeObserver } from "rc-resize-observer"; // Add ResizeObserver for responsive handling
+import TextArea from "antd/es/input/TextArea";
+import SpinnerBtn from "../../../components/SpinnerBtn";
 
 const CustomerSection = React.memo(
   ({
@@ -305,8 +306,10 @@ const CustomerSection = React.memo(
 
     // Define the useEffect hook
 
+    const [isLoading, setIsLoading] = useState(false);
     const saveData = async () => {
       try {
+        setIsLoading(true);
         // Check if there are duplicate channel names
         const channelNames = tempCustomerInputs.map(
           (input) => input.channelName
@@ -383,6 +386,7 @@ const CustomerSection = React.memo(
         message.error(error.message);
       } finally {
         setIsSaved(false);
+        setIsLoading(false);
       }
     };
 
@@ -423,7 +427,7 @@ const CustomerSection = React.memo(
             .map((data) => parseInt(data.customers, 10)),
         };
       });
-
+      console.log("seriesData", seriesData);
       const seriesData2 = tempCustomerGrowthData.map((channelData) => {
         return {
           name: channelData[0]?.channelName || "Unknown Channel",
@@ -776,8 +780,9 @@ const CustomerSection = React.memo(
 
     const handleFetchGPT = async () => {
       try {
+        setIsLoading(true);
         const customer = tempCustomerInputs.find(
-          (input) => input.id == renderCustomerForm
+          (input) => input.id === renderCustomerForm
         );
         let responseGPT;
         if (customer) {
@@ -785,19 +790,28 @@ const CustomerSection = React.memo(
             fetchGPTResponse(customer.id, customer.additionalInfo,customer )
           );
         }
-console.log(" responseGPT",responseGPT)
+
+        console.log("responseGPT", responseGPT);
+
+        // Check if responseGPT is an object with a single key that holds an array
         let gptResponseArray = [];
-        for (let key in responseGPT) {
-          if (Array.isArray(responseGPT[key])) {
-            gptResponseArray = responseGPT[key];
+        if (responseGPT && typeof responseGPT === "object") {
+          const keys = Object.keys(responseGPT);
+          if (keys.length === 1 && Array.isArray(responseGPT[keys[0]])) {
+            gptResponseArray = responseGPT[keys[0]];
+          } else {
+            gptResponseArray = responseGPT;
           }
+        } else {
+          gptResponseArray = responseGPT;
         }
 
         const updatedTempCustomerInputs = tempCustomerInputs.map((input) => {
           if (input.id === customer.id) {
             return {
               ...input,
-              gptResponseArray: gptResponseArray, // assuming responseGPT.payload contains the required data
+              customersPerMonth: gptResponseArray[0] || 0, // assuming the first element is needed
+              gptResponseArray: gptResponseArray, // assuming gptResponseArray contains the required data
             };
           }
           return input;
@@ -807,8 +821,12 @@ console.log(" responseGPT",responseGPT)
         setShowAdvancedInputs(false);
       } catch (error) {
         console.log("Fetching GPT error:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
+
+    console.log("tempCustomerInputs", tempCustomerInputs);
 
     const handleAddAdvancedInput = (id) => {
       const newInputs = tempCustomerInputs.map((input) => {
@@ -1223,12 +1241,13 @@ console.log(" responseGPT",responseGPT)
                       visible={showAdvancedInputs}
                       onOk={handleFetchGPT}
                       onCancel={() => setShowAdvancedInputs(false)}
-                      okText="Apply"
+                      okText={isLoading ? <SpinnerBtn /> : "Apply"}
                       cancelText="Cancel"
                       cancelButtonProps={{
                         style: {
                           borderRadius: "0.375rem",
                           cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                          minWidth: "5vw",
                         },
                       }}
                       okButtonProps={{
@@ -1238,6 +1257,7 @@ console.log(" responseGPT",responseGPT)
                           color: "#fff",
                           borderRadius: "0.375rem",
                           cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                          minWidth: "5vw",
                         },
                       }}
                       centered={true}
@@ -1295,17 +1315,23 @@ console.log(" responseGPT",responseGPT)
               </button>
 
               <button
-                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[5vw]"
                 onClick={handleSave}
               >
-                <CheckCircleOutlined
-                  style={{
-                    fontSize: "12px",
-                    color: "#FFFFFF",
-                    marginRight: "4px",
-                  }}
-                />
-                Save
+                {isLoading ? (
+                  <SpinnerBtn />
+                ) : (
+                  <>
+                    <CheckCircleOutlined
+                      style={{
+                        fontSize: "12px",
+                        color: "#FFFFFF",
+                        marginRight: "4px",
+                      }}
+                    />
+                    Save
+                  </>
+                )}
               </button>
             </div>
           </section>

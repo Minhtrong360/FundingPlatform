@@ -785,6 +785,7 @@ const CustomerSection = React.memo(
           );
         }
 
+        console.log("responseGPT", responseGPT);
         let gptResponseArray = [];
         for (let key in responseGPT) {
           if (Array.isArray(responseGPT[key])) {
@@ -796,6 +797,7 @@ const CustomerSection = React.memo(
           if (input.id === customer.id) {
             return {
               ...input,
+              customersPerMonth: gptResponseArray[0],
               gptResponseArray: gptResponseArray, // assuming responseGPT.payload contains the required data
             };
           }
@@ -808,6 +810,8 @@ const CustomerSection = React.memo(
         console.log("Fetching GPT error:", error);
       }
     };
+
+    console.log("tempCustomerInputs", tempCustomerInputs);
 
     const handleAddAdvancedInput = (id) => {
       const newInputs = tempCustomerInputs.map((input) => {

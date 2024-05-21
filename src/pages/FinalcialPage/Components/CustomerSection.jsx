@@ -48,7 +48,8 @@ import { Checkbox } from "antd";
 import {
   Modal as AntdModal, // Add AntdModal for larger mode view
 } from "antd";
-import { ResizeObserver } from "rc-resize-observer"; // Add ResizeObserver for responsive handling
+import TextArea from "antd/es/input/TextArea";
+import SpinnerBtn from "../../../components/SpinnerBtn";
 
 const CustomerSection = React.memo(
   ({
@@ -304,8 +305,10 @@ const CustomerSection = React.memo(
 
     // Define the useEffect hook
 
+    const [isLoading, setIsLoading] = useState(false);
     const saveData = async () => {
       try {
+        setIsLoading(true);
         // Check if there are duplicate channel names
         const channelNames = tempCustomerInputs.map(
           (input) => input.channelName
@@ -382,6 +385,7 @@ const CustomerSection = React.memo(
         message.error(error.message);
       } finally {
         setIsSaved(false);
+        setIsLoading(false);
       }
     };
 
@@ -775,6 +779,7 @@ const CustomerSection = React.memo(
 
     const handleFetchGPT = async () => {
       try {
+        setIsLoading(true);
         const customer = tempCustomerInputs.find(
           (input) => input.id == renderCustomerForm
         );
@@ -786,19 +791,19 @@ const CustomerSection = React.memo(
         }
 
         console.log("responseGPT", responseGPT);
-        let gptResponseArray = [];
-        for (let key in responseGPT) {
-          if (Array.isArray(responseGPT[key])) {
-            gptResponseArray = responseGPT[key];
-          }
-        }
+        // let gptResponseArray = [];
+        // for (let key in responseGPT) {
+        //   if (Array.isArray(responseGPT[key])) {
+        //     gptResponseArray = responseGPT[key];
+        //   }
+        // }
 
         const updatedTempCustomerInputs = tempCustomerInputs.map((input) => {
           if (input.id === customer.id) {
             return {
               ...input,
-              customersPerMonth: gptResponseArray[0],
-              gptResponseArray: gptResponseArray, // assuming responseGPT.payload contains the required data
+              customersPerMonth: responseGPT[0],
+              gptResponseArray: responseGPT, // assuming responseGPT.payload contains the required data
             };
           }
           return input;
@@ -808,6 +813,8 @@ const CustomerSection = React.memo(
         setShowAdvancedInputs(false);
       } catch (error) {
         console.log("Fetching GPT error:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -1226,12 +1233,13 @@ const CustomerSection = React.memo(
                       visible={showAdvancedInputs}
                       onOk={handleFetchGPT}
                       onCancel={() => setShowAdvancedInputs(false)}
-                      okText="Apply"
+                      okText={isLoading ? <SpinnerBtn /> : "Apply"}
                       cancelText="Cancel"
                       cancelButtonProps={{
                         style: {
                           borderRadius: "0.375rem",
                           cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                          minWidth: "5vw",
                         },
                       }}
                       okButtonProps={{
@@ -1241,6 +1249,7 @@ const CustomerSection = React.memo(
                           color: "#fff",
                           borderRadius: "0.375rem",
                           cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                          minWidth: "5vw",
                         },
                       }}
                       centered={true}
@@ -1249,7 +1258,7 @@ const CustomerSection = React.memo(
                         <span className="flex items-center text-sm">
                           Additional Info:
                         </span>
-                        <Input
+                        <TextArea
                           className="col-start-2 border-gray-300"
                           value={input.additionalInfo}
                           onChange={(e) =>
@@ -1298,17 +1307,23 @@ const CustomerSection = React.memo(
               </button>
 
               <button
-                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[5vw]"
                 onClick={handleSave}
               >
-                <CheckCircleOutlined
-                  style={{
-                    fontSize: "12px",
-                    color: "#FFFFFF",
-                    marginRight: "4px",
-                  }}
-                />
-                Save
+                {isLoading ? (
+                  <SpinnerBtn />
+                ) : (
+                  <>
+                    <CheckCircleOutlined
+                      style={{
+                        fontSize: "12px",
+                        color: "#FFFFFF",
+                        marginRight: "4px",
+                      }}
+                    />
+                    Save
+                  </>
+                )}
               </button>
             </div>
           </section>

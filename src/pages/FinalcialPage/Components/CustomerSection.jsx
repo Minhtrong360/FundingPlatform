@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
+import TextArea from "antd/es/input/TextArea";
 import {
   Button,
   Card,
@@ -781,10 +782,10 @@ const CustomerSection = React.memo(
         let responseGPT;
         if (customer) {
           responseGPT = await dispatch(
-            fetchGPTResponse(customer.id, customer.additionalInfo)
+            fetchGPTResponse(customer.id, customer.additionalInfo,customer )
           );
         }
-
+console.log(" responseGPT",responseGPT)
         let gptResponseArray = [];
         for (let key in responseGPT) {
           if (Array.isArray(responseGPT[key])) {
@@ -1245,7 +1246,7 @@ const CustomerSection = React.memo(
                         <span className="flex items-center text-sm">
                           Additional Info:
                         </span>
-                        <Input
+                        <TextArea
                           className="col-start-2 border-gray-300"
                           value={input.additionalInfo}
                           onChange={(e) =>
@@ -1255,7 +1256,7 @@ const CustomerSection = React.memo(
                               e.target.value
                             )
                           }
-                          rows={4}
+                          rows={10}
                         />
                       </div>
                     </Modal>

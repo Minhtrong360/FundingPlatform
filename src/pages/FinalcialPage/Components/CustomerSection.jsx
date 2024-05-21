@@ -19,6 +19,7 @@ import {
   transformCustomerData,
   generateCustomerTableData,
   setCustomerTableData,
+  fetchGPTResponse
 } from "../../../features/CustomerSlice";
 import {
   calculateChannelRevenue,
@@ -46,7 +47,6 @@ import { useAuth } from "../../../context/AuthContext";
 import { Checkbox } from "antd";
 import {
   Modal as AntdModal, // Add AntdModal for larger mode view
-
 } from "antd";
 import { ResizeObserver } from "rc-resize-observer"; // Add ResizeObserver for responsive handling
 
@@ -58,10 +58,18 @@ const CustomerSection = React.memo(
     customerGrowthChart,
     setCustomerGrowthChart,
   }) => {
-    const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
-const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
+    const [functionType, setFunctionType] = useState("linear"); // New state for function type
+    const [chartNotes, setChartNotes] = useState(""); // New state for chart notes
 
-    
+    const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
+    const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
+
+    const chartFunctions = [
+      { value: "linear", label: "Linear" },
+      { value: "exponential", label: "Exponential" },
+      { value: "logarithmic", label: "Logarithmic" },
+    ];
+
     const handleChartClick = (chart) => {
       setSelectedChart(chart);
       setIsChartModalVisible(true);
@@ -111,6 +119,7 @@ const [selectedChart, setSelectedChart] = useState(null); // New state for selec
         acquisitionCost: 0, // Default value for acquisition cost
         adjustmentFactor: 1, // Default value for adjustment factor
         eventName: "", // Default value for event name
+        additionalInfo: "", // Default value for additional info
       };
 
       setTempCustomerInputs([...tempCustomerInputs, newCustomer]);
@@ -228,8 +237,6 @@ const [selectedChart, setSelectedChart] = useState(null); // New state for selec
     const startingMonth = startMonth; // Tháng bắt đầu từ 1
     const startingYear = startYear; // Năm bắt đầu từ 24
 
-    
-
     const customerColumns = [
       {
         fixed: "left",
@@ -247,20 +254,24 @@ const [selectedChart, setSelectedChart] = useState(null); // New state for selec
           key: `month${i + 1}`,
           align: "right",
           render: (text, record) => {
-            const channel = tempCustomerInputs.find(input => input.channelName === record.channelName);
+            const channel = tempCustomerInputs.find(
+              (input) => input.channelName === record.channelName
+            );
             const month = i + 1;
-            const isInEvent = month >= channel?.eventBeginMonth && month <= channel?.eventEndMonth;
-            const growthRate = isInEvent ? channel?.localGrowthRate : channel?.growthPerMonth;
+            const isInEvent =
+              month >= channel?.eventBeginMonth &&
+              month <= channel?.eventEndMonth;
+            const growthRate = isInEvent
+              ? channel?.localGrowthRate
+              : channel?.growthPerMonth;
             const eventName = channel?.eventName || "";
-    
+
             const tooltipTitle = isInEvent
               ? `Local Growth Rate: ${growthRate}%\nEvent: ${eventName}`
-              : '';
-    
-            const cellStyle = isInEvent
-              ? { backgroundColor: 'yellow' }
-              : {};
-    
+              : "";
+
+            const cellStyle = isInEvent ? { backgroundColor: "yellow" } : {};
+
             return (
               <Tooltip title={tooltipTitle} placement="topLeft">
                 <div style={cellStyle}>{text}</div>
@@ -270,13 +281,6 @@ const [selectedChart, setSelectedChart] = useState(null); // New state for selec
         };
       }),
     ];
-    
-    
-    
-    
-
-    
-    
 
     const handleSelectChange = (event) => {
       setRenderCustomerForm(event.target.value);
@@ -371,6 +375,9 @@ const [selectedChart, setSelectedChart] = useState(null); // New state for selec
                 message.success("Data saved successfully!");
               }
             }
+          }
+          for (const customer of tempCustomerInputs) {
+            await dispatch(fetchGPTResponse(customer.id, customer.additionalInfo));
           }
         } catch (error) {
           message.error(error.message);
@@ -864,24 +871,24 @@ const [selectedChart, setSelectedChart] = useState(null); // New state for selec
             ))}
           </div>
           <AntdModal
-  visible={isChartModalVisible}
-  footer={null}
-  onCancel={() => setIsChartModalVisible(false)}
-  width="90%"
-  style={{ top: 20 }}
->
-  {selectedChart && (
-    <Chart
-      options={{
-        ...selectedChart.options,
-        // ... other options
-      }}
-      series={selectedChart.series}
-      type="area"
-      height={500}
-    />
-  )}
-</AntdModal>
+            visible={isChartModalVisible}
+            footer={null}
+            onCancel={() => setIsChartModalVisible(false)}
+            width="90%"
+            style={{ top: 20 }}
+          >
+            {selectedChart && (
+              <Chart
+                options={{
+                  ...selectedChart.options,
+                  // ... other options
+                }}
+                series={selectedChart.series}
+                type="area"
+                height={500}
+              />
+            )}
+          </AntdModal>
 
           <h3 className="text-lg font-semibold my-4">Customer Table</h3>
           <Table
@@ -1090,6 +1097,25 @@ const [selectedChart, setSelectedChart] = useState(null); // New state for selec
                       }
                     />
                   </div>
+                  
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className="flex items-center text-sm">
+                        Additional Info:
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        value={input.additionalInfo}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "additionalInfo",
+                            e.target.value
+                          )
+                        }
+                        rows={4} 
+                      />
+                    </div>
+                    
                   <div className="grid grid-cols-2 gap-4 mb-3">
                     <span className=" flex items-center text-sm">
                       Acquisition cost:
@@ -1109,68 +1135,92 @@ const [selectedChart, setSelectedChart] = useState(null); // New state for selec
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4 mb-3">
-  <Checkbox
-    className="col-span-2"
-    checked={showAdvancedInputs}
-    onChange={(e) => setShowAdvancedInputs(e.target.checked)}
-  >
-    Show Advanced Inputs
-  </Checkbox>
-</div>
+                    <Checkbox
+                      className="col-span-2"
+                      checked={showAdvancedInputs}
+                      onChange={(e) => setShowAdvancedInputs(e.target.checked)}
+                    >
+                      Show Advanced Inputs
+                    </Checkbox>
+                  </div>
 
-{showAdvancedInputs && (
-  <>
-    <div className="grid grid-cols-2 gap-4 mb-3">
-    <span className="flex items-center text-sm">Local Growth Rate:</span>
-    <Input
-      className="col-start-2 border-gray-300"
-      value={input.localGrowthRate}
-      onChange={(e) =>
-        handleInputChange(input?.id, "localGrowthRate", e.target.value)
-      }
-    />
-  </div>
+                  {showAdvancedInputs && (
+                    <>
+                      <div className="grid grid-cols-2 gap-4 mb-3">
+                        <span className="flex items-center text-sm">
+                          Local Growth Rate:
+                        </span>
+                        <Input
+                          className="col-start-2 border-gray-300"
+                          value={input.localGrowthRate}
+                          onChange={(e) =>
+                            handleInputChange(
+                              input?.id,
+                              "localGrowthRate",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
 
-    <div className="grid grid-cols-2 gap-4 mb-3">
-      <span className="flex items-center text-sm">Event Begin Month:</span>
-      <Input
-        className="col-start-2 border-gray-300"
-        type="number"
-        min={1}
-        max={12}
-        value={input.eventBeginMonth}
-        onChange={(e) =>
-          handleInputChange(input?.id, "eventBeginMonth", e.target.value)
-        }
-      />
-    </div>
+                      <div className="grid grid-cols-2 gap-4 mb-3">
+                        <span className="flex items-center text-sm">
+                          Event Begin Month:
+                        </span>
+                        <Input
+                          className="col-start-2 border-gray-300"
+                          type="number"
+                          min={1}
+                          max={12}
+                          value={input.eventBeginMonth}
+                          onChange={(e) =>
+                            handleInputChange(
+                              input?.id,
+                              "eventBeginMonth",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
 
-    <div className="grid grid-cols-2 gap-4 mb-3">
-      <span className="flex items-center text-sm">Event End Month:</span>
-      <Input
-        className="col-start-2 border-gray-300"
-        type="number"
-        min={1}
-        max={12}
-        value={input.eventEndMonth}
-        onChange={(e) =>
-          handleInputChange(input?.id, "eventEndMonth", e.target.value)
-        }
-      />
-    </div>
+                      <div className="grid grid-cols-2 gap-4 mb-3">
+                        <span className="flex items-center text-sm">
+                          Event End Month:
+                        </span>
+                        <Input
+                          className="col-start-2 border-gray-300"
+                          type="number"
+                          min={1}
+                          max={12}
+                          value={input.eventEndMonth}
+                          onChange={(e) =>
+                            handleInputChange(
+                              input?.id,
+                              "eventEndMonth",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
 
-    <div className="grid grid-cols-2 gap-4 mb-3">
-      <span className="flex items-center text-sm">Event Name:</span>
-      <Input
-        className="col-start-2 border-gray-300"
-        value={input.eventName}
-        onChange={(e) =>
-          handleInputChange(input?.id, "eventName", e.target.value)
-        }
-      />
-    </div>
-  </>
-)}
+                      <div className="grid grid-cols-2 gap-4 mb-3">
+                        <span className="flex items-center text-sm">
+                          Event Name:
+                        </span>
+                        <Input
+                          className="col-start-2 border-gray-300"
+                          value={input.eventName}
+                          onChange={(e) =>
+                            handleInputChange(
+                              input?.id,
+                              "eventName",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
 
@@ -1376,6 +1426,24 @@ const [selectedChart, setSelectedChart] = useState(null); // New state for selec
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className="flex items-center text-sm">
+                        Adding (Last month)
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        value={formatNumber(input.customersPerMonth)}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "customersPerMonth",
+                            parseNumber(e.target.value)
+                          )
+                        }
+                        type="text"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-3">
                       <span className=" flex items-center text-sm">
                         Growth rate (%):
                       </span>
@@ -1479,6 +1547,24 @@ const [selectedChart, setSelectedChart] = useState(null); // New state for selec
                         }
                       />
                     </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className="flex items-center text-sm">
+                        Additional Info:
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        value={input.additionalInfo}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "additionalInfo",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+                    
                     <div className="grid grid-cols-2 gap-4 mb-3">
                       <span className=" flex items-center text-sm">
                         Acquisition cost:
@@ -1497,6 +1583,9 @@ const [selectedChart, setSelectedChart] = useState(null); // New state for selec
                         disabled
                       />
                     </div>
+
+                   
+
                     <div className="flex justify-end items-center">
                       <button
                         className="bg-red-600 text-white py-2 px-2 rounded text-sm mt-4"

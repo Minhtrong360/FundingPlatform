@@ -18,6 +18,8 @@ const initialState = {
       eventName: "", // Default value for event name
       eventBeginMonth: 1, // Event-specific begin month
       eventEndMonth: 36, // Event-specific end month
+      additionalInfo: "", // Default value for additional info
+
     },
     {
       id: 2,
@@ -34,6 +36,8 @@ const initialState = {
       eventName: "", // Default value for event name
       eventBeginMonth: 1, // Event-specific begin month
       eventEndMonth: 36, // Event-specific end month
+      additionalInfo: "", // Default value for additional info
+
     },
   ],
   customerGrowthData: [],
@@ -56,6 +60,13 @@ const customerSlice = createSlice({
     },
     setCustomerTableData(state, action) {
       state.customerTableData = action.payload;
+    },
+    setGPTResponse(state, action) {
+      const { id, response } = action.payload;
+      const customer = state.customerInputs.find((input) => input.id === id);
+      if (customer) {
+        customer.gptResponse = response;
+      }
     },
   },
 });
@@ -422,6 +433,40 @@ export const {
   setCustomerGrowthData,
   setYearlyAverageCustomers,
   setCustomerTableData,
+  setGPTResponse, // New action creator
 } = customerSlice.actions;
 
 export default customerSlice.reducer;
+
+export const fetchGPTResponse = (id, additionalInfo) => async (dispatch) => {
+  try {
+    console.log("fetching GPT response");
+    const response = await fetch(
+      "https://news-fetcher-8k6m.onrender.com/drawchart",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_input: additionalInfo,  // Treat additionalInfo as a single prompt
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.error) {
+      throw new Error(data.error);
+    }
+
+    const cleanedResponseText = data?.response?.replace(/json|`/g, "");
+    console.log("GPT response:", cleanedResponseText);
+    dispatch(setGPTResponse({ id, response: cleanedResponseText }));
+  } catch (error) {
+    console.error("Error fetching GPT response:", error);
+  }
+};
+
+
+

@@ -816,7 +816,7 @@ const CustomerSection = React.memo(
                 className="flex flex-col transition duration-500  rounded-2xl"
               >
                 <div className="flex justify-between items-center">
-                  <div className="min-w-[10vw]">
+                  <div className="min-w-[10vw] mb-2">
                     <label htmlFor="startMonthSelect">Start Month:</label>
                     <select
                       id="startMonthSelect"
@@ -841,7 +841,7 @@ const CustomerSection = React.memo(
                       })}
                     </select>
                   </div>
-                  <div className="min-w-[10vw]">
+                  <div className="min-w-[10vw] mb-2">
                     <label htmlFor="endMonthSelect">End Month:</label>
                     <select
                       id="endMonthSelect"

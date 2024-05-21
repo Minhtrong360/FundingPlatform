@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Chart from "react-apexcharts";
-import { Card } from "antd";
+import { Card, Modal } from "antd";
 import { formatNumber } from "../../../features/CostSlice";
 import { useSelector } from "react-redux";
 
@@ -97,6 +97,14 @@ const CustomChart = ({
     dataLabels: { enabled: false },
   };
 
+  const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
+  const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
+
+  const handleChartClick = (chart) => {
+    setSelectedChart(chart);
+    setIsChartModalVisible(true);
+  };
+
   return (
     <div className="grid md:grid-cols-2 gap-6 mt-6">
       <Card
@@ -104,7 +112,7 @@ const CustomChart = ({
         className="flex flex-col transition duration-500  rounded-2xl"
       >
         <div className="flex justify-between items-center">
-          <div className="min-w-[10vw]">
+          <div className="min-w-[10vw] mb-2">
             <label htmlFor="startMonthSelect">Start Month:</label>
             <select
               id="startMonthSelect"
@@ -128,7 +136,7 @@ const CustomChart = ({
               })}
             </select>
           </div>
-          <div className="min-w-[10vw]">
+          <div className="min-w-[10vw] mb-2">
             <label htmlFor="endMonthSelect">End Month:</label>
             <select
               id="endMonthSelect"
@@ -156,13 +164,32 @@ const CustomChart = ({
             </select>
           </div>
         </div>
-        <Chart
-          options={chartOptions}
-          series={[{ name: seriesTitle, data: filteredData }]}
-          type="area"
-          height={350}
-        />
+        <div onClick={() => handleChartClick(filteredData)}>
+          <Chart
+            options={chartOptions}
+            series={[{ name: seriesTitle, data: filteredData }]}
+            type="area"
+            height={350}
+          />
+        </div>
       </Card>
+      <Modal
+        centered
+        visible={isChartModalVisible}
+        footer={null}
+        onCancel={() => setIsChartModalVisible(false)}
+        width="90%"
+        style={{ top: 20 }}
+      >
+        {selectedChart && (
+          <Chart
+            options={chartOptions}
+            series={[{ name: seriesTitle, data: filteredData }]}
+            type="area"
+            height={500}
+          />
+        )}
+      </Modal>
     </div>
   );
 };

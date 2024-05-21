@@ -781,7 +781,7 @@ const CustomerSection = React.memo(
       try {
         setIsLoading(true);
         const customer = tempCustomerInputs.find(
-          (input) => input.id == renderCustomerForm
+          (input) => input.id === renderCustomerForm
         );
         let responseGPT;
         if (customer) {
@@ -791,19 +791,26 @@ const CustomerSection = React.memo(
         }
 
         console.log("responseGPT", responseGPT);
-        // let gptResponseArray = [];
-        // for (let key in responseGPT) {
-        //   if (Array.isArray(responseGPT[key])) {
-        //     gptResponseArray = responseGPT[key];
-        //   }
-        // }
+
+        // Check if responseGPT is an object with a single key that holds an array
+        let gptResponseArray = [];
+        if (responseGPT && typeof responseGPT === "object") {
+          const keys = Object.keys(responseGPT);
+          if (keys.length === 1 && Array.isArray(responseGPT[keys[0]])) {
+            gptResponseArray = responseGPT[keys[0]];
+          } else {
+            gptResponseArray = responseGPT;
+          }
+        } else {
+          gptResponseArray = responseGPT;
+        }
 
         const updatedTempCustomerInputs = tempCustomerInputs.map((input) => {
           if (input.id === customer.id) {
             return {
               ...input,
-              customersPerMonth: responseGPT[0],
-              gptResponseArray: responseGPT, // assuming responseGPT.payload contains the required data
+              customersPerMonth: gptResponseArray[0] || 0, // assuming the first element is needed
+              gptResponseArray: gptResponseArray, // assuming gptResponseArray contains the required data
             };
           }
           return input;

@@ -868,7 +868,7 @@ const CustomerSection = React.memo(
       }
     };
 
-    console.log("tempCustomerInputs", tempCustomerInputs);
+   
 
     const handleAddAdvancedInput = (id) => {
       const newInputs = tempCustomerInputs.map((input) => {

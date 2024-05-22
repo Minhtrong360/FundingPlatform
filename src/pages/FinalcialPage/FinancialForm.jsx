@@ -65,6 +65,7 @@ import CashFlowSection from "./Components/CashFlowSection";
 import { Button, FloatButton, Modal, message } from "antd";
 import { useParams } from "react-router-dom";
 import AnnounceFMPage from "./Components/AnnounceFMPage";
+import Perflexity from "./Components/Perflexity";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
@@ -72,7 +73,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [spinning, setSpinning] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [temIsLoading, setTemIsLoading] = useState(true);
-
+  
   //DurationSection
   const {
     selectedDuration,
@@ -87,7 +88,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     financialProjectName,
     cutMonth,
   } = useSelector((state) => state.durationSelect);
-
+  const generatePrompt = () => {
+    return `Describe a project in 100 words. Project name: ${financialProjectName}`; 
+  };
   const { yearlyAverageCustomers } = useSelector((state) => state.customer);
   const { yearlySales } = useSelector((state) => state.sales);
 
@@ -941,6 +944,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                     >
                       Overview
                     </h2>
+                    <Perflexity prompt={generatePrompt()} button={"Benchmark"} />
                     <MetricsFM
                       customerGrowthChart={customerGrowthChart}
                       revenue={revenue}

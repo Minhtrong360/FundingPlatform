@@ -13,10 +13,10 @@ const Perflexity = ({prompt,button}) => {
       const newMessage = { role: "user", content: prompt };
     
     // Update the messages state by adding the new message
-      setMessages([...messages, newMessage]);
+      setMessages([ newMessage]);
 
     // Log the updated messages array
-    console.log("Input sent to backend:", [...messages, newMessage]);
+    console.log("Input sent to backend:", [ newMessage]);
       // const response = await fetch("https://news-fetcher-8k6m.onrender.com/chat", {
         const response = await fetch("http://localhost:8000/research", {
         method: "POST",
@@ -31,7 +31,8 @@ const Perflexity = ({prompt,button}) => {
       }
 
       const data = await response.json();
-      const assistantResponse = data?.response?.replace(/\*\*/g, '');
+      
+      const assistantResponse = data?.response?.replace(/json|`/g, "");
       console.log(assistantResponse)
        // Replace newline characters with <br> tags
       const formattedAssistantResponse = assistantResponse.replace(/\n/g, '<br>');

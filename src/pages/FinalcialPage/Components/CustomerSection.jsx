@@ -785,10 +785,10 @@ const CustomerSection = React.memo(
         let responseGPT;
         if (customer) {
           responseGPT = await dispatch(
-            fetchGPTResponse(customer.id, customer.additionalInfo,customer )
+            fetchGPTResponse(customer.id, customer.additionalInfo, customer)
           );
         }
-
+        console.log("responseGPT", responseGPT);
         // Check if responseGPT is an object with a single key that holds an array
         let gptResponseArray = [];
         if (responseGPT && typeof responseGPT === "object") {
@@ -802,11 +802,13 @@ const CustomerSection = React.memo(
           gptResponseArray = responseGPT;
         }
 
+        console.log("gptResponseArray", gptResponseArray);
+
         const updatedTempCustomerInputs = tempCustomerInputs.map((input) => {
           if (input.id === customer.id) {
             return {
               ...input,
-              customersPerMonth: gptResponseArray[0] || 0, // assuming the first element is needed
+              customersPerMonth: gptResponseArray[0], // assuming the first element is needed
               gptResponseArray: gptResponseArray, // assuming gptResponseArray contains the required data
             };
           }

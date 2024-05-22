@@ -19,7 +19,6 @@ const initialState = {
       eventBeginMonth: 1, // Event-specific begin month
       eventEndMonth: 36, // Event-specific end month
       additionalInfo: "", // Default value for additional info
-
     },
     {
       id: 2,
@@ -37,7 +36,6 @@ const initialState = {
       eventBeginMonth: 1, // Event-specific begin month
       eventEndMonth: 36, // Event-specific end month
       additionalInfo: "", // Default value for additional info
-
     },
   ],
   customerGrowthData: [],
@@ -79,22 +77,34 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
     let beginValue = parseFloat(customerInput.beginCustomer);
 
     for (let month = 1; month <= numberOfMonths; month++) {
-      if (month >= customerInput.beginMonth && month <= customerInput.endMonth) {
+      if (
+        month >= customerInput.beginMonth &&
+        month <= customerInput.endMonth
+      ) {
         if (month === customerInput.beginMonth) {
           currentCustomers = initialCustomers;
         } else {
           let growthRate = parseFloat(customerInput.growthPerMonth);
 
-          if (month >= customerInput.eventBeginMonth && month <= customerInput.eventEndMonth) {
+          if (
+            month >= customerInput.eventBeginMonth &&
+            month <= customerInput.eventEndMonth
+          ) {
             growthRate = customerInput.localGrowthRate;
           }
 
           if (customerInput.customerGrowthFrequency === "Monthly") {
             currentCustomers *= 1 + growthRate / 100;
-          } else if (["Annually", "Quarterly", "Semi-Annually"].includes(customerInput.customerGrowthFrequency)) {
+          } else if (
+            ["Annually", "Quarterly", "Semi-Annually"].includes(
+              customerInput.customerGrowthFrequency
+            )
+          ) {
             let frequency = 12;
-            if (customerInput.customerGrowthFrequency === "Quarterly") frequency = 3;
-            else if (customerInput.customerGrowthFrequency === "Semi-Annually") frequency = 6;
+            if (customerInput.customerGrowthFrequency === "Quarterly")
+              frequency = 3;
+            else if (customerInput.customerGrowthFrequency === "Semi-Annually")
+              frequency = 6;
 
             if ((month - customerInput.beginMonth) % frequency === 0) {
               currentCustomers *= 1 + growthRate / 100;
@@ -102,14 +112,22 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
           }
         }
 
-        const churnValue = (beginValue * (customerInput.churnRate / 100)).toFixed(0);
+        const churnValue = (
+          beginValue *
+          (customerInput.churnRate / 100)
+        ).toFixed(0);
 
         beginValue += currentCustomers - parseFloat(churnValue);
 
         monthlyCustomers.push({
           month: month,
           customers: beginValue.toFixed(0) > 0 ? beginValue.toFixed(0) : 0,
-          begin: month === customerInput.beginMonth ? parseFloat(customerInput.beginCustomer).toFixed(0) : parseFloat(monthlyCustomers[monthlyCustomers.length - 1]?.end).toFixed(0),
+          begin:
+            month === customerInput.beginMonth
+              ? parseFloat(customerInput.beginCustomer).toFixed(0)
+              : parseFloat(
+                  monthlyCustomers[monthlyCustomers.length - 1]?.end
+                ).toFixed(0),
           add: currentCustomers.toFixed(0),
           churn: churnValue,
           end: beginValue.toFixed(0) > 0 ? beginValue.toFixed(0) : 0,
@@ -131,7 +149,6 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
   });
 };
 
-
 export const calculateYearlyAverage = (
   tempCustomerGrowthData,
   numberOfMonths
@@ -149,7 +166,6 @@ export const calculateYearlyAverage = (
   }
   return yearlyAverages;
 };
-
 
 export function transformCustomerData(
   tempCustomerGrowthData,
@@ -233,7 +249,10 @@ export function generateCustomerTableData(
           if (i === customerInput.beginMonth) {
             currentCustomers = customerInput.customersPerMonth;
           } else {
-            if (i >= customerInput.eventBeginMonth && i <= customerInput.eventEndMonth) {
+            if (
+              i >= customerInput.eventBeginMonth &&
+              i <= customerInput.eventEndMonth
+            ) {
               growthRate = customerInput.localGrowthRate;
             }
 
@@ -254,7 +273,7 @@ export function generateCustomerTableData(
             }
           }
           channelAddRow[`month${i}`] = formatNumber(
-            currentCustomers.toFixed(0)
+            currentCustomers?.toFixed(0)
           );
         } else {
           channelAddRow[`month${i}`] = "0";
@@ -362,7 +381,10 @@ export function generateCustomerTableData(
           if (i === customerInput.beginMonth) {
             currentCustomers = customerInput.customersPerMonth;
           } else {
-            if (i >= customerInput.eventBeginMonth && i <= customerInput.eventEndMonth) {
+            if (
+              i >= customerInput.eventBeginMonth &&
+              i <= customerInput.eventEndMonth
+            ) {
               growthRate = customerInput.localGrowthRate;
             }
 
@@ -438,36 +460,35 @@ export const {
 
 export default customerSlice.reducer;
 
-export const fetchGPTResponse = (id, additionalInfo, customer) => async (dispatch) => {
-  try {
-    console.log("fetching GPT response");
-    const response = await fetch(
-      "https://news-fetcher-8k6m.onrender.com/drawchart",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_input: `Dựa trên ${additionalInfo}. Tìm các hàm toán học rời rạc thỏa mãn điều kiện trên. Sau khi tìm được các hàm này, tính giá trị của hàm từ tháng ${customer.beginMonth} đến ${customer.endMonth}. 
-          Không giải thích. Chỉ trả về kết quả file JSON theo dạng [70, 100, ... 500] là giá trị của các hàm rời rạc tương ứng tại các điểm trên.`,  // Treat additionalInfo as a single prompt
-        }),
+export const fetchGPTResponse =
+  (id, additionalInfo, customer) => async (dispatch) => {
+    try {
+      console.log("fetching GPT response");
+      const response = await fetch(
+        "https://news-fetcher-8k6m.onrender.com/drawchart",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_input: `Dựa trên ${additionalInfo}. Tìm các hàm toán học rời rạc thỏa mãn điều kiện trên. Sau khi tìm được các hàm này, tính giá trị của hàm từ tháng ${customer.beginMonth} đến ${customer.endMonth}. 
+          Không giải thích. Chỉ trả về kết quả file JSON theo dạng [70, 100, ... 500] là giá trị của các hàm rời rạc tương ứng tại các điểm trên.`, // Treat additionalInfo as a single prompt
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error);
       }
-    );
 
-    const data = await response.json();
-
-    if (data.error) {
-      throw new Error(data.error);
+      const cleanedResponseText = JSON.parse(
+        data?.response?.replace(/json|`/g, "")
+      );
+      return cleanedResponseText;
+    } catch (error) {
+      console.error("Error fetching GPT response:", error);
     }
-
-    const cleanedResponseText = data?.response?.replace(/json|`/g, "");
-    console.log("GPT response:", cleanedResponseText);
-    dispatch(setGPTResponse({ id, response: cleanedResponseText }));
-  } catch (error) {
-    console.error("Error fetching GPT response:", error);
-  }
-};
-
-
-
+  };

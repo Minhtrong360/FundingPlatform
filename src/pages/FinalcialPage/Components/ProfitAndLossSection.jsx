@@ -98,7 +98,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   const { personnelCostData, personnelInputs } = useSelector(
     (state) => state.personnel
   );
-
+ 
   useEffect(() => {
     const calculatedData = calculatePersonnelCostData(
       personnelInputs,
@@ -167,9 +167,9 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     grossProfit,
     totalCosts,
     totalPersonnelCosts,
+    detailedPersonnelCosts, // Added detailed personnel costs
     totalInvestmentDepreciation,
     totalInterestPayments,
-
     ebitda,
     earningsBeforeTax,
     incomeTax,
@@ -186,6 +186,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     incomeTaxRate,
     startingCashBalance
   );
+  
 
   const transposedData = [
     { key: "Revenue" },
@@ -197,7 +198,14 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     { key: "Gross Profit", values: grossProfit },
     { key: "Operating Expenses" },
     { key: "Operating Costs", values: totalCosts },
-    { key: "Personnel", values: totalPersonnelCosts },
+    {
+      key: "Personnel",
+      values: totalPersonnelCosts,
+      children: Object.keys(detailedPersonnelCosts).map((jobTitle) => ({
+        key: jobTitle,
+        values: detailedPersonnelCosts[jobTitle],
+      })),
+    },
     { key: "EBITDA", values: ebitda },
     { key: "Additional Expenses" },
     { key: "Depreciation", values: totalInvestmentDepreciation },
@@ -214,6 +222,16 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       }),
       {}
     ),
+    children: item.children?.map((child) => ({
+      metric: child.key,
+      ...child.values.reduce(
+        (acc, value, i) => ({
+          ...acc,
+          [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+        }),
+        {}
+      ),
+    })),
   }));
 
   const months = [
@@ -783,12 +801,14 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             Profit and Loss Statement
           </h2>
           {/* <pre>{JSON.stringify(tableData, null, 2)}</pre> */}
+          
           <Table
             className="overflow-auto my-8 rounded-md bg-white"
             size="small"
             bordered
             dataSource={transposedData}
             columns={columns}
+  
             pagination={false}
           />
 

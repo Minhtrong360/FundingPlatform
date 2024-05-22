@@ -245,9 +245,9 @@ const CustomerSection = React.memo(
 
     const startingMonth = startMonth; // Tháng bắt đầu từ 1
     const startingYear = startYear; // Năm bắt đầu từ 24
-    console.log(customerTableData)
+
     const handleInputTable = (value, recordKey, monthKey) => {
-      console.log( value, recordKey, monthKey)
+    
       const updatedData = customerTableData.map(record => {
         if (record.key === recordKey) {
           return {
@@ -459,6 +459,7 @@ const CustomerSection = React.memo(
             .map((data) => parseInt(data.customers, 10)),
         };
       });
+   
       const seriesData2 = tempCustomerGrowthData.map((channelData) => {
         return {
           name: channelData[0]?.channelName || "Unknown Channel",
@@ -832,6 +833,8 @@ const CustomerSection = React.memo(
           );
         }
 
+  
+
         // Check if responseGPT is an object with a single key that holds an array
         let gptResponseArray = [];
         if (responseGPT && typeof responseGPT === "object") {
@@ -864,6 +867,8 @@ const CustomerSection = React.memo(
         setIsLoading(false);
       }
     };
+
+    console.log("tempCustomerInputs", tempCustomerInputs);
 
     const handleAddAdvancedInput = (id) => {
       const newInputs = tempCustomerInputs.map((input) => {
@@ -1416,8 +1421,8 @@ const CustomerSection = React.memo(
                 borderColor: "#2563EB",
                 color: "#fff",
                 borderRadius: "0.375rem",
-                cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                minWidth: "5vw",
+                cursor: "pointer",
+                minWidth: "5vw", // Hiệu ứng con trỏ khi di chuột qua
               },
             }}
             centered={true}

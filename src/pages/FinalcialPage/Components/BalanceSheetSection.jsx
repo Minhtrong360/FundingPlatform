@@ -204,7 +204,11 @@ function BalanceSheetSection({ numberOfMonths }) {
   const { costData, costInputs } = useSelector((state) => state.cost);
 
   useEffect(() => {
-    const calculatedData = calculateCostData(costInputs, numberOfMonths);
+    const calculatedData = calculateCostData(
+      costInputs,
+      numberOfMonths,
+      revenueData
+    );
     dispatch(setCostData(calculatedData));
   }, [costInputs, numberOfMonths]);
 
@@ -1060,7 +1064,6 @@ console.log("BalenceSheetData",BalenceSheetData);
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
-      
         <div className="">
           <div className=" gap-4 mb-3">
             <Select

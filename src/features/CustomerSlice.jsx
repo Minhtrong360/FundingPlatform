@@ -450,7 +450,7 @@ export const fetchGPTResponse = (id, additionalInfo, customer) => async (dispatc
         },
         body: JSON.stringify({
           user_input: `Dựa trên ${additionalInfo}. Tìm các hàm toán học rời rạc thỏa mãn điều kiện trên. Sau khi tìm được các hàm này, tính giá trị của hàm từ tháng ${customer.beginMonth} đến ${customer.endMonth}. 
-          Không giải thích.  Chỉ trả về array dạng số, với chữ array.`,  // Treat additionalInfo as a single prompt
+          Không giải thích. Chỉ trả về kết quả file JSON theo dạng [70, 100, ... 500] là giá trị của các hàm rời rạc tương ứng tại các điểm trên.`,  // Treat additionalInfo as a single prompt
         }),
       }
     );

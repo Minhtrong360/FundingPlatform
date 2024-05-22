@@ -13,12 +13,12 @@ const initialState = {
       endMonth: 36,
       beginCustomer: 0,
       churnRate: 0,
-      acquisitionCost: 0, // Default value for acquisition cost
-      localGrowthRate: 1, // Default value for local growth rate
-      eventName: "", // Default value for event name
-      eventBeginMonth: 1, // Event-specific begin month
-      eventEndMonth: 36, // Event-specific end month
-      additionalInfo: "", // Default value for additional info
+      acquisitionCost: 0,
+      localGrowthRate: 1,
+      eventName: "",
+      eventBeginMonth: 1,
+      eventEndMonth: 36,
+      additionalInfo: "",
     },
     {
       id: 2,
@@ -30,12 +30,12 @@ const initialState = {
       endMonth: 36,
       beginCustomer: 0,
       churnRate: 0,
-      acquisitionCost: 0, // Default value for acquisition cost
-      localGrowthRate: 1, // Default value for local growth rate
-      eventName: "", // Default value for event name
-      eventBeginMonth: 1, // Event-specific begin month
-      eventEndMonth: 36, // Event-specific end month
-      additionalInfo: "", // Default value for additional info
+      acquisitionCost: 0,
+      localGrowthRate: 1,
+      eventName: "",
+      eventBeginMonth: 1,
+      eventEndMonth: 36,
+      additionalInfo: "",
     },
   ],
   customerGrowthData: [],
@@ -58,13 +58,19 @@ const customerSlice = createSlice({
     },
     setCustomerTableData(state, action) {
       state.customerTableData = action.payload;
-      console.log("customerTableData", state.customerTableData)
     },
     setGPTResponse(state, action) {
       const { id, response } = action.payload;
       const customer = state.customerInputs.find((input) => input.id === id);
       if (customer) {
         customer.gptResponse = response;
+      }
+    },
+    setGPTResponseArray(state, action) {
+      const { id, responseArray } = action.payload;
+      const customer = state.customerInputs.find((input) => input.id === id);
+      if (customer) {
+        customer.gptResponseArray = responseArray;
       }
     },
   },
@@ -94,7 +100,14 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
             growthRate = customerInput.localGrowthRate;
           }
 
-          if (customerInput.customerGrowthFrequency === "Monthly") {
+          if (
+            customerInput.gptResponseArray &&
+            customerInput.gptResponseArray.length > month - 1
+          ) {
+            currentCustomers = parseFloat(
+              customerInput.gptResponseArray[month - 1]
+            );
+          } else if (customerInput.customerGrowthFrequency === "Monthly") {
             currentCustomers *= 1 + growthRate / 100;
           } else if (
             ["Annually", "Quarterly", "Semi-Annually"].includes(
@@ -129,7 +142,7 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
               : parseFloat(
                   monthlyCustomers[monthlyCustomers.length - 1]?.end
                 ).toFixed(0),
-          add: currentCustomers.toFixed(0),
+          add: currentCustomers?.toFixed(0),
           churn: churnValue,
           end: beginValue.toFixed(0) > 0 ? beginValue.toFixed(0) : 0,
           channelName: customerInput.channelName,
@@ -242,7 +255,7 @@ export function generateCustomerTableData(
         channelName: `${curr.channelName} (Add)`,
       };
 
-      let currentCustomers = parseFloat(customerInput.customersPerMonth);
+      let currentCustomers = parseFloat(customerInput?.customersPerMonth);
       for (let i = 1; i <= numberOfMonths; i++) {
         let growthRate = parseFloat(customerInput.growthPerMonth);
 
@@ -257,7 +270,14 @@ export function generateCustomerTableData(
               growthRate = customerInput.localGrowthRate;
             }
 
-            if (customerInput.customerGrowthFrequency === "Monthly") {
+            if (
+              customerInput.gptResponseArray &&
+              customerInput.gptResponseArray.length > i - 1
+            ) {
+              currentCustomers = parseFloat(
+                customerInput.gptResponseArray[i - 1]
+              );
+            } else if (customerInput.customerGrowthFrequency === "Monthly") {
               currentCustomers *= 1 + growthRate / 100;
             } else {
               let frequency = 12; // Default to Annually
@@ -389,7 +409,14 @@ export function generateCustomerTableData(
               growthRate = customerInput.localGrowthRate;
             }
 
-            if (customerInput.customerGrowthFrequency === "Monthly") {
+            if (
+              customerInput.gptResponseArray &&
+              customerInput.gptResponseArray.length > i - 1
+            ) {
+              currentCustomers = parseFloat(
+                customerInput.gptResponseArray[i - 1]
+              );
+            } else if (customerInput.customerGrowthFrequency === "Monthly") {
               currentCustomers *= 1 + growthRate / 100;
             } else {
               let frequency = 12; // Default to Annually
@@ -456,7 +483,8 @@ export const {
   setCustomerGrowthData,
   setYearlyAverageCustomers,
   setCustomerTableData,
-  setGPTResponse, // New action creator
+  setGPTResponse,
+  setGPTResponseArray,
 } = customerSlice.actions;
 
 export default customerSlice.reducer;
@@ -478,7 +506,6 @@ export const fetchGPTResponse =
           }),
         }
       );
-
       const data = await response.json();
 
       if (data.error) {

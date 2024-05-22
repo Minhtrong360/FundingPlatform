@@ -62,6 +62,7 @@ const PersonnelSection = ({
     const newPersonnel = {
       id: newId,
       jobTitle: "New position",
+      department: "General", // New field
       salaryPerMonth: 0,
       increasePerYear: 10,
       growthSalaryFrequency: "Annually",
@@ -361,6 +362,14 @@ const PersonnelSection = ({
     setIsDeleteModalOpen(false);
   };
 
+  const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
+  const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
+
+  const handleChartClick = (chart) => {
+    setSelectedChart(chart);
+    setIsChartModalVisible(true);
+  };
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full xl:w-3/4 sm:p-4 p-0">
@@ -369,7 +378,7 @@ const PersonnelSection = ({
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col transition duration-500  rounded-2xl">
             <div className="flex justify-between items-center">
-              <div className="min-w-[10vw]">
+              <div className="min-w-[10vw] mb-2">
                 <label htmlFor="startMonthSelect">Start Month:</label>
                 <select
                   id="startMonthSelect"
@@ -393,7 +402,7 @@ const PersonnelSection = ({
                   })}
                 </select>
               </div>
-              <div className="min-w-[10vw]">
+              <div className="min-w-[10vw] mb-2">
                 <label htmlFor="endMonthSelect">End Month:</label>
                 <select
                   id="endMonthSelect"
@@ -421,24 +430,45 @@ const PersonnelSection = ({
                 </select>
               </div>
             </div>
-
-            <Chart
-              options={{
-                ...personnelChart.options,
-                stroke: {
-                  width: 1, // Set the stroke width to 2
-                  curve: "straight",
-                },
-                xaxis: {
-                  ...personnelChart.options.xaxis,
-                  // tickAmount: 12, // Set the number of ticks on the x-axis to 12
-                },
-              }}
-              series={personnelChart.series}
-              type="area"
-              height={350}
-            />
+            <div onClick={() => handleChartClick(personnelChart)}>
+              <Chart
+                options={{
+                  ...personnelChart.options,
+                  stroke: {
+                    width: 1, // Set the stroke width to 2
+                    curve: "straight",
+                  },
+                  xaxis: {
+                    ...personnelChart.options.xaxis,
+                    // tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                  },
+                }}
+                series={personnelChart.series}
+                type="area"
+                height={350}
+              />
+            </div>
           </Card>
+          <Modal
+            centered
+            visible={isChartModalVisible}
+            footer={null}
+            onCancel={() => setIsChartModalVisible(false)}
+            width="90%"
+            style={{ top: 20 }}
+          >
+            {selectedChart && (
+              <Chart
+                options={{
+                  ...selectedChart.options,
+                  // ... other options
+                }}
+                series={selectedChart.series}
+                type="area"
+                height={500}
+              />
+            )}
+          </Modal>
         </div>
         <h3 className="text-lg font-semibold my-4">Personnel Cost Table</h3>
         <Table
@@ -448,7 +478,11 @@ const PersonnelSection = ({
           columns={personnelCostColumns}
           pagination={false}
           bordered
-          rowClassName={(record) => (record.key === "Total" ? "font-bold" : "")}
+          rowClassName={(record) =>
+            record.key === "Total" || record.isDepartment === true
+              ? "font-bold"
+              : ""
+          }
         />
       </div>
 
@@ -484,7 +518,7 @@ const PersonnelSection = ({
           </div>
 
           {tempPersonnelInputs
-            .filter((input) => input?.id == renderPersonnelForm) // Sử dụng biến renderForm
+            .filter((input) => input?.id == renderPersonnelForm)
             .map((input) => (
               <div
                 key={input?.id}
@@ -500,6 +534,21 @@ const PersonnelSection = ({
                       handlePersonnelInputChange(
                         input.id,
                         "jobTitle",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-3">
+                  <span className=" flex items-center text-sm">Department</span>
+                  <Input
+                    className="col-start-2 border-gray-300"
+                    placeholder="Enter Department"
+                    value={input.department}
+                    onChange={(e) =>
+                      handlePersonnelInputChange(
+                        input.id,
+                        "department",
                         e.target.value
                       )
                     }

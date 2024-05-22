@@ -87,6 +87,8 @@ const SalesSection = ({
       cogsByChannelAndProduct,
       netRevenueByChannelAndProduct,
       grossProfitByChannelAndProduct,
+      cashInflowByChannelAndProduct,
+      receivablesByChannelAndProduct,
     } = dispatch(
       calculateChannelRevenue(
         numberOfMonths,
@@ -109,6 +111,8 @@ const SalesSection = ({
         cogsByChannelAndProduct,
         netRevenueByChannelAndProduct,
         grossProfitByChannelAndProduct,
+        cashInflowByChannelAndProduct,
+        receivablesByChannelAndProduct,
       },
       tempChannelInputs,
       renderChannelForm
@@ -124,18 +128,8 @@ const SalesSection = ({
   ]);
 
   useEffect(() => {
-    setTempChannelInputs(channelInputs);
-  }, [channelInputs]);
-
-  useEffect(() => {
     calculateAndDispatchRevenueData();
-  }, [
-    customerGrowthData,
-    tempChannelInputs,
-    numberOfMonths,
-    renderChannelForm,
-    calculateAndDispatchRevenueData,
-  ]);
+  }, [tempChannelInputs, renderChannelForm]);
 
   const { id } = useParams();
 
@@ -187,18 +181,7 @@ const SalesSection = ({
 
       saveData();
     }
-  }, [
-    isSaved,
-    tempChannelInputs,
-    tempRevenueData,
-    tempRevenueDeductionData,
-    tempCogsData,
-    tempNetRevenueData,
-    tempGrossProfitData,
-    id,
-    dispatch,
-    setIsSaved,
-  ]);
+  }, [isSaved]);
 
   const addNewChannelInput = () => {
     const maxId = Math.max(...tempChannelInputs.map((input) => input?.id));
@@ -212,7 +195,7 @@ const SalesSection = ({
       cogsPercentage: 30,
       selectedChannel: channelNames[0],
       channelAllocation: 0.8,
-      daysGetPaid: 0,
+      daysGetPaid: 0, // Default to 0 day
     };
     setTempChannelInputs([...tempChannelInputs, newChannel]);
     setRenderChannelForm(newId.toString());
@@ -390,21 +373,18 @@ const SalesSection = ({
         ],
       }));
     }
-  }, [
-    tempRevenueData,
-    numberOfMonths,
-    chartStartMonth,
-    chartEndMonth,
-    startingMonth,
-    startingYear,
-    tempRevenueDeductionData,
-    tempNetRevenueData,
-    tempCogsData,
-    tempGrossProfitData,
-    setRevenue,
-  ]);
+  }, [tempRevenueData, chartStartMonth, chartEndMonth]);
+
+  const daysOptions = [0, 15, 30, 45, 60, 90];
 
   const handleSave = () => {
+    const updatedChannelInputs = tempChannelInputs.map((input) => {
+      if (!daysOptions.includes(input.daysGetPaid)) {
+        input.daysGetPaid = daysOptions[0];
+      }
+      return input;
+    });
+    setTempChannelInputs(updatedChannelInputs);
     setIsSaved(true);
   };
 
@@ -429,7 +409,7 @@ const SalesSection = ({
         align: "right",
         onCell: (record) => ({
           style: {
-            borderRight: "1px solid #f0f0f0", // Add border right style
+            borderRight: "1px solid #f0f0f0",
           },
         }),
       };
@@ -443,6 +423,13 @@ const SalesSection = ({
     setIsDeleteModalOpen(false);
   };
 
+  const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
+  const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
+
+  const handleChartClick = (chart) => {
+    setSelectedChart(chart);
+    setIsChartModalVisible(true);
+  };
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full xl:w-3/4 sm:p-4 p-0">
@@ -454,7 +441,7 @@ const SalesSection = ({
               className="flex flex-col transition duration-500  rounded-2xl"
             >
               <div className="flex justify-between items-center">
-                <div className="min-w-[10vw]">
+                <div className="min-w-[10vw] mb-2">
                   <label htmlFor="startMonthSelect">Start Month:</label>
                   <select
                     id="startMonthSelect"
@@ -478,7 +465,7 @@ const SalesSection = ({
                     })}
                   </select>
                 </div>
-                <div className="min-w-[10vw]">
+                <div className="min-w-[10vw] mb-2">
                   <label htmlFor="endMonthSelect">End Month:</label>
                   <select
                     id="endMonthSelect"
@@ -506,20 +493,43 @@ const SalesSection = ({
                   </select>
                 </div>
               </div>
-              <Chart
-                options={{
-                  chart: { animations: { enabled: false } },
-                  ...chart.options,
-                  xaxis: { ...chart.options.xaxis },
-                  stroke: { width: 1 },
-                }}
-                series={chart.series}
-                type="area"
-                height={350}
-              />
+              <div onClick={() => handleChartClick(chart)}>
+                <Chart
+                  options={{
+                    chart: { animations: { enabled: false } },
+                    ...chart.options,
+                    xaxis: { ...chart.options.xaxis },
+                    stroke: { width: 1, curve: "straight" },
+                  }}
+                  series={chart.series}
+                  type="area"
+                  height={350}
+                />
+              </div>
             </Card>
           ))}
         </div>
+
+        <Modal
+          centered
+          visible={isChartModalVisible}
+          footer={null}
+          onCancel={() => setIsChartModalVisible(false)}
+          width="90%"
+          style={{ top: 20 }}
+        >
+          {selectedChart && (
+            <Chart
+              options={{
+                ...selectedChart.options,
+                // ... other options
+              }}
+              series={selectedChart.series}
+              type="area"
+              height={500}
+            />
+          )}
+        </Modal>
 
         <h3 className="text-lg font-semibold my-4">Revenue by Product</h3>
         <Table
@@ -715,8 +725,7 @@ const SalesSection = ({
                     onValueChange={(value) =>
                       handleChannelInputChange(input.id, "daysGetPaid", value)
                     }
-                    value={input.daysGetPaid !== null ? input.daysGetPaid : ""}
-                    disabled
+                    value={input.daysGetPaid !== null ? input.daysGetPaid : 0}
                   >
                     <SelectTrigger
                       id={`select-days-get-paid-${index}`}
@@ -725,7 +734,7 @@ const SalesSection = ({
                       <SelectValue placeholder="Select Days" />
                     </SelectTrigger>
                     <SelectContent position="popper">
-                      {[0, 15, 30, 45, 60, 75, 90, 105, 120].map((days) => (
+                      {daysOptions.map((days) => (
                         <SelectItem key={days} value={days}>
                           {days} days
                         </SelectItem>
@@ -1029,7 +1038,6 @@ const SalesSection = ({
                         value={
                           input.daysGetPaid !== null ? input.daysGetPaid : ""
                         }
-                        disabled
                       >
                         <SelectTrigger
                           id={`select-days-get-paid-${index}`}
@@ -1038,7 +1046,7 @@ const SalesSection = ({
                           <SelectValue placeholder="Select Days" />
                         </SelectTrigger>
                         <SelectContent position="popper">
-                          {[0, 15, 30, 45, 60, 75, 90, 105, 120].map((days) => (
+                          {daysOptions.map((days) => (
                             <SelectItem key={days} value={days}>
                               {days} days
                             </SelectItem>

@@ -13,7 +13,12 @@ const initialState = {
       endMonth: 36,
       beginCustomer: 0,
       churnRate: 0,
-      acquisitionCost: 0, // Default value for acquisition cost
+      acquisitionCost: 0,
+      localGrowthRate: 1,
+      eventName: "",
+      eventBeginMonth: 1,
+      eventEndMonth: 36,
+      additionalInfo: "",
     },
     {
       id: 2,
@@ -25,7 +30,12 @@ const initialState = {
       endMonth: 36,
       beginCustomer: 0,
       churnRate: 0,
-      acquisitionCost: 0, // Default value for acquisition cost
+      acquisitionCost: 0,
+      localGrowthRate: 1,
+      eventName: "",
+      eventBeginMonth: 1,
+      eventEndMonth: 36,
+      additionalInfo: "",
     },
   ],
   customerGrowthData: [],
@@ -48,34 +58,31 @@ const customerSlice = createSlice({
     },
     setCustomerTableData(state, action) {
       state.customerTableData = action.payload;
+      console.log("customerTableData", state.customerTableData)
+    },
+    setGPTResponse(state, action) {
+      const { id, response } = action.payload;
+      const customer = state.customerInputs.find((input) => input.id === id);
+      if (customer) {
+        customer.gptResponse = response;
+      }
+    },
+    setGPTResponseArray(state, action) {
+      const { id, responseArray } = action.payload;
+      const customer = state.customerInputs.find((input) => input.id === id);
+      if (customer) {
+        customer.gptResponseArray = responseArray;
+      }
     },
   },
 });
 
-export const calculateYearlyAverage = (
-  tempCustomerGrowthData,
-  numberOfMonths
-) => {
-  const yearlyAverages = [];
-  for (let i = 0; i < numberOfMonths; i += 12) {
-    let totalCustomers = 0;
-    for (let j = i; j < i + 12 && j < numberOfMonths; j++) {
-      tempCustomerGrowthData.forEach((channelData) => {
-        totalCustomers += parseFloat(channelData[j]?.customers) || 0;
-      });
-    }
-    const averageCustomers = totalCustomers / 12;
-    yearlyAverages.push(averageCustomers.toFixed(0));
-  }
-  return yearlyAverages;
-};
-
 export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
   return customerInputs.map((customerInput) => {
     let monthlyCustomers = [];
-    let initialCustomers = parseFloat(customerInput.customersPerMonth); // Initial customers per month, remains unchanged
-    let currentCustomers = initialCustomers; // Current customers, will be updated based on growth
-    let beginValue = parseFloat(customerInput.beginCustomer); // Begin value for the current month
+    let initialCustomers = parseFloat(customerInput.customersPerMonth);
+    let currentCustomers = initialCustomers;
+    let beginValue = parseFloat(customerInput.beginCustomer);
 
     for (let month = 1; month <= numberOfMonths; month++) {
       if (
@@ -85,9 +92,24 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
         if (month === customerInput.beginMonth) {
           currentCustomers = initialCustomers;
         } else {
-          if (customerInput.customerGrowthFrequency === "Monthly") {
-            currentCustomers *=
-              1 + parseFloat(customerInput.growthPerMonth) / 100;
+          let growthRate = parseFloat(customerInput.growthPerMonth);
+
+          if (
+            month >= customerInput.eventBeginMonth &&
+            month <= customerInput.eventEndMonth
+          ) {
+            growthRate = customerInput.localGrowthRate;
+          }
+
+          if (
+            customerInput.gptResponseArray &&
+            customerInput.gptResponseArray.length > month - 1
+          ) {
+            currentCustomers = parseFloat(
+              customerInput.gptResponseArray[month - 1]
+            );
+          } else if (customerInput.customerGrowthFrequency === "Monthly") {
+            currentCustomers *= 1 + growthRate / 100;
           } else if (
             ["Annually", "Quarterly", "Semi-Annually"].includes(
               customerInput.customerGrowthFrequency
@@ -100,8 +122,7 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
               frequency = 6;
 
             if ((month - customerInput.beginMonth) % frequency === 0) {
-              currentCustomers *=
-                1 + parseFloat(customerInput.growthPerMonth) / 100;
+              currentCustomers *= 1 + growthRate / 100;
             }
           }
         }
@@ -109,9 +130,9 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
         const churnValue = (
           beginValue *
           (customerInput.churnRate / 100)
-        ).toFixed(0); // Calculate churn value
+        ).toFixed(0);
 
-        beginValue += currentCustomers - parseFloat(churnValue); // Update beginValue for the calculation of the next month
+        beginValue += currentCustomers - parseFloat(churnValue);
 
         monthlyCustomers.push({
           month: month,
@@ -122,7 +143,6 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
               : parseFloat(
                   monthlyCustomers[monthlyCustomers.length - 1]?.end
                 ).toFixed(0),
-
           add: currentCustomers.toFixed(0),
           churn: churnValue,
           end: beginValue.toFixed(0) > 0 ? beginValue.toFixed(0) : 0,
@@ -142,6 +162,24 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
     }
     return monthlyCustomers;
   });
+};
+
+export const calculateYearlyAverage = (
+  tempCustomerGrowthData,
+  numberOfMonths
+) => {
+  const yearlyAverages = [];
+  for (let i = 0; i < numberOfMonths; i += 12) {
+    let totalCustomers = 0;
+    for (let j = i; j < i + 12 && j < numberOfMonths; j++) {
+      tempCustomerGrowthData.forEach((channelData) => {
+        totalCustomers += parseFloat(channelData[j]?.customers) || 0;
+      });
+    }
+    const averageCustomers = totalCustomers / 12;
+    yearlyAverages.push(averageCustomers.toFixed(0));
+  }
+  return yearlyAverages;
 };
 
 export function transformCustomerData(
@@ -220,13 +258,28 @@ export function generateCustomerTableData(
 
       let currentCustomers = parseFloat(customerInput.customersPerMonth);
       for (let i = 1; i <= numberOfMonths; i++) {
+        let growthRate = parseFloat(customerInput.growthPerMonth);
+
         if (i >= customerInput.beginMonth && i <= customerInput.endMonth) {
           if (i === customerInput.beginMonth) {
             currentCustomers = customerInput.customersPerMonth;
           } else {
-            if (customerInput.customerGrowthFrequency === "Monthly") {
-              currentCustomers *=
-                1 + parseFloat(customerInput.growthPerMonth) / 100;
+            if (
+              i >= customerInput.eventBeginMonth &&
+              i <= customerInput.eventEndMonth
+            ) {
+              growthRate = customerInput.localGrowthRate;
+            }
+
+            if (
+              customerInput.gptResponseArray &&
+              customerInput.gptResponseArray.length > i - 1
+            ) {
+              currentCustomers = parseFloat(
+                customerInput.gptResponseArray[i - 1]
+              );
+            } else if (customerInput.customerGrowthFrequency === "Monthly") {
+              currentCustomers *= 1 + growthRate / 100;
             } else {
               let frequency = 12; // Default to Annually
               if (customerInput.customerGrowthFrequency === "Quarterly")
@@ -237,8 +290,7 @@ export function generateCustomerTableData(
                 frequency = 6;
 
               if ((i - customerInput.beginMonth) % frequency === 0) {
-                currentCustomers *=
-                  1 + parseFloat(customerInput.growthPerMonth) / 100;
+                currentCustomers *= 1 + growthRate / 100;
               }
             }
           }
@@ -345,13 +397,28 @@ export function generateCustomerTableData(
 
       let currentCustomers = parseFloat(customerInput.customersPerMonth);
       for (let i = 1; i <= numberOfMonths; i++) {
+        let growthRate = parseFloat(customerInput.growthPerMonth);
+
         if (i >= customerInput.beginMonth && i <= customerInput.endMonth) {
           if (i === customerInput.beginMonth) {
             currentCustomers = customerInput.customersPerMonth;
           } else {
-            if (customerInput.customerGrowthFrequency === "Monthly") {
-              currentCustomers *=
-                1 + parseFloat(customerInput.growthPerMonth) / 100;
+            if (
+              i >= customerInput.eventBeginMonth &&
+              i <= customerInput.eventEndMonth
+            ) {
+              growthRate = customerInput.localGrowthRate;
+            }
+
+            if (
+              customerInput.gptResponseArray &&
+              customerInput.gptResponseArray.length > i - 1
+            ) {
+              currentCustomers = parseFloat(
+                customerInput.gptResponseArray[i - 1]
+              );
+            } else if (customerInput.customerGrowthFrequency === "Monthly") {
+              currentCustomers *= 1 + growthRate / 100;
             } else {
               let frequency = 12; // Default to Annually
               if (customerInput.customerGrowthFrequency === "Quarterly")
@@ -362,8 +429,7 @@ export function generateCustomerTableData(
                 frequency = 6;
 
               if ((i - customerInput.beginMonth) % frequency === 0) {
-                currentCustomers *=
-                  1 + parseFloat(customerInput.growthPerMonth) / 100;
+                currentCustomers *= 1 + growthRate / 100;
               }
             }
           }
@@ -418,6 +484,39 @@ export const {
   setCustomerGrowthData,
   setYearlyAverageCustomers,
   setCustomerTableData,
+  setGPTResponse,
+  setGPTResponseArray,
 } = customerSlice.actions;
 
 export default customerSlice.reducer;
+
+export const fetchGPTResponse = (id, additionalInfo) => async (dispatch) => {
+  try {
+    console.log("fetching GPT response");
+    const response = await fetch(
+      "https://news-fetcher-8k6m.onrender.com/drawchart",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_input: additionalInfo,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.error) {
+      throw new Error(data.error);
+    }
+
+    const cleanedResponseText = JSON.parse(
+      data.response.replace(/json|`/g, "")
+    );
+    return cleanedResponseText;
+  } catch (error) {
+    console.error("Error fetching GPT response:", error);
+  }
+};

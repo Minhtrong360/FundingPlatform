@@ -413,6 +413,15 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     removeLoanInput(renderLoanForm);
     setIsDeleteModalOpen(false);
   };
+
+  const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
+  const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
+
+  const handleChartClick = (chart) => {
+    setSelectedChart(chart);
+    setIsChartModalVisible(true);
+  };
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full xl:w-3/4 sm:p-4 p-0">
@@ -425,7 +434,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               className="flex flex-col transition duration-500  rounded-2xl"
             >
               <div className="flex justify-between items-center">
-                <div className="min-w-[10vw]">
+                <div className="min-w-[10vw] mb-2">
                   <label htmlFor="startMonthSelect">Start Month:</label>
                   <select
                     id="startMonthSelect"
@@ -449,7 +458,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                     })}
                   </select>
                 </div>
-                <div className="min-w-[10vw]">
+                <div className="min-w-[10vw] mb-2">
                   <label htmlFor="endMonthSelect">End Month:</label>
                   <select
                     id="endMonthSelect"
@@ -477,27 +486,48 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                   </select>
                 </div>
               </div>
-              <Chart
-                options={{
-                  ...series.options,
+              <div onClick={() => handleChartClick(series)}>
+                <Chart
+                  options={{
+                    ...series.options,
 
-                  xaxis: {
-                    ...series.options.xaxis,
-                    // tickAmount: 6, // Ensure x-axis has 6 ticks
-                  },
-                  stroke: {
-                    width: 1, // Set the stroke width to 1
-                    curve: "straight", // Set the stroke curve to straight
-                  },
-                }}
-                series={series.series}
-                type="area"
-                height={350}
-              />
+                    xaxis: {
+                      ...series.options.xaxis,
+                      // tickAmount: 6, // Ensure x-axis has 6 ticks
+                    },
+                    stroke: {
+                      width: 1, // Set the stroke width to 1
+                      curve: "straight", // Set the stroke curve to straight
+                    },
+                  }}
+                  series={series.series}
+                  type="area"
+                  height={350}
+                />
+              </div>
             </Card>
           ))}
         </div>
-
+        <Modal
+          centered
+          visible={isChartModalVisible}
+          footer={null}
+          onCancel={() => setIsChartModalVisible(false)}
+          width="90%"
+          style={{ top: 20 }}
+        >
+          {selectedChart && (
+            <Chart
+              options={{
+                ...selectedChart.options,
+                // ... other options
+              }}
+              series={selectedChart.series}
+              type="area"
+              height={500}
+            />
+          )}
+        </Modal>
         <h3 className="text-lg font-semibold my-4">Loan Data</h3>
         <Table
           className="overflow-auto my-8 rounded-md bg-white"

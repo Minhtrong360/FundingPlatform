@@ -19,6 +19,7 @@ import {
   transformCustomerData,
   generateCustomerTableData,
   setCustomerTableData,
+  fetchGPTResponse,
 } from "../../../features/CustomerSlice";
 import {
   calculateChannelRevenue,
@@ -43,7 +44,12 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
-
+import { Checkbox } from "antd";
+import {
+  Modal as AntdModal, // Add AntdModal for larger mode view
+} from "antd";
+import TextArea from "antd/es/input/TextArea";
+import SpinnerBtn from "../../../components/SpinnerBtn";
 
 const CustomerSection = React.memo(
   ({
@@ -53,8 +59,25 @@ const CustomerSection = React.memo(
     customerGrowthChart,
     setCustomerGrowthChart,
   }) => {
+    const [functionType, setFunctionType] = useState("linear"); // New state for function type
+    const [chartNotes, setChartNotes] = useState(""); // New state for chart notes
+
+    const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
+    const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
+
+    const chartFunctions = [
+      { value: "linear", label: "Linear" },
+      { value: "exponential", label: "Exponential" },
+      { value: "logarithmic", label: "Logarithmic" },
+    ];
+
+    const handleChartClick = (chart) => {
+      setSelectedChart(chart);
+      setIsChartModalVisible(true);
+    };
+
     const dispatch = useDispatch();
-   const { customerInputs, customerGrowthData, customerTableData } =
+    const { customerInputs, customerGrowthData, customerTableData } =
       useSelector((state) => state.customer);
 
     const { startMonth, startYear } = useSelector(
@@ -62,8 +85,7 @@ const CustomerSection = React.memo(
     );
     const [tempCustomerInputs, setTempCustomerInputs] =
       useState(customerInputs);
-      console.log("customerInputs",customerInputs)
-      console.log("tempCustomerInputs",tempCustomerInputs)
+
     useEffect(() => {
       setTempCustomerInputs(customerInputs);
     }, [customerInputs]);
@@ -84,6 +106,7 @@ const CustomerSection = React.memo(
 
       const maxId = Math.max(...tempCustomerInputs.map((input) => input?.id));
       const newId = maxId !== -Infinity ? maxId + 1 : 1;
+
       const newCustomer = {
         id: newId,
         customersPerMonth: 100,
@@ -93,12 +116,13 @@ const CustomerSection = React.memo(
         beginMonth: 1,
         endMonth: 15,
         beginCustomer: 0,
-        customersLastMonth: 5000,
-        growthType: "linear",
-        note: "",
         churnRate: 0,
         acquisitionCost: 0, // Default value for acquisition cost
+        adjustmentFactor: 1, // Default value for adjustment factor
+        eventName: "", // Default value for event name
+        additionalInfo: "", // Default value for additional info
       };
+
       setTempCustomerInputs([...tempCustomerInputs, newCustomer]);
       setRenderCustomerForm(newId.toString());
     };
@@ -122,23 +146,33 @@ const CustomerSection = React.memo(
       }
     };
 
-    const handleInputChange = (id, field, value) => {
-      // Ensure churnRate value is within the range of 0 to 100
+    // Update handleInputChange to handle advanced inputs
+    const handleInputChange = (id, field, value, advancedIndex = null) => {
       if (field === "churnRate") {
         value = Math.max(0, Math.min(100, value)); // Clamp value between 0 and 100
       }
 
       const newInputs = tempCustomerInputs.map((input) => {
         if (input?.id === id) {
-          return {
-            ...input,
-            [field]: value,
-          };
+          if (advancedIndex !== null) {
+            const newAdvancedInputs = input.advancedInputs.map(
+              (advInput, index) => {
+                if (index === advancedIndex) {
+                  return { ...advInput, [field]: value };
+                }
+                return advInput;
+              }
+            );
+            return { ...input, advancedInputs: newAdvancedInputs };
+          }
+          return { ...input, [field]: value };
         }
         return input;
       });
       setTempCustomerInputs(newInputs);
     };
+
+    const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
 
     useEffect(() => {
       const calculatedData = calculateCustomerGrowth(
@@ -146,7 +180,30 @@ const CustomerSection = React.memo(
         numberOfMonths
       );
       dispatch(setCustomerGrowthData(calculatedData));
-    }, [customerInputs, numberOfMonths]);
+    }, [customerInputs, numberOfMonths, showAdvancedInputs]); // Include showAdvancedInputs as a dependency
+
+    useEffect(() => {
+      const calculatedData = calculateCustomerGrowth(
+        tempCustomerInputs,
+        numberOfMonths
+      );
+
+      const calculateTransformedCustomerTableData = transformCustomerData(
+        calculatedData,
+        tempCustomerInputs
+      );
+
+      const calculateCustomerTableData = generateCustomerTableData(
+        calculateTransformedCustomerTableData,
+        tempCustomerInputs,
+        numberOfMonths,
+        renderCustomerForm
+      );
+
+      dispatch(setCustomerTableData(calculateCustomerTableData));
+
+      setTempCustomerGrowthData(calculatedData);
+    }, [tempCustomerInputs, renderCustomerForm, showAdvancedInputs]); // Include showAdvancedInputs as a dependency
 
     useEffect(() => {
       const calculatedData = calculateCustomerGrowth(
@@ -188,7 +245,25 @@ const CustomerSection = React.memo(
 
     const startingMonth = startMonth; // Tháng bắt đầu từ 1
     const startingYear = startYear; // Năm bắt đầu từ 24
-
+    console.log(customerTableData)
+    const handleInputTable = (value, recordKey, monthKey) => {
+      console.log( value, recordKey, monthKey)
+      const updatedData = customerTableData.map(record => {
+        if (record.key === recordKey) {
+          return {
+            ...record,
+            [monthKey]: value,
+          };
+        }
+       
+        return record;
+        
+      });
+    
+      dispatch(setCustomerTableData(updatedData));
+     
+    
+    };
     const customerColumns = [
       {
         fixed: "left",
@@ -200,31 +275,51 @@ const CustomerSection = React.memo(
       ...Array.from({ length: numberOfMonths }, (_, i) => {
         const monthIndex = (startingMonth + i - 1) % 12;
         const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
-
-        const monthNumber = i + 1;
-        const isHighlightedMonth = monthNumber >= 5 && monthNumber <= 10;
-
         return {
           title: `${months[monthIndex]}/${year}`,
           dataIndex: `month${i + 1}`,
           key: `month${i + 1}`,
-
           align: "right",
-          
-          onCell: (record) => ({
-        style: {
-          borderRight: "1px solid #f0f0f0", // Add border right style
-          // Apply background color if the month is between the 5th and 10th and channelName includes "Begin"
-        // backgroundColor:
-        // isHighlightedMonth && record.channelName.includes("Begin")
-        //   ? '#fffae6' 
-        //   :   undefined,
-        // color:
-        // isHighlightedMonth && record.channelName.includes("Begin")
-        //   ? '#a3e635' 
-        //   : undefined,
-        },
-      }),
+          render: (text, record) => {
+            const channel = tempCustomerInputs.find(
+              (input) => input.channelName === record.channelName
+            );
+            const month = i + 1;
+            const isInEvent =
+              month >= channel?.eventBeginMonth &&
+              month <= channel?.eventEndMonth;
+            const growthRate = isInEvent
+              ? channel?.localGrowthRate
+              : channel?.growthPerMonth;
+            const eventName = channel?.eventName || "";
+
+            const tooltipTitle = isInEvent
+              ? `Local Growth Rate: ${growthRate}%\nEvent: ${eventName}`
+              : "";
+
+            const cellStyle = isInEvent ? { backgroundColor: "yellow" } : {};
+
+            if (record.key.includes("-add")) {
+              return (
+                <Tooltip title={tooltipTitle} placement="topLeft">
+                  <div style={cellStyle}>
+                  <input
+                   
+                    className="border-white p-0 text-xs text-right w-full h-full"
+                      value={record[`month${i + 1}`]}
+                      onChange={(e) => handleInputTable(e.target.value, record.key, `month${i + 1}`)}
+                    />
+                  </div>
+                </Tooltip>
+              );
+            }
+    
+            return (
+              <Tooltip title={tooltipTitle} placement="topLeft">
+                <div style={cellStyle}>{text}</div>
+              </Tooltip>
+            );
+          },
         };
       }),
     ];
@@ -234,7 +329,7 @@ const CustomerSection = React.memo(
     };
 
     const handleSave = () => {
-      setIsSaved(true);
+      saveData();
     };
     const channelInputs = useSelector((state) => state.sales.channelInputs);
 
@@ -242,104 +337,97 @@ const CustomerSection = React.memo(
     const { user } = useAuth();
 
     // Define the useEffect hook
-    useEffect(() => {
-      const saveData = async () => {
-        try {
-          if (isSaved) {
-            // Check if there are duplicate channel names
-            const channelNames = tempCustomerInputs.map(
-              (input) => input.channelName
-            );
-            const duplicateChannel = channelNames.find(
-              (name, index) => channelNames.indexOf(name) !== index
-            );
 
-            if (duplicateChannel) {
-              message.warning(
-                `Please change the channel name: "${duplicateChannel}" before saving.`
-              );
-              return;
-            }
+    const [isLoading, setIsLoading] = useState(false);
+    const saveData = async () => {
+      try {
+        setIsLoading(true);
+        // Check if there are duplicate channel names
+        const channelNames = tempCustomerInputs.map(
+          (input) => input.channelName
+        );
+        const duplicateChannel = channelNames.find(
+          (name, index) => channelNames.indexOf(name) !== index
+        );
 
-            const { data: existingData, error: selectError } = await supabase
-              .from("finance")
-              .select("*")
-              .eq("id", id);
-            if (selectError) {
-              throw selectError;
-            }
-
-            if (existingData && existingData.length > 0) {
-              const { user_email, collabs, inputData } = existingData[0];
-
-              // Check if user.email matches user_email or is included in collabs
-              if (user.email !== user_email && !collabs?.includes(user.email)) {
-                message.error(
-                  "You do not have permission to update this record."
-                );
-                return;
-              }
-
-              dispatch(setCustomerInputs(tempCustomerInputs));
-              const { revenueByChannelAndProduct } = dispatch(
-                calculateChannelRevenue(
-                  numberOfMonths,
-                  tempCustomerGrowthData,
-                  tempCustomerInputs,
-                  channelInputs
-                )
-              );
-
-              const yearlySale = calculateYearlySales(
-                revenueByChannelAndProduct
-              );
-              dispatch(setYearlySales(yearlySale));
-
-              const newInputData = JSON.parse(inputData);
-
-              const calculatedData = calculateCustomerGrowth(
-                tempCustomerInputs,
-                numberOfMonths
-              );
-              const averages = calculateYearlyAverage(
-                calculatedData,
-                numberOfMonths
-              );
-
-              newInputData.customerInputs = tempCustomerInputs;
-              newInputData.yearlyAverageCustomers = averages;
-              newInputData.yearlySales = yearlySale;
-
-              const { error: updateError } = await supabase
-                .from("finance")
-                .update({ inputData: newInputData })
-                .eq("id", existingData[0]?.id)
-                .select();
-
-              if (updateError) {
-                throw updateError;
-              } else {
-                message.success("Data saved successfully!");
-              }
-            }
-          }
-        } catch (error) {
-          message.error(error.message);
-        } finally {
-          setIsSaved(false);
+        if (duplicateChannel) {
+          message.warning(
+            `Please change the channel name: "${duplicateChannel}" before saving.`
+          );
+          return;
         }
-      };
 
-      // Call the saveData function
-      saveData();
-    }, [isSaved]);
+        const { data: existingData, error: selectError } = await supabase
+          .from("finance")
+          .select("*")
+          .eq("id", id);
+        if (selectError) {
+          throw selectError;
+        }
+
+        if (existingData && existingData.length > 0) {
+          const { user_email, collabs, inputData } = existingData[0];
+
+          // Check if user.email matches user_email or is included in collabs
+          if (user.email !== user_email && !collabs?.includes(user.email)) {
+            message.error("You do not have permission to update this record.");
+            return;
+          }
+
+          dispatch(setCustomerInputs(tempCustomerInputs));
+          const { revenueByChannelAndProduct } = dispatch(
+            calculateChannelRevenue(
+              numberOfMonths,
+              tempCustomerGrowthData,
+              tempCustomerInputs,
+              channelInputs
+            )
+          );
+
+          const yearlySale = calculateYearlySales(revenueByChannelAndProduct);
+          dispatch(setYearlySales(yearlySale));
+
+          const newInputData = JSON.parse(inputData);
+
+          const calculatedData = calculateCustomerGrowth(
+            tempCustomerInputs,
+            numberOfMonths
+          );
+          const averages = calculateYearlyAverage(
+            calculatedData,
+            numberOfMonths
+          );
+
+          newInputData.customerInputs = tempCustomerInputs;
+          newInputData.yearlyAverageCustomers = averages;
+          newInputData.yearlySales = yearlySale;
+
+          const { error: updateError } = await supabase
+            .from("finance")
+            .update({ inputData: newInputData })
+            .eq("id", existingData[0]?.id)
+            .select();
+
+          if (updateError) {
+            throw updateError;
+          } else {
+            message.success("Data saved successfully!");
+          }
+        }
+      } catch (error) {
+        message.error(error.message);
+      } finally {
+        setIsSaved(false);
+        setIsLoading(false);
+      }
+    };
 
     const [chartStartMonth, setChartStartMonth] = useState(1);
     const [chartEndMonth, setChartEndMonth] = useState(6);
 
     useEffect(() => {
-      const startIdx = chartStartMonth - 1; // Chỉ số bắt đầu cho mảng, dựa trên chartStartMonth
-      const endIdx = chartEndMonth; // Chỉ số kết thúc cho mảng, dựa trên chartEndMonth
+      const startIdx = chartStartMonth - 1;
+      const endIdx = chartEndMonth;
 
       const filteredCategories = Array.from(
         { length: endIdx - startIdx },
@@ -371,7 +459,7 @@ const CustomerSection = React.memo(
             .map((data) => parseInt(data.customers, 10)),
         };
       });
-
+      console.log("seriesData", seriesData);
       const seriesData2 = tempCustomerGrowthData.map((channelData) => {
         return {
           name: channelData[0]?.channelName || "Unknown Channel",
@@ -383,7 +471,6 @@ const CustomerSection = React.memo(
         };
       });
 
-      // Calculate total customers per month for all channels
       const totalCustomersPerMonth = seriesData.reduce((acc, channel) => {
         channel.data.forEach((customers, index) => {
           if (!acc[index]) {
@@ -393,7 +480,7 @@ const CustomerSection = React.memo(
         });
         return acc;
       }, []);
-      // Calculate total customers per month for all channels
+
       const totalCustomersPerMonth2 = seriesData2.reduce((acc, channel) => {
         channel.data.forEach((customers, index) => {
           if (!acc[index]) {
@@ -405,15 +492,14 @@ const CustomerSection = React.memo(
       }, []);
 
       const yearlyTotalData = [];
-      let startIndex = 0; // Bắt đầu từ phần tử đầu tiên trong mảng
-      const monthsInFirstYear = 12 - (startMonth - 1); // Số tháng còn lại trong năm đầu từ tháng bắt đầu
+      let startIndex = 0;
+      const monthsInFirstYear = 12 - (startMonth - 1);
 
       const channelYearlyTotals = seriesData2.map((channel) => ({
         name: channel.name,
         data: [],
       }));
 
-      // Tính tổng cho năm đầu tiên từ tháng bắt đầu đến hết năm
       const firstYearTotal = totalCustomersPerMonth2
         .slice(startIndex, monthsInFirstYear)
         .reduce((sum, current) => sum + current, 0);
@@ -425,10 +511,9 @@ const CustomerSection = React.memo(
           .reduce((sum, current) => sum + current, 0);
         channelYearlyTotals[index].data.push(firstYearTotal);
       });
-      // Cập nhật startIndex cho năm tiếp theo
+
       startIndex += monthsInFirstYear;
 
-      // Tính tổng cho các năm tiếp theo, mỗi lần tính cho 12 tháng
       while (startIndex < totalCustomersPerMonth2.length) {
         const yearlyTotal = totalCustomersPerMonth2
           .slice(startIndex, startIndex + 12)
@@ -446,8 +531,8 @@ const CustomerSection = React.memo(
       }
 
       const yearlyGrowthRates = yearlyTotalData.map((total, index, arr) => {
-        if (index === 0) return 0; // Không có tỷ lệ tăng trưởng cho năm đầu tiên
-        return ((total - arr[index - 1]) / arr[index - 1]) * 100; // Tính toán tỷ lệ tăng trưởng
+        if (index === 0) return 0;
+        return ((total - arr[index - 1]) / arr[index - 1]) * 100;
       });
 
       setCustomerGrowthChart((prevState) => {
@@ -470,10 +555,8 @@ const CustomerSection = React.memo(
                   stacked: false,
                   animated: false,
                 },
-
                 fill: {
                   type: "gradient",
-
                   gradient: {
                     shade: "light",
                     shadeIntensity: 0.5,
@@ -519,8 +602,6 @@ const CustomerSection = React.memo(
                 },
               ],
             },
-
-            // Individual charts for each channel
             ...seriesData.map((channelSeries) => ({
               options: {
                 ...prevState.options,
@@ -530,7 +611,7 @@ const CustomerSection = React.memo(
                 },
                 xaxis: {
                   axisTicks: {
-                    show: false, // Hide x-axis ticks
+                    show: false,
                   },
                   labels: {
                     show: true,
@@ -540,7 +621,6 @@ const CustomerSection = React.memo(
                     },
                   },
                   categories: filteredCategories,
-
                   title: {
                     text: "Month",
                     style: {
@@ -557,48 +637,46 @@ const CustomerSection = React.memo(
               series: [
                 {
                   name: "Begin",
-                  data: channelSeries.dataBegin, // Yearly total data
+                  data: channelSeries.dataBegin,
                 },
                 {
                   name: "Add",
-                  data: channelSeries.dataAdd, // Yearly total data
+                  data: channelSeries.dataAdd,
                 },
                 {
                   name: "Churn",
-                  data: channelSeries.dataChurn, // Yearly total data
+                  data: channelSeries.dataChurn,
                 },
                 {
                   name: "End",
-                  data: channelSeries.dataEnd, // Yearly total data
+                  data: channelSeries.dataEnd,
                 },
               ],
             })),
           ],
           chartsNoFilter: [
-            // New chart for yearly total and growth rate with separate y-axes
             {
               options: {
                 ...prevState.options,
                 chart: {
                   ...prevState.options.chart,
                   id: "yearlyTotal",
-                  stacked: false, // Set as non-stacked for total visualization
+                  stacked: false,
                   toolbar: {
                     show: false,
                   },
                 },
                 title: {
                   ...prevState.options.title,
-                  text: "Yearly Total and Growth Rate",
+                  text: "Yearly Total",
                 },
                 fill: {
                   type: "gradient",
-
                   gradient: {
                     shade: "light",
                     shadeIntensity: 0.5,
                     opacityFrom: 0.75,
-                    opacityTo: 0.65,
+                    opacityTo: 65,
                     stops: [0, 90, 100],
                   },
                 },
@@ -610,53 +688,89 @@ const CustomerSection = React.memo(
                       const year = startYear + i;
                       return `${year}`;
                     }
-                  ), // Creating categories for each year
+                  ),
                 },
-                yaxis: [
-                  {
-                    title: {
-                      text: "Yearly Total",
-                    },
-                    seriesName: "Yearly Total",
-                    labels: {
-                      formatter: (value) => `${formatNumber(value.toFixed(0))}`, // No decimals for total
-                    },
+                yaxis: {
+                  title: {
+                    text: "Yearly Total",
                   },
-                  {
-                    opposite: true,
-                    title: {
-                      text: "Yearly Growth Rate (%)",
-                    },
-                    seriesName: "Yearly Growth Rate (%)",
-                    labels: {
-                      formatter: (value) => `${value.toFixed(2)}%`,
-                    },
+                  labels: {
+                    formatter: (value) => `${formatNumber(value.toFixed(0))}`,
                   },
-                ],
+                },
               },
               series: [
                 {
                   name: "Yearly Total",
-                  data: yearlyTotalData, // Yearly total data
-                },
-                {
-                  name: "Yearly Growth Rate (%)",
-                  data: yearlyGrowthRates, // Yearly growth rates
-                  type: "line", // Differentiating the chart type for growth rates
+                  data: yearlyTotalData,
+                  type: "bar",
                 },
               ],
             },
-            // New chart for displaying total yearly sales per channel
             {
               options: {
                 ...prevState.options,
                 chart: {
                   ...prevState.options.chart,
-                  id: "channelYearlyTotals",
-                  stacked: false, // Non-stacked visualization
+                  id: "yearlyGrowthRate",
+                  stacked: false,
                   toolbar: {
                     show: false,
                   },
+                },
+                title: {
+                  ...prevState.options.title,
+                  text: "Yearly Growth Rate",
+                },
+                fill: {
+                  type: "gradient",
+                  gradient: {
+                    shade: "light",
+                    shadeIntensity: 0.5,
+                    opacityFrom: 0.75,
+                    opacityTo: 65,
+                    stops: [0, 90, 100],
+                  },
+                },
+                xaxis: {
+                  ...prevState.options.xaxis,
+                  categories: Array.from(
+                    { length: yearlyGrowthRates.length },
+                    (_, i) => {
+                      const year = startYear + i;
+                      return `${year}`;
+                    }
+                  ),
+                },
+                yaxis: {
+                  title: {
+                    text: "Yearly Growth Rate (%)",
+                  },
+                  labels: {
+                    formatter: (value) => `${value.toFixed(2)}%`,
+                  },
+                },
+              },
+              series: [
+                {
+                 
+                  data: yearlyGrowthRates,
+                  type: "bar",
+                },
+              ],
+            },
+            {
+              options: {
+                ...prevState.options,
+                chart: {
+                  ...prevState.options.chart,
+                
+                  id: "channelYearlyTotals",
+                  stacked: false,
+                  toolbar: {
+                    show: false,
+                  },
+                 
                 },
                 title: {
                   ...prevState.options.title,
@@ -664,12 +778,11 @@ const CustomerSection = React.memo(
                 },
                 fill: {
                   type: "gradient",
-
                   gradient: {
                     shade: "light",
                     shadeIntensity: 0.5,
                     opacityFrom: 0.75,
-                    opacityTo: 0.65,
+                    opacityTo: 65,
                     stops: [0, 90, 100],
                   },
                 },
@@ -681,10 +794,17 @@ const CustomerSection = React.memo(
                       const year = startYear + i;
                       return `${year}`;
                     }
-                  ), // Creating categories for each year
+                  ),
                 },
               },
-              series: channelYearlyTotals, // Yearly totals per channel
+              series: [
+                {
+                  name: "Total Yearly Customers by Channel",
+                  data: channelYearlyTotals[0].data,
+                  type: "bar",
+                },
+              ],
+           
             },
           ],
         };
@@ -699,8 +819,88 @@ const CustomerSection = React.memo(
       removeCustomerInput(renderCustomerForm);
       setIsDeleteModalOpen(false);
     };
-    
-    
+
+    const handleFetchGPT = async () => {
+      try {
+        setIsLoading(true);
+        const customer = tempCustomerInputs.find(
+          (input) => input.id === renderCustomerForm
+        );
+        let responseGPT;
+        if (customer) {
+          responseGPT = await dispatch(
+            fetchGPTResponse(customer.id, customer.additionalInfo)
+          );
+        }
+
+        console.log("responseGPT", responseGPT);
+
+        // Check if responseGPT is an object with a single key that holds an array
+        let gptResponseArray = [];
+        if (responseGPT && typeof responseGPT === "object") {
+          const keys = Object.keys(responseGPT);
+          if (keys.length === 1 && Array.isArray(responseGPT[keys[0]])) {
+            gptResponseArray = responseGPT[keys[0]];
+          } else {
+            gptResponseArray = responseGPT;
+          }
+        } else {
+          gptResponseArray = responseGPT;
+        }
+
+        const updatedTempCustomerInputs = tempCustomerInputs.map((input) => {
+          if (input.id === customer.id) {
+            return {
+              ...input,
+              customersPerMonth: gptResponseArray[0] || 0, // assuming the first element is needed
+              gptResponseArray: gptResponseArray, // assuming gptResponseArray contains the required data
+            };
+          }
+          return input;
+        });
+
+        setTempCustomerInputs(updatedTempCustomerInputs);
+        setShowAdvancedInputs(false);
+      } catch (error) {
+        console.log("Fetching GPT error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    console.log("tempCustomerInputs", tempCustomerInputs);
+
+    const handleAddAdvancedInput = (id) => {
+      const newInputs = tempCustomerInputs.map((input) => {
+        if (input?.id === id) {
+          const newAdvancedInputs = [
+            ...input.advancedInputs,
+            {
+              localGrowthRate: "",
+              eventBeginMonth: "",
+              eventEndMonth: "",
+              eventName: "",
+            },
+          ];
+          return { ...input, advancedInputs: newAdvancedInputs };
+        }
+        return input;
+      });
+      setTempCustomerInputs(newInputs);
+    };
+
+    const handleRemoveAdvancedInput = (id, index) => {
+      const newInputs = tempCustomerInputs.map((input) => {
+        if (input?.id === id) {
+          const newAdvancedInputs = input.advancedInputs.filter(
+            (advInput, advIndex) => advIndex !== index
+          );
+          return { ...input, advancedInputs: newAdvancedInputs };
+        }
+        return input;
+      });
+      setTempCustomerInputs(newInputs);
+    };
 
     return (
       <div className="w-full h-full flex flex-col lg:flex-row">
@@ -714,7 +914,7 @@ const CustomerSection = React.memo(
                 className="flex flex-col transition duration-500  rounded-2xl"
               >
                 <div className="flex justify-between items-center">
-                  <div className="min-w-[10vw]">
+                  <div className="min-w-[10vw] mb-2">
                     <label htmlFor="startMonthSelect">Start Month:</label>
                     <select
                       id="startMonthSelect"
@@ -739,7 +939,7 @@ const CustomerSection = React.memo(
                       })}
                     </select>
                   </div>
-                  <div className="min-w-[10vw]">
+                  <div className="min-w-[10vw] mb-2">
                     <label htmlFor="endMonthSelect">End Month:</label>
                     <select
                       id="endMonthSelect"
@@ -768,33 +968,35 @@ const CustomerSection = React.memo(
                     </select>
                   </div>
                 </div>
-                <Chart
-                  options={{
-                    ...chart.options,
-                    fill: {
-                      type: "gradient",
+                <div onClick={() => handleChartClick(chart)}>
+                  <Chart
+                    options={{
+                      ...chart.options,
+                      fill: {
+                        type: "gradient",
 
-                      gradient: {
-                        shade: "light",
-                        shadeIntensity: 0.5,
-                        opacityFrom: 0.75,
-                        opacityTo: 0.65,
-                        stops: [0, 90, 100],
+                        gradient: {
+                          shade: "light",
+                          shadeIntensity: 0.5,
+                          opacityFrom: 0.75,
+                          opacityTo: 0.65,
+                          stops: [0, 90, 100],
+                        },
                       },
-                    },
-                    xaxis: {
-                      ...chart.options.xaxis,
-                      // tickAmount: 12, // Set the number of ticks on the x-axis to 12
-                    },
-                    stroke: {
-                      width: 1,
-                      curve: "straight", // Set the stroke width to 1
-                    },
-                  }}
-                  series={chart.series}
-                  type="bar"
-                  height={350}
-                />
+                      xaxis: {
+                        ...chart.options.xaxis,
+                        // tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                      },
+                      stroke: {
+                        width: 1,
+                        curve: "straight", // Set the stroke width to 1
+                      },
+                    }}
+                    series={chart.series}
+                    type="area"
+                    height={350}
+                  />
+                </div>
               </Card>
             ))}
 
@@ -802,28 +1004,48 @@ const CustomerSection = React.memo(
               <Card
                 key={index}
                 className="flex flex-col transition duration-500  rounded-2xl"
+                onClick={() => handleChartClick(chart)}
               >
                 <Chart
                   options={{
                     ...chart.options,
                     xaxis: {
                       ...chart.options.xaxis,
-                      // tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                      
                     },
                     stroke: {
                       width: 1, // Set the stroke width to 1
                     },
                   }}
                   series={chart.series}
-                  type="bar"
+                  type="area"
                   height={350}
                 />
               </Card>
             ))}
           </div>
+          <AntdModal
+            visible={isChartModalVisible}
+            footer={null}
+            centered
+            onCancel={() => setIsChartModalVisible(false)}
+            width="90%"
+            style={{ top: 20 }}
+          >
+            {selectedChart && (
+              <Chart
+                options={{
+                  ...selectedChart.options,
+                  // ... other options
+                }}
+                series={selectedChart.series}
+                type="area"
+                height={500}
+              />
+            )}
+          </AntdModal>
 
           <h3 className="text-lg font-semibold my-4">Customer Table</h3>
-          
           <Table
             className="bg-white overflow-auto  my-8 rounded-md"
             size="small"
@@ -873,175 +1095,236 @@ const CustomerSection = React.memo(
             </div>
 
             {tempCustomerInputs
-  .filter((input) => input?.id == renderCustomerForm)
-  .map((input) => (
-    <div key={input?.id} className="bg-white rounded-2xl p-6 border my-4">
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Channel Name:</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          value={input.channelName}
-          onChange={(e) =>
-            handleInputChange(input?.id, "channelName", e.target.value)
-          }
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Existing Customer:</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          type="text"
-          value={formatNumber(input.beginCustomer)}
-          onChange={(e) =>
-            handleInputChange(input?.id, "beginCustomer", parseNumber(e.target.value))
-          }
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Adding (First month)</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          value={formatNumber(input.customersPerMonth)}
-          onChange={(e) =>
-            handleInputChange(input?.id, "customersPerMonth", parseNumber(e.target.value))
-          }
-          type="text"
-        />
-      </div>
+              .filter((input) => input?.id == renderCustomerForm)
+              .map((input) => (
+                <div
+                  key={input?.id}
+                  className="bg-white rounded-2xl p-6 border my-4"
+                >
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className="flex items-center text-sm">
+                      Channel Name:
+                    </span>
+                    <Input
+                      className="col-start-2 border-gray-300"
+                      value={input.channelName}
+                      onChange={(e) =>
+                        handleInputChange(
+                          input?.id,
+                          "channelName",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className="flex items-center text-sm">
+                      Existing Customer:
+                    </span>
+                    <Input
+                      className="col-start-2 border-gray-300"
+                      type="text"
+                      value={formatNumber(input.beginCustomer)}
+                      onChange={(e) =>
+                        handleInputChange(
+                          input?.id,
+                          "beginCustomer",
+                          parseNumber(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className="flex items-center text-sm">
+                      Adding (First month)
+                    </span>
+                    <Input
+                      className="col-start-2 border-gray-300"
+                      value={formatNumber(input.customersPerMonth)}
+                      onChange={(e) =>
+                        handleInputChange(
+                          input?.id,
+                          "customersPerMonth",
+                          parseNumber(e.target.value)
+                        )
+                      }
+                      type="text"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className="flex items-center text-sm">
+                      Growth rate (%):
+                    </span>
+                    <Input
+                      className="col-start-2 border-gray-300"
+                      value={formatNumber(input.growthPerMonth)}
+                      onChange={(e) =>
+                        handleInputChange(
+                          input?.id,
+                          "growthPerMonth",
+                          parseNumber(e.target.value)
+                        )
+                      }
+                      type="text"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className="flex items-center text-sm">
+                      Frequency:
+                    </span>
+                    <Select
+                      className="border-gray-300"
+                      onValueChange={(value) =>
+                        handleInputChange(
+                          input?.id,
+                          "customerGrowthFrequency",
+                          value
+                        )
+                      }
+                      value={input.customerGrowthFrequency}
+                    >
+                      <SelectTrigger
+                        id={`select-customerGrowthFrequency-${input?.id}`}
+                        className="border-solid border-[1px] border-gray-300"
+                      >
+                        <SelectValue placeholder="Select Growth Frequency" />
+                      </SelectTrigger>
+                      <SelectContent position="popper">
+                        <SelectItem value="Monthly">Monthly</SelectItem>
+                        <SelectItem value="Quarterly">Quarterly</SelectItem>
+                        <SelectItem value="Semi-Annually">
+                          Semi-Annually
+                        </SelectItem>
+                        <SelectItem value="Annually">Annually</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className="flex items-center text-sm">
+                      Begin Month:
+                    </span>
+                    <Input
+                      className="col-start-2 border-gray-300"
+                      type="number"
+                      min={1}
+                      value={input.beginMonth}
+                      onChange={(e) =>
+                        handleInputChange(
+                          input?.id,
+                          "beginMonth",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className="flex items-center text-sm">
+                      End Month:
+                    </span>
+                    <Input
+                      className="col-start-2 border-gray-300"
+                      type="number"
+                      min={1}
+                      value={input.endMonth}
+                      onChange={(e) =>
+                        handleInputChange(input?.id, "endMonth", e.target.value)
+                      }
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className="flex items-center text-sm">
+                      Churn rate (%):
+                    </span>
+                    <Input
+                      className="col-start-2 border-gray-300"
+                      type="text"
+                      value={formatNumber(input.churnRate)}
+                      onChange={(e) =>
+                        handleInputChange(
+                          input?.id,
+                          "churnRate",
+                          parseNumber(e.target.value)
+                        )
+                      }
+                    />
+                  </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Adding (Last month)</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          value={formatNumber(input.customersLastMonth)}
-          onChange={(e) =>
-            handleInputChange(input?.id, "customersLastMonth", parseNumber(e.target.value))
-          }
-          type="text"
-        />
-      </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <span className=" flex items-center text-sm">
+                      Acquisition cost:
+                    </span>
+                    <Input
+                      className="col-start-2 border-gray-300"
+                      type="text"
+                      value={input.acquisitionCost}
+                      onChange={(e) =>
+                        handleInputChange(
+                          input?.id,
+                          "acquisitionCost",
+                          e.target.value
+                        )
+                      }
+                      disabled
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <Checkbox
+                      className="col-span-2"
+                      checked={showAdvancedInputs}
+                      onChange={(e) => setShowAdvancedInputs(e.target.checked)}
+                    >
+                      Show Advanced Inputs
+                    </Checkbox>
+                  </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Growth rate (%):</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          value={formatNumber(input.growthPerMonth)}
-          onChange={(e) =>
-            handleInputChange(input?.id, "growthPerMonth", parseNumber(e.target.value))
-          }
-          type="text"
-        />
-      </div>
-
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Growth type:</span>
-        <Select
-          className="border-gray-300"
-          onValueChange={(value) =>
-            handleInputChange(input?.id, "growthType", value)
-          }
-          value={input.growthType}
-        >
-          <SelectTrigger
-            id={`select-growthType-${input?.id}`}
-            className="border-solid border-[1px] border-gray-300"
-          >
-            <SelectValue placeholder="Select Growth Type" />
-          </SelectTrigger>
-          <SelectContent position="popper">
-            <SelectItem value="linear">Linear</SelectItem>
-            <SelectItem value="logarithmic">Logarithmic</SelectItem>
-            <SelectItem value="exponential">Exponential</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Frequency:</span>
-        <Select
-          className="border-gray-300"
-          onValueChange={(value) =>
-            handleInputChange(input?.id, "customerGrowthFrequency", value)
-          }
-          value={input.customerGrowthFrequency}
-        >
-          <SelectTrigger
-            id={`select-customerGrowthFrequency-${input?.id}`}
-            className="border-solid border-[1px] border-gray-300"
-          >
-            <SelectValue placeholder="Select Growth Frequency" />
-          </SelectTrigger>
-          <SelectContent position="popper">
-            <SelectItem value="Monthly">Monthly</SelectItem>
-            <SelectItem value="Quarterly">Quarterly</SelectItem>
-            <SelectItem value="Semi-Annually">Semi-Annually</SelectItem>
-            <SelectItem value="Annually">Annually</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Begin Month:</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          type="number"
-          min={1}
-          value={input.beginMonth}
-          onChange={(e) =>
-            handleInputChange(input?.id, "beginMonth", e.target.value)
-          }
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">End Month:</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          type="number"
-          min={1}
-          value={input.endMonth}
-          onChange={(e) =>
-            handleInputChange(input?.id, "endMonth", e.target.value)
-          }
-        />
-      </div>
-
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Churn rate (%):</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          type="text"
-          value={formatNumber(input.churnRate)}
-          onChange={(e) =>
-            handleInputChange(input?.id, "churnRate", parseNumber(e.target.value))
-          }
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Acquisition cost:</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          type="text"
-          value={input.acquisitionCost}
-          onChange={(e) =>
-            handleInputChange(input?.id, "acquisitionCost", e.target.value)
-          }
-          disabled
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Note:</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          value={input.note}
-          onChange={(e) =>
-            handleInputChange(input?.id, "note", e.target.value)
-          }
-          type="text"
-        />
-      </div>
-    </div>
-  ))}
-
+                  {showAdvancedInputs && (
+                    <Modal
+                      title="Advanced Inputs"
+                      visible={showAdvancedInputs}
+                      onOk={handleFetchGPT}
+                      onCancel={() => setShowAdvancedInputs(false)}
+                      okText={isLoading ? <SpinnerBtn /> : "Apply"}
+                      cancelText="Cancel"
+                      cancelButtonProps={{
+                        style: {
+                          borderRadius: "0.375rem",
+                          cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                          minWidth: "5vw",
+                        },
+                      }}
+                      okButtonProps={{
+                        style: {
+                          background: "#2563EB",
+                          borderColor: "#2563EB",
+                          color: "#fff",
+                          borderRadius: "0.375rem",
+                          cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                          minWidth: "5vw",
+                        },
+                      }}
+                      centered={true}
+                    >
+                      <div className="gap-4 mb-3">
+                        <span className="flex items-center text-sm">
+                          Additional Info:
+                        </span>
+                        <TextArea
+                          className="col-start-2 border-gray-300"
+                          value={input.additionalInfo}
+                          onChange={(e) =>
+                            handleInputChange(
+                              input?.id,
+                              "additionalInfo",
+                              e.target.value
+                            )
+                          }
+                          rows={4}
+                        />
+                      </div>
+                    </Modal>
+                  )}
+                </div>
+              ))}
 
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <div className="flex justify-center items-center">
@@ -1074,17 +1357,23 @@ const CustomerSection = React.memo(
               </button>
 
               <button
-                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[5vw]"
                 onClick={handleSave}
               >
-                <CheckCircleOutlined
-                  style={{
-                    fontSize: "12px",
-                    color: "#FFFFFF",
-                    marginRight: "4px",
-                  }}
-                />
-                Save
+                {isLoading ? (
+                  <SpinnerBtn />
+                ) : (
+                  <>
+                    <CheckCircleOutlined
+                      style={{
+                        fontSize: "12px",
+                        color: "#FFFFFF",
+                        marginRight: "4px",
+                      }}
+                    />
+                    Save
+                  </>
+                )}
               </button>
             </div>
           </section>
@@ -1187,175 +1476,232 @@ const CustomerSection = React.memo(
               </div>
 
               {tempCustomerInputs
-  .filter((input) => input?.id == renderCustomerForm)
-  .map((input) => (
-    <div key={input?.id} className="bg-white rounded-2xl p-6 border my-4">
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Channel Name:</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          value={input.channelName}
-          onChange={(e) =>
-            handleInputChange(input?.id, "channelName", e.target.value)
-          }
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Existing Customer:</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          type="text"
-          value={formatNumber(input.beginCustomer)}
-          onChange={(e) =>
-            handleInputChange(input?.id, "beginCustomer", parseNumber(e.target.value))
-          }
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Adding (First month)</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          value={formatNumber(input.customersPerMonth)}
-          onChange={(e) =>
-            handleInputChange(input?.id, "customersPerMonth", parseNumber(e.target.value))
-          }
-          type="text"
-        />
-      </div>
+                .filter((input) => input?.id == renderCustomerForm)
+                .map((input) => (
+                  <div
+                    key={input?.id}
+                    className="bg-white rounded-2xl p-6 border my-4"
+                  >
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className=" flex items-center text-sm">
+                        Channel Name:
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        value={input.channelName}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "channelName",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className=" flex items-center text-sm">
+                        Existing Customer:
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        type="text"
+                        value={formatNumber(input.beginCustomer)}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "beginCustomer",
+                            parseNumber(e.target.value)
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className="flex items-center text-sm">
+                        Adding (First month)
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        value={formatNumber(input.customersPerMonth)}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "customersPerMonth",
+                            parseNumber(e.target.value)
+                          )
+                        }
+                        type="text"
+                      />
+                    </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Adding (Last month)</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          value={formatNumber(input.customersLastMonth)}
-          onChange={(e) =>
-            handleInputChange(input?.id, "customersLastMonth", parseNumber(e.target.value))
-          }
-          type="text"
-        />
-      </div>
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className="flex items-center text-sm">
+                        Adding (Last month)
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        value={formatNumber(input.customersPerMonth)}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "customersPerMonth",
+                            parseNumber(e.target.value)
+                          )
+                        }
+                        type="text"
+                      />
+                    </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Growth rate (%):</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          value={formatNumber(input.growthPerMonth)}
-          onChange={(e) =>
-            handleInputChange(input?.id, "growthPerMonth", parseNumber(e.target.value))
-          }
-          type="text"
-        />
-      </div>
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className=" flex items-center text-sm">
+                        Growth rate (%):
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        value={formatNumber(input.growthPerMonth)}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "growthPerMonth",
+                            parseNumber(e.target.value)
+                          )
+                        }
+                        type="text"
+                      />
+                    </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Growth type:</span>
-        <Select
-          className="border-gray-300"
-          onValueChange={(value) =>
-            handleInputChange(input?.id, "growthType", value)
-          }
-          value={input.growthType}
-        >
-          <SelectTrigger
-            id={`select-growthType-${input?.id}`}
-            className="border-solid border-[1px] border-gray-300"
-          >
-            <SelectValue placeholder="Select Growth Type" />
-          </SelectTrigger>
-          <SelectContent position="popper">
-            <SelectItem value="linear">Linear</SelectItem>
-            <SelectItem value="logarithmic">Logarithmic</SelectItem>
-            <SelectItem value="exponential">Exponential</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className="flex items-center text-sm">
+                        Frequency:
+                      </span>
+                      <Select
+                        className="border-gray-300"
+                        onValueChange={(value) =>
+                          handleInputChange(
+                            input?.id,
+                            "customerGrowthFrequency",
+                            value
+                          )
+                        }
+                        value={input.customerGrowthFrequency}
+                      >
+                        <SelectTrigger
+                          id={`select-customerGrowthFrequency-${input?.id}`}
+                          className="border-solid border-[1px] border-gray-300"
+                        >
+                          <SelectValue placeholder="Select Growth Frequency" />
+                        </SelectTrigger>
+                        <SelectContent position="popper">
+                          <SelectItem value="Monthly">Monthly</SelectItem>
+                          <SelectItem value="Quarterly">Quarterly</SelectItem>
+                          <SelectItem value="Semi-Annually">
+                            Semi-Annually
+                          </SelectItem>
+                          <SelectItem value="Annually">Annually</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Frequency:</span>
-        <Select
-          className="border-gray-300"
-          onValueChange={(value) =>
-            handleInputChange(input?.id, "customerGrowthFrequency", value)
-          }
-          value={input.customerGrowthFrequency}
-        >
-          <SelectTrigger
-            id={`select-customerGrowthFrequency-${input?.id}`}
-            className="border-solid border-[1px] border-gray-300"
-          >
-            <SelectValue placeholder="Select Growth Frequency" />
-          </SelectTrigger>
-          <SelectContent position="popper">
-            <SelectItem value="Monthly">Monthly</SelectItem>
-            <SelectItem value="Quarterly">Quarterly</SelectItem>
-            <SelectItem value="Semi-Annually">Semi-Annually</SelectItem>
-            <SelectItem value="Annually">Annually</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className=" flex items-center text-sm">
+                        Begin Month:
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        type="number"
+                        min={1}
+                        value={input.beginMonth}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "beginMonth",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className=" flex items-center text-sm">
+                        End Month:
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        type="number"
+                        min={1}
+                        value={input.endMonth}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "endMonth",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Begin Month:</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          type="number"
-          min={1}
-          value={input.beginMonth}
-          onChange={(e) =>
-            handleInputChange(input?.id, "beginMonth", e.target.value)
-          }
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">End Month:</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          type="number"
-          min={1}
-          value={input.endMonth}
-          onChange={(e) =>
-            handleInputChange(input?.id, "endMonth", e.target.value)
-          }
-        />
-      </div>
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className=" flex items-center text-sm">
+                        Churn rate (%):
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        type="text"
+                        value={formatNumber(input.churnRate)}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "churnRate",
+                            parseNumber(e.target.value)
+                          )
+                        }
+                      />
+                    </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Churn rate (%):</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          type="text"
-          value={formatNumber(input.churnRate)}
-          onChange={(e) =>
-            handleInputChange(input?.id, "churnRate", parseNumber(e.target.value))
-          }
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Acquisition cost:</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          type="text"
-          value={input.acquisitionCost}
-          onChange={(e) =>
-            handleInputChange(input?.id, "acquisitionCost", e.target.value)
-          }
-          disabled
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4 mb-3">
-        <span className="flex items-center text-sm">Note:</span>
-        <Input
-          className="col-start-2 border-gray-300"
-          value={input.note}
-          onChange={(e) =>
-            handleInputChange(input?.id, "note", e.target.value)
-          }
-          type="text"
-        />
-      </div>
-    </div>
-  ))}
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className="flex items-center text-sm">
+                        Additional Info:
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        value={input.additionalInfo}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "additionalInfo",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
 
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <span className=" flex items-center text-sm">
+                        Acquisition cost:
+                      </span>
+                      <Input
+                        className="col-start-2 border-gray-300"
+                        type="text"
+                        value={input.acquisitionCost}
+                        onChange={(e) =>
+                          handleInputChange(
+                            input?.id,
+                            "acquisitionCost",
+                            e.target.value
+                          )
+                        }
+                        disabled
+                      />
+                    </div>
+
+                    <div className="flex justify-end items-center">
+                      <button
+                        className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
+                        onClick={() => setIsDeleteModalOpen(true)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))}
             </section>
           </Modal>
         )}

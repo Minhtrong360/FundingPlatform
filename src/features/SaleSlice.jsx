@@ -12,6 +12,7 @@ const initialState = {
       cogsPercentage: 30,
       selectedChannel: "Offline",
       channelAllocation: 0.4,
+      daysGetPaid: 0,
     },
     {
       id: 2,
@@ -22,6 +23,7 @@ const initialState = {
       cogsPercentage: 35,
       selectedChannel: "Offline",
       channelAllocation: 0.3,
+      daysGetPaid: 0,
     },
     {
       id: 3,
@@ -32,6 +34,7 @@ const initialState = {
       cogsPercentage: 25,
       selectedChannel: "Online",
       channelAllocation: 0.6,
+      daysGetPaid: 0,
     },
   ],
   channelNames: [],
@@ -99,6 +102,8 @@ export const calculateChannelRevenue =
     let cogsByChannelAndProduct = {};
     let netRevenueByChannelAndProduct = {};
     let grossProfitByChannelAndProduct = {};
+    let cashInflowByChannelAndProduct = {};
+    let receivablesByChannelAndProduct = {};
 
     channelInputs.forEach((channel) => {
       if (channel.selectedChannel && channel.productName) {
@@ -108,6 +113,8 @@ export const calculateChannelRevenue =
         const cogsArray = Array(numberOfMonths).fill(0);
         const netRevenueArray = Array(numberOfMonths).fill(0);
         const grossProfitArray = Array(numberOfMonths).fill(0);
+        const cashInflowArray = Array(numberOfMonths).fill(0);
+        const receivablesArray = Array(numberOfMonths).fill(0);
 
         // Calculate revenue, revenueDeduction, and COGS
         customerGrowthData.forEach((growthData) => {
@@ -154,6 +161,76 @@ export const calculateChannelRevenue =
             cogsByChannelAndProduct[channelProductKey][i];
         });
         grossProfitByChannelAndProduct[channelProductKey] = grossProfitArray;
+
+        // Calculate cash inflow and receivables based on daysGetPaid
+        const paymentDelayInMonths = channel.daysGetPaid / 30;
+
+        for (let i = 0; i < numberOfMonths; i++) {
+          if (paymentDelayInMonths === 0) {
+            cashInflowArray[i] = revenueArray[i];
+            receivablesArray[i] = 0;
+          } else if (paymentDelayInMonths === 0.5) {
+            if (i === 0) {
+              cashInflowArray[i] = 0.5 * revenueArray[i];
+              receivablesArray[i] = 0.5 * revenueArray[i];
+            } else {
+              cashInflowArray[i] =
+                0.5 * revenueArray[i] + receivablesArray[i - 1];
+              receivablesArray[i] = 0.5 * revenueArray[i];
+            }
+          } else if (paymentDelayInMonths === 1) {
+            if (i === 0) {
+              cashInflowArray[i] = 0;
+              receivablesArray[i] = revenueArray[i];
+            } else {
+              cashInflowArray[i] = receivablesArray[i - 1];
+              receivablesArray[i] = revenueArray[i];
+            }
+          } else if (paymentDelayInMonths === 1.5) {
+            if (i === 0) {
+              cashInflowArray[i] = 0;
+              receivablesArray[i] = revenueArray[i];
+            } else if (i === 1) {
+              cashInflowArray[i] = 0.5 * receivablesArray[i - 1];
+              receivablesArray[i] =
+                revenueArray[i] + 0.5 * receivablesArray[i - 1];
+            } else {
+              cashInflowArray[i] =
+                0.5 * revenueArray[i - 2] + 0.5 * revenueArray[i - 1];
+              receivablesArray[i] = revenueArray[i] + 0.5 * revenueArray[i - 1];
+            }
+          } else if (paymentDelayInMonths === 2) {
+            if (i === 0) {
+              cashInflowArray[i] = 0;
+              receivablesArray[i] = revenueArray[i];
+            } else if (i === 1) {
+              cashInflowArray[i] = 0;
+              receivablesArray[i] = revenueArray[i] + revenueArray[i - 1];
+            } else {
+              cashInflowArray[i] = revenueArray[i - 2];
+              receivablesArray[i] = revenueArray[i] + revenueArray[i - 1];
+            }
+          } else if (paymentDelayInMonths === 3) {
+            if (i === 0) {
+              cashInflowArray[i] = 0;
+              receivablesArray[i] = revenueArray[i];
+            } else if (i === 1) {
+              cashInflowArray[i] = 0;
+              receivablesArray[i] = revenueArray[i] + revenueArray[i - 1];
+            } else if (i === 2) {
+              cashInflowArray[i] = 0;
+              receivablesArray[i] =
+                revenueArray[i] + revenueArray[i - 1] + revenueArray[i - 2];
+            } else {
+              cashInflowArray[i] = revenueArray[i - 3];
+              receivablesArray[i] =
+                revenueArray[i] + revenueArray[i - 1] + revenueArray[i - 2];
+            }
+          }
+        }
+
+        cashInflowByChannelAndProduct[channelProductKey] = cashInflowArray;
+        receivablesByChannelAndProduct[channelProductKey] = receivablesArray;
       }
     });
 
@@ -164,6 +241,8 @@ export const calculateChannelRevenue =
       cogsByChannelAndProduct,
       netRevenueByChannelAndProduct,
       grossProfitByChannelAndProduct,
+      cashInflowByChannelAndProduct,
+      receivablesByChannelAndProduct,
     };
   };
 
@@ -198,6 +277,14 @@ export const transformRevenueDataForTable = (
 ) => {
   const allTransformedData = [];
   const totalRow = { key: "Total", channelName: "Total" };
+  const cashInflowRow = {
+    key: "Total Cash Inflow",
+    channelName: "Total Cash Inflow",
+  };
+  const receivablesRow = {
+    key: "Total Receivables",
+    channelName: "Total Receivables",
+  };
 
   // Aggregate totals for all channels and products
   const aggregateTotals = () => {
@@ -207,7 +294,10 @@ export const transformRevenueDataForTable = (
       cogs: {},
       netRevenue: {},
       grossProfit: {},
+      cashInFlow: {},
+      receivables: {},
     };
+
     Object.keys(calculatedChannelRevenue.revenueByChannelAndProduct).forEach(
       (channelProductKey) => {
         calculatedChannelRevenue.revenueByChannelAndProduct[
@@ -219,6 +309,31 @@ export const transformRevenueDataForTable = (
         });
       }
     );
+
+    Object.keys(calculatedChannelRevenue.cashInflowByChannelAndProduct).forEach(
+      (channelProductKey) => {
+        calculatedChannelRevenue.cashInflowByChannelAndProduct[
+          channelProductKey
+        ].forEach((value, index) => {
+          aggregatedData.cashInFlow[`month${index + 1}`] =
+            (aggregatedData.cashInFlow[`month${index + 1}`] || 0) +
+            parseNumber(value);
+        });
+      }
+    );
+
+    Object.keys(
+      calculatedChannelRevenue.receivablesByChannelAndProduct
+    ).forEach((channelProductKey) => {
+      calculatedChannelRevenue.receivablesByChannelAndProduct[
+        channelProductKey
+      ].forEach((value, index) => {
+        aggregatedData.receivables[`month${index + 1}`] =
+          (aggregatedData.receivables[`month${index + 1}`] || 0) +
+          parseNumber(value);
+      });
+    });
+
     return aggregatedData;
   };
 
@@ -242,6 +357,8 @@ export const transformRevenueDataForTable = (
         const cogsRowKey = `COGS`;
         const netRevenueRowKey = `Net Revenue`;
         const grossProfitRowKey = `Gross Profit`;
+        const cashInflowRowKey = `Cash Inflow`;
+        const receivablesRowKey = `Receivables`;
         const productName = `Product Name`;
 
         transformedRevenueTableData[productName] = {
@@ -267,6 +384,14 @@ export const transformRevenueDataForTable = (
         transformedRevenueTableData[grossProfitRowKey] = {
           key: `${grossProfitRowKey} - ${selectedProduct}`,
           channelName: grossProfitRowKey,
+        };
+        transformedRevenueTableData[cashInflowRowKey] = {
+          key: `${cashInflowRowKey} - ${selectedProduct}`,
+          channelName: cashInflowRowKey,
+        };
+        transformedRevenueTableData[receivablesRowKey] = {
+          key: `${receivablesRowKey} - ${selectedProduct}`,
+          channelName: receivablesRowKey,
         };
 
         calculatedChannelRevenue.revenueByChannelAndProduct[
@@ -310,6 +435,28 @@ export const transformRevenueDataForTable = (
             formatNumber(parseFloat(value)?.toFixed(2));
         });
 
+        // Add cash inflow and receivables data
+        calculatedChannelRevenue.cashInflowByChannelAndProduct[
+          channelProductKey
+        ]?.forEach((value, index) => {
+          transformedRevenueTableData[cashInflowRowKey][`month${index + 1}`] =
+            formatNumber(parseFloat(value)?.toFixed(2));
+
+          cashInflowRow[`month${index + 1}`] = formatNumber(
+            (
+              parseNumber(cashInflowRow[`month${index + 1}`] || 0) +
+              parseNumber(value)
+            ).toFixed(2)
+          );
+        });
+
+        calculatedChannelRevenue.receivablesByChannelAndProduct[
+          channelProductKey
+        ]?.forEach((value, index) => {
+          transformedRevenueTableData[receivablesRowKey][`month${index + 1}`] =
+            formatNumber(parseFloat(value)?.toFixed(2));
+        });
+
         allTransformedData.push(Object.values(transformedRevenueTableData));
       }
     }
@@ -322,7 +469,18 @@ export const transformRevenueDataForTable = (
     );
   });
 
-  allTransformedData.push(totalRow);
+  Object.keys(totalAggregatedData.cashInFlow).forEach((monthKey) => {
+    cashInflowRow[monthKey] = formatNumber(
+      totalAggregatedData.cashInFlow[monthKey].toFixed(2)
+    );
+  });
+  Object.keys(totalAggregatedData.receivables).forEach((monthKey) => {
+    receivablesRow[monthKey] = formatNumber(
+      totalAggregatedData.receivables[monthKey].toFixed(2)
+    );
+  });
+
+  allTransformedData.push(totalRow, cashInflowRow, receivablesRow);
 
   return allTransformedData.flat();
 };

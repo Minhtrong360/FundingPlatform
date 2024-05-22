@@ -73,7 +73,8 @@ const Gemini = ({
                     "deductionPercentage": 0,
                     "cogsPercentage": 30,
                     "selectedChannel": "Offline",
-                    "channelAllocation": 0.4
+                    "channelAllocation": 0.4,
+                    "daysGetPaid": 0
                   },
                   {
                     "id": 2,
@@ -83,7 +84,8 @@ const Gemini = ({
                     "deductionPercentage": 0,
                     "cogsPercentage": 35,
                     "selectedChannel": "Offline",
-                    "channelAllocation": 0.3
+                    "channelAllocation": 0.3,
+                    "daysGetPaid": 0
                   },
                   {
                     "id": 3,
@@ -93,7 +95,8 @@ const Gemini = ({
                     "deductionPercentage": 0,
                     "cogsPercentage": 25,
                     "selectedChannel": "Online",
-                    "channelAllocation": 0.6
+                    "channelAllocation": 0.6, 
+                    "daysGetPaid": 0
                   }
                 ],
                 "channelNames": ["Online", "Offline"]

@@ -33,6 +33,14 @@ const CostSection = ({
   setIsSaved,
   handleSubmit,
 }) => {
+  const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
+  const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
+
+  const handleChartClick = (chart) => {
+    setSelectedChart(chart);
+    setIsChartModalVisible(true);
+  };
+
   const { costInputs, costData } = useSelector((state) => state.cost);
   const dispatch = useDispatch();
 
@@ -400,7 +408,7 @@ const CostSection = ({
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="flex flex-col transition duration-500   rounded-2xl">
             <div className="flex justify-between items-center">
-              <div className="min-w-[10vw]">
+              <div className="min-w-[10vw] mb-2">
                 <label htmlFor="startMonthSelect">Start Month:</label>
                 <select
                   id="startMonthSelect"
@@ -424,7 +432,7 @@ const CostSection = ({
                   })}
                 </select>
               </div>
-              <div className="min-w-[10vw]">
+              <div className="min-w-[10vw] mb-2">
                 <label htmlFor="endMonthSelect">End Month:</label>
                 <select
                   id="endMonthSelect"
@@ -452,21 +460,43 @@ const CostSection = ({
                 </select>
               </div>
             </div>
-            <Chart
-              options={{
-                ...costChart.options,
-                xaxis: {
-                  ...costChart.options.xaxis,
-                  // tickAmount: 6, // Set the number of ticks on the x-axis to 12
-                },
-                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-              }}
-              series={costChart.series}
-              type="area"
-              height={350}
-            />
+            <div onClick={() => handleChartClick(costChart)}>
+              <Chart
+                options={{
+                  ...costChart.options,
+                  xaxis: {
+                    ...costChart.options.xaxis,
+                    // tickAmount: 6, // Set the number of ticks on the x-axis to 12
+                  },
+                  stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+                }}
+                series={costChart.series}
+                type="area"
+                height={350}
+              />
+            </div>
           </Card>
         </div>
+        <Modal
+          centered
+          visible={isChartModalVisible}
+          footer={null}
+          onCancel={() => setIsChartModalVisible(false)}
+          width="90%"
+          style={{ top: 20 }}
+        >
+          {selectedChart && (
+            <Chart
+              options={{
+                ...selectedChart.options,
+                // ... other options
+              }}
+              series={selectedChart.series}
+              type="area"
+              height={500}
+            />
+          )}
+        </Modal>
         <h3 className="text-lg font-semibold my-4">Cost Table</h3>
         <Table
           className="overflow-auto my-8 rounded-md bg-white"

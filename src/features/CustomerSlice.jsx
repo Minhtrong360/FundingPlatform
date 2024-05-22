@@ -58,6 +58,7 @@ const customerSlice = createSlice({
     },
     setCustomerTableData(state, action) {
       state.customerTableData = action.payload;
+      console.log("customerTableData", state.customerTableData)
     },
     setGPTResponse(state, action) {
       const { id, response } = action.payload;

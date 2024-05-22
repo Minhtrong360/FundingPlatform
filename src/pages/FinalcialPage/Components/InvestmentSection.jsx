@@ -179,7 +179,12 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         type: "area",
         height: 350,
         zoom: { enabled: false },
-        toolbar: { show: false },
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          }
+        },
         fontFamily: "Sora, sans-serif",
       },
       grid: { show: false },
@@ -579,7 +584,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         />
       </div>
 
-      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section
           aria-labelledby="investment-heading"
           className="mb-8 sticky top-8"

@@ -440,37 +440,38 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
 
   return (
     <div
-      className={`container mx-auto px-4 flex flex-col lg:flex-row ${
+      className={`container mx-auto px-4 flex flex-col  ${
         fullScreen === true ? "justify-center items-center" : ""
       }`}
     >
       {fullScreen === false && (
-        <>
-          <aside className="w-full md:max-w-[200px] py-8">
-            <div className="sticky top-8 space-y-4">
-              <nav className="space-y-1">
-                {/* Navbar */}
-                {Object.keys(tabContents).map((tab) => (
-                  <div
-                    key={tab}
-                    className={` cursor-pointer ${
-                      activeTab === tab
-                        ? "flex items-left px-3 py-2 text-sm font-medium text-blue-600 bg-blue-100 rounded-md"
-                        : "flex items-left px-3 py-2 text-gray-600"
-                    }`}
-                    onClick={() => handleTabChange(tab)}
-                  >
-                    {tab}
-                  </div>
-                ))}
-              </nav>
-            </div>
-          </aside>
-          <div className="w-full  py-8 px-0 md:pl-8">
-            {/* Content */}
-            {tabContents[activeTab]}
-          </div>
-        </>
+       <>
+       <aside className="sticky z-20 top-0 bg-white">
+         <div className="w-full  py-8 overflow-x-auto">
+           <nav className="flex space-x-4">
+             {/* Navbar */}
+             {Object.keys(tabContents).map((tab) => (
+               <div
+                 key={tab}
+                 className={`cursor-pointer flex items-center px-3 py-2 text-sm font-medium ${
+                   activeTab === tab
+                     ? "text-blue-600 bg-blue-100 rounded-md"
+                     : "text-gray-600"
+                 }`}
+                 onClick={() => handleTabChange(tab)}
+               >
+                 {tab}
+               </div>
+             ))}
+           </nav>
+         </div>
+       </aside>
+       <div className="w-full py-8 px-0 md:pl-8">
+         {/* Content */}
+         {tabContents[activeTab]}
+       </div>
+     </>
+     
       )}
       {fullScreen === true && (
         <BlockNoteView

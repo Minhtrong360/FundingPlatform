@@ -13,6 +13,8 @@ import LoanSection from "./Components/LoanSection";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 
+// import { toast } from "react-toastify";
+
 import ProgressBar from "../../components/ProgressBar";
 import Gemini from "./Components/Gemini";
 import MetricsFM from "./Components/MetricsFM";
@@ -37,16 +39,21 @@ import {
 import {
   calculateCustomerGrowth,
   calculateYearlyAverage,
+  generateCustomerTableData,
   setCustomerGrowthData,
   setCustomerInputs,
+  setCustomerTableData,
   setYearlyAverageCustomers,
+  transformCustomerData,
 } from "../../features/CustomerSlice";
 import {
   calculateChannelRevenue,
   calculateYearlySales,
   setChannelInputs,
   setChannelNames,
+  setRevenueTableData,
   setYearlySales,
+  transformRevenueDataForTable,
 } from "../../features/SaleSlice";
 import FundraisingSection from "./Components/FundraisingSections";
 import { formatNumber, setCostInputs } from "../../features/CostSlice";
@@ -203,7 +210,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           enabled: false, // Disable zooming
         },
         toolbar: {
-          show: false, // Hide the toolbar
+          show: true,
+          tools: {
+            download: true,
+          }
         },
         id: "customer-growth-chart",
         type: "area",
@@ -267,7 +277,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-
+      
       grid: {
         show: false,
       },
@@ -305,7 +315,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           enabled: false, // Disable zooming
         },
         toolbar: {
-          show: false, // Hide the toolbar
+          show: true,
+          tools: {
+            download: true,
+          }
         },
         animations: {
           enabled: false,
@@ -327,7 +340,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-
+    
       xaxis: {
         axisTicks: {
           show: false, // Hide x-axis ticks
@@ -516,7 +529,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
     setCustomerGrowthChart((prevState) => ({
       ...prevState,
-
       series: [
         ...seriesData,
         {
@@ -559,10 +571,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         const financeRecord = existingData[0];
 
         // Kiểm tra nếu tác giả của dữ liệu tài chính trùng với userId
-        if (
-          financeRecord.user_id === user.id ||
-          financeRecord.collabs?.includes(user.email)
-        ) {
+        if (financeRecord.user_id === user.id) {
           // Cập nhật bản ghi hiện có
 
           const { error: updateError } = await supabase
@@ -799,6 +808,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         />
       </div> */}
 
+     
       {spinning ? (
         <ProgressBar spinning={spinning} isLoading={isLoading} />
       ) : (
@@ -814,7 +824,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               setSpinning={setSpinning}
             />
           </div>
-
+          
           <div className="my-4 ">
             {/* <div className="rounded-lg bg-green-500 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">
               <button onClick={startTour}>

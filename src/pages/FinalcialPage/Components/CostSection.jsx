@@ -189,11 +189,17 @@ const CostSection = ({
         id: "cost-chart",
         type: "bar",
         height: 350,
-        toolbar: { show: false },
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          }
+        },
         zoom: { enabled: false },
         animations: {
           enabled: false,
         },
+        
       },
       colors: [
         "#00A2FF",
@@ -527,7 +533,7 @@ const CostSection = ({
         />
       </div>
 
-      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section aria-labelledby="costs-heading" className="mb-8 sticky top-8">
           <h2
             className="text-lg font-semibold mb-8 flex items-center"

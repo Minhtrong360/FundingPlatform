@@ -54,7 +54,12 @@ const CustomChart = ({
       id,
       type: "area",
       height: 350,
-      toolbar: { show: false },
+      toolbar: {
+        show: true,
+        tools: {
+          download: true,
+        }
+      },
       zoom: { enabled: false },
       animations: {
         enabled: false,

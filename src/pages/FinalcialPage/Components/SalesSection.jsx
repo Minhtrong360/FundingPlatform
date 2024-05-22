@@ -33,6 +33,7 @@ import {
 } from "../../../features/SaleSlice";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { supabase } from "../../../supabase";
+
 import { useParams } from "react-router-dom";
 import {
   FileOutlined,
@@ -50,6 +51,7 @@ const SalesSection = ({
   setIsSaved,
   revenue,
   setRevenue,
+  handleSubmit,
 }) => {
   const dispatch = useDispatch();
   const {
@@ -140,6 +142,16 @@ const SalesSection = ({
       setIsLoading(true);
       const saveData = async () => {
         try {
+          dispatch(setChannelInputs(tempChannelInputs));
+          dispatch(setRevenueData(tempRevenueData));
+          dispatch(setRevenueDeductionData(tempRevenueDeductionData));
+          dispatch(setCogsData(tempCogsData));
+          dispatch(setNetRevenueData(tempNetRevenueData));
+          dispatch(setGrossProfitData(tempGrossProfitData));
+
+          const sales = calculateYearlySales(tempRevenueData);
+          dispatch(setYearlySales(sales));
+
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
             .select("*")
@@ -150,26 +162,6 @@ const SalesSection = ({
           }
 
           if (existingData && existingData.length > 0) {
-            const { user_email, collabs } = existingData[0];
-
-            // Check if user.email matches user_email or is included in collabs
-            if (user.email !== user_email && !collabs?.includes(user.email)) {
-              message.error(
-                "You do not have permission to update this record."
-              );
-              return;
-            }
-
-            dispatch(setChannelInputs(tempChannelInputs));
-            dispatch(setRevenueData(tempRevenueData));
-            dispatch(setRevenueDeductionData(tempRevenueDeductionData));
-            dispatch(setCogsData(tempCogsData));
-            dispatch(setNetRevenueData(tempNetRevenueData));
-            dispatch(setGrossProfitData(tempGrossProfitData));
-
-            const sales = calculateYearlySales(tempRevenueData);
-            dispatch(setYearlySales(sales));
-
             const newInputData = JSON.parse(existingData[0].inputData);
             newInputData.channelInputs = tempChannelInputs;
             newInputData.yearlySales = sales;
@@ -308,25 +300,6 @@ const SalesSection = ({
         })
         .filter((chart) => chart !== null);
 
-      const salesChartsData2 = Object.entries(tempRevenueData)
-        .map(([key, data]) => {
-          if (!data) return null;
-
-          const dataDeductions = tempRevenueDeductionData[key] || [];
-          const dataNetRevenue = tempNetRevenueData[key] || [];
-          const dataCOGS = tempCogsData[key] || [];
-          const dataGrossProfit = tempGrossProfitData[key] || [];
-          return {
-            name: key,
-            data: data,
-            dataDeductions,
-            dataNetRevenue,
-            dataCOGS,
-            dataGrossProfit,
-          };
-        })
-        .filter((chart) => chart !== null);
-
       const totalSalesData = salesChartsData.reduce((acc, channel) => {
         channel.data.forEach((amount, index) => {
           if (!acc[index]) acc[index] = 0;
@@ -334,22 +307,15 @@ const SalesSection = ({
         });
         return acc;
       }, Array(endIdx - startIdx).fill(0));
-      const totalSalesData2 = salesChartsData2.reduce((acc, channel) => {
-        channel.data.forEach((amount, index) => {
-          if (!acc[index]) acc[index] = 0;
-          acc[index] += amount;
-        });
-        return acc;
-      }, Array(numberOfMonths).fill(0));
 
       setRevenue((prevState) => ({
         ...prevState,
         series: [
-          ...salesChartsData2.map((channel) => ({
+          ...salesChartsData.map((channel) => ({
             name: channel.name,
             data: channel.data,
           })),
-          { name: "Total", data: totalSalesData2 },
+          { name: "Total", data: totalSalesData },
         ],
         charts: [
           {
@@ -585,7 +551,7 @@ const SalesSection = ({
         />
       </div>
 
-      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section aria-labelledby="sales-heading" className="mb-8 sticky top-8">
           <h2
             className="text-lg font-semibold mb-8 flex items-center"

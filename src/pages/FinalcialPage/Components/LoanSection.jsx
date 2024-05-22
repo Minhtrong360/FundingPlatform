@@ -133,7 +133,12 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         type: "line",
         height: 350,
         fontFamily: "Sora, sans-serif",
-        toolbar: { show: false },
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          }
+        },
         zoom: { enabled: false },
         animations: {
           enabled: false,
@@ -545,7 +550,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         />
       </div>
 
-      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section aria-labelledby="loan-heading" className="mb-8 sticky top-8">
           <h2
             className="text-lg font-semibold mb-8 flex items-center"

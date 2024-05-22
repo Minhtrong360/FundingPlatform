@@ -171,7 +171,12 @@ const PersonnelSection = ({
         id: "personnel-chart",
         type: "bar",
         height: 350,
-        toolbar: { show: false },
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          }
+        },
         zoom: { enabled: false },
         fontFamily: "Sora, sans-serif",
         animations: {
@@ -485,7 +490,7 @@ const PersonnelSection = ({
         />
       </div>
 
-      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section
           aria-labelledby="personnel-heading"
           className="mb-8 sticky top-8"

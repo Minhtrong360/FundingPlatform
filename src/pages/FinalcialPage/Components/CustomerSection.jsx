@@ -245,7 +245,25 @@ const CustomerSection = React.memo(
 
     const startingMonth = startMonth; // Tháng bắt đầu từ 1
     const startingYear = startYear; // Năm bắt đầu từ 24
-
+    console.log(customerTableData)
+    const handleInputTable = (value, recordKey, monthKey) => {
+      console.log( value, recordKey, monthKey)
+      const updatedData = customerTableData.map(record => {
+        if (record.key === recordKey) {
+          return {
+            ...record,
+            [monthKey]: value,
+          };
+        }
+       
+        return record;
+        
+      });
+    
+      dispatch(setCustomerTableData(updatedData));
+     
+    
+    };
     const customerColumns = [
       {
         fixed: "left",
@@ -281,6 +299,21 @@ const CustomerSection = React.memo(
 
             const cellStyle = isInEvent ? { backgroundColor: "yellow" } : {};
 
+            if (record.key.includes("-add")) {
+              return (
+                <Tooltip title={tooltipTitle} placement="topLeft">
+                  <div style={cellStyle}>
+                  <input
+                   
+                    className="border-white p-0 text-xs text-right w-full h-full"
+                      value={record[`month${i + 1}`]}
+                      onChange={(e) => handleInputTable(e.target.value, record.key, `month${i + 1}`)}
+                    />
+                  </div>
+                </Tooltip>
+              );
+            }
+    
             return (
               <Tooltip title={tooltipTitle} placement="topLeft">
                 <div style={cellStyle}>{text}</div>
@@ -669,6 +702,7 @@ const CustomerSection = React.memo(
                 {
                   name: "Yearly Total",
                   data: yearlyTotalData,
+                  type: "bar",
                 },
               ],
             },
@@ -718,9 +752,9 @@ const CustomerSection = React.memo(
               },
               series: [
                 {
-                  name: "Yearly Growth Rate (%)",
+                 
                   data: yearlyGrowthRates,
-                  type: "line",
+                  type: "bar",
                 },
               ],
             },
@@ -729,11 +763,13 @@ const CustomerSection = React.memo(
                 ...prevState.options,
                 chart: {
                   ...prevState.options.chart,
+                
                   id: "channelYearlyTotals",
                   stacked: false,
                   toolbar: {
                     show: false,
                   },
+                 
                 },
                 title: {
                   ...prevState.options.title,
@@ -760,7 +796,14 @@ const CustomerSection = React.memo(
                   ),
                 },
               },
-              series: channelYearlyTotals,
+              series: [
+                {
+                  name: "Total Yearly Customers by Channel",
+                  data: channelYearlyTotals[0].data,
+                  type: "bar",
+                },
+              ],
+           
             },
           ],
         };
@@ -965,7 +1008,7 @@ const CustomerSection = React.memo(
                     ...chart.options,
                     xaxis: {
                       ...chart.options.xaxis,
-                      // tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                      
                     },
                     stroke: {
                       width: 1, // Set the stroke width to 1
@@ -1013,7 +1056,7 @@ const CustomerSection = React.memo(
           />
         </div>
 
-        <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
+        <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
           <section
             aria-labelledby="customers-heading"
             className="mb-8 sticky top-8"

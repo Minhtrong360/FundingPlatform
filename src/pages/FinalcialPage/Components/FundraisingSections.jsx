@@ -142,7 +142,12 @@ const FundraisingSection = ({
         id: "fundraising-chart",
         type: "area",
         height: 350,
-        toolbar: { show: false },
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          }
+        },
         zoom: { enabled: false },
         animations: {
           enabled: false,
@@ -481,7 +486,7 @@ const FundraisingSection = ({
         />
       </div>
 
-      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section
           aria-labelledby="fundraising-heading"
           className="mb-8 sticky top-8"

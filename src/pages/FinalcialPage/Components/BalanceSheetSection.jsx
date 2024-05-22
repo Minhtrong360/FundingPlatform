@@ -47,6 +47,126 @@ import { setCutMonth } from "../../../features/DurationSlice";
 import { FileOutlined } from "@ant-design/icons";
 import GroqJS from "./GroqJson";
 
+import Chart from 'react-apexcharts';
+import { DatePicker } from 'antd';
+import moment from 'moment';
+import { grid2Classes } from "@mui/material";
+
+const { RangePicker } = DatePicker;
+
+const BalanceSheetChart = ({ data }) => {
+  const [filteredData, setFilteredData] = useState(data);
+  const [dateRange, setDateRange] = useState([null, null]);
+
+  // Define the chart options
+  const chartOptions = {
+    chart: {
+      type: 'area',
+      height: 350,
+      toolbar: {
+        show: true,
+        tools: {
+          download: true,
+        }
+      },
+      zoom: {
+        autoScaleYaxis: true
+      }
+    },
+    grid: {
+      show: false
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      curve: 'smooth',
+    },
+    xaxis: {
+      type: 'datetime',
+      labels: {
+        
+      }
+    },
+    tooltip: {
+      x: {
+        format: 'MM-yyyy',
+      },
+    },
+  };
+
+  // Prepare the series data
+  const getSeriesData = (data) => data.map(item => {
+    const seriesData = Object.entries(item)
+      .filter(([key]) => key !== 'metric')
+      .map(([key, value]) => {
+        const [month, year] = key.split('-');
+        // Create a Date object with year and month (months are 0-based in JavaScript)
+        const date = new Date(year, month );
+        // Get the time in milliseconds for the date
+        const timeInMillis = date.getTime();
+        // Return an array with the time in milliseconds and the parsed value
+        return [timeInMillis, parseFloat(value.replace(/,/g, ''))];
+      });
+  
+    return {
+      name: item.metric,
+      // Sort the series data based on the timestamp
+      data: seriesData.sort((a, b) => a[0] - b[0]),
+    };
+  });
+  
+  
+  const handleDateChange = (dates) => {
+    if (dates) {
+      const [start, end] = dates;
+      setDateRange([start, end]);
+
+      const filtered = data.map(item => {
+        const filteredValues = Object.entries(item)
+          .filter(([key]) => key !== 'metric')
+          .filter(([key]) => {
+            const [month, year] = key.split('-');
+            const date = new Date(year, month - 1);
+            const startDate = start.toDate();
+            const endDate = end.toDate();
+            const selectedStartDate = new Date(startDate.getFullYear(), startDate.getMonth());
+            const selectedEndDate = new Date(endDate.getFullYear(), endDate.getMonth());
+            return date >= selectedStartDate && date <= selectedEndDate;
+          })
+          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
+        return { metric: item.metric, ...filteredValues };
+      });
+
+      setFilteredData(filtered);
+    } else {
+      setDateRange([null, null]);
+      setFilteredData(data);
+    }
+  };
+  console.log("filteredData",filteredData)
+  const series = getSeriesData(filteredData);
+  console.log("series",series)
+
+  return (
+    <div>
+      <RangePicker 
+        onChange={handleDateChange} 
+        format="MM-YYYY" 
+        picker="month" 
+        value={dateRange} 
+      />
+      <Chart options={chartOptions} series={series} type="bar" height={350} />
+    </div>
+  );
+};
+
+
+
+
+
+
 function BalanceSheetSection({ numberOfMonths }) {
   const dispatch = useDispatch();
   const { cutMonth } = useSelector((state) => state.durationSelect);
@@ -424,6 +544,159 @@ function BalanceSheetSection({ numberOfMonths }) {
   const totalLiabilitiesAndShareholdersEquity = totalLiabilities.map(
     (totalLiability, index) => totalLiability + totalShareholdersEquity[index]
   );
+  
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+  const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  const startingYear = startYear; // Năm bắt đầu từ 24
+
+// const realDate = [];
+
+// for (let i = 0; i < numberOfMonths; i++) {
+//     const monthIndex = (startingMonth + i - 1) % 12;
+//     const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+//     const title = `${monthIndex + 1}/${year}`;
+//     realDate.push(title);
+// }
+const realDate = Array.from({ length: numberOfMonths }, (_, i) => {
+  const monthIndex = (startingMonth + i - 1) % 12;
+  const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+  return `${monthIndex + 1}-${year}`;
+});
+
+
+console.log(realDate);
+const BalenceSheetData = [
+  // {
+  //   key: "Assets",
+  // },
+  // {
+  //   key: " Current Assets",
+  // },
+  // {
+  //   key: "Cash",
+  //   values: cashEndBalances, // Set values to zero
+  // },
+  // {
+  //   key: "Accounts Receivable", // Added Accounts Receivable row
+  //   values: new Array(numberOfMonths).fill(0), // Set values to zero
+  // },
+  // {
+  //   key: "Inventory", // Added Inventory row
+  //   values: new Array(numberOfMonths).fill(0), // Set values to zero
+  // },
+  // {
+  //   key: "Current Assets", // Added Current Assets row
+  //   values: currentAssets,
+  // },
+  // {
+  //   key: "Long-Term Assets",
+  // },
+  // // insert BS Total investment here
+  // { key: "Total Investment", values: totalAssetValue }, // New row for total investment
+
+  // { key: "Total Accumulated Depreciation", values: bsTotalDepreciation },
+
+  // {
+  //   key: "Net Fixed Assets",
+  //   values: bsTotalNetFixedAssets,
+  // },
+
+  // {
+  //   key: "Long term assets",
+  //   values: bsTotalNetFixedAssets,
+  // },
+
+  // {
+  //   key: "Total Assets",
+  //   values: totalAssets,
+  // },
+
+  // {
+  //   key: "Liabilities & Equity",
+  // },
+  // {
+  //   key: "Current Liabilities",
+  // },
+  // {
+  //   key: "Account Payable", // Added Inventory row
+  //   values: new Array(numberOfMonths).fill(0), // Set values to zero
+  // },
+
+  // {
+  //   key: "Long-Term Liabilities",
+  // },
+  // {
+  //   key: "Long term liabilities",
+  //   values: bsTotalRemainingBalance, // New row for long term liabilities
+  // },
+
+  // {
+  //   key: "Total Liabilities", // Added Inventory row
+  //   values: totalLiabilities,
+  // },
+
+  // {
+  //   key: "Shareholders Equity",
+  // },
+  // {
+  //   key: "Paid in Capital",
+  //   values: Array.from({ length: numberOfMonths }, (_, i) => {
+  //     const currentValue = i === 0 ? startingPaidInCapital.toFixed(2) : "0";
+  //     const currentValueFloat = parseFloat(currentValue);
+  //     const capitalArrValue = capitalArr[i] || 0; // If capitalArr doesn't have value at index i, default to 0
+  //     return (currentValueFloat + capitalArrValue).toFixed(2);
+  //   }).map((value) => parseFloat(value)),
+  // },
+  // {
+  //   key: "Common Stock", // Added Inventory row
+  //   values: commonStockArr,
+  // },
+  // {
+  //   key: "Preferred Stock", // Added Inventory row
+  //   values: preferredStockArr,
+  // },
+  // {
+  //   key: "Retain Earnings", // Added Inventory row
+  //   values: netIncome,
+  // },
+
+  // // Calculated the accumulated retained earnings here
+
+  // {
+  //   key: "Accumulated Retain Earnings",
+  //   values: accumulatedRetainEarnings,
+  // },
+
+  // {
+  //   key: "Total Shareholders Equity",
+  //   values: totalShareholdersEquity,
+  // },
+
+  // Add the Total Liabilities and Shareholders Equity here
+
+  {
+    key: "Total Liabilities and Shareholders Equity",
+    values: totalLiabilitiesAndShareholdersEquity,
+  },
+
+  {
+    key: "Total Assets (Double Check)",
+    values: totalAssets,
+  },
+].map((item, index) => ({
+  metric: item.key,
+  ...item.values?.reduce(
+    (acc, value, i) => ({
+      ...acc,
+      [realDate[i]]: formatNumber(value?.toFixed(2)),
+    }),
+    {}
+  ),
+}));
+
+console.log("BalenceSheetData",BalenceSheetData);
 
   const positionDataWithNetIncome2 = [
     {
@@ -553,7 +826,7 @@ function BalanceSheetSection({ numberOfMonths }) {
       {}
     ),
   }));
-
+  // console.log("BLS", positionDataWithNetIncome2)
   const months = [
     "01",
     "02",
@@ -568,12 +841,12 @@ function BalanceSheetSection({ numberOfMonths }) {
     "11",
     "12",
   ];
-  const { startMonth, startYear } = useSelector(
-    (state) => state.durationSelect
-  );
+  // const { startMonth, startYear } = useSelector(
+  //   (state) => state.durationSelect
+  // );
 
-  const startingMonth = startMonth; // Tháng bắt đầu từ 1
-  const startingYear = startYear; // Năm bắt đầu từ 24
+  // const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  // const startingYear = startYear; // Năm bắt đầu từ 24
 
   const positionColumns1 = [
     {
@@ -913,9 +1186,14 @@ function BalanceSheetSection({ numberOfMonths }) {
             ))}
           </Tabs>
         </div>
+
+        {/* <div>
+      <h1>Balance Sheet Data</h1>
+      <BalanceSheetChart data={BalenceSheetData} />
+    </div> */}
       </div>
 
-      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section className="mb-8 sticky top-8 bg-white">
           <GroqJS datasrc={positionDataWithNetIncome2} />
         </section>

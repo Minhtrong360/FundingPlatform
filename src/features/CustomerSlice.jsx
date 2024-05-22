@@ -514,6 +514,7 @@ export const fetchGPTResponse = (id, additionalInfo) => async (dispatch) => {
     const cleanedResponseText = JSON.parse(
       data.response.replace(/json|`/g, "")
     );
+    console.log("cleanedResponseText", cleanedResponseText);
     return cleanedResponseText;
   } catch (error) {
     console.error("Error fetching GPT response:", error);

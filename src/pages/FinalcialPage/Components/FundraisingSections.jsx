@@ -23,6 +23,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
+import SpinnerBtn from "../../../components/SpinnerBtn";
 
 const FundraisingSection = ({
   numberOfMonths,
@@ -224,10 +225,12 @@ const FundraisingSection = ({
 
   const { id } = useParams();
   const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const saveData = async () => {
       try {
+        setIsLoading(true);
         if (isSaved) {
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
@@ -278,6 +281,7 @@ const FundraisingSection = ({
         message.error(error);
       } finally {
         setIsSaved(false);
+        setIsLoading(false);
       }
     };
     saveData();
@@ -663,17 +667,23 @@ const FundraisingSection = ({
             </button>
 
             <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[5vw]"
               onClick={handleSave}
             >
-              <CheckCircleOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />
-              Save
+              {isLoading ? (
+                <SpinnerBtn />
+              ) : (
+                <>
+                  <CheckCircleOutlined
+                    style={{
+                      fontSize: "12px",
+                      color: "#FFFFFF",
+                      marginRight: "4px",
+                    }}
+                  />
+                  Save
+                </>
+              )}
             </button>
           </div>
         </section>
@@ -708,7 +718,7 @@ const FundraisingSection = ({
             setSelectedFundraisingId(fundraisingInputs[0]?.id);
             setIsInputFormOpen(false);
           }}
-          okText="Save change"
+          okText={isLoading ? <SpinnerBtn /> : "Save Change"}
           cancelText="Cancel"
           cancelButtonProps={{
             style: {
@@ -723,6 +733,7 @@ const FundraisingSection = ({
               color: "#fff",
               borderRadius: "0.375rem",
               cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              minWidth: "5vw",
             },
           }}
           centered={true}

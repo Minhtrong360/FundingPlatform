@@ -99,7 +99,11 @@ const AllChartSections = ({
   const { costData, costInputs } = useSelector((state) => state.cost);
 
   useEffect(() => {
-    const calculatedData = calculateCostData(costInputs, numberOfMonths);
+    const calculatedData = calculateCostData(
+      costInputs,
+      numberOfMonths,
+      revenueData
+    );
     dispatch(setCostData(calculatedData));
   }, [costInputs, numberOfMonths]);
 
@@ -511,6 +515,8 @@ const AllChartSections = ({
     setSelectedZoomChartVer2(chart);
     setIsChartModalVisibleVer2(true);
   };
+
+  console.log("yearlySales", yearlySales);
 
   return (
     <div className="flex flex-col">

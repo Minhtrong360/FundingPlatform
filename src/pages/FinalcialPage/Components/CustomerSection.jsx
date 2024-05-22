@@ -427,7 +427,6 @@ const CustomerSection = React.memo(
             .map((data) => parseInt(data.customers, 10)),
         };
       });
-      console.log("seriesData", seriesData);
       const seriesData2 = tempCustomerGrowthData.map((channelData) => {
         return {
           name: channelData[0]?.channelName || "Unknown Channel",
@@ -782,7 +781,7 @@ const CustomerSection = React.memo(
       try {
         setIsLoading(true);
         const customer = tempCustomerInputs.find(
-          (input) => input.id === renderCustomerForm
+          (input) => input.id == renderCustomerForm
         );
         let responseGPT;
         if (customer) {
@@ -790,8 +789,6 @@ const CustomerSection = React.memo(
             fetchGPTResponse(customer.id, customer.additionalInfo,customer )
           );
         }
-
-        console.log("responseGPT", responseGPT);
 
         // Check if responseGPT is an object with a single key that holds an array
         let gptResponseArray = [];
@@ -825,8 +822,6 @@ const CustomerSection = React.memo(
         setIsLoading(false);
       }
     };
-
-    console.log("tempCustomerInputs", tempCustomerInputs);
 
     const handleAddAdvancedInput = (id) => {
       const newInputs = tempCustomerInputs.map((input) => {
@@ -1365,7 +1360,7 @@ const CustomerSection = React.memo(
               setTempCustomerInputs(customerInputs);
               setIsInputFormOpen(false);
             }}
-            okText="Save change"
+            okText={isLoading ? <SpinnerBtn /> : "Save Change"}
             cancelText="Cancel"
             cancelButtonProps={{
               style: {
@@ -1380,6 +1375,7 @@ const CustomerSection = React.memo(
                 color: "#fff",
                 borderRadius: "0.375rem",
                 cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                minWidth: "5vw",
               },
             }}
             centered={true}

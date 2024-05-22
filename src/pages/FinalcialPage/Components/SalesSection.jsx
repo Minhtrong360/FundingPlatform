@@ -42,6 +42,7 @@ import {
   CheckCircleOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
+import SpinnerBtn from "../../../components/SpinnerBtn";
 
 const SalesSection = ({
   numberOfMonths,
@@ -132,9 +133,11 @@ const SalesSection = ({
 
   const { id } = useParams();
   const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (isSaved) {
+      setIsLoading(true);
       const saveData = async () => {
         try {
           const { data: existingData, error: selectError } = await supabase
@@ -186,6 +189,7 @@ const SalesSection = ({
           message.error(error.message);
         } finally {
           setIsSaved(false);
+          setIsLoading(false);
         }
       };
 
@@ -810,17 +814,23 @@ const SalesSection = ({
             </button>
 
             <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[5vw]"
               onClick={handleSave}
             >
-              <CheckCircleOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />
-              Save
+              {isLoading ? (
+                <SpinnerBtn />
+              ) : (
+                <>
+                  <CheckCircleOutlined
+                    style={{
+                      fontSize: "12px",
+                      color: "#FFFFFF",
+                      marginRight: "4px",
+                    }}
+                  />
+                  Save
+                </>
+              )}
             </button>
           </div>
         </section>
@@ -849,7 +859,7 @@ const SalesSection = ({
             setTempChannelInputs(channelInputs);
             setIsInputFormOpen(false);
           }}
-          okText="Save change"
+          okText={isLoading ? <SpinnerBtn /> : "Save Change"}
           cancelText="Cancel"
           cancelButtonProps={{
             style: { borderRadius: "0.375rem", cursor: "pointer" },
@@ -861,6 +871,7 @@ const SalesSection = ({
               color: "#fff",
               borderRadius: "0.375rem",
               cursor: "pointer",
+              minWidth: "5vw",
             },
           }}
           centered={true}

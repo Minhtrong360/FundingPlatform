@@ -18,6 +18,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
+import SpinnerBtn from "../../../components/SpinnerBtn";
 
 const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const dispatch = useDispatch();
@@ -345,10 +346,12 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
   const { id } = useParams();
   const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const saveData = async () => {
       try {
         if (isSaved) {
+          setIsLoading(true);
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
             .select("*")
@@ -391,6 +394,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         message.error(error);
       } finally {
         setIsSaved(false);
+        setIsLoading(false);
       }
     };
     saveData();
@@ -699,17 +703,23 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
             </button>
 
             <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[5vw]"
               onClick={handleSave}
             >
-              <CheckCircleOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />
-              Save
+              {isLoading ? (
+                <SpinnerBtn />
+              ) : (
+                <>
+                  <CheckCircleOutlined
+                    style={{
+                      fontSize: "12px",
+                      color: "#FFFFFF",
+                      marginRight: "4px",
+                    }}
+                  />
+                  Save
+                </>
+              )}
             </button>
           </div>
         </section>
@@ -744,7 +754,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
             setRenderLoanForm(loanInputs[0]?.id);
             setIsInputFormOpen(false);
           }}
-          okText="Save change"
+          okText={isLoading ? <SpinnerBtn /> : "Save Change"}
           cancelText="Cancel"
           cancelButtonProps={{
             style: {
@@ -759,6 +769,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               color: "#fff",
               borderRadius: "0.375rem",
               cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              minWidth: "5vw",
             },
           }}
           centered={true}

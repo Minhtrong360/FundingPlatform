@@ -84,7 +84,11 @@ function CashFlowSection({ numberOfMonths }) {
   const { costData, costInputs } = useSelector((state) => state.cost);
 
   useEffect(() => {
-    const calculatedData = calculateCostData(costInputs, numberOfMonths);
+    const calculatedData = calculateCostData(
+      costInputs,
+      numberOfMonths,
+      revenueData
+    );
     dispatch(setCostData(calculatedData));
   }, [costInputs, numberOfMonths]);
 

@@ -14,6 +14,8 @@ const initialState = {
   financialProjectName: "",
   numberOfMonths: 36,
   cutMonth: 4,
+  description: "",
+  location: "",
 };
 
 const durationSelectSlice = createSlice({
@@ -56,6 +58,12 @@ const durationSelectSlice = createSlice({
     setCutMonth(state, action) {
       state.cutMonth = action.payload;
     },
+    setDescription(state, action) {
+      state.description = action.payload;
+    },
+    setLocation(state, action) {
+      state.location = action.payload;
+    },
     // Thêm reducers khác nếu cần
   },
 });
@@ -73,6 +81,8 @@ export const {
   setFinancialProjectName,
   setNumberOfMonths,
   setCutMonth,
+  setDescription,
+  setLocation,
 } = durationSelectSlice.actions;
 
 export function formatDate(inputDateString) {

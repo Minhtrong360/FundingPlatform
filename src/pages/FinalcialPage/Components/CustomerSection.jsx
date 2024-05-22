@@ -247,23 +247,50 @@ const CustomerSection = React.memo(
     const startingYear = startYear; // Năm bắt đầu từ 24
 
     const handleInputTable = (value, recordKey, monthKey) => {
-    
-      const updatedData = customerTableData.map(record => {
+      console.log(value, recordKey, monthKey);
+
+      // Extract month number from the monthKey
+      const monthIndex = parseInt(monthKey.replace("month", "")) - 1;
+
+      const updatedData = customerTableData.map((record) => {
         if (record.key === recordKey) {
           return {
             ...record,
             [monthKey]: value,
           };
         }
-       
         return record;
-        
       });
-    
+
       dispatch(setCustomerTableData(updatedData));
-     
-    
+
+      // Update gptResponseArray in tempCustomerInputs
+
+      const updatedTempCustomerInputs = tempCustomerInputs.map((input) => {
+        if (input.channelName === recordKey.split("-")[0]) {
+          const updatedGPTResponseArray = [...input.gptResponseArray];
+          updatedGPTResponseArray[monthIndex] = Number(value);
+          if (monthKey == "month1") {
+            return {
+              ...input,
+              gptResponseArray: updatedGPTResponseArray,
+              customersPerMonth: Number(value),
+            };
+          }
+          return {
+            ...input,
+            gptResponseArray: updatedGPTResponseArray,
+          };
+        }
+        return input;
+      });
+
+      setTempCustomerInputs(updatedTempCustomerInputs);
     };
+
+    console.log("customerTableData", customerTableData);
+    console.log("tempCustomerInputs", tempCustomerInputs);
+
     const customerColumns = [
       {
         fixed: "left",
@@ -303,17 +330,22 @@ const CustomerSection = React.memo(
               return (
                 <Tooltip title={tooltipTitle} placement="topLeft">
                   <div style={cellStyle}>
-                  <input
-                   
-                    className="border-white p-0 text-xs text-right w-full h-full"
+                    <input
+                      className="border-white p-0 text-xs text-right w-full h-full"
                       value={record[`month${i + 1}`]}
-                      onChange={(e) => handleInputTable(e.target.value, record.key, `month${i + 1}`)}
+                      onChange={(e) =>
+                        handleInputTable(
+                          e.target.value,
+                          record.key,
+                          `month${i + 1}`
+                        )
+                      }
                     />
                   </div>
                 </Tooltip>
               );
             }
-    
+
             return (
               <Tooltip title={tooltipTitle} placement="topLeft">
                 <div style={cellStyle}>{text}</div>
@@ -703,7 +735,6 @@ const CustomerSection = React.memo(
                 {
                   name: "Yearly Total",
                   data: yearlyTotalData,
-                  type: "bar",
                 },
               ],
             },
@@ -753,9 +784,9 @@ const CustomerSection = React.memo(
               },
               series: [
                 {
-                 
+                  name: "Yearly Growth Rate (%)",
                   data: yearlyGrowthRates,
-                  type: "bar",
+                  type: "line",
                 },
               ],
             },
@@ -764,13 +795,11 @@ const CustomerSection = React.memo(
                 ...prevState.options,
                 chart: {
                   ...prevState.options.chart,
-                
                   id: "channelYearlyTotals",
                   stacked: false,
                   toolbar: {
                     show: false,
                   },
-                 
                 },
                 title: {
                   ...prevState.options.title,
@@ -797,14 +826,7 @@ const CustomerSection = React.memo(
                   ),
                 },
               },
-              series: [
-                {
-                  name: "Total Yearly Customers by Channel",
-                  data: channelYearlyTotals[0].data,
-                  type: "bar",
-                },
-              ],
-           
+              series: channelYearlyTotals,
             },
           ],
         };
@@ -829,9 +851,10 @@ const CustomerSection = React.memo(
         let responseGPT;
         if (customer) {
           responseGPT = await dispatch(
-            fetchGPTResponse(customer.id, customer.additionalInfo)
+            fetchGPTResponse(customer.id, customer.additionalInfo, customer)
           );
         }
+        console.log("responseGPT", responseGPT);
 
   
 
@@ -848,11 +871,13 @@ const CustomerSection = React.memo(
           gptResponseArray = responseGPT;
         }
 
+        console.log("gptResponseArray", gptResponseArray);
+
         const updatedTempCustomerInputs = tempCustomerInputs.map((input) => {
           if (input.id === customer.id) {
             return {
               ...input,
-              customersPerMonth: gptResponseArray[0] || 0, // assuming the first element is needed
+              customersPerMonth: gptResponseArray[0], // assuming the first element is needed
               gptResponseArray: gptResponseArray, // assuming gptResponseArray contains the required data
             };
           }
@@ -1011,7 +1036,7 @@ const CustomerSection = React.memo(
                     ...chart.options,
                     xaxis: {
                       ...chart.options.xaxis,
-                      
+                      // tickAmount: 12, // Set the number of ticks on the x-axis to 12
                     },
                     stroke: {
                       width: 1, // Set the stroke width to 1
@@ -1059,7 +1084,7 @@ const CustomerSection = React.memo(
           />
         </div>
 
-        <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
+        <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
           <section
             aria-labelledby="customers-heading"
             className="mb-8 sticky top-8"
@@ -1318,7 +1343,7 @@ const CustomerSection = React.memo(
                               e.target.value
                             )
                           }
-                          rows={4}
+                          rows={10}
                         />
                       </div>
                     </Modal>

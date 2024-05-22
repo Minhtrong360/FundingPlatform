@@ -58,7 +58,6 @@ const customerSlice = createSlice({
     },
     setCustomerTableData(state, action) {
       state.customerTableData = action.payload;
-      console.log("customerTableData", state.customerTableData)
     },
     setGPTResponse(state, action) {
       const { id, response } = action.payload;
@@ -143,7 +142,7 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
               : parseFloat(
                   monthlyCustomers[monthlyCustomers.length - 1]?.end
                 ).toFixed(0),
-          add: currentCustomers.toFixed(0),
+          add: currentCustomers?.toFixed(0),
           churn: churnValue,
           end: beginValue.toFixed(0) > 0 ? beginValue.toFixed(0) : 0,
           channelName: customerInput.channelName,
@@ -256,7 +255,7 @@ export function generateCustomerTableData(
         channelName: `${curr.channelName} (Add)`,
       };
 
-      let currentCustomers = parseFloat(customerInput.customersPerMonth);
+      let currentCustomers = parseFloat(customerInput?.customersPerMonth);
       for (let i = 1; i <= numberOfMonths; i++) {
         let growthRate = parseFloat(customerInput.growthPerMonth);
 
@@ -295,7 +294,7 @@ export function generateCustomerTableData(
             }
           }
           channelAddRow[`month${i}`] = formatNumber(
-            currentCustomers.toFixed(0)
+            currentCustomers?.toFixed(0)
           );
         } else {
           channelAddRow[`month${i}`] = "0";
@@ -490,34 +489,34 @@ export const {
 
 export default customerSlice.reducer;
 
-export const fetchGPTResponse = (id, additionalInfo) => async (dispatch) => {
-  try {
-    console.log("fetching GPT response");
-    const response = await fetch(
-      "https://news-fetcher-8k6m.onrender.com/drawchart",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_input: additionalInfo,
-        }),
+export const fetchGPTResponse =
+  (id, additionalInfo, customer) => async (dispatch) => {
+    try {
+      console.log("fetching GPT response");
+      const response = await fetch(
+        "https://news-fetcher-8k6m.onrender.com/drawchart",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_input: `Dựa trên ${additionalInfo}. Tìm các hàm toán học rời rạc thỏa mãn điều kiện trên. Sau khi tìm được các hàm này, tính giá trị của hàm từ tháng ${customer.beginMonth} đến ${customer.endMonth}. 
+          Không giải thích. Chỉ trả về kết quả file JSON theo dạng [70, 100, ... 500] là giá trị của các hàm rời rạc tương ứng tại các điểm trên.`, // Treat additionalInfo as a single prompt
+          }),
+        }
+      );
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error);
       }
-    );
 
-    const data = await response.json();
-
-    if (data.error) {
-      throw new Error(data.error);
+      const cleanedResponseText = JSON.parse(
+        data?.response?.replace(/json|`/g, "")
+      );
+      return cleanedResponseText;
+    } catch (error) {
+      console.error("Error fetching GPT response:", error);
     }
-
-    const cleanedResponseText = JSON.parse(
-      data.response.replace(/json|`/g, "")
-    );
-    console.log("cleanedResponseText", cleanedResponseText);
-    return cleanedResponseText;
-  } catch (error) {
-    console.error("Error fetching GPT response:", error);
-  }
-};
+  };

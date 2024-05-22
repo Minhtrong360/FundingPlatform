@@ -94,7 +94,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   const { personnelCostData, personnelInputs } = useSelector(
     (state) => state.personnel
   );
-  
+
   useEffect(() => {
     const calculatedData = calculatePersonnelCostData(
       personnelInputs,
@@ -162,7 +162,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     totalCOGS,
     grossProfit,
     totalCosts,
-  
     totalPersonnelCosts,
     totalInvestmentDepreciation,
     totalInterestPayments,
@@ -183,7 +182,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     incomeTaxRate,
     startingCashBalance
   );
-  console.log("personnelCostData",personnelCostData)
+
   const transposedData = [
     { key: "Revenue" },
     { key: "Total Revenue", values: totalRevenue },

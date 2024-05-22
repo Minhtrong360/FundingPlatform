@@ -466,32 +466,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
         dispatch(
           setCustomerInputs(
-            inputData.customerInputs || [
-              {
-                id: 1,
-                customersPerMonth: 300,
-                growthPerMonth: 1,
-                customerGrowthFrequency: "Monthly",
-                channelName: "Online",
-                beginMonth: 1,
-                endMonth: 36,
-                beginCustomer: 0,
-                churnRate: 0,
-                acquisitionCost: 0, // Default value for acquisition cost
-              },
-              {
-                id: 2,
-                customersPerMonth: 400,
-                growthPerMonth: 2,
-                customerGrowthFrequency: "Monthly",
-                channelName: "Offline",
-                beginMonth: 1,
-                endMonth: 36,
-                beginCustomer: 0,
-                churnRate: 0,
-                acquisitionCost: 0, // Default value for acquisition cost
-              },
-            ]
+            inputData.customerInputs || customerInputs
           )
         );
         dispatch(

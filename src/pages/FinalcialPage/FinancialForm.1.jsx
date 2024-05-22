@@ -98,6 +98,7 @@ export const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
   // Gemini
   const [chatbotResponse, setChatbotResponse] = useState("");
+  
   // Gemini useEffect
   useEffect(() => {
     // Ensure chatbotResponse is only processed when it's a valid string

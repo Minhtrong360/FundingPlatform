@@ -60,6 +60,7 @@ import CashFlowSection from "./Components/CashFlowSection";
 import { Button, FloatButton, Modal, message } from "antd";
 import { useParams } from "react-router-dom";
 import AnnounceFMPage from "./Components/AnnounceFMPage";
+import Perflexity from "./Components/Perflexity";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
@@ -67,7 +68,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [spinning, setSpinning] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [temIsLoading, setTemIsLoading] = useState(true);
-
+  
   //DurationSection
   const {
     selectedDuration,
@@ -84,7 +85,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     description,
     location,
   } = useSelector((state) => state.durationSelect);
-
+  const generatePrompt = () => {
+    return `Given ${description} and ${location}, list all facts and figures related to the revenue, cost, personnel, margin, salary related to in bullet points. Each bullet points no more than 10 words. `; 
+  };
   const { yearlyAverageCustomers } = useSelector((state) => state.customer);
   const { yearlySales } = useSelector((state) => state.sales);
 
@@ -942,6 +945,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                     >
                       Overview
                     </h2>
+                    {/* <Perflexity prompt={generatePrompt()} button={"Benchmark"} /> */}
                     <MetricsFM
                       customerGrowthChart={customerGrowthChart}
                       revenue={revenue}

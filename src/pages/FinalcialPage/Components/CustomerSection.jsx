@@ -787,6 +787,7 @@ const CustomerSection = React.memo(
             .map((data) => parseInt(data.customers, 10)),
         };
       });
+   
       const seriesData2 = tempCustomerGrowthData.map((channelData) => {
         return {
           name: channelData[0]?.channelName || "Unknown Channel",
@@ -1150,6 +1151,9 @@ const CustomerSection = React.memo(
           );
         }
         console.log("responseGPT", responseGPT);
+
+  
+
         // Check if responseGPT is an object with a single key that holds an array
         let gptResponseArray = [];
         if (responseGPT && typeof responseGPT === "object") {
@@ -1184,6 +1188,8 @@ const CustomerSection = React.memo(
         setIsLoading(false);
       }
     };
+
+   
 
     const handleAddAdvancedInput = (id) => {
       const newInputs = tempCustomerInputs.map((input) => {
@@ -1736,8 +1742,8 @@ const CustomerSection = React.memo(
                 borderColor: "#2563EB",
                 color: "#fff",
                 borderRadius: "0.375rem",
-                cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                minWidth: "5vw",
+                cursor: "pointer",
+                minWidth: "5vw", // Hiệu ứng con trỏ khi di chuột qua
               },
             }}
             centered={true}

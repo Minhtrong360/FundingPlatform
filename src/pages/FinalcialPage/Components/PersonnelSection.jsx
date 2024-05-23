@@ -117,7 +117,6 @@ const PersonnelSection = ({
   const personnelCostTableData = transformPersonnelCostDataForTable(
     tempPersonnelCostData
   );
-
   //PersonnelColumns
   const months = [
     "01",

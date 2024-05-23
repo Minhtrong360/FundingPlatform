@@ -8,7 +8,7 @@ const initialState = {
       costValue: 1000,
       growthPercentage: 5,
       beginMonth: 1,
-      endMonth: 6,
+      endMonth: 36,
       growthFrequency: "Monthly",
       costType: "Based on Revenue",
       salePercentage: 5,
@@ -89,7 +89,11 @@ export const calculateCostData = (
     let monthlyCosts = [];
     let currentCost = parseFloat(costInput.costValue);
     for (let month = 1; month <= numberOfMonths; month++) {
-      if (costInput.costType === "Based on Revenue") {
+      if (costInput.gptResponseArray?.length) {
+        // Use gptResponseArray if it exists
+        currentCost = costInput.gptResponseArray[month - 1] || 0;
+        monthlyCosts.push({ month: month, cost: currentCost });
+      } else if (costInput.costType === "Based on Revenue") {
         const relatedRevenue = revenueData[costInput.relatedRevenue] || [];
         const revenueForMonth = relatedRevenue[month - 1] || 0;
         currentCost = (costInput.salePercentage / 100) * revenueForMonth;
@@ -196,7 +200,7 @@ export const transformCostDataForTable = (
   return categorizedTableData;
 };
 
-export const { setCostInputs, setCostData, setIsSaved, setCostTableData } =
+export const { setCostInputs, setCostData, setCostTableData } =
   costSlice.actions;
 
 export default costSlice.reducer;

@@ -32,7 +32,7 @@ const CustomChart = ({
   ];
 
   const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(6);
+  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
 
   const xaxisCategories = Array.from(
     { length: chartEndMonth - chartStartMonth + 1 },
@@ -58,7 +58,7 @@ const CustomChart = ({
         show: true,
         tools: {
           download: true,
-        }
+        },
       },
       zoom: { enabled: false },
       animations: {

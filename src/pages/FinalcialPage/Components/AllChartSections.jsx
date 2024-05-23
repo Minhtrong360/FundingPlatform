@@ -498,7 +498,7 @@ const AllChartSections = ({
   const bsTotalFundingValues = totalFunding
     ? Object.values(totalFunding)
         .slice(2)
-        .map((value) => parseFloat(value.replace(",", "")))
+        .map((value) => parseNumber(value))
     : [];
 
   const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility

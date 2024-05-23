@@ -24,6 +24,8 @@ import {
 import {
   calculateChannelRevenue,
   calculateYearlySales,
+  setChannelInputs,
+  setRevenueData,
   setYearlySales,
 } from "../../../features/SaleSlice";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
@@ -366,7 +368,6 @@ const CustomerSection = React.memo(
       { value: "exponential", label: "Exponential" },
       { value: "logarithmic", label: "Logarithmic" },
     ];
-
     const handleChartClick = (chart) => {
       setSelectedChart(chart);
       setIsChartModalVisible(true);
@@ -543,8 +544,6 @@ const CustomerSection = React.memo(
     const startingYear = startYear; // Năm bắt đầu từ 24
 
     const handleInputTable = (value, recordKey, monthKey) => {
-      console.log(value, recordKey, monthKey);
-
       // Extract month number from the monthKey
       const monthIndex = parseInt(monthKey.replace("month", "")) - 1;
 
@@ -583,9 +582,6 @@ const CustomerSection = React.memo(
 
       setTempCustomerInputs(updatedTempCustomerInputs);
     };
-
-    console.log("customerTableData", customerTableData);
-    console.log("tempCustomerInputs", tempCustomerInputs);
 
     const customerColumns = [
       {
@@ -702,18 +698,35 @@ const CustomerSection = React.memo(
             return;
           }
 
+          const updatedChannelInputs = channelInputs.map((input) => {
+            const matchedChannel = tempCustomerInputs.find(
+              (customer) => customer.id === input.selectedChannel.id
+            );
+            if (matchedChannel) {
+              return {
+                ...input,
+                selectedChannel: {
+                  ...input.selectedChannel,
+                  channelName: matchedChannel.channelName,
+                },
+              };
+            }
+            return input;
+          });
+
           dispatch(setCustomerInputs(tempCustomerInputs));
           const { revenueByChannelAndProduct } = dispatch(
             calculateChannelRevenue(
               numberOfMonths,
               tempCustomerGrowthData,
               tempCustomerInputs,
-              channelInputs
+              updatedChannelInputs
             )
           );
 
           const yearlySale = calculateYearlySales(revenueByChannelAndProduct);
           dispatch(setYearlySales(yearlySale));
+          dispatch(setRevenueData(revenueByChannelAndProduct));
 
           const newInputData = JSON.parse(inputData);
 
@@ -726,9 +739,11 @@ const CustomerSection = React.memo(
             numberOfMonths
           );
 
+          dispatch(setChannelInputs(updatedChannelInputs));
           newInputData.customerInputs = tempCustomerInputs;
           newInputData.yearlyAverageCustomers = averages;
           newInputData.yearlySales = yearlySale;
+          newInputData.channelInputs = updatedChannelInputs;
 
           const { error: updateError } = await supabase
             .from("finance")
@@ -752,7 +767,7 @@ const CustomerSection = React.memo(
     };
 
     const [chartStartMonth, setChartStartMonth] = useState(1);
-    const [chartEndMonth, setChartEndMonth] = useState(6);
+    const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
 
     useEffect(() => {
       const startIdx = chartStartMonth - 1;
@@ -1150,7 +1165,6 @@ const CustomerSection = React.memo(
             fetchGPTResponse(customer.id, customer.additionalInfo, customer)
           );
         }
-        console.log("responseGPT", responseGPT);
         // Check if responseGPT is an object with a single key that holds an array
         let gptResponseArray = [];
         if (responseGPT && typeof responseGPT === "object") {
@@ -1163,8 +1177,6 @@ const CustomerSection = React.memo(
         } else {
           gptResponseArray = responseGPT;
         }
-
-        console.log("gptResponseArray", gptResponseArray);
 
         const updatedTempCustomerInputs = tempCustomerInputs.map((input) => {
           if (input.id === customer.id) {

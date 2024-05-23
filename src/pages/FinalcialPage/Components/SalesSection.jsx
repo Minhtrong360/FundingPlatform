@@ -70,21 +70,26 @@ const ChannelInputForm = ({
 
       <div>
         <label
-          htmlFor="selectedChannel"
+          htmlFor="renderChannelForm"
           className="block my-4 text-base darkTextWhite"
         ></label>
         <select
-          id="selectedChannel"
+          id="renderChannelForm"
           className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
           value={renderChannelForm}
           onChange={(e) => setRenderChannelForm(e.target.value)}
         >
           <option value="all">All</option>
-          {tempChannelInputs.map((input) => (
-            <option key={input?.id} value={input?.id}>
-              {`${input.productName} - ${input.selectedChannel}`}
-            </option>
-          ))}
+          {tempChannelInputs.map((input) => {
+            const channelName = channelNames.find(
+              (channel) => channel.id === input.selectedChannel.id
+            )?.channelName;
+            return (
+              <option key={input.id} value={input.id}>
+                {`${input.productName} - ${channelName}`}
+              </option>
+            );
+          })}
         </select>
       </div>
 
@@ -178,7 +183,9 @@ const ChannelInputForm = ({
                   handleChannelInputChange(input.id, "selectedChannel", value)
                 }
                 value={
-                  input.selectedChannel !== null ? input.selectedChannel : ""
+                  input.selectedChannel.id !== null
+                    ? input.selectedChannel.id
+                    : ""
                 }
               >
                 <SelectTrigger
@@ -188,9 +195,9 @@ const ChannelInputForm = ({
                   <SelectValue placeholder="Select Channel" />
                 </SelectTrigger>
                 <SelectContent position="popper">
-                  {channelNames.map((channelName, channelIndex) => (
-                    <SelectItem key={channelIndex} value={channelName}>
-                      {channelName}
+                  {channelNames?.map((channelName) => (
+                    <SelectItem key={channelName.id} value={channelName.id}>
+                      {channelName.channelName}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -220,11 +227,12 @@ const ChannelInputForm = ({
             <div className="grid grid-cols-2 gap-4 mb-3">
               <span className="flex items-center text-sm">Days get paid:</span>
               <Select
-                className="border-gray-300"
+                className="border-gray-300 z-50"
                 onValueChange={(value) =>
                   handleChannelInputChange(input.id, "daysGetPaid", value)
                 }
                 value={input.daysGetPaid !== null ? input.daysGetPaid : 0}
+                disabled
               >
                 <SelectTrigger
                   id={`select-days-get-paid-${index}`}
@@ -320,6 +328,7 @@ const SalesSection = ({
   );
 
   const [tempChannelInputs, setTempChannelInputs] = useState(channelInputs);
+
   const [tempRevenueData, setTempRevenueData] = useState(revenueData);
   const [tempRevenueDeductionData, setTempRevenueDeductionData] =
     useState(revenueDeductionData);
@@ -392,16 +401,6 @@ const SalesSection = ({
       setIsLoading(true);
       const saveData = async () => {
         try {
-          dispatch(setChannelInputs(tempChannelInputs));
-          dispatch(setRevenueData(tempRevenueData));
-          dispatch(setRevenueDeductionData(tempRevenueDeductionData));
-          dispatch(setCogsData(tempCogsData));
-          dispatch(setNetRevenueData(tempNetRevenueData));
-          dispatch(setGrossProfitData(tempGrossProfitData));
-
-          const sales = calculateYearlySales(tempRevenueData);
-          dispatch(setYearlySales(sales));
-
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
             .select("*")
@@ -412,7 +411,27 @@ const SalesSection = ({
           }
 
           if (existingData && existingData.length > 0) {
+            const { user_email, collabs } = existingData[0];
+
+            // Check if user.email matches user_email or is included in collabs
+            if (user.email !== user_email && !collabs?.includes(user.email)) {
+              message.error(
+                "You do not have permission to update this record."
+              );
+              return;
+            }
+            dispatch(setChannelInputs(tempChannelInputs));
+            dispatch(setRevenueData(tempRevenueData));
+            dispatch(setRevenueDeductionData(tempRevenueDeductionData));
+            dispatch(setCogsData(tempCogsData));
+            dispatch(setNetRevenueData(tempNetRevenueData));
+            dispatch(setGrossProfitData(tempGrossProfitData));
+
+            const sales = calculateYearlySales(tempRevenueData);
+            dispatch(setYearlySales(sales));
+
             const newInputData = JSON.parse(existingData[0].inputData);
+
             newInputData.channelInputs = tempChannelInputs;
             newInputData.yearlySales = sales;
 
@@ -479,6 +498,12 @@ const SalesSection = ({
   const handleChannelInputChange = (id, field, value) => {
     const newInputs = tempChannelInputs.map((input) => {
       if (input?.id === id) {
+        if (field === "selectedChannel") {
+          return {
+            ...input,
+            selectedChannel: channelNames.find((name) => name.id === value),
+          };
+        }
         return { ...input, [field]: value };
       }
       return input;
@@ -487,7 +512,7 @@ const SalesSection = ({
   };
 
   const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(6);
+  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
 
   const months = [
     "01",

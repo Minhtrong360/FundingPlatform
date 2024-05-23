@@ -88,7 +88,7 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
         month >= customerInput.beginMonth &&
         month <= customerInput.endMonth
       ) {
-        if (month === customerInput.beginMonth) {
+        if (month == customerInput.beginMonth) {
           currentCustomers = initialCustomers;
         } else {
           let growthRate = parseFloat(customerInput.growthPerMonth);
@@ -130,19 +130,21 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
           beginValue *
           (customerInput.churnRate / 100)
         ).toFixed(0);
-
         beginValue += currentCustomers - parseFloat(churnValue);
 
         monthlyCustomers.push({
           month: month,
           customers: beginValue.toFixed(0) > 0 ? beginValue.toFixed(0) : 0,
           begin:
-            month === customerInput.beginMonth
+            month == customerInput.beginMonth
               ? parseFloat(customerInput.beginCustomer).toFixed(0)
               : parseFloat(
                   monthlyCustomers[monthlyCustomers.length - 1]?.end
                 ).toFixed(0),
-          add: currentCustomers?.toFixed(0),
+          add:
+            month == customerInput.beginMonth
+              ? initialCustomers.toFixed(0)
+              : currentCustomers.toFixed(0),
           churn: churnValue,
           end: beginValue.toFixed(0) > 0 ? beginValue.toFixed(0) : 0,
           channelName: customerInput.channelName,
@@ -255,14 +257,31 @@ export function generateCustomerTableData(
         channelName: `${curr.channelName} (Add)`,
       };
 
-      let currentCustomers = parseFloat(customerInput?.customersPerMonth);
-      for (let i = 1; i <= numberOfMonths; i++) {
-        let growthRate = parseFloat(customerInput.growthPerMonth);
+      let currentCustomers = parseFloat(customerInput.customersPerMonth);
 
+      for (let i = 1; i <= numberOfMonths; i++) {
         if (i >= customerInput.beginMonth && i <= customerInput.endMonth) {
-          if (i === customerInput.beginMonth) {
+          let growthRate = parseFloat(customerInput.growthPerMonth);
+
+          if (i == customerInput.beginMonth) {
             currentCustomers = customerInput.customersPerMonth;
+            startRow[`month${i}`] = formatNumber(
+              parseFloat(customerInput.beginCustomer).toFixed(0)
+            );
+            beginRow[`month${i}`] = formatNumber(
+              parseFloat(customerInput.beginCustomer).toFixed(0)
+            );
+            channelAddRow[`month${i}`] = formatNumber(
+              currentCustomers.toFixed(0)
+            );
           } else {
+            if (
+              i >= customerInput.eventBeginMonth &&
+              i <= customerInput.eventEndMonth
+            ) {
+              growthRate = customerInput.localGrowthRate;
+            }
+
             if (
               customerInput.gptResponseArray &&
               customerInput.gptResponseArray.length > i - 1
@@ -285,42 +304,33 @@ export function generateCustomerTableData(
                 currentCustomers *= 1 + growthRate / 100;
               }
             }
+
+            channelAddRow[`month${i}`] = formatNumber(
+              currentCustomers.toFixed(0)
+            );
+            beginRow[`month${i}`] = formatNumber(
+              parseNumber(endRow[`month${i - 1}`])
+            );
           }
-          channelAddRow[`month${i}`] = formatNumber(
-            currentCustomers?.toFixed(0)
+
+          const beginValue = parseNumber(beginRow[`month${i}`]);
+          const addValue = parseNumber(channelAddRow[`month${i}`]);
+          const churnValue = (
+            beginValue *
+            (customerInput.churnRate / 100)
+          ).toFixed(0);
+
+          churnRow[`month${i}`] = churnValue;
+
+          endRow[`month${i}`] = formatNumber(
+            beginValue + addValue - parseNumber(churnRow[`month${i}`])
           );
         } else {
           channelAddRow[`month${i}`] = "0";
           startRow[`month${i}`] = "0";
           beginRow[`month${i}`] = "0";
           churnRow[`month${i}`] = "0";
-        }
-      }
-
-      if (customerInput) {
-        startRow[`month${customerInput.beginMonth}`] = formatNumber(
-          parseFloat(customerInput.beginCustomer).toFixed(0)
-        );
-        beginRow[`month${customerInput.beginMonth}`] =
-          startRow[`month${customerInput.beginMonth}`];
-
-        for (let i = customerInput.beginMonth; i <= numberOfMonths; i++) {
-          if (i > customerInput.beginMonth) {
-            beginRow[`month${i}`] = formatNumber(endRow[`month${i - 1}`]); // Set Begin row of month i to End row of month i-1
-          }
-          endRow[`month${i}`] = formatNumber(endRow[`month${i}`]);
-          const beginValue = beginRow[`month${i}`] || 0; // Begin value for the current month
-          const addValue = parseNumber(channelAddRow[`month${i}`]) || 0; // Add value for the current month
-          const churnValue = (
-            parseNumber(beginValue) *
-            (customerInput.churnRate / 100)
-          ).toFixed(0); // Calculate churn value
-          churnRow[`month${i}`] = churnValue; // Assign churn value to Churn row of the current month
-          endRow[`month${i}`] = formatNumber(
-            parseNumber(beginValue) +
-              parseNumber(addValue) -
-              parseNumber(churnValue)
-          ); // Update End row to Begin + Add - Churn
+          endRow[`month${i}`] = "0";
         }
       }
 
@@ -388,12 +398,22 @@ export function generateCustomerTableData(
       };
 
       let currentCustomers = parseFloat(customerInput.customersPerMonth);
-      for (let i = 1; i <= numberOfMonths; i++) {
-        let growthRate = parseFloat(customerInput.growthPerMonth);
 
+      for (let i = 1; i <= numberOfMonths; i++) {
         if (i >= customerInput.beginMonth && i <= customerInput.endMonth) {
-          if (i === customerInput.beginMonth) {
+          let growthRate = parseFloat(customerInput.growthPerMonth);
+
+          if (i == customerInput.beginMonth) {
             currentCustomers = customerInput.customersPerMonth;
+            startRow[`month${i}`] = formatNumber(
+              parseFloat(customerInput.beginCustomer).toFixed(0)
+            );
+            beginRow[`month${i}`] = formatNumber(
+              parseFloat(customerInput.beginCustomer).toFixed(0)
+            );
+            channelAddRow[`month${i}`] = formatNumber(
+              currentCustomers.toFixed(0)
+            );
           } else {
             if (
               i >= customerInput.eventBeginMonth &&
@@ -424,42 +444,33 @@ export function generateCustomerTableData(
                 currentCustomers *= 1 + growthRate / 100;
               }
             }
+
+            channelAddRow[`month${i}`] = formatNumber(
+              currentCustomers.toFixed(0)
+            );
+            beginRow[`month${i}`] = formatNumber(
+              parseNumber(endRow[`month${i - 1}`])
+            );
           }
-          channelAddRow[`month${i}`] = formatNumber(
-            currentCustomers.toFixed(0)
+
+          const beginValue = parseNumber(beginRow[`month${i}`]);
+          const addValue = parseNumber(channelAddRow[`month${i}`]);
+          const churnValue = (
+            beginValue *
+            (customerInput.churnRate / 100)
+          ).toFixed(0);
+
+          churnRow[`month${i}`] = churnValue;
+
+          endRow[`month${i}`] = formatNumber(
+            beginValue + addValue - parseNumber(churnRow[`month${i}`])
           );
         } else {
           channelAddRow[`month${i}`] = "0";
-        }
-        startRow[`month${i}`] = "0";
-        beginRow[`month${i}`] = "0";
-        churnRow[`month${i}`] = "0";
-      }
-
-      if (customerInput) {
-        startRow[`month${customerInput.beginMonth}`] = formatNumber(
-          parseFloat(customerInput.beginCustomer).toFixed(0)
-        );
-        beginRow[`month${customerInput.beginMonth}`] =
-          startRow[`month${customerInput.beginMonth}`];
-
-        for (let i = customerInput.beginMonth; i <= numberOfMonths; i++) {
-          if (i > customerInput.beginMonth) {
-            beginRow[`month${i}`] = formatNumber(endRow[`month${i - 1}`]); // Set Begin row of month i to End row of month i-1
-          }
-          endRow[`month${i}`] = formatNumber(endRow[`month${i}`]);
-          const beginValue = beginRow[`month${i}`] || 0; // Begin value for the current month
-          const addValue = parseNumber(channelAddRow[`month${i}`]) || 0; // Add value for the current month
-          const churnValue = (
-            parseNumber(beginValue) *
-            (customerInput.churnRate / 100)
-          ).toFixed(0); // Calculate churn value
-          churnRow[`month${i}`] = churnValue; // Assign churn value to Churn row of the current month
-          endRow[`month${i}`] = formatNumber(
-            parseNumber(beginValue) +
-              parseNumber(addValue) -
-              parseNumber(churnValue)
-          ); // Update End row to Begin + Add - Churn
+          startRow[`month${i}`] = "0";
+          beginRow[`month${i}`] = "0";
+          churnRow[`month${i}`] = "0";
+          endRow[`month${i}`] = "0";
         }
       }
 

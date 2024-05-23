@@ -528,7 +528,7 @@ const PersonnelSection = ({
 
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
   const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(6);
+  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
 
   useEffect(() => {
     const filteredSeries = tempPersonnelCostData.map((personnel) => ({

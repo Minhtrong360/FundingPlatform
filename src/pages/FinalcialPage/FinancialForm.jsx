@@ -390,8 +390,15 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   useEffect(() => {
     // Update channelNames based on current customerInputs
     const updatedChannelNames = customerInputs
-      .map((input) => input.channelName)
-      .filter((name, index, self) => name && self.indexOf(name) === index);
+      .map((input) => ({
+        id: input.id,
+        channelName: input.channelName,
+      }))
+      .filter(
+        (item, index, self) =>
+          item.channelName &&
+          self.findIndex((i) => i.channelName === item.channelName) === index
+      );
     dispatch(setChannelNames(updatedChannelNames));
   }, [customerInputs]);
 

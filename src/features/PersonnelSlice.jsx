@@ -8,7 +8,7 @@ export const personnelSlice = createSlice({
       {
         id: 1,
         jobTitle: "Cashier",
-        department: "Sales", // New field
+        department: "Sales", // Updated to lowercase
         salaryPerMonth: 800,
         increasePerYear: 10,
         growthSalaryFrequency: "Annually",
@@ -19,7 +19,7 @@ export const personnelSlice = createSlice({
       {
         id: 2,
         jobTitle: "Manager",
-        department: "Management", // New field
+        department: "Management", // Updated to lowercase
         salaryPerMonth: 2000,
         increasePerYear: 10,
         growthSalaryFrequency: "Annually",
@@ -91,7 +91,7 @@ export const calculatePersonnelCostData = (
     }
     allPersonnelCosts.push({
       jobTitle: `${personnelInput.jobTitle} (${personnelInput.numberOfHires})`,
-      department: personnelInput.department, // New field
+      department: personnelInput.department.toLowerCase(), // Normalize department to lowercase
       monthlyCosts,
     });
   });
@@ -100,10 +100,11 @@ export const calculatePersonnelCostData = (
 
 export const transformPersonnelCostDataForTable = (tempPersonnelCostData) => {
   const groupedByDepartment = tempPersonnelCostData.reduce((acc, item) => {
-    if (!acc[item.department]) {
-      acc[item.department] = [];
+    const normalizedDepartment = item.department.toLowerCase(); // Normalize department to lowercase
+    if (!acc[normalizedDepartment]) {
+      acc[normalizedDepartment] = [];
     }
-    acc[item.department].push(item);
+    acc[normalizedDepartment].push(item);
     return acc;
   }, {});
 

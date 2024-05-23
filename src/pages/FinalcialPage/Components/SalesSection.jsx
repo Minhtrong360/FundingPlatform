@@ -45,6 +45,257 @@ import {
 import { useAuth } from "../../../context/AuthContext";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 
+const ChannelInputForm = ({
+  tempChannelInputs,
+  renderChannelForm,
+  setRenderChannelForm,
+  handleChannelInputChange,
+  formatNumber,
+  parseNumber,
+  channelNames,
+  daysOptions,
+  addNewChannelInput,
+  handleSave,
+  isLoading,
+  setIsDeleteModalOpen,
+}) => {
+  return (
+    <section aria-labelledby="sales-heading" className="mb-8 sticky top-8">
+      <h2
+        className="text-lg font-semibold mb-8 flex items-center"
+        id="sales-heading"
+      >
+        Sales Section
+      </h2>
+
+      <div>
+        <label
+          htmlFor="selectedChannel"
+          className="block my-4 text-base darkTextWhite"
+        ></label>
+        <select
+          id="selectedChannel"
+          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+          value={renderChannelForm}
+          onChange={(e) => setRenderChannelForm(e.target.value)}
+        >
+          <option value="all">All</option>
+          {tempChannelInputs.map((input) => (
+            <option key={input?.id} value={input?.id}>
+              {`${input.productName} - ${input.selectedChannel}`}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {tempChannelInputs
+        .filter((input) => input?.id == renderChannelForm)
+        .map((input, index) => (
+          <div key={input.id} className="bg-white rounded-2xl p-6 border my-4">
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className="flex items-center text-sm">Product Name:</span>
+              <Input
+                className="col-start-2 border-gray-300"
+                value={input.productName}
+                onChange={(e) =>
+                  handleChannelInputChange(
+                    input.id,
+                    "productName",
+                    e.target.value
+                  )
+                }
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className="flex items-center text-sm">Price:</span>
+              <Input
+                className="col-start-2 border-gray-300"
+                value={formatNumber(input.price)}
+                onChange={(e) =>
+                  handleChannelInputChange(
+                    input.id,
+                    "price",
+                    parseNumber(e.target.value)
+                  )
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className="flex items-center text-sm">Multiples:</span>
+              <Input
+                className="col-start-2 border-gray-300"
+                value={formatNumber(input.multiples)}
+                onChange={(e) =>
+                  handleChannelInputChange(
+                    input.id,
+                    "multiples",
+                    parseNumber(e.target.value)
+                  )
+                }
+              />
+            </div>
+
+            <Tooltip title="Revenue deductions like transaction fees, commission fee... ">
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">
+                  Rev. Deductions (%):
+                </span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  value={formatNumber(input.deductionPercentage)}
+                  onChange={(e) =>
+                    handleChannelInputChange(
+                      input.id,
+                      "deductionPercentage",
+                      parseNumber(e.target.value)
+                    )
+                  }
+                />
+              </div>
+            </Tooltip>
+
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className="flex items-center text-sm">COGS (%):</span>
+              <Input
+                className="col-start-2 border-gray-300"
+                value={formatNumber(input.cogsPercentage)}
+                onChange={(e) =>
+                  handleChannelInputChange(
+                    input.id,
+                    "cogsPercentage",
+                    parseNumber(e.target.value)
+                  )
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className="flex items-center text-sm">Sales Channel:</span>
+              <Select
+                className="border-gray-300"
+                onValueChange={(value) =>
+                  handleChannelInputChange(input.id, "selectedChannel", value)
+                }
+                value={
+                  input.selectedChannel !== null ? input.selectedChannel : ""
+                }
+              >
+                <SelectTrigger
+                  id={`select-channel-${index}`}
+                  className="border-solid border-[1px] border-gray-300"
+                >
+                  <SelectValue placeholder="Select Channel" />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  {channelNames.map((channelName, channelIndex) => (
+                    <SelectItem key={channelIndex} value={channelName}>
+                      {channelName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className="flex items-center text-sm">
+                Channel Allocation (%):
+              </span>
+              <Input
+                className="col-start-2 border-gray-300"
+                type="number"
+                min={0}
+                max={100}
+                value={formatNumber(input.channelAllocation * 100)}
+                onChange={(e) =>
+                  handleChannelInputChange(
+                    input.id,
+                    "channelAllocation",
+                    parseNumber(e.target.value) / 100
+                  )
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className="flex items-center text-sm">Days get paid:</span>
+              <Select
+                className="border-gray-300"
+                onValueChange={(value) =>
+                  handleChannelInputChange(input.id, "daysGetPaid", value)
+                }
+                value={input.daysGetPaid !== null ? input.daysGetPaid : 0}
+              >
+                <SelectTrigger
+                  id={`select-days-get-paid-${index}`}
+                  className="border-solid border-[1px] border-gray-300"
+                >
+                  <SelectValue placeholder="Select Days" />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  {daysOptions.map((days) => (
+                    <SelectItem key={days} value={days}>
+                      {days} days
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        ))}
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <button
+          className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
+          onClick={() => setIsDeleteModalOpen(true)}
+        >
+          <DeleteOutlined
+            style={{
+              fontSize: "12px",
+              color: "#FFFFFF",
+              marginRight: "4px",
+            }}
+          />
+          Remove
+        </button>
+
+        <button
+          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+          onClick={addNewChannelInput}
+        >
+          <PlusOutlined
+            style={{
+              fontSize: "12px",
+              color: "#FFFFFF",
+              marginRight: "4px",
+            }}
+          />
+          Add
+        </button>
+
+        <button
+          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw]"
+          onClick={handleSave}
+        >
+          {isLoading ? (
+            <SpinnerBtn />
+          ) : (
+            <>
+              <CheckCircleOutlined
+                style={{
+                  fontSize: "12px",
+                  color: "#FFFFFF",
+                  marginRight: "4px",
+                }}
+              />
+              Save
+            </>
+          )}
+        </button>
+      </div>
+    </section>
+  );
+};
+
 const SalesSection = ({
   numberOfMonths,
   isSaved,
@@ -81,7 +332,6 @@ const SalesSection = ({
   );
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 
-  // Avoid using unoptimized anonymous functions inside useEffect
   const calculateAndDispatchRevenueData = useCallback(() => {
     const {
       revenueByChannelAndProduct,
@@ -182,6 +432,7 @@ const SalesSection = ({
         } finally {
           setIsSaved(false);
           setIsLoading(false);
+          setIsInputFormOpen(false);
         }
       };
 
@@ -552,254 +803,20 @@ const SalesSection = ({
       </div>
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
-        <section aria-labelledby="sales-heading" className="mb-8 sticky top-8">
-          <h2
-            className="text-lg font-semibold mb-8 flex items-center"
-            id="sales-heading"
-          >
-            Sales Section
-          </h2>
-
-          <div>
-            <label
-              htmlFor="selectedChannel"
-              className="block my-4 text-base darkTextWhite"
-            ></label>
-            <select
-              id="selectedChannel"
-              className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-              value={renderChannelForm}
-              onChange={handleChannelChange}
-            >
-              <option value="all">All</option>
-              {tempChannelInputs.map((input) => (
-                <option key={input?.id} value={input?.id}>
-                  {`${input.productName} - ${input.selectedChannel}`}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {tempChannelInputs
-            .filter((input) => input?.id == renderChannelForm)
-            .map((input, index) => (
-              <div
-                key={input.id}
-                className="bg-white rounded-2xl p-6 border my-4"
-              >
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className="flex items-center text-sm">
-                    Product Name:
-                  </span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    value={input.productName}
-                    onChange={(e) =>
-                      handleChannelInputChange(
-                        input.id,
-                        "productName",
-                        e.target.value
-                      )
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className="flex items-center text-sm">Price:</span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    value={formatNumber(input.price)}
-                    onChange={(e) =>
-                      handleChannelInputChange(
-                        input.id,
-                        "price",
-                        parseNumber(e.target.value)
-                      )
-                    }
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className="flex items-center text-sm">Multiples:</span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    value={formatNumber(input.multiples)}
-                    onChange={(e) =>
-                      handleChannelInputChange(
-                        input.id,
-                        "multiples",
-                        parseNumber(e.target.value)
-                      )
-                    }
-                  />
-                </div>
-
-                <Tooltip title="Revenue deductions like transaction fees, commission fee... ">
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">
-                      Rev. Deductions (%):
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      value={formatNumber(input.deductionPercentage)}
-                      onChange={(e) =>
-                        handleChannelInputChange(
-                          input.id,
-                          "deductionPercentage",
-                          parseNumber(e.target.value)
-                        )
-                      }
-                    />
-                  </div>
-                </Tooltip>
-
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className="flex items-center text-sm">COGS (%):</span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    value={formatNumber(input.cogsPercentage)}
-                    onChange={(e) =>
-                      handleChannelInputChange(
-                        input.id,
-                        "cogsPercentage",
-                        parseNumber(e.target.value)
-                      )
-                    }
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className="flex items-center text-sm">
-                    Sales Channel:
-                  </span>
-                  <Select
-                    className="border-gray-300"
-                    onValueChange={(value) =>
-                      handleChannelInputChange(
-                        input.id,
-                        "selectedChannel",
-                        value
-                      )
-                    }
-                    value={
-                      input.selectedChannel !== null
-                        ? input.selectedChannel
-                        : ""
-                    }
-                  >
-                    <SelectTrigger
-                      id={`select-channel-${index}`}
-                      className="border-solid border-[1px] border-gray-300"
-                    >
-                      <SelectValue placeholder="Select Channel" />
-                    </SelectTrigger>
-                    <SelectContent position="popper">
-                      {channelNames.map((channelName, channelIndex) => (
-                        <SelectItem key={channelIndex} value={channelName}>
-                          {channelName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className="flex items-center text-sm">
-                    Channel Allocation (%):
-                  </span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    type="number"
-                    min={0}
-                    max={100}
-                    value={formatNumber(input.channelAllocation * 100)}
-                    onChange={(e) =>
-                      handleChannelInputChange(
-                        input.id,
-                        "channelAllocation",
-                        parseNumber(e.target.value) / 100
-                      )
-                    }
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className="flex items-center text-sm">
-                    Days get paid:
-                  </span>
-                  <Select
-                    className="border-gray-300"
-                    onValueChange={(value) =>
-                      handleChannelInputChange(input.id, "daysGetPaid", value)
-                    }
-                    value={input.daysGetPaid !== null ? input.daysGetPaid : 0}
-                  >
-                    <SelectTrigger
-                      id={`select-days-get-paid-${index}`}
-                      className="border-solid border-[1px] border-gray-300"
-                    >
-                      <SelectValue placeholder="Select Days" />
-                    </SelectTrigger>
-                    <SelectContent position="popper">
-                      {daysOptions.map((days) => (
-                        <SelectItem key={days} value={days}>
-                          {days} days
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            ))}
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <button
-              className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
-              onClick={() => setIsDeleteModalOpen(true)}
-            >
-              <DeleteOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />
-              Remove
-            </button>
-
-            <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
-              onClick={addNewChannelInput}
-            >
-              <PlusOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />
-              Add
-            </button>
-
-            <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[5vw]"
-              onClick={handleSave}
-            >
-              {isLoading ? (
-                <SpinnerBtn />
-              ) : (
-                <>
-                  <CheckCircleOutlined
-                    style={{
-                      fontSize: "12px",
-                      color: "#FFFFFF",
-                      marginRight: "4px",
-                    }}
-                  />
-                  Save
-                </>
-              )}
-            </button>
-          </div>
-        </section>
+        <ChannelInputForm
+          tempChannelInputs={tempChannelInputs}
+          renderChannelForm={renderChannelForm}
+          setRenderChannelForm={setRenderChannelForm}
+          handleChannelInputChange={handleChannelInputChange}
+          formatNumber={formatNumber}
+          parseNumber={parseNumber}
+          channelNames={channelNames}
+          daysOptions={daysOptions}
+          addNewChannelInput={addNewChannelInput}
+          handleSave={handleSave}
+          isLoading={isLoading}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
+        />
       </div>
 
       <div className="xl:hidden block">
@@ -840,244 +857,24 @@ const SalesSection = ({
               minWidth: "5vw",
             },
           }}
+          footer={null}
           centered={true}
           zIndex={50}
         >
-          <section
-            aria-labelledby="sales-heading"
-            className="mb-8 sticky top-8"
-          >
-            <h2
-              className="text-lg font-semibold mb-8 flex items-center"
-              id="sales-heading"
-            >
-              Sales Section{" "}
-              <span className="flex justify-center items-center">
-                <PlusCircleOutlined
-                  className="ml-2 text-blue-500"
-                  size="large"
-                  style={{ fontSize: "24px" }}
-                  onClick={addNewChannelInput}
-                />
-              </span>
-            </h2>
-
-            <div>
-              <label
-                htmlFor="selectedChannel"
-                className="block my-4 text-base darkTextWhite"
-              ></label>
-
-              <Select
-                id="selectedChannel"
-                className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                value={renderChannelForm}
-                onValueChange={(value) => handleChannelChange(value)}
-              >
-                <SelectTrigger className="border-solid border-[1px] border-gray-300">
-                  <SelectValue placeholder="All" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  <SelectItem value="all">All</SelectItem>
-                  {tempChannelInputs.map((input) => (
-                    <SelectItem key={input?.id} value={input?.id}>
-                      {`${input.productName} - ${input.selectedChannel}`}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {tempChannelInputs.length > 0 &&
-              tempChannelInputs
-                .filter((input) => input?.id == renderChannelForm)
-                .map((input, index) => (
-                  <div
-                    key={input.id}
-                    className="bg-white rounded-2xl p-6 border my-4"
-                  >
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        Product Name:
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        value={input.productName}
-                        onChange={(e) =>
-                          handleChannelInputChange(
-                            input.id,
-                            "productName",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">Price:</span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        value={formatNumber(input.price)}
-                        onChange={(e) =>
-                          handleChannelInputChange(
-                            input.id,
-                            "price",
-                            parseNumber(e.target.value)
-                          )
-                        }
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        Multiples:
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        value={formatNumber(input.multiples)}
-                        onChange={(e) =>
-                          handleChannelInputChange(
-                            input.id,
-                            "multiples",
-                            parseNumber(e.target.value)
-                          )
-                        }
-                      />
-                    </div>
-
-                    <Tooltip title="Revenue deductions like transaction fees, commission fee... ">
-                      <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">
-                          Rev. Deductions (%):
-                        </span>
-                        <Input
-                          className="col-start-2 border-gray-300"
-                          value={formatNumber(input.deductionPercentage)}
-                          onChange={(e) =>
-                            handleChannelInputChange(
-                              input.id,
-                              "deductionPercentage",
-                              parseNumber(e.target.value)
-                            )
-                          }
-                        />
-                      </div>
-                    </Tooltip>
-
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        COGS (%):
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        value={formatNumber(input.cogsPercentage)}
-                        onChange={(e) =>
-                          handleChannelInputChange(
-                            input.id,
-                            "cogsPercentage",
-                            parseNumber(e.target.value)
-                          )
-                        }
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        Sales Channel:
-                      </span>
-                      <Select
-                        className="border-gray-300"
-                        onValueChange={(value) =>
-                          handleChannelInputChange(
-                            input.id,
-                            "selectedChannel",
-                            value
-                          )
-                        }
-                        value={
-                          input.selectedChannel !== null
-                            ? input.selectedChannel
-                            : ""
-                        }
-                      >
-                        <SelectTrigger
-                          id={`select-channel-${index}`}
-                          className="border-solid border-[1px] border-gray-300"
-                        >
-                          <SelectValue placeholder="Select Channel" />
-                        </SelectTrigger>
-                        <SelectContent position="popper">
-                          {channelNames.map((channelName, channelIndex) => (
-                            <SelectItem key={channelIndex} value={channelName}>
-                              {channelName}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        Channel Allocation (%):
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        type="number"
-                        min={0}
-                        max={100}
-                        value={formatNumber(input.channelAllocation * 100)}
-                        onChange={(e) =>
-                          handleChannelInputChange(
-                            input.id,
-                            "channelAllocation",
-                            parseNumber(e.target.value) / 100
-                          )
-                        }
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        Days get paid:
-                      </span>
-                      <Select
-                        className="border-gray-300"
-                        onValueChange={(value) =>
-                          handleChannelInputChange(
-                            input.id,
-                            "daysGetPaid",
-                            value
-                          )
-                        }
-                        value={
-                          input.daysGetPaid !== null ? input.daysGetPaid : ""
-                        }
-                      >
-                        <SelectTrigger
-                          id={`select-days-get-paid-${index}`}
-                          className="border-solid border-[1px] border-gray-300"
-                        >
-                          <SelectValue placeholder="Select Days" />
-                        </SelectTrigger>
-                        <SelectContent position="popper">
-                          {daysOptions.map((days) => (
-                            <SelectItem key={days} value={days}>
-                              {days} days
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="flex justify-end items-center">
-                      <button
-                        className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
-                        onClick={() => setIsDeleteModalOpen(true)}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                ))}
-          </section>
+          <ChannelInputForm
+            tempChannelInputs={tempChannelInputs}
+            renderChannelForm={renderChannelForm}
+            setRenderChannelForm={setRenderChannelForm}
+            handleChannelInputChange={handleChannelInputChange}
+            formatNumber={formatNumber}
+            parseNumber={parseNumber}
+            channelNames={channelNames}
+            daysOptions={daysOptions}
+            addNewChannelInput={addNewChannelInput}
+            handleSave={handleSave}
+            isLoading={isLoading}
+            setIsDeleteModalOpen={setIsDeleteModalOpen}
+          />
         </Modal>
       )}
 

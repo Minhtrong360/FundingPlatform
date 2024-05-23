@@ -264,13 +264,6 @@ export function generateCustomerTableData(
             currentCustomers = customerInput.customersPerMonth;
           } else {
             if (
-              i >= customerInput.eventBeginMonth &&
-              i <= customerInput.eventEndMonth
-            ) {
-              growthRate = customerInput.localGrowthRate;
-            }
-
-            if (
               customerInput.gptResponseArray &&
               customerInput.gptResponseArray.length > i - 1
             ) {
@@ -298,10 +291,10 @@ export function generateCustomerTableData(
           );
         } else {
           channelAddRow[`month${i}`] = "0";
+          startRow[`month${i}`] = "0";
+          beginRow[`month${i}`] = "0";
+          churnRow[`month${i}`] = "0";
         }
-        startRow[`month${i}`] = "0";
-        beginRow[`month${i}`] = "0";
-        churnRow[`month${i}`] = "0";
       }
 
       if (customerInput) {

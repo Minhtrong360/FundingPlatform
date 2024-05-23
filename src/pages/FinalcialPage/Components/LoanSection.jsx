@@ -20,6 +20,190 @@ import { CheckCircleOutlined } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 
+const LoanInputForm = ({
+  tempLoanInputs,
+  renderLoanForm,
+  setRenderLoanForm,
+  handleLoanInputChange,
+  addNewLoanInput,
+  confirmDelete,
+  setIsDeleteModalOpen,
+  isDeleteModalOpen,
+  handleSave,
+  isLoading,
+}) => {
+  return (
+    <section aria-labelledby="loan-heading" className="mb-8 sticky top-8">
+      <h2
+        className="text-lg font-semibold mb-8 flex items-center"
+        id="loan-heading"
+      >
+        Loan
+      </h2>
+
+      <div>
+        <label
+          htmlFor="selectedChannel"
+          className="block my-4 text-base  darkTextWhite"
+        ></label>
+        <select
+          id="selectedChannel"
+          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+          value={renderLoanForm}
+          onChange={(e) => setRenderLoanForm(e.target.value)}
+        >
+          <option value="all">All</option>
+          {tempLoanInputs.map((input) => (
+            <option key={input?.id} value={input?.id}>
+              {input.loanName}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {tempLoanInputs
+        .filter((input) => input?.id == renderLoanForm)
+        .map((input) => (
+          <div key={input?.id} className="bg-white rounded-2xl p-6 border my-4">
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className="flex items-center text-sm">Loan Name:</span>
+              <Input
+                required
+                className="border p-2 rounded-2xl border-gray-300"
+                value={input.loanName}
+                onChange={(e) =>
+                  handleLoanInputChange(input?.id, "loanName", e.target.value)
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className="flex items-center text-sm">Loan Amount:</span>
+              <Input
+                required
+                className="border p-2 rounded-2xl border-gray-300"
+                value={formatNumber(input.loanAmount)}
+                onChange={(e) =>
+                  handleLoanInputChange(
+                    input?.id,
+                    "loanAmount",
+                    parseNumber(e.target.value)
+                  )
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className="flex items-center text-sm">
+                Interest Rate (%):
+              </span>
+              <Input
+                required
+                className="border p-2 rounded-2xl border-gray-300"
+                value={formatNumber(input.interestRate)}
+                onChange={(e) =>
+                  handleLoanInputChange(
+                    input?.id,
+                    "interestRate",
+                    parseNumber(e.target.value)
+                  )
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className="flex items-center text-sm">
+                Month Loan Begins:
+              </span>
+              <Input
+                required
+                type="number"
+                className="border p-2 rounded-2xl border-gray-300"
+                value={input.loanBeginMonth}
+                onChange={(e) =>
+                  handleLoanInputChange(
+                    input?.id,
+                    "loanBeginMonth",
+                    e.target.value
+                  )
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className="flex items-center text-sm">
+                Month Loan Ends:
+              </span>
+              <Input
+                required
+                type="number"
+                className="border p-2 rounded-2xl border-gray-300"
+                value={input.loanEndMonth}
+                onChange={(e) =>
+                  handleLoanInputChange(
+                    input?.id,
+                    "loanEndMonth",
+                    e.target.value
+                  )
+                }
+              />
+            </div>
+            <div className="flex justify-center items-center"></div>
+          </div>
+        ))}
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <button
+          className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
+          onClick={() => setIsDeleteModalOpen(true)}
+        >
+          <DeleteOutlined
+            style={{
+              fontSize: "12px",
+              color: "#FFFFFF",
+              marginRight: "4px",
+            }}
+          />
+          Remove
+        </button>
+
+        <button
+          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+          onClick={addNewLoanInput}
+        >
+          <PlusOutlined
+            style={{
+              fontSize: "12px",
+              color: "#FFFFFF",
+              marginRight: "4px",
+            }}
+          />
+          Add
+        </button>
+
+        <button
+          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw]"
+          onClick={handleSave}
+        >
+          {isLoading ? (
+            <SpinnerBtn />
+          ) : (
+            <>
+              <CheckCircleOutlined
+                style={{
+                  fontSize: "12px",
+                  color: "#FFFFFF",
+                  marginRight: "4px",
+                }}
+              />
+              Save
+            </>
+          )}
+        </button>
+      </div>
+    </section>
+  );
+};
+
 const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const dispatch = useDispatch();
   const { loanInputs } = useSelector((state) => state.loan);
@@ -78,6 +262,11 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   useEffect(() => {
     const calculatedData = calculateLoanData(loanInputs, numberOfMonths);
     dispatch(setLoanData(calculatedData));
+    const tableData = transformLoanDataForTable(
+      loanInputs,
+      renderLoanForm,
+      numberOfMonths
+    );
     dispatch(setLoanTableData(tableData));
   }, [loanInputs, numberOfMonths, renderLoanForm]);
 
@@ -99,8 +288,8 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     (state) => state.durationSelect
   );
 
-  const startingMonth = startMonth; // Tháng bắt đầu từ 1
-  const startingYear = startYear; // Năm bắt đầu từ 24
+  const startingMonth = startMonth;
+  const startingYear = startYear;
 
   const loanColumns = [
     {
@@ -119,7 +308,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         align: "right",
         onCell: (record) => ({
           style: {
-            borderRight: "1px solid #f0f0f0", // Add border right style
+            borderRight: "1px solid #f0f0f0",
           },
         }),
       };
@@ -137,12 +326,10 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           show: true,
           tools: {
             download: true,
-          }
+          },
         },
         zoom: { enabled: false },
-        animations: {
-          enabled: false,
-        },
+        animations: { enabled: false },
       },
       colors: [
         "#00A2FF",
@@ -161,7 +348,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           },
         },
         axisTicks: {
-          show: false, // Hide x-axis ticks
+          show: false,
         },
         categories: Array.from({ length: numberOfMonths }, (_, i) => {
           const monthIndex = (startingMonth + i - 1) % 12;
@@ -199,9 +386,8 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-
       dataLabels: { enabled: false },
-      stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+      stroke: { width: 1, curve: "straight" },
     },
     series: [],
   });
@@ -223,14 +409,12 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
     const seriesData = calculateLoanData(tempLoanInputs, numberOfMonths).map(
       (loan) => {
-        // Khởi tạo mảng dữ liệu rỗng với giá trị là 0 cho mỗi tháng
         const data = Array(filteredMonths.length).fill(0);
         const dataPayment = Array(filteredMonths.length).fill(0);
         const dataPrincipal = Array(filteredMonths.length).fill(0);
         const dataInterest = Array(filteredMonths.length).fill(0);
         const dataRemainingBalance = Array(filteredMonths.length).fill(0);
 
-        // Cập nhật mảng dữ liệu với thông tin thực tế từ loanDataPerMonth
         loan.loanDataPerMonth
           .slice(chartStartMonth - 1, chartEndMonth)
           .forEach((monthData, index) => {
@@ -252,7 +436,6 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       }
     );
 
-    // Tính toán tổng số liệu cho tất cả các khoản vay
     const totalLoanData = seriesData.reduce((acc, channel) => {
       channel.data.forEach((amount, index) => {
         acc[index] = (acc[index] || 0) + amount;
@@ -260,7 +443,6 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       return acc;
     }, Array(filteredMonths.length).fill(0));
 
-    // Cập nhật state của biểu đồ với dữ liệu mới
     setLoanChart((prevState) => ({
       ...prevState,
       series: seriesData,
@@ -335,9 +517,6 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     startingYear,
     numberOfMonths,
   ]);
-  const handleSelectChange = (event) => {
-    setRenderLoanForm(event.target.value);
-  };
 
   const handleSave = () => {
     setIsSaved(true);
@@ -368,7 +547,6 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           if (existingData && existingData.length > 0) {
             const { user_email, collabs } = existingData[0];
 
-            // Check if user.email matches user_email or is included in collabs
             if (user.email !== user_email && !collabs?.includes(user.email)) {
               message.error(
                 "You do not have permission to update this record."
@@ -400,6 +578,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       } finally {
         setIsSaved(false);
         setIsLoading(false);
+        setIsInputFormOpen(false);
       }
     };
     saveData();
@@ -418,8 +597,8 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     setIsDeleteModalOpen(false);
   };
 
-  const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
-  const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
+  const [isChartModalVisible, setIsChartModalVisible] = useState(false);
+  const [selectedChart, setSelectedChart] = useState(null);
 
   const handleChartClick = (chart) => {
     setSelectedChart(chart);
@@ -435,7 +614,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           {loanChart?.charts?.map((series, index) => (
             <Card
               key={index}
-              className="flex flex-col transition duration-500  rounded-2xl"
+              className="flex flex-col transition duration-500 rounded-2xl"
             >
               <div className="flex justify-between items-center">
                 <div className="min-w-[10vw] mb-2">
@@ -497,11 +676,10 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
                     xaxis: {
                       ...series.options.xaxis,
-                      // tickAmount: 6, // Ensure x-axis has 6 ticks
                     },
                     stroke: {
-                      width: 1, // Set the stroke width to 1
-                      curve: "straight", // Set the stroke curve to straight
+                      width: 1,
+                      curve: "straight",
                     },
                   }}
                   series={series.series}
@@ -524,7 +702,6 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
             <Chart
               options={{
                 ...selectedChart.options,
-                // ... other options
               }}
               series={selectedChart.series}
               type="area"
@@ -549,185 +726,19 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           }
         />
       </div>
-
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
-        <section aria-labelledby="loan-heading" className="mb-8 sticky top-8">
-          <h2
-            className="text-lg font-semibold mb-8 flex items-center"
-            id="loan-heading"
-          >
-            Loan
-          </h2>
-
-          <div>
-            <label
-              htmlFor="selectedChannel"
-              className="block my-4 text-base  darkTextWhite"
-            ></label>
-            <select
-              id="selectedChannel"
-              className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-              value={renderLoanForm}
-              onChange={handleSelectChange}
-            >
-              <option value="all">All</option>
-              {tempLoanInputs.map((input) => (
-                <option key={input?.id} value={input?.id}>
-                  {input.loanName}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {tempLoanInputs
-            .filter((input) => input?.id == renderLoanForm)
-            .map((input) => (
-              <div
-                key={input?.id}
-                className="bg-white rounded-2xl p-6 border my-4"
-              >
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className="flex items-center text-sm">Loan Name:</span>
-                  <Input
-                    required
-                    className="border p-2 rounded border-gray-300"
-                    value={input.loanName}
-                    onChange={(e) =>
-                      handleLoanInputChange(
-                        input?.id,
-                        "loanName",
-                        e.target.value
-                      )
-                    }
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className="flex items-center text-sm">
-                    Loan Amount:
-                  </span>
-                  <Input
-                    required
-                    className="border p-2 rounded border-gray-300"
-                    value={formatNumber(input.loanAmount)}
-                    onChange={(e) =>
-                      handleLoanInputChange(
-                        input?.id,
-                        "loanAmount",
-                        parseNumber(e.target.value)
-                      )
-                    }
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className="flex items-center text-sm">
-                    Interest Rate (%):
-                  </span>
-                  <Input
-                    required
-                    className="border p-2 rounded border-gray-300"
-                    value={formatNumber(input.interestRate)}
-                    onChange={(e) =>
-                      handleLoanInputChange(
-                        input?.id,
-                        "interestRate",
-                        parseNumber(e.target.value)
-                      )
-                    }
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className="flex items-center text-sm">
-                    Month Loan Begins:
-                  </span>
-                  <Input
-                    required
-                    type="number"
-                    className="border p-2 rounded border-gray-300"
-                    value={input.loanBeginMonth}
-                    onChange={(e) =>
-                      handleLoanInputChange(
-                        input?.id,
-                        "loanBeginMonth",
-                        e.target.value
-                      )
-                    }
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className="flex items-center text-sm">
-                    Month Loan Ends:
-                  </span>
-                  <Input
-                    required
-                    type="number"
-                    className="border p-2 rounded border-gray-300"
-                    value={input.loanEndMonth}
-                    onChange={(e) =>
-                      handleLoanInputChange(
-                        input?.id,
-                        "loanEndMonth",
-                        e.target.value
-                      )
-                    }
-                  />
-                </div>
-                <div className="flex justify-center items-center"></div>
-              </div>
-            ))}
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <button
-              className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4 flex items-center"
-              onClick={() => setIsDeleteModalOpen(true)}
-            >
-              <DeleteOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />
-              Remove
-            </button>
-
-            <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
-              onClick={addNewLoanInput}
-            >
-              <PlusOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />
-              Add
-            </button>
-
-            <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[5vw]"
-              onClick={handleSave}
-            >
-              {isLoading ? (
-                <SpinnerBtn />
-              ) : (
-                <>
-                  <CheckCircleOutlined
-                    style={{
-                      fontSize: "12px",
-                      color: "#FFFFFF",
-                      marginRight: "4px",
-                    }}
-                  />
-                  Save
-                </>
-              )}
-            </button>
-          </div>
-        </section>
+        <LoanInputForm
+          tempLoanInputs={tempLoanInputs}
+          renderLoanForm={renderLoanForm}
+          setRenderLoanForm={setRenderLoanForm}
+          handleLoanInputChange={handleLoanInputChange}
+          addNewLoanInput={addNewLoanInput}
+          confirmDelete={confirmDelete}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
+          isDeleteModalOpen={isDeleteModalOpen}
+          handleSave={handleSave}
+          isLoading={isLoading}
+        />
       </div>
 
       <div className="xl:hidden block">
@@ -748,7 +759,6 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
       {isInputFormOpen && (
         <Modal
-          // title="Customer channel"
           visible={isInputFormOpen}
           onOk={() => {
             handleSave();
@@ -764,7 +774,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           cancelButtonProps={{
             style: {
               borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              cursor: "pointer",
             },
           }}
           okButtonProps={{
@@ -773,158 +783,26 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               borderColor: "#2563EB",
               color: "#fff",
               borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              cursor: "pointer",
               minWidth: "5vw",
             },
           }}
+          footer={null}
           centered={true}
           zIndex={50}
         >
-          <section aria-labelledby="loan-heading" className="mb-8 sticky top-8">
-            <h2
-              className="text-lg font-semibold mb-8 flex items-center"
-              id="loan-heading"
-            >
-              Loan{" "}
-              <span className="flex justify-center items-center">
-                <PlusCircleOutlined
-                  className="ml-2 text-blue-500"
-                  size="large"
-                  style={{ fontSize: "24px" }}
-                  onClick={addNewLoanInput}
-                />
-              </span>
-            </h2>
-
-            <div>
-              <label
-                htmlFor="selectedChannel"
-                className="block my-4 text-base  darkTextWhite"
-              ></label>
-              <select
-                id="selectedChannel"
-                className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                value={renderLoanForm}
-                onChange={handleSelectChange}
-              >
-                <option value="all">All</option>
-                {tempLoanInputs.map((input) => (
-                  <option key={input?.id} value={input?.id}>
-                    {input.loanName}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {tempLoanInputs
-              .filter((input) => input?.id == renderLoanForm)
-              .map((input) => (
-                <div
-                  key={input?.id}
-                  className="bg-white rounded-2xl p-6 border my-4"
-                >
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">
-                      Loan Name:
-                    </span>
-                    <Input
-                      required
-                      className="border p-2 rounded border-gray-300"
-                      value={input.loanName}
-                      onChange={(e) =>
-                        handleLoanInputChange(
-                          input?.id,
-                          "loanName",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">
-                      Loan Amount:
-                    </span>
-                    <Input
-                      required
-                      className="border p-2 rounded border-gray-300"
-                      value={formatNumber(input.loanAmount)}
-                      onChange={(e) =>
-                        handleLoanInputChange(
-                          input?.id,
-                          "loanAmount",
-                          parseNumber(e.target.value)
-                        )
-                      }
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">
-                      Interest Rate (%):
-                    </span>
-                    <Input
-                      required
-                      className="border p-2 rounded border-gray-300"
-                      value={formatNumber(input.interestRate)}
-                      onChange={(e) =>
-                        handleLoanInputChange(
-                          input?.id,
-                          "interestRate",
-                          parseNumber(e.target.value)
-                        )
-                      }
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">
-                      Month Loan Begins:
-                    </span>
-                    <Input
-                      required
-                      type="number"
-                      className="border p-2 rounded border-gray-300"
-                      value={input.loanBeginMonth}
-                      onChange={(e) =>
-                        handleLoanInputChange(
-                          input?.id,
-                          "loanBeginMonth",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">
-                      Month Loan Ends:
-                    </span>
-                    <Input
-                      required
-                      type="number"
-                      className="border p-2 rounded border-gray-300"
-                      value={input.loanEndMonth}
-                      onChange={(e) =>
-                        handleLoanInputChange(
-                          input?.id,
-                          "loanEndMonth",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="flex justify-end items-center">
-                    <button
-                      className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
-                      onClick={() => setIsDeleteModalOpen(true)}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
-          </section>
+          <LoanInputForm
+            tempLoanInputs={tempLoanInputs}
+            renderLoanForm={renderLoanForm}
+            setRenderLoanForm={setRenderLoanForm}
+            handleLoanInputChange={handleLoanInputChange}
+            addNewLoanInput={addNewLoanInput}
+            confirmDelete={confirmDelete}
+            setIsDeleteModalOpen={setIsDeleteModalOpen}
+            isDeleteModalOpen={isDeleteModalOpen}
+            handleSave={handleSave}
+            isLoading={isLoading}
+          />
         </Modal>
       )}
       {isDeleteModalOpen && (
@@ -938,7 +816,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           cancelButtonProps={{
             style: {
               borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              cursor: "pointer",
             },
           }}
           okButtonProps={{
@@ -947,7 +825,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               borderColor: "#f5222d",
               color: "#fff",
               borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              cursor: "pointer",
             },
           }}
           centered={true}

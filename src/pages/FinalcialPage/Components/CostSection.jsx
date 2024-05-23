@@ -27,13 +27,301 @@ import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 
-const CostSection = ({
-  numberOfMonths,
+const CostInputForm = ({
+  tempCostInput,
+  renderCostForm,
+  handleCostInputChange,
+  formatNumber,
+  parseNumber,
+  costGroupArray,
+  revenueData,
+  costTypeOptions,
+  addNewCostInput,
+  handleSave,
+  isLoading,
+  setIsDeleteModalOpen,
+  handleCostTypeChange,
+}) => (
+  <section aria-labelledby="costs-heading" className="mb-8 sticky top-8">
+    <h2
+      className="text-lg font-semibold mb-8 flex items-center"
+      id="costs-heading"
+    >
+      Costs
+    </h2>
+    <div>
+      <label
+        htmlFor="selectedChannel"
+        className="block my-4 text-base darkTextWhite"
+      ></label>
+      <select
+        id="selectedChannel"
+        className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+        value={renderCostForm}
+        onChange={(e) => handleCostTypeChange(e.target.value)}
+      >
+        {tempCostInput.map((input) => (
+          <option key={input?.id} value={input?.id}>
+            {input.costName}
+          </option>
+        ))}
+      </select>
+    </div>
+    {tempCostInput
+      .filter((input) => input?.id == renderCostForm)
+      .map((input) => (
+        <div key={input?.id} className="bg-white rounded-2xl p-6 border my-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
+            <span className="flex items-center text-sm">Cost dependence:</span>
+            <Select
+              className="border-gray-300"
+              onValueChange={(value) => handleCostTypeChange(input?.id, value)}
+              value={
+                input.costType === "Based on Revenue"
+                  ? "Based on Revenue"
+                  : "Not related to revenue"
+              }
+            >
+              <SelectTrigger
+                id={`select-costCategory-${input?.id}`}
+                className="border-solid border-[1px] border-gray-300"
+              >
+                <SelectValue placeholder="Select Cost Category" />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectItem value="Not related to revenue">
+                  Not related to revenue
+                </SelectItem>
+                <SelectItem value="Based on Revenue">
+                  Based on Revenue
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          {input.costType === "Based on Revenue" && (
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className="flex items-center text-sm">Cost Group:</span>
+              <Select
+                className="border-gray-300"
+                onValueChange={(value) =>
+                  handleCostInputChange(input?.id, "costGroup", value)
+                }
+                value={input.costGroup}
+              >
+                <SelectTrigger
+                  id={`select-costType-${input?.id}`}
+                  className="border-solid border-[1px] border-gray-300"
+                >
+                  <SelectValue placeholder="Select Cost Type" />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  {costGroupArray.map((cost) => (
+                    <SelectItem value={cost} key={cost}>
+                      {cost}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+          {input.costType === "Based on Revenue" ? (
+            <>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">Cost Name:</span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  value={input.costName}
+                  onChange={(e) =>
+                    handleCostInputChange(input?.id, "costName", e.target.value)
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">
+                  Related Product:
+                </span>
+                <Select
+                  className="mb-4"
+                  placeholder="Select Related Revenue"
+                  value={input.relatedRevenue}
+                  onValueChange={(value) =>
+                    handleCostInputChange(input.id, "relatedRevenue", value)
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Related Revenue" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.keys(revenueData).map((revenueKey) => (
+                      <SelectItem key={revenueKey} value={revenueKey}>
+                        {revenueKey}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">
+                  Cost Value (% Revenue):
+                </span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  type="text"
+                  value={formatNumber(input.salePercentage)}
+                  onChange={(e) =>
+                    handleCostInputChange(
+                      input?.id,
+                      "salePercentage",
+                      parseNumber(e.target.value)
+                    )
+                  }
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">Cost Name:</span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  value={input.costName}
+                  onChange={(e) =>
+                    handleCostInputChange(input?.id, "costName", e.target.value)
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">Cost Value:</span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  type="text"
+                  value={formatNumber(input.costValue)}
+                  onChange={(e) =>
+                    handleCostInputChange(
+                      input?.id,
+                      "costValue",
+                      parseNumber(e.target.value)
+                    )
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">
+                  Growth Percentage (%):
+                </span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  type="text"
+                  value={formatNumber(input.growthPercentage)}
+                  onChange={(e) =>
+                    handleCostInputChange(
+                      input?.id,
+                      "growthPercentage",
+                      parseNumber(e.target.value)
+                    )
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">Frequency:</span>
+                <Select
+                  className="border-gray-300"
+                  onValueChange={(value) =>
+                    handleCostInputChange(input?.id, "growthFrequency", value)
+                  }
+                  value={input.growthFrequency}
+                >
+                  <SelectTrigger
+                    id={`select-growthFrequency-${input?.id}`}
+                    className="border-solid border-[1px] border-gray-300"
+                  >
+                    <SelectValue placeholder="Select Growth Frequency" />
+                  </SelectTrigger>
+                  <SelectContent position="popper">
+                    <SelectItem value="Monthly">Monthly</SelectItem>
+                    <SelectItem value="Quarterly">Quarterly</SelectItem>
+                    <SelectItem value="Semi-Annually">Semi-Annually</SelectItem>
+                    <SelectItem value="Annually">Annually</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">Begin Month:</span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  type="number"
+                  min="1"
+                  max="12"
+                  value={input.beginMonth}
+                  onChange={(e) =>
+                    handleCostInputChange(
+                      input?.id,
+                      "beginMonth",
+                      parseInt(e.target.value, 10)
+                    )
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">End Month:</span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  type="number"
+                  min="1"
+                  max="12"
+                  value={input.endMonth}
+                  onChange={(e) =>
+                    handleCostInputChange(
+                      input?.id,
+                      "endMonth",
+                      parseInt(e.target.value, 10)
+                    )
+                  }
+                />
+              </div>
+            </>
+          )}
+        </div>
+      ))}
+    <div className="flex justify-between items-center">
+      <button
+        className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4 flex items-center"
+        onClick={() => setIsDeleteModalOpen(true)}
+      >
+        <DeleteOutlined
+          style={{ fontSize: "12px", color: "#FFFFFF", marginRight: "4px" }}
+        />
+        Remove
+      </button>
+      <button
+        className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+        onClick={addNewCostInput}
+      >
+        <PlusOutlined
+          style={{ fontSize: "12px", color: "#FFFFFF", marginRight: "4px" }}
+        />
+        Add
+      </button>
+      <button
+        className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw]"
+        onClick={handleSave}
+      >
+        {isLoading ? (
+          <SpinnerBtn />
+        ) : (
+          <>
+            <CheckCircleOutlined
+              style={{ fontSize: "12px", color: "#FFFFFF", marginRight: "4px" }}
+            />{" "}
+            Save
+          </>
+        )}
+      </button>
+    </div>
+  </section>
+);
 
-  isSaved,
-  setIsSaved,
-  handleSubmit,
-}) => {
+const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
   const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
   const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
 
@@ -48,9 +336,7 @@ const CostSection = ({
   const dispatch = useDispatch();
 
   const [tempCostInput, setTempCostInput] = useState(costInputs);
-
   const [tempCostData, setTempCostData] = useState(costData);
-
   const [renderCostForm, setRenderCostForm] = useState(costInputs[0]?.id);
 
   const costGroupArray = [
@@ -90,6 +376,7 @@ const CostSection = ({
     setTempCostInput([...tempCostInput, newCustomer]);
     setRenderCostForm(newId.toString());
   };
+
   const removeCostInput = (id) => {
     const indexToRemove = tempCostInput.findIndex((input) => input?.id == id);
     if (indexToRemove !== -1) {
@@ -129,7 +416,6 @@ const CostSection = ({
     setTempCostInput(updatedInputs);
   };
 
-  // useEffect to update cost data when cost inputs or number of months change
   useEffect(() => {
     const calculatedData = calculateCostData(
       costInputs,
@@ -139,7 +425,6 @@ const CostSection = ({
     dispatch(setCostData(calculatedData));
   }, [costInputs, numberOfMonths]);
 
-  // useEffect to update temporary cost data when temp cost inputs or number of months change
   useEffect(() => {
     const calculatedData = calculateCostData(
       tempCostInput,
@@ -149,7 +434,6 @@ const CostSection = ({
     setTempCostData(calculatedData);
   }, [tempCostInput, numberOfMonths]);
 
-  // Function to generate columns for the cost table
   const months = [
     "01",
     "02",
@@ -168,8 +452,8 @@ const CostSection = ({
     (state) => state.durationSelect
   );
 
-  const startingMonth = startMonth; // Tháng bắt đầu từ 1
-  const startingYear = startYear; // Năm bắt đầu từ 24
+  const startingMonth = startMonth;
+  const startingYear = startYear;
 
   const costColumns = [
     {
@@ -188,14 +472,13 @@ const CostSection = ({
         align: "right",
         onCell: (record) => ({
           style: {
-            borderRight: "1px solid #f0f0f0", // Add border right style
+            borderRight: "1px solid #f0f0f0",
           },
         }),
       };
     }),
   ];
 
-  // State for cost chart
   const [costChart, setCostChart] = useState({
     options: {
       chart: {
@@ -249,9 +532,8 @@ const CostSection = ({
       },
       yaxis: {
         axisBorder: {
-          show: true, // Show y-axis line
+          show: true,
         },
-
         labels: {
           show: true,
           style: {
@@ -274,25 +556,21 @@ const CostSection = ({
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-      // fill: { type: "solid" },
       dataLabels: { enabled: false },
       stroke: { curve: "straight", width: 1 },
     },
     series: [],
   });
 
-  // Function to handle select change
   const handleSelectChange = (event) => {
     const selectedId = event.target.value;
     setRenderCostForm(selectedId);
   };
 
-  // Function to handle save
   const handleSave = () => {
     setIsSaved(true);
   };
 
-  // useEffect to update cost inputs when data is saved
   const { id } = useParams();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -313,7 +591,6 @@ const CostSection = ({
           if (existingData && existingData.length > 0) {
             const { user_email, collabs } = existingData[0];
 
-            // Check if user.email matches user_email or is included in collabs
             if (user.email !== user_email && !collabs?.includes(user.email)) {
               message.error(
                 "You do not have permission to update this record."
@@ -345,6 +622,7 @@ const CostSection = ({
       } finally {
         setIsSaved(false);
         setIsLoading(false);
+        setIsInputFormOpen(false);
       }
     };
     saveData();
@@ -354,7 +632,6 @@ const CostSection = ({
   const [chartStartMonth, setChartStartMonth] = useState(1);
   const [chartEndMonth, setChartEndMonth] = useState(6);
 
-  // useEffect to update cost chart data
   useEffect(() => {
     const seriesData = tempCostData.map((item) => {
       return {
@@ -524,341 +801,20 @@ const CostSection = ({
       </div>
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
-        <section aria-labelledby="costs-heading" className="mb-8 sticky top-8">
-          <h2
-            className="text-lg font-semibold mb-8 flex items-center"
-            id="costs-heading"
-          >
-            Costs
-          </h2>
-
-          <div>
-            <label
-              htmlFor="selectedChannel"
-              className="block my-4 text-base darkTextWhite"
-            ></label>
-            <select
-              id="selectedChannel"
-              className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-              value={renderCostForm}
-              onChange={handleSelectChange}
-            >
-              {tempCostInput.map((input) => (
-                <option key={input?.id} value={input?.id}>
-                  {input.costName}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {tempCostInput
-            .filter((input) => input?.id == renderCostForm)
-            .map((input) => (
-              <div
-                key={input?.id}
-                className="bg-white rounded-2xl p-6 border my-4"
-              >
-                {/* New dropdown for "Based on Revenue" or "Not related to revenue" */}
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className="flex items-center text-sm">
-                    Cost dependence:
-                  </span>
-                  <Select
-                    className="border-gray-300"
-                    onValueChange={(value) =>
-                      handleCostTypeChange(input?.id, value)
-                    }
-                    value={
-                      input.costType === "Based on Revenue"
-                        ? "Based on Revenue"
-                        : "Not related to revenue"
-                    }
-                  >
-                    <SelectTrigger
-                      id={`select-costCategory-${input?.id}`}
-                      className="border-solid border-[1px] border-gray-300"
-                    >
-                      <SelectValue placeholder="Select Cost Category" />
-                    </SelectTrigger>
-                    <SelectContent position="popper">
-                      <SelectItem value="Not related to revenue">
-                        Not related to revenue
-                      </SelectItem>
-                      <SelectItem value="Based on Revenue">
-                        Based on Revenue
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Conditionally render the cost type dropdown */}
-                {input.costType === "Based on Revenue" && (
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">
-                      Cost Group:
-                    </span>
-                    <Select
-                      className="border-gray-300"
-                      onValueChange={(value) =>
-                        handleCostInputChange(input?.id, "costGroup", value)
-                      }
-                      value={input.costGroup}
-                    >
-                      <SelectTrigger
-                        id={`select-costType-${input?.id}`}
-                        className="border-solid border-[1px] border-gray-300"
-                      >
-                        <SelectValue placeholder="Select Cost Type" />
-                      </SelectTrigger>
-                      <SelectContent position="popper">
-                        {costGroupArray.map((cost) => {
-                          return <SelectItem value={cost}>{cost}</SelectItem>;
-                        })}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-
-                {/* The rest of the input fields remain unchanged */}
-                {input.costType === "Based on Revenue" ? (
-                  <>
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        Cost Name:
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        value={input.costName}
-                        onChange={(e) =>
-                          handleCostInputChange(
-                            input?.id,
-                            "costName",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        Related Product:
-                      </span>
-                      <Select
-                        className="mb-4"
-                        placeholder="Select Related Revenue"
-                        value={input.relatedRevenue}
-                        onValueChange={(value) =>
-                          handleCostInputChange(
-                            input.id,
-                            "relatedRevenue",
-                            value
-                          )
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Related Revenue" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {Object.keys(revenueData).map((revenueKey) => (
-                            <SelectItem key={revenueKey} value={revenueKey}>
-                              {revenueKey}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        Cost Value (% Revenue):
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        type="text"
-                        value={formatNumber(input.salePercentage)}
-                        onChange={(e) =>
-                          handleCostInputChange(
-                            input?.id,
-                            "salePercentage",
-                            parseNumber(e.target.value)
-                          )
-                        }
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        Cost Name:
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        value={input.costName}
-                        onChange={(e) =>
-                          handleCostInputChange(
-                            input?.id,
-                            "costName",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        Cost Value:
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        type="text"
-                        value={formatNumber(input.costValue)}
-                        onChange={(e) =>
-                          handleCostInputChange(
-                            input?.id,
-                            "costValue",
-                            parseNumber(e.target.value)
-                          )
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        Growth Percentage (%):
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        type="text"
-                        value={formatNumber(input.growthPercentage)}
-                        onChange={(e) =>
-                          handleCostInputChange(
-                            input?.id,
-                            "growthPercentage",
-                            parseNumber(e.target.value)
-                          )
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        Frequency:
-                      </span>
-                      <Select
-                        className="border-gray-300"
-                        onValueChange={(value) =>
-                          handleCostInputChange(
-                            input?.id,
-                            "growthFrequency",
-                            value
-                          )
-                        }
-                        value={input.growthFrequency}
-                      >
-                        <SelectTrigger
-                          id={`select-growthFrequency-${input?.id}`}
-                          className="border-solid border-[1px] border-gray-300"
-                        >
-                          <SelectValue placeholder="Select Growth Frequency" />
-                        </SelectTrigger>
-                        <SelectContent position="popper">
-                          <SelectItem value="Monthly">Monthly</SelectItem>
-                          <SelectItem value="Quarterly">Quarterly</SelectItem>
-                          <SelectItem value="Semi-Annually">
-                            Semi-Annually
-                          </SelectItem>
-                          <SelectItem value="Annually">Annually</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        Begin Month:
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        type="number"
-                        min="1"
-                        max="12"
-                        value={input.beginMonth}
-                        onChange={(e) =>
-                          handleCostInputChange(
-                            input?.id,
-                            "beginMonth",
-                            parseInt(e.target.value, 10)
-                          )
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        End Month:
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        type="number"
-                        min="1"
-                        max="12"
-                        value={input.endMonth}
-                        onChange={(e) =>
-                          handleCostInputChange(
-                            input?.id,
-                            "endMonth",
-                            parseInt(e.target.value, 10)
-                          )
-                        }
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
-            ))}
-          <div className="flex justify-between items-center">
-            <button
-              className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4 flex items-center"
-              onClick={() => setIsDeleteModalOpen(true)}
-            >
-              <DeleteOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />
-              Remove
-            </button>
-
-            <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 "
-              onClick={addNewCostInput}
-            >
-              <PlusOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />
-              Add
-            </button>
-
-            <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[5vw]"
-              onClick={handleSave}
-            >
-              {isLoading ? (
-                <SpinnerBtn />
-              ) : (
-                <>
-                  <CheckCircleOutlined
-                    style={{
-                      fontSize: "12px",
-                      color: "#FFFFFF",
-                      marginRight: "4px",
-                    }}
-                  />
-                  Save
-                </>
-              )}
-            </button>
-          </div>
-        </section>
+        <CostInputForm
+          tempCostInput={tempCostInput}
+          renderCostForm={renderCostForm}
+          handleCostInputChange={handleCostInputChange}
+          formatNumber={formatNumber}
+          parseNumber={parseNumber}
+          costGroupArray={costGroupArray}
+          revenueData={revenueData}
+          addNewCostInput={addNewCostInput}
+          handleSave={handleSave}
+          isLoading={isLoading}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
+          handleCostTypeChange={handleCostTypeChange}
+        />
       </div>
 
       <div className="xl:hidden block">
@@ -893,7 +849,7 @@ const CostSection = ({
           cancelButtonProps={{
             style: {
               borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              cursor: "pointer",
             },
           }}
           okButtonProps={{
@@ -902,316 +858,28 @@ const CostSection = ({
               borderColor: "#2563EB",
               color: "#fff",
               borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              cursor: "pointer",
               minWidth: "5vw",
             },
           }}
+          footer={null}
           centered={true}
           zIndex={50}
         >
-          <section
-            aria-labelledby="costs-heading"
-            className="mb-8 sticky top-8"
-          >
-            <h2
-              className="text-lg font-semibold mb-8 flex items-center"
-              id="costs-heading"
-            >
-              Costs
-              <span className="flex justify-center items-center">
-                <PlusCircleOutlined
-                  className="ml-2 text-blue-500"
-                  size="large"
-                  style={{ fontSize: "24px" }}
-                  onClick={addNewCostInput}
-                />
-              </span>
-            </h2>
-
-            <div>
-              <label
-                htmlFor="selectedChannel"
-                className="block my-4 text-base darkTextWhite"
-              ></label>
-              <select
-                id="selectedChannel"
-                className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                value={renderCostForm}
-                onChange={handleSelectChange}
-              >
-                {tempCostInput.map((input) => (
-                  <option key={input?.id} value={input?.id}>
-                    {input.costName}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {tempCostInput
-              .filter((input) => input?.id == renderCostForm)
-              .map((input) => (
-                <div
-                  key={input?.id}
-                  className="bg-white rounded-2xl p-6 border my-4"
-                >
-                  {/* New dropdown for "Based on Revenue" or "Not related to revenue" */}
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">
-                      Cost dependence:
-                    </span>
-                    <Select
-                      className="border-gray-300"
-                      onValueChange={(value) =>
-                        handleCostTypeChange(input?.id, value)
-                      }
-                      value={
-                        input.costType === "Based on Revenue"
-                          ? "Based on Revenue"
-                          : "Not related to revenue"
-                      }
-                    >
-                      <SelectTrigger
-                        id={`select-costCategory-${input?.id}`}
-                        className="border-solid border-[1px] border-gray-300"
-                      >
-                        <SelectValue placeholder="Select Cost Category" />
-                      </SelectTrigger>
-                      <SelectContent position="popper">
-                        <SelectItem value="Not related to revenue">
-                          Not related to revenue
-                        </SelectItem>
-                        <SelectItem value="Based on Revenue">
-                          Based on Revenue
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Conditionally render the cost type dropdown */}
-                  {input.costType === "Based on Revenue" && (
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        Cost Type:
-                      </span>
-                      <Select
-                        className="border-gray-300"
-                        onValueChange={(value) =>
-                          handleCostInputChange(input?.id, "costType", value)
-                        }
-                        value={input.costType}
-                      >
-                        <SelectTrigger
-                          id={`select-costType-${input?.id}`}
-                          className="border-solid border-[1px] border-gray-300"
-                        >
-                          <SelectValue placeholder="Select Cost Type" />
-                        </SelectTrigger>
-                        <SelectContent position="popper">
-                          <SelectItem value="Sales, Marketing Cost">
-                            Sales, Marketing
-                          </SelectItem>
-                          <SelectItem value="General Administrative Cost">
-                            General Administrative
-                          </SelectItem>
-                          <SelectItem value="Based on Revenue">
-                            Based on Revenue
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-
-                  {/* The rest of the input fields remain unchanged */}
-                  {input.costType === "Based on Revenue" ? (
-                    <>
-                      <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">
-                          Cost Name:
-                        </span>
-                        <Input
-                          className="col-start-2 border-gray-300"
-                          value={input.costName}
-                          onChange={(e) =>
-                            handleCostInputChange(
-                              input?.id,
-                              "costName",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">
-                          Related Product:
-                        </span>
-                        <Select
-                          className="mb-4"
-                          placeholder="Select Related Revenue"
-                          value={input.relatedRevenue}
-                          onValueChange={(value) =>
-                            handleCostInputChange(
-                              input.id,
-                              "relatedRevenue",
-                              value
-                            )
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select Related Revenue" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Object.keys(revenueData).map((revenueKey) => (
-                              <SelectItem key={revenueKey} value={revenueKey}>
-                                {revenueKey}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">
-                          Cost Value (% Revenue):
-                        </span>
-                        <Input
-                          className="col-start-2 border-gray-300"
-                          type="text"
-                          value={formatNumber(input.salePercentage)}
-                          onChange={(e) =>
-                            handleCostInputChange(
-                              input?.id,
-                              "salePercentage",
-                              parseNumber(e.target.value)
-                            )
-                          }
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">
-                          Cost Name:
-                        </span>
-                        <Input
-                          className="col-start-2 border-gray-300"
-                          value={input.costName}
-                          onChange={(e) =>
-                            handleCostInputChange(
-                              input?.id,
-                              "costName",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">
-                          Cost Value:
-                        </span>
-                        <Input
-                          className="col-start-2 border-gray-300"
-                          type="text"
-                          value={formatNumber(input.costValue)}
-                          onChange={(e) =>
-                            handleCostInputChange(
-                              input?.id,
-                              "costValue",
-                              parseNumber(e.target.value)
-                            )
-                          }
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">
-                          Growth Percentage (%):
-                        </span>
-                        <Input
-                          className="col-start-2 border-gray-300"
-                          type="text"
-                          value={formatNumber(input.growthPercentage)}
-                          onChange={(e) =>
-                            handleCostInputChange(
-                              input?.id,
-                              "growthPercentage",
-                              parseNumber(e.target.value)
-                            )
-                          }
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">
-                          Frequency:
-                        </span>
-                        <Select
-                          className="border-gray-300"
-                          onValueChange={(value) =>
-                            handleCostInputChange(
-                              input?.id,
-                              "growthFrequency",
-                              value
-                            )
-                          }
-                          value={input.growthFrequency}
-                        >
-                          <SelectTrigger
-                            id={`select-growthFrequency-${input?.id}`}
-                            className="border-solid border-[1px] border-gray-300"
-                          >
-                            <SelectValue placeholder="Select Growth Frequency" />
-                          </SelectTrigger>
-                          <SelectContent position="popper">
-                            <SelectItem value="Monthly">Monthly</SelectItem>
-                            <SelectItem value="Quarterly">Quarterly</SelectItem>
-                            <SelectItem value="Semi-Annually">
-                              Semi-Annually
-                            </SelectItem>
-                            <SelectItem value="Annually">Annually</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">
-                          Begin Month:
-                        </span>
-                        <Input
-                          className="col-start-2 border-gray-300"
-                          type="number"
-                          min="1"
-                          max="12"
-                          value={input.beginMonth}
-                          onChange={(e) =>
-                            handleCostInputChange(
-                              input?.id,
-                              "beginMonth",
-                              parseInt(e.target.value, 10)
-                            )
-                          }
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">
-                          End Month:
-                        </span>
-                        <Input
-                          className="col-start-2 border-gray-300"
-                          type="number"
-                          min="1"
-                          max="12"
-                          value={input.endMonth}
-                          onChange={(e) =>
-                            handleCostInputChange(
-                              input?.id,
-                              "endMonth",
-                              parseInt(e.target.value, 10)
-                            )
-                          }
-                        />
-                      </div>
-                    </>
-                  )}
-                </div>
-              ))}
-          </section>
+          <CostInputForm
+            tempCostInput={tempCostInput}
+            renderCostForm={renderCostForm}
+            handleCostInputChange={handleCostInputChange}
+            formatNumber={formatNumber}
+            parseNumber={parseNumber}
+            costGroupArray={costGroupArray}
+            revenueData={revenueData}
+            addNewCostInput={addNewCostInput}
+            handleSave={handleSave}
+            isLoading={isLoading}
+            setIsDeleteModalOpen={setIsDeleteModalOpen}
+            handleCostTypeChange={handleCostTypeChange}
+          />
         </Modal>
       )}
 
@@ -1226,7 +894,7 @@ const CostSection = ({
           cancelButtonProps={{
             style: {
               borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              cursor: "pointer",
             },
           }}
           okButtonProps={{
@@ -1235,7 +903,7 @@ const CostSection = ({
               borderColor: "#f5222d",
               color: "#fff",
               borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              cursor: "pointer",
             },
           }}
           centered={true}

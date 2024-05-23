@@ -25,12 +25,259 @@ import { CheckCircleOutlined } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 
-const FundraisingSection = ({
-  numberOfMonths,
-  isSaved,
-  setIsSaved,
-  handleSubmit,
+const FundraisingInputForm = ({
+  tempFundraisingInputs,
+  selectedFundraisingId,
+  setSelectedFundraisingId,
+  handleFundraisingInputChange,
+  addNewFundraisingInput,
+  confirmDelete,
+  setIsDeleteModalOpen,
+  isDeleteModalOpen,
+  handleSave,
+  isLoading,
 }) => {
+  return (
+    <section
+      aria-labelledby="fundraising-heading"
+      className="mb-8 sticky top-8"
+    >
+      <h2
+        className="text-lg font-semibold mb-8 flex items-center"
+        id="fundraising-heading"
+      >
+        Fundraising
+        <span className="flex justify-center items-center">
+          <PlusCircleOutlined
+            className="ml-2 text-blue-500"
+            size="large"
+            style={{ fontSize: "24px" }}
+            onClick={addNewFundraisingInput}
+          />
+        </span>
+      </h2>
+
+      <div>
+        <label
+          htmlFor="selectedFundraising"
+          className="block my-4 text-base darkTextWhite"
+        ></label>
+        <select
+          id="selectedFundraising"
+          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+          value={selectedFundraisingId}
+          onChange={(e) => setSelectedFundraisingId(e.target.value)}
+        >
+          {tempFundraisingInputs.map((input) => (
+            <option key={input?.id} value={input?.id}>
+              {input.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {tempFundraisingInputs
+        .filter((input) => input?.id == selectedFundraisingId)
+        .map((input) => (
+          <div key={input?.id} className="bg-white rounded-2xl p-6 border my-4">
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className=" flex items-center text-sm">
+                Fundraising Name:
+              </span>
+              <FundraisingInput
+                className="col-start-2 border-gray-300"
+                value={input.name}
+                onChange={(e) =>
+                  handleFundraisingInputChange(
+                    input?.id,
+                    "name",
+                    e.target.value
+                  )
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className=" flex items-center text-sm">
+                Equity offered (%):
+              </span>
+              <FundraisingInput
+                className="col-start-2 border-gray-300"
+                type="number"
+                min={0}
+                max={100}
+                value={formatNumber(input.equityOffered)}
+                onChange={(e) =>
+                  handleFundraisingInputChange(
+                    input?.id,
+                    "equityOffered",
+                    parseNumber(e.target.value)
+                  )
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className=" flex items-center text-sm">
+                Fundraising Amount:
+              </span>
+              <FundraisingInput
+                className="col-start-2 border-gray-300"
+                value={formatNumber(input.fundraisingAmount)}
+                onChange={(e) =>
+                  handleFundraisingInputChange(
+                    input?.id,
+                    "fundraisingAmount",
+                    parseNumber(e.target.value)
+                  )
+                }
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className=" flex items-center text-sm">
+                Fundraising Type:
+              </span>
+              <FundraisingSelect
+                className="border-gray-300"
+                onValueChange={(value) =>
+                  handleFundraisingInputChange(
+                    input?.id,
+                    "fundraisingType",
+                    value
+                  )
+                }
+                value={input.fundraisingType}
+              >
+                <FundraisingSelectTrigger
+                  id={`select-fundraisingType-${input?.id}`}
+                  className="border-solid border-[1px] border-gray-300"
+                >
+                  <FundraisingSelectValue placeholder="Select Fundraising Type" />
+                </FundraisingSelectTrigger>
+                <FundraisingSelectContent position="popper">
+                  <FundraisingSelectItem
+                    value="Common Stock"
+                    className="hover:cursor-pointer"
+                  >
+                    Common Stock
+                  </FundraisingSelectItem>
+                  <FundraisingSelectItem
+                    value="Preferred Stock"
+                    className="hover:cursor-pointer"
+                  >
+                    Preferred Stock
+                  </FundraisingSelectItem>
+                  <FundraisingSelectItem
+                    value="Paid in Capital"
+                    className="hover:cursor-pointer"
+                  >
+                    Paid in Capital
+                  </FundraisingSelectItem>
+                </FundraisingSelectContent>
+              </FundraisingSelect>
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className=" flex items-center text-sm">
+                Month Fundraising Begins:
+              </span>
+              <FundraisingInput
+                className="col-start-2 border-gray-300"
+                type="number"
+                min="1"
+                max="12"
+                value={input.fundraisingBeginMonth}
+                onChange={(e) =>
+                  handleFundraisingInputChange(
+                    input?.id,
+                    "fundraisingBeginMonth",
+                    parseInt(e.target.value, 10)
+                  )
+                }
+              />
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <button
+                className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
+                onClick={() => setIsDeleteModalOpen(true)}
+              >
+                {" "}
+                <DeleteOutlined
+                  style={{
+                    fontSize: "12px",
+                    color: "#FFFFFF",
+                    marginRight: "4px",
+                  }}
+                />
+                Remove
+              </button>
+
+              <button
+                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+                onClick={addNewFundraisingInput}
+              >
+                <PlusOutlined
+                  style={{
+                    fontSize: "12px",
+                    color: "#FFFFFF",
+                    marginRight: "4px",
+                  }}
+                />
+                Add
+              </button>
+
+              <button
+                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw]"
+                onClick={handleSave}
+              >
+                {isLoading ? (
+                  <SpinnerBtn />
+                ) : (
+                  <>
+                    <CheckCircleOutlined
+                      style={{
+                        fontSize: "12px",
+                        color: "#FFFFFF",
+                        marginRight: "4px",
+                      }}
+                    />
+                    Save
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        ))}
+      <Modal
+        title="Confirm Delete"
+        visible={isDeleteModalOpen}
+        onOk={confirmDelete}
+        onCancel={() => setIsDeleteModalOpen(false)}
+        okText="Delete"
+        cancelText="Cancel"
+        cancelButtonProps={{
+          style: {
+            borderRadius: "0.375rem",
+            cursor: "pointer",
+          },
+        }}
+        okButtonProps={{
+          style: {
+            background: "#f5222d",
+            borderColor: "#f5222d",
+            color: "#fff",
+            borderRadius: "0.375rem",
+            cursor: "pointer",
+          },
+        }}
+        centered={true}
+      >
+        Are you sure you want to delete it?
+      </Modal>
+    </section>
+  );
+};
+
+const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const { fundraisingInputs } = useSelector((state) => state.fundraising);
   const dispatch = useDispatch();
 
@@ -146,7 +393,7 @@ const FundraisingSection = ({
           show: true,
           tools: {
             download: true,
-          }
+          },
         },
         zoom: { enabled: false },
         animations: {
@@ -210,11 +457,8 @@ const FundraisingSection = ({
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-
       dataLabels: { enabled: false },
       stroke: { width: 1, curve: "smooth" },
-
-      // markers: { size: 1 },
     },
     series: [],
   });
@@ -287,6 +531,7 @@ const FundraisingSection = ({
       } finally {
         setIsSaved(false);
         setIsLoading(false);
+        setIsInputFormOpen(false);
       }
     };
     saveData();
@@ -323,7 +568,6 @@ const FundraisingSection = ({
       ) {
         const seriesItem = {
           name: item.name,
-          // Lọc và lấy dữ liệu từ chartStartMonth đến chartEndMonth
           data: Object.keys(item)
             .filter((key) => key.startsWith("month"))
             .slice(chartStartMonth - 1, chartEndMonth) // slice để lấy khoảng tháng cần thiết
@@ -487,211 +731,18 @@ const FundraisingSection = ({
       </div>
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
-        <section
-          aria-labelledby="fundraising-heading"
-          className="mb-8 sticky top-8"
-        >
-          <h2
-            className="text-lg font-semibold mb-8 flex items-center"
-            id="fundraising-heading"
-          >
-            Fundraising
-          </h2>
-
-          <div>
-            <label
-              htmlFor="selectedFundraising"
-              className="block my-4 text-base  darkTextWhite"
-            ></label>
-            <select
-              id="selectedFundraising"
-              className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-              value={selectedFundraisingId}
-              onChange={handleSelectChange}
-            >
-              {tempFundraisingInputs.map((input) => (
-                <option key={input?.id} value={input?.id}>
-                  {input.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {tempFundraisingInputs
-            .filter((input) => input?.id == selectedFundraisingId)
-            .map((input) => (
-              <div
-                key={input?.id}
-                className="bg-white rounded-2xl p-6 border my-4 "
-              >
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Fundraising Name:
-                  </span>
-                  <FundraisingInput
-                    className="col-start-2 border-gray-300"
-                    value={input.name}
-                    onChange={(e) =>
-                      handleFundraisingInputChange(
-                        input?.id,
-                        "name",
-                        e.target.value
-                      )
-                    }
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Equity offered (%):
-                  </span>
-                  <FundraisingInput
-                    className="col-start-2 border-gray-300"
-                    type="number"
-                    min={0}
-                    max={100}
-                    value={formatNumber(input.equityOffered)}
-                    onChange={(e) =>
-                      handleFundraisingInputChange(
-                        input?.id,
-                        "equityOffered",
-                        parseNumber(e.target.value)
-                      )
-                    }
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Fundraising Amount:
-                  </span>
-                  <FundraisingInput
-                    className="col-start-2 border-gray-300"
-                    value={formatNumber(input.fundraisingAmount)}
-                    onChange={(e) =>
-                      handleFundraisingInputChange(
-                        input?.id,
-                        "fundraisingAmount",
-                        parseNumber(e.target.value)
-                      )
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Fundraising Type:
-                  </span>
-                  <FundraisingSelect
-                    className="border-gray-300"
-                    onValueChange={(value) =>
-                      handleFundraisingInputChange(
-                        input?.id,
-                        "fundraisingType",
-                        value
-                      )
-                    }
-                    value={input.fundraisingType}
-                  >
-                    <FundraisingSelectTrigger
-                      id={`select-fundraisingType-${input?.id}`}
-                      className="border-solid border-[1px] border-gray-300"
-                    >
-                      <FundraisingSelectValue placeholder="Select Fundraising Type" />
-                    </FundraisingSelectTrigger>
-                    <FundraisingSelectContent position="popper">
-                      <FundraisingSelectItem
-                        value="Common Stock"
-                        className="hover:cursor-pointer"
-                      >
-                        Common Stock
-                      </FundraisingSelectItem>
-                      <FundraisingSelectItem
-                        value="Preferred Stock"
-                        className="hover:cursor-pointer"
-                      >
-                        Preferred Stock
-                      </FundraisingSelectItem>
-                      <FundraisingSelectItem
-                        value="Paid in Capital"
-                        className="hover:cursor-pointer"
-                      >
-                        Paid in Capital
-                      </FundraisingSelectItem>
-                    </FundraisingSelectContent>
-                  </FundraisingSelect>
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Month Fundraising Begins:
-                  </span>
-                  <FundraisingInput
-                    className="col-start-2 border-gray-300"
-                    type="number"
-                    min="1"
-                    max="12"
-                    value={input.fundraisingBeginMonth}
-                    onChange={(e) =>
-                      handleFundraisingInputChange(
-                        input?.id,
-                        "fundraisingBeginMonth",
-                        parseInt(e.target.value, 10)
-                      )
-                    }
-                  />
-                </div>
-              </div>
-            ))}
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <button
-              className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
-              onClick={() => setIsDeleteModalOpen(true)}
-            >
-              {" "}
-              <DeleteOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />
-              Remove
-            </button>
-
-            <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
-              onClick={addNewFundraisingInput}
-            >
-              <PlusOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />
-              Add
-            </button>
-
-            <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[5vw]"
-              onClick={handleSave}
-            >
-              {isLoading ? (
-                <SpinnerBtn />
-              ) : (
-                <>
-                  <CheckCircleOutlined
-                    style={{
-                      fontSize: "12px",
-                      color: "#FFFFFF",
-                      marginRight: "4px",
-                    }}
-                  />
-                  Save
-                </>
-              )}
-            </button>
-          </div>
-        </section>
+        <FundraisingInputForm
+          tempFundraisingInputs={tempFundraisingInputs}
+          selectedFundraisingId={selectedFundraisingId}
+          setSelectedFundraisingId={setSelectedFundraisingId}
+          handleFundraisingInputChange={handleFundraisingInputChange}
+          addNewFundraisingInput={addNewFundraisingInput}
+          confirmDelete={confirmDelete}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
+          isDeleteModalOpen={isDeleteModalOpen}
+          handleSave={handleSave}
+          isLoading={isLoading}
+        />
       </div>
 
       <div className="xl:hidden block">
@@ -712,7 +763,6 @@ const FundraisingSection = ({
 
       {isInputFormOpen && (
         <Modal
-          // title="Customer channel"
           visible={isInputFormOpen}
           onOk={() => {
             handleSave();
@@ -728,7 +778,7 @@ const FundraisingSection = ({
           cancelButtonProps={{
             style: {
               borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              cursor: "pointer",
             },
           }}
           okButtonProps={{
@@ -737,213 +787,26 @@ const FundraisingSection = ({
               borderColor: "#2563EB",
               color: "#fff",
               borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              cursor: "pointer",
               minWidth: "5vw",
             },
           }}
+          footer={null}
           centered={true}
           zIndex={50}
         >
-          <section
-            aria-labelledby="fundraising-heading"
-            className="mb-8 sticky top-8"
-          >
-            <h2
-              className="text-lg font-semibold mb-8 flex items-center"
-              id="fundraising-heading"
-            >
-              Fundraising{" "}
-              <span className="flex justify-center items-center">
-                <PlusCircleOutlined
-                  className="ml-2 text-blue-500"
-                  size="large"
-                  style={{ fontSize: "24px" }}
-                  onClick={addNewFundraisingInput}
-                />
-              </span>
-            </h2>
-
-            <div>
-              <label
-                htmlFor="selectedFundraising"
-                className="block my-4 text-base  darkTextWhite"
-              ></label>
-              <select
-                id="selectedFundraising"
-                className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                value={selectedFundraisingId}
-                onChange={handleSelectChange}
-              >
-                {tempFundraisingInputs.map((input) => (
-                  <option key={input?.id} value={input?.id}>
-                    {input.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {tempFundraisingInputs
-              .filter((input) => input?.id == selectedFundraisingId)
-              .map((input) => (
-                <div
-                  key={input?.id}
-                  className="bg-white rounded-2xl p-6 border my-4 "
-                >
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Fundraising Name:
-                    </span>
-                    <FundraisingInput
-                      className="col-start-2 border-gray-300"
-                      value={input.name}
-                      onChange={(e) =>
-                        handleFundraisingInputChange(
-                          input?.id,
-                          "name",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Equity offered (%):
-                    </span>
-                    <FundraisingInput
-                      className="col-start-2 border-gray-300"
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={formatNumber(input.equityOffered)}
-                      onChange={(e) =>
-                        handleFundraisingInputChange(
-                          input?.id,
-                          "equityOffered",
-                          parseNumber(e.target.value)
-                        )
-                      }
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Fundraising Amount:
-                    </span>
-                    <FundraisingInput
-                      className="col-start-2 border-gray-300"
-                      value={formatNumber(input.fundraisingAmount)}
-                      onChange={(e) =>
-                        handleFundraisingInputChange(
-                          input?.id,
-                          "fundraisingAmount",
-                          parseNumber(e.target.value)
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Fundraising Type:
-                    </span>
-                    <FundraisingSelect
-                      className="border-gray-300"
-                      onValueChange={(value) =>
-                        handleFundraisingInputChange(
-                          input?.id,
-                          "fundraisingType",
-                          value
-                        )
-                      }
-                      value={input.fundraisingType}
-                    >
-                      <FundraisingSelectTrigger
-                        id={`select-fundraisingType-${input?.id}`}
-                        className="border-solid border-[1px] border-gray-300"
-                      >
-                        <FundraisingSelectValue placeholder="Select Fundraising Type" />
-                      </FundraisingSelectTrigger>
-                      <FundraisingSelectContent position="popper">
-                        <FundraisingSelectItem
-                          value="Common Stock"
-                          className="hover:cursor-pointer"
-                        >
-                          Common Stock
-                        </FundraisingSelectItem>
-                        <FundraisingSelectItem
-                          value="Preferred Stock"
-                          className="hover:cursor-pointer"
-                        >
-                          Preferred Stock
-                        </FundraisingSelectItem>
-                        <FundraisingSelectItem
-                          value="Paid in Capital"
-                          className="hover:cursor-pointer"
-                        >
-                          Paid in Capital
-                        </FundraisingSelectItem>
-                      </FundraisingSelectContent>
-                    </FundraisingSelect>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Month Fundraising Begins:
-                    </span>
-                    <FundraisingInput
-                      className="col-start-2 border-gray-300"
-                      type="number"
-                      min="1"
-                      max="12"
-                      value={input.fundraisingBeginMonth}
-                      onChange={(e) =>
-                        handleFundraisingInputChange(
-                          input?.id,
-                          "fundraisingBeginMonth",
-                          parseInt(e.target.value, 10)
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="flex justify-end items-center">
-                    <button
-                      className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
-                      onClick={() => setIsDeleteModalOpen(true)}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
-          </section>
-        </Modal>
-      )}
-
-      {isDeleteModalOpen && (
-        <Modal
-          title="Confirm Delete"
-          visible={isDeleteModalOpen}
-          onOk={confirmDelete}
-          onCancel={() => setIsDeleteModalOpen(false)}
-          okText="Delete"
-          cancelText="Cancel"
-          cancelButtonProps={{
-            style: {
-              borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-            },
-          }}
-          okButtonProps={{
-            style: {
-              background: "#f5222d",
-              borderColor: "#f5222d",
-              color: "#fff",
-              borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-            },
-          }}
-          centered={true}
-        >
-          Are you sure you want to delete it?
+          <FundraisingInputForm
+            tempFundraisingInputs={tempFundraisingInputs}
+            selectedFundraisingId={selectedFundraisingId}
+            setSelectedFundraisingId={setSelectedFundraisingId}
+            handleFundraisingInputChange={handleFundraisingInputChange}
+            addNewFundraisingInput={addNewFundraisingInput}
+            confirmDelete={confirmDelete}
+            setIsDeleteModalOpen={setIsDeleteModalOpen}
+            isDeleteModalOpen={isDeleteModalOpen}
+            handleSave={handleSave}
+            isLoading={isLoading}
+          />
         </Modal>
       )}
     </div>

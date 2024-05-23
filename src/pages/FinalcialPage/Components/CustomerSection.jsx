@@ -51,7 +51,7 @@ import {
 import TextArea from "antd/es/input/TextArea";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 
-const CustomerChannelSection = ({
+const CustomerInputsForm = ({
   tempCustomerInputs,
   renderCustomerForm,
   handleSelectChange,
@@ -324,7 +324,7 @@ const CustomerChannelSection = ({
           Add
         </button>
         <button
-          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[5vw]"
+          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw]"
           onClick={handleSave}
         >
           {isLoading ? (
@@ -747,6 +747,7 @@ const CustomerSection = React.memo(
       } finally {
         setIsSaved(false);
         setIsLoading(false);
+        setIsInputFormOpen(false);
       }
     };
 
@@ -787,7 +788,6 @@ const CustomerSection = React.memo(
             .map((data) => parseInt(data.customers, 10)),
         };
       });
-   
       const seriesData2 = tempCustomerGrowthData.map((channelData) => {
         return {
           name: channelData[0]?.channelName || "Unknown Channel",
@@ -1151,9 +1151,6 @@ const CustomerSection = React.memo(
           );
         }
         console.log("responseGPT", responseGPT);
-
-  
-
         // Check if responseGPT is an object with a single key that holds an array
         let gptResponseArray = [];
         if (responseGPT && typeof responseGPT === "object") {
@@ -1188,8 +1185,6 @@ const CustomerSection = React.memo(
         setIsLoading(false);
       }
     };
-
-   
 
     const handleAddAdvancedInput = (id) => {
       const newInputs = tempCustomerInputs.map((input) => {
@@ -1381,323 +1376,23 @@ const CustomerSection = React.memo(
         </div>
 
         <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
-          <section
-            aria-labelledby="customers-heading"
-            className="mb-8 sticky top-8"
-          >
-            <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Examples:  Online, Offline, Social Media, Email Marketing, Referrals, Direct Sales, Subscription...">
-              <h2
-                className="text-lg font-semibold mb-8 flex items-center"
-                id="customers-heading"
-              >
-                Customer channel{" "}
-              </h2>
-            </Tooltip>
-
-            <div>
-              <label
-                htmlFor="selectedChannel"
-                className="block my-4 text-base  darkTextWhite"
-              ></label>
-              <select
-                id="selectedChannel"
-                className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                value={renderCustomerForm}
-                onChange={handleSelectChange}
-              >
-                <option value="all">All</option>
-
-                {tempCustomerInputs.map((input) => (
-                  <option key={input?.id} value={input?.id}>
-                    {input?.channelName}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {tempCustomerInputs
-              .filter((input) => input?.id == renderCustomerForm)
-              .map((input) => (
-                <div
-                  key={input?.id}
-                  className="bg-white rounded-2xl p-6 border my-4"
-                >
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">
-                      Channel Name:
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      value={input.channelName}
-                      onChange={(e) =>
-                        handleInputChange(
-                          input?.id,
-                          "channelName",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">
-                      Existing Customer:
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      type="text"
-                      value={formatNumber(input.beginCustomer)}
-                      onChange={(e) =>
-                        handleInputChange(
-                          input?.id,
-                          "beginCustomer",
-                          parseNumber(e.target.value)
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">
-                      Adding (First month)
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      value={formatNumber(input.customersPerMonth)}
-                      onChange={(e) =>
-                        handleInputChange(
-                          input?.id,
-                          "customersPerMonth",
-                          parseNumber(e.target.value)
-                        )
-                      }
-                      type="text"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">
-                      Growth rate (%):
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      value={formatNumber(input.growthPerMonth)}
-                      onChange={(e) =>
-                        handleInputChange(
-                          input?.id,
-                          "growthPerMonth",
-                          parseNumber(e.target.value)
-                        )
-                      }
-                      type="text"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">
-                      Frequency:
-                    </span>
-                    <Select
-                      className="border-gray-300"
-                      onValueChange={(value) =>
-                        handleInputChange(
-                          input?.id,
-                          "customerGrowthFrequency",
-                          value
-                        )
-                      }
-                      value={input.customerGrowthFrequency}
-                    >
-                      <SelectTrigger
-                        id={`select-customerGrowthFrequency-${input?.id}`}
-                        className="border-solid border-[1px] border-gray-300"
-                      >
-                        <SelectValue placeholder="Select Growth Frequency" />
-                      </SelectTrigger>
-                      <SelectContent position="popper">
-                        <SelectItem value="Monthly">Monthly</SelectItem>
-                        <SelectItem value="Quarterly">Quarterly</SelectItem>
-                        <SelectItem value="Semi-Annually">
-                          Semi-Annually
-                        </SelectItem>
-                        <SelectItem value="Annually">Annually</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">
-                      Begin Month:
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      type="number"
-                      min={1}
-                      value={input.beginMonth}
-                      onChange={(e) =>
-                        handleInputChange(
-                          input?.id,
-                          "beginMonth",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">
-                      End Month:
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      type="number"
-                      min={1}
-                      value={input.endMonth}
-                      onChange={(e) =>
-                        handleInputChange(input?.id, "endMonth", e.target.value)
-                      }
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">
-                      Churn rate (%):
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      type="text"
-                      value={formatNumber(input.churnRate)}
-                      onChange={(e) =>
-                        handleInputChange(
-                          input?.id,
-                          "churnRate",
-                          parseNumber(e.target.value)
-                        )
-                      }
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Acquisition cost:
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      type="text"
-                      value={input.acquisitionCost}
-                      onChange={(e) =>
-                        handleInputChange(
-                          input?.id,
-                          "acquisitionCost",
-                          e.target.value
-                        )
-                      }
-                      disabled
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <Checkbox
-                      className="col-span-2"
-                      checked={showAdvancedInputs}
-                      onChange={(e) => setShowAdvancedInputs(e.target.checked)}
-                    >
-                      Show Advanced Inputs
-                    </Checkbox>
-                  </div>
-
-                  {showAdvancedInputs && (
-                    <Modal
-                      title="Advanced Inputs"
-                      visible={showAdvancedInputs}
-                      onOk={handleFetchGPT}
-                      onCancel={() => setShowAdvancedInputs(false)}
-                      okText={isLoading ? <SpinnerBtn /> : "Apply"}
-                      cancelText="Cancel"
-                      cancelButtonProps={{
-                        style: {
-                          borderRadius: "0.375rem",
-                          cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                          minWidth: "5vw",
-                        },
-                      }}
-                      okButtonProps={{
-                        style: {
-                          background: "#2563EB",
-                          borderColor: "#2563EB",
-                          color: "#fff",
-                          borderRadius: "0.375rem",
-                          cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                          minWidth: "5vw",
-                        },
-                      }}
-                      centered={true}
-                    >
-                      <div className="gap-4 mb-3">
-                        <span className="flex items-center text-sm">
-                          Additional Info:
-                        </span>
-                        <TextArea
-                          className="col-start-2 border-gray-300"
-                          value={input.additionalInfo}
-                          onChange={(e) =>
-                            handleInputChange(
-                              input?.id,
-                              "additionalInfo",
-                              e.target.value
-                            )
-                          }
-                          rows={10}
-                        />
-                      </div>
-                    </Modal>
-                  )}
-                </div>
-              ))}
-
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <div className="flex justify-center items-center">
-                <button
-                  className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
-                  onClick={() => setIsDeleteModalOpen(true)}
-                >
-                  <DeleteOutlined
-                    style={{
-                      fontSize: "12px",
-                      color: "#FFFFFF",
-                      marginRight: "4px",
-                    }}
-                  />
-                  Remove
-                </button>
-              </div>
-              <button
-                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
-                onClick={handleAddNewCustomer}
-              >
-                <PlusOutlined
-                  style={{
-                    fontSize: "12px",
-                    color: "#FFFFFF",
-                    marginRight: "4px",
-                  }}
-                />
-                Add
-              </button>
-
-              <button
-                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[5vw]"
-                onClick={handleSave}
-              >
-                {isLoading ? (
-                  <SpinnerBtn />
-                ) : (
-                  <>
-                    <CheckCircleOutlined
-                      style={{
-                        fontSize: "12px",
-                        color: "#FFFFFF",
-                        marginRight: "4px",
-                      }}
-                    />
-                    Save
-                  </>
-                )}
-              </button>
-            </div>
-          </section>
+          <CustomerInputsForm
+            tempCustomerInputs={tempCustomerInputs}
+            renderCustomerForm={renderCustomerForm}
+            handleSelectChange={handleSelectChange}
+            handleInputChange={handleInputChange}
+            formatNumber={formatNumber}
+            parseNumber={parseNumber}
+            handleAddNewCustomer={handleAddNewCustomer}
+            handleSave={handleSave}
+            handleFetchGPT={handleFetchGPT}
+            isLoading={isLoading}
+            showAdvancedInputs={showAdvancedInputs}
+            setShowAdvancedInputs={setShowAdvancedInputs}
+            isDeleteModalOpen={isDeleteModalOpen}
+            setIsDeleteModalOpen={setIsDeleteModalOpen}
+            confirmDelete={confirmDelete}
+          />
         </div>
 
         <div className="xl:hidden block">
@@ -1718,313 +1413,32 @@ const CustomerSection = React.memo(
 
         {isInputFormOpen && (
           <Modal
-            // title="Customer channel"
             visible={isInputFormOpen}
-            onOk={() => {
-              handleSave();
-              setIsInputFormOpen(false);
-            }}
             onCancel={() => {
               setTempCustomerInputs(customerInputs);
               setIsInputFormOpen(false);
             }}
-            okText={isLoading ? <SpinnerBtn /> : "Save Change"}
-            cancelText="Cancel"
-            cancelButtonProps={{
-              style: {
-                borderRadius: "0.375rem",
-                cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-              },
-            }}
-            okButtonProps={{
-              style: {
-                background: "#2563EB",
-                borderColor: "#2563EB",
-                color: "#fff",
-                borderRadius: "0.375rem",
-                cursor: "pointer",
-                minWidth: "5vw", // Hiệu ứng con trỏ khi di chuột qua
-              },
-            }}
             centered={true}
             zIndex={50}
+            footer={null}
           >
-            <section
-              aria-labelledby="customers-heading"
-              className="mb-8 sticky top-8"
-            >
-              <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Examples:  Online, Offline, Social Media, Email Marketing, Referrals, Direct Sales, Subscription...">
-                <div className="flex items-center">
-                  <h2
-                    className="text-lg font-semibold mb-8 flex items-center"
-                    id="customers-heading"
-                  >
-                    Customer channel
-                    <span className="flex justify-center items-center">
-                      <PlusCircleOutlined
-                        className="ml-2 text-blue-500"
-                        size="large"
-                        style={{ fontSize: "24px" }}
-                        onClick={handleAddNewCustomer}
-                      />
-                    </span>
-                  </h2>
-                </div>
-              </Tooltip>
-
-              <div>
-                <label
-                  htmlFor="selectedChannel"
-                  className="block my-4 text-base  darkTextWhite"
-                ></label>
-                <Select
-                  id="selectedChannel"
-                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                  value={renderCustomerForm}
-                  onValueChange={(value) => handleSelectChange(value)}
-                >
-                  <SelectTrigger className="border-solid border-[1px] border-gray-300">
-                    <SelectValue placeholder="All" />
-                  </SelectTrigger>
-                  <SelectContent position="popper">
-                    <SelectItem value="all">All</SelectItem>
-                    {tempCustomerInputs.map((input) => (
-                      <SelectItem key={input?.id} value={input?.id}>
-                        {input.channelName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {tempCustomerInputs
-                .filter((input) => input?.id == renderCustomerForm)
-                .map((input) => (
-                  <div
-                    key={input?.id}
-                    className="bg-white rounded-2xl p-6 border my-4"
-                  >
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className=" flex items-center text-sm">
-                        Channel Name:
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        value={input.channelName}
-                        onChange={(e) =>
-                          handleInputChange(
-                            input?.id,
-                            "channelName",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className=" flex items-center text-sm">
-                        Existing Customer:
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        type="text"
-                        value={formatNumber(input.beginCustomer)}
-                        onChange={(e) =>
-                          handleInputChange(
-                            input?.id,
-                            "beginCustomer",
-                            parseNumber(e.target.value)
-                          )
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        Adding (First month)
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        value={formatNumber(input.customersPerMonth)}
-                        onChange={(e) =>
-                          handleInputChange(
-                            input?.id,
-                            "customersPerMonth",
-                            parseNumber(e.target.value)
-                          )
-                        }
-                        type="text"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        Adding (Last month)
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        value={formatNumber(input.customersPerMonth)}
-                        onChange={(e) =>
-                          handleInputChange(
-                            input?.id,
-                            "customersPerMonth",
-                            parseNumber(e.target.value)
-                          )
-                        }
-                        type="text"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className=" flex items-center text-sm">
-                        Growth rate (%):
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        value={formatNumber(input.growthPerMonth)}
-                        onChange={(e) =>
-                          handleInputChange(
-                            input?.id,
-                            "growthPerMonth",
-                            parseNumber(e.target.value)
-                          )
-                        }
-                        type="text"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        Frequency:
-                      </span>
-                      <Select
-                        className="border-gray-300"
-                        onValueChange={(value) =>
-                          handleInputChange(
-                            input?.id,
-                            "customerGrowthFrequency",
-                            value
-                          )
-                        }
-                        value={input.customerGrowthFrequency}
-                      >
-                        <SelectTrigger
-                          id={`select-customerGrowthFrequency-${input?.id}`}
-                          className="border-solid border-[1px] border-gray-300"
-                        >
-                          <SelectValue placeholder="Select Growth Frequency" />
-                        </SelectTrigger>
-                        <SelectContent position="popper">
-                          <SelectItem value="Monthly">Monthly</SelectItem>
-                          <SelectItem value="Quarterly">Quarterly</SelectItem>
-                          <SelectItem value="Semi-Annually">
-                            Semi-Annually
-                          </SelectItem>
-                          <SelectItem value="Annually">Annually</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className=" flex items-center text-sm">
-                        Begin Month:
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        type="number"
-                        min={1}
-                        value={input.beginMonth}
-                        onChange={(e) =>
-                          handleInputChange(
-                            input?.id,
-                            "beginMonth",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className=" flex items-center text-sm">
-                        End Month:
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        type="number"
-                        min={1}
-                        value={input.endMonth}
-                        onChange={(e) =>
-                          handleInputChange(
-                            input?.id,
-                            "endMonth",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className=" flex items-center text-sm">
-                        Churn rate (%):
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        type="text"
-                        value={formatNumber(input.churnRate)}
-                        onChange={(e) =>
-                          handleInputChange(
-                            input?.id,
-                            "churnRate",
-                            parseNumber(e.target.value)
-                          )
-                        }
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">
-                        Additional Info:
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        value={input.additionalInfo}
-                        onChange={(e) =>
-                          handleInputChange(
-                            input?.id,
-                            "additionalInfo",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className=" flex items-center text-sm">
-                        Acquisition cost:
-                      </span>
-                      <Input
-                        className="col-start-2 border-gray-300"
-                        type="text"
-                        value={input.acquisitionCost}
-                        onChange={(e) =>
-                          handleInputChange(
-                            input?.id,
-                            "acquisitionCost",
-                            e.target.value
-                          )
-                        }
-                        disabled
-                      />
-                    </div>
-
-                    <div className="flex justify-end items-center">
-                      <button
-                        className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
-                        onClick={() => setIsDeleteModalOpen(true)}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                ))}
-            </section>
+            <CustomerInputsForm
+              tempCustomerInputs={tempCustomerInputs}
+              renderCustomerForm={renderCustomerForm}
+              handleSelectChange={handleSelectChange}
+              handleInputChange={handleInputChange}
+              formatNumber={formatNumber}
+              parseNumber={parseNumber}
+              handleAddNewCustomer={handleAddNewCustomer}
+              handleSave={handleSave}
+              handleFetchGPT={handleFetchGPT}
+              isLoading={isLoading}
+              showAdvancedInputs={showAdvancedInputs}
+              setShowAdvancedInputs={setShowAdvancedInputs}
+              isDeleteModalOpen={isDeleteModalOpen}
+              setIsDeleteModalOpen={setIsDeleteModalOpen}
+              confirmDelete={confirmDelete}
+            />
           </Modal>
         )}
 
@@ -2039,7 +1453,7 @@ const CustomerSection = React.memo(
             cancelButtonProps={{
               style: {
                 borderRadius: "0.375rem",
-                cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                cursor: "pointer",
               },
             }}
             okButtonProps={{
@@ -2048,7 +1462,7 @@ const CustomerSection = React.memo(
                 borderColor: "#f5222d",
                 color: "#fff",
                 borderRadius: "0.375rem",
-                cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                cursor: "pointer",
               },
             }}
             centered={true}

@@ -68,7 +68,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [spinning, setSpinning] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [temIsLoading, setTemIsLoading] = useState(true);
-  
+
   //DurationSection
   const {
     selectedDuration,
@@ -86,7 +86,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     location,
   } = useSelector((state) => state.durationSelect);
   const generatePrompt = () => {
-    return `Given ${description} and ${location}, list all facts and figures related to the revenue, cost, personnel, margin, salary related to in bullet points. Each bullet points no more than 10 words. `; 
+    return `Given ${description} and ${location}, list all facts and figures related to the revenue, cost, personnel, margin, salary related to in bullet points. Each bullet points no more than 10 words. `;
   };
   const { yearlyAverageCustomers } = useSelector((state) => state.customer);
   const { yearlySales } = useSelector((state) => state.sales);
@@ -952,7 +952,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                       numberOfMonths={numberOfMonths}
                     />
                   </div>
-                  <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block ">
+                  <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
                     <DurationSelect
                       handleSubmit={handleSubmit}
                       isLoading={isLoading}

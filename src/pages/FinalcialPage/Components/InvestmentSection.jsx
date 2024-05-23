@@ -145,8 +145,8 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     (state) => state.durationSelect
   );
 
-  const startingMonth = startMonth; // Tháng bắt đầu từ 1
-  const startingYear = startYear; // Năm bắt đầu từ 24
+  const startingMonth = startMonth;
+  const startingYear = startYear;
 
   const investmentColumns = [
     {
@@ -165,7 +165,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         align: "right",
         onCell: (record) => ({
           style: {
-            borderRight: "1px solid #f0f0f0", // Add border right style
+            borderRight: "1px solid #f0f0f0",
           },
         }),
       };
@@ -183,7 +183,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           show: true,
           tools: {
             download: true,
-          }
+          },
         },
         fontFamily: "Sora, sans-serif",
       },
@@ -198,7 +198,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       ],
       xaxis: {
         axisTicks: {
-          show: false, // Hide x-axis ticks
+          show: false,
         },
         labels: {
           show: true,
@@ -239,7 +239,6 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       },
       dataLabels: { enabled: false },
       stroke: { width: 1, curve: "straight" },
-      // markers: { size: 1 },
     },
     series: [],
   });
@@ -389,7 +388,6 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           if (existingData && existingData.length > 0) {
             const { user_email, collabs } = existingData[0];
 
-            // Check if user.email matches user_email or is included in collabs
             if (user.email !== user_email && !collabs?.includes(user.email)) {
               message.error(
                 "You do not have permission to update this record."
@@ -428,6 +426,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       } finally {
         setIsSaved(false);
         setIsLoading(false);
+        setIsInputFormOpen(false);
       }
     };
     saveData();
@@ -452,8 +451,8 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     setIsDeleteModalOpen(false);
   };
 
-  const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
-  const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
+  const [isChartModalVisible, setIsChartModalVisible] = useState(false);
+  const [selectedChart, setSelectedChart] = useState(null);
 
   const handleChartClick = (chart) => {
     setSelectedChart(chart);
@@ -527,14 +526,12 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                 <Chart
                   options={{
                     ...series.options,
-
                     xaxis: {
                       ...series.options.xaxis,
-                      // tickAmount: 6, // Ensure x-axis has 12 ticks
                     },
                     stroke: {
                       width: 1,
-                      curve: "straight", // Set the stroke width to 1
+                      curve: "straight",
                     },
                   }}
                   series={series.series}
@@ -557,7 +554,6 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
             <Chart
               options={{
                 ...selectedChart.options,
-                // ... other options
               }}
               series={selectedChart.series}
               type="area"
@@ -585,192 +581,19 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       </div>
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
-        <section
-          aria-labelledby="investment-heading"
-          className="mb-8 sticky top-8"
-        >
-          <h2
-            className="text-lg font-semibold mb-8 flex items-center"
-            id="investment-heading"
-          >
-            Investment
-          </h2>
-
-          <div>
-            <label
-              htmlFor="selectedChannel"
-              className="block my-4 text-base  darkTextWhite"
-            ></label>
-            <select
-              id="selectedChannel"
-              className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-              value={renderInvestmentForm}
-              onChange={handleSelectChange}
-            >
-              <option value="all">All</option>
-              {tempInvestmentInputs.map((input) => (
-                <option key={input?.id} value={input?.id}>
-                  {input.purchaseName}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {tempInvestmentInputs
-            .filter((input) => input?.id == renderInvestmentForm)
-            .map((input) => (
-              <div
-                key={input?.id}
-                className="bg-white rounded-2xl p-6 border my-4"
-              >
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Name of Purchase
-                  </span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    value={input.purchaseName}
-                    onChange={(e) =>
-                      handleInvestmentInputChange(
-                        input?.id,
-                        "purchaseName",
-                        e.target.value
-                      )
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">Asset Cost</span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    value={formatNumber(input.assetCost)}
-                    onChange={(e) =>
-                      handleInvestmentInputChange(
-                        input?.id,
-                        "assetCost",
-                        parseNumber(e.target.value)
-                      )
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">Quantity:</span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    type="text"
-                    min="1"
-                    value={formatNumber(input.quantity)}
-                    onChange={(e) =>
-                      handleInvestmentInputChange(
-                        input?.id,
-                        "quantity",
-                        parseNumber(e.target.value)
-                      )
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Purchase Month
-                  </span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    value={input.purchaseMonth}
-                    onChange={(e) =>
-                      handleInvestmentInputChange(
-                        input?.id,
-                        "purchaseMonth",
-                        e.target.value
-                      )
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Residual Value
-                  </span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    value={input.residualValue}
-                    onChange={(e) =>
-                      handleInvestmentInputChange(
-                        input?.id,
-                        "residualValue",
-                        e.target.value
-                      )
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Useful Lifetime (Months)
-                  </span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    value={formatNumber(input.usefulLifetime)}
-                    onChange={(e) =>
-                      handleInvestmentInputChange(
-                        input?.id,
-                        "usefulLifetime",
-                        parseNumber(e.target.value)
-                      )
-                    }
-                  />
-                </div>
-              </div>
-            ))}
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <button
-              className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
-              onClick={() => setIsDeleteModalOpen(true)}
-            >
-              <DeleteOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />
-              Remove
-            </button>
-
-            <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
-              onClick={addNewInvestmentInput}
-            >
-              <PlusOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />
-              Add
-            </button>
-
-            <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[5vw]"
-              onClick={handleSave}
-            >
-              {isLoading ? (
-                <SpinnerBtn />
-              ) : (
-                <>
-                  <CheckCircleOutlined
-                    style={{
-                      fontSize: "12px",
-                      color: "#FFFFFF",
-                      marginRight: "4px",
-                    }}
-                  />
-                  Save
-                </>
-              )}
-            </button>
-          </div>
-        </section>
+        <InvestmentInputForm
+          tempInvestmentInputs={tempInvestmentInputs}
+          renderInvestmentForm={renderInvestmentForm}
+          setRenderInvestmentForm={setRenderInvestmentForm}
+          handleInvestmentInputChange={handleInvestmentInputChange}
+          formatNumber={formatNumber}
+          parseNumber={parseNumber}
+          addNewInvestmentInput={addNewInvestmentInput}
+          handleSave={handleSave}
+          isLoading={isLoading}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
+        />
       </div>
-
       <div className="xl:hidden block">
         <FloatButton
           tooltip={<div>Input values</div>}
@@ -789,7 +612,6 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
       {isInputFormOpen && (
         <Modal
-          // title="Customer channel"
           visible={isInputFormOpen}
           onOk={() => {
             handleSave();
@@ -805,7 +627,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           cancelButtonProps={{
             style: {
               borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              cursor: "pointer",
             },
           }}
           okButtonProps={{
@@ -814,168 +636,26 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               borderColor: "#2563EB",
               color: "#fff",
               borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              cursor: "pointer",
               minWidth: "5vw",
             },
           }}
+          footer={null}
           centered={true}
           zIndex={50}
         >
-          <section
-            aria-labelledby="investment-heading"
-            className="mb-8 sticky top-8"
-          >
-            <h2
-              className="text-lg font-semibold mb-8 flex items-center"
-              id="investment-heading"
-            >
-              Investment{" "}
-              <span className="flex justify-center items-center">
-                <PlusCircleOutlined
-                  className="ml-2 text-blue-500"
-                  size="large"
-                  style={{ fontSize: "24px" }}
-                  onClick={addNewInvestmentInput}
-                />
-              </span>
-            </h2>
-
-            <div>
-              <label
-                htmlFor="selectedChannel"
-                className="block my-4 text-base  darkTextWhite"
-              ></label>
-              <select
-                id="selectedChannel"
-                className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                value={renderInvestmentForm}
-                onChange={handleSelectChange}
-              >
-                <option value="all">All</option>
-                {tempInvestmentInputs.map((input) => (
-                  <option key={input?.id} value={input?.id}>
-                    {input.purchaseName}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {tempInvestmentInputs
-              .filter((input) => input?.id == renderInvestmentForm)
-              .map((input) => (
-                <div
-                  key={input?.id}
-                  className="bg-white rounded-2xl p-6 border my-4"
-                >
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Name of Purchase
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      value={input.purchaseName}
-                      onChange={(e) =>
-                        handleInvestmentInputChange(
-                          input?.id,
-                          "purchaseName",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Asset Cost
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      value={formatNumber(input.assetCost)}
-                      onChange={(e) =>
-                        handleInvestmentInputChange(
-                          input?.id,
-                          "assetCost",
-                          parseNumber(e.target.value)
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Quantity:
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      type="text"
-                      min="1"
-                      value={formatNumber(input.quantity)}
-                      onChange={(e) =>
-                        handleInvestmentInputChange(
-                          input?.id,
-                          "quantity",
-                          parseNumber(e.target.value)
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Purchase Month
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      value={input.purchaseMonth}
-                      onChange={(e) =>
-                        handleInvestmentInputChange(
-                          input?.id,
-                          "purchaseMonth",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Residual Value
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      value={input.residualValue}
-                      onChange={(e) =>
-                        handleInvestmentInputChange(
-                          input?.id,
-                          "residualValue",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Useful Lifetime (Months)
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      value={formatNumber(input.usefulLifetime)}
-                      onChange={(e) =>
-                        handleInvestmentInputChange(
-                          input?.id,
-                          "usefulLifetime",
-                          parseNumber(e.target.value)
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="flex justify-end items-center">
-                    <button
-                      className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
-                      onClick={() => setIsDeleteModalOpen(true)}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
-          </section>
+          <InvestmentInputForm
+            tempInvestmentInputs={tempInvestmentInputs}
+            renderInvestmentForm={renderInvestmentForm}
+            setRenderInvestmentForm={setRenderInvestmentForm}
+            handleInvestmentInputChange={handleInvestmentInputChange}
+            formatNumber={formatNumber}
+            parseNumber={parseNumber}
+            addNewInvestmentInput={addNewInvestmentInput}
+            handleSave={handleSave}
+            isLoading={isLoading}
+            setIsDeleteModalOpen={setIsDeleteModalOpen}
+          />
         </Modal>
       )}
       {isDeleteModalOpen && (
@@ -989,7 +669,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           cancelButtonProps={{
             style: {
               borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              cursor: "pointer",
             },
           }}
           okButtonProps={{
@@ -998,7 +678,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               borderColor: "#f5222d",
               color: "#fff",
               borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+              cursor: "pointer",
             },
           }}
           centered={true}
@@ -1007,6 +687,195 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         </Modal>
       )}
     </div>
+  );
+};
+
+const InvestmentInputForm = ({
+  tempInvestmentInputs,
+  renderInvestmentForm,
+  setRenderInvestmentForm,
+  handleInvestmentInputChange,
+  formatNumber,
+  parseNumber,
+  addNewInvestmentInput,
+  handleSave,
+  isLoading,
+  setIsDeleteModalOpen,
+}) => {
+  return (
+    <section aria-labelledby="investment-heading" className="mb-8 sticky top-8">
+      <h2
+        className="text-lg font-semibold mb-8 flex items-center"
+        id="investment-heading"
+      >
+        Investment
+      </h2>
+      <div>
+        <label
+          htmlFor="selectedChannel"
+          className="block my-4 text-base darkTextWhite"
+        ></label>
+        <select
+          id="selectedChannel"
+          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+          value={renderInvestmentForm}
+          onChange={(e) => setRenderInvestmentForm(e.target.value)}
+        >
+          <option value="all">All</option>
+          {tempInvestmentInputs.map((input) => (
+            <option key={input?.id} value={input?.id}>
+              {input.purchaseName}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {tempInvestmentInputs
+        .filter((input) => input?.id == renderInvestmentForm)
+        .map((input) => (
+          <div key={input?.id} className="bg-white rounded-2xl p-6 border my-4">
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className="flex items-center text-sm">
+                Name of Purchase
+              </span>
+              <Input
+                className="col-start-2 border-gray-300"
+                value={input.purchaseName}
+                onChange={(e) =>
+                  handleInvestmentInputChange(
+                    input?.id,
+                    "purchaseName",
+                    e.target.value
+                  )
+                }
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className="flex items-center text-sm">Asset Cost</span>
+              <Input
+                className="col-start-2 border-gray-300"
+                value={formatNumber(input.assetCost)}
+                onChange={(e) =>
+                  handleInvestmentInputChange(
+                    input?.id,
+                    "assetCost",
+                    parseNumber(e.target.value)
+                  )
+                }
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className="flex items-center text-sm">Quantity:</span>
+              <Input
+                className="col-start-2 border-gray-300"
+                type="text"
+                min="1"
+                value={formatNumber(input.quantity)}
+                onChange={(e) =>
+                  handleInvestmentInputChange(
+                    input?.id,
+                    "quantity",
+                    parseNumber(e.target.value)
+                  )
+                }
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className="flex items-center text-sm">Purchase Month</span>
+              <Input
+                className="col-start-2 border-gray-300"
+                value={input.purchaseMonth}
+                onChange={(e) =>
+                  handleInvestmentInputChange(
+                    input?.id,
+                    "purchaseMonth",
+                    e.target.value
+                  )
+                }
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className="flex items-center text-sm">Residual Value</span>
+              <Input
+                className="col-start-2 border-gray-300"
+                value={input.residualValue}
+                onChange={(e) =>
+                  handleInvestmentInputChange(
+                    input?.id,
+                    "residualValue",
+                    e.target.value
+                  )
+                }
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className="flex items-center text-sm">
+                Useful Lifetime (Months)
+              </span>
+              <Input
+                className="col-start-2 border-gray-300"
+                value={formatNumber(input.usefulLifetime)}
+                onChange={(e) =>
+                  handleInvestmentInputChange(
+                    input?.id,
+                    "usefulLifetime",
+                    parseNumber(e.target.value)
+                  )
+                }
+              />
+            </div>
+          </div>
+        ))}
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <button
+          className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
+          onClick={() => setIsDeleteModalOpen(true)}
+        >
+          <DeleteOutlined
+            style={{
+              fontSize: "12px",
+              color: "#FFFFFF",
+              marginRight: "4px",
+            }}
+          />
+          Remove
+        </button>
+
+        <button
+          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+          onClick={addNewInvestmentInput}
+        >
+          <PlusOutlined
+            style={{
+              fontSize: "12px",
+              color: "#FFFFFF",
+              marginRight: "4px",
+            }}
+          />
+          Add
+        </button>
+
+        <button
+          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw]"
+          onClick={handleSave}
+        >
+          {isLoading ? (
+            <SpinnerBtn />
+          ) : (
+            <>
+              <CheckCircleOutlined
+                style={{
+                  fontSize: "12px",
+                  color: "#FFFFFF",
+                  marginRight: "4px",
+                }}
+              />
+              Save
+            </>
+          )}
+        </button>
+      </div>
+    </section>
   );
 };
 

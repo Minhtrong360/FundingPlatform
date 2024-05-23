@@ -25,6 +25,7 @@ import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import currencyLists from "../../../components/Currency";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import SpinnerBtn from "../../../components/SpinnerBtn";
+import TextArea from "antd/es/input/TextArea";
 
 const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
   const dispatch = useDispatch();
@@ -324,12 +325,12 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
             </SelectContent>
           </Select>
         </div>
-        <div className="grid grid-cols-2 gap-4 mb-3">
+        <div className="grid grid-cols-2 gap-4 mb-3 min-h-[7rem]">
           <Tooltip title="Input the income tax, e.g. 10">
             <span className="flex items-center text-sm">Description :</span>
           </Tooltip>
-          <Input
-            className="border-gray-300"
+          <TextArea
+            className="border-gray-300 rounded-2xl"
             type="text"
             value={description}
             onChange={(e) => dispatch(setDescription(e.target.value))}

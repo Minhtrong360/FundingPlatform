@@ -53,11 +53,21 @@ const CostSection = ({
 
   const [renderCostForm, setRenderCostForm] = useState(costInputs[0]?.id);
 
+  const costGroupArray = [
+    "Rent",
+    "Utilities",
+    "Insurance",
+    "Office Supplies",
+    "Travel Expenses",
+    "Professional Fees",
+  ];
+
   useEffect(() => {
     setTempCostInput(
       costInputs.map((input) => ({
         ...input,
         relatedRevenue: input.relatedRevenue || Object.keys(revenueData)[0],
+        costGroup: input.costGroup || costGroupArray[0],
       }))
     );
   }, [costInputs, revenueData]);
@@ -112,7 +122,9 @@ const CostSection = ({
 
   const handleCostTypeChange = (id, value) => {
     const updatedInputs = tempCostInput.map((input) =>
-      input.id === id ? { ...input, costType: value, relatedRevenue: "" } : input
+      input.id === id
+        ? { ...input, costType: value, relatedRevenue: "" }
+        : input
     );
     setTempCostInput(updatedInputs);
   };
@@ -195,13 +207,12 @@ const CostSection = ({
           show: true,
           tools: {
             download: true,
-          }
+          },
         },
         zoom: { enabled: false },
         animations: {
           enabled: false,
         },
-        
       },
       colors: [
         "#00A2FF",
@@ -514,12 +525,18 @@ const CostSection = ({
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section aria-labelledby="costs-heading" className="mb-8 sticky top-8">
-          <h2 className="text-lg font-semibold mb-8 flex items-center" id="costs-heading">
+          <h2
+            className="text-lg font-semibold mb-8 flex items-center"
+            id="costs-heading"
+          >
             Costs
           </h2>
 
           <div>
-            <label htmlFor="selectedChannel" className="block my-4 text-base darkTextWhite"></label>
+            <label
+              htmlFor="selectedChannel"
+              className="block my-4 text-base darkTextWhite"
+            ></label>
             <select
               id="selectedChannel"
               className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
@@ -537,14 +554,25 @@ const CostSection = ({
           {tempCostInput
             .filter((input) => input?.id == renderCostForm)
             .map((input) => (
-              <div key={input?.id} className="bg-white rounded-2xl p-6 border my-4">
+              <div
+                key={input?.id}
+                className="bg-white rounded-2xl p-6 border my-4"
+              >
                 {/* New dropdown for "Based on Revenue" or "Not related to revenue" */}
                 <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className="flex items-center text-sm">Cost dependence:</span>
+                  <span className="flex items-center text-sm">
+                    Cost dependence:
+                  </span>
                   <Select
                     className="border-gray-300"
-                    onValueChange={(value) => handleCostTypeChange(input?.id, value)}
-                    value={input.costType === "Based on Revenue" ? "Based on Revenue" : "Not related to revenue"}
+                    onValueChange={(value) =>
+                      handleCostTypeChange(input?.id, value)
+                    }
+                    value={
+                      input.costType === "Based on Revenue"
+                        ? "Based on Revenue"
+                        : "Not related to revenue"
+                    }
                   >
                     <SelectTrigger
                       id={`select-costCategory-${input?.id}`}
@@ -566,11 +594,15 @@ const CostSection = ({
                 {/* Conditionally render the cost type dropdown */}
                 {input.costType === "Based on Revenue" && (
                   <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">Cost Type:</span>
+                    <span className="flex items-center text-sm">
+                      Cost Group:
+                    </span>
                     <Select
                       className="border-gray-300"
-                      onValueChange={(value) => handleCostInputChange(input?.id, "costType", value)}
-                      value={input.costType}
+                      onValueChange={(value) =>
+                        handleCostInputChange(input?.id, "costGroup", value)
+                      }
+                      value={input.costGroup}
                     >
                       <SelectTrigger
                         id={`select-costType-${input?.id}`}
@@ -579,15 +611,9 @@ const CostSection = ({
                         <SelectValue placeholder="Select Cost Type" />
                       </SelectTrigger>
                       <SelectContent position="popper">
-                        <SelectItem value="Sales, Marketing Cost">
-                          Sales, Marketing
-                        </SelectItem>
-                        <SelectItem value="General Administrative Cost">
-                          General Administrative
-                        </SelectItem>
-                        <SelectItem value="Based on Revenue">
-                          Based on Revenue
-                        </SelectItem>
+                        {costGroupArray.map((cost) => {
+                          return <SelectItem value={cost}>{cost}</SelectItem>;
+                        })}
                       </SelectContent>
                     </Select>
                   </div>
@@ -597,20 +623,36 @@ const CostSection = ({
                 {input.costType === "Based on Revenue" ? (
                   <>
                     <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">Cost Name:</span>
+                      <span className="flex items-center text-sm">
+                        Cost Name:
+                      </span>
                       <Input
                         className="col-start-2 border-gray-300"
                         value={input.costName}
-                        onChange={(e) => handleCostInputChange(input?.id, "costName", e.target.value)}
+                        onChange={(e) =>
+                          handleCostInputChange(
+                            input?.id,
+                            "costName",
+                            e.target.value
+                          )
+                        }
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">Related Product:</span>
+                      <span className="flex items-center text-sm">
+                        Related Product:
+                      </span>
                       <Select
                         className="mb-4"
                         placeholder="Select Related Revenue"
                         value={input.relatedRevenue}
-                        onValueChange={(value) => handleCostInputChange(input.id, "relatedRevenue", value)}
+                        onValueChange={(value) =>
+                          handleCostInputChange(
+                            input.id,
+                            "relatedRevenue",
+                            value
+                          )
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select Related Revenue" />
@@ -625,48 +667,88 @@ const CostSection = ({
                       </Select>
                     </div>
                     <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">Cost Value (% Revenue):</span>
+                      <span className="flex items-center text-sm">
+                        Cost Value (% Revenue):
+                      </span>
                       <Input
                         className="col-start-2 border-gray-300"
                         type="text"
                         value={formatNumber(input.salePercentage)}
-                        onChange={(e) => handleCostInputChange(input?.id, "salePercentage", parseNumber(e.target.value))}
+                        onChange={(e) =>
+                          handleCostInputChange(
+                            input?.id,
+                            "salePercentage",
+                            parseNumber(e.target.value)
+                          )
+                        }
                       />
                     </div>
                   </>
                 ) : (
                   <>
                     <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">Cost Name:</span>
+                      <span className="flex items-center text-sm">
+                        Cost Name:
+                      </span>
                       <Input
                         className="col-start-2 border-gray-300"
                         value={input.costName}
-                        onChange={(e) => handleCostInputChange(input?.id, "costName", e.target.value)}
+                        onChange={(e) =>
+                          handleCostInputChange(
+                            input?.id,
+                            "costName",
+                            e.target.value
+                          )
+                        }
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">Cost Value:</span>
+                      <span className="flex items-center text-sm">
+                        Cost Value:
+                      </span>
                       <Input
                         className="col-start-2 border-gray-300"
                         type="text"
                         value={formatNumber(input.costValue)}
-                        onChange={(e) => handleCostInputChange(input?.id, "costValue", parseNumber(e.target.value))}
+                        onChange={(e) =>
+                          handleCostInputChange(
+                            input?.id,
+                            "costValue",
+                            parseNumber(e.target.value)
+                          )
+                        }
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">Growth Percentage (%):</span>
+                      <span className="flex items-center text-sm">
+                        Growth Percentage (%):
+                      </span>
                       <Input
                         className="col-start-2 border-gray-300"
                         type="text"
                         value={formatNumber(input.growthPercentage)}
-                        onChange={(e) => handleCostInputChange(input?.id, "growthPercentage", parseNumber(e.target.value))}
+                        onChange={(e) =>
+                          handleCostInputChange(
+                            input?.id,
+                            "growthPercentage",
+                            parseNumber(e.target.value)
+                          )
+                        }
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">Frequency:</span>
+                      <span className="flex items-center text-sm">
+                        Frequency:
+                      </span>
                       <Select
                         className="border-gray-300"
-                        onValueChange={(value) => handleCostInputChange(input?.id, "growthFrequency", value)}
+                        onValueChange={(value) =>
+                          handleCostInputChange(
+                            input?.id,
+                            "growthFrequency",
+                            value
+                          )
+                        }
                         value={input.growthFrequency}
                       >
                         <SelectTrigger
@@ -678,31 +760,49 @@ const CostSection = ({
                         <SelectContent position="popper">
                           <SelectItem value="Monthly">Monthly</SelectItem>
                           <SelectItem value="Quarterly">Quarterly</SelectItem>
-                          <SelectItem value="Semi-Annually">Semi-Annually</SelectItem>
+                          <SelectItem value="Semi-Annually">
+                            Semi-Annually
+                          </SelectItem>
                           <SelectItem value="Annually">Annually</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">Begin Month:</span>
+                      <span className="flex items-center text-sm">
+                        Begin Month:
+                      </span>
                       <Input
                         className="col-start-2 border-gray-300"
                         type="number"
                         min="1"
                         max="12"
                         value={input.beginMonth}
-                        onChange={(e) => handleCostInputChange(input?.id, "beginMonth", parseInt(e.target.value, 10))}
+                        onChange={(e) =>
+                          handleCostInputChange(
+                            input?.id,
+                            "beginMonth",
+                            parseInt(e.target.value, 10)
+                          )
+                        }
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">End Month:</span>
+                      <span className="flex items-center text-sm">
+                        End Month:
+                      </span>
                       <Input
                         className="col-start-2 border-gray-300"
                         type="number"
                         min="1"
                         max="12"
                         value={input.endMonth}
-                        onChange={(e) => handleCostInputChange(input?.id, "endMonth", parseInt(e.target.value, 10))}
+                        onChange={(e) =>
+                          handleCostInputChange(
+                            input?.id,
+                            "endMonth",
+                            parseInt(e.target.value, 10)
+                          )
+                        }
                       />
                     </div>
                   </>
@@ -809,8 +909,14 @@ const CostSection = ({
           centered={true}
           zIndex={50}
         >
-          <section aria-labelledby="costs-heading" className="mb-8 sticky top-8">
-            <h2 className="text-lg font-semibold mb-8 flex items-center" id="costs-heading">
+          <section
+            aria-labelledby="costs-heading"
+            className="mb-8 sticky top-8"
+          >
+            <h2
+              className="text-lg font-semibold mb-8 flex items-center"
+              id="costs-heading"
+            >
               Costs
               <span className="flex justify-center items-center">
                 <PlusCircleOutlined
@@ -823,7 +929,10 @@ const CostSection = ({
             </h2>
 
             <div>
-              <label htmlFor="selectedChannel" className="block my-4 text-base darkTextWhite"></label>
+              <label
+                htmlFor="selectedChannel"
+                className="block my-4 text-base darkTextWhite"
+              ></label>
               <select
                 id="selectedChannel"
                 className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
@@ -841,14 +950,25 @@ const CostSection = ({
             {tempCostInput
               .filter((input) => input?.id == renderCostForm)
               .map((input) => (
-                <div key={input?.id} className="bg-white rounded-2xl p-6 border my-4">
+                <div
+                  key={input?.id}
+                  className="bg-white rounded-2xl p-6 border my-4"
+                >
                   {/* New dropdown for "Based on Revenue" or "Not related to revenue" */}
                   <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">Cost dependence:</span>
+                    <span className="flex items-center text-sm">
+                      Cost dependence:
+                    </span>
                     <Select
                       className="border-gray-300"
-                      onValueChange={(value) => handleCostTypeChange(input?.id, value)}
-                      value={input.costType === "Based on Revenue" ? "Based on Revenue" : "Not related to revenue"}
+                      onValueChange={(value) =>
+                        handleCostTypeChange(input?.id, value)
+                      }
+                      value={
+                        input.costType === "Based on Revenue"
+                          ? "Based on Revenue"
+                          : "Not related to revenue"
+                      }
                     >
                       <SelectTrigger
                         id={`select-costCategory-${input?.id}`}
@@ -870,10 +990,14 @@ const CostSection = ({
                   {/* Conditionally render the cost type dropdown */}
                   {input.costType === "Based on Revenue" && (
                     <div className="grid grid-cols-2 gap-4 mb-3">
-                      <span className="flex items-center text-sm">Cost Type:</span>
+                      <span className="flex items-center text-sm">
+                        Cost Type:
+                      </span>
                       <Select
                         className="border-gray-300"
-                        onValueChange={(value) => handleCostInputChange(input?.id, "costType", value)}
+                        onValueChange={(value) =>
+                          handleCostInputChange(input?.id, "costType", value)
+                        }
                         value={input.costType}
                       >
                         <SelectTrigger
@@ -901,20 +1025,36 @@ const CostSection = ({
                   {input.costType === "Based on Revenue" ? (
                     <>
                       <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">Cost Name:</span>
+                        <span className="flex items-center text-sm">
+                          Cost Name:
+                        </span>
                         <Input
                           className="col-start-2 border-gray-300"
                           value={input.costName}
-                          onChange={(e) => handleCostInputChange(input?.id, "costName", e.target.value)}
+                          onChange={(e) =>
+                            handleCostInputChange(
+                              input?.id,
+                              "costName",
+                              e.target.value
+                            )
+                          }
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">Related Product:</span>
+                        <span className="flex items-center text-sm">
+                          Related Product:
+                        </span>
                         <Select
                           className="mb-4"
                           placeholder="Select Related Revenue"
                           value={input.relatedRevenue}
-                          onValueChange={(value) => handleCostInputChange(input.id, "relatedRevenue", value)}
+                          onValueChange={(value) =>
+                            handleCostInputChange(
+                              input.id,
+                              "relatedRevenue",
+                              value
+                            )
+                          }
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select Related Revenue" />
@@ -929,48 +1069,88 @@ const CostSection = ({
                         </Select>
                       </div>
                       <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">Cost Value (% Revenue):</span>
+                        <span className="flex items-center text-sm">
+                          Cost Value (% Revenue):
+                        </span>
                         <Input
                           className="col-start-2 border-gray-300"
                           type="text"
                           value={formatNumber(input.salePercentage)}
-                          onChange={(e) => handleCostInputChange(input?.id, "salePercentage", parseNumber(e.target.value))}
+                          onChange={(e) =>
+                            handleCostInputChange(
+                              input?.id,
+                              "salePercentage",
+                              parseNumber(e.target.value)
+                            )
+                          }
                         />
                       </div>
                     </>
                   ) : (
                     <>
                       <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">Cost Name:</span>
+                        <span className="flex items-center text-sm">
+                          Cost Name:
+                        </span>
                         <Input
                           className="col-start-2 border-gray-300"
                           value={input.costName}
-                          onChange={(e) => handleCostInputChange(input?.id, "costName", e.target.value)}
+                          onChange={(e) =>
+                            handleCostInputChange(
+                              input?.id,
+                              "costName",
+                              e.target.value
+                            )
+                          }
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">Cost Value:</span>
+                        <span className="flex items-center text-sm">
+                          Cost Value:
+                        </span>
                         <Input
                           className="col-start-2 border-gray-300"
                           type="text"
                           value={formatNumber(input.costValue)}
-                          onChange={(e) => handleCostInputChange(input?.id, "costValue", parseNumber(e.target.value))}
+                          onChange={(e) =>
+                            handleCostInputChange(
+                              input?.id,
+                              "costValue",
+                              parseNumber(e.target.value)
+                            )
+                          }
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">Growth Percentage (%):</span>
+                        <span className="flex items-center text-sm">
+                          Growth Percentage (%):
+                        </span>
                         <Input
                           className="col-start-2 border-gray-300"
                           type="text"
                           value={formatNumber(input.growthPercentage)}
-                          onChange={(e) => handleCostInputChange(input?.id, "growthPercentage", parseNumber(e.target.value))}
+                          onChange={(e) =>
+                            handleCostInputChange(
+                              input?.id,
+                              "growthPercentage",
+                              parseNumber(e.target.value)
+                            )
+                          }
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">Frequency:</span>
+                        <span className="flex items-center text-sm">
+                          Frequency:
+                        </span>
                         <Select
                           className="border-gray-300"
-                          onValueChange={(value) => handleCostInputChange(input?.id, "growthFrequency", value)}
+                          onValueChange={(value) =>
+                            handleCostInputChange(
+                              input?.id,
+                              "growthFrequency",
+                              value
+                            )
+                          }
                           value={input.growthFrequency}
                         >
                           <SelectTrigger
@@ -982,31 +1162,49 @@ const CostSection = ({
                           <SelectContent position="popper">
                             <SelectItem value="Monthly">Monthly</SelectItem>
                             <SelectItem value="Quarterly">Quarterly</SelectItem>
-                            <SelectItem value="Semi-Annually">Semi-Annually</SelectItem>
+                            <SelectItem value="Semi-Annually">
+                              Semi-Annually
+                            </SelectItem>
                             <SelectItem value="Annually">Annually</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                       <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">Begin Month:</span>
+                        <span className="flex items-center text-sm">
+                          Begin Month:
+                        </span>
                         <Input
                           className="col-start-2 border-gray-300"
                           type="number"
                           min="1"
                           max="12"
                           value={input.beginMonth}
-                          onChange={(e) => handleCostInputChange(input?.id, "beginMonth", parseInt(e.target.value, 10))}
+                          onChange={(e) =>
+                            handleCostInputChange(
+                              input?.id,
+                              "beginMonth",
+                              parseInt(e.target.value, 10)
+                            )
+                          }
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-4 mb-3">
-                        <span className="flex items-center text-sm">End Month:</span>
+                        <span className="flex items-center text-sm">
+                          End Month:
+                        </span>
                         <Input
                           className="col-start-2 border-gray-300"
                           type="number"
                           min="1"
                           max="12"
                           value={input.endMonth}
-                          onChange={(e) => handleCostInputChange(input?.id, "endMonth", parseInt(e.target.value, 10))}
+                          onChange={(e) =>
+                            handleCostInputChange(
+                              input?.id,
+                              "endMonth",
+                              parseInt(e.target.value, 10)
+                            )
+                          }
                         />
                       </div>
                     </>

@@ -1150,7 +1150,7 @@ export const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   {isInputFormOpen && (
                     <Modal
                       // title="Customer channel"
-                      visible={isInputFormOpen}
+                      open={isInputFormOpen}
                       onOk={() => {
                         handleSubmit();
                         setIsInputFormOpen(false);

@@ -186,6 +186,62 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     incomeTaxRate,
     startingCashBalance
   );
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+  const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  const startingYear = startYear; // Năm bắt đầu từ 24
+
+  const realDate = Array.from({ length: numberOfMonths }, (_, i) => {
+    const monthIndex = (startingMonth + i - 1) % 12;
+    const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+    return `${monthIndex + 1}-${year}`;
+  });
+  const profitAndLossData = [
+    { key: "Revenue" },
+    { key: "Total Revenue", values: totalRevenue },
+    { key: "Deductions", values: totalDeductions },
+    { key: "Net Revenue", values: netRevenue },
+    { key: "Cost of Revenue" },
+    { key: "Total COGS", values: totalCOGS },
+    { key: "Gross Profit", values: grossProfit },
+    { key: "Operating Expenses" },
+    { key: "Operating Costs", values: totalCosts },
+    {
+      key: "Personnel",
+      values: totalPersonnelCosts,
+      children: Object.keys(detailedPersonnelCosts).map((jobTitle) => ({
+        key: jobTitle,
+        values: detailedPersonnelCosts[jobTitle],
+      })),
+    },
+    { key: "EBITDA", values: ebitda },
+    { key: "Additional Expenses" },
+    { key: "Depreciation", values: totalInvestmentDepreciation },
+    { key: "Interest", values: totalInterestPayments },
+    { key: "EBT", values: earningsBeforeTax },
+    { key: "Income Tax", values: incomeTax },
+    { key: "Net Income", values: netIncome },
+  ].map((item, index) => ({
+    metric: item.key,
+    ...item.values?.reduce(
+      (acc, value, i) => ({
+        ...acc,
+        [realDate[i]]: formatNumber(value?.toFixed(2)),
+      }),
+      {}
+    ),
+    children: item.children?.map((child) => ({
+      metric: child.key,
+      ...child.values.reduce(
+        (acc, value, i) => ({
+          ...acc,
+          [realDate[i]]: formatNumber(value?.toFixed(2)),
+        }),
+        {}
+      ),
+    })),
+  }));
 
   const transposedData = [
     { key: "Revenue" },
@@ -247,12 +303,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     "11",
     "12",
   ];
-  const { startMonth, startYear } = useSelector(
-    (state) => state.durationSelect
-  );
-
-  const startingMonth = startMonth; // Tháng bắt đầu từ 1
-  const startingYear = startYear; // Năm bắt đầu từ 24
 
   const columns = [
     {
@@ -263,7 +313,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
 
       render: (text, record) => ({
         children: (
-          <div className={"md:whitespace-nowrap"}>
+          <div className={"md:whitespace-nowrap truncate"}>
             <div
               style={{
                 fontWeight:
@@ -846,8 +896,8 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       </div>
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
-        <section className="mb-8 sticky top-8 bg-white">
-          <GroqJS datasrc={transposedData} />
+        <section className="mb-8 sticky top-8">
+          <GroqJS datasrc={profitAndLossData} />
         </section>
       </div>
 
@@ -870,7 +920,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       {isInputFormOpen && (
         <Modal
           // title="Customer channel"
-          visible={isInputFormOpen}
+          open={isInputFormOpen}
           onCancel={() => {
             setIsInputFormOpen(false);
           }}
@@ -894,7 +944,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           centered={true}
           zIndex={50}
         >
-          <GroqJS datasrc={transposedData} />
+          <GroqJS datasrc={profitAndLossData} />
         </Modal>
       )}
     </div>

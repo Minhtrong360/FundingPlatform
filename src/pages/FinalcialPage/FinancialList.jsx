@@ -786,7 +786,7 @@ function FinancialList() {
               {isDeleteModalOpen && (
                 <Modal
                   title="Confirm Delete"
-                  visible={isDeleteModalOpen}
+                  open={isDeleteModalOpen}
                   onOk={confirmDelete}
                   onCancel={() => {
                     setIsDeleteModalOpen(false);
@@ -817,7 +817,7 @@ function FinancialList() {
               {isAddNewModalOpen && (
                 <Modal
                   title="Add new financial project"
-                  visible={isAddNewModalOpen}
+                  open={isAddNewModalOpen}
                   onOk={confirmAddNew}
                   onCancel={() => setIsAddNewModalOpen(false)}
                   okText="Create"
@@ -855,7 +855,7 @@ function FinancialList() {
               {isAssignModalOpen && (
                 <Modal
                   title="Assign project"
-                  visible={isAssignModalOpen}
+                  open={isAssignModalOpen}
                   onOk={handleConfirmAssign}
                   onCancel={() => setIsAssignModalOpen(false)}
                   okText="Assign"
@@ -892,7 +892,7 @@ function FinancialList() {
               {isInviteModalOpen && (
                 <Modal
                   title="Invite user"
-                  visible={isInviteModalOpen}
+                  open={isInviteModalOpen}
                   onOk={handleConfirmInvite}
                   onCancel={() => setIsInviteModalOpen(false)}
                   okText="Invite"

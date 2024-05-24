@@ -892,7 +892,7 @@ function NewUserPage() {
       {isChangePasswordModalOpen && (
         <Modal
           title="Change Password"
-          visible={isChangePasswordModalOpen}
+          open={isChangePasswordModalOpen}
           onOk={confirmSave}
           onCancel={() => setIsChangePasswordModalOpen(false)}
           okText="Save"

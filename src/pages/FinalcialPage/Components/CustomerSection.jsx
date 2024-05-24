@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Input } from "../../../components/ui/Input";
 import {
   Button,
@@ -990,6 +990,7 @@ const CustomerSection = React.memo(
                   ...prevState.options.title,
                   text: "Yearly Total",
                 },
+                //
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
@@ -1031,6 +1032,7 @@ const CustomerSection = React.memo(
                   ...prevState.options.title,
                   text: "Yearly Growth Rate",
                 },
+
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
@@ -1073,7 +1075,7 @@ const CustomerSection = React.memo(
                   ...prevState.options.title,
                   text: "Total Yearly Customers by Channel",
                 },
-               
+
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
@@ -1332,34 +1334,26 @@ const CustomerSection = React.memo(
                     </Card>
                   ))}
                 </div>
-              <AntdModal
-  visible={isChartModalVisible}
-  footer={null}
-  centered
-  onCancel={() => setIsChartModalVisible(false)}
-  width="90%"
-  style={{ top: 20 }}
->
-  {selectedChart && (
-    <Chart
-      options={{
-        ...selectedChart.options,
-        toolbar: {
-          show: true,
-          tools: {
-            download: true,
-            // ... other tools
-          },
-          // ... other toolbar options
-        },
-        // ... other options
-      }}
-      series={selectedChart.series}
-      type="area"
-      height={500}
-    />
-  )}
-</AntdModal>
+                <AntdModal
+                  open={isChartModalVisible}
+                  footer={null}
+                  centered
+                  onCancel={() => setIsChartModalVisible(false)}
+                  width="90%"
+                  style={{ top: 20 }}
+                >
+                  {selectedChart && (
+                    <Chart
+                      options={{
+                        ...selectedChart.options,
+                        // ... other options
+                      }}
+                      series={selectedChart.series}
+                      type="area"
+                      height={500}
+                    />
+                  )}
+                </AntdModal>
 
                 <h3 className="text-lg font-semibold my-4">Customer Table</h3>
                 <Table
@@ -1423,7 +1417,7 @@ const CustomerSection = React.memo(
 
               {isInputFormOpen && (
                 <Modal
-                  visible={isInputFormOpen}
+                  open={isInputFormOpen}
                   onCancel={() => {
                     setTempCustomerInputs(customerInputs);
                     setIsInputFormOpen(false);
@@ -1454,7 +1448,7 @@ const CustomerSection = React.memo(
               {isDeleteModalOpen && (
                 <Modal
                   title="Confirm Delete"
-                  visible={isDeleteModalOpen}
+                  open={isDeleteModalOpen}
                   onOk={confirmDelete}
                   onCancel={() => setIsDeleteModalOpen(false)}
                   okText="Delete"

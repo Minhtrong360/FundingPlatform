@@ -360,7 +360,7 @@ function Tabs({
 
         {/* <Modal
           title="Add new Premium Code"
-          visible={isAddNewModalOpen}
+          open={isAddNewModalOpen}
           onOk={handleAddNewCode}
           onCancel={() => setIsAddNewModalOpen(false)}
           okText="Save"
@@ -423,7 +423,7 @@ function Tabs({
 
         <Modal
           title="Edit Premium Code"
-          visible={isEditModalOpen}
+          open={isEditModalOpen}
           onOk={handleEditCode}
           onCancel={() => setIsEditModalOpen(false)}
           okText="Save"
@@ -487,7 +487,7 @@ function Tabs({
         {isDeleteModalOpen && (
           <Modal
             title="Confirm Delete"
-            visible={isDeleteModalOpen}
+            open={isDeleteModalOpen}
             onOk={handleDeleteCode}
             onCancel={() => setIsDeleteModalOpen(false)}
             okText="Delete"

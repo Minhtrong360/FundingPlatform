@@ -360,7 +360,7 @@ export default function FleaMarketForm({
   return (
     <Modal
       title="Add new Flea-Market project"
-      visible={isAddNewModalOpen}
+      open={isAddNewModalOpen}
       onOk={handleSubmit}
       onCancel={handleCancel}
       okText="Save"

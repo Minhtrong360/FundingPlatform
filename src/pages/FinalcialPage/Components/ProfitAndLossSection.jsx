@@ -98,7 +98,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   const { personnelCostData, personnelInputs } = useSelector(
     (state) => state.personnel
   );
- 
+
   useEffect(() => {
     const calculatedData = calculatePersonnelCostData(
       personnelInputs,
@@ -186,7 +186,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     incomeTaxRate,
     startingCashBalance
   );
-  
 
   const transposedData = [
     { key: "Revenue" },
@@ -801,14 +800,13 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             Profit and Loss Statement
           </h2>
           {/* <pre>{JSON.stringify(tableData, null, 2)}</pre> */}
-          
+
           <Table
             className="overflow-auto my-8 rounded-md bg-white"
             size="small"
             bordered
             dataSource={transposedData}
             columns={columns}
-  
             pagination={false}
           />
 

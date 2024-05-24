@@ -372,7 +372,7 @@ const CostInputForm = ({
                   Additional Info:
                 </span>
                 <TextArea
-                  className="col-start-2 border-gray-300"
+                  className="col-start-2 border-gray-300 text-sm"
                   value={input.additionalInfo}
                   onChange={(e) =>
                     handleCostInputChange(
@@ -573,10 +573,6 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
 
   const handleInputTable = (value, recordKey, monthKey) => {
     // Extract month number from the monthKey
-    console.log("value", value);
-    console.log("recordKey", recordKey);
-    console.log("monthKey", monthKey);
-    console.log("costTableData", costTableData);
 
     // Update gptResponseArray in tempCustomerInputs
     const monthIndex = parseInt(monthKey.replace("month", "")) - 1;
@@ -585,7 +581,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
       if (record.key === recordKey) {
         return {
           ...record,
-          [monthKey]: value,
+          [monthKey]: formatNumber(value.toFixed(2)),
         };
       }
       return record;
@@ -593,26 +589,22 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
 
     dispatch(setCostTableData(updatedData));
 
-    // const updatedTempCustomerInputs = tempCostInput.map((input) => {
-    //   if (input.channelName === recordKey.split("-")[0]) {
-    //     const updatedGPTResponseArray = [...input.gptResponseArray];
-    //     updatedGPTResponseArray[monthIndex] = Number(value);
-    //     if (monthKey == "month1") {
-    //       return {
-    //         ...input,
-    //         gptResponseArray: updatedGPTResponseArray,
-    //         customersPerMonth: Number(value),
-    //       };
-    //     }
-    //     return {
-    //       ...input,
-    //       gptResponseArray: updatedGPTResponseArray,
-    //     };
-    //   }
-    //   return input;
-    // });
+    const updatedTempCostInputs = tempCostInput?.map((input) => {
+      if (input.costName === recordKey.split("-")[0]) {
+        const updatedGPTResponseArray = input.gptResponseArray
+          ? [...input.gptResponseArray]
+          : [];
+        updatedGPTResponseArray[monthIndex] = Number(value);
 
-    // setTempCostInput(updatedTempCustomerInputs);
+        return {
+          ...input,
+          gptResponseArray: updatedGPTResponseArray,
+        };
+      }
+      return input;
+    });
+
+    setTempCostInput(updatedTempCostInputs);
   };
 
   const costColumns = [
@@ -636,7 +628,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
           },
         }),
         render: (text, record) => {
-          if (!record.isHeader) {
+          if (!record.isHeader && record.key !== "Total") {
             return (
               <div>
                 <input
@@ -644,7 +636,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
                   value={record[`month${i + 1}`]}
                   onChange={(e) =>
                     handleInputTable(
-                      e.target.value,
+                      parseNumber(e.target.value),
                       record.key,
                       `month${i + 1}`
                     )
@@ -916,234 +908,273 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
     }
   };
 
-  console.log("tempCostInput", tempCostInput);
+  const [activeTab, setActiveTab] = useState("table&chart");
+
+  const handleTabChange = (tabName) => {
+    setActiveTab(tabName);
+  };
   return (
-    <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full xl:w-3/4 sm:p-4 p-0">
-        <h3 className="text-lg font-semibold mb-8">Cost Chart</h3>
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col transition duration-500 rounded-2xl">
-            <div className="flex justify-between items-center">
-              <div className="min-w-[10vw] mb-2">
-                <label htmlFor="startMonthSelect">Start Month:</label>
-                <select
-                  id="startMonthSelect"
-                  value={chartStartMonth}
-                  onChange={(e) =>
-                    setChartStartMonth(
-                      Math.max(1, Math.min(e.target.value, chartEndMonth))
-                    )
-                  }
-                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                >
-                  {Array.from({ length: numberOfMonths }, (_, i) => {
-                    const monthIndex = (startingMonth + i - 1) % 12;
-                    const year =
-                      startingYear + Math.floor((startingMonth + i - 1) / 12);
-                    return (
-                      <option key={i + 1} value={i + 1}>
-                        {`${months[monthIndex]}/${year}`}
-                      </option>
-                    );
-                  })}
-                </select>
+    <div>
+      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
+        <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
+          <li
+            className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+              activeTab === "table&chart" ? "bg-yellow-300 font-bold" : ""
+            }`}
+            onClick={() => handleTabChange("table&chart")}
+          >
+            Table and Chart
+          </li>
+          {/* Repeat for other tabs */}
+          <li
+            className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+              activeTab === "input" ? "bg-yellow-300 font-bold" : ""
+            }`}
+            onClick={() => handleTabChange("input")}
+          >
+            Input
+          </li>
+        </ul>
+      </div>
+      <div className="w-full h-full flex flex-col lg:flex-row">
+        {activeTab === "table&chart" && (
+          <>
+            <div className="w-full xl:w-3/4 sm:p-4 p-0">
+              <h3 className="text-lg font-semibold mb-8">Cost Chart</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card className="flex flex-col transition duration-500 rounded-2xl">
+                  <div className="flex justify-between items-center">
+                    <div className="min-w-[10vw] mb-2">
+                      <label htmlFor="startMonthSelect">Start Month:</label>
+                      <select
+                        id="startMonthSelect"
+                        value={chartStartMonth}
+                        onChange={(e) =>
+                          setChartStartMonth(
+                            Math.max(1, Math.min(e.target.value, chartEndMonth))
+                          )
+                        }
+                        className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                      >
+                        {Array.from({ length: numberOfMonths }, (_, i) => {
+                          const monthIndex = (startingMonth + i - 1) % 12;
+                          const year =
+                            startingYear +
+                            Math.floor((startingMonth + i - 1) / 12);
+                          return (
+                            <option key={i + 1} value={i + 1}>
+                              {`${months[monthIndex]}/${year}`}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                    <div className="min-w-[10vw] mb-2">
+                      <label htmlFor="endMonthSelect">End Month:</label>
+                      <select
+                        id="endMonthSelect"
+                        value={chartEndMonth}
+                        onChange={(e) =>
+                          setChartEndMonth(
+                            Math.max(
+                              chartStartMonth,
+                              Math.min(e.target.value, numberOfMonths)
+                            )
+                          )
+                        }
+                        className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                      >
+                        {Array.from({ length: numberOfMonths }, (_, i) => {
+                          const monthIndex = (startingMonth + i - 1) % 12;
+                          const year =
+                            startingYear +
+                            Math.floor((startingMonth + i - 1) / 12);
+                          return (
+                            <option key={i + 1} value={i + 1}>
+                              {`${months[monthIndex]}/${year}`}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                  </div>
+                  <div onClick={() => handleChartClick(costChart)}>
+                    <Chart
+                      options={{
+                        ...costChart.options,
+                        xaxis: {
+                          ...costChart.options.xaxis,
+                        },
+                        stroke: { width: 1, curve: "straight" },
+                      }}
+                      series={costChart.series}
+                      type="area"
+                      height={350}
+                    />
+                  </div>
+                </Card>
               </div>
-              <div className="min-w-[10vw] mb-2">
-                <label htmlFor="endMonthSelect">End Month:</label>
-                <select
-                  id="endMonthSelect"
-                  value={chartEndMonth}
-                  onChange={(e) =>
-                    setChartEndMonth(
-                      Math.max(
-                        chartStartMonth,
-                        Math.min(e.target.value, numberOfMonths)
-                      )
-                    )
-                  }
-                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                >
-                  {Array.from({ length: numberOfMonths }, (_, i) => {
-                    const monthIndex = (startingMonth + i - 1) % 12;
-                    const year =
-                      startingYear + Math.floor((startingMonth + i - 1) / 12);
-                    return (
-                      <option key={i + 1} value={i + 1}>
-                        {`${months[monthIndex]}/${year}`}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-            </div>
-            <div onClick={() => handleChartClick(costChart)}>
-              <Chart
-                options={{
-                  ...costChart.options,
-                  xaxis: {
-                    ...costChart.options.xaxis,
-                  },
-                  stroke: { width: 1, curve: "straight" },
-                }}
-                series={costChart.series}
-                type="area"
-                height={350}
+              <Modal
+                centered
+                visible={isChartModalVisible}
+                footer={null}
+                onCancel={() => setIsChartModalVisible(false)}
+                width="90%"
+                style={{ top: 20 }}
+              >
+                {selectedChart && (
+                  <Chart
+                    options={{
+                      ...selectedChart.options,
+                    }}
+                    series={selectedChart.series}
+                    type="area"
+                    height={500}
+                  />
+                )}
+              </Modal>
+              <h3 className="text-lg font-semibold my-4">Cost Table</h3>
+              <Table
+                className="overflow-auto my-8 rounded-md bg-white"
+                size="small"
+                dataSource={costTableData}
+                columns={costColumns}
+                pagination={false}
+                bordered
+                rowClassName={(record) =>
+                  record.key === "Total" || record.isHeader ? "font-bold" : ""
+                }
               />
             </div>
-          </Card>
-        </div>
-        <Modal
-          centered
-          visible={isChartModalVisible}
-          footer={null}
-          onCancel={() => setIsChartModalVisible(false)}
-          width="90%"
-          style={{ top: 20 }}
-        >
-          {selectedChart && (
-            <Chart
-              options={{
-                ...selectedChart.options,
-              }}
-              series={selectedChart.series}
-              type="area"
-              height={500}
-            />
-          )}
-        </Modal>
-        <h3 className="text-lg font-semibold my-4">Cost Table</h3>
-        <Table
-          className="overflow-auto my-8 rounded-md bg-white"
-          size="small"
-          dataSource={costTableData}
-          columns={costColumns}
-          pagination={false}
-          bordered
-          rowClassName={(record) =>
-            record.key === "Total" || record.isHeader ? "font-bold" : ""
-          }
-        />
+            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden "></div>
+          </>
+        )}
+        {activeTab === "input" && (
+          <>
+            <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
+
+            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
+              <CostInputForm
+                tempCostInput={tempCostInput}
+                renderCostForm={renderCostForm}
+                setRenderCostForm={setRenderCostForm}
+                handleCostInputChange={handleCostInputChange}
+                formatNumber={formatNumber}
+                parseNumber={parseNumber}
+                costGroupArray={costGroupArray}
+                revenueData={revenueData}
+                addNewCostInput={addNewCostInput}
+                handleSave={handleSave}
+                isLoading={isLoading}
+                setIsDeleteModalOpen={setIsDeleteModalOpen}
+                handleCostTypeChange={handleCostTypeChange}
+                showAdvancedInputs={showAdvancedInputs}
+                setShowAdvancedInputs={setShowAdvancedInputs}
+                handleFetchGPT={handleFetchGPT}
+              />
+            </div>
+
+            <div className="xl:hidden block">
+              <FloatButton
+                tooltip={<div>Input values</div>}
+                style={{
+                  position: "fixed",
+                  bottom: "30px",
+                  right: "30px",
+                }}
+                onClick={() => {
+                  setIsInputFormOpen(true);
+                }}
+              >
+                <Button type="primary" shape="circle" icon={<FileOutlined />} />
+              </FloatButton>
+            </div>
+
+            {isInputFormOpen && (
+              <Modal
+                visible={isInputFormOpen}
+                onOk={() => {
+                  handleSave();
+                  setIsInputFormOpen(false);
+                }}
+                onCancel={() => {
+                  setTempCostInput(costInputs);
+                  setIsInputFormOpen(false);
+                }}
+                okText={isLoading ? <SpinnerBtn /> : "Save Change"}
+                cancelText="Cancel"
+                cancelButtonProps={{
+                  style: {
+                    borderRadius: "0.375rem",
+                    cursor: "pointer",
+                  },
+                }}
+                okButtonProps={{
+                  style: {
+                    background: "#2563EB",
+                    borderColor: "#2563EB",
+                    color: "#fff",
+                    borderRadius: "0.375rem",
+                    cursor: "pointer",
+                    minWidth: "5vw",
+                  },
+                }}
+                footer={null}
+                centered={true}
+                zIndex={50}
+              >
+                <CostInputForm
+                  tempCostInput={tempCostInput}
+                  renderCostForm={renderCostForm}
+                  setRenderCostForm={setRenderCostForm}
+                  handleCostInputChange={handleCostInputChange}
+                  formatNumber={formatNumber}
+                  parseNumber={parseNumber}
+                  costGroupArray={costGroupArray}
+                  revenueData={revenueData}
+                  addNewCostInput={addNewCostInput}
+                  handleSave={handleSave}
+                  isLoading={isLoading}
+                  setIsDeleteModalOpen={setIsDeleteModalOpen}
+                  handleCostTypeChange={handleCostTypeChange}
+                  showAdvancedInputs={showAdvancedInputs}
+                  setShowAdvancedInputs={setShowAdvancedInputs}
+                  handleFetchGPT={handleFetchGPT}
+                />
+              </Modal>
+            )}
+
+            {isDeleteModalOpen && (
+              <Modal
+                title="Confirm Delete"
+                visible={isDeleteModalOpen}
+                onOk={confirmDelete}
+                onCancel={() => setIsDeleteModalOpen(false)}
+                okText="Delete"
+                cancelText="Cancel"
+                cancelButtonProps={{
+                  style: {
+                    borderRadius: "0.375rem",
+                    cursor: "pointer",
+                  },
+                }}
+                okButtonProps={{
+                  style: {
+                    background: "#f5222d",
+                    borderColor: "#f5222d",
+                    color: "#fff",
+                    borderRadius: "0.375rem",
+                    cursor: "pointer",
+                  },
+                }}
+                centered={true}
+              >
+                Are you sure you want to delete it?
+              </Modal>
+            )}
+          </>
+        )}
       </div>
-
-      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
-        <CostInputForm
-          tempCostInput={tempCostInput}
-          renderCostForm={renderCostForm}
-          setRenderCostForm={setRenderCostForm}
-          handleCostInputChange={handleCostInputChange}
-          formatNumber={formatNumber}
-          parseNumber={parseNumber}
-          costGroupArray={costGroupArray}
-          revenueData={revenueData}
-          addNewCostInput={addNewCostInput}
-          handleSave={handleSave}
-          isLoading={isLoading}
-          setIsDeleteModalOpen={setIsDeleteModalOpen}
-          handleCostTypeChange={handleCostTypeChange}
-          showAdvancedInputs={showAdvancedInputs}
-          setShowAdvancedInputs={setShowAdvancedInputs}
-          handleFetchGPT={handleFetchGPT}
-        />
-      </div>
-
-      <div className="xl:hidden block">
-        <FloatButton
-          tooltip={<div>Input values</div>}
-          style={{
-            position: "fixed",
-            bottom: "30px",
-            right: "30px",
-          }}
-          onClick={() => {
-            setIsInputFormOpen(true);
-          }}
-        >
-          <Button type="primary" shape="circle" icon={<FileOutlined />} />
-        </FloatButton>
-      </div>
-
-      {isInputFormOpen && (
-        <Modal
-          visible={isInputFormOpen}
-          onOk={() => {
-            handleSave();
-            setIsInputFormOpen(false);
-          }}
-          onCancel={() => {
-            setTempCostInput(costInputs);
-            setIsInputFormOpen(false);
-          }}
-          okText={isLoading ? <SpinnerBtn /> : "Save Change"}
-          cancelText="Cancel"
-          cancelButtonProps={{
-            style: {
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-            },
-          }}
-          okButtonProps={{
-            style: {
-              background: "#2563EB",
-              borderColor: "#2563EB",
-              color: "#fff",
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-              minWidth: "5vw",
-            },
-          }}
-          footer={null}
-          centered={true}
-          zIndex={50}
-        >
-          <CostInputForm
-            tempCostInput={tempCostInput}
-            renderCostForm={renderCostForm}
-            setRenderCostForm={setRenderCostForm}
-            handleCostInputChange={handleCostInputChange}
-            formatNumber={formatNumber}
-            parseNumber={parseNumber}
-            costGroupArray={costGroupArray}
-            revenueData={revenueData}
-            addNewCostInput={addNewCostInput}
-            handleSave={handleSave}
-            isLoading={isLoading}
-            setIsDeleteModalOpen={setIsDeleteModalOpen}
-            handleCostTypeChange={handleCostTypeChange}
-            showAdvancedInputs={showAdvancedInputs}
-            setShowAdvancedInputs={setShowAdvancedInputs}
-            handleFetchGPT={handleFetchGPT}
-          />
-        </Modal>
-      )}
-
-      {isDeleteModalOpen && (
-        <Modal
-          title="Confirm Delete"
-          visible={isDeleteModalOpen}
-          onOk={confirmDelete}
-          onCancel={() => setIsDeleteModalOpen(false)}
-          okText="Delete"
-          cancelText="Cancel"
-          cancelButtonProps={{
-            style: {
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-            },
-          }}
-          okButtonProps={{
-            style: {
-              background: "#f5222d",
-              borderColor: "#f5222d",
-              color: "#fff",
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-            },
-          }}
-          centered={true}
-        >
-          Are you sure you want to delete it?
-        </Modal>
-      )}
     </div>
   );
 };

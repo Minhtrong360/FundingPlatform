@@ -731,6 +731,11 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 
+  const [activeTabA, setActiveTabA] = useState("table&chart");
+
+  const handleTabChangeA = (tabName) => {
+    setActiveTabA(tabName);
+  };
   return (
     <div className="min-h-screen">
       {/* <div>
@@ -942,86 +947,122 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
             <div className="">
               {activeTab === "overview" && (
-                <div className="w-full h-full flex flex-col lg:flex-row ">
-                  {/* <div className="w-full lg:w-1/4 sm:p-4 p-0 "> */}
+                <div>
+                  <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
+                    <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
+                      <li
+                        className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                          activeTabA === "table&chart"
+                            ? "bg-yellow-300 font-bold"
+                            : ""
+                        }`}
+                        onClick={() => handleTabChangeA("table&chart")}
+                      >
+                        Chart
+                      </li>
+                      {/* Repeat for other tabs */}
+                      <li
+                        className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                          activeTabA === "input"
+                            ? "bg-yellow-300 font-bold"
+                            : ""
+                        }`}
+                        onClick={() => handleTabChangeA("input")}
+                      >
+                        Input
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="w-full h-full flex flex-col lg:flex-row">
+                    {activeTabA === "table&chart" && (
+                      <>
+                        <div className="w-full xl:w-3/4 sm:p-4 p-0">
+                          <h2
+                            className="text-lg font-semibold mb-7 flex items-center"
+                            id="duration-heading"
+                          >
+                            Overview
+                          </h2>
+                          {/* <Perflexity prompt={generatePrompt()} button={"Benchmark"} /> */}
+                          <MetricsFM
+                            customerGrowthChart={customerGrowthChart}
+                            revenue={revenue}
+                            numberOfMonths={numberOfMonths}
+                          />
+                        </div>
+                        <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden "></div>
+                      </>
+                    )}
+                    {activeTabA === "input" && (
+                      <>
+                        <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
 
-                  <div className="w-full xl:w-3/4 sm:p-4 p-0">
-                    <h2
-                      className="text-lg font-semibold mb-7 flex items-center"
-                      id="duration-heading"
-                    >
-                      Overview
-                    </h2>
-                    {/* <Perflexity prompt={generatePrompt()} button={"Benchmark"} /> */}
-                    <MetricsFM
-                      customerGrowthChart={customerGrowthChart}
-                      revenue={revenue}
-                      numberOfMonths={numberOfMonths}
-                    />
-                  </div>
-                  <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
-                    <DurationSelect
-                      handleSubmit={handleSubmit}
-                      isLoading={isLoading}
-                    />
-                  </div>
-                  <div className="xl:hidden block">
-                    <FloatButton
-                      tooltip={<div>Input values</div>}
-                      style={{
-                        position: "fixed",
-                        bottom: "30px",
-                        right: "30px",
-                      }}
-                      onClick={() => {
-                        setIsInputFormOpen(true);
-                      }}
-                    >
-                      <Button
-                        type="primary"
-                        shape="circle"
-                        icon={<FileOutlined />}
-                      />
-                    </FloatButton>
-                  </div>
+                        <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
+                          <DurationSelect
+                            handleSubmit={handleSubmit}
+                            isLoading={isLoading}
+                          />
+                        </div>
+                        <div className="xl:hidden block">
+                          <FloatButton
+                            tooltip={<div>Input values</div>}
+                            style={{
+                              position: "fixed",
+                              bottom: "30px",
+                              right: "30px",
+                            }}
+                            onClick={() => {
+                              setIsInputFormOpen(true);
+                            }}
+                          >
+                            <Button
+                              type="primary"
+                              shape="circle"
+                              icon={<FileOutlined />}
+                            />
+                          </FloatButton>
+                        </div>
 
-                  {isInputFormOpen && (
-                    <Modal
-                      // title="Customer channel"
-                      visible={isInputFormOpen}
-                      onOk={() => {
-                        handleSubmit();
-                        setIsInputFormOpen(false);
-                      }}
-                      onCancel={() => {
-                        setIsInputFormOpen(false);
-                      }}
-                      okText="Save"
-                      cancelText="Close"
-                      cancelButtonProps={{
-                        style: {
-                          borderRadius: "0.375rem",
-                          cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                        },
-                      }}
-                      okButtonProps={{
-                        style: {
-                          background: "#2563EB",
-                          borderColor: "#2563EB",
-                          color: "#fff",
-                          borderRadius: "0.375rem",
-                          cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                        },
-                      }}
-                      centered={true}
-                      zIndex={50}
-                    >
-                      <DurationSelect
-                        handleSubmit={handleSubmit}
-                        isInputFormOpen="Ok"
-                      />
-                    </Modal>
-                  )}
+                        {isInputFormOpen && (
+                          <Modal
+                            // title="Customer channel"
+                            visible={isInputFormOpen}
+                            onOk={() => {
+                              handleSubmit();
+                              setIsInputFormOpen(false);
+                            }}
+                            onCancel={() => {
+                              setIsInputFormOpen(false);
+                            }}
+                            okText="Save"
+                            cancelText="Close"
+                            cancelButtonProps={{
+                              style: {
+                                borderRadius: "0.375rem",
+                                cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                              },
+                            }}
+                            okButtonProps={{
+                              style: {
+                                background: "#2563EB",
+                                borderColor: "#2563EB",
+                                color: "#fff",
+                                borderRadius: "0.375rem",
+                                cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                              },
+                            }}
+                            centered={true}
+                            zIndex={50}
+                          >
+                            <DurationSelect
+                              handleSubmit={handleSubmit}
+                              isInputFormOpen="Ok"
+                            />
+                          </Modal>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
               {activeTab === "customer" && (

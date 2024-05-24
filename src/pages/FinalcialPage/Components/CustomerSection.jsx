@@ -53,301 +53,320 @@ import {
 import TextArea from "antd/es/input/TextArea";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 
-const CustomerInputsForm = ({
-  tempCustomerInputs,
-  renderCustomerForm,
-  handleSelectChange,
-  handleInputChange,
-  formatNumber,
-  parseNumber,
-  handleAddNewCustomer,
-  handleSave,
-  handleFetchGPT,
-  isLoading,
-  showAdvancedInputs,
-  setShowAdvancedInputs,
-  isDeleteModalOpen,
-  setIsDeleteModalOpen,
-  confirmDelete,
-}) => {
-  return (
-    <section aria-labelledby="customers-heading" className="mb-8 sticky top-8">
-      <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Examples:  Online, Offline, Social Media, Email Marketing, Referrals, Direct Sales, Subscription...">
-        <h2
-          className="text-lg font-semibold mb-8 flex items-center"
-          id="customers-heading"
-        >
-          Customer channel{" "}
-        </h2>
-      </Tooltip>
-
-      <div>
-        <label
-          htmlFor="selectedChannel"
-          className="block my-4 text-base darkTextWhite"
-        ></label>
-        <select
-          id="selectedChannel"
-          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-          value={renderCustomerForm}
-          onChange={handleSelectChange}
-        >
-          <option value="all">All</option>
-          {tempCustomerInputs.map((input) => (
-            <option key={input?.id} value={input?.id}>
-              {input?.channelName}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {tempCustomerInputs
-        .filter((input) => input?.id == renderCustomerForm)
-        .map((input) => (
-          <div key={input?.id} className="bg-white rounded-2xl p-6 border my-4">
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <span className="flex items-center text-sm">Channel Name:</span>
-              <Input
-                className="col-start-2 border-gray-300"
-                value={input.channelName}
-                onChange={(e) =>
-                  handleInputChange(input?.id, "channelName", e.target.value)
-                }
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <span className="flex items-center text-sm">
-                Existing Customer:
-              </span>
-              <Input
-                className="col-start-2 border-gray-300"
-                type="text"
-                value={formatNumber(input.beginCustomer)}
-                onChange={(e) =>
-                  handleInputChange(
-                    input?.id,
-                    "beginCustomer",
-                    parseNumber(e.target.value)
-                  )
-                }
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <span className="flex items-center text-sm">
-                Adding (First month)
-              </span>
-              <Input
-                className="col-start-2 border-gray-300"
-                value={formatNumber(input.customersPerMonth)}
-                onChange={(e) =>
-                  handleInputChange(
-                    input?.id,
-                    "customersPerMonth",
-                    parseNumber(e.target.value)
-                  )
-                }
-                type="text"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <span className="flex items-center text-sm">
-                Growth rate (%):
-              </span>
-              <Input
-                className="col-start-2 border-gray-300"
-                value={formatNumber(input.growthPerMonth)}
-                onChange={(e) =>
-                  handleInputChange(
-                    input?.id,
-                    "growthPerMonth",
-                    parseNumber(e.target.value)
-                  )
-                }
-                type="text"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <span className="flex items-center text-sm">Frequency:</span>
-              <Select
-                className="border-gray-300"
-                onValueChange={(value) =>
-                  handleInputChange(input?.id, "customerGrowthFrequency", value)
-                }
-                value={input.customerGrowthFrequency}
-              >
-                <SelectTrigger
-                  id={`select-customerGrowthFrequency-${input?.id}`}
-                  className="border-solid border-[1px] border-gray-300"
-                >
-                  <SelectValue placeholder="Select Growth Frequency" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  <SelectItem value="Monthly">Monthly</SelectItem>
-                  <SelectItem value="Quarterly">Quarterly</SelectItem>
-                  <SelectItem value="Semi-Annually">Semi-Annually</SelectItem>
-                  <SelectItem value="Annually">Annually</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <span className="flex items-center text-sm">Begin Month:</span>
-              <Input
-                className="col-start-2 border-gray-300"
-                type="number"
-                min={1}
-                value={input.beginMonth}
-                onChange={(e) =>
-                  handleInputChange(input?.id, "beginMonth", e.target.value)
-                }
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <span className="flex items-center text-sm">End Month:</span>
-              <Input
-                className="col-start-2 border-gray-300"
-                type="number"
-                min={1}
-                value={input.endMonth}
-                onChange={(e) =>
-                  handleInputChange(input?.id, "endMonth", e.target.value)
-                }
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <span className="flex items-center text-sm">Churn rate (%):</span>
-              <Input
-                className="col-start-2 border-gray-300"
-                type="text"
-                value={formatNumber(input.churnRate)}
-                onChange={(e) =>
-                  handleInputChange(
-                    input?.id,
-                    "churnRate",
-                    parseNumber(e.target.value)
-                  )
-                }
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <span className="flex items-center text-sm">
-                Acquisition cost:
-              </span>
-              <Input
-                className="col-start-2 border-gray-300"
-                type="text"
-                value={input.acquisitionCost}
-                onChange={(e) =>
-                  handleInputChange(
-                    input?.id,
-                    "acquisitionCost",
-                    e.target.value
-                  )
-                }
-                disabled
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <Checkbox
-                className="col-span-2"
-                checked={showAdvancedInputs}
-                onChange={(e) => setShowAdvancedInputs(e.target.checked)}
-              >
-                Show Advanced Inputs
-              </Checkbox>
-            </div>
-            {showAdvancedInputs && (
-              <Modal
-                title="Advanced Inputs"
-                visible={showAdvancedInputs}
-                onOk={handleFetchGPT}
-                onCancel={() => setShowAdvancedInputs(false)}
-                okText={isLoading ? <SpinnerBtn /> : "Apply"}
-                cancelText="Cancel"
-                cancelButtonProps={{
-                  style: {
-                    borderRadius: "0.375rem",
-                    cursor: "pointer",
-                    minWidth: "5vw",
-                  },
-                }}
-                okButtonProps={{
-                  style: {
-                    background: "#2563EB",
-                    borderColor: "#2563EB",
-                    color: "#fff",
-                    borderRadius: "0.375rem",
-                    cursor: "pointer",
-                    minWidth: "5vw",
-                  },
-                }}
-                centered={true}
-              >
-                <div className="gap-4 mb-3">
-                  <span className="flex items-center text-sm">
-                    Additional Info:
-                  </span>
-                  <TextArea
-                    className="col-start-2 border-gray-300"
-                    value={input.additionalInfo}
-                    onChange={(e) =>
-                      handleInputChange(
-                        input?.id,
-                        "additionalInfo",
-                        e.target.value
-                      )
-                    }
-                    rows={10}
-                  />
-                </div>
-              </Modal>
-            )}
-          </div>
-        ))}
-
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <div className="flex justify-center items-center">
-          <button
-            className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
-            onClick={() => setIsDeleteModalOpen(true)}
+const CustomerInputsForm = React.memo(
+  ({
+    tempCustomerInputs,
+    renderCustomerForm,
+    setRenderCustomerForm,
+    handleSelectChange,
+    handleInputChange,
+    formatNumber,
+    parseNumber,
+    handleAddNewCustomer,
+    handleSave,
+    handleFetchGPT,
+    isLoading,
+    showAdvancedInputs,
+    setShowAdvancedInputs,
+    isDeleteModalOpen,
+    setIsDeleteModalOpen,
+    confirmDelete,
+  }) => {
+    return (
+      <section
+        aria-labelledby="customers-heading"
+        className="mb-8 sticky top-8"
+      >
+        <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Examples:  Online, Offline, Social Media, Email Marketing, Referrals, Direct Sales, Subscription...">
+          <h2
+            className="text-lg font-semibold mb-8 flex items-center"
+            id="customers-heading"
           >
-            <DeleteOutlined
-              style={{ fontSize: "12px", color: "#FFFFFF", marginRight: "4px" }}
-            />
-            Remove
-          </button>
+            Customer channel{" "}
+          </h2>
+        </Tooltip>
+
+        <div>
+          <label
+            htmlFor="selectedChannel"
+            className="block my-4 text-base darkTextWhite"
+          ></label>
+          <select
+            id="selectedChannel"
+            className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+            value={renderCustomerForm}
+            onChange={(e) => setRenderCustomerForm(e.target.value)}
+          >
+            <option value="all">All</option>
+            {tempCustomerInputs.map((input) => (
+              <option key={input?.id} value={input?.id}>
+                {input?.channelName}
+              </option>
+            ))}
+          </select>
         </div>
-        <button
-          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
-          onClick={handleAddNewCustomer}
-        >
-          <PlusOutlined
-            style={{ fontSize: "12px", color: "#FFFFFF", marginRight: "4px" }}
-          />
-          Add
-        </button>
-        <button
-          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw]"
-          onClick={handleSave}
-        >
-          {isLoading ? (
-            <SpinnerBtn />
-          ) : (
-            <>
-              <CheckCircleOutlined
+
+        {tempCustomerInputs
+          .filter((input) => input?.id == renderCustomerForm)
+          .map((input) => (
+            <div
+              key={input?.id}
+              className="bg-white rounded-2xl p-6 border my-4"
+            >
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">Channel Name:</span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  value={input.channelName}
+                  onChange={(e) =>
+                    handleInputChange(input?.id, "channelName", e.target.value)
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">
+                  Existing Customer:
+                </span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  type="text"
+                  value={formatNumber(input.beginCustomer)}
+                  onChange={(e) =>
+                    handleInputChange(
+                      input?.id,
+                      "beginCustomer",
+                      parseNumber(e.target.value)
+                    )
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">
+                  Adding (First month)
+                </span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  value={formatNumber(input.customersPerMonth)}
+                  onChange={(e) =>
+                    handleInputChange(
+                      input?.id,
+                      "customersPerMonth",
+                      parseNumber(e.target.value)
+                    )
+                  }
+                  type="text"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">
+                  Growth rate (%):
+                </span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  value={formatNumber(input.growthPerMonth)}
+                  onChange={(e) =>
+                    handleInputChange(
+                      input?.id,
+                      "growthPerMonth",
+                      parseNumber(e.target.value)
+                    )
+                  }
+                  type="text"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">Frequency:</span>
+                <Select
+                  className="border-gray-300"
+                  onValueChange={(value) =>
+                    handleInputChange(
+                      input?.id,
+                      "customerGrowthFrequency",
+                      value
+                    )
+                  }
+                  value={input.customerGrowthFrequency}
+                >
+                  <SelectTrigger
+                    id={`select-customerGrowthFrequency-${input?.id}`}
+                    className="border-solid border-[1px] border-gray-300"
+                  >
+                    <SelectValue placeholder="Select Growth Frequency" />
+                  </SelectTrigger>
+                  <SelectContent position="popper">
+                    <SelectItem value="Monthly">Monthly</SelectItem>
+                    <SelectItem value="Quarterly">Quarterly</SelectItem>
+                    <SelectItem value="Semi-Annually">Semi-Annually</SelectItem>
+                    <SelectItem value="Annually">Annually</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">Begin Month:</span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  type="number"
+                  min={1}
+                  value={input.beginMonth}
+                  onChange={(e) =>
+                    handleInputChange(input?.id, "beginMonth", e.target.value)
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">End Month:</span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  type="number"
+                  min={1}
+                  value={input.endMonth}
+                  onChange={(e) =>
+                    handleInputChange(input?.id, "endMonth", e.target.value)
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">
+                  Churn rate (%):
+                </span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  type="text"
+                  value={formatNumber(input.churnRate)}
+                  onChange={(e) =>
+                    handleInputChange(
+                      input?.id,
+                      "churnRate",
+                      parseNumber(e.target.value)
+                    )
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">
+                  Acquisition cost:
+                </span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  type="text"
+                  value={input.acquisitionCost}
+                  onChange={(e) =>
+                    handleInputChange(
+                      input?.id,
+                      "acquisitionCost",
+                      e.target.value
+                    )
+                  }
+                  disabled
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <Checkbox
+                  className="col-span-2"
+                  checked={showAdvancedInputs}
+                  onChange={(e) => setShowAdvancedInputs(e.target.checked)}
+                >
+                  Show Advanced Inputs
+                </Checkbox>
+              </div>
+              {showAdvancedInputs && (
+                <Modal
+                  title="Advanced Inputs"
+                  visible={showAdvancedInputs}
+                  onOk={handleFetchGPT}
+                  onCancel={() => setShowAdvancedInputs(false)}
+                  okText={isLoading ? <SpinnerBtn /> : "Apply"}
+                  cancelText="Cancel"
+                  cancelButtonProps={{
+                    style: {
+                      borderRadius: "0.375rem",
+                      cursor: "pointer",
+                      minWidth: "5vw",
+                    },
+                  }}
+                  okButtonProps={{
+                    style: {
+                      background: "#2563EB",
+                      borderColor: "#2563EB",
+                      color: "#fff",
+                      borderRadius: "0.375rem",
+                      cursor: "pointer",
+                      minWidth: "5vw",
+                    },
+                  }}
+                  centered={true}
+                >
+                  <div className="gap-4 mb-3">
+                    <span className="flex items-center text-sm">
+                      Additional Info:
+                    </span>
+                    <TextArea
+                      className="col-start-2 border-gray-300 text-sm"
+                      value={input.additionalInfo}
+                      onChange={(e) =>
+                        handleInputChange(
+                          input?.id,
+                          "additionalInfo",
+                          e.target.value
+                        )
+                      }
+                      rows={10}
+                    />
+                  </div>
+                </Modal>
+              )}
+            </div>
+          ))}
+
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div className="flex justify-center items-center">
+            <button
+              className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
+              onClick={() => setIsDeleteModalOpen(true)}
+            >
+              <DeleteOutlined
                 style={{
                   fontSize: "12px",
                   color: "#FFFFFF",
                   marginRight: "4px",
                 }}
               />
-              Save
-            </>
-          )}
-        </button>
-      </div>
-    </section>
-  );
-};
+              Remove
+            </button>
+          </div>
+          <button
+            className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+            onClick={handleAddNewCustomer}
+          >
+            <PlusOutlined
+              style={{ fontSize: "12px", color: "#FFFFFF", marginRight: "4px" }}
+            />
+            Add
+          </button>
+          <button
+            className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw]"
+            onClick={handleSave}
+          >
+            {isLoading ? (
+              <SpinnerBtn />
+            ) : (
+              <>
+                <CheckCircleOutlined
+                  style={{
+                    fontSize: "12px",
+                    color: "#FFFFFF",
+                    marginRight: "4px",
+                  }}
+                />
+                Save
+              </>
+            )}
+          </button>
+        </div>
+      </section>
+    );
+  }
+);
 
 const CustomerSection = React.memo(
   ({
@@ -382,10 +401,6 @@ const CustomerSection = React.memo(
     );
     const [tempCustomerInputs, setTempCustomerInputs] =
       useState(customerInputs);
-
-    useEffect(() => {
-      setTempCustomerInputs(customerInputs);
-    }, [customerInputs]);
 
     const [tempCustomerGrowthData, setTempCustomerGrowthData] =
       useState(customerGrowthData);
@@ -473,14 +488,6 @@ const CustomerSection = React.memo(
 
     useEffect(() => {
       const calculatedData = calculateCustomerGrowth(
-        customerInputs,
-        numberOfMonths
-      );
-      dispatch(setCustomerGrowthData(calculatedData));
-    }, [customerInputs, numberOfMonths, showAdvancedInputs]); // Include showAdvancedInputs as a dependency
-
-    useEffect(() => {
-      const calculatedData = calculateCustomerGrowth(
         tempCustomerInputs,
         numberOfMonths
       );
@@ -501,29 +508,6 @@ const CustomerSection = React.memo(
 
       setTempCustomerGrowthData(calculatedData);
     }, [tempCustomerInputs, renderCustomerForm, showAdvancedInputs]); // Include showAdvancedInputs as a dependency
-
-    useEffect(() => {
-      const calculatedData = calculateCustomerGrowth(
-        tempCustomerInputs,
-        numberOfMonths
-      );
-
-      const calculateTransformedCustomerTableData = transformCustomerData(
-        calculatedData,
-        tempCustomerInputs
-      );
-
-      const calculateCustomerTableData = generateCustomerTableData(
-        calculateTransformedCustomerTableData,
-        tempCustomerInputs,
-        numberOfMonths,
-        renderCustomerForm
-      );
-
-      dispatch(setCustomerTableData(calculateCustomerTableData));
-
-      setTempCustomerGrowthData(calculatedData);
-    }, [tempCustomerInputs, renderCustomerForm]);
 
     const months = [
       "01",
@@ -551,7 +535,7 @@ const CustomerSection = React.memo(
         if (record.key === recordKey) {
           return {
             ...record,
-            [monthKey]: value,
+            [monthKey]: formatNumber(value),
           };
         }
         return record;
@@ -563,7 +547,9 @@ const CustomerSection = React.memo(
 
       const updatedTempCustomerInputs = tempCustomerInputs.map((input) => {
         if (input.channelName === recordKey.split("-")[0]) {
-          const updatedGPTResponseArray = [...input.gptResponseArray];
+          const updatedGPTResponseArray = input.gptResponseArray
+            ? [...input.gptResponseArray]
+            : [];
           updatedGPTResponseArray[monthIndex] = Number(value);
           if (monthKey == "month1") {
             return {
@@ -627,7 +613,7 @@ const CustomerSection = React.memo(
                       value={record[`month${i + 1}`]}
                       onChange={(e) =>
                         handleInputTable(
-                          e.target.value,
+                          parseNumber(e.target.value),
                           record.key,
                           `month${i + 1}`
                         )
@@ -659,8 +645,6 @@ const CustomerSection = React.memo(
 
     const { id } = useParams();
     const { user } = useAuth();
-
-    // Define the useEffect hook
 
     const [isLoading, setIsLoading] = useState(false);
     const saveData = async () => {
@@ -734,6 +718,8 @@ const CustomerSection = React.memo(
             tempCustomerInputs,
             numberOfMonths
           );
+          dispatch(setCustomerGrowthData(calculatedData));
+
           const averages = calculateYearlyAverage(
             calculatedData,
             numberOfMonths
@@ -1230,258 +1216,302 @@ const CustomerSection = React.memo(
       setTempCustomerInputs(newInputs);
     };
 
+    const [activeTab, setActiveTab] = useState("table&chart");
+
+    const handleTabChange = (tabName) => {
+      setActiveTab(tabName);
+    };
     return (
-      <div className="w-full h-full flex flex-col lg:flex-row">
-        <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
-          <h3 className="text-lg font-semibold mb-8">Customer Chart</h3>
+      <div>
+        <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
+          <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
+            <li
+              className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                activeTab === "table&chart" ? "bg-yellow-300 font-bold" : ""
+              }`}
+              onClick={() => handleTabChange("table&chart")}
+            >
+              Table and Chart
+            </li>
+            {/* Repeat for other tabs */}
+            <li
+              className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                activeTab === "input" ? "bg-yellow-300 font-bold" : ""
+              }`}
+              onClick={() => handleTabChange("input")}
+            >
+              Input
+            </li>
+          </ul>
+        </div>
+        <div className="w-full h-full flex flex-col lg:flex-row">
+          {activeTab === "table&chart" && (
+            <>
+              <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
+                <h3 className="text-lg font-semibold mb-8">Customer Chart</h3>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {customerGrowthChart.charts?.map((chart, index) => (
-              <Card
-                key={index}
-                className="flex flex-col transition duration-500  rounded-2xl"
-              >
-                <div className="flex justify-between items-center">
-                  <div className="min-w-[10vw] mb-2">
-                    <label htmlFor="startMonthSelect">Start Month:</label>
-                    <select
-                      id="startMonthSelect"
-                      value={chartStartMonth}
-                      onChange={(e) =>
-                        setChartStartMonth(
-                          Math.max(1, Math.min(e.target.value, chartEndMonth))
-                        )
-                      }
-                      className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                <div className="grid md:grid-cols-2 gap-6">
+                  {customerGrowthChart.charts?.map((chart, index) => (
+                    <Card
+                      key={index}
+                      className="flex flex-col transition duration-500  rounded-2xl"
                     >
-                      {Array.from({ length: numberOfMonths }, (_, i) => {
-                        const monthIndex = (startingMonth + i - 1) % 12;
-                        const year =
-                          startingYear +
-                          Math.floor((startingMonth + i - 1) / 12);
-                        return (
-                          <option key={i + 1} value={i + 1}>
-                            {`${months[monthIndex]}/${year}`}
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </div>
-                  <div className="min-w-[10vw] mb-2">
-                    <label htmlFor="endMonthSelect">End Month:</label>
-                    <select
-                      id="endMonthSelect"
-                      value={chartEndMonth}
-                      onChange={(e) =>
-                        setChartEndMonth(
-                          Math.max(
-                            chartStartMonth,
-                            Math.min(e.target.value, numberOfMonths)
-                          )
-                        )
-                      }
-                      className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                      <div className="flex justify-between items-center">
+                        <div className="min-w-[10vw] mb-2">
+                          <label htmlFor="startMonthSelect">Start Month:</label>
+                          <select
+                            id="startMonthSelect"
+                            value={chartStartMonth}
+                            onChange={(e) =>
+                              setChartStartMonth(
+                                Math.max(
+                                  1,
+                                  Math.min(e.target.value, chartEndMonth)
+                                )
+                              )
+                            }
+                            className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                          >
+                            {Array.from({ length: numberOfMonths }, (_, i) => {
+                              const monthIndex = (startingMonth + i - 1) % 12;
+                              const year =
+                                startingYear +
+                                Math.floor((startingMonth + i - 1) / 12);
+                              return (
+                                <option key={i + 1} value={i + 1}>
+                                  {`${months[monthIndex]}/${year}`}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                        <div className="min-w-[10vw] mb-2">
+                          <label htmlFor="endMonthSelect">End Month:</label>
+                          <select
+                            id="endMonthSelect"
+                            value={chartEndMonth}
+                            onChange={(e) =>
+                              setChartEndMonth(
+                                Math.max(
+                                  chartStartMonth,
+                                  Math.min(e.target.value, numberOfMonths)
+                                )
+                              )
+                            }
+                            className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                          >
+                            {Array.from({ length: numberOfMonths }, (_, i) => {
+                              const monthIndex = (startingMonth + i - 1) % 12;
+                              const year =
+                                startingYear +
+                                Math.floor((startingMonth + i - 1) / 12);
+                              return (
+                                <option key={i + 1} value={i + 1}>
+                                  {`${months[monthIndex]}/${year}`}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                      </div>
+                      <div onClick={() => handleChartClick(chart)}>
+                        <Chart
+                          options={{
+                            ...chart.options,
+                            fill: {
+                              type: "gradient",
+
+                              gradient: {
+                                shade: "light",
+                                shadeIntensity: 0.5,
+                                opacityFrom: 0.75,
+                                opacityTo: 0.65,
+                                stops: [0, 90, 100],
+                              },
+                            },
+                            xaxis: {
+                              ...chart.options.xaxis,
+                              // tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                            },
+                            stroke: {
+                              width: 1,
+                              curve: "straight", // Set the stroke width to 1
+                            },
+                          }}
+                          series={chart.series}
+                          type="area"
+                          height={350}
+                        />
+                      </div>
+                    </Card>
+                  ))}
+
+                  {customerGrowthChart.chartsNoFilter?.map((chart, index) => (
+                    <Card
+                      key={index}
+                      className="flex flex-col transition duration-500  rounded-2xl"
+                      onClick={() => handleChartClick(chart)}
                     >
-                      {Array.from({ length: numberOfMonths }, (_, i) => {
-                        const monthIndex = (startingMonth + i - 1) % 12;
-                        const year =
-                          startingYear +
-                          Math.floor((startingMonth + i - 1) / 12);
-                        return (
-                          <option key={i + 1} value={i + 1}>
-                            {`${months[monthIndex]}/${year}`}
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </div>
+                      <Chart
+                        options={{
+                          ...chart.options,
+                          xaxis: {
+                            ...chart.options.xaxis,
+                            // tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                          },
+                          stroke: {
+                            width: 1, // Set the stroke width to 1
+                          },
+                        }}
+                        series={chart.series}
+                        type="area"
+                        height={350}
+                      />
+                    </Card>
+                  ))}
                 </div>
-                <div onClick={() => handleChartClick(chart)}>
-                  <Chart
-                    options={{
-                      ...chart.options,
-                      fill: {
-                        type: "gradient",
+                <AntdModal
+                  visible={isChartModalVisible}
+                  footer={null}
+                  centered
+                  onCancel={() => setIsChartModalVisible(false)}
+                  width="90%"
+                  style={{ top: 20 }}
+                >
+                  {selectedChart && (
+                    <Chart
+                      options={{
+                        ...selectedChart.options,
+                        // ... other options
+                      }}
+                      series={selectedChart.series}
+                      type="area"
+                      height={500}
+                    />
+                  )}
+                </AntdModal>
 
-                        gradient: {
-                          shade: "light",
-                          shadeIntensity: 0.5,
-                          opacityFrom: 0.75,
-                          opacityTo: 0.65,
-                          stops: [0, 90, 100],
-                        },
-                      },
-                      xaxis: {
-                        ...chart.options.xaxis,
-                        // tickAmount: 12, // Set the number of ticks on the x-axis to 12
-                      },
-                      stroke: {
-                        width: 1,
-                        curve: "straight", // Set the stroke width to 1
-                      },
-                    }}
-                    series={chart.series}
-                    type="area"
-                    height={350}
+                <h3 className="text-lg font-semibold my-4">Customer Table</h3>
+                <Table
+                  className="bg-white overflow-auto  my-8 rounded-md"
+                  size="small"
+                  dataSource={customerTableData}
+                  columns={customerColumns}
+                  pagination={false}
+                  bordered
+                  rowClassName={(record) =>
+                    record.key === record.channelName ? "font-bold" : ""
+                  }
+                />
+              </div>
+              <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden "></div>
+            </>
+          )}
+          {activeTab === "input" && (
+            <>
+              <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
+
+              <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
+                <CustomerInputsForm
+                  tempCustomerInputs={tempCustomerInputs}
+                  renderCustomerForm={renderCustomerForm}
+                  setRenderCustomerForm={setRenderCustomerForm}
+                  handleInputChange={handleInputChange}
+                  formatNumber={formatNumber}
+                  parseNumber={parseNumber}
+                  handleAddNewCustomer={handleAddNewCustomer}
+                  handleSave={handleSave}
+                  handleFetchGPT={handleFetchGPT}
+                  isLoading={isLoading}
+                  showAdvancedInputs={showAdvancedInputs}
+                  setShowAdvancedInputs={setShowAdvancedInputs}
+                  isDeleteModalOpen={isDeleteModalOpen}
+                  setIsDeleteModalOpen={setIsDeleteModalOpen}
+                  confirmDelete={confirmDelete}
+                />
+              </div>
+
+              <div className="xl:hidden block">
+                <FloatButton
+                  tooltip={<div>Input values</div>}
+                  style={{
+                    position: "fixed",
+                    bottom: "30px",
+                    right: "30px",
+                  }}
+                  onClick={() => {
+                    setIsInputFormOpen(true);
+                  }}
+                >
+                  <Button
+                    type="primary"
+                    shape="circle"
+                    icon={<FileOutlined />}
                   />
-                </div>
-              </Card>
-            ))}
+                </FloatButton>
+              </div>
 
-            {customerGrowthChart.chartsNoFilter?.map((chart, index) => (
-              <Card
-                key={index}
-                className="flex flex-col transition duration-500  rounded-2xl"
-                onClick={() => handleChartClick(chart)}
-              >
-                <Chart
-                  options={{
-                    ...chart.options,
-                    xaxis: {
-                      ...chart.options.xaxis,
-                      // tickAmount: 12, // Set the number of ticks on the x-axis to 12
-                    },
-                    stroke: {
-                      width: 1, // Set the stroke width to 1
+              {isInputFormOpen && (
+                <Modal
+                  visible={isInputFormOpen}
+                  onCancel={() => {
+                    setTempCustomerInputs(customerInputs);
+                    setIsInputFormOpen(false);
+                  }}
+                  centered={true}
+                  zIndex={50}
+                  footer={null}
+                >
+                  <CustomerInputsForm
+                    tempCustomerInputs={tempCustomerInputs}
+                    renderCustomerForm={renderCustomerForm}
+                    setRenderCustomerForm={setRenderCustomerForm}
+                    formatNumber={formatNumber}
+                    parseNumber={parseNumber}
+                    handleAddNewCustomer={handleAddNewCustomer}
+                    handleSave={handleSave}
+                    handleFetchGPT={handleFetchGPT}
+                    isLoading={isLoading}
+                    showAdvancedInputs={showAdvancedInputs}
+                    setShowAdvancedInputs={setShowAdvancedInputs}
+                    isDeleteModalOpen={isDeleteModalOpen}
+                    setIsDeleteModalOpen={setIsDeleteModalOpen}
+                    confirmDelete={confirmDelete}
+                  />
+                </Modal>
+              )}
+
+              {isDeleteModalOpen && (
+                <Modal
+                  title="Confirm Delete"
+                  visible={isDeleteModalOpen}
+                  onOk={confirmDelete}
+                  onCancel={() => setIsDeleteModalOpen(false)}
+                  okText="Delete"
+                  cancelText="Cancel"
+                  cancelButtonProps={{
+                    style: {
+                      borderRadius: "0.375rem",
+                      cursor: "pointer",
                     },
                   }}
-                  series={chart.series}
-                  type="area"
-                  height={350}
-                />
-              </Card>
-            ))}
-          </div>
-          <AntdModal
-            visible={isChartModalVisible}
-            footer={null}
-            centered
-            onCancel={() => setIsChartModalVisible(false)}
-            width="90%"
-            style={{ top: 20 }}
-          >
-            {selectedChart && (
-              <Chart
-                options={{
-                  ...selectedChart.options,
-                  // ... other options
-                }}
-                series={selectedChart.series}
-                type="area"
-                height={500}
-              />
-            )}
-          </AntdModal>
-
-          <h3 className="text-lg font-semibold my-4">Customer Table</h3>
-          <Table
-            className="bg-white overflow-auto  my-8 rounded-md"
-            size="small"
-            dataSource={customerTableData}
-            columns={customerColumns}
-            pagination={false}
-            bordered
-            rowClassName={(record) =>
-              record.key === record.channelName ? "font-bold" : ""
-            }
-          />
+                  okButtonProps={{
+                    style: {
+                      background: "#f5222d",
+                      borderColor: "#f5222d",
+                      color: "#fff",
+                      borderRadius: "0.375rem",
+                      cursor: "pointer",
+                    },
+                  }}
+                  centered={true}
+                >
+                  Are you sure you want to delete it?
+                </Modal>
+              )}
+            </>
+          )}
         </div>
-
-        <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
-          <CustomerInputsForm
-            tempCustomerInputs={tempCustomerInputs}
-            renderCustomerForm={renderCustomerForm}
-            handleSelectChange={handleSelectChange}
-            handleInputChange={handleInputChange}
-            formatNumber={formatNumber}
-            parseNumber={parseNumber}
-            handleAddNewCustomer={handleAddNewCustomer}
-            handleSave={handleSave}
-            handleFetchGPT={handleFetchGPT}
-            isLoading={isLoading}
-            showAdvancedInputs={showAdvancedInputs}
-            setShowAdvancedInputs={setShowAdvancedInputs}
-            isDeleteModalOpen={isDeleteModalOpen}
-            setIsDeleteModalOpen={setIsDeleteModalOpen}
-            confirmDelete={confirmDelete}
-          />
-        </div>
-
-        <div className="xl:hidden block">
-          <FloatButton
-            tooltip={<div>Input values</div>}
-            style={{
-              position: "fixed",
-              bottom: "30px",
-              right: "30px",
-            }}
-            onClick={() => {
-              setIsInputFormOpen(true);
-            }}
-          >
-            <Button type="primary" shape="circle" icon={<FileOutlined />} />
-          </FloatButton>
-        </div>
-
-        {isInputFormOpen && (
-          <Modal
-            visible={isInputFormOpen}
-            onCancel={() => {
-              setTempCustomerInputs(customerInputs);
-              setIsInputFormOpen(false);
-            }}
-            centered={true}
-            zIndex={50}
-            footer={null}
-          >
-            <CustomerInputsForm
-              tempCustomerInputs={tempCustomerInputs}
-              renderCustomerForm={renderCustomerForm}
-              handleSelectChange={handleSelectChange}
-              handleInputChange={handleInputChange}
-              formatNumber={formatNumber}
-              parseNumber={parseNumber}
-              handleAddNewCustomer={handleAddNewCustomer}
-              handleSave={handleSave}
-              handleFetchGPT={handleFetchGPT}
-              isLoading={isLoading}
-              showAdvancedInputs={showAdvancedInputs}
-              setShowAdvancedInputs={setShowAdvancedInputs}
-              isDeleteModalOpen={isDeleteModalOpen}
-              setIsDeleteModalOpen={setIsDeleteModalOpen}
-              confirmDelete={confirmDelete}
-            />
-          </Modal>
-        )}
-
-        {isDeleteModalOpen && (
-          <Modal
-            title="Confirm Delete"
-            visible={isDeleteModalOpen}
-            onOk={confirmDelete}
-            onCancel={() => setIsDeleteModalOpen(false)}
-            okText="Delete"
-            cancelText="Cancel"
-            cancelButtonProps={{
-              style: {
-                borderRadius: "0.375rem",
-                cursor: "pointer",
-              },
-            }}
-            okButtonProps={{
-              style: {
-                background: "#f5222d",
-                borderColor: "#f5222d",
-                color: "#fff",
-                borderRadius: "0.375rem",
-                cursor: "pointer",
-              },
-            }}
-            centered={true}
-          >
-            Are you sure you want to delete it?
-          </Modal>
-        )}
       </div>
     );
   }

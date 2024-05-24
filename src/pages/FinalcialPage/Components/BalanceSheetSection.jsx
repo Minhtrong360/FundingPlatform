@@ -551,14 +551,6 @@ function BalanceSheetSection({ numberOfMonths }) {
   const startingMonth = startMonth; // Tháng bắt đầu từ 1
   const startingYear = startYear; // Năm bắt đầu từ 24
 
-// const realDate = [];
-
-// for (let i = 0; i < numberOfMonths; i++) {
-//     const monthIndex = (startingMonth + i - 1) % 12;
-//     const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
-//     const title = `${monthIndex + 1}/${year}`;
-//     realDate.push(title);
-// }
 const realDate = Array.from({ length: numberOfMonths }, (_, i) => {
   const monthIndex = (startingMonth + i - 1) % 12;
   const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
@@ -566,113 +558,113 @@ const realDate = Array.from({ length: numberOfMonths }, (_, i) => {
 });
 
 
-console.log(realDate);
+
 const BalenceSheetData = [
-  // {
-  //   key: "Assets",
-  // },
-  // {
-  //   key: " Current Assets",
-  // },
-  // {
-  //   key: "Cash",
-  //   values: cashEndBalances, // Set values to zero
-  // },
-  // {
-  //   key: "Accounts Receivable", // Added Accounts Receivable row
-  //   values: new Array(numberOfMonths).fill(0), // Set values to zero
-  // },
-  // {
-  //   key: "Inventory", // Added Inventory row
-  //   values: new Array(numberOfMonths).fill(0), // Set values to zero
-  // },
-  // {
-  //   key: "Current Assets", // Added Current Assets row
-  //   values: currentAssets,
-  // },
-  // {
-  //   key: "Long-Term Assets",
-  // },
-  // // insert BS Total investment here
-  // { key: "Total Investment", values: totalAssetValue }, // New row for total investment
+  {
+    key: "Assets",
+  },
+  {
+    key: " Current Assets",
+  },
+  {
+    key: "Cash",
+    values: cashEndBalances, // Set values to zero
+  },
+  {
+    key: "Accounts Receivable", // Added Accounts Receivable row
+    values: new Array(numberOfMonths).fill(0), // Set values to zero
+  },
+  {
+    key: "Inventory", // Added Inventory row
+    values: new Array(numberOfMonths).fill(0), // Set values to zero
+  },
+  {
+    key: "Current Assets", // Added Current Assets row
+    values: currentAssets,
+  },
+  {
+    key: "Long-Term Assets",
+  },
+  // insert BS Total investment here
+  { key: "Total Investment", values: totalAssetValue }, // New row for total investment
 
-  // { key: "Total Accumulated Depreciation", values: bsTotalDepreciation },
+  { key: "Total Accumulated Depreciation", values: bsTotalDepreciation },
 
-  // {
-  //   key: "Net Fixed Assets",
-  //   values: bsTotalNetFixedAssets,
-  // },
+  {
+    key: "Net Fixed Assets",
+    values: bsTotalNetFixedAssets,
+  },
 
-  // {
-  //   key: "Long term assets",
-  //   values: bsTotalNetFixedAssets,
-  // },
+  {
+    key: "Long term assets",
+    values: bsTotalNetFixedAssets,
+  },
 
-  // {
-  //   key: "Total Assets",
-  //   values: totalAssets,
-  // },
+  {
+    key: "Total Assets",
+    values: totalAssets,
+  },
 
-  // {
-  //   key: "Liabilities & Equity",
-  // },
-  // {
-  //   key: "Current Liabilities",
-  // },
-  // {
-  //   key: "Account Payable", // Added Inventory row
-  //   values: new Array(numberOfMonths).fill(0), // Set values to zero
-  // },
+  {
+    key: "Liabilities & Equity",
+  },
+  {
+    key: "Current Liabilities",
+  },
+  {
+    key: "Account Payable", // Added Inventory row
+    values: new Array(numberOfMonths).fill(0), // Set values to zero
+  },
 
-  // {
-  //   key: "Long-Term Liabilities",
-  // },
-  // {
-  //   key: "Long term liabilities",
-  //   values: bsTotalRemainingBalance, // New row for long term liabilities
-  // },
+  {
+    key: "Long-Term Liabilities",
+  },
+  {
+    key: "Long term liabilities",
+    values: bsTotalRemainingBalance, // New row for long term liabilities
+  },
 
-  // {
-  //   key: "Total Liabilities", // Added Inventory row
-  //   values: totalLiabilities,
-  // },
+  {
+    key: "Total Liabilities", // Added Inventory row
+    values: totalLiabilities,
+  },
 
-  // {
-  //   key: "Shareholders Equity",
-  // },
-  // {
-  //   key: "Paid in Capital",
-  //   values: Array.from({ length: numberOfMonths }, (_, i) => {
-  //     const currentValue = i === 0 ? startingPaidInCapital.toFixed(2) : "0";
-  //     const currentValueFloat = parseFloat(currentValue);
-  //     const capitalArrValue = capitalArr[i] || 0; // If capitalArr doesn't have value at index i, default to 0
-  //     return (currentValueFloat + capitalArrValue).toFixed(2);
-  //   }).map((value) => parseFloat(value)),
-  // },
-  // {
-  //   key: "Common Stock", // Added Inventory row
-  //   values: commonStockArr,
-  // },
-  // {
-  //   key: "Preferred Stock", // Added Inventory row
-  //   values: preferredStockArr,
-  // },
-  // {
-  //   key: "Retain Earnings", // Added Inventory row
-  //   values: netIncome,
-  // },
+  {
+    key: "Shareholders Equity",
+  },
+  {
+    key: "Paid in Capital",
+    values: Array.from({ length: numberOfMonths }, (_, i) => {
+      const currentValue = i === 0 ? startingPaidInCapital.toFixed(2) : "0";
+      const currentValueFloat = parseFloat(currentValue);
+      const capitalArrValue = capitalArr[i] || 0; // If capitalArr doesn't have value at index i, default to 0
+      return (currentValueFloat + capitalArrValue).toFixed(2);
+    }).map((value) => parseFloat(value)),
+  },
+  {
+    key: "Common Stock", // Added Inventory row
+    values: commonStockArr,
+  },
+  {
+    key: "Preferred Stock", // Added Inventory row
+    values: preferredStockArr,
+  },
+  {
+    key: "Retain Earnings", // Added Inventory row
+    values: netIncome,
+  },
 
-  // // Calculated the accumulated retained earnings here
+  // Calculated the accumulated retained earnings here
 
-  // {
-  //   key: "Accumulated Retain Earnings",
-  //   values: accumulatedRetainEarnings,
-  // },
+  {
+    key: "Accumulated Retain Earnings",
+    values: accumulatedRetainEarnings,
+  },
 
-  // {
-  //   key: "Total Shareholders Equity",
-  //   values: totalShareholdersEquity,
-  // },
+  {
+    key: "Total Shareholders Equity",
+    values: totalShareholdersEquity,
+  },
 
   // Add the Total Liabilities and Shareholders Equity here
 
@@ -696,7 +688,7 @@ const BalenceSheetData = [
   ),
 }));
 
-console.log("BalenceSheetData",BalenceSheetData);
+
 
   const positionDataWithNetIncome2 = [
     {
@@ -1194,8 +1186,8 @@ console.log("BalenceSheetData",BalenceSheetData);
       </div>
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
-        <section className="mb-8 sticky top-8 bg-white">
-          <GroqJS datasrc={positionDataWithNetIncome2} />
+        <section className="mb-8 sticky top-8 ">
+          <GroqJS datasrc={BalenceSheetData} />
         </section>
       </div>
 
@@ -1242,7 +1234,7 @@ console.log("BalenceSheetData",BalenceSheetData);
           centered={true}
           zIndex={50}
         >
-          <GroqJS datasrc={positionDataWithNetIncome2} />
+          <GroqJS datasrc={BalenceSheetData} />
         </Modal>
       )}
     </div>

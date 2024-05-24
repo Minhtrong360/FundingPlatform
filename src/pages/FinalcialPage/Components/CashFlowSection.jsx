@@ -307,6 +307,117 @@ function CashFlowSection({ numberOfMonths }) {
       0 /* AP */
   );
 
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+  const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  const startingYear = startYear; // Năm bắt đầu từ 24
+
+const realDate = Array.from({ length: numberOfMonths }, (_, i) => {
+  const monthIndex = (startingMonth + i - 1) % 12;
+  const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+  return `${monthIndex + 1}-${year}`;
+});
+  const cashFlowData = [
+    { key: " Operating Activities " },
+    { key: "Net Income", values: netIncome },
+    { key: "Depreciation", values: totalInvestmentDepreciation },
+    {
+      key: "Decrease (Increase) in Inventory",
+      values: new Array(numberOfMonths).fill(0),
+    },
+    {
+      key: "Decrease (Increase) in AR",
+      values: new Array(numberOfMonths).fill(0),
+    },
+    {
+      key: "Decrease (Increase) in AP",
+      values: new Array(numberOfMonths).fill(0),
+    },
+    {
+      key: "CF Operations",
+      values: CFOperationsArray,
+    },
+    { key: " Investing Activities " },
+    {
+      key: "CF Investments",
+      values: cfInvestmentsArray,
+    },
+    { key: " Financing Activities " },
+    {
+      key: "CF Loans",
+      values: cfLoanArray,
+    },
+    {
+      key: "Total Principal", // Updated key to Total Principal
+      values: totalPrincipal, // Updated values with totalPrincipal
+    },
+    {
+      key: "Increase in Common Stock",
+      values: commonStockArr, // Placeholder values
+    },
+    {
+      key: "Increase in Preferred Stock",
+      values: preferredStockArr, // Placeholder values
+    },
+    {
+      key: "Increase in Paid in Capital",
+      values: capitalArr, // Placeholder values
+    },
+    {
+      key: "CF Financing",
+      values: netIncome.map((_, index) => {
+        const cfLoan = cfLoanArray[index] || 0;
+        const increaseCommonStock = commonStockArr[index] || 0; // Placeholder value
+        const increasePreferredStock = preferredStockArr[index] || 0; // Placeholder value
+        const increasePaidInCapital = capitalArr[index] || 0; // Placeholder value
+        return (
+          cfLoan -
+          totalPrincipal[index] +
+          increaseCommonStock +
+          increasePreferredStock +
+          increasePaidInCapital
+        );
+      }),
+    },
+    {
+      key: "Net +/- in Cash",
+      values: netIncome.map((_, index) => {
+        const cfLoan = cfLoanArray[index] || 0;
+        const increaseCommonStock = commonStockArr[index] || 0; // Placeholder value
+        const increasePreferredStock = preferredStockArr[index] || 0; // Placeholder value
+        const increasePaidInCapital = capitalArr[index] || 0; // Placeholder value
+        const cfOperations =
+          netIncome[index] + totalInvestmentDepreciation[index] + 0 - 0 - 0; // Placeholder values
+        const cfInvestment = cfInvestmentsArray[index] || 0;
+        const cfFinancing =
+          cfLoan -
+          totalPrincipal[index] +
+          increaseCommonStock +
+          increasePreferredStock +
+          increasePaidInCapital;
+        return cfOperations - cfInvestment + cfFinancing;
+      }),
+    },
+    {
+      key: "Cash Begin",
+      values: cashBeginBalances,
+    },
+    {
+      key: "Cash End",
+      values: cashEndBalances,
+    },
+  ].map((item, index) => ({
+    metric: item.key,
+    ...item.values?.reduce(
+      (acc, value, i) => ({
+        ...acc,
+        [realDate[i]]: formatNumber(value?.toFixed(2)),
+      }),
+      {}
+    ),
+  }));
+  
   const positionDataWithNetIncome = [
     { key: " Operating Activities " },
     { key: "Net Income", values: netIncome },
@@ -421,13 +532,7 @@ function CashFlowSection({ numberOfMonths }) {
     "11",
     "12",
   ];
-  const { startMonth, startYear } = useSelector(
-    (state) => state.durationSelect
-  );
-
-  const startingMonth = startMonth; // Tháng bắt đầu từ 1
-  const startingYear = startYear; // Năm bắt đầu từ 24
-
+  
   const positionColumns = [
     {
       title: "Metric",
@@ -765,8 +870,8 @@ function CashFlowSection({ numberOfMonths }) {
       </div>
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
-        <section className="mb-8 sticky top-8 bg-white">
-          <GroqJS datasrc={positionDataWithNetIncome} />
+        <section className="mb-8 sticky top-8">
+          <GroqJS datasrc={cashFlowData} />
         </section>
       </div>
 
@@ -813,7 +918,7 @@ function CashFlowSection({ numberOfMonths }) {
           centered={true}
           zIndex={50}
         >
-          <GroqJS datasrc={positionDataWithNetIncome} />
+          <GroqJS datasrc={cashFlowData} />
         </Modal>
       )}
     </div>

@@ -53,7 +53,6 @@ import {
 import TextArea from "antd/es/input/TextArea";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 
-
 const CustomerInputsForm = ({
   tempCustomerInputs,
   renderCustomerForm,
@@ -1014,16 +1013,7 @@ const CustomerSection = React.memo(
                   ...prevState.options.title,
                   text: "Yearly Total",
                 },
-                fill: {
-                  type: "gradient",
-                  gradient: {
-                    shade: "light",
-                    shadeIntensity: 0.5,
-                    opacityFrom: 0.75,
-                    opacityTo: 65,
-                    stops: [0, 90, 100],
-                  },
-                },
+                // 
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
@@ -1065,16 +1055,7 @@ const CustomerSection = React.memo(
                   ...prevState.options.title,
                   text: "Yearly Growth Rate",
                 },
-                fill: {
-                  type: "gradient",
-                  gradient: {
-                    shade: "light",
-                    shadeIntensity: 0.5,
-                    opacityFrom: 0.75,
-                    opacityTo: 65,
-                    stops: [0, 90, 100],
-                  },
-                },
+              
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
@@ -1117,16 +1098,7 @@ const CustomerSection = React.memo(
                   ...prevState.options.title,
                   text: "Total Yearly Customers by Channel",
                 },
-                fill: {
-                  type: "gradient",
-                  gradient: {
-                    shade: "light",
-                    shadeIntensity: 0.5,
-                    opacityFrom: 0.75,
-                    opacityTo: 65,
-                    stops: [0, 90, 100],
-                  },
-                },
+             
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(

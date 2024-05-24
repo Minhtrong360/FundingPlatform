@@ -1,42 +1,42 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { Modal } from "antd";
+import SpinnerBtn from "../../../components/SpinnerBtn";
 
 const GroqJS = ({ datasrc }) => {
   const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
   const [input, setInput] = useState("");
   const { startMonth, startYear } = useSelector(
     (state) => state.durationSelect
   );
+  // Add the following state for controlling the modal visibility
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  // Update the handleSubmit function to set modal visibility and response content
   const handleSubmit = async () => {
     try {
-      // Create a new message object for the user input
-      //
-
+      setIsLoading(true);
       const newMessage = {
         role: "user",
         content:
           `1. All answers are short and using bullet points.
-          2. Analyze figures and numbers vertically and horizontally. 
-          3. Show remarkable changes, red flags, insights based on quantitative reasonings. 
-          4. Give a score out of 10 for the data below` +
+        2. Analyze figures and numbers vertically and horizontally. 
+        3. Show remarkable changes, red flags, insights based on quantitative reasonings. 
+        4. Give a score out of 10 for the data below` +
           "\n" +
           JSON.stringify(datasrc),
       };
-      console.log("Input sent to backend:", JSON.stringify({ messages }));
-      // Update the messages state by adding the new message
-      setMessages([ newMessage]);
+      setMessages([newMessage]);
 
-      // Log the updated messages array
-      console.log("Input sent to backend:", [ newMessage]);
       const response = await fetch(
         "https://news-fetcher-8k6m.onrender.com/chat",
-        // const response = await fetch("https://fastapi-example-l5fo.onrender.com/chat",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ messages: [ newMessage] }),
+          body: JSON.stringify({ messages: [newMessage] }),
         }
       );
 
@@ -47,59 +47,47 @@ const GroqJS = ({ datasrc }) => {
       const data = await response.json();
       const assistantResponse = data?.response?.replace(/[#*`]/g, "");
 
-      console.log(assistantResponse);
-      // Replace newline characters with <br> tags
       const formattedAssistantResponse = assistantResponse.replace(
         /\n/g,
         "<br>"
       );
-      // setMessages([...messages,{ role: "user", content: input }, { role: "assistant", content: formattedAssistantResponse }]);
       setMessages([
         ...messages,
         { role: "assistant", content: formattedAssistantResponse },
       ]);
       setInput("");
+      setIsModalVisible(true); // Show the modal
     } catch (error) {
       console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="w-full max-h-[600px] flex flex-col rounded-md shadow-lg border p-4 ">
-      <div className="overflow-auto ">
-        {/* Chat history */}
-        {/* {messages.map((message, index) => (
-        <div className="border p-2 rounded  shadow-lg" key={index}>
-          {message.role === "user" ? (
-            <div>👨‍💻 {message.content}</div>
-          ) : (
-            <div dangerouslySetInnerHTML={{ __html: message.content }} />
-          )}
-        </div>
-      ))} */}
-        {messages.map((message, index) => (
-          <div className="border p-2 rounded shadow-lg" key={index}>
-            {message.role !== "user" ? (
-              <div dangerouslySetInnerHTML={{ __html: message.content }} />
-            ) : (
-              <div></div>
-            )}
-          </div>
-        ))}
-      </div>
-      {/* Chat input */}
-      {/* <input
-        className="border p-2 rounded m-4 shadow-lg"
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      /> */}
+    <div className=" flex flex-col rounded-md  ">
       <button
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-4"
         onClick={handleSubmit}
       >
-        Analyze
+        {isLoading ? <SpinnerBtn /> : "Analyze"}
       </button>
+      <Modal
+        open={isModalVisible}
+        footer={null}
+        centered
+        onCancel={() => setIsModalVisible(false)}
+        width="60%"
+        style={{ top: 20 }}
+      >
+        {messages.length > 0 && (
+          <div
+            dangerouslySetInnerHTML={{
+              __html: messages[messages.length - 1].content,
+            }}
+          />
+        )}
+      </Modal>
     </div>
   );
 };

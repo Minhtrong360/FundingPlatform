@@ -6,7 +6,7 @@ import {
   SelectItem,
 } from "../../../components/ui/Select";
 import { Input } from "../../../components/ui/Input";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -37,7 +37,7 @@ import { useAuth } from "../../../context/AuthContext";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 import TextArea from "antd/es/input/TextArea";
 import { fetchGPTResponse } from "../../../features/CustomerSlice";
-
+import { debounce } from "lodash";
 const CostInputForm = ({
   tempCostInput,
   renderCostForm,
@@ -343,7 +343,7 @@ const CostInputForm = ({
           {showAdvancedInputs && (
             <Modal
               title="Advanced Inputs"
-              visible={showAdvancedInputs}
+              open={showAdvancedInputs}
               onOk={handleFetchGPT}
               onCancel={() => setShowAdvancedInputs(false)}
               okText={isLoading ? <SpinnerBtn /> : "Apply"}
@@ -550,6 +550,28 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
     dispatch(setCostTableData(costTableData));
   }, [tempCostInput, numberOfMonths]);
 
+  const debouncedUpdateCostData = useCallback(
+    debounce((tempCostInput, numberOfMonths, revenueData) => {
+      const calculatedData = calculateCostData(
+        tempCostInput,
+        numberOfMonths,
+        revenueData
+      );
+      setTempCostData(calculatedData);
+
+      const costTableData = transformCostDataForTable(
+        tempCostInput,
+        numberOfMonths,
+        revenueData
+      );
+      dispatch(setCostTableData(costTableData));
+    }, 300),
+    []
+  );
+
+  useEffect(() => {
+    debouncedUpdateCostData(tempCostInput, numberOfMonths, revenueData);
+  }, [tempCostInput, numberOfMonths]);
   const months = [
     "01",
     "02",
@@ -1016,7 +1038,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
               </div>
               <Modal
                 centered
-                visible={isChartModalVisible}
+                open={isChartModalVisible}
                 footer={null}
                 onCancel={() => setIsChartModalVisible(false)}
                 width="90%"
@@ -1092,7 +1114,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
 
             {isInputFormOpen && (
               <Modal
-                visible={isInputFormOpen}
+                open={isInputFormOpen}
                 onOk={() => {
                   handleSave();
                   setIsInputFormOpen(false);
@@ -1147,7 +1169,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
             {isDeleteModalOpen && (
               <Modal
                 title="Confirm Delete"
-                visible={isDeleteModalOpen}
+                open={isDeleteModalOpen}
                 onOk={confirmDelete}
                 onCancel={() => setIsDeleteModalOpen(false)}
                 okText="Delete"

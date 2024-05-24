@@ -241,7 +241,7 @@ const FundraisingInputForm = ({
         ))}
       <Modal
         title="Confirm Delete"
-        visible={isDeleteModalOpen}
+        open={isDeleteModalOpen}
         onOk={confirmDelete}
         onCancel={() => setIsDeleteModalOpen(false)}
         okText="Delete"
@@ -719,7 +719,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               </div>
               <Modal
                 centered
-                visible={isChartModalVisible}
+                open={isChartModalVisible}
                 footer={null}
                 onCancel={() => setIsChartModalVisible(false)}
                 width="90%"
@@ -793,7 +793,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
             {isInputFormOpen && (
               <Modal
-                visible={isInputFormOpen}
+                open={isInputFormOpen}
                 onOk={() => {
                   handleSave();
                   setIsInputFormOpen(false);

@@ -180,7 +180,7 @@ const CustomChart = ({
       </Card>
       <Modal
         centered
-        visible={isChartModalVisible}
+        open={isChartModalVisible}
         footer={null}
         onCancel={() => setIsChartModalVisible(false)}
         width="90%"

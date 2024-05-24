@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Input } from "../../../components/ui/Input";
 import {
   Button,
@@ -999,16 +999,7 @@ const CustomerSection = React.memo(
                   ...prevState.options.title,
                   text: "Yearly Total",
                 },
-                fill: {
-                  type: "gradient",
-                  gradient: {
-                    shade: "light",
-                    shadeIntensity: 0.5,
-                    opacityFrom: 0.75,
-                    opacityTo: 65,
-                    stops: [0, 90, 100],
-                  },
-                },
+                //
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
@@ -1050,16 +1041,7 @@ const CustomerSection = React.memo(
                   ...prevState.options.title,
                   text: "Yearly Growth Rate",
                 },
-                fill: {
-                  type: "gradient",
-                  gradient: {
-                    shade: "light",
-                    shadeIntensity: 0.5,
-                    opacityFrom: 0.75,
-                    opacityTo: 65,
-                    stops: [0, 90, 100],
-                  },
-                },
+
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
@@ -1102,16 +1084,7 @@ const CustomerSection = React.memo(
                   ...prevState.options.title,
                   text: "Total Yearly Customers by Channel",
                 },
-                fill: {
-                  type: "gradient",
-                  gradient: {
-                    shade: "light",
-                    shadeIntensity: 0.5,
-                    opacityFrom: 0.75,
-                    opacityTo: 65,
-                    stops: [0, 90, 100],
-                  },
-                },
+
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
@@ -1371,7 +1344,7 @@ const CustomerSection = React.memo(
                   ))}
                 </div>
                 <AntdModal
-                  visible={isChartModalVisible}
+                  open={isChartModalVisible}
                   footer={null}
                   centered
                   onCancel={() => setIsChartModalVisible(false)}
@@ -1453,7 +1426,7 @@ const CustomerSection = React.memo(
 
               {isInputFormOpen && (
                 <Modal
-                  visible={isInputFormOpen}
+                  open={isInputFormOpen}
                   onCancel={() => {
                     setTempCustomerInputs(customerInputs);
                     setIsInputFormOpen(false);
@@ -1484,7 +1457,7 @@ const CustomerSection = React.memo(
               {isDeleteModalOpen && (
                 <Modal
                   title="Confirm Delete"
-                  visible={isDeleteModalOpen}
+                  open={isDeleteModalOpen}
                   onOk={confirmDelete}
                   onCancel={() => setIsDeleteModalOpen(false)}
                   okText="Delete"

@@ -593,14 +593,9 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
   const startingMonth = startMonth;
   const startingYear = startYear;
 
-  const handleInputTable = (value, recordKey, monthKey) => {
-    // Extract month number from the monthKey
-    console.log("value", value);
-    console.log("recordKey", recordKey);
-    console.log("monthKey", monthKey);
-    console.log("costTableData", costTableData);
+  const [modifiedCells, setModifiedCells] = useState({});
 
-    // Update gptResponseArray in tempCustomerInputs
+  const handleInputTable = (value, recordKey, monthKey) => {
     const monthIndex = parseInt(monthKey.replace("month", "")) - 1;
 
     const updatedData = costTableData.map((record) => {
@@ -615,26 +610,10 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
 
     dispatch(setCostTableData(updatedData));
 
-    // const updatedTempCustomerInputs = tempCostInput.map((input) => {
-    //   if (input.channelName === recordKey.split("-")[0]) {
-    //     const updatedGPTResponseArray = [...input.gptResponseArray];
-    //     updatedGPTResponseArray[monthIndex] = Number(value);
-    //     if (monthKey == "month1") {
-    //       return {
-    //         ...input,
-    //         gptResponseArray: updatedGPTResponseArray,
-    //         customersPerMonth: Number(value),
-    //       };
-    //     }
-    //     return {
-    //       ...input,
-    //       gptResponseArray: updatedGPTResponseArray,
-    //     };
-    //   }
-    //   return input;
-    // });
-
-    // setTempCostInput(updatedTempCustomerInputs);
+    setModifiedCells((prev) => ({
+      ...prev,
+      [`${recordKey}-${monthKey}`]: true,
+    }));
   };
 
   const costColumns = [
@@ -658,11 +637,14 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
           },
         }),
         render: (text, record) => {
-          if (!record.isHeader) {
+          const cellKey = `${record.key}-month${i + 1}`;
+          const isModified = modifiedCells[cellKey];
+
+          if (record.key !== "Total") {
             return (
-              <div>
+              <div className={isModified ? "bg-yellow-300" : ""}>
                 <input
-                  className="border-white p-0 text-xs text-right w-full h-full"
+                  className="border-transparent bg-transparent p-0 text-xs text-right w-full h-full"
                   value={record[`month${i + 1}`]}
                   onChange={(e) =>
                     handleInputTable(
@@ -682,7 +664,8 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
     }),
   ];
 
-  console.log("costTableData", costTableData);
+
+ 
 
   const [costChart, setCostChart] = useState({
     options: {

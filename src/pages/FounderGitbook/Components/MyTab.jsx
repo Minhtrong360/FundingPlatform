@@ -76,7 +76,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
                 className="absolute top-0 left-0 w-full h-full"
                 src={`https://www.youtube.com/embed/${block.props.videoId}`}
                 title="YouTube video player"
-                frameBorder="0"
+                frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               ></iframe>
@@ -440,7 +440,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
 
   return (
     <div
-      className={`container mx-auto px-4 flex flex-col  ${
+      className={`container mr-8 px-8  flex flex-col  ${
         fullScreen === true ? "justify-center items-center" : ""
       }`}
     >

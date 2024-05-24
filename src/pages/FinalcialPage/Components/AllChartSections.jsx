@@ -564,7 +564,7 @@ const AllChartSections = ({
 
             <Modal
               centered
-              open={isChartModalVisible}
+              visible={isChartModalVisible}
               footer={null}
               onCancel={() => setIsChartModalVisible(false)}
               width="90%"
@@ -648,7 +648,7 @@ const AllChartSections = ({
           </div>
           <Modal
             centered
-            open={isChartModalVisibleVer2}
+            visible={isChartModalVisibleVer2}
             footer={null}
             onCancel={() => {
               setIsChartModalVisibleVer2(false);

@@ -424,7 +424,7 @@ function FleaMarketList() {
               {isDeleteModalOpen && (
                 <Modal
                   title="Confirm Delete"
-                  visible={isDeleteModalOpen}
+                  open={isDeleteModalOpen}
                   onOk={confirmDelete}
                   onCancel={() => setIsDeleteModalOpen(false)}
                   okText="Delete"
@@ -453,7 +453,7 @@ function FleaMarketList() {
               {isAssignModalOpen && (
                 <Modal
                   title="Assign project"
-                  visible={isAssignModalOpen}
+                  open={isAssignModalOpen}
                   onOk={handleConfirmAssign}
                   onCancel={() => setIsAssignModalOpen(false)}
                   okText="Assign"

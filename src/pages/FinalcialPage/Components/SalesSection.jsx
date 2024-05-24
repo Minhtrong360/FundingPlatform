@@ -794,7 +794,7 @@ const SalesSection = ({
 
         <Modal
           centered
-          visible={isChartModalVisible}
+          open={isChartModalVisible}
           footer={null}
           onCancel={() => setIsChartModalVisible(false)}
           width="90%"
@@ -858,7 +858,7 @@ const SalesSection = ({
 
       {isInputFormOpen && (
         <Modal
-          visible={isInputFormOpen}
+          open={isInputFormOpen}
           onOk={() => {
             handleSave();
             setIsInputFormOpen(false);
@@ -906,7 +906,7 @@ const SalesSection = ({
       {isDeleteModalOpen && (
         <Modal
           title="Confirm Delete"
-          visible={isDeleteModalOpen}
+          open={isDeleteModalOpen}
           onOk={confirmDelete}
           onCancel={() => setIsDeleteModalOpen(false)}
           okText="Delete"

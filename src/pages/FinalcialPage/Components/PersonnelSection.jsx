@@ -666,7 +666,7 @@ const PersonnelSection = ({
           </Card>
           <Modal
             centered
-            visible={isChartModalVisible}
+            open={isChartModalVisible}
             footer={null}
             onCancel={() => setIsChartModalVisible(false)}
             width="90%"
@@ -731,7 +731,7 @@ const PersonnelSection = ({
       </div>
       {isInputFormOpen && (
         <Modal
-          visible={isInputFormOpen}
+          open={isInputFormOpen}
           onOk={() => {
             handleSave();
             setIsInputFormOpen(false);
@@ -779,7 +779,7 @@ const PersonnelSection = ({
       {isDeleteModalOpen && (
         <Modal
           title="Confirm Delete"
-          visible={isDeleteModalOpen}
+          open={isDeleteModalOpen}
           onOk={confirmDelete}
           onCancel={() => setIsDeleteModalOpen(false)}
           okText="Delete"

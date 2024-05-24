@@ -2425,7 +2425,7 @@ function AdminPage() {
         {isDeleteModalOpen && (
           <Modal
             title="Confirm Delete"
-            visible={isDeleteModalOpen}
+            open={isDeleteModalOpen}
             onOk={confirmDelete}
             onCancel={cancelDelete}
             okText="Delete"
@@ -2454,7 +2454,7 @@ function AdminPage() {
         {isDeleteFinModalOpen && (
           <Modal
             title="Confirm Delete"
-            visible={isDeleteFinModalOpen}
+            open={isDeleteFinModalOpen}
             onOk={confirmFinDelete}
             onCancel={() => {
               setIsDeleteFinModalOpen(false);
@@ -2486,7 +2486,7 @@ function AdminPage() {
         {isUpgradePlanModalOpen && (
           <Modal
             title="Upgrade client's plan"
-            visible={isUpgradePlanModalOpen}
+            open={isUpgradePlanModalOpen}
             onOk={confirmUpgrade}
             onCancel={() => {
               setIsUpgradePlanModalOpen(false);
@@ -2544,7 +2544,7 @@ function AdminPage() {
         {isDeleteClientModalOpen && (
           <Modal
             title="Confirm Delete Client"
-            visible={isDeleteClientModalOpen}
+            open={isDeleteClientModalOpen}
             onOk={confirmClientDelete}
             onCancel={() => {
               setIsDeleteClientModalOpen(false);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Input } from "../../../components/ui/Input";
 import {
   Button,
@@ -52,6 +52,7 @@ import {
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import SpinnerBtn from "../../../components/SpinnerBtn";
+
 
 const CustomerInputsForm = ({
   tempCustomerInputs,
@@ -258,7 +259,7 @@ const CustomerInputsForm = ({
             {showAdvancedInputs && (
               <Modal
                 title="Advanced Inputs"
-                visible={showAdvancedInputs}
+                open={showAdvancedInputs}
                 onOk={handleFetchGPT}
                 onCancel={() => setShowAdvancedInputs(false)}
                 okText={isLoading ? <SpinnerBtn /> : "Apply"}
@@ -1353,7 +1354,7 @@ const CustomerSection = React.memo(
             ))}
           </div>
           <AntdModal
-            visible={isChartModalVisible}
+            open={isChartModalVisible}
             footer={null}
             centered
             onCancel={() => setIsChartModalVisible(false)}
@@ -1387,7 +1388,7 @@ const CustomerSection = React.memo(
           />
         </div>
 
-        <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
+        <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
           <CustomerInputsForm
             tempCustomerInputs={tempCustomerInputs}
             renderCustomerForm={renderCustomerForm}
@@ -1425,7 +1426,7 @@ const CustomerSection = React.memo(
 
         {isInputFormOpen && (
           <Modal
-            visible={isInputFormOpen}
+            open={isInputFormOpen}
             onCancel={() => {
               setTempCustomerInputs(customerInputs);
               setIsInputFormOpen(false);
@@ -1457,7 +1458,7 @@ const CustomerSection = React.memo(
         {isDeleteModalOpen && (
           <Modal
             title="Confirm Delete"
-            visible={isDeleteModalOpen}
+            open={isDeleteModalOpen}
             onOk={confirmDelete}
             onCancel={() => setIsDeleteModalOpen(false)}
             okText="Delete"

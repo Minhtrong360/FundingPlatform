@@ -544,7 +544,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         </div>
         <Modal
           centered
-          visible={isChartModalVisible}
+          open={isChartModalVisible}
           footer={null}
           onCancel={() => setIsChartModalVisible(false)}
           width="90%"
@@ -612,7 +612,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
       {isInputFormOpen && (
         <Modal
-          visible={isInputFormOpen}
+          open={isInputFormOpen}
           onOk={() => {
             handleSave();
             setIsInputFormOpen(false);
@@ -661,7 +661,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       {isDeleteModalOpen && (
         <Modal
           title="Confirm Delete"
-          visible={isDeleteModalOpen}
+          open={isDeleteModalOpen}
           onOk={confirmDelete}
           onCancel={() => setIsDeleteModalOpen(false)}
           okText="Delete"

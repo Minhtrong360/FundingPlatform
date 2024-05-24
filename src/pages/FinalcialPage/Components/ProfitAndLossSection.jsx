@@ -264,7 +264,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
 
       render: (text, record) => ({
         children: (
-          <div className={"md:whitespace-nowrap"}>
+          <div className={"md:whitespace-nowrap truncate"}>
             <div
               style={{
                 fontWeight:
@@ -872,7 +872,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       {isInputFormOpen && (
         <Modal
           // title="Customer channel"
-          visible={isInputFormOpen}
+          open={isInputFormOpen}
           onCancel={() => {
             setIsInputFormOpen(false);
           }}

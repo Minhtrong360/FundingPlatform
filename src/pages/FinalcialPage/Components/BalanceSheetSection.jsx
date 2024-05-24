@@ -1218,7 +1218,7 @@ console.log("BalenceSheetData",BalenceSheetData);
       {isInputFormOpen && (
         <Modal
           // title="Customer channel"
-          visible={isInputFormOpen}
+          open={isInputFormOpen}
           onCancel={() => {
             setIsInputFormOpen(false);
           }}

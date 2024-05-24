@@ -425,7 +425,7 @@ function FilesList() {
       {/* Modal */}
       <Modal
         title="Confirm Delete"
-        visible={isDeleteModalVisible}
+        open={isDeleteModalVisible}
         onOk={handleDeleteModalOk}
         onCancel={handleDeleteModalCancel}
         okText="Delete"

@@ -789,7 +789,7 @@ function CashFlowSection({ numberOfMonths }) {
       {isInputFormOpen && (
         <Modal
           // title="Customer channel"
-          visible={isInputFormOpen}
+          open={isInputFormOpen}
           onCancel={() => {
             setIsInputFormOpen(false);
           }}

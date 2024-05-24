@@ -23,13 +23,253 @@ import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
+import SpinnerBtn from "../../../components/SpinnerBtn";
 
-const FundraisingSection = ({
-  numberOfMonths,
-  isSaved,
-  setIsSaved,
-  handleSubmit,
+const FundraisingInputForm = ({
+  tempFundraisingInputs,
+  selectedFundraisingId,
+  setSelectedFundraisingId,
+  handleFundraisingInputChange,
+  addNewFundraisingInput,
+  confirmDelete,
+  setIsDeleteModalOpen,
+  isDeleteModalOpen,
+  handleSave,
+  isLoading,
 }) => {
+  return (
+    <section
+      aria-labelledby="fundraising-heading"
+      className="mb-8 sticky top-8"
+    >
+      <h2
+        className="text-lg font-semibold mb-8 flex items-center"
+        id="fundraising-heading"
+      >
+        Fundraising
+      </h2>
+
+      <div>
+        <label
+          htmlFor="selectedFundraising"
+          className="block my-4 text-base darkTextWhite"
+        ></label>
+        <select
+          id="selectedFundraising"
+          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+          value={selectedFundraisingId}
+          onChange={(e) => setSelectedFundraisingId(e.target.value)}
+        >
+          {tempFundraisingInputs.map((input) => (
+            <option key={input?.id} value={input?.id}>
+              {input.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {tempFundraisingInputs
+        .filter((input) => input?.id == selectedFundraisingId)
+        .map((input) => (
+          <div key={input?.id} className="bg-white rounded-2xl p-6 border my-4">
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className=" flex items-center text-sm">
+                Fundraising Name:
+              </span>
+              <FundraisingInput
+                className="col-start-2 border-gray-300"
+                value={input.name}
+                onChange={(e) =>
+                  handleFundraisingInputChange(
+                    input?.id,
+                    "name",
+                    e.target.value
+                  )
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className=" flex items-center text-sm">
+                Equity offered (%):
+              </span>
+              <FundraisingInput
+                className="col-start-2 border-gray-300"
+                type="number"
+                min={0}
+                max={100}
+                value={formatNumber(input.equityOffered)}
+                onChange={(e) =>
+                  handleFundraisingInputChange(
+                    input?.id,
+                    "equityOffered",
+                    parseNumber(e.target.value)
+                  )
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className=" flex items-center text-sm">
+                Fundraising Amount:
+              </span>
+              <FundraisingInput
+                className="col-start-2 border-gray-300"
+                value={formatNumber(input.fundraisingAmount)}
+                onChange={(e) =>
+                  handleFundraisingInputChange(
+                    input?.id,
+                    "fundraisingAmount",
+                    parseNumber(e.target.value)
+                  )
+                }
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className=" flex items-center text-sm">
+                Fundraising Type:
+              </span>
+              <FundraisingSelect
+                className="border-gray-300"
+                onValueChange={(value) =>
+                  handleFundraisingInputChange(
+                    input?.id,
+                    "fundraisingType",
+                    value
+                  )
+                }
+                value={input.fundraisingType}
+              >
+                <FundraisingSelectTrigger
+                  id={`select-fundraisingType-${input?.id}`}
+                  className="border-solid border-[1px] border-gray-300"
+                >
+                  <FundraisingSelectValue placeholder="Select Fundraising Type" />
+                </FundraisingSelectTrigger>
+                <FundraisingSelectContent position="popper">
+                  <FundraisingSelectItem
+                    value="Common Stock"
+                    className="hover:cursor-pointer"
+                  >
+                    Common Stock
+                  </FundraisingSelectItem>
+                  <FundraisingSelectItem
+                    value="Preferred Stock"
+                    className="hover:cursor-pointer"
+                  >
+                    Preferred Stock
+                  </FundraisingSelectItem>
+                  <FundraisingSelectItem
+                    value="Paid in Capital"
+                    className="hover:cursor-pointer"
+                  >
+                    Paid in Capital
+                  </FundraisingSelectItem>
+                </FundraisingSelectContent>
+              </FundraisingSelect>
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <span className=" flex items-center text-sm">
+                Month Fundraising Begins:
+              </span>
+              <FundraisingInput
+                className="col-start-2 border-gray-300"
+                type="number"
+                min="1"
+                max="12"
+                value={input.fundraisingBeginMonth}
+                onChange={(e) =>
+                  handleFundraisingInputChange(
+                    input?.id,
+                    "fundraisingBeginMonth",
+                    parseInt(e.target.value, 10)
+                  )
+                }
+              />
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <button
+                className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
+                onClick={() => setIsDeleteModalOpen(true)}
+              >
+                {" "}
+                <DeleteOutlined
+                  style={{
+                    fontSize: "12px",
+                    color: "#FFFFFF",
+                    marginRight: "4px",
+                  }}
+                />
+                Remove
+              </button>
+
+              <button
+                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+                onClick={addNewFundraisingInput}
+              >
+                <PlusOutlined
+                  style={{
+                    fontSize: "12px",
+                    color: "#FFFFFF",
+                    marginRight: "4px",
+                  }}
+                />
+                Add
+              </button>
+
+              <button
+                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw]"
+                onClick={handleSave}
+              >
+                {isLoading ? (
+                  <SpinnerBtn />
+                ) : (
+                  <>
+                    <CheckCircleOutlined
+                      style={{
+                        fontSize: "12px",
+                        color: "#FFFFFF",
+                        marginRight: "4px",
+                      }}
+                    />
+                    Save
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        ))}
+      <Modal
+        title="Confirm Delete"
+        open={isDeleteModalOpen}
+        onOk={confirmDelete}
+        onCancel={() => setIsDeleteModalOpen(false)}
+        okText="Delete"
+        cancelText="Cancel"
+        cancelButtonProps={{
+          style: {
+            borderRadius: "0.375rem",
+            cursor: "pointer",
+          },
+        }}
+        okButtonProps={{
+          style: {
+            background: "#f5222d",
+            borderColor: "#f5222d",
+            color: "#fff",
+            borderRadius: "0.375rem",
+            cursor: "pointer",
+          },
+        }}
+        centered={true}
+      >
+        Are you sure you want to delete it?
+      </Modal>
+    </section>
+  );
+};
+
+const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const { fundraisingInputs } = useSelector((state) => state.fundraising);
   const dispatch = useDispatch();
 
@@ -141,7 +381,12 @@ const FundraisingSection = ({
         id: "fundraising-chart",
         type: "area",
         height: 350,
-        toolbar: { show: false },
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          },
+        },
         zoom: { enabled: false },
         animations: {
           enabled: false,
@@ -204,11 +449,8 @@ const FundraisingSection = ({
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-
       dataLabels: { enabled: false },
       stroke: { width: 1, curve: "smooth" },
-
-      // markers: { size: 1 },
     },
     series: [],
   });
@@ -224,10 +466,12 @@ const FundraisingSection = ({
 
   const { id } = useParams();
   const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const saveData = async () => {
       try {
+        setIsLoading(true);
         if (isSaved) {
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
@@ -278,6 +522,8 @@ const FundraisingSection = ({
         message.error(error);
       } finally {
         setIsSaved(false);
+        setIsLoading(false);
+        setIsInputFormOpen(false);
       }
     };
     saveData();
@@ -294,7 +540,7 @@ const FundraisingSection = ({
     dispatch(setFundraisingTableData(tableData));
   }, []);
   const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(6);
+  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
 
   useEffect(() => {
     const transformedData = transformFundraisingDataForTable(
@@ -303,17 +549,24 @@ const FundraisingSection = ({
     );
 
     const seriesData = [];
-
     transformedData.forEach((item) => {
-      const seriesItem = {
-        name: item.name,
-        // Lọc và lấy dữ liệu từ chartStartMonth đến chartEndMonth
-        data: Object.keys(item)
-          .filter((key) => key.startsWith("month"))
-          .slice(chartStartMonth - 1, chartEndMonth) // slice để lấy khoảng tháng cần thiết
-          .map((key) => (item[key] ? parseNumber(item[key]) : 0)), // Sử dụng parseNumber và đảm bảo rằng nếu không có dữ liệu thì trả về 0
-      };
-      seriesData.push(seriesItem);
+      if (
+        item.name !== "Increased in Common Stock" &&
+        item.name !== "Increased in Preferred Stock" &&
+        item.name !== "Increased in Paid in Capital" &&
+        item.name !== "Accumulated Common Stock" &&
+        item.name !== "Accumulated Preferred Stock" &&
+        item.name !== "Accumulated Paid in Capital"
+      ) {
+        const seriesItem = {
+          name: item.name,
+          data: Object.keys(item)
+            .filter((key) => key.startsWith("month"))
+            .slice(chartStartMonth - 1, chartEndMonth) // slice để lấy khoảng tháng cần thiết
+            .map((key) => (item[key] ? parseNumber(item[key]) : 0)), // Sử dụng parseNumber và đảm bảo rằng nếu không có dữ liệu thì trả về 0
+        };
+        seriesData.push(seriesItem);
+      }
     });
 
     setFundraisingChart((prevChart) => ({
@@ -348,551 +601,247 @@ const FundraisingSection = ({
     setIsDeleteModalOpen(false);
   };
 
+  const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
+  const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
+
+  const handleChartClick = (chart) => {
+    setSelectedChart(chart);
+    setIsChartModalVisible(true);
+  };
+
+  const [activeTab, setActiveTab] = useState("table&chart");
+
+  const handleTabChange = (tabName) => {
+    setActiveTab(tabName);
+  };
+
   return (
-    <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full xl:w-3/4 sm:p-4 p-0">
-        <h3 className="text-lg font-semibold mb-8">Fundraising Chart</h3>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col transition duration-500  rounded-2xl">
-            <div className="flex justify-between items-center">
-              <div className="min-w-[10vw]">
-                <label htmlFor="startMonthSelect">Start Month:</label>
-                <select
-                  id="startMonthSelect"
-                  value={chartStartMonth}
-                  onChange={(e) =>
-                    setChartStartMonth(
-                      Math.max(1, Math.min(e.target.value, chartEndMonth))
-                    )
-                  }
-                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                >
-                  {Array.from({ length: numberOfMonths }, (_, i) => {
-                    const monthIndex = (startingMonth + i - 1) % 12;
-                    const year =
-                      startingYear + Math.floor((startingMonth + i - 1) / 12);
-                    return (
-                      <option key={i + 1} value={i + 1}>
-                        {`${months[monthIndex]}/${year}`}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-              <div className="min-w-[10vw]">
-                <label htmlFor="endMonthSelect">End Month:</label>
-                <select
-                  id="endMonthSelect"
-                  value={chartEndMonth}
-                  onChange={(e) =>
-                    setChartEndMonth(
-                      Math.max(
-                        chartStartMonth,
-                        Math.min(e.target.value, numberOfMonths)
-                      )
-                    )
-                  }
-                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                >
-                  {Array.from({ length: numberOfMonths }, (_, i) => {
-                    const monthIndex = (startingMonth + i - 1) % 12;
-                    const year =
-                      startingYear + Math.floor((startingMonth + i - 1) / 12);
-                    return (
-                      <option key={i + 1} value={i + 1}>
-                        {`${months[monthIndex]}/${year}`}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-            </div>
-            <Chart
-              options={{
-                ...fundraisingChart.options,
-                xaxis: {
-                  ...fundraisingChart.options.xaxis,
-                  // tickAmount: 6, // Set the number of ticks on the x-axis to 12
-                },
-              }}
-              series={fundraisingChart.series}
-              type="area"
-              height={350}
-            />
-          </Card>
-        </div>
-
-        <h3 className="text-lg font-semibold my-4">Fundraising Table</h3>
-        <Table
-          className="overflow-auto my-8 rounded-md bg-white"
-          size="small"
-          dataSource={transformFundraisingDataForTable(
-            tempFundraisingInputs,
-            numberOfMonths
-          )}
-          columns={fundraisingColumns}
-          bordered
-          pagination={false}
-          rowClassName={(record) =>
-            record.key === "Total funding" ? "font-bold" : ""
-          }
-        />
-      </div>
-
-      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
-        <section
-          aria-labelledby="fundraising-heading"
-          className="mb-8 sticky top-8"
-        >
-          <h2
-            className="text-lg font-semibold mb-8 flex items-center"
-            id="fundraising-heading"
+    <div>
+      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
+        <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
+          <li
+            className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+              activeTab === "table&chart" ? "bg-yellow-300 font-bold" : ""
+            }`}
+            onClick={() => handleTabChange("table&chart")}
           >
-            Fundraising
-          </h2>
+            Table and Chart
+          </li>
+          {/* Repeat for other tabs */}
+          <li
+            className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+              activeTab === "input" ? "bg-yellow-300 font-bold" : ""
+            }`}
+            onClick={() => handleTabChange("input")}
+          >
+            Input
+          </li>
+        </ul>
+      </div>
+      <div className="w-full h-full flex flex-col lg:flex-row">
+        {activeTab === "table&chart" && (
+          <>
+            <div className="w-full xl:w-3/4 sm:p-4 p-0">
+              <h3 className="text-lg font-semibold mb-8">Fundraising Chart</h3>
 
-          <div>
-            <label
-              htmlFor="selectedFundraising"
-              className="block my-4 text-base  darkTextWhite"
-            ></label>
-            <select
-              id="selectedFundraising"
-              className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-              value={selectedFundraisingId}
-              onChange={handleSelectChange}
-            >
-              {tempFundraisingInputs.map((input) => (
-                <option key={input?.id} value={input?.id}>
-                  {input.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {tempFundraisingInputs
-            .filter((input) => input?.id == selectedFundraisingId)
-            .map((input) => (
-              <div
-                key={input?.id}
-                className="bg-white rounded-2xl p-6 border my-4 "
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card className="flex flex-col transition duration-500  rounded-2xl">
+                  <div className="flex justify-between items-center">
+                    <div className="min-w-[10vw] mb-2">
+                      <label htmlFor="startMonthSelect">Start Month:</label>
+                      <select
+                        id="startMonthSelect"
+                        value={chartStartMonth}
+                        onChange={(e) =>
+                          setChartStartMonth(
+                            Math.max(1, Math.min(e.target.value, chartEndMonth))
+                          )
+                        }
+                        className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                      >
+                        {Array.from({ length: numberOfMonths }, (_, i) => {
+                          const monthIndex = (startingMonth + i - 1) % 12;
+                          const year =
+                            startingYear +
+                            Math.floor((startingMonth + i - 1) / 12);
+                          return (
+                            <option key={i + 1} value={i + 1}>
+                              {`${months[monthIndex]}/${year}`}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                    <div className="min-w-[10vw] mb-2">
+                      <label htmlFor="endMonthSelect">End Month:</label>
+                      <select
+                        id="endMonthSelect"
+                        value={chartEndMonth}
+                        onChange={(e) =>
+                          setChartEndMonth(
+                            Math.max(
+                              chartStartMonth,
+                              Math.min(e.target.value, numberOfMonths)
+                            )
+                          )
+                        }
+                        className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                      >
+                        {Array.from({ length: numberOfMonths }, (_, i) => {
+                          const monthIndex = (startingMonth + i - 1) % 12;
+                          const year =
+                            startingYear +
+                            Math.floor((startingMonth + i - 1) / 12);
+                          return (
+                            <option key={i + 1} value={i + 1}>
+                              {`${months[monthIndex]}/${year}`}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                  </div>
+                  <div onClick={() => handleChartClick(fundraisingChart)}>
+                    <Chart
+                      options={{
+                        ...fundraisingChart.options,
+                        xaxis: {
+                          ...fundraisingChart.options.xaxis,
+                          // tickAmount: 6, // Set the number of ticks on the x-axis to 12
+                        },
+                      }}
+                      series={fundraisingChart.series}
+                      type="area"
+                      height={350}
+                    />
+                  </div>
+                </Card>
+              </div>
+              <Modal
+                centered
+                open={isChartModalVisible}
+                footer={null}
+                onCancel={() => setIsChartModalVisible(false)}
+                width="90%"
+                style={{ top: 20 }}
               >
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Fundraising Name:
-                  </span>
-                  <FundraisingInput
-                    className="col-start-2 border-gray-300"
-                    value={input.name}
-                    onChange={(e) =>
-                      handleFundraisingInputChange(
-                        input?.id,
-                        "name",
-                        e.target.value
-                      )
-                    }
+                {selectedChart && (
+                  <Chart
+                    options={{
+                      ...selectedChart.options,
+                      // ... other options
+                    }}
+                    series={selectedChart.series}
+                    type="area"
+                    height={500}
                   />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Equity offered (%):
-                  </span>
-                  <FundraisingInput
-                    className="col-start-2 border-gray-300"
-                    type="number"
-                    min={0}
-                    max={100}
-                    value={formatNumber(input.equityOffered)}
-                    onChange={(e) =>
-                      handleFundraisingInputChange(
-                        input?.id,
-                        "equityOffered",
-                        parseNumber(e.target.value)
-                      )
-                    }
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Fundraising Amount:
-                  </span>
-                  <FundraisingInput
-                    className="col-start-2 border-gray-300"
-                    value={formatNumber(input.fundraisingAmount)}
-                    onChange={(e) =>
-                      handleFundraisingInputChange(
-                        input?.id,
-                        "fundraisingAmount",
-                        parseNumber(e.target.value)
-                      )
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Fundraising Type:
-                  </span>
-                  <FundraisingSelect
-                    className="border-gray-300"
-                    onValueChange={(value) =>
-                      handleFundraisingInputChange(
-                        input?.id,
-                        "fundraisingType",
-                        value
-                      )
-                    }
-                    value={input.fundraisingType}
-                  >
-                    <FundraisingSelectTrigger
-                      id={`select-fundraisingType-${input?.id}`}
-                      className="border-solid border-[1px] border-gray-300"
-                    >
-                      <FundraisingSelectValue placeholder="Select Fundraising Type" />
-                    </FundraisingSelectTrigger>
-                    <FundraisingSelectContent position="popper">
-                      <FundraisingSelectItem
-                        value="Common Stock"
-                        className="hover:cursor-pointer"
-                      >
-                        Common Stock
-                      </FundraisingSelectItem>
-                      <FundraisingSelectItem
-                        value="Preferred Stock"
-                        className="hover:cursor-pointer"
-                      >
-                        Preferred Stock
-                      </FundraisingSelectItem>
-                      <FundraisingSelectItem
-                        value="Paid in Capital"
-                        className="hover:cursor-pointer"
-                      >
-                        Paid in Capital
-                      </FundraisingSelectItem>
-                    </FundraisingSelectContent>
-                  </FundraisingSelect>
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Month Fundraising Begins:
-                  </span>
-                  <FundraisingInput
-                    className="col-start-2 border-gray-300"
-                    type="number"
-                    min="1"
-                    max="12"
-                    value={input.fundraisingBeginMonth}
-                    onChange={(e) =>
-                      handleFundraisingInputChange(
-                        input?.id,
-                        "fundraisingBeginMonth",
-                        parseInt(e.target.value, 10)
-                      )
-                    }
-                  />
-                </div>
-              </div>
-            ))}
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <button
-              className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
-              onClick={() => setIsDeleteModalOpen(true)}
-            >
-              {" "}
-              <DeleteOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
+                )}
+              </Modal>
+              <h3 className="text-lg font-semibold my-4">Fundraising Table</h3>
+              <Table
+                className="overflow-auto my-8 rounded-md bg-white"
+                size="small"
+                dataSource={transformFundraisingDataForTable(
+                  tempFundraisingInputs,
+                  numberOfMonths
+                )}
+                columns={fundraisingColumns}
+                bordered
+                pagination={false}
+                rowClassName={(record) =>
+                  record.key === "Total funding" ? "font-bold" : ""
+                }
               />
-              Remove
-            </button>
+            </div>
+            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden "></div>
+          </>
+        )}
+        {activeTab === "input" && (
+          <>
+            <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
 
-            <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
-              onClick={addNewFundraisingInput}
-            >
-              <PlusOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
+            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
+              <FundraisingInputForm
+                tempFundraisingInputs={tempFundraisingInputs}
+                selectedFundraisingId={selectedFundraisingId}
+                setSelectedFundraisingId={setSelectedFundraisingId}
+                handleFundraisingInputChange={handleFundraisingInputChange}
+                addNewFundraisingInput={addNewFundraisingInput}
+                confirmDelete={confirmDelete}
+                setIsDeleteModalOpen={setIsDeleteModalOpen}
+                isDeleteModalOpen={isDeleteModalOpen}
+                handleSave={handleSave}
+                isLoading={isLoading}
               />
-              Add
-            </button>
+            </div>
 
-            <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
-              onClick={handleSave}
-            >
-              <CheckCircleOutlined
+            <div className="xl:hidden block">
+              <FloatButton
+                tooltip={<div>Input values</div>}
                 style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
+                  position: "fixed",
+                  bottom: "30px",
+                  right: "30px",
                 }}
-              />
-              Save
-            </button>
-          </div>
-        </section>
-      </div>
+                onClick={() => {
+                  setIsInputFormOpen(true);
+                }}
+              >
+                <Button type="primary" shape="circle" icon={<FileOutlined />} />
+              </FloatButton>
+            </div>
 
-      <div className="xl:hidden block">
-        <FloatButton
-          tooltip={<div>Input values</div>}
-          style={{
-            position: "fixed",
-            bottom: "30px",
-            right: "30px",
-          }}
-          onClick={() => {
-            setIsInputFormOpen(true);
-          }}
-        >
-          <Button type="primary" shape="circle" icon={<FileOutlined />} />
-        </FloatButton>
-      </div>
-
-      {isInputFormOpen && (
-        <Modal
-          // title="Customer channel"
-          visible={isInputFormOpen}
-          onOk={() => {
-            handleSave();
-            setIsInputFormOpen(false);
-          }}
-          onCancel={() => {
-            setTempFundraisingInputs(fundraisingInputs);
-            setSelectedFundraisingId(fundraisingInputs[0]?.id);
-            setIsInputFormOpen(false);
-          }}
-          okText="Save change"
-          cancelText="Cancel"
-          cancelButtonProps={{
-            style: {
-              borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-            },
-          }}
-          okButtonProps={{
-            style: {
-              background: "#2563EB",
-              borderColor: "#2563EB",
-              color: "#fff",
-              borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-            },
-          }}
-          centered={true}
-          zIndex={50}
-        >
-          <section
-            aria-labelledby="fundraising-heading"
-            className="mb-8 sticky top-8"
-          >
-            <h2
-              className="text-lg font-semibold mb-8 flex items-center"
-              id="fundraising-heading"
-            >
-              Fundraising{" "}
-              <span className="flex justify-center items-center">
-                <PlusCircleOutlined
-                  className="ml-2 text-blue-500"
-                  size="large"
-                  style={{ fontSize: "24px" }}
-                  onClick={addNewFundraisingInput}
+            {isInputFormOpen && (
+              <Modal
+                open={isInputFormOpen}
+                onOk={() => {
+                  handleSave();
+                  setIsInputFormOpen(false);
+                }}
+                onCancel={() => {
+                  setTempFundraisingInputs(fundraisingInputs);
+                  setSelectedFundraisingId(fundraisingInputs[0]?.id);
+                  setIsInputFormOpen(false);
+                }}
+                okText={isLoading ? <SpinnerBtn /> : "Save Change"}
+                cancelText="Cancel"
+                cancelButtonProps={{
+                  style: {
+                    borderRadius: "0.375rem",
+                    cursor: "pointer",
+                  },
+                }}
+                okButtonProps={{
+                  style: {
+                    background: "#2563EB",
+                    borderColor: "#2563EB",
+                    color: "#fff",
+                    borderRadius: "0.375rem",
+                    cursor: "pointer",
+                    minWidth: "5vw",
+                  },
+                }}
+                footer={null}
+                centered={true}
+                zIndex={50}
+              >
+                <FundraisingInputForm
+                  tempFundraisingInputs={tempFundraisingInputs}
+                  selectedFundraisingId={selectedFundraisingId}
+                  setSelectedFundraisingId={setSelectedFundraisingId}
+                  handleFundraisingInputChange={handleFundraisingInputChange}
+                  addNewFundraisingInput={addNewFundraisingInput}
+                  confirmDelete={confirmDelete}
+                  setIsDeleteModalOpen={setIsDeleteModalOpen}
+                  isDeleteModalOpen={isDeleteModalOpen}
+                  handleSave={handleSave}
+                  isLoading={isLoading}
                 />
-              </span>
-            </h2>
-
-            <div>
-              <label
-                htmlFor="selectedFundraising"
-                className="block my-4 text-base  darkTextWhite"
-              ></label>
-              <select
-                id="selectedFundraising"
-                className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                value={selectedFundraisingId}
-                onChange={handleSelectChange}
-              >
-                {tempFundraisingInputs.map((input) => (
-                  <option key={input?.id} value={input?.id}>
-                    {input.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {tempFundraisingInputs
-              .filter((input) => input?.id == selectedFundraisingId)
-              .map((input) => (
-                <div
-                  key={input?.id}
-                  className="bg-white rounded-2xl p-6 border my-4 "
-                >
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Fundraising Name:
-                    </span>
-                    <FundraisingInput
-                      className="col-start-2 border-gray-300"
-                      value={input.name}
-                      onChange={(e) =>
-                        handleFundraisingInputChange(
-                          input?.id,
-                          "name",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Equity offered (%):
-                    </span>
-                    <FundraisingInput
-                      className="col-start-2 border-gray-300"
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={formatNumber(input.equityOffered)}
-                      onChange={(e) =>
-                        handleFundraisingInputChange(
-                          input?.id,
-                          "equityOffered",
-                          parseNumber(e.target.value)
-                        )
-                      }
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Fundraising Amount:
-                    </span>
-                    <FundraisingInput
-                      className="col-start-2 border-gray-300"
-                      value={formatNumber(input.fundraisingAmount)}
-                      onChange={(e) =>
-                        handleFundraisingInputChange(
-                          input?.id,
-                          "fundraisingAmount",
-                          parseNumber(e.target.value)
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Fundraising Type:
-                    </span>
-                    <FundraisingSelect
-                      className="border-gray-300"
-                      onValueChange={(value) =>
-                        handleFundraisingInputChange(
-                          input?.id,
-                          "fundraisingType",
-                          value
-                        )
-                      }
-                      value={input.fundraisingType}
-                    >
-                      <FundraisingSelectTrigger
-                        id={`select-fundraisingType-${input?.id}`}
-                        className="border-solid border-[1px] border-gray-300"
-                      >
-                        <FundraisingSelectValue placeholder="Select Fundraising Type" />
-                      </FundraisingSelectTrigger>
-                      <FundraisingSelectContent position="popper">
-                        <FundraisingSelectItem
-                          value="Common Stock"
-                          className="hover:cursor-pointer"
-                        >
-                          Common Stock
-                        </FundraisingSelectItem>
-                        <FundraisingSelectItem
-                          value="Preferred Stock"
-                          className="hover:cursor-pointer"
-                        >
-                          Preferred Stock
-                        </FundraisingSelectItem>
-                        <FundraisingSelectItem
-                          value="Paid in Capital"
-                          className="hover:cursor-pointer"
-                        >
-                          Paid in Capital
-                        </FundraisingSelectItem>
-                      </FundraisingSelectContent>
-                    </FundraisingSelect>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Month Fundraising Begins:
-                    </span>
-                    <FundraisingInput
-                      className="col-start-2 border-gray-300"
-                      type="number"
-                      min="1"
-                      max="12"
-                      value={input.fundraisingBeginMonth}
-                      onChange={(e) =>
-                        handleFundraisingInputChange(
-                          input?.id,
-                          "fundraisingBeginMonth",
-                          parseInt(e.target.value, 10)
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="flex justify-end items-center">
-                    <button
-                      className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
-                      onClick={() => setIsDeleteModalOpen(true)}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
-          </section>
-        </Modal>
-      )}
-
-      {isDeleteModalOpen && (
-        <Modal
-          title="Confirm Delete"
-          visible={isDeleteModalOpen}
-          onOk={confirmDelete}
-          onCancel={() => setIsDeleteModalOpen(false)}
-          okText="Delete"
-          cancelText="Cancel"
-          cancelButtonProps={{
-            style: {
-              borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-            },
-          }}
-          okButtonProps={{
-            style: {
-              background: "#f5222d",
-              borderColor: "#f5222d",
-              color: "#fff",
-              borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-            },
-          }}
-          centered={true}
-        >
-          Are you sure you want to delete it?
-        </Modal>
-      )}
+              </Modal>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 };

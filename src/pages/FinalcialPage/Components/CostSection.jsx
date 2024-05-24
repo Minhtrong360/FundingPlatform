@@ -6,14 +6,23 @@ import {
   SelectItem,
 } from "../../../components/ui/Select";
 import { Input } from "../../../components/ui/Input";
-import { useEffect, useState } from "react";
-import { Button, Card, FloatButton, Modal, Table, message } from "antd";
+import { useCallback, useEffect, useState } from "react";
+import {
+  Button,
+  Card,
+  Checkbox,
+  FloatButton,
+  Modal,
+  Table,
+  message,
+} from "antd";
 import Chart from "react-apexcharts";
 import {
   setCostInputs,
   setCostData,
   calculateCostData,
   transformCostDataForTable,
+  setCostTableData,
 } from "../../../features/CostSlice";
 
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
@@ -25,26 +34,436 @@ import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
+import SpinnerBtn from "../../../components/SpinnerBtn";
+import TextArea from "antd/es/input/TextArea";
+import { fetchGPTResponse } from "../../../features/CustomerSlice";
+import { debounce } from "lodash";
+const CostInputForm = ({
+  tempCostInput,
+  renderCostForm,
+  setRenderCostForm,
+  handleCostInputChange,
+  formatNumber,
+  parseNumber,
+  costGroupArray,
+  revenueData,
+  costTypeOptions,
+  addNewCostInput,
+  handleSave,
+  isLoading,
+  setIsDeleteModalOpen,
+  handleCostTypeChange,
+  showAdvancedInputs,
+  setShowAdvancedInputs,
+  handleFetchGPT,
+}) => (
+  <section aria-labelledby="costs-heading" className="mb-8 sticky top-8">
+    <h2
+      className="text-lg font-semibold mb-8 flex items-center"
+      id="costs-heading"
+    >
+      Costs
+    </h2>
+    <div>
+      <label
+        htmlFor="selectedChannel"
+        className="block my-4 text-base darkTextWhite"
+      ></label>
+      <select
+        id="selectedChannel"
+        className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+        value={renderCostForm}
+        onChange={(e) => setRenderCostForm(e.target.value)}
+      >
+        {tempCostInput.map((input) => (
+          <option key={input?.id} value={input?.id}>
+            {input.costName}
+          </option>
+        ))}
+      </select>
+    </div>
+    {tempCostInput
+      .filter((input) => input?.id == renderCostForm)
+      .map((input) => (
+        <div key={input?.id} className="bg-white rounded-2xl p-6 border my-4">
+          <div className="grid grid-cols-2 gap-4 mb-3">
+            <span className="flex items-center text-sm">Cost dependence:</span>
+            <Select
+              className="border-gray-300"
+              onValueChange={(value) => handleCostTypeChange(input?.id, value)}
+              value={
+                input.costType === "Based on Revenue"
+                  ? "Based on Revenue"
+                  : "Not related to revenue"
+              }
+            >
+              <SelectTrigger
+                id={`select-costCategory-${input?.id}`}
+                className="border-solid border-[1px] border-gray-300"
+              >
+                <SelectValue placeholder="Select Cost Category" />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectItem value="Not related to revenue">
+                  Not related to revenue
+                </SelectItem>
+                <SelectItem value="Based on Revenue">
+                  Based on Revenue
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-2 gap-4 mb-3">
+            <span className="flex items-center text-sm">Cost Group:</span>
+            <Select
+              className="border-gray-300"
+              onValueChange={(value) =>
+                handleCostInputChange(input?.id, "costGroup", value)
+              }
+              value={input.costGroup}
+            >
+              <SelectTrigger
+                id={`select-costType-${input?.id}`}
+                className="border-solid border-[1px] border-gray-300"
+              >
+                <SelectValue placeholder="Select Cost Type" />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                {costGroupArray.map((cost) => (
+                  <SelectItem value={cost} key={cost}>
+                    {cost}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          {input.costType === "Based on Revenue" ? (
+            <>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">Cost Name:</span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  value={input.costName}
+                  onChange={(e) =>
+                    handleCostInputChange(input?.id, "costName", e.target.value)
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">
+                  Related Product:
+                </span>
+                <Select
+                  className="mb-4"
+                  placeholder="Select Related Revenue"
+                  value={input.relatedRevenue}
+                  onValueChange={(value) =>
+                    handleCostInputChange(input.id, "relatedRevenue", value)
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Related Revenue" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.keys(revenueData).map((revenueKey) => (
+                      <SelectItem key={revenueKey} value={revenueKey}>
+                        {revenueKey}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">
+                  Cost Value (% Revenue):
+                </span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  type="text"
+                  value={formatNumber(input.salePercentage)}
+                  onChange={(e) =>
+                    handleCostInputChange(
+                      input?.id,
+                      "salePercentage",
+                      parseNumber(e.target.value)
+                    )
+                  }
+                />
+              </div>
 
-const CostSection = ({
-  numberOfMonths,
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">Begin Month:</span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  type="number"
+                  min="1"
+                  max="12"
+                  value={input.beginMonth}
+                  onChange={(e) =>
+                    handleCostInputChange(
+                      input?.id,
+                      "beginMonth",
+                      parseInt(e.target.value, 10)
+                    )
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">End Month:</span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  type="number"
+                  min="1"
+                  max="12"
+                  value={input.endMonth}
+                  onChange={(e) =>
+                    handleCostInputChange(
+                      input?.id,
+                      "endMonth",
+                      parseInt(e.target.value, 10)
+                    )
+                  }
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">Cost Name:</span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  value={input.costName}
+                  onChange={(e) =>
+                    handleCostInputChange(input?.id, "costName", e.target.value)
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">Cost Value:</span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  type="text"
+                  value={formatNumber(input.costValue)}
+                  onChange={(e) =>
+                    handleCostInputChange(
+                      input?.id,
+                      "costValue",
+                      parseNumber(e.target.value)
+                    )
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">
+                  Growth Percentage (%):
+                </span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  type="text"
+                  value={formatNumber(input.growthPercentage)}
+                  onChange={(e) =>
+                    handleCostInputChange(
+                      input?.id,
+                      "growthPercentage",
+                      parseNumber(e.target.value)
+                    )
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">Frequency:</span>
+                <Select
+                  className="border-gray-300"
+                  onValueChange={(value) =>
+                    handleCostInputChange(input?.id, "growthFrequency", value)
+                  }
+                  value={input.growthFrequency}
+                >
+                  <SelectTrigger
+                    id={`select-growthFrequency-${input?.id}`}
+                    className="border-solid border-[1px] border-gray-300"
+                  >
+                    <SelectValue placeholder="Select Growth Frequency" />
+                  </SelectTrigger>
+                  <SelectContent position="popper">
+                    <SelectItem value="Monthly">Monthly</SelectItem>
+                    <SelectItem value="Quarterly">Quarterly</SelectItem>
+                    <SelectItem value="Semi-Annually">Semi-Annually</SelectItem>
+                    <SelectItem value="Annually">Annually</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">Begin Month:</span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  type="number"
+                  min="1"
+                  max="12"
+                  value={input.beginMonth}
+                  onChange={(e) =>
+                    handleCostInputChange(
+                      input?.id,
+                      "beginMonth",
+                      parseInt(e.target.value, 10)
+                    )
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <span className="flex items-center text-sm">End Month:</span>
+                <Input
+                  className="col-start-2 border-gray-300"
+                  type="number"
+                  min="1"
+                  max="12"
+                  value={input.endMonth}
+                  onChange={(e) =>
+                    handleCostInputChange(
+                      input?.id,
+                      "endMonth",
+                      parseInt(e.target.value, 10)
+                    )
+                  }
+                />
+              </div>
+            </>
+          )}
+          <div className="grid grid-cols-2 gap-4 mb-3">
+            <Checkbox
+              className="col-span-2"
+              checked={showAdvancedInputs}
+              onChange={(e) => setShowAdvancedInputs(e.target.checked)}
+            >
+              Show Advanced Inputs
+            </Checkbox>
+          </div>
+          {showAdvancedInputs && (
+            <Modal
+              title="Advanced Inputs"
+              open={showAdvancedInputs}
+              onOk={handleFetchGPT}
+              onCancel={() => setShowAdvancedInputs(false)}
+              okText={isLoading ? <SpinnerBtn /> : "Apply"}
+              cancelText="Cancel"
+              cancelButtonProps={{
+                style: {
+                  borderRadius: "0.375rem",
+                  cursor: "pointer",
+                  minWidth: "5vw",
+                },
+              }}
+              okButtonProps={{
+                style: {
+                  background: "#2563EB",
+                  borderColor: "#2563EB",
+                  color: "#fff",
+                  borderRadius: "0.375rem",
+                  cursor: "pointer",
+                  minWidth: "5vw",
+                },
+              }}
+              centered={true}
+            >
+              <div className="gap-4 mb-3">
+                <span className="flex items-center text-sm">
+                  Additional Info:
+                </span>
+                <TextArea
+                  className="col-start-2 border-gray-300 text-sm"
+                  value={input.additionalInfo}
+                  onChange={(e) =>
+                    handleCostInputChange(
+                      input?.id,
+                      "additionalInfo",
+                      e.target.value
+                    )
+                  }
+                  rows={10}
+                />
+              </div>
+            </Modal>
+          )}
+        </div>
+      ))}
+    <div className="flex justify-between items-center">
+      <button
+        className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4 flex items-center"
+        onClick={() => setIsDeleteModalOpen(true)}
+      >
+        <DeleteOutlined
+          style={{ fontSize: "12px", color: "#FFFFFF", marginRight: "4px" }}
+        />
+        Remove
+      </button>
+      <button
+        className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+        onClick={addNewCostInput}
+      >
+        <PlusOutlined
+          style={{ fontSize: "12px", color: "#FFFFFF", marginRight: "4px" }}
+        />
+        Add
+      </button>
+      <button
+        className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw]"
+        onClick={handleSave}
+      >
+        {isLoading ? (
+          <SpinnerBtn />
+        ) : (
+          <>
+            <CheckCircleOutlined
+              style={{ fontSize: "12px", color: "#FFFFFF", marginRight: "4px" }}
+            />{" "}
+            Save
+          </>
+        )}
+      </button>
+    </div>
+  </section>
+);
 
-  isSaved,
-  setIsSaved,
-  handleSubmit,
-}) => {
-  const { costInputs, costData } = useSelector((state) => state.cost);
+const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
+  const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
+  const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
+
+  const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
+
+  const handleChartClick = (chart) => {
+    setSelectedChart(chart);
+    setIsChartModalVisible(true);
+  };
+
+  const { costInputs, costData, costTableData } = useSelector(
+    (state) => state.cost
+  );
+  const { revenueData } = useSelector((state) => state.sales);
+
   const dispatch = useDispatch();
 
   const [tempCostInput, setTempCostInput] = useState(costInputs);
-
   const [tempCostData, setTempCostData] = useState(costData);
-
   const [renderCostForm, setRenderCostForm] = useState(costInputs[0]?.id);
 
+  const costGroupArray = [
+    "Rent",
+    "Utilities",
+    "Insurance",
+    "Office Supplies",
+    "Travel Expenses",
+    "Professional Fees",
+  ];
+
   useEffect(() => {
-    setTempCostInput(costInputs);
-  }, [costInputs]);
+    setTempCostInput(
+      costInputs.map((input) => ({
+        ...input,
+        relatedRevenue: input.relatedRevenue || Object.keys(revenueData)[0],
+        costGroup: input.costGroup || costGroupArray[0],
+      }))
+    );
+  }, [costInputs, revenueData]);
 
   const addNewCostInput = () => {
     const maxId = Math.max(...tempCostInput.map((input) => input?.id));
@@ -58,6 +477,8 @@ const CostSection = ({
       growthFrequency: "Monthly",
       endMonth: 6,
       costType: "Sales, Marketing Cost",
+      relatedRevenue: Object.keys(revenueData)[0],
+      salePercentage: 0,
     };
     setTempCostInput([...tempCostInput, newCustomer]);
     setRenderCostForm(newId.toString());
@@ -93,23 +514,62 @@ const CostSection = ({
     setTempCostInput(newInputs);
   };
 
-  // Function to calculate cost data
+  const handleCostTypeChange = (id, value) => {
+    const updatedInputs = tempCostInput.map((input) =>
+      input.id === id
+        ? { ...input, costType: value, relatedRevenue: "" }
+        : input
+    );
+    setTempCostInput(updatedInputs);
+  };
 
-  // Function to transform cost data for table
-
-  // useEffect to update cost data when cost inputs or number of months change
   useEffect(() => {
-    const calculatedData = calculateCostData(costInputs, numberOfMonths);
+    const calculatedData = calculateCostData(
+      costInputs,
+      numberOfMonths,
+      revenueData
+    );
     dispatch(setCostData(calculatedData));
   }, [costInputs, numberOfMonths]);
 
-  // useEffect to update temporary cost data when temp cost inputs or number of months change
   useEffect(() => {
-    const calculatedData = calculateCostData(tempCostInput, numberOfMonths);
+    const calculatedData = calculateCostData(
+      tempCostInput,
+      numberOfMonths,
+      revenueData
+    );
     setTempCostData(calculatedData);
+
+    const costTableData = transformCostDataForTable(
+      tempCostInput,
+      numberOfMonths,
+      revenueData
+    );
+    dispatch(setCostTableData(costTableData));
   }, [tempCostInput, numberOfMonths]);
 
-  // Function to generate columns for the cost table
+  const debouncedUpdateCostData = useCallback(
+    debounce((tempCostInput, numberOfMonths, revenueData) => {
+      const calculatedData = calculateCostData(
+        tempCostInput,
+        numberOfMonths,
+        revenueData
+      );
+      setTempCostData(calculatedData);
+
+      const costTableData = transformCostDataForTable(
+        tempCostInput,
+        numberOfMonths,
+        revenueData
+      );
+      dispatch(setCostTableData(costTableData));
+    }, 300),
+    []
+  );
+
+  useEffect(() => {
+    debouncedUpdateCostData(tempCostInput, numberOfMonths, revenueData);
+  }, [tempCostInput, numberOfMonths]);
   const months = [
     "01",
     "02",
@@ -128,8 +588,44 @@ const CostSection = ({
     (state) => state.durationSelect
   );
 
-  const startingMonth = startMonth; // Tháng bắt đầu từ 1
-  const startingYear = startYear; // Năm bắt đầu từ 24
+  const startingMonth = startMonth;
+  const startingYear = startYear;
+
+  const handleInputTable = (value, recordKey, monthKey) => {
+    // Extract month number from the monthKey
+
+    // Update gptResponseArray in tempCustomerInputs
+    const monthIndex = parseInt(monthKey.replace("month", "")) - 1;
+
+    const updatedData = costTableData.map((record) => {
+      if (record.key === recordKey) {
+        return {
+          ...record,
+          [monthKey]: formatNumber(value.toFixed(2)),
+        };
+      }
+      return record;
+    });
+
+    dispatch(setCostTableData(updatedData));
+
+    const updatedTempCostInputs = tempCostInput?.map((input) => {
+      if (input.costName === recordKey.split("-")[0]) {
+        const updatedGPTResponseArray = input.gptResponseArray
+          ? [...input.gptResponseArray]
+          : [];
+        updatedGPTResponseArray[monthIndex] = Number(value);
+
+        return {
+          ...input,
+          gptResponseArray: updatedGPTResponseArray,
+        };
+      }
+      return input;
+    });
+
+    setTempCostInput(updatedTempCostInputs);
+  };
 
   const costColumns = [
     {
@@ -148,14 +644,36 @@ const CostSection = ({
         align: "right",
         onCell: (record) => ({
           style: {
-            borderRight: "1px solid #f0f0f0", // Add border right style
+            borderRight: "1px solid #f0f0f0",
           },
         }),
+        render: (text, record) => {
+          if (!record.isHeader && record.key !== "Total") {
+            return (
+              <div>
+                <input
+                  className="border-white p-0 text-xs text-right w-full h-full"
+                  value={record[`month${i + 1}`]}
+                  onChange={(e) =>
+                    handleInputTable(
+                      parseNumber(e.target.value),
+                      record.key,
+                      `month${i + 1}`
+                    )
+                  }
+                />
+              </div>
+            );
+          }
+
+          return <div>{text}</div>;
+        },
       };
     }),
   ];
 
-  // State for cost chart
+  console.log("costTableData", costTableData);
+
   const [costChart, setCostChart] = useState({
     options: {
       chart: {
@@ -163,7 +681,12 @@ const CostSection = ({
         id: "cost-chart",
         type: "bar",
         height: 350,
-        toolbar: { show: false },
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          },
+        },
         zoom: { enabled: false },
         animations: {
           enabled: false,
@@ -204,16 +727,15 @@ const CostSection = ({
       },
       yaxis: {
         axisBorder: {
-          show: true, // Show y-axis line
+          show: true,
         },
-
         labels: {
           show: true,
           style: {
             fontFamily: "Sora, sans-serif",
           },
           formatter: function (val) {
-            return formatNumber(Math.floor(val));
+            return formatNumber(val.toFixed(2));
           },
         },
         title: {
@@ -229,55 +751,24 @@ const CostSection = ({
         horizontalAlign: "right",
         fontFamily: "Sora, sans-serif",
       },
-      // fill: { type: "solid" },
       dataLabels: { enabled: false },
       stroke: { curve: "straight", width: 1 },
     },
     series: [],
   });
 
-  // Function to handle select change
-  const handleSelectChange = (event) => {
-    const selectedId = event.target.value;
-    const selectedInput = tempCostInput.find(
-      (input) => input.id.toString() === selectedId
-    );
-
-    if (
-      selectedInput?.fundraisingType === "Paid in Capital" &&
-      selectedInput.fundraisingBeginMonth < 2
-    ) {
-      const updatedInputs = tempCostInput.map((input) =>
-        input.id.toString() === selectedId
-          ? { ...input, fundraisingBeginMonth: 2 }
-          : input
-      );
-      setTempCostInput(updatedInputs);
-      message.warning(
-        "Fundraising Begin Month should be greater or equal to 2 for Paid in Capital."
-      );
-    }
-
-    setRenderCostForm(selectedId);
-  };
-
-  // Update useEffect to include fundraising amount, type, and begin month
-  useEffect(() => {
-    const calculatedData = calculateCostData(tempCostInput, numberOfMonths);
-    setTempCostData(calculatedData);
-  }, [tempCostInput, numberOfMonths]);
-
-  // Function to handle save
   const handleSave = () => {
     setIsSaved(true);
   };
 
-  // useEffect to update cost inputs when data is saved
   const { id } = useParams();
   const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     const saveData = async () => {
       try {
+        setIsLoading(true);
         if (isSaved) {
           const { data: existingData, error: selectError } = await supabase
             .from("finance")
@@ -290,7 +781,6 @@ const CostSection = ({
           if (existingData && existingData.length > 0) {
             const { user_email, collabs } = existingData[0];
 
-            // Check if user.email matches user_email or is included in collabs
             if (user.email !== user_email && !collabs?.includes(user.email)) {
               message.error(
                 "You do not have permission to update this record."
@@ -321,6 +811,8 @@ const CostSection = ({
         message.error(error);
       } finally {
         setIsSaved(false);
+        setIsLoading(false);
+        setIsInputFormOpen(false);
       }
     };
     saveData();
@@ -328,9 +820,8 @@ const CostSection = ({
 
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
   const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(6);
+  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
 
-  // useEffect to update cost chart data
   useEffect(() => {
     const seriesData = tempCostData.map((item) => {
       return {
@@ -387,596 +878,323 @@ const CostSection = ({
     setIsDeleteModalOpen(false);
   };
 
+  const handleFetchGPT = async () => {
+    try {
+      setIsLoading(true);
+      const costSelected = tempCostInput.find(
+        (input) => input.id == renderCostForm
+      );
+      let responseGPT;
+      if (costSelected) {
+        responseGPT = await dispatch(
+          fetchGPTResponse(
+            costSelected.id,
+            costSelected.additionalInfo,
+            costSelected
+          )
+        );
+      }
+      console.log("responseGPT", responseGPT);
+      // Check if responseGPT is an object with a single key that holds an array
+      let gptResponseArray = [];
+      if (responseGPT && typeof responseGPT === "object") {
+        const keys = Object.keys(responseGPT);
+        if (keys.length === 1 && Array.isArray(responseGPT[keys[0]])) {
+          gptResponseArray = responseGPT[keys[0]];
+        } else {
+          gptResponseArray = responseGPT;
+        }
+      } else {
+        gptResponseArray = responseGPT;
+      }
+      console.log("gptResponseArray", gptResponseArray);
+
+      const updatedTempCostInputs = tempCostInput.map((input) => {
+        if (input.id === costSelected.id) {
+          return {
+            ...input,
+            gptResponseArray: gptResponseArray, // assuming gptResponseArray contains the required data
+          };
+        }
+        return input;
+      });
+
+      setTempCostInput(updatedTempCostInputs);
+      setShowAdvancedInputs(false);
+    } catch (error) {
+      console.log("Fetching GPT error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const [activeTab, setActiveTab] = useState("table&chart");
+
+  const handleTabChange = (tabName) => {
+    setActiveTab(tabName);
+  };
   return (
-    <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full xl:w-3/4 sm:p-4 p-0">
-        <h3 className="text-lg font-semibold mb-8">Cost Chart</h3>
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col transition duration-500   rounded-2xl">
-            <div className="flex justify-between items-center">
-              <div className="min-w-[10vw]">
-                <label htmlFor="startMonthSelect">Start Month:</label>
-                <select
-                  id="startMonthSelect"
-                  value={chartStartMonth}
-                  onChange={(e) =>
-                    setChartStartMonth(
-                      Math.max(1, Math.min(e.target.value, chartEndMonth))
-                    )
-                  }
-                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                >
-                  {Array.from({ length: numberOfMonths }, (_, i) => {
-                    const monthIndex = (startingMonth + i - 1) % 12;
-                    const year =
-                      startingYear + Math.floor((startingMonth + i - 1) / 12);
-                    return (
-                      <option key={i + 1} value={i + 1}>
-                        {`${months[monthIndex]}/${year}`}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-              <div className="min-w-[10vw]">
-                <label htmlFor="endMonthSelect">End Month:</label>
-                <select
-                  id="endMonthSelect"
-                  value={chartEndMonth}
-                  onChange={(e) =>
-                    setChartEndMonth(
-                      Math.max(
-                        chartStartMonth,
-                        Math.min(e.target.value, numberOfMonths)
-                      )
-                    )
-                  }
-                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                >
-                  {Array.from({ length: numberOfMonths }, (_, i) => {
-                    const monthIndex = (startingMonth + i - 1) % 12;
-                    const year =
-                      startingYear + Math.floor((startingMonth + i - 1) / 12);
-                    return (
-                      <option key={i + 1} value={i + 1}>
-                        {`${months[monthIndex]}/${year}`}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-            </div>
-            <Chart
-              options={{
-                ...costChart.options,
-                xaxis: {
-                  ...costChart.options.xaxis,
-                  // tickAmount: 6, // Set the number of ticks on the x-axis to 12
-                },
-                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-              }}
-              series={costChart.series}
-              type="area"
-              height={350}
-            />
-          </Card>
-        </div>
-        <h3 className="text-lg font-semibold my-4">Cost Table</h3>
-        <Table
-          className="overflow-auto my-8 rounded-md bg-white"
-          size="small"
-          dataSource={transformCostDataForTable(tempCostInput, numberOfMonths)}
-          columns={costColumns}
-          pagination={false}
-          bordered
-          rowClassName={(record) => (record.key === "Total" ? "font-bold" : "")}
-        />
-      </div>
-
-      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden border-r-8 border-l-8 border-white">
-        <section aria-labelledby="costs-heading" className="mb-8 sticky top-8">
-          <h2
-            className="text-lg font-semibold mb-8 flex items-center"
-            id="costs-heading"
+    <div>
+      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
+        <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
+          <li
+            className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+              activeTab === "table&chart" ? "bg-yellow-300 font-bold" : ""
+            }`}
+            onClick={() => handleTabChange("table&chart")}
           >
-            Costs
-          </h2>
-
-          <div>
-            <label
-              htmlFor="selectedChannel"
-              className="block my-4 text-base  darkTextWhite"
-            ></label>
-            <select
-              id="selectedChannel"
-              className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-              value={renderCostForm}
-              onChange={handleSelectChange}
-            >
-              {tempCostInput.map((input) => (
-                <option key={input?.id} value={input?.id}>
-                  {input.costName}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {tempCostInput
-            .filter((input) => input?.id == renderCostForm)
-            .map((input) => (
-              <div
-                key={input?.id}
-                className="bg-white rounded-2xl p-6 border my-4 "
+            Table and Chart
+          </li>
+          {/* Repeat for other tabs */}
+          <li
+            className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+              activeTab === "input" ? "bg-yellow-300 font-bold" : ""
+            }`}
+            onClick={() => handleTabChange("input")}
+          >
+            Input
+          </li>
+        </ul>
+      </div>
+      <div className="w-full h-full flex flex-col lg:flex-row">
+        {activeTab === "table&chart" && (
+          <>
+            <div className="w-full xl:w-3/4 sm:p-4 p-0">
+              <h3 className="text-lg font-semibold mb-8">Cost Chart</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card className="flex flex-col transition duration-500 rounded-2xl">
+                  <div className="flex justify-between items-center">
+                    <div className="min-w-[10vw] mb-2">
+                      <label htmlFor="startMonthSelect">Start Month:</label>
+                      <select
+                        id="startMonthSelect"
+                        value={chartStartMonth}
+                        onChange={(e) =>
+                          setChartStartMonth(
+                            Math.max(1, Math.min(e.target.value, chartEndMonth))
+                          )
+                        }
+                        className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                      >
+                        {Array.from({ length: numberOfMonths }, (_, i) => {
+                          const monthIndex = (startingMonth + i - 1) % 12;
+                          const year =
+                            startingYear +
+                            Math.floor((startingMonth + i - 1) / 12);
+                          return (
+                            <option key={i + 1} value={i + 1}>
+                              {`${months[monthIndex]}/${year}`}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                    <div className="min-w-[10vw] mb-2">
+                      <label htmlFor="endMonthSelect">End Month:</label>
+                      <select
+                        id="endMonthSelect"
+                        value={chartEndMonth}
+                        onChange={(e) =>
+                          setChartEndMonth(
+                            Math.max(
+                              chartStartMonth,
+                              Math.min(e.target.value, numberOfMonths)
+                            )
+                          )
+                        }
+                        className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                      >
+                        {Array.from({ length: numberOfMonths }, (_, i) => {
+                          const monthIndex = (startingMonth + i - 1) % 12;
+                          const year =
+                            startingYear +
+                            Math.floor((startingMonth + i - 1) / 12);
+                          return (
+                            <option key={i + 1} value={i + 1}>
+                              {`${months[monthIndex]}/${year}`}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                  </div>
+                  <div onClick={() => handleChartClick(costChart)}>
+                    <Chart
+                      options={{
+                        ...costChart.options,
+                        xaxis: {
+                          ...costChart.options.xaxis,
+                        },
+                        stroke: { width: 1, curve: "straight" },
+                      }}
+                      series={costChart.series}
+                      type="area"
+                      height={350}
+                    />
+                  </div>
+                </Card>
+              </div>
+              <Modal
+                centered
+                open={isChartModalVisible}
+                footer={null}
+                onCancel={() => setIsChartModalVisible(false)}
+                width="90%"
+                style={{ top: 20 }}
               >
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">Cost Name:</span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    value={input.costName}
-                    onChange={(e) =>
-                      handleCostInputChange(
-                        input?.id,
-                        "costName",
-                        e.target.value
-                      )
-                    }
+                {selectedChart && (
+                  <Chart
+                    options={{
+                      ...selectedChart.options,
+                    }}
+                    series={selectedChart.series}
+                    type="area"
+                    height={500}
                   />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Cost Value:
-                  </span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    type="text"
-                    value={formatNumber(input.costValue)}
-                    onChange={(e) =>
-                      handleCostInputChange(
-                        input?.id,
-                        "costValue",
-                        parseNumber(e.target.value)
-                      )
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Growth Percentage (%):
-                  </span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    type="text"
-                    value={formatNumber(input.growthPercentage)}
-                    onChange={(e) =>
-                      handleCostInputChange(
-                        input?.id,
-                        "growthPercentage",
-                        parseNumber(e.target.value)
-                      )
-                    }
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className="flex items-center text-sm">Frequency:</span>
-                  <Select
-                    className="border-gray-300"
-                    onValueChange={(value) =>
-                      handleCostInputChange(input?.id, "growthFrequency", value)
-                    }
-                    value={input.growthFrequency}
-                  >
-                    <SelectTrigger
-                      id={`select-growthFrequency-${input?.id}`}
-                      className="border-solid border-[1px] border-gray-300"
-                    >
-                      <SelectValue placeholder="Select Growth Frequency" />
-                    </SelectTrigger>
-                    <SelectContent position="popper">
-                      <SelectItem value="Monthly">Monthly</SelectItem>
-                      <SelectItem value="Quarterly">Quarterly</SelectItem>
-                      <SelectItem value="Semi-Annually">
-                        Semi-Annually
-                      </SelectItem>
-                      <SelectItem value="Annually">Annually</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">
-                    Begin Month:
-                  </span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    type="number"
-                    min="1"
-                    max="12"
-                    value={input.beginMonth}
-                    onChange={(e) =>
-                      handleCostInputChange(
-                        input?.id,
-                        "beginMonth",
-                        parseInt(e.target.value, 10)
-                      )
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">End Month:</span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    type="number"
-                    min="1"
-                    max="12"
-                    value={input.endMonth}
-                    onChange={(e) =>
-                      handleCostInputChange(
-                        input?.id,
-                        "endMonth",
-                        parseInt(e.target.value, 10)
-                      )
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <span className=" flex items-center text-sm">Cost Type:</span>
-                  <Select
-                    className="border-gray-300"
-                    onValueChange={(value) =>
-                      handleCostInputChange(input?.id, "costType", value)
-                    }
-                    value={input.costType}
-                  >
-                    <SelectTrigger
-                      id={`select-costType-${input?.id}`}
-                      className="border-solid border-[1px] border-gray-300"
-                    >
-                      <SelectValue placeholder="Select Cost Type" />
-                    </SelectTrigger>
-                    <SelectContent position="popper">
-                      <SelectItem value="Sales, Marketing Cost">
-                        Sales, Marketing
-                      </SelectItem>
-                      <SelectItem value="General Administrative Cost">
-                        General Administrative
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            ))}
-
-          <div className="flex justify-between items-center">
-            <button
-              className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4 flex items-center"
-              onClick={() => setIsDeleteModalOpen(true)}
-            >
-              <DeleteOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
+                )}
+              </Modal>
+              <h3 className="text-lg font-semibold my-4">Cost Table</h3>
+              <Table
+                className="overflow-auto my-8 rounded-md bg-white"
+                size="small"
+                dataSource={costTableData}
+                columns={costColumns}
+                pagination={false}
+                bordered
+                rowClassName={(record) =>
+                  record.key === "Total" || record.isHeader ? "font-bold" : ""
+                }
               />
-              Remove
-            </button>
+            </div>
+            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden "></div>
+          </>
+        )}
+        {activeTab === "input" && (
+          <>
+            <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
 
-            <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 "
-              onClick={addNewCostInput}
-            >
-              <PlusOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
+            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
+              <CostInputForm
+                tempCostInput={tempCostInput}
+                renderCostForm={renderCostForm}
+                setRenderCostForm={setRenderCostForm}
+                handleCostInputChange={handleCostInputChange}
+                formatNumber={formatNumber}
+                parseNumber={parseNumber}
+                costGroupArray={costGroupArray}
+                revenueData={revenueData}
+                addNewCostInput={addNewCostInput}
+                handleSave={handleSave}
+                isLoading={isLoading}
+                setIsDeleteModalOpen={setIsDeleteModalOpen}
+                handleCostTypeChange={handleCostTypeChange}
+                showAdvancedInputs={showAdvancedInputs}
+                setShowAdvancedInputs={setShowAdvancedInputs}
+                handleFetchGPT={handleFetchGPT}
               />
-              Add
-            </button>
+            </div>
 
-            <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 flex items-center"
-              onClick={handleSave}
-            >
-              <CheckCircleOutlined
+            <div className="xl:hidden block">
+              <FloatButton
+                tooltip={<div>Input values</div>}
                 style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
+                  position: "fixed",
+                  bottom: "30px",
+                  right: "30px",
                 }}
-              />
-              Save
-            </button>
-          </div>
-        </section>
-      </div>
+                onClick={() => {
+                  setIsInputFormOpen(true);
+                }}
+              >
+                <Button type="primary" shape="circle" icon={<FileOutlined />} />
+              </FloatButton>
+            </div>
 
-      <div className="xl:hidden block">
-        <FloatButton
-          tooltip={<div>Input values</div>}
-          style={{
-            position: "fixed",
-            bottom: "30px",
-            right: "30px",
-          }}
-          onClick={() => {
-            setIsInputFormOpen(true);
-          }}
-        >
-          <Button type="primary" shape="circle" icon={<FileOutlined />} />
-        </FloatButton>
-      </div>
-
-      {isInputFormOpen && (
-        <Modal
-          // title="Customer channel"
-          visible={isInputFormOpen}
-          onOk={() => {
-            handleSave();
-            setIsInputFormOpen(false);
-          }}
-          onCancel={() => {
-            setTempCostInput(costInputs);
-            setIsInputFormOpen(false);
-          }}
-          okText="Save change"
-          cancelText="Cancel"
-          cancelButtonProps={{
-            style: {
-              borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-            },
-          }}
-          okButtonProps={{
-            style: {
-              background: "#2563EB",
-              borderColor: "#2563EB",
-              color: "#fff",
-              borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-            },
-          }}
-          centered={true}
-          zIndex={50}
-        >
-          <section
-            aria-labelledby="costs-heading"
-            className="mb-8 sticky top-8"
-          >
-            <h2
-              className="text-lg font-semibold mb-8 flex items-center"
-              id="costs-heading"
-            >
-              Costs
-              <span className="flex justify-center items-center">
-                <PlusCircleOutlined
-                  className="ml-2 text-blue-500"
-                  size="large"
-                  style={{ fontSize: "24px" }}
-                  onClick={addNewCostInput}
+            {isInputFormOpen && (
+              <Modal
+                open={isInputFormOpen}
+                onOk={() => {
+                  handleSave();
+                  setIsInputFormOpen(false);
+                }}
+                onCancel={() => {
+                  setTempCostInput(costInputs);
+                  setIsInputFormOpen(false);
+                }}
+                okText={isLoading ? <SpinnerBtn /> : "Save Change"}
+                cancelText="Cancel"
+                cancelButtonProps={{
+                  style: {
+                    borderRadius: "0.375rem",
+                    cursor: "pointer",
+                  },
+                }}
+                okButtonProps={{
+                  style: {
+                    background: "#2563EB",
+                    borderColor: "#2563EB",
+                    color: "#fff",
+                    borderRadius: "0.375rem",
+                    cursor: "pointer",
+                    minWidth: "5vw",
+                  },
+                }}
+                footer={null}
+                centered={true}
+                zIndex={50}
+              >
+                <CostInputForm
+                  tempCostInput={tempCostInput}
+                  renderCostForm={renderCostForm}
+                  setRenderCostForm={setRenderCostForm}
+                  handleCostInputChange={handleCostInputChange}
+                  formatNumber={formatNumber}
+                  parseNumber={parseNumber}
+                  costGroupArray={costGroupArray}
+                  revenueData={revenueData}
+                  addNewCostInput={addNewCostInput}
+                  handleSave={handleSave}
+                  isLoading={isLoading}
+                  setIsDeleteModalOpen={setIsDeleteModalOpen}
+                  handleCostTypeChange={handleCostTypeChange}
+                  showAdvancedInputs={showAdvancedInputs}
+                  setShowAdvancedInputs={setShowAdvancedInputs}
+                  handleFetchGPT={handleFetchGPT}
                 />
-              </span>
-            </h2>
+              </Modal>
+            )}
 
-            <div>
-              <label
-                htmlFor="selectedChannel"
-                className="block my-4 text-base  darkTextWhite"
-              ></label>
-              <select
-                id="selectedChannel"
-                className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                value={renderCostForm}
-                onChange={handleSelectChange}
+            {isDeleteModalOpen && (
+              <Modal
+                title="Confirm Delete"
+                open={isDeleteModalOpen}
+                onOk={confirmDelete}
+                onCancel={() => setIsDeleteModalOpen(false)}
+                okText="Delete"
+                cancelText="Cancel"
+                cancelButtonProps={{
+                  style: {
+                    borderRadius: "0.375rem",
+                    cursor: "pointer",
+                  },
+                }}
+                okButtonProps={{
+                  style: {
+                    background: "#f5222d",
+                    borderColor: "#f5222d",
+                    color: "#fff",
+                    borderRadius: "0.375rem",
+                    cursor: "pointer",
+                  },
+                }}
+                centered={true}
               >
-                {tempCostInput.map((input) => (
-                  <option key={input?.id} value={input?.id}>
-                    {input.costName}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {tempCostInput
-              .filter((input) => input?.id == renderCostForm)
-              .map((input) => (
-                <div
-                  key={input?.id}
-                  className="bg-white rounded-2xl p-6 border my-4 "
-                >
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Cost Name:
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      value={input.costName}
-                      onChange={(e) =>
-                        handleCostInputChange(
-                          input?.id,
-                          "costName",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Cost Value:
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      type="text"
-                      value={formatNumber(input.costValue)}
-                      onChange={(e) =>
-                        handleCostInputChange(
-                          input?.id,
-                          "costValue",
-                          parseNumber(e.target.value)
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Growth Percentage (%):
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      type="text"
-                      value={formatNumber(input.growthPercentage)}
-                      onChange={(e) =>
-                        handleCostInputChange(
-                          input?.id,
-                          "growthPercentage",
-                          parseNumber(e.target.value)
-                        )
-                      }
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className="flex items-center text-sm">
-                      Frequency:
-                    </span>
-                    <Select
-                      className="border-gray-300"
-                      onValueChange={(value) =>
-                        handleCostInputChange(
-                          input?.id,
-                          "growthFrequency",
-                          value
-                        )
-                      }
-                      value={input.growthFrequency}
-                    >
-                      <SelectTrigger
-                        id={`select-growthFrequency-${input?.id}`}
-                        className="border-solid border-[1px] border-gray-300"
-                      >
-                        <SelectValue placeholder="Select Growth Frequency" />
-                      </SelectTrigger>
-                      <SelectContent position="popper">
-                        <SelectItem value="Monthly">Monthly</SelectItem>
-                        <SelectItem value="Quarterly">Quarterly</SelectItem>
-                        <SelectItem value="Semi-Annually">
-                          Semi-Annually
-                        </SelectItem>
-                        <SelectItem value="Annually">Annually</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Begin Month:
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      type="number"
-                      min="1"
-                      max="12"
-                      value={input.beginMonth}
-                      onChange={(e) =>
-                        handleCostInputChange(
-                          input?.id,
-                          "beginMonth",
-                          parseInt(e.target.value, 10)
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      End Month:
-                    </span>
-                    <Input
-                      className="col-start-2 border-gray-300"
-                      type="number"
-                      min="1"
-                      max="12"
-                      value={input.endMonth}
-                      onChange={(e) =>
-                        handleCostInputChange(
-                          input?.id,
-                          "endMonth",
-                          parseInt(e.target.value, 10)
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <span className=" flex items-center text-sm">
-                      Cost Type:
-                    </span>
-                    <Select
-                      className="border-gray-300"
-                      onValueChange={(value) =>
-                        handleCostInputChange(input?.id, "costType", value)
-                      }
-                      value={input.costType}
-                    >
-                      <SelectTrigger
-                        id={`select-costType-${input?.id}`}
-                        className="border-solid border-[1px] border-gray-300"
-                      >
-                        <SelectValue placeholder="Select Cost Type" />
-                      </SelectTrigger>
-                      <SelectContent position="popper">
-                        <SelectItem value="Sales, Marketing Cost">
-                          Sales, Marketing
-                        </SelectItem>
-                        <SelectItem value="General Administrative Cost">
-                          General Administrative
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="flex justify-end items-center">
-                    <button
-                      className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
-                      onClick={() => setIsDeleteModalOpen(true)}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
-          </section>
-        </Modal>
-      )}
-
-      {isDeleteModalOpen && (
-        <Modal
-          title="Confirm Delete"
-          visible={isDeleteModalOpen}
-          onOk={confirmDelete}
-          onCancel={() => setIsDeleteModalOpen(false)}
-          okText="Delete"
-          cancelText="Cancel"
-          cancelButtonProps={{
-            style: {
-              borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-            },
-          }}
-          okButtonProps={{
-            style: {
-              background: "#f5222d",
-              borderColor: "#f5222d",
-              color: "#fff",
-              borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-            },
-          }}
-          centered={true}
-        >
-          Are you sure you want to delete it?
-        </Modal>
-      )}
+                Are you sure you want to delete it?
+              </Modal>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 };

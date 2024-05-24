@@ -647,7 +647,7 @@ function ProjectList({ projects }) {
       {isDeleteModalOpen && (
         <Modal
           title="Confirm Delete"
-          visible={isDeleteModalOpen}
+          open={isDeleteModalOpen}
           onOk={confirmDelete}
           onCancel={cancelDelete}
           okText="Delete"
@@ -676,7 +676,7 @@ function ProjectList({ projects }) {
       {isAssignModalOpen && (
         <Modal
           title="Assign project"
-          visible={isAssignModalOpen}
+          open={isAssignModalOpen}
           onOk={handleConfirmAssign}
           onCancel={() => setIsAssignModalOpen(false)}
           okText="Assign"
@@ -713,7 +713,7 @@ function ProjectList({ projects }) {
       {isInviteModalOpen && (
         <Modal
           title="Invite user"
-          visible={isInviteModalOpen}
+          open={isInviteModalOpen}
           onOk={handleConfirmInvite}
           onCancel={() => setIsInviteModalOpen(false)}
           okText="Invite"

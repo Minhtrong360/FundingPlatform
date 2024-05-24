@@ -13,11 +13,12 @@ const initialState = {
       endMonth: 36,
       beginCustomer: 0,
       churnRate: 0,
-      acquisitionCost: 0, // Default value for acquisition cost
-      localGrowthRate: 1, // Default value for local growth rate
-      eventName: "", // Default value for event name
-      eventBeginMonth: 1, // Event-specific begin month
-      eventEndMonth: 36, // Event-specific end month
+      acquisitionCost: 0,
+      localGrowthRate: 1,
+      eventName: "",
+      eventBeginMonth: 1,
+      eventEndMonth: 36,
+      additionalInfo: "",
     },
     {
       id: 2,
@@ -29,11 +30,12 @@ const initialState = {
       endMonth: 36,
       beginCustomer: 0,
       churnRate: 0,
-      acquisitionCost: 0, // Default value for acquisition cost
-      localGrowthRate: 1, // Default value for local growth rate
-      eventName: "", // Default value for event name
-      eventBeginMonth: 1, // Event-specific begin month
-      eventEndMonth: 36, // Event-specific end month
+      acquisitionCost: 0,
+      localGrowthRate: 1,
+      eventName: "",
+      eventBeginMonth: 1,
+      eventEndMonth: 36,
+      additionalInfo: "",
     },
   ],
   customerGrowthData: [],
@@ -57,6 +59,20 @@ const customerSlice = createSlice({
     setCustomerTableData(state, action) {
       state.customerTableData = action.payload;
     },
+    setGPTResponse(state, action) {
+      const { id, response } = action.payload;
+      const customer = state.customerInputs.find((input) => input.id === id);
+      if (customer) {
+        customer.gptResponse = response;
+      }
+    },
+    setGPTResponseArray(state, action) {
+      const { id, responseArray } = action.payload;
+      const customer = state.customerInputs.find((input) => input.id === id);
+      if (customer) {
+        customer.gptResponseArray = responseArray;
+      }
+    },
   },
 });
 
@@ -68,22 +84,41 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
     let beginValue = parseFloat(customerInput.beginCustomer);
 
     for (let month = 1; month <= numberOfMonths; month++) {
-      if (month >= customerInput.beginMonth && month <= customerInput.endMonth) {
-        if (month === customerInput.beginMonth) {
+      if (
+        month >= customerInput.beginMonth &&
+        month <= customerInput.endMonth
+      ) {
+        if (month == customerInput.beginMonth) {
           currentCustomers = initialCustomers;
         } else {
           let growthRate = parseFloat(customerInput.growthPerMonth);
 
-          if (month >= customerInput.eventBeginMonth && month <= customerInput.eventEndMonth) {
+          if (
+            month >= customerInput.eventBeginMonth &&
+            month <= customerInput.eventEndMonth
+          ) {
             growthRate = customerInput.localGrowthRate;
           }
 
-          if (customerInput.customerGrowthFrequency === "Monthly") {
+          if (
+            customerInput.gptResponseArray &&
+            customerInput.gptResponseArray.length > month - 1
+          ) {
+            currentCustomers = parseFloat(
+              customerInput.gptResponseArray[month - 1]
+            );
+          } else if (customerInput.customerGrowthFrequency === "Monthly") {
             currentCustomers *= 1 + growthRate / 100;
-          } else if (["Annually", "Quarterly", "Semi-Annually"].includes(customerInput.customerGrowthFrequency)) {
+          } else if (
+            ["Annually", "Quarterly", "Semi-Annually"].includes(
+              customerInput.customerGrowthFrequency
+            )
+          ) {
             let frequency = 12;
-            if (customerInput.customerGrowthFrequency === "Quarterly") frequency = 3;
-            else if (customerInput.customerGrowthFrequency === "Semi-Annually") frequency = 6;
+            if (customerInput.customerGrowthFrequency === "Quarterly")
+              frequency = 3;
+            else if (customerInput.customerGrowthFrequency === "Semi-Annually")
+              frequency = 6;
 
             if ((month - customerInput.beginMonth) % frequency === 0) {
               currentCustomers *= 1 + growthRate / 100;
@@ -91,15 +126,25 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
           }
         }
 
-        const churnValue = (beginValue * (customerInput.churnRate / 100)).toFixed(0);
-
+        const churnValue = (
+          beginValue *
+          (customerInput.churnRate / 100)
+        ).toFixed(0);
         beginValue += currentCustomers - parseFloat(churnValue);
 
         monthlyCustomers.push({
           month: month,
           customers: beginValue.toFixed(0) > 0 ? beginValue.toFixed(0) : 0,
-          begin: month === customerInput.beginMonth ? parseFloat(customerInput.beginCustomer).toFixed(0) : parseFloat(monthlyCustomers[monthlyCustomers.length - 1]?.end).toFixed(0),
-          add: currentCustomers.toFixed(0),
+          begin:
+            month == customerInput.beginMonth
+              ? parseFloat(customerInput.beginCustomer).toFixed(0)
+              : parseFloat(
+                  monthlyCustomers[monthlyCustomers.length - 1]?.end
+                ).toFixed(0),
+          add:
+            month == customerInput.beginMonth
+              ? initialCustomers.toFixed(0)
+              : currentCustomers.toFixed(0),
           churn: churnValue,
           end: beginValue.toFixed(0) > 0 ? beginValue.toFixed(0) : 0,
           channelName: customerInput.channelName,
@@ -120,7 +165,6 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
   });
 };
 
-
 export const calculateYearlyAverage = (
   tempCustomerGrowthData,
   numberOfMonths
@@ -138,7 +182,6 @@ export const calculateYearlyAverage = (
   }
   return yearlyAverages;
 };
-
 
 export function transformCustomerData(
   tempCustomerGrowthData,
@@ -215,18 +258,38 @@ export function generateCustomerTableData(
       };
 
       let currentCustomers = parseFloat(customerInput.customersPerMonth);
-      for (let i = 1; i <= numberOfMonths; i++) {
-        let growthRate = parseFloat(customerInput.growthPerMonth);
 
+      for (let i = 1; i <= numberOfMonths; i++) {
         if (i >= customerInput.beginMonth && i <= customerInput.endMonth) {
-          if (i === customerInput.beginMonth) {
+          let growthRate = parseFloat(customerInput.growthPerMonth);
+
+          if (i == customerInput.beginMonth) {
             currentCustomers = customerInput.customersPerMonth;
+            startRow[`month${i}`] = formatNumber(
+              parseFloat(customerInput.beginCustomer).toFixed(0)
+            );
+            beginRow[`month${i}`] = formatNumber(
+              parseFloat(customerInput.beginCustomer).toFixed(0)
+            );
+            channelAddRow[`month${i}`] = formatNumber(
+              currentCustomers.toFixed(0)
+            );
           } else {
-            if (i >= customerInput.eventBeginMonth && i <= customerInput.eventEndMonth) {
+            if (
+              i >= customerInput.eventBeginMonth &&
+              i <= customerInput.eventEndMonth
+            ) {
               growthRate = customerInput.localGrowthRate;
             }
 
-            if (customerInput.customerGrowthFrequency === "Monthly") {
+            if (
+              customerInput.gptResponseArray &&
+              customerInput.gptResponseArray.length > i - 1
+            ) {
+              currentCustomers = parseFloat(
+                customerInput.gptResponseArray[i - 1]
+              );
+            } else if (customerInput.customerGrowthFrequency === "Monthly") {
               currentCustomers *= 1 + growthRate / 100;
             } else {
               let frequency = 12; // Default to Annually
@@ -241,42 +304,33 @@ export function generateCustomerTableData(
                 currentCustomers *= 1 + growthRate / 100;
               }
             }
+
+            channelAddRow[`month${i}`] = formatNumber(
+              currentCustomers.toFixed(0)
+            );
+            beginRow[`month${i}`] = formatNumber(
+              parseNumber(endRow[`month${i - 1}`])
+            );
           }
-          channelAddRow[`month${i}`] = formatNumber(
-            currentCustomers.toFixed(0)
+
+          const beginValue = parseNumber(beginRow[`month${i}`]);
+          const addValue = parseNumber(channelAddRow[`month${i}`]);
+          const churnValue = (
+            beginValue *
+            (customerInput.churnRate / 100)
+          ).toFixed(0);
+
+          churnRow[`month${i}`] = churnValue;
+
+          endRow[`month${i}`] = formatNumber(
+            beginValue + addValue - parseNumber(churnRow[`month${i}`])
           );
         } else {
           channelAddRow[`month${i}`] = "0";
-        }
-        startRow[`month${i}`] = "0";
-        beginRow[`month${i}`] = "0";
-        churnRow[`month${i}`] = "0";
-      }
-
-      if (customerInput) {
-        startRow[`month${customerInput.beginMonth}`] = formatNumber(
-          parseFloat(customerInput.beginCustomer).toFixed(0)
-        );
-        beginRow[`month${customerInput.beginMonth}`] =
-          startRow[`month${customerInput.beginMonth}`];
-
-        for (let i = customerInput.beginMonth; i <= numberOfMonths; i++) {
-          if (i > customerInput.beginMonth) {
-            beginRow[`month${i}`] = formatNumber(endRow[`month${i - 1}`]); // Set Begin row of month i to End row of month i-1
-          }
-          endRow[`month${i}`] = formatNumber(endRow[`month${i}`]);
-          const beginValue = beginRow[`month${i}`] || 0; // Begin value for the current month
-          const addValue = parseNumber(channelAddRow[`month${i}`]) || 0; // Add value for the current month
-          const churnValue = (
-            parseNumber(beginValue) *
-            (customerInput.churnRate / 100)
-          ).toFixed(0); // Calculate churn value
-          churnRow[`month${i}`] = churnValue; // Assign churn value to Churn row of the current month
-          endRow[`month${i}`] = formatNumber(
-            parseNumber(beginValue) +
-              parseNumber(addValue) -
-              parseNumber(churnValue)
-          ); // Update End row to Begin + Add - Churn
+          startRow[`month${i}`] = "0";
+          beginRow[`month${i}`] = "0";
+          churnRow[`month${i}`] = "0";
+          endRow[`month${i}`] = "0";
         }
       }
 
@@ -344,18 +398,38 @@ export function generateCustomerTableData(
       };
 
       let currentCustomers = parseFloat(customerInput.customersPerMonth);
-      for (let i = 1; i <= numberOfMonths; i++) {
-        let growthRate = parseFloat(customerInput.growthPerMonth);
 
+      for (let i = 1; i <= numberOfMonths; i++) {
         if (i >= customerInput.beginMonth && i <= customerInput.endMonth) {
-          if (i === customerInput.beginMonth) {
+          let growthRate = parseFloat(customerInput.growthPerMonth);
+
+          if (i == customerInput.beginMonth) {
             currentCustomers = customerInput.customersPerMonth;
+            startRow[`month${i}`] = formatNumber(
+              parseFloat(customerInput.beginCustomer).toFixed(0)
+            );
+            beginRow[`month${i}`] = formatNumber(
+              parseFloat(customerInput.beginCustomer).toFixed(0)
+            );
+            channelAddRow[`month${i}`] = formatNumber(
+              currentCustomers.toFixed(0)
+            );
           } else {
-            if (i >= customerInput.eventBeginMonth && i <= customerInput.eventEndMonth) {
+            if (
+              i >= customerInput.eventBeginMonth &&
+              i <= customerInput.eventEndMonth
+            ) {
               growthRate = customerInput.localGrowthRate;
             }
 
-            if (customerInput.customerGrowthFrequency === "Monthly") {
+            if (
+              customerInput.gptResponseArray &&
+              customerInput.gptResponseArray.length > i - 1
+            ) {
+              currentCustomers = parseFloat(
+                customerInput.gptResponseArray[i - 1]
+              );
+            } else if (customerInput.customerGrowthFrequency === "Monthly") {
               currentCustomers *= 1 + growthRate / 100;
             } else {
               let frequency = 12; // Default to Annually
@@ -370,42 +444,33 @@ export function generateCustomerTableData(
                 currentCustomers *= 1 + growthRate / 100;
               }
             }
+
+            channelAddRow[`month${i}`] = formatNumber(
+              currentCustomers.toFixed(0)
+            );
+            beginRow[`month${i}`] = formatNumber(
+              parseNumber(endRow[`month${i - 1}`])
+            );
           }
-          channelAddRow[`month${i}`] = formatNumber(
-            currentCustomers.toFixed(0)
+
+          const beginValue = parseNumber(beginRow[`month${i}`]);
+          const addValue = parseNumber(channelAddRow[`month${i}`]);
+          const churnValue = (
+            beginValue *
+            (customerInput.churnRate / 100)
+          ).toFixed(0);
+
+          churnRow[`month${i}`] = churnValue;
+
+          endRow[`month${i}`] = formatNumber(
+            beginValue + addValue - parseNumber(churnRow[`month${i}`])
           );
         } else {
           channelAddRow[`month${i}`] = "0";
-        }
-        startRow[`month${i}`] = "0";
-        beginRow[`month${i}`] = "0";
-        churnRow[`month${i}`] = "0";
-      }
-
-      if (customerInput) {
-        startRow[`month${customerInput.beginMonth}`] = formatNumber(
-          parseFloat(customerInput.beginCustomer).toFixed(0)
-        );
-        beginRow[`month${customerInput.beginMonth}`] =
-          startRow[`month${customerInput.beginMonth}`];
-
-        for (let i = customerInput.beginMonth; i <= numberOfMonths; i++) {
-          if (i > customerInput.beginMonth) {
-            beginRow[`month${i}`] = formatNumber(endRow[`month${i - 1}`]); // Set Begin row of month i to End row of month i-1
-          }
-          endRow[`month${i}`] = formatNumber(endRow[`month${i}`]);
-          const beginValue = beginRow[`month${i}`] || 0; // Begin value for the current month
-          const addValue = parseNumber(channelAddRow[`month${i}`]) || 0; // Add value for the current month
-          const churnValue = (
-            parseNumber(beginValue) *
-            (customerInput.churnRate / 100)
-          ).toFixed(0); // Calculate churn value
-          churnRow[`month${i}`] = churnValue; // Assign churn value to Churn row of the current month
-          endRow[`month${i}`] = formatNumber(
-            parseNumber(beginValue) +
-              parseNumber(addValue) -
-              parseNumber(churnValue)
-          ); // Update End row to Begin + Add - Churn
+          startRow[`month${i}`] = "0";
+          beginRow[`month${i}`] = "0";
+          churnRow[`month${i}`] = "0";
+          endRow[`month${i}`] = "0";
         }
       }
 
@@ -422,6 +487,40 @@ export const {
   setCustomerGrowthData,
   setYearlyAverageCustomers,
   setCustomerTableData,
+  setGPTResponse,
+  setGPTResponseArray,
 } = customerSlice.actions;
 
 export default customerSlice.reducer;
+
+export const fetchGPTResponse =
+  (id, additionalInfo, customer) => async (dispatch) => {
+    try {
+      console.log("fetching GPT response");
+      const response = await fetch(
+        "https://news-fetcher-8k6m.onrender.com/drawchart",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_input: `Dựa trên ${additionalInfo}. Tìm các hàm toán học rời rạc thỏa mãn điều kiện trên. Sau khi tìm được các hàm này, tính giá trị của hàm từ tháng ${customer.beginMonth} đến ${customer.endMonth}. 
+          Không giải thích. Chỉ trả về kết quả file JSON theo dạng [70, 100, ... 500] là giá trị của các hàm rời rạc tương ứng tại các điểm trên.`, // Treat additionalInfo as a single prompt
+          }),
+        }
+      );
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      const cleanedResponseText = JSON.parse(
+        data?.response?.replace(/json|`/g, "")
+      );
+      return cleanedResponseText;
+    } catch (error) {
+      console.error("Error fetching GPT response:", error);
+    }
+  };

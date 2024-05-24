@@ -108,6 +108,12 @@ const StatBadgeByDay = ({ ggData, setIsLoading }) => {
         id: "customer-growth-chart",
         type: "line",
         height: 350,
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          }
+        },
       },
       xaxis: {
         type: "datetime",

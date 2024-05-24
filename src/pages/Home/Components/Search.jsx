@@ -301,7 +301,7 @@ const Search = ({
             {isOpen && (
               <Modal
                 title="Add filter criteria"
-                visible={isOpen}
+                open={isOpen}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 okText="Apply"

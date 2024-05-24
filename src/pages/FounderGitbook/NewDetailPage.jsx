@@ -160,7 +160,7 @@ export default function NewDetailPage({ location }) {
                 blocks={blocks}
               />
 
-              <div className="mt-4 xl:container w-full mx-auto sm:px-4 pl-8 flex flex-col lg:flex-row">
+              <div className="mt-4  w-4/5 mx-auto sm:px-8  ">
                 <MyTab
                   blocks={blocks}
                   setBlocks={setBlocks}
@@ -169,7 +169,7 @@ export default function NewDetailPage({ location }) {
                   currentProject={currentProject}
                 />
 
-                <Author company={company} />
+                {/* <Author company={company} /> */}
               </div>
             </div>
           ) : (

@@ -33,6 +33,8 @@ import {
   setCutMonth,
   setStartMonth,
   setStartYear,
+  setDescription,
+  setLocation,
 } from "../../features/DurationSlice";
 import {
   calculateCustomerGrowth,
@@ -58,6 +60,7 @@ import CashFlowSection from "./Components/CashFlowSection";
 import { Button, FloatButton, Modal, message } from "antd";
 import { useParams } from "react-router-dom";
 import AnnounceFMPage from "./Components/AnnounceFMPage";
+import Perflexity from "./Components/Perflexity";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
@@ -79,8 +82,12 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     startYear,
     financialProjectName,
     cutMonth,
+    description,
+    location,
   } = useSelector((state) => state.durationSelect);
-
+  const generatePrompt = () => {
+    return `Given ${description} and ${location}, list all facts and figures related to the revenue, cost, personnel, margin, salary related to in bullet points. Each bullet points no more than 10 words. `;
+  };
   const { yearlyAverageCustomers } = useSelector((state) => state.customer);
   const { yearlySales } = useSelector((state) => state.sales);
 
@@ -383,8 +390,15 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   useEffect(() => {
     // Update channelNames based on current customerInputs
     const updatedChannelNames = customerInputs
-      .map((input) => input.channelName)
-      .filter((name, index, self) => name && self.indexOf(name) === index);
+      .map((input) => ({
+        id: input.id,
+        channelName: input.channelName,
+      }))
+      .filter(
+        (item, index, self) =>
+          item.channelName &&
+          self.findIndex((i) => i.channelName === item.channelName) === index
+      );
     dispatch(setChannelNames(updatedChannelNames));
   }, [customerInputs]);
 
@@ -446,6 +460,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         dispatch(setPayrollTax(inputData.payrollTax || 0));
         dispatch(setCurrency(inputData.currency || "USD"));
         dispatch(setCutMonth(inputData.cutMonth || 4));
+        dispatch(setDescription(inputData.description || ""));
+        dispatch(setLocation(inputData.location || ""));
         dispatch(
           setStartMonth(inputData.startMonth || new Date().getMonth() + 1)
         );
@@ -548,6 +564,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
   const saveOrUpdateFinanceData = async (inputData) => {
     try {
+      setIsLoading(true);
       const { data: existingData, error: selectError } = await supabase
         .from("finance")
         .select("*")
@@ -599,6 +616,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       message.error(error.message);
       console.error("Error in saveOrUpdateFinanceData", error);
       return null;
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -624,6 +643,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       fundraisingInputs,
       yearlyAverageCustomers,
       yearlySales,
+      description,
+      location,
     };
 
     await saveOrUpdateFinanceData(financeData);
@@ -710,6 +731,11 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 
+  const [activeTabA, setActiveTabA] = useState("table&chart");
+
+  const handleTabChangeA = (tabName) => {
+    setActiveTabA(tabName);
+  };
   return (
     <div className="min-h-screen">
       {/* <div>
@@ -921,82 +947,122 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
             <div className="">
               {activeTab === "overview" && (
-                <div className="w-full h-full flex flex-col lg:flex-row ">
-                  {/* <div className="w-full lg:w-1/4 sm:p-4 p-0 "> */}
+                <div>
+                  <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
+                    <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
+                      <li
+                        className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                          activeTabA === "table&chart"
+                            ? "bg-yellow-300 font-bold"
+                            : ""
+                        }`}
+                        onClick={() => handleTabChangeA("table&chart")}
+                      >
+                        Chart
+                      </li>
+                      {/* Repeat for other tabs */}
+                      <li
+                        className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                          activeTabA === "input"
+                            ? "bg-yellow-300 font-bold"
+                            : ""
+                        }`}
+                        onClick={() => handleTabChangeA("input")}
+                      >
+                        Input
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="w-full h-full flex flex-col lg:flex-row">
+                    {activeTabA === "table&chart" && (
+                      <>
+                        <div className="w-full xl:w-3/4 sm:p-4 p-0">
+                          <h2
+                            className="text-lg font-semibold mb-7 flex items-center"
+                            id="duration-heading"
+                          >
+                            Overview
+                          </h2>
+                          {/* <Perflexity prompt={generatePrompt()} button={"Benchmark"} /> */}
+                          <MetricsFM
+                            customerGrowthChart={customerGrowthChart}
+                            revenue={revenue}
+                            numberOfMonths={numberOfMonths}
+                          />
+                        </div>
+                        <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden "></div>
+                      </>
+                    )}
+                    {activeTabA === "input" && (
+                      <>
+                        <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
 
-                  <div className="w-full xl:w-3/4 sm:p-4 p-0">
-                    <h2
-                      className="text-lg font-semibold mb-7 flex items-center"
-                      id="duration-heading"
-                    >
-                      Overview
-                    </h2>
-                    <MetricsFM
-                      customerGrowthChart={customerGrowthChart}
-                      revenue={revenue}
-                      numberOfMonths={numberOfMonths}
-                    />
-                  </div>
-                  <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block ">
-                    <DurationSelect handleSubmit={handleSubmit} />
-                  </div>
-                  <div className="xl:hidden block">
-                    <FloatButton
-                      tooltip={<div>Input values</div>}
-                      style={{
-                        position: "fixed",
-                        bottom: "30px",
-                        right: "30px",
-                      }}
-                      onClick={() => {
-                        setIsInputFormOpen(true);
-                      }}
-                    >
-                      <Button
-                        type="primary"
-                        shape="circle"
-                        icon={<FileOutlined />}
-                      />
-                    </FloatButton>
-                  </div>
+                        <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
+                          <DurationSelect
+                            handleSubmit={handleSubmit}
+                            isLoading={isLoading}
+                          />
+                        </div>
+                        <div className="xl:hidden block">
+                          <FloatButton
+                            tooltip={<div>Input values</div>}
+                            style={{
+                              position: "fixed",
+                              bottom: "30px",
+                              right: "30px",
+                            }}
+                            onClick={() => {
+                              setIsInputFormOpen(true);
+                            }}
+                          >
+                            <Button
+                              type="primary"
+                              shape="circle"
+                              icon={<FileOutlined />}
+                            />
+                          </FloatButton>
+                        </div>
 
-                  {isInputFormOpen && (
-                    <Modal
-                      // title="Customer channel"
-                      visible={isInputFormOpen}
-                      onOk={() => {
-                        handleSubmit();
-                        setIsInputFormOpen(false);
-                      }}
-                      onCancel={() => {
-                        setIsInputFormOpen(false);
-                      }}
-                      okText="Save"
-                      cancelText="Close"
-                      cancelButtonProps={{
-                        style: {
-                          borderRadius: "0.375rem",
-                          cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                        },
-                      }}
-                      okButtonProps={{
-                        style: {
-                          background: "#2563EB",
-                          borderColor: "#2563EB",
-                          color: "#fff",
-                          borderRadius: "0.375rem",
-                          cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                        },
-                      }}
-                      centered={true}
-                      zIndex={50}
-                    >
-                      <DurationSelect
-                        handleSubmit={handleSubmit}
-                        isInputFormOpen="Ok"
-                      />
-                    </Modal>
-                  )}
+                        {isInputFormOpen && (
+                          <Modal
+                            // title="Customer channel"
+                            open={isInputFormOpen}
+                            onOk={() => {
+                              handleSubmit();
+                              setIsInputFormOpen(false);
+                            }}
+                            onCancel={() => {
+                              setIsInputFormOpen(false);
+                            }}
+                            okText="Save"
+                            cancelText="Close"
+                            cancelButtonProps={{
+                              style: {
+                                borderRadius: "0.375rem",
+                                cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                              },
+                            }}
+                            okButtonProps={{
+                              style: {
+                                background: "#2563EB",
+                                borderColor: "#2563EB",
+                                color: "#fff",
+                                borderRadius: "0.375rem",
+                                cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                              },
+                            }}
+                            centered={true}
+                            zIndex={50}
+                          >
+                            <DurationSelect
+                              handleSubmit={handleSubmit}
+                              isInputFormOpen="Ok"
+                            />
+                          </Modal>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
               {activeTab === "customer" && (

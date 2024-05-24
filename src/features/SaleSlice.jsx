@@ -10,7 +10,7 @@ const initialState = {
       multiples: 1,
       deductionPercentage: 5,
       cogsPercentage: 30,
-      selectedChannel: "Offline",
+      selectedChannel: { id: 1, channelName: "Online" },
       channelAllocation: 0.4,
       daysGetPaid: 0,
     },
@@ -21,7 +21,7 @@ const initialState = {
       multiples: 1,
       deductionPercentage: 4,
       cogsPercentage: 35,
-      selectedChannel: "Offline",
+      selectedChannel: { id: 2, channelName: "Offline" },
       channelAllocation: 0.3,
       daysGetPaid: 0,
     },
@@ -32,7 +32,7 @@ const initialState = {
       multiples: 1,
       deductionPercentage: 6,
       cogsPercentage: 25,
-      selectedChannel: "Online",
+      selectedChannel: { id: 2, channelName: "Offline" },
       channelAllocation: 0.6,
       daysGetPaid: 0,
     },
@@ -106,8 +106,8 @@ export const calculateChannelRevenue =
     let receivablesByChannelAndProduct = {};
 
     channelInputs.forEach((channel) => {
-      if (channel.selectedChannel && channel.productName) {
-        const channelProductKey = `${channel.selectedChannel} - ${channel.productName}`;
+      if (channel.selectedChannel.channelName && channel.productName) {
+        const channelProductKey = `${channel.selectedChannel.channelName} - ${channel.productName}`;
         const revenueArray = Array(numberOfMonths).fill(0);
         const revenueDeductionArray = Array(numberOfMonths).fill(0);
         const cogsArray = Array(numberOfMonths).fill(0);
@@ -119,9 +119,10 @@ export const calculateChannelRevenue =
         // Calculate revenue, revenueDeduction, and COGS
         customerGrowthData.forEach((growthData) => {
           growthData.forEach((data) => {
-            if (data.channelName === channel.selectedChannel) {
+            if (data.channelName === channel.selectedChannel.channelName) {
               const customerInput = customerInputs.find(
-                (input) => input.channelName === channel.selectedChannel
+                (input) =>
+                  input.channelName === channel.selectedChannel.channelName
               );
               if (customerInput) {
                 const begin = customerInput.beginMonth;
@@ -345,7 +346,7 @@ export const transformRevenueDataForTable = (
       if (
         (selectedChannel ==
           tempChannelInputs.find((input) => input.id == renderChannelForm)
-            ?.selectedChannel &&
+            ?.selectedChannel.channelName &&
           selectedProduct ==
             tempChannelInputs.find((input) => input.id == renderChannelForm)
               ?.productName) ||

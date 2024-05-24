@@ -14,7 +14,13 @@ const InputField = ({ value, onChange }) => (
 const BarChart = ({ xCategories, seriesData, series }) => (
   <ReactApexChart
     options={{
-      chart: { id: "bar-chart", toolbar: { show: true } },
+      chart: { id: "bar-chart",  toolbar: {
+        show: true,
+      
+        tools: {
+          download: true,
+        }
+      },},
       xaxis: { categories: xCategories },
     }}
     series={series.map((seriesPair, index) => ({

@@ -67,7 +67,7 @@ export default function FleaMarketDetail({
   return (
     <Modal
       title="Flea-Market project detail"
-      visible={isDetailModalOpen}
+      open={isDetailModalOpen}
       onOk={showContactDetails ? handleHide : handleContact}
       onCancel={handleCancel}
       okText={showContactDetails ? "Hide" : "Contact"}

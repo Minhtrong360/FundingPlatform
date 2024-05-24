@@ -8,6 +8,7 @@ export const personnelSlice = createSlice({
       {
         id: 1,
         jobTitle: "Cashier",
+        department: "Sales", // Updated to lowercase
         salaryPerMonth: 800,
         increasePerYear: 10,
         growthSalaryFrequency: "Annually",
@@ -18,6 +19,7 @@ export const personnelSlice = createSlice({
       {
         id: 2,
         jobTitle: "Manager",
+        department: "Management", // Updated to lowercase
         salaryPerMonth: 2000,
         increasePerYear: 10,
         growthSalaryFrequency: "Annually",
@@ -88,7 +90,8 @@ export const calculatePersonnelCostData = (
       }
     }
     allPersonnelCosts.push({
-      jobTitle: personnelInput.jobTitle,
+      jobTitle: `${personnelInput.jobTitle} (${personnelInput.numberOfHires})`,
+      department: personnelInput?.department?.toLowerCase(), // Normalize department to lowercase
       monthlyCosts,
     });
   });
@@ -96,16 +99,41 @@ export const calculatePersonnelCostData = (
 };
 
 export const transformPersonnelCostDataForTable = (tempPersonnelCostData) => {
-  const transformedCustomerTableData = tempPersonnelCostData.map((item) => {
-    const rowData = { key: item.jobTitle, jobTitle: item.jobTitle };
-    item.monthlyCosts?.forEach((monthData) => {
-      rowData[`month${monthData.month}`] = formatNumber(
-        monthData.cost?.toFixed(2)
-      ); // Adjust formatting as needed
+  const groupedByDepartment = tempPersonnelCostData.reduce((acc, item) => {
+    const normalizedDepartment = item.department.toLowerCase(); // Normalize department to lowercase
+    if (!acc[normalizedDepartment]) {
+      acc[normalizedDepartment] = [];
+    }
+    acc[normalizedDepartment].push(item);
+    return acc;
+  }, {});
+
+  const transformedPersonnelTableData = [];
+
+  for (const [department, items] of Object.entries(groupedByDepartment)) {
+    transformedPersonnelTableData.push({
+      key: department.toUpperCase(),
+      jobTitle: department.toUpperCase(),
+      department: department,
+      isDepartment: true,
     });
-    return rowData;
-  });
-  const totalRow = { key: "Total", jobTitle: "Total" };
+
+    items.forEach((item) => {
+      const rowData = {
+        key: item.jobTitle,
+        jobTitle: item.jobTitle,
+        department: item.department,
+      };
+      item.monthlyCosts?.forEach((monthData) => {
+        rowData[`month${monthData.month}`] = formatNumber(
+          monthData.cost?.toFixed(2)
+        );
+      });
+      transformedPersonnelTableData.push(rowData);
+    });
+  }
+
+  const totalRow = { key: "Total", jobTitle: "Total", department: "" };
   tempPersonnelCostData[0]?.monthlyCosts.forEach((monthData, index) => {
     let totalMonthlyCost = 0;
     tempPersonnelCostData.forEach((item) => {
@@ -114,10 +142,10 @@ export const transformPersonnelCostDataForTable = (tempPersonnelCostData) => {
     });
     totalRow[`month${monthData.month}`] = formatNumber(
       totalMonthlyCost.toFixed(2)
-    ); // Adjust formatting as needed
+    );
   });
-  transformedCustomerTableData.push(totalRow);
-  return transformedCustomerTableData;
+  transformedPersonnelTableData.push(totalRow);
+  return transformedPersonnelTableData;
 };
 
 export const {

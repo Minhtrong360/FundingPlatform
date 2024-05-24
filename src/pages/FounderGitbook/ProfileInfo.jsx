@@ -224,7 +224,7 @@ export default function ProfileInfo({
       {showConfirmation && (
         <Modal
           title="Apply verification"
-          visible={showConfirmation}
+          open={showConfirmation}
           onOk={handleRequiredVerification}
           onCancel={() => setShowConfirmation(false)}
           okText="Agree"

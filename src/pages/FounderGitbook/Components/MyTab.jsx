@@ -76,7 +76,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
                 className="absolute top-0 left-0 w-full h-full"
                 src={`https://www.youtube.com/embed/${block.props.videoId}`}
                 title="YouTube video player"
-                frameBorder="0"
+                frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               ></iframe>
@@ -440,23 +440,23 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
 
   return (
     <div
-      className={`container mx-auto px-4 flex flex-col lg:flex-row ${
+      className={`container mr-8 px-8  flex flex-col  ${
         fullScreen === true ? "justify-center items-center" : ""
       }`}
     >
       {fullScreen === false && (
         <>
-          <aside className="w-full md:max-w-[200px] py-8">
-            <div className="sticky top-8 space-y-4">
-              <nav className="space-y-1">
+          <aside className="sticky z-20 top-0 bg-white">
+            <div className="w-full  py-8 overflow-x-auto">
+              <nav className="flex space-x-4 pl-14">
                 {/* Navbar */}
                 {Object.keys(tabContents).map((tab) => (
                   <div
                     key={tab}
-                    className={` cursor-pointer ${
+                    className={`cursor-pointer flex items-center px-3 py-2 text-sm font-medium ${
                       activeTab === tab
-                        ? "flex items-left px-3 py-2 text-sm font-medium text-blue-600 bg-blue-100 rounded-md"
-                        : "flex items-left px-3 py-2 text-gray-600"
+                        ? "text-blue-600 bg-blue-100 rounded-md"
+                        : "text-gray-600"
                     }`}
                     onClick={() => handleTabChange(tab)}
                   >
@@ -466,7 +466,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
               </nav>
             </div>
           </aside>
-          <div className="w-full  py-8 px-0 md:pl-8">
+          <div className="w-full py-8 px-0 md:pl-8">
             {/* Content */}
             {tabContents[activeTab]}
           </div>

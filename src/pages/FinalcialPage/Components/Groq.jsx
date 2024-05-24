@@ -143,73 +143,75 @@
 
 //////////////
 ///////////////////////////
-import React, { useState, useRef } from "react";
-import { Button, Input } from "antd";
+import React, { useState, useEffect, useRef } from 'react';
+import { Button, Input } from 'antd';
+
 
 const { TextArea } = Input;
 
-const DF = () => {
+const PF = () => {
   const [messages, setMessages] = useState([]);
-  const [inputValue, setInputValue] = useState("");
-  const eventSourceRef = useRef(null);
+  const [currentMessage, setCurrentMessage] = useState('');
+  const [inputValue, setInputValue] = useState('');
+  const ws = useRef(null);
+  const clearMessages = () => {
+    setMessages([]);
+  };
+  console.log(messages)
+  useEffect(() => {
+    ws.current = new WebSocket('ws://localhost:8000/ws/chat');
 
-  const handleSend = async () => {
-    const newMessages = [...messages, { role: "user", content: inputValue }];
-    setMessages(newMessages);
-    setInputValue("");
-
-    if (eventSourceRef.current) {
-      eventSourceRef.current.close();
-    }
-
-    const response = await fetch("http://localhost:8000/stream", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ messages: newMessages }),
-    });
-
-    eventSourceRef.current = new EventSource("http://localhost:8000/stream");
-    eventSourceRef.current.onmessage = (event) => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { role: "assistant", content: event.data },
-      ]);
+    ws.current.onmessage = (event) => {
+      const cleanedMessage = event.data.replace(/[*`]/g, '');
+      setCurrentMessage((prevMessage) => prevMessage + cleanedMessage);
     };
+
+    return () => {
+      ws.current.close();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (currentMessage) {
+      const timer = setTimeout(() => {
+        setMessages((prevMessages) => [...prevMessages, currentMessage]);
+        setCurrentMessage('');
+      }, 5); // Adjust this timeout based on your requirements
+      return () => clearTimeout(timer);
+    }
+  }, [currentMessage]);
+
+  const handleSendMessage = () => {
+    ws.current.send(inputValue);
+    setMessages((prevMessages) => [...prevMessages, `You: ${inputValue}`]);
+    setInputValue('');
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-4 bg-white rounded shadow-md">
-        <div className="mb-4">
-          <TextArea
-            rows={4}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Type a message"
-          />
-        </div>
-        <div className="flex justify-end mb-4">
-          <Button type="primary" onClick={handleSend}>
-            Send
-          </Button>
-        </div>
-        <div className="border-t border-gray-200 pt-4">
+    <div className="flex flex-col items-center h-screen bg-gray-100 p-4">
+      <div className="w-full max-w-md bg-white shadow-md rounded-lg p-4">
+        <div className="h-96 overflow-y-scroll mb-4">
           {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`p-2 rounded mb-2 shadow-sm ${
-                message.role === "user" ? "bg-blue-100" : "bg-gray-100"
-              }`}
-            >
-              {message.content}
+            <div key={index} className="mb-2 whitespace-pre-wrap">
+              {message}
             </div>
           ))}
         </div>
+        <TextArea
+          rows={4}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          placeholder="Type your message here..."
+          className="mb-4"
+        />
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleSendMessage}>
+          Send
+        </button>
+        <button  className="max-w-[100px] bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded m-4"
+       onClick={clearMessages}>Clear </button>
       </div>
     </div>
   );
 };
 
-export default DF;
+export default PF;

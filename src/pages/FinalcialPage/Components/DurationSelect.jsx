@@ -9,6 +9,8 @@ import {
   setStartMonth,
   setStartYear,
   setFinancialProjectName,
+  setDescription,
+  setLocation,
 } from "../../../features/DurationSlice";
 import { Tooltip } from "antd";
 import { Input } from "../../../components/ui/Input";
@@ -22,8 +24,10 @@ import {
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import currencyLists from "../../../components/Currency";
 import { CheckCircleOutlined } from "@ant-design/icons";
+import SpinnerBtn from "../../../components/SpinnerBtn";
+import TextArea from "antd/es/input/TextArea";
 
-const DurationSelect = ({ handleSubmit, isInputFormOpen }) => {
+const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
   const dispatch = useDispatch();
   const {
     selectedDuration,
@@ -35,6 +39,8 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen }) => {
     startMonth,
     startYear,
     financialProjectName,
+    description,
+    location,
   } = useSelector((state) => state.durationSelect);
 
   const months = [
@@ -319,21 +325,49 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen }) => {
             </SelectContent>
           </Select>
         </div>
+        <div className="grid grid-cols-2 gap-4 mb-3 min-h-[7rem]">
+          <Tooltip title="Input the income tax, e.g. 10">
+            <span className="flex items-center text-sm">Description :</span>
+          </Tooltip>
+          <TextArea
+            className="border-gray-300 rounded-2xl text-sm"
+            type="text"
+            value={description}
+            onChange={(e) => dispatch(setDescription(e.target.value))}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4 mb-3">
+          <Tooltip title="Input the income tax, e.g. 10">
+            <span className="flex items-center text-sm">Location :</span>
+          </Tooltip>
+          <Input
+            className="border-gray-300"
+            type="text"
+            value={location}
+            onChange={(e) => dispatch(setLocation(e.target.value))}
+          />
+        </div>
       </div>
       {isInputFormOpen !== "Ok" && (
         <div className="flex justify-end">
           <button
-            className="bg-blue-600 text-white px-4 py-2 rounded-2xl mt-8 text-sm flex items-center"
+            className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[5vw]"
             onClick={handleSubmit}
           >
-            <CheckCircleOutlined
-              style={{
-                fontSize: "12px",
-                color: "#FFFFFF",
-                marginRight: "4px",
-              }}
-            />
-            Save
+            {isLoading ? (
+              <SpinnerBtn />
+            ) : (
+              <>
+                <CheckCircleOutlined
+                  style={{
+                    fontSize: "12px",
+                    color: "#FFFFFF",
+                    marginRight: "4px",
+                  }}
+                />
+                Save
+              </>
+            )}
           </button>
         </div>
       )}

@@ -32,6 +32,7 @@ export const calculateProfitAndLoss = (
   let totalCOGS = new Array(numberOfMonths).fill(0);
   let totalCosts = new Array(numberOfMonths).fill(0);
   let totalPersonnelCosts = new Array(numberOfMonths).fill(0);
+  let detailedPersonnelCosts = {}; // To store detailed personnel costs
   let totalInvestmentDepreciation = new Array(numberOfMonths).fill(0);
   let totalLoanPayments = new Array(numberOfMonths).fill(0);
 
@@ -61,8 +62,10 @@ export const calculateProfitAndLoss = (
   });
 
   personnelCostData.forEach((personnel) => {
+    detailedPersonnelCosts[personnel.jobTitle] = new Array(numberOfMonths).fill(0);
     personnel.monthlyCosts.forEach((monthData) => {
       totalPersonnelCosts[monthData.month - 1] += monthData.cost;
+      detailedPersonnelCosts[personnel.jobTitle][monthData.month - 1] += monthData.cost;
     });
   });
 
@@ -133,6 +136,7 @@ export const calculateProfitAndLoss = (
     grossProfit,
     totalCosts,
     totalPersonnelCosts,
+    detailedPersonnelCosts, // Return detailed personnel costs
     totalInvestmentDepreciation,
     totalInterestPayments,
     totalPrincipal,

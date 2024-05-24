@@ -1,3 +1,4 @@
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import {
   Select,
   SelectTrigger,
@@ -6,7 +7,7 @@ import {
   SelectItem,
 } from "../../../components/ui/Select";
 import { Input } from "../../../components/ui/Input";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Button,
   Card,
@@ -429,6 +430,7 @@ const CostInputForm = ({
 const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
   const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
   const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
+  
 
   const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
 
@@ -441,6 +443,20 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
     (state) => state.cost
   );
   const { revenueData } = useSelector((state) => state.sales);
+
+  const onDragEnd = useCallback((result) => {
+    const { destination, source } = result;
+
+    if (!destination) {
+      return;
+    }
+
+    const reorderedData = Array.from(costTableData);
+    const [removed] = reorderedData.splice(source.index, 1);
+    reorderedData.splice(destination.index, 0, removed);
+
+    dispatch(setCostTableData(reorderedData));
+  }, [costTableData]);
 
   const dispatch = useDispatch();
 
@@ -1012,17 +1028,57 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
           )}
         </Modal>
         <h3 className="text-lg font-semibold my-4">Cost Table</h3>
-        <Table
-          className="overflow-auto my-8 rounded-md bg-white"
-          size="small"
-          dataSource={costTableData}
-          columns={costColumns}
-          pagination={false}
-          bordered
-          rowClassName={(record) =>
-            record.key === "Total" || record.isHeader ? "font-bold" : ""
-          }
-        />
+        <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="costTable">
+          {(provided) => (
+            <div ref={provided.innerRef} {...provided.droppableProps}>
+              <Table
+                className="overflow-auto my-8 rounded-md bg-white"
+                size="small"
+                dataSource={costTableData}
+                columns={costColumns}
+                pagination={false}
+                bordered
+                rowClassName={(record) =>
+                  record.key === "Total" || record.isHeader ? "font-bold" : ""
+                }
+                components={{
+                  body: {
+                    row: (props) => {
+                      const index = costTableData.findIndex(
+                        (item) => item.key === props["data-row-key"]
+                      );
+                      return (
+                        <Draggable
+                          key={props["data-row-key"]}
+                          draggableId={props["data-row-key"]}
+                          index={index}
+                        >
+                          {(provided) => (
+                            <tr
+                              {...props}
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className={props.className}
+                              style={{
+                                ...props.style,
+                                ...provided.draggableProps.style,
+                              }}
+                            />
+                          )}
+                        </Draggable>
+                      );
+                    },
+                  },
+                }}
+              />
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+
       </div>
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">

@@ -884,16 +884,7 @@ const CustomerSection = React.memo(
                   stacked: false,
                   animated: false,
                 },
-                fill: {
-                  type: "gradient",
-                  gradient: {
-                    shade: "light",
-                    shadeIntensity: 0.5,
-                    opacityFrom: 0.75,
-                    opacityTo: 0.65,
-                    stops: [0, 90, 100],
-                  },
-                },
+                
                 xaxis: {
                   axisTicks: {
                     show: false,
@@ -999,16 +990,6 @@ const CustomerSection = React.memo(
                   ...prevState.options.title,
                   text: "Yearly Total",
                 },
-                fill: {
-                  type: "gradient",
-                  gradient: {
-                    shade: "light",
-                    shadeIntensity: 0.5,
-                    opacityFrom: 0.75,
-                    opacityTo: 65,
-                    stops: [0, 90, 100],
-                  },
-                },
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
@@ -1049,16 +1030,6 @@ const CustomerSection = React.memo(
                 title: {
                   ...prevState.options.title,
                   text: "Yearly Growth Rate",
-                },
-                fill: {
-                  type: "gradient",
-                  gradient: {
-                    shade: "light",
-                    shadeIntensity: 0.5,
-                    opacityFrom: 0.75,
-                    opacityTo: 65,
-                    stops: [0, 90, 100],
-                  },
                 },
                 xaxis: {
                   ...prevState.options.xaxis,
@@ -1102,16 +1073,7 @@ const CustomerSection = React.memo(
                   ...prevState.options.title,
                   text: "Total Yearly Customers by Channel",
                 },
-                fill: {
-                  type: "gradient",
-                  gradient: {
-                    shade: "light",
-                    shadeIntensity: 0.5,
-                    opacityFrom: 0.75,
-                    opacityTo: 65,
-                    stops: [0, 90, 100],
-                  },
-                },
+               
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
@@ -1370,26 +1332,34 @@ const CustomerSection = React.memo(
                     </Card>
                   ))}
                 </div>
-                <AntdModal
-                  visible={isChartModalVisible}
-                  footer={null}
-                  centered
-                  onCancel={() => setIsChartModalVisible(false)}
-                  width="90%"
-                  style={{ top: 20 }}
-                >
-                  {selectedChart && (
-                    <Chart
-                      options={{
-                        ...selectedChart.options,
-                        // ... other options
-                      }}
-                      series={selectedChart.series}
-                      type="area"
-                      height={500}
-                    />
-                  )}
-                </AntdModal>
+              <AntdModal
+  visible={isChartModalVisible}
+  footer={null}
+  centered
+  onCancel={() => setIsChartModalVisible(false)}
+  width="90%"
+  style={{ top: 20 }}
+>
+  {selectedChart && (
+    <Chart
+      options={{
+        ...selectedChart.options,
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+            // ... other tools
+          },
+          // ... other toolbar options
+        },
+        // ... other options
+      }}
+      series={selectedChart.series}
+      type="area"
+      height={500}
+    />
+  )}
+</AntdModal>
 
                 <h3 className="text-lg font-semibold my-4">Customer Table</h3>
                 <Table

@@ -113,32 +113,30 @@ const CostInputForm = ({
               </SelectContent>
             </Select>
           </div>
-          {input.costType === "Based on Revenue" && (
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <span className="flex items-center text-sm">Cost Group:</span>
-              <Select
-                className="border-gray-300"
-                onValueChange={(value) =>
-                  handleCostInputChange(input?.id, "costGroup", value)
-                }
-                value={input.costGroup}
+          <div className="grid grid-cols-2 gap-4 mb-3">
+            <span className="flex items-center text-sm">Cost Group:</span>
+            <Select
+              className="border-gray-300"
+              onValueChange={(value) =>
+                handleCostInputChange(input?.id, "costGroup", value)
+              }
+              value={input.costGroup}
+            >
+              <SelectTrigger
+                id={`select-costType-${input?.id}`}
+                className="border-solid border-[1px] border-gray-300"
               >
-                <SelectTrigger
-                  id={`select-costType-${input?.id}`}
-                  className="border-solid border-[1px] border-gray-300"
-                >
-                  <SelectValue placeholder="Select Cost Type" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  {costGroupArray.map((cost) => (
-                    <SelectItem value={cost} key={cost}>
-                      {cost}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
+                <SelectValue placeholder="Select Cost Type" />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                {costGroupArray.map((cost) => (
+                  <SelectItem value={cost} key={cost}>
+                    {cost}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           {input.costType === "Based on Revenue" ? (
             <>
               <div className="grid grid-cols-2 gap-4 mb-3">

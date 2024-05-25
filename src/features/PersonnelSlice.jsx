@@ -100,7 +100,7 @@ export const calculatePersonnelCostData = (
 
 export const transformPersonnelCostDataForTable = (tempPersonnelCostData) => {
   const groupedByDepartment = tempPersonnelCostData.reduce((acc, item) => {
-    const normalizedDepartment = item.department.toLowerCase(); // Normalize department to lowercase
+    const normalizedDepartment = item.department?.toLowerCase(); // Normalize department to lowercase
     if (!acc[normalizedDepartment]) {
       acc[normalizedDepartment] = [];
     }

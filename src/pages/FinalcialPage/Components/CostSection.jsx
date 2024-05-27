@@ -428,7 +428,6 @@ const CostInputForm = ({
 const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
   const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
   const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
-  
 
   const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
 
@@ -442,19 +441,22 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
   );
   const { revenueData } = useSelector((state) => state.sales);
 
-  const onDragEnd = useCallback((result) => {
-    const { destination, source } = result;
+  const onDragEnd = useCallback(
+    (result) => {
+      const { destination, source } = result;
 
-    if (!destination) {
-      return;
-    }
+      if (!destination) {
+        return;
+      }
 
-    const reorderedData = Array.from(costTableData);
-    const [removed] = reorderedData.splice(source.index, 1);
-    reorderedData.splice(destination.index, 0, removed);
+      const reorderedData = Array.from(costTableData);
+      const [removed] = reorderedData.splice(source.index, 1);
+      reorderedData.splice(destination.index, 0, removed);
 
-    dispatch(setCostTableData(reorderedData));
-  }, [costTableData]);
+      dispatch(setCostTableData(reorderedData));
+    },
+    [costTableData]
+  );
 
   const dispatch = useDispatch();
 

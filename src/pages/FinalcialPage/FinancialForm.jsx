@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { saveAs } from "file-saver";
 import Joyride, { STATUS, CallBackProps, Step } from "react-joyride";
-import { FileOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import {
+  CheckCircleOutlined,
+  FileOutlined,
+  QuestionCircleOutlined,
+} from "@ant-design/icons";
 
 import DurationSelect from "./Components/DurationSelect";
 import CustomerSection from "./Components/CustomerSection";
@@ -61,6 +65,7 @@ import { Button, FloatButton, Modal, message } from "antd";
 import { useParams } from "react-router-dom";
 import AnnounceFMPage from "./Components/AnnounceFMPage";
 import Perflexity from "./Components/Perflexity";
+import SpinnerBtn from "../../components/SpinnerBtn";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
@@ -990,20 +995,45 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                             numberOfMonths={numberOfMonths}
                           />
                         </div>
-                        <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden "></div>
+                        <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
+                          <button
+                            className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
+                            style={{
+                              bottom: "20px",
+                              right: "20px",
+                              position: "fixed",
+                            }}
+                            onClick={handleSubmit}
+                          >
+                            {isLoading ? (
+                              <SpinnerBtn />
+                            ) : (
+                              <>
+                                <CheckCircleOutlined
+                                  style={{
+                                    fontSize: "12px",
+                                    color: "#FFFFFF",
+                                    marginRight: "4px",
+                                  }}
+                                />
+                                Save
+                              </>
+                            )}
+                          </button>
+                        </div>
                       </>
                     )}
                     {activeTabA === "input" && (
                       <>
                         <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
 
-                        <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
+                        <div className="w-full xl:w-1/4 sm:p-4 p-0">
                           <DurationSelect
                             handleSubmit={handleSubmit}
                             isLoading={isLoading}
                           />
                         </div>
-                        <div className="xl:hidden block">
+                        {/* <div className="xl:hidden block">
                           <FloatButton
                             tooltip={<div>Input values</div>}
                             style={{
@@ -1021,7 +1051,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                               icon={<FileOutlined />}
                             />
                           </FloatButton>
-                        </div>
+                        </div> */}
 
                         {isInputFormOpen && (
                           <Modal

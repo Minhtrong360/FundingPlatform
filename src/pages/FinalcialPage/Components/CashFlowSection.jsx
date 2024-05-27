@@ -313,11 +313,11 @@ function CashFlowSection({ numberOfMonths }) {
   const startingMonth = startMonth; // Tháng bắt đầu từ 1
   const startingYear = startYear; // Năm bắt đầu từ 24
 
-const realDate = Array.from({ length: numberOfMonths }, (_, i) => {
-  const monthIndex = (startingMonth + i - 1) % 12;
-  const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
-  return `${monthIndex + 1}-${year}`;
-});
+  const realDate = Array.from({ length: numberOfMonths }, (_, i) => {
+    const monthIndex = (startingMonth + i - 1) % 12;
+    const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+    return `${monthIndex + 1}-${year}`;
+  });
   const cashFlowData = [
     { key: " Operating Activities " },
     { key: "Net Income", values: netIncome },
@@ -417,7 +417,7 @@ const realDate = Array.from({ length: numberOfMonths }, (_, i) => {
       {}
     ),
   }));
-  
+
   const positionDataWithNetIncome = [
     { key: " Operating Activities " },
     { key: "Net Income", values: netIncome },
@@ -532,7 +532,7 @@ const realDate = Array.from({ length: numberOfMonths }, (_, i) => {
     "11",
     "12",
   ];
-  
+
   const positionColumns = [
     {
       title: "Metric",

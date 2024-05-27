@@ -761,14 +761,35 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                 }
               />
             </div>
-            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden "></div>
+            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
+              <button
+                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
+                style={{ bottom: "20px", right: "20px", position: "fixed" }}
+                onClick={handleSave}
+              >
+                {isLoading ? (
+                  <SpinnerBtn />
+                ) : (
+                  <>
+                    <CheckCircleOutlined
+                      style={{
+                        fontSize: "12px",
+                        color: "#FFFFFF",
+                        marginRight: "4px",
+                      }}
+                    />
+                    Save
+                  </>
+                )}
+              </button>
+            </div>
           </>
         )}
         {activeTab === "input" && (
           <>
             <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
 
-            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
+            <div className="w-full xl:w-1/4 sm:p-4 p-0">
               <LoanInputForm
                 tempLoanInputs={tempLoanInputs}
                 renderLoanForm={renderLoanForm}
@@ -783,7 +804,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               />
             </div>
 
-            <div className="xl:hidden block">
+            {/* <div className="xl:hidden block">
               <FloatButton
                 tooltip={<div>Input values</div>}
                 style={{
@@ -797,7 +818,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               >
                 <Button type="primary" shape="circle" icon={<FileOutlined />} />
               </FloatButton>
-            </div>
+            </div> */}
 
             {isInputFormOpen && (
               <Modal

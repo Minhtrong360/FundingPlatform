@@ -272,7 +272,7 @@ export function generateCustomerTableData(
               parseFloat(customerInput.beginCustomer).toFixed(0)
             );
             channelAddRow[`month${i}`] = formatNumber(
-              currentCustomers.toFixed(0)
+              currentCustomers?.toFixed(0)
             );
           } else {
             if (

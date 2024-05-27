@@ -272,7 +272,7 @@ const CustomerInputsForm = React.memo(
               {showAdvancedInputs && (
                 <Modal
                   title="Advanced Inputs"
-                  visible={showAdvancedInputs}
+                  open={showAdvancedInputs}
                   onOk={handleFetchGPT}
                   onCancel={() => setShowAdvancedInputs(false)}
                   okText={isLoading ? <SpinnerBtn /> : "Apply"}
@@ -1124,25 +1124,27 @@ const CustomerSection = React.memo(
             fetchGPTResponse(customer.id, customer.additionalInfo, customer)
           );
         }
-        // Check if responseGPT is an object with a single key that holds an array
+
+        // Check if responseGPT is an object with multiple keys
         let gptResponseArray = [];
-        if (responseGPT && typeof responseGPT === "object") {
+        if (
+          responseGPT &&
+          typeof responseGPT === "object" &&
+          !Array.isArray(responseGPT)
+        ) {
           const keys = Object.keys(responseGPT);
-          if (keys.length === 1 && Array.isArray(responseGPT[keys[0]])) {
+          if (keys.length > 0) {
+            // Always take the first array found in the response
             gptResponseArray = responseGPT[keys[0]];
-          } else {
-            gptResponseArray = responseGPT;
           }
-        } else {
-          gptResponseArray = responseGPT;
         }
 
         const updatedTempCustomerInputs = tempCustomerInputs.map((input) => {
           if (input.id === customer.id) {
             return {
               ...input,
-              customersPerMonth: gptResponseArray[0], // assuming the first element is needed
-              gptResponseArray: gptResponseArray, // assuming gptResponseArray contains the required data
+              customersPerMonth: gptResponseArray[0] || [], // assuming the first element is needed
+              gptResponseArray: gptResponseArray || [], // assuming gptResponseArray contains the required data
             };
           }
           return input;
@@ -1377,14 +1379,35 @@ const CustomerSection = React.memo(
                   }
                 />
               </div>
-              <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden "></div>
+              <div className="w-full xl:w-1/4 sm:p-4 p-0   ">
+                <button
+                  className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
+                  style={{ bottom: "20px", right: "20px", position: "fixed" }}
+                  onClick={handleSave}
+                >
+                  {isLoading ? (
+                    <SpinnerBtn />
+                  ) : (
+                    <>
+                      <CheckCircleOutlined
+                        style={{
+                          fontSize: "12px",
+                          color: "#FFFFFF",
+                          marginRight: "4px",
+                        }}
+                      />
+                      Save
+                    </>
+                  )}
+                </button>
+              </div>
             </>
           )}
           {activeTab === "input" && (
             <>
               <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
 
-              <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
+              <div className="w-full xl:w-1/4 sm:p-4 p-0   ">
                 <CustomerInputsForm
                   tempCustomerInputs={tempCustomerInputs}
                   renderCustomerForm={renderCustomerForm}
@@ -1404,7 +1427,7 @@ const CustomerSection = React.memo(
                 />
               </div>
 
-              <div className="xl:hidden block">
+              {/* <div className="xl:hidden block">
                 <FloatButton
                   tooltip={<div>Input values</div>}
                   style={{
@@ -1422,7 +1445,7 @@ const CustomerSection = React.memo(
                     icon={<FileOutlined />}
                   />
                 </FloatButton>
-              </div>
+              </div> */}
 
               {isInputFormOpen && (
                 <Modal

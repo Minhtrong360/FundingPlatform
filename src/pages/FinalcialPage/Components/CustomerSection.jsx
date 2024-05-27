@@ -884,16 +884,7 @@ const CustomerSection = React.memo(
                   stacked: false,
                   animated: false,
                 },
-                fill: {
-                  type: "gradient",
-                  gradient: {
-                    shade: "light",
-                    shadeIntensity: 0.5,
-                    opacityFrom: 0.75,
-                    opacityTo: 0.65,
-                    stops: [0, 90, 100],
-                  },
-                },
+                
                 xaxis: {
                   axisTicks: {
                     show: false,

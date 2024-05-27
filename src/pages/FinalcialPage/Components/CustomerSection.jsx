@@ -1125,19 +1125,22 @@ const CustomerSection = React.memo(
           );
         }
 
+        console.log("responseGPT", responseGPT);
         // Check if responseGPT is an object with multiple keys
         let gptResponseArray = [];
-        if (
-          responseGPT &&
-          typeof responseGPT === "object" &&
-          !Array.isArray(responseGPT)
-        ) {
-          const keys = Object.keys(responseGPT);
-          if (keys.length > 0) {
-            // Always take the first array found in the response
-            gptResponseArray = responseGPT[keys[0]];
+        if (responseGPT) {
+          if (Array.isArray(responseGPT)) {
+            // If responseGPT is already an array, use it directly
+            gptResponseArray = responseGPT;
+          } else if (typeof responseGPT === "object") {
+            // If responseGPT is an object with multiple keys, get the first array found
+            const keys = Object.keys(responseGPT);
+            if (keys.length > 0 && Array.isArray(responseGPT[keys[0]])) {
+              gptResponseArray = responseGPT[keys[0]];
+            }
           }
         }
+        console.log("gptResponseArray", gptResponseArray);
 
         const updatedTempCustomerInputs = tempCustomerInputs.map((input) => {
           if (input.id === customer.id) {

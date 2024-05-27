@@ -130,8 +130,8 @@ const CostInputForm = ({
                 <SelectValue placeholder="Select Cost Type" />
               </SelectTrigger>
               <SelectContent position="popper">
-                {costGroupArray.map((cost) => (
-                  <SelectItem value={cost} key={cost}>
+                {costGroupArray.map((cost, index) => (
+                  <SelectItem value={cost} key={index}>
                     {cost}
                   </SelectItem>
                 ))}
@@ -586,6 +586,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
   useEffect(() => {
     debouncedUpdateCostData(tempCostInput, numberOfMonths, revenueData);
   }, [tempCostInput, numberOfMonths]);
+
   const months = [
     "01",
     "02",
@@ -687,8 +688,6 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
       };
     }),
   ];
-
-  console.log("costTableData", costTableData);
 
   const [costChart, setCostChart] = useState({
     options: {
@@ -910,20 +909,19 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
           )
         );
       }
-      console.log("responseGPT", responseGPT);
       // Check if responseGPT is an object with a single key that holds an array
       let gptResponseArray = [];
-      if (responseGPT && typeof responseGPT === "object") {
+      if (
+        responseGPT &&
+        typeof responseGPT === "object" &&
+        !Array.isArray(responseGPT)
+      ) {
         const keys = Object.keys(responseGPT);
-        if (keys.length === 1 && Array.isArray(responseGPT[keys[0]])) {
+        if (keys.length > 0) {
+          // Always take the first array found in the response
           gptResponseArray = responseGPT[keys[0]];
-        } else {
-          gptResponseArray = responseGPT;
         }
-      } else {
-        gptResponseArray = responseGPT;
       }
-      console.log("gptResponseArray", gptResponseArray);
 
       const updatedTempCostInputs = tempCostInput.map((input) => {
         if (input.id === costSelected.id) {
@@ -949,6 +947,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
   const handleTabChange = (tabName) => {
     setActiveTab(tabName);
   };
+
   return (
     <div>
       <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
@@ -1082,14 +1081,35 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
                 }
               />
             </div>
-            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden "></div>
+            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
+              <button
+                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
+                style={{ bottom: "20px", right: "20px", position: "fixed" }}
+                onClick={handleSave}
+              >
+                {isLoading ? (
+                  <SpinnerBtn />
+                ) : (
+                  <>
+                    <CheckCircleOutlined
+                      style={{
+                        fontSize: "12px",
+                        color: "#FFFFFF",
+                        marginRight: "4px",
+                      }}
+                    />
+                    Save
+                  </>
+                )}
+              </button>
+            </div>
           </>
         )}
         {activeTab === "input" && (
           <>
             <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
 
-            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
+            <div className="w-full xl:w-1/4 sm:p-4 p-0 ">
               <CostInputForm
                 tempCostInput={tempCostInput}
                 renderCostForm={renderCostForm}
@@ -1110,7 +1130,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
               />
             </div>
 
-            <div className="xl:hidden block">
+            {/* <div className="xl:hidden block">
               <FloatButton
                 tooltip={<div>Input values</div>}
                 style={{
@@ -1124,7 +1144,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
               >
                 <Button type="primary" shape="circle" icon={<FileOutlined />} />
               </FloatButton>
-            </div>
+            </div> */}
 
             {isInputFormOpen && (
               <Modal

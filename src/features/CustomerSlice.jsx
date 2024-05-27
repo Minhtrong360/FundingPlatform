@@ -272,7 +272,7 @@ export function generateCustomerTableData(
               parseFloat(customerInput.beginCustomer).toFixed(0)
             );
             channelAddRow[`month${i}`] = formatNumber(
-              currentCustomers.toFixed(0)
+              currentCustomers?.toFixed(0)
             );
           } else {
             if (
@@ -505,8 +505,8 @@ export const fetchGPTResponse =
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            user_input: `Dựa trên ${additionalInfo}. Tìm các hàm toán học rời rạc thỏa mãn điều kiện trên. Sau khi tìm được các hàm này, tính giá trị của hàm từ tháng ${customer.beginMonth} đến ${customer.endMonth}. 
-          Không giải thích. Chỉ trả về kết quả file JSON theo dạng [70, 100, ... 500] là giá trị của các hàm rời rạc tương ứng tại các điểm trên.`, // Treat additionalInfo as a single prompt
+            user_input: `Dựa trên ${additionalInfo}, tìm các hàm toán học rời rạc thỏa mãn điều kiện đã cho. Sau khi tìm được các hàm này, tính giá trị của hàm từ tháng ${customer.beginMonth} đến ${customer.endMonth}. 
+          Trả về kết quả file JSON theo dạng [70, 100, ... 500] là giá trị của các hàm rời rạc tương ứng tại các điểm trên and nothing else. Absolutely no explanation.`, // Treat additionalInfo as a single prompt
           }),
         }
       );
@@ -519,6 +519,7 @@ export const fetchGPTResponse =
       const cleanedResponseText = JSON.parse(
         data?.response?.replace(/json|`/g, "")
       );
+      console.log("cleanedResponseText", cleanedResponseText);
       return cleanedResponseText;
     } catch (error) {
       console.error("Error fetching GPT response:", error);

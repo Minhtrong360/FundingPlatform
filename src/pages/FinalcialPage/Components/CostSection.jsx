@@ -1,3 +1,4 @@
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import {
   Select,
   SelectTrigger,
@@ -129,8 +130,8 @@ const CostInputForm = ({
                 <SelectValue placeholder="Select Cost Type" />
               </SelectTrigger>
               <SelectContent position="popper">
-                {costGroupArray.map((cost) => (
-                  <SelectItem value={cost} key={cost}>
+                {costGroupArray.map((cost, index) => (
+                  <SelectItem value={cost} key={index}>
                     {cost}
                   </SelectItem>
                 ))}
@@ -440,6 +441,23 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
   );
   const { revenueData } = useSelector((state) => state.sales);
 
+  const onDragEnd = useCallback(
+    (result) => {
+      const { destination, source } = result;
+
+      if (!destination) {
+        return;
+      }
+
+      const reorderedData = Array.from(costTableData);
+      const [removed] = reorderedData.splice(source.index, 1);
+      reorderedData.splice(destination.index, 0, removed);
+
+      dispatch(setCostTableData(reorderedData));
+    },
+    [costTableData]
+  );
+
   const dispatch = useDispatch();
 
   const [tempCostInput, setTempCostInput] = useState(costInputs);
@@ -570,6 +588,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
   useEffect(() => {
     debouncedUpdateCostData(tempCostInput, numberOfMonths, revenueData);
   }, [tempCostInput, numberOfMonths]);
+
   const months = [
     "01",
     "02",
@@ -671,8 +690,6 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
       };
     }),
   ];
-
-  console.log("costTableData", costTableData);
 
   const [costChart, setCostChart] = useState({
     options: {
@@ -894,19 +911,23 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
           )
         );
       }
-      console.log("responseGPT", responseGPT);
       // Check if responseGPT is an object with a single key that holds an array
+      console.log("responseGPT", responseGPT);
+
       let gptResponseArray = [];
-      if (responseGPT && typeof responseGPT === "object") {
-        const keys = Object.keys(responseGPT);
-        if (keys.length === 1 && Array.isArray(responseGPT[keys[0]])) {
-          gptResponseArray = responseGPT[keys[0]];
-        } else {
+      if (responseGPT) {
+        if (Array.isArray(responseGPT)) {
+          // If responseGPT is already an array, use it directly
           gptResponseArray = responseGPT;
+        } else if (typeof responseGPT === "object") {
+          // If responseGPT is an object with multiple keys, get the first array found
+          const keys = Object.keys(responseGPT);
+          if (keys.length > 0 && Array.isArray(responseGPT[keys[0]])) {
+            gptResponseArray = responseGPT[keys[0]];
+          }
         }
-      } else {
-        gptResponseArray = responseGPT;
       }
+
       console.log("gptResponseArray", gptResponseArray);
 
       const updatedTempCostInputs = tempCostInput.map((input) => {
@@ -927,12 +948,13 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
       setIsLoading(false);
     }
   };
-
+  console.log("tempCostInput", tempCostInput);
   const [activeTab, setActiveTab] = useState("table&chart");
 
   const handleTabChange = (tabName) => {
     setActiveTab(tabName);
   };
+
   return (
     <div>
       <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
@@ -1066,14 +1088,35 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
                 }
               />
             </div>
-            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden "></div>
+            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
+              <button
+                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
+                style={{ bottom: "20px", right: "20px", position: "fixed" }}
+                onClick={handleSave}
+              >
+                {isLoading ? (
+                  <SpinnerBtn />
+                ) : (
+                  <>
+                    <CheckCircleOutlined
+                      style={{
+                        fontSize: "12px",
+                        color: "#FFFFFF",
+                        marginRight: "4px",
+                      }}
+                    />
+                    Save
+                  </>
+                )}
+              </button>
+            </div>
           </>
         )}
         {activeTab === "input" && (
           <>
             <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
 
-            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
+            <div className="w-full xl:w-1/4 sm:p-4 p-0 ">
               <CostInputForm
                 tempCostInput={tempCostInput}
                 renderCostForm={renderCostForm}
@@ -1094,7 +1137,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
               />
             </div>
 
-            <div className="xl:hidden block">
+            {/* <div className="xl:hidden block">
               <FloatButton
                 tooltip={<div>Input values</div>}
                 style={{
@@ -1108,7 +1151,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
               >
                 <Button type="primary" shape="circle" icon={<FileOutlined />} />
               </FloatButton>
-            </div>
+            </div> */}
 
             {isInputFormOpen && (
               <Modal

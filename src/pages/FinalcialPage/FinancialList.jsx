@@ -29,28 +29,58 @@ function FinancialList() {
     // Tải danh sách finance từ Supabase dựa trên user.id
 
     const loadFinances = async () => {
-      const { data, error } = await supabase
+      // const { data, error } = await supabase
+      //   .from("finance")
+      //   .select("*")
+      //   .filter("user_id", "eq", user?.id);
+
+      // Lấy các dự án có user_id = user.id
+      let { data: projects1, error: error1 } = await supabase
         .from("finance")
         .select("*")
-        .filter("user_id", "eq", user?.id);
+        .eq("user_id", user.id);
 
-      if (error) {
-        message.error(error.message);
-        console.error("Lỗi khi tải danh sách finance:", error.message);
-      } else {
-        // Chuyển đổi inputData của mỗi đối tượng từ chuỗi JSON thành đối tượng JavaScript
-        let transformedData = data.map((item) => ({
-          ...item,
-          inputData: JSON.parse(item.inputData),
-        }));
-
-        const sortedProjects = [...transformedData].sort((a, b) => {
-          const dateA = new Date(a.created_at);
-          const dateB = new Date(b.created_at);
-          return dateB - dateA;
-        });
-        setFinances(sortedProjects);
+      if (error1) {
+        console.log("error1", error1);
+        throw error1;
       }
+
+      // Lấy các dự án có user.email trong mảng collabs
+      let { data: projects2, error: error2 } = await supabase
+        .from("finance")
+        .select("*")
+        .contains("collabs", [user.email]);
+
+      if (error2) {
+        console.log("error2", error2);
+        throw error2;
+      }
+
+      let { data: projects3, error: error3 } = await supabase
+        .from("finance")
+        .select("*")
+        .contains("invited_user", [user.email]);
+
+      if (error3) {
+        console.log("error3", error3);
+        throw error3;
+      }
+
+      // Kết hợp các dự án từ hai kết quả truy vấn trên
+      const combinedProjects = [...projects1, ...projects2, ...projects3];
+
+      // Chuyển đổi inputData của mỗi đối tượng từ chuỗi JSON thành đối tượng JavaScript
+      let transformedData = combinedProjects.map((item) => ({
+        ...item,
+        inputData: JSON.parse(item.inputData),
+      }));
+
+      const sortedProjects = [...transformedData].sort((a, b) => {
+        const dateA = new Date(a.created_at);
+        const dateB = new Date(b.created_at);
+        return dateB - dateA;
+      });
+      setFinances(sortedProjects);
     };
     if (user) {
       loadFinances();

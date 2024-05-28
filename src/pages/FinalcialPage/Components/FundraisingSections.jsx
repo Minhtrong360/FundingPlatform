@@ -279,10 +279,6 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     fundraisingInputs[0]?.id
   );
 
-  useEffect(() => {
-    setTempFundraisingInputs(fundraisingInputs);
-  }, [fundraisingInputs]);
-
   const addNewFundraisingInput = () => {
     const maxId = Math.max(...tempFundraisingInputs.map((input) => input?.id));
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
@@ -455,79 +451,63 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     series: [],
   });
 
-  const handleSelectChange = (event) => {
-    const selectedId = event.target.value;
-    setSelectedFundraisingId(selectedId);
-  };
-
-  const handleSave = () => {
-    setIsSaved(true);
-  };
-
   const { id } = useParams();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const saveData = async () => {
-      try {
-        setIsLoading(true);
-        if (isSaved) {
-          const { data: existingData, error: selectError } = await supabase
-            .from("finance")
-            .select("*")
-            .eq("id", id);
-          if (selectError) {
-            throw selectError;
-          }
+  const handleSave = async () => {
+    try {
+      setIsLoading(true);
 
-          if (existingData && existingData.length > 0) {
-            const { user_email, collabs } = existingData[0];
-
-            // Check if user.email matches user_email or is included in collabs
-            if (user.email !== user_email && !collabs?.includes(user.email)) {
-              message.error(
-                "You do not have permission to update this record."
-              );
-              return;
-            }
-
-            dispatch(setFundraisingInputs(tempFundraisingInputs));
-
-            const tableData = transformFundraisingDataForTable(
-              tempFundraisingInputs,
-              numberOfMonths
-            );
-
-            dispatch(setFundraisingTableData(tableData));
-
-            const newInputData = JSON.parse(existingData[0].inputData);
-
-            newInputData.fundraisingInputs = tempFundraisingInputs;
-
-            const { error: updateError } = await supabase
-              .from("finance")
-              .update({ inputData: newInputData })
-              .eq("id", existingData[0]?.id)
-              .select();
-
-            if (updateError) {
-              throw updateError;
-            } else {
-              message.success("Data saved successfully!");
-            }
-          }
-        }
-      } catch (error) {
-        message.error(error);
-      } finally {
-        setIsSaved(false);
-        setIsLoading(false);
-        setIsInputFormOpen(false);
+      const { data: existingData, error: selectError } = await supabase
+        .from("finance")
+        .select("*")
+        .eq("id", id);
+      if (selectError) {
+        throw selectError;
       }
-    };
-    saveData();
-  }, [isSaved]);
+
+      if (existingData && existingData.length > 0) {
+        const { user_email, collabs } = existingData[0];
+
+        // Check if user.email matches user_email or is included in collabs
+        if (user.email !== user_email && !collabs?.includes(user.email)) {
+          message.error("You do not have permission to update this record.");
+          return;
+        }
+
+        dispatch(setFundraisingInputs(tempFundraisingInputs));
+
+        const tableData = transformFundraisingDataForTable(
+          tempFundraisingInputs,
+          numberOfMonths
+        );
+
+        dispatch(setFundraisingTableData(tableData));
+
+        const newInputData = JSON.parse(existingData[0].inputData);
+
+        newInputData.fundraisingInputs = tempFundraisingInputs;
+
+        const { error: updateError } = await supabase
+          .from("finance")
+          .update({ inputData: newInputData })
+          .eq("id", existingData[0]?.id)
+          .select();
+
+        if (updateError) {
+          throw updateError;
+        } else {
+          message.success("Data saved successfully!");
+        }
+      }
+    } catch (error) {
+      message.error(error);
+    } finally {
+      setIsLoading(false);
+      setIsInputFormOpen(false);
+    }
+  };
 
   useEffect(() => {
     dispatch(setFundraisingInputs(tempFundraisingInputs));
@@ -617,7 +597,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
   return (
     <div>
-      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
+      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm sticky top-8 z-50">
         <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
           <li
             className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
@@ -711,7 +691,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                         },
                       }}
                       series={fundraisingChart.series}
-                      type="area"
+                      type="bar"
                       height={350}
                     />
                   </div>
@@ -732,7 +712,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                       // ... other options
                     }}
                     series={selectedChart.series}
-                    type="area"
+                    type="bar"
                     height={500}
                   />
                 )}

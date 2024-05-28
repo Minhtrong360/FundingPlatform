@@ -1,4 +1,5 @@
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+
 import {
   Select,
   SelectTrigger,
@@ -155,6 +156,7 @@ const CostInputForm = ({
                   Related Product:
                 </span>
                 <Select
+                  disabled={input.applyAdditionalInfo}
                   className="mb-4"
                   placeholder="Select Related Revenue"
                   value={input.relatedRevenue}
@@ -179,6 +181,7 @@ const CostInputForm = ({
                   Cost Value (% Revenue):
                 </span>
                 <Input
+                  disabled={input.applyAdditionalInfo}
                   className="col-start-2 border-gray-300"
                   type="text"
                   value={formatNumber(input.salePercentage)}
@@ -226,6 +229,21 @@ const CostInputForm = ({
                   }
                 />
               </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <Checkbox
+                  className="col-span-2"
+                  checked={input.applyAdditionalInfo}
+                  onChange={(e) =>
+                    handleCostInputChange(
+                      input?.id,
+                      "applyAdditionalInfo",
+                      e.target.checked
+                    )
+                  }
+                >
+                  Apply Advance Input
+                </Checkbox>
+              </div>
             </>
           ) : (
             <>
@@ -242,6 +260,7 @@ const CostInputForm = ({
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <span className="flex items-center text-sm">Cost Value:</span>
                 <Input
+                  disabled={input.applyAdditionalInfo}
                   className="col-start-2 border-gray-300"
                   type="text"
                   value={formatNumber(input.costValue)}
@@ -259,6 +278,7 @@ const CostInputForm = ({
                   Growth Percentage (%):
                 </span>
                 <Input
+                  disabled={input.applyAdditionalInfo}
                   className="col-start-2 border-gray-300"
                   type="text"
                   value={formatNumber(input.growthPercentage)}
@@ -274,6 +294,7 @@ const CostInputForm = ({
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <span className="flex items-center text-sm">Frequency:</span>
                 <Select
+                  disabled={input.applyAdditionalInfo}
                   className="border-gray-300"
                   onValueChange={(value) =>
                     handleCostInputChange(input?.id, "growthFrequency", value)
@@ -328,6 +349,21 @@ const CostInputForm = ({
                   }
                 />
               </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <Checkbox
+                  className="col-span-2"
+                  checked={input.applyAdditionalInfo}
+                  onChange={(e) =>
+                    handleCostInputChange(
+                      input?.id,
+                      "applyAdditionalInfo",
+                      e.target.checked
+                    )
+                  }
+                >
+                  Apply Advance Input
+                </Checkbox>
+              </div>
             </>
           )}
           <div className="grid grid-cols-2 gap-4 mb-3">
@@ -339,6 +375,7 @@ const CostInputForm = ({
               Show Advanced Inputs
             </Checkbox>
           </div>
+
           {showAdvancedInputs && (
             <Modal
               title="Advanced Inputs"
@@ -481,6 +518,13 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
         costGroup: input.costGroup || costGroupArray[0],
       }))
     );
+
+    const calculatedData = calculateCostData(
+      costInputs,
+      numberOfMonths,
+      revenueData
+    );
+    dispatch(setCostData(calculatedData));
   }, [costInputs, revenueData]);
 
   const addNewCostInput = () => {
@@ -543,15 +587,6 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
 
   useEffect(() => {
     const calculatedData = calculateCostData(
-      costInputs,
-      numberOfMonths,
-      revenueData
-    );
-    dispatch(setCostData(calculatedData));
-  }, [costInputs, numberOfMonths]);
-
-  useEffect(() => {
-    const calculatedData = calculateCostData(
       tempCostInput,
       numberOfMonths,
       revenueData
@@ -564,29 +599,6 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
       revenueData
     );
     dispatch(setCostTableData(costTableData));
-  }, [tempCostInput, numberOfMonths]);
-
-  const debouncedUpdateCostData = useCallback(
-    debounce((tempCostInput, numberOfMonths, revenueData) => {
-      const calculatedData = calculateCostData(
-        tempCostInput,
-        numberOfMonths,
-        revenueData
-      );
-      setTempCostData(calculatedData);
-
-      const costTableData = transformCostDataForTable(
-        tempCostInput,
-        numberOfMonths,
-        revenueData
-      );
-      dispatch(setCostTableData(costTableData));
-    }, 300),
-    []
-  );
-
-  useEffect(() => {
-    debouncedUpdateCostData(tempCostInput, numberOfMonths, revenueData);
   }, [tempCostInput, numberOfMonths]);
 
   const months = [
@@ -774,66 +786,55 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
     series: [],
   });
 
-  const handleSave = () => {
-    setIsSaved(true);
+  const handleSave = async () => {
+    try {
+      setIsLoading(true);
+
+      const { data: existingData, error: selectError } = await supabase
+        .from("finance")
+        .select("*")
+        .eq("id", id);
+      if (selectError) {
+        throw selectError;
+      }
+
+      if (existingData && existingData.length > 0) {
+        const { user_email, collabs } = existingData[0];
+
+        if (user.email !== user_email && !collabs?.includes(user.email)) {
+          message.error("You do not have permission to update this record.");
+          return;
+        }
+
+        dispatch(setCostInputs(tempCostInput));
+
+        const newInputData = JSON.parse(existingData[0].inputData);
+
+        newInputData.costInputs = tempCostInput;
+
+        const { error: updateError } = await supabase
+          .from("finance")
+          .update({ inputData: newInputData })
+          .eq("id", existingData[0]?.id)
+          .select();
+
+        if (updateError) {
+          throw updateError;
+        } else {
+          message.success("Data saved successfully!");
+        }
+      }
+    } catch (error) {
+      message.error(error);
+    } finally {
+      setIsLoading(false);
+      setIsInputFormOpen(false);
+    }
   };
 
   const { id } = useParams();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    const saveData = async () => {
-      try {
-        setIsLoading(true);
-        if (isSaved) {
-          const { data: existingData, error: selectError } = await supabase
-            .from("finance")
-            .select("*")
-            .eq("id", id);
-          if (selectError) {
-            throw selectError;
-          }
-
-          if (existingData && existingData.length > 0) {
-            const { user_email, collabs } = existingData[0];
-
-            if (user.email !== user_email && !collabs?.includes(user.email)) {
-              message.error(
-                "You do not have permission to update this record."
-              );
-              return;
-            }
-
-            dispatch(setCostInputs(tempCostInput));
-
-            const newInputData = JSON.parse(existingData[0].inputData);
-
-            newInputData.costInputs = tempCostInput;
-
-            const { error: updateError } = await supabase
-              .from("finance")
-              .update({ inputData: newInputData })
-              .eq("id", existingData[0]?.id)
-              .select();
-
-            if (updateError) {
-              throw updateError;
-            } else {
-              message.success("Data saved successfully!");
-            }
-          }
-        }
-      } catch (error) {
-        message.error(error);
-      } finally {
-        setIsSaved(false);
-        setIsLoading(false);
-        setIsInputFormOpen(false);
-      }
-    };
-    saveData();
-  }, [isSaved]);
 
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
   const [chartStartMonth, setChartStartMonth] = useState(1);
@@ -935,6 +936,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
           return {
             ...input,
             gptResponseArray: gptResponseArray, // assuming gptResponseArray contains the required data
+            applyAdditionalInfo: true,
           };
         }
         return input;
@@ -948,7 +950,6 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
       setIsLoading(false);
     }
   };
-  console.log("tempCostInput", tempCostInput);
   const [activeTab, setActiveTab] = useState("table&chart");
 
   const handleTabChange = (tabName) => {
@@ -957,7 +958,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
 
   return (
     <div>
-      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
+      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm sticky top-8 z-50">
         <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
           <li
             className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
@@ -1076,6 +1077,24 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
                 )}
               </Modal>
               <h3 className="text-lg font-semibold my-4">Cost Table</h3>
+              <div>
+                <label
+                  htmlFor="selectedChannel"
+                  className="block my-4 text-base darkTextWhite"
+                ></label>
+                <select
+                  id="selectedChannel"
+                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                  value={renderCostForm}
+                  onChange={(e) => setRenderCostForm(e.target.value)}
+                >
+                  {tempCostInput.map((input) => (
+                    <option key={input?.id} value={input?.id}>
+                      {input.costName}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <Table
                 className="overflow-auto my-8 rounded-md bg-white"
                 size="small"

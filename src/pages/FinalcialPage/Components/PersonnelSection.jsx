@@ -263,12 +263,7 @@ const PersonnelInputForm = ({
   );
 };
 
-const PersonnelSection = ({
-  numberOfMonths,
-  isSaved,
-  setIsSaved,
-  handleSubmit,
-}) => {
+const PersonnelSection = ({ numberOfMonths }) => {
   const { personnelInputs, personnelCostData } = useSelector(
     (state) => state.personnel
   );
@@ -280,11 +275,6 @@ const PersonnelSection = ({
   const [renderPersonnelForm, setRenderPersonnelForm] = useState(
     personnelInputs[0]?.id
   );
-
-  useEffect(() => {
-    setTempPersonnelInputs(personnelInputs);
-    setRenderPersonnelForm(personnelInputs[0]?.id);
-  }, [personnelInputs]);
 
   const addNewPersonnelInput = () => {
     const maxId = Math.max(...tempPersonnelInputs.map((input) => input?.id));
@@ -467,64 +457,53 @@ const PersonnelSection = ({
     series: [],
   });
 
-  const handleSave = () => {
-    setIsSaved(true);
-  };
-
   const { id } = useParams();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const saveData = async () => {
-      try {
-        setIsLoading(true);
-        if (isSaved) {
-          const { data: existingData, error: selectError } = await supabase
-            .from("finance")
-            .select("*")
-            .eq("id", id);
-          if (selectError) {
-            throw selectError;
-          }
+  const handleSave = async () => {
+    try {
+      setIsLoading(true);
 
-          if (existingData && existingData.length > 0) {
-            const { user_email, collabs } = existingData[0];
-            if (user.email !== user_email && !collabs?.includes(user.email)) {
-              message.error(
-                "You do not have permission to update this record."
-              );
-              return;
-            }
-
-            dispatch(setPersonnelInputs(tempPersonnelInputs));
-
-            const newInputData = JSON.parse(existingData[0].inputData);
-            newInputData.personnelInputs = tempPersonnelInputs;
-
-            const { error: updateError } = await supabase
-              .from("finance")
-              .update({ inputData: newInputData })
-              .eq("id", existingData[0]?.id)
-              .select();
-
-            if (updateError) {
-              throw updateError;
-            } else {
-              message.success("Data saved successfully!");
-            }
-          }
-        }
-      } catch (error) {
-        message.error(error);
-      } finally {
-        setIsSaved(false);
-        setIsLoading(false);
-        setIsInputFormOpen(false);
+      const { data: existingData, error: selectError } = await supabase
+        .from("finance")
+        .select("*")
+        .eq("id", id);
+      if (selectError) {
+        throw selectError;
       }
-    };
-    saveData();
-  }, [isSaved]);
+
+      if (existingData && existingData.length > 0) {
+        const { user_email, collabs } = existingData[0];
+        if (user.email !== user_email && !collabs?.includes(user.email)) {
+          message.error("You do not have permission to update this record.");
+          return;
+        }
+
+        dispatch(setPersonnelInputs(tempPersonnelInputs));
+
+        const newInputData = JSON.parse(existingData[0].inputData);
+        newInputData.personnelInputs = tempPersonnelInputs;
+
+        const { error: updateError } = await supabase
+          .from("finance")
+          .update({ inputData: newInputData })
+          .eq("id", existingData[0]?.id)
+          .select();
+
+        if (updateError) {
+          throw updateError;
+        } else {
+          message.success("Data saved successfully!");
+        }
+      }
+    } catch (error) {
+      message.error(error);
+    } finally {
+      setIsLoading(false);
+      setIsInputFormOpen(false);
+    }
+  };
 
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
   const [chartStartMonth, setChartStartMonth] = useState(1);
@@ -595,7 +574,7 @@ const PersonnelSection = ({
 
   return (
     <div>
-      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
+      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm sticky top-8 z-50">
         <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
           <li
             className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${

@@ -396,68 +396,67 @@ const SalesSection = ({
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if (isSaved) {
+  const handleSave = async () => {
+    try {
       setIsLoading(true);
-      const saveData = async () => {
-        try {
-          const { data: existingData, error: selectError } = await supabase
-            .from("finance")
-            .select("*")
-            .eq("id", id);
+      const { data: existingData, error: selectError } = await supabase
+        .from("finance")
+        .select("*")
+        .eq("id", id);
 
-          if (selectError) {
-            throw selectError;
-          }
+      if (selectError) {
+        throw selectError;
+      }
 
-          if (existingData && existingData.length > 0) {
-            const { user_email, collabs } = existingData[0];
+      if (existingData && existingData.length > 0) {
+        const { user_email, collabs } = existingData[0];
 
-            // Check if user.email matches user_email or is included in collabs
-            if (user.email !== user_email && !collabs?.includes(user.email)) {
-              message.error(
-                "You do not have permission to update this record."
-              );
-              return;
-            }
-            dispatch(setChannelInputs(tempChannelInputs));
-            dispatch(setRevenueData(tempRevenueData));
-            dispatch(setRevenueDeductionData(tempRevenueDeductionData));
-            dispatch(setCogsData(tempCogsData));
-            dispatch(setNetRevenueData(tempNetRevenueData));
-            dispatch(setGrossProfitData(tempGrossProfitData));
-
-            const sales = calculateYearlySales(tempRevenueData);
-            dispatch(setYearlySales(sales));
-
-            const newInputData = JSON.parse(existingData[0].inputData);
-
-            newInputData.channelInputs = tempChannelInputs;
-            newInputData.yearlySales = sales;
-
-            const { error: updateError } = await supabase
-              .from("finance")
-              .update({ inputData: newInputData })
-              .eq("id", existingData[0]?.id)
-              .select();
-
-            if (updateError) {
-              throw updateError;
-            }
-          }
-          message.success("Data saved successfully!");
-        } catch (error) {
-          message.error(error.message);
-        } finally {
-          setIsSaved(false);
-          setIsLoading(false);
-          setIsInputFormOpen(false);
+        // Check if user.email matches user_email or is included in collabs
+        if (user.email !== user_email && !collabs?.includes(user.email)) {
+          message.error("You do not have permission to update this record.");
+          return;
         }
-      };
 
-      saveData();
+        const updatedChannelInputs = tempChannelInputs.map((input) => {
+          if (!daysOptions.includes(input.daysGetPaid)) {
+            input.daysGetPaid = daysOptions[0];
+          }
+          return input;
+        });
+
+        dispatch(setChannelInputs(updatedChannelInputs));
+        dispatch(setRevenueData(tempRevenueData));
+        dispatch(setRevenueDeductionData(tempRevenueDeductionData));
+        dispatch(setCogsData(tempCogsData));
+        dispatch(setNetRevenueData(tempNetRevenueData));
+        dispatch(setGrossProfitData(tempGrossProfitData));
+
+        const sales = calculateYearlySales(tempRevenueData);
+        dispatch(setYearlySales(sales));
+
+        const newInputData = JSON.parse(existingData[0].inputData);
+
+        newInputData.channelInputs = updatedChannelInputs;
+        newInputData.yearlySales = sales;
+
+        const { error: updateError } = await supabase
+          .from("finance")
+          .update({ inputData: newInputData })
+          .eq("id", existingData[0]?.id)
+          .select();
+
+        if (updateError) {
+          throw updateError;
+        }
+      }
+      message.success("Data saved successfully!");
+    } catch (error) {
+      message.error(error.message);
+    } finally {
+      setIsLoading(false);
+      setIsInputFormOpen(false);
     }
-  }, [isSaved]);
+  };
 
   const addNewChannelInput = () => {
     const maxId = Math.max(...tempChannelInputs.map((input) => input?.id));
@@ -659,21 +658,6 @@ const SalesSection = ({
 
   const daysOptions = [0, 15, 30, 45, 60, 90];
 
-  const handleSave = () => {
-    const updatedChannelInputs = tempChannelInputs.map((input) => {
-      if (!daysOptions.includes(input.daysGetPaid)) {
-        input.daysGetPaid = daysOptions[0];
-      }
-      return input;
-    });
-    setTempChannelInputs(updatedChannelInputs);
-    setIsSaved(true);
-  };
-
-  const handleChannelChange = (e) => {
-    setRenderChannelForm(e.target.value);
-  };
-
   const revenueColumns = [
     {
       fixed: "left",
@@ -721,7 +705,7 @@ const SalesSection = ({
 
   return (
     <div>
-      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
+      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm sticky top-8 z-50">
         <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
           <li
             className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
@@ -851,6 +835,30 @@ const SalesSection = ({
               </Modal>
 
               <h3 className="text-lg font-semibold my-4">Revenue by Product</h3>
+              <div>
+                <label
+                  htmlFor="renderChannelForm"
+                  className="block my-4 text-base darkTextWhite"
+                ></label>
+                <select
+                  id="renderChannelForm"
+                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                  value={renderChannelForm}
+                  onChange={(e) => setRenderChannelForm(e.target.value)}
+                >
+                  <option value="all">All</option>
+                  {tempChannelInputs.map((input) => {
+                    const channelName = channelNames.find(
+                      (channel) => channel.id === input.selectedChannel.id
+                    )?.channelName;
+                    return (
+                      <option key={input.id} value={input.id}>
+                        {`${input.productName} - ${channelName}`}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
               <Table
                 className="overflow-auto my-8 rounded-md bg-white"
                 size="small"

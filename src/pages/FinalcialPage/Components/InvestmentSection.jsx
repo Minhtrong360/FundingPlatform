@@ -34,10 +34,6 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     investmentInputs[0]?.id
   );
 
-  useEffect(() => {
-    setTempInvestmentInputs(investmentInputs);
-  }, [investmentInputs]);
-
   const addNewInvestmentInput = () => {
     const maxId = Math.max(...tempInvestmentInputs.map((input) => input?.id));
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
@@ -100,16 +96,6 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     );
     dispatch(setInvestmentTableData(tableData));
   }, [investmentInputs, numberOfMonths, renderInvestmentForm]);
-
-  useEffect(() => {
-    const tableData = transformInvestmentDataForTable(
-      investmentInputs,
-      renderInvestmentForm,
-      investmentData,
-      numberOfMonths
-    );
-    dispatch(setInvestmentTableData(tableData));
-  }, [investmentInputs, numberOfMonths, investmentData]);
 
   useEffect(() => {
     const calculatedData = calculateInvestmentData(
@@ -360,87 +346,64 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     startingYear,
   ]);
 
-  const handleSelectChange = (event) => {
-    setRenderInvestmentForm(event.target.value);
-  };
-
-  const handleSave = () => {
-    setIsSaved(true);
-  };
   const { id } = useParams();
 
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const saveData = async () => {
-      try {
-        setIsLoading(true);
-        if (isSaved) {
-          const { data: existingData, error: selectError } = await supabase
-            .from("finance")
-            .select("*")
-            .eq("id", id);
-          if (selectError) {
-            throw selectError;
-          }
+  const handleSave = async () => {
+    try {
+      setIsLoading(true);
 
-          if (existingData && existingData.length > 0) {
-            const { user_email, collabs } = existingData[0];
-
-            if (user.email !== user_email && !collabs?.includes(user.email)) {
-              message.error(
-                "You do not have permission to update this record."
-              );
-              return;
-            }
-
-            dispatch(setInvestmentInputs(tempInvestmentInputs));
-            const tableData = transformInvestmentDataForTable(
-              tempInvestmentInputs,
-              renderInvestmentForm,
-              tempInvestmentData,
-              numberOfMonths
-            );
-            dispatch(setInvestmentTableData(tableData));
-
-            const newInputData = JSON.parse(existingData[0].inputData);
-
-            newInputData.investmentInputs = tempInvestmentInputs;
-
-            const { error: updateError } = await supabase
-              .from("finance")
-              .update({ inputData: newInputData })
-              .eq("id", existingData[0]?.id)
-              .select();
-
-            if (updateError) {
-              throw updateError;
-            } else {
-              message.success("Data saved successfully!");
-            }
-          }
-        }
-      } catch (error) {
-        message.error(error);
-      } finally {
-        setIsSaved(false);
-        setIsLoading(false);
-        setIsInputFormOpen(false);
+      const { data: existingData, error: selectError } = await supabase
+        .from("finance")
+        .select("*")
+        .eq("id", id);
+      if (selectError) {
+        throw selectError;
       }
-    };
-    saveData();
-  }, [isSaved]);
 
-  useEffect(() => {
-    const tableData = transformInvestmentDataForTable(
-      investmentInputs,
-      renderInvestmentForm,
-      investmentData,
-      numberOfMonths
-    );
-    dispatch(setInvestmentTableData(tableData));
-  }, []);
+      if (existingData && existingData.length > 0) {
+        const { user_email, collabs } = existingData[0];
+
+        if (user.email !== user_email && !collabs?.includes(user.email)) {
+          message.error("You do not have permission to update this record.");
+          return;
+        }
+
+        dispatch(setInvestmentInputs(tempInvestmentInputs));
+        const tableData = transformInvestmentDataForTable(
+          tempInvestmentInputs,
+          renderInvestmentForm,
+          tempInvestmentData,
+          numberOfMonths
+        );
+        dispatch(setInvestmentTableData(tableData));
+
+        const newInputData = JSON.parse(existingData[0].inputData);
+
+        newInputData.investmentInputs = tempInvestmentInputs;
+
+        const { error: updateError } = await supabase
+          .from("finance")
+          .update({ inputData: newInputData })
+          .eq("id", existingData[0]?.id)
+          .select();
+
+        if (updateError) {
+          throw updateError;
+        } else {
+          message.success("Data saved successfully!");
+        }
+      }
+    } catch (error) {
+      message.error(error);
+    } finally {
+      setIsSaved(false);
+      setIsLoading(false);
+      setIsInputFormOpen(false);
+    }
+  };
 
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 
@@ -467,7 +430,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
   return (
     <div>
-      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
+      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm sticky top-8 z-50">
         <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
           <li
             className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
@@ -597,6 +560,25 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                 )}
               </Modal>
               <h3 className="text-lg font-semibold my-4">Investment Table</h3>
+              <div>
+                <label
+                  htmlFor="selectedChannel"
+                  className="block my-4 text-base darkTextWhite"
+                ></label>
+                <select
+                  id="selectedChannel"
+                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                  value={renderInvestmentForm}
+                  onChange={(e) => setRenderInvestmentForm(e.target.value)}
+                >
+                  <option value="all">All</option>
+                  {tempInvestmentInputs.map((input) => (
+                    <option key={input?.id} value={input?.id}>
+                      {input.purchaseName}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <Table
                 className="overflow-auto my-8 rounded-md bg-white"
                 size="small"

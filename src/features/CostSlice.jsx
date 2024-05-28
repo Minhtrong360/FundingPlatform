@@ -14,6 +14,7 @@ const initialState = {
       costGroup: "Professional Fees",
       salePercentage: 5,
       relatedRevenue: "Offline - Cake",
+      applyAdditionalInfo: false,
     },
     {
       id: 2,
@@ -27,6 +28,7 @@ const initialState = {
       costGroup: "Professional Fees",
       salePercentage: 0,
       relatedRevenue: "",
+      applyAdditionalInfo: false,
     },
     {
       id: 3,
@@ -40,6 +42,7 @@ const initialState = {
       costGroup: "Rent",
       salePercentage: 0,
       relatedRevenue: "",
+      applyAdditionalInfo: false,
     },
   ],
   costData: [],
@@ -92,8 +95,8 @@ export const calculateCostData = (
     let monthlyCosts = [];
     let currentCost = parseFloat(costInput.costValue);
     for (let month = 1; month <= numberOfMonths; month++) {
-      if (costInput.gptResponseArray?.length) {
-        // Use gptResponseArray if it exists
+      if (costInput.applyAdditionalInfo && costInput.gptResponseArray?.length) {
+        // Use gptResponseArray if applyAdditionalInfo is true and gptResponseArray exists
         currentCost = costInput.gptResponseArray[month - 1] || 0;
         monthlyCosts.push({ month: month, cost: currentCost });
       } else if (costInput.costType === "Based on Revenue") {

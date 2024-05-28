@@ -145,6 +145,7 @@ const CustomerInputsForm = React.memo(
                   Adding (First month)
                 </span>
                 <Input
+                  disabled={input.applyAdditionalInfo}
                   className="col-start-2 border-gray-300"
                   value={formatNumber(input.customersPerMonth)}
                   onChange={(e) =>
@@ -162,6 +163,7 @@ const CustomerInputsForm = React.memo(
                   Growth rate (%):
                 </span>
                 <Input
+                  disabled={input.applyAdditionalInfo}
                   className="col-start-2 border-gray-300"
                   value={formatNumber(input.growthPerMonth)}
                   onChange={(e) =>
@@ -177,6 +179,7 @@ const CustomerInputsForm = React.memo(
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <span className="flex items-center text-sm">Frequency:</span>
                 <Select
+                  disabled={input.applyAdditionalInfo}
                   className="border-gray-300"
                   onValueChange={(value) =>
                     handleInputChange(
@@ -259,6 +262,21 @@ const CustomerInputsForm = React.memo(
                   }
                   disabled
                 />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <Checkbox
+                  className="col-span-2"
+                  checked={input.applyAdditionalInfo}
+                  onChange={(e) =>
+                    handleInputChange(
+                      input?.id,
+                      "applyAdditionalInfo",
+                      e.target.checked
+                    )
+                  }
+                >
+                  Apply Additional Info
+                </Checkbox>
               </div>
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <Checkbox
@@ -746,7 +764,6 @@ const CustomerSection = React.memo(
       } catch (error) {
         message.error(error.message);
       } finally {
-        setIsSaved(false);
         setIsLoading(false);
         setIsInputFormOpen(false);
       }
@@ -884,7 +901,7 @@ const CustomerSection = React.memo(
                   stacked: false,
                   animated: false,
                 },
-                
+
                 xaxis: {
                   axisTicks: {
                     show: false,
@@ -1192,12 +1209,12 @@ const CustomerSection = React.memo(
     };
     return (
       <div>
-        <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
+        <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm sticky top-8 z-50">
           <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
             <li
               className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                 activeTab === "table&chart" ? "bg-yellow-300 font-bold" : ""
-              }`}
+              } `}
               onClick={() => handleTabChange("table&chart")}
             >
               Table and Chart
@@ -1206,7 +1223,7 @@ const CustomerSection = React.memo(
             <li
               className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                 activeTab === "input" ? "bg-yellow-300 font-bold" : ""
-              }`}
+              } `}
               onClick={() => handleTabChange("input")}
             >
               Input
@@ -1359,8 +1376,28 @@ const CustomerSection = React.memo(
                     />
                   )}
                 </AntdModal>
-
-                <h3 className="text-lg font-semibold my-4">Customer Table</h3>
+                <span>
+                  <h3 className="text-lg font-semibold my-4">Customer Table</h3>
+                  <div>
+                    <label
+                      htmlFor="selectedChannel"
+                      className="block my-4 text-base darkTextWhite"
+                    ></label>
+                    <select
+                      id="selectedChannel"
+                      className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                      value={renderCustomerForm}
+                      onChange={(e) => setRenderCustomerForm(e.target.value)}
+                    >
+                      <option value="all">All</option>
+                      {tempCustomerInputs.map((input) => (
+                        <option key={input?.id} value={input?.id}>
+                          {input?.channelName}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </span>
                 <Table
                   className="bg-white overflow-auto  my-8 rounded-md"
                   size="small"

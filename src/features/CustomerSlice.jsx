@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { formatNumber, parseNumber } from "./CostSlice";
+import { message } from "antd";
 
 const initialState = {
   customerInputs: [
@@ -19,6 +20,7 @@ const initialState = {
       eventBeginMonth: 1,
       eventEndMonth: 36,
       additionalInfo: "",
+      applyAdditionalInfo: false,
     },
     {
       id: 2,
@@ -36,6 +38,7 @@ const initialState = {
       eventBeginMonth: 1,
       eventEndMonth: 36,
       additionalInfo: "",
+      applyAdditionalInfo: false,
     },
   ],
   customerGrowthData: [],
@@ -101,6 +104,7 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
           }
 
           if (
+            customerInput.applyAdditionalInfo &&
             customerInput.gptResponseArray &&
             customerInput.gptResponseArray.length > month - 1
           ) {
@@ -283,6 +287,7 @@ export function generateCustomerTableData(
             }
 
             if (
+              customerInput.applyAdditionalInfo &&
               customerInput.gptResponseArray &&
               customerInput.gptResponseArray.length > i - 1
             ) {
@@ -423,6 +428,7 @@ export function generateCustomerTableData(
             }
 
             if (
+              customerInput.applyAdditionalInfo &&
               customerInput.gptResponseArray &&
               customerInput.gptResponseArray.length > i - 1
             ) {
@@ -520,8 +526,10 @@ export const fetchGPTResponse =
         data?.response?.replace(/json|`/g, "")
       );
       console.log("cleanedResponseText", cleanedResponseText);
+      message.success("Your request was applied.");
       return cleanedResponseText;
     } catch (error) {
       console.error("Error fetching GPT response:", error);
+      message.error("Something was wrong. Please try again.");
     }
   };

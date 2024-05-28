@@ -210,10 +210,6 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const [tempLoanInputs, setTempLoanInputs] = useState(loanInputs);
   const [renderLoanForm, setRenderLoanForm] = useState(loanInputs[0]?.id);
 
-  useEffect(() => {
-    setTempLoanInputs(loanInputs);
-  }, [loanInputs]);
-
   const addNewLoanInput = () => {
     const maxId = Math.max(...tempLoanInputs.map((input) => input?.id));
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
@@ -518,10 +514,6 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     numberOfMonths,
   ]);
 
-  const handleSave = () => {
-    setIsSaved(true);
-  };
-
   const tableData = transformLoanDataForTable(
     tempLoanInputs,
     renderLoanForm,
@@ -531,62 +523,52 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const { id } = useParams();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  useEffect(() => {
-    const saveData = async () => {
-      try {
-        if (isSaved) {
-          setIsLoading(true);
-          const { data: existingData, error: selectError } = await supabase
-            .from("finance")
-            .select("*")
-            .eq("id", id);
-          if (selectError) {
-            throw selectError;
-          }
 
-          if (existingData && existingData.length > 0) {
-            const { user_email, collabs } = existingData[0];
-
-            if (user.email !== user_email && !collabs?.includes(user.email)) {
-              message.error(
-                "You do not have permission to update this record."
-              );
-              return;
-            }
-
-            dispatch(setLoanInputs(tempLoanInputs));
-            dispatch(setLoanTableData(tableData));
-            const newInputData = JSON.parse(existingData[0].inputData);
-
-            newInputData.loanInputs = tempLoanInputs;
-
-            const { error: updateError } = await supabase
-              .from("finance")
-              .update({ inputData: newInputData })
-              .eq("id", existingData[0]?.id)
-              .select();
-
-            if (updateError) {
-              throw updateError;
-            } else {
-              message.success("Data saved successfully!");
-            }
-          }
-        }
-      } catch (error) {
-        message.error(error);
-      } finally {
-        setIsSaved(false);
-        setIsLoading(false);
-        setIsInputFormOpen(false);
+  const handleSave = async () => {
+    try {
+      setIsLoading(true);
+      const { data: existingData, error: selectError } = await supabase
+        .from("finance")
+        .select("*")
+        .eq("id", id);
+      if (selectError) {
+        throw selectError;
       }
-    };
-    saveData();
-  }, [isSaved]);
 
-  useEffect(() => {
-    dispatch(setLoanTableData(tableData));
-  }, []);
+      if (existingData && existingData.length > 0) {
+        const { user_email, collabs } = existingData[0];
+
+        if (user.email !== user_email && !collabs?.includes(user.email)) {
+          message.error("You do not have permission to update this record.");
+          return;
+        }
+
+        dispatch(setLoanInputs(tempLoanInputs));
+        dispatch(setLoanTableData(tableData));
+        const newInputData = JSON.parse(existingData[0].inputData);
+
+        newInputData.loanInputs = tempLoanInputs;
+
+        const { error: updateError } = await supabase
+          .from("finance")
+          .update({ inputData: newInputData })
+          .eq("id", existingData[0]?.id)
+          .select();
+
+        if (updateError) {
+          throw updateError;
+        } else {
+          message.success("Data saved successfully!");
+        }
+      }
+    } catch (error) {
+      message.error(error);
+    } finally {
+      setIsSaved(false);
+      setIsLoading(false);
+      setIsInputFormOpen(false);
+    }
+  };
 
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 
@@ -613,7 +595,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
   return (
     <div>
-      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
+      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm sticky top-8 z-50">
         <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
           <li
             className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
@@ -745,6 +727,25 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                 )}
               </Modal>
               <h3 className="text-lg font-semibold my-4">Loan Data</h3>
+              <div>
+                <label
+                  htmlFor="selectedChannel"
+                  className="block my-4 text-base  darkTextWhite"
+                ></label>
+                <select
+                  id="selectedChannel"
+                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                  value={renderLoanForm}
+                  onChange={(e) => setRenderLoanForm(e.target.value)}
+                >
+                  <option value="all">All</option>
+                  {tempLoanInputs.map((input) => (
+                    <option key={input?.id} value={input?.id}>
+                      {input.loanName}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <Table
                 className="overflow-auto my-8 rounded-md bg-white"
                 size="small"

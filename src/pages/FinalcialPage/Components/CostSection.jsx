@@ -1077,7 +1077,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
                 )}
               </Modal>
               <h3 className="text-lg font-semibold my-4">Cost Table</h3>
-              <div>
+              {/* <div>
                 <label
                   htmlFor="selectedChannel"
                   className="block my-4 text-base darkTextWhite"
@@ -1094,7 +1094,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
                     </option>
                   ))}
                 </select>
-              </div>
+              </div> */}
               <Table
                 className="overflow-auto my-8 rounded-md bg-white"
                 size="small"

@@ -629,7 +629,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
     dispatch(setCostTableData(updatedData));
 
     const updatedTempCostInputs = tempCostInput?.map((input) => {
-      if (input.costName === recordKey.split("-")[0]) {
+      if (input.costName === recordKey.split(" -")[0]) {
         const updatedGPTResponseArray = input.gptResponseArray
           ? [...input.gptResponseArray]
           : [];

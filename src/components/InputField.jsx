@@ -52,7 +52,8 @@ export default function InputField({
           </div>
         ) : (
           <label htmlFor={id} className="block mb-2 text-sm darkTextWhite">
-            {label}
+            {label.split("*")[0]}
+            <span className="font-extrabold">{label.includes("*") && "*"}</span>
           </label>
         )}
       </Tooltip>

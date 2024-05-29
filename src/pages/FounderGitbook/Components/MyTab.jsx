@@ -440,7 +440,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
 
   return (
     <div
-      className={`container mr-8 px-8  flex flex-col  ${
+      className={`px-8  flex flex-col  ${
         fullScreen === true ? "justify-center items-center" : ""
       }`}
     >
@@ -448,7 +448,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
         <>
           <aside className="sticky z-20 top-0 bg-white">
             <div className="w-full  py-8 overflow-x-auto">
-              <nav className="flex justify-between sm:space-x-4 sm:pl-14">
+              <nav className="flex justify-between sm:space-x-4 sm:px-14">
                 {/* Navbar */}
                 {Object.keys(tabContents).map((tab) => (
                   <div
@@ -466,7 +466,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
               </nav>
             </div>
           </aside>
-          <div className="w-full py-8 px-0 md:pl-8">
+          <div className="w-full py-8 px-0 md:px-8">
             {/* Content */}
             {tabContents[activeTab]}
           </div>

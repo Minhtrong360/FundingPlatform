@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import AnnouncePage from "../../components/AnnouncePage";
 import Header from "../Home/Header";
 import ProfileInfo from "./ProfileInfo";
-
 import Author from "./Components/Author";
 import MyTab from "./Components/MyTab";
 import { useParams } from "react-router";
@@ -32,7 +30,6 @@ export default function NewDetailPage({ location }) {
 
   useEffect(() => {
     if (locationKey !== location?.key || !company.length) {
-      // Check if companies are already loaded
       fetchData();
     } else {
       setIsLoading(false);
@@ -40,8 +37,7 @@ export default function NewDetailPage({ location }) {
   }, []);
 
   useEffect(() => {
-    sessionStorage.setItem("companyDetailPage", JSON.stringify(company)); // Cache companies data
-
+    sessionStorage.setItem("companyDetailPage", JSON.stringify(company));
     sessionStorage.setItem(
       "locationKeyDetailPage",
       JSON.stringify(location.key)
@@ -52,7 +48,7 @@ export default function NewDetailPage({ location }) {
     sessionStorage.setItem(
       "currentProjectDetailPage",
       JSON.stringify(currentProject)
-    ); // Cache companies data
+    );
   }, [currentProject]);
 
   const fetchData = async () => {
@@ -72,7 +68,7 @@ export default function NewDetailPage({ location }) {
         .from("users")
         .select("*")
         .eq("email", user.email)
-        .single(); // user.email là giá trị email của người dùng
+        .single();
 
       if (
         (projectData.status === "private" ||
@@ -83,7 +79,7 @@ export default function NewDetailPage({ location }) {
         userData?.admin !== true
       ) {
         setViewError(true);
-        setIsLoading(false); // Người dùng không được phép xem, ngừng hiển thị loading
+        setIsLoading(false);
       } else {
         setViewError(false);
         const { data: companyData, error: companyError } = await supabase
@@ -97,14 +93,13 @@ export default function NewDetailPage({ location }) {
         }
 
         setCompany(companyData);
-        setIsLoading(false); // Dữ liệu đã tải xong, ngừng hiển thị loading
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
-
-      setIsLoading(false); // Có lỗi xảy ra, ngừng hiển thị loading
+      setIsLoading(false);
     } finally {
-      setIsLoading(false); // Có lỗi xảy ra, ngừng hiển thị loading
+      setIsLoading(false);
     }
   };
 
@@ -137,7 +132,7 @@ export default function NewDetailPage({ location }) {
   const position = "notFixed";
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white max-w-7xl mx-auto">
       {isLoading ? (
         <LoadingButtonClick isLoading={isLoading} />
       ) : (
@@ -159,8 +154,7 @@ export default function NewDetailPage({ location }) {
                 setCurrentProject={setCurrentProject}
                 blocks={blocks}
               />
-
-              <div className="mt-4  sm:w-4/5 w-full mx-auto sm:px-8  ">
+              <div className="mt-4 sm:max-w-7xl w-full mx-auto">
                 <MyTab
                   blocks={blocks}
                   setBlocks={setBlocks}
@@ -168,8 +162,6 @@ export default function NewDetailPage({ location }) {
                   fullScreen={fullScreen}
                   currentProject={currentProject}
                 />
-
-                {/* <Author company={company} /> */}
               </div>
             </div>
           ) : (

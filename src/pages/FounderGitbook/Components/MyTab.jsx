@@ -476,7 +476,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
         <BlockNoteView
           editor={editor}
           theme={"light"}
-          className="w-full lg:w-8/12 my-12"
+          className="w-full my-12"
         />
       )}
     </div>

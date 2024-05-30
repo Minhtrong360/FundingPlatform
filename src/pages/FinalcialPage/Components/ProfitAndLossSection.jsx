@@ -48,7 +48,10 @@ import CustomChart from "./CustomChart";
 import SelectField from "../../../components/SelectField";
 import { setCutMonth } from "../../../features/DurationSlice";
 import GroqJS from "./GroqJson";
-import { FileOutlined } from "@ant-design/icons";
+import { DownloadOutlined, FileOutlined } from "@ant-design/icons";
+
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
 
 const ProfitAndLossSection = ({ numberOfMonths }) => {
   const dispatch = useDispatch();
@@ -679,6 +682,52 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   const { TabPane } = Tabs; // Destructure TabPane from Tabs
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 
+  const downloadExcel = () => {
+    const workBook = XLSX.utils.book_new();
+
+    // Create worksheet data in the desired format
+    const worksheetData = [
+      [
+        "Metric",
+        ...Array.from({ length: numberOfMonths }, (_, i) => {
+          const monthIndex = (startingMonth + i - 1) % 12;
+          const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+          return `${months[monthIndex]}/${year}`;
+        }),
+      ],
+    ];
+
+    // Add rows for each channel
+    transposedData.forEach((record) => {
+      const row = [record.metric];
+      for (let i = 1; i <= numberOfMonths; i++) {
+        row.push(record[`Month ${i}`] || "");
+      }
+      worksheetData.push(row);
+    });
+
+    // Convert data to worksheet
+    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(workBook, worksheet, "Profit And Loss Data");
+
+    // Write workbook and trigger download
+    const wbout = XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
+
+    function s2ab(s) {
+      const buf = new ArrayBuffer(s.length);
+      const view = new Uint8Array(buf);
+      for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+      return buf;
+    }
+
+    saveAs(
+      new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
+      "profitAndLoss_data.xlsx"
+    );
+  };
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
@@ -846,9 +895,16 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             />
           )}
 
-          <h2 className="text-lg font-semibold my-8">
-            Profit and Loss Statement
-          </h2>
+          <div className="flex justify-between items-center my-4">
+            <h3 className="text-lg font-semibold">Profit and Loss Statement</h3>
+            <button
+              onClick={downloadExcel}
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
+            >
+              <DownloadOutlined className="mr-1" />
+              Download Excel
+            </button>
+          </div>
           {/* <pre>{JSON.stringify(tableData, null, 2)}</pre> */}
 
           <Table

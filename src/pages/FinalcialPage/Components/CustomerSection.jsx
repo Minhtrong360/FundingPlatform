@@ -1341,6 +1341,15 @@ const CustomerSection = React.memo(
                       <Chart
                         options={{
                           ...chart.options,
+                          chart: {
+                            ...chart.chart,
+                            toolbar: {
+                              show: true,
+                              tools: {
+                                download: true,
+                              },
+                            },
+                          },
                           xaxis: {
                             ...chart.options.xaxis,
                             // tickAmount: 12, // Set the number of ticks on the x-axis to 12
@@ -1368,8 +1377,18 @@ const CustomerSection = React.memo(
                     <Chart
                       options={{
                         ...selectedChart.options,
+                        chart: {
+                          ...selectedChart.chart,
+                          toolbar: {
+                            show: true,
+                            tools: {
+                              download: true,
+                            },
+                          },
+                        },
                         // ... other options
                       }}
+                      className="p-4"
                       series={selectedChart.series}
                       type="area"
                       height={500}

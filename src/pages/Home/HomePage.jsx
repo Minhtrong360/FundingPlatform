@@ -23,12 +23,12 @@ import MultiSelectField from "../../components/MultiSelectField";
 import industries from "../../components/Industries";
 import { formatNumber } from "../../features/CostSlice";
 import SpinnerBtn from "../../components/SpinnerBtn";
+import BubleChatBot from "./Components/BubleChatBot";
 
 const HomePage = () => {
   const { user } = useAuth();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  console.log("isModalOpen", isModalOpen);
   useEffect(() => {
     // Kiểm tra nếu người dùng chưa có full_name hoặc role
     const checkUserData = async () => {
@@ -345,7 +345,10 @@ const HomePage = () => {
   return (
     <>
       <Header />
+
+      {user && <BubleChatBot />}
       <HeroSection />
+
       <HeroCard />
       <Features />
 

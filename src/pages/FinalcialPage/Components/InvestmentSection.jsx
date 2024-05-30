@@ -13,12 +13,19 @@ import {
 } from "../../../features/InvestmentSlice";
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
-import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import {
+  DownloadOutlined,
+  FileOutlined,
+  PlusCircleOutlined,
+} from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
 import SpinnerBtn from "../../../components/SpinnerBtn";
+
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
 
 const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const { investmentInputs, investmentData } = useSelector(
@@ -268,13 +275,16 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       };
     });
 
-    const totalSalesData = seriesData.reduce((acc, channel) => {
-      channel.data.forEach((amount, index) => {
-        if (!acc[index]) acc[index] = 0;
-        acc[index] += amount;
-      });
-      return acc;
-    }, Array(chartEndMonth - chartStartMonth + 1).fill(0));
+    const totalSalesData = seriesData.reduce(
+      (acc, channel) => {
+        channel.data.forEach((amount, index) => {
+          if (!acc[index]) acc[index] = 0;
+          acc[index] += amount;
+        });
+        return acc;
+      },
+      Array(chartEndMonth - chartStartMonth + 1).fill(0)
+    );
 
     setInvestmentChart((prevState) => ({
       ...prevState,
@@ -428,6 +438,57 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     setActiveTab(tabName);
   };
 
+  const downloadExcel = () => {
+    const workBook = XLSX.utils.book_new();
+
+    // Create worksheet data in the desired format
+    const worksheetData = [
+      [
+        "Type",
+        ...Array.from({ length: numberOfMonths }, (_, i) => {
+          const monthIndex = (startingMonth + i - 1) % 12;
+          const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+          return `${months[monthIndex]}/${year}`;
+        }),
+      ],
+    ];
+
+    // Add rows for each channel
+    transformInvestmentDataForTable(
+      tempInvestmentInputs,
+      renderInvestmentForm,
+      tempInvestmentData,
+      numberOfMonths
+    ).forEach((record) => {
+      const row = [record.type];
+      for (let i = 1; i <= numberOfMonths; i++) {
+        row.push(record[`month${i}`] || "");
+      }
+      worksheetData.push(row);
+    });
+
+    // Convert data to worksheet
+    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(workBook, worksheet, "Investment Data");
+
+    // Write workbook and trigger download
+    const wbout = XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
+
+    function s2ab(s) {
+      const buf = new ArrayBuffer(s.length);
+      const view = new Uint8Array(buf);
+      for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+      return buf;
+    }
+
+    saveAs(
+      new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
+      "investment_data.xlsx"
+    );
+  };
+
   return (
     <div>
       <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm sticky top-8 z-50">
@@ -559,7 +620,16 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                   />
                 )}
               </Modal>
-              <h3 className="text-lg font-semibold my-4">Investment Table</h3>
+              <div className="flex justify-between items-center my-4">
+                <h3 className="text-lg font-semibold">Investment Table</h3>
+                <button
+                  onClick={downloadExcel}
+                  className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
+                >
+                  <DownloadOutlined className="mr-1" />
+                  Download Excel
+                </button>
+              </div>{" "}
               <div>
                 <label
                   htmlFor="selectedChannel"
@@ -599,7 +669,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
             <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
               <button
                 className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
-                style={{ bottom: "20px", right: "20px", position: "fixed" }}
+                style={{ bottom: "20px", right: "80px", position: "fixed" }}
                 onClick={handleSave}
               >
                 {isLoading ? (

@@ -18,12 +18,19 @@ import {
 } from "../../../features/FundraisingSlice";
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
-import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import {
+  DownloadOutlined,
+  FileOutlined,
+  PlusCircleOutlined,
+} from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
 import SpinnerBtn from "../../../components/SpinnerBtn";
+
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
 
 const FundraisingInputForm = ({
   tempFundraisingInputs,
@@ -595,6 +602,56 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     setActiveTab(tabName);
   };
 
+  const downloadExcel = () => {
+    const workBook = XLSX.utils.book_new();
+
+    // Create worksheet data in the desired format
+    const worksheetData = [
+      [
+        "Fundraising Activities",
+        ...Array.from({ length: numberOfMonths }, (_, i) => {
+          const monthIndex = (startingMonth + i - 1) % 12;
+          const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+          return `${months[monthIndex]}/${year}`;
+        }),
+      ],
+    ];
+
+    // Add rows for each channel
+    transformFundraisingDataForTable(
+      tempFundraisingInputs,
+      numberOfMonths
+    ).forEach((record) => {
+      console.log("record", record);
+      const row = [record.name];
+      for (let i = 1; i <= numberOfMonths; i++) {
+        row.push(record[`month${i}`] || "");
+      }
+      worksheetData.push(row);
+    });
+
+    // Convert data to worksheet
+    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(workBook, worksheet, "Fundraising Data");
+
+    // Write workbook and trigger download
+    const wbout = XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
+
+    function s2ab(s) {
+      const buf = new ArrayBuffer(s.length);
+      const view = new Uint8Array(buf);
+      for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+      return buf;
+    }
+
+    saveAs(
+      new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
+      "fundraising_data.xlsx"
+    );
+  };
+
   return (
     <div>
       <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm sticky top-8 z-50">
@@ -623,7 +680,6 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           <>
             <div className="w-full xl:w-3/4 sm:p-4 p-0">
               <h3 className="text-lg font-semibold mb-8">Fundraising Chart</h3>
-
               <div className="grid md:grid-cols-2 gap-6">
                 <Card className="flex flex-col transition duration-500  rounded-2xl">
                   <div className="flex justify-between items-center">
@@ -717,7 +773,16 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                   />
                 )}
               </Modal>
-              <h3 className="text-lg font-semibold my-4">Fundraising Table</h3>
+              <div className="flex justify-between items-center my-4">
+                <h3 className="text-lg font-semibold">Fundraising Table</h3>
+                <button
+                  onClick={downloadExcel}
+                  className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
+                >
+                  <DownloadOutlined className="mr-1" />
+                  Download Excel
+                </button>
+              </div>{" "}
               <Table
                 className="overflow-auto my-8 rounded-md bg-white"
                 size="small"
@@ -736,7 +801,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
             <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
               <button
                 className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
-                style={{ bottom: "20px", right: "20px", position: "fixed" }}
+                style={{ bottom: "20px", right: "80px", position: "fixed" }}
                 onClick={handleSave}
               >
                 {isLoading ? (

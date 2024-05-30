@@ -23,7 +23,7 @@ import MultiSelectField from "../../components/MultiSelectField";
 import industries from "../../components/Industries";
 import { formatNumber } from "../../features/CostSlice";
 import SpinnerBtn from "../../components/SpinnerBtn";
-// import BubleChatBot from "./Components/BubleChatBot";
+import BubleChatBot from "./Components/BubleChatBot";
 
 const HomePage = () => {
   const { user } = useAuth();
@@ -346,7 +346,7 @@ const HomePage = () => {
     <>
       <Header />
 
-      {/* {user && <BubleChatBot />} */}
+      {user && <BubleChatBot />}
       <HeroSection />
 
       <HeroCard />

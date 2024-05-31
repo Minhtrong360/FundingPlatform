@@ -517,6 +517,14 @@ const AllChartSections = ({
     setIsChartModalVisibleVer2(true);
   };
 
+  useEffect(() => {
+    setSelectedZoomChart(customerGrowthChart);
+    setIsChartModalVisible(true);
+    setTimeout(() => {
+      setIsChartModalVisible(false);
+    }, 100);
+  }, []);
+
   return (
     <div className="flex flex-col">
       <main className="flex flex-1 flex-col gap-4  mb-4 md:gap-8 ">
@@ -583,7 +591,7 @@ const AllChartSections = ({
               {selectedZoomChart && (
                 <Chart
                   options={{
-                    ...selectedZoomChart.options,
+                    ...selectedZoomChart?.options,
                     grid: {
                       show: false,
                     },
@@ -599,7 +607,7 @@ const AllChartSections = ({
                       },
                     },
                     xaxis: {
-                      ...selectedZoomChart.options.xaxis,
+                      ...selectedZoomChart?.options?.xaxis,
                       categories: Array.from(
                         { length: numberOfMonths },
                         (_, i) => {
@@ -612,7 +620,7 @@ const AllChartSections = ({
                     },
                     stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
                   }}
-                  series={selectedZoomChart.series}
+                  series={selectedZoomChart?.series}
                   type="area"
                   height={500}
                   className="p-4"

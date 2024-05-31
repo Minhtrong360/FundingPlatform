@@ -419,6 +419,7 @@ const CustomerSection = React.memo(
         // Click was on the toolbar, so don't open the modal
         return;
       }
+      console.log("2");
 
       setSelectedChart(chart);
       setIsChartModalVisible(true);

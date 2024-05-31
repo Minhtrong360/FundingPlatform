@@ -540,9 +540,12 @@ const AllChartSections = ({
                     zoom: {
                       enabled: false, // Disable zooming
                     },
-                    toolbar: {
-                      show: false, // Hide the toolbar
-                    },
+                     toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          },
+        },
                   },
                   xaxis: {
                     ...customerGrowthChart.options.xaxis,
@@ -582,7 +585,10 @@ const AllChartSections = ({
                         enabled: false, // Disable zooming
                       },
                       toolbar: {
-                        show: false, // Hide the toolbar
+                        show: true,
+                        tools: {
+                          download: true,
+                        },
                       },
                     },
                     xaxis: {
@@ -621,9 +627,12 @@ const AllChartSections = ({
                     zoom: {
                       enabled: false, // Disable zooming
                     },
-                    toolbar: {
-                      show: false, // Hide the toolbar
-                    },
+                     toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          },
+        },
                   },
                   ...revenue.options,
                   xaxis: {
@@ -663,9 +672,12 @@ const AllChartSections = ({
                   zoom: {
                     enabled: false, // Disable zooming
                   },
-                  toolbar: {
-                    show: false, // Hide the toolbar
-                  },
+                   toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          },
+        },
                   ...revenue.options,
                   xaxis: {
                     ...revenue.options.xaxis,
@@ -693,9 +705,12 @@ const AllChartSections = ({
                   zoom: {
                     enabled: false, // Disable zooming
                   },
-                  toolbar: {
-                    show: false, // Hide the toolbar
-                  },
+                   toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          },
+        },
                   ...revenue.options,
                   xaxis: {
                     ...revenue.options.xaxis,
@@ -722,9 +737,12 @@ const AllChartSections = ({
                   zoom: {
                     enabled: false, // Disable zooming
                   },
-                  toolbar: {
-                    show: false, // Hide the toolbar
-                  },
+                   toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          },
+        },
                   ...revenue.options,
                   xaxis: {
                     ...revenue.options.xaxis,
@@ -751,9 +769,12 @@ const AllChartSections = ({
                   zoom: {
                     enabled: false, // Disable zooming
                   },
-                  toolbar: {
-                    show: false, // Hide the toolbar
-                  },
+                   toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          },
+        },
                   ...revenue.options,
                   xaxis: {
                     ...revenue.options.xaxis,
@@ -780,9 +801,12 @@ const AllChartSections = ({
                   zoom: {
                     enabled: false, // Disable zooming
                   },
-                  toolbar: {
-                    show: false, // Hide the toolbar
-                  },
+                   toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          },
+        },
                   ...revenue.options,
                   xaxis: {
                     ...revenue.options.xaxis,
@@ -836,9 +860,12 @@ const AllChartSections = ({
                   zoom: {
                     enabled: false, // Disable zooming
                   },
-                  toolbar: {
-                    show: false, // Hide the toolbar
-                  },
+                   toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          },
+        },
                   ...revenue.options,
                   xaxis: {
                     ...revenue.options.xaxis,

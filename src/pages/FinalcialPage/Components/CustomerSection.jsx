@@ -413,17 +413,15 @@ const CustomerSection = React.memo(
     const handleChartClick = (chart, event) => {
       console.log("event", event);
       const toolbar = document.querySelector(".apexcharts-toolbar");
-      console.log("toolbar", toolbar);
       if (toolbar && toolbar.contains(event.target)) {
-        console.log("1");
+        console.log("Toolbar button clicked, modal will not open");
         // Click was on the toolbar, so don't open the modal
         return;
       }
-
+    
       setSelectedChart(chart);
       setIsChartModalVisible(true);
     };
-
     const dispatch = useDispatch();
     const { customerInputs, customerGrowthData, customerTableData } =
       useSelector((state) => state.customer);
@@ -1014,7 +1012,10 @@ const CustomerSection = React.memo(
                   id: "yearlyTotal",
                   stacked: false,
                   toolbar: {
-                    show: false,
+                    show: true,
+                    tools: {
+                      download: true,
+                    },
                   },
                 },
                 title: {
@@ -1056,7 +1057,10 @@ const CustomerSection = React.memo(
                   id: "yearlyGrowthRate",
                   stacked: false,
                   toolbar: {
-                    show: false,
+                    show: true,
+                    tools: {
+                      download: true,
+                    },
                   },
                 },
                 title: {
@@ -1099,7 +1103,10 @@ const CustomerSection = React.memo(
                   id: "channelYearlyTotals",
                   stacked: false,
                   toolbar: {
-                    show: false,
+                    show: true,
+                    tools: {
+                      download: true,
+                    },
                   },
                 },
                 title: {
@@ -1396,7 +1403,7 @@ const CustomerSection = React.memo(
                   {customerGrowthChart.chartsNoFilter?.map((chart, index) => (
                     <Card
                       key={index}
-                      className="flex flex-col transition duration-500  rounded-2xl"
+                      className="flex flex-col transition duration-500 rounded-2xl"
                     >
                       <Chart
                         options={{

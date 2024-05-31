@@ -198,7 +198,10 @@ export const FinancialForm = ({ currentUser, setCurrentUser }) => {
           enabled: false, // Disable zooming
         },
         toolbar: {
-          show: false, // Hide the toolbar
+          show: true,
+          tools: {
+            download: true,
+          },
         },
         id: "customer-growth-chart",
         type: "area",
@@ -300,7 +303,10 @@ export const FinancialForm = ({ currentUser, setCurrentUser }) => {
           enabled: false, // Disable zooming
         },
         toolbar: {
-          show: false, // Hide the toolbar
+          show: true,
+          tools: {
+            download: true,
+          },
         },
         animations: {
           enabled: false,

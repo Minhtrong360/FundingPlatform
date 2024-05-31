@@ -238,9 +238,12 @@ function Dashboard({ dataSource }) {
                   zoom: {
                     enabled: false, // Disable zooming
                   },
-                  toolbar: {
-                    show: false, // Hide the toolbar
-                  },
+                   toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          },
+        },
                   type: chart.type,
                   height: 350,
                   animations: {

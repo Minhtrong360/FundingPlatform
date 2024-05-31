@@ -16,6 +16,7 @@ import { useParams } from "react-router-dom";
 import {
   DownloadOutlined,
   FileOutlined,
+  FullscreenOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
@@ -523,6 +524,14 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                     key={index}
                     className="flex flex-col transition duration-500  rounded-2xl"
                   >
+                    <div className="absolute top-2 right-2">
+                      <button
+                        onClick={(event) => handleChartClick(series, event)}
+                        className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                      >
+                        <FullscreenOutlined />
+                      </button>
+                    </div>
                     <div className="flex justify-between items-center">
                       <div className="min-w-[10vw] mb-2">
                         <label htmlFor="startMonthSelect">Start Month:</label>
@@ -581,23 +590,21 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                         </select>
                       </div>
                     </div>
-                    <div onClick={() => handleChartClick(series)}>
-                      <Chart
-                        options={{
-                          ...series.options,
-                          xaxis: {
-                            ...series.options.xaxis,
-                          },
-                          stroke: {
-                            width: 1,
-                            curve: "straight",
-                          },
-                        }}
-                        series={series.series}
-                        type="area"
-                        height={350}
-                      />
-                    </div>
+                    <Chart
+                      options={{
+                        ...series.options,
+                        xaxis: {
+                          ...series.options.xaxis,
+                        },
+                        stroke: {
+                          width: 1,
+                          curve: "straight",
+                        },
+                      }}
+                      series={series.series}
+                      type="area"
+                      height={350}
+                    />
                   </Card>
                 ))}
               </div>
@@ -617,6 +624,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                     series={selectedChart.series}
                     type="area"
                     height={500}
+                    className="p-4"
                   />
                 )}
               </Modal>

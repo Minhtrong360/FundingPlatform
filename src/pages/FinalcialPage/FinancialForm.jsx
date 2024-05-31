@@ -663,61 +663,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     // Handle post-save actions
   };
 
-  // Download Excel
-  // const downloadExcel = () => {
-  //   const workBook = XLSX.utils.book_new();
-
-  //   const convertDataToWorksheet = (data) => {
-  //     return XLSX.utils.json_to_sheet(data);
-  //   };
-
-  //   const addSheetToWorkbook = (sheet, sheetName) => {
-  //     XLSX.utils.book_append_sheet(workBook, sheet, sheetName);
-  //   };
-
-  //   // Example data conversion and sheet addition
-  //   addSheetToWorkbook(
-  //     convertDataToWorksheet(transformCostDataForTable()),
-  //     "Costs"
-  //   );
-  //   addSheetToWorkbook(
-  //     convertDataToWorksheet(transformPersonnelCostDataForTable()),
-  //     "Personnel Costs"
-  //   );
-  //   addSheetToWorkbook(
-  //     convertDataToWorksheet(transformInvestmentDataForTable()),
-  //     "Investments"
-  //   );
-  //   addSheetToWorkbook(
-  //     convertDataToWorksheet(transformLoanDataForTable()),
-  //     "Loans"
-  //   );
-  //   //addSheetToWorkbook(convertDataToWorksheet(transposedData), 'Profit and Loss');
-
-  //   // Write the workbook and trigger download
-  //   const wbout = XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
-
-  //   function s2ab(s) {
-  //     const buf = new ArrayBuffer(s.length);
-  //     const view = new Uint8Array(buf);
-  //     for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
-  //     return buf;
-  //   }
-
-  //   saveAs(
-  //     new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
-  //     "financial-data.xlsx"
-  //   );
-  // };
-
-  // Download JSON
-
-  // Chuẩn bị file cần down
-
-  const downloadJSON = () => {};
-
-  // Kết thúc down JSON
-
   const [activeTab, setActiveTab] = useState("overview");
 
   const handleTabChange = (tabName) => {
@@ -1175,13 +1120,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           </div>
         </>
       )}
-
-      {/* <button onClick={downloadExcel} className="download-excel-button">
-        Download Excel
-      </button> */}
-      {/* <button onClick={downloadJSON} className="download-excel-button">
-        Download Excel
-      </button> */}
     </div>
   );
 };

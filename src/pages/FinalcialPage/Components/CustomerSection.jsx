@@ -43,6 +43,7 @@ import {
   DeleteOutlined,
   DownloadOutlined,
   FileOutlined,
+  FullscreenOutlined,
   PlusCircleOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
@@ -413,9 +414,8 @@ const CustomerSection = React.memo(
     const handleChartClick = (chart, event) => {
       console.log("event", event);
       const toolbar = document.querySelector(".apexcharts-toolbar");
-      console.log("toolbar", toolbar);
       if (toolbar && toolbar.contains(event.target)) {
-        console.log("1");
+        console.log("Toolbar button clicked, modal will not open");
         // Click was on the toolbar, so don't open the modal
         return;
       }
@@ -423,7 +423,6 @@ const CustomerSection = React.memo(
       setSelectedChart(chart);
       setIsChartModalVisible(true);
     };
-
     const dispatch = useDispatch();
     const { customerInputs, customerGrowthData, customerTableData } =
       useSelector((state) => state.customer);
@@ -1014,7 +1013,10 @@ const CustomerSection = React.memo(
                   id: "yearlyTotal",
                   stacked: false,
                   toolbar: {
-                    show: false,
+                    show: true,
+                    tools: {
+                      download: true,
+                    },
                   },
                 },
                 title: {
@@ -1056,7 +1058,10 @@ const CustomerSection = React.memo(
                   id: "yearlyGrowthRate",
                   stacked: false,
                   toolbar: {
-                    show: false,
+                    show: true,
+                    tools: {
+                      download: true,
+                    },
                   },
                 },
                 title: {
@@ -1099,7 +1104,10 @@ const CustomerSection = React.memo(
                   id: "channelYearlyTotals",
                   stacked: false,
                   toolbar: {
-                    show: false,
+                    show: true,
+                    tools: {
+                      download: true,
+                    },
                   },
                 },
                 title: {
@@ -1302,8 +1310,16 @@ const CustomerSection = React.memo(
                   {customerGrowthChart.charts?.map((chart, index) => (
                     <Card
                       key={index}
-                      className="flex flex-col transition duration-500  rounded-2xl"
+                      className="flex flex-col transition duration-500 rounded-2xl relative"
                     >
+                      <div className="absolute top-2 right-2">
+                        <button
+                          onClick={(event) => handleChartClick(chart, event)}
+                          className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                        >
+                          <FullscreenOutlined />
+                        </button>
+                      </div>
                       <div className="flex justify-between items-center">
                         <div className="min-w-[10vw] mb-2">
                           <label htmlFor="startMonthSelect">Start Month:</label>
@@ -1318,7 +1334,7 @@ const CustomerSection = React.memo(
                                 )
                               )
                             }
-                            className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                            className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
                           >
                             {Array.from({ length: numberOfMonths }, (_, i) => {
                               const monthIndex = (startingMonth + i - 1) % 12;
@@ -1346,7 +1362,7 @@ const CustomerSection = React.memo(
                                 )
                               )
                             }
-                            className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                            className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
                           >
                             {Array.from({ length: numberOfMonths }, (_, i) => {
                               const monthIndex = (startingMonth + i - 1) % 12;
@@ -1367,7 +1383,6 @@ const CustomerSection = React.memo(
                           ...chart.options,
                           fill: {
                             type: "gradient",
-
                             gradient: {
                               shade: "light",
                               shadeIntensity: 0.5,
@@ -1388,7 +1403,6 @@ const CustomerSection = React.memo(
                         series={chart.series}
                         type="area"
                         height={350}
-                        onClick={(event) => handleChartClick(chart, event)}
                       />
                     </Card>
                   ))}
@@ -1396,8 +1410,16 @@ const CustomerSection = React.memo(
                   {customerGrowthChart.chartsNoFilter?.map((chart, index) => (
                     <Card
                       key={index}
-                      className="flex flex-col transition duration-500  rounded-2xl"
+                      className="flex flex-col transition duration-500 rounded-2xl"
                     >
+                      <div className="absolute top-2 right-2">
+                        <button
+                          onClick={(event) => handleChartClick(chart, event)}
+                          className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                        >
+                          <FullscreenOutlined />
+                        </button>
+                      </div>
                       <Chart
                         options={{
                           ...chart.options,
@@ -1415,7 +1437,7 @@ const CustomerSection = React.memo(
                         series={chart.series}
                         type="area"
                         height={350}
-                        onClick={(event) => handleChartClick(chart, event)}
+                        // onClick={(event) => handleChartClick(chart, event)}
                       />
                     </Card>
                   ))}

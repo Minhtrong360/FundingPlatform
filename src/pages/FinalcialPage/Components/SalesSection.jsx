@@ -42,6 +42,7 @@ import {
   DeleteOutlined,
   CheckCircleOutlined,
   DownloadOutlined,
+  FullscreenOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
 import SpinnerBtn from "../../../components/SpinnerBtn";
@@ -790,6 +791,14 @@ const SalesSection = ({
                     key={index}
                     className="flex flex-col transition duration-500  rounded-2xl"
                   >
+                    <div className="absolute top-2 right-2">
+                      <button
+                        onClick={(event) => handleChartClick(chart, event)}
+                        className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                      >
+                        <FullscreenOutlined />
+                      </button>
+                    </div>
                     <div className="flex justify-between items-center">
                       <div className="min-w-[10vw] mb-2">
                         <label htmlFor="startMonthSelect">Start Month:</label>
@@ -848,19 +857,17 @@ const SalesSection = ({
                         </select>
                       </div>
                     </div>
-                    <div onClick={() => handleChartClick(chart)}>
-                      <Chart
-                        options={{
-                          chart: { animations: { enabled: false } },
-                          ...chart.options,
-                          xaxis: { ...chart.options.xaxis },
-                          stroke: { width: 1, curve: "straight" },
-                        }}
-                        series={chart.series}
-                        type="area"
-                        height={350}
-                      />
-                    </div>
+                    <Chart
+                      options={{
+                        chart: { animations: { enabled: false } },
+                        ...chart.options,
+                        xaxis: { ...chart.options.xaxis },
+                        stroke: { width: 1, curve: "straight" },
+                      }}
+                      series={chart.series}
+                      type="area"
+                      height={350}
+                    />
                   </Card>
                 ))}
               </div>
@@ -881,11 +888,12 @@ const SalesSection = ({
                     series={selectedChart.series}
                     type="area"
                     height={500}
+                    className="p-4"
                   />
                 )}
               </Modal>
               <div className="flex justify-between items-center my-4">
-                <h3 className="text-lg font-semibold">Customer Table</h3>
+                <h3 className="text-lg font-semibold">Revenue Table</h3>
                 <button
                   onClick={downloadExcel}
                   className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "

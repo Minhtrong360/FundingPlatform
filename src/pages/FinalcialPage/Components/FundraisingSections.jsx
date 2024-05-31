@@ -21,6 +21,7 @@ import { useParams } from "react-router-dom";
 import {
   DownloadOutlined,
   FileOutlined,
+  FullscreenOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
@@ -682,6 +683,16 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               <h3 className="text-lg font-semibold mb-8">Fundraising Chart</h3>
               <div className="grid md:grid-cols-2 gap-6">
                 <Card className="flex flex-col transition duration-500  rounded-2xl">
+                  <div className="absolute top-2 right-2">
+                    <button
+                      onClick={(event) =>
+                        handleChartClick(fundraisingChart, event)
+                      }
+                      className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    >
+                      <FullscreenOutlined />
+                    </button>
+                  </div>
                   <div className="flex justify-between items-center">
                     <div className="min-w-[10vw] mb-2">
                       <label htmlFor="startMonthSelect">Start Month:</label>
@@ -737,20 +748,18 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                       </select>
                     </div>
                   </div>
-                  <div onClick={() => handleChartClick(fundraisingChart)}>
-                    <Chart
-                      options={{
-                        ...fundraisingChart.options,
-                        xaxis: {
-                          ...fundraisingChart.options.xaxis,
-                          // tickAmount: 6, // Set the number of ticks on the x-axis to 12
-                        },
-                      }}
-                      series={fundraisingChart.series}
-                      type="bar"
-                      height={350}
-                    />
-                  </div>
+                  <Chart
+                    options={{
+                      ...fundraisingChart.options,
+                      xaxis: {
+                        ...fundraisingChart.options.xaxis,
+                        // tickAmount: 6, // Set the number of ticks on the x-axis to 12
+                      },
+                    }}
+                    series={fundraisingChart.series}
+                    type="bar"
+                    height={350}
+                  />
                 </Card>
               </div>
               <Modal
@@ -770,6 +779,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                     series={selectedChart.series}
                     type="bar"
                     height={500}
+                    className="p-4"
                   />
                 )}
               </Modal>

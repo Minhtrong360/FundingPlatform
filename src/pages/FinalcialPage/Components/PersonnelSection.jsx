@@ -22,6 +22,7 @@ import { useParams } from "react-router-dom";
 import {
   DownloadOutlined,
   FileOutlined,
+  FullscreenOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
@@ -596,7 +597,6 @@ const PersonnelSection = ({ numberOfMonths }) => {
 
     // Add rows for each channel
     personnelCostTableData.forEach((record) => {
-      console.log("record", record);
       const row = [record.jobTitle];
       for (let i = 1; i <= numberOfMonths; i++) {
         row.push(record[`month${i}`] || "");
@@ -658,6 +658,16 @@ const PersonnelSection = ({ numberOfMonths }) => {
               </h3>
               <div className="grid md:grid-cols-2 gap-6">
                 <Card className="flex flex-col transition duration-500 rounded-2xl">
+                  <div className="absolute top-2 right-2">
+                    <button
+                      onClick={(event) =>
+                        handleChartClick(personnelChart, event)
+                      }
+                      className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    >
+                      <FullscreenOutlined />
+                    </button>
+                  </div>
                   <div className="flex justify-between items-center">
                     <div className="min-w-[10vw] mb-2">
                       <label htmlFor="startMonthSelect">Start Month:</label>
@@ -713,23 +723,21 @@ const PersonnelSection = ({ numberOfMonths }) => {
                       </select>
                     </div>
                   </div>
-                  <div onClick={() => handleChartClick(personnelChart)}>
-                    <Chart
-                      options={{
-                        ...personnelChart.options,
-                        stroke: {
-                          width: 1,
-                          curve: "straight",
-                        },
-                        xaxis: {
-                          ...personnelChart.options.xaxis,
-                        },
-                      }}
-                      series={personnelChart.series}
-                      type="area"
-                      height={350}
-                    />
-                  </div>
+                  <Chart
+                    options={{
+                      ...personnelChart.options,
+                      stroke: {
+                        width: 1,
+                        curve: "straight",
+                      },
+                      xaxis: {
+                        ...personnelChart.options.xaxis,
+                      },
+                    }}
+                    series={personnelChart.series}
+                    type="area"
+                    height={350}
+                  />
                 </Card>
                 <Modal
                   centered
@@ -747,6 +755,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
                       series={selectedChart.series}
                       type="area"
                       height={500}
+                      className="p-4"
                     />
                   )}
                 </Modal>

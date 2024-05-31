@@ -47,6 +47,7 @@ import {
 } from "../../../features/SaleSlice";
 import CustomChart from "./CustomChart";
 import { getCurrencyLabelByKey } from "../../../features/DurationSlice";
+import { FullscreenOutlined } from "@ant-design/icons";
 
 const AllChartSections = ({
   yearlyAverageCustomers,
@@ -520,47 +521,56 @@ const AllChartSections = ({
     <div className="flex flex-col">
       <main className="flex flex-1 flex-col gap-4  mb-4 md:gap-8 ">
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
+            <div className="absolute top-2 right-2">
+              <button
+                onClick={(event) =>
+                  handleChartClick(customerGrowthChart, event)
+                }
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <FullscreenOutlined />
+              </button>
+            </div>
             <div>
               <div className="text-base">Total User</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
                 {formatNumber(Math.round(sumArray(yearlyAverageCustomers)))}
               </p>
             </div>
-            <div onClick={() => handleChartClick(customerGrowthChart)}>
-              <Chart
-                type="area"
-                series={customerGrowthChart.series}
-                options={{
-                  ...customerGrowthChart.options,
-                  grid: {
-                    show: false,
+
+            <Chart
+              type="area"
+              series={customerGrowthChart.series}
+              options={{
+                ...customerGrowthChart.options,
+                grid: {
+                  show: false,
+                },
+                chart: {
+                  zoom: {
+                    enabled: false, // Disable zooming
                   },
-                  chart: {
-                    zoom: {
-                      enabled: false, // Disable zooming
+                  toolbar: {
+                    show: true,
+                    tools: {
+                      download: true,
                     },
-                    toolbar: {
-                      show: false, // Hide the toolbar
-                    },
                   },
-                  xaxis: {
-                    ...customerGrowthChart.options.xaxis,
-                    categories: Array.from(
-                      { length: numberOfMonths },
-                      (_, i) => {
-                        const monthIndex = (startMonth + i - 1) % 12;
-                        const year =
-                          startYear + Math.floor((startMonth + i - 1) / 12);
-                        return `${months[monthIndex]}/${year}`;
-                      }
-                    ),
-                  },
-                  stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-                }}
-                height={300}
-              />
-            </div>
+                },
+                xaxis: {
+                  ...customerGrowthChart.options.xaxis,
+                  categories: Array.from({ length: numberOfMonths }, (_, i) => {
+                    const monthIndex = (startMonth + i - 1) % 12;
+                    const year =
+                      startYear + Math.floor((startMonth + i - 1) / 12);
+                    return `${months[monthIndex]}/${year}`;
+                  }),
+                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+              }}
+              height={300}
+            />
 
             <Modal
               centered
@@ -582,7 +592,10 @@ const AllChartSections = ({
                         enabled: false, // Disable zooming
                       },
                       toolbar: {
-                        show: false, // Hide the toolbar
+                        show: true,
+                        tools: {
+                          download: true,
+                        },
                       },
                     },
                     xaxis: {
@@ -602,11 +615,20 @@ const AllChartSections = ({
                   series={selectedZoomChart.series}
                   type="area"
                   height={500}
+                  className="p-4"
                 />
               )}
             </Modal>
           </div>
-          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
+            <div className="absolute top-2 right-2">
+              <button
+                onClick={(event) => handleChartClick(revenue, event)}
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <FullscreenOutlined />
+              </button>
+            </div>
             <div>
               <div className="text-base">Total Revenue</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -614,37 +636,35 @@ const AllChartSections = ({
                 {formatNumber(Math.round(sumArray(yearlySales)))}
               </p>
             </div>
-            <div onClick={() => handleChartClick(revenue)}>
-              <Chart
-                options={{
-                  chart: {
-                    zoom: {
-                      enabled: false, // Disable zooming
-                    },
-                    toolbar: {
-                      show: false, // Hide the toolbar
+            <Chart
+              options={{
+                chart: {
+                  zoom: {
+                    enabled: false, // Disable zooming
+                  },
+                  toolbar: {
+                    show: true,
+                    tools: {
+                      download: true,
                     },
                   },
-                  ...revenue.options,
-                  xaxis: {
-                    ...revenue.options.xaxis,
-                    categories: Array.from(
-                      { length: numberOfMonths },
-                      (_, i) => {
-                        const monthIndex = (startMonth + i - 1) % 12;
-                        const year =
-                          startYear + Math.floor((startMonth + i - 1) / 12);
-                        return `${months[monthIndex]}/${year}`;
-                      }
-                    ),
-                  },
-                  stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-                }}
-                series={revenue.series}
-                type="area"
-                height={300}
-              />
-            </div>
+                },
+                ...revenue.options,
+                xaxis: {
+                  ...revenue.options.xaxis,
+                  categories: Array.from({ length: numberOfMonths }, (_, i) => {
+                    const monthIndex = (startMonth + i - 1) % 12;
+                    const year =
+                      startYear + Math.floor((startMonth + i - 1) / 12);
+                    return `${months[monthIndex]}/${year}`;
+                  }),
+                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+              }}
+              series={revenue.series}
+              type="area"
+              height={300}
+            />
           </div>
           <Modal
             centered
@@ -664,7 +684,10 @@ const AllChartSections = ({
                     enabled: false, // Disable zooming
                   },
                   toolbar: {
-                    show: false, // Hide the toolbar
+                    show: true,
+                    tools: {
+                      download: true,
+                    },
                   },
                   ...revenue.options,
                   xaxis: {
@@ -675,11 +698,20 @@ const AllChartSections = ({
                 series={[{ data: selectedZoomChartVer2, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
                 type={chartType ? chartType : "area"}
                 height={300}
+                className="p-4"
               />
             )}
           </Modal>
 
-          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
+            <div className="absolute top-2 right-2">
+              <button
+                onClick={(event) => handleChartClickVer2(totalCosts, event)}
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <FullscreenOutlined />
+              </button>
+            </div>
             <div>
               <div className="text-base">Total Cost</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -687,28 +719,39 @@ const AllChartSections = ({
                 {formatNumber(Math.round(sumArray(totalCosts)))}
               </p>
             </div>
-            <div onClick={() => handleChartClickVer2(totalCosts)}>
-              <Chart
-                options={{
-                  zoom: {
-                    enabled: false, // Disable zooming
+            <Chart
+              options={{
+                zoom: {
+                  enabled: false, // Disable zooming
+                },
+                toolbar: {
+                  show: true,
+                  tools: {
+                    download: true,
                   },
-                  toolbar: {
-                    show: false, // Hide the toolbar
-                  },
-                  ...revenue.options,
-                  xaxis: {
-                    ...revenue.options.xaxis,
-                  },
-                  stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-                }}
-                series={[{ data: totalCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
-                type="area"
-                height={300}
-              />
-            </div>
+                },
+                ...revenue.options,
+                xaxis: {
+                  ...revenue.options.xaxis,
+                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+              }}
+              series={[{ data: totalCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
+              type="area"
+              height={300}
+            />
           </div>
-          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
+            <div className="absolute top-2 right-2">
+              <button
+                onClick={(event) =>
+                  handleChartClickVer2(totalPersonnelCosts, event)
+                }
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <FullscreenOutlined />
+              </button>
+            </div>
             <div>
               <div className="text-base">Total Personnel Cost</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -716,28 +759,39 @@ const AllChartSections = ({
                 {formatNumber(Math.round(sumArray(totalPersonnelCosts)))}
               </p>
             </div>
-            <div onClick={() => handleChartClickVer2(totalPersonnelCosts)}>
-              <Chart
-                options={{
-                  zoom: {
-                    enabled: false, // Disable zooming
+            <Chart
+              options={{
+                zoom: {
+                  enabled: false, // Disable zooming
+                },
+                toolbar: {
+                  show: true,
+                  tools: {
+                    download: true,
                   },
-                  toolbar: {
-                    show: false, // Hide the toolbar
-                  },
-                  ...revenue.options,
-                  xaxis: {
-                    ...revenue.options.xaxis,
-                  },
-                  stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-                }}
-                series={[{ data: totalPersonnelCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
-                type="area"
-                height={300}
-              />
-            </div>
+                },
+                ...revenue.options,
+                xaxis: {
+                  ...revenue.options.xaxis,
+                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+              }}
+              series={[{ data: totalPersonnelCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
+              type="area"
+              height={300}
+            />
           </div>
-          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
+            <div className="absolute top-2 right-2">
+              <button
+                onClick={(event) =>
+                  handleChartClickVer2(bsTotalInvestmentValues, event)
+                }
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <FullscreenOutlined />
+              </button>
+            </div>
             <div>
               <div className="text-base">Total Investment</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -745,28 +799,37 @@ const AllChartSections = ({
                 {formatNumber(Math.round(sumArray(cfInvestmentsArray)))}
               </p>
             </div>
-            <div onClick={() => handleChartClickVer2(bsTotalInvestmentValues)}>
-              <Chart
-                options={{
-                  zoom: {
-                    enabled: false, // Disable zooming
+            <Chart
+              options={{
+                zoom: {
+                  enabled: false, // Disable zooming
+                },
+                toolbar: {
+                  show: true,
+                  tools: {
+                    download: true,
                   },
-                  toolbar: {
-                    show: false, // Hide the toolbar
-                  },
-                  ...revenue.options,
-                  xaxis: {
-                    ...revenue.options.xaxis,
-                  },
-                  stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-                }}
-                series={[{ data: bsTotalInvestmentValues, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
-                type="area"
-                height={300}
-              />
-            </div>
+                },
+                ...revenue.options,
+                xaxis: {
+                  ...revenue.options.xaxis,
+                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+              }}
+              series={[{ data: bsTotalInvestmentValues, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
+              type="area"
+              height={300}
+            />
           </div>
-          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
+            <div className="absolute top-2 right-2">
+              <button
+                onClick={(event) => handleChartClickVer2(totalLoanData, event)}
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <FullscreenOutlined />
+              </button>
+            </div>
             <div>
               <div className="text-base">Total Loan</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -774,50 +837,62 @@ const AllChartSections = ({
                 {formatNumber(Math.round(sumArray(cfLoanArray)))}
               </p>
             </div>
-            <div onClick={() => handleChartClickVer2(totalLoanData)}>
-              <Chart
-                options={{
-                  zoom: {
-                    enabled: false, // Disable zooming
+            <Chart
+              options={{
+                zoom: {
+                  enabled: false, // Disable zooming
+                },
+                toolbar: {
+                  show: true,
+                  tools: {
+                    download: true,
                   },
-                  toolbar: {
-                    show: false, // Hide the toolbar
+                },
+                ...revenue.options,
+                xaxis: {
+                  ...revenue.options.xaxis,
+                },
+                yaxis: {
+                  axisBorder: {
+                    show: true, // Show y-axis line
                   },
-                  ...revenue.options,
-                  xaxis: {
-                    ...revenue.options.xaxis,
-                  },
-                  yaxis: {
-                    axisBorder: {
-                      show: true, // Show y-axis line
-                    },
 
-                    labels: {
-                      show: true,
-                      style: {
-                        fontFamily: "Sora, sans-serif",
-                      },
-                      formatter: function (val) {
-                        return formatNumber(Math.floor(val));
-                      },
+                  labels: {
+                    show: true,
+                    style: {
+                      fontFamily: "Sora, sans-serif",
                     },
-                    title: {
-                      text: "Remaining Loan ($)",
-                      style: {
-                        fontSize: "12px",
-                        fontFamily: "Sora, sans-serif",
-                      },
+                    formatter: function (val) {
+                      return formatNumber(Math.floor(val));
                     },
                   },
-                  stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-                }}
-                series={[{ data: totalLoanData, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
-                type="area"
-                height={300}
-              />
-            </div>
+                  title: {
+                    text: "Remaining Loan ($)",
+                    style: {
+                      fontSize: "12px",
+                      fontFamily: "Sora, sans-serif",
+                    },
+                  },
+                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+              }}
+              series={[{ data: totalLoanData, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
+              type="area"
+              height={300}
+            />
           </div>
-          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8">
+          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
+            <div className="absolute top-2 right-2">
+              <button
+                onClick={() => {
+                  handleChartClickVer2(bsTotalFundingValues);
+                  setChartType("bar");
+                }}
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <FullscreenOutlined />
+              </button>
+            </div>
             <div>
               <div className="text-base">Total Fundraising</div>
               <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
@@ -825,31 +900,28 @@ const AllChartSections = ({
                 {formatNumber(Math.round(sumArray(bsTotalFundingValues)))}
               </p>
             </div>
-            <div
-              onClick={() => {
-                handleChartClickVer2(bsTotalFundingValues);
-                setChartType("bar");
+
+            <Chart
+              options={{
+                zoom: {
+                  enabled: false, // Disable zooming
+                },
+                toolbar: {
+                  show: true,
+                  tools: {
+                    download: true,
+                  },
+                },
+                ...revenue.options,
+                xaxis: {
+                  ...revenue.options.xaxis,
+                },
+                stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
-            >
-              <Chart
-                options={{
-                  zoom: {
-                    enabled: false, // Disable zooming
-                  },
-                  toolbar: {
-                    show: false, // Hide the toolbar
-                  },
-                  ...revenue.options,
-                  xaxis: {
-                    ...revenue.options.xaxis,
-                  },
-                  stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-                }}
-                series={[{ data: bsTotalFundingValues, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
-                type="bar"
-                height={300}
-              />
-            </div>
+              series={[{ data: bsTotalFundingValues, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
+              type="bar"
+              height={300}
+            />
           </div>
         </div>
 

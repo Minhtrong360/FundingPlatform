@@ -3,6 +3,7 @@ import Chart from "react-apexcharts";
 import { Card, Modal } from "antd";
 import { formatNumber } from "../../../features/CostSlice";
 import { useSelector } from "react-redux";
+import { FullscreenOutlined } from "@ant-design/icons";
 
 const CustomChart = ({
   numberOfMonths,
@@ -116,6 +117,14 @@ const CustomChart = ({
         title={title}
         className="flex flex-col transition duration-500  rounded-2xl"
       >
+        <div className="absolute top-16 right-2">
+          <button
+            onClick={(event) => handleChartClick(filteredData, event)}
+            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          >
+            <FullscreenOutlined />
+          </button>
+        </div>
         <div className="flex justify-between items-center">
           <div className="min-w-[10vw] mb-2">
             <label htmlFor="startMonthSelect">Start Month:</label>
@@ -169,14 +178,13 @@ const CustomChart = ({
             </select>
           </div>
         </div>
-        <div onClick={() => handleChartClick(filteredData)}>
-          <Chart
-            options={chartOptions}
-            series={[{ name: seriesTitle, data: filteredData }]}
-            type="area"
-            height={350}
-          />
-        </div>
+
+        <Chart
+          options={chartOptions}
+          series={[{ name: seriesTitle, data: filteredData }]}
+          type="area"
+          height={350}
+        />
       </Card>
       <Modal
         centered
@@ -192,6 +200,7 @@ const CustomChart = ({
             series={[{ name: seriesTitle, data: filteredData }]}
             type="area"
             height={500}
+            className="p-4"
           />
         )}
       </Modal>

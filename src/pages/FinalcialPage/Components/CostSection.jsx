@@ -31,7 +31,11 @@ import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
-import { DownloadOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  DownloadOutlined,
+  FullscreenOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { FileOutlined, PlusCircleOutlined } from "@ant-design/icons";
@@ -626,6 +630,8 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
   const startingMonth = startMonth;
   const startingYear = startYear;
 
+  const [modifiedCells, setModifiedCells] = useState({});
+
   const handleInputTable = (value, recordKey, monthKey) => {
     // Extract month number from the monthKey
 
@@ -683,11 +689,14 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
           },
         }),
         render: (text, record) => {
+          const cellKey = `${record.key}-month${i + 1}`;
+          const isModified = modifiedCells[cellKey];
+
           if (!record.isHeader && record.key !== "Total") {
             return (
-              <div>
+              <div className={isModified ? "bg-yellow-300" : ""}>
                 <input
-                  className="border-white p-0 text-xs text-right w-full h-full"
+                  className="border-transparent bg-transparent p-0 text-xs text-right w-full h-full"
                   value={record[`month${i + 1}`]}
                   onChange={(e) =>
                     handleInputTable(
@@ -1036,6 +1045,14 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
               <h3 className="text-lg font-semibold mb-8">Cost Chart</h3>
               <div className="grid md:grid-cols-2 gap-6">
                 <Card className="flex flex-col transition duration-500 rounded-2xl">
+                  <div className="absolute top-2 right-2">
+                    <button
+                      onClick={(event) => handleChartClick(costChart, event)}
+                      className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    >
+                      <FullscreenOutlined />
+                    </button>
+                  </div>
                   <div className="flex justify-between items-center">
                     <div className="min-w-[10vw] mb-2">
                       <label htmlFor="startMonthSelect">Start Month:</label>
@@ -1091,20 +1108,18 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
                       </select>
                     </div>
                   </div>
-                  <div onClick={() => handleChartClick(costChart)}>
-                    <Chart
-                      options={{
-                        ...costChart.options,
-                        xaxis: {
-                          ...costChart.options.xaxis,
-                        },
-                        stroke: { width: 1, curve: "straight" },
-                      }}
-                      series={costChart.series}
-                      type="area"
-                      height={350}
-                    />
-                  </div>
+                  <Chart
+                    options={{
+                      ...costChart.options,
+                      xaxis: {
+                        ...costChart.options.xaxis,
+                      },
+                      stroke: { width: 1, curve: "straight" },
+                    }}
+                    series={costChart.series}
+                    type="area"
+                    height={350}
+                  />
                 </Card>
               </div>
               <Modal
@@ -1123,6 +1138,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
                     series={selectedChart.series}
                     type="area"
                     height={500}
+                    className="p-4"
                   />
                 )}
               </Modal>

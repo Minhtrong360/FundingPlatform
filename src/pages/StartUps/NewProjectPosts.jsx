@@ -9,6 +9,7 @@ import Header from "../Home/Header";
 import { message } from "antd";
 import HeroStartup from "./HeroStartup";
 import regions from "../../components/Regions";
+import Header2 from "../Home/Header2";
 
 const NewProjectPosts = ({ location }) => {
   const [companies, setCompanies] = useState(
@@ -245,7 +246,8 @@ const NewProjectPosts = ({ location }) => {
 
   return (
     <div className="lg:px-8 mx-auto my-12">
-      <Header />
+      {/* <Header /> */}
+      <Header2 />
       <div className="px-3 py-2 lg:px-8 lg:py-1 mx-auto">
         <HeroStartup />
         <Search

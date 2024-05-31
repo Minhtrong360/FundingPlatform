@@ -23,6 +23,7 @@ import MultiSelectField from "../../components/MultiSelectField";
 import industries from "../../components/Industries";
 import { formatNumber } from "../../features/CostSlice";
 import SpinnerBtn from "../../components/SpinnerBtn";
+import Header2 from "./Header2";
 // import BubleChatBot from "./Components/BubleChatBot";
 
 const HomePage = () => {
@@ -344,7 +345,8 @@ const HomePage = () => {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
+      <Header2 />
 
       {/* {user && <BubleChatBot />} */}
       <HeroSection />

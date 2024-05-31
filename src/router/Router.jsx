@@ -223,7 +223,7 @@ function Router() {
 
         <Route
           key={location.key}
-          path="/marketresearch"
+          path="/founders/market-research"
           element={<MarketResearch />}
         />
       </Routes>

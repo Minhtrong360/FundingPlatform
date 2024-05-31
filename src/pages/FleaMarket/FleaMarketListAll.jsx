@@ -7,6 +7,7 @@ import { supabase } from "../../supabase";
 import Header from "../Home/Header";
 import { formatNumber } from "../../features/CostSlice";
 import FleaMarketDetail from "./FleaMarketDetail";
+import Header2 from "../Home/Header2";
 
 function FleaMarketListAll() {
   const [fleaMarketData, setFleaMarketData] = useState([]);
@@ -155,7 +156,8 @@ function FleaMarketListAll() {
 
   return (
     <div className="max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto my-12">
-      <Header />
+      {/* <Header /> */}
+      <Header2 />
       <div className="max-w-[85rem] px-3 py-2 sm:px-6 lg:px-8 lg:py-1 mx-auto mt-28">
         <div className="flex flex-col mb-8">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

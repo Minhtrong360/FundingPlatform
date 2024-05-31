@@ -517,6 +517,14 @@ const AllChartSections = ({
     setIsChartModalVisibleVer2(true);
   };
 
+  useEffect(() => {
+    setSelectedZoomChart(customerGrowthChart);
+    setIsChartModalVisible(true);
+    setTimeout(() => {
+      setIsChartModalVisible(false);
+    }, 100);
+  }, []);
+
   return (
     <div className="flex flex-col">
       <main className="flex flex-1 flex-col gap-4  mb-4 md:gap-8 ">

@@ -6,6 +6,11 @@ const FAQ = () => {
 
   const faqData = [
     {
+      question: "What is the customer support email?",
+      answer:
+        "Our customer support email is support@beekrowd.com",
+    },
+    {
       question: "What is BeeKrowd service all about?",
       answer:
         "Our platform is designed to help individuals, organizations, and causes build business and fundraising profiles effectively and efficiently. We provide a platform and tools to facilitate fundraising campaigns for various needs.",

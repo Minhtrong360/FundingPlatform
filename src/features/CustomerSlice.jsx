@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { formatNumber, parseNumber } from "./CostSlice";
+import { message } from "antd";
 
 const initialState = {
   customerInputs: [
@@ -19,6 +20,7 @@ const initialState = {
       eventBeginMonth: 1,
       eventEndMonth: 36,
       additionalInfo: "",
+      applyAdditionalInfo: false,
     },
     {
       id: 2,
@@ -36,6 +38,7 @@ const initialState = {
       eventBeginMonth: 1,
       eventEndMonth: 36,
       additionalInfo: "",
+      applyAdditionalInfo: false,
     },
   ],
   customerGrowthData: [],
@@ -101,6 +104,7 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
           }
 
           if (
+            customerInput.applyAdditionalInfo &&
             customerInput.gptResponseArray &&
             customerInput.gptResponseArray.length > month - 1
           ) {
@@ -272,7 +276,7 @@ export function generateCustomerTableData(
               parseFloat(customerInput.beginCustomer).toFixed(0)
             );
             channelAddRow[`month${i}`] = formatNumber(
-              currentCustomers.toFixed(0)
+              currentCustomers?.toFixed(0)
             );
           } else {
             if (
@@ -283,6 +287,7 @@ export function generateCustomerTableData(
             }
 
             if (
+              customerInput.applyAdditionalInfo &&
               customerInput.gptResponseArray &&
               customerInput.gptResponseArray.length > i - 1
             ) {
@@ -423,6 +428,7 @@ export function generateCustomerTableData(
             }
 
             if (
+              customerInput.applyAdditionalInfo &&
               customerInput.gptResponseArray &&
               customerInput.gptResponseArray.length > i - 1
             ) {
@@ -505,8 +511,8 @@ export const fetchGPTResponse =
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            user_input: `Dựa trên ${additionalInfo}. Tìm các hàm toán học rời rạc thỏa mãn điều kiện trên. Sau khi tìm được các hàm này, tính giá trị của hàm từ tháng ${customer.beginMonth} đến ${customer.endMonth}. 
-          Không giải thích. Chỉ trả về kết quả file JSON theo dạng [70, 100, ... 500] là giá trị của các hàm rời rạc tương ứng tại các điểm trên.`, // Treat additionalInfo as a single prompt
+            user_input: `Dựa trên ${additionalInfo}, tìm các hàm toán học rời rạc thỏa mãn điều kiện đã cho. Sau khi tìm được các hàm này, tính giá trị của hàm từ tháng ${customer.beginMonth} đến ${customer.endMonth}. 
+          Trả về kết quả file JSON theo dạng [70, 100, ... 500] là giá trị của các hàm rời rạc tương ứng tại các điểm trên and nothing else. Absolutely no explanation.`, // Treat additionalInfo as a single prompt
           }),
         }
       );
@@ -519,8 +525,11 @@ export const fetchGPTResponse =
       const cleanedResponseText = JSON.parse(
         data?.response?.replace(/json|`/g, "")
       );
+      console.log("cleanedResponseText", cleanedResponseText);
+      message.success("Your request was applied.");
       return cleanedResponseText;
     } catch (error) {
       console.error("Error fetching GPT response:", error);
+      message.error("Something was wrong. Please try again.");
     }
   };

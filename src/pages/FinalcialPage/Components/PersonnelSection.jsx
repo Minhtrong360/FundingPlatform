@@ -263,12 +263,7 @@ const PersonnelInputForm = ({
   );
 };
 
-const PersonnelSection = ({
-  numberOfMonths,
-  isSaved,
-  setIsSaved,
-  handleSubmit,
-}) => {
+const PersonnelSection = ({ numberOfMonths }) => {
   const { personnelInputs, personnelCostData } = useSelector(
     (state) => state.personnel
   );
@@ -280,11 +275,6 @@ const PersonnelSection = ({
   const [renderPersonnelForm, setRenderPersonnelForm] = useState(
     personnelInputs[0]?.id
   );
-
-  useEffect(() => {
-    setTempPersonnelInputs(personnelInputs);
-    setRenderPersonnelForm(personnelInputs[0]?.id);
-  }, [personnelInputs]);
 
   const addNewPersonnelInput = () => {
     const maxId = Math.max(...tempPersonnelInputs.map((input) => input?.id));
@@ -467,64 +457,53 @@ const PersonnelSection = ({
     series: [],
   });
 
-  const handleSave = () => {
-    setIsSaved(true);
-  };
-
   const { id } = useParams();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const saveData = async () => {
-      try {
-        setIsLoading(true);
-        if (isSaved) {
-          const { data: existingData, error: selectError } = await supabase
-            .from("finance")
-            .select("*")
-            .eq("id", id);
-          if (selectError) {
-            throw selectError;
-          }
+  const handleSave = async () => {
+    try {
+      setIsLoading(true);
 
-          if (existingData && existingData.length > 0) {
-            const { user_email, collabs } = existingData[0];
-            if (user.email !== user_email && !collabs?.includes(user.email)) {
-              message.error(
-                "You do not have permission to update this record."
-              );
-              return;
-            }
-
-            dispatch(setPersonnelInputs(tempPersonnelInputs));
-
-            const newInputData = JSON.parse(existingData[0].inputData);
-            newInputData.personnelInputs = tempPersonnelInputs;
-
-            const { error: updateError } = await supabase
-              .from("finance")
-              .update({ inputData: newInputData })
-              .eq("id", existingData[0]?.id)
-              .select();
-
-            if (updateError) {
-              throw updateError;
-            } else {
-              message.success("Data saved successfully!");
-            }
-          }
-        }
-      } catch (error) {
-        message.error(error);
-      } finally {
-        setIsSaved(false);
-        setIsLoading(false);
-        setIsInputFormOpen(false);
+      const { data: existingData, error: selectError } = await supabase
+        .from("finance")
+        .select("*")
+        .eq("id", id);
+      if (selectError) {
+        throw selectError;
       }
-    };
-    saveData();
-  }, [isSaved]);
+
+      if (existingData && existingData.length > 0) {
+        const { user_email, collabs } = existingData[0];
+        if (user.email !== user_email && !collabs?.includes(user.email)) {
+          message.error("You do not have permission to update this record.");
+          return;
+        }
+
+        dispatch(setPersonnelInputs(tempPersonnelInputs));
+
+        const newInputData = JSON.parse(existingData[0].inputData);
+        newInputData.personnelInputs = tempPersonnelInputs;
+
+        const { error: updateError } = await supabase
+          .from("finance")
+          .update({ inputData: newInputData })
+          .eq("id", existingData[0]?.id)
+          .select();
+
+        if (updateError) {
+          throw updateError;
+        } else {
+          message.success("Data saved successfully!");
+        }
+      }
+    } catch (error) {
+      message.error(error);
+    } finally {
+      setIsLoading(false);
+      setIsInputFormOpen(false);
+    }
+  };
 
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
   const [chartStartMonth, setChartStartMonth] = useState(1);
@@ -587,223 +566,289 @@ const PersonnelSection = ({
     setIsChartModalVisible(true);
   };
 
-  return (
-    <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full xl:w-3/4 sm:p-4 p-0">
-        <h3 className="text-lg font-semibold mb-8">Personnel Cost Chart</h3>
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col transition duration-500 rounded-2xl">
-            <div className="flex justify-between items-center">
-              <div className="min-w-[10vw] mb-2">
-                <label htmlFor="startMonthSelect">Start Month:</label>
-                <select
-                  id="startMonthSelect"
-                  value={chartStartMonth}
-                  onChange={(e) =>
-                    setChartStartMonth(
-                      Math.max(1, Math.min(e.target.value, chartEndMonth))
-                    )
-                  }
-                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                >
-                  {Array.from({ length: numberOfMonths }, (_, i) => {
-                    const monthIndex = (startingMonth + i - 1) % 12;
-                    const year =
-                      startingYear + Math.floor((startingMonth + i - 1) / 12);
-                    return (
-                      <option key={i + 1} value={i + 1}>
-                        {`${months[monthIndex]}/${year}`}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-              <div className="min-w-[10vw] mb-2">
-                <label htmlFor="endMonthSelect">End Month:</label>
-                <select
-                  id="endMonthSelect"
-                  value={chartEndMonth}
-                  onChange={(e) =>
-                    setChartEndMonth(
-                      Math.max(
-                        chartStartMonth,
-                        Math.min(e.target.value, numberOfMonths)
-                      )
-                    )
-                  }
-                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                >
-                  {Array.from({ length: numberOfMonths }, (_, i) => {
-                    const monthIndex = (startingMonth + i - 1) % 12;
-                    const year =
-                      startingYear + Math.floor((startingMonth + i - 1) / 12);
-                    return (
-                      <option key={i + 1} value={i + 1}>
-                        {`${months[monthIndex]}/${year}`}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-            </div>
-            <div onClick={() => handleChartClick(personnelChart)}>
-              <Chart
-                options={{
-                  ...personnelChart.options,
-                  stroke: {
-                    width: 1,
-                    curve: "straight",
-                  },
-                  xaxis: {
-                    ...personnelChart.options.xaxis,
-                  },
-                }}
-                series={personnelChart.series}
-                type="area"
-                height={350}
-              />
-            </div>
-          </Card>
-          <Modal
-            centered
-            open={isChartModalVisible}
-            footer={null}
-            onCancel={() => setIsChartModalVisible(false)}
-            width="90%"
-            style={{ top: 20 }}
-          >
-            {selectedChart && (
-              <Chart
-                options={{
-                  ...selectedChart.options,
-                }}
-                series={selectedChart.series}
-                type="area"
-                height={500}
-              />
-            )}
-          </Modal>
-        </div>
-        <h3 className="text-lg font-semibold my-4">Personnel Cost Table</h3>
-        <Table
-          className="overflow-auto my-8 rounded-md bg-white"
-          size="small"
-          dataSource={personnelCostTableData}
-          columns={personnelCostColumns}
-          pagination={false}
-          bordered
-          rowClassName={(record) =>
-            record.key === "Total" || record.isDepartment === true
-              ? "font-bold"
-              : ""
-          }
-        />
-      </div>
+  const [activeTab, setActiveTab] = useState("table&chart");
 
-      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
-        <PersonnelInputForm
-          tempPersonnelInputs={tempPersonnelInputs}
-          renderPersonnelForm={renderPersonnelForm}
-          setRenderPersonnelForm={setRenderPersonnelForm}
-          handlePersonnelInputChange={handlePersonnelInputChange}
-          formatNumber={formatNumber}
-          parseNumber={parseNumber}
-          addNewPersonnelInput={addNewPersonnelInput}
-          handleSave={handleSave}
-          isLoading={isLoading}
-          setIsDeleteModalOpen={setIsDeleteModalOpen}
-        />
+  const handleTabChange = (tabName) => {
+    setActiveTab(tabName);
+  };
+
+  return (
+    <div>
+      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm sticky top-8 z-50">
+        <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
+          <li
+            className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+              activeTab === "table&chart" ? "bg-yellow-300 font-bold" : ""
+            }`}
+            onClick={() => handleTabChange("table&chart")}
+          >
+            Table and Chart
+          </li>
+          {/* Repeat for other tabs */}
+          <li
+            className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+              activeTab === "input" ? "bg-yellow-300 font-bold" : ""
+            }`}
+            onClick={() => handleTabChange("input")}
+          >
+            Input
+          </li>
+        </ul>
       </div>
-      <div className="xl:hidden block">
-        <FloatButton
-          tooltip={<div>Input values</div>}
-          style={{
-            position: "fixed",
-            bottom: "30px",
-            right: "30px",
-          }}
-          onClick={() => {
-            setIsInputFormOpen(true);
-          }}
-        >
-          <Button type="primary" shape="circle" icon={<FileOutlined />} />
-        </FloatButton>
+      <div className="w-full h-full flex flex-col lg:flex-row">
+        {activeTab === "table&chart" && (
+          <>
+            <div className="w-full xl:w-3/4 sm:p-4 p-0">
+              <h3 className="text-lg font-semibold mb-8">
+                Personnel Cost Chart
+              </h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card className="flex flex-col transition duration-500 rounded-2xl">
+                  <div className="flex justify-between items-center">
+                    <div className="min-w-[10vw] mb-2">
+                      <label htmlFor="startMonthSelect">Start Month:</label>
+                      <select
+                        id="startMonthSelect"
+                        value={chartStartMonth}
+                        onChange={(e) =>
+                          setChartStartMonth(
+                            Math.max(1, Math.min(e.target.value, chartEndMonth))
+                          )
+                        }
+                        className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                      >
+                        {Array.from({ length: numberOfMonths }, (_, i) => {
+                          const monthIndex = (startingMonth + i - 1) % 12;
+                          const year =
+                            startingYear +
+                            Math.floor((startingMonth + i - 1) / 12);
+                          return (
+                            <option key={i + 1} value={i + 1}>
+                              {`${months[monthIndex]}/${year}`}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                    <div className="min-w-[10vw] mb-2">
+                      <label htmlFor="endMonthSelect">End Month:</label>
+                      <select
+                        id="endMonthSelect"
+                        value={chartEndMonth}
+                        onChange={(e) =>
+                          setChartEndMonth(
+                            Math.max(
+                              chartStartMonth,
+                              Math.min(e.target.value, numberOfMonths)
+                            )
+                          )
+                        }
+                        className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                      >
+                        {Array.from({ length: numberOfMonths }, (_, i) => {
+                          const monthIndex = (startingMonth + i - 1) % 12;
+                          const year =
+                            startingYear +
+                            Math.floor((startingMonth + i - 1) / 12);
+                          return (
+                            <option key={i + 1} value={i + 1}>
+                              {`${months[monthIndex]}/${year}`}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                  </div>
+                  <div onClick={() => handleChartClick(personnelChart)}>
+                    <Chart
+                      options={{
+                        ...personnelChart.options,
+                        stroke: {
+                          width: 1,
+                          curve: "straight",
+                        },
+                        xaxis: {
+                          ...personnelChart.options.xaxis,
+                        },
+                      }}
+                      series={personnelChart.series}
+                      type="area"
+                      height={350}
+                    />
+                  </div>
+                </Card>
+                <Modal
+                  centered
+                  open={isChartModalVisible}
+                  footer={null}
+                  onCancel={() => setIsChartModalVisible(false)}
+                  width="90%"
+                  style={{ top: 20 }}
+                >
+                  {selectedChart && (
+                    <Chart
+                      options={{
+                        ...selectedChart.options,
+                      }}
+                      series={selectedChart.series}
+                      type="area"
+                      height={500}
+                    />
+                  )}
+                </Modal>
+              </div>
+              <h3 className="text-lg font-semibold my-4">
+                Personnel Cost Table
+              </h3>
+              <Table
+                className="overflow-auto my-8 rounded-md bg-white"
+                size="small"
+                dataSource={personnelCostTableData}
+                columns={personnelCostColumns}
+                pagination={false}
+                bordered
+                rowClassName={(record) =>
+                  record.key === "Total" || record.isDepartment === true
+                    ? "font-bold"
+                    : ""
+                }
+              />
+            </div>
+            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
+              <button
+                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
+                style={{ bottom: "20px", right: "20px", position: "fixed" }}
+                onClick={handleSave}
+              >
+                {isLoading ? (
+                  <SpinnerBtn />
+                ) : (
+                  <>
+                    <CheckCircleOutlined
+                      style={{
+                        fontSize: "12px",
+                        color: "#FFFFFF",
+                        marginRight: "4px",
+                      }}
+                    />
+                    Save
+                  </>
+                )}
+              </button>
+            </div>
+          </>
+        )}
+        {activeTab === "input" && (
+          <>
+            <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
+
+            <div className="w-full xl:w-1/4 sm:p-4 p-0">
+              <PersonnelInputForm
+                tempPersonnelInputs={tempPersonnelInputs}
+                renderPersonnelForm={renderPersonnelForm}
+                setRenderPersonnelForm={setRenderPersonnelForm}
+                handlePersonnelInputChange={handlePersonnelInputChange}
+                formatNumber={formatNumber}
+                parseNumber={parseNumber}
+                addNewPersonnelInput={addNewPersonnelInput}
+                handleSave={handleSave}
+                isLoading={isLoading}
+                setIsDeleteModalOpen={setIsDeleteModalOpen}
+              />
+            </div>
+            {/* <div className="xl:hidden block">
+              <FloatButton
+                tooltip={<div>Input values</div>}
+                style={{
+                  position: "fixed",
+                  bottom: "30px",
+                  right: "30px",
+                }}
+                onClick={() => {
+                  setIsInputFormOpen(true);
+                }}
+              >
+                <Button type="primary" shape="circle" icon={<FileOutlined />} />
+              </FloatButton>
+            </div> */}
+            {isInputFormOpen && (
+              <Modal
+                open={isInputFormOpen}
+                onOk={() => {
+                  handleSave();
+                  setIsInputFormOpen(false);
+                }}
+                onCancel={() => {
+                  setTempPersonnelInputs(personnelInputs);
+                  setIsInputFormOpen(false);
+                }}
+                okText={isLoading ? <SpinnerBtn /> : "Save Change"}
+                cancelText="Cancel"
+                cancelButtonProps={{
+                  style: {
+                    borderRadius: "0.375rem",
+                    cursor: "pointer",
+                  },
+                }}
+                okButtonProps={{
+                  style: {
+                    background: "#2563EB",
+                    borderColor: "#2563EB",
+                    color: "#fff",
+                    borderRadius: "0.375rem",
+                    cursor: "pointer",
+                    minWidth: "5vw",
+                  },
+                }}
+                footer={null}
+                centered={true}
+                zIndex={50}
+              >
+                <PersonnelInputForm
+                  tempPersonnelInputs={tempPersonnelInputs}
+                  renderPersonnelForm={renderPersonnelForm}
+                  setRenderPersonnelForm={setRenderPersonnelForm}
+                  handlePersonnelInputChange={handlePersonnelInputChange}
+                  formatNumber={formatNumber}
+                  parseNumber={parseNumber}
+                  addNewPersonnelInput={addNewPersonnelInput}
+                  handleSave={handleSave}
+                  isLoading={isLoading}
+                  setIsDeleteModalOpen={setIsDeleteModalOpen}
+                />
+              </Modal>
+            )}
+            {isDeleteModalOpen && (
+              <Modal
+                title="Confirm Delete"
+                open={isDeleteModalOpen}
+                onOk={confirmDelete}
+                onCancel={() => setIsDeleteModalOpen(false)}
+                okText="Delete"
+                cancelText="Cancel"
+                cancelButtonProps={{
+                  style: {
+                    borderRadius: "0.375rem",
+                    cursor: "pointer",
+                  },
+                }}
+                okButtonProps={{
+                  style: {
+                    background: "#f5222d",
+                    borderColor: "#f5222d",
+                    color: "#fff",
+                    borderRadius: "0.375rem",
+                    cursor: "pointer",
+                  },
+                }}
+                centered={true}
+              >
+                Are you sure you want to delete it?
+              </Modal>
+            )}
+          </>
+        )}
       </div>
-      {isInputFormOpen && (
-        <Modal
-          open={isInputFormOpen}
-          onOk={() => {
-            handleSave();
-            setIsInputFormOpen(false);
-          }}
-          onCancel={() => {
-            setTempPersonnelInputs(personnelInputs);
-            setIsInputFormOpen(false);
-          }}
-          okText={isLoading ? <SpinnerBtn /> : "Save Change"}
-          cancelText="Cancel"
-          cancelButtonProps={{
-            style: {
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-            },
-          }}
-          okButtonProps={{
-            style: {
-              background: "#2563EB",
-              borderColor: "#2563EB",
-              color: "#fff",
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-              minWidth: "5vw",
-            },
-          }}
-          footer={null}
-          centered={true}
-          zIndex={50}
-        >
-          <PersonnelInputForm
-            tempPersonnelInputs={tempPersonnelInputs}
-            renderPersonnelForm={renderPersonnelForm}
-            setRenderPersonnelForm={setRenderPersonnelForm}
-            handlePersonnelInputChange={handlePersonnelInputChange}
-            formatNumber={formatNumber}
-            parseNumber={parseNumber}
-            addNewPersonnelInput={addNewPersonnelInput}
-            handleSave={handleSave}
-            isLoading={isLoading}
-            setIsDeleteModalOpen={setIsDeleteModalOpen}
-          />
-        </Modal>
-      )}
-      {isDeleteModalOpen && (
-        <Modal
-          title="Confirm Delete"
-          open={isDeleteModalOpen}
-          onOk={confirmDelete}
-          onCancel={() => setIsDeleteModalOpen(false)}
-          okText="Delete"
-          cancelText="Cancel"
-          cancelButtonProps={{
-            style: {
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-            },
-          }}
-          okButtonProps={{
-            style: {
-              background: "#f5222d",
-              borderColor: "#f5222d",
-              color: "#fff",
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-            },
-          }}
-          centered={true}
-        >
-          Are you sure you want to delete it?
-        </Modal>
-      )}
     </div>
   );
 };

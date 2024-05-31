@@ -1,3 +1,5 @@
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+
 import {
   Select,
   SelectTrigger,
@@ -113,32 +115,30 @@ const CostInputForm = ({
               </SelectContent>
             </Select>
           </div>
-          {input.costType === "Based on Revenue" && (
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <span className="flex items-center text-sm">Cost Group:</span>
-              <Select
-                className="border-gray-300"
-                onValueChange={(value) =>
-                  handleCostInputChange(input?.id, "costGroup", value)
-                }
-                value={input.costGroup}
+          <div className="grid grid-cols-2 gap-4 mb-3">
+            <span className="flex items-center text-sm">Cost Group:</span>
+            <Select
+              className="border-gray-300"
+              onValueChange={(value) =>
+                handleCostInputChange(input?.id, "costGroup", value)
+              }
+              value={input.costGroup}
+            >
+              <SelectTrigger
+                id={`select-costType-${input?.id}`}
+                className="border-solid border-[1px] border-gray-300"
               >
-                <SelectTrigger
-                  id={`select-costType-${input?.id}`}
-                  className="border-solid border-[1px] border-gray-300"
-                >
-                  <SelectValue placeholder="Select Cost Type" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  {costGroupArray.map((cost) => (
-                    <SelectItem value={cost} key={cost}>
-                      {cost}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
+                <SelectValue placeholder="Select Cost Type" />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                {costGroupArray.map((cost, index) => (
+                  <SelectItem value={cost} key={index}>
+                    {cost}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           {input.costType === "Based on Revenue" ? (
             <>
               <div className="grid grid-cols-2 gap-4 mb-3">
@@ -156,6 +156,7 @@ const CostInputForm = ({
                   Related Product:
                 </span>
                 <Select
+                  disabled={input.applyAdditionalInfo}
                   className="mb-4"
                   placeholder="Select Related Revenue"
                   value={input.relatedRevenue}
@@ -180,6 +181,7 @@ const CostInputForm = ({
                   Cost Value (% Revenue):
                 </span>
                 <Input
+                  disabled={input.applyAdditionalInfo}
                   className="col-start-2 border-gray-300"
                   type="text"
                   value={formatNumber(input.salePercentage)}
@@ -227,6 +229,21 @@ const CostInputForm = ({
                   }
                 />
               </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <Checkbox
+                  className="col-span-2"
+                  checked={input.applyAdditionalInfo}
+                  onChange={(e) =>
+                    handleCostInputChange(
+                      input?.id,
+                      "applyAdditionalInfo",
+                      e.target.checked
+                    )
+                  }
+                >
+                  Apply Advance Input
+                </Checkbox>
+              </div>
             </>
           ) : (
             <>
@@ -243,6 +260,7 @@ const CostInputForm = ({
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <span className="flex items-center text-sm">Cost Value:</span>
                 <Input
+                  disabled={input.applyAdditionalInfo}
                   className="col-start-2 border-gray-300"
                   type="text"
                   value={formatNumber(input.costValue)}
@@ -260,6 +278,7 @@ const CostInputForm = ({
                   Growth Percentage (%):
                 </span>
                 <Input
+                  disabled={input.applyAdditionalInfo}
                   className="col-start-2 border-gray-300"
                   type="text"
                   value={formatNumber(input.growthPercentage)}
@@ -275,6 +294,7 @@ const CostInputForm = ({
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <span className="flex items-center text-sm">Frequency:</span>
                 <Select
+                  disabled={input.applyAdditionalInfo}
                   className="border-gray-300"
                   onValueChange={(value) =>
                     handleCostInputChange(input?.id, "growthFrequency", value)
@@ -329,6 +349,21 @@ const CostInputForm = ({
                   }
                 />
               </div>
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <Checkbox
+                  className="col-span-2"
+                  checked={input.applyAdditionalInfo}
+                  onChange={(e) =>
+                    handleCostInputChange(
+                      input?.id,
+                      "applyAdditionalInfo",
+                      e.target.checked
+                    )
+                  }
+                >
+                  Apply Advance Input
+                </Checkbox>
+              </div>
             </>
           )}
           <div className="grid grid-cols-2 gap-4 mb-3">
@@ -340,6 +375,7 @@ const CostInputForm = ({
               Show Advanced Inputs
             </Checkbox>
           </div>
+
           {showAdvancedInputs && (
             <Modal
               title="Advanced Inputs"
@@ -372,7 +408,7 @@ const CostInputForm = ({
                   Additional Info:
                 </span>
                 <TextArea
-                  className="col-start-2 border-gray-300"
+                  className="col-start-2 border-gray-300 text-sm"
                   value={input.additionalInfo}
                   onChange={(e) =>
                     handleCostInputChange(
@@ -442,6 +478,23 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
   );
   const { revenueData } = useSelector((state) => state.sales);
 
+  const onDragEnd = useCallback(
+    (result) => {
+      const { destination, source } = result;
+
+      if (!destination) {
+        return;
+      }
+
+      const reorderedData = Array.from(costTableData);
+      const [removed] = reorderedData.splice(source.index, 1);
+      reorderedData.splice(destination.index, 0, removed);
+
+      dispatch(setCostTableData(reorderedData));
+    },
+    [costTableData]
+  );
+
   const dispatch = useDispatch();
 
   const [tempCostInput, setTempCostInput] = useState(costInputs);
@@ -465,6 +518,13 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
         costGroup: input.costGroup || costGroupArray[0],
       }))
     );
+
+    const calculatedData = calculateCostData(
+      costInputs,
+      numberOfMonths,
+      revenueData
+    );
+    dispatch(setCostData(calculatedData));
   }, [costInputs, revenueData]);
 
   const addNewCostInput = () => {
@@ -527,15 +587,6 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
 
   useEffect(() => {
     const calculatedData = calculateCostData(
-      costInputs,
-      numberOfMonths,
-      revenueData
-    );
-    dispatch(setCostData(calculatedData));
-  }, [costInputs, numberOfMonths]);
-
-  useEffect(() => {
-    const calculatedData = calculateCostData(
       tempCostInput,
       numberOfMonths,
       revenueData
@@ -550,28 +601,6 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
     dispatch(setCostTableData(costTableData));
   }, [tempCostInput, numberOfMonths]);
 
-  const debouncedUpdateCostData = useCallback(
-    debounce((tempCostInput, numberOfMonths, revenueData) => {
-      const calculatedData = calculateCostData(
-        tempCostInput,
-        numberOfMonths,
-        revenueData
-      );
-      setTempCostData(calculatedData);
-
-      const costTableData = transformCostDataForTable(
-        tempCostInput,
-        numberOfMonths,
-        revenueData
-      );
-      dispatch(setCostTableData(costTableData));
-    }, 300),
-    []
-  );
-
-  useEffect(() => {
-    debouncedUpdateCostData(tempCostInput, numberOfMonths, revenueData);
-  }, [tempCostInput, numberOfMonths]);
   const months = [
     "01",
     "02",
@@ -596,13 +625,16 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
   const [modifiedCells, setModifiedCells] = useState({});
 
   const handleInputTable = (value, recordKey, monthKey) => {
+    // Extract month number from the monthKey
+
+    // Update gptResponseArray in tempCustomerInputs
     const monthIndex = parseInt(monthKey.replace("month", "")) - 1;
 
     const updatedData = costTableData.map((record) => {
       if (record.key === recordKey) {
         return {
           ...record,
-          [monthKey]: value,
+          [monthKey]: formatNumber(value.toFixed(2)),
         };
       }
       return record;
@@ -610,10 +642,22 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
 
     dispatch(setCostTableData(updatedData));
 
-    setModifiedCells((prev) => ({
-      ...prev,
-      [`${recordKey}-${monthKey}`]: true,
-    }));
+    const updatedTempCostInputs = tempCostInput?.map((input) => {
+      if (input.costName === recordKey.split(" -")[0]) {
+        const updatedGPTResponseArray = input.gptResponseArray
+          ? [...input.gptResponseArray]
+          : [];
+        updatedGPTResponseArray[monthIndex] = Number(value);
+
+        return {
+          ...input,
+          gptResponseArray: updatedGPTResponseArray,
+        };
+      }
+      return input;
+    });
+
+    setTempCostInput(updatedTempCostInputs);
   };
 
   const costColumns = [
@@ -640,7 +684,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
           const cellKey = `${record.key}-month${i + 1}`;
           const isModified = modifiedCells[cellKey];
 
-          if (record.key !== "Total") {
+          if (!record.isHeader && record.key !== "Total") {
             return (
               <div className={isModified ? "bg-yellow-300" : ""}>
                 <input
@@ -648,7 +692,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
                   value={record[`month${i + 1}`]}
                   onChange={(e) =>
                     handleInputTable(
-                      e.target.value,
+                      parseNumber(e.target.value),
                       record.key,
                       `month${i + 1}`
                     )
@@ -663,9 +707,6 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
       };
     }),
   ];
-
-
- 
 
   const [costChart, setCostChart] = useState({
     options: {
@@ -750,66 +791,55 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
     series: [],
   });
 
-  const handleSave = () => {
-    setIsSaved(true);
+  const handleSave = async () => {
+    try {
+      setIsLoading(true);
+
+      const { data: existingData, error: selectError } = await supabase
+        .from("finance")
+        .select("*")
+        .eq("id", id);
+      if (selectError) {
+        throw selectError;
+      }
+
+      if (existingData && existingData.length > 0) {
+        const { user_email, collabs } = existingData[0];
+
+        if (user.email !== user_email && !collabs?.includes(user.email)) {
+          message.error("You do not have permission to update this record.");
+          return;
+        }
+
+        dispatch(setCostInputs(tempCostInput));
+
+        const newInputData = JSON.parse(existingData[0].inputData);
+
+        newInputData.costInputs = tempCostInput;
+
+        const { error: updateError } = await supabase
+          .from("finance")
+          .update({ inputData: newInputData })
+          .eq("id", existingData[0]?.id)
+          .select();
+
+        if (updateError) {
+          throw updateError;
+        } else {
+          message.success("Data saved successfully!");
+        }
+      }
+    } catch (error) {
+      message.error(error);
+    } finally {
+      setIsLoading(false);
+      setIsInputFormOpen(false);
+    }
   };
 
   const { id } = useParams();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    const saveData = async () => {
-      try {
-        setIsLoading(true);
-        if (isSaved) {
-          const { data: existingData, error: selectError } = await supabase
-            .from("finance")
-            .select("*")
-            .eq("id", id);
-          if (selectError) {
-            throw selectError;
-          }
-
-          if (existingData && existingData.length > 0) {
-            const { user_email, collabs } = existingData[0];
-
-            if (user.email !== user_email && !collabs?.includes(user.email)) {
-              message.error(
-                "You do not have permission to update this record."
-              );
-              return;
-            }
-
-            dispatch(setCostInputs(tempCostInput));
-
-            const newInputData = JSON.parse(existingData[0].inputData);
-
-            newInputData.costInputs = tempCostInput;
-
-            const { error: updateError } = await supabase
-              .from("finance")
-              .update({ inputData: newInputData })
-              .eq("id", existingData[0]?.id)
-              .select();
-
-            if (updateError) {
-              throw updateError;
-            } else {
-              message.success("Data saved successfully!");
-            }
-          }
-        }
-      } catch (error) {
-        message.error(error);
-      } finally {
-        setIsSaved(false);
-        setIsLoading(false);
-        setIsInputFormOpen(false);
-      }
-    };
-    saveData();
-  }, [isSaved]);
 
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
   const [chartStartMonth, setChartStartMonth] = useState(1);
@@ -887,19 +917,23 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
           )
         );
       }
-      console.log("responseGPT", responseGPT);
       // Check if responseGPT is an object with a single key that holds an array
+      console.log("responseGPT", responseGPT);
+
       let gptResponseArray = [];
-      if (responseGPT && typeof responseGPT === "object") {
-        const keys = Object.keys(responseGPT);
-        if (keys.length === 1 && Array.isArray(responseGPT[keys[0]])) {
-          gptResponseArray = responseGPT[keys[0]];
-        } else {
+      if (responseGPT) {
+        if (Array.isArray(responseGPT)) {
+          // If responseGPT is already an array, use it directly
           gptResponseArray = responseGPT;
+        } else if (typeof responseGPT === "object") {
+          // If responseGPT is an object with multiple keys, get the first array found
+          const keys = Object.keys(responseGPT);
+          if (keys.length > 0 && Array.isArray(responseGPT[keys[0]])) {
+            gptResponseArray = responseGPT[keys[0]];
+          }
         }
-      } else {
-        gptResponseArray = responseGPT;
       }
+
       console.log("gptResponseArray", gptResponseArray);
 
       const updatedTempCostInputs = tempCostInput.map((input) => {
@@ -907,6 +941,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
           return {
             ...input,
             gptResponseArray: gptResponseArray, // assuming gptResponseArray contains the required data
+            applyAdditionalInfo: true,
           };
         }
         return input;
@@ -920,235 +955,313 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
       setIsLoading(false);
     }
   };
+  const [activeTab, setActiveTab] = useState("table&chart");
 
-  console.log("tempCostInput", tempCostInput);
+  const handleTabChange = (tabName) => {
+    setActiveTab(tabName);
+  };
+
   return (
-    <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full xl:w-3/4 sm:p-4 p-0">
-        <h3 className="text-lg font-semibold mb-8">Cost Chart</h3>
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card className="flex flex-col transition duration-500 rounded-2xl">
-            <div className="flex justify-between items-center">
-              <div className="min-w-[10vw] mb-2">
-                <label htmlFor="startMonthSelect">Start Month:</label>
-                <select
-                  id="startMonthSelect"
-                  value={chartStartMonth}
-                  onChange={(e) =>
-                    setChartStartMonth(
-                      Math.max(1, Math.min(e.target.value, chartEndMonth))
-                    )
-                  }
-                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
-                >
-                  {Array.from({ length: numberOfMonths }, (_, i) => {
-                    const monthIndex = (startingMonth + i - 1) % 12;
-                    const year =
-                      startingYear + Math.floor((startingMonth + i - 1) / 12);
-                    return (
-                      <option key={i + 1} value={i + 1}>
-                        {`${months[monthIndex]}/${year}`}
-                      </option>
-                    );
-                  })}
-                </select>
+    <div>
+      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm sticky top-8 z-50">
+        <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
+          <li
+            className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+              activeTab === "table&chart" ? "bg-yellow-300 font-bold" : ""
+            }`}
+            onClick={() => handleTabChange("table&chart")}
+          >
+            Table and Chart
+          </li>
+          {/* Repeat for other tabs */}
+          <li
+            className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+              activeTab === "input" ? "bg-yellow-300 font-bold" : ""
+            }`}
+            onClick={() => handleTabChange("input")}
+          >
+            Input
+          </li>
+        </ul>
+      </div>
+      <div className="w-full h-full flex flex-col lg:flex-row">
+        {activeTab === "table&chart" && (
+          <>
+            <div className="w-full xl:w-3/4 sm:p-4 p-0">
+              <h3 className="text-lg font-semibold mb-8">Cost Chart</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card className="flex flex-col transition duration-500 rounded-2xl">
+                  <div className="flex justify-between items-center">
+                    <div className="min-w-[10vw] mb-2">
+                      <label htmlFor="startMonthSelect">Start Month:</label>
+                      <select
+                        id="startMonthSelect"
+                        value={chartStartMonth}
+                        onChange={(e) =>
+                          setChartStartMonth(
+                            Math.max(1, Math.min(e.target.value, chartEndMonth))
+                          )
+                        }
+                        className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                      >
+                        {Array.from({ length: numberOfMonths }, (_, i) => {
+                          const monthIndex = (startingMonth + i - 1) % 12;
+                          const year =
+                            startingYear +
+                            Math.floor((startingMonth + i - 1) / 12);
+                          return (
+                            <option key={i + 1} value={i + 1}>
+                              {`${months[monthIndex]}/${year}`}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                    <div className="min-w-[10vw] mb-2">
+                      <label htmlFor="endMonthSelect">End Month:</label>
+                      <select
+                        id="endMonthSelect"
+                        value={chartEndMonth}
+                        onChange={(e) =>
+                          setChartEndMonth(
+                            Math.max(
+                              chartStartMonth,
+                              Math.min(e.target.value, numberOfMonths)
+                            )
+                          )
+                        }
+                        className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                      >
+                        {Array.from({ length: numberOfMonths }, (_, i) => {
+                          const monthIndex = (startingMonth + i - 1) % 12;
+                          const year =
+                            startingYear +
+                            Math.floor((startingMonth + i - 1) / 12);
+                          return (
+                            <option key={i + 1} value={i + 1}>
+                              {`${months[monthIndex]}/${year}`}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                  </div>
+                  <div onClick={() => handleChartClick(costChart)}>
+                    <Chart
+                      options={{
+                        ...costChart.options,
+                        xaxis: {
+                          ...costChart.options.xaxis,
+                        },
+                        stroke: { width: 1, curve: "straight" },
+                      }}
+                      series={costChart.series}
+                      type="area"
+                      height={350}
+                    />
+                  </div>
+                </Card>
               </div>
-              <div className="min-w-[10vw] mb-2">
-                <label htmlFor="endMonthSelect">End Month:</label>
+              <Modal
+                centered
+                open={isChartModalVisible}
+                footer={null}
+                onCancel={() => setIsChartModalVisible(false)}
+                width="90%"
+                style={{ top: 20 }}
+              >
+                {selectedChart && (
+                  <Chart
+                    options={{
+                      ...selectedChart.options,
+                    }}
+                    series={selectedChart.series}
+                    type="area"
+                    height={500}
+                  />
+                )}
+              </Modal>
+              <h3 className="text-lg font-semibold my-4">Cost Table</h3>
+              {/* <div>
+                <label
+                  htmlFor="selectedChannel"
+                  className="block my-4 text-base darkTextWhite"
+                ></label>
                 <select
-                  id="endMonthSelect"
-                  value={chartEndMonth}
-                  onChange={(e) =>
-                    setChartEndMonth(
-                      Math.max(
-                        chartStartMonth,
-                        Math.min(e.target.value, numberOfMonths)
-                      )
-                    )
-                  }
+                  id="selectedChannel"
                   className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                  value={renderCostForm}
+                  onChange={(e) => setRenderCostForm(e.target.value)}
                 >
-                  {Array.from({ length: numberOfMonths }, (_, i) => {
-                    const monthIndex = (startingMonth + i - 1) % 12;
-                    const year =
-                      startingYear + Math.floor((startingMonth + i - 1) / 12);
-                    return (
-                      <option key={i + 1} value={i + 1}>
-                        {`${months[monthIndex]}/${year}`}
-                      </option>
-                    );
-                  })}
+                  {tempCostInput.map((input) => (
+                    <option key={input?.id} value={input?.id}>
+                      {input.costName}
+                    </option>
+                  ))}
                 </select>
-              </div>
-            </div>
-            <div onClick={() => handleChartClick(costChart)}>
-              <Chart
-                options={{
-                  ...costChart.options,
-                  xaxis: {
-                    ...costChart.options.xaxis,
-                  },
-                  stroke: { width: 1, curve: "straight" },
-                }}
-                series={costChart.series}
-                type="area"
-                height={350}
+              </div> */}
+              <Table
+                className="overflow-auto my-8 rounded-md bg-white"
+                size="small"
+                dataSource={costTableData}
+                columns={costColumns}
+                pagination={false}
+                bordered
+                rowClassName={(record) =>
+                  record.key === "Total" || record.isHeader ? "font-bold" : ""
+                }
               />
             </div>
-          </Card>
-        </div>
-        <Modal
-          centered
-          open={isChartModalVisible}
-          footer={null}
-          onCancel={() => setIsChartModalVisible(false)}
-          width="90%"
-          style={{ top: 20 }}
-        >
-          {selectedChart && (
-            <Chart
-              options={{
-                ...selectedChart.options,
-              }}
-              series={selectedChart.series}
-              type="area"
-              height={500}
-            />
-          )}
-        </Modal>
-        <h3 className="text-lg font-semibold my-4">Cost Table</h3>
-        <Table
-          className="overflow-auto my-8 rounded-md bg-white"
-          size="small"
-          dataSource={costTableData}
-          columns={costColumns}
-          pagination={false}
-          bordered
-          rowClassName={(record) =>
-            record.key === "Total" || record.isHeader ? "font-bold" : ""
-          }
-        />
+            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
+              <button
+                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
+                style={{ bottom: "20px", right: "20px", position: "fixed" }}
+                onClick={handleSave}
+              >
+                {isLoading ? (
+                  <SpinnerBtn />
+                ) : (
+                  <>
+                    <CheckCircleOutlined
+                      style={{
+                        fontSize: "12px",
+                        color: "#FFFFFF",
+                        marginRight: "4px",
+                      }}
+                    />
+                    Save
+                  </>
+                )}
+              </button>
+            </div>
+          </>
+        )}
+        {activeTab === "input" && (
+          <>
+            <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
+
+            <div className="w-full xl:w-1/4 sm:p-4 p-0 ">
+              <CostInputForm
+                tempCostInput={tempCostInput}
+                renderCostForm={renderCostForm}
+                setRenderCostForm={setRenderCostForm}
+                handleCostInputChange={handleCostInputChange}
+                formatNumber={formatNumber}
+                parseNumber={parseNumber}
+                costGroupArray={costGroupArray}
+                revenueData={revenueData}
+                addNewCostInput={addNewCostInput}
+                handleSave={handleSave}
+                isLoading={isLoading}
+                setIsDeleteModalOpen={setIsDeleteModalOpen}
+                handleCostTypeChange={handleCostTypeChange}
+                showAdvancedInputs={showAdvancedInputs}
+                setShowAdvancedInputs={setShowAdvancedInputs}
+                handleFetchGPT={handleFetchGPT}
+              />
+            </div>
+
+            {/* <div className="xl:hidden block">
+              <FloatButton
+                tooltip={<div>Input values</div>}
+                style={{
+                  position: "fixed",
+                  bottom: "30px",
+                  right: "30px",
+                }}
+                onClick={() => {
+                  setIsInputFormOpen(true);
+                }}
+              >
+                <Button type="primary" shape="circle" icon={<FileOutlined />} />
+              </FloatButton>
+            </div> */}
+
+            {isInputFormOpen && (
+              <Modal
+                open={isInputFormOpen}
+                onOk={() => {
+                  handleSave();
+                  setIsInputFormOpen(false);
+                }}
+                onCancel={() => {
+                  setTempCostInput(costInputs);
+                  setIsInputFormOpen(false);
+                }}
+                okText={isLoading ? <SpinnerBtn /> : "Save Change"}
+                cancelText="Cancel"
+                cancelButtonProps={{
+                  style: {
+                    borderRadius: "0.375rem",
+                    cursor: "pointer",
+                  },
+                }}
+                okButtonProps={{
+                  style: {
+                    background: "#2563EB",
+                    borderColor: "#2563EB",
+                    color: "#fff",
+                    borderRadius: "0.375rem",
+                    cursor: "pointer",
+                    minWidth: "5vw",
+                  },
+                }}
+                footer={null}
+                centered={true}
+                zIndex={50}
+              >
+                <CostInputForm
+                  tempCostInput={tempCostInput}
+                  renderCostForm={renderCostForm}
+                  setRenderCostForm={setRenderCostForm}
+                  handleCostInputChange={handleCostInputChange}
+                  formatNumber={formatNumber}
+                  parseNumber={parseNumber}
+                  costGroupArray={costGroupArray}
+                  revenueData={revenueData}
+                  addNewCostInput={addNewCostInput}
+                  handleSave={handleSave}
+                  isLoading={isLoading}
+                  setIsDeleteModalOpen={setIsDeleteModalOpen}
+                  handleCostTypeChange={handleCostTypeChange}
+                  showAdvancedInputs={showAdvancedInputs}
+                  setShowAdvancedInputs={setShowAdvancedInputs}
+                  handleFetchGPT={handleFetchGPT}
+                />
+              </Modal>
+            )}
+
+            {isDeleteModalOpen && (
+              <Modal
+                title="Confirm Delete"
+                open={isDeleteModalOpen}
+                onOk={confirmDelete}
+                onCancel={() => setIsDeleteModalOpen(false)}
+                okText="Delete"
+                cancelText="Cancel"
+                cancelButtonProps={{
+                  style: {
+                    borderRadius: "0.375rem",
+                    cursor: "pointer",
+                  },
+                }}
+                okButtonProps={{
+                  style: {
+                    background: "#f5222d",
+                    borderColor: "#f5222d",
+                    color: "#fff",
+                    borderRadius: "0.375rem",
+                    cursor: "pointer",
+                  },
+                }}
+                centered={true}
+              >
+                Are you sure you want to delete it?
+              </Modal>
+            )}
+          </>
+        )}
       </div>
-
-      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
-        <CostInputForm
-          tempCostInput={tempCostInput}
-          renderCostForm={renderCostForm}
-          setRenderCostForm={setRenderCostForm}
-          handleCostInputChange={handleCostInputChange}
-          formatNumber={formatNumber}
-          parseNumber={parseNumber}
-          costGroupArray={costGroupArray}
-          revenueData={revenueData}
-          addNewCostInput={addNewCostInput}
-          handleSave={handleSave}
-          isLoading={isLoading}
-          setIsDeleteModalOpen={setIsDeleteModalOpen}
-          handleCostTypeChange={handleCostTypeChange}
-          showAdvancedInputs={showAdvancedInputs}
-          setShowAdvancedInputs={setShowAdvancedInputs}
-          handleFetchGPT={handleFetchGPT}
-        />
-      </div>
-
-      <div className="xl:hidden block">
-        <FloatButton
-          tooltip={<div>Input values</div>}
-          style={{
-            position: "fixed",
-            bottom: "30px",
-            right: "30px",
-          }}
-          onClick={() => {
-            setIsInputFormOpen(true);
-          }}
-        >
-          <Button type="primary" shape="circle" icon={<FileOutlined />} />
-        </FloatButton>
-      </div>
-
-      {isInputFormOpen && (
-        <Modal
-          open={isInputFormOpen}
-          onOk={() => {
-            handleSave();
-            setIsInputFormOpen(false);
-          }}
-          onCancel={() => {
-            setTempCostInput(costInputs);
-            setIsInputFormOpen(false);
-          }}
-          okText={isLoading ? <SpinnerBtn /> : "Save Change"}
-          cancelText="Cancel"
-          cancelButtonProps={{
-            style: {
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-            },
-          }}
-          okButtonProps={{
-            style: {
-              background: "#2563EB",
-              borderColor: "#2563EB",
-              color: "#fff",
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-              minWidth: "5vw",
-            },
-          }}
-          footer={null}
-          centered={true}
-          zIndex={50}
-        >
-          <CostInputForm
-            tempCostInput={tempCostInput}
-            renderCostForm={renderCostForm}
-            setRenderCostForm={setRenderCostForm}
-            handleCostInputChange={handleCostInputChange}
-            formatNumber={formatNumber}
-            parseNumber={parseNumber}
-            costGroupArray={costGroupArray}
-            revenueData={revenueData}
-            addNewCostInput={addNewCostInput}
-            handleSave={handleSave}
-            isLoading={isLoading}
-            setIsDeleteModalOpen={setIsDeleteModalOpen}
-            handleCostTypeChange={handleCostTypeChange}
-            showAdvancedInputs={showAdvancedInputs}
-            setShowAdvancedInputs={setShowAdvancedInputs}
-            handleFetchGPT={handleFetchGPT}
-          />
-        </Modal>
-      )}
-
-      {isDeleteModalOpen && (
-        <Modal
-          title="Confirm Delete"
-          open={isDeleteModalOpen}
-          onOk={confirmDelete}
-          onCancel={() => setIsDeleteModalOpen(false)}
-          okText="Delete"
-          cancelText="Cancel"
-          cancelButtonProps={{
-            style: {
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-            },
-          }}
-          okButtonProps={{
-            style: {
-              background: "#f5222d",
-              borderColor: "#f5222d",
-              color: "#fff",
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-            },
-          }}
-          centered={true}
-        >
-          Are you sure you want to delete it?
-        </Modal>
-      )}
     </div>
   );
 };

@@ -98,7 +98,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   const { personnelCostData, personnelInputs } = useSelector(
     (state) => state.personnel
   );
- 
+
   useEffect(() => {
     const calculatedData = calculatePersonnelCostData(
       personnelInputs,
@@ -192,11 +192,11 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   const startingMonth = startMonth; // Tháng bắt đầu từ 1
   const startingYear = startYear; // Năm bắt đầu từ 24
 
-const realDate = Array.from({ length: numberOfMonths }, (_, i) => {
-  const monthIndex = (startingMonth + i - 1) % 12;
-  const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
-  return `${monthIndex + 1}-${year}`;
-});
+  const realDate = Array.from({ length: numberOfMonths }, (_, i) => {
+    const monthIndex = (startingMonth + i - 1) % 12;
+    const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+    return `${monthIndex + 1}-${year}`;
+  });
   const profitAndLossData = [
     { key: "Revenue" },
     { key: "Total Revenue", values: totalRevenue },
@@ -303,7 +303,6 @@ const realDate = Array.from({ length: numberOfMonths }, (_, i) => {
     "11",
     "12",
   ];
-  
 
   const columns = [
     {
@@ -851,14 +850,13 @@ const realDate = Array.from({ length: numberOfMonths }, (_, i) => {
             Profit and Loss Statement
           </h2>
           {/* <pre>{JSON.stringify(tableData, null, 2)}</pre> */}
-          
+
           <Table
             className="overflow-auto my-8 rounded-md bg-white"
             size="small"
             bordered
             dataSource={transposedData}
             columns={columns}
-  
             pagination={false}
           />
 

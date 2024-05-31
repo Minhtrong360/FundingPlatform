@@ -330,7 +330,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
             <span className="flex items-center text-sm">Description :</span>
           </Tooltip>
           <TextArea
-            className="border-gray-300 rounded-2xl"
+            className="border-gray-300 rounded-2xl text-sm"
             type="text"
             value={description}
             onChange={(e) => dispatch(setDescription(e.target.value))}

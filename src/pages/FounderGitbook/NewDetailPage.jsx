@@ -160,7 +160,7 @@ export default function NewDetailPage({ location }) {
                 blocks={blocks}
               />
 
-              <div className="mt-4  w-4/5 mx-auto sm:px-8  ">
+              <div className="mt-4  sm:w-4/5 w-full mx-auto sm:px-8  ">
                 <MyTab
                   blocks={blocks}
                   setBlocks={setBlocks}

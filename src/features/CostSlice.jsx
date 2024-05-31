@@ -11,8 +11,10 @@ const initialState = {
       endMonth: 36,
       growthFrequency: "Monthly",
       costType: "Based on Revenue",
+      costGroup: "Professional Fees",
       salePercentage: 5,
       relatedRevenue: "Offline - Cake",
+      applyAdditionalInfo: false,
     },
     {
       id: 2,
@@ -23,8 +25,10 @@ const initialState = {
       endMonth: 36,
       growthFrequency: "Annually",
       costType: "Sales, Marketing Cost",
+      costGroup: "Professional Fees",
       salePercentage: 0,
       relatedRevenue: "",
+      applyAdditionalInfo: false,
     },
     {
       id: 3,
@@ -35,8 +39,10 @@ const initialState = {
       endMonth: 36,
       growthFrequency: "Annually",
       costType: "General Administrative Cost",
+      costGroup: "Rent",
       salePercentage: 0,
       relatedRevenue: "",
+      applyAdditionalInfo: false,
     },
   ],
   costData: [],
@@ -89,8 +95,8 @@ export const calculateCostData = (
     let monthlyCosts = [];
     let currentCost = parseFloat(costInput.costValue);
     for (let month = 1; month <= numberOfMonths; month++) {
-      if (costInput.gptResponseArray?.length) {
-        // Use gptResponseArray if it exists
+      if (costInput.applyAdditionalInfo && costInput.gptResponseArray?.length) {
+        // Use gptResponseArray if applyAdditionalInfo is true and gptResponseArray exists
         currentCost = costInput.gptResponseArray[month - 1] || 0;
         monthlyCosts.push({ month: month, cost: currentCost });
       } else if (costInput.costType === "Based on Revenue") {
@@ -133,6 +139,7 @@ export const calculateCostData = (
       costName: costInput.costName,
       monthlyCosts,
       costType: costInput.costType,
+      costGroup: costInput.costGroup, // Include the cost group in the cost data
     });
   });
   return allCosts;
@@ -151,13 +158,13 @@ export const transformCostDataForTable = (
   );
 
   calculatedCostData?.forEach((costItem) => {
-    const rowKey = `${costItem.costName}`;
+    const rowKey = `${costItem.costName} - ${costItem.costGroup}`;
     costItem.monthlyCosts.forEach((monthData) => {
       if (!transformedTableData[rowKey]) {
         transformedTableData[rowKey] = {
           key: rowKey,
           costName: rowKey,
-          costType: costItem.costType, // Include the cost type for grouping
+          costGroup: costItem.costGroup, // Include the cost group for grouping
         };
       }
       transformedTableData[rowKey][`month${monthData.month}`] = formatNumber(
@@ -166,22 +173,24 @@ export const transformCostDataForTable = (
     });
   });
 
-  // Group costs by costType
-  const costTypes = [...new Set(tempCostInput.map((input) => input.costType))];
+  // Group costs by costGroup
+  const costGroups = [
+    ...new Set(tempCostInput.map((input) => input.costGroup)),
+  ];
   const categorizedTableData = [];
 
-  costTypes.forEach((type) => {
+  costGroups.forEach((group) => {
     categorizedTableData.push({
-      key: `${type}`,
-      costName: `${type}`,
+      key: `${group}`,
+      costName: `${group}`,
       isHeader: true,
     });
 
-    const costsOfType = Object.values(transformedTableData).filter(
-      (data) => data.costType === type
+    const costsOfGroup = Object.values(transformedTableData).filter(
+      (data) => data.costGroup === group
     );
 
-    costsOfType.forEach((data) => categorizedTableData.push(data));
+    costsOfGroup.forEach((data) => categorizedTableData.push(data));
   });
 
   // Add total row

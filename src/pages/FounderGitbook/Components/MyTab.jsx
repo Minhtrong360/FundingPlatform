@@ -445,33 +445,32 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
       }`}
     >
       {fullScreen === false && (
-       <>
-       <aside className="sticky z-20 top-0 bg-white">
-         <div className="w-full  py-8 overflow-x-auto">
-           <nav className="flex space-x-4">
-             {/* Navbar */}
-             {Object.keys(tabContents).map((tab) => (
-               <div
-                 key={tab}
-                 className={`cursor-pointer flex items-center px-3 py-2 text-sm font-medium ${
-                   activeTab === tab
-                     ? "text-blue-600 bg-blue-100 rounded-md"
-                     : "text-gray-600"
-                 }`}
-                 onClick={() => handleTabChange(tab)}
-               >
-                 {tab}
-               </div>
-             ))}
-           </nav>
-         </div>
-       </aside>
-       <div className="w-full py-8 px-0 md:pl-8">
-         {/* Content */}
-         {tabContents[activeTab]}
-       </div>
-     </>
-     
+        <>
+          <aside className="sticky z-20 top-0 bg-white">
+            <div className="w-full  py-8 overflow-x-auto">
+              <nav className="flex justify-between sm:space-x-4 sm:pl-14">
+                {/* Navbar */}
+                {Object.keys(tabContents).map((tab) => (
+                  <div
+                    key={tab}
+                    className={`cursor-pointer flex items-center sm:px-3 px-1 py-2 text-sm font-medium ${
+                      activeTab === tab
+                        ? "text-blue-600 bg-blue-100 rounded-md"
+                        : "text-gray-600"
+                    }`}
+                    onClick={() => handleTabChange(tab)}
+                  >
+                    {tab}
+                  </div>
+                ))}
+              </nav>
+            </div>
+          </aside>
+          <div className="w-full py-8 px-0 md:pl-8">
+            {/* Content */}
+            {tabContents[activeTab]}
+          </div>
+        </>
       )}
       {fullScreen === true && (
         <BlockNoteView

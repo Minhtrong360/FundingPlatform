@@ -22,6 +22,10 @@ import { supabase } from "../../../supabase";
 import { useAuth } from "../../../context/AuthContext";
 import FilesList from "../FilesList";
 
+import * as Y from "yjs";
+import { WebrtcProvider } from "y-webrtc";
+import YPartyKitProvider from "y-partykit/provider";
+
 function LoaderIcon(props) {
   return (
     <svg
@@ -168,6 +172,15 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
     }
   }
 
+  // const doc = new Y.Doc();
+
+  // const provider = new YPartyKitProvider(
+  //   "blocknote-dev.yousefed.partykit.dev",
+  //   // use a unique name as a "room" for your application:
+  //   "your-project-name",
+  //   doc
+  // );
+  // console.log("provider", provider);
   const editor = useBlockNote({
     blockSpecs: blockSpecs,
     uploadFile: uploadToCustomDatabase,
@@ -175,6 +188,18 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
       ...getDefaultReactSlashMenuItems(blockSchema),
       insertYouTubeLink,
     ],
+
+    // collaboration: {
+    //   // The Yjs Provider responsible for transporting updates:
+    //   provider,
+    //   // Where to store BlockNote data in the Y.Doc:
+    //   fragment: doc.getXmlFragment("document-store"),
+    //   // Information (name and color) for this user:
+    //   user: {
+    //     name: "My Username",
+    //     color: "#ff0000",
+    //   },
+    // },
 
     onEditorContentChange: function (editor) {
       setBlocks(editor.topLevelBlocks);
@@ -329,12 +354,12 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
                 theme={"light"}
                 className="w-full lg:w-12/12"
               />
-              <div className="mt-28">
-                <div className="text-black font-semibold">Keywords:</div>
+              {company?.keyWords && (
+                <div className="mt-28 px-5">
+                  <div className="text-black font-semibold">Keywords:</div>
 
-                <div className="mt-2">
-                  {company?.keyWords &&
-                    company.keyWords.split(",").map((keyWord, index) => {
+                  <div className="mt-2">
+                    {company.keyWords.split(",").map((keyWord, index) => {
                       const trimmedKeyword = keyWord.trim(); // Loại bỏ khoảng trắng ở đầu và cuối
                       if (trimmedKeyword) {
                         return (
@@ -348,28 +373,31 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
                       }
                       return null; // Loại bỏ từ khóa nếu chỉ còn khoảng trắng
                     })}
+                  </div>
                 </div>
+              )}
+              <div className="px-5">
+                {user?.id === currentProject?.user_id ||
+                currentProject?.collabs?.includes(user.email) ? (
+                  <button
+                    className={`min-w-[110px] mt-8 hover:cursor-pointer py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent ${
+                      isLoading
+                        ? "bg-gray-600 disabled:opacity-50 disabled:pointer-events-none"
+                        : "bg-blue-600 text-white hover:bg-blue-700"
+                    }  `}
+                    onClick={handleSave}
+                    type="button"
+                  >
+                    {isLoading ? (
+                      <div className="animate-spin h-5 w-5 text-white">
+                        <LoaderIcon className="h-full w-full" />
+                      </div>
+                    ) : (
+                      "Save profile"
+                    )}
+                  </button>
+                ) : null}
               </div>
-              {user?.id === currentProject?.user_id ||
-              currentProject?.collabs?.includes(user.email) ? (
-                <button
-                  className={`min-w-[110px] mt-8 hover:cursor-pointer py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent ${
-                    isLoading
-                      ? "bg-gray-600 disabled:opacity-50 disabled:pointer-events-none"
-                      : "bg-blue-600 text-white hover:bg-blue-700"
-                  }  `}
-                  onClick={handleSave}
-                  type="button"
-                >
-                  {isLoading ? (
-                    <div className="animate-spin h-5 w-5 text-white">
-                      <LoaderIcon className="h-full w-full" />
-                    </div>
-                  ) : (
-                    "Save profile"
-                  )}
-                </button>
-              ) : null}
               <Modal
                 ariaHideApp={false}
                 isOpen={isModalOpen}
@@ -440,7 +468,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
 
   return (
     <div
-      className={`container mr-8 px-8  flex flex-col  ${
+      className={`px-8  flex flex-col  ${
         fullScreen === true ? "justify-center items-center" : ""
       }`}
     >
@@ -448,7 +476,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
         <>
           <aside className="sticky z-20 top-0 bg-white">
             <div className="w-full  py-8 overflow-x-auto">
-              <nav className="flex justify-between sm:space-x-4 sm:pl-14">
+              <nav className="flex justify-between sm:space-x-4 sm:px-14">
                 {/* Navbar */}
                 {Object.keys(tabContents).map((tab) => (
                   <div
@@ -466,7 +494,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
               </nav>
             </div>
           </aside>
-          <div className="w-full py-8 px-0 md:pl-8">
+          <div className="w-full py-8 px-0 md:px-8">
             {/* Content */}
             {tabContents[activeTab]}
           </div>
@@ -476,7 +504,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
         <BlockNoteView
           editor={editor}
           theme={"light"}
-          className="w-full lg:w-8/12 my-12"
+          className="w-full my-12"
         />
       )}
     </div>

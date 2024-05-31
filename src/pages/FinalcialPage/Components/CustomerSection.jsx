@@ -41,6 +41,7 @@ import { useParams } from "react-router-dom";
 import {
   CheckCircleOutlined,
   DeleteOutlined,
+  DownloadOutlined,
   FileOutlined,
   PlusCircleOutlined,
   PlusOutlined,
@@ -52,6 +53,9 @@ import {
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import SpinnerBtn from "../../../components/SpinnerBtn";
+
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
 
 const CustomerInputsForm = React.memo(
   ({
@@ -405,7 +409,17 @@ const CustomerSection = React.memo(
       { value: "exponential", label: "Exponential" },
       { value: "logarithmic", label: "Logarithmic" },
     ];
-    const handleChartClick = (chart) => {
+
+    const handleChartClick = (chart, event) => {
+      console.log("event", event);
+      const toolbar = document.querySelector(".apexcharts-toolbar");
+      console.log("toolbar", toolbar);
+      if (toolbar && toolbar.contains(event.target)) {
+        console.log("1");
+        // Click was on the toolbar, so don't open the modal
+        return;
+      }
+
       setSelectedChart(chart);
       setIsChartModalVisible(true);
     };
@@ -942,10 +956,10 @@ const CustomerSection = React.memo(
             ...seriesData.map((channelSeries) => ({
               options: {
                 ...prevState.options,
-                chart: {
-                  ...prevState.options.chart,
-                  id: channelSeries.name,
-                },
+                // chart: {
+                //   ...prevState.options.chart,
+                //   id: channelSeries.name,
+                // },
                 xaxis: {
                   axisTicks: {
                     show: false,
@@ -1207,6 +1221,54 @@ const CustomerSection = React.memo(
     const handleTabChange = (tabName) => {
       setActiveTab(tabName);
     };
+
+    const downloadExcel = () => {
+      const workBook = XLSX.utils.book_new();
+
+      // Create worksheet data in the desired format
+      const worksheetData = [
+        [
+          "Channel Name",
+          ...Array.from({ length: numberOfMonths }, (_, i) => {
+            const monthIndex = (startingMonth + i - 1) % 12;
+            const year =
+              startingYear + Math.floor((startingMonth + i - 1) / 12);
+            return `${months[monthIndex]}/${year}`;
+          }),
+        ],
+      ];
+
+      // Add rows for each channel
+      customerTableData.forEach((record) => {
+        const row = [record.channelName];
+        for (let i = 1; i <= numberOfMonths; i++) {
+          row.push(record[`month${i}`] || "");
+        }
+        worksheetData.push(row);
+      });
+
+      // Convert data to worksheet
+      const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+      // Add worksheet to workbook
+      XLSX.utils.book_append_sheet(workBook, worksheet, "Customer Data");
+
+      // Write workbook and trigger download
+      const wbout = XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
+
+      function s2ab(s) {
+        const buf = new ArrayBuffer(s.length);
+        const view = new Uint8Array(buf);
+        for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+        return buf;
+      }
+
+      saveAs(
+        new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
+        "customer_data.xlsx"
+      );
+    };
+
     return (
       <div>
         <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm sticky top-8 z-50">
@@ -1300,35 +1362,34 @@ const CustomerSection = React.memo(
                           </select>
                         </div>
                       </div>
-                      <div onClick={() => handleChartClick(chart)}>
-                        <Chart
-                          options={{
-                            ...chart.options,
-                            fill: {
-                              type: "gradient",
+                      <Chart
+                        options={{
+                          ...chart.options,
+                          fill: {
+                            type: "gradient",
 
-                              gradient: {
-                                shade: "light",
-                                shadeIntensity: 0.5,
-                                opacityFrom: 0.75,
-                                opacityTo: 0.65,
-                                stops: [0, 90, 100],
-                              },
+                            gradient: {
+                              shade: "light",
+                              shadeIntensity: 0.5,
+                              opacityFrom: 0.75,
+                              opacityTo: 0.65,
+                              stops: [0, 90, 100],
                             },
-                            xaxis: {
-                              ...chart.options.xaxis,
-                              // tickAmount: 12, // Set the number of ticks on the x-axis to 12
-                            },
-                            stroke: {
-                              width: 1,
-                              curve: "straight", // Set the stroke width to 1
-                            },
-                          }}
-                          series={chart.series}
-                          type="area"
-                          height={350}
-                        />
-                      </div>
+                          },
+                          xaxis: {
+                            ...chart.options.xaxis,
+                            // tickAmount: 12, // Set the number of ticks on the x-axis to 12
+                          },
+                          stroke: {
+                            width: 1,
+                            curve: "straight", // Set the stroke width to 1
+                          },
+                        }}
+                        series={chart.series}
+                        type="area"
+                        height={350}
+                        onClick={(event) => handleChartClick(chart, event)}
+                      />
                     </Card>
                   ))}
 
@@ -1336,11 +1397,13 @@ const CustomerSection = React.memo(
                     <Card
                       key={index}
                       className="flex flex-col transition duration-500  rounded-2xl"
-                      onClick={() => handleChartClick(chart)}
                     >
                       <Chart
                         options={{
                           ...chart.options,
+                          chart: {
+                            ...customerGrowthChart.options.chart,
+                          },
                           xaxis: {
                             ...chart.options.xaxis,
                             // tickAmount: 12, // Set the number of ticks on the x-axis to 12
@@ -1352,6 +1415,7 @@ const CustomerSection = React.memo(
                         series={chart.series}
                         type="area"
                         height={350}
+                        onClick={(event) => handleChartClick(chart, event)}
                       />
                     </Card>
                   ))}
@@ -1370,6 +1434,7 @@ const CustomerSection = React.memo(
                         ...selectedChart.options,
                         // ... other options
                       }}
+                      className="p-4"
                       series={selectedChart.series}
                       type="area"
                       height={500}
@@ -1377,7 +1442,16 @@ const CustomerSection = React.memo(
                   )}
                 </AntdModal>
                 <span>
-                  <h3 className="text-lg font-semibold my-4">Customer Table</h3>
+                  <div className="flex justify-between items-center my-4">
+                    <h3 className="text-lg font-semibold">Customer Table</h3>
+                    <button
+                      onClick={downloadExcel}
+                      className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
+                    >
+                      <DownloadOutlined className="mr-1" />
+                      Download Excel
+                    </button>
+                  </div>
                   <div>
                     <label
                       htmlFor="selectedChannel"
@@ -1398,6 +1472,7 @@ const CustomerSection = React.memo(
                     </select>
                   </div>
                 </span>
+
                 <Table
                   className="bg-white overflow-auto  my-8 rounded-md"
                   size="small"
@@ -1413,7 +1488,7 @@ const CustomerSection = React.memo(
               <div className="w-full xl:w-1/4 sm:p-4 p-0   ">
                 <button
                   className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
-                  style={{ bottom: "20px", right: "20px", position: "fixed" }}
+                  style={{ bottom: "20px", right: "80px", position: "fixed" }}
                   onClick={handleSave}
                 >
                   {isLoading ? (

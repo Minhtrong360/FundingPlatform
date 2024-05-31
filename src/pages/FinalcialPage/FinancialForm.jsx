@@ -215,7 +215,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           enabled: false, // Disable zooming
         },
         toolbar: {
-          show: false, // Hide the toolbar
+          show: true,
+          tools: {
+            download: true,
+          },
         },
         id: "customer-growth-chart",
         type: "area",
@@ -317,7 +320,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           enabled: false, // Disable zooming
         },
         toolbar: {
-          show: false, // Hide the toolbar
+          show: true,
+          tools: {
+            download: true,
+          },
         },
         animations: {
           enabled: false,
@@ -1000,7 +1006,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                             className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
                             style={{
                               bottom: "20px",
-                              right: "20px",
+                              right: "80px",
                               position: "fixed",
                             }}
                             onClick={handleSubmit}

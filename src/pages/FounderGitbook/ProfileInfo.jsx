@@ -218,7 +218,7 @@ export default function ProfileInfo({
     <div
       key="1"
       className={`max-w-7xl ${
-        canClick === false ? "mt-4 " : "mx-auto sm:mt-26 mt-16"
+        canClick === false ? "mt-4 " : "mx-auto sm:mt-24 mt-16"
       } px-4 sm:px-6 lg:px-8 `}
     >
       {showConfirmation && (

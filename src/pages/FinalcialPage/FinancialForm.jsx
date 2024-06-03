@@ -478,18 +478,223 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         );
         dispatch(setStartYear(inputData.startYear || new Date().getFullYear()));
 
-        dispatch(setCustomerInputs(inputData.customerInputs || customerInputs));
-        dispatch(setChannelInputs(inputData.channelInputs || channelInputs));
-        dispatch(setCostInputs(inputData.costInputs || costInputs));
         dispatch(
-          setPersonnelInputs(inputData.personnelInputs || personnelInputs)
+          setCustomerInputs(
+            inputData.customerInputs || [
+              {
+                id: 1,
+                customersPerMonth: 300,
+                growthPerMonth: 1,
+                customerGrowthFrequency: "Monthly",
+                channelName: "Online",
+                beginMonth: 1,
+                endMonth: 36,
+                beginCustomer: 0,
+                churnRate: 0,
+                acquisitionCost: 0,
+                localGrowthRate: 1,
+                eventName: "",
+                eventBeginMonth: 1,
+                eventEndMonth: 36,
+                additionalInfo: "",
+                applyAdditionalInfo: false,
+              },
+              {
+                id: 2,
+                customersPerMonth: 400,
+                growthPerMonth: 2,
+                customerGrowthFrequency: "Monthly",
+                channelName: "Offline",
+                beginMonth: 1,
+                endMonth: 36,
+                beginCustomer: 0,
+                churnRate: 0,
+                acquisitionCost: 0,
+                localGrowthRate: 1,
+                eventName: "",
+                eventBeginMonth: 1,
+                eventEndMonth: 36,
+                additionalInfo: "",
+                applyAdditionalInfo: false,
+              },
+            ]
+          )
         );
         dispatch(
-          setInvestmentInputs(inputData.investmentInputs || investmentInputs)
+          setChannelInputs(
+            inputData.channelInputs || [
+              {
+                id: 1,
+                productName: "Coffee",
+                price: 4,
+                multiples: 1,
+                deductionPercentage: 5,
+                cogsPercentage: 30,
+                selectedChannel: { id: 1, channelName: "Online" },
+                channelAllocation: 0.4,
+                daysGetPaid: 0,
+              },
+              {
+                id: 2,
+                productName: "Cake",
+                price: 8,
+                multiples: 1,
+                deductionPercentage: 4,
+                cogsPercentage: 35,
+                selectedChannel: { id: 2, channelName: "Offline" },
+                channelAllocation: 0.3,
+                daysGetPaid: 0,
+              },
+              {
+                id: 3,
+                productName: "Coffee Bag",
+                price: 6,
+                multiples: 1,
+                deductionPercentage: 6,
+                cogsPercentage: 25,
+                selectedChannel: { id: 2, channelName: "Offline" },
+                channelAllocation: 0.6,
+                daysGetPaid: 0,
+              },
+            ]
+          )
         );
-        dispatch(setLoanInputs(inputData.loanInputs || loanInputs));
         dispatch(
-          setFundraisingInputs(inputData.fundraisingInputs || fundraisingInputs)
+          setCostInputs(
+            inputData.costInputs || [
+              {
+                id: 1,
+                costName: "Website",
+                costValue: 1000,
+                growthPercentage: 5,
+                beginMonth: 1,
+                endMonth: 36,
+                growthFrequency: "Monthly",
+                costType: "Based on Revenue",
+                costGroup: "Professional Fees",
+                salePercentage: 5,
+                relatedRevenue: "Offline - Cake",
+                applyAdditionalInfo: false,
+              },
+              {
+                id: 2,
+                costName: "Marketing",
+                costValue: 500,
+                growthPercentage: 10,
+                beginMonth: 1,
+                endMonth: 36,
+                growthFrequency: "Annually",
+                costType: "Sales, Marketing Cost",
+                costGroup: "Professional Fees",
+                salePercentage: 0,
+                relatedRevenue: "",
+                applyAdditionalInfo: false,
+              },
+              {
+                id: 3,
+                costName: "Rent",
+                costValue: 1000,
+                growthPercentage: 4,
+                beginMonth: 1,
+                endMonth: 36,
+                growthFrequency: "Annually",
+                costType: "General Administrative Cost",
+                costGroup: "Rent",
+                salePercentage: 0,
+                relatedRevenue: "",
+                applyAdditionalInfo: false,
+              },
+            ]
+          )
+        );
+        dispatch(
+          setPersonnelInputs(
+            inputData.personnelInputs || [
+              {
+                id: 1,
+                jobTitle: "Cashier",
+                department: "Sales", // Updated to lowercase
+                salaryPerMonth: 800,
+                increasePerYear: 10,
+                growthSalaryFrequency: "Annually",
+                numberOfHires: 2,
+                jobBeginMonth: 1,
+                jobEndMonth: 36,
+              },
+              {
+                id: 2,
+                jobTitle: "Manager",
+                department: "Management", // Updated to lowercase
+                salaryPerMonth: 2000,
+                increasePerYear: 10,
+                growthSalaryFrequency: "Annually",
+                numberOfHires: 1,
+                jobBeginMonth: 1,
+                jobEndMonth: 36,
+              },
+            ]
+          )
+        );
+        dispatch(
+          setInvestmentInputs(
+            inputData.investmentInputs || [
+              {
+                id: 1,
+                purchaseName: "Coffee machine",
+                assetCost: 8000,
+                quantity: 1,
+                purchaseMonth: 2,
+                residualValue: 0,
+                usefulLifetime: 36,
+              },
+
+              {
+                id: 2,
+                purchaseName: "Table",
+                assetCost: 200,
+                quantity: 10,
+                purchaseMonth: 1,
+                residualValue: 0,
+                usefulLifetime: 36,
+              },
+            ]
+          )
+        );
+        dispatch(
+          setLoanInputs(
+            inputData.loanInputs || [
+              {
+                id: 1,
+                loanName: "Banking loan",
+                loanAmount: "30000",
+                interestRate: "6",
+                loanBeginMonth: "1",
+                loanEndMonth: "36",
+              },
+              {
+                id: 2,
+                loanName: "Startup loan",
+                loanAmount: "20000",
+                interestRate: "3",
+                loanBeginMonth: "1",
+                loanEndMonth: "36",
+              },
+            ]
+          )
+        );
+        dispatch(
+          setFundraisingInputs(
+            inputData.fundraisingInputs || [
+              {
+                id: 1,
+                name: "",
+                fundraisingAmount: 0,
+                fundraisingType: "Common Stock",
+                fundraisingBeginMonth: 1,
+                equityOffered: 0,
+              },
+            ]
+          )
         );
       }
 

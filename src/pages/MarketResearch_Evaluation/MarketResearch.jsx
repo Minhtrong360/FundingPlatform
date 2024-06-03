@@ -2,6 +2,7 @@ import { Tabs, Tag } from "antd";
 import { useState } from "react";
 import Perflexity from "../FinalcialPage/Components/Perflexity";
 import Header2 from "../Home/Header2";
+import Header from "../Home/Header";
 const { TabPane } = Tabs;
 
 export default function MarketResearch() {
@@ -26,7 +27,8 @@ export default function MarketResearch() {
 
   return (
     <>
-      <Header2 />
+      <Header />
+      {/* <Header2 /> */}
 
       <div
         key="1"

@@ -591,7 +591,7 @@ const AllChartSections = ({
               {selectedZoomChart && (
                 <Chart
                   options={{
-                    ...selectedZoomChart.options,
+                    ...selectedZoomChart?.options,
                     grid: {
                       show: false,
                     },
@@ -607,7 +607,7 @@ const AllChartSections = ({
                       },
                     },
                     xaxis: {
-                      ...selectedZoomChart.options.xaxis,
+                      ...selectedZoomChart?.options?.xaxis,
                       categories: Array.from(
                         { length: numberOfMonths },
                         (_, i) => {
@@ -620,7 +620,7 @@ const AllChartSections = ({
                     },
                     stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
                   }}
-                  series={selectedZoomChart.series}
+                  series={selectedZoomChart?.series}
                   type="area"
                   height={500}
                   className="p-4"

@@ -27,8 +27,8 @@ export default function MarketResearch() {
 
   return (
     <>
-      <Header />
-      {/* <Header2 /> */}
+      {/* <Header /> */}
+      <Header2 />
 
       <div
         key="1"

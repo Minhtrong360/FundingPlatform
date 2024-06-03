@@ -345,8 +345,8 @@ const HomePage = () => {
 
   return (
     <>
-      <Header />
-      {/* <Header2 /> */}
+      {/* <Header /> */}
+      <Header2 />
 
       {/* {user && <BubleChatBot />} */}
       <HeroSection />

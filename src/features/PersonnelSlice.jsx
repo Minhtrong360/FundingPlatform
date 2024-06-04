@@ -90,7 +90,7 @@ export const calculatePersonnelCostData = (
       }
     }
     allPersonnelCosts.push({
-      jobTitle: `${personnelInput.jobTitle} (${personnelInput.numberOfHires})`,
+      jobTitle: `${personnelInput.jobTitle}`,
       department: personnelInput?.department?.toLowerCase(), // Normalize department to lowercase
       monthlyCosts,
     });

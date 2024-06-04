@@ -490,6 +490,25 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     );
   };
 
+  const downloadJSON = () => {
+    const investmentTableData = transformInvestmentDataForTable(
+      tempInvestmentInputs,
+      renderInvestmentForm,
+      tempInvestmentData,
+      numberOfMonths
+    );
+    const data = {
+      tempInvestmentInputs,
+      investmentTableData,
+    };
+
+    const jsonBlob = new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json",
+    });
+
+    saveAs(jsonBlob, "investment_data.json");
+  };
+
   return (
     <div>
       <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm sticky top-8 z-50">
@@ -636,6 +655,13 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                 >
                   <DownloadOutlined className="mr-1" />
                   Download Excel
+                </button>
+                <button
+                  onClick={downloadJSON}
+                  className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
+                >
+                  <DownloadOutlined className="mr-1" />
+                  Download JSON
                 </button>
               </div>{" "}
               <div>

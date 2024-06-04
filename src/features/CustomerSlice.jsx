@@ -310,6 +310,8 @@ export function generateCustomerTableData(
               }
             }
 
+            startRow[`month${i}`] = 0;
+
             channelAddRow[`month${i}`] = formatNumber(
               currentCustomers.toFixed(0)
             );
@@ -450,6 +452,8 @@ export function generateCustomerTableData(
                 currentCustomers *= 1 + growthRate / 100;
               }
             }
+
+            startRow[`month${i}`] = 0;
 
             channelAddRow[`month${i}`] = formatNumber(
               currentCustomers.toFixed(0)

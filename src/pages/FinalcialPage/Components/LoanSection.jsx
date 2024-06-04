@@ -56,7 +56,7 @@ const LoanInputForm = ({
         ></label>
         <select
           id="selectedChannel"
-          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
           value={renderLoanForm}
           onChange={(e) => setRenderLoanForm(e.target.value)}
         >
@@ -707,7 +707,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                               )
                             )
                           }
-                          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                         >
                           {Array.from({ length: numberOfMonths }, (_, i) => {
                             const monthIndex = (startingMonth + i - 1) % 12;
@@ -735,7 +735,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                               )
                             )
                           }
-                          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                         >
                           {Array.from({ length: numberOfMonths }, (_, i) => {
                             const monthIndex = (startingMonth + i - 1) % 12;
@@ -807,7 +807,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                 ></label>
                 <select
                   id="selectedChannel"
-                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                   value={renderLoanForm}
                   onChange={(e) => setRenderLoanForm(e.target.value)}
                 >

@@ -79,7 +79,7 @@ const ChannelInputForm = ({
         ></label>
         <select
           id="renderChannelForm"
-          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
           value={renderChannelForm}
           onChange={(e) => setRenderChannelForm(e.target.value)}
         >
@@ -813,7 +813,7 @@ const SalesSection = ({
                               )
                             )
                           }
-                          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                         >
                           {Array.from({ length: numberOfMonths }, (_, i) => {
                             const monthIndex = (startingMonth + i - 1) % 12;
@@ -841,7 +841,7 @@ const SalesSection = ({
                               )
                             )
                           }
-                          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                         >
                           {Array.from({ length: numberOfMonths }, (_, i) => {
                             const monthIndex = (startingMonth + i - 1) % 12;
@@ -909,7 +909,7 @@ const SalesSection = ({
                 ></label>
                 <select
                   id="renderChannelForm"
-                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                   value={renderChannelForm}
                   onChange={(e) => setRenderChannelForm(e.target.value)}
                 >

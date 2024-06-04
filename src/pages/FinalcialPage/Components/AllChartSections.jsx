@@ -517,13 +517,13 @@ const AllChartSections = ({
     setIsChartModalVisibleVer2(true);
   };
 
-  useEffect(() => {
-    setSelectedZoomChart(customerGrowthChart);
-    setIsChartModalVisible(true);
-    setTimeout(() => {
-      setIsChartModalVisible(false);
-    }, 100);
-  }, []);
+  // useEffect(() => {
+  //   setSelectedZoomChart(customerGrowthChart);
+  //   setIsChartModalVisible(true);
+  //   setTimeout(() => {
+  //     setIsChartModalVisible(false);
+  //   }, 100);
+  // }, []);
 
   return (
     <div className="flex flex-col">

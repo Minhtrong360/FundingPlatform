@@ -67,21 +67,30 @@ const costSlice = createSlice({
 
 export const formatNumber = (value) => {
   try {
-    const stringValue = value?.toString()?.replace(/,/g, "");
+    if (value == null) return "0";
+    const stringValue = value.toString().replace(/,/g, "");
     return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  } catch (error) {}
+  } catch (error) {
+    console.error("Error formatting number:", error);
+    return value;
+  }
 };
 
 export const parseNumber = (value) => {
-  if (typeof value === "string") {
-    const numberString = value.replace(/,/g, "");
-    const parsedNumber = parseFloat(numberString);
-    if (isNaN(parsedNumber)) {
-      return 0;
+  try {
+    if (typeof value === "string") {
+      const numberString = value.replace(/,/g, "");
+      const parsedNumber = parseFloat(numberString);
+      if (isNaN(parsedNumber)) {
+        return 0;
+      }
+      return parsedNumber;
+    } else {
+      return value;
     }
-    return parsedNumber;
-  } else {
-    return value;
+  } catch (error) {
+    console.error("Error parsing number:", error);
+    return 0;
   }
 };
 
@@ -99,7 +108,11 @@ export const calculateCostData = (
         // Use gptResponseArray if applyAdditionalInfo is true and gptResponseArray exists
         currentCost = costInput.gptResponseArray[month - 1] || 0;
         monthlyCosts.push({ month: month, cost: currentCost });
-      } else if (costInput.costType === "Based on Revenue") {
+      } else if (
+        costInput.costType === "Based on Revenue" &&
+        month >= costInput.beginMonth &&
+        month <= costInput.endMonth
+      ) {
         const relatedRevenue = revenueData[costInput.relatedRevenue] || [];
         const revenueForMonth = relatedRevenue[month - 1] || 0;
         currentCost = (costInput.salePercentage / 100) * revenueForMonth;

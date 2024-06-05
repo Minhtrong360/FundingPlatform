@@ -658,8 +658,35 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       tempFundraisingInputs,
       numberOfMonths
     );
+
+    // Update personnel inputs with formatted job begin and end months
+    const updateFundraisingInputs = tempFundraisingInputs.map((input) => {
+      const monthIndexStart =
+        (Number(startingMonth) + Number(input.fundraisingBeginMonth) - 2) % 12;
+
+      const yearStart =
+        Number(startingYear) +
+        Math.floor(
+          (Number(startingMonth) + Number(input.fundraisingBeginMonth) - 2) / 12
+        );
+
+      // const monthIndexEnd =
+      //   (Number(startingMonth) + Number(input.jobEndMonth) - 2) % 12;
+      // const yearEnd =
+      //   Number(startingYear) +
+      //   Math.floor(
+      //     (Number(startingMonth) + Number(input.jobEndMonth) - 2) / 12
+      //   );
+
+      return {
+        ...input,
+        fundraisingInputs: `${months[monthIndexStart]}/${yearStart}`,
+        // jobEndMonth: `${months[monthIndexEnd]}/${yearEnd}`,
+      };
+    });
+
     const data = {
-      tempFundraisingInputs,
+      fundraisingInputs: updateFundraisingInputs,
       fundraisingTableData,
     };
 

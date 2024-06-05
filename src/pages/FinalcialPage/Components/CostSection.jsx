@@ -1016,8 +1016,29 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
   };
 
   const downloadJSON = () => {
+    // Update personnel inputs with formatted job begin and end months
+    const updateCostInputs = tempCostInput.map((input) => {
+      const monthIndexStart =
+        (Number(startingMonth) + Number(input.beginMonth) - 2) % 12;
+
+      const yearStart =
+        Number(startingYear) +
+        Math.floor((Number(startingMonth) + Number(input.beginMonth) - 2) / 12);
+
+      const monthIndexEnd =
+        (Number(startingMonth) + Number(input.endMonth) - 2) % 12;
+      const yearEnd =
+        Number(startingYear) +
+        Math.floor((Number(startingMonth) + Number(input.endMonth) - 2) / 12);
+
+      return {
+        ...input,
+        beginMonth: `${months[monthIndexStart]}/${yearStart}`,
+        endMonth: `${months[monthIndexEnd]}/${yearEnd}`,
+      };
+    });
     const data = {
-      tempCostInput,
+      costInput: updateCostInputs,
       costTableData,
     };
 

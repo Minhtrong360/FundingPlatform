@@ -497,8 +497,27 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       tempInvestmentData,
       numberOfMonths
     );
+
+    // Update personnel inputs with formatted job begin and end months
+    const updateInvestmentInputs = tempInvestmentInputs.map((input) => {
+      const monthIndexStart =
+        (Number(startingMonth) + Number(input.purchaseMonth) - 2) % 12;
+
+      const yearStart =
+        Number(startingYear) +
+        Math.floor(
+          (Number(startingMonth) + Number(input.purchaseMonth) - 2) / 12
+        );
+
+      return {
+        ...input,
+        purchaseMonth: `${months[monthIndexStart]}/${yearStart}`,
+        // jobEndMonth: `${months[monthIndexEnd]}/${yearEnd}`,
+      };
+    });
+
     const data = {
-      tempInvestmentInputs,
+      investmentInputs: updateInvestmentInputs,
       investmentTableData,
     };
 

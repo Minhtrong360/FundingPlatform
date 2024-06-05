@@ -657,8 +657,34 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       renderLoanForm,
       numberOfMonths
     );
+
+    // Update personnel inputs with formatted job begin and end months
+    const updateLoanInputs = tempLoanInputs.map((input) => {
+      const monthIndexStart =
+        (Number(startingMonth) + Number(input.loanBeginMonth) - 2) % 12;
+
+      const yearStart =
+        Number(startingYear) +
+        Math.floor(
+          (Number(startingMonth) + Number(input.loanBeginMonth) - 2) / 12
+        );
+
+      const monthIndexEnd =
+        (Number(startingMonth) + Number(input.loanEndMonth) - 2) % 12;
+      const yearEnd =
+        Number(startingYear) +
+        Math.floor(
+          (Number(startingMonth) + Number(input.loanEndMonth) - 2) / 12
+        );
+
+      return {
+        ...input,
+        loanBeginMonth: `${months[monthIndexStart]}/${yearStart}`,
+        loanEndMonth: `${months[monthIndexEnd]}/${yearEnd}`,
+      };
+    });
     const data = {
-      tempLoanInputs,
+      loanInputs: updateLoanInputs,
       loanTableData,
     };
 

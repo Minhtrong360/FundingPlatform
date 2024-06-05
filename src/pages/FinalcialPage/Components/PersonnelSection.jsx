@@ -633,32 +633,30 @@ const PersonnelSection = ({ numberOfMonths }) => {
     );
 
     // Update personnel inputs with formatted job begin and end months
-    const updatePersonnelInputs = tempPersonnelInputs.map((personnel) => {
+    const updatePersonnelInputs = tempPersonnelInputs.map((input) => {
       const monthIndexStart =
-        (Number(startingMonth) + Number(personnel.jobBeginMonth) - 2) % 12;
+        (Number(startingMonth) + Number(input.jobBeginMonth) - 2) % 12;
 
       const yearStart =
         Number(startingYear) +
         Math.floor(
-          (Number(startingMonth) + Number(personnel.jobBeginMonth) - 2) / 12
+          (Number(startingMonth) + Number(input.jobBeginMonth) - 2) / 12
         );
 
       const monthIndexEnd =
-        (Number(startingMonth) + Number(personnel.jobEndMonth) - 2) % 12;
+        (Number(startingMonth) + Number(input.jobEndMonth) - 2) % 12;
       const yearEnd =
         Number(startingYear) +
         Math.floor(
-          (Number(startingMonth) + Number(personnel.jobEndMonth) - 2) / 12
+          (Number(startingMonth) + Number(input.jobEndMonth) - 2) / 12
         );
 
       return {
-        ...personnel,
+        ...input,
         jobBeginMonth: `${months[monthIndexStart]}/${yearStart}`,
         jobEndMonth: `${months[monthIndexEnd]}/${yearEnd}`,
       };
     });
-
-    console.log("updatePersonnelInputs", updatePersonnelInputs);
 
     // Prepare data object to be saved
     const data = {

@@ -627,14 +627,46 @@ const PersonnelSection = ({ numberOfMonths }) => {
   };
 
   const downloadJSON = () => {
+    // Filter out department data from personnelCostTableData
     const updatePersonnelCostTableData = personnelCostTableData.filter(
-      (data) => data.isDepartment !== true
+      (data) => !data.isDepartment
     );
+
+    // Update personnel inputs with formatted job begin and end months
+    const updatePersonnelInputs = tempPersonnelInputs.map((personnel) => {
+      const monthIndexStart =
+        (Number(startingMonth) + Number(personnel.jobBeginMonth) - 2) % 12;
+
+      const yearStart =
+        Number(startingYear) +
+        Math.floor(
+          (Number(startingMonth) + Number(personnel.jobBeginMonth) - 2) / 12
+        );
+
+      const monthIndexEnd =
+        (Number(startingMonth) + Number(personnel.jobEndMonth) - 2) % 12;
+      const yearEnd =
+        Number(startingYear) +
+        Math.floor(
+          (Number(startingMonth) + Number(personnel.jobEndMonth) - 2) / 12
+        );
+
+      return {
+        ...personnel,
+        jobBeginMonth: `${months[monthIndexStart]}/${yearStart}`,
+        jobEndMonth: `${months[monthIndexEnd]}/${yearEnd}`,
+      };
+    });
+
+    console.log("updatePersonnelInputs", updatePersonnelInputs);
+
+    // Prepare data object to be saved
     const data = {
-      tempPersonnelInputs,
+      personnelInputs: updatePersonnelInputs,
       updatePersonnelCostTableData,
     };
 
+    // Create a JSON Blob and trigger download
     const jsonBlob = new Blob([JSON.stringify(data, null, 2)], {
       type: "application/json",
     });

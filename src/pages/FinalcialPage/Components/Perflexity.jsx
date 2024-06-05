@@ -18,7 +18,7 @@ const Perflexity = ({prompt,button}) => {
     // Log the updated messages array
     console.log("Input sent to backend:", [ newMessage]);
       // const response = await fetch("https://news-fetcher-8k6m.onrender.com/chat", {
-        const response = await fetch("https://news-fetcher-8k6m.onrender.com/research", {
+        const response = await fetch("https://news-fetcher-8k6m.onrender.com/researchflowise", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31,8 +31,10 @@ const Perflexity = ({prompt,button}) => {
       }
 
       const data = await response.json();
-      
-      const assistantResponse = data?.response?.replace(/[#*`]/g, "");
+      console.log("data: ", data);
+      // const assistantResponse = data?.response?.replace(/[#*`]/g, "");
+      const assistantResponse = typeof data?.response === 'string' ? data.response.replace(/[#*`]/g, "") : '';
+
       console.log(assistantResponse)
        // Replace newline characters with <br> tags
       const formattedAssistantResponse = assistantResponse.replace(/\n/g, '<br>');

@@ -158,6 +158,11 @@ const CostInputForm = ({
                     handleCostInputChange(input?.id, "costName", e.target.value)
                   }
                 />
+                {/* {!input.costName.trim() && (
+                  <span className="text-red-500 italic col-span-2 text-sm">
+                    * Cost name is required.
+                  </span>
+                )} */}
               </div>
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <span className="flex items-center text-sm">
@@ -264,6 +269,11 @@ const CostInputForm = ({
                     handleCostInputChange(input?.id, "costName", e.target.value)
                   }
                 />
+                {/* {!input.costName.trim() && (
+                  <span className="text-red-500 italic col-span-2 text-sm">
+                    * Cost name is required.
+                  </span>
+                )} */}
               </div>
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <span className="flex items-center text-sm">Cost Value:</span>
@@ -801,6 +811,16 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
 
   const handleSave = async () => {
     try {
+      // Kiểm tra nếu bất kỳ costName nào bị để trống
+      const isAnyCostNameEmpty = tempCostInput.some(
+        (input) => !input.costName.trim()
+      );
+
+      if (isAnyCostNameEmpty) {
+        message.error("Please enter all cost names before saving.");
+        return;
+      }
+
       setIsLoading(true);
 
       const { data: existingData, error: selectError } = await supabase

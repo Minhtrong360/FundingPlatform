@@ -121,7 +121,10 @@ function FilesList() {
         return;
       }
 
-      if (currentProject.user_id === user.id) {
+      if (
+        currentProject.user_id === user.id ||
+        currentProject.collabs?.includes(user.email)
+      ) {
         const { data: newFile, error } = await supabase
           .from("files")
           .insert([
@@ -144,14 +147,15 @@ function FilesList() {
           );
 
           if (linkWithSameNameExists) {
-            alert("A link with the same name already exists.");
+            message.error("A link with the same name already exists.");
             return;
           }
 
           setProjectLinks([...projectLinks, newFile[0]]);
         }
       } else {
-        alert("You are not the owner of the project.");
+        message.error("You are not the owner of the project.");
+        return;
       }
     } catch (error) {
       console.log("Error creating file:", error);

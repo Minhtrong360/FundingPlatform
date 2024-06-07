@@ -46,6 +46,7 @@ function CompanySetting() {
     amountRaised: 0,
     round: "Pre-seed",
     keyWords: "",
+    showAdditionalFields: "Yes",
   });
 
   useEffect(() => {
@@ -94,6 +95,7 @@ function CompanySetting() {
                 amountRaised: parseNumber(companyData.amountRaised),
                 round: companyData.round,
                 keyWords: companyData.keyWords,
+                showAdditionalFields: companyData.showAdditionalFields,
               });
 
               setIsLoading(false);
@@ -183,9 +185,8 @@ function CompanySetting() {
           projectUrl.startsWith("http://") ||
           projectUrl.startsWith("https://")
         ) {
-          const uploadedProjectUrl = await uploadImageFromURLToSupabase(
-            projectUrl
-          );
+          const uploadedProjectUrl =
+            await uploadImageFromURLToSupabase(projectUrl);
           if (uploadedProjectUrl) {
             projectUrl = uploadedProjectUrl;
           }
@@ -264,6 +265,7 @@ function CompanySetting() {
                 amountRaised: parseNumber(formData.amountRaised),
                 round: formData.round,
                 keyWords: formData.keyWords,
+                showAdditionalFields: formData.showAdditionalFields,
               },
             ])
             .select();
@@ -315,6 +317,7 @@ function CompanySetting() {
                 amountRaised: parseNumber(formData.amountRaised),
                 round: formData.round,
                 keyWords: formData.keyWords,
+                showAdditionalFields: formData.showAdditionalFields,
               },
             ])
             .select();

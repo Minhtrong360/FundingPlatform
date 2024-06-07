@@ -375,88 +375,93 @@ export default function ProfileInfo({
           )}
         </div>
       </div>
-      <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 transform scale-90">
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border ">
-          <div className="text-xl font-semibold">
-            $
-            {company?.target_amount
-              ? formatNumber(company?.target_amount)
-              : "1,000,000"}
-          </div>
-          <div className="text-black mt-2">Target amount</div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-          <div className="text-xl font-semibold">
-            $
-            {company?.ticket_size
-              ? formatNumber(company?.ticket_size)
-              : "100,000"}
-          </div>
-          <div className="text-black mt-2">Min ticket size</div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-          <div className="text-xl font-semibold">
-            {company?.revenueStatus ? company?.revenueStatus : "0k-10k"}
-          </div>
-          <div className="text-black mt-2">Revenue range</div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-          <div className="text-xl font-semibold">
-            {" "}
-            ${company?.amountRaised ? formatNumber(company?.amountRaised) : "0"}
-          </div>
-          <div className="text-black mt-2">Raised before</div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-          <div className="text-xl font-semibold">
-            {company?.teamSize ? company?.teamSize : "1-10"}+
-          </div>
-          <div className="text-black mt-2">Team size</div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-          <div className="text-xl font-semibold">Round</div>
-          <div className="text-black mt-2">
-            {company?.round ? company?.round : "Pre-seed"}
-          </div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-          <div className="text-xl font-semibold">Established</div>
-          <div className="text-black mt-2">
-            {company?.operationTime ? company?.operationTime : "2024"}
-          </div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-          <Tooltip title={company?.offer}>
-            <div className="text-xl font-semibold">Offer</div>
-            <div className="text-black mt-2 truncate">
-              {company?.offer ? company?.offer : "5% equity"}
+      {company.showAdditionalFields === "Yes" && (
+        <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 transform scale-90">
+          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border ">
+            <div className="text-xl font-semibold">
+              $
+              {company?.target_amount
+                ? formatNumber(company?.target_amount)
+                : "1,000,000"}
             </div>
-          </Tooltip>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-          <div className="text-xl font-semibold">Type</div>
-          <div className="text-black mt-2">
-            {company?.offer_type ? company?.offer_type : "Investment"}
+            <div className="text-black mt-2">Target amount</div>
           </div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-          <Tooltip title={company?.website}>
-            <div className="text-xl font-semibold ">Website</div>
-            <div
-              className="text-black mt-2 truncate hover:cursor-pointer"
-              onClick={() => window.open(company?.website)}
-            >
-              {company?.website
-                ? company?.website
-                    .replace(/^(https?:\/\/)?(www\.)?/i, "")
-                    .replace(/^(http?:\/\/)?(www\.)?/i, "")
-                    .replace(/\/+$/, "")
-                : "beekrowd.com"}
+          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
+            <div className="text-xl font-semibold">
+              $
+              {company?.ticket_size
+                ? formatNumber(company?.ticket_size)
+                : "100,000"}
             </div>
-          </Tooltip>
+            <div className="text-black mt-2">Min ticket size</div>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
+            <div className="text-xl font-semibold">
+              {company?.revenueStatus ? company?.revenueStatus : "0k-10k"}
+            </div>
+            <div className="text-black mt-2">Revenue range</div>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
+            <div className="text-xl font-semibold">
+              {" "}
+              $
+              {company?.amountRaised
+                ? formatNumber(company?.amountRaised)
+                : "0"}
+            </div>
+            <div className="text-black mt-2">Raised before</div>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
+            <div className="text-xl font-semibold">
+              {company?.teamSize ? company?.teamSize : "1-10"}+
+            </div>
+            <div className="text-black mt-2">Team size</div>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
+            <div className="text-xl font-semibold">Round</div>
+            <div className="text-black mt-2">
+              {company?.round ? company?.round : "Pre-seed"}
+            </div>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
+            <div className="text-xl font-semibold">Established</div>
+            <div className="text-black mt-2">
+              {company?.operationTime ? company?.operationTime : "2024"}
+            </div>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
+            <Tooltip title={company?.offer}>
+              <div className="text-xl font-semibold">Offer</div>
+              <div className="text-black mt-2 truncate">
+                {company?.offer ? company?.offer : "5% equity"}
+              </div>
+            </Tooltip>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
+            <div className="text-xl font-semibold">Type</div>
+            <div className="text-black mt-2">
+              {company?.offer_type ? company?.offer_type : "Investment"}
+            </div>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
+            <Tooltip title={company?.website}>
+              <div className="text-xl font-semibold ">Website</div>
+              <div
+                className="text-black mt-2 truncate hover:cursor-pointer"
+                onClick={() => window.open(company?.website)}
+              >
+                {company?.websites
+                  ? company?.website
+                      .replace(/^(https?:\/\/)?(www\.)?/i, "")
+                      .replace(/^(http?:\/\/)?(www\.)?/i, "")
+                      .replace(/\/+$/, "")
+                  : "beekrowd.com"}
+              </div>
+            </Tooltip>
+          </div>
+          {/* Repeat the structure for other statistic cards */}
         </div>
-        {/* Repeat the structure for other statistic cards */}
-      </div>
+      )}
     </div>
   );
 }

@@ -8,6 +8,7 @@ import ProfileInfo from "./ProfileInfo";
 import Author from "./Components/Author";
 import MyTab from "./Components/MyTab";
 import { useParams } from "react-router";
+import Header2 from "../Home/Header2";
 
 export default function NewDetailPage({ location }) {
   const [company, setCompany] = useState(
@@ -147,7 +148,8 @@ export default function NewDetailPage({ location }) {
           </button>
           {fullScreen === false ? (
             <div>
-              <Header position={position} />
+              {/* <Header position={position} /> */}
+              <Header2 position={position} />
               <ProfileInfo
                 company={company}
                 currentProject={currentProject}

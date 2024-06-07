@@ -184,6 +184,16 @@ function NewUserPage() {
       if (!navigator.onLine) {
         throw new Error("No internet access.");
       }
+
+      if (!userData.full_name) {
+        message.warning(`Please full-fill your full name`);
+        return;
+      }
+      if (!userData.roll) {
+        message.warning(`Please full-fill your role`);
+        return;
+      }
+
       let avatarUrl = userData.avatar;
       if (avatarUrl && avatarUrl.startsWith("data:image")) {
         const file = dataURItoFile(avatarUrl, "img");
@@ -517,7 +527,7 @@ function NewUserPage() {
                     <div className="flex flex-col">
                       <div className="mt-4">
                         <InputField
-                          label="Full name"
+                          label="Full name *"
                           id="full_name"
                           name="full_name"
                           value={userData.full_name}
@@ -544,7 +554,7 @@ function NewUserPage() {
                           htmlFor="roll"
                           className="block mb-2 text-sm text-gray-700 font-medium darkTextWhite"
                         >
-                          Role
+                          Role <span className="font-semibold">*</span>
                         </label>
                         <select
                           id="roll"

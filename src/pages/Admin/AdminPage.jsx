@@ -262,6 +262,7 @@ function AdminPage() {
       title: "No",
       key: "index",
       align: "center",
+      fixed: "left",
       render: (text, record, index) => (
         <span
           className={`  hover:cursor-pointer text-left`}
@@ -279,6 +280,7 @@ function AdminPage() {
       width: "25%",
       key: "name",
       align: "center",
+      fixed: "left",
       render: (text, record) => (
         <>
           <span

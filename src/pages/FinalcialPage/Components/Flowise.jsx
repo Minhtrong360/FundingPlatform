@@ -1,76 +1,92 @@
 import React, { useState } from "react";
+import SpinnerBtn from "../../../components/SpinnerBtn";
 
-const Flowise = ({prompt,button}) => {
+const Flowise = ({ prompt, button }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const clearMessages = () => {
     setMessages([]);
   };
   const handleSubmit = async () => {
     try {
-      console.log("Input sent to backend:", JSON.stringify({messages}));
+      setIsLoading(true);
+      console.log("Input sent to backend:", JSON.stringify({ messages }));
       // Create a new message object for the user input
       const newMessage = { role: "user", content: prompt };
-    
-    // Update the messages state by adding the new message
-      setMessages([ newMessage]);
+
+      // Update the messages state by adding the new message
+      setMessages([newMessage]);
 
       // Log the updated messages array
-      console.log("Input sent to backend:", [ newMessage]);
-        
-     
-        const response = await fetch(
-            "https://flowise-ngy8.onrender.com/api/v1/prediction/d07c777f-6204-4699-92ea-9c0abb67d157",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ "question": [ newMessage.content] })
-            }
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
+      console.log("Input sent to backend:", [newMessage]);
+
+      const response = await fetch(
+        "https://flowise-ngy8.onrender.com/api/v1/prediction/d07c777f-6204-4699-92ea-9c0abb67d157",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ question: [newMessage.content] }),
         }
-        const dataR = await response.json();
-        const dataAR = dataR.text
-        console.log("dataAR:",dataAR)
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const dataR = await response.json();
+      const dataAR = dataR.text;
+      console.log("dataAR:", dataAR);
 
       // const assistantResponse = data?.response?.replace(/[#*`]/g, "");
-      const assistantResponse = typeof dataR?.text === 'string' ? dataR.text.replace(/[#*`]/g, "") : '';
+      const assistantResponse =
+        typeof dataR?.text === "string" ? dataR.text.replace(/[#*`]/g, "") : "";
 
-      console.log("assistantResponse: ", assistantResponse)
-       // Replace newline characters with <br> tags
-      const formattedAssistantResponse = assistantResponse.replace(/\n/g, '<br>');
-      setMessages([...messages,{ role: "user", content: input }, { role: "assistant", content: formattedAssistantResponse }]);
+      console.log("assistantResponse: ", assistantResponse);
+      // Replace newline characters with <br> tags
+      const formattedAssistantResponse = assistantResponse.replace(
+        /\n/g,
+        "<br>"
+      );
+      setMessages([
+        ...messages,
+        { role: "user", content: input },
+        { role: "assistant", content: formattedAssistantResponse },
+      ]);
       // setMessages([...messages, { role: "assistant", content: formattedAssistantResponse }]);
       setInput("");
+      setIsLoading(false);
     } catch (error) {
       console.error("Error:", error);
     }
   };
   function formatUrls(text) {
     const urlPattern = /(https?:\/\/[^\s)]+)/g;
-    return text.replace(urlPattern, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
-}
+    return text.replace(
+      urlPattern,
+      '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
+    );
+  }
 
-const formattedMessages = messages.map((message, index) => {
+  const formattedMessages = messages.map((message, index) => {
     if (message.role !== "user") {
-        const formattedContent = formatUrls(message.content.replace(/\n/g, '<br>'));
-        return (
-            <div className="p-2 rounded m-4" key={index}>
-                <div dangerouslySetInnerHTML={{ __html: formattedContent }} />
-            </div>
-        );
+      const formattedContent = formatUrls(
+        message.content.replace(/\n/g, "<br>")
+      );
+      return (
+        <div className="p-2 rounded m-4" key={index}>
+          <div dangerouslySetInnerHTML={{ __html: formattedContent }} />
+        </div>
+      );
     }
     return null;
-});
+  });
   return (
     <div className="w-full max-h-[500px] flex flex-col  p-4 mt-4 mb-4">
       {/* Chat history */}
       <div className="overflow-auto ">
-      {formattedMessages}
-      {/* {messages.map((message, index) => (
+        {formattedMessages}
+        {/* {messages.map((message, index) => (
         <>
             {message.role !== "user" && (
                 <div className=" p-2 rounded m-4 " key={index}>
@@ -79,25 +95,27 @@ const formattedMessages = messages.map((message, index) => {
             )}
         </>
     ))} */}
-
-       </div>
+      </div>
       <div className="md:flex-row flex flex-col">
-      <button
-        className=" max-w-[100px] bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded m-4"
-        onClick={handleSubmit}
-      >
-        {button}
-      </button>
-      <button  className="max-w-[100px] bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded m-4"
-       onClick={clearMessages}>Clear </button>
-    </div>
-
+        <button
+          disabled={isLoading}
+          className=" max-w-[100px] min-w-[6rem] bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded m-4"
+          onClick={handleSubmit}
+        >
+          {isLoading ? <SpinnerBtn /> : button}
+        </button>
+        <button
+          className="max-w-[100px] bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded m-4"
+          onClick={clearMessages}
+        >
+          Clear{" "}
+        </button>
+      </div>
     </div>
   );
 };
 
 export default Flowise;
-
 
 /////////////////////
 

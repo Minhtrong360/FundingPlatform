@@ -138,14 +138,14 @@ export default function NewDetailPage({ location }) {
         <LoadingButtonClick isLoading={isLoading} />
       ) : (
         <>
-          <button
+          {/* <button
             className={`w-[100px] fixed bottom-5 lg:left-5 right-5 p-2 rounded-md ${
               fullScreen ? "bg-gray-300" : "bg-blue-600 text-white"
             } z-50 text-sm`}
             onClick={() => setFullScreen((prev) => !prev)}
           >
             Full screen
-          </button>
+          </button> */}
           {fullScreen === false ? (
             <div>
               {/* <Header position={position} /> */}

@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
-
 import AddLinkFile from "./AddLinkFile";
 import { useParams } from "react-router-dom";
-
 import InvitedUserFile from "../../components/InvitedUserFile";
 import apiService from "../../app/apiService";
-import { message, Modal } from "antd";
-import { Tooltip } from "antd";
+import { message, Modal, Table, Tooltip, Button } from "antd";
 
 function FilesList() {
   const { id } = useParams();
@@ -18,13 +15,14 @@ function FilesList() {
   const [currentProject, setCurrentProject] = useState();
   const [currentUser, setCurrentUser] = useState(null);
   const [isPrivateDisabled, setIsPrivateDisabled] = useState(false);
-  const [deleteFileId, setDeleteFileId] = useState(null); // Thêm state để lưu ID của file sẽ bị xóa
-  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false); // Thêm state để kiểm soát hiển thị của Modal
+  const [deleteFileId, setDeleteFileId] = useState(null);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   const showDeleteModal = (fileId) => {
     setDeleteFileId(fileId);
     setIsDeleteModalVisible(true);
   };
+
   const handleDeleteModalOk = async () => {
     try {
       if (!navigator.onLine) {
@@ -248,6 +246,86 @@ function FilesList() {
     return false;
   };
 
+  const columns = [
+    {
+      title: "No.",
+      dataIndex: "no",
+      key: "no",
+      render: (_, __, index) => <span>#{index + 1}</span>,
+    },
+    {
+      title: "File name",
+      dataIndex: "name",
+      key: "name",
+      render: (text) => (
+        <Tooltip title={text} color="geekblue" zIndex={20000}>
+          {text}
+        </Tooltip>
+      ),
+    },
+    {
+      title: "File link",
+      dataIndex: "link",
+      key: "link",
+      render: (text, record) => (
+        <span
+          onClick={() => calculateCanClick(record) && handleLinkClick(record)}
+          style={{
+            cursor: calculateCanClick(record) ? "pointer" : "not-allowed",
+            color: calculateCanClick(record) ? "blue" : "black",
+            maxWidth: "10rem",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {calculateCanClick(record) ? text : "***********"}
+        </span>
+      ),
+    },
+    {
+      title: "Owner",
+      dataIndex: "owner_email",
+      key: "owner_email",
+      render: (text) => (
+        <Tooltip title={text} color="geekblue" zIndex={20000}>
+          {text}
+        </Tooltip>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (text) => (text ? "Public" : "Private"),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Button danger onClick={() => showDeleteModal(record.id)}>
+          Delete
+        </Button>
+      ),
+    },
+    {
+      title: "Invite",
+      key: "invite",
+      render: (_, record) =>
+        record.status ? (
+          ""
+        ) : record?.user_id === user.id ? (
+          <InvitedUserFile fileId={record.id} />
+        ) : record?.invited_user?.includes(user?.email) ? (
+          ""
+        ) : (
+          <Button type="primary" onClick={() => handleSendRequest(record)}>
+            Send Request
+          </Button>
+        ),
+    },
+  ];
+
   return (
     <main className="w-full ml-2">
       <section className="px-4 mx-auto">
@@ -259,174 +337,17 @@ function FilesList() {
             isPrivateDisabled={isPrivateDisabled}
           />
         </div>
-
-        <div className="flex flex-col">
-          <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-              <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-md">
-                <table className="min-w-full divide-y divide-gray-200 darkDivideGray">
-                  <thead className="bg-gray-50 darkBgBlue">
-                    <tr>
-                      <th
-                        scope="col"
-                        className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
-                      >
-                        <div className="flex items-center gap-x-3">
-                          <input
-                            type="checkbox"
-                            className="text-blue-500 border-gray-300 rounded darkBg darkRingOffsetGray darkBorderGray"
-                          />
-                          <button className="flex items-center gap-x-2">
-                            <span>NO.</span>
-                          </button>
-                        </div>
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
-                      >
-                        File name
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
-                      >
-                        File link
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
-                      >
-                        Owner
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
-                      >
-                        Status
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
-                      >
-                        Action
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
-                      >
-                        Invite
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200 darkDivideGray darkBg">
-                    {projectLinks?.map((link, index) => (
-                      <tr key={index}>
-                        <td className="px-4 py-4 text-sm font-medium text-gray-700 darkTextGray whitespace-nowrap">
-                          <div className="inline-flex items-center gap-x-3">
-                            <input
-                              type="checkbox"
-                              className="text-blue-500 border-gray-300 rounded darkBg darkRingOffsetGray darkBorderGray"
-                            />
-                            <span>#{index + 1}</span>
-                          </div>
-                        </td>
-                        <td
-                          className={`hover:cursor-pointer px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap`}
-                          style={{
-                            maxWidth: "150px",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          <Tooltip
-                            title={link.name}
-                            color="geekblue"
-                            zIndex={20000}
-                          >
-                            {link.name}
-                          </Tooltip>
-                        </td>
-                        <td
-                          className={`${
-                            calculateCanClick(link)
-                              ? "hover:cursor-pointer hover:bg-blue-700100"
-                              : ""
-                          } px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap`}
-                          onClick={() =>
-                            calculateCanClick(link) && handleLinkClick(link)
-                          }
-                          style={{
-                            cursor: calculateCanClick(link)
-                              ? "pointer"
-                              : "not-allowed",
-                            color: calculateCanClick(link) ? "blue" : "black",
-                            maxWidth: "10rem",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {calculateCanClick(link) ? link.link : "***********"}
-                        </td>
-                        <td
-                          className="px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap"
-                          style={{
-                            maxWidth: "10rem",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          <Tooltip
-                            title={link.owner_email}
-                            color="geekblue"
-                            zIndex={20000}
-                          >
-                            {link.owner_email}
-                          </Tooltip>
-                        </td>
-                        <td className="px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap">
-                          {link.status ? "Public" : "Private"}
-                        </td>
-                        <td className="px-4 py-4 text-sm whitespace-nowrap">
-                          <div className="flex items-center gap-x-6">
-                            <button
-                              className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-                              onClick={() => showDeleteModal(link.id)}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </td>
-                        <td className="px-4 py-4 text-sm whitespace-nowrap">
-                          {link.status ? (
-                            ""
-                          ) : link?.user_id === user.id ? (
-                            <InvitedUserFile fileId={link.id} />
-                          ) : link?.invited_user?.includes(user?.email) ? (
-                            ""
-                          ) : (
-                            <button
-                              className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-                              onClick={() => handleSendRequest(link)}
-                            >
-                              Send Request
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Table
+          columns={columns}
+          dataSource={projectLinks.map((link, index) => ({
+            ...link,
+            key: link.id,
+            no: index + 1,
+          }))}
+          loading={isLoading}
+          rowKey="id"
+        />
       </section>
-
-      {/* Modal */}
       <Modal
         title="Confirm Delete"
         open={isDeleteModalVisible}
@@ -437,7 +358,7 @@ function FilesList() {
         cancelButtonProps={{
           style: {
             borderRadius: "0.375rem",
-            cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            cursor: "pointer",
           },
         }}
         okButtonProps={{
@@ -446,7 +367,7 @@ function FilesList() {
             borderColor: "#f5222d",
             color: "#fff",
             borderRadius: "0.375rem",
-            cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            cursor: "pointer",
           },
         }}
         centered={true}

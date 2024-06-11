@@ -1109,7 +1109,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             <div className="">
               {activeTab === "overview" && (
                 <div>
-                  <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm sticky top-8 z-50">
+                  <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm NOsticky NOtop-8 z-50">
                     <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
                       <li
                         className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${

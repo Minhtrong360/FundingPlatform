@@ -41,7 +41,7 @@ const LoanInputForm = ({
   isLoading,
 }) => {
   return (
-    <section aria-labelledby="loan-heading" className="mb-8 sticky top-8">
+    <section aria-labelledby="loan-heading" className="mb-8 NOsticky NOtop-8">
       <h2
         className="text-lg font-semibold mb-8 flex items-center"
         id="loan-heading"
@@ -697,7 +697,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
   return (
     <div>
-      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm sticky top-8 z-50">
+      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm NOsticky NOtop-8 z-50">
         <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
           <li
             className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${

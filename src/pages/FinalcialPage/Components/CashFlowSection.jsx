@@ -928,7 +928,7 @@ function CashFlowSection({ numberOfMonths }) {
       </div>
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
-        <section className="mb-8 sticky top-8">
+        <section className="mb-8 NOsticky NOtop-8">
           <GroqJS datasrc={cashFlowData} />
         </section>
       </div>

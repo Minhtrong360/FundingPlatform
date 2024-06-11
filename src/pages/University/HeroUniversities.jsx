@@ -33,6 +33,7 @@ const HeroUniversities = ({ university, onSelectCode }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [newCode, setNewCode] = useState("");
   const [expirationDate, setExpirationDate] = useState(null);
+  const [newExpirationDate, setNewExpirationDate] = useState(null); // New state for new expiration date
   const [selectedCode, setSelectedCode] = useState(null);
   const [codeToDelete, setCodeToDelete] = useState(null);
   const [codeData, setCodeData] = useState([]);
@@ -123,7 +124,7 @@ const HeroUniversities = ({ university, onSelectCode }) => {
   };
 
   const handleEditCode = async () => {
-    if (!selectedCode || !newCode || !expirationDate) {
+    if (!selectedCode || !newCode || !newExpirationDate) {
       message.error("Please enter all required fields");
       return;
     }
@@ -132,7 +133,7 @@ const HeroUniversities = ({ university, onSelectCode }) => {
       .from("code")
       .update({
         code: newCode,
-        expired_at: expirationDate.format("YYYY-MM-DD"),
+        expired_at: newExpirationDate.format("YYYY-MM-DD"),
       })
       .eq("id", selectedCode.id)
       .select();
@@ -155,6 +156,7 @@ const HeroUniversities = ({ university, onSelectCode }) => {
       setIsEditModalOpen(false);
       setNewCode("");
       setExpirationDate(null);
+      setNewExpirationDate(null);
     }
   };
 
@@ -180,6 +182,7 @@ const HeroUniversities = ({ university, onSelectCode }) => {
     setSelectedCode(record);
     setNewCode(record.code);
     setExpirationDate(record.expired_at ? moment(record.expired_at) : null);
+    setNewExpirationDate(null); // Reset new expiration date
     setIsEditModalOpen(true);
   };
 
@@ -295,12 +298,6 @@ const HeroUniversities = ({ university, onSelectCode }) => {
           <div className="mt-7 flex justify-center">
             {" "}
             {/* Add justify-center class */}
-            {/* <button
-              className="sm:mx-4 mx-2 hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
-              onClick={handleClick}
-            >
-              {user ? "See demo" : "Get started"}
-            </button> */}
             {user && (
               <button
                 className="sm:mx-4 mx-2 hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
@@ -406,7 +403,7 @@ const HeroUniversities = ({ university, onSelectCode }) => {
         </Modal>
 
         <Modal
-          title="Edit Premium Code"
+          title="Edit Code"
           open={isEditModalOpen}
           onOk={handleEditCode}
           onCancel={() => setIsEditModalOpen(false)}
@@ -449,16 +446,41 @@ const HeroUniversities = ({ university, onSelectCode }) => {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="edit_expired_at">Expired at</label>
+                  <label htmlFor="edit_expired_at">Expired at (Old)</label>
                   <div className="flex items-center">
                     <DatePicker
                       id="edit_expired_at"
                       format="DD/MM/YYYY"
                       placeholder="Select date"
                       value={expirationDate}
-                      onChange={(date) => setExpirationDate(date)}
                       style={{ width: "100%" }}
-                      className="text-sm py-[7px]"
+                      disabled
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2" style={{ visibility: "hidden" }}>
+                  <label htmlFor="edit_code">Code</label>
+                  <div className="flex items-center">
+                    <Input
+                      id="edit_code"
+                      placeholder="Enter your code"
+                      required
+                      className="border-gray-300 rounded-md text-sm"
+                      value={newCode}
+                      onChange={(e) => setNewCode(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="new_expired_at">Expired at (New)</label>
+                  <div className="flex items-center">
+                    <DatePicker
+                      id="new_expired_at"
+                      format="DD/MM/YYYY"
+                      placeholder="Select new date"
+                      value={newExpirationDate}
+                      onChange={(date) => setNewExpirationDate(date)}
+                      style={{ width: "100%" }}
                       required
                     />
                   </div>

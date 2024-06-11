@@ -30,9 +30,11 @@ function ProjectList({ projects }) {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
   const [email, setEmail] = useState("elonmusk@gmail.com");
+  const [contestCode, setContestCode] = useState("");
   const [inviteEmail, setInviteEmail] = useState("elonmusk@gmail.com");
 
   const [SelectedID, setSelectedID] = useState();
@@ -46,6 +48,12 @@ function ProjectList({ projects }) {
 
   const handleAssign = async (projectId) => {
     setIsAssignModalOpen(true);
+
+    setSelectedID(projectId);
+  };
+
+  const handleSubmit = async (projectId) => {
+    setIsSubmitModalOpen(true);
 
     setSelectedID(projectId);
   };
@@ -154,6 +162,80 @@ function ProjectList({ projects }) {
       message.error(error.message);
     } finally {
       setIsAssignModalOpen(false);
+    }
+  };
+
+  //Hàm Submit to contest
+  // Hàm Submit to contest
+  const handleConfirmSubmit = async () => {
+    try {
+      // Kiểm tra kết nối internet
+      if (!navigator.onLine) {
+        message.error("No internet access.");
+        return;
+      }
+
+      // Kiểm tra xem contestCode có tồn tại trong bảng code hay không
+      const { data: codeData, error: codeError } = await supabase
+        .from("code")
+        .select("*")
+        .eq("code", contestCode);
+
+      if (codeError) {
+        console.log("Error fetching code data:", codeError);
+        message.error(codeError.message);
+        return;
+      }
+
+      if (codeData.length === 0) {
+        message.error(`Code "${contestCode}" does not exist.`);
+        return;
+      }
+
+      const { data: projectData, error: projectError } = await supabase
+        .from("projects")
+        .select("*")
+        .eq("id", SelectedID);
+
+      if (projectError) {
+        console.log("Error fetching project data:", projectError);
+        message.error(projectError.message);
+        return;
+      }
+
+      if (projectData.length === 0) {
+        console.log("Project not found.");
+        message.error("Project not found.");
+        return;
+      }
+
+      const project = projectData[0];
+      const updatedUniversityCode = project.universityCode || [];
+
+      // Thêm contestCode vào mảng universityCode
+      if (!updatedUniversityCode.includes(contestCode)) {
+        updatedUniversityCode.push(contestCode);
+      } else {
+        message.warning("You submitted this project to this contest.");
+        return;
+      }
+
+      const { error: updateError } = await supabase
+        .from("projects")
+        .update({ universityCode: updatedUniversityCode })
+        .eq("id", SelectedID);
+
+      if (updateError) {
+        console.log("Error updating project data:", updateError);
+        message.error(updateError.message);
+        return;
+      }
+
+      message.success("Submitted project successfully");
+      setIsSubmitModalOpen(false);
+    } catch (error) {
+      console.log("Error submitting project:", error);
+      message.error(error.message);
     }
   };
 
@@ -339,18 +421,18 @@ function ProjectList({ projects }) {
               record?.status === "public"
                 ? "bg-blue-600 text-white"
                 : record?.status === "private"
-                ? "bg-red-600 text-white"
-                : record?.status === "stealth"
-                ? "bg-yellow-300 text-black"
-                : ""
+                  ? "bg-red-600 text-white"
+                  : record?.status === "stealth"
+                    ? "bg-yellow-300 text-black"
+                    : ""
             }   focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
             style={{ fontSize: "12px" }}
           >
             {record.status === "public"
               ? "Public"
               : record.status === "private"
-              ? "Private"
-              : "Stealth"}
+                ? "Private"
+                : "Stealth"}
           </button>
         </>
       ),
@@ -390,7 +472,14 @@ function ProjectList({ projects }) {
                         Assign
                       </div>
                     </Menu.Item>
-
+                    <Menu.Item key="submit">
+                      <div
+                        onClick={() => handleSubmit(record.id)}
+                        style={{ fontSize: "12px" }}
+                      >
+                        Submit
+                      </div>
+                    </Menu.Item>
                     {record.user_id === user.id ? (
                       <Menu.Item key="invite">
                         <div
@@ -420,10 +509,10 @@ function ProjectList({ projects }) {
               record.collabs?.includes(user.email)
                 ? "Collaboration"
                 : record.invited_user?.includes(user.email)
-                ? "View only"
-                : record.collabs?.includes(user.email)
-                ? "Collaboration"
-                : "Default Label"}
+                  ? "View only"
+                  : record.collabs?.includes(user.email)
+                    ? "Collaboration"
+                    : "Default Label"}
             </div>
           )}
         </>
@@ -509,18 +598,18 @@ function ProjectList({ projects }) {
               record?.status === "public"
                 ? "bg-blue-600 text-white"
                 : record?.status === "private"
-                ? "bg-red-600 text-white"
-                : record?.status === "stealth"
-                ? "bg-yellow-300 text-black"
-                : ""
+                  ? "bg-red-600 text-white"
+                  : record?.status === "stealth"
+                    ? "bg-yellow-300 text-black"
+                    : ""
             }   focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
             style={{ fontSize: "12px" }}
           >
             {record.status === "public"
               ? "Public"
               : record.status === "private"
-              ? "Private"
-              : "Stealth"}
+                ? "Private"
+                : "Stealth"}
           </button>
         </>
       ),
@@ -590,10 +679,10 @@ function ProjectList({ projects }) {
               record.collabs?.includes(user.email)
                 ? "Collaboration"
                 : record.invited_user?.includes(user.email)
-                ? "View only"
-                : record.collabs?.includes(user.email)
-                ? "Collaboration"
-                : "Default Label"}
+                  ? "View only"
+                  : record.collabs?.includes(user.email)
+                    ? "Collaboration"
+                    : "Default Label"}
             </div>
           )}
         </>
@@ -704,6 +793,43 @@ function ProjectList({ projects }) {
             name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            required
+          />
+        </Modal>
+      )}
+
+      {isSubmitModalOpen && (
+        <Modal
+          title="Submit project"
+          open={isSubmitModalOpen}
+          onOk={handleConfirmSubmit}
+          onCancel={() => setIsSubmitModalOpen(false)}
+          okText="Submit"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#2563EB",
+              borderColor: "#2563EB",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          centered={true}
+        >
+          <InputField
+            label="Submit this project to:"
+            id="contestCode"
+            name="contestCode"
+            value={contestCode}
+            onChange={(e) => setContestCode(e.target.value)}
             type="text"
             required
           />

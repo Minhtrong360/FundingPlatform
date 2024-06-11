@@ -80,7 +80,7 @@ const CustomerInputsForm = React.memo(
     return (
       <section
         aria-labelledby="customers-heading"
-        className="mb-8 sticky top-8"
+        className="mb-8 NOsticky NOtop-8"
       >
         <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Examples:  Online, Offline, Social Media, Email Marketing, Referrals, Direct Sales, Subscription...">
           <h2
@@ -1118,7 +1118,7 @@ const CustomerSection = React.memo(
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
-                    { length: channelYearlyTotals[0].data.length },
+                    { length: channelYearlyTotals[0]?.data.length },
                     (_, i) => {
                       const year = startYear + i;
                       return `${year}`;
@@ -1316,7 +1316,7 @@ const CustomerSection = React.memo(
 
     return (
       <div>
-        <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm sticky top-8 z-50">
+        <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm NOsticky NOtop-8 z-50">
           <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
             <li
               className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${

@@ -561,7 +561,7 @@ function NewUserPage() {
                           name="roll"
                           value={userData.roll}
                           onChange={handleRollChange}
-                          className="py-3 px-4 block w-full border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus:ring-gray-600"
+                          className="py-3 px-4 block w-full border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500  darkTextGray400 "
                         >
                           <option value="Founder">Founder</option>
                           <option value="Investor">Investor</option>
@@ -791,7 +791,7 @@ function NewUserPage() {
                       id="hs-about-hire-us-2"
                       name="detail"
                       rows="4"
-                      className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus:ring-gray-600"
+                      className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
                       value={userData.detail}
                       onChange={handleInputChange}
                     ></textarea>
@@ -800,7 +800,7 @@ function NewUserPage() {
                   <div className="grid grid-cols-1 gap-4 lg:gap-6 mt-6 ">
                     <button
                       type="submit"
-                      className={`w-full sm:w-[30%] py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600 ${
+                      className={`w-full sm:w-[30%] py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none   ${
                         isLoading ? "bg-gray-500 disabled" : ""
                       }`}
                       style={{ justifySelf: "end" }} // Canh phải
@@ -884,7 +884,7 @@ function NewUserPage() {
                   <div className="grid grid-cols-1 gap-4 lg:gap-6 mt-6">
                     <button
                       type="button"
-                      className={`w-full sm:w-[30%] py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark-focus-outline-none dark-focus-ring-1 dark-focus-ring-gray-600 ${
+                      className={`w-full sm:w-[30%] py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none   ${
                         isLoading ? "bg-gray-500 disabled" : ""
                       }`}
                       onClick={handleBilling}

@@ -126,14 +126,14 @@ const Header2 = ({ position }) => {
           label: "Buy Private Shares",
           path: "/Flea-Market/info",
         },
-        {
-          key: "3",
-          label: "Order Bespoke Investment",
-          path: "/investors/order-bespoke-investment",
-        },
+        // {
+        //   key: "3",
+        //   label: "Order Bespoke Investment",
+        //   path: "/investors/order-bespoke-investment",
+        // },
       ],
     },
-    { title: "About Us", path: "/about-us" },
+    // { title: "About Us", path: "/about-us" },
   ];
 
   const renderMenu = (subItems) => (

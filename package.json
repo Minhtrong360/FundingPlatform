@@ -29,7 +29,7 @@
     "@tiptap/react": "^2.1.13",
     "@tiptap/starter-kit": "^2.1.13",
     "ai": "^3.0.29",
-    "antd": "^5.12.1",
+    "antd": "^5.18.0",
     "apexcharts": "^3.45.0",
     "axios": "^1.6.2",
     "class-variance-authority": "^0.7.0",

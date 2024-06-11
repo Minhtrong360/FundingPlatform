@@ -255,10 +255,11 @@ function Tabs({
           <main className="w-full min-h-[92.5vh]">
             <section className="container px-4 mx-auto mt-14">
               <div className="flex flex-col mb-8">
-                <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                  <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-                    <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
+                {/* <div className="-mx-4 -my-2  sm:-mx-6 lg:-mx-8">
+                  <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8"> */}
+                    {/* <div className=" border border-gray-300 darkBorderGray md:rounded-lg"> */}
                       <Table
+                      className="overflow-auto my-8 rounded-md bg-white"
                         columns={columns}
                         dataSource={dataSource}
                         pagination={{
@@ -268,9 +269,9 @@ function Tabs({
                         size="small"
                         bordered
                       />
-                    </div>
-                  </div>
-                </div>
+                    {/* </div> */}
+                  {/* </div>
+                </div> */}
               </div>
             </section>
             <div className="w-full flex items-center justify-center mt-10">
@@ -281,10 +282,11 @@ function Tabs({
         {activeTab === "financial" && (
           <section className="container px-4 mx-auto mt-14">
             <div className="flex flex-col mb-8">
-              <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+              {/* <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-                  <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
+                  <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg"> */}
                     <Table
+                     className="overflow-auto my-8 rounded-md bg-white"
                       columns={financialColumns}
                       dataSource={dataFinanceSource}
                       pagination={{
@@ -294,19 +296,20 @@ function Tabs({
                       size="small"
                       bordered
                     />
-                  </div>
+                  {/* </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </section>
         )}
         {activeTab === "client" && (
           <section className="container px-4 mx-auto mt-14">
             <div className="flex flex-col mb-8">
-              <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+              {/* <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-                  <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
+                  <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg"> */}
                     <Table
+                     className="overflow-auto my-8 rounded-md bg-white"
                       columns={clientColumns}
                       dataSource={dataClientSource}
                       pagination={{
@@ -316,9 +319,9 @@ function Tabs({
                       size="small"
                       bordered
                     />
-                  </div>
+                  {/* </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </section>
         )}

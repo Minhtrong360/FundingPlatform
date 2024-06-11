@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Perflexity = ({prompt,button}) => {
+const Flowise = ({prompt,button}) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const clearMessages = () => {
@@ -15,25 +15,29 @@ const Perflexity = ({prompt,button}) => {
     // Update the messages state by adding the new message
       setMessages([ newMessage]);
 
-    // Log the updated messages array
-    console.log("Input sent to backend:", [ newMessage]);
-      // const response = await fetch("https://news-fetcher-8k6m.onrender.com/chat", {
-        const response = await fetch("https://news-fetcher-8k6m.onrender.com/researchflowise", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ messages: [ newMessage] }),
-      });
+      // Log the updated messages array
+      console.log("Input sent to backend:", [ newMessage]);
+        
+     
+        const response = await fetch(
+            "https://flowise-ngy8.onrender.com/api/v1/prediction/d07c777f-6204-4699-92ea-9c0abb67d157",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ "question": [ newMessage.content] })
+            }
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const dataR = await response.json();
+        const dataAR = dataR.text
+        console.log("dataAR:",dataAR)
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const data = await response.json();
-      console.log("data: ", data);
       // const assistantResponse = data?.response?.replace(/[#*`]/g, "");
-      const assistantResponse = typeof data?.response === 'string' ? data.response.replace(/[#*`]/g, "") : '';
+      const assistantResponse = typeof dataR?.text === 'string' ? dataR.text.replace(/[#*`]/g, "") : '';
 
       console.log("assistantResponse: ", assistantResponse)
        // Replace newline characters with <br> tags
@@ -45,22 +49,28 @@ const Perflexity = ({prompt,button}) => {
       console.error("Error:", error);
     }
   };
+  function formatUrls(text) {
+    const urlPattern = /(https?:\/\/[^\s)]+)/g;
+    return text.replace(urlPattern, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+}
 
+const formattedMessages = messages.map((message, index) => {
+    if (message.role !== "user") {
+        const formattedContent = formatUrls(message.content.replace(/\n/g, '<br>'));
+        return (
+            <div className="p-2 rounded m-4" key={index}>
+                <div dangerouslySetInnerHTML={{ __html: formattedContent }} />
+            </div>
+        );
+    }
+    return null;
+});
   return (
     <div className="w-full max-h-[500px] flex flex-col  p-4 mt-4 mb-4">
       {/* Chat history */}
       <div className="overflow-auto ">
+      {formattedMessages}
       {/* {messages.map((message, index) => (
-        <div className="border p-2 rounded m-4 shadow-lg" key={index}>
-          {message.role === "user" ? (
-            // <div>👨‍💻 {message.content}</div>
-            <div className="border-transparent"></div>
-          ) : (
-            <div dangerouslySetInnerHTML={{ __html: message.content }} />
-          )}
-        </div>
-      ))} */}
-        {messages.map((message, index) => (
         <>
             {message.role !== "user" && (
                 <div className=" p-2 rounded m-4 " key={index}>
@@ -68,18 +78,9 @@ const Perflexity = ({prompt,button}) => {
                 </div>
             )}
         </>
-    ))}
-
-
+    ))} */}
 
        </div>
-      {/* Chat input */}
-      {/* <input
-        className="border p-2 rounded m-4 shadow-lg"
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      /> */}
       <div className="md:flex-row flex flex-col">
       <button
         className=" max-w-[100px] bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded m-4"
@@ -95,7 +96,7 @@ const Perflexity = ({prompt,button}) => {
   );
 };
 
-export default Perflexity;
+export default Flowise;
 
 
 /////////////////////

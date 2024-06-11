@@ -486,8 +486,8 @@ function AdminPage() {
           {record.required && record.verified
             ? "Accepted"
             : record.required
-            ? "Waiting..."
-            : "No required"}
+              ? "Waiting..."
+              : "No required"}
         </div>
       ),
       filters: [
@@ -534,8 +534,8 @@ function AdminPage() {
                 {option === "accepted"
                   ? "Accepted"
                   : option === "waiting"
-                  ? "Waiting"
-                  : "Not Required"}
+                    ? "Waiting"
+                    : "Not Required"}
               </Checkbox>
             </div>
           ))}
@@ -567,17 +567,17 @@ function AdminPage() {
               record?.status === "public"
                 ? "bg-blue-600 text-white"
                 : record?.status === "private"
-                ? "bg-red-600 text-white"
-                : record?.status === "stealth"
-                ? "bg-yellow-300 text-black"
-                : ""
+                  ? "bg-red-600 text-white"
+                  : record?.status === "stealth"
+                    ? "bg-yellow-300 text-black"
+                    : ""
             }   focus:ring-4 focus:outline-none focus:ring-blue-300  py-1 text-center rounded-md `}
           >
             {record?.status === "public"
               ? "Public"
               : record?.status === "private"
-              ? "Private"
-              : "Stealth"}
+                ? "Private"
+                : "Stealth"}
           </button>
         </div>
       ),
@@ -616,8 +616,8 @@ function AdminPage() {
                 {option === "public"
                   ? "Public"
                   : option === "private"
-                  ? "Private"
-                  : "Stealth"}
+                    ? "Private"
+                    : "Stealth"}
               </Checkbox>
             </div>
           ))}

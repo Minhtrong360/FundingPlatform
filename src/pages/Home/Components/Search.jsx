@@ -22,6 +22,7 @@ const Search = ({
   setRegion,
   targetAmountArray,
   setCountry,
+  selectedCode,
 }) => {
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -117,7 +118,9 @@ const Search = ({
             id="profiles"
             className="text-3xl sm:text-5xl font-semibold text-gray-800 darkTextGray"
           >
-            Business profiles
+            {selectedCode
+              ? `Business profiles for ${selectedCode}`
+              : "Business profiles"}
           </h3>
           <div className="mt-7 sm:mt-12 mx-auto max-w-xl relative">
             <form onSubmit={handleSearchSubmit}>

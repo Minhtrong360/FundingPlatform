@@ -58,7 +58,8 @@ code {
   width: 296px;
   height: 350px;
 
-  background: linear-gradient(to right, #cbd4e1 8px, transparent 8px) 0 0,
+  background:
+    linear-gradient(to right, #cbd4e1 8px, transparent 8px) 0 0,
     linear-gradient(to right, #cbd4e1 8px, transparent 8px) 0 100%,
     linear-gradient(to left, #cbd4e1 8px, transparent 8px) 100% 0,
     linear-gradient(to left, #cbd4e1 8px, transparent 8px) 100% 100%,
@@ -293,4 +294,22 @@ code {
 
 .ant-carousel .slick-dots li.slick-active button {
   background-color: #2563eb;
+}
+/* In your index.css or a separate CSS file */
+
+.ant-input {
+  position: relative;
+  display: inline-flex;
+  width: 100%;
+  min-width: 0;
+  padding: 4px 11px;
+  color: rgba(0, 0, 0, 0.88);
+  font-size: 14px;
+  line-height: 1.5714285714285714;
+  border-radius: 6px;
+  transition: all 0.2s;
+  background: #ffffff;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #d9d9d9;
 }

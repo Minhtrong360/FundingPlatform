@@ -44,6 +44,7 @@ import FleaMarketList from "../pages/FleaMarket/FleaMarketList.jsx";
 import FleaMarketListAll from "../pages/FleaMarket/FleaMarketListAll.jsx";
 import AdminRequired from "./AdminRequired.jsx";
 import MarketResearch from "../pages/MarketResearch_Evaluation/MarketResearch.jsx";
+import UniversitiesPage from "../pages/University/UniversitiesPage.jsx";
 
 function Router() {
   const location = useLocation();
@@ -225,6 +226,14 @@ function Router() {
           key={location.key}
           path="/founders/market-research"
           element={<MarketResearch />}
+        />
+
+        {/* For universities */}
+
+        <Route
+          key={location.key}
+          path="/universities"
+          element={<UniversitiesPage location={location} />}
         />
       </Routes>
     </>

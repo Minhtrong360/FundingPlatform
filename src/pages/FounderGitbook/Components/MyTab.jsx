@@ -17,7 +17,7 @@ import {
 import { YoutubeOutlined } from "@ant-design/icons";
 
 import Sample from "./Sample";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../../../supabase";
 import { useAuth } from "../../../context/AuthContext";
 import FilesList from "../FilesList";
@@ -56,6 +56,40 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
   const [activeTab, setActiveTab] = useState("Your Profile");
   const [youtubeLink, setYoutubeLink] = useState("Add wanted youtube url");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isContentChanged, setIsContentChanged] = useState(false);
+  const handleBeforeUnload = useCallback(
+    (event) => {
+      if (isContentChanged) {
+        const message =
+          "You have unsaved changes. Are you sure you want to leave?";
+        event.returnValue = message; // Gecko, Trident, Chrome 34+
+        return message; // Gecko, WebKit, Chrome <34
+      }
+    },
+    [isContentChanged]
+  );
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    const handlePopState = (event) => {
+      if (isContentChanged) {
+        const confirmationMessage =
+          "You have unsaved changes. Are you sure you want to leave?";
+        if (!window.confirm(confirmationMessage)) {
+          // Ngăn người dùng quay lại trang trước đó
+          window.history.pushState(null, "", window.location.href);
+        }
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [handleBeforeUnload, isContentChanged]);
 
   const YouTubeLinkBlock = createReactBlockSpec(
     {
@@ -203,6 +237,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
 
     onEditorContentChange: function (editor) {
       setBlocks(editor.topLevelBlocks);
+      setIsContentChanged(true); // Đánh dấu nội dung đã thay đổi
     },
   });
 
@@ -314,6 +349,8 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
         } else {
           setIsLoading(false);
           message.success("Saved successfully.");
+          setIsContentChanged(false); // Đánh dấu nội dung đã được lưu
+
           // Reset isSaved to false after 1 second
         }
       } else {

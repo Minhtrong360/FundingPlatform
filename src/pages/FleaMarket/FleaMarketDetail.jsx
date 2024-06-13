@@ -113,13 +113,13 @@ export default function FleaMarketDetail({
 
           <div className="mt-4">
             <div className="flex gap-2 flex-wrap justify-center">
-              <span className="bg-gray-200 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+              <span className="bg-gray-200 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded dark1:bg-gray-700 dark1:text-gray-300">
                 Number of Shares: {formatNumber(fleaMarketData.shares)}
               </span>
-              <span className="bg-gray-200 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+              <span className="bg-gray-200 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded dark1:bg-gray-700 dark1:text-gray-300">
                 Price per shares: {formatNumber(fleaMarketData.price)}
               </span>
-              <span className="bg-gray-200 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+              <span className="bg-gray-200 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded dark1:bg-gray-700 dark1:text-gray-300">
                 Amount invested: {formatNumber(fleaMarketData.amountInvested)}
               </span>
             </div>

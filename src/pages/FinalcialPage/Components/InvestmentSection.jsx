@@ -565,7 +565,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                     <div className="absolute top-2 right-2">
                       <button
                         onClick={(event) => handleChartClick(series, event)}
-                        className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                        className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
                       >
                         <FullscreenOutlined />
                       </button>

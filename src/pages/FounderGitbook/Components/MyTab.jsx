@@ -384,7 +384,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
       ? {}
       : {
           "Your Profile": (
-            <div>
+            <div className="relative">
               {" "}
               <BlockNoteView
                 editor={editor}
@@ -413,7 +413,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
                   </div>
                 </div>
               )}
-              <div className="px-5">
+              <div className="sm:px-5 sticky bottom-5 left-5">
                 {user?.id === currentProject?.user_id ||
                 currentProject?.collabs?.includes(user.email) ? (
                   <button

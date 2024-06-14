@@ -21,7 +21,7 @@ export default function MarketResearch() {
   const [teamsize, setTeamsize] = useState("");
 
   const generatePromptMK = () => {
-    return `Market information for  ${specificPrompt}. Return only figures and quantitative data in bullet points. Include links for sources at the end.`;
+    return ` ${specificPrompt}`;
   };
   const generatePromptV = () => {
     return `Search revenue multiples for ${industryV} ${yearV} ${bussinessmodel} ${ai} ${arr} ${teamsize} . Calculate the estimated valuation by using ${arr} and multiples. Return the final valuation and source links.`;

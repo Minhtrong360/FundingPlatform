@@ -506,22 +506,37 @@ export default customerSlice.reducer;
 export const fetchGPTResponse =
   (id, additionalInfo, customer) => async (dispatch) => {
     try {
-      console.log("fetching GPT response");
+      console.log("fetching Flowise response.........");
       const response = await fetch(
-        "https://news-fetcher-8k6m.onrender.com/drawchart",
+        "https://flowise-ngy8.onrender.com/api/v1/prediction/6c607fa8-4cdd-466b-8646-959200f1a5e5",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            user_input: `Dựa trên ${additionalInfo}, tìm các hàm toán học rời rạc thỏa mãn điều kiện đã cho. Sau khi tìm được các hàm này, tính giá trị của hàm từ tháng ${customer.beginMonth} đến ${customer.endMonth}. 
-          Trả về kết quả file JSON theo dạng [70, 100, ... 500] là giá trị của các hàm rời rạc tương ứng tại các điểm trên and nothing else. Absolutely no explanation.`, // Treat additionalInfo as a single prompt
-          }),
+          body: JSON.stringify({ question:  `additionalInfo is ${additionalInfo}, customer.beginMonth is ${customer.beginMonth} , customer.endMonth is ${customer.endMonth}.` }),
         }
       );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      // const dataR = await response.json();
+      // console.log("dataR: ", dataR);
+      // const response = await fetch(
+      //   "https://news-fetcher-8k6m.onrender.com/drawchart",
+      //   {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({
+      //       user_input: `Dựa trên ${additionalInfo}, tìm các hàm toán học rời rạc thỏa mãn điều kiện đã cho. Sau khi tìm được các hàm này, tính giá trị của hàm từ tháng ${customer.beginMonth} đến ${customer.endMonth}. 
+      //     Trả về kết quả file JSON theo dạng [70, 100, ... 500] là giá trị của các hàm rời rạc tương ứng tại các điểm trên and nothing else. Absolutely no explanation.`, // Treat additionalInfo as a single prompt
+      //     }),
+      //   }
+      // );
       const data = await response.json();
-
+      console.log("data là: ", data)
       if (data.error) {
         throw new Error(data.error);
       }

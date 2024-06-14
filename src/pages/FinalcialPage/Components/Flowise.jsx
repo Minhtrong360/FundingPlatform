@@ -22,7 +22,7 @@ const Flowise = ({ prompt, button }) => {
       console.log("Input sent to backend:", [newMessage]);
 
       const response = await fetch(
-        "https://flowise-ngy8.onrender.com/api/v1/prediction/d07c777f-6204-4699-92ea-9c0abb67d157",
+        "https://flowise-ngy8.onrender.com/api/v1/prediction/6c607fa8-4cdd-466b-8646-959200f1a5e5",
         {
           method: "POST",
           headers: {
@@ -35,6 +35,7 @@ const Flowise = ({ prompt, button }) => {
         throw new Error("Network response was not ok");
       }
       const dataR = await response.json();
+      console.log("dataR: ", dataR);
       const dataAR = dataR.text;
       console.log("dataAR:", dataAR);
 
@@ -82,7 +83,7 @@ const Flowise = ({ prompt, button }) => {
     return null;
   });
   return (
-    <div className="w-full max-h-[500px] flex flex-col  p-4 mt-4 mb-4">
+    <div className="w-full max-h-[500px] flex flex-col  p-4 mt-4 mb-4 bg-white rounded-xl">
       {/* Chat history */}
       <div className="overflow-auto ">
         {formattedMessages}

@@ -209,7 +209,17 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     { key: "Total COGS", values: totalCOGS },
     { key: "Gross Profit", values: grossProfit },
     { key: "Operating Expenses" },
-    { key: "Operating Costs", values: totalCosts },
+    // { key: "Operating Costs", values: totalCosts },
+    { 
+      key: "Operating Costs", 
+      values: totalCosts, 
+      children: costData
+        .filter(cost => cost.costGroup === 'Operating Costs')
+        .map(cost => ({
+          key: cost.costName,
+          values: cost.monthlyCosts.map(mc => mc.cost),
+        })),
+    },
     {
       key: "Personnel",
       values: totalPersonnelCosts,
@@ -255,7 +265,17 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     { key: "Total COGS", values: totalCOGS },
     { key: "Gross Profit", values: grossProfit },
     { key: "Operating Expenses" },
-    { key: "Operating Costs", values: totalCosts },
+    // { key: "Operating Costs", values: totalCosts },
+    { 
+      key: "Operating Costs", 
+      values: totalCosts, 
+      children: costData
+        .filter(cost => cost.costGroup === 'Operating Costs')
+        .map(cost => ({
+          key: cost.costName,
+          values: cost.monthlyCosts.map(mc => mc.cost),
+        })),
+    },
     {
       key: "Personnel",
       values: totalPersonnelCosts,

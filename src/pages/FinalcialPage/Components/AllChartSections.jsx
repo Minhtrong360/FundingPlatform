@@ -535,7 +535,7 @@ const AllChartSections = ({
                 onClick={(event) =>
                   handleChartClick(customerGrowthChart, event)
                 }
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
               >
                 <FullscreenOutlined />
               </button>
@@ -632,7 +632,7 @@ const AllChartSections = ({
             <div className="absolute top-2 right-2">
               <button
                 onClick={(event) => handleChartClick(revenue, event)}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
               >
                 <FullscreenOutlined />
               </button>
@@ -715,7 +715,7 @@ const AllChartSections = ({
             <div className="absolute top-2 right-2">
               <button
                 onClick={(event) => handleChartClickVer2(totalCosts, event)}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
               >
                 <FullscreenOutlined />
               </button>
@@ -755,7 +755,7 @@ const AllChartSections = ({
                 onClick={(event) =>
                   handleChartClickVer2(totalPersonnelCosts, event)
                 }
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
               >
                 <FullscreenOutlined />
               </button>
@@ -795,7 +795,7 @@ const AllChartSections = ({
                 onClick={(event) =>
                   handleChartClickVer2(bsTotalInvestmentValues, event)
                 }
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
               >
                 <FullscreenOutlined />
               </button>
@@ -833,7 +833,7 @@ const AllChartSections = ({
             <div className="absolute top-2 right-2">
               <button
                 onClick={(event) => handleChartClickVer2(totalLoanData, event)}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
               >
                 <FullscreenOutlined />
               </button>
@@ -896,7 +896,7 @@ const AllChartSections = ({
                   handleChartClickVer2(bsTotalFundingValues);
                   setChartType("bar");
                 }}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
               >
                 <FullscreenOutlined />
               </button>

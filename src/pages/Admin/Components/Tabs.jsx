@@ -209,8 +209,6 @@ function Tabs({
   //   setIsDeleteModalOpen(true);
   // };
 
-  console.log("dataSource", dataSource);
-  console.log("filteredData", filteredData);
   return (
     <div
       className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0 "
@@ -218,66 +216,66 @@ function Tabs({
     >
       <div className="p-4 border-gray-300 rounded-md darkBorderGray min-h-[96vh]">
         <h1 className="text-4xl text-center my-2 font-bold">Admin Dashboard</h1>
-        <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
-          <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
-            <li
-              className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
-                activeTab === "fundraising" ? "bg-yellow-300 font-bold" : ""
-              }`}
-              onClick={() => handleTabChange("fundraising")}
-            >
-              Fundraising profiles
-            </li>
-            <li
-              className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
-                activeTab === "financial" ? "bg-yellow-300 font-bold" : ""
-              }`}
-              onClick={() => handleTabChange("financial")}
-            >
-              Financial profiles
-            </li>
-            <li
-              className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
-                activeTab === "client" ? "bg-yellow-300 font-bold" : ""
-              }`}
-              onClick={() => handleTabChange("client")}
-            >
-              Client profiles
-            </li>
-            <li
-              className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
-                activeTab === "adminChart" ? "bg-yellow-300 font-bold" : ""
-              }`}
-              onClick={() => handleTabChange("adminChart")}
-            >
-              Admin charts
-            </li>
-          </ul>
-        </div>
+        <section className="container px-2 mx-auto mt-14">
+          <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
+            <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
+              <li
+                className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                  activeTab === "fundraising" ? "bg-yellow-300 font-bold" : ""
+                }`}
+                onClick={() => handleTabChange("fundraising")}
+              >
+                Fundraising profiles
+              </li>
+              <li
+                className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                  activeTab === "financial" ? "bg-yellow-300 font-bold" : ""
+                }`}
+                onClick={() => handleTabChange("financial")}
+              >
+                Financial profiles
+              </li>
+              <li
+                className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                  activeTab === "client" ? "bg-yellow-300 font-bold" : ""
+                }`}
+                onClick={() => handleTabChange("client")}
+              >
+                Client profiles
+              </li>
+              <li
+                className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
+                  activeTab === "adminChart" ? "bg-yellow-300 font-bold" : ""
+                }`}
+                onClick={() => handleTabChange("adminChart")}
+              >
+                Admin charts
+              </li>
+            </ul>
+          </div>
+        </section>
         {activeTab === "fundraising" && (
           <main className="w-full min-h-[92.5vh]">
             <section className="container px-4 mx-auto mt-14">
               <div className="flex flex-col mb-8">
-                {/* <div className="-mx-4 -my-2  sm:-mx-6 lg:-mx-8">
-                  <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8"> */}
-                {/* <div className=" border border-gray-300 darkBorderGray md:rounded-lg"> */}
                 <h2 className="text-2xl font-semibold">
                   Fundraising profiles table
                 </h2>
-                <Table
-                  className="overflow-auto my-8 rounded-md bg-white"
-                  columns={columns}
-                  dataSource={dataSource}
-                  pagination={{
-                    position: ["bottomLeft"],
-                  }}
-                  rowKey="id"
-                  size="small"
-                  bordered
-                />
-                {/* </div> */}
-                {/* </div>
-                </div> */}
+                <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
+                  <Table
+                    columns={columns}
+                    dataSource={dataSource}
+                    pagination={{
+                      position: ["bottomLeft"],
+                    }}
+                    rowKey="id"
+                    size="small"
+                    bordered
+                    scroll={{
+                      x: true,
+                    }}
+                  />
+                </div>
               </div>
             </section>
           </main>
@@ -291,17 +289,22 @@ function Tabs({
               <h2 className="text-2xl font-semibold">
                 Financial profiles table
               </h2>
-              <Table
-                className="overflow-auto my-8 rounded-md bg-white"
-                columns={financialColumns}
-                dataSource={dataFinanceSource}
-                pagination={{
-                  position: ["bottomLeft"],
-                }}
-                rowKey="id"
-                size="small"
-                bordered
-              />
+              <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
+                <Table
+                  className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white"
+                  columns={financialColumns}
+                  dataSource={dataFinanceSource}
+                  pagination={{
+                    position: ["bottomLeft"],
+                  }}
+                  rowKey="id"
+                  size="small"
+                  bordered
+                  scroll={{
+                    x: true,
+                  }}
+                />
+              </div>
               {/* </div>
                 </div>
               </div> */}
@@ -315,17 +318,22 @@ function Tabs({
                 <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
                   <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg"> */}
               <h2 className="text-2xl font-semibold">User listing table</h2>
-              <Table
-                className="overflow-auto my-8 rounded-md bg-white"
-                columns={clientColumns}
-                dataSource={dataClientSource}
-                pagination={{
-                  position: ["bottomLeft"],
-                }}
-                rowKey="id"
-                size="small"
-                bordered
-              />
+              <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
+                <Table
+                  className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white"
+                  columns={clientColumns}
+                  dataSource={dataClientSource}
+                  pagination={{
+                    position: ["bottomLeft"],
+                  }}
+                  rowKey="id"
+                  size="small"
+                  bordered
+                  scroll={{
+                    x: true,
+                  }}
+                />
+              </div>
               {/* </div>
                 </div>
               </div> */}

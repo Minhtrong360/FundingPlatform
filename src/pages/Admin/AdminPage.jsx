@@ -261,6 +261,7 @@ function AdminPage() {
     {
       title: "No",
       key: "index",
+
       align: "center",
       fixed: "left",
       render: (text, record, index) => (
@@ -277,10 +278,11 @@ function AdminPage() {
     {
       title: "Company name",
       dataIndex: "name",
-      width: "25%",
+      width: "15%",
       key: "name",
       align: "center",
       fixed: "left",
+      sorter: true,
       render: (text, record) => (
         <>
           <span
@@ -1517,6 +1519,7 @@ function AdminPage() {
       dataIndex: "index",
       key: "index",
       align: "center",
+      fixed: "left",
       render: (text, record, index) => (
         <span>{dataFinanceSource?.indexOf(record) + 1}</span>
       ),
@@ -1527,6 +1530,7 @@ function AdminPage() {
       key: "name",
       width: "20%",
       align: "center",
+      fixed: "left",
       render: (text, record) => (
         <>
           <span
@@ -1597,6 +1601,30 @@ function AdminPage() {
     },
 
     {
+      title: "Owner",
+      dataIndex: "user_email",
+      key: "user_email",
+      width: "20",
+      align: "center",
+      fixed: "left",
+      render: (text, record) => (
+        <>
+          <span
+            className="hover:cursor-pointer text-left"
+            onClick={() => handleFinanceClick(record)}
+          >
+            <div
+              className="truncate"
+              style={{ maxWidth: "100%" }}
+              title={record.user_email}
+            >
+              {record.user_email}
+            </div>
+          </span>
+        </>
+      ),
+    },
+    {
       title: "Date",
       dataIndex: "created_at",
       key: "created_at",
@@ -1658,29 +1686,6 @@ function AdminPage() {
         const date = moment(record.created_at);
         return date >= moment(start) && date <= moment(end);
       },
-    },
-    {
-      title: "Owner",
-      dataIndex: "user_email",
-      key: "user_email",
-      width: "20",
-      align: "center",
-      render: (text, record) => (
-        <>
-          <span
-            className="hover:cursor-pointer text-left"
-            onClick={() => handleFinanceClick(record)}
-          >
-            <div
-              className="truncate"
-              style={{ maxWidth: "100%" }}
-              title={record.user_email}
-            >
-              {record.user_email}
-            </div>
-          </span>
-        </>
-      ),
     },
     {
       title: "Industry",
@@ -1799,6 +1804,7 @@ function AdminPage() {
       dataIndex: "index",
       key: "index",
       align: "center",
+      fixed: "left",
       render: (text, record, index) => (
         <span>{dataClientSource?.indexOf(record) + 1}</span>
       ),
@@ -1809,6 +1815,8 @@ function AdminPage() {
       key: "full_name",
       width: "20%",
       align: "center",
+      fixed: "left",
+
       render: (text, record) => (
         <Tooltip title={record.full_name}>
           <span className="hover:cursor-pointer text-left">
@@ -1879,6 +1887,8 @@ function AdminPage() {
       key: "email",
       width: "20%",
       align: "center",
+      fixed: "left",
+
       render: (text, record) => (
         <Tooltip title={record.email}>
           <span className="hover:cursor-pointer text-left">

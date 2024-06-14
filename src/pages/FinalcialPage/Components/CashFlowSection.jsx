@@ -1,4 +1,4 @@
-import { Button, FloatButton, Modal, Table, Tabs } from "antd";
+import { Button, Checkbox, FloatButton, Modal, Table, Tabs } from "antd";
 import {
   Select,
   SelectTrigger,
@@ -787,6 +787,7 @@ function CashFlowSection({ numberOfMonths }) {
       "cashflow_data.xlsx"
     );
   };
+  const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
@@ -892,38 +893,51 @@ function CashFlowSection({ numberOfMonths }) {
             pagination={false}
             bordered
           />
-
-          <div className="w-full lg:w-[20%] md:w-[50%] my-5">
-            <SelectField
-              label="Select Cut Month:"
-              id="Select Cut Month:"
-              name="Select Cut Month:"
-              value={cutMonth}
-              onChange={handleCutMonthChange}
-              options={Array.from({ length: 12 }, (_, index) => ({
-                label: `${index + 1}`,
-                value: `${index + 1}`,
-              })).map((option) => option.label)} // Chỉ trả về mảng các label
-            />
+          <div className="grid grid-cols-2 gap-4 mb-3">
+            <Checkbox
+              className="col-span-2"
+              checked={showAdvancedInputs}
+              onChange={(e) => setShowAdvancedInputs(e.target.checked)}
+            >
+              Show More Detail Result
+            </Checkbox>
           </div>
 
-          <Tabs
-            activeKey={activeTab.toString()}
-            onChange={(key) => setActiveTab(parseInt(key))}
-          >
-            {divideMonthsIntoYearsForCashFlow().map((year, index) => (
-              <TabPane tab={year.year} key={index}>
-                <Table
-                  className="bg-white overflow-auto my-8 rounded-md shadow-xl"
-                  size="small"
-                  dataSource={getDataSourceForYearCashFlow(year.months)}
-                  columns={generateCashFlowTableColumns(year)}
-                  pagination={false}
-                  bordered
+          {showAdvancedInputs && (
+            <>
+              <div className="w-full lg:w-[20%] md:w-[50%] my-5">
+                <SelectField
+                  label="Select Cut Month:"
+                  id="Select Cut Month:"
+                  name="Select Cut Month:"
+                  value={cutMonth}
+                  onChange={handleCutMonthChange}
+                  options={Array.from({ length: 12 }, (_, index) => ({
+                    label: `${index + 1}`,
+                    value: `${index + 1}`,
+                  })).map((option) => option.label)} // Chỉ trả về mảng các label
                 />
-              </TabPane>
-            ))}
-          </Tabs>
+              </div>
+
+              <Tabs
+                activeKey={activeTab.toString()}
+                onChange={(key) => setActiveTab(parseInt(key))}
+              >
+                {divideMonthsIntoYearsForCashFlow().map((year, index) => (
+                  <TabPane tab={year.year} key={index}>
+                    <Table
+                      className="bg-white overflow-auto my-8 rounded-md shadow-xl"
+                      size="small"
+                      dataSource={getDataSourceForYearCashFlow(year.months)}
+                      columns={generateCashFlowTableColumns(year)}
+                      pagination={false}
+                      bordered
+                    />
+                  </TabPane>
+                ))}
+              </Tabs>
+            </>
+          )}
         </div>
       </div>
 

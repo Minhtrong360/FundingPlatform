@@ -1,4 +1,12 @@
-import { Button, FloatButton, Modal, Table, Tabs, message } from "antd";
+import {
+  Button,
+  Checkbox,
+  FloatButton,
+  Modal,
+  Table,
+  Tabs,
+  message,
+} from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -1098,6 +1106,8 @@ function BalanceSheetSection({ numberOfMonths }) {
     );
   };
 
+  const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
@@ -1192,6 +1202,7 @@ function BalanceSheetSection({ numberOfMonths }) {
               Download Excel
             </button>
           </div>
+
           <Table
             className="overflow-auto my-8 rounded-md bg-white"
             size="small"
@@ -1201,35 +1212,48 @@ function BalanceSheetSection({ numberOfMonths }) {
             bordered
           />
 
-          <div className="w-full lg:w-[20%] md:w-[50%] my-5">
-            <SelectField
-              label="Select Cut Month:"
-              id="Select Cut Month:"
-              name="Select Cut Month:"
-              value={cutMonth}
-              onChange={handleCutMonthChange}
-              options={Array.from({ length: 12 }, (_, index) => ({
-                label: `${index + 1}`,
-                value: `${index + 1}`,
-              })).map((option) => option.label)} // Chỉ trả về mảng các label
-            />
+          <div className="grid grid-cols-2 gap-4 mb-3">
+            <Checkbox
+              className="col-span-2"
+              checked={showAdvancedInputs}
+              onChange={(e) => setShowAdvancedInputs(e.target.checked)}
+            >
+              Show More Detail Result
+            </Checkbox>
           </div>
-          <Tabs
-            activeKey={activeTab.toString()}
-            onChange={(key) => setActiveTab(parseInt(key))}
-          >
-            {divideMonthsIntoYearsForBalanceSheet().map((year, index) => (
-              <TabPane tab={year.year} key={index.toString()}>
-                <Table
-                  className="bg-white overflow-auto my-8 rounded-md shadow-xl"
-                  size="small"
-                  dataSource={getDataSourceForYearBalanceSheet(year.months)}
-                  columns={generateBalanceSheetTableColumns(year)}
-                  pagination={false}
+          {showAdvancedInputs && (
+            <>
+              <div className="w-full lg:w-[20%] md:w-[50%] my-5">
+                <SelectField
+                  label="Select Cut Month:"
+                  id="Select Cut Month:"
+                  name="Select Cut Month:"
+                  value={cutMonth}
+                  onChange={handleCutMonthChange}
+                  options={Array.from({ length: 12 }, (_, index) => ({
+                    label: `${index + 1}`,
+                    value: `${index + 1}`,
+                  })).map((option) => option.label)} // Chỉ trả về mảng các label
                 />
-              </TabPane>
-            ))}
-          </Tabs>
+              </div>
+              <Tabs
+                activeKey={activeTab.toString()}
+                onChange={(key) => setActiveTab(parseInt(key))}
+              >
+                {divideMonthsIntoYearsForBalanceSheet().map((year, index) => (
+                  <TabPane tab={year.year} key={index.toString()}>
+                    <Table
+                      className="bg-white overflow-auto my-8 rounded-md shadow-xl"
+                      size="small"
+                      dataSource={getDataSourceForYearBalanceSheet(year.months)}
+                      columns={generateBalanceSheetTableColumns(year)}
+                      pagination={false}
+                    />
+                  </TabPane>
+                ))}
+              </Tabs>
+            </>
+          )}
         </div>
 
         {/* <div>

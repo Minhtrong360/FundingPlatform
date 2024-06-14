@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, FloatButton, Modal, Table, Tabs } from "antd";
+import { Button, Checkbox, FloatButton, Modal, Table, Tabs } from "antd";
 
 import {
   Select,
@@ -748,6 +748,8 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     );
   };
 
+  const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
@@ -936,38 +938,51 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             pagination={false}
           />
 
-          <div className="w-full lg:w-[20%] md:w-[50%] my-5">
-            <SelectField
-              label="Select Cut Month:"
-              id="Select Cut Month:"
-              name="Select Cut Month:"
-              value={cutMonth}
-              onChange={handleCutMonthChange}
-              options={Array.from({ length: 12 }, (_, index) => ({
-                label: `${index + 1}`,
-                value: `${index + 1}`,
-              })).map((option) => option.label)} // Chỉ trả về mảng các label
-            />
+          <div className="grid grid-cols-2 gap-4 mb-3">
+            <Checkbox
+              className="col-span-2"
+              checked={showAdvancedInputs}
+              onChange={(e) => setShowAdvancedInputs(e.target.checked)}
+            >
+              Show More Detail Result
+            </Checkbox>
           </div>
-
-          <Tabs
-            activeKey={activeTab.toString()}
-            onChange={(key) => setActiveTab(parseInt(key))}
-          >
-            {/* Mapping over years to create TabPanes */}
-            {years.map((year, index) => (
-              <TabPane tab={year.year} key={index.toString()}>
-                {/* Display table for the selected year */}
-                <Table
-                  className="bg-white overflow-auto my-8 rounded-md shadow-xl"
-                  size="small"
-                  dataSource={getDataSourceForYear(year.months)}
-                  columns={generateTableColumns(year)}
-                  pagination={false}
+          {showAdvancedInputs && (
+            <>
+              <div className="w-full lg:w-[20%] md:w-[50%] my-5">
+                <SelectField
+                  label="Select Cut Month:"
+                  id="Select Cut Month:"
+                  name="Select Cut Month:"
+                  value={cutMonth}
+                  onChange={handleCutMonthChange}
+                  options={Array.from({ length: 12 }, (_, index) => ({
+                    label: `${index + 1}`,
+                    value: `${index + 1}`,
+                  })).map((option) => option.label)} // Chỉ trả về mảng các label
                 />
-              </TabPane>
-            ))}
-          </Tabs>
+              </div>
+
+              <Tabs
+                activeKey={activeTab.toString()}
+                onChange={(key) => setActiveTab(parseInt(key))}
+              >
+                {/* Mapping over years to create TabPanes */}
+                {years.map((year, index) => (
+                  <TabPane tab={year.year} key={index.toString()}>
+                    {/* Display table for the selected year */}
+                    <Table
+                      className="bg-white overflow-auto my-8 rounded-md shadow-xl"
+                      size="small"
+                      dataSource={getDataSourceForYear(year.months)}
+                      columns={generateTableColumns(year)}
+                      pagination={false}
+                    />
+                  </TabPane>
+                ))}
+              </Tabs>
+            </>
+          )}
         </div>
       </div>
 

@@ -306,10 +306,10 @@ function FinancialList() {
               record.collabs?.includes(user.email)
                 ? "Collaboration"
                 : record.invited_user?.includes(user.email)
-                ? "View only"
-                : record.collabs?.includes(user.email)
-                ? "Collaboration"
-                : "Default Label"}
+                  ? "View only"
+                  : record.collabs?.includes(user.email)
+                    ? "Collaboration"
+                    : "Default Label"}
             </div>
           )}
         </>
@@ -529,10 +529,10 @@ function FinancialList() {
               record.collabs?.includes(user.email)
                 ? "Collaboration"
                 : record.invited_user?.includes(user.email)
-                ? "View only"
-                : record.collabs?.includes(user.email)
-                ? "Collaboration"
-                : "Default Label"}
+                  ? "View only"
+                  : record.collabs?.includes(user.email)
+                    ? "Collaboration"
+                    : "Default Label"}
             </div>
           )}
         </>
@@ -1020,6 +1020,10 @@ function FinancialList() {
               </ReactModal>
 
               <section className="container px-4 mx-auto">
+                <h1 className="text-4xl text-center my-2 font-bold">
+                  Financial Listing Dashboard
+                </h1>
+
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-lg font-semibold text-center flex justify-center items-center">
                     My Projects

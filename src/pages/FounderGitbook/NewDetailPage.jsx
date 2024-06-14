@@ -133,7 +133,7 @@ export default function NewDetailPage({ location }) {
   const position = "notFixed";
 
   return (
-    <div className="min-h-screen bg-white max-w-7xl mx-auto">
+    <div className="min-h-screen bg-white max-w-6xl mx-auto">
       {isLoading ? (
         <LoadingButtonClick isLoading={isLoading} />
       ) : (

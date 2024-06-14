@@ -721,18 +721,6 @@ function ProjectList({ projects }) {
 
   return (
     <main className="w-full min-h-[92.5vh]">
-      <div className="flex justify-end mr-5 mb-5 items-end">
-        <AddProject
-          updatedProjects={updatedProjects}
-          setUpdatedProjects={setUpdatedProjects}
-          isModalOpen={isModalOpen}
-          setIsModalOpen={setIsModalOpen}
-          selectedProject={selectedProject}
-          setSelectedProject={setSelectedProject}
-          myProjects={myProjects}
-        />
-      </div>
-
       {isDeleteModalOpen && (
         <Modal
           title="Confirm Delete"
@@ -897,7 +885,21 @@ function ProjectList({ projects }) {
       )}
 
       <section className="container px-4 mx-auto">
-        <h2 className="text-lg font-semibold mb-4">My Projects</h2>
+        <h1 className="text-4xl text-center my-2 font-bold">
+          Fundraising Profile Listing Dashboard
+        </h1>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold mb-4">My Projects</h2>
+          <AddProject
+            updatedProjects={updatedProjects}
+            setUpdatedProjects={setUpdatedProjects}
+            isModalOpen={isModalOpen}
+            setIsModalOpen={setIsModalOpen}
+            selectedProject={selectedProject}
+            setSelectedProject={setSelectedProject}
+            myProjects={myProjects}
+          />
+        </div>
         <div className="flex flex-col mb-8">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">

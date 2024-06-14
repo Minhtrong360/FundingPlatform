@@ -104,34 +104,32 @@ export default function MarketResearch() {
                     onChange={(e) => setYearV(e.target.value)}
                     className="mt-4 mb-4 py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
                   />
+                  <div className="block mb-1">Estimate Arr</div>
+                  <input
+                    placeholder="$10k, $100k, $1M, etc."
+                    value={arr}
+                    onChange={(e) => setArr(e.target.value)}
+                    className="mt-4 mb-4 py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
+                  />
                 </div>
                 <div>
                   <div className="block mb-1">Business Model</div>
                   <input
-                    placeholder="United States, Russia, etc."
+                    placeholder="SaaS, Marketplace, Licensing, Affiliate..."
                     value={bussinessmodel}
                     onChange={(e) => setBussinessmodel(e.target.value)}
                     className="mt-4 mb-4 py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
                   />
                   <div className="block mb-1">AI</div>
                   <input
-                    placeholder="Specific prompt"
+                    placeholder="Yes/No"
                     value={ai}
                     onChange={(e) => setAi(e.target.value)}
                     className="mt-4 mb-4 py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
                   />
-                </div>
-                <div>
-                  <div className="block mb-1">Estimate Arr</div>
-                  <input
-                    placeholder="United States, Russia, etc."
-                    value={arr}
-                    onChange={(e) => setArr(e.target.value)}
-                    className="mt-4 mb-4 py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
-                  />
                   <div className="block mb-1">Teamsize</div>
                   <input
-                    placeholder="Specific prompt"
+                    placeholder="1-10, 10-50, 50-100, etc."
                     value={teamsize}
                     onChange={(e) => setTeamsize(e.target.value)}
                     className="mt-4 mb-4 py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "

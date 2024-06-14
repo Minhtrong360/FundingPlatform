@@ -66,37 +66,40 @@ const Gemini = ({
               "SalesSection": {
                 "channelInputs": [
                   {
-                    "id": 1,
-                    "productName": "Coffee",
-                    "price": 4,
-                    "multiples": 1,
-                    "deductionPercentage": 0,
-                    "cogsPercentage": 30,
-                    "selectedChannel": "Offline",
-                    "channelAllocation": 0.4
+                    id: 1,
+                    productName: "Coffee",
+                    price: 4,
+                    multiples: 1,
+                    deductionPercentage: 5,
+                    cogsPercentage: 30,
+                    selectedChannel: { id: 1, channelName: "Online" },
+                    channelAllocation: 0.4,
+                    daysGetPaid: 0,
                   },
                   {
-                    "id": 2,
-                    "productName": "Cake",
-                    "price": 8,
-                    "multiples": 1,
-                    "deductionPercentage": 0,
-                    "cogsPercentage": 35,
-                    "selectedChannel": "Offline",
-                    "channelAllocation": 0.3
+                    id: 2,
+                    productName: "Cake",
+                    price: 8,
+                    multiples: 1,
+                    deductionPercentage: 4,
+                    cogsPercentage: 35,
+                    selectedChannel: { id: 2, channelName: "Offline" },
+                    channelAllocation: 0.3,
+                    daysGetPaid: 0,
                   },
                   {
-                    "id": 3,
-                    "productName": "Coffee Bag",
-                    "price": 6,
-                    "multiples": 1,
-                    "deductionPercentage": 0,
-                    "cogsPercentage": 25,
-                    "selectedChannel": "Online",
-                    "channelAllocation": 0.6
-                  }
+                    id: 3,
+                    productName: "Coffee Bag",
+                    price: 6,
+                    multiples: 1,
+                    deductionPercentage: 6,
+                    cogsPercentage: 25,
+                    selectedChannel: { id: 2, channelName: "Offline" },
+                    channelAllocation: 0.6,
+                    daysGetPaid: 0,
+                  },
                 ],
-                "channelNames": ["Online", "Offline"]
+                "channelNames": [{id: 1, channelName: 'Online'}, { id: 2, channelName: "Offline" }]
               },
               "CostSection": {
                 "costInputs": [
@@ -132,23 +135,27 @@ const Gemini = ({
               "PersonnelSection": {
                 "personnelInputs": [
                   {
-                    "id": 1,
-                    "jobTitle": "Cashier",
-                    "salaryPerMonth": 800,
-                    "increasePerYear": 10,
-                    "numberOfHires": 2,
-                    "jobBeginMonth": 1,
-                    "jobEndMonth": 36
+                    id: 1,
+                    jobTitle: "Cashier",
+                    department: "Sales",
+                    salaryPerMonth: 800,
+                    increasePerYear: 10,
+                    growthSalaryFrequency: "Annually",
+                    numberOfHires: 2,
+                    jobBeginMonth: 1,
+                    jobEndMonth: 36,
                   },
                   {
-                    "id": 2,
-                    "jobTitle": "Manager",
-                    "salaryPerMonth": 2000,
-                    "increasePerYear": 10,
-                    "numberOfHires": 1,
-                    "jobBeginMonth": 1,
-                    "jobEndMonth": 36
-                  }
+                    id: 2,
+                    jobTitle: "Manager",
+                    department: "Management",
+                    salaryPerMonth: 2000,
+                    increasePerYear: 10,
+                    growthSalaryFrequency: "Annually",
+                    numberOfHires: 1,
+                    jobBeginMonth: 1,
+                    jobEndMonth: 36,
+                  },
                 ]
               },
               "InvestmentSection": {

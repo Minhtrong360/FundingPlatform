@@ -313,3 +313,26 @@ code {
   border-style: solid;
   border-color: #d9d9d9;
 }
+
+.chatbot-container {
+  font-family: "Sora", sans-serif !important;
+}
+
+/* Add this CSS to your global stylesheet or component-specific CSS file */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none; /* for Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
+}
+
+.ant-table-content {
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none; /* for Firefox */
+}
+
+.ant-table-content::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
+}

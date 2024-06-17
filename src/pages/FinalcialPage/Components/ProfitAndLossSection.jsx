@@ -240,7 +240,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     ...item.values?.reduce(
       (acc, value, i) => ({
         ...acc,
-        [realDate[i]]: formatNumber(value?.toFixed(2)),
+        [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
       }),
       {}
     ),
@@ -249,7 +249,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       ...child.values.reduce(
         (acc, value, i) => ({
           ...acc,
-          [realDate[i]]: formatNumber(value?.toFixed(2)),
+          [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
         }),
         {}
       ),

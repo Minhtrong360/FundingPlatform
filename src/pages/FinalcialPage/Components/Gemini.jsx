@@ -20,9 +20,18 @@ const Gemini = ({
     try {
       setIsLoading(true);
       setSpinning(true);
-
+      // const response = await fetch(
+      //   "https://flowise-ngy8.onrender.com/api/v1/prediction/28d10093-9e46-4387-a559-98b986583e1b",
+      //   {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({ question: [newMessage.content] }),
+      //   }
+      console.log("Input value:", inputValue)
       const response = await fetch(
-        "https://news-fetcher-8k6m.onrender.com/message",
+        "https://flowise-ngy8.onrender.com/api/v1/prediction/28d10093-9e46-4387-a559-98b986583e1b",
         {
           method: "POST",
           headers: {
@@ -30,7 +39,7 @@ const Gemini = ({
           },
 
           body: JSON.stringify({
-            user_input: `{
+            question: [`{
               "DurationSelect": {
                 "selectedDuration": "5 years",
                 "startingCashBalance": 20000,
@@ -205,22 +214,24 @@ const Gemini = ({
                 ]
               }
             }
-            Based on given JSON, return purely a JSON file with appropriate values used for business model of ${inputValue}. All the keys must be included in new JSON with key name unchanged. Values of each key are unique. No explain.`,
+            Based on given JSON, return purely a JSON file with appropriate replace values used for business model of ${inputValue}. All the keys must be included in new JSON with key name unchanged. Values of each key are unique. No explain.`],
           }),
         }
       );
 
       const data = await response.json();
-
+      const dataJS = JSON.stringify(data.json)
+      console.log("data: ", data);
+      console.log("dataJS: ", dataJS)
       if (data.error) {
         throw new Error(data.error);
       }
       //Remove backticks from the constant responseText
-      const cleanedResponseText = data?.response?.replace(/json|`/g, "");
+      const cleanedResponseText = dataJS?.response?.replace(/json|`/g, "");
 
       // Set the chatbot response to the latest messag
 
-      setChatbotResponse(cleanedResponseText);
+      setChatbotResponse(dataJS);
 
       saveUserData();
     } catch (error) {

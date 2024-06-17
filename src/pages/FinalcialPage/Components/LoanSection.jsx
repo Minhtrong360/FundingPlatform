@@ -27,6 +27,7 @@ import SpinnerBtn from "../../../components/SpinnerBtn";
 
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
+import GroqJS from "./GroqJson";
 
 const LoanInputForm = ({
   tempLoanInputs,
@@ -887,6 +888,13 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               />
             </div>
             <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
+            <section className="mb-8 NOsticky NOtop-8 ">
+              <GroqJS datasrc={transformLoanDataForTable(
+                      tempLoanInputs,
+                      renderLoanForm,
+                      numberOfMonths
+                    )} inputUrl={'urlLoan'}/>
+            </section>
               <button
                 className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
                 style={{ bottom: "20px", right: "80px", position: "fixed" }}

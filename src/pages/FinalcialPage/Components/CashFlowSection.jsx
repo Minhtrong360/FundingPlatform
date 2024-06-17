@@ -943,7 +943,7 @@ function CashFlowSection({ numberOfMonths }) {
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section className="mb-8 NOsticky NOtop-8">
-          <GroqJS datasrc={cashFlowData} />
+          <GroqJS datasrc={cashFlowData} inputUrl='urlCF'/>
         </section>
       </div>
 
@@ -990,7 +990,7 @@ function CashFlowSection({ numberOfMonths }) {
           centered={true}
           zIndex={50}
         >
-          <GroqJS datasrc={cashFlowData} />
+          <GroqJS datasrc={cashFlowData} inputUrl='urlCF'/>
         </Modal>
       )}
     </div>

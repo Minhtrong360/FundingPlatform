@@ -58,6 +58,7 @@ import SpinnerBtn from "../../../components/SpinnerBtn";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import Flowise from "./Flowise";
+import GroqJS from "./GroqJson";
 
 const CustomerInputsForm = React.memo(
   ({
@@ -1355,7 +1356,7 @@ const CustomerSection = React.memo(
                       <div className="absolute top-2 right-2">
                         <button
                           onClick={(event) => handleChartClick(chart, event)}
-                          className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
+                          className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                         >
                           <FullscreenOutlined />
                         </button>
@@ -1374,7 +1375,7 @@ const CustomerSection = React.memo(
                                 )
                               )
                             }
-                            className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark1:bg-slate-900 dark1:border-gray-700 dark1:text-gray-400 dark1:focus:ring-gray-600"
+                            className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
                           >
                             {Array.from({ length: numberOfMonths }, (_, i) => {
                               const monthIndex = (startingMonth + i - 1) % 12;
@@ -1402,7 +1403,7 @@ const CustomerSection = React.memo(
                                 )
                               )
                             }
-                            className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark1:bg-slate-900 dark1:border-gray-700 dark1:text-gray-400 dark1:focus:ring-gray-600"
+                            className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
                           >
                             {Array.from({ length: numberOfMonths }, (_, i) => {
                               const monthIndex = (startingMonth + i - 1) % 12;
@@ -1455,7 +1456,7 @@ const CustomerSection = React.memo(
                       <div className="absolute top-2 right-2">
                         <button
                           onClick={(event) => handleChartClick(chart, event)}
-                          className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
+                          className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                         >
                           <FullscreenOutlined />
                         </button>
@@ -1554,8 +1555,11 @@ const CustomerSection = React.memo(
                   }
                 />
               </div>
-              <div className="w-full xl:w-1/4 sm:p-4 p-0   ">
-              <Flowise prompt={generatePromptC()} button={"Send"} />
+              <div className="w-full xl:w-1/4 sm:p-4 p-0 ">
+              <section className="mb-8 NOsticky NOtop-8 ">
+                <GroqJS datasrc={customerTableData} inputUrl={'urlCus'}/>
+              </section>
+              {/* <Flowise prompt={generatePromptC()} button={"Send"} /> */}
                 <button
                   className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
                   style={{ bottom: "20px", right: "80px", position: "fixed" }}

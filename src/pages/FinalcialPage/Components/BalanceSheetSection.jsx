@@ -1264,7 +1264,7 @@ function BalanceSheetSection({ numberOfMonths }) {
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section className="mb-8 NOsticky NOtop-8 ">
-          <GroqJS datasrc={BalenceSheetData} />
+          <GroqJS datasrc={BalenceSheetData} inputUrl="urlBS"/>
         </section>
       </div>
 
@@ -1311,7 +1311,7 @@ function BalanceSheetSection({ numberOfMonths }) {
           centered={true}
           zIndex={50}
         >
-          <GroqJS datasrc={BalenceSheetData} />
+          <GroqJS datasrc={BalenceSheetData} inputUrl={'urlBS'}/>
         </Modal>
       )}
     </div>

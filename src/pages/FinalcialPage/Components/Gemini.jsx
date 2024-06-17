@@ -20,16 +20,15 @@ const Gemini = ({
     try {
       setIsLoading(true);
       setSpinning(true);
-      // const response = await fetch(
-      //   "https://flowise-ngy8.onrender.com/api/v1/prediction/28d10093-9e46-4387-a559-98b986583e1b",
-      //   {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify({ question: [newMessage.content] }),
-      //   }
-      console.log("Input value:", inputValue)
+
+      const canProceed = await saveUserData();
+
+      if (!canProceed) {
+        setIsLoading(false);
+        setSpinning(false);
+        return;
+      }
+
       const response = await fetch(
         "https://flowise-ngy8.onrender.com/api/v1/prediction/28d10093-9e46-4387-a559-98b986583e1b",
         {
@@ -39,7 +38,8 @@ const Gemini = ({
           },
 
           body: JSON.stringify({
-            question: [`{
+            question: [
+              `{
               "DurationSelect": {
                 "selectedDuration": "5 years",
                 "startingCashBalance": 20000,
@@ -214,29 +214,28 @@ const Gemini = ({
                 ]
               }
             }
-            Based on given JSON, return purely a JSON file with appropriate replace values used for business model of ${inputValue}. All the keys must be included in new JSON with key name unchanged. Values of each key are unique. No explain.`],
+            Based on given JSON, return purely a JSON file with appropriate replace values used for business model of ${inputValue}. All the keys must be included in new JSON with key name unchanged. Values of each key are unique. No explain.`,
+            ],
           }),
         }
       );
 
       const data = await response.json();
-      const dataJS = JSON.stringify(data.json)
-      console.log("data: ", data);
-      console.log("dataJS: ", dataJS)
+      const dataJS = JSON.stringify(data.json);
+
       if (data.error) {
         throw new Error(data.error);
       }
-      //Remove backticks from the constant responseText
-      const cleanedResponseText = dataJS?.response?.replace(/json|`/g, "");
 
       // Set the chatbot response to the latest messag
 
       setChatbotResponse(dataJS);
-
-      saveUserData();
+      setIsLoading(false);
+      setSpinning(false);
     } catch (error) {
       console.log("Error sending message:", error);
       setIsLoading(false);
+      setSpinning(false);
     }
   };
 
@@ -245,11 +244,21 @@ const Gemini = ({
       const maxPrompt = 20;
       // Thực hiện truy vấn để lấy thông tin người dùng theo id (điều này cần được thay đổi dựa trên cấu trúc dữ liệu của bạn trong Supabase)
       const currentPrompt = currentUser.financePromptNumber - 1;
+      const oneHour = 60 * 60 * 1000; // 1 hour in milliseconds
+
       if (currentPrompt <= 0) {
-        message.warning("Prompt per hour limited. Let return after an hour.");
-        return;
+        const timeRemainingMs =
+          oneHour - (Date.now() - currentUser.financeFirstPrompt);
+        const timeRemainingMinutes = Math.ceil(timeRemainingMs / (60 * 1000));
+        message.warning(
+          `Prompt per hour limited. Please return after ${timeRemainingMinutes} minutes.`
+        );
+        return false;
       } else {
-        if (currentPrompt == maxPrompt - 1) {
+        if (
+          currentPrompt == maxPrompt - 1 ||
+          (currentPrompt != maxPrompt && !currentUser.financeFirstPrompt)
+        ) {
           await supabase
             .from("users")
             .update({ financeFirstPrompt: Date.now() })
@@ -271,8 +280,12 @@ const Gemini = ({
         if (data) {
           setCurrentUser(data[0]);
         }
+        return true;
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 
   return (

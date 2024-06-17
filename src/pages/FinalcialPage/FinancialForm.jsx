@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { saveAs } from "file-saver";
-import Joyride, { STATUS, CallBackProps, Step } from "react-joyride";
-import {
-  CheckCircleOutlined,
-  FileOutlined,
-  QuestionCircleOutlined,
-} from "@ant-design/icons";
+// import { saveAs } from "file-saver";
+// import Joyride, { STATUS, CallBackProps, Step } from "react-joyride";
+import { CheckCircleOutlined } from "@ant-design/icons";
 
 import DurationSelect from "./Components/DurationSelect";
 import CustomerSection from "./Components/CustomerSection";
@@ -21,7 +17,7 @@ import ProgressBar from "../../components/ProgressBar";
 import Gemini from "./Components/Gemini";
 import MetricsFM from "./Components/MetricsFM";
 import ProfitAndLossSection from "./Components/ProfitAndLossSection";
-import * as XLSX from "xlsx";
+// import * as XLSX from "xlsx";
 import BalanceSheetSection from "./Components/BalanceSheetSection";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { useDispatch, useSelector } from "react-redux";
@@ -61,10 +57,10 @@ import { setInvestmentInputs } from "../../features/InvestmentSlice";
 import { setLoanInputs } from "../../features/LoanSlice";
 import { setFundraisingInputs } from "../../features/FundraisingSlice";
 import CashFlowSection from "./Components/CashFlowSection";
-import { Button, FloatButton, Modal, message } from "antd";
+import { Modal, message } from "antd";
 import { useParams } from "react-router-dom";
-import AnnounceFMPage from "./Components/AnnounceFMPage";
-import Perflexity from "./Components/Perflexity";
+// import AnnounceFMPage from "./Components/AnnounceFMPage";
+// import Perflexity from "./Components/Perflexity";
 import SpinnerBtn from "../../components/SpinnerBtn";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
@@ -90,9 +86,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     description,
     location,
   } = useSelector((state) => state.durationSelect);
-  const generatePrompt = () => {
-    return `Given ${description} and ${location}, list all facts and figures related to the revenue, cost, personnel, margin, salary related to in bullet points. Each bullet points no more than 10 words. `;
-  };
+  // const generatePrompt = () => {
+  //   return `Given ${description} and ${location}, list all facts and figures related to the revenue, cost, personnel, margin, salary related to in bullet points. Each bullet points no more than 10 words. `;
+  // };
   const { yearlyAverageCustomers } = useSelector((state) => state.customer);
   const { yearlySales } = useSelector((state) => state.sales);
 
@@ -881,15 +877,15 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     setRun(false); // Initialize Joyride on component mount
   }, []);
 
-  const handleJoyrideCallback = (data) => {
-    if (data.status === "finished" || data.status === "skipped") {
-      setRun(false);
-    }
-  };
+  // const handleJoyrideCallback = (data) => {
+  //   if (data.status === "finished" || data.status === "skipped") {
+  //     setRun(false);
+  //   }
+  // };
 
-  const startTour = () => {
-    setRun(true);
-  };
+  // const startTour = () => {
+  //   setRun(true);
+  // };
 
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 

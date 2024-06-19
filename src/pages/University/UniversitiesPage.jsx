@@ -11,15 +11,15 @@ import regions from "../../components/Regions";
 import Header2 from "../Home/Header2";
 import HeroUniversities from "./HeroUniversities";
 import CredentialModal from "./CredentialModal";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const predefinedCredentials = {
   // Example predefined credentials
-  12345: { password: "password123", university: "University A" },
-  67890: { password: "password456", university: "University B" },
+  12345: { password: "12345", university: "University A" },
+  67890: { password: "67890", university: "University B" },
 };
 
-const UniversitiesPage = ({ location }) => {
+const UniversitiesPage = () => {
   const [companies, setCompanies] = useState(
     JSON.parse(sessionStorage.getItem("companies")) || []
   );
@@ -36,7 +36,7 @@ const UniversitiesPage = ({ location }) => {
   const [selectedCode, setSelectedCode] = useState("");
 
   const [university, setUniversity] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
   const [currentTab, setCurrentTab] = useState("All");
@@ -57,13 +57,24 @@ const UniversitiesPage = ({ location }) => {
       setUniversity(credentials.university);
       setIsModalVisible(false);
       fetchCompanies(credentials.university);
-      navigate(
-        `/universities?university=${encodeURIComponent(credentials.university)}`
-      );
+      navigate(`/workspace?workspace=${credentials.university}`);
     } else {
       message.error("Invalid ID or password.");
     }
   };
+  const location = useLocation();
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const workspace = searchParams.get("workspace");
+    if (!workspace) {
+      setIsModalVisible(true);
+    } else {
+      setIsModalVisible(false);
+      setUniversity(workspace);
+      fetchCompanies(workspace);
+    }
+  }, [location]);
 
   useEffect(() => {
     if (locationKey !== location?.key || !companies.length) {

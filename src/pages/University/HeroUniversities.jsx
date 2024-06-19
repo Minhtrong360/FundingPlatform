@@ -18,26 +18,19 @@ import { formatDate } from "../../features/DurationSlice";
 
 const HeroUniversities = ({ university, onSelectCode }) => {
   const { user } = useAuth();
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    if (!user) {
-      navigate("/login");
-    } else {
-      navigate(`/founder/${"3ec3f142-f33c-4977-befd-30d4ce2b764d"}`);
-    }
-  };
 
   const [isAddNewModalOpen, setIsAddNewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [newCode, setNewCode] = useState("");
+  const [competitionName, setCompetitionName] = useState(""); // New state for competition name
   const [expirationDate, setExpirationDate] = useState(null);
   const [newExpirationDate, setNewExpirationDate] = useState(null); // New state for new expiration date
   const [selectedCode, setSelectedCode] = useState(null);
   const [codeToDelete, setCodeToDelete] = useState(null);
   const [codeData, setCodeData] = useState([]);
   const [projectCounts, setProjectCounts] = useState({});
+  const [projectList, setProjectList] = useState();
 
   useEffect(() => {
     const fetchCodeData = async () => {
@@ -65,6 +58,30 @@ const HeroUniversities = ({ university, onSelectCode }) => {
     fetchCodeData();
   }, [university]);
 
+  const filterProjectsByCode = async (code) => {
+    try {
+      const { data: projects, error } = await supabase
+        .from("projects")
+        .select("*")
+        .contains("universityCode", [code]);
+
+      if (error) {
+        throw error;
+      }
+
+      const parsedProjects = projects.map((project) => ({
+        ...project,
+        applyInfo: JSON.parse(project.applyInfo),
+      }));
+
+      setProjectList(parsedProjects);
+    } catch (error) {
+      console.error("Error fetching projects for code:", error);
+    }
+  };
+
+  console.log("projectList", projectList);
+
   const fetchProjectCounts = async (codes) => {
     const counts = {};
 
@@ -86,7 +103,7 @@ const HeroUniversities = ({ university, onSelectCode }) => {
   };
 
   const handleAddNewCode = async () => {
-    if (!newCode || !expirationDate) {
+    if (!newCode || !expirationDate || !competitionName) {
       message.error("Please enter all required fields");
       return;
     }
@@ -98,6 +115,7 @@ const HeroUniversities = ({ university, onSelectCode }) => {
           code: newCode,
           expired_at: expirationDate.format("YYYY-MM-DD"),
           universityCode: [`${university}`],
+          name: competitionName, // Add this line
         },
       ])
       .select();
@@ -120,11 +138,12 @@ const HeroUniversities = ({ university, onSelectCode }) => {
       setIsAddNewModalOpen(false);
       setNewCode("");
       setExpirationDate(null);
+      setCompetitionName(""); // Reset the competition name
     }
   };
 
   const handleEditCode = async () => {
-    if (!selectedCode || !newCode || !newExpirationDate) {
+    if (!selectedCode || !newCode || !newExpirationDate || !competitionName) {
       message.error("Please enter all required fields");
       return;
     }
@@ -134,6 +153,7 @@ const HeroUniversities = ({ university, onSelectCode }) => {
       .update({
         code: newCode,
         expired_at: newExpirationDate.format("YYYY-MM-DD"),
+        name: competitionName, // Add this line
       })
       .eq("id", selectedCode.id)
       .select();
@@ -157,6 +177,7 @@ const HeroUniversities = ({ university, onSelectCode }) => {
       setNewCode("");
       setExpirationDate(null);
       setNewExpirationDate(null);
+      setCompetitionName(""); // Reset the competition name
     }
   };
 
@@ -178,9 +199,9 @@ const HeroUniversities = ({ university, onSelectCode }) => {
   };
 
   const openEditModal = (record) => {
-    console.log("record", record);
     setSelectedCode(record);
     setNewCode(record.code);
+    setCompetitionName(record.name); // Set competition name
     setExpirationDate(record.expired_at ? moment(record.expired_at) : null);
     setNewExpirationDate(null); // Reset new expiration date
     setIsEditModalOpen(true);
@@ -199,6 +220,14 @@ const HeroUniversities = ({ university, onSelectCode }) => {
       align: "center",
       render: (text, record, index) => (
         <span>{codeData?.indexOf(record) + 1}</span>
+      ),
+    },
+    {
+      title: "Competition Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text, record) => (
+        <span className="hover:cursor-pointer">{record.name}</span>
       ),
     },
     {
@@ -276,6 +305,135 @@ const HeroUniversities = ({ university, onSelectCode }) => {
     },
   ];
 
+  const projectByCodeColumns = [
+    {
+      title: "No",
+      dataIndex: "index",
+      key: "index",
+      align: "center",
+      render: (text, record, index) => (
+        <span>{projectList?.indexOf(record) + 1}</span>
+      ),
+    },
+    {
+      title: "Project Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text, record) => (
+        <span className="hover:cursor-pointer">{record?.name}</span>
+      ),
+    },
+    {
+      title: "Creator",
+      dataIndex: "code",
+      key: "code",
+      render: (text, record) => (
+        <span className="hover:cursor-pointer">
+          {record?.applyInfo.creatorName}
+        </span>
+      ),
+    },
+    {
+      title: "Applied at",
+      dataIndex: "applyAt",
+      key: "applyAt",
+      render: (text, record) => (
+        <span className="hover:cursor-pointer">
+          {formatDate(record?.applyInfo.applyAt)}
+        </span>
+      ),
+    },
+    {
+      title: "Contact Email",
+      dataIndex: "contactEmail",
+      key: "contactEmail",
+      render: (text, record) => (
+        <span className="hover:cursor-pointer">
+          {record?.applyInfo.contactEmail}
+        </span>
+      ),
+    },
+    {
+      title: "Contact Phone",
+      dataIndex: "contactPhone",
+      key: "contactPhone",
+      render: (text, record) => (
+        <span className="hover:cursor-pointer">
+          {record?.applyInfo.contactPhone}
+        </span>
+      ),
+    },
+    {
+      title: "University",
+      dataIndex: "university",
+      key: "university",
+      render: (text, record) => (
+        <span className="hover:cursor-pointer">
+          {record?.applyInfo.university}
+        </span>
+      ),
+    },
+    {
+      title: "Team size",
+      dataIndex: "teamSize",
+      key: "teamSize",
+      render: (text, record) => (
+        <span className="hover:cursor-pointer">
+          {record?.applyInfo.teamSize}
+        </span>
+      ),
+    },
+    {
+      title: "Team Emails",
+      dataIndex: "teamEmails",
+      key: "teamEmails",
+      render: (text, record) => (
+        <span className="hover:cursor-pointer">
+          {record?.applyInfo.teamEmails}
+        </span>
+      ),
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      key: "action",
+      align: "center",
+      render: (text, record) => (
+        <Dropdown
+          className="flex items-center justify-center"
+          overlay={
+            <Menu>
+              <>
+                <Menu.Item key="edit">
+                  <div
+                    onClick={() => openEditModal(record)}
+                    style={{ fontSize: "12px" }}
+                  >
+                    Edit
+                  </div>
+                </Menu.Item>
+                <Menu.Item key="delete">
+                  <div
+                    onClick={() => openDeleteModal(record.id)}
+                    style={{ fontSize: "12px" }}
+                  >
+                    Delete
+                  </div>
+                </Menu.Item>
+              </>
+            </Menu>
+          }
+        >
+          <div className="bg-blue-600 rounded-md max-w-[5rem] text-white py-1 hover:cursor-pointer">
+            Action
+          </div>
+        </Dropdown>
+      ),
+    },
+  ];
+
+  console.log("selectedCode", selectedCode);
+
   return (
     <section className="bg-white mt-12">
       {" "}
@@ -304,6 +462,7 @@ const HeroUniversities = ({ university, onSelectCode }) => {
                 onClick={() => {
                   setNewCode("");
                   setExpirationDate(null);
+                  setCompetitionName(""); // Reset competition name
                   setIsAddNewModalOpen(true);
                 }}
               >
@@ -317,6 +476,10 @@ const HeroUniversities = ({ university, onSelectCode }) => {
           <div className="flex flex-col mb-8">
             <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
+                <h3 className="font-bold text-xl text-left mb-5">
+                  Code listing
+                </h3>
+
                 <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
                   <Table
                     columns={codeColumns}
@@ -331,6 +494,7 @@ const HeroUniversities = ({ university, onSelectCode }) => {
                       onClick: () => {
                         setSelectedCode(record);
                         onSelectCode(record.code);
+                        filterProjectsByCode(record.code);
                       },
                     })}
                   />
@@ -339,6 +503,30 @@ const HeroUniversities = ({ university, onSelectCode }) => {
             </div>
           </div>
         </section>
+        {projectList && (
+          <section className="container px-4 mx-auto mt-14">
+            <div className="flex flex-col mb-5">
+              <h2 className="text-xl font-bold text-left">
+                Project listing by {selectedCode?.code}
+              </h2>
+              <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
+                <Table
+                  columns={projectByCodeColumns}
+                  dataSource={projectList}
+                  pagination={{
+                    position: ["bottomLeft"],
+                  }}
+                  rowKey="id"
+                  size="small"
+                  bordered
+                  scroll={{
+                    x: true,
+                  }}
+                />
+              </div>
+            </div>
+          </section>
+        )}
 
         <Modal
           title="Add new Competition"
@@ -370,6 +558,19 @@ const HeroUniversities = ({ university, onSelectCode }) => {
           >
             <form className="grid gap-6 col-span-1 md:col-span-2">
               <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label htmlFor="competition_name">Competition Name</label>
+                  <div className="flex items-center">
+                    <Input
+                      id="competition_name"
+                      placeholder="Enter competition name"
+                      required
+                      className="border-gray-300 rounded-md text-sm"
+                      value={competitionName}
+                      onChange={(e) => setCompetitionName(e.target.value)}
+                    />
+                  </div>
+                </div>
                 <div className="space-y-2">
                   <label htmlFor="code">Name (CODE)</label>
                   <div className="flex items-center">
@@ -433,6 +634,21 @@ const HeroUniversities = ({ university, onSelectCode }) => {
             <form className="grid gap-6 col-span-1 md:col-span-2">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
+                  <label htmlFor="edit_competition_name">
+                    Competition Name
+                  </label>
+                  <div className="flex items-center">
+                    <Input
+                      id="edit_competition_name"
+                      placeholder="Enter competition name"
+                      required
+                      className="border-gray-300 rounded-md text-sm"
+                      value={competitionName}
+                      onChange={(e) => setCompetitionName(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
                   <label htmlFor="edit_code">Code</label>
                   <div className="flex items-center">
                     <Input
@@ -458,19 +674,7 @@ const HeroUniversities = ({ university, onSelectCode }) => {
                     />
                   </div>
                 </div>
-                <div className="space-y-2" style={{ visibility: "hidden" }}>
-                  <label htmlFor="edit_code">Code</label>
-                  <div className="flex items-center">
-                    <Input
-                      id="edit_code"
-                      placeholder="Enter your code"
-                      required
-                      className="border-gray-300 rounded-md text-sm"
-                      value={newCode}
-                      onChange={(e) => setNewCode(e.target.value)}
-                    />
-                  </div>
-                </div>
+
                 <div className="space-y-2">
                   <label htmlFor="new_expired_at">Expired at (New)</label>
                   <div className="flex items-center">

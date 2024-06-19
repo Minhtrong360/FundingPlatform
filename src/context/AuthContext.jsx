@@ -127,17 +127,19 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (currentUser) {
       if (
-        currentUser[0]?.plan === "Free" ||
-        currentUser[0]?.plan === null ||
-        currentUser[0]?.plan === undefined ||
-        currentUser[0]?.subscription_status === "canceled" ||
-        currentUser[0]?.subscription_status === "cancelled"
+        !currentUser[0]?.plan ||
+        currentUser[0]?.plan == "Free" ||
+        currentUser[0]?.plan == null ||
+        currentUser[0]?.plan == undefined ||
+        !currentUser[0]?.subscription_status ||
+        currentUser[0]?.subscription_status == "canceled" ||
+        currentUser[0]?.subscription_status == "cancelled"
       ) {
         setSubscribed(false);
       } else {
         setSubscribed(true);
       }
-      if (currentUser[0].admin === true) {
+      if (currentUser[0].admin == true) {
         setAdmin(true);
       } else {
         setAdmin(false);

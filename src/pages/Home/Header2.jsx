@@ -126,11 +126,11 @@ const Header2 = ({ position }) => {
           label: "Buy Private Shares",
           path: "/Flea-Market/info",
         },
-        // {
-        //   key: "3",
-        //   label: "Order Bespoke Investment",
-        //   path: "/investors/order-bespoke-investment",
-        // },
+        {
+          key: "3",
+          label: "Work Space",
+          path: "/workspace",
+        },
       ],
     },
     // { title: "About Us", path: "/about-us" },

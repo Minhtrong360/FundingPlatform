@@ -16,12 +16,13 @@ const CredentialModal = ({ visible, onSubmit, onCancel }) => {
   return (
     <Modal
       title="Enter Credentials"
-      visible={visible}
+      open={visible}
       onOk={handleOk}
       onCancel={onCancel}
       okText="Submit"
       cancelText="Cancel"
       centered
+      styles={{ mask: { backgroundColor: "black" } }} // This will set the background color
     >
       <Input
         placeholder="ID"

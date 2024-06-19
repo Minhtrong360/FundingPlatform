@@ -232,7 +232,7 @@ function Router() {
 
         <Route
           key={location.key}
-          path="/universities"
+          path="/workspace"
           element={<UniversitiesPage location={location} />}
         />
       </Routes>

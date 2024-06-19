@@ -20,9 +20,7 @@ const predefinedCredentials = {
 };
 
 const UniversitiesPage = () => {
-  const [companies, setCompanies] = useState(
-    JSON.parse(sessionStorage.getItem("companies")) || []
-  );
+  const [companies, setCompanies] = useState([]);
 
   const [page, setPage] = useState(1);
   const itemsPerPage = 6;
@@ -41,15 +39,11 @@ const UniversitiesPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentTab, setCurrentTab] = useState("All");
 
-  const [companiesToRender, setCompaniesToRender] = useState(
-    JSON.parse(sessionStorage.getItem("companiesToRender")) || []
-  );
+  const [companiesToRender, setCompaniesToRender] = useState([]);
 
   const [visibleItemCount, setVisibleItemCount] = useState(itemsPerPage);
 
   const navigate = useNavigate();
-
-  const locationKey = JSON.parse(sessionStorage.getItem("locationKey"));
 
   const handleCredentialSubmit = ({ id, password }) => {
     const credentials = predefinedCredentials[id];
@@ -75,30 +69,6 @@ const UniversitiesPage = () => {
       fetchCompanies(workspace);
     }
   }, [location]);
-
-  useEffect(() => {
-    if (locationKey !== location?.key || !companies.length) {
-      // Check if companies are already loaded
-      fetchCompanies();
-    } else {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    sessionStorage.setItem("companies", JSON.stringify(companies)); // Cache companies data
-
-    sessionStorage.setItem("locationKey", JSON.stringify(location.key));
-  }, [companies, location.key]);
-
-  useEffect(() => {
-    if (companiesToRender.length > 0) {
-      sessionStorage.setItem(
-        "companiesToRender",
-        JSON.stringify(companiesToRender)
-      );
-    }
-  }, [companiesToRender]);
 
   const fetchCompanies = async (code = "") => {
     setIsLoading(true);
@@ -297,6 +267,7 @@ const UniversitiesPage = () => {
         <HeroUniversities
           university={university}
           onSelectCode={handleSelectCode}
+          setCompanies={setCompanies}
         />
         <Search
           onSearch={handleSearch}

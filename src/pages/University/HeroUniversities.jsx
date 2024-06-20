@@ -249,6 +249,25 @@ const HeroUniversities = ({ university, onSelectCode, setCompanies }) => {
     }
   };
 
+  const handleUnpublishCode = async () => {
+    const { data, error } = await supabase
+      .from("code")
+      .update({ publish: false })
+      .eq("id", selectedCode.id)
+      .select();
+
+    if (error) {
+      message.error("Failed to unpublish code");
+      console.error(error);
+    } else {
+      message.success("Code unpublished successfully");
+      setCodeData((prev) =>
+        prev.map((item) => (item.id === selectedCode.id ? data[0] : item))
+      );
+      setIsPublishModalOpen(false);
+    }
+  };
+
   const handleAddJudge = async () => {
     const updatedJudges = [
       ...selectedCode?.judges,
@@ -526,6 +545,17 @@ const HeroUniversities = ({ university, onSelectCode, setCompanies }) => {
       ),
     },
     {
+      title: "Publish status",
+      dataIndex: "publish",
+      key: "publish",
+      align: "center",
+      render: (text, record) => (
+        <span className="hover:cursor-pointer">
+          {record.publish ? "Published" : "Unpublished"}
+        </span>
+      ),
+    },
+    {
       title: "Action",
       dataIndex: "action",
       key: "action",
@@ -549,7 +579,7 @@ const HeroUniversities = ({ university, onSelectCode, setCompanies }) => {
                     onClick={() => openPublishModal(record)}
                     style={{ fontSize: "12px" }}
                   >
-                    Publish
+                    {record.publish ? "Un-publish" : "Publish"}
                   </div>
                 </Menu.Item>
                 <Menu.Item key="judges">
@@ -1041,11 +1071,13 @@ const HeroUniversities = ({ university, onSelectCode, setCompanies }) => {
         </Modal>
 
         <Modal
-          title="Confirm Publish"
+          title={
+            selectedCode?.publish ? "Confirm Unpublish" : "Confirm Publish"
+          }
           open={isPublishModalOpen}
-          onOk={handlePublishCode}
+          onOk={selectedCode?.publish ? handleUnpublishCode : handlePublishCode}
           onCancel={() => setIsPublishModalOpen(false)}
-          okText="Publish"
+          okText={selectedCode?.publish ? "Unpublish" : "Publish"}
           cancelText="Cancel"
           cancelButtonProps={{
             style: {
@@ -1064,8 +1096,9 @@ const HeroUniversities = ({ university, onSelectCode, setCompanies }) => {
           }}
           centered={true}
         >
-          Other users can see all projects that relate to this code on
-          "University Contest". Are you sure to publish?
+          {selectedCode?.publish
+            ? "Are you sure to un-publish this code?"
+            : 'Other users can see all projects that relate to this code on "Competition". Are you sure to publish?'}
         </Modal>
 
         <Modal

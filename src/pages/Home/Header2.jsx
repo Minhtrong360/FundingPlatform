@@ -133,7 +133,7 @@ const Header2 = ({ position }) => {
         },
       ],
     },
-    // { title: "About Us", path: "/about-us" },
+    { title: "Competitions", path: "/competitions" },
   ];
 
   const renderMenu = (subItems) => (

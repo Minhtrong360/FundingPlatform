@@ -337,6 +337,8 @@ const CompetitionPosts = ({ location }) => {
       title: "Number of Profiles",
       dataIndex: "number_of_used",
       key: "number_of_used",
+      align: "center",
+
       render: (text, record) => (
         <span className="flex justify-center items-center">
           {projectCounts[record.id] || 0}

@@ -1,6 +1,6 @@
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import {
+  Avatar,
   Button,
   DatePicker,
   Dropdown,
@@ -10,13 +10,14 @@ import {
   Table,
   message,
 } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 import moment from "moment";
 import { formatDate } from "../../features/DurationSlice";
+import { IconButton } from "@mui/material";
 
-const HeroUniversities = ({ university, onSelectCode, setCompanies }) => {
+const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
+  console.log("credentials", credentials);
   const { user } = useAuth();
   const [isAddNewModalOpen, setIsAddNewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -39,13 +40,16 @@ const HeroUniversities = ({ university, onSelectCode, setCompanies }) => {
   const [judgeName, setJudgeName] = useState("");
   const [judgeEmail, setJudgeEmail] = useState("");
 
+  const [universityName, setUniversityName] = useState(credentials?.university);
+  const [description, setDescription] = useState(credentials?.description);
+
   useEffect(() => {
     const fetchCodeData = async () => {
       try {
         const { data: codes, error } = await supabase
           .from("code")
           .select("*")
-          .contains("universityCode", [`${university}`]);
+          .eq("UniID", credentials?.UniID);
 
         if (error) {
           throw error;
@@ -63,7 +67,7 @@ const HeroUniversities = ({ university, onSelectCode, setCompanies }) => {
     };
 
     fetchCodeData();
-  }, [university]);
+  }, [credentials]);
 
   const filterProjectsByCode = async (code) => {
     try {
@@ -146,7 +150,7 @@ const HeroUniversities = ({ university, onSelectCode, setCompanies }) => {
         {
           code: newCode,
           expired_at: expirationDate.format("YYYY-MM-DD"),
-          universityCode: [`${university}`],
+          UniID: credentials.UniID,
           name: competitionName,
         },
       ])
@@ -343,8 +347,6 @@ const HeroUniversities = ({ university, onSelectCode, setCompanies }) => {
       return;
     }
 
-    console.log("project", project);
-
     // Parse applyInfo array
     const applyInfoArray = project?.applyInfo;
     const applyInfoIndex = applyInfoArray.findIndex(
@@ -361,7 +363,7 @@ const HeroUniversities = ({ university, onSelectCode, setCompanies }) => {
 
     try {
       // Update the project in the database
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("projects")
         .update({
           applyInfo: applyInfoArray.map((info) => JSON.stringify(info)),
@@ -498,7 +500,12 @@ const HeroUniversities = ({ university, onSelectCode, setCompanies }) => {
       title: "Number of Profiles",
       dataIndex: "number_of_used",
       key: "number_of_used",
-      render: (text, record) => projectCounts[record.id] || 0,
+      align: "center",
+      render: (text, record) => (
+        <span className="flex justify-center items-center">
+          {projectCounts[record.id] || 0}
+        </span>
+      ),
     },
     {
       title: "Judges Name",
@@ -722,7 +729,9 @@ const HeroUniversities = ({ university, onSelectCode, setCompanies }) => {
           selectedCode.code
         );
         return (
-          <span className="hover:cursor-pointer">{applyInfo.teamSize}</span>
+          <span className="hover:cursor-pointer flex justify-center items-center">
+            {applyInfo.teamSize}
+          </span>
         );
       },
     },
@@ -744,12 +753,17 @@ const HeroUniversities = ({ university, onSelectCode, setCompanies }) => {
       title: "Score",
       dataIndex: "score",
       key: "score",
+      align: "center",
       render: (text, record) => {
         const applyInfo = getApplyInfoByCode(
           record.applyInfo,
           selectedCode.code
         );
-        return <span>{applyInfo.score || 0}</span>;
+        return (
+          <span className="flex justify-center items-center">
+            {applyInfo.score || 0}
+          </span>
+        );
       },
     },
     {
@@ -793,24 +807,176 @@ const HeroUniversities = ({ university, onSelectCode, setCompanies }) => {
     },
   ];
 
+  const [avatarUrl, setAvatarUrl] = useState(credentials?.avatar_url); // State to store project image URL
+  useEffect(() => {
+    setAvatarUrl(credentials?.avatar_url);
+    setUniversityName(credentials?.university);
+    setDescription(credentials?.description);
+  }, [credentials]);
+
+  const dataURItoFile = (dataURI, fileNamePrefix) => {
+    const byteString = atob(dataURI.split(",")[1]);
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    const extension = dataURI.split(",")[0].split("/")[1].split(";")[0]; // Lấy phần mở rộng của tệp từ data URI
+    const fileName = `${fileNamePrefix}-${Date.now()}.${extension}`; // Tạo tên tệp duy nhất với ngày giờ hiện tại và phần mở rộng
+    const blob = new Blob([ab], { type: `image/${extension}` });
+    return new File([blob], fileName, { type: `image/${extension}` });
+  };
+
+  const uploadImageToSupabase = async (file) => {
+    try {
+      const { data, error } = await supabase.storage
+        .from("beekrowd_storage") // Chọn bucket
+        .upload(`beekrowd_images/${file.name}`, file); // Lưu ảnh vào folder beekrowd_images
+
+      if (error) {
+        console.error("Error uploading image to Supabase:", error);
+        return null;
+      }
+
+      // Trả về liên kết ảnh từ Supabase
+      // Lấy URL của ảnh đã lưu
+
+      const imageUrl = `https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/${data.fullPath}`;
+
+      return imageUrl;
+    } catch (error) {
+      console.error("Error uploading image to Supabase:", error);
+      return null;
+    }
+  };
+
+  const handleProjectImageUpload = (event) => {
+    const file = event.target.files[0]; // Get the uploaded file
+    // Assuming you're using FileReader to read the uploaded file as data URL
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      setAvatarUrl(e.target.result); // Set the project image URL in state
+
+      // Upload the image to Supabase
+      const uploadedAvatarUrl = await uploadImageToSupabase(
+        dataURItoFile(e.target.result, "img")
+      );
+
+      console.log("credentials", credentials);
+      if (uploadedAvatarUrl) {
+        setAvatarUrl(uploadedAvatarUrl); // Update the state with the uploaded image URL
+
+        // Update the avatar_url field in the workspace table
+        const { error } = await supabase
+          .from("workspace")
+          .update({ avatar_url: uploadedAvatarUrl })
+          .eq("UniID", credentials.UniID);
+
+        if (error) {
+          message.error("Failed to update avatar URL in the database");
+          console.error("Error updating avatar URL:", error);
+        } else {
+          message.success("Avatar URL updated successfully");
+        }
+      }
+    };
+
+    reader.readAsDataURL(file); // Read the uploaded file
+  };
+
+  const handleUniversityNameChange = async (newName) => {
+    setUniversityName(newName);
+    const { error } = await supabase
+      .from("workspace")
+      .update({ university: newName })
+      .eq("UniID", credentials?.UniID);
+
+    if (error) {
+      message.error("Failed to update university name in the database");
+      console.error("Error updating university name:", error);
+    } else {
+      // message.success("University name updated successfully");
+    }
+  };
+  const handleDescriptionChange = async (newDescription) => {
+    setDescription(newDescription);
+    const { error } = await supabase
+      .from("workspace")
+      .update({ description: description })
+      .eq("UniID", credentials?.UniID);
+
+    if (error) {
+      message.error("Failed to update university name in the database");
+      console.error("Error updating university name:", error);
+    } else {
+      // message.success("University name updated successfully");
+    }
+  };
+
   return (
     <section className="bg-white mt-12">
-      <div className="sm:px-6 px-3 pt-16 mx-auto text-center">
+      <div className="sm:px-6 px-3 mx-auto text-center">
         <div className="max-w-3xl mx-auto">
+          <div className="flex flex-col space-y-6 justify-center items-center">
+            <input
+              type="file"
+              onChange={handleProjectImageUpload}
+              id="upload"
+              accept="image/*"
+              style={{ display: "none" }}
+            />
+            <label htmlFor="upload">
+              <IconButton
+                color="primary"
+                aria-label="upload picture"
+                component="span"
+              >
+                <Avatar
+                  id="avatar"
+                  src={avatarUrl}
+                  style={{
+                    width: "200px",
+                    height: "200px",
+                  }}
+                />
+              </IconButton>
+            </label>
+            <label htmlFor="avatar" />
+          </div>
           <h1
-            className="block text-3xl font-extrabold leading-relaxed text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl"
-            style={{ lineHeight: "1.5" }}
+            className="block font-extrabold leading-relaxed text-gray-800 text-3xl sm:text-4xl md:text-5xl lg:text-7xl mb-4"
+            style={{ lineHeight: "1.25" }}
           >
-            Profile listing for{" "}
-            <span className="text-blue-600 bg-yellow-300 h-6">
-              {university}.
-            </span>
+            Profile listing for
+            <Input.TextArea
+              className="text-blue-600 bg-yellow-300 inline-block text-3xl sm:text-4xl md:text-5xl lg:text-7xl"
+              value={universityName}
+              onChange={(e) => handleUniversityNameChange(e.target.value)}
+              style={{
+                border: "none",
+                backgroundColor: "#FDE047",
+                textAlign: "center",
+                fontWeight: "bold",
+                color: "#2563EB",
+                outline: "none",
+              }}
+              autoSize
+            />
           </h1>
-          <p className="mt-6 text-lg text-gray-800">
-            Create a fundraising profile and get discovered by investors. It
-            will be easy, fast and well-structured.
-          </p>
-          <div className="mt-7 flex justify-center">
+          <Input.TextArea
+            value={description}
+            onChange={(e) => handleDescriptionChange(e.target.value)}
+            style={{
+              border: "none",
+              backgroundColor: "transparent",
+              textAlign: "center",
+              outline: "none",
+              fontSize: "20px",
+              lineHeight: "28px",
+            }}
+            autoSize
+          />
+          <div className="mt-7 text-lg flex justify-center">
             {user && (
               <button
                 className="sm:mx-4 mx-2 hover:cursor-pointer py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"

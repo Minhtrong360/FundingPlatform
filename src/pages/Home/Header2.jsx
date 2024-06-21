@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { Dropdown, Button, Space, Menu } from "antd";
+import { Dropdown, Button, Menu } from "antd";
+import { LockOutlined } from "@ant-design/icons";
 import ImageDropdown from "./ImageDropdown";
-import NavbarItem from "./NavbarItem";
 import { useAuth } from "../../context/AuthContext";
 import { ArrowDropDownOutlined } from "@mui/icons-material";
 
@@ -22,8 +22,8 @@ const NavbarButton = ({ children, onClick, className }) => {
 const Header2 = ({ position }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
-  const [loginPart, setLoginPart] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLoginButtonClick = () => {
     navigate("/login");
@@ -48,16 +48,9 @@ const Header2 = ({ position }) => {
     };
   }, [screenWidth]);
 
-  const location = useLocation();
-
   const handleBurgerBtn = () => {
     setIsOpen(!isOpen);
   };
-
-  useEffect(() => {
-    const loginPart = location.pathname;
-    setLoginPart(loginPart);
-  }, [location]);
 
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -91,7 +84,6 @@ const Header2 = ({ position }) => {
   }, [lastScrollY]);
 
   const menuItems = [
-    { title: "Home", path: "/" },
     {
       title: "Founders",
       subItems: [
@@ -124,16 +116,19 @@ const Header2 = ({ position }) => {
         {
           key: "2",
           label: "Buy Private Shares",
-          path: "/Flea-Market/info",
-        },
-        {
-          key: "3",
-          label: "Work Space",
-          path: "/workspace",
+          path: "/Listing-Flea-Market",
         },
       ],
     },
     { title: "Competitions", path: "/competitions" },
+    {
+      title: (
+        <>
+          Work Space <LockOutlined />
+        </>
+      ),
+      path: "/workspace",
+    },
   ];
 
   const renderMenu = (subItems) => (
@@ -144,6 +139,18 @@ const Header2 = ({ position }) => {
       }))}
     />
   );
+
+  const isActiveTab = (path, subItems) => {
+    if (location.pathname === path) {
+      return true;
+    }
+    if (subItems) {
+      return subItems.some((subItem) =>
+        location.pathname.startsWith(subItem.path)
+      );
+    }
+    return false;
+  };
 
   return (
     <>
@@ -163,7 +170,7 @@ const Header2 = ({ position }) => {
           </button>
           <div
             className={`flex ${
-              screenWidth > 820 ? "order-2" : ""
+              screenWidth > 900 ? "order-2" : ""
             } space-x-3 rtl:space-x-reverse`}
           >
             {user ? (
@@ -178,7 +185,7 @@ const Header2 = ({ position }) => {
               data-collapse-toggle="navbar-sticky"
               type="button"
               className={`inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-md ${
-                screenWidth > 820 ? "hidden" : "block"
+                screenWidth > 900 ? "hidden" : "block"
               } hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 darkTextGray darkHoverBgBlue darkFocus`}
               aria-controls="navbar-sticky"
               aria-expanded={isOpen}
@@ -205,14 +212,14 @@ const Header2 = ({ position }) => {
 
           <div
             className={`items-center justify-between ${
-              screenWidth > 820 ? "order-1 w-auto" : "w-full"
+              screenWidth > 900 ? "order-1 w-auto" : "w-full"
             } ${isOpen ? "block" : "hidden"}`}
             id="navbar-sticky"
-            style={screenWidth > 820 ? { display: "flex" } : {}}
+            style={screenWidth > 900 ? { display: "flex" } : {}}
           >
             <ul
               className={`${
-                screenWidth > 820
+                screenWidth > 900
                   ? "flex-row mt-0 p-0 border-0 bg-white"
                   : "flex-col mt-4 p-4 border-gray-100 bg-gray-50"
               } flex font-medium border rounded-md  md:space-x-4 lg:space-x-8 rtl:space-x-reverse  darkBgBlue md:darkBg darkBorderGray`}
@@ -221,7 +228,7 @@ const Header2 = ({ position }) => {
                 <li
                   key={index}
                   className={`relative ${
-                    screenWidth > 820 ? "inline-block" : "block"
+                    screenWidth > 900 ? "inline-block" : "block"
                   }`}
                 >
                   {item.subItems ? (
@@ -230,13 +237,21 @@ const Header2 = ({ position }) => {
                       placement="bottomLeft"
                       arrow
                     >
-                      <Button className="text-black hover:text-blue-600 border-0 bg-transparent shadow-none">
+                      <Button
+                        className={`text-black hover:text-blue-600 border-0 bg-transparent shadow-none ${
+                          isActiveTab(item.path, item.subItems)
+                            ? "text-[#2563EB]"
+                            : ""
+                        }`}
+                      >
                         {item.title} <ArrowDropDownOutlined />
                       </Button>
                     </Dropdown>
                   ) : (
                     <Button
-                      className="text-black hover:text-blue-600 border-0 bg-transparent shadow-none"
+                      className={`text-black hover:text-blue-600 border-0 bg-transparent shadow-none ${
+                        isActiveTab(item.path) ? "text-[#2563EB]" : ""
+                      }`}
                       onClick={() => navigate(item.path)}
                     >
                       {item.title}

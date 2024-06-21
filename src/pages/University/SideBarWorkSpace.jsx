@@ -12,7 +12,7 @@ import {
 } from "@ant-design/icons";
 import { useAuth } from "../context/AuthContext";
 
-function SideBar({ toggleSidebar, isSidebarOpen }) {
+function SideBarWorkSpace({ toggleSidebar, isSidebarOpen }) {
   const navigate = useNavigate();
 
   const [selectedItem, setSelectedItem] = useState(null);
@@ -95,20 +95,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             <HomeOutlined />
             <span className="sidebar-text">Home</span>
           </button>
-          {currentUser[0].admin && (
-            <button
-              style={{ minWidth: "100%" }}
-              className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm ${
-                selectedItem?.includes("/admin")
-                  ? "bg-gray-300 "
-                  : "text-gray-900 darkTextWhite"
-              } sidebar-button hover:bg-gray-200`}
-              onClick={() => navigate("/admin")}
-            >
-              <UserSwitchOutlined />
-              <span className="sidebar-text">Admin Dashboard</span>
-            </button>
-          )}
+
           <button
             className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm ${
               selectedItem?.includes("/user-info")
@@ -181,4 +168,4 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
   );
 }
 
-export default SideBar;
+export default SideBarWorkSpace;

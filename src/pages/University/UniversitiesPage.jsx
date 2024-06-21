@@ -270,7 +270,6 @@ const UniversitiesPage = () => {
 
   return (
     <div className="lg:px-8 mx-auto my-12">
-      <Header2 />
       <div className="px-3 py-2 lg:px-8 lg:py-1 mx-auto">
         <HeroUniversities
           onSelectCode={handleSelectCode}

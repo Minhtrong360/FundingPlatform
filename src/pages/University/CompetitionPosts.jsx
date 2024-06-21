@@ -13,9 +13,10 @@ import {
 } from "@mui/material";
 import Header2 from "../Home/Header2";
 import HeroCompetition from "./HeroCompetition";
-import { Table, message } from "antd";
+import { Button, Modal, Table, message } from "antd";
 import regions from "../../components/Regions";
 import { formatDate } from "../../features/DurationSlice";
+import UniEditorTool from "./UniEditorTool";
 
 const CompetitionPosts = ({ location }) => {
   const [companies, setCompanies] = useState([]);
@@ -299,6 +300,13 @@ const CompetitionPosts = ({ location }) => {
     { min: Infinity, max: Infinity, label: "Non-Profit" },
   ];
 
+  const [isRulesModalOpen, setIsRulesModalOpen] = useState(false); // New state for rules modal
+
+  const openRulesModal = (record) => {
+    setSelectedCodeData(record);
+    setIsRulesModalOpen(true);
+  };
+
   const codeColumns = [
     {
       title: "No",
@@ -318,6 +326,17 @@ const CompetitionPosts = ({ location }) => {
       dataIndex: "code",
       key: "code",
       render: (text, record) => <span>{record.code}</span>,
+    },
+    {
+      title: "Rules",
+      dataIndex: "rules",
+      key: "rules",
+      align: "center",
+      render: (text, record) => (
+        <Button onClick={() => openRulesModal(record)} className="text-xs">
+          {record.rules ? "View Rules" : "No Rules"}
+        </Button>
+      ),
     },
     {
       title: "Created at",
@@ -391,8 +410,6 @@ const CompetitionPosts = ({ location }) => {
     },
   ];
 
-  console.log("companies", companies);
-  console.log("companiesToRender", companiesToRender);
   return (
     <div className="lg:px-8 mx-auto my-12">
       <Header2 />
@@ -498,6 +515,15 @@ const CompetitionPosts = ({ location }) => {
           </>
         )}
       </div>
+      <Modal
+        title={`Rules for ${selectedCodeData?.code}`}
+        open={isRulesModalOpen}
+        onCancel={() => setIsRulesModalOpen(false)}
+        centered={true}
+        footer={null}
+      >
+        <UniEditorTool selectedCode={selectedCodeData} unChange={true} />
+      </Modal>
     </div>
   );
 };

@@ -15,9 +15,9 @@ import { supabase } from "../../supabase";
 import moment from "moment";
 import { formatDate } from "../../features/DurationSlice";
 import { IconButton } from "@mui/material";
+import UniEditorTool from "./UniEditorTool";
 
 const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
-  console.log("credentials", credentials);
   const { user } = useAuth();
   const [isAddNewModalOpen, setIsAddNewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -448,6 +448,13 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
     }
   };
 
+  const [isRulesModalOpen, setIsRulesModalOpen] = useState(false); // New state for rules modal
+
+  const openRulesModal = (record) => {
+    setSelectedCode(record);
+    setIsRulesModalOpen(true);
+  };
+
   const codeColumns = [
     {
       title: "No",
@@ -472,6 +479,17 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
       key: "code",
       render: (text, record) => (
         <span className="hover:cursor-pointer">{record.code}</span>
+      ),
+    },
+    {
+      title: "Rules",
+      dataIndex: "rules",
+      key: "rules",
+      align: "center",
+      render: (text, record) => (
+        <Button onClick={() => openRulesModal(record)} className="text-xs">
+          {record.rules ? "View Rules" : "Add Rules"}
+        </Button>
       ),
     },
     {
@@ -609,9 +627,9 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
             </Menu>
           }
         >
-          <div className="bg-blue-600 rounded-md max-w-[5rem] text-white py-1 hover:cursor-pointer">
+          <Button className="bg-blue-600 rounded-md max-w-[5rem] text-white py-1 hover:cursor-pointer text-xs">
             Action
-          </div>
+          </Button>
         </Dropdown>
       ),
     },
@@ -862,7 +880,6 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
         dataURItoFile(e.target.result, "img")
       );
 
-      console.log("credentials", credentials);
       if (uploadedAvatarUrl) {
         setAvatarUrl(uploadedAvatarUrl); // Update the state with the uploaded image URL
 
@@ -910,6 +927,26 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
       console.error("Error updating university name:", error);
     } else {
       // message.success("University name updated successfully");
+    }
+  };
+
+  const handleUpdateRules = async (updatedCode) => {
+    console.log("OK", updatedCode);
+    try {
+      const { error } = await supabase
+        .from("code")
+        .update({ rules: updatedCode.rules })
+        .eq("id", updatedCode.id);
+
+      if (error) {
+        throw error;
+      }
+
+      message.success("Rules updated successfully");
+      setIsRulesModalOpen(false);
+    } catch (error) {
+      message.error("Failed to update rules");
+      console.error("Error updating rules:", error);
     }
   };
 
@@ -1401,6 +1438,20 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
               </div>
             </form>
           </div>
+        </Modal>
+
+        <Modal
+          title={`Rules for ${selectedCode?.code}`}
+          open={isRulesModalOpen}
+          onCancel={() => setIsRulesModalOpen(false)}
+          okText="Update"
+          onOk={() => handleUpdateRules(selectedCode)}
+          centered={true}
+        >
+          <UniEditorTool
+            selectedCode={selectedCode}
+            setSelectedCode={setSelectedCode}
+          />
         </Modal>
       </div>
     </section>

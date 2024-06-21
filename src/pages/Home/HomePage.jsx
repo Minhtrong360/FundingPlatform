@@ -44,7 +44,6 @@ const HomePage = () => {
           throw error;
         }
 
-        console.log("data", data);
         if (!data.full_name || !data.roll) {
           setIsModalOpen(true);
         }

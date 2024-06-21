@@ -39,6 +39,17 @@ function ProjectList({ projects }) {
 
   const [SelectedID, setSelectedID] = useState();
 
+  const [applyInfo, setApplyInfo] = useState({
+    // projectName: "",
+    creatorName: "",
+    // registrationTime: "",
+    contactEmail: "",
+    contactPhone: "",
+    university: "",
+    teamSize: "",
+    teamEmails: "",
+  });
+
   const handleDelete = async (projectId) => {
     // Hiển thị modal xác nhận xóa
     setIsDeleteModalOpen(true);
@@ -169,10 +180,33 @@ function ProjectList({ projects }) {
   // Hàm Submit to contest
   const handleConfirmSubmit = async () => {
     try {
-      // Kiểm tra kết nối internet
       if (!navigator.onLine) {
         message.error("No internet access.");
         return;
+      }
+
+      // Validate fields in applyInfo and contestCode
+      if (!contestCode) {
+        message.error("Please fill in the contest code.");
+        return;
+      }
+
+      const requiredFields = {
+        // projectName: "Project Name",
+        creatorName: "Creator Name",
+        // registrationTime: "Registration Time",
+        contactEmail: "Contact Email",
+        contactPhone: "Contact Phone",
+        university: "University",
+        teamSize: "Team Size",
+        teamEmails: "Team Emails",
+      };
+
+      for (const [key, label] of Object.entries(requiredFields)) {
+        if (!applyInfo[key]) {
+          message.error(`Please fill in the ${label}.`);
+          return;
+        }
       }
 
       // Kiểm tra xem contestCode có tồn tại trong bảng code hay không
@@ -210,11 +244,18 @@ function ProjectList({ projects }) {
       }
 
       const project = projectData[0];
-      const updatedUniversityCode = project.universityCode || [];
+      let updatedUniversityCode = project.universityCode || [];
+      let updatedApplyInfo = project.applyInfo || [];
 
-      // Thêm contestCode vào mảng universityCode
+      // Thêm contestCode và applyInfo mới vào mảng nếu chưa tồn tại
       if (!updatedUniversityCode.includes(contestCode)) {
         updatedUniversityCode.push(contestCode);
+        const newApplyInfo = {
+          ...applyInfo,
+          applyAt: new Date().toISOString(),
+          universityCode: contestCode,
+        };
+        updatedApplyInfo.push(newApplyInfo);
       } else {
         message.warning("You submitted this project to this contest.");
         return;
@@ -222,7 +263,10 @@ function ProjectList({ projects }) {
 
       const { error: updateError } = await supabase
         .from("projects")
-        .update({ universityCode: updatedUniversityCode })
+        .update({
+          universityCode: updatedUniversityCode,
+          applyInfo: updatedApplyInfo,
+        })
         .eq("id", SelectedID);
 
       if (updateError) {
@@ -813,11 +857,110 @@ function ProjectList({ projects }) {
           centered={true}
         >
           <InputField
+            style={{ marginBottom: "6px" }}
             label="Submit this project to:"
             id="contestCode"
             name="contestCode"
             value={contestCode}
             onChange={(e) => setContestCode(e.target.value)}
+            type="text"
+            required
+          />
+          {/* <InputField
+                      style={{ marginBottom: "6px" }}
+
+            label="Project Name"
+            id="projectName"
+            name="projectName"
+            value={applyInfo.projectName}
+            onChange={(e) =>
+              setApplyInfo({ ...applyInfo, projectName: e.target.value })
+            }
+            type="text"
+            required
+          /> */}
+          <InputField
+            style={{ marginBottom: "6px" }}
+            label="Creator Name"
+            id="creatorName"
+            name="creatorName"
+            value={applyInfo.creatorName}
+            onChange={(e) =>
+              setApplyInfo({ ...applyInfo, creatorName: e.target.value })
+            }
+            type="text"
+            required
+          />
+          {/* <InputField
+                      style={{ marginBottom: "6px" }}
+
+            label="Registration Time"
+            id="registrationTime"
+            name="registrationTime"
+            value={applyInfo.registrationTime}
+            onChange={(e) =>
+              setApplyInfo({ ...applyInfo, registrationTime: e.target.value })
+            }
+            type="text"
+            required
+          /> */}
+          <InputField
+            style={{ marginBottom: "6px" }}
+            label="Contact Email"
+            id="contactEmail"
+            name="contactEmail"
+            value={applyInfo.contactEmail}
+            onChange={(e) =>
+              setApplyInfo({ ...applyInfo, contactEmail: e.target.value })
+            }
+            type="text"
+            required
+          />
+          <InputField
+            style={{ marginBottom: "6px" }}
+            label="Contact Phone"
+            id="contactPhone"
+            name="contactPhone"
+            value={applyInfo.contactPhone}
+            onChange={(e) =>
+              setApplyInfo({ ...applyInfo, contactPhone: e.target.value })
+            }
+            type="text"
+            required
+          />
+          <InputField
+            style={{ marginBottom: "6px" }}
+            label="University"
+            id="university"
+            name="university"
+            value={applyInfo.university}
+            onChange={(e) =>
+              setApplyInfo({ ...applyInfo, university: e.target.value })
+            }
+            type="text"
+            required
+          />
+          <InputField
+            style={{ marginBottom: "6px" }}
+            label="Team Size"
+            id="teamSize"
+            name="teamSize"
+            value={applyInfo.teamSize}
+            onChange={(e) =>
+              setApplyInfo({ ...applyInfo, teamSize: e.target.value })
+            }
+            type="text"
+            required
+          />
+          <InputField
+            style={{ marginBottom: "6px" }}
+            label="Team Emails"
+            id="teamEmails"
+            name="teamEmails"
+            value={applyInfo.teamEmails}
+            onChange={(e) =>
+              setApplyInfo({ ...applyInfo, teamEmails: e.target.value })
+            }
             type="text"
             required
           />

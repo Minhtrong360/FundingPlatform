@@ -26,7 +26,7 @@ const UniversitiesPage = () => {
   const [country, setCountry] = useState("");
   const [selectedCode, setSelectedCode] = useState("");
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(true);
 
   const [isLoading, setIsLoading] = useState(true);
   const [currentTab, setCurrentTab] = useState("All");
@@ -42,7 +42,6 @@ const UniversitiesPage = () => {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const workspace = searchParams.get("workspace");
     const id = searchParams.get("id");
 
     const fetchAndSetCredentials = async (id) => {
@@ -52,15 +51,11 @@ const UniversitiesPage = () => {
       }
     };
 
-    if (!workspace) {
+    if (id) {
+      fetchAndSetCredentials(id);
+    }
+    if (!id) {
       setIsModalVisible(true);
-    } else {
-      setIsModalVisible(false);
-      fetchCompanies(workspace);
-
-      if (id) {
-        fetchAndSetCredentials(id);
-      }
     }
   }, [location]);
 

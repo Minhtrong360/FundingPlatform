@@ -1,16 +1,12 @@
-import { Tabs, Tag } from "antd";
+import { Tabs } from "antd";
 import { useState } from "react";
 import Perflexity from "../FinalcialPage/Components/Perflexity";
 import Flowise from "../FinalcialPage/Components/Flowise";
 import Header2 from "../Home/Header2";
-import Header from "../Home/Header";
-import { Input } from "antd";
+
 const { TabPane } = Tabs;
 
 export default function MarketResearch() {
-  const [industry, setIndustry] = useState("");
-  const [year, setYear] = useState("");
-  const [region, setRegion] = useState("");
   const [specificPrompt, setSpecificPrompt] = useState("");
 
   const [industryV, setIndustryV] = useState("");

@@ -406,7 +406,7 @@ const CustomerSection = React.memo(
 
     const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
     const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
-    
+
     const chartFunctions = [
       { value: "linear", label: "Linear" },
       { value: "exponential", label: "Exponential" },
@@ -428,9 +428,9 @@ const CustomerSection = React.memo(
     const dispatch = useDispatch();
     const { customerInputs, customerGrowthData, customerTableData } =
       useSelector((state) => state.customer);
-      const generatePromptC = () => {
-        return ` ${JSON.stringify(customerTableData)}`;
-      };
+    const generatePromptC = () => {
+      return ` ${JSON.stringify(customerTableData)}`;
+    };
     const { startMonth, startYear } = useSelector(
       (state) => state.durationSelect
     );
@@ -1346,7 +1346,7 @@ const CustomerSection = React.memo(
             <>
               <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
                 <h3 className="text-lg font-semibold mb-8">Customer Chart</h3>
-                 
+
                 <div className="grid md:grid-cols-2 gap-6">
                   {customerGrowthChart.charts?.map((chart, index) => (
                     <Card
@@ -1555,11 +1555,8 @@ const CustomerSection = React.memo(
                   }
                 />
               </div>
-              <div className="w-full xl:w-1/4 sm:p-4 p-0 ">
-              <section className="mb-8 NOsticky NOtop-8 ">
-                <GroqJS datasrc={customerTableData} inputUrl={'urlCus'}/>
-              </section>
-              {/* <Flowise prompt={generatePromptC()} button={"Send"} /> */}
+              <div className="w-full xl:w-1/4 sm:p-4 p-0   ">
+                <Flowise prompt={generatePromptC()} button={"Send"} />
                 <button
                   className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
                   style={{ bottom: "20px", right: "80px", position: "fixed" }}

@@ -5,7 +5,6 @@ import { supabase } from "../../supabase";
 import Search from "../Home/Components/Search";
 
 import { LinearProgress } from "@mui/material";
-import Header from "../Home/Header";
 import { message } from "antd";
 import regions from "../../components/Regions";
 import Header2 from "../Home/Header2";
@@ -13,16 +12,8 @@ import HeroUniversities from "./HeroUniversities";
 import CredentialModal from "./CredentialModal";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const predefinedCredentials = {
-  // Example predefined credentials
-  12345: { password: "12345", university: "University A" },
-  67890: { password: "67890", university: "University B" },
-};
-
 const UniversitiesPage = () => {
-  const [companies, setCompanies] = useState(
-    JSON.parse(sessionStorage.getItem("companies")) || []
-  );
+  const [companies, setCompanies] = useState([]);
 
   const [page, setPage] = useState(1);
   const itemsPerPage = 6;
@@ -35,78 +26,73 @@ const UniversitiesPage = () => {
   const [country, setCountry] = useState("");
   const [selectedCode, setSelectedCode] = useState("");
 
-  const [university, setUniversity] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(true);
 
   const [isLoading, setIsLoading] = useState(true);
   const [currentTab, setCurrentTab] = useState("All");
 
-  const [companiesToRender, setCompaniesToRender] = useState(
-    JSON.parse(sessionStorage.getItem("companiesToRender")) || []
-  );
+  const [companiesToRender, setCompaniesToRender] = useState([]);
 
   const [visibleItemCount, setVisibleItemCount] = useState(itemsPerPage);
 
   const navigate = useNavigate();
 
-  const locationKey = JSON.parse(sessionStorage.getItem("locationKey"));
+  const location = useLocation();
+  const [credentials, setCredentials] = useState();
 
-  const handleCredentialSubmit = ({ id, password }) => {
-    const credentials = predefinedCredentials[id];
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const id = searchParams.get("id");
+
+    const fetchAndSetCredentials = async (id) => {
+      const credentials = await fetchCredentials(id);
+      if (credentials) {
+        setCredentials(credentials);
+      }
+    };
+
+    if (id) {
+      fetchAndSetCredentials(id);
+    }
+    if (!id) {
+      setIsModalVisible(true);
+    }
+  }, [location]);
+
+  const fetchCredentials = async (id) => {
+    const { data, error } = await supabase
+      .from("workspace")
+      .select("*")
+      .eq("UniID", id)
+      .single();
+
+    if (error) {
+      console.error("Error fetching credentials:", error);
+      message.error("Error fetching credentials.");
+      return null;
+    }
+
+    return data;
+  };
+
+  const handleCredentialSubmit = async ({ id, password }) => {
+    const credentials = await fetchCredentials(id);
     if (credentials && credentials.password === password) {
-      setUniversity(credentials.university);
       setIsModalVisible(false);
       fetchCompanies(credentials.university);
-      navigate(`/workspace?workspace=${credentials.university}`);
+      setCredentials(credentials);
+      navigate(`/workspace?workspace=${credentials.university}&id=${id}`);
     } else {
       message.error("Invalid ID or password.");
     }
   };
-  const location = useLocation();
-
-  useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const workspace = searchParams.get("workspace");
-    if (!workspace) {
-      setIsModalVisible(true);
-    } else {
-      setIsModalVisible(false);
-      setUniversity(workspace);
-      fetchCompanies(workspace);
-    }
-  }, [location]);
-
-  useEffect(() => {
-    if (locationKey !== location?.key || !companies.length) {
-      // Check if companies are already loaded
-      fetchCompanies();
-    } else {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    sessionStorage.setItem("companies", JSON.stringify(companies)); // Cache companies data
-
-    sessionStorage.setItem("locationKey", JSON.stringify(location.key));
-  }, [companies, location.key]);
-
-  useEffect(() => {
-    if (companiesToRender.length > 0) {
-      sessionStorage.setItem(
-        "companiesToRender",
-        JSON.stringify(companiesToRender)
-      );
-    }
-  }, [companiesToRender]);
 
   const fetchCompanies = async (code = "") => {
     setIsLoading(true);
     try {
-      // Fetch projects including their verified status and status, avoiding stealth status projects
       const { data: projects, error: projectsError } = await supabase
         .from("projects")
-        .select("id, verified, status") // Get verified status and status along with id
+        .select("id, verified, status")
         .neq("status", "stealth")
         .contains("universityCode", [code]);
 
@@ -117,7 +103,6 @@ const UniversitiesPage = () => {
 
       const projectIds = projects.map((project) => project.id);
 
-      // Fetch companies based on project ids
       const { data: fetchedCompanies, error: companiesError } = await supabase
         .from("company")
         .select("*")
@@ -129,7 +114,6 @@ const UniversitiesPage = () => {
         return;
       }
 
-      // Create maps to store verified status and status for quick lookup
       const verifiedStatusMap = new Map();
       const statusMap = new Map();
 
@@ -138,11 +122,10 @@ const UniversitiesPage = () => {
         statusMap.set(project.id, project.status);
       });
 
-      // Attach verified status and status directly to each company object
       fetchedCompanies.forEach((company) => {
         company.verifiedStatus =
           verifiedStatusMap.get(company.project_id) || false;
-        company.status = statusMap.get(company.project_id) || "Unknown"; // Default to "Unknown" if no status found
+        company.status = statusMap.get(company.project_id) || "Unknown";
       });
 
       setCompanies(fetchedCompanies);
@@ -169,8 +152,7 @@ const UniversitiesPage = () => {
     if (target) {
       return { min: target.min, max: target.max };
     } else {
-      // Trường hợp không tìm thấy nhãn tương ứng trong mảng
-      return { min: 0, max: Infinity }; // Giả sử mặc định là từ 0 đến vô cùng
+      return { min: 0, max: Infinity };
     }
   };
 
@@ -182,7 +164,6 @@ const UniversitiesPage = () => {
         subCountries.includes(company.country)
       );
     } else {
-      // Trường hợp không tìm thấy region tương ứng trong mảng
       return [];
     }
   };
@@ -251,7 +232,6 @@ const UniversitiesPage = () => {
     country,
   ]);
 
-  // Function to handle scrolling to the bottom of the page
   useEffect(() => {
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } =
@@ -259,7 +239,6 @@ const UniversitiesPage = () => {
       const atBottom = scrollTop + clientHeight >= scrollHeight;
 
       if (atBottom) {
-        // Nếu người dùng cuộn đến cuối trang, tăng số lượng bài viết hiển thị thêm (ví dụ, thêm 5)
         setVisibleItemCount((prevVisible) => prevVisible + itemsPerPage);
       }
     };
@@ -291,12 +270,11 @@ const UniversitiesPage = () => {
 
   return (
     <div className="lg:px-8 mx-auto my-12">
-      {/* <Header /> */}
-      <Header2 />
       <div className="px-3 py-2 lg:px-8 lg:py-1 mx-auto">
         <HeroUniversities
-          university={university}
           onSelectCode={handleSelectCode}
+          setCompanies={setCompanies}
+          credentials={credentials}
         />
         <Search
           onSearch={handleSearch}
@@ -313,7 +291,7 @@ const UniversitiesPage = () => {
           setRegion={setRegion}
           targetAmountArray={targetAmountArray}
           setCountry={setCountry}
-          selectedCode={selectedCode} // Pass selected code to Search component
+          selectedCode={selectedCode}
         />
 
         {isLoading ? (
@@ -360,4 +338,5 @@ const UniversitiesPage = () => {
     </div>
   );
 };
+
 export default UniversitiesPage;

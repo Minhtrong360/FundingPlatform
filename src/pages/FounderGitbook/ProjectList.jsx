@@ -244,22 +244,29 @@ function ProjectList({ projects }) {
       }
 
       const project = projectData[0];
-      const updatedUniversityCode = project.universityCode || [];
+      let updatedUniversityCode = project.universityCode || [];
+      let updatedApplyInfo = project.applyInfo || [];
 
-      // Thêm contestCode vào mảng universityCode
+      // Thêm contestCode và applyInfo mới vào mảng nếu chưa tồn tại
       if (!updatedUniversityCode.includes(contestCode)) {
         updatedUniversityCode.push(contestCode);
+        const newApplyInfo = {
+          ...applyInfo,
+          applyAt: new Date().toISOString(),
+          universityCode: contestCode,
+        };
+        updatedApplyInfo.push(newApplyInfo);
       } else {
         message.warning("You submitted this project to this contest.");
         return;
       }
 
-      // Add the current date and time to applyInfo
-      applyInfo.applyAt = new Date().toISOString();
-
       const { error: updateError } = await supabase
         .from("projects")
-        .update({ universityCode: updatedUniversityCode, applyInfo })
+        .update({
+          universityCode: updatedUniversityCode,
+          applyInfo: updatedApplyInfo,
+        })
         .eq("id", SelectedID);
 
       if (updateError) {

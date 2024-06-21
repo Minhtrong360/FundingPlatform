@@ -413,7 +413,6 @@ const CustomerSection = React.memo(
     ];
 
     const handleChartClick = (chart, event) => {
-      console.log("event", event);
       const toolbar = document.querySelector(".apexcharts-toolbar");
       if (toolbar && toolbar.contains(event.target)) {
         console.log("Toolbar button clicked, modal will not open");
@@ -645,13 +644,18 @@ const CustomerSection = React.memo(
                     <input
                       className="border-white p-0 text-xs text-right w-full h-full"
                       value={record[`month${i + 1}`]}
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        handleInputChange(
+                          record?.id,
+                          "applyAdditionalInfo",
+                          true
+                        );
                         handleInputTable(
                           parseNumber(e.target.value),
                           record.key,
                           `month${i + 1}`
-                        )
-                      }
+                        );
+                      }}
                     />
                   </div>
                 </Tooltip>

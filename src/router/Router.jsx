@@ -45,6 +45,7 @@ import FleaMarketListAll from "../pages/FleaMarket/FleaMarketListAll.jsx";
 import AdminRequired from "./AdminRequired.jsx";
 import MarketResearch from "../pages/MarketResearch_Evaluation/MarketResearch.jsx";
 import UniversitiesPage from "../pages/University/UniversitiesPage.jsx";
+import CompetitionPosts from "../pages/University/CompetitionPosts.jsx";
 
 function Router() {
   const location = useLocation();
@@ -76,7 +77,7 @@ function Router() {
         />
         <Route
           key={location.key}
-          path="/Flea-Market/info"
+          path="/Listing-Flea-Market"
           element={
             <AuthRequire message="Sign in required!">
               <FleaMarketListAll />
@@ -234,6 +235,11 @@ function Router() {
           key={location.key}
           path="/workspace"
           element={<UniversitiesPage location={location} />}
+        />
+        <Route
+          key={location.key}
+          path="/competitions"
+          element={<CompetitionPosts location={location} />}
         />
       </Routes>
     </>

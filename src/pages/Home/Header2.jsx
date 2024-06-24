@@ -239,7 +239,7 @@ const Header2 = ({ position }) => {
                     >
                       <Button
                         className={`text-black hover:text-blue-600 border-0 bg-transparent shadow-none ${
-                          isActiveTab(item.path, item.subItems)
+                          location.pathname.startsWith(item.path)
                             ? "text-[#2563EB]"
                             : ""
                         }`}
@@ -250,7 +250,9 @@ const Header2 = ({ position }) => {
                   ) : (
                     <Button
                       className={`text-black hover:text-blue-600 border-0 bg-transparent shadow-none ${
-                        isActiveTab(item.path) ? "text-[#2563EB]" : ""
+                        location.pathname.startsWith(item.path)
+                          ? "text-[#2563EB]"
+                          : ""
                       }`}
                       onClick={() => navigate(item.path)}
                     >

@@ -10,6 +10,8 @@ import {
   Select,
   FormControl,
   InputLabel,
+  Tab,
+  Tabs,
 } from "@mui/material";
 import Header2 from "../Home/Header2";
 import HeroCompetition from "./HeroCompetition";
@@ -17,6 +19,8 @@ import { Button, Modal, Table, message } from "antd";
 import regions from "../../components/Regions";
 import { formatDate } from "../../features/DurationSlice";
 import UniEditorTool from "./UniEditorTool";
+import UniCard from "./UniCard";
+import UniSearch from "./UniSearch";
 
 const CompetitionPosts = ({ location }) => {
   const [companies, setCompanies] = useState([]);
@@ -300,169 +304,45 @@ const CompetitionPosts = ({ location }) => {
     { min: Infinity, max: Infinity, label: "Non-Profit" },
   ];
 
-  const [isRulesModalOpen, setIsRulesModalOpen] = useState(false); // New state for rules modal
+  // const [isRulesModalOpen, setIsRulesModalOpen] = useState(false); // New state for rules modal
 
-  const openRulesModal = (record) => {
-    setSelectedCodeData(record);
-    setIsRulesModalOpen(true);
-  };
-
-  const codeColumns = [
-    {
-      title: "No",
-      dataIndex: "index",
-      key: "index",
-      align: "center",
-      render: (text, record, index) => <span>{index + 1}</span>,
-    },
-    {
-      title: "Competition Name",
-      dataIndex: "name",
-      key: "name",
-      render: (text, record) => <span>{record.name}</span>,
-    },
-    {
-      title: "Code",
-      dataIndex: "code",
-      key: "code",
-      render: (text, record) => <span>{record.code}</span>,
-    },
-    {
-      title: "Rules",
-      dataIndex: "rules",
-      key: "rules",
-      align: "center",
-      render: (text, record) => (
-        <Button onClick={() => openRulesModal(record)} className="text-xs">
-          {record.rules ? "View Rules" : "No Rules"}
-        </Button>
-      ),
-    },
-    {
-      title: "Created at",
-      dataIndex: "created_at",
-      key: "created_at",
-      align: "center",
-      render: (text, record) => <span>{formatDate(record.created_at)}</span>,
-    },
-    {
-      title: "Expired at",
-      dataIndex: "expired_at",
-      key: "expired_at",
-      align: "center",
-      render: (text, record) => <span>{formatDate(record.expired_at)}</span>,
-    },
-    {
-      title: "Number of Profiles",
-      dataIndex: "number_of_used",
-      key: "number_of_used",
-      align: "center",
-
-      render: (text, record) => (
-        <span className="flex justify-center items-center">
-          {projectCounts[record.id] || 0}
-        </span>
-      ),
-    },
-    {
-      title: "Judges Name",
-      dataIndex: "judges",
-      key: "judges_name",
-      render: (text, record) => (
-        <span
-          className="hover:cursor-pointer truncate"
-          style={{
-            maxWidth: "150px",
-            display: "inline-block",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-          title={record.judges
-            ?.map((judge) => JSON.parse(judge).name)
-            .join(", ")}
-        >
-          {record.judges?.map((judge) => JSON.parse(judge).name).join(", ")}
-        </span>
-      ),
-    },
-    {
-      title: "Judges Email",
-      dataIndex: "judges",
-      key: "judges_email",
-      render: (text, record) => (
-        <span
-          className="hover:cursor-pointer truncate"
-          style={{
-            maxWidth: "200px",
-            display: "inline-block",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-          title={record.judges
-            ?.map((judge) => JSON.parse(judge).email)
-            .join(", ")}
-        >
-          {record.judges?.map((judge) => JSON.parse(judge).email).join(", ")}
-        </span>
-      ),
-    },
-  ];
-
+  const [selectedTab, setSelectedTab] = useState("Listing"); // New state for tab selection
   return (
     <div className="lg:px-8 mx-auto my-12">
       <Header2 />
       <div className="px-3 py-2 lg:px-8 lg:py-1 mx-auto">
         <HeroCompetition />
-        <div className="flex flex-col justify-center items-center">
-          <div className="text-2xl sm:text-3xl font-semibold text-gray-800 darkTextGray mb-5">
-            Select your favorite competition
-          </div>
-          <FormControl
-            fullWidth
-            className="max-w-3xl"
-            variant="outlined"
-            margin="normal"
-          >
-            <InputLabel id="code-select-label">Select Code</InputLabel>
-            <Select
-              labelId="code-select-label"
-              value={selectedCode}
-              onChange={(e) => setSelectedCode(e.target.value)}
-              label="Select Code"
-            >
-              {codes.map((code) => (
-                <MenuItem key={code.id} value={code.code}>
-                  {code.code}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
 
-        {selectedCodeData && (
-          <section className="max-w-5xl px-4 mx-auto mt-14">
+        <>
+          <section className="container px-4 mx-auto mt-14 max-w-3xl">
             <div className="flex flex-col mb-5">
-              <h3 className="text-2xl sm:text-3xl font-semibold text-gray-800 darkTextGray text-center">
-                Competition information
-              </h3>
-
-              <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
-                <Table
-                  columns={codeColumns}
-                  dataSource={[selectedCodeData]}
-                  pagination={false}
-                  rowKey="id"
-                  size="small"
-                  bordered
-                />
-              </div>
+              <h3 className="font-bold text-xl text-left">Code listing</h3>
+              <div className="mx-auto mt-5 grid sm:grid-cols-2 gap-32 transition-all duration-600 ease-out transform translate-x-0">
+                {codes.map((code, index) => (
+                  <div
+                    key={code.id}
+                    className="group flex justify-center w-full"
+                  >
+                    {code ? (
+                      <UniCard
+                        data={code}
+                        setSelectedCode={setSelectedCodeData}
+                        codeInCompetition={setSelectedCode}
+                        // onSelectCode={onSelectCode}
+                        // filterProjectsByCode={filterProjectsByCode}
+                        projectCounts={projectCounts}
+                      />
+                    ) : (
+                      <div className="w-[30vw] h-[55vh]"></div>
+                    )}
+                  </div>
+                ))}
+              </div>{" "}
             </div>
           </section>
-        )}
+        </>
 
-        <Search
+        <UniSearch
           onSearch={handleSearch}
           onIndustryChange={handleIndustryChange}
           companies={companiesToRender}
@@ -480,50 +360,59 @@ const CompetitionPosts = ({ location }) => {
           selectedCode={selectedCode}
         />
 
+        <Tabs
+          value={selectedTab}
+          onChange={(event, newValue) => setSelectedTab(newValue)}
+          indicatorColor="primary"
+          textColor="primary"
+          centered
+        >
+          <Tab label="Listing" value="Listing" />
+          <Tab label="Rules" value="Rules" />
+        </Tabs>
+
         {isLoading ? (
           <LinearProgress className="my-20" />
-        ) : (
+        ) : selectedTab === "Listing" ? (
           <>
             {companiesToRender.length === 0 ? (
               <div className="mt-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
                 No result
               </div>
             ) : (
-              <>
-                <div className="mx-auto max-w-[85rem] mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
-                  {companiesToRender.map((company, index) => (
-                    <div key={company.id} className="group flex justify-center">
-                      {company ? (
-                        <Card
-                          key={company.id}
-                          title={company.name}
-                          description={company.description}
-                          imageUrl={company.card_url}
-                          buttonText="More"
-                          project_id={company.project_id}
-                          verified={company.verifiedStatus}
-                          status={company.status}
-                        />
-                      ) : (
-                        <div className="w-[30vw] h-[55vh]"></div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </>
+              <div className="mx-auto max-w-[85rem] mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
+                {companiesToRender.map((company, index) => (
+                  <div key={company.id} className="group flex justify-center">
+                    {company ? (
+                      <Card
+                        key={company.id}
+                        title={company.name}
+                        description={company.description}
+                        imageUrl={company.card_url}
+                        buttonText="More"
+                        project_id={company.project_id}
+                        verified={company.verifiedStatus}
+                        status={company.status}
+                      />
+                    ) : (
+                      <div className="w-[30vw] h-[55vh]"></div>
+                    )}
+                  </div>
+                ))}
+              </div>
             )}
           </>
+        ) : (
+          <div className="flex justify-center items-center">
+            <UniEditorTool
+              selectedCode={selectedCodeData}
+              setSelectedCode={setSelectedCodeData}
+              unChange={true}
+              // handleUpdateRules={handleUpdateRules}
+            />
+          </div>
         )}
       </div>
-      <Modal
-        title={`Rules for ${selectedCodeData?.code}`}
-        open={isRulesModalOpen}
-        onCancel={() => setIsRulesModalOpen(false)}
-        centered={true}
-        footer={null}
-      >
-        <UniEditorTool selectedCode={selectedCodeData} unChange={true} />
-      </Modal>
     </div>
   );
 };

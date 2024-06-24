@@ -1,32 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import {
-  CheckSquareOutlined,
-  DashboardOutlined,
-  DollarCircleOutlined,
-  HomeOutlined,
-  ProfileOutlined,
-  ShopOutlined,
-  UserOutlined,
-  UserSwitchOutlined,
-} from "@ant-design/icons";
-import { useAuth } from "../context/AuthContext";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { HomeOutlined, EyeOutlined, ToolOutlined } from "@ant-design/icons";
 
-function SideBarWorkSpace({ toggleSidebar, isSidebarOpen }) {
+function SideBarWorkSpace({
+  toggleSidebar,
+  isSidebarOpen,
+  currentTab,
+  setCurrentTab,
+}) {
   const navigate = useNavigate();
 
-  const [selectedItem, setSelectedItem] = useState(null);
-  const location = useLocation();
-
-  useEffect(() => {
-    setSelectedItem(location.pathname);
-  }, [location]);
-
-  const handleItemClick = (route) => {
-    navigate(route);
+  const handleItemClick = (tab) => {
+    setCurrentTab(tab);
   };
-
-  const { currentUser } = useAuth();
 
   return (
     <div>
@@ -35,7 +21,7 @@ function SideBarWorkSpace({ toggleSidebar, isSidebarOpen }) {
         data-drawer-toggle="default-sidebar"
         aria-controls="default-sidebar"
         type="button"
-        className="z-30 inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-md sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 "
+        className="z-30 inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-md sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
         onClick={toggleSidebar}
       >
         <span className="sr-only">Open sidebar</span>
@@ -69,14 +55,13 @@ function SideBarWorkSpace({ toggleSidebar, isSidebarOpen }) {
             max-width: 0;
             overflow: hidden;
             white-space: nowrap;
-            
             opacity: 0;
-        }
+          }
           .group:hover .sidebar-text {
             max-width: 300px; /* Adjust as needed */
             opacity: 1;
             margin-left: 8px;
-            font-size: 12px
+            font-size: 12px;
           }
           .sidebar-button {
             display: flex;
@@ -89,78 +74,31 @@ function SideBarWorkSpace({ toggleSidebar, isSidebarOpen }) {
         </style>
         <div className="mt-16 mx-auto flex flex-col items-start h-full px-3 py-4 space-y-2 overflow-y-auto">
           <button
-            className="mt-2  w-full p-2 group flex items-center rounded-md text-sm  sidebar-button hover:bg-gray-200"
+            className={`mt-2 w-full p-2 group flex items-center rounded-md text-sm sidebar-button ${
+              currentTab === "Home" ? "bg-gray-300" : "hover:bg-gray-200"
+            }`}
             onClick={() => navigate("/")}
           >
             <HomeOutlined />
             <span className="sidebar-text">Home</span>
           </button>
-
           <button
-            className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm ${
-              selectedItem?.includes("/user-info")
-                ? "bg-gray-300 "
-                : "text-gray-900 darkTextWhite"
-            } sidebar-button hover:bg-gray-200`}
-            onClick={() => handleItemClick("/user-info")}
+            className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm sidebar-button ${
+              currentTab === "View" ? "bg-gray-300" : "hover:bg-gray-200"
+            }`}
+            onClick={() => handleItemClick("View")}
           >
-            <UserOutlined />
-            <span className="sidebar-text">User Settings</span>
+            <EyeOutlined />
+            <span className="sidebar-text">View</span>
           </button>
           <button
-            className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm ${
-              selectedItem?.includes("/dashboard")
-                ? "bg-gray-300 "
-                : "text-gray-900 darkTextWhite"
-            } sidebar-button hover:bg-gray-200 `}
-            onClick={() => handleItemClick("/dashboard")}
+            className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm sidebar-button ${
+              currentTab === "Manage" ? "bg-gray-300" : "hover:bg-gray-200"
+            }`}
+            onClick={() => handleItemClick("Manage")}
           >
-            <DashboardOutlined />
-            <span className="sidebar-text">Dashboard</span>
-          </button>
-          <button
-            className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm ${
-              selectedItem?.includes("/financials")
-                ? "bg-gray-300 "
-                : "text-gray-900 darkTextWhite"
-            } sidebar-button hover:bg-gray-200`}
-            onClick={() => handleItemClick("/financials")}
-          >
-            <DollarCircleOutlined />
-            <span className="sidebar-text">Financial Model</span>
-          </button>
-          <button
-            className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm  ${
-              selectedItem?.includes("/founder")
-                ? "bg-gray-300"
-                : "text-gray-900 darkTextWhite"
-            } sidebar-button hover:bg-gray-200`}
-            onClick={() => handleItemClick("/founder")}
-          >
-            <ProfileOutlined />
-            <span className="sidebar-text">Project list</span>
-          </button>
-          <button
-            className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm  ${
-              selectedItem?.includes("/Flea-Market")
-                ? "bg-gray-300"
-                : "text-gray-900 darkTextWhite"
-            } sidebar-button hover:bg-gray-200`}
-            onClick={() => handleItemClick("/Flea-Market")}
-          >
-            <ShopOutlined />
-            <span className="sidebar-text">Flea Market</span>
-          </button>
-          <button
-            className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm  ${
-              selectedItem?.includes("/workspace")
-                ? "bg-gray-300"
-                : "text-gray-900 darkTextWhite"
-            } sidebar-button hover:bg-gray-200`}
-            onClick={() => handleItemClick("/workspace")}
-          >
-            <CheckSquareOutlined />
-            <span className="sidebar-text">Work Space</span>
+            <ToolOutlined />
+            <span className="sidebar-text">Manage</span>
           </button>
         </div>
       </aside>

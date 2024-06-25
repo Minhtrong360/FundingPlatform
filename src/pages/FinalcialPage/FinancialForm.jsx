@@ -62,6 +62,7 @@ import { useParams } from "react-router-dom";
 // import AnnounceFMPage from "./Components/AnnounceFMPage";
 // import Perflexity from "./Components/Perflexity";
 import SpinnerBtn from "../../components/SpinnerBtn";
+import DraggableChart from "./Components/DraggableChart";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();

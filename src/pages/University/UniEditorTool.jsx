@@ -9,7 +9,7 @@ import { defaultBlockSchema, defaultBlockSpecs } from "@blocknote/core";
 import "@blocknote/core/style.css";
 import { supabase } from "../../supabase";
 import { YoutubeOutlined } from "@ant-design/icons";
-import { message } from "antd";
+import { Button, message } from "antd";
 import ReactModal from "react-modal";
 
 // Create the YouTube Link block
@@ -74,6 +74,7 @@ export default function UniEditorTool({
   selectedCode,
   setSelectedCode,
   unChange,
+  handleUpdateRules,
 }) {
   useEffect(() => {
     const fetchMarkdown = async () => {
@@ -163,18 +164,28 @@ export default function UniEditorTool({
 
   return (
     <>
-      <div className="flex-grow items-center justify-center max-w-[85rem] py-10 ">
+      <div className="flex-grow items-center justify-center max-w-[50vw] py-10 ">
         <BlockNoteView
           editor={editor}
           theme={"light"}
-          className={`w-full lg:w-9/12 ${unChange ? "pointer-events-none" : ""}`}
+          className={`${unChange ? "pointer-events-none" : ""}`}
         />
+
         {unChange && (
           <div
             className="absolute top-0 left-0 w-full h-full bg-transparent z-10"
             style={{ pointerEvents: "none" }}
           ></div>
         )}
+        {unChange ? null : (
+          <Button
+            onClick={() => handleUpdateRules(selectedCode)}
+            className="text-sm bg-blue-600 text-white ml-5 mt-5"
+          >
+            Update
+          </Button>
+        )}
+
         <ReactModal
           ariaHideApp={false}
           isOpen={isModalOpen}

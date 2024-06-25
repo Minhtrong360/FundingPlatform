@@ -58,6 +58,7 @@ import SpinnerBtn from "../../../components/SpinnerBtn";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import Flowise from "./Flowise";
+import DraggableChart from "./DraggableChart";
 
 const CustomerInputsForm = React.memo(
   ({
@@ -1321,6 +1322,15 @@ const CustomerSection = React.memo(
       saveAs(jsonBlob, "customer_data.json");
     };
 
+    const chartData = customerGrowthData
+      .map((channelData) => {
+        return channelData.map((data, index) => ({
+          month: `${startMonth + index}`,
+          value: parseFloat(data.customers),
+        }));
+      })
+      .flat();
+
     return (
       <div>
         <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm NOsticky NOtop-8 z-50">
@@ -1559,7 +1569,6 @@ const CustomerSection = React.memo(
                 />
               </div>
               <div className="w-full xl:w-1/4 sm:p-4 p-0   ">
-                <Flowise prompt={generatePromptC()} button={"Send"} />
                 <button
                   className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
                   style={{ bottom: "20px", right: "80px", position: "fixed" }}
@@ -1585,7 +1594,17 @@ const CustomerSection = React.memo(
           )}
           {activeTab === "input" && (
             <>
-              <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
+              <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
+                {/* <div>
+                  <h3>Customer Chart</h3>
+                  <DraggableChart
+                  // chartData={chartData}
+                  // xAxisCategories={customerGrowthData.map(
+                  //   (data, index) => `Month ${index + 1}`
+                  // )}
+                  />
+                </div>{" "} */}
+              </div>
 
               <div className="w-full xl:w-1/4 sm:p-4 p-0   ">
                 <CustomerInputsForm

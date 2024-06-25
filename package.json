@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@amcharts/amcharts4": "^4.10.39",
     "@ant-design/charts": "^2.1.1",
     "@ant-design/icons": "^5.2.6",
     "@blocknote/core": "^0.10.1",

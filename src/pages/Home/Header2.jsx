@@ -140,18 +140,6 @@ const Header2 = ({ position }) => {
     />
   );
 
-  const isActiveTab = (path, subItems) => {
-    if (location.pathname === path) {
-      return true;
-    }
-    if (subItems) {
-      return subItems.some((subItem) =>
-        location.pathname.startsWith(subItem.path)
-      );
-    }
-    return false;
-  };
-
   return (
     <>
       <nav
@@ -239,7 +227,9 @@ const Header2 = ({ position }) => {
                     >
                       <Button
                         className={`text-black hover:text-blue-600 border-0 bg-transparent shadow-none ${
-                          isActiveTab(item.path, item.subItems)
+                          item.subItems.some((subItem) =>
+                            location.pathname.startsWith(subItem.path)
+                          )
                             ? "text-[#2563EB]"
                             : ""
                         }`}
@@ -250,7 +240,9 @@ const Header2 = ({ position }) => {
                   ) : (
                     <Button
                       className={`text-black hover:text-blue-600 border-0 bg-transparent shadow-none ${
-                        isActiveTab(item.path) ? "text-[#2563EB]" : ""
+                        location.pathname.startsWith(item.path)
+                          ? "text-[#2563EB]"
+                          : ""
                       }`}
                       onClick={() => navigate(item.path)}
                     >

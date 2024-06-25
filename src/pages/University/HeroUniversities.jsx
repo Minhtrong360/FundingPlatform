@@ -8,6 +8,7 @@ import {
   Menu,
   Modal,
   Table,
+  Card,
   message,
 } from "antd";
 import { useEffect, useState } from "react";
@@ -15,9 +16,16 @@ import { supabase } from "../../supabase";
 import moment from "moment";
 import { formatDate } from "../../features/DurationSlice";
 import { IconButton } from "@mui/material";
+import UniEditorTool from "./UniEditorTool";
+import UniCard from "./UniCard";
 
-const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
-  console.log("credentials", credentials);
+const HeroUniversities = ({
+  onSelectCode,
+  setCompanies,
+  credentials,
+  currentTab,
+  setSelectedCodeFull,
+}) => {
   const { user } = useAuth();
   const [isAddNewModalOpen, setIsAddNewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -28,6 +36,7 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
 
   const [newCode, setNewCode] = useState("");
   const [competitionName, setCompetitionName] = useState("");
+  const [competitionDescription, setCompetitionDescription] = useState("");
   const [expirationDate, setExpirationDate] = useState(null);
   const [newExpirationDate, setNewExpirationDate] = useState(null);
   const [selectedCode, setSelectedCode] = useState(null);
@@ -139,7 +148,12 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
   };
 
   const handleAddNewCode = async () => {
-    if (!newCode || !expirationDate || !competitionName) {
+    if (
+      !newCode ||
+      !expirationDate ||
+      !competitionName ||
+      !competitionDescription
+    ) {
       message.error("Please enter all required fields");
       return;
     }
@@ -152,6 +166,7 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
           expired_at: expirationDate.format("YYYY-MM-DD"),
           UniID: credentials.UniID,
           name: competitionName,
+          description: competitionDescription,
         },
       ])
       .select();
@@ -175,6 +190,7 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
       setNewCode("");
       setExpirationDate(null);
       setCompetitionName("");
+      setCompetitionDescription("");
     }
   };
 
@@ -190,6 +206,7 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
         code: newCode,
         expired_at: newExpirationDate.format("YYYY-MM-DD"),
         name: competitionName,
+        description: competitionDescription,
       })
       .eq("id", selectedCode.id)
       .select();
@@ -214,6 +231,7 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
       setExpirationDate(null);
       setNewExpirationDate(null);
       setCompetitionName("");
+      setCompetitionDescription("");
     }
   };
 
@@ -292,6 +310,7 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
         prev.map((item) => (item.id === selectedCode.id ? data[0] : item))
       );
       setSelectedCode(data[0]); // Update the selectedCode state to reflect the change
+      setSelectedCodeFull(data[0]);
       setJudgeName("");
       setJudgeEmail("");
     }
@@ -392,8 +411,10 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
 
   const openEditModal = (record) => {
     setSelectedCode(record);
+    setSelectedCodeFull(record);
     setNewCode(record.code);
     setCompetitionName(record.name);
+    setCompetitionDescription(record.description);
     setExpirationDate(record.expired_at ? moment(record.expired_at) : null);
     setNewExpirationDate(null);
     setIsEditModalOpen(true);
@@ -406,11 +427,13 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
 
   const openPublishModal = (record) => {
     setSelectedCode(record);
+    setSelectedCodeFull(record);
     setIsPublishModalOpen(true);
   };
 
   const openJudgeModal = (record) => {
     setSelectedCode(record);
+    setSelectedCodeFull(record);
     setIsJudgeModalOpen(true);
   };
 
@@ -445,7 +468,16 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
         prev.map((item) => (item.id === selectedCode.id ? data[0] : item))
       );
       setSelectedCode(data[0]); // Update the selectedCode state to reflect the change
+      setSelectedCodeFull(data[0]); // Update the selectedCode state to reflect the change
     }
+  };
+
+  const [isRulesModalOpen, setIsRulesModalOpen] = useState(false); // New state for rules modal
+
+  const openRulesModal = (record) => {
+    setSelectedCode(record);
+    setSelectedCodeFull(record);
+    setIsRulesModalOpen(true);
   };
 
   const codeColumns = [
@@ -474,6 +506,17 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
         <span className="hover:cursor-pointer">{record.code}</span>
       ),
     },
+    // {
+    //   title: "Rules",
+    //   dataIndex: "rules",
+    //   key: "rules",
+    //   align: "center",
+    //   render: (text, record) => (
+    //     <Button onClick={() => openRulesModal(record)} className="text-xs">
+    //       {record.rules ? "View Rules" : "Add Rules"}
+    //     </Button>
+    //   ),
+    // },
     {
       title: "Created at",
       dataIndex: "created_at",
@@ -609,9 +652,9 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
             </Menu>
           }
         >
-          <div className="bg-blue-600 rounded-md max-w-[5rem] text-white py-1 hover:cursor-pointer">
+          <Button className="bg-blue-600 rounded-md max-w-[5rem] text-white py-1 hover:cursor-pointer text-xs">
             Action
-          </div>
+          </Button>
         </Dropdown>
       ),
     },
@@ -862,7 +905,6 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
         dataURItoFile(e.target.result, "img")
       );
 
-      console.log("credentials", credentials);
       if (uploadedAvatarUrl) {
         setAvatarUrl(uploadedAvatarUrl); // Update the state with the uploaded image URL
 
@@ -913,8 +955,27 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
     }
   };
 
+  const handleUpdateRules = async (updatedCode) => {
+    try {
+      const { error } = await supabase
+        .from("code")
+        .update({ rules: updatedCode.rules })
+        .eq("id", updatedCode.id);
+
+      if (error) {
+        throw error;
+      }
+
+      message.success("Rules updated successfully");
+      setIsRulesModalOpen(false);
+    } catch (error) {
+      message.error("Failed to update rules");
+      console.error("Error updating rules:", error);
+    }
+  };
+
   return (
-    <section className="bg-white mt-12">
+    <section className="bg-white">
       <div className="sm:px-6 px-3 mx-auto text-center">
         <div className="max-w-3xl mx-auto">
           <div className="flex flex-col space-y-6 justify-center items-center">
@@ -984,6 +1045,7 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
                   setNewCode("");
                   setExpirationDate(null);
                   setCompetitionName("");
+                  setCompetitionDescription("");
                   setIsAddNewModalOpen(true);
                 }}
               >
@@ -992,55 +1054,90 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
             )}
           </div>
         </div>
+        {currentTab === "Manage" && (
+          <>
+            <section className="container px-4 mx-auto mt-14 max-w-3xl">
+              <div className="flex flex-col mb-5">
+                <h3 className="font-bold text-xl text-left">Code listing</h3>
 
-        <section className="container px-4 mx-auto mt-14">
-          <div className="flex flex-col mb-5">
-            <h3 className="font-bold text-xl text-left">Code listing</h3>
-
-            <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
-              <Table
-                columns={codeColumns}
-                dataSource={codeData}
-                pagination={{
-                  position: ["bottomLeft"],
-                }}
-                rowKey="id"
-                size="small"
-                bordered
-                onRow={(record) => ({
-                  onClick: () => {
-                    setSelectedCode(record);
-                    onSelectCode(record.code);
-                    filterProjectsByCode(record.code);
-                  },
-                })}
-              />
-            </div>
-          </div>
-        </section>
-        {projectList?.length > 0 && (
-          <section className="container px-4 mx-auto mt-14">
-            <div className="flex flex-col mb-5">
-              <h2 className="text-xl font-bold text-left">
-                Project listing by {selectedCode?.code}
-              </h2>
-              <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
-                <Table
-                  columns={projectByCodeColumns}
-                  dataSource={projectList}
-                  pagination={{
-                    position: ["bottomLeft"],
-                  }}
-                  rowKey="id"
-                  size="small"
-                  bordered
-                  scroll={{
-                    x: true,
-                  }}
-                />
+                <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
+                  <Table
+                    columns={codeColumns}
+                    dataSource={codeData}
+                    pagination={{
+                      position: ["bottomLeft"],
+                    }}
+                    rowKey="id"
+                    size="small"
+                    bordered
+                    onRow={(record) => ({
+                      onClick: () => {
+                        setSelectedCode(record);
+                        setSelectedCodeFull(record);
+                        onSelectCode(record.code);
+                        filterProjectsByCode(record.code);
+                      },
+                    })}
+                  />
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
+            {projectList?.length > 0 && (
+              <section className="container px-4 mx-auto mt-14 max-w-3xl">
+                <div className="flex flex-col mb-5">
+                  <h2 className="text-xl font-bold text-left">
+                    Project listing by {selectedCode?.code}
+                  </h2>
+                  <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
+                    <Table
+                      columns={projectByCodeColumns}
+                      dataSource={projectList}
+                      pagination={{
+                        position: ["bottomLeft"],
+                      }}
+                      rowKey="id"
+                      size="small"
+                      bordered
+                      scroll={{
+                        x: true,
+                      }}
+                    />
+                  </div>
+                </div>
+              </section>
+            )}
+          </>
+        )}
+
+        {currentTab === "View" && (
+          <>
+            <section className="container px-4 mx-auto mt-14 max-w-3xl">
+              <div className="flex flex-col mb-5">
+                <h3 className="font-bold text-xl text-left">Code listing</h3>
+                <div className="mx-auto mt-5 grid sm:grid-cols-2 gap-32 transition-all duration-600 ease-out transform translate-x-0">
+                  {codeData.map((code, index) => (
+                    <div
+                      key={code.id}
+                      className="group flex justify-center w-full"
+                    >
+                      {code ? (
+                        <UniCard
+                          data={code}
+                          setSelectedCode={setSelectedCode}
+                          setSelectedCodeFull={setSelectedCodeFull}
+                          onSelectCode={onSelectCode}
+                          filterProjectsByCode={filterProjectsByCode}
+                          projectCounts={projectCounts}
+                        />
+                      ) : (
+                        <div className="w-[30vw] h-[55vh]"></div>
+                      )}
+                    </div>
+                  ))}
+                </div>{" "}
+              </div>
+            </section>
+          </>
         )}
 
         <Modal
@@ -1112,6 +1209,22 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
                       required
                     />
                   </div>
+                </div>
+              </div>
+              <div className="space-y-1 md:col-span-2">
+                <label htmlFor="competition_description">
+                  Competition Description
+                </label>
+                <div className="flex items-center">
+                  <Input.TextArea
+                    id="competition_description"
+                    placeholder="Enter competition description"
+                    required
+                    className="border-gray-300 rounded-md text-sm"
+                    value={competitionDescription}
+                    onChange={(e) => setCompetitionDescription(e.target.value)}
+                    autoSize
+                  />
                 </div>
               </div>
             </form>
@@ -1204,6 +1317,25 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
                     />
                   </div>
                 </div>
+
+                <div className="space-y-1 md:col-span-2">
+                  <label htmlFor="competition_description">
+                    Competition Description
+                  </label>
+                  <div className="flex items-center">
+                    <Input.TextArea
+                      id="competition_description"
+                      placeholder="Enter competition description"
+                      required
+                      className="border-gray-300 rounded-md text-sm"
+                      value={competitionDescription}
+                      onChange={(e) =>
+                        setCompetitionDescription(e.target.value)
+                      }
+                      autoSize
+                    />
+                  </div>
+                </div>
               </div>
             </form>
           </div>
@@ -1274,9 +1406,10 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
           onCancel={() => setIsJudgeModalOpen(false)}
           footer={null}
           centered={true}
-          styles={{ body: { maxHeight: "70vh", overflowY: "auto" } }} // Add this line
+          styles={{ body: { minHeight: "84vh" } }} // Use bodyStyle to style the body
+          width={600}
         >
-          <div className="w-full max-w-2xl mx-auto p-6 space-y-6">
+          <div className="w-full mx-auto p-6 space-y-6 ">
             <h3 className="text-lg font-semibold">Add Judge</h3>
             <form className="grid gap-6 col-span-1 md:col-span-2">
               <div className="space-y-2">
@@ -1312,8 +1445,6 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
 
             <h3 className="text-lg font-semibold mt-6">Judge Listing</h3>
             <div>
-              {" "}
-              {/* Add this line */}
               <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
                 <Table
                   dataSource={selectedCode?.judges?.map((judge) =>
@@ -1349,10 +1480,8 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
                     },
                   ]}
                   rowKey="email"
-                  pagination={{ pageSize: 5, position: ["bottomLeft"] }}
-                  scroll={{
-                    x: true,
-                  }}
+                  pagination={{ pageSize: 4, position: ["topRight"] }}
+                  scroll={{ x: true }}
                 />
               </div>
             </div>
@@ -1401,6 +1530,20 @@ const HeroUniversities = ({ onSelectCode, setCompanies, credentials }) => {
               </div>
             </form>
           </div>
+        </Modal>
+
+        <Modal
+          title={`Rules for ${selectedCode?.code}`}
+          open={isRulesModalOpen}
+          onCancel={() => setIsRulesModalOpen(false)}
+          okText="Update"
+          onOk={() => handleUpdateRules(selectedCode)}
+          centered={true}
+        >
+          <UniEditorTool
+            selectedCode={selectedCode}
+            setSelectedCode={setSelectedCode}
+          />
         </Modal>
       </div>
     </section>

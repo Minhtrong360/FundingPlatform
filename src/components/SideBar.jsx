@@ -11,7 +11,6 @@ import {
   UserSwitchOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../context/AuthContext";
-import { WorkspacesOutlined } from "@mui/icons-material";
 
 function SideBar({ toggleSidebar, isSidebarOpen }) {
   const navigate = useNavigate();
@@ -167,7 +166,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
           </button>
           <button
             className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm  ${
-              selectedItem?.includes("/Flea-Market")
+              selectedItem?.includes("/workspace")
                 ? "bg-gray-300"
                 : "text-gray-900 darkTextWhite"
             } sidebar-button hover:bg-gray-200`}

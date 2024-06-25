@@ -77,7 +77,7 @@ function Router() {
         />
         <Route
           key={location.key}
-          path="/Flea-Market/info"
+          path="/Listing-Flea-Market"
           element={
             <AuthRequire message="Sign in required!">
               <FleaMarketListAll />

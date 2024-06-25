@@ -30,9 +30,9 @@ const HeroCompetition = () => {
             style={{ lineHeight: "1.5" }}
           >
             <span className="text-blue-600 bg-yellow-300 h-6">
-              Profile listing
+              Profile listing for
             </span>{" "}
-            for Competitions.
+            Competitions.
           </h1>
           <p className="mt-6 text-lg text-gray-800">
             Create a fundraising profile and get the reward from Competitions on

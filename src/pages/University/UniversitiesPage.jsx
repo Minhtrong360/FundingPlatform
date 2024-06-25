@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from "react";
 import Card from "../Home/Components/Card";
 import { supabase } from "../../supabase";
-
-import Search from "../Home/Components/Search";
-
-import { LinearProgress } from "@mui/material";
+import { LinearProgress, Tabs, Tab } from "@mui/material";
 import { message } from "antd";
 import regions from "../../components/Regions";
-import Header2 from "../Home/Header2";
 import HeroUniversities from "./HeroUniversities";
 import CredentialModal from "./CredentialModal";
 import { useLocation, useNavigate } from "react-router-dom";
+import SideBarWorkSpace from "./SideBarWorkSpace";
+import UniSearch from "./UniSearch";
+import UniEditorTool from "./UniEditorTool"; // Assuming this is the component for editing rules
 
 const UniversitiesPage = () => {
   const [companies, setCompanies] = useState([]);
-
   const [page, setPage] = useState(1);
   const itemsPerPage = 6;
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,24 +23,20 @@ const UniversitiesPage = () => {
   const [region, setRegion] = useState("");
   const [country, setCountry] = useState("");
   const [selectedCode, setSelectedCode] = useState("");
-
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
+  const [selectedCodeFull, setSelectedCodeFull] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [currentTab, setCurrentTab] = useState("All");
-
+  const [currentItem, setCurrentItem] = useState("View");
   const [companiesToRender, setCompaniesToRender] = useState([]);
-
   const [visibleItemCount, setVisibleItemCount] = useState(itemsPerPage);
-
+  const [selectedTab, setSelectedTab] = useState("Listing"); // New state for tab selection
   const navigate = useNavigate();
-
   const location = useLocation();
   const [credentials, setCredentials] = useState();
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const workspace = searchParams.get("workspace");
     const id = searchParams.get("id");
 
     const fetchAndSetCredentials = async (id) => {
@@ -52,15 +46,11 @@ const UniversitiesPage = () => {
       }
     };
 
-    if (!workspace) {
+    if (id) {
+      fetchAndSetCredentials(id);
+    }
+    if (!id) {
       setIsModalVisible(true);
-    } else {
-      setIsModalVisible(false);
-      fetchCompanies(workspace);
-
-      if (id) {
-        fetchAndSetCredentials(id);
-      }
     }
   }, [location]);
 
@@ -273,16 +263,41 @@ const UniversitiesPage = () => {
     fetchCompanies(code);
   };
 
+  const handleUpdateRules = async (updatedCode) => {
+    try {
+      const { error } = await supabase
+        .from("code")
+        .update({ rules: updatedCode.rules })
+        .eq("id", updatedCode.id);
+
+      if (error) {
+        throw error;
+      }
+
+      message.success("Rules updated successfully");
+    } catch (error) {
+      message.error("Failed to update rules");
+      console.error("Error updating rules:", error);
+    }
+  };
+
   return (
-    <div className="lg:px-8 mx-auto my-12">
-      <Header2 />
-      <div className="px-3 py-2 lg:px-8 lg:py-1 mx-auto">
+    <div className="lg:px-8 mx-auto mb-16 flex">
+      <SideBarWorkSpace
+        setCurrentTab={setCurrentItem}
+        isSidebarOpen={true}
+        currentTab={currentItem}
+      />
+
+      <div className="px-3 py-2 lg:px-8 lg:py-1 mx-auto flex-grow">
         <HeroUniversities
           onSelectCode={handleSelectCode}
           setCompanies={setCompanies}
           credentials={credentials}
+          currentTab={currentItem}
+          setSelectedCodeFull={setSelectedCodeFull}
         />
-        <Search
+        <UniSearch
           onSearch={handleSearch}
           onIndustryChange={handleIndustryChange}
           companies={companiesToRender}
@@ -300,39 +315,57 @@ const UniversitiesPage = () => {
           selectedCode={selectedCode}
         />
 
+        <Tabs
+          value={selectedTab}
+          onChange={(event, newValue) => setSelectedTab(newValue)}
+          indicatorColor="primary"
+          textColor="primary"
+          centered
+        >
+          <Tab label="Listing" value="Listing" />
+          <Tab label="Rules" value="Rules" />
+        </Tabs>
+
         {isLoading ? (
           <LinearProgress className="my-20" />
-        ) : (
+        ) : selectedTab === "Listing" ? (
           <>
             {companiesToRender.length === 0 ? (
               <div className="mt-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
                 No result
               </div>
             ) : (
-              <>
-                <div className="mx-auto max-w-[85rem] mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
-                  {companiesToRender.map((company, index) => (
-                    <div key={company.id} className="group flex justify-center">
-                      {company ? (
-                        <Card
-                          key={company.id}
-                          title={company.name}
-                          description={company.description}
-                          imageUrl={company.card_url}
-                          buttonText="More"
-                          project_id={company.project_id}
-                          verified={company.verifiedStatus}
-                          status={company.status}
-                        />
-                      ) : (
-                        <div className="w-[30vw] h-[55vh]"></div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </>
+              <div className="mx-auto max-w-[85rem] mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
+                {companiesToRender.map((company, index) => (
+                  <div key={company.id} className="group flex justify-center">
+                    {company ? (
+                      <Card
+                        key={company.id}
+                        title={company.name}
+                        description={company.description}
+                        imageUrl={company.card_url}
+                        buttonText="More"
+                        project_id={company.project_id}
+                        verified={company.verifiedStatus}
+                        status={company.status}
+                      />
+                    ) : (
+                      <div className="w-[30vw] h-[55vh]"></div>
+                    )}
+                  </div>
+                ))}
+              </div>
             )}
           </>
+        ) : (
+          <div className="flex justify-center items-center">
+            <UniEditorTool
+              selectedCode={selectedCodeFull}
+              setSelectedCode={setSelectedCodeFull}
+              unChange={currentItem === "View" ? true : false}
+              handleUpdateRules={handleUpdateRules}
+            />
+          </div>
         )}
 
         <CredentialModal

@@ -14,7 +14,7 @@ import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 
 import ProgressBar from "../../components/ProgressBar";
-import Gemini from "./Components/Gemini";
+import BusinessModelBot from "./Components/BusinessModelBot";
 import MetricsFM from "./Components/MetricsFM";
 import ProfitAndLossSection from "./Components/ProfitAndLossSection";
 // import * as XLSX from "xlsx";
@@ -62,6 +62,9 @@ import { useParams } from "react-router-dom";
 // import AnnounceFMPage from "./Components/AnnounceFMPage";
 // import Perflexity from "./Components/Perflexity";
 import SpinnerBtn from "../../components/SpinnerBtn";
+import FlowiseChat from "./FLowiseChat";
+import DraggableChart from "./Amchart";
+
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
@@ -110,9 +113,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     setNumberOfMonths(month);
   }, [selectedDuration]);
 
-  // Gemini
+  // BusinessModelBot
   const [chatbotResponse, setChatbotResponse] = useState("");
-  // Gemini useEffect
+  // BusinessModelBot useEffect
   useEffect(() => {
     // Ensure chatbotResponse is only processed when it's a valid string
     // if (!chatbotResponse || chatbotResponse.trim() === "") return;
@@ -989,7 +992,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         <>
           {temIsLoading && <LoadingButtonClick isLoading={temIsLoading} />}
           <div className="w-full h-full flex flex-col lg:flex-row">
-            <Gemini
+            <BusinessModelBot
               setIsLoading={setIsLoading}
               setChatbotResponse={setChatbotResponse}
               currentUser={currentUser}
@@ -1141,6 +1144,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                           >
                             Overview
                           </h2>
+                          {/* <N8NChat/> */}
+                          {/* <DraggableChart/> */}
+                          <FlowiseChat/>
                           {/* <Perflexity prompt={generatePrompt()} button={"Benchmark"} /> */}
                           <MetricsFM
                             customerGrowthChart={customerGrowthChart}

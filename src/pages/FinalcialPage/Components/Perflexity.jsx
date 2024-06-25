@@ -19,16 +19,16 @@ const Perflexity = ({ prompt, button }) => {
       setMessages([newMessage]);
 
       // Log the updated messages array
-      console.log("Input sent to backend:", [newMessage]);
+      console.log("Input sent to backend:", [newMessage.content]);
       // const response = await fetch("https://news-fetcher-8k6m.onrender.com/chat", {
       const response = await fetch(
-        "https://news-fetcher-8k6m.onrender.com/researchflowise",
+        "https://flowise-ngy8.onrender.com/api/v1/prediction/d8cd8202-5324-4743-b7ab-be418f21a947",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ messages: [newMessage] }),
+          body: JSON.stringify({ question: [newMessage.content] }),
         }
       );
 
@@ -40,8 +40,8 @@ const Perflexity = ({ prompt, button }) => {
       console.log("data: ", data);
       // const assistantResponse = data?.response?.replace(/[#*`]/g, "");
       const assistantResponse =
-        typeof data?.response === "string"
-          ? data.response.replace(/[#*`]/g, "")
+        typeof data?.text === "string"
+          ? data.text.replace(/[#*`]/g, "")
           : "";
 
       console.log("assistantResponse: ", assistantResponse);

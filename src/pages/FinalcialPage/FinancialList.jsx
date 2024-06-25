@@ -257,7 +257,7 @@ function FinancialList() {
         <>
           {record.user_id === user.id ? (
             <Dropdown
-              overlay={
+              menu={
                 <Menu>
                   <>
                     <Menu.Item key="delete">
@@ -480,7 +480,7 @@ function FinancialList() {
         <>
           {record.user_id === user.id ? (
             <Dropdown
-              overlay={
+              menu={
                 <Menu>
                   <>
                     <Menu.Item key="delete">

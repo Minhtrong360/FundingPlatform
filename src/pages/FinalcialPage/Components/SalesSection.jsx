@@ -964,7 +964,7 @@ const SalesSection = ({
 
             <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
             <section className="mb-8 NOsticky NOtop-8 ">
-          <GroqJS datasrc={revenueTableData} inputUrl={'urlSale'}/>
+          {/* <GroqJS datasrc={revenueTableData} inputUrl={'urlSale'}/> */}
         </section>
               <button
                 className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "

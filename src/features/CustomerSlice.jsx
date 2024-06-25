@@ -20,7 +20,8 @@ const initialState = {
       eventBeginMonth: 1,
       eventEndMonth: 36,
       additionalInfo: "",
-      applyAdditionalInfo: false,
+      applyFormula: false,
+      gptResponseArray: [],
     },
     {
       id: 2,
@@ -38,7 +39,8 @@ const initialState = {
       eventBeginMonth: 1,
       eventEndMonth: 36,
       additionalInfo: "",
-      applyAdditionalInfo: false,
+      applyFormula: false,
+      gptResponseArray: [],
     },
   ],
   customerGrowthData: [],
@@ -104,7 +106,7 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
           }
 
           if (
-            customerInput.applyAdditionalInfo &&
+            customerInput.applyFormula &&
             customerInput.gptResponseArray &&
             customerInput.gptResponseArray.length > month - 1
           ) {
@@ -287,7 +289,7 @@ export function generateCustomerTableData(
             }
 
             if (
-              customerInput.applyAdditionalInfo &&
+              customerInput.applyFormula &&
               customerInput.gptResponseArray &&
               customerInput.gptResponseArray.length > i - 1
             ) {
@@ -345,7 +347,6 @@ export function generateCustomerTableData(
     }
   );
 
-  // Calculate the totals
   const totalRow = {
     key: "Total",
     channelName: "Total",
@@ -430,7 +431,7 @@ export function generateCustomerTableData(
             }
 
             if (
-              customerInput.applyAdditionalInfo &&
+              customerInput.applyFormula &&
               customerInput.gptResponseArray &&
               customerInput.gptResponseArray.length > i - 1
             ) {
@@ -440,7 +441,7 @@ export function generateCustomerTableData(
             } else if (customerInput.customerGrowthFrequency === "Monthly") {
               currentCustomers *= 1 + growthRate / 100;
             } else {
-              let frequency = 12; // Default to Annually
+              let frequency = 12;
               if (customerInput.customerGrowthFrequency === "Quarterly")
                 frequency = 3;
               else if (
@@ -521,21 +522,6 @@ export const fetchGPTResponse =
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      // const dataR = await response.json();
-      // console.log("dataR: ", dataR);
-      // const response = await fetch(
-      //   "https://news-fetcher-8k6m.onrender.com/drawchart",
-      //   {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify({
-      //       user_input: `Dựa trên ${additionalInfo}, tìm các hàm toán học rời rạc thỏa mãn điều kiện đã cho. Sau khi tìm được các hàm này, tính giá trị của hàm từ tháng ${customer.beginMonth} đến ${customer.endMonth}.
-      //     Trả về kết quả file JSON theo dạng [70, 100, ... 500] là giá trị của các hàm rời rạc tương ứng tại các điểm trên and nothing else. Absolutely no explanation.`, // Treat additionalInfo as a single prompt
-      //     }),
-      //   }
-      // );
       const data = await response.json();
       if (data.error) {
         throw new Error(data.error);

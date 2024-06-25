@@ -54,10 +54,8 @@ import {
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import SpinnerBtn from "../../../components/SpinnerBtn";
-
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
-import Flowise from "./Flowise";
 import DraggableChart from "./DraggableChart";
 
 const CustomerInputsForm = React.memo(
@@ -73,11 +71,12 @@ const CustomerInputsForm = React.memo(
     handleSave,
     handleFetchGPT,
     isLoading,
-    showAdvancedInputs,
-    setShowAdvancedInputs,
+    showCustomInputs,
+    setShowCustomInputs,
     isDeleteModalOpen,
     setIsDeleteModalOpen,
     confirmDelete,
+    tempCustomerGrowthData,
   }) => {
     return (
       <section
@@ -152,7 +151,7 @@ const CustomerInputsForm = React.memo(
                   Adding (First month)
                 </span>
                 <Input
-                  disabled={input.applyAdditionalInfo}
+                  disabled={input.applyFormula}
                   className="col-start-2 border-gray-300"
                   value={formatNumber(input.customersPerMonth)}
                   onChange={(e) =>
@@ -170,7 +169,7 @@ const CustomerInputsForm = React.memo(
                   Growth rate (%):
                 </span>
                 <Input
-                  disabled={input.applyAdditionalInfo}
+                  disabled={input.applyFormula}
                   className="col-start-2 border-gray-300"
                   value={formatNumber(input.growthPerMonth)}
                   onChange={(e) =>
@@ -186,7 +185,7 @@ const CustomerInputsForm = React.memo(
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <span className="flex items-center text-sm">Frequency:</span>
                 <Select
-                  disabled={input.applyAdditionalInfo}
+                  disabled={input.applyFormula}
                   className="border-gray-300"
                   onValueChange={(value) =>
                     handleInputChange(
@@ -273,33 +272,33 @@ const CustomerInputsForm = React.memo(
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <Checkbox
                   className="col-span-2"
-                  checked={input.applyAdditionalInfo}
+                  checked={input.applyFormula}
                   onChange={(e) =>
                     handleInputChange(
                       input?.id,
-                      "applyAdditionalInfo",
+                      "applyFormula",
                       e.target.checked
                     )
                   }
                 >
-                  Apply Additional Info
+                  Apply Formula
                 </Checkbox>
               </div>
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <Checkbox
                   className="col-span-2"
-                  checked={showAdvancedInputs}
-                  onChange={(e) => setShowAdvancedInputs(e.target.checked)}
+                  checked={showCustomInputs}
+                  onChange={(e) => setShowCustomInputs(e.target.checked)}
                 >
-                  Show Advanced Inputs
+                  Apply Custom
                 </Checkbox>
               </div>
-              {showAdvancedInputs && (
+              {showCustomInputs && (
                 <Modal
-                  title="Advanced Inputs"
-                  open={showAdvancedInputs}
+                  title="Custom Inputs"
+                  open={showCustomInputs}
                   onOk={handleFetchGPT}
-                  onCancel={() => setShowAdvancedInputs(false)}
+                  onCancel={() => setShowCustomInputs(false)}
                   okText={isLoading ? <SpinnerBtn /> : "Apply"}
                   cancelText="Cancel"
                   cancelButtonProps={{
@@ -320,24 +319,34 @@ const CustomerInputsForm = React.memo(
                     },
                   }}
                   centered={true}
+                  width="90%"
+                  style={{ top: 20 }}
                 >
-                  <div className="gap-4 mb-3">
-                    <span className="flex items-center text-sm">
-                      Additional Info:
-                    </span>
-                    <TextArea
-                      className="col-start-2 border-gray-300 text-sm"
-                      value={input.additionalInfo}
-                      onChange={(e) =>
-                        handleInputChange(
-                          input?.id,
-                          "additionalInfo",
-                          e.target.value
-                        )
-                      }
-                      rows={10}
-                    />
-                  </div>
+                  <DraggableChart
+                    data={
+                      input?.gptResponseArray?.length
+                        ? input?.gptResponseArray?.map((value, index) => ({
+                            month: `Month ${index + 1}`,
+                            customers: value,
+                          }))
+                        : tempCustomerGrowthData
+                            .find(
+                              (data) =>
+                                data[0]?.channelName === input.channelName
+                            )
+                            ?.map((monthData, index) => ({
+                              month: `Month ${index + 1}`,
+                              customers: monthData.add,
+                            }))
+                    }
+                    onDataChange={(newData) =>
+                      handleInputChange(
+                        input?.id,
+                        "gptResponseArray",
+                        newData.map((item) => item.customers)
+                      )
+                    }
+                  />
                 </Modal>
               )}
             </div>
@@ -417,7 +426,6 @@ const CustomerSection = React.memo(
       const toolbar = document.querySelector(".apexcharts-toolbar");
       if (toolbar && toolbar.contains(event.target)) {
         console.log("Toolbar button clicked, modal will not open");
-        // Click was on the toolbar, so don't open the modal
         return;
       }
 
@@ -463,10 +471,10 @@ const CustomerSection = React.memo(
         endMonth: 15,
         beginCustomer: 0,
         churnRate: 0,
-        acquisitionCost: 0, // Default value for acquisition cost
-        adjustmentFactor: 1, // Default value for adjustment factor
-        eventName: "", // Default value for event name
-        additionalInfo: "", // Default value for additional info
+        acquisitionCost: 0,
+        adjustmentFactor: 1,
+        eventName: "",
+        additionalInfo: "",
       };
 
       setTempCustomerInputs([...tempCustomerInputs, newCustomer]);
@@ -492,10 +500,9 @@ const CustomerSection = React.memo(
       }
     };
 
-    // Update handleInputChange to handle advanced inputs
     const handleInputChange = (id, field, value, advancedIndex = null) => {
       if (field === "churnRate") {
-        value = Math.max(0, Math.min(100, value)); // Clamp value between 0 and 100
+        value = Math.max(0, Math.min(100, value));
       }
 
       const newInputs = tempCustomerInputs.map((input) => {
@@ -518,8 +525,9 @@ const CustomerSection = React.memo(
       setTempCustomerInputs(newInputs);
     };
 
-    const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
+    const [showCustomInputs, setShowCustomInputs] = useState(false);
 
+    console.log("tempCustomerGrowthData", tempCustomerGrowthData);
     useEffect(() => {
       const calculatedData = calculateCustomerGrowth(
         tempCustomerInputs,
@@ -541,7 +549,7 @@ const CustomerSection = React.memo(
       dispatch(setCustomerTableData(calculateCustomerTableData));
 
       setTempCustomerGrowthData(calculatedData);
-    }, [tempCustomerInputs, renderCustomerForm, showAdvancedInputs]); // Include showAdvancedInputs as a dependency
+    }, [tempCustomerInputs, renderCustomerForm, showCustomInputs]);
 
     const months = [
       "01",
@@ -558,11 +566,10 @@ const CustomerSection = React.memo(
       "12",
     ];
 
-    const startingMonth = startMonth; // Tháng bắt đầu từ 1
-    const startingYear = startYear; // Năm bắt đầu từ 24
+    const startingMonth = startMonth;
+    const startingYear = startYear;
 
     const handleInputTable = (value, recordKey, monthKey) => {
-      // Extract month number from the monthKey
       const monthIndex = parseInt(monthKey.replace("month", "")) - 1;
 
       const updatedData = customerTableData.map((record) => {
@@ -576,8 +583,6 @@ const CustomerSection = React.memo(
       });
 
       dispatch(setCustomerTableData(updatedData));
-
-      // Update gptResponseArray in tempCustomerInputs
 
       const updatedTempCustomerInputs = tempCustomerInputs.map((input) => {
         if (input.channelName === recordKey.split("-")[0]) {
@@ -646,11 +651,7 @@ const CustomerSection = React.memo(
                       className="border-white p-0 text-xs text-right w-full h-full"
                       value={record[`month${i + 1}`]}
                       onChange={(e) => {
-                        handleInputChange(
-                          record?.id,
-                          "applyAdditionalInfo",
-                          true
-                        );
+                        handleInputChange(record?.id, "applyFormula", true);
                         handleInputTable(
                           parseNumber(e.target.value),
                           record.key,
@@ -689,7 +690,6 @@ const CustomerSection = React.memo(
     const saveData = async () => {
       try {
         setIsLoading(true);
-        // Check if there are duplicate channel names
         const channelNames = tempCustomerInputs.map(
           (input) => input.channelName
         );
@@ -715,7 +715,6 @@ const CustomerSection = React.memo(
         if (existingData && existingData.length > 0) {
           const { user_email, collabs, inputData } = existingData[0];
 
-          // Check if user.email matches user_email or is included in collabs
           if (user.email !== user_email && !collabs?.includes(user.email)) {
             message.error("You do not have permission to update this record.");
             return;
@@ -963,10 +962,6 @@ const CustomerSection = React.memo(
             ...seriesData.map((channelSeries) => ({
               options: {
                 ...prevState.options,
-                // chart: {
-                //   ...prevState.options.chart,
-                //   id: channelSeries.name,
-                // },
                 xaxis: {
                   axisTicks: {
                     show: false,
@@ -1031,7 +1026,6 @@ const CustomerSection = React.memo(
                   ...prevState.options.title,
                   text: "Yearly Total",
                 },
-                //
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
@@ -1076,7 +1070,6 @@ const CustomerSection = React.memo(
                   ...prevState.options.title,
                   text: "Yearly Growth Rate",
                 },
-
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
@@ -1122,7 +1115,6 @@ const CustomerSection = React.memo(
                   ...prevState.options.title,
                   text: "Total Yearly Customers by Channel",
                 },
-
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
@@ -1163,36 +1155,31 @@ const CustomerSection = React.memo(
           );
         }
 
-        console.log("responseGPT", responseGPT);
-        // Check if responseGPT is an object with multiple keys
         let gptResponseArray = [];
         if (responseGPT) {
           if (Array.isArray(responseGPT)) {
-            // If responseGPT is already an array, use it directly
             gptResponseArray = responseGPT;
           } else if (typeof responseGPT === "object") {
-            // If responseGPT is an object with multiple keys, get the first array found
             const keys = Object.keys(responseGPT);
             if (keys.length > 0 && Array.isArray(responseGPT[keys[0]])) {
               gptResponseArray = responseGPT[keys[0]];
             }
           }
         }
-        console.log("gptResponseArray", gptResponseArray);
 
         const updatedTempCustomerInputs = tempCustomerInputs.map((input) => {
           if (input.id === customer.id) {
             return {
               ...input,
-              customersPerMonth: gptResponseArray[0] || [], // assuming the first element is needed
-              gptResponseArray: gptResponseArray || [], // assuming gptResponseArray contains the required data
+              customersPerMonth: gptResponseArray[0] || [],
+              gptResponseArray: gptResponseArray || [],
             };
           }
           return input;
         });
 
         setTempCustomerInputs(updatedTempCustomerInputs);
-        setShowAdvancedInputs(false);
+        setShowCustomInputs(false);
       } catch (error) {
         console.log("Fetching GPT error:", error);
       } finally {
@@ -1241,7 +1228,6 @@ const CustomerSection = React.memo(
     const downloadExcel = () => {
       const workBook = XLSX.utils.book_new();
 
-      // Create worksheet data in the desired format
       const worksheetData = [
         [
           "Channel Name",
@@ -1254,7 +1240,6 @@ const CustomerSection = React.memo(
         ],
       ];
 
-      // Add rows for each channel
       customerTableData.forEach((record) => {
         const row = [record.channelName];
         for (let i = 1; i <= numberOfMonths; i++) {
@@ -1263,14 +1248,11 @@ const CustomerSection = React.memo(
         worksheetData.push(row);
       });
 
-      // Convert data to worksheet
       const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
 
       console.log("worksheetData", worksheetData);
-      // Add worksheet to workbook
       XLSX.utils.book_append_sheet(workBook, worksheet, "Customer Data");
 
-      // Write workbook and trigger download
       const wbout = XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
 
       function s2ab(s) {
@@ -1322,15 +1304,6 @@ const CustomerSection = React.memo(
       saveAs(jsonBlob, "customer_data.json");
     };
 
-    const chartData = customerGrowthData
-      .map((channelData) => {
-        return channelData.map((data, index) => ({
-          month: `${startMonth + index}`,
-          value: parseFloat(data.customers),
-        }));
-      })
-      .flat();
-
     return (
       <div>
         <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm NOsticky NOtop-8 z-50">
@@ -1343,7 +1316,6 @@ const CustomerSection = React.memo(
             >
               Table and Chart
             </li>
-            {/* Repeat for other tabs */}
             <li
               className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                 activeTab === "input" ? "bg-yellow-300 font-bold" : ""
@@ -1447,11 +1419,10 @@ const CustomerSection = React.memo(
                           },
                           xaxis: {
                             ...chart.options.xaxis,
-                            // tickAmount: 12, // Set the number of ticks on the x-axis to 12
                           },
                           stroke: {
                             width: 1,
-                            curve: "straight", // Set the stroke width to 1
+                            curve: "straight",
                           },
                         }}
                         series={chart.series}
@@ -1482,16 +1453,14 @@ const CustomerSection = React.memo(
                           },
                           xaxis: {
                             ...chart.options.xaxis,
-                            // tickAmount: 12, // Set the number of ticks on the x-axis to 12
                           },
                           stroke: {
-                            width: 1, // Set the stroke width to 1
+                            width: 1,
                           },
                         }}
                         series={chart.series}
                         type="area"
                         height={350}
-                        // onClick={(event) => handleChartClick(chart, event)}
                       />
                     </Card>
                   ))}
@@ -1508,7 +1477,6 @@ const CustomerSection = React.memo(
                     <Chart
                       options={{
                         ...selectedChart.options,
-                        // ... other options
                       }}
                       className="p-4"
                       series={selectedChart.series}
@@ -1594,17 +1562,7 @@ const CustomerSection = React.memo(
           )}
           {activeTab === "input" && (
             <>
-              <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
-                {/* <div>
-                  <h3>Customer Chart</h3>
-                  <DraggableChart
-                  // chartData={chartData}
-                  // xAxisCategories={customerGrowthData.map(
-                  //   (data, index) => `Month ${index + 1}`
-                  // )}
-                  />
-                </div>{" "} */}
-              </div>
+              <div className="w-full xl:w-3/4 sm:p-4 p-0 "></div>
 
               <div className="w-full xl:w-1/4 sm:p-4 p-0   ">
                 <CustomerInputsForm
@@ -1618,33 +1576,14 @@ const CustomerSection = React.memo(
                   handleSave={handleSave}
                   handleFetchGPT={handleFetchGPT}
                   isLoading={isLoading}
-                  showAdvancedInputs={showAdvancedInputs}
-                  setShowAdvancedInputs={setShowAdvancedInputs}
+                  showCustomInputs={showCustomInputs}
+                  setShowCustomInputs={setShowCustomInputs}
                   isDeleteModalOpen={isDeleteModalOpen}
                   setIsDeleteModalOpen={setIsDeleteModalOpen}
                   confirmDelete={confirmDelete}
+                  tempCustomerGrowthData={tempCustomerGrowthData}
                 />
               </div>
-
-              {/* <div className="xl:hidden block">
-                <FloatButton
-                  tooltip={<div>Input values</div>}
-                  style={{
-                    position: "fixed",
-                    bottom: "30px",
-                    right: "30px",
-                  }}
-                  onClick={() => {
-                    setIsInputFormOpen(true);
-                  }}
-                >
-                  <Button
-                    type="primary"
-                    shape="circle"
-                    icon={<FileOutlined />}
-                  />
-                </FloatButton>
-              </div> */}
 
               {isInputFormOpen && (
                 <Modal
@@ -1667,8 +1606,8 @@ const CustomerSection = React.memo(
                     handleSave={handleSave}
                     handleFetchGPT={handleFetchGPT}
                     isLoading={isLoading}
-                    showAdvancedInputs={showAdvancedInputs}
-                    setShowAdvancedInputs={setShowAdvancedInputs}
+                    showCustomInputs={showCustomInputs}
+                    setShowCustomInputs={setShowCustomInputs}
                     isDeleteModalOpen={isDeleteModalOpen}
                     setIsDeleteModalOpen={setIsDeleteModalOpen}
                     confirmDelete={confirmDelete}

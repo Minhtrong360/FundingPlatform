@@ -4,6 +4,7 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 
 const DraggableChart = ({ data, onDataChange }) => {
   const chartRef = useRef(null);
+  console.log("data", data);
   useEffect(() => {
     let chart = am4core.create(chartRef.current, am4charts.XYChart);
     chart.hiddenState.properties.opacity = 0;

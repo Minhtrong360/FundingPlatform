@@ -119,8 +119,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     // if (!chatbotResponse || chatbotResponse.trim() === "") return;
     try {
       const data = JSON.parse(chatbotResponse);
-      console.log("chatbotResponse", chatbotResponse);
-      console.log("data", data);
+
       if (data.DurationSelect)
         // dispatch(setSelectedDuration(data.DurationSelect.selectedDuration));
         dispatch(

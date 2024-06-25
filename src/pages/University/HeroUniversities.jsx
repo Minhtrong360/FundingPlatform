@@ -1056,7 +1056,7 @@ const HeroUniversities = ({
         </div>
         {currentTab === "Manage" && (
           <>
-            <section className="container px-4 mx-auto mt-14 max-w-3xl">
+            <section className="container px-4 mx-auto mt-14 max-w-5xl">
               <div className="flex flex-col mb-5">
                 <h3 className="font-bold text-xl text-left">Code listing</h3>
 
@@ -1083,7 +1083,7 @@ const HeroUniversities = ({
               </div>
             </section>
             {projectList?.length > 0 && (
-              <section className="container px-4 mx-auto mt-14 max-w-3xl">
+              <section className="container px-4 mx-auto mt-14 max-w-5xl">
                 <div className="flex flex-col mb-5">
                   <h2 className="text-xl font-bold text-left">
                     Project listing by {selectedCode?.code}

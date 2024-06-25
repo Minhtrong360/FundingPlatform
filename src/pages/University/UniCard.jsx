@@ -59,7 +59,7 @@ const UniCard = ({
           <>
             <img
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-in-out"
-              src={universityInfo?.avatar_url}
+              src="https://images.unsplash.com/photo-1603612692333-7bac35e43500?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Company Avatar"
             />
           </>
@@ -86,11 +86,11 @@ const UniCard = ({
           Number candidate: {projectCounts[data.id] || 0}
         </p>
         <div className="flex justify-between items-center">
-          <Tooltip title={universityInfo.university}>
+          <Tooltip title={universityInfo?.university}>
             <Tag
               className={`max-w-32 mt-1 inline-flex items-center px-3 py-1 text-sm font-medium text-center   rounded-3xl truncate`}
             >
-              {universityInfo.university}
+              {universityInfo?.university}
             </Tag>
           </Tooltip>
 

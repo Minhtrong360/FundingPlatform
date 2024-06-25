@@ -46,6 +46,7 @@ import AdminRequired from "./AdminRequired.jsx";
 import MarketResearch from "../pages/MarketResearch_Evaluation/MarketResearch.jsx";
 import UniversitiesPage from "../pages/University/UniversitiesPage.jsx";
 import CompetitionPosts from "../pages/University/CompetitionPosts.jsx";
+import DraggableChart from "../pages/FinalcialPage/Components/DraggableChart.jsx";
 
 function Router() {
   const location = useLocation();
@@ -240,6 +241,11 @@ function Router() {
           key={location.key}
           path="/competitions"
           element={<CompetitionPosts location={location} />}
+        />
+        <Route
+          key={location.key}
+          path="/dragChart"
+          element={<DraggableChart />}
         />
       </Routes>
     </>

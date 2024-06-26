@@ -4,7 +4,6 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 
 const DraggableChart = ({ data, onDataChange }) => {
   const chartRef = useRef(null);
-  console.log("data", data);
   useEffect(() => {
     let chart = am4core.create(chartRef.current, am4charts.XYChart);
     chart.hiddenState.properties.opacity = 0;
@@ -82,7 +81,6 @@ const DraggableChart = ({ data, onDataChange }) => {
       var value = valueAxis.yToValue(event.target.pixelY);
       dataItem.valueY = value;
       dataItem.customers = value;
-      console.log(`Month: ${dataItem.categoryX}, New Value: ${value}`);
       dataItem.column.isHover = true;
       dataItem.column.hideTooltip(0);
       event.target.isHover = true;
@@ -93,7 +91,7 @@ const DraggableChart = ({ data, onDataChange }) => {
         }
         return item;
       });
-
+      console.log("newData", newData);
       onDataChange(newData);
     }
 

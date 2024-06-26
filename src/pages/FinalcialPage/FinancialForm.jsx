@@ -115,10 +115,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [chatbotResponse, setChatbotResponse] = useState("");
   // Gemini useEffect
   useEffect(() => {
-    // Ensure chatbotResponse is only processed when it's a valid string
-    // if (!chatbotResponse || chatbotResponse.trim() === "") return;
     try {
-      const data = JSON.parse(chatbotResponse);
+      // Ensure chatbotResponse is only processed when it's a valid string
+      if (!chatbotResponse || chatbotResponse.trim() === "") return;
+      const data = JSON?.parse(chatbotResponse);
 
       if (data.DurationSelect)
         // dispatch(setSelectedDuration(data.DurationSelect.selectedDuration));

@@ -1,14 +1,7 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
+
 import { Input } from "../../../components/ui/Input";
-import {
-  Button,
-  Card,
-  FloatButton,
-  Modal,
-  Table,
-  Tooltip,
-  message,
-} from "antd";
+import { Card, Modal, Table, Tooltip, message, Checkbox } from "antd";
 import Chart from "react-apexcharts";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -19,7 +12,6 @@ import {
   transformCustomerData,
   generateCustomerTableData,
   setCustomerTableData,
-  fetchGPTResponse,
 } from "../../../features/CustomerSlice";
 import {
   calculateChannelRevenue,
@@ -42,17 +34,10 @@ import {
   CheckCircleOutlined,
   DeleteOutlined,
   DownloadOutlined,
-  FileOutlined,
   FullscreenOutlined,
-  PlusCircleOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
-import { Checkbox } from "antd";
-import {
-  Modal as AntdModal, // Add AntdModal for larger mode view
-} from "antd";
-import TextArea from "antd/es/input/TextArea";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
@@ -61,23 +46,80 @@ import DraggableChart from "./DraggableChart";
 const CustomerInputsForm = React.memo(
   ({
     tempCustomerInputs,
+    setTempCustomerInputs,
     renderCustomerForm,
     setRenderCustomerForm,
-    handleSelectChange,
     handleInputChange,
     formatNumber,
     parseNumber,
     handleAddNewCustomer,
     handleSave,
-    handleFetchGPT,
     isLoading,
-    showCustomInputs,
-    setShowCustomInputs,
-    isDeleteModalOpen,
     setIsDeleteModalOpen,
-    confirmDelete,
     tempCustomerGrowthData,
   }) => {
+    const [isModalCustomOpen, setIsModalCustomOpen] = useState(false);
+    const [temporaryData, setTemporaryData] = useState([]);
+
+    useEffect(() => {
+      const input = tempCustomerInputs.find(
+        (input) => input?.id == renderCustomerForm
+      );
+
+      if (input) {
+        setTemporaryData(
+          input?.gptResponseArray?.length
+            ? input?.gptResponseArray.map((value, index) => ({
+                month: `Month ${index + 1}`,
+                customers: value,
+              }))
+            : tempCustomerGrowthData
+                .find((data) => data[0]?.channelName === input.channelName)
+                ?.map((monthData, index) => ({
+                  month: `Month ${index + 1}`,
+                  customers: monthData.add,
+                })) || []
+        );
+      }
+    }, [renderCustomerForm]);
+
+    const handleApply = () => {
+      const input = tempCustomerInputs.find(
+        (input) => input?.id == renderCustomerForm
+      );
+
+      if (input) {
+        // Update gptResponseArray and applyCustom first and ensure state update is completed before next update
+        setTempCustomerInputs((prevInputs) => {
+          const newInputs = prevInputs.map((i) => {
+            if (i?.id === input?.id) {
+              return {
+                ...i,
+                gptResponseArray: temporaryData.map((item) => item.customers),
+                applyCustom: true,
+              };
+            }
+            return i;
+          });
+          // After updating gptResponseArray and applyCustom, update customersPerMonth
+          const updatedInputs = newInputs.map((i) => {
+            if (i?.id === input?.id) {
+              return {
+                ...i,
+                customersPerMonth: Number(
+                  temporaryData[0].customers.toFixed(0)
+                ),
+              };
+            }
+            return i;
+          });
+          setTemporaryData(temporaryData);
+          setIsModalCustomOpen(false);
+          return updatedInputs;
+        });
+      }
+    };
+
     return (
       <section
         aria-labelledby="customers-heading"
@@ -99,7 +141,7 @@ const CustomerInputsForm = React.memo(
           ></label>
           <select
             id="selectedChannel"
-            className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+            className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
             value={renderCustomerForm}
             onChange={(e) => setRenderCustomerForm(e.target.value)}
           >
@@ -151,7 +193,7 @@ const CustomerInputsForm = React.memo(
                   Adding (First month)
                 </span>
                 <Input
-                  disabled={input.applyFormula}
+                  disabled={input.applyCustom}
                   className="col-start-2 border-gray-300"
                   value={formatNumber(input.customersPerMonth)}
                   onChange={(e) =>
@@ -169,7 +211,7 @@ const CustomerInputsForm = React.memo(
                   Growth rate (%):
                 </span>
                 <Input
-                  disabled={input.applyFormula}
+                  disabled={input.applyCustom}
                   className="col-start-2 border-gray-300"
                   value={formatNumber(input.growthPerMonth)}
                   onChange={(e) =>
@@ -185,7 +227,7 @@ const CustomerInputsForm = React.memo(
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <span className="flex items-center text-sm">Frequency:</span>
                 <Select
-                  disabled={input.applyFormula}
+                  disabled={input.applyCustom}
                   className="border-gray-300"
                   onValueChange={(value) =>
                     handleInputChange(
@@ -269,36 +311,33 @@ const CustomerInputsForm = React.memo(
                   disabled
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4 mb-3">
+
+              <div className="flex items-center gap-2 mb-3">
                 <Checkbox
-                  className="col-span-2"
-                  checked={input.applyFormula}
-                  onChange={(e) =>
+                  checked={input.applyCustom}
+                  onChange={(e) => {
                     handleInputChange(
                       input?.id,
-                      "applyFormula",
+                      "applyCustom",
                       e.target.checked
-                    )
-                  }
-                >
-                  Apply Formula
-                </Checkbox>
-              </div>
-              <div className="grid grid-cols-2 gap-4 mb-3">
-                <Checkbox
-                  className="col-span-2"
-                  checked={showCustomInputs}
-                  onChange={(e) => setShowCustomInputs(e.target.checked)}
+                    );
+                  }}
+                ></Checkbox>
+                <span
+                  className="text-sm hover:cursor-pointer"
+                  onClick={() => setIsModalCustomOpen(true)}
                 >
                   Apply Custom
-                </Checkbox>
+                </span>
               </div>
-              {showCustomInputs && (
+              {isModalCustomOpen && (
                 <Modal
                   title="Custom Inputs"
-                  open={showCustomInputs}
-                  onOk={handleFetchGPT}
-                  onCancel={() => setShowCustomInputs(false)}
+                  open={isModalCustomOpen}
+                  onOk={handleApply}
+                  onCancel={() => {
+                    setIsModalCustomOpen(false);
+                  }}
                   okText={isLoading ? <SpinnerBtn /> : "Apply"}
                   cancelText="Cancel"
                   cancelButtonProps={{
@@ -323,29 +362,8 @@ const CustomerInputsForm = React.memo(
                   style={{ top: 20 }}
                 >
                   <DraggableChart
-                    data={
-                      input?.gptResponseArray?.length
-                        ? input?.gptResponseArray?.map((value, index) => ({
-                            month: `Month ${index + 1}`,
-                            customers: value,
-                          }))
-                        : tempCustomerGrowthData
-                            .find(
-                              (data) =>
-                                data[0]?.channelName === input.channelName
-                            )
-                            ?.map((monthData, index) => ({
-                              month: `Month ${index + 1}`,
-                              customers: monthData.add,
-                            }))
-                    }
-                    onDataChange={(newData) =>
-                      handleInputChange(
-                        input?.id,
-                        "gptResponseArray",
-                        newData.map((item) => item.customers)
-                      )
-                    }
+                    data={temporaryData}
+                    onDataChange={(newData) => setTemporaryData(newData)}
                   />
                 </Modal>
               )}
@@ -403,29 +421,13 @@ const CustomerInputsForm = React.memo(
 );
 
 const CustomerSection = React.memo(
-  ({
-    numberOfMonths,
-    isSaved,
-    setIsSaved,
-    customerGrowthChart,
-    setCustomerGrowthChart,
-  }) => {
-    const [functionType, setFunctionType] = useState("linear"); // New state for function type
-    const [chartNotes, setChartNotes] = useState(""); // New state for chart notes
-
+  ({ numberOfMonths, customerGrowthChart, setCustomerGrowthChart }) => {
     const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
     const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
-
-    const chartFunctions = [
-      { value: "linear", label: "Linear" },
-      { value: "exponential", label: "Exponential" },
-      { value: "logarithmic", label: "Logarithmic" },
-    ];
 
     const handleChartClick = (chart, event) => {
       const toolbar = document.querySelector(".apexcharts-toolbar");
       if (toolbar && toolbar.contains(event.target)) {
-        console.log("Toolbar button clicked, modal will not open");
         return;
       }
 
@@ -435,9 +437,7 @@ const CustomerSection = React.memo(
     const dispatch = useDispatch();
     const { customerInputs, customerGrowthData, customerTableData } =
       useSelector((state) => state.customer);
-    const generatePromptC = () => {
-      return ` ${JSON.stringify(customerTableData)}`;
-    };
+
     const { startMonth, startYear } = useSelector(
       (state) => state.durationSelect
     );
@@ -475,6 +475,7 @@ const CustomerSection = React.memo(
         adjustmentFactor: 1,
         eventName: "",
         additionalInfo: "",
+        applyCustom: false, // Add this field
       };
 
       setTempCustomerInputs([...tempCustomerInputs, newCustomer]);
@@ -507,33 +508,24 @@ const CustomerSection = React.memo(
 
       const newInputs = tempCustomerInputs.map((input) => {
         if (input?.id === id) {
-          if (advancedIndex !== null) {
-            const newAdvancedInputs = input.advancedInputs.map(
-              (advInput, index) => {
-                if (index === advancedIndex) {
-                  return { ...advInput, [field]: value };
-                }
-                return advInput;
-              }
-            );
-            return { ...input, advancedInputs: newAdvancedInputs };
+          if (field === "applyCustom" && value) {
+            return { ...input, [field]: value }; // Initialize gptResponseArray
           }
           return { ...input, [field]: value };
         }
         return input;
       });
+      console.log("newInputs", newInputs);
       setTempCustomerInputs(newInputs);
     };
 
     const [showCustomInputs, setShowCustomInputs] = useState(false);
 
-    console.log("tempCustomerGrowthData", tempCustomerGrowthData);
     useEffect(() => {
       const calculatedData = calculateCustomerGrowth(
         tempCustomerInputs,
         numberOfMonths
       );
-
       const calculateTransformedCustomerTableData = transformCustomerData(
         calculatedData,
         tempCustomerInputs
@@ -651,7 +643,7 @@ const CustomerSection = React.memo(
                       className="border-white p-0 text-xs text-right w-full h-full"
                       value={record[`month${i + 1}`]}
                       onChange={(e) => {
-                        handleInputChange(record?.id, "applyFormula", true);
+                        handleInputChange(record?.id, "applyCustom", true);
                         handleInputTable(
                           parseNumber(e.target.value),
                           record.key,
@@ -673,10 +665,6 @@ const CustomerSection = React.memo(
         };
       }),
     ];
-
-    const handleSelectChange = (event) => {
-      setRenderCustomerForm(event.target.value);
-    };
 
     const handleSave = () => {
       saveData();
@@ -1142,83 +1130,6 @@ const CustomerSection = React.memo(
       setIsDeleteModalOpen(false);
     };
 
-    const handleFetchGPT = async () => {
-      try {
-        setIsLoading(true);
-        const customer = tempCustomerInputs.find(
-          (input) => input.id == renderCustomerForm
-        );
-        let responseGPT;
-        if (customer) {
-          responseGPT = await dispatch(
-            fetchGPTResponse(customer.id, customer.additionalInfo, customer)
-          );
-        }
-
-        let gptResponseArray = [];
-        if (responseGPT) {
-          if (Array.isArray(responseGPT)) {
-            gptResponseArray = responseGPT;
-          } else if (typeof responseGPT === "object") {
-            const keys = Object.keys(responseGPT);
-            if (keys.length > 0 && Array.isArray(responseGPT[keys[0]])) {
-              gptResponseArray = responseGPT[keys[0]];
-            }
-          }
-        }
-
-        const updatedTempCustomerInputs = tempCustomerInputs.map((input) => {
-          if (input.id === customer.id) {
-            return {
-              ...input,
-              customersPerMonth: gptResponseArray[0] || [],
-              gptResponseArray: gptResponseArray || [],
-            };
-          }
-          return input;
-        });
-
-        setTempCustomerInputs(updatedTempCustomerInputs);
-        setShowCustomInputs(false);
-      } catch (error) {
-        console.log("Fetching GPT error:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    const handleAddAdvancedInput = (id) => {
-      const newInputs = tempCustomerInputs.map((input) => {
-        if (input?.id === id) {
-          const newAdvancedInputs = [
-            ...input.advancedInputs,
-            {
-              localGrowthRate: "",
-              eventBeginMonth: "",
-              eventEndMonth: "",
-              eventName: "",
-            },
-          ];
-          return { ...input, advancedInputs: newAdvancedInputs };
-        }
-        return input;
-      });
-      setTempCustomerInputs(newInputs);
-    };
-
-    const handleRemoveAdvancedInput = (id, index) => {
-      const newInputs = tempCustomerInputs.map((input) => {
-        if (input?.id === id) {
-          const newAdvancedInputs = input.advancedInputs.filter(
-            (advInput, advIndex) => advIndex !== index
-          );
-          return { ...input, advancedInputs: newAdvancedInputs };
-        }
-        return input;
-      });
-      setTempCustomerInputs(newInputs);
-    };
-
     const [activeTab, setActiveTab] = useState("table&chart");
 
     const handleTabChange = (tabName) => {
@@ -1250,7 +1161,6 @@ const CustomerSection = React.memo(
 
       const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
 
-      console.log("worksheetData", worksheetData);
       XLSX.utils.book_append_sheet(workBook, worksheet, "Customer Data");
 
       const wbout = XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
@@ -1465,7 +1375,7 @@ const CustomerSection = React.memo(
                     </Card>
                   ))}
                 </div>
-                <AntdModal
+                <Modal
                   open={isChartModalVisible}
                   footer={null}
                   centered
@@ -1484,7 +1394,7 @@ const CustomerSection = React.memo(
                       height={500}
                     />
                   )}
-                </AntdModal>
+                </Modal>
                 <span>
                   <div className="flex justify-between items-center my-4">
                     <h3 className="text-lg font-semibold">Customer Table</h3>
@@ -1567,6 +1477,7 @@ const CustomerSection = React.memo(
               <div className="w-full xl:w-1/4 sm:p-4 p-0   ">
                 <CustomerInputsForm
                   tempCustomerInputs={tempCustomerInputs}
+                  setTempCustomerInputs={setTempCustomerInputs}
                   renderCustomerForm={renderCustomerForm}
                   setRenderCustomerForm={setRenderCustomerForm}
                   handleInputChange={handleInputChange}
@@ -1574,7 +1485,6 @@ const CustomerSection = React.memo(
                   parseNumber={parseNumber}
                   handleAddNewCustomer={handleAddNewCustomer}
                   handleSave={handleSave}
-                  handleFetchGPT={handleFetchGPT}
                   isLoading={isLoading}
                   showCustomInputs={showCustomInputs}
                   setShowCustomInputs={setShowCustomInputs}
@@ -1584,36 +1494,6 @@ const CustomerSection = React.memo(
                   tempCustomerGrowthData={tempCustomerGrowthData}
                 />
               </div>
-
-              {isInputFormOpen && (
-                <Modal
-                  open={isInputFormOpen}
-                  onCancel={() => {
-                    setTempCustomerInputs(customerInputs);
-                    setIsInputFormOpen(false);
-                  }}
-                  centered={true}
-                  zIndex={50}
-                  footer={null}
-                >
-                  <CustomerInputsForm
-                    tempCustomerInputs={tempCustomerInputs}
-                    renderCustomerForm={renderCustomerForm}
-                    setRenderCustomerForm={setRenderCustomerForm}
-                    formatNumber={formatNumber}
-                    parseNumber={parseNumber}
-                    handleAddNewCustomer={handleAddNewCustomer}
-                    handleSave={handleSave}
-                    handleFetchGPT={handleFetchGPT}
-                    isLoading={isLoading}
-                    showCustomInputs={showCustomInputs}
-                    setShowCustomInputs={setShowCustomInputs}
-                    isDeleteModalOpen={isDeleteModalOpen}
-                    setIsDeleteModalOpen={setIsDeleteModalOpen}
-                    confirmDelete={confirmDelete}
-                  />
-                </Modal>
-              )}
 
               {isDeleteModalOpen && (
                 <Modal

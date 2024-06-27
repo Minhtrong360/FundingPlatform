@@ -4,6 +4,7 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 
 const DraggableChart = ({ data, onDataChange }) => {
   const chartRef = useRef(null);
+
   useEffect(() => {
     let chart = am4core.create(chartRef.current, am4charts.XYChart);
     chart.hiddenState.properties.opacity = 0;
@@ -91,7 +92,6 @@ const DraggableChart = ({ data, onDataChange }) => {
         }
         return item;
       });
-      console.log("newData", newData);
       onDataChange(newData);
     }
 
@@ -132,8 +132,8 @@ const DraggableChart = ({ data, onDataChange }) => {
       var column = dataItem.column;
       itemBullet.minX = column.pixelX + column.pixelWidth / 2;
       itemBullet.maxX = itemBullet.minX;
-      itemBullet.minY = 0;
-      itemBullet.maxY = chart.seriesContainer.pixelHeight;
+      itemBullet.minY = -Number.MAX_SAFE_INTEGER; // Allows dragging above the chart
+      itemBullet.maxY = Number.MAX_SAFE_INTEGER; // Allows dragging below the chart
     });
 
     columnTemplate.adapter.add("fill", (fill, target) => {
@@ -144,6 +144,7 @@ const DraggableChart = ({ data, onDataChange }) => {
       return chart.colors.getIndex(target.dataItem.index).saturate(0.3);
     });
 
+    // Dispose the chart when component unmounts
     return () => {
       chart.dispose();
     };

@@ -34,6 +34,7 @@ const Flowise = ({ prompt, button }) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
+      console.log("response", response);
       const dataR = await response.json();
       console.log("dataR: ", dataR);
       const dataAR = dataR.text;

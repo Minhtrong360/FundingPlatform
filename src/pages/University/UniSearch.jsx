@@ -1,25 +1,14 @@
 import React, { useEffect, useState } from "react";
 
-import { Modal, Select } from "antd";
-
-import { PlusCircleOutlined } from "@ant-design/icons";
-
 const UniSearch = ({
   onSearch,
-  onIndustryChange,
+
   companies,
   searchTerm,
   setSearchTerm,
 
   currentTab,
   setCurrentTab,
-  setVisibleItemCount,
-  setTargetAmount,
-  setRevenueRange,
-  setRound,
-  setRegion,
-  targetAmountArray,
-  setCountry,
   selectedCode,
 }) => {
   const handleSearchChange = (e) => {
@@ -35,32 +24,11 @@ const UniSearch = ({
     }
   };
 
-  const [isOpen, setIsOpen] = useState(false);
-
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     onSearch(searchTerm);
     setSuggestions([]);
   };
-
-  const handleIndustryClick = (industry) => {
-    onIndustryChange(industry);
-  };
-  const handleTargetAmount = (value) => {
-    setTargetAmount(value);
-  };
-  const handleRevenueRange = (value) => {
-    setRevenueRange(value);
-  };
-  const handleRound = (value) => {
-    setRound(value);
-  };
-  const handleRegion = (value) => {
-    setRegion(value);
-  };
-  // const handleCountry = (value) => {
-  //   setCountry(value);
-  // };
 
   const [suggestions, setSuggestions] = useState([]);
 
@@ -69,8 +37,6 @@ const UniSearch = ({
     setSuggestions([]);
     onSearch(name); // Optional: Trigger the search when a suggestion is clicked
   };
-
-  const { Option } = Select;
 
   useEffect(() => {
     if (!searchTerm) {
@@ -84,34 +50,6 @@ const UniSearch = ({
     }
   }, [currentTab, companies, searchTerm]);
 
-  const handleChange = (value) => {
-    setVisibleItemCount(6);
-    setCurrentTab(value);
-  };
-
-  const revenueRange = [
-    "$0 - $10k",
-    "$10k - $50k",
-    "$50k - $100k",
-    "$100k - $500k",
-    "$500k - $1M",
-    "$1M - $5M",
-    ">$5M",
-    "Non-Profit",
-  ];
-
-  const handleOk = () => {
-    setIsOpen(false);
-  };
-
-  const handleCancel = () => {
-    setTargetAmount("");
-    setRevenueRange("");
-    setRound("");
-    setRegion("");
-    setIsOpen(false);
-  };
-
   return (
     <div className="relative overflow-hidden">
       <div
@@ -123,7 +61,7 @@ const UniSearch = ({
             className="text-3xl sm:text-5xl font-semibold text-gray-800 darkTextGray"
           >
             {selectedCode
-              ? `Business profiles for ${selectedCode}`
+              ? `Business profiles for ${selectedCode.code}`
               : "Business profiles"}
           </h3>
           <div className="mt-7 sm:mt-12 mx-auto max-w-xl relative">

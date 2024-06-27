@@ -177,7 +177,6 @@ function ProjectList({ projects }) {
   };
 
   //Hàm Submit to contest
-  // Hàm Submit to contest
   const handleConfirmSubmit = async () => {
     try {
       if (!navigator.onLine) {
@@ -185,16 +184,13 @@ function ProjectList({ projects }) {
         return;
       }
 
-      // Validate fields in applyInfo and contestCode
       if (!contestCode) {
         message.error("Please fill in the contest code.");
         return;
       }
 
       const requiredFields = {
-        // projectName: "Project Name",
         creatorName: "Creator Name",
-        // registrationTime: "Registration Time",
         contactEmail: "Contact Email",
         contactPhone: "Contact Phone",
         university: "University",
@@ -209,14 +205,12 @@ function ProjectList({ projects }) {
         }
       }
 
-      // Kiểm tra xem contestCode có tồn tại trong bảng code hay không
       const { data: codeData, error: codeError } = await supabase
         .from("code")
-        .select("*")
+        .select("id")
         .eq("code", contestCode);
 
       if (codeError) {
-        console.log("Error fetching code data:", codeError);
         message.error(codeError.message);
         return;
       }
@@ -226,19 +220,19 @@ function ProjectList({ projects }) {
         return;
       }
 
+      const codeId = codeData[0].id;
+
       const { data: projectData, error: projectError } = await supabase
         .from("projects")
         .select("*")
         .eq("id", SelectedID);
 
       if (projectError) {
-        console.log("Error fetching project data:", projectError);
         message.error(projectError.message);
         return;
       }
 
       if (projectData.length === 0) {
-        console.log("Project not found.");
         message.error("Project not found.");
         return;
       }
@@ -247,13 +241,12 @@ function ProjectList({ projects }) {
       let updatedUniversityCode = project.universityCode || [];
       let updatedApplyInfo = project.applyInfo || [];
 
-      // Thêm contestCode và applyInfo mới vào mảng nếu chưa tồn tại
-      if (!updatedUniversityCode.includes(contestCode)) {
-        updatedUniversityCode.push(contestCode);
+      if (!updatedUniversityCode.includes(codeId)) {
+        updatedUniversityCode.push(codeId);
         const newApplyInfo = {
           ...applyInfo,
           applyAt: new Date().toISOString(),
-          universityCode: contestCode,
+          universityCode: codeId,
         };
         updatedApplyInfo.push(newApplyInfo);
       } else {
@@ -270,7 +263,6 @@ function ProjectList({ projects }) {
         .eq("id", SelectedID);
 
       if (updateError) {
-        console.log("Error updating project data:", updateError);
         message.error(updateError.message);
         return;
       }
@@ -278,7 +270,6 @@ function ProjectList({ projects }) {
       message.success("Submitted project successfully");
       setIsSubmitModalOpen(false);
     } catch (error) {
-      console.log("Error submitting project:", error);
       message.error(error.message);
     }
   };

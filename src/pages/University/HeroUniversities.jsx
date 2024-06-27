@@ -78,22 +78,19 @@ const HeroUniversities = ({
     fetchCodeData();
   }, [credentials]);
 
-  const filterProjectsByCode = async (code) => {
+  const filterProjectsByCode = async (codeId) => {
     try {
-      // Lấy danh sách projects từ bảng projects
       const { data: projects, error: projectsError } = await supabase
         .from("projects")
         .select("*")
-        .contains("universityCode", [code]);
+        .contains("universityCode", [codeId]);
 
       if (projectsError) {
         throw projectsError;
       }
 
-      // Lấy project_id từ danh sách projects
       const projectIds = projects.map((project) => project.id);
 
-      // Lấy thông tin company từ bảng company dựa trên project_id
       const { data: companies, error: companiesError } = await supabase
         .from("company")
         .select("*")
@@ -103,12 +100,10 @@ const HeroUniversities = ({
         throw companiesError;
       }
 
-      // Kết hợp thông tin từ hai bảng
       const combinedProjects = projects.map((project) => {
         const parsedApplyInfo = project.applyInfo.map((info) =>
           JSON.parse(info)
         );
-
         const companyInfo = companies.find(
           (company) => company.project_id === project.id
         );
@@ -116,11 +111,10 @@ const HeroUniversities = ({
         return {
           ...project,
           applyInfo: parsedApplyInfo,
-          company: companyInfo, // Thêm thông tin company vào project
+          company: companyInfo,
         };
       });
 
-      // Lưu thông tin vào state
       setProjectList(combinedProjects);
     } catch (error) {
       console.error("Error fetching projects and companies for code:", error);
@@ -134,7 +128,7 @@ const HeroUniversities = ({
       const { count, error } = await supabase
         .from("projects")
         .select("id", { count: "exact" })
-        .contains("universityCode", [code.code]);
+        .contains("universityCode", [code.id]);
 
       if (error) {
         console.error("Error fetching project count:", error);
@@ -232,6 +226,8 @@ const HeroUniversities = ({
       setNewExpirationDate(null);
       setCompetitionName("");
       setCompetitionDescription("");
+      setSelectedCode(data[0]);
+      setSelectedCodeFull(data[0]);
     }
   };
 
@@ -369,7 +365,7 @@ const HeroUniversities = ({
     // Parse applyInfo array
     const applyInfoArray = project?.applyInfo;
     const applyInfoIndex = applyInfoArray.findIndex(
-      (info) => info.universityCode === selectedCode.code
+      (info) => info.universityCode === selectedCode.id
     );
 
     if (applyInfoIndex === -1) {
@@ -441,7 +437,7 @@ const HeroUniversities = ({
   const openScoreModal = (record) => {
     setSelectedProject(record);
     const applyInfo = record?.applyInfo?.find(
-      (info) => info.universityCode === selectedCode.code
+      (info) => info.universityCode === selectedCode.id
     );
 
     // Set score from the found applyInfo or default to 0
@@ -695,10 +691,7 @@ const HeroUniversities = ({
       dataIndex: "code",
       key: "code",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(
-          record.applyInfo,
-          selectedCode.code
-        );
+        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
         return (
           <span className="hover:cursor-pointer">{applyInfo.creatorName}</span>
         );
@@ -709,10 +702,7 @@ const HeroUniversities = ({
       dataIndex: "applyAt",
       key: "applyAt",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(
-          record.applyInfo,
-          selectedCode.code
-        );
+        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
         return (
           <span className="hover:cursor-pointer">
             {formatDate(applyInfo.applyAt)}
@@ -725,10 +715,7 @@ const HeroUniversities = ({
       dataIndex: "contactEmail",
       key: "contactEmail",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(
-          record.applyInfo,
-          selectedCode.code
-        );
+        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
         return (
           <span className="hover:cursor-pointer">{applyInfo.contactEmail}</span>
         );
@@ -739,10 +726,7 @@ const HeroUniversities = ({
       dataIndex: "contactPhone",
       key: "contactPhone",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(
-          record.applyInfo,
-          selectedCode.code
-        );
+        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
         return (
           <span className="hover:cursor-pointer">{applyInfo.contactPhone}</span>
         );
@@ -753,10 +737,7 @@ const HeroUniversities = ({
       dataIndex: "university",
       key: "university",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(
-          record.applyInfo,
-          selectedCode.code
-        );
+        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
         return (
           <span className="hover:cursor-pointer">{applyInfo.university}</span>
         );
@@ -767,10 +748,7 @@ const HeroUniversities = ({
       dataIndex: "teamSize",
       key: "teamSize",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(
-          record.applyInfo,
-          selectedCode.code
-        );
+        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
         return (
           <span className="hover:cursor-pointer flex justify-center items-center">
             {applyInfo.teamSize}
@@ -783,10 +761,7 @@ const HeroUniversities = ({
       dataIndex: "teamEmails",
       key: "teamEmails",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(
-          record.applyInfo,
-          selectedCode.code
-        );
+        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
         return (
           <span className="hover:cursor-pointer">{applyInfo.teamEmails}</span>
         );
@@ -798,10 +773,7 @@ const HeroUniversities = ({
       key: "score",
       align: "center",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(
-          record.applyInfo,
-          selectedCode.code
-        );
+        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
         return (
           <span className="flex justify-center items-center">
             {applyInfo.score || 0}
@@ -823,7 +795,7 @@ const HeroUniversities = ({
                 <Menu.Item key="remove">
                   <div
                     onClick={() =>
-                      handleRemoveProjectCode(record.id, selectedCode.code)
+                      handleRemoveProjectCode(record.id, selectedCode.id)
                     }
                     style={{ fontSize: "12px" }}
                   >
@@ -1074,8 +1046,8 @@ const HeroUniversities = ({
                       onClick: () => {
                         setSelectedCode(record);
                         setSelectedCodeFull(record);
-                        onSelectCode(record.code);
-                        filterProjectsByCode(record.code);
+                        onSelectCode(record.id);
+                        filterProjectsByCode(record.id);
                       },
                     })}
                   />

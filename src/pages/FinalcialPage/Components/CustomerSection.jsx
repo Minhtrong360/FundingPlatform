@@ -1,14 +1,7 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
+
 import { Input } from "../../../components/ui/Input";
-import {
-  Button,
-  Card,
-  FloatButton,
-  Modal,
-  Table,
-  Tooltip,
-  message,
-} from "antd";
+import { Card, Modal, Table, Tooltip, message, Checkbox } from "antd";
 import Chart from "react-apexcharts";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -19,7 +12,6 @@ import {
   transformCustomerData,
   generateCustomerTableData,
   setCustomerTableData,
-  fetchGPTResponse,
 } from "../../../features/CustomerSlice";
 import {
   calculateChannelRevenue,
@@ -42,43 +34,101 @@ import {
   CheckCircleOutlined,
   DeleteOutlined,
   DownloadOutlined,
-  FileOutlined,
   FullscreenOutlined,
-  PlusCircleOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
-import { Checkbox } from "antd";
-import {
-  Modal as AntdModal, // Add AntdModal for larger mode view
-} from "antd";
-import TextArea from "antd/es/input/TextArea";
 import SpinnerBtn from "../../../components/SpinnerBtn";
-
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
-import Flowise from "./Flowise";
 import DraggableChart from "./DraggableChart";
 
 const CustomerInputsForm = React.memo(
   ({
     tempCustomerInputs,
+    setTempCustomerInputs,
     renderCustomerForm,
     setRenderCustomerForm,
-    handleSelectChange,
     handleInputChange,
     formatNumber,
     parseNumber,
     handleAddNewCustomer,
     handleSave,
-    handleFetchGPT,
     isLoading,
-    showAdvancedInputs,
-    setShowAdvancedInputs,
-    isDeleteModalOpen,
     setIsDeleteModalOpen,
-    confirmDelete,
+    tempCustomerGrowthData,
   }) => {
+    const [isModalCustomOpen, setIsModalCustomOpen] = useState(false);
+    const [temporaryData, setTemporaryData] = useState([]);
+
+    useEffect(() => {
+      const input = tempCustomerInputs.find(
+        (input) => input?.id == renderCustomerForm
+      );
+
+      if (input) {
+        setTemporaryData(
+          input?.gptResponseArray?.length
+            ? input?.gptResponseArray.map((value, index) => ({
+                month: `Month ${index + 1}`,
+                customers: value,
+              }))
+            : tempCustomerGrowthData
+                .find((data) => data[0]?.channelName === input.channelName)
+                ?.map((monthData, index) => ({
+                  month: `Month ${index + 1}`,
+                  customers: monthData.add,
+                })) || []
+        );
+        handleInputChange(
+          input?.id,
+          "gptResponseArray",
+          input?.gptResponseArray?.length
+            ? input?.gptResponseArray
+            : tempCustomerGrowthData
+                .find((data) => data[0]?.channelName === input.channelName)
+                ?.map((monthData) => monthData.add) || []
+        );
+      }
+    }, [renderCustomerForm]);
+
+    const handleApply = () => {
+      const input = tempCustomerInputs.find(
+        (input) => input?.id == renderCustomerForm
+      );
+
+      if (input) {
+        // Update gptResponseArray and applyCustom first and ensure state update is completed before next update
+        setTempCustomerInputs((prevInputs) => {
+          const newInputs = prevInputs.map((i) => {
+            if (i?.id === input?.id) {
+              return {
+                ...i,
+                gptResponseArray: temporaryData.map((item) => item.customers),
+                applyCustom: true,
+              };
+            }
+            return i;
+          });
+          // After updating gptResponseArray and applyCustom, update customersPerMonth
+          const updatedInputs = newInputs.map((i) => {
+            if (i?.id === input?.id) {
+              return {
+                ...i,
+                customersPerMonth: Number(
+                  temporaryData[0].customers.toFixed(0)
+                ),
+              };
+            }
+            return i;
+          });
+          setTemporaryData(temporaryData);
+          setIsModalCustomOpen(false);
+          return updatedInputs;
+        });
+      }
+    };
+
     return (
       <section
         aria-labelledby="customers-heading"
@@ -100,7 +150,7 @@ const CustomerInputsForm = React.memo(
           ></label>
           <select
             id="selectedChannel"
-            className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+            className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
             value={renderCustomerForm}
             onChange={(e) => setRenderCustomerForm(e.target.value)}
           >
@@ -152,7 +202,7 @@ const CustomerInputsForm = React.memo(
                   Adding (First month)
                 </span>
                 <Input
-                  disabled={input.applyAdditionalInfo}
+                  disabled={input.applyCustom}
                   className="col-start-2 border-gray-300"
                   value={formatNumber(input.customersPerMonth)}
                   onChange={(e) =>
@@ -170,7 +220,7 @@ const CustomerInputsForm = React.memo(
                   Growth rate (%):
                 </span>
                 <Input
-                  disabled={input.applyAdditionalInfo}
+                  disabled={input.applyCustom}
                   className="col-start-2 border-gray-300"
                   value={formatNumber(input.growthPerMonth)}
                   onChange={(e) =>
@@ -186,7 +236,7 @@ const CustomerInputsForm = React.memo(
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <span className="flex items-center text-sm">Frequency:</span>
                 <Select
-                  disabled={input.applyAdditionalInfo}
+                  disabled={input.applyCustom}
                   className="border-gray-300"
                   onValueChange={(value) =>
                     handleInputChange(
@@ -270,36 +320,33 @@ const CustomerInputsForm = React.memo(
                   disabled
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4 mb-3">
+
+              <div className="flex items-center gap-2 mb-3">
                 <Checkbox
-                  className="col-span-2"
-                  checked={input.applyAdditionalInfo}
-                  onChange={(e) =>
+                  checked={input.applyCustom}
+                  onChange={(e) => {
                     handleInputChange(
                       input?.id,
-                      "applyAdditionalInfo",
+                      "applyCustom",
                       e.target.checked
-                    )
-                  }
+                    );
+                  }}
+                ></Checkbox>
+                <span
+                  className="text-sm hover:cursor-pointer"
+                  onClick={() => setIsModalCustomOpen(true)}
                 >
-                  Apply Additional Info
-                </Checkbox>
+                  Apply Custom
+                </span>
               </div>
-              <div className="grid grid-cols-2 gap-4 mb-3">
-                <Checkbox
-                  className="col-span-2"
-                  checked={showAdvancedInputs}
-                  onChange={(e) => setShowAdvancedInputs(e.target.checked)}
-                >
-                  Show Advanced Inputs
-                </Checkbox>
-              </div>
-              {showAdvancedInputs && (
+              {isModalCustomOpen && (
                 <Modal
-                  title="Advanced Inputs"
-                  open={showAdvancedInputs}
-                  onOk={handleFetchGPT}
-                  onCancel={() => setShowAdvancedInputs(false)}
+                  title="Custom Inputs"
+                  open={isModalCustomOpen}
+                  onOk={handleApply}
+                  onCancel={() => {
+                    setIsModalCustomOpen(false);
+                  }}
                   okText={isLoading ? <SpinnerBtn /> : "Apply"}
                   cancelText="Cancel"
                   cancelButtonProps={{
@@ -320,24 +367,13 @@ const CustomerInputsForm = React.memo(
                     },
                   }}
                   centered={true}
+                  width="90%"
+                  style={{ top: 20 }}
                 >
-                  <div className="gap-4 mb-3">
-                    <span className="flex items-center text-sm">
-                      Additional Info:
-                    </span>
-                    <TextArea
-                      className="col-start-2 border-gray-300 text-sm"
-                      value={input.additionalInfo}
-                      onChange={(e) =>
-                        handleInputChange(
-                          input?.id,
-                          "additionalInfo",
-                          e.target.value
-                        )
-                      }
-                      rows={10}
-                    />
-                  </div>
+                  <DraggableChart
+                    data={temporaryData}
+                    onDataChange={(newData) => setTemporaryData(newData)}
+                  />
                 </Modal>
               )}
             </div>
@@ -394,30 +430,13 @@ const CustomerInputsForm = React.memo(
 );
 
 const CustomerSection = React.memo(
-  ({
-    numberOfMonths,
-    isSaved,
-    setIsSaved,
-    customerGrowthChart,
-    setCustomerGrowthChart,
-  }) => {
-    const [functionType, setFunctionType] = useState("linear"); // New state for function type
-    const [chartNotes, setChartNotes] = useState(""); // New state for chart notes
-
+  ({ numberOfMonths, customerGrowthChart, setCustomerGrowthChart }) => {
     const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
     const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
-
-    const chartFunctions = [
-      { value: "linear", label: "Linear" },
-      { value: "exponential", label: "Exponential" },
-      { value: "logarithmic", label: "Logarithmic" },
-    ];
 
     const handleChartClick = (chart, event) => {
       const toolbar = document.querySelector(".apexcharts-toolbar");
       if (toolbar && toolbar.contains(event.target)) {
-        console.log("Toolbar button clicked, modal will not open");
-        // Click was on the toolbar, so don't open the modal
         return;
       }
 
@@ -427,9 +446,7 @@ const CustomerSection = React.memo(
     const dispatch = useDispatch();
     const { customerInputs, customerGrowthData, customerTableData } =
       useSelector((state) => state.customer);
-    const generatePromptC = () => {
-      return ` ${JSON.stringify(customerTableData)}`;
-    };
+
     const { startMonth, startYear } = useSelector(
       (state) => state.durationSelect
     );
@@ -463,10 +480,11 @@ const CustomerSection = React.memo(
         endMonth: 15,
         beginCustomer: 0,
         churnRate: 0,
-        acquisitionCost: 0, // Default value for acquisition cost
-        adjustmentFactor: 1, // Default value for adjustment factor
-        eventName: "", // Default value for event name
-        additionalInfo: "", // Default value for additional info
+        acquisitionCost: 0,
+        adjustmentFactor: 1,
+        eventName: "",
+        additionalInfo: "",
+        applyCustom: false, // Add this field
       };
 
       setTempCustomerInputs([...tempCustomerInputs, newCustomer]);
@@ -492,40 +510,31 @@ const CustomerSection = React.memo(
       }
     };
 
-    // Update handleInputChange to handle advanced inputs
     const handleInputChange = (id, field, value, advancedIndex = null) => {
       if (field === "churnRate") {
-        value = Math.max(0, Math.min(100, value)); // Clamp value between 0 and 100
+        value = Math.max(0, Math.min(100, value));
       }
 
       const newInputs = tempCustomerInputs.map((input) => {
         if (input?.id === id) {
-          if (advancedIndex !== null) {
-            const newAdvancedInputs = input.advancedInputs.map(
-              (advInput, index) => {
-                if (index === advancedIndex) {
-                  return { ...advInput, [field]: value };
-                }
-                return advInput;
-              }
-            );
-            return { ...input, advancedInputs: newAdvancedInputs };
+          if (field === "applyCustom" && value) {
+            return { ...input, [field]: value }; // Initialize gptResponseArray
           }
           return { ...input, [field]: value };
         }
         return input;
       });
+      console.log("newInputs", newInputs);
       setTempCustomerInputs(newInputs);
     };
 
-    const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
+    const [showCustomInputs, setShowCustomInputs] = useState(false);
 
     useEffect(() => {
       const calculatedData = calculateCustomerGrowth(
         tempCustomerInputs,
         numberOfMonths
       );
-
       const calculateTransformedCustomerTableData = transformCustomerData(
         calculatedData,
         tempCustomerInputs
@@ -541,7 +550,7 @@ const CustomerSection = React.memo(
       dispatch(setCustomerTableData(calculateCustomerTableData));
 
       setTempCustomerGrowthData(calculatedData);
-    }, [tempCustomerInputs, renderCustomerForm, showAdvancedInputs]); // Include showAdvancedInputs as a dependency
+    }, [tempCustomerInputs, renderCustomerForm, showCustomInputs]);
 
     const months = [
       "01",
@@ -558,11 +567,10 @@ const CustomerSection = React.memo(
       "12",
     ];
 
-    const startingMonth = startMonth; // Tháng bắt đầu từ 1
-    const startingYear = startYear; // Năm bắt đầu từ 24
+    const startingMonth = startMonth;
+    const startingYear = startYear;
 
     const handleInputTable = (value, recordKey, monthKey) => {
-      // Extract month number from the monthKey
       const monthIndex = parseInt(monthKey.replace("month", "")) - 1;
 
       const updatedData = customerTableData.map((record) => {
@@ -576,8 +584,6 @@ const CustomerSection = React.memo(
       });
 
       dispatch(setCustomerTableData(updatedData));
-
-      // Update gptResponseArray in tempCustomerInputs
 
       const updatedTempCustomerInputs = tempCustomerInputs.map((input) => {
         if (input.channelName === recordKey.split("-")[0]) {
@@ -646,11 +652,7 @@ const CustomerSection = React.memo(
                       className="border-white p-0 text-xs text-right w-full h-full"
                       value={record[`month${i + 1}`]}
                       onChange={(e) => {
-                        handleInputChange(
-                          record?.id,
-                          "applyAdditionalInfo",
-                          true
-                        );
+                        handleInputChange(record?.id, "applyCustom", true);
                         handleInputTable(
                           parseNumber(e.target.value),
                           record.key,
@@ -673,10 +675,6 @@ const CustomerSection = React.memo(
       }),
     ];
 
-    const handleSelectChange = (event) => {
-      setRenderCustomerForm(event.target.value);
-    };
-
     const handleSave = () => {
       saveData();
     };
@@ -689,7 +687,6 @@ const CustomerSection = React.memo(
     const saveData = async () => {
       try {
         setIsLoading(true);
-        // Check if there are duplicate channel names
         const channelNames = tempCustomerInputs.map(
           (input) => input.channelName
         );
@@ -715,7 +712,6 @@ const CustomerSection = React.memo(
         if (existingData && existingData.length > 0) {
           const { user_email, collabs, inputData } = existingData[0];
 
-          // Check if user.email matches user_email or is included in collabs
           if (user.email !== user_email && !collabs?.includes(user.email)) {
             message.error("You do not have permission to update this record.");
             return;
@@ -963,10 +959,6 @@ const CustomerSection = React.memo(
             ...seriesData.map((channelSeries) => ({
               options: {
                 ...prevState.options,
-                // chart: {
-                //   ...prevState.options.chart,
-                //   id: channelSeries.name,
-                // },
                 xaxis: {
                   axisTicks: {
                     show: false,
@@ -1031,7 +1023,6 @@ const CustomerSection = React.memo(
                   ...prevState.options.title,
                   text: "Yearly Total",
                 },
-                //
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
@@ -1076,7 +1067,6 @@ const CustomerSection = React.memo(
                   ...prevState.options.title,
                   text: "Yearly Growth Rate",
                 },
-
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
@@ -1122,7 +1112,6 @@ const CustomerSection = React.memo(
                   ...prevState.options.title,
                   text: "Total Yearly Customers by Channel",
                 },
-
                 xaxis: {
                   ...prevState.options.xaxis,
                   categories: Array.from(
@@ -1150,88 +1139,6 @@ const CustomerSection = React.memo(
       setIsDeleteModalOpen(false);
     };
 
-    const handleFetchGPT = async () => {
-      try {
-        setIsLoading(true);
-        const customer = tempCustomerInputs.find(
-          (input) => input.id == renderCustomerForm
-        );
-        let responseGPT;
-        if (customer) {
-          responseGPT = await dispatch(
-            fetchGPTResponse(customer.id, customer.additionalInfo, customer)
-          );
-        }
-
-        console.log("responseGPT", responseGPT);
-        // Check if responseGPT is an object with multiple keys
-        let gptResponseArray = [];
-        if (responseGPT) {
-          if (Array.isArray(responseGPT)) {
-            // If responseGPT is already an array, use it directly
-            gptResponseArray = responseGPT;
-          } else if (typeof responseGPT === "object") {
-            // If responseGPT is an object with multiple keys, get the first array found
-            const keys = Object.keys(responseGPT);
-            if (keys.length > 0 && Array.isArray(responseGPT[keys[0]])) {
-              gptResponseArray = responseGPT[keys[0]];
-            }
-          }
-        }
-        console.log("gptResponseArray", gptResponseArray);
-
-        const updatedTempCustomerInputs = tempCustomerInputs.map((input) => {
-          if (input.id === customer.id) {
-            return {
-              ...input,
-              customersPerMonth: gptResponseArray[0] || [], // assuming the first element is needed
-              gptResponseArray: gptResponseArray || [], // assuming gptResponseArray contains the required data
-            };
-          }
-          return input;
-        });
-
-        setTempCustomerInputs(updatedTempCustomerInputs);
-        setShowAdvancedInputs(false);
-      } catch (error) {
-        console.log("Fetching GPT error:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    const handleAddAdvancedInput = (id) => {
-      const newInputs = tempCustomerInputs.map((input) => {
-        if (input?.id === id) {
-          const newAdvancedInputs = [
-            ...input.advancedInputs,
-            {
-              localGrowthRate: "",
-              eventBeginMonth: "",
-              eventEndMonth: "",
-              eventName: "",
-            },
-          ];
-          return { ...input, advancedInputs: newAdvancedInputs };
-        }
-        return input;
-      });
-      setTempCustomerInputs(newInputs);
-    };
-
-    const handleRemoveAdvancedInput = (id, index) => {
-      const newInputs = tempCustomerInputs.map((input) => {
-        if (input?.id === id) {
-          const newAdvancedInputs = input.advancedInputs.filter(
-            (advInput, advIndex) => advIndex !== index
-          );
-          return { ...input, advancedInputs: newAdvancedInputs };
-        }
-        return input;
-      });
-      setTempCustomerInputs(newInputs);
-    };
-
     const [activeTab, setActiveTab] = useState("table&chart");
 
     const handleTabChange = (tabName) => {
@@ -1241,7 +1148,6 @@ const CustomerSection = React.memo(
     const downloadExcel = () => {
       const workBook = XLSX.utils.book_new();
 
-      // Create worksheet data in the desired format
       const worksheetData = [
         [
           "Channel Name",
@@ -1254,7 +1160,6 @@ const CustomerSection = React.memo(
         ],
       ];
 
-      // Add rows for each channel
       customerTableData.forEach((record) => {
         const row = [record.channelName];
         for (let i = 1; i <= numberOfMonths; i++) {
@@ -1263,14 +1168,10 @@ const CustomerSection = React.memo(
         worksheetData.push(row);
       });
 
-      // Convert data to worksheet
       const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
 
-      console.log("worksheetData", worksheetData);
-      // Add worksheet to workbook
       XLSX.utils.book_append_sheet(workBook, worksheet, "Customer Data");
 
-      // Write workbook and trigger download
       const wbout = XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
 
       function s2ab(s) {
@@ -1322,35 +1223,29 @@ const CustomerSection = React.memo(
       saveAs(jsonBlob, "customer_data.json");
     };
 
-    const chartData = customerGrowthData
-      .map((channelData) => {
-        return channelData.map((data, index) => ({
-          month: `${startMonth + index}`,
-          value: parseFloat(data.customers),
-        }));
-      })
-      .flat();
-
     return (
       <div>
         <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm NOsticky NOtop-8 z-50">
           <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
             <li
-              className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
-                activeTab === "table&chart" ? "bg-yellow-300 font-bold" : ""
-              } `}
-              onClick={() => handleTabChange("table&chart")}
-            >
-              Table and Chart
-            </li>
-            {/* Repeat for other tabs */}
-            <li
-              className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
-                activeTab === "input" ? "bg-yellow-300 font-bold" : ""
+              className={`hover:cursor-pointer px-2 py-1 rounded-md ${
+                activeTab === "input"
+                  ? "bg-yellow-300 font-bold"
+                  : "bg-yellow-100 hover:bg-yellow-200"
               } `}
               onClick={() => handleTabChange("input")}
             >
-              Input
+              a. Input
+            </li>
+            <li
+              className={`hover:cursor-pointer px-2 py-1 rounded-md ${
+                activeTab === "table&chart"
+                  ? "bg-green-300 font-bold"
+                  : "bg-green-100 hover:bg-green-200"
+              } `}
+              onClick={() => handleTabChange("table&chart")}
+            >
+              b. Table and Chart
             </li>
           </ul>
         </div>
@@ -1447,11 +1342,10 @@ const CustomerSection = React.memo(
                           },
                           xaxis: {
                             ...chart.options.xaxis,
-                            // tickAmount: 12, // Set the number of ticks on the x-axis to 12
                           },
                           stroke: {
                             width: 1,
-                            curve: "straight", // Set the stroke width to 1
+                            curve: "straight",
                           },
                         }}
                         series={chart.series}
@@ -1482,21 +1376,19 @@ const CustomerSection = React.memo(
                           },
                           xaxis: {
                             ...chart.options.xaxis,
-                            // tickAmount: 12, // Set the number of ticks on the x-axis to 12
                           },
                           stroke: {
-                            width: 1, // Set the stroke width to 1
+                            width: 1,
                           },
                         }}
                         series={chart.series}
                         type="area"
                         height={350}
-                        // onClick={(event) => handleChartClick(chart, event)}
                       />
                     </Card>
                   ))}
                 </div>
-                <AntdModal
+                <Modal
                   open={isChartModalVisible}
                   footer={null}
                   centered
@@ -1508,7 +1400,6 @@ const CustomerSection = React.memo(
                     <Chart
                       options={{
                         ...selectedChart.options,
-                        // ... other options
                       }}
                       className="p-4"
                       series={selectedChart.series}
@@ -1516,7 +1407,7 @@ const CustomerSection = React.memo(
                       height={500}
                     />
                   )}
-                </AntdModal>
+                </Modal>
                 <span>
                   <div className="flex justify-between items-center my-4">
                     <h3 className="text-lg font-semibold">Customer Table</h3>
@@ -1526,13 +1417,6 @@ const CustomerSection = React.memo(
                     >
                       <DownloadOutlined className="mr-1" />
                       Download Excel
-                    </button>
-                    <button
-                      onClick={downloadJSON}
-                      className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
-                    >
-                      <DownloadOutlined className="mr-1" />
-                      Download JSON
                     </button>
                   </div>
                   <div>
@@ -1594,21 +1478,12 @@ const CustomerSection = React.memo(
           )}
           {activeTab === "input" && (
             <>
-              <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
-                {/* <div>
-                  <h3>Customer Chart</h3>
-                  <DraggableChart
-                  // chartData={chartData}
-                  // xAxisCategories={customerGrowthData.map(
-                  //   (data, index) => `Month ${index + 1}`
-                  // )}
-                  />
-                </div>{" "} */}
-              </div>
+              <div className="w-full xl:w-3/4 sm:p-4 p-0 "></div>
 
               <div className="w-full xl:w-1/4 sm:p-4 p-0   ">
                 <CustomerInputsForm
                   tempCustomerInputs={tempCustomerInputs}
+                  setTempCustomerInputs={setTempCustomerInputs}
                   renderCustomerForm={renderCustomerForm}
                   setRenderCustomerForm={setRenderCustomerForm}
                   handleInputChange={handleInputChange}
@@ -1616,65 +1491,15 @@ const CustomerSection = React.memo(
                   parseNumber={parseNumber}
                   handleAddNewCustomer={handleAddNewCustomer}
                   handleSave={handleSave}
-                  handleFetchGPT={handleFetchGPT}
                   isLoading={isLoading}
-                  showAdvancedInputs={showAdvancedInputs}
-                  setShowAdvancedInputs={setShowAdvancedInputs}
+                  showCustomInputs={showCustomInputs}
+                  setShowCustomInputs={setShowCustomInputs}
                   isDeleteModalOpen={isDeleteModalOpen}
                   setIsDeleteModalOpen={setIsDeleteModalOpen}
                   confirmDelete={confirmDelete}
+                  tempCustomerGrowthData={tempCustomerGrowthData}
                 />
               </div>
-
-              {/* <div className="xl:hidden block">
-                <FloatButton
-                  tooltip={<div>Input values</div>}
-                  style={{
-                    position: "fixed",
-                    bottom: "30px",
-                    right: "30px",
-                  }}
-                  onClick={() => {
-                    setIsInputFormOpen(true);
-                  }}
-                >
-                  <Button
-                    type="primary"
-                    shape="circle"
-                    icon={<FileOutlined />}
-                  />
-                </FloatButton>
-              </div> */}
-
-              {isInputFormOpen && (
-                <Modal
-                  open={isInputFormOpen}
-                  onCancel={() => {
-                    setTempCustomerInputs(customerInputs);
-                    setIsInputFormOpen(false);
-                  }}
-                  centered={true}
-                  zIndex={50}
-                  footer={null}
-                >
-                  <CustomerInputsForm
-                    tempCustomerInputs={tempCustomerInputs}
-                    renderCustomerForm={renderCustomerForm}
-                    setRenderCustomerForm={setRenderCustomerForm}
-                    formatNumber={formatNumber}
-                    parseNumber={parseNumber}
-                    handleAddNewCustomer={handleAddNewCustomer}
-                    handleSave={handleSave}
-                    handleFetchGPT={handleFetchGPT}
-                    isLoading={isLoading}
-                    showAdvancedInputs={showAdvancedInputs}
-                    setShowAdvancedInputs={setShowAdvancedInputs}
-                    isDeleteModalOpen={isDeleteModalOpen}
-                    setIsDeleteModalOpen={setIsDeleteModalOpen}
-                    confirmDelete={confirmDelete}
-                  />
-                </Modal>
-              )}
 
               {isDeleteModalOpen && (
                 <Modal

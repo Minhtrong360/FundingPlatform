@@ -3,7 +3,6 @@ import Card from "../Home/Components/Card";
 import { supabase } from "../../supabase";
 import { LinearProgress, Tabs, Tab } from "@mui/material";
 import { message } from "antd";
-import regions from "../../components/Regions";
 import HeroUniversities from "./HeroUniversities";
 import CredentialModal from "./CredentialModal";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -16,13 +15,7 @@ const UniversitiesPage = () => {
   const [page, setPage] = useState(1);
   const itemsPerPage = 6;
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedIndustry, setSelectedIndustry] = useState("");
-  const [targetAmount, setTargetAmount] = useState("");
-  const [revenueRange, setRevenueRange] = useState("");
-  const [round, setRound] = useState("");
-  const [region, setRegion] = useState("");
-  const [country, setCountry] = useState("");
-  const [selectedCode, setSelectedCode] = useState("");
+
   const [selectedCodeFull, setSelectedCodeFull] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
@@ -82,14 +75,15 @@ const UniversitiesPage = () => {
     }
   };
 
-  const fetchCompanies = async (code = "") => {
+  // Update fetchCompanies function
+  const fetchCompanies = async (codeId = "") => {
     setIsLoading(true);
     try {
       const { data: projects, error: projectsError } = await supabase
         .from("projects")
         .select("id, verified, status")
         .neq("status", "stealth")
-        .contains("universityCode", [code]);
+        .contains("universityCode", [codeId]);
 
       if (projectsError) {
         message.error(projectsError.message);
@@ -132,35 +126,14 @@ const UniversitiesPage = () => {
     }
   };
 
+  // Update handleSelectCode function
+  const handleSelectCode = (codeId) => {
+    fetchCompanies(codeId);
+  };
+
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
     setPage(1);
-  };
-
-  const handleIndustryChange = (industry) => {
-    setSelectedIndustry(industry);
-    setPage(1);
-  };
-
-  const getMinMaxFromLabel = (label) => {
-    const target = targetAmountArray.find((item) => item.label === label);
-    if (target) {
-      return { min: target.min, max: target.max };
-    } else {
-      return { min: 0, max: Infinity };
-    }
-  };
-
-  const findCompaniesByRegion = (companies, region) => {
-    const selectedRegion = regions.find((item) => item.key === region);
-    if (selectedRegion) {
-      const subCountries = selectedRegion.sub;
-      return companies.filter((company) =>
-        subCountries.includes(company.country)
-      );
-    } else {
-      return [];
-    }
   };
 
   useEffect(() => {
@@ -179,53 +152,9 @@ const UniversitiesPage = () => {
       );
     }
 
-    if (selectedIndustry) {
-      data = data.filter((company) =>
-        company?.industry?.some(
-          (industry) =>
-            industry.toLowerCase() === selectedIndustry.toLowerCase()
-        )
-      );
-    }
-
-    if (targetAmount) {
-      const { min, max } = getMinMaxFromLabel(targetAmount);
-      data = data.filter(
-        (company) =>
-          company.target_amount >= min && company.target_amount <= max
-      );
-    }
-
-    if (revenueRange) {
-      data = data.filter((company) => company?.revenueStatus === revenueRange);
-    }
-
-    if (round) {
-      data = data.filter((company) => company?.round === round);
-    }
-    if (country) {
-      data = data.filter((company) => company?.country === country);
-    }
-    if (region) {
-      const filteredCompanies = findCompaniesByRegion(data, region);
-      data = filteredCompanies;
-    }
-
     const visibleCompanies = data.slice(0, visibleItemCount);
     setCompaniesToRender(visibleCompanies);
-  }, [
-    currentTab,
-    companies,
-    page,
-    searchTerm,
-    selectedIndustry,
-    visibleItemCount,
-    targetAmount,
-    revenueRange,
-    round,
-    region,
-    country,
-  ]);
+  }, [currentTab, companies, page, searchTerm, visibleItemCount]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -244,24 +173,6 @@ const UniversitiesPage = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-  const targetAmountArray = [
-    { min: 0, max: 100000, label: "$0 - $100k" },
-    { min: 100001, max: 500000, label: "$100k - $500k" },
-    { min: 500001, max: 1000000, label: "$500k - $1M" },
-    { min: 1000001, max: 5000000, label: "$1M - $5M" },
-    { min: 5000001, max: 10000000, label: "$5M - $10M" },
-    { min: 10000001, max: 50000000, label: "$10M - $50M" },
-    { min: 50000001, max: 100000000, label: "$50M - $100M" },
-    { min: 100000001, max: 500000000, label: "$100M - $500M" },
-    { min: 500000001, max: Infinity, label: ">$500M" },
-    { min: Infinity, max: Infinity, label: "Non-Profit" },
-  ];
-
-  const handleSelectCode = (code) => {
-    setSelectedCode(code);
-    fetchCompanies(code);
-  };
 
   const handleUpdateRules = async (updatedCode) => {
     try {
@@ -299,20 +210,12 @@ const UniversitiesPage = () => {
         />
         <UniSearch
           onSearch={handleSearch}
-          onIndustryChange={handleIndustryChange}
           companies={companiesToRender}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           currentTab={currentTab}
           setCurrentTab={setCurrentTab}
-          setVisibleItemCount={setVisibleItemCount}
-          setTargetAmount={setTargetAmount}
-          setRevenueRange={setRevenueRange}
-          setRound={setRound}
-          setRegion={setRegion}
-          targetAmountArray={targetAmountArray}
-          setCountry={setCountry}
-          selectedCode={selectedCode}
+          selectedCode={selectedCodeFull}
         />
 
         <Tabs

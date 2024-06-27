@@ -1008,6 +1008,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
              <h3 className="text-md text-center font-md mb-2">
   <span className="bg-yellow-100">Yellow parts</span> are inputs. <span className="bg-green-100">Green parts</span> are automatically generated results.
 </h3>
+<h3 className="text-md text-center font-md mb-2">
+  <span className="font-semibold">Modules</span> are listed with 1, 2, 3...<span className="font-semibold"> Sub-modules</span> are listed with a, b, c...
+</h3>
             <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
               <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
                 <li

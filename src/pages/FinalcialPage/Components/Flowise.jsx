@@ -19,10 +19,10 @@ const Flowise = ({ prompt, button }) => {
       setMessages([newMessage]);
 
       // Log the updated messages array
-      console.log("Input sent to backend:", [newMessage]);
+      console.log("Input sent to backend:", [newMessage.content]);
 
       const response = await fetch(
-        "https://flowise-ngy8.onrender.com/api/v1/prediction/6c607fa8-4cdd-466b-8646-959200f1a5e5",
+        "https://flowise-ngy8.onrender.com/api/v1/prediction/eefcc2cf-c772-4b5d-be24-af5d2216d09e",
         {
           method: "POST",
           headers: {
@@ -34,7 +34,6 @@ const Flowise = ({ prompt, button }) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      console.log("response", response);
       const dataR = await response.json();
       console.log("dataR: ", dataR);
       const dataAR = dataR.text;

@@ -80,6 +80,15 @@ const CustomerInputsForm = React.memo(
                   customers: monthData.add,
                 })) || []
         );
+        handleInputChange(
+          input?.id,
+          "gptResponseArray",
+          input?.gptResponseArray?.length
+            ? input?.gptResponseArray
+            : tempCustomerGrowthData
+                .find((data) => data[0]?.channelName === input.channelName)
+                ?.map((monthData) => monthData.add) || []
+        );
       }
     }, [renderCustomerForm]);
 

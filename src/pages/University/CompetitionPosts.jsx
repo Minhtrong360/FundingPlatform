@@ -206,97 +206,103 @@ const CompetitionPosts = ({ location }) => {
       <Header2 />
       <div className="px-3 py-2 lg:px-8 lg:py-1 mx-auto">
         <HeroCompetition />
-
-        <>
-          <section className="container px-4 mx-auto mt-14 max-w-3xl">
-            <div className="flex flex-col mb-5">
-              <h3 className="font-bold text-xl text-left">Code listing</h3>
-              <div className="mx-auto mt-5 grid sm:grid-cols-2 gap-32 transition-all duration-600 ease-out transform translate-x-0">
-                {codes.map((code, index) => (
-                  <div
-                    key={code.id}
-                    className="group flex justify-center w-full"
-                  >
-                    {code ? (
-                      <UniCard
-                        data={code}
-                        setSelectedCode={setSelectedCodeData}
-                        codeInCompetition={setSelectedCode}
-                        // onSelectCode={onSelectCode}
-                        // filterProjectsByCode={filterProjectsByCode}
-                        projectCounts={projectCounts}
-                      />
-                    ) : (
-                      <div className="w-[30vw] h-[55vh]"></div>
-                    )}
-                  </div>
-                ))}
-              </div>{" "}
-            </div>
-          </section>
-        </>
-
-        <UniSearch
-          onSearch={handleSearch}
-          companies={companiesToRender}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          currentTab={currentTab}
-          setCurrentTab={setCurrentTab}
-          selectedCode={selectedCodeData}
-        />
-
-        <Tabs
-          value={selectedTab}
-          onChange={(event, newValue) => setSelectedTab(newValue)}
-          indicatorColor="primary"
-          textColor="primary"
-          centered
-        >
-          <Tab label="Listing" value="Listing" />
-          <Tab label="Rules" value="Rules" />
-        </Tabs>
-
-        {isLoading ? (
-          <LinearProgress className="my-20" />
-        ) : selectedTab === "Listing" ? (
+        {codes?.length > 0 && (
           <>
-            {companiesToRender.length === 0 ? (
-              <div className="mt-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
-                No result
-              </div>
-            ) : (
-              <div className="mx-auto max-w-[85rem] mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
-                {companiesToRender.map((company, index) => (
-                  <div key={company.id} className="group flex justify-center">
-                    {company ? (
-                      <Card
-                        key={company.id}
-                        title={company.name}
-                        description={company.description}
-                        imageUrl={company.card_url}
-                        buttonText="More"
-                        project_id={company.project_id}
-                        verified={company.verifiedStatus}
-                        status={company.status}
-                      />
-                    ) : (
-                      <div className="w-[30vw] h-[55vh]"></div>
-                    )}
+            <>
+              <section className="container px-4 mx-auto mt-14 max-w-3xl">
+                <div className="flex flex-col mb-5">
+                  <h3 className="font-bold text-xl text-left">Code listing</h3>
+                  <div className="mx-auto mt-5 grid sm:grid-cols-2 gap-32 transition-all duration-600 ease-out transform translate-x-0">
+                    {codes.map((code, index) => (
+                      <div
+                        key={code.id}
+                        className="group flex justify-center w-full"
+                      >
+                        {code ? (
+                          <UniCard
+                            data={code}
+                            setSelectedCode={setSelectedCodeData}
+                            codeInCompetition={setSelectedCode}
+                            // onSelectCode={onSelectCode}
+                            // filterProjectsByCode={filterProjectsByCode}
+                            projectCounts={projectCounts}
+                          />
+                        ) : (
+                          <div className="w-[30vw] h-[55vh]"></div>
+                        )}
+                      </div>
+                    ))}
+                  </div>{" "}
+                </div>
+              </section>
+            </>
+
+            <UniSearch
+              onSearch={handleSearch}
+              companies={companiesToRender}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              currentTab={currentTab}
+              setCurrentTab={setCurrentTab}
+              selectedCode={selectedCodeData}
+            />
+
+            <Tabs
+              value={selectedTab}
+              onChange={(event, newValue) => setSelectedTab(newValue)}
+              indicatorColor="primary"
+              textColor="primary"
+              centered
+            >
+              <Tab label="Listing" value="Listing" />
+              <Tab label="Rules" value="Rules" />
+            </Tabs>
+
+            {isLoading ? (
+              <LinearProgress className="my-20" />
+            ) : selectedTab === "Listing" ? (
+              <>
+                {companiesToRender.length === 0 ? (
+                  <div className="mt-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
+                    No result
                   </div>
-                ))}
+                ) : (
+                  <div className="mx-auto max-w-[85rem] mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
+                    {companiesToRender.map((company, index) => (
+                      <div
+                        key={company.id}
+                        className="group flex justify-center"
+                      >
+                        {company ? (
+                          <Card
+                            key={company.id}
+                            title={company.name}
+                            description={company.description}
+                            imageUrl={company.card_url}
+                            buttonText="More"
+                            project_id={company.project_id}
+                            verified={company.verifiedStatus}
+                            status={company.status}
+                          />
+                        ) : (
+                          <div className="w-[30vw] h-[55vh]"></div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="flex justify-center items-center">
+                <UniEditorTool
+                  selectedCode={selectedCodeData}
+                  setSelectedCode={setSelectedCodeData}
+                  unChange={true}
+                  // handleUpdateRules={handleUpdateRules}
+                />
               </div>
             )}
           </>
-        ) : (
-          <div className="flex justify-center items-center">
-            <UniEditorTool
-              selectedCode={selectedCodeData}
-              setSelectedCode={setSelectedCodeData}
-              unChange={true}
-              // handleUpdateRules={handleUpdateRules}
-            />
-          </div>
         )}
       </div>
     </div>

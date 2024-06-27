@@ -1168,13 +1168,6 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
                   <DownloadOutlined className="mr-1" />
                   Download Excel
                 </button>
-                <button
-                  onClick={downloadJSON}
-                  className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
-                >
-                  <DownloadOutlined className="mr-1" />
-                  Download JSON
-                </button>
               </div>{" "}
               {/* <div>
                 <label

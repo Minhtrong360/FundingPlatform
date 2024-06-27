@@ -1228,20 +1228,24 @@ const CustomerSection = React.memo(
         <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm NOsticky NOtop-8 z-50">
           <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
             <li
-              className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
-                activeTab === "table&chart" ? "bg-yellow-300 font-bold" : ""
-              } `}
-              onClick={() => handleTabChange("table&chart")}
-            >
-              Table and Chart
-            </li>
-            <li
-              className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
-                activeTab === "input" ? "bg-yellow-300 font-bold" : ""
+              className={`hover:cursor-pointer px-2 py-1 rounded-md ${
+                activeTab === "input"
+                  ? "bg-yellow-300 font-bold"
+                  : "bg-yellow-100 hover:bg-yellow-200"
               } `}
               onClick={() => handleTabChange("input")}
             >
-              Input
+              a. Input
+            </li>
+            <li
+              className={`hover:cursor-pointer px-2 py-1 rounded-md ${
+                activeTab === "table&chart"
+                  ? "bg-green-300 font-bold"
+                  : "bg-green-100 hover:bg-green-200"
+              } `}
+              onClick={() => handleTabChange("table&chart")}
+            >
+              b. Table and Chart
             </li>
           </ul>
         </div>

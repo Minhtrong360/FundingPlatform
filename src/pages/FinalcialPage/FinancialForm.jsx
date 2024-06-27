@@ -1005,95 +1005,115 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 <QuestionCircleOutlined />
               </button>
             </div> */}
-             <h3 className="text-md text-center font-md mb-2">
-  <span className="bg-yellow-100">Yellow parts</span> are inputs. <span className="bg-green-100">Green parts</span> are automatically generated results.
-</h3>
-<h3 className="text-md text-center font-md mb-2">
-  <span className="font-semibold">Modules</span> are listed with 1, 2, 3...<span className="font-semibold"> Sub-modules</span> are listed with a, b, c...
-</h3>
+            <h3 className="text-md text-center font-md mb-2">
+              <span className="bg-yellow-100">Yellow parts</span> are inputs.{" "}
+              <span className="bg-green-100">Green parts</span> are
+              automatically generated results.
+            </h3>
+            <h3 className="text-md text-center font-md mb-2">
+              <span className="font-semibold">Modules</span> are listed with 1,
+              2, 3...<span className="font-semibold"> Sub-modules</span> are
+              listed with a, b, c...
+            </h3>
             <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
               <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
                 <li
-  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-    activeTab === "overview" ? "bg-yellow-300 font-bold" : "bg-yellow-100 hover:bg-yellow-200"
-  }`}
-  onClick={() => handleTabChange("overview")}
->
-  1. Overview
-</li>
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
+                    activeTab === "overview"
+                      ? "bg-yellow-300 font-bold"
+                      : "bg-yellow-100 hover:bg-yellow-200"
+                  }`}
+                  onClick={() => handleTabChange("overview")}
+                >
+                  1. Overview
+                </li>
                 {/* Repeat for other tabs */}
                 <li
-  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-    activeTab === "customer"
-      ? "bg-yellow-300 font-bold"
-      : "bg-yellow-100 hover:bg-yellow-200"
-  }`}
-  onClick={() => handleTabChange("customer")}
->
-  2. Customer
-</li>
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
+                    activeTab === "customer"
+                      ? "bg-yellow-300 font-bold"
+                      : "bg-yellow-100 hover:bg-yellow-200"
+                  }`}
+                  onClick={() => handleTabChange("customer")}
+                >
+                  2. Customer
+                </li>
 
                 <li
-  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-    activeTab === "sales"
-      ? "bg-yellow-300 font-bold"
-      : "bg-yellow-100 hover:bg-yellow-200"
-  }`}
-  onClick={() => handleTabChange("sales")}
->
-  3. Sales
-</li>
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
+                    activeTab === "sales"
+                      ? "bg-yellow-300 font-bold"
+                      : "bg-yellow-100 hover:bg-yellow-200"
+                  }`}
+                  onClick={() => handleTabChange("sales")}
+                >
+                  3. Sales
+                </li>
                 <li
-  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-    activeTab === "cost" ? "bg-yellow-300 font-bold" : "bg-yellow-100 hover:bg-yellow-200"
-  }`}
-  onClick={() => handleTabChange("cost")}
->
-  4. Costs
-</li>
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
+                    activeTab === "cost"
+                      ? "bg-yellow-300 font-bold"
+                      : "bg-yellow-100 hover:bg-yellow-200"
+                  }`}
+                  onClick={() => handleTabChange("cost")}
+                >
+                  4. Costs
+                </li>
                 <li
-  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-    activeTab === "personnel" ? "bg-yellow-300 font-bold" : "bg-yellow-100 hover:bg-yellow-200"
-  }`}
-  onClick={() => handleTabChange("personnel")}
->
-  5. Personnel
-</li>
-             <li
-  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-    activeTab === "investment" ? "bg-yellow-300 font-bold" : "bg-yellow-100 hover:bg-yellow-200"
-  }`}
-  onClick={() => handleTabChange("investment")}
->
-  6. CapEx
-</li>
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
+                    activeTab === "personnel"
+                      ? "bg-yellow-300 font-bold"
+                      : "bg-yellow-100 hover:bg-yellow-200"
+                  }`}
+                  onClick={() => handleTabChange("personnel")}
+                >
+                  5. Personnel
+                </li>
                 <li
-  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-    activeTab === "loan" ? "bg-yellow-300 font-bold" : "bg-yellow-100 hover:bg-yellow-200"
-  }`}
-  onClick={() => handleTabChange("loan")}
->
-  7. Loans
-</li>
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
+                    activeTab === "investment"
+                      ? "bg-yellow-300 font-bold"
+                      : "bg-yellow-100 hover:bg-yellow-200"
+                  }`}
+                  onClick={() => handleTabChange("investment")}
+                >
+                  6. CapEx
+                </li>
                 <li
-  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-    activeTab === "fundraising" ? "bg-yellow-300 font-bold" : "bg-yellow-100 hover:bg-yellow-200"
-  }`}
-  onClick={() => handleTabChange("fundraising")}
->
-  8. Funding
-</li>
-               <li
-  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-    activeTab === "profitAndLoss" ? "bg-green-300 font-bold" : "bg-green-100 hover:bg-green-200"
-  }`}
-  onClick={() => handleTabChange("profitAndLoss")}
->
-  9. Profit & Loss
-</li>
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
+                    activeTab === "loan"
+                      ? "bg-yellow-300 font-bold"
+                      : "bg-yellow-100 hover:bg-yellow-200"
+                  }`}
+                  onClick={() => handleTabChange("loan")}
+                >
+                  7. Loans
+                </li>
+                <li
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
+                    activeTab === "fundraising"
+                      ? "bg-yellow-300 font-bold"
+                      : "bg-yellow-100 hover:bg-yellow-200"
+                  }`}
+                  onClick={() => handleTabChange("fundraising")}
+                >
+                  8. Funding
+                </li>
+                <li
+                  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
+                    activeTab === "profitAndLoss"
+                      ? "bg-green-300 font-bold"
+                      : "bg-green-100 hover:bg-green-200"
+                  }`}
+                  onClick={() => handleTabChange("profitAndLoss")}
+                >
+                  9. Profit & Loss
+                </li>
                 <li
                   className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-green-200 ${
-                    activeTab === "cashFlow" ? "bg-green-300 font-bold" : "bg-green-100 hover:bg-green-200"
+                    activeTab === "cashFlow"
+                      ? "bg-green-300 font-bold"
+                      : "bg-green-100 hover:bg-green-200"
                   }`}
                   onClick={() => handleTabChange("cashFlow")}
                 >
@@ -1102,7 +1122,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 <li
                   className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-green-200 ${
                     activeTab === "balanceSheet"
-                      ? "bg-green-300 font-bold" : "bg-green-100 hover:bg-green-200"
+                      ? "bg-green-300 font-bold"
+                      : "bg-green-100 hover:bg-green-200"
                   }`}
                   onClick={() => handleTabChange("balanceSheet")}
                 >
@@ -1116,26 +1137,27 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 <div>
                   <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm NOsticky NOtop-8 z-50">
                     <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
-                    <li
+                      <li
                         className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
                           activeTabA === "input"
-                            ? "bg-yellow-100 font-bold"
-                            : ""
+                            ? "bg-yellow-300 font-bold"
+                            : "bg-yellow-100"
                         }`}
                         onClick={() => handleTabChangeA("input")}
                       >
-                      a. Inputs
+                        a. Inputs
                       </li>
                       <li
-  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-    activeTabA === "table&chart" ? "bg-green-300 font-bold" : "bg-green-100"
-  } hover:bg-green-200`}
-  onClick={() => handleTabChangeA("table&chart")}
->
+                        className={`hover:cursor-pointer px-2 py-1 rounded-md ${
+                          activeTabA === "table&chart"
+                            ? "bg-green-300 font-bold"
+                            : "bg-green-100"
+                        } hover:bg-green-200`}
+                        onClick={() => handleTabChangeA("table&chart")}
+                      >
                         b. Charts
                       </li>
                       {/* Repeat for other tabs */}
-                     
                     </ul>
                   </div>
                   <div className="w-full h-full flex flex-col lg:flex-row">

@@ -64,6 +64,7 @@ import { useParams } from "react-router-dom";
 import SpinnerBtn from "../../components/SpinnerBtn";
 import FlowiseChat from "./FLowiseChat";
 import DraggableChart from "./Amchart";
+import AmChart5 from "./Amchart5";
 
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
@@ -1146,6 +1147,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                           </h2>
                           {/* <N8NChat/> */}
                           {/* <DraggableChart/> */}
+                          <AmChart5/>
                           <FlowiseChat/>
                           {/* <Perflexity prompt={generatePrompt()} button={"Benchmark"} /> */}
                           <MetricsFM

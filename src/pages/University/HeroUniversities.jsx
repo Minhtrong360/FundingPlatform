@@ -957,6 +957,8 @@ const HeroUniversities = ({
   const startIndex = currentCodePage * itemsPerPage;
   const selectedCodes = codeData.slice(startIndex, startIndex + itemsPerPage);
 
+  console.log("selectedCodes", selectedCodes);
+
   return (
     <section className="bg-white">
       <div className="sm:px-6 px-3 mx-auto text-center">

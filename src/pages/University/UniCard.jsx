@@ -1,5 +1,3 @@
-import { useNavigate } from "react-router-dom";
-
 import { Tag, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
@@ -35,6 +33,7 @@ const UniCard = ({
     fetchCodeData();
   }, [data]);
 
+  console.log("data", data);
   return (
     <div
       onClick={() => {
@@ -55,16 +54,20 @@ const UniCard = ({
       className="flex flex-col h-full w-full bg-white border rounded-md shadow-md transition-all duration-300  hover:shadow-lg cursor-pointer"
     >
       <div className="relative pt-[50%] sm:pt-[70%] rounded-t-lg overflow-hidden">
-        {universityInfo?.avatar_url ? (
+        {data?.avatar_url ? (
           <>
             <img
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-in-out"
-              src={universityInfo?.avatar_url}
+              src={data?.avatar_url}
               alt="Company Avatar"
             />
           </>
         ) : (
-          <div className=" h-full w-full  absolute top-0 start-0 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out "></div>
+          <img
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-in-out"
+            src="https://media.istockphoto.com/id/1342229191/vi/anh/m%E1%BB%99t-h%E1%BB%93-n%C6%B0%E1%BB%9Bc-c%C3%B3-h%C3%ACnh-d%E1%BA%A1ng-c%E1%BB%A7a-c%C3%A1c-l%E1%BB%A5c-%C4%91%E1%BB%8Ba-tr%C3%AAn-th%E1%BA%BF-gi%E1%BB%9Bi-%E1%BB%9F-gi%E1%BB%AFa-thi%C3%AAn-nhi%C3%AAn-hoang-s%C6%A1-m%E1%BB%99t-ph%C3%A9p-%E1%BA%A9n.jpg?s=2048x2048&w=is&k=20&c=Yf6EtqbY4M9wanhrAhqFtyWXf1N0usDnSQXF8HUX3L0="
+            alt="Company Avatar"
+          />
         )}
       </div>
       <div className="flex-grow p-5">

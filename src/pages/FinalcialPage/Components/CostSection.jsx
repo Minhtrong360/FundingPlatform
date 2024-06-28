@@ -175,27 +175,14 @@ const CostInputForm = ({
             </div>
             <div className="grid grid-cols-2 gap-4 mb-3">
               <span className="flex items-center text-sm">Cost Group:</span>
-              <Select
-                className="border-gray-300"
-                onValueChange={(value) =>
-                  handleCostInputChange(input?.id, "costGroup", value)
-                }
+
+              <Input
+                className="col-start-2 border-gray-300"
                 value={input.costGroup}
-              >
-                <SelectTrigger
-                  id={`select-costType-${input?.id}`}
-                  className="border-solid border-[1px] border-gray-300"
-                >
-                  <SelectValue placeholder="Select Cost Type" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  {costGroupArray.map((cost, index) => (
-                    <SelectItem value={cost} key={index}>
-                      {cost}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                onChange={(e) =>
+                  handleCostInputChange(input?.id, "costGroup", e.target.value)
+                }
+              />
             </div>
             {input.costType === "Based on Revenue" ? (
               <>
@@ -415,27 +402,27 @@ const CostInputForm = ({
                       )
                     }
                   />
+                  <div className="flex items-center gap-2 mb-3">
+                    <Checkbox
+                      checked={input.applyAdditionalInfo}
+                      onChange={(e) => {
+                        handleCostInputChange(
+                          input?.id,
+                          "applyAdditionalInfo",
+                          e.target.checked
+                        );
+                      }}
+                    ></Checkbox>
+                    <span
+                      className="text-sm hover:cursor-pointer"
+                      onClick={() => setIsModalCustomOpen(true)}
+                    >
+                      Apply Custom
+                    </span>
+                  </div>
                 </div>
               </>
             )}
-            <div className="flex items-center gap-2 mb-3">
-              <Checkbox
-                checked={input.applyAdditionalInfo}
-                onChange={(e) => {
-                  handleCostInputChange(
-                    input?.id,
-                    "applyAdditionalInfo",
-                    e.target.checked
-                  );
-                }}
-              ></Checkbox>
-              <span
-                className="text-sm hover:cursor-pointer"
-                onClick={() => setIsModalCustomOpen(true)}
-              >
-                Apply Custom
-              </span>
-            </div>
 
             {isModalCustomOpen && (
               <Modal
@@ -619,7 +606,13 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
   const handleCostTypeChange = (id, value) => {
     const updatedInputs = tempCostInput.map((input) =>
       input.id === id
-        ? { ...input, costType: value, relatedRevenue: "" }
+        ? {
+            ...input,
+            costType: value,
+            relatedRevenue: "",
+            applyAdditionalInfo:
+              value === "Based on Revenue" ? false : input.applyAdditionalInfo,
+          }
         : input
     );
     setTempCostInput(updatedInputs);

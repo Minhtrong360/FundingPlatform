@@ -1227,9 +1227,9 @@ const CustomerSection = React.memo(
                   <h4 className="text-base font-semibold mb-4">
                     1. All channels chart
                   </h4>
-                  {customerGrowthChart.charts
+                  {customerGrowthChart?.charts
                     ?.filter(
-                      (chart) => chart.options.chart.id === "allChannels"
+                      (chart) => chart?.options?.chart?.id === "allChannels"
                     )
                     .map((chart, index) => (
                       <Card
@@ -1345,9 +1345,9 @@ const CustomerSection = React.memo(
                       2. Component charts
                     </h4>
                     <div className="grid md:grid-cols-2 gap-6">
-                      {customerGrowthChart.charts
+                      {customerGrowthChart?.charts
                         ?.filter(
-                          (chart) => chart.options.chart.id !== "allChannels"
+                          (chart) => chart?.options?.chart?.id !== "allChannels"
                         )
                         .map((chart, index) => (
                           <div className="ml-2">
@@ -1482,7 +1482,7 @@ const CustomerSection = React.memo(
                       3. Advanced charts
                     </h4>
                     <div className="grid md:grid-cols-2 gap-6">
-                      {customerGrowthChart.chartsNoFilter.map(
+                      {customerGrowthChart?.chartsNoFilter?.map(
                         (chart, index) => (
                           <div className="ml-2">
                             <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}</h5>

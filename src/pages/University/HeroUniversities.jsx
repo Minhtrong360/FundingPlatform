@@ -1043,20 +1043,11 @@ const HeroUniversities = ({
               <div className="flex flex-col mb-5">
                 <h3 className="font-bold text-xl text-left">Code listing</h3>
 
-                <div
-                  className="overflow-hidden overflow-y-scroll scrollbar-hide my-8 rounded-md bg-white"
-                  style={{ maxHeight: "60vh" }}
-                >
+                <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
                   <Table
                     columns={codeColumns}
                     dataSource={codeData}
                     pagination={{
-                      current: currentPage,
-                      pageSize: pageSize,
-                      onChange: (page, pageSize) => {
-                        setCurrentPage(page);
-                        setPageSize(pageSize);
-                      },
                       position: ["bottomLeft"],
                     }}
                     rowKey="id"
@@ -1070,7 +1061,6 @@ const HeroUniversities = ({
                         filterProjectsByCode(record.id);
                       },
                     })}
-                    scroll={{ y: 400 }}
                   />
                 </div>
               </div>

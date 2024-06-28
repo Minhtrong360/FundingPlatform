@@ -722,7 +722,9 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         {activeTab === "table&chart" && (
           <>
             <div className="w-full xl:w-3/4 sm:p-4 p-0">
-              <h3 className="text-lg font-semibold mb-8">Fundraising Chart</h3>
+              <h3 className="text-lg font-semibold mb-8">
+                I. Fundraising Chart
+              </h3>
               <div className="grid md:grid-cols-2 gap-6">
                 <Card className="flex flex-col transition duration-500  rounded-2xl">
                   <div className="absolute top-2 right-2">
@@ -746,7 +748,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                             Math.max(1, Math.min(e.target.value, chartEndMonth))
                           )
                         }
-                        className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                        className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                       >
                         {Array.from({ length: numberOfMonths }, (_, i) => {
                           const monthIndex = (startingMonth + i - 1) % 12;
@@ -774,7 +776,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                             )
                           )
                         }
-                        className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                        className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                       >
                         {Array.from({ length: numberOfMonths }, (_, i) => {
                           const monthIndex = (startingMonth + i - 1) % 12;
@@ -825,8 +827,8 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                   />
                 )}
               </Modal>
-              <div className="flex justify-between items-center my-4">
-                <h3 className="text-lg font-semibold">Fundraising Table</h3>
+              <div className="flex justify-between items-center my-4 mt-20">
+                <h3 className="text-lg font-semibold">II. Fundraising Table</h3>
                 <button
                   onClick={downloadExcel}
                   className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "

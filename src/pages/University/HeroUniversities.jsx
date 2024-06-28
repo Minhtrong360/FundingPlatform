@@ -18,6 +18,7 @@ import { formatDate } from "../../features/DurationSlice";
 import { IconButton } from "@mui/material";
 import UniEditorTool from "./UniEditorTool";
 import UniCard from "./UniCard";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 const HeroUniversities = ({
   onSelectCode,
@@ -51,6 +52,9 @@ const HeroUniversities = ({
 
   const [universityName, setUniversityName] = useState(credentials?.university);
   const [description, setDescription] = useState(credentials?.description);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
     const fetchCodeData = async () => {
@@ -502,17 +506,6 @@ const HeroUniversities = ({
         <span className="hover:cursor-pointer">{record.code}</span>
       ),
     },
-    // {
-    //   title: "Rules",
-    //   dataIndex: "rules",
-    //   key: "rules",
-    //   align: "center",
-    //   render: (text, record) => (
-    //     <Button onClick={() => openRulesModal(record)} className="text-xs">
-    //       {record.rules ? "View Rules" : "Add Rules"}
-    //     </Button>
-    //   ),
-    // },
     {
       title: "Created at",
       dataIndex: "created_at",
@@ -946,6 +939,24 @@ const HeroUniversities = ({
     }
   };
 
+  const [currentCodePage, setCurrentCodePage] = useState(0);
+  const itemsPerPage = 2;
+
+  const handleNext = () => {
+    if ((currentCodePage + 1) * itemsPerPage < codeData.length) {
+      setCurrentCodePage(currentCodePage + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentCodePage > 0) {
+      setCurrentCodePage(currentCodePage - 1);
+    }
+  };
+
+  const startIndex = currentCodePage * itemsPerPage;
+  const selectedCodes = codeData.slice(startIndex, startIndex + itemsPerPage);
+
   return (
     <section className="bg-white">
       <div className="sm:px-6 px-3 mx-auto text-center">
@@ -1032,11 +1043,20 @@ const HeroUniversities = ({
               <div className="flex flex-col mb-5">
                 <h3 className="font-bold text-xl text-left">Code listing</h3>
 
-                <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
+                <div
+                  className="overflow-hidden overflow-y-scroll scrollbar-hide my-8 rounded-md bg-white"
+                  style={{ maxHeight: "60vh" }}
+                >
                   <Table
                     columns={codeColumns}
                     dataSource={codeData}
                     pagination={{
+                      current: currentPage,
+                      pageSize: pageSize,
+                      onChange: (page, pageSize) => {
+                        setCurrentPage(page);
+                        setPageSize(pageSize);
+                      },
                       position: ["bottomLeft"],
                     }}
                     rowKey="id"
@@ -1050,6 +1070,7 @@ const HeroUniversities = ({
                         filterProjectsByCode(record.id);
                       },
                     })}
+                    scroll={{ y: 400 }}
                   />
                 </div>
               </div>
@@ -1087,26 +1108,41 @@ const HeroUniversities = ({
               <div className="flex flex-col mb-5">
                 <h3 className="font-bold text-xl text-left">Code listing</h3>
                 <div className="mx-auto mt-5 grid sm:grid-cols-2 gap-32 transition-all duration-600 ease-out transform translate-x-0">
-                  {codeData.map((code, index) => (
+                  {selectedCodes.map((code) => (
                     <div
                       key={code.id}
                       className="group flex justify-center w-full"
                     >
-                      {code ? (
-                        <UniCard
-                          data={code}
-                          setSelectedCode={setSelectedCode}
-                          setSelectedCodeFull={setSelectedCodeFull}
-                          onSelectCode={onSelectCode}
-                          filterProjectsByCode={filterProjectsByCode}
-                          projectCounts={projectCounts}
-                        />
-                      ) : (
-                        <div className="w-[30vw] h-[55vh]"></div>
-                      )}
+                      <UniCard
+                        data={code}
+                        setSelectedCode={setSelectedCode}
+                        setSelectedCodeFull={setSelectedCodeFull}
+                        onSelectCode={onSelectCode}
+                        filterProjectsByCode={filterProjectsByCode}
+                        projectCounts={projectCounts}
+                      />
                     </div>
                   ))}
-                </div>{" "}
+                </div>
+                <div className="flex justify-between mt-5">
+                  <button
+                    onClick={handlePrevious}
+                    disabled={currentCodePage === 0}
+                    className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${currentCodePage === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
+                    <LeftOutlined /> Previous
+                  </button>
+                  <button
+                    onClick={handleNext}
+                    disabled={
+                      (currentCodePage + 1) * itemsPerPage >= codeData.length
+                    }
+                    className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${(currentCodePage + 1) * itemsPerPage >= codeData.length ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
+                    Next
+                    <RightOutlined className="ml-2" />
+                  </button>
+                </div>
               </div>
             </section>
           </>

@@ -1164,13 +1164,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                     {activeTabA === "table&chart" && (
                       <>
                         <div className="w-full xl:w-3/4 sm:p-4 p-0">
-                          <h2
-                            className="text-lg font-semibold mb-7 flex items-center"
-                            id="duration-heading"
-                          >
-                            Overview
-                          </h2>
                           {/* <Perflexity prompt={generatePrompt()} button={"Benchmark"} /> */}
+
                           <MetricsFM
                             customerGrowthChart={customerGrowthChart}
                             revenue={revenue}

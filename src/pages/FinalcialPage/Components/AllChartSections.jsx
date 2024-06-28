@@ -528,6 +528,12 @@ const AllChartSections = ({
   return (
     <div className="flex flex-col">
       <main className="flex flex-1 flex-col gap-4  mb-4 md:gap-8 ">
+        <h2
+          className="text-lg font-semibold flex items-center"
+          id="duration-heading"
+        >
+          I. Overview
+        </h2>
         <div className="grid md:grid-cols-2 gap-6">
           <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
             <div className="absolute top-2 right-2">
@@ -936,6 +942,9 @@ const AllChartSections = ({
         {/* Các biểu đồ */}
 
         <div>
+          <h3 className="text-lg font-semibold mb-4 mt-20">
+            II. Relevant Chart
+          </h3>
           <div className=" gap-4 mb-3">
             <Select
               onValueChange={(value) => handleChartSelect(value)}

@@ -136,7 +136,7 @@ const CustomChart = ({
                   Math.max(1, Math.min(parseInt(e.target.value), chartEndMonth))
                 )
               }
-              className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500"
+              className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500"
             >
               {Array.from({ length: numberOfMonths }, (_, i) => {
                 const monthIndex = (startMonth + i - 1) % 12;
@@ -163,7 +163,7 @@ const CustomChart = ({
                   )
                 )
               }
-              className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500"
+              className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500"
             >
               {Array.from({ length: numberOfMonths }, (_, i) => {
                 const monthIndex = (startMonth + i - 1) % 12;

@@ -1112,6 +1112,8 @@ function BalanceSheetSection({ numberOfMonths }) {
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
         <div className="">
+          <h3 className="text-lg font-semibold mb-4">I. Relevant Chart</h3>
+
           <div className=" gap-4 mb-3">
             <Select
               onValueChange={(value) => handleChartSelect(value)}
@@ -1192,8 +1194,8 @@ function BalanceSheetSection({ numberOfMonths }) {
             />
           )}
 
-          <div className="flex justify-between items-center my-4">
-            <h3 className="text-lg font-semibold">Balance Sheet</h3>
+          <div className="flex justify-between items-center my-4 mt-20">
+            <h3 className="text-lg font-semibold">II. Balance Sheet</h3>
             <button
               onClick={downloadExcel}
               className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "

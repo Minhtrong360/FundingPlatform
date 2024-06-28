@@ -736,97 +736,216 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         {activeTab === "table&chart" && (
           <>
             <div className="w-full xl:w-3/4 sm:p-4 p-0">
-              <h3 className="text-lg font-semibold mb-8">Loan Chart</h3>
-              <div className="grid md:grid-cols-2 gap-6">
-                {loanChart?.charts?.map((series, index) => (
-                  <Card
-                    key={index}
-                    className="flex flex-col transition duration-500 rounded-2xl"
-                  >
-                    <div className="absolute top-2 right-2">
-                      <button
-                        onClick={(event) => handleChartClick(series, event)}
-                        className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
-                      >
-                        <FullscreenOutlined />
-                      </button>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <div className="min-w-[10vw] mb-2">
-                        <label htmlFor="startMonthSelect">Start Month:</label>
-                        <select
-                          id="startMonthSelect"
-                          value={chartStartMonth}
-                          onChange={(e) =>
-                            setChartStartMonth(
-                              Math.max(
-                                1,
-                                Math.min(e.target.value, chartEndMonth)
-                              )
-                            )
-                          }
-                          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+              <h3 className="text-lg font-semibold mb-8">I. Loan Chart</h3>
+              <div className="ml-4 mt-20">
+                <h4 className="text-base font-semibold mb-4">
+                  1. All loan chart
+                </h4>
+                {loanChart?.charts
+                  ?.filter((chart) => chart.options.chart.id === "allLoans")
+                  .map((series, index) => (
+                    <Card
+                      key={index}
+                      className="flex flex-col transition duration-500 rounded-2xl"
+                    >
+                      <div className="absolute top-2 right-2">
+                        <button
+                          onClick={(event) => handleChartClick(series, event)}
+                          className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
                         >
-                          {Array.from({ length: numberOfMonths }, (_, i) => {
-                            const monthIndex = (startingMonth + i - 1) % 12;
-                            const year =
-                              startingYear +
-                              Math.floor((startingMonth + i - 1) / 12);
-                            return (
-                              <option key={i + 1} value={i + 1}>
-                                {`${months[monthIndex]}/${year}`}
-                              </option>
-                            );
-                          })}
-                        </select>
+                          <FullscreenOutlined />
+                        </button>
                       </div>
-                      <div className="min-w-[10vw] mb-2">
-                        <label htmlFor="endMonthSelect">End Month:</label>
-                        <select
-                          id="endMonthSelect"
-                          value={chartEndMonth}
-                          onChange={(e) =>
-                            setChartEndMonth(
-                              Math.max(
-                                chartStartMonth,
-                                Math.min(e.target.value, numberOfMonths)
+                      <div className="flex justify-between items-center">
+                        <div className="min-w-[10vw] mb-2">
+                          <label htmlFor="startMonthSelect">Start Month:</label>
+                          <select
+                            id="startMonthSelect"
+                            value={chartStartMonth}
+                            onChange={(e) =>
+                              setChartStartMonth(
+                                Math.max(
+                                  1,
+                                  Math.min(e.target.value, chartEndMonth)
+                                )
                               )
-                            )
-                          }
-                          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
-                        >
-                          {Array.from({ length: numberOfMonths }, (_, i) => {
-                            const monthIndex = (startingMonth + i - 1) % 12;
-                            const year =
-                              startingYear +
-                              Math.floor((startingMonth + i - 1) / 12);
-                            return (
-                              <option key={i + 1} value={i + 1}>
-                                {`${months[monthIndex]}/${year}`}
-                              </option>
-                            );
-                          })}
-                        </select>
+                            }
+                            className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                          >
+                            {Array.from({ length: numberOfMonths }, (_, i) => {
+                              const monthIndex = (startingMonth + i - 1) % 12;
+                              const year =
+                                startingYear +
+                                Math.floor((startingMonth + i - 1) / 12);
+                              return (
+                                <option key={i + 1} value={i + 1}>
+                                  {`${months[monthIndex]}/${year}`}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                        <div className="min-w-[10vw] mb-2">
+                          <label htmlFor="endMonthSelect">End Month:</label>
+                          <select
+                            id="endMonthSelect"
+                            value={chartEndMonth}
+                            onChange={(e) =>
+                              setChartEndMonth(
+                                Math.max(
+                                  chartStartMonth,
+                                  Math.min(e.target.value, numberOfMonths)
+                                )
+                              )
+                            }
+                            className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                          >
+                            {Array.from({ length: numberOfMonths }, (_, i) => {
+                              const monthIndex = (startingMonth + i - 1) % 12;
+                              const year =
+                                startingYear +
+                                Math.floor((startingMonth + i - 1) / 12);
+                              return (
+                                <option key={i + 1} value={i + 1}>
+                                  {`${months[monthIndex]}/${year}`}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
                       </div>
-                    </div>
-                    <Chart
-                      options={{
-                        ...series.options,
+                      <Chart
+                        options={{
+                          ...series.options,
 
-                        xaxis: {
-                          ...series.options.xaxis,
-                        },
-                        stroke: {
-                          width: 1,
-                          curve: "straight",
-                        },
-                      }}
-                      series={series.series}
-                      type="area"
-                      height={350}
-                    />
-                  </Card>
-                ))}
+                          xaxis: {
+                            ...series.options.xaxis,
+                          },
+                          stroke: {
+                            width: 1,
+                            curve: "straight",
+                          },
+                        }}
+                        series={series.series}
+                        type="area"
+                        height={350}
+                      />
+                    </Card>
+                  ))}
+              </div>
+              <div className="ml-4 mt-20">
+                <h4 className="text-base font-semibold mb-4">
+                  2. Component charts
+                </h4>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {loanChart?.charts
+                    ?.filter((chart) => chart.options.chart.id !== "allLoans")
+                    .map((series, index) => (
+                      <div className="ml-2">
+                        <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${series.options.title.text}`}</h5>
+
+                        <Card
+                          key={index}
+                          className="flex flex-col transition duration-500 rounded-2xl"
+                        >
+                          <div className="absolute top-2 right-2">
+                            <button
+                              onClick={(event) =>
+                                handleChartClick(series, event)
+                              }
+                              className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
+                            >
+                              <FullscreenOutlined />
+                            </button>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <div className="min-w-[10vw] mb-2">
+                              <label htmlFor="startMonthSelect">
+                                Start Month:
+                              </label>
+                              <select
+                                id="startMonthSelect"
+                                value={chartStartMonth}
+                                onChange={(e) =>
+                                  setChartStartMonth(
+                                    Math.max(
+                                      1,
+                                      Math.min(e.target.value, chartEndMonth)
+                                    )
+                                  )
+                                }
+                                className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                              >
+                                {Array.from(
+                                  { length: numberOfMonths },
+                                  (_, i) => {
+                                    const monthIndex =
+                                      (startingMonth + i - 1) % 12;
+                                    const year =
+                                      startingYear +
+                                      Math.floor((startingMonth + i - 1) / 12);
+                                    return (
+                                      <option key={i + 1} value={i + 1}>
+                                        {`${months[monthIndex]}/${year}`}
+                                      </option>
+                                    );
+                                  }
+                                )}
+                              </select>
+                            </div>
+                            <div className="min-w-[10vw] mb-2">
+                              <label htmlFor="endMonthSelect">End Month:</label>
+                              <select
+                                id="endMonthSelect"
+                                value={chartEndMonth}
+                                onChange={(e) =>
+                                  setChartEndMonth(
+                                    Math.max(
+                                      chartStartMonth,
+                                      Math.min(e.target.value, numberOfMonths)
+                                    )
+                                  )
+                                }
+                                className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                              >
+                                {Array.from(
+                                  { length: numberOfMonths },
+                                  (_, i) => {
+                                    const monthIndex =
+                                      (startingMonth + i - 1) % 12;
+                                    const year =
+                                      startingYear +
+                                      Math.floor((startingMonth + i - 1) / 12);
+                                    return (
+                                      <option key={i + 1} value={i + 1}>
+                                        {`${months[monthIndex]}/${year}`}
+                                      </option>
+                                    );
+                                  }
+                                )}
+                              </select>
+                            </div>
+                          </div>
+                          <Chart
+                            options={{
+                              ...series.options,
+
+                              xaxis: {
+                                ...series.options.xaxis,
+                              },
+                              stroke: {
+                                width: 1,
+                                curve: "straight",
+                              },
+                            }}
+                            series={series.series}
+                            type="area"
+                            height={350}
+                          />
+                        </Card>
+                      </div>
+                    ))}
+                </div>
               </div>
               <Modal
                 centered
@@ -848,35 +967,34 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                   />
                 )}
               </Modal>
-              <div className="flex justify-between items-center my-4">
-                <h3 className="text-lg font-semibold">Loan Table</h3>
-                <button
-                  onClick={downloadExcel}
-                  className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
-                >
-                  <DownloadOutlined className="mr-1" />
-                  Download Excel
-                </button>
-              </div>{" "}
-              <div>
-                <label
-                  htmlFor="selectedChannel"
-                  className="block my-4 text-base  darkTextWhite"
-                ></label>
-                <select
-                  id="selectedChannel"
-                  className="py-3 px-4 block w-80 border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
-                  value={renderLoanForm}
-                  onChange={(e) => setRenderLoanForm(e.target.value)}
-                >
-                  <option value="all">All</option>
-                  {tempLoanInputs.map((input) => (
-                    <option key={input?.id} value={input?.id}>
-                      {input.loanName}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <span>
+                <h3 className="text-lg font-semibold mt-20 my-4">
+                  II. Customer Table
+                </h3>
+
+                <div className="flex justify-between items-center">
+                  <select
+                    id="selectedChannel"
+                    className="py-2 px-4 block w-80 border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                    value={renderLoanForm}
+                    onChange={(e) => setRenderLoanForm(e.target.value)}
+                  >
+                    <option value="all">All</option>
+                    {tempLoanInputs.map((input) => (
+                      <option key={input?.id} value={input?.id}>
+                        {input.loanName}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={downloadExcel}
+                    className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
+                  >
+                    <DownloadOutlined className="mr-1" />
+                    Download Excel
+                  </button>
+                </div>
+              </span>
               <Table
                 className="overflow-auto my-8 rounded-md bg-white"
                 size="small"

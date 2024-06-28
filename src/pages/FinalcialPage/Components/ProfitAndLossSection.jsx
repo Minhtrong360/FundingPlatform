@@ -210,14 +210,14 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     { key: "Gross Profit", values: grossProfit },
     { key: "Operating Expenses" },
     // { key: "Operating Costs", values: totalCosts },
-    { 
-      key: "Operating Costs", 
-      values: totalCosts, 
+    {
+      key: "Operating Costs",
+      values: totalCosts,
       children: costData
-        .filter(cost => cost.costGroup === 'Operating Costs')
-        .map(cost => ({
+        .filter((cost) => cost.costGroup === "Operating Costs")
+        .map((cost) => ({
           key: cost.costName,
-          values: cost.monthlyCosts.map(mc => mc.cost),
+          values: cost.monthlyCosts.map((mc) => mc.cost),
         })),
     },
     {
@@ -266,14 +266,14 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     { key: "Gross Profit", values: grossProfit },
     { key: "Operating Expenses" },
     // { key: "Operating Costs", values: totalCosts },
-    { 
-      key: "Operating Costs", 
-      values: totalCosts, 
+    {
+      key: "Operating Costs",
+      values: totalCosts,
       children: costData
-        .filter(cost => cost.costGroup === 'Operating Costs')
-        .map(cost => ({
+        .filter((cost) => cost.costGroup === "Operating Costs")
+        .map((cost) => ({
           key: cost.costName,
-          values: cost.monthlyCosts.map(mc => mc.cost),
+          values: cost.monthlyCosts.map((mc) => mc.cost),
         })),
     },
     {
@@ -754,6 +754,8 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
         <div>
+          <h3 className="text-lg font-semibold mb-4">I. Relevant Chart</h3>
+
           <div className=" gap-4 mb-3">
             <Select
               onValueChange={(value) => handleChartSelect(value)}
@@ -917,8 +919,10 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             />
           )}
 
-          <div className="flex justify-between items-center my-4">
-            <h3 className="text-lg font-semibold">Profit and Loss Statement</h3>
+          <div className="flex justify-between items-center my-4 mt-20">
+            <h3 className="text-lg font-semibold">
+              II. Profit and Loss Statement
+            </h3>
             <button
               onClick={downloadExcel}
               className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "

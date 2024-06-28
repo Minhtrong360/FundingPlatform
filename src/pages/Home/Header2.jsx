@@ -131,25 +131,17 @@ const Header2 = ({ position }) => {
     },
   ];
 
-  const renderMenu = (subItems) => (
-    <Menu
-      items={subItems.map((subItem) => ({
-        key: subItem.key,
-        label: <a onClick={() => navigate(subItem.path)}>{subItem.label}</a>,
-      }))}
-    />
-  );
-
-  const isActiveTab = (path, subItems) => {
-    if (location.pathname === path) {
-      return true;
-    }
-    if (subItems) {
-      return subItems.some((subItem) =>
-        location.pathname.startsWith(subItem.path)
-      );
-    }
-    return false;
+  const renderMenu = (subItems) => {
+    return (
+      <Menu
+        items={subItems.map((subItem) => ({
+          key: subItem.key,
+          label: (
+            <div onClick={() => navigate(subItem.path)}>{subItem.label}</div>
+          ),
+        }))}
+      />
+    );
   };
 
   return (
@@ -238,10 +230,12 @@ const Header2 = ({ position }) => {
                       arrow
                     >
                       <Button
-                        className={`text-black hover:text-blue-600 border-0 bg-transparent shadow-none ${
-                          location.pathname.startsWith(item.path)
+                        className={` hover:text-blue-600 border-0 bg-transparent shadow-none ${
+                          item.subItems.some(
+                            (subItem) => subItem.path === location.pathname
+                          )
                             ? "text-[#2563EB]"
-                            : ""
+                            : "text-black"
                         }`}
                       >
                         {item.title} <ArrowDropDownOutlined />
@@ -249,10 +243,10 @@ const Header2 = ({ position }) => {
                     </Dropdown>
                   ) : (
                     <Button
-                      className={`text-black hover:text-blue-600 border-0 bg-transparent shadow-none ${
-                        location.pathname.startsWith(item.path)
+                      className={` hover:text-blue-600 border-0 bg-transparent shadow-none ${
+                        item.path === location.pathname
                           ? "text-[#2563EB]"
-                          : ""
+                          : "text-black"
                       }`}
                       onClick={() => navigate(item.path)}
                     >

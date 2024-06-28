@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/Input";
-import { Button, Card, FloatButton, Modal, Table, message } from "antd";
+import { Card, Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,12 +13,7 @@ import {
 } from "../../../features/InvestmentSlice";
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
-import {
-  DownloadOutlined,
-  FileOutlined,
-  FullscreenOutlined,
-  PlusCircleOutlined,
-} from "@ant-design/icons";
+import { DownloadOutlined, FullscreenOutlined } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
@@ -27,7 +22,6 @@ import SpinnerBtn from "../../../components/SpinnerBtn";
 
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
-import GroqJS from "./GroqJson";
 
 const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const { investmentInputs, investmentData } = useSelector(
@@ -529,26 +523,61 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     saveAs(jsonBlob, "investment_data.json");
   };
 
+  console.log(
+    "transformInvestmentDataForTable",
+    transformInvestmentDataForTable(
+      tempInvestmentInputs,
+      renderInvestmentForm,
+      tempInvestmentData,
+      numberOfMonths
+    )
+  );
+
+  const filteredTableData =
+    renderInvestmentForm !== "all"
+      ? transformInvestmentDataForTable(
+          tempInvestmentInputs,
+          renderInvestmentForm,
+          tempInvestmentData,
+          numberOfMonths
+        ).filter(
+          (record) =>
+            record.key !== "CF Investments" &&
+            record.key !== "Total Depreciation" &&
+            record.key !== "BS Total investment" &&
+            record.key !== "BS Total Accumulated Depreciation" &&
+            record.key !== "BS Total Net Fixed Assets"
+        )
+      : transformInvestmentDataForTable(
+          tempInvestmentInputs,
+          renderInvestmentForm,
+          tempInvestmentData,
+          numberOfMonths
+        );
+
   return (
     <div>
       <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm NOsticky NOtop-8 z-50">
         <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
           <li
-            className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
-              activeTab === "table&chart" ? "bg-yellow-300 font-bold" : ""
-            }`}
-            onClick={() => handleTabChange("table&chart")}
-          >
-            Table and Chart
-          </li>
-          {/* Repeat for other tabs */}
-          <li
-            className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
-              activeTab === "input" ? "bg-yellow-300 font-bold" : ""
-            }`}
+            className={`hover:cursor-pointer px-2 py-1 rounded-md ${
+              activeTab === "input"
+                ? "bg-yellow-300 font-bold"
+                : "bg-yellow-100 hover:bg-yellow-200"
+            } `}
             onClick={() => handleTabChange("input")}
           >
-            Input
+            a. Input
+          </li>
+          <li
+            className={`hover:cursor-pointer px-2 py-1 rounded-md ${
+              activeTab === "table&chart"
+                ? "bg-green-300 font-bold"
+                : "bg-green-100 hover:bg-green-200"
+            } `}
+            onClick={() => handleTabChange("table&chart")}
+          >
+            b. Table and Chart
           </li>
         </ul>
       </div>
@@ -676,13 +705,6 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                   <DownloadOutlined className="mr-1" />
                   Download Excel
                 </button>
-                <button
-                  onClick={downloadJSON}
-                  className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
-                >
-                  <DownloadOutlined className="mr-1" />
-                  Download JSON
-                </button>
               </div>{" "}
               <div>
                 <label
@@ -691,7 +713,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                 ></label>
                 <select
                   id="selectedChannel"
-                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                  className="py-3 px-4 block w-80 border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                   value={renderInvestmentForm}
                   onChange={(e) => setRenderInvestmentForm(e.target.value)}
                 >
@@ -706,18 +728,8 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               <Table
                 className="overflow-auto my-8 rounded-md bg-white"
                 size="small"
-                dataSource={transformInvestmentDataForTable(
-                  tempInvestmentInputs,
-                  renderInvestmentForm,
-                  tempInvestmentData,
-                  numberOfMonths
-                )}
-                columns={transformInvestmentDataForTable(
-                  tempInvestmentInputs,
-                  renderInvestmentForm,
-                  tempInvestmentData,
-                  numberOfMonths
-                )}
+                dataSource={filteredTableData}
+                columns={investmentColumns}
                 pagination={false}
                 bordered
                 rowClassName={(record) =>
@@ -726,9 +738,6 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               />
             </div>
             <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
-            <section className="mb-8 NOsticky NOtop-8 ">
-              {/* <GroqJS datasrc={tempInvestmentData} inputUrl={'urlInv'}/> */}
-            </section>
               <button
                 className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
                 style={{ bottom: "20px", right: "80px", position: "fixed" }}

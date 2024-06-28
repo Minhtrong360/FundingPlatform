@@ -50,9 +50,7 @@ const Valuation = ({  button }) => {
       console.log("data: ", data);
       // const assistantResponse = data?.response?.replace(/[#*`]/g, "");
       const assistantResponse =
-        typeof data?.text === "string"
-          ? data.text.replace(/[#*`]/g, "")
-          : "";
+        typeof data?.text === "string" ? data.text.replace(/[#*`]/g, "") : "";
 
       console.log("assistantResponse: ", assistantResponse);
       // Replace newline characters with <br> tags

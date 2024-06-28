@@ -2,22 +2,10 @@ import React, { useEffect, useState } from "react";
 import Card from "../Home/Components/Card";
 import { supabase } from "../../supabase";
 
-import Search from "../Home/Components/Search";
-
-import {
-  LinearProgress,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-  Tab,
-  Tabs,
-} from "@mui/material";
+import { LinearProgress, Tab, Tabs } from "@mui/material";
 import Header2 from "../Home/Header2";
 import HeroCompetition from "./HeroCompetition";
-import { Button, Modal, Table, message } from "antd";
-import regions from "../../components/Regions";
-import { formatDate } from "../../features/DurationSlice";
+import { message } from "antd";
 import UniEditorTool from "./UniEditorTool";
 import UniCard from "./UniCard";
 import UniSearch from "./UniSearch";
@@ -30,12 +18,6 @@ const CompetitionPosts = ({ location }) => {
   const [page, setPage] = useState(1);
   const itemsPerPage = 6;
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedIndustry, setSelectedIndustry] = useState("");
-  const [targetAmount, setTargetAmount] = useState("");
-  const [revenueRange, setRevenueRange] = useState("");
-  const [round, setRound] = useState("");
-  const [region, setRegion] = useState("");
-  const [country, setCountry] = useState("");
 
   const [isLoading, setIsLoading] = useState(true);
   const [currentTab, setCurrentTab] = useState("verified");
@@ -52,7 +34,6 @@ const CompetitionPosts = ({ location }) => {
 
   useEffect(() => {
     if (selectedCode) {
-      fetchCompanies();
       fetchSelectedCodeData();
     }
   }, [selectedCode]);
@@ -69,6 +50,7 @@ const CompetitionPosts = ({ location }) => {
         message.error("Error fetching code data: " + error.message);
         return;
       }
+      fetchCompanies(data.id);
 
       const projectCounts = await fetchProjectCounts(codes);
 
@@ -123,15 +105,15 @@ const CompetitionPosts = ({ location }) => {
     }
   };
 
-  const fetchCompanies = async () => {
+  // Update fetchCompanies function
+  const fetchCompanies = async (codeId = "") => {
     setIsLoading(true);
     try {
-      // Fetch projects including their verified status and status, avoiding stealth status projects
       const { data: projects, error: projectsError } = await supabase
         .from("projects")
-        .select("id, verified, status, universityCode") // Get verified status and status along with id
+        .select("id, verified, status")
         .neq("status", "stealth")
-        .contains("universityCode", [selectedCode]);
+        .contains("universityCode", [codeId]);
 
       if (projectsError) {
         message.error(projectsError.message);
@@ -140,7 +122,6 @@ const CompetitionPosts = ({ location }) => {
 
       const projectIds = projects.map((project) => project.id);
 
-      // Fetch companies based on project ids
       const { data: fetchedCompanies, error: companiesError } = await supabase
         .from("company")
         .select("*")
@@ -152,7 +133,6 @@ const CompetitionPosts = ({ location }) => {
         return;
       }
 
-      // Create maps to store verified status and status for quick lookup
       const verifiedStatusMap = new Map();
       const statusMap = new Map();
 
@@ -161,11 +141,10 @@ const CompetitionPosts = ({ location }) => {
         statusMap.set(project.id, project.status);
       });
 
-      // Attach verified status and status directly to each company object
       fetchedCompanies.forEach((company) => {
         company.verifiedStatus =
           verifiedStatusMap.get(company.project_id) || false;
-        company.status = statusMap.get(company.project_id) || "Unknown"; // Default to "Unknown" if no status found
+        company.status = statusMap.get(company.project_id) || "Unknown";
       });
 
       setCompanies(fetchedCompanies);
@@ -180,32 +159,6 @@ const CompetitionPosts = ({ location }) => {
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
     setPage(1);
-  };
-
-  const handleIndustryChange = (industry) => {
-    setSelectedIndustry(industry);
-    setPage(1);
-  };
-
-  const getMinMaxFromLabel = (label) => {
-    const target = targetAmountArray.find((item) => item.label === label);
-    if (target) {
-      return { min: target.min, max: target.max };
-    } else {
-      return { min: 0, max: Infinity };
-    }
-  };
-
-  const findCompaniesByRegion = (companies, region) => {
-    const selectedRegion = regions.find((item) => item.key === region);
-    if (selectedRegion) {
-      const subCountries = selectedRegion.sub;
-      return companies.filter((company) =>
-        subCountries.includes(company.country)
-      );
-    } else {
-      return [];
-    }
   };
 
   useEffect(() => {
@@ -224,53 +177,9 @@ const CompetitionPosts = ({ location }) => {
       );
     }
 
-    if (selectedIndustry) {
-      data = data.filter((company) =>
-        company?.industry?.some(
-          (industry) =>
-            industry.toLowerCase() === selectedIndustry.toLowerCase()
-        )
-      );
-    }
-
-    if (targetAmount) {
-      const { min, max } = getMinMaxFromLabel(targetAmount);
-      data = data.filter(
-        (company) =>
-          company.target_amount >= min && company.target_amount <= max
-      );
-    }
-
-    if (revenueRange) {
-      data = data.filter((company) => company?.revenueStatus === revenueRange);
-    }
-
-    if (round) {
-      data = data.filter((company) => company?.round === round);
-    }
-    if (country) {
-      data = data.filter((company) => company?.country === country);
-    }
-    if (region) {
-      const filteredCompanies = findCompaniesByRegion(data, region);
-      data = filteredCompanies;
-    }
-
     const visibleCompanies = data.slice(0, visibleItemCount);
     setCompaniesToRender(visibleCompanies);
-  }, [
-    currentTab,
-    companies,
-    page,
-    searchTerm,
-    selectedIndustry,
-    visibleItemCount,
-    targetAmount,
-    revenueRange,
-    round,
-    region,
-    country,
-  ]);
+  }, [currentTab, companies, page, searchTerm, visibleItemCount]);
 
   // Function to handle scrolling to the bottom of the page
   useEffect(() => {
@@ -290,21 +199,6 @@ const CompetitionPosts = ({ location }) => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-  const targetAmountArray = [
-    { min: 0, max: 100000, label: "$0 - $100k" },
-    { min: 100001, max: 500000, label: "$100k - $500k" },
-    { min: 500001, max: 1000000, label: "$500k - $1M" },
-    { min: 1000001, max: 5000000, label: "$1M - $5M" },
-    { min: 5000001, max: 10000000, label: "$5M - $10M" },
-    { min: 10000001, max: 50000000, label: "$10M - $50M" },
-    { min: 50000001, max: 100000000, label: "$50M - $100M" },
-    { min: 100000001, max: 500000000, label: "$100M - $500M" },
-    { min: 500000001, max: Infinity, label: ">$500M" },
-    { min: Infinity, max: Infinity, label: "Non-Profit" },
-  ];
-
-  // const [isRulesModalOpen, setIsRulesModalOpen] = useState(false); // New state for rules modal
 
   const [selectedTab, setSelectedTab] = useState("Listing"); // New state for tab selection
   return (
@@ -344,20 +238,12 @@ const CompetitionPosts = ({ location }) => {
 
         <UniSearch
           onSearch={handleSearch}
-          onIndustryChange={handleIndustryChange}
           companies={companiesToRender}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           currentTab={currentTab}
           setCurrentTab={setCurrentTab}
-          setVisibleItemCount={setVisibleItemCount}
-          setTargetAmount={setTargetAmount}
-          setRevenueRange={setRevenueRange}
-          setRound={setRound}
-          setRegion={setRegion}
-          targetAmountArray={targetAmountArray}
-          setCountry={setCountry}
-          selectedCode={selectedCode}
+          selectedCode={selectedCodeData}
         />
 
         <Tabs

@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Modal } from "antd";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 
-const GroqJS = ({ datasrc, inputUrl }) => {
+const GroqJS = ({ datasrc }) => {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,44 +28,15 @@ const GroqJS = ({ datasrc, inputUrl }) => {
           JSON.stringify(datasrc),
       };
       setMessages([newMessage]);
-     
 
-      let url;
-      if (inputUrl === 'urlPNL') {
-        url = 'https://flowise-ngy8.onrender.com/api/v1/prediction/af577d02-be0e-477f-94ad-303c5bdb451e';
-      } else if (inputUrl === 'urlCF') {
-        url = 'https://flowise-ngy8.onrender.com/api/v1/prediction/cf33a36d-0f2e-40a1-b668-4074ab08e2cd';
-      } else if (inputUrl === 'urlBS') {
-        url = 'https://flowise-ngy8.onrender.com/api/v1/prediction/26a1b357-632b-4551-9f60-9d2e9b216738';
-      } else if (inputUrl === 'urlCus') {
-        url = 'http://localhost:300/';
-      } else if (inputUrl === 'urlSale') {
-        url = 'http://localhost:300/';
-      } else if (inputUrl === 'urlCost') {
-        url = 'http://localhost:300/';
-      } else if (inputUrl === 'urlPer') {
-        url = 'http://localhost:300/';
-      } else if (inputUrl === 'urlInv') {
-        url = 'http://localhost:300/';
-      } else if (inputUrl === 'urlFund') {
-        url = 'http://localhost:300/';
-      } else if (inputUrl === 'urlLoan') {
-        url = 'http://localhost:300/';
-      } 
-      else {
-        alert('Invalid URL input');
-        return;
-      }
-     
       const response = await fetch(
-        // "https://news-fetcher-8k6m.onrender.com/chat",
-        url,
+        "https://news-fetcher-8k6m.onrender.com/chat",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ question: [JSON.stringify(datasrc)] }),
+          body: JSON.stringify({ messages: [newMessage] }),
         }
       );
 
@@ -74,10 +45,7 @@ const GroqJS = ({ datasrc, inputUrl }) => {
       }
 
       const data = await response.json();
-      const dataJS = JSON.stringify(data)
-      console.log("data: ", data);
-      console.log("dataJS: ", dataJS)
-      const assistantResponse = data.text?.replace(/[#*`]/g, "");
+      const assistantResponse = data?.response?.replace(/[#*`]/g, "");
 
       const formattedAssistantResponse = assistantResponse.replace(
         /\n/g,

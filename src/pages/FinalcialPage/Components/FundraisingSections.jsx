@@ -7,7 +7,7 @@ import {
 } from "../../../components/ui/Select";
 import { Input as FundraisingInput } from "../../../components/ui/Input";
 import { useEffect, useState } from "react";
-import { Button, Card, FloatButton, Modal, Table, message } from "antd";
+import { Card, Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,12 +18,7 @@ import {
 } from "../../../features/FundraisingSlice";
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
-import {
-  DownloadOutlined,
-  FileOutlined,
-  FullscreenOutlined,
-  PlusCircleOutlined,
-} from "@ant-design/icons";
+import { DownloadOutlined, FullscreenOutlined } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
@@ -32,7 +27,6 @@ import SpinnerBtn from "../../../components/SpinnerBtn";
 
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
-import GroqJS from "./GroqJson";
 
 const FundraisingInputForm = ({
   tempFundraisingInputs,
@@ -703,21 +697,24 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm NOsticky NOtop-8 z-50">
         <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
           <li
-            className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
-              activeTab === "table&chart" ? "bg-yellow-300 font-bold" : ""
-            }`}
-            onClick={() => handleTabChange("table&chart")}
-          >
-            Table and Chart
-          </li>
-          {/* Repeat for other tabs */}
-          <li
-            className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
-              activeTab === "input" ? "bg-yellow-300 font-bold" : ""
-            }`}
+            className={`hover:cursor-pointer px-2 py-1 rounded-md ${
+              activeTab === "input"
+                ? "bg-yellow-300 font-bold"
+                : "bg-yellow-100 hover:bg-yellow-200"
+            } `}
             onClick={() => handleTabChange("input")}
           >
-            Input
+            a. Input
+          </li>
+          <li
+            className={`hover:cursor-pointer px-2 py-1 rounded-md ${
+              activeTab === "table&chart"
+                ? "bg-green-300 font-bold"
+                : "bg-green-100 hover:bg-green-200"
+            } `}
+            onClick={() => handleTabChange("table&chart")}
+          >
+            b. Table and Chart
           </li>
         </ul>
       </div>
@@ -837,13 +834,6 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                   <DownloadOutlined className="mr-1" />
                   Download Excel
                 </button>
-                <button
-                  onClick={downloadJSON}
-                  className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
-                >
-                  <DownloadOutlined className="mr-1" />
-                  Download JSON
-                </button>
               </div>{" "}
               <Table
                 className="overflow-auto my-8 rounded-md bg-white"
@@ -861,12 +851,6 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               />
             </div>
             <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
-              <section className="mb-8 NOsticky NOtop-8 ">
-                {/* <GroqJS datasrc={transformFundraisingDataForTable(
-                  tempFundraisingInputs,
-                  numberOfMonths
-                )} inputUrl={'urlFund'} /> */}
-              </section>
               <button
                 className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
                 style={{ bottom: "20px", right: "80px", position: "fixed" }}

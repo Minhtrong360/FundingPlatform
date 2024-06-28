@@ -988,7 +988,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section className="mb-8 NOsticky NOtop-8">
-          <GroqJS datasrc={profitAndLossData} inputUrl={'urlPNL'}/>
+          <GroqJS datasrc={profitAndLossData} />
         </section>
       </div>
 
@@ -1035,7 +1035,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           centered={true}
           zIndex={50}
         >
-          <GroqJS datasrc={profitAndLossData} inputUrl={'urlPNL'}/>
+          <GroqJS datasrc={profitAndLossData} />
         </Modal>
       )}
     </div>

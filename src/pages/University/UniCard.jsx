@@ -43,10 +43,10 @@ const UniCard = ({
           setSelectedCodeFull(data);
         }
         if (onSelectCode) {
-          onSelectCode(data.code);
+          onSelectCode(data.id);
         }
         if (filterProjectsByCode) {
-          filterProjectsByCode(data.code);
+          filterProjectsByCode(data.id);
         }
         if (codeInCompetition) {
           codeInCompetition(data.code);

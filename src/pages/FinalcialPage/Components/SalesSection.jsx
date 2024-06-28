@@ -759,6 +759,16 @@ const SalesSection = ({
     saveAs(jsonBlob, "revenue_data.json");
   };
 
+  const filteredTableData =
+    renderChannelForm !== "all"
+      ? revenueTableData.filter(
+          (record) =>
+            record.key !== "Total" &&
+            record.key !== "Total Cash Inflow" &&
+            record.key !== "Total Receivables"
+        )
+      : revenueTableData;
+
   return (
     <div>
       <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm NOsticky NOtop-8 z-50">
@@ -915,7 +925,7 @@ const SalesSection = ({
                 ></label>
                 <select
                   id="renderChannelForm"
-                  className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                  className="py-3 px-4 block w-80 border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                   value={renderChannelForm}
                   onChange={(e) => setRenderChannelForm(e.target.value)}
                 >
@@ -935,7 +945,7 @@ const SalesSection = ({
               <Table
                 className="overflow-auto my-8 rounded-md bg-white"
                 size="small"
-                dataSource={revenueTableData}
+                dataSource={filteredTableData}
                 columns={revenueColumns}
                 pagination={false}
                 bordered

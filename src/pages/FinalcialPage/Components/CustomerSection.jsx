@@ -1223,6 +1223,11 @@ const CustomerSection = React.memo(
       saveAs(jsonBlob, "customer_data.json");
     };
 
+    const filteredTableData =
+      renderCustomerForm !== "all"
+        ? customerTableData.filter((record) => record.key !== "Total")
+        : customerTableData;
+
     return (
       <div>
         <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm NOsticky NOtop-8 z-50">
@@ -1426,7 +1431,7 @@ const CustomerSection = React.memo(
                     ></label>
                     <select
                       id="selectedChannel"
-                      className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                      className="py-3 px-4 block w-80 border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                       value={renderCustomerForm}
                       onChange={(e) => setRenderCustomerForm(e.target.value)}
                     >
@@ -1443,7 +1448,7 @@ const CustomerSection = React.memo(
                 <Table
                   className="bg-white overflow-auto  my-8 rounded-md"
                   size="small"
-                  dataSource={customerTableData}
+                  dataSource={filteredTableData}
                   columns={customerColumns}
                   pagination={false}
                   bordered

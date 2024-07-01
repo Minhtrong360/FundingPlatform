@@ -251,15 +251,20 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   }));
 
   const { costTableData } = useSelector((state) => state.cost);
+  const { revenueTableData } = useSelector((state) => state.sales);
+  console.log("revenueTableData", revenueTableData);
   const transposedData = [
     { key: "Revenue" },
     { key: "Total Revenue", values: totalRevenue },
     { key: "Deductions", values: totalDeductions },
     { key: "Net Revenue", values: netRevenue },
+    { key: "" },
     { key: "Cost of Revenue" },
     { key: "Total COGS", values: totalCOGS },
     { key: "Gross Profit", values: grossProfit },
+    { key: "" },
     { key: "Operating Expenses" },
+
     // { key: "Operating Costs", values: totalCosts },
     {
       key: "Operating Costs",
@@ -293,10 +298,12 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       })),
     },
     { key: "EBITDA", values: ebitda },
+    { key: "" },
     { key: "Additional Expenses" },
     { key: "Depreciation", values: totalInvestmentDepreciation },
     { key: "Interest", values: totalInterestPayments },
     { key: "EBT", values: earningsBeforeTax },
+    { key: "" },
     { key: "Income Tax", values: incomeTax },
     { key: "Net Income", values: netIncome },
   ].map((item, index) => ({
@@ -351,7 +358,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
 
       render: (text, record) => ({
         children: (
-          <div className={"md:whitespace-nowrap truncate"}>
+          <div className={"md:whitespace-nowrap "}>
             <div
               style={{
                 fontWeight:
@@ -393,7 +400,23 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           ) {
             return {
               style: {
-                borderRight: "1px solid #f0f0f0",
+                // borderRight: "1px solid #f0f0f0",
+              },
+            };
+          } else if (
+            // record.metric === "Total Revenue" ||
+            // record.metric === "Total COGS" ||
+            record.metric === "Net Revenue" ||
+            record.metric === "Gross Profit" ||
+            record.metric === "EBITDA" ||
+            // record.metric === "Operating Costs" ||
+            record.metric === "Net Income"
+          ) {
+            return {
+              style: {
+                borderTop: "2px solid #000000",
+
+                fontWeight: "bold", // Add bold styling for Total Revenue
               },
             };
           } else if (
@@ -407,14 +430,13 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           ) {
             return {
               style: {
-                borderRight: "1px solid #f0f0f0",
                 fontWeight: "bold", // Add bold styling for Total Revenue
               },
             };
           } else {
             return {
               style: {
-                borderRight: "1px solid #f0f0f0",
+                // borderRight: "1px solid #f0f0f0",
               },
             };
           }
@@ -951,7 +973,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           <Table
             className="overflow-auto my-8 rounded-md bg-white"
             size="small"
-            bordered
             dataSource={transposedData}
             columns={columns}
             pagination={false}

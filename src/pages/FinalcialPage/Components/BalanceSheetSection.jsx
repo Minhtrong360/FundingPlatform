@@ -701,7 +701,7 @@ function BalanceSheetSection({ numberOfMonths }) {
       key: "Assets",
     },
     {
-      key: "Current Assets",
+      key: "Current-Assets",
     },
     {
       key: "Cash",
@@ -719,6 +719,7 @@ function BalanceSheetSection({ numberOfMonths }) {
       key: "Current Assets", // Added Current Assets row
       values: currentAssets,
     },
+    {key: " "},
     {
       key: "Long-Term Assets",
     },
@@ -736,12 +737,12 @@ function BalanceSheetSection({ numberOfMonths }) {
       key: "Long term assets",
       values: bsTotalNetFixedAssets,
     },
-
+   
     {
       key: "Total Assets",
       values: totalAssets,
     },
-
+    {key: " "},
     {
       key: "Liabilities & Equity",
     },
@@ -765,7 +766,10 @@ function BalanceSheetSection({ numberOfMonths }) {
       key: "Total Liabilities", // Added Inventory row
       values: totalLiabilities,
     },
-
+    {
+      key: " ", 
+   
+    },
     {
       key: "Shareholders Equity",
     },
@@ -802,14 +806,14 @@ function BalanceSheetSection({ numberOfMonths }) {
       key: "Total Shareholders Equity",
       values: totalShareholdersEquity,
     },
-
+  
     // Add the Total Liabilities and Shareholders Equity here
 
     {
       key: "Total Liabilities and Shareholders Equity",
       values: totalLiabilitiesAndShareholdersEquity,
     },
-
+    
     {
       key: "Total Assets (Double Check)",
       values: totalAssets,
@@ -859,6 +863,7 @@ function BalanceSheetSection({ numberOfMonths }) {
             <div
               style={{
                 fontWeight:
+                  record.metric ==  " " ||
                   record.metric === "Current Assets" ||
                   record.metric === "Long term assets" ||
                   record.metric === "Total Assets" ||
@@ -868,7 +873,7 @@ function BalanceSheetSection({ numberOfMonths }) {
                   record.metric ===
                     "Total Liabilities and Shareholders Equity" ||
                   record.metric === "Assets" ||
-                  record.metric === "Current Assets" ||
+                  record.metric === "Current-Assets" ||
                   record.metric === "Long-Term Assets" ||
                   record.metric === "Liabilities & Equity" ||
                   record.metric === "Current Liabilities" ||
@@ -878,7 +883,7 @@ function BalanceSheetSection({ numberOfMonths }) {
                     : "normal",
               }}
             >
-              {text}
+               {text || <>&nbsp;</>}
             </div>
           </div>
         ),
@@ -891,12 +896,12 @@ function BalanceSheetSection({ numberOfMonths }) {
         title: `${months[monthIndex]}/${year}`,
         dataIndex: `Month ${i + 1}`,
         key: `Month ${i + 1}`,
-        style: { borderRight: "1px solid #f0f0f0" },
+        // style: { borderRight: "1px solid #f0f0f0" },
         align: "right",
         onCell: (record) => {
           if (
             record.metric === "Assets" ||
-            record.metric === "Current Assets" ||
+            record.metric === "Current-Assets" ||
             record.metric === "Long-Term Assets" ||
             record.metric === "Liabilities & Equity" ||
             record.metric === "Current Liabilities" ||
@@ -905,10 +910,10 @@ function BalanceSheetSection({ numberOfMonths }) {
           ) {
             return {
               style: {
-                borderRight: "1px solid #f0f0f0",
+                // borderRight: "1px solid #f0f0f0",
               },
             };
-          } else if (
+          } else if (   
             record.metric === "Current Assets" ||
             record.metric === "Long term assets" ||
             record.metric === "Total Assets" ||
@@ -919,14 +924,16 @@ function BalanceSheetSection({ numberOfMonths }) {
           ) {
             return {
               style: {
-                borderRight: "1px solid #f0f0f0",
+                borderTop: "2px solid #000000",
                 fontWeight: "bold", // Add bold styling for Total Revenue
               },
             };
           } else {
             return {
               style: {
-                borderRight: "1px solid #f0f0f0",
+                // borderRight: "1px solid #f0f0f0",
+               
+
               },
             };
           }
@@ -1211,7 +1218,7 @@ function BalanceSheetSection({ numberOfMonths }) {
             dataSource={positionDataWithNetIncome2}
             columns={positionColumns1}
             pagination={false}
-            bordered
+            
           />
 
           <div className="grid grid-cols-2 gap-4 mb-3">
@@ -1245,7 +1252,7 @@ function BalanceSheetSection({ numberOfMonths }) {
                 {divideMonthsIntoYearsForBalanceSheet().map((year, index) => (
                   <TabPane tab={year.year} key={index.toString()}>
                     <Table
-                      className="bg-white overflow-auto my-8 rounded-md shadow-xl"
+                      className="bg-white overflow-auto my-8 rounded-md "
                       size="small"
                       dataSource={getDataSourceForYearBalanceSheet(year.months)}
                       columns={generateBalanceSheetTableColumns(year)}

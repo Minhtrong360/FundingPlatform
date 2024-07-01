@@ -33,7 +33,6 @@ const UniCard = ({
     fetchCodeData();
   }, [data]);
 
-  console.log("data", data);
   return (
     <div
       onClick={() => {

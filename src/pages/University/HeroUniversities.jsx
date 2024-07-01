@@ -8,7 +8,6 @@ import {
   Menu,
   Modal,
   Table,
-  Card,
   message,
 } from "antd";
 import { useEffect, useState } from "react";
@@ -16,7 +15,6 @@ import { supabase } from "../../supabase";
 import moment from "moment";
 import { formatDate } from "../../features/DurationSlice";
 import { IconButton } from "@mui/material";
-import UniEditorTool from "./UniEditorTool";
 import UniCard from "./UniCard";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
@@ -52,9 +50,6 @@ const HeroUniversities = ({
 
   const [universityName, setUniversityName] = useState(credentials?.university);
   const [description, setDescription] = useState(credentials?.description);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
     const fetchCodeData = async () => {
@@ -214,6 +209,7 @@ const HeroUniversities = ({
         expired_at: newExpirationDate.format("YYYY-MM-DD"),
         name: competitionName,
         description: competitionDescription,
+        avatar_url: codeAvatarUrl,
       })
       .eq("id", selectedCode.id)
       .select();
@@ -239,6 +235,7 @@ const HeroUniversities = ({
       setNewExpirationDate(null);
       setCompetitionName("");
       setCompetitionDescription("");
+      setCodeAvatarUrl("");
       setSelectedCode(data[0]);
       setSelectedCodeFull(data[0]);
     }
@@ -480,14 +477,6 @@ const HeroUniversities = ({
       setSelectedCode(data[0]); // Update the selectedCode state to reflect the change
       setSelectedCodeFull(data[0]); // Update the selectedCode state to reflect the change
     }
-  };
-
-  const [isRulesModalOpen, setIsRulesModalOpen] = useState(false); // New state for rules modal
-
-  const openRulesModal = (record) => {
-    setSelectedCode(record);
-    setSelectedCodeFull(record);
-    setIsRulesModalOpen(true);
   };
 
   const codeColumns = [
@@ -951,25 +940,6 @@ const HeroUniversities = ({
     }
   };
 
-  const handleUpdateRules = async (updatedCode) => {
-    try {
-      const { error } = await supabase
-        .from("code")
-        .update({ rules: updatedCode.rules })
-        .eq("id", updatedCode.id);
-
-      if (error) {
-        throw error;
-      }
-
-      message.success("Rules updated successfully");
-      setIsRulesModalOpen(false);
-    } catch (error) {
-      message.error("Failed to update rules");
-      console.error("Error updating rules:", error);
-    }
-  };
-
   const [currentCodePage, setCurrentCodePage] = useState(0);
   const itemsPerPage = 2;
 
@@ -987,8 +957,6 @@ const HeroUniversities = ({
 
   const startIndex = currentCodePage * itemsPerPage;
   const selectedCodes = codeData.slice(startIndex, startIndex + itemsPerPage);
-
-  console.log("selectedCodes", selectedCodes);
 
   return (
     <section className="bg-white">
@@ -1610,20 +1578,6 @@ const HeroUniversities = ({
               </div>
             </form>
           </div>
-        </Modal>
-
-        <Modal
-          title={`Rules for ${selectedCode?.code}`}
-          open={isRulesModalOpen}
-          onCancel={() => setIsRulesModalOpen(false)}
-          okText="Update"
-          onOk={() => handleUpdateRules(selectedCode)}
-          centered={true}
-        >
-          <UniEditorTool
-            selectedCode={selectedCode}
-            setSelectedCode={setSelectedCode}
-          />
         </Modal>
       </div>
     </section>

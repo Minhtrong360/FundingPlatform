@@ -441,11 +441,15 @@ function CashFlowSection({ numberOfMonths }) {
       key: "CF Operations",
       values: CFOperationsArray,
     },
+    {key: " ",
+    
+    },
     { key: "Investing Activities" },
     {
       key: "CF Investments",
       values: cfInvestmentsArray,
     },
+    { key: " ", },
     { key: "Financing Activities" },
     {
       key: "CF Loans",
@@ -483,6 +487,7 @@ function CashFlowSection({ numberOfMonths }) {
         );
       }),
     },
+    {key: " ",},
     {
       key: "Net +/- in Cash",
       values: netIncome.map((_, index) => {
@@ -557,7 +562,8 @@ function CashFlowSection({ numberOfMonths }) {
                   record.metric === "Cash End" ||
                   record.metric === "Operating Activities" ||
                   record.metric === "Investing Activities" ||
-                  record.metric === "Financing Activities"
+                  record.metric === "Financing Activities"  
+                 
                     ? "bold"
                     : "normal",
               }}
@@ -584,7 +590,7 @@ function CashFlowSection({ numberOfMonths }) {
           ) {
             return {
               style: {
-                borderRight: "1px solid #f0f0f0",
+                // borderRight: "1px solid #f0f0f0",
               },
             };
           } else if (
@@ -598,14 +604,29 @@ function CashFlowSection({ numberOfMonths }) {
           ) {
             return {
               style: {
-                borderRight: "1px solid #f0f0f0",
+                borderTop: "2px solid #000000",
                 fontWeight: "bold",
               },
             };
-          } else {
+          } else if (
+            record.metric === "CF Operations" ||
+            record.metric === "Operating Activities" ||
+            record.metric === "CF Investments" ||
+            record.metric === "CF Financing" ||
+            record.metric === "Net +/- in Cash" ||
+            record.metric === "Cash Begin" ||
+            record.metric === "Cash End"
+          ) {
             return {
               style: {
-                borderRight: "1px solid #f0f0f0",
+               
+                fontWeight: "bold",
+              },
+            };
+          }else {
+            return {
+              style: {
+                // borderRight: "1px solid #f0f0f0",
               },
             };
           }
@@ -731,7 +752,7 @@ function CashFlowSection({ numberOfMonths }) {
         title: "Year Total",
         dataIndex: "yearTotal",
         key: "yearTotal",
-        render: (text) => <strong>{formatNumber(text)}</strong>, // Assuming formatNumber is a utility function to format numbers
+        render: (text) => <strong>{formatNumber(text)}</strong>, 
       },
     ];
     return columns;
@@ -886,12 +907,12 @@ function CashFlowSection({ numberOfMonths }) {
             </button>
           </div>
           <Table
-            className="bg-white overflow-x-auto my-8 rounded-md shadow-xl"
+            className="bg-white overflow-auto my-8 rounded-md "
             size="small"
             dataSource={positionDataWithNetIncome}
             columns={positionColumns}
             pagination={false}
-            bordered
+            
           />
           <div className="grid grid-cols-2 gap-4 mb-3">
             <Checkbox
@@ -926,12 +947,12 @@ function CashFlowSection({ numberOfMonths }) {
                 {divideMonthsIntoYearsForCashFlow().map((year, index) => (
                   <TabPane tab={year.year} key={index}>
                     <Table
-                      className="bg-white overflow-auto my-8 rounded-md shadow-xl"
+                      className="bg-white overflow-auto my-8 rounded-md "
                       size="small"
                       dataSource={getDataSourceForYearCashFlow(year.months)}
                       columns={generateCashFlowTableColumns(year)}
                       pagination={false}
-                      bordered
+                      
                     />
                   </TabPane>
                 ))}

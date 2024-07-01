@@ -2,7 +2,7 @@ import { BubbleChat } from 'flowise-embed-react'
 
 const FlowiseChat = () => {
     return (
-        <BubbleChat chatflowid="26a1b357-632b-4551-9f60-9d2e9b216738" apiHost="https://flowise-ngy8.onrender.com" />
+        <BubbleChat chatflowid="d07c777f-6204-4699-92ea-9c0abb67d157" apiHost="https://flowise-ngy8.onrender.com" />
     );
 };
 

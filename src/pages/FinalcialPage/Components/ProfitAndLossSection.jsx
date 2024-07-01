@@ -213,12 +213,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     {
       key: "Operating Costs",
       values: totalCosts,
-      children: costData
-        .filter((cost) => cost.costGroup === "Operating Costs")
-        .map((cost) => ({
-          key: cost.costName,
-          values: cost.monthlyCosts.map((mc) => mc.cost),
-        })),
     },
     {
       key: "Personnel",
@@ -256,6 +250,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     })),
   }));
 
+  const { costTableData } = useSelector((state) => state.cost);
   const transposedData = [
     { key: "Revenue" },
     { key: "Total Revenue", values: totalRevenue },
@@ -269,12 +264,17 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     {
       key: "Operating Costs",
       values: totalCosts,
-      children: costData
-        .filter((cost) => cost.costGroup === "Operating Costs")
-        .map((cost) => ({
-          key: cost.costName,
-          values: cost.monthlyCosts.map((mc) => mc.cost),
-        })),
+      children: costTableData.map((item) => ({
+        key: item.key,
+        metric: item.costName,
+        ...Object.keys(item).reduce((acc, key) => {
+          if (key.startsWith("month")) {
+            const monthIndex = key.replace("month", "").trim();
+            acc[`Month ${monthIndex}`] = item[key];
+          }
+          return acc;
+        }, {}),
+      })),
     },
     {
       key: "Personnel",
@@ -282,6 +282,14 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       children: Object.keys(detailedPersonnelCosts).map((jobTitle) => ({
         key: jobTitle,
         values: detailedPersonnelCosts[jobTitle],
+        metric: jobTitle,
+        ...detailedPersonnelCosts[jobTitle].reduce(
+          (acc, value, i) => ({
+            ...acc,
+            [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+          }),
+          {}
+        ),
       })),
     },
     { key: "EBITDA", values: ebitda },
@@ -301,17 +309,24 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       {}
     ),
     children: item.children?.map((child) => ({
-      metric: child.key,
-      ...child.values.reduce(
+      metric: child.metric,
+      ...child.values?.reduce(
         (acc, value, i) => ({
           ...acc,
           [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
         }),
         {}
       ),
+      ...Object.keys(child).reduce((acc, key) => {
+        if (key.startsWith("Month")) {
+          acc[key] = child[key];
+        }
+        return acc;
+      }, {}),
     })),
   }));
 
+  ////////
   const months = [
     "01",
     "02",
@@ -992,7 +1007,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section className="mb-8 NOsticky NOtop-8">
-          <GroqJS datasrc={profitAndLossData} />
+          <GroqJS datasrc={profitAndLossData} inputUrl="urlPNL" />
         </section>
       </div>
 
@@ -1039,7 +1054,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           centered={true}
           zIndex={50}
         >
-          <GroqJS datasrc={profitAndLossData} />
+          <GroqJS datasrc={profitAndLossData} inputUrl="urlPNL" />
         </Modal>
       )}
     </div>

@@ -61,7 +61,6 @@ const AllChartSections = ({
   }
 
   const [selectedChart, setSelectedChart] = useState("total-revenue-chart"); // State để lưu trữ biểu đồ được chọn
-
   // Tính toán
   const dispatch = useDispatch();
   const { customerGrowthData, customerInputs } = useSelector(

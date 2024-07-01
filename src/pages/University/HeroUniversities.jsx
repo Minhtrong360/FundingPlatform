@@ -165,6 +165,7 @@ const HeroUniversities = ({
           UniID: credentials.UniID,
           name: competitionName,
           description: competitionDescription,
+          avatar_url: codeAvatarUrl,
         },
       ])
       .select();
@@ -189,6 +190,7 @@ const HeroUniversities = ({
       setExpirationDate(null);
       setCompetitionName("");
       setCompetitionDescription("");
+      setCodeAvatarUrl("");
     }
   };
 
@@ -417,6 +419,7 @@ const HeroUniversities = ({
     setCompetitionDescription(record.description);
     setExpirationDate(record.expired_at ? moment(record.expired_at) : null);
     setNewExpirationDate(null);
+    setCodeAvatarUrl(record.avatar_url);
     setIsEditModalOpen(true);
   };
 
@@ -816,6 +819,7 @@ const HeroUniversities = ({
   ];
 
   const [avatarUrl, setAvatarUrl] = useState(credentials?.avatar_url); // State to store project image URL
+  const [codeAvatarUrl, setCodeAvatarUrl] = useState(); // State to store project image URL
   useEffect(() => {
     setAvatarUrl(credentials?.avatar_url);
     setUniversityName(credentials?.university);
@@ -885,6 +889,26 @@ const HeroUniversities = ({
         } else {
           message.success("Avatar URL updated successfully");
         }
+      }
+    };
+
+    reader.readAsDataURL(file); // Read the uploaded file
+  };
+
+  const handleCodeAvatarUpload = (event) => {
+    const file = event.target.files[0]; // Get the uploaded file
+    // Assuming you're using FileReader to read the uploaded file as data URL
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      setCodeAvatarUrl(e.target.result); // Set the project image URL in state
+
+      // Upload the image to Supabase
+      const uploadedAvatarUrl = await uploadImageToSupabase(
+        dataURItoFile(e.target.result, "img")
+      );
+
+      if (uploadedAvatarUrl) {
+        setCodeAvatarUrl(uploadedAvatarUrl); // Update the state with the uploaded image URL
       }
     };
 
@@ -1031,6 +1055,7 @@ const HeroUniversities = ({
                   setExpirationDate(null);
                   setCompetitionName("");
                   setCompetitionDescription("");
+                  setCodeAvatarUrl("");
                   setIsAddNewModalOpen(true);
                 }}
               >
@@ -1227,6 +1252,30 @@ const HeroUniversities = ({
                   />
                 </div>
               </div>
+              <div className="space-y-1 md:col-span-2">
+                <label htmlFor="cover">Competition Cover</label>
+                <div className="flex items-center">
+                  <Input
+                    id="cover"
+                    placeholder="Code Cover"
+                    required
+                    className="border-gray-300 rounded-md text-sm"
+                    value={
+                      codeAvatarUrl?.length > 20
+                        ? codeAvatarUrl?.substring(0, 20) + "..."
+                        : codeAvatarUrl
+                    }
+                    onChange={(e) => setCodeAvatarUrl(e.target.value)}
+                  />
+                </div>
+                <span className="py-1 px-2 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "></span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleCodeAvatarUpload}
+                  className="py-1 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
+                />
+              </div>
             </form>
           </div>
         </Modal>
@@ -1335,6 +1384,30 @@ const HeroUniversities = ({
                       autoSize
                     />
                   </div>
+                </div>
+                <div className="space-y-1 md:col-span-2">
+                  <label htmlFor="cover">Competition Cover</label>
+                  <div className="flex items-center">
+                    <Input
+                      id="cover"
+                      placeholder="Code Cover"
+                      required
+                      className="border-gray-300 rounded-md text-sm"
+                      value={
+                        codeAvatarUrl?.length > 20
+                          ? codeAvatarUrl?.substring(0, 20) + "..."
+                          : codeAvatarUrl
+                      }
+                      onChange={(e) => setCodeAvatarUrl(e.target.value)}
+                    />
+                  </div>
+                  <span className="py-1 px-2 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "></span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleCodeAvatarUpload}
+                    className="py-1 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
+                  />
                 </div>
               </div>
             </form>

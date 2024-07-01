@@ -150,7 +150,8 @@ const HeroUniversities = ({
       !newCode ||
       !expirationDate ||
       !competitionName ||
-      !competitionDescription
+      !competitionDescription ||
+      !codeAvatarUrl
     ) {
       message.error("Please enter all required fields");
       return;
@@ -195,7 +196,13 @@ const HeroUniversities = ({
   };
 
   const handleEditCode = async () => {
-    if (!selectedCode || !newCode || !newExpirationDate || !competitionName) {
+    if (
+      !selectedCode ||
+      !newCode ||
+      !newExpirationDate ||
+      !competitionName ||
+      !codeAvatarUrl
+    ) {
       message.error("Please enter all required fields");
       return;
     }

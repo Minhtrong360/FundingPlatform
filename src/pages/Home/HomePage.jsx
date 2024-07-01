@@ -24,6 +24,7 @@ import industries from "../../components/Industries";
 import { formatNumber } from "../../features/CostSlice";
 import SpinnerBtn from "../../components/SpinnerBtn";
 import Header2 from "./Header2";
+import FlowiseChat from "../FinalcialPage/FLowiseChat";
 // import BubleChatBot from "./Components/BubleChatBot";
 
 const HomePage = () => {
@@ -346,7 +347,7 @@ const HomePage = () => {
     <>
       {/* <Header /> */}
       <Header2 />
-
+      <FlowiseChat />
       {/* {user && <BubleChatBot />} */}
       <HeroSection />
 

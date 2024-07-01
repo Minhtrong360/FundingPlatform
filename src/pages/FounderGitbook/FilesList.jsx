@@ -303,7 +303,11 @@ function FilesList() {
       title: "Action",
       key: "action",
       render: (_, record) => (
-        <Button danger onClick={() => showDeleteModal(record.id)}>
+        <Button
+          style={{ fontSize: "12px" }}
+          danger
+          onClick={() => showDeleteModal(record.id)}
+        >
           Delete
         </Button>
       ),
@@ -319,7 +323,11 @@ function FilesList() {
         ) : record?.invited_user?.includes(user?.email) ? (
           ""
         ) : (
-          <Button type="primary" onClick={() => handleSendRequest(record)}>
+          <Button
+            type="primary"
+            style={{ backgroundColor: "#2563EB", fontSize: "12px" }}
+            onClick={() => handleSendRequest(record)}
+          >
             Send Request
           </Button>
         ),
@@ -337,16 +345,22 @@ function FilesList() {
             isPrivateDisabled={isPrivateDisabled}
           />
         </div>
-        <Table
-          columns={columns}
-          dataSource={projectLinks.map((link, index) => ({
-            ...link,
-            key: link.id,
-            no: index + 1,
-          }))}
-          loading={isLoading}
-          rowKey="id"
-        />
+        <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
+          <Table
+            columns={columns}
+            dataSource={projectLinks.map((link, index) => ({
+              ...link,
+              key: link.id,
+              no: index + 1,
+            }))}
+            loading={isLoading}
+            rowKey="id"
+            scroll={{
+              x: true,
+            }}
+            size="small"
+          />
+        </div>
       </section>
       <Modal
         title="Confirm Delete"

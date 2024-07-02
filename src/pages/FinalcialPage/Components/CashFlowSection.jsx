@@ -441,15 +441,13 @@ function CashFlowSection({ numberOfMonths }) {
       key: "CF Operations",
       values: CFOperationsArray,
     },
-    {key: " ",
-    
-    },
+    { key: "" },
     { key: "Investing Activities" },
     {
       key: "CF Investments",
       values: cfInvestmentsArray,
     },
-    { key: " ", },
+    { key: "" },
     { key: "Financing Activities" },
     {
       key: "CF Loans",
@@ -487,7 +485,7 @@ function CashFlowSection({ numberOfMonths }) {
         );
       }),
     },
-    {key: " ",},
+    { key: "" },
     {
       key: "Net +/- in Cash",
       values: netIncome.map((_, index) => {
@@ -562,8 +560,7 @@ function CashFlowSection({ numberOfMonths }) {
                   record.metric === "Cash End" ||
                   record.metric === "Operating Activities" ||
                   record.metric === "Investing Activities" ||
-                  record.metric === "Financing Activities"  
-                 
+                  record.metric === "Financing Activities"
                     ? "bold"
                     : "normal",
               }}
@@ -619,11 +616,10 @@ function CashFlowSection({ numberOfMonths }) {
           ) {
             return {
               style: {
-               
                 fontWeight: "bold",
               },
             };
-          }else {
+          } else {
             return {
               style: {
                 // borderRight: "1px solid #f0f0f0",
@@ -752,7 +748,7 @@ function CashFlowSection({ numberOfMonths }) {
         title: "Year Total",
         dataIndex: "yearTotal",
         key: "yearTotal",
-        render: (text) => <strong>{formatNumber(text)}</strong>, 
+        render: (text) => <strong>{formatNumber(text)}</strong>,
       },
     ];
     return columns;
@@ -779,7 +775,6 @@ function CashFlowSection({ numberOfMonths }) {
 
     // Add rows for each channel
     positionDataWithNetIncome.forEach((record) => {
-      console.log("record", record);
       const row = [record.metric];
       for (let i = 1; i <= numberOfMonths; i++) {
         row.push(record[`Month ${i}`] || "");
@@ -914,7 +909,6 @@ function CashFlowSection({ numberOfMonths }) {
             dataSource={positionDataWithNetIncome}
             columns={positionColumns}
             pagination={false}
-            
           />
           <div className="grid grid-cols-2 gap-4 mb-3">
             <Checkbox
@@ -954,7 +948,6 @@ function CashFlowSection({ numberOfMonths }) {
                       dataSource={getDataSourceForYearCashFlow(year.months)}
                       columns={generateCashFlowTableColumns(year)}
                       pagination={false}
-                      
                     />
                   </TabPane>
                 ))}

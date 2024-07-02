@@ -234,7 +234,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     ...item.values?.reduce(
       (acc, value, i) => ({
         ...acc,
-        [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+        [realDate[i]]: formatNumber(value?.toFixed(2)),
       }),
       {}
     ),
@@ -251,8 +251,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   }));
 
   const { costTableData } = useSelector((state) => state.cost);
-  const { revenueTableData } = useSelector((state) => state.sales);
-  console.log("revenueTableData", revenueTableData);
   const transposedData = [
     { key: "Revenue" },
     { key: "Total Revenue", values: totalRevenue },

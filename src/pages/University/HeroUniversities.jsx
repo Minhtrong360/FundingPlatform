@@ -1103,7 +1103,7 @@ const HeroUniversities = ({
                   {selectedCodes.map((code) => (
                     <div
                       key={code.id}
-                      className="group flex justify-center w-full"
+                      className="group flex-grow justify-center w-full"
                     >
                       <UniCard
                         data={code}

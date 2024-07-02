@@ -65,15 +65,15 @@ const HeroCompetition = () => {
               style={{ paddingTop: "56.25%", paddingBottom: "6.25%" }}
             >
               <p>
-                <iframe
-                  title="YouTube video player"
+                <img
+                  alt="Cover"
                   className="absolute top-0 left-0 right-0 w-full h-full"
-                  src="https://www.youtube.com/embed/OTuhZIlpDZg?si=HFGd7RDtQJEH0dCp&amp;controls=0&autoplay=1&mute=1&loop=1&playlist=OTuhZIlpDZg"
+                  src="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_storage/beekrowd_images/Competition_Cover.jpg"
                   width="100%"
                   height="100%"
                   allowFullScreen
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                ></iframe>
+                ></img>
               </p>
             </div>
           </div>

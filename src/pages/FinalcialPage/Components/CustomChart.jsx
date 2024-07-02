@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 import { Card, Modal } from "antd";
 import { formatNumber } from "../../../features/CostSlice";
@@ -44,6 +44,10 @@ const CustomChart = ({
       return `${months[monthIndex]}/${year}`;
     }
   );
+
+  useEffect(() => {
+    setChartEndMonth(numberOfMonths);
+  }, [numberOfMonths]);
 
   const filteredData = RenderData.slice(chartStartMonth - 1, chartEndMonth).map(
     (value) => parseFloat(value.toFixed(0))

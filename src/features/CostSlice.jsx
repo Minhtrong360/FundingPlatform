@@ -152,7 +152,7 @@ export const calculateCostData = (
       costName: costInput.costName,
       monthlyCosts,
       costType: costInput.costType,
-      costGroup: costInput.costGroup, // Include the cost group in the cost data
+      costGroup: costInput.costGroup?.toUpperCase(), // Include the cost group in the cost data
     });
   });
   return allCosts;
@@ -171,13 +171,13 @@ export const transformCostDataForTable = (
   );
 
   calculatedCostData?.forEach((costItem) => {
-    const rowKey = `${costItem.costName} - ${costItem.costGroup}`;
+    const rowKey = `${costItem.costName}`;
     costItem.monthlyCosts.forEach((monthData) => {
       if (!transformedTableData[rowKey]) {
         transformedTableData[rowKey] = {
           key: rowKey,
           costName: rowKey,
-          costGroup: costItem.costGroup, // Include the cost group for grouping
+          costGroup: costItem.costGroup.toUpperCase(), // Include the cost group for grouping
         };
       }
       transformedTableData[rowKey][`month${monthData.month}`] = formatNumber(
@@ -188,7 +188,7 @@ export const transformCostDataForTable = (
 
   // Group costs by costGroup
   const costGroups = [
-    ...new Set(tempCostInput.map((input) => input.costGroup)),
+    ...new Set(tempCostInput.map((input) => input.costGroup.toUpperCase())),
   ];
   const categorizedTableData = [];
 
@@ -200,7 +200,7 @@ export const transformCostDataForTable = (
     });
 
     const costsOfGroup = Object.values(transformedTableData).filter(
-      (data) => data.costGroup === group
+      (data) => data.costGroup.toUpperCase() === group.toUpperCase()
     );
 
     costsOfGroup.forEach((data) => categorizedTableData.push(data));

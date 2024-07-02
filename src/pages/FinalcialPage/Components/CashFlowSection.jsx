@@ -946,7 +946,11 @@ function CashFlowSection({ numberOfMonths }) {
 
           {showAdvancedInputs && (
             <>
-              <div className="w-full lg:w-[20%] md:w-[50%] my-5">
+              <div className="w-full lg:w-[20%] md:w-[50%] my-5 mt-20">
+                <h3 className="text-lg font-semibold my-5">
+                  III. Cash Flow By Years
+                </h3>
+
                 <SelectField
                   label="Select Cut Month:"
                   id="Select Cut Month:"

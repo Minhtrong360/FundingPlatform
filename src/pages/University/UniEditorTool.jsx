@@ -164,7 +164,7 @@ export default function UniEditorTool({
 
   return (
     <>
-      <div className="flex-grow items-center justify-center max-w-[50vw] py-10 ">
+      <div className="flex-grow items-center justify-center max-w-[85rem] py-10 ">
         <BlockNoteView
           editor={editor}
           theme={"light"}

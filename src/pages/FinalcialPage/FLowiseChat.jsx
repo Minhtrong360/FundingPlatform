@@ -43,7 +43,7 @@ const theme = {
 const FlowiseChat = () => {
   return (
     <BubbleChat
-      chatflowid="d07c777f-6204-4699-92ea-9c0abb67d157"
+      chatflowid="39943ce9-4b02-44a9-be58-b53010dbf83b"
       apiHost="https://flowise-ngy8.onrender.com"
       theme={theme}
     />

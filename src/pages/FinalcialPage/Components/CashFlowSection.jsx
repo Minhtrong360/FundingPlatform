@@ -441,11 +441,13 @@ function CashFlowSection({ numberOfMonths }) {
       key: "CF Operations",
       values: CFOperationsArray,
     },
+    { key: "1" },
     { key: "Investing Activities" },
     {
       key: "CF Investments",
       values: cfInvestmentsArray,
     },
+    { key: "1" },
     { key: "Financing Activities" },
     {
       key: "CF Loans",
@@ -483,6 +485,7 @@ function CashFlowSection({ numberOfMonths }) {
         );
       }),
     },
+    { key: "1" },
     {
       key: "Net +/- in Cash",
       values: netIncome.map((_, index) => {
@@ -544,7 +547,10 @@ function CashFlowSection({ numberOfMonths }) {
       fixed: "left",
       render: (text, record) => ({
         children: (
-          <div className={" md:whitespace-nowrap "}>
+          <div
+            className={" md:whitespace-nowrap "}
+            style={{ visibility: record.metric === "1" ? "hidden" : "visible" }}
+          >
             <div
               style={{
                 fontWeight:
@@ -584,7 +590,7 @@ function CashFlowSection({ numberOfMonths }) {
           ) {
             return {
               style: {
-                borderRight: "1px solid #f0f0f0",
+                // borderRight: "1px solid #f0f0f0",
               },
             };
           } else if (
@@ -598,14 +604,28 @@ function CashFlowSection({ numberOfMonths }) {
           ) {
             return {
               style: {
-                borderRight: "1px solid #f0f0f0",
+                borderTop: "2px solid #000000",
+                fontWeight: "bold",
+              },
+            };
+          } else if (
+            record.metric === "CF Operations" ||
+            record.metric === "Operating Activities" ||
+            record.metric === "CF Investments" ||
+            record.metric === "CF Financing" ||
+            record.metric === "Net +/- in Cash" ||
+            record.metric === "Cash Begin" ||
+            record.metric === "Cash End"
+          ) {
+            return {
+              style: {
                 fontWeight: "bold",
               },
             };
           } else {
             return {
               style: {
-                borderRight: "1px solid #f0f0f0",
+                // borderRight: "1px solid #f0f0f0",
               },
             };
           }
@@ -721,17 +741,38 @@ function CashFlowSection({ numberOfMonths }) {
         dataIndex: "metric",
         key: "metric",
         fixed: "left",
+        render: (text, record) => ({
+          children: (
+            <div
+              className={"md:whitespace-nowrap"}
+              style={{
+                visibility: record.metric === "1" ? "hidden" : "visible",
+              }}
+            >
+              <div>{text}</div>
+            </div>
+          ),
+        }),
       },
       ...year.textMonth.map((textMonth, index) => ({
         title: textMonth,
         dataIndex: `Month ${year.months[index]}`,
         key: `Month ${year.months[index]}`,
+        render: (text, record) => (
+          <div
+            style={{
+              visibility: record.metric === "1" ? "hidden" : "visible",
+            }}
+          >
+            {text}
+          </div>
+        ),
       })),
       {
         title: "Year Total",
         dataIndex: "yearTotal",
         key: "yearTotal",
-        render: (text) => <strong>{formatNumber(text)}</strong>, // Assuming formatNumber is a utility function to format numbers
+        render: (text) => <strong>{formatNumber(text)}</strong>,
       },
     ];
     return columns;
@@ -758,7 +799,6 @@ function CashFlowSection({ numberOfMonths }) {
 
     // Add rows for each channel
     positionDataWithNetIncome.forEach((record) => {
-      console.log("record", record);
       const row = [record.metric];
       for (let i = 1; i <= numberOfMonths; i++) {
         row.push(record[`Month ${i}`] || "");
@@ -793,6 +833,8 @@ function CashFlowSection({ numberOfMonths }) {
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
         <div className="">
+          <h3 className="text-lg font-semibold mb-4">I. Relevant Chart</h3>
+
           <div className=" gap-4 mb-3">
             <Select
               onValueChange={(value) => handleChartSelect(value)}
@@ -875,8 +917,8 @@ function CashFlowSection({ numberOfMonths }) {
             />
           )}
 
-          <div className="flex justify-between items-center my-4">
-            <h3 className="text-lg font-semibold">Cash Flow</h3>
+          <div className="flex justify-between items-center my-4 mt-20">
+            <h3 className="text-lg font-semibold">II. Cash Flow</h3>
             <button
               onClick={downloadExcel}
               className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
@@ -886,12 +928,11 @@ function CashFlowSection({ numberOfMonths }) {
             </button>
           </div>
           <Table
-            className="bg-white overflow-x-auto my-8 rounded-md shadow-xl"
+            className="bg-white overflow-auto my-8 rounded-md "
             size="small"
             dataSource={positionDataWithNetIncome}
             columns={positionColumns}
             pagination={false}
-            bordered
           />
           <div className="grid grid-cols-2 gap-4 mb-3">
             <Checkbox
@@ -905,7 +946,11 @@ function CashFlowSection({ numberOfMonths }) {
 
           {showAdvancedInputs && (
             <>
-              <div className="w-full lg:w-[20%] md:w-[50%] my-5">
+              <div className="w-full lg:w-[20%] md:w-[50%] my-5 mt-20">
+                <h3 className="text-lg font-semibold my-5">
+                  III. Cash Flow By Years
+                </h3>
+
                 <SelectField
                   label="Select Cut Month:"
                   id="Select Cut Month:"
@@ -926,12 +971,11 @@ function CashFlowSection({ numberOfMonths }) {
                 {divideMonthsIntoYearsForCashFlow().map((year, index) => (
                   <TabPane tab={year.year} key={index}>
                     <Table
-                      className="bg-white overflow-auto my-8 rounded-md shadow-xl"
+                      className="bg-white overflow-auto my-8 rounded-md "
                       size="small"
                       dataSource={getDataSourceForYearCashFlow(year.months)}
                       columns={generateCashFlowTableColumns(year)}
                       pagination={false}
-                      bordered
                     />
                   </TabPane>
                 ))}
@@ -943,7 +987,7 @@ function CashFlowSection({ numberOfMonths }) {
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section className="mb-8 NOsticky NOtop-8">
-          <GroqJS datasrc={cashFlowData} />
+          <GroqJS datasrc={cashFlowData} inputUrl="urlCF" />
         </section>
       </div>
 
@@ -990,7 +1034,7 @@ function CashFlowSection({ numberOfMonths }) {
           centered={true}
           zIndex={50}
         >
-          <GroqJS datasrc={cashFlowData} />
+          <GroqJS datasrc={cashFlowData} inputUrl="urlCF" />
         </Modal>
       )}
     </div>

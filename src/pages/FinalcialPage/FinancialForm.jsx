@@ -14,7 +14,7 @@ import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 
 import ProgressBar from "../../components/ProgressBar";
-import Gemini from "./Components/Gemini";
+import BusinessModelBot from "./Components/BusinessModelBot";
 import MetricsFM from "./Components/MetricsFM";
 import ProfitAndLossSection from "./Components/ProfitAndLossSection";
 // import * as XLSX from "xlsx";
@@ -62,8 +62,7 @@ import { useParams } from "react-router-dom";
 // import AnnounceFMPage from "./Components/AnnounceFMPage";
 // import Perflexity from "./Components/Perflexity";
 import SpinnerBtn from "../../components/SpinnerBtn";
-import DraggableChart from "./Components/DraggableChart";
-
+import FlowiseChat from "./FLowiseChat";
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -111,15 +110,16 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     setNumberOfMonths(month);
   }, [selectedDuration]);
 
-  // Gemini
+  // BusinessModelBot
   const [chatbotResponse, setChatbotResponse] = useState("");
-  // Gemini useEffect
+  // BusinessModelBot useEffect
   useEffect(() => {
+    // Ensure chatbotResponse is only processed when it's a valid string
+    // if (!chatbotResponse || chatbotResponse.trim() === "") return;
     try {
-      // Ensure chatbotResponse is only processed when it's a valid string
-      if (!chatbotResponse || chatbotResponse.trim() === "") return;
       const data = JSON?.parse(chatbotResponse);
-
+      // console.log("chatbotResponse", chatbotResponse);
+      // console.log("data", data);
       if (data.DurationSelect)
         // dispatch(setSelectedDuration(data.DurationSelect.selectedDuration));
         dispatch(
@@ -871,22 +871,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     setActiveTab(tabName);
   };
 
-  const [run, setRun] = useState(false);
-
-  useEffect(() => {
-    setRun(false); // Initialize Joyride on component mount
-  }, []);
-
-  // const handleJoyrideCallback = (data) => {
-  //   if (data.status === "finished" || data.status === "skipped") {
-  //     setRun(false);
-  //   }
-  // };
-
-  // const startTour = () => {
-  //   setRun(true);
-  // };
-
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 
   const [activeTabA, setActiveTabA] = useState("table&chart");
@@ -896,100 +880,13 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   };
   return (
     <div className="min-h-screen">
-      {/* <div>
-        <Joyride
-          steps={[
-            {
-              target: ".cursor-pointer-overview",
-              content:
-                "This is the Overview tab. It provides a summary of your financial data.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-customer",
-              content:
-                "This is the Customer tab. It allows you to manage customer-related data.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-sales",
-              content:
-                "This is the Sales tab. It helps you track your sales performance.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-cost",
-              content:
-                "This is the Cost tab. It helps you analyze your costs and expenses.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-personnel",
-              content:
-                "This is the Personnel tab. It allows you to manage your workforce.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-investment",
-              content:
-                "This is the Investment tab. It helps you track your investments.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-loan",
-              content:
-                "This is the Loan tab. It allows you to manage your loans and debts.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-fundraising",
-              content:
-                "This is the Fundraising tab. It helps you manage fundraising activities.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-profitAndLoss",
-              content:
-                "This is the Profit and Loss tab. It provides insights into your profitability.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-cashFlow",
-              content:
-                "This is the Cash Flow tab. It helps you monitor your cash flow.",
-              disableBeacon: true,
-            },
-            {
-              target: ".cursor-pointer-balanceSheet",
-              content:
-                "This is the Balance Sheet tab. It provides an overview of your financial position.",
-              disableBeacon: true,
-            },
-          ]}
-          run={run}
-          continuous
-          scrollToFirstStep
-          showProgress
-          showSkipButton
-          disableOverlayClose
-          disableScrolling
-          disableCloseOnEsc
-          callback={handleJoyrideCallback}
-          styles={{
-            options: {
-              zIndex: 10000,
-            },
-          }}
-        />
-      </div> */}
-
       {spinning ? (
         <ProgressBar spinning={spinning} isLoading={isLoading} />
       ) : (
         <>
           {temIsLoading && <LoadingButtonClick isLoading={temIsLoading} />}
           <div className="w-full h-full flex flex-col lg:flex-row">
-            <Gemini
+            <BusinessModelBot
               setIsLoading={setIsLoading}
               setChatbotResponse={setChatbotResponse}
               currentUser={currentUser}
@@ -998,6 +895,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               setSpinning={setSpinning}
             />
           </div>
+          <FlowiseChat />
 
           <div className="my-4 ">
             {/* <div className="rounded-lg bg-green-500 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">
@@ -1164,13 +1062,11 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                     {activeTabA === "table&chart" && (
                       <>
                         <div className="w-full xl:w-3/4 sm:p-4 p-0">
-                          <h2
-                            className="text-lg font-semibold mb-7 flex items-center"
-                            id="duration-heading"
-                          >
-                            Overview
-                          </h2>
+                          {/* <N8NChat/> */}
+                          {/* <DraggableChart/> */}
+                          {/* <AmChart5/> */}
                           {/* <Perflexity prompt={generatePrompt()} button={"Benchmark"} /> */}
+
                           <MetricsFM
                             customerGrowthChart={customerGrowthChart}
                             revenue={revenue}

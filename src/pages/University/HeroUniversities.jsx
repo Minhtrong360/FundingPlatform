@@ -8,7 +8,6 @@ import {
   Menu,
   Modal,
   Table,
-  Card,
   message,
 } from "antd";
 import { useEffect, useState } from "react";
@@ -16,14 +15,15 @@ import { supabase } from "../../supabase";
 import moment from "moment";
 import { formatDate } from "../../features/DurationSlice";
 import { IconButton } from "@mui/material";
-import UniEditorTool from "./UniEditorTool";
 import UniCard from "./UniCard";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 const HeroUniversities = ({
   onSelectCode,
   setCompanies,
   credentials,
   currentTab,
+  selectedCode,
   setSelectedCodeFull,
 }) => {
   const { user } = useAuth();
@@ -39,7 +39,6 @@ const HeroUniversities = ({
   const [competitionDescription, setCompetitionDescription] = useState("");
   const [expirationDate, setExpirationDate] = useState(null);
   const [newExpirationDate, setNewExpirationDate] = useState(null);
-  const [selectedCode, setSelectedCode] = useState(null);
   const [codeToDelete, setCodeToDelete] = useState(null);
   const [codeData, setCodeData] = useState([]);
   const [projectCounts, setProjectCounts] = useState({});
@@ -70,6 +69,9 @@ const HeroUniversities = ({
           codes.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         );
         setProjectCounts(projectCounts);
+        setSelectedCodeFull(codes[0]);
+        onSelectCode(codes[0]?.id);
+        filterProjectsByCode(codes[0]?.id);
       } catch (error) {
         console.error("Error fetching code data:", error);
       }
@@ -146,7 +148,8 @@ const HeroUniversities = ({
       !newCode ||
       !expirationDate ||
       !competitionName ||
-      !competitionDescription
+      !competitionDescription ||
+      !codeAvatarUrl
     ) {
       message.error("Please enter all required fields");
       return;
@@ -161,6 +164,7 @@ const HeroUniversities = ({
           UniID: credentials.UniID,
           name: competitionName,
           description: competitionDescription,
+          avatar_url: codeAvatarUrl,
         },
       ])
       .select();
@@ -185,11 +189,18 @@ const HeroUniversities = ({
       setExpirationDate(null);
       setCompetitionName("");
       setCompetitionDescription("");
+      setCodeAvatarUrl("");
     }
   };
 
   const handleEditCode = async () => {
-    if (!selectedCode || !newCode || !newExpirationDate || !competitionName) {
+    if (
+      !selectedCode ||
+      !newCode ||
+      !newExpirationDate ||
+      !competitionName ||
+      !codeAvatarUrl
+    ) {
       message.error("Please enter all required fields");
       return;
     }
@@ -201,8 +212,9 @@ const HeroUniversities = ({
         expired_at: newExpirationDate.format("YYYY-MM-DD"),
         name: competitionName,
         description: competitionDescription,
+        avatar_url: codeAvatarUrl,
       })
-      .eq("id", selectedCode.id)
+      .eq("id", selectedCode?.id)
       .select();
 
     if (error) {
@@ -212,7 +224,7 @@ const HeroUniversities = ({
       message.success("Code updated successfully");
       setCodeData((prev) =>
         prev
-          .map((item) => (item.id === selectedCode.id ? data[0] : item))
+          .map((item) => (item.id === selectedCode?.id ? data[0] : item))
           .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
       );
       const updatedCounts = await fetchProjectCounts([data[0]]);
@@ -226,7 +238,7 @@ const HeroUniversities = ({
       setNewExpirationDate(null);
       setCompetitionName("");
       setCompetitionDescription("");
-      setSelectedCode(data[0]);
+      setCodeAvatarUrl("");
       setSelectedCodeFull(data[0]);
     }
   };
@@ -252,7 +264,7 @@ const HeroUniversities = ({
     const { data, error } = await supabase
       .from("code")
       .update({ publish: true })
-      .eq("id", selectedCode.id)
+      .eq("id", selectedCode?.id)
       .select();
 
     if (error) {
@@ -261,7 +273,7 @@ const HeroUniversities = ({
     } else {
       message.success("Code published successfully");
       setCodeData((prev) =>
-        prev.map((item) => (item.id === selectedCode.id ? data[0] : item))
+        prev.map((item) => (item.id === selectedCode?.id ? data[0] : item))
       );
       setIsPublishModalOpen(false);
     }
@@ -271,7 +283,7 @@ const HeroUniversities = ({
     const { data, error } = await supabase
       .from("code")
       .update({ publish: false })
-      .eq("id", selectedCode.id)
+      .eq("id", selectedCode?.id)
       .select();
 
     if (error) {
@@ -280,7 +292,7 @@ const HeroUniversities = ({
     } else {
       message.success("Code unpublished successfully");
       setCodeData((prev) =>
-        prev.map((item) => (item.id === selectedCode.id ? data[0] : item))
+        prev.map((item) => (item.id === selectedCode?.id ? data[0] : item))
       );
       setIsPublishModalOpen(false);
     }
@@ -294,7 +306,7 @@ const HeroUniversities = ({
     const { data, error } = await supabase
       .from("code")
       .update({ judges: updatedJudges })
-      .eq("id", selectedCode.id)
+      .eq("id", selectedCode?.id)
       .select();
 
     if (error) {
@@ -303,9 +315,8 @@ const HeroUniversities = ({
     } else {
       message.success("Judge added successfully");
       setCodeData((prev) =>
-        prev.map((item) => (item.id === selectedCode.id ? data[0] : item))
+        prev.map((item) => (item.id === selectedCode?.id ? data[0] : item))
       );
-      setSelectedCode(data[0]); // Update the selectedCode state to reflect the change
       setSelectedCodeFull(data[0]);
       setJudgeName("");
       setJudgeEmail("");
@@ -365,7 +376,7 @@ const HeroUniversities = ({
     // Parse applyInfo array
     const applyInfoArray = project?.applyInfo;
     const applyInfoIndex = applyInfoArray.findIndex(
-      (info) => info.universityCode === selectedCode.id
+      (info) => info.universityCode === selectedCode?.id
     );
 
     if (applyInfoIndex === -1) {
@@ -406,13 +417,13 @@ const HeroUniversities = ({
   };
 
   const openEditModal = (record) => {
-    setSelectedCode(record);
     setSelectedCodeFull(record);
     setNewCode(record.code);
     setCompetitionName(record.name);
     setCompetitionDescription(record.description);
     setExpirationDate(record.expired_at ? moment(record.expired_at) : null);
     setNewExpirationDate(null);
+    setCodeAvatarUrl(record.avatar_url);
     setIsEditModalOpen(true);
   };
 
@@ -422,13 +433,11 @@ const HeroUniversities = ({
   };
 
   const openPublishModal = (record) => {
-    setSelectedCode(record);
     setSelectedCodeFull(record);
     setIsPublishModalOpen(true);
   };
 
   const openJudgeModal = (record) => {
-    setSelectedCode(record);
     setSelectedCodeFull(record);
     setIsJudgeModalOpen(true);
   };
@@ -437,7 +446,7 @@ const HeroUniversities = ({
   const openScoreModal = (record) => {
     setSelectedProject(record);
     const applyInfo = record?.applyInfo?.find(
-      (info) => info.universityCode === selectedCode.id
+      (info) => info.universityCode === selectedCode?.id
     );
 
     // Set score from the found applyInfo or default to 0
@@ -452,7 +461,7 @@ const HeroUniversities = ({
     const { data, error } = await supabase
       .from("code")
       .update({ judges: updatedJudges })
-      .eq("id", selectedCode.id)
+      .eq("id", selectedCode?.id)
       .select();
 
     if (error) {
@@ -461,19 +470,10 @@ const HeroUniversities = ({
     } else {
       message.success("Judge removed successfully");
       setCodeData((prev) =>
-        prev.map((item) => (item.id === selectedCode.id ? data[0] : item))
+        prev.map((item) => (item.id === selectedCode?.id ? data[0] : item))
       );
-      setSelectedCode(data[0]); // Update the selectedCode state to reflect the change
       setSelectedCodeFull(data[0]); // Update the selectedCode state to reflect the change
     }
-  };
-
-  const [isRulesModalOpen, setIsRulesModalOpen] = useState(false); // New state for rules modal
-
-  const openRulesModal = (record) => {
-    setSelectedCode(record);
-    setSelectedCodeFull(record);
-    setIsRulesModalOpen(true);
   };
 
   const codeColumns = [
@@ -502,17 +502,6 @@ const HeroUniversities = ({
         <span className="hover:cursor-pointer">{record.code}</span>
       ),
     },
-    // {
-    //   title: "Rules",
-    //   dataIndex: "rules",
-    //   key: "rules",
-    //   align: "center",
-    //   render: (text, record) => (
-    //     <Button onClick={() => openRulesModal(record)} className="text-xs">
-    //       {record.rules ? "View Rules" : "Add Rules"}
-    //     </Button>
-    //   ),
-    // },
     {
       title: "Created at",
       dataIndex: "created_at",
@@ -691,9 +680,12 @@ const HeroUniversities = ({
       dataIndex: "code",
       key: "code",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
+        const applyInfo = getApplyInfoByCode(
+          record?.applyInfo,
+          selectedCode?.id
+        );
         return (
-          <span className="hover:cursor-pointer">{applyInfo.creatorName}</span>
+          <span className="hover:cursor-pointer">{applyInfo?.creatorName}</span>
         );
       },
     },
@@ -702,7 +694,10 @@ const HeroUniversities = ({
       dataIndex: "applyAt",
       key: "applyAt",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
+        const applyInfo = getApplyInfoByCode(
+          record?.applyInfo,
+          selectedCode?.id
+        );
         return (
           <span className="hover:cursor-pointer">
             {formatDate(applyInfo.applyAt)}
@@ -715,7 +710,10 @@ const HeroUniversities = ({
       dataIndex: "contactEmail",
       key: "contactEmail",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
+        const applyInfo = getApplyInfoByCode(
+          record.applyInfo,
+          selectedCode?.id
+        );
         return (
           <span className="hover:cursor-pointer">{applyInfo.contactEmail}</span>
         );
@@ -726,7 +724,10 @@ const HeroUniversities = ({
       dataIndex: "contactPhone",
       key: "contactPhone",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
+        const applyInfo = getApplyInfoByCode(
+          record.applyInfo,
+          selectedCode?.id
+        );
         return (
           <span className="hover:cursor-pointer">{applyInfo.contactPhone}</span>
         );
@@ -737,7 +738,10 @@ const HeroUniversities = ({
       dataIndex: "university",
       key: "university",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
+        const applyInfo = getApplyInfoByCode(
+          record.applyInfo,
+          selectedCode?.id
+        );
         return (
           <span className="hover:cursor-pointer">{applyInfo.university}</span>
         );
@@ -748,7 +752,10 @@ const HeroUniversities = ({
       dataIndex: "teamSize",
       key: "teamSize",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
+        const applyInfo = getApplyInfoByCode(
+          record.applyInfo,
+          selectedCode?.id
+        );
         return (
           <span className="hover:cursor-pointer flex justify-center items-center">
             {applyInfo.teamSize}
@@ -761,7 +768,10 @@ const HeroUniversities = ({
       dataIndex: "teamEmails",
       key: "teamEmails",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
+        const applyInfo = getApplyInfoByCode(
+          record.applyInfo,
+          selectedCode?.id
+        );
         return (
           <span className="hover:cursor-pointer">{applyInfo.teamEmails}</span>
         );
@@ -773,7 +783,10 @@ const HeroUniversities = ({
       key: "score",
       align: "center",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
+        const applyInfo = getApplyInfoByCode(
+          record.applyInfo,
+          selectedCode?.id
+        );
         return (
           <span className="flex justify-center items-center">
             {applyInfo.score || 0}
@@ -795,7 +808,7 @@ const HeroUniversities = ({
                 <Menu.Item key="remove">
                   <div
                     onClick={() =>
-                      handleRemoveProjectCode(record.id, selectedCode.id)
+                      handleRemoveProjectCode(record.id, selectedCode?.id)
                     }
                     style={{ fontSize: "12px" }}
                   >
@@ -823,6 +836,7 @@ const HeroUniversities = ({
   ];
 
   const [avatarUrl, setAvatarUrl] = useState(credentials?.avatar_url); // State to store project image URL
+  const [codeAvatarUrl, setCodeAvatarUrl] = useState(); // State to store project image URL
   useEffect(() => {
     setAvatarUrl(credentials?.avatar_url);
     setUniversityName(credentials?.university);
@@ -898,6 +912,26 @@ const HeroUniversities = ({
     reader.readAsDataURL(file); // Read the uploaded file
   };
 
+  const handleCodeAvatarUpload = (event) => {
+    const file = event.target.files[0]; // Get the uploaded file
+    // Assuming you're using FileReader to read the uploaded file as data URL
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      setCodeAvatarUrl(e.target.result); // Set the project image URL in state
+
+      // Upload the image to Supabase
+      const uploadedAvatarUrl = await uploadImageToSupabase(
+        dataURItoFile(e.target.result, "img")
+      );
+
+      if (uploadedAvatarUrl) {
+        setCodeAvatarUrl(uploadedAvatarUrl); // Update the state with the uploaded image URL
+      }
+    };
+
+    reader.readAsDataURL(file); // Read the uploaded file
+  };
+
   const handleUniversityNameChange = async (newName) => {
     setUniversityName(newName);
     const { error } = await supabase
@@ -927,24 +961,23 @@ const HeroUniversities = ({
     }
   };
 
-  const handleUpdateRules = async (updatedCode) => {
-    try {
-      const { error } = await supabase
-        .from("code")
-        .update({ rules: updatedCode.rules })
-        .eq("id", updatedCode.id);
+  const [currentCodePage, setCurrentCodePage] = useState(0);
+  const itemsPerPage = 2;
 
-      if (error) {
-        throw error;
-      }
-
-      message.success("Rules updated successfully");
-      setIsRulesModalOpen(false);
-    } catch (error) {
-      message.error("Failed to update rules");
-      console.error("Error updating rules:", error);
+  const handleNext = () => {
+    if ((currentCodePage + 1) * itemsPerPage < codeData.length) {
+      setCurrentCodePage(currentCodePage + 1);
     }
   };
+
+  const handlePrevious = () => {
+    if (currentCodePage > 0) {
+      setCurrentCodePage(currentCodePage - 1);
+    }
+  };
+
+  const startIndex = currentCodePage * itemsPerPage;
+  const selectedCodes = codeData.slice(startIndex, startIndex + itemsPerPage);
 
   return (
     <section className="bg-white">
@@ -1018,6 +1051,7 @@ const HeroUniversities = ({
                   setExpirationDate(null);
                   setCompetitionName("");
                   setCompetitionDescription("");
+                  setCodeAvatarUrl("");
                   setIsAddNewModalOpen(true);
                 }}
               >
@@ -1028,7 +1062,7 @@ const HeroUniversities = ({
         </div>
         {currentTab === "Manage" && (
           <>
-            <section className="container px-4 mx-auto mt-14 max-w-5xl">
+            <section className="container px-4 mx-auto mt-14 max-w-[85rem]">
               <div className="flex flex-col mb-5">
                 <h3 className="font-bold text-xl text-left">Code listing</h3>
 
@@ -1044,7 +1078,6 @@ const HeroUniversities = ({
                     bordered
                     onRow={(record) => ({
                       onClick: () => {
-                        setSelectedCode(record);
                         setSelectedCodeFull(record);
                         onSelectCode(record.id);
                         filterProjectsByCode(record.id);
@@ -1055,7 +1088,7 @@ const HeroUniversities = ({
               </div>
             </section>
             {projectList?.length > 0 && (
-              <section className="container px-4 mx-auto mt-14 max-w-5xl">
+              <section className="container px-4 mx-auto mt-14 max-w-[85rem]">
                 <div className="flex flex-col mb-5">
                   <h2 className="text-xl font-bold text-left">
                     Project listing by {selectedCode?.code}
@@ -1087,26 +1120,40 @@ const HeroUniversities = ({
               <div className="flex flex-col mb-5">
                 <h3 className="font-bold text-xl text-left">Code listing</h3>
                 <div className="mx-auto mt-5 grid sm:grid-cols-2 gap-32 transition-all duration-600 ease-out transform translate-x-0">
-                  {codeData.map((code, index) => (
+                  {selectedCodes.map((code) => (
                     <div
                       key={code.id}
-                      className="group flex justify-center w-full"
+                      className="group flex-grow justify-center w-full"
                     >
-                      {code ? (
-                        <UniCard
-                          data={code}
-                          setSelectedCode={setSelectedCode}
-                          setSelectedCodeFull={setSelectedCodeFull}
-                          onSelectCode={onSelectCode}
-                          filterProjectsByCode={filterProjectsByCode}
-                          projectCounts={projectCounts}
-                        />
-                      ) : (
-                        <div className="w-[30vw] h-[55vh]"></div>
-                      )}
+                      <UniCard
+                        data={code}
+                        setSelectedCodeFull={setSelectedCodeFull}
+                        onSelectCode={onSelectCode}
+                        filterProjectsByCode={filterProjectsByCode}
+                        projectCounts={projectCounts}
+                      />
                     </div>
                   ))}
-                </div>{" "}
+                </div>
+                <div className="flex justify-between mt-5">
+                  <button
+                    onClick={handlePrevious}
+                    disabled={currentCodePage === 0}
+                    className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${currentCodePage === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
+                    <LeftOutlined /> Previous
+                  </button>
+                  <button
+                    onClick={handleNext}
+                    disabled={
+                      (currentCodePage + 1) * itemsPerPage >= codeData.length
+                    }
+                    className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${(currentCodePage + 1) * itemsPerPage >= codeData.length ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
+                    Next
+                    <RightOutlined className="ml-2" />
+                  </button>
+                </div>
               </div>
             </section>
           </>
@@ -1198,6 +1245,30 @@ const HeroUniversities = ({
                     autoSize
                   />
                 </div>
+              </div>
+              <div className="space-y-1 md:col-span-2">
+                <label htmlFor="cover">Competition Cover</label>
+                <div className="flex items-center">
+                  <Input
+                    id="cover"
+                    placeholder="Code Cover"
+                    required
+                    className="border-gray-300 rounded-md text-sm"
+                    value={
+                      codeAvatarUrl?.length > 20
+                        ? codeAvatarUrl?.substring(0, 20) + "..."
+                        : codeAvatarUrl
+                    }
+                    onChange={(e) => setCodeAvatarUrl(e.target.value)}
+                  />
+                </div>
+                <span className="py-1 px-2 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "></span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleCodeAvatarUpload}
+                  className="py-1 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
+                />
               </div>
             </form>
           </div>
@@ -1307,6 +1378,30 @@ const HeroUniversities = ({
                       autoSize
                     />
                   </div>
+                </div>
+                <div className="space-y-1 md:col-span-2">
+                  <label htmlFor="cover">Competition Cover</label>
+                  <div className="flex items-center">
+                    <Input
+                      id="cover"
+                      placeholder="Code Cover"
+                      required
+                      className="border-gray-300 rounded-md text-sm"
+                      value={
+                        codeAvatarUrl?.length > 20
+                          ? codeAvatarUrl?.substring(0, 20) + "..."
+                          : codeAvatarUrl
+                      }
+                      onChange={(e) => setCodeAvatarUrl(e.target.value)}
+                    />
+                  </div>
+                  <span className="py-1 px-2 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "></span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleCodeAvatarUpload}
+                    className="py-1 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
+                  />
                 </div>
               </div>
             </form>
@@ -1502,20 +1597,6 @@ const HeroUniversities = ({
               </div>
             </form>
           </div>
-        </Modal>
-
-        <Modal
-          title={`Rules for ${selectedCode?.code}`}
-          open={isRulesModalOpen}
-          onCancel={() => setIsRulesModalOpen(false)}
-          okText="Update"
-          onOk={() => handleUpdateRules(selectedCode)}
-          centered={true}
-        >
-          <UniEditorTool
-            selectedCode={selectedCode}
-            setSelectedCode={setSelectedCode}
-          />
         </Modal>
       </div>
     </section>

@@ -9,6 +9,7 @@ import { message } from "antd";
 import UniEditorTool from "./UniEditorTool";
 import UniCard from "./UniCard";
 import UniSearch from "./UniSearch";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 const CompetitionPosts = ({ location }) => {
   const [companies, setCompanies] = useState([]);
@@ -201,19 +202,38 @@ const CompetitionPosts = ({ location }) => {
   }, []);
 
   const [selectedTab, setSelectedTab] = useState("Listing"); // New state for tab selection
+
+  const [currentCodePage, setCurrentCodePage] = useState(0);
+  const itemsCodePerPage = 2;
+
+  const handleNext = () => {
+    if ((currentCodePage + 1) * itemsCodePerPage < codes.length) {
+      setCurrentCodePage(currentCodePage + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentCodePage > 0) {
+      setCurrentCodePage(currentCodePage - 1);
+    }
+  };
+
+  const startIndex = currentCodePage * itemsCodePerPage;
+  const selectedCodes = codes.slice(startIndex, startIndex + itemsCodePerPage);
+
   return (
     <div className="lg:px-8 mx-auto my-12">
       <Header2 />
       <div className="px-3 py-2 lg:px-8 lg:py-1 mx-auto">
         <HeroCompetition />
-        {codes?.length > 0 && (
+        {codes.length > 0 && (
           <>
             <>
               <section className="container px-4 mx-auto mt-14 max-w-3xl">
                 <div className="flex flex-col mb-5">
                   <h3 className="font-bold text-xl text-left">Code listing</h3>
                   <div className="mx-auto mt-5 grid sm:grid-cols-2 gap-32 transition-all duration-600 ease-out transform translate-x-0">
-                    {codes.map((code, index) => (
+                    {selectedCodes.map((code, index) => (
                       <div
                         key={code.id}
                         className="group flex justify-center w-full"
@@ -232,6 +252,26 @@ const CompetitionPosts = ({ location }) => {
                         )}
                       </div>
                     ))}
+                    <div className="flex justify-between mt-5">
+                      <button
+                        onClick={handlePrevious}
+                        disabled={currentCodePage === 0}
+                        className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${currentCodePage === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+                      >
+                        <LeftOutlined /> Previous
+                      </button>
+                      <button
+                        onClick={handleNext}
+                        disabled={
+                          (currentCodePage + 1) * itemsCodePerPage >=
+                          codes.length
+                        }
+                        className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${(currentCodePage + 1) * itemsCodePerPage >= codes.length ? "opacity-50 cursor-not-allowed" : ""}`}
+                      >
+                        Next
+                        <RightOutlined className="ml-2" />
+                      </button>
+                    </div>
                   </div>{" "}
                 </div>
               </section>

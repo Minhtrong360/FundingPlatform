@@ -1,26 +1,28 @@
-import { Tabs } from "antd";
 import { useState } from "react";
-import Perflexity from "../FinalcialPage/Components/Perflexity";
+import { Tabs } from "antd";
+
 import Flowise from "../FinalcialPage/Components/Flowise";
 import Header2 from "../Home/Header2";
+import Valuation from "../FinalcialPage/Components/Perflexity";
 
 const { TabPane } = Tabs;
 
 export default function MarketResearch() {
-  const [specificPrompt, setSpecificPrompt] = useState("");
+  const [activeTab, setActiveTab] = useState("1");
 
-  const [industryV, setIndustryV] = useState("");
-  const [yearV, setYearV] = useState("");
-  const [bussinessmodel, setBussinessmodel] = useState("");
-  const [ai, setAi] = useState("");
-  const [arr, setArr] = useState("");
-  const [teamsize, setTeamsize] = useState("");
-
-  const generatePromptMK = () => {
-    return ` ${specificPrompt}`;
+  const handleTabChange = (key) => {
+    setActiveTab(key);
   };
-  const generatePromptV = () => {
-    return `Search revenue multiples for ${industryV} ${yearV} ${bussinessmodel} ${ai} ${arr} ${teamsize} . Calculate the estimated valuation by using ${arr} and multiples. Return the final valuation and source links.`;
+
+  const getTabTitle = (key) => {
+    switch (key) {
+      case "1":
+        return "Market Research";
+      case "2":
+        return "Valuation";
+      default:
+        return "Market Research";
+    }
   };
 
   return (
@@ -30,110 +32,20 @@ export default function MarketResearch() {
 
       <div
         key="1"
-        className="max-w-4xl mt-24 mb-4 mx-auto p-6 bg-white rounded-lg shadow-xl border"
+        className="max-w-4xl mt-24 mb-4 mx-auto p-6 bg-white rounded-lg"
       >
-        <h1 className="text-2xl font-semibold mb-4">Market Research</h1>
-        <Tabs defaultActiveKey="1" className="">
-          <TabPane tab="Market Research" key="1">
+        <h1 className="text-2xl font-semibold mb-4">
+          {getTabTitle(activeTab)}
+        </h1>
+        <Tabs defaultActiveKey="1" onChange={handleTabChange}>
+          <TabPane tab="Market Research" style={{ fontSize: "14px" }} key="1">
             <div className="flex flex-col">
-              <div className="grid md:grid-cols-1 gap-6 mt-6">
-                {/* <div>
-                  <div className="block mb-1">Industry</div>
-                  <input
-                    placeholder="Agritech, Ecommerce, etc."
-                    value={industry}
-                    onChange={(e) => setIndustry(e.target.value)}
-                    className="mt-4 mb-4 py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
-                  />
-
-                  <div className="block mb-1">Year</div>
-                  <input
-                    placeholder="2023, 2024, etc."
-                    value={year}
-                    onChange={(e) => setYear(e.target.value)}
-                    className="mt-4 mb-4 py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
-                  />
-                </div> */}
-                <div>
-                  {/* <div className="block mb-1">Region</div>
-                  <input
-                    placeholder="United States, Russia, etc."
-                    value={region}
-                    onChange={(e) => setRegion(e.target.value)}
-                    className="mt-4 mb-4 py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
-                  /> */}
-                  <div className="block mb-1">Specific prompt</div>
-                  <input
-                    placeholder="Specific prompt"
-                    value={specificPrompt}
-                    onChange={(e) => setSpecificPrompt(e.target.value)}
-                    className="mt-4 mb-4 py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
-                  />
-                </div>
-              </div>
-              {/* <div className="block mb-1">
-                <Tag>{industry} </Tag>
-                <Tag>{year}</Tag>
-                <Tag>{region}</Tag>
-                <Tag>{specificPrompt}</Tag>
-              </div> */}
-              <Flowise prompt={generatePromptMK()} button={"Research"} />
-              {/* <DF /> */}
+              <Flowise button={"Research"} />
             </div>
           </TabPane>
-          <TabPane tab="Valuation" key="2">
+          <TabPane tab="Valuation" style={{ fontSize: "14px" }} key="2">
             <div className="flex flex-col">
-              <div className="grid md:grid-cols-2 gap-6 mt-6">
-                <div>
-                  <div className="block mb-1">Industry</div>
-                  <input
-                    placeholder="Agritech, Ecommerce, etc."
-                    value={industryV}
-                    onChange={(e) => setIndustryV(e.target.value)}
-                    className="mt-4 mb-4 py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
-                  />
-
-                  <div className="block mb-1">Year</div>
-                  <input
-                    placeholder="2023, 2024, etc."
-                    value={yearV}
-                    onChange={(e) => setYearV(e.target.value)}
-                    className="mt-4 mb-4 py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
-                  />
-                  <div className="block mb-1">Estimate Arr</div>
-                  <input
-                    placeholder="$10k, $100k, $1M, etc."
-                    value={arr}
-                    onChange={(e) => setArr(e.target.value)}
-                    className="mt-4 mb-4 py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
-                  />
-                </div>
-                <div>
-                  <div className="block mb-1">Business Model</div>
-                  <input
-                    placeholder="SaaS, Marketplace, Licensing, Affiliate..."
-                    value={bussinessmodel}
-                    onChange={(e) => setBussinessmodel(e.target.value)}
-                    className="mt-4 mb-4 py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
-                  />
-                  <div className="block mb-1">AI</div>
-                  <input
-                    placeholder="Yes/No"
-                    value={ai}
-                    onChange={(e) => setAi(e.target.value)}
-                    className="mt-4 mb-4 py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
-                  />
-                  <div className="block mb-1">Teamsize</div>
-                  <input
-                    placeholder="1-10, 10-50, 50-100, etc."
-                    value={teamsize}
-                    onChange={(e) => setTeamsize(e.target.value)}
-                    className="mt-4 mb-4 py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
-                  />
-                </div>
-              </div>
-
-              <Perflexity prompt={generatePromptV()} button={"Valuation"} />
+              <Valuation button={"Valuation"} />
             </div>
           </TabPane>
         </Tabs>

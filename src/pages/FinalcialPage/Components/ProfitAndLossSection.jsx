@@ -210,10 +210,9 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     { key: "Gross Profit", values: grossProfit },
     { key: "Operating Expenses" },
     // { key: "Operating Costs", values: totalCosts },
-    { 
-      key: "Operating Costs", 
+    {
+      key: "Operating Costs",
       values: totalCosts,
-      
     },
     {
       key: "Personnel",
@@ -251,13 +250,9 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     })),
   }));
 
-  const { costTableData} = useSelector(
-    (state) => state.cost
-  );
-  const { revenueTableData} = useSelector(
-    (state) => state.sales
-  );
-  console.log("revenueTableData",revenueTableData)
+  const { costTableData } = useSelector((state) => state.cost);
+  const { revenueTableData } = useSelector((state) => state.sales);
+  console.log("revenueTableData", revenueTableData);
   const transposedData = [
     { key: "Revenue" },
     // { key: "Total Revenue", values: totalRevenue },
@@ -280,13 +275,13 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     },
     { key: "Deductions", values: totalDeductions },
     { key: "Net Revenue", values: netRevenue },
-    {key: ""},
+    { key: "" },
     { key: "Cost of Revenue" },
     { key: "Total COGS", values: totalCOGS },
     { key: "Gross Profit", values: grossProfit },
-    {key: ""},
+    { key: "" },
     { key: "Operating Expenses" },
-    
+
     // { key: "Operating Costs", values: totalCosts },
     {
       key: "Operating Costs",
@@ -300,51 +295,61 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             acc[`Month ${monthIndex}`] = item[key];
           }
           return acc;
-        }, {})
+        }, {}),
       })),
-    }, {
+    },
+    {
       key: "Personnel",
       values: totalPersonnelCosts,
       children: Object.keys(detailedPersonnelCosts).map((jobTitle) => ({
         key: jobTitle,
         values: detailedPersonnelCosts[jobTitle],
         metric: jobTitle,
-        ...detailedPersonnelCosts[jobTitle].reduce((acc, value, i) => ({
-          ...acc,
-          [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
-        }), {})
+        ...detailedPersonnelCosts[jobTitle].reduce(
+          (acc, value, i) => ({
+            ...acc,
+            [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+          }),
+          {}
+        ),
       })),
     },
     { key: "EBITDA", values: ebitda },
-    {key: ""},
+    { key: "" },
     { key: "Additional Expenses" },
     { key: "Depreciation", values: totalInvestmentDepreciation },
     { key: "Interest", values: totalInterestPayments },
     { key: "EBT", values: earningsBeforeTax },
-    {key: ""},
+    { key: "" },
     { key: "Income Tax", values: incomeTax },
     { key: "Net Income", values: netIncome },
   ].map((item, index) => ({
     metric: item.key,
-    ...item.values?.reduce((acc, value, i) => ({
-      ...acc,
-      [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
-    }), {}),
-    children: item.children?.map((child) => ({
-      metric: child.metric,
-      ...child.values?.reduce((acc, value, i) => ({
+    ...item.values?.reduce(
+      (acc, value, i) => ({
         ...acc,
         [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
-      }), {}),
+      }),
+      {}
+    ),
+    children: item.children?.map((child) => ({
+      metric: child.metric,
+      ...child.values?.reduce(
+        (acc, value, i) => ({
+          ...acc,
+          [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+        }),
+        {}
+      ),
       ...Object.keys(child).reduce((acc, key) => {
         if (key.startsWith("Month")) {
           acc[key] = child[key];
         }
         return acc;
-      }, {})
+      }, {}),
     })),
   }));
-  
+
   ////////
   const months = [
     "01",
@@ -427,11 +432,11 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             return {
               style: {
                 borderTop: "2px solid #000000",
-                
+
                 fontWeight: "bold", // Add bold styling for Total Revenue
               },
             };
-          }else if (
+          } else if (
             record.metric === "Total Revenue" ||
             record.metric === "Total COGS" ||
             record.metric === "Net Revenue" ||
@@ -442,8 +447,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           ) {
             return {
               style: {
-               
-                
                 fontWeight: "bold", // Add bold styling for Total Revenue
               },
             };
@@ -800,11 +803,13 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   };
 
   const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
-  
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
         <div>
+          <h3 className="text-lg font-semibold mb-4">I. Relevant Chart</h3>
+
           <div className=" gap-4 mb-3">
             <Select
               onValueChange={(value) => handleChartSelect(value)}
@@ -968,8 +973,10 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             />
           )}
 
-          <div className="flex justify-between items-center my-4">
-            <h3 className="text-lg font-semibold">Profit and Loss Statement</h3>
+          <div className="flex justify-between items-center my-4 mt-20">
+            <h3 className="text-lg font-semibold">
+              II. Profit and Loss Statement
+            </h3>
             <button
               onClick={downloadExcel}
               className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
@@ -983,10 +990,8 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           <Table
             className="overflow-auto my-8 rounded-md bg-white"
             size="small"
-        
             dataSource={transposedData}
             columns={columns}
-            
             pagination={false}
           />
 

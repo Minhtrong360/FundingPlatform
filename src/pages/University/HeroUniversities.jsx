@@ -8,7 +8,6 @@ import {
   Menu,
   Modal,
   Table,
-  Card,
   message,
 } from "antd";
 import { useEffect, useState } from "react";
@@ -16,8 +15,8 @@ import { supabase } from "../../supabase";
 import moment from "moment";
 import { formatDate } from "../../features/DurationSlice";
 import { IconButton } from "@mui/material";
-import UniEditorTool from "./UniEditorTool";
 import UniCard from "./UniCard";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 const HeroUniversities = ({
   onSelectCode,
@@ -146,7 +145,8 @@ const HeroUniversities = ({
       !newCode ||
       !expirationDate ||
       !competitionName ||
-      !competitionDescription
+      !competitionDescription ||
+      !codeAvatarUrl
     ) {
       message.error("Please enter all required fields");
       return;
@@ -161,6 +161,7 @@ const HeroUniversities = ({
           UniID: credentials.UniID,
           name: competitionName,
           description: competitionDescription,
+          avatar_url: codeAvatarUrl,
         },
       ])
       .select();
@@ -185,11 +186,18 @@ const HeroUniversities = ({
       setExpirationDate(null);
       setCompetitionName("");
       setCompetitionDescription("");
+      setCodeAvatarUrl("");
     }
   };
 
   const handleEditCode = async () => {
-    if (!selectedCode || !newCode || !newExpirationDate || !competitionName) {
+    if (
+      !selectedCode ||
+      !newCode ||
+      !newExpirationDate ||
+      !competitionName ||
+      !codeAvatarUrl
+    ) {
       message.error("Please enter all required fields");
       return;
     }
@@ -201,6 +209,7 @@ const HeroUniversities = ({
         expired_at: newExpirationDate.format("YYYY-MM-DD"),
         name: competitionName,
         description: competitionDescription,
+        avatar_url: codeAvatarUrl,
       })
       .eq("id", selectedCode.id)
       .select();
@@ -226,6 +235,7 @@ const HeroUniversities = ({
       setNewExpirationDate(null);
       setCompetitionName("");
       setCompetitionDescription("");
+      setCodeAvatarUrl("");
       setSelectedCode(data[0]);
       setSelectedCodeFull(data[0]);
     }
@@ -413,6 +423,7 @@ const HeroUniversities = ({
     setCompetitionDescription(record.description);
     setExpirationDate(record.expired_at ? moment(record.expired_at) : null);
     setNewExpirationDate(null);
+    setCodeAvatarUrl(record.avatar_url);
     setIsEditModalOpen(true);
   };
 
@@ -468,14 +479,6 @@ const HeroUniversities = ({
     }
   };
 
-  const [isRulesModalOpen, setIsRulesModalOpen] = useState(false); // New state for rules modal
-
-  const openRulesModal = (record) => {
-    setSelectedCode(record);
-    setSelectedCodeFull(record);
-    setIsRulesModalOpen(true);
-  };
-
   const codeColumns = [
     {
       title: "No",
@@ -502,17 +505,6 @@ const HeroUniversities = ({
         <span className="hover:cursor-pointer">{record.code}</span>
       ),
     },
-    // {
-    //   title: "Rules",
-    //   dataIndex: "rules",
-    //   key: "rules",
-    //   align: "center",
-    //   render: (text, record) => (
-    //     <Button onClick={() => openRulesModal(record)} className="text-xs">
-    //       {record.rules ? "View Rules" : "Add Rules"}
-    //     </Button>
-    //   ),
-    // },
     {
       title: "Created at",
       dataIndex: "created_at",
@@ -823,6 +815,7 @@ const HeroUniversities = ({
   ];
 
   const [avatarUrl, setAvatarUrl] = useState(credentials?.avatar_url); // State to store project image URL
+  const [codeAvatarUrl, setCodeAvatarUrl] = useState(); // State to store project image URL
   useEffect(() => {
     setAvatarUrl(credentials?.avatar_url);
     setUniversityName(credentials?.university);
@@ -898,6 +891,26 @@ const HeroUniversities = ({
     reader.readAsDataURL(file); // Read the uploaded file
   };
 
+  const handleCodeAvatarUpload = (event) => {
+    const file = event.target.files[0]; // Get the uploaded file
+    // Assuming you're using FileReader to read the uploaded file as data URL
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      setCodeAvatarUrl(e.target.result); // Set the project image URL in state
+
+      // Upload the image to Supabase
+      const uploadedAvatarUrl = await uploadImageToSupabase(
+        dataURItoFile(e.target.result, "img")
+      );
+
+      if (uploadedAvatarUrl) {
+        setCodeAvatarUrl(uploadedAvatarUrl); // Update the state with the uploaded image URL
+      }
+    };
+
+    reader.readAsDataURL(file); // Read the uploaded file
+  };
+
   const handleUniversityNameChange = async (newName) => {
     setUniversityName(newName);
     const { error } = await supabase
@@ -927,24 +940,23 @@ const HeroUniversities = ({
     }
   };
 
-  const handleUpdateRules = async (updatedCode) => {
-    try {
-      const { error } = await supabase
-        .from("code")
-        .update({ rules: updatedCode.rules })
-        .eq("id", updatedCode.id);
+  const [currentCodePage, setCurrentCodePage] = useState(0);
+  const itemsPerPage = 2;
 
-      if (error) {
-        throw error;
-      }
-
-      message.success("Rules updated successfully");
-      setIsRulesModalOpen(false);
-    } catch (error) {
-      message.error("Failed to update rules");
-      console.error("Error updating rules:", error);
+  const handleNext = () => {
+    if ((currentCodePage + 1) * itemsPerPage < codeData.length) {
+      setCurrentCodePage(currentCodePage + 1);
     }
   };
+
+  const handlePrevious = () => {
+    if (currentCodePage > 0) {
+      setCurrentCodePage(currentCodePage - 1);
+    }
+  };
+
+  const startIndex = currentCodePage * itemsPerPage;
+  const selectedCodes = codeData.slice(startIndex, startIndex + itemsPerPage);
 
   return (
     <section className="bg-white">
@@ -1018,6 +1030,7 @@ const HeroUniversities = ({
                   setExpirationDate(null);
                   setCompetitionName("");
                   setCompetitionDescription("");
+                  setCodeAvatarUrl("");
                   setIsAddNewModalOpen(true);
                 }}
               >
@@ -1087,26 +1100,41 @@ const HeroUniversities = ({
               <div className="flex flex-col mb-5">
                 <h3 className="font-bold text-xl text-left">Code listing</h3>
                 <div className="mx-auto mt-5 grid sm:grid-cols-2 gap-32 transition-all duration-600 ease-out transform translate-x-0">
-                  {codeData.map((code, index) => (
+                  {selectedCodes.map((code) => (
                     <div
                       key={code.id}
                       className="group flex justify-center w-full"
                     >
-                      {code ? (
-                        <UniCard
-                          data={code}
-                          setSelectedCode={setSelectedCode}
-                          setSelectedCodeFull={setSelectedCodeFull}
-                          onSelectCode={onSelectCode}
-                          filterProjectsByCode={filterProjectsByCode}
-                          projectCounts={projectCounts}
-                        />
-                      ) : (
-                        <div className="w-[30vw] h-[55vh]"></div>
-                      )}
+                      <UniCard
+                        data={code}
+                        setSelectedCode={setSelectedCode}
+                        setSelectedCodeFull={setSelectedCodeFull}
+                        onSelectCode={onSelectCode}
+                        filterProjectsByCode={filterProjectsByCode}
+                        projectCounts={projectCounts}
+                      />
                     </div>
                   ))}
-                </div>{" "}
+                </div>
+                <div className="flex justify-between mt-5">
+                  <button
+                    onClick={handlePrevious}
+                    disabled={currentCodePage === 0}
+                    className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${currentCodePage === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
+                    <LeftOutlined /> Previous
+                  </button>
+                  <button
+                    onClick={handleNext}
+                    disabled={
+                      (currentCodePage + 1) * itemsPerPage >= codeData.length
+                    }
+                    className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${(currentCodePage + 1) * itemsPerPage >= codeData.length ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
+                    Next
+                    <RightOutlined className="ml-2" />
+                  </button>
+                </div>
               </div>
             </section>
           </>
@@ -1198,6 +1226,30 @@ const HeroUniversities = ({
                     autoSize
                   />
                 </div>
+              </div>
+              <div className="space-y-1 md:col-span-2">
+                <label htmlFor="cover">Competition Cover</label>
+                <div className="flex items-center">
+                  <Input
+                    id="cover"
+                    placeholder="Code Cover"
+                    required
+                    className="border-gray-300 rounded-md text-sm"
+                    value={
+                      codeAvatarUrl?.length > 20
+                        ? codeAvatarUrl?.substring(0, 20) + "..."
+                        : codeAvatarUrl
+                    }
+                    onChange={(e) => setCodeAvatarUrl(e.target.value)}
+                  />
+                </div>
+                <span className="py-1 px-2 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "></span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleCodeAvatarUpload}
+                  className="py-1 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
+                />
               </div>
             </form>
           </div>
@@ -1307,6 +1359,30 @@ const HeroUniversities = ({
                       autoSize
                     />
                   </div>
+                </div>
+                <div className="space-y-1 md:col-span-2">
+                  <label htmlFor="cover">Competition Cover</label>
+                  <div className="flex items-center">
+                    <Input
+                      id="cover"
+                      placeholder="Code Cover"
+                      required
+                      className="border-gray-300 rounded-md text-sm"
+                      value={
+                        codeAvatarUrl?.length > 20
+                          ? codeAvatarUrl?.substring(0, 20) + "..."
+                          : codeAvatarUrl
+                      }
+                      onChange={(e) => setCodeAvatarUrl(e.target.value)}
+                    />
+                  </div>
+                  <span className="py-1 px-2 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "></span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleCodeAvatarUpload}
+                    className="py-1 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
+                  />
                 </div>
               </div>
             </form>
@@ -1502,20 +1578,6 @@ const HeroUniversities = ({
               </div>
             </form>
           </div>
-        </Modal>
-
-        <Modal
-          title={`Rules for ${selectedCode?.code}`}
-          open={isRulesModalOpen}
-          onCancel={() => setIsRulesModalOpen(false)}
-          okText="Update"
-          onOk={() => handleUpdateRules(selectedCode)}
-          centered={true}
-        >
-          <UniEditorTool
-            selectedCode={selectedCode}
-            setSelectedCode={setSelectedCode}
-          />
         </Modal>
       </div>
     </section>

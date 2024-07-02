@@ -741,11 +741,32 @@ function CashFlowSection({ numberOfMonths }) {
         dataIndex: "metric",
         key: "metric",
         fixed: "left",
+        render: (text, record) => ({
+          children: (
+            <div
+              className={"md:whitespace-nowrap"}
+              style={{
+                visibility: record.metric === "1" ? "hidden" : "visible",
+              }}
+            >
+              <div>{text}</div>
+            </div>
+          ),
+        }),
       },
       ...year.textMonth.map((textMonth, index) => ({
         title: textMonth,
         dataIndex: `Month ${year.months[index]}`,
         key: `Month ${year.months[index]}`,
+        render: (text, record) => (
+          <div
+            style={{
+              visibility: record.metric === "1" ? "hidden" : "visible",
+            }}
+          >
+            {text}
+          </div>
+        ),
       })),
       {
         title: "Year Total",

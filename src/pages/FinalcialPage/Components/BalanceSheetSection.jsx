@@ -900,25 +900,49 @@ function BalanceSheetSection({ numberOfMonths }) {
   };
 
   // Generate table columns including Year Total column for Balance Sheet
-  const generateBalanceSheetTableColumns = (year) => [
-    {
-      title: "Metric",
-      dataIndex: "metric",
-      key: "metric",
-      fixed: "left",
-    },
-    ...year.textMonth.map((textMonth, index) => ({
-      title: textMonth,
-      dataIndex: `Month ${year.months[index]}`,
-      key: `Month ${year.months[index]}`,
-    })),
-    {
-      title: "Year Total",
-      dataIndex: "yearTotal",
-      key: "yearTotal",
-      // Add any formatting if needed
-    },
-  ];
+  const generateBalanceSheetTableColumns = (year) => {
+    const columns = [
+      {
+        title: "Metric",
+        dataIndex: "metric",
+        key: "metric",
+        fixed: "left",
+        render: (text, record) => ({
+          children: (
+            <div
+              className={"md:whitespace-nowrap"}
+              style={{
+                visibility: record.metric === "1" ? "hidden" : "visible",
+              }}
+            >
+              <div>{text}</div>
+            </div>
+          ),
+        }),
+      },
+      ...year.textMonth.map((textMonth, index) => ({
+        title: textMonth,
+        dataIndex: `Month ${year.months[index]}`,
+        key: `Month ${year.months[index]}`,
+        render: (text, record) => (
+          <div
+            style={{
+              visibility: record.metric === "1" ? "hidden" : "visible",
+            }}
+          >
+            {text}
+          </div>
+        ),
+      })),
+      {
+        title: "Year Total",
+        dataIndex: "yearTotal",
+        key: "yearTotal",
+        render: (text) => <strong>{formatNumber(text)}</strong>,
+      },
+    ];
+    return columns;
+  };
 
   const getDataSourceForYearBalanceSheet = (months) => {
     const monthKeys = months.map((month) => `Month ${month}`);

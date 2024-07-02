@@ -193,7 +193,7 @@ function Router() {
             <AnnouncePage
               title="Free trial"
               announce="Subscribe now."
-              describe="14-day free trial available."
+              describe="Subscribe available."
             />
           }
         /> */}

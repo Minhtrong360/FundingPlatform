@@ -191,16 +191,24 @@ const UniversitiesPage = () => {
       console.error("Error updating rules:", error);
     }
   };
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   return (
     <div className="lg:px-8 mx-auto mb-16 flex">
       <SideBarWorkSpace
+        isSidebarOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
         setCurrentTab={setCurrentItem}
-        isSidebarOpen={true}
         currentTab={currentItem}
       />
 
-      <div className="px-3 py-2 lg:px-8 lg:py-1 mx-auto flex-grow">
+      <div
+        className="px-3 py-2 lg:px-8 lg:py-1 mx-auto flex-grow"
+        onClick={() => setIsSidebarOpen(false)}
+      >
         <HeroUniversities
           onSelectCode={handleSelectCode}
           setCompanies={setCompanies}

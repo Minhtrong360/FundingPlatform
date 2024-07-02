@@ -206,6 +206,7 @@ const UniversitiesPage = () => {
           setCompanies={setCompanies}
           credentials={credentials}
           currentTab={currentItem}
+          selectedCode={selectedCodeFull}
           setSelectedCodeFull={setSelectedCodeFull}
         />
         <UniSearch

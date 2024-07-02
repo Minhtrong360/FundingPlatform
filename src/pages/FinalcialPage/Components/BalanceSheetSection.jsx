@@ -600,7 +600,7 @@ function BalanceSheetSection({ numberOfMonths }) {
       key: "Current Assets", // Added Current Assets row
       values: currentAssets,
     },
-    { key: " " },
+    { key: "1" },
     {
       key: "Long-Term Assets",
     },
@@ -623,7 +623,7 @@ function BalanceSheetSection({ numberOfMonths }) {
       key: "Total Assets",
       values: totalAssets,
     },
-    { key: " " },
+    { key: "1" },
     {
       key: "Liabilities & Equity",
     },
@@ -648,7 +648,7 @@ function BalanceSheetSection({ numberOfMonths }) {
       values: totalLiabilities,
     },
     {
-      key: " ",
+      key: "1",
     },
     {
       key: "Shareholders Equity",
@@ -739,7 +739,10 @@ function BalanceSheetSection({ numberOfMonths }) {
 
       render: (text, record) => ({
         children: (
-          <div className={" md:whitespace-nowrap "}>
+          <div
+            className={" md:whitespace-nowrap "}
+            style={{ visibility: record.metric === "1" ? "hidden" : "visible" }}
+          >
             <div
               style={{
                 fontWeight:

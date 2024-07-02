@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Button, Checkbox, FloatButton, Modal, Table, Tabs } from "antd";
+import {
+  Button,
+  Checkbox,
+  FloatButton,
+  Modal,
+  Table,
+  Tabs,
+  Tooltip,
+} from "antd";
 
 import {
   Select,
@@ -16,12 +24,16 @@ import {
   formatNumber,
   parseNumber,
   setCostData,
+  setCostTableData,
+  transformCostDataForTable,
 } from "../../../features/CostSlice";
 import {
   calculateChannelRevenue,
   setCogsData,
   setRevenueData,
   setRevenueDeductionData,
+  setRevenueTableData,
+  transformRevenueDataForTable,
 } from "../../../features/SaleSlice";
 import {
   calculatePersonnelCostData,
@@ -69,6 +81,10 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       revenueByChannelAndProduct,
       DeductionByChannelAndProduct,
       cogsByChannelAndProduct,
+      netRevenueByChannelAndProduct,
+      grossProfitByChannelAndProduct,
+      cashInflowByChannelAndProduct,
+      receivablesByChannelAndProduct,
     } = dispatch(
       calculateChannelRevenue(
         numberOfMonths,
@@ -77,6 +93,20 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
         channelInputs
       )
     );
+    const calculateRevenueTableData = transformRevenueDataForTable(
+      {
+        revenueByChannelAndProduct,
+        DeductionByChannelAndProduct,
+        cogsByChannelAndProduct,
+        netRevenueByChannelAndProduct,
+        grossProfitByChannelAndProduct,
+        cashInflowByChannelAndProduct,
+        receivablesByChannelAndProduct,
+      },
+      channelInputs,
+      "all"
+    );
+    dispatch(setRevenueTableData(calculateRevenueTableData));
 
     dispatch(setRevenueData(revenueByChannelAndProduct));
     dispatch(setRevenueDeductionData(DeductionByChannelAndProduct));
@@ -96,6 +126,12 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       revenueData
     );
     dispatch(setCostData(calculatedData));
+    const costTableData = transformCostDataForTable(
+      costInputs,
+      numberOfMonths,
+      revenueData
+    );
+    dispatch(setCostTableData(costTableData));
   }, [costInputs, numberOfMonths]);
 
   const { personnelCostData, personnelInputs } = useSelector(
@@ -234,7 +270,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     ...item.values?.reduce(
       (acc, value, i) => ({
         ...acc,
-        [realDate[i]]: formatNumber(value?.toFixed(2)),
+        [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
       }),
       {}
     ),
@@ -243,7 +279,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       ...child.values.reduce(
         (acc, value, i) => ({
           ...acc,
-          [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+          [realDate[i]]: formatNumber(value?.toFixed(2)),
         }),
         {}
       ),
@@ -251,6 +287,15 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   }));
 
   const { costTableData } = useSelector((state) => state.cost);
+  const { revenueTableData } = useSelector((state) => state.sales);
+
+  const truncateText = (text, maxLength) => {
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return text.substring(0, maxLength) + "...";
+  };
+
   const transposedData = [
     { key: "Revenue" },
     // { key: "Total Revenue", values: totalRevenue },
@@ -258,8 +303,12 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       key: "Total Revenue",
       values: totalRevenue,
       children: revenueTableData
-        .filter(item => item.key.includes("Revenue - ") && !item.key.includes("Net Revenue -"))
-        .map(item => ({
+        .filter(
+          (item) =>
+            item.key.includes("Revenue - ") &&
+            !item.key.includes("Net Revenue -")
+        )
+        .map((item) => ({
           key: item.key,
           metric: item.key,
           ...Object.keys(item).reduce((acc, key) => {
@@ -268,7 +317,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
               acc[`Month ${monthIndex}`] = item[key];
             }
             return acc;
-          }, {})
+          }, {}),
         })),
     },
     { key: "Deductions", values: totalDeductions },
@@ -370,34 +419,42 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       title: <div>Metric</div>,
       dataIndex: "metric",
       key: "metric",
+      render: (text, record) => {
+        const isTotalRevenueChild = record.metric.startsWith("Revenue - ");
+        const maxLength = isTotalRevenueChild ? 15 : 50; // Set the max length for truncation
+        const displayText = truncateText(text, maxLength);
 
-      render: (text, record) => ({
-        children: (
-          <div className={"md:whitespace-nowrap "}>
-            <div
-              style={{
-                fontWeight:
-                  record.metric === "Total Revenue" ||
-                  record.metric === "Total COGS" ||
-                  record.metric === "Net Revenue" ||
-                  record.metric === "Gross Profit" ||
-                  record.metric === "EBITDA" ||
-                  record.metric === "Operating Costs" ||
-                  record.metric === "Net Income" ||
-                  record.metric === "Revenue" ||
-                  record.metric === "Cost of Revenue" ||
-                  record.metric === "Operating Expenses" ||
-                  record.metric === "Additional Expenses"
-                    ? "bold"
-                    : "normal",
-              }}
-            >
-              {text}
+        return {
+          children: (
+            <div className={"md:whitespace-nowrap "}>
+              <Tooltip title={text}>
+                <div
+                  style={{
+                    fontWeight:
+                      record.metric === "Total Revenue" ||
+                      record.metric === "Total COGS" ||
+                      record.metric === "Net Revenue" ||
+                      record.metric === "Gross Profit" ||
+                      record.metric === "EBITDA" ||
+                      record.metric === "Operating Costs" ||
+                      record.metric === "Net Income" ||
+                      record.metric === "Revenue" ||
+                      record.metric === "Cost of Revenue" ||
+                      record.metric === "Operating Expenses" ||
+                      record.metric === "Additional Expenses"
+                        ? "bold"
+                        : "normal",
+                  }}
+                >
+                  {displayText}
+                </div>
+              </Tooltip>
             </div>
-          </div>
-        ),
-      }),
+          ),
+        };
+      },
     },
+
     ...Array.from({ length: numberOfMonths }, (_, i) => {
       const monthIndex = (startingMonth + i - 1) % 12;
       const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
@@ -806,8 +863,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
         <div>
-          <h3 className="text-lg font-semibold mb-4">I. Relevant Chart</h3>
-
           <div className=" gap-4 mb-3">
             <Select
               onValueChange={(value) => handleChartSelect(value)}
@@ -971,10 +1026,8 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
             />
           )}
 
-          <div className="flex justify-between items-center my-4 mt-20">
-            <h3 className="text-lg font-semibold">
-              II. Profit and Loss Statement
-            </h3>
+          <div className="flex justify-between items-center my-4">
+            <h3 className="text-lg font-semibold">Profit and Loss Statement</h3>
             <button
               onClick={downloadExcel}
               className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "

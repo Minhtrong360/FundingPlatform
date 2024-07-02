@@ -441,13 +441,13 @@ function CashFlowSection({ numberOfMonths }) {
       key: "CF Operations",
       values: CFOperationsArray,
     },
-    { key: "" },
+    { key: "1" },
     { key: "Investing Activities" },
     {
       key: "CF Investments",
       values: cfInvestmentsArray,
     },
-    { key: "" },
+    { key: "1" },
     { key: "Financing Activities" },
     {
       key: "CF Loans",
@@ -485,7 +485,7 @@ function CashFlowSection({ numberOfMonths }) {
         );
       }),
     },
-    { key: "" },
+    { key: "1" },
     {
       key: "Net +/- in Cash",
       values: netIncome.map((_, index) => {
@@ -547,7 +547,10 @@ function CashFlowSection({ numberOfMonths }) {
       fixed: "left",
       render: (text, record) => ({
         children: (
-          <div className={" md:whitespace-nowrap "}>
+          <div
+            className={" md:whitespace-nowrap "}
+            style={{ visibility: record.metric === "1" ? "hidden" : "visible" }}
+          >
             <div
               style={{
                 fontWeight:

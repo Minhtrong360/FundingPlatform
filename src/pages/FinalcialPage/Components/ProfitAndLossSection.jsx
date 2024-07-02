@@ -253,7 +253,24 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   const { costTableData } = useSelector((state) => state.cost);
   const transposedData = [
     { key: "Revenue" },
-    { key: "Total Revenue", values: totalRevenue },
+    // { key: "Total Revenue", values: totalRevenue },
+    {
+      key: "Total Revenue",
+      values: totalRevenue,
+      children: revenueTableData
+        .filter(item => item.key.includes("Revenue - ") && !item.key.includes("Net Revenue -"))
+        .map(item => ({
+          key: item.key,
+          metric: item.key,
+          ...Object.keys(item).reduce((acc, key) => {
+            if (key.startsWith("month")) {
+              const monthIndex = key.replace("month", "").trim();
+              acc[`Month ${monthIndex}`] = item[key];
+            }
+            return acc;
+          }, {})
+        })),
+    },
     { key: "Deductions", values: totalDeductions },
     { key: "Net Revenue", values: netRevenue },
     { key: "" },

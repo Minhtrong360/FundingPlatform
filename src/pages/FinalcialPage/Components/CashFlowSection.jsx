@@ -441,15 +441,13 @@ function CashFlowSection({ numberOfMonths }) {
       key: "CF Operations",
       values: CFOperationsArray,
     },
-    {key: " ",
-    
-    },
+    { key: "1" },
     { key: "Investing Activities" },
     {
       key: "CF Investments",
       values: cfInvestmentsArray,
     },
-    { key: " ", },
+    { key: "1" },
     { key: "Financing Activities" },
     {
       key: "CF Loans",
@@ -487,7 +485,7 @@ function CashFlowSection({ numberOfMonths }) {
         );
       }),
     },
-    {key: " ",},
+    { key: "1" },
     {
       key: "Net +/- in Cash",
       values: netIncome.map((_, index) => {
@@ -549,7 +547,10 @@ function CashFlowSection({ numberOfMonths }) {
       fixed: "left",
       render: (text, record) => ({
         children: (
-          <div className={" md:whitespace-nowrap "}>
+          <div
+            className={" md:whitespace-nowrap "}
+            style={{ visibility: record.metric === "1" ? "hidden" : "visible" }}
+          >
             <div
               style={{
                 fontWeight:
@@ -562,8 +563,7 @@ function CashFlowSection({ numberOfMonths }) {
                   record.metric === "Cash End" ||
                   record.metric === "Operating Activities" ||
                   record.metric === "Investing Activities" ||
-                  record.metric === "Financing Activities"  
-                 
+                  record.metric === "Financing Activities"
                     ? "bold"
                     : "normal",
               }}
@@ -619,11 +619,10 @@ function CashFlowSection({ numberOfMonths }) {
           ) {
             return {
               style: {
-               
                 fontWeight: "bold",
               },
             };
-          }else {
+          } else {
             return {
               style: {
                 // borderRight: "1px solid #f0f0f0",
@@ -742,17 +741,38 @@ function CashFlowSection({ numberOfMonths }) {
         dataIndex: "metric",
         key: "metric",
         fixed: "left",
+        render: (text, record) => ({
+          children: (
+            <div
+              className={"md:whitespace-nowrap"}
+              style={{
+                visibility: record.metric === "1" ? "hidden" : "visible",
+              }}
+            >
+              <div>{text}</div>
+            </div>
+          ),
+        }),
       },
       ...year.textMonth.map((textMonth, index) => ({
         title: textMonth,
         dataIndex: `Month ${year.months[index]}`,
         key: `Month ${year.months[index]}`,
+        render: (text, record) => (
+          <div
+            style={{
+              visibility: record.metric === "1" ? "hidden" : "visible",
+            }}
+          >
+            {text}
+          </div>
+        ),
       })),
       {
         title: "Year Total",
         dataIndex: "yearTotal",
         key: "yearTotal",
-        render: (text) => <strong>{formatNumber(text)}</strong>, 
+        render: (text) => <strong>{formatNumber(text)}</strong>,
       },
     ];
     return columns;
@@ -779,7 +799,6 @@ function CashFlowSection({ numberOfMonths }) {
 
     // Add rows for each channel
     positionDataWithNetIncome.forEach((record) => {
-      console.log("record", record);
       const row = [record.metric];
       for (let i = 1; i <= numberOfMonths; i++) {
         row.push(record[`Month ${i}`] || "");
@@ -914,7 +933,6 @@ function CashFlowSection({ numberOfMonths }) {
             dataSource={positionDataWithNetIncome}
             columns={positionColumns}
             pagination={false}
-            
           />
           <div className="grid grid-cols-2 gap-4 mb-3">
             <Checkbox
@@ -928,7 +946,11 @@ function CashFlowSection({ numberOfMonths }) {
 
           {showAdvancedInputs && (
             <>
-              <div className="w-full lg:w-[20%] md:w-[50%] my-5">
+              <div className="w-full lg:w-[20%] md:w-[50%] my-5 mt-20">
+                <h3 className="text-lg font-semibold my-5">
+                  III. Cash Flow By Years
+                </h3>
+
                 <SelectField
                   label="Select Cut Month:"
                   id="Select Cut Month:"
@@ -954,7 +976,6 @@ function CashFlowSection({ numberOfMonths }) {
                       dataSource={getDataSourceForYearCashFlow(year.months)}
                       columns={generateCashFlowTableColumns(year)}
                       pagination={false}
-                      
                     />
                   </TabPane>
                 ))}

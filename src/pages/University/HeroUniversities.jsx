@@ -23,6 +23,7 @@ const HeroUniversities = ({
   setCompanies,
   credentials,
   currentTab,
+  selectedCode,
   setSelectedCodeFull,
 }) => {
   const { user } = useAuth();
@@ -38,7 +39,6 @@ const HeroUniversities = ({
   const [competitionDescription, setCompetitionDescription] = useState("");
   const [expirationDate, setExpirationDate] = useState(null);
   const [newExpirationDate, setNewExpirationDate] = useState(null);
-  const [selectedCode, setSelectedCode] = useState(null);
   const [codeToDelete, setCodeToDelete] = useState(null);
   const [codeData, setCodeData] = useState([]);
   const [projectCounts, setProjectCounts] = useState({});
@@ -69,6 +69,9 @@ const HeroUniversities = ({
           codes.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         );
         setProjectCounts(projectCounts);
+        setSelectedCodeFull(codes[0]);
+        onSelectCode(codes[0]?.id);
+        filterProjectsByCode(codes[0]?.id);
       } catch (error) {
         console.error("Error fetching code data:", error);
       }
@@ -211,7 +214,7 @@ const HeroUniversities = ({
         description: competitionDescription,
         avatar_url: codeAvatarUrl,
       })
-      .eq("id", selectedCode.id)
+      .eq("id", selectedCode?.id)
       .select();
 
     if (error) {
@@ -221,7 +224,7 @@ const HeroUniversities = ({
       message.success("Code updated successfully");
       setCodeData((prev) =>
         prev
-          .map((item) => (item.id === selectedCode.id ? data[0] : item))
+          .map((item) => (item.id === selectedCode?.id ? data[0] : item))
           .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
       );
       const updatedCounts = await fetchProjectCounts([data[0]]);
@@ -236,7 +239,6 @@ const HeroUniversities = ({
       setCompetitionName("");
       setCompetitionDescription("");
       setCodeAvatarUrl("");
-      setSelectedCode(data[0]);
       setSelectedCodeFull(data[0]);
     }
   };
@@ -262,7 +264,7 @@ const HeroUniversities = ({
     const { data, error } = await supabase
       .from("code")
       .update({ publish: true })
-      .eq("id", selectedCode.id)
+      .eq("id", selectedCode?.id)
       .select();
 
     if (error) {
@@ -271,7 +273,7 @@ const HeroUniversities = ({
     } else {
       message.success("Code published successfully");
       setCodeData((prev) =>
-        prev.map((item) => (item.id === selectedCode.id ? data[0] : item))
+        prev.map((item) => (item.id === selectedCode?.id ? data[0] : item))
       );
       setIsPublishModalOpen(false);
     }
@@ -281,7 +283,7 @@ const HeroUniversities = ({
     const { data, error } = await supabase
       .from("code")
       .update({ publish: false })
-      .eq("id", selectedCode.id)
+      .eq("id", selectedCode?.id)
       .select();
 
     if (error) {
@@ -290,7 +292,7 @@ const HeroUniversities = ({
     } else {
       message.success("Code unpublished successfully");
       setCodeData((prev) =>
-        prev.map((item) => (item.id === selectedCode.id ? data[0] : item))
+        prev.map((item) => (item.id === selectedCode?.id ? data[0] : item))
       );
       setIsPublishModalOpen(false);
     }
@@ -304,7 +306,7 @@ const HeroUniversities = ({
     const { data, error } = await supabase
       .from("code")
       .update({ judges: updatedJudges })
-      .eq("id", selectedCode.id)
+      .eq("id", selectedCode?.id)
       .select();
 
     if (error) {
@@ -313,9 +315,8 @@ const HeroUniversities = ({
     } else {
       message.success("Judge added successfully");
       setCodeData((prev) =>
-        prev.map((item) => (item.id === selectedCode.id ? data[0] : item))
+        prev.map((item) => (item.id === selectedCode?.id ? data[0] : item))
       );
-      setSelectedCode(data[0]); // Update the selectedCode state to reflect the change
       setSelectedCodeFull(data[0]);
       setJudgeName("");
       setJudgeEmail("");
@@ -375,7 +376,7 @@ const HeroUniversities = ({
     // Parse applyInfo array
     const applyInfoArray = project?.applyInfo;
     const applyInfoIndex = applyInfoArray.findIndex(
-      (info) => info.universityCode === selectedCode.id
+      (info) => info.universityCode === selectedCode?.id
     );
 
     if (applyInfoIndex === -1) {
@@ -416,7 +417,6 @@ const HeroUniversities = ({
   };
 
   const openEditModal = (record) => {
-    setSelectedCode(record);
     setSelectedCodeFull(record);
     setNewCode(record.code);
     setCompetitionName(record.name);
@@ -433,13 +433,11 @@ const HeroUniversities = ({
   };
 
   const openPublishModal = (record) => {
-    setSelectedCode(record);
     setSelectedCodeFull(record);
     setIsPublishModalOpen(true);
   };
 
   const openJudgeModal = (record) => {
-    setSelectedCode(record);
     setSelectedCodeFull(record);
     setIsJudgeModalOpen(true);
   };
@@ -448,7 +446,7 @@ const HeroUniversities = ({
   const openScoreModal = (record) => {
     setSelectedProject(record);
     const applyInfo = record?.applyInfo?.find(
-      (info) => info.universityCode === selectedCode.id
+      (info) => info.universityCode === selectedCode?.id
     );
 
     // Set score from the found applyInfo or default to 0
@@ -463,7 +461,7 @@ const HeroUniversities = ({
     const { data, error } = await supabase
       .from("code")
       .update({ judges: updatedJudges })
-      .eq("id", selectedCode.id)
+      .eq("id", selectedCode?.id)
       .select();
 
     if (error) {
@@ -472,9 +470,8 @@ const HeroUniversities = ({
     } else {
       message.success("Judge removed successfully");
       setCodeData((prev) =>
-        prev.map((item) => (item.id === selectedCode.id ? data[0] : item))
+        prev.map((item) => (item.id === selectedCode?.id ? data[0] : item))
       );
-      setSelectedCode(data[0]); // Update the selectedCode state to reflect the change
       setSelectedCodeFull(data[0]); // Update the selectedCode state to reflect the change
     }
   };
@@ -683,9 +680,12 @@ const HeroUniversities = ({
       dataIndex: "code",
       key: "code",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
+        const applyInfo = getApplyInfoByCode(
+          record?.applyInfo,
+          selectedCode?.id
+        );
         return (
-          <span className="hover:cursor-pointer">{applyInfo.creatorName}</span>
+          <span className="hover:cursor-pointer">{applyInfo?.creatorName}</span>
         );
       },
     },
@@ -694,7 +694,10 @@ const HeroUniversities = ({
       dataIndex: "applyAt",
       key: "applyAt",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
+        const applyInfo = getApplyInfoByCode(
+          record?.applyInfo,
+          selectedCode?.id
+        );
         return (
           <span className="hover:cursor-pointer">
             {formatDate(applyInfo.applyAt)}
@@ -707,7 +710,10 @@ const HeroUniversities = ({
       dataIndex: "contactEmail",
       key: "contactEmail",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
+        const applyInfo = getApplyInfoByCode(
+          record.applyInfo,
+          selectedCode?.id
+        );
         return (
           <span className="hover:cursor-pointer">{applyInfo.contactEmail}</span>
         );
@@ -718,7 +724,10 @@ const HeroUniversities = ({
       dataIndex: "contactPhone",
       key: "contactPhone",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
+        const applyInfo = getApplyInfoByCode(
+          record.applyInfo,
+          selectedCode?.id
+        );
         return (
           <span className="hover:cursor-pointer">{applyInfo.contactPhone}</span>
         );
@@ -729,7 +738,10 @@ const HeroUniversities = ({
       dataIndex: "university",
       key: "university",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
+        const applyInfo = getApplyInfoByCode(
+          record.applyInfo,
+          selectedCode?.id
+        );
         return (
           <span className="hover:cursor-pointer">{applyInfo.university}</span>
         );
@@ -740,7 +752,10 @@ const HeroUniversities = ({
       dataIndex: "teamSize",
       key: "teamSize",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
+        const applyInfo = getApplyInfoByCode(
+          record.applyInfo,
+          selectedCode?.id
+        );
         return (
           <span className="hover:cursor-pointer flex justify-center items-center">
             {applyInfo.teamSize}
@@ -753,7 +768,10 @@ const HeroUniversities = ({
       dataIndex: "teamEmails",
       key: "teamEmails",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
+        const applyInfo = getApplyInfoByCode(
+          record.applyInfo,
+          selectedCode?.id
+        );
         return (
           <span className="hover:cursor-pointer">{applyInfo.teamEmails}</span>
         );
@@ -765,7 +783,10 @@ const HeroUniversities = ({
       key: "score",
       align: "center",
       render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(record.applyInfo, selectedCode.id);
+        const applyInfo = getApplyInfoByCode(
+          record.applyInfo,
+          selectedCode?.id
+        );
         return (
           <span className="flex justify-center items-center">
             {applyInfo.score || 0}
@@ -787,7 +808,7 @@ const HeroUniversities = ({
                 <Menu.Item key="remove">
                   <div
                     onClick={() =>
-                      handleRemoveProjectCode(record.id, selectedCode.id)
+                      handleRemoveProjectCode(record.id, selectedCode?.id)
                     }
                     style={{ fontSize: "12px" }}
                   >
@@ -1041,7 +1062,7 @@ const HeroUniversities = ({
         </div>
         {currentTab === "Manage" && (
           <>
-            <section className="container px-4 mx-auto mt-14 max-w-3xl">
+            <section className="container px-4 mx-auto mt-14 max-w-[85rem]">
               <div className="flex flex-col mb-5">
                 <h3 className="font-bold text-xl text-left">Code listing</h3>
 
@@ -1057,7 +1078,6 @@ const HeroUniversities = ({
                     bordered
                     onRow={(record) => ({
                       onClick: () => {
-                        setSelectedCode(record);
                         setSelectedCodeFull(record);
                         onSelectCode(record.id);
                         filterProjectsByCode(record.id);
@@ -1068,7 +1088,7 @@ const HeroUniversities = ({
               </div>
             </section>
             {projectList?.length > 0 && (
-              <section className="container px-4 mx-auto mt-14 max-w-3xl">
+              <section className="container px-4 mx-auto mt-14 max-w-[85rem]">
                 <div className="flex flex-col mb-5">
                   <h2 className="text-xl font-bold text-left">
                     Project listing by {selectedCode?.code}
@@ -1103,11 +1123,10 @@ const HeroUniversities = ({
                   {selectedCodes.map((code) => (
                     <div
                       key={code.id}
-                      className="group flex justify-center w-full"
+                      className="group flex-grow justify-center w-full"
                     >
                       <UniCard
                         data={code}
-                        setSelectedCode={setSelectedCode}
                         setSelectedCodeFull={setSelectedCodeFull}
                         onSelectCode={onSelectCode}
                         filterProjectsByCode={filterProjectsByCode}

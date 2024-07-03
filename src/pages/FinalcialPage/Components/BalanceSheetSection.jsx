@@ -55,127 +55,8 @@ import { setCutMonth } from "../../../features/DurationSlice";
 import { DownloadOutlined, FileOutlined } from "@ant-design/icons";
 import GroqJS from "./GroqJson";
 
-import Chart from "react-apexcharts";
-import { DatePicker } from "antd";
-import moment from "moment";
-import { grid2Classes } from "@mui/material";
-
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
-
-const { RangePicker } = DatePicker;
-
-const BalanceSheetChart = ({ data }) => {
-  const [filteredData, setFilteredData] = useState(data);
-  const [dateRange, setDateRange] = useState([null, null]);
-
-  // Define the chart options
-  const chartOptions = {
-    chart: {
-      type: "area",
-      height: 350,
-      toolbar: {
-        show: true,
-        tools: {
-          download: true,
-        },
-      },
-      zoom: {
-        autoScaleYaxis: true,
-      },
-    },
-    grid: {
-      show: false,
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      curve: "smooth",
-    },
-    xaxis: {
-      type: "datetime",
-      labels: {},
-    },
-    tooltip: {
-      x: {
-        format: "MM-yyyy",
-      },
-    },
-  };
-
-  // Prepare the series data
-  const getSeriesData = (data) =>
-    data.map((item) => {
-      const seriesData = Object.entries(item)
-        .filter(([key]) => key !== "metric")
-        .map(([key, value]) => {
-          const [month, year] = key.split("-");
-          // Create a Date object with year and month (months are 0-based in JavaScript)
-          const date = new Date(year, month);
-          // Get the time in milliseconds for the date
-          const timeInMillis = date.getTime();
-          // Return an array with the time in milliseconds and the parsed value
-          return [timeInMillis, parseFloat(value.replace(/,/g, ""))];
-        });
-
-      return {
-        name: item.metric,
-        // Sort the series data based on the timestamp
-        data: seriesData.sort((a, b) => a[0] - b[0]),
-      };
-    });
-
-  const handleDateChange = (dates) => {
-    if (dates) {
-      const [start, end] = dates;
-      setDateRange([start, end]);
-
-      const filtered = data.map((item) => {
-        const filteredValues = Object.entries(item)
-          .filter(([key]) => key !== "metric")
-          .filter(([key]) => {
-            const [month, year] = key.split("-");
-            const date = new Date(year, month - 1);
-            const startDate = start.toDate();
-            const endDate = end.toDate();
-            const selectedStartDate = new Date(
-              startDate.getFullYear(),
-              startDate.getMonth()
-            );
-            const selectedEndDate = new Date(
-              endDate.getFullYear(),
-              endDate.getMonth()
-            );
-            return date >= selectedStartDate && date <= selectedEndDate;
-          })
-          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
-
-        return { metric: item.metric, ...filteredValues };
-      });
-
-      setFilteredData(filtered);
-    } else {
-      setDateRange([null, null]);
-      setFilteredData(data);
-    }
-  };
-  console.log("filteredData", filteredData);
-  const series = getSeriesData(filteredData);
-  console.log("series", series);
-
-  return (
-    <div>
-      <RangePicker
-        onChange={handleDateChange}
-        format="MM-YYYY"
-        picker="month"
-        value={dateRange}
-      />
-      <Chart options={chartOptions} series={series} type="bar" height={350} />
-    </div>
-  );
-};
 
 function BalanceSheetSection({ numberOfMonths }) {
   const dispatch = useDispatch();
@@ -719,7 +600,7 @@ function BalanceSheetSection({ numberOfMonths }) {
       key: "Current Assets", // Added Current Assets row
       values: currentAssets,
     },
-    {key: " "},
+    { key: "1" },
     {
       key: "Long-Term Assets",
     },
@@ -737,12 +618,12 @@ function BalanceSheetSection({ numberOfMonths }) {
       key: "Long term assets",
       values: bsTotalNetFixedAssets,
     },
-   
+
     {
       key: "Total Assets",
       values: totalAssets,
     },
-    {key: " "},
+    { key: "1" },
     {
       key: "Liabilities & Equity",
     },
@@ -767,8 +648,7 @@ function BalanceSheetSection({ numberOfMonths }) {
       values: totalLiabilities,
     },
     {
-      key: " ", 
-   
+      key: "1",
     },
     {
       key: "Shareholders Equity",
@@ -806,14 +686,14 @@ function BalanceSheetSection({ numberOfMonths }) {
       key: "Total Shareholders Equity",
       values: totalShareholdersEquity,
     },
-  
+
     // Add the Total Liabilities and Shareholders Equity here
 
     {
       key: "Total Liabilities and Shareholders Equity",
       values: totalLiabilitiesAndShareholdersEquity,
     },
-    
+
     {
       key: "Total Assets (Double Check)",
       values: totalAssets,
@@ -859,11 +739,14 @@ function BalanceSheetSection({ numberOfMonths }) {
 
       render: (text, record) => ({
         children: (
-          <div className={" md:whitespace-nowrap "}>
+          <div
+            className={" md:whitespace-nowrap "}
+            style={{ visibility: record.metric === "1" ? "hidden" : "visible" }}
+          >
             <div
               style={{
                 fontWeight:
-                  record.metric ==  " " ||
+                  record.metric == " " ||
                   record.metric === "Current Assets" ||
                   record.metric === "Long term assets" ||
                   record.metric === "Total Assets" ||
@@ -883,7 +766,7 @@ function BalanceSheetSection({ numberOfMonths }) {
                     : "normal",
               }}
             >
-               {text || <>&nbsp;</>}
+              {text || <>&nbsp;</>}
             </div>
           </div>
         ),
@@ -913,7 +796,7 @@ function BalanceSheetSection({ numberOfMonths }) {
                 // borderRight: "1px solid #f0f0f0",
               },
             };
-          } else if (   
+          } else if (
             record.metric === "Current Assets" ||
             record.metric === "Long term assets" ||
             record.metric === "Total Assets" ||
@@ -932,8 +815,6 @@ function BalanceSheetSection({ numberOfMonths }) {
             return {
               style: {
                 // borderRight: "1px solid #f0f0f0",
-               
-
               },
             };
           }
@@ -1019,25 +900,49 @@ function BalanceSheetSection({ numberOfMonths }) {
   };
 
   // Generate table columns including Year Total column for Balance Sheet
-  const generateBalanceSheetTableColumns = (year) => [
-    {
-      title: "Metric",
-      dataIndex: "metric",
-      key: "metric",
-      fixed: "left",
-    },
-    ...year.textMonth.map((textMonth, index) => ({
-      title: textMonth,
-      dataIndex: `Month ${year.months[index]}`,
-      key: `Month ${year.months[index]}`,
-    })),
-    {
-      title: "Year Total",
-      dataIndex: "yearTotal",
-      key: "yearTotal",
-      // Add any formatting if needed
-    },
-  ];
+  const generateBalanceSheetTableColumns = (year) => {
+    const columns = [
+      {
+        title: "Metric",
+        dataIndex: "metric",
+        key: "metric",
+        fixed: "left",
+        render: (text, record) => ({
+          children: (
+            <div
+              className={"md:whitespace-nowrap"}
+              style={{
+                visibility: record.metric === "1" ? "hidden" : "visible",
+              }}
+            >
+              <div>{text}</div>
+            </div>
+          ),
+        }),
+      },
+      ...year.textMonth.map((textMonth, index) => ({
+        title: textMonth,
+        dataIndex: `Month ${year.months[index]}`,
+        key: `Month ${year.months[index]}`,
+        render: (text, record) => (
+          <div
+            style={{
+              visibility: record.metric === "1" ? "hidden" : "visible",
+            }}
+          >
+            {text}
+          </div>
+        ),
+      })),
+      {
+        title: "Year Total",
+        dataIndex: "yearTotal",
+        key: "yearTotal",
+        render: (text) => <strong>{formatNumber(text)}</strong>,
+      },
+    ];
+    return columns;
+  };
 
   const getDataSourceForYearBalanceSheet = (months) => {
     const monthKeys = months.map((month) => `Month ${month}`);
@@ -1218,7 +1123,6 @@ function BalanceSheetSection({ numberOfMonths }) {
             dataSource={positionDataWithNetIncome2}
             columns={positionColumns1}
             pagination={false}
-            
           />
 
           <div className="grid grid-cols-2 gap-4 mb-3">
@@ -1232,7 +1136,10 @@ function BalanceSheetSection({ numberOfMonths }) {
           </div>
           {showAdvancedInputs && (
             <>
-              <div className="w-full lg:w-[20%] md:w-[50%] my-5">
+              <div className="w-full lg:w-[20%] md:w-[50%] my-5 mt-20">
+                <h3 className="text-lg font-semibold my-5">
+                  III. Balance Sheet By Years
+                </h3>
                 <SelectField
                   label="Select Cut Month:"
                   id="Select Cut Month:"

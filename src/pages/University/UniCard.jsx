@@ -5,7 +5,6 @@ import { supabase } from "../../supabase";
 const UniCard = ({
   data,
   codeInCompetition,
-  setSelectedCode,
   setSelectedCodeFull,
   onSelectCode,
   filterProjectsByCode,
@@ -36,7 +35,6 @@ const UniCard = ({
   return (
     <div
       onClick={() => {
-        setSelectedCode(data);
         if (setSelectedCodeFull) {
           setSelectedCodeFull(data);
         }

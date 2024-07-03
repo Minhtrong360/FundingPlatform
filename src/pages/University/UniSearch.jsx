@@ -60,9 +60,14 @@ const UniSearch = ({
             id="profiles"
             className="text-3xl sm:text-5xl font-semibold text-gray-800 darkTextGray"
           >
-            {selectedCode
-              ? `Business profiles for ${selectedCode.code}`
-              : "Business profiles"}
+            {selectedCode ? (
+              <>
+                Business profiles for{" "}
+                <span className="bg-yellow-300">{selectedCode.code}</span>
+              </>
+            ) : (
+              "Business profiles"
+            )}
           </h3>
           <div className="mt-7 sm:mt-12 mx-auto max-w-xl relative">
             <form onSubmit={handleSearchSubmit}>

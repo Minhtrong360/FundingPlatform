@@ -62,7 +62,7 @@ const HeroSection = () => {
               {user
                 ? subscribed
                   ? "Financial Model"
-                  : "14-day free trial"
+                  : "Subscribe"
                 : "Get started"}
             </button>
           </div>

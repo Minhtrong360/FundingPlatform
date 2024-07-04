@@ -27,6 +27,7 @@ const UniversitiesPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [credentials, setCredentials] = useState();
+  const [filteredProjectList, setFilteredProjectList] = useState([]);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -151,10 +152,24 @@ const UniversitiesPage = () => {
         company?.name?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
+    if (filteredProjectList) {
+      data = data.filter((company) =>
+        filteredProjectList.some(
+          (project) => project?.id === company.project_id
+        )
+      );
+    }
 
     const visibleCompanies = data.slice(0, visibleItemCount);
     setCompaniesToRender(visibleCompanies);
-  }, [currentTab, companies, page, searchTerm, visibleItemCount]);
+  }, [
+    currentTab,
+    companies,
+    page,
+    searchTerm,
+    visibleItemCount,
+    filteredProjectList,
+  ]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -197,94 +212,105 @@ const UniversitiesPage = () => {
   };
 
   return (
-    <div className="lg:px-8 mx-auto mb-16 flex">
-      <SideBarWorkSpace
-        isSidebarOpen={isSidebarOpen}
-        toggleSidebar={toggleSidebar}
-        setCurrentTab={setCurrentItem}
-        currentTab={currentItem}
-      />
-
-      <div
-        className="px-3 py-2 lg:px-8 lg:py-1 mx-auto flex-grow"
-        onClick={() => setIsSidebarOpen(false)}
-      >
-        <HeroUniversities
-          onSelectCode={handleSelectCode}
-          setCompanies={setCompanies}
-          credentials={credentials}
+    <div className=" bg-white darkBg antialiased !p-0">
+      <div id="exampleWrapper">
+        <SideBarWorkSpace
+          isSidebarOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+          setCurrentTab={setCurrentItem}
           currentTab={currentItem}
-          selectedCode={selectedCodeFull}
-          setSelectedCodeFull={setSelectedCodeFull}
         />
-        <UniSearch
-          onSearch={handleSearch}
-          companies={companiesToRender}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          currentTab={currentTab}
-          setCurrentTab={setCurrentTab}
-          selectedCode={selectedCodeFull}
-        />
-
-        <Tabs
-          value={selectedTab}
-          onChange={(event, newValue) => setSelectedTab(newValue)}
-          indicatorColor="primary"
-          textColor="primary"
-          centered
+        <div
+          className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0 "
+          onClick={() => setIsSidebarOpen(false)}
         >
-          <Tab label="Listing" value="Listing" />
-          <Tab label="Rules" value="Rules" />
-        </Tabs>
+          <div
+            className="px-3 py-2 lg:px-8 lg:py-1 mx-auto flex-grow"
+            onClick={() => setIsSidebarOpen(false)}
+          >
+            <HeroUniversities
+              onSelectCode={handleSelectCode}
+              setCompanies={setCompanies}
+              credentials={credentials}
+              currentTab={currentItem}
+              selectedCode={selectedCodeFull}
+              setSelectedCodeFull={setSelectedCodeFull}
+              filteredProjectList={filteredProjectList}
+              setFilteredProjectList={setFilteredProjectList}
+            />
+            <UniSearch
+              onSearch={handleSearch}
+              companies={companiesToRender}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              currentTab={currentTab}
+              setCurrentTab={setCurrentTab}
+              selectedCode={selectedCodeFull}
+            />
 
-        {isLoading ? (
-          <LinearProgress className="my-20" />
-        ) : selectedTab === "Listing" ? (
-          <>
-            {companiesToRender.length === 0 ? (
-              <div className="mt-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
-                No result
-              </div>
-            ) : (
-              <div className="mx-auto max-w-[85rem] mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
-                {companiesToRender.map((company, index) => (
-                  <div key={company.id} className="group flex justify-center">
-                    {company ? (
-                      <Card
-                        key={company.id}
-                        title={company.name}
-                        description={company.description}
-                        imageUrl={company.card_url}
-                        buttonText="More"
-                        project_id={company.project_id}
-                        verified={company.verifiedStatus}
-                        status={company.status}
-                      />
-                    ) : (
-                      <div className="w-[30vw] h-[55vh]"></div>
-                    )}
+            <Tabs
+              value={selectedTab}
+              onChange={(event, newValue) => setSelectedTab(newValue)}
+              indicatorColor="primary"
+              textColor="primary"
+              centered
+            >
+              <Tab label="Listing" value="Listing" />
+              <Tab label="Rules" value="Rules" />
+            </Tabs>
+
+            {isLoading ? (
+              <LinearProgress className="my-20" />
+            ) : selectedTab === "Listing" ? (
+              <>
+                {companiesToRender.length === 0 ? (
+                  <div className="mt-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
+                    No result
                   </div>
-                ))}
+                ) : (
+                  <div className="mx-auto max-w-[85rem] mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
+                    {companiesToRender.map((company, index) => (
+                      <div
+                        key={company.id}
+                        className="group flex justify-center"
+                      >
+                        {company ? (
+                          <Card
+                            key={company.id}
+                            title={company.name}
+                            description={company.description}
+                            imageUrl={company.card_url}
+                            buttonText="More"
+                            project_id={company.project_id}
+                            verified={company.verifiedStatus}
+                            status={company.status}
+                          />
+                        ) : (
+                          <div className="w-[30vw] h-[55vh]"></div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="flex justify-center items-center">
+                <UniEditorTool
+                  selectedCode={selectedCodeFull}
+                  setSelectedCode={setSelectedCodeFull}
+                  unChange={currentItem === "View" ? true : false}
+                  handleUpdateRules={handleUpdateRules}
+                />
               </div>
             )}
-          </>
-        ) : (
-          <div className="flex justify-center items-center">
-            <UniEditorTool
-              selectedCode={selectedCodeFull}
-              setSelectedCode={setSelectedCodeFull}
-              unChange={currentItem === "View" ? true : false}
-              handleUpdateRules={handleUpdateRules}
+
+            <CredentialModal
+              visible={isModalVisible}
+              onSubmit={handleCredentialSubmit}
+              onCancel={() => navigate("/")}
             />
           </div>
-        )}
-
-        <CredentialModal
-          visible={isModalVisible}
-          onSubmit={handleCredentialSubmit}
-          onCancel={() => navigate("/")}
-        />
+        </div>
       </div>
     </div>
   );

@@ -252,27 +252,26 @@ const CompetitionPosts = ({ location }) => {
                         )}
                       </div>
                     ))}
-                    <div className="flex justify-between mt-5">
-                      <button
-                        onClick={handlePrevious}
-                        disabled={currentCodePage === 0}
-                        className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${currentCodePage === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
-                      >
-                        <LeftOutlined /> Previous
-                      </button>
-                      <button
-                        onClick={handleNext}
-                        disabled={
-                          (currentCodePage + 1) * itemsCodePerPage >=
-                          codes.length
-                        }
-                        className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${(currentCodePage + 1) * itemsCodePerPage >= codes.length ? "opacity-50 cursor-not-allowed" : ""}`}
-                      >
-                        Next
-                        <RightOutlined className="ml-2" />
-                      </button>
-                    </div>
                   </div>{" "}
+                  <div className="flex justify-between mt-5">
+                    <button
+                      onClick={handlePrevious}
+                      disabled={currentCodePage === 0}
+                      className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${currentCodePage === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+                    >
+                      <LeftOutlined /> Previous
+                    </button>
+                    <button
+                      onClick={handleNext}
+                      disabled={
+                        (currentCodePage + 1) * itemsCodePerPage >= codes.length
+                      }
+                      className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${(currentCodePage + 1) * itemsCodePerPage >= codes.length ? "opacity-50 cursor-not-allowed" : ""}`}
+                    >
+                      Next
+                      <RightOutlined className="ml-2" />
+                    </button>
+                  </div>
                 </div>
               </section>
             </>

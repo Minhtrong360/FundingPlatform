@@ -1821,7 +1821,7 @@ function AdminPage() {
         <Tooltip title={record.full_name}>
           <span className="hover:cursor-pointer text-left">
             <div className="truncate" style={{ maxWidth: "100%" }}>
-              {record.full_name ? record.full_name : "No provided"}
+              {record.full_name ? record.full_name : ""}
             </div>
           </span>
         </Tooltip>
@@ -1951,7 +1951,7 @@ function AdminPage() {
         record.email?.toString().toLowerCase().includes(value.toLowerCase()),
     },
     {
-      title: "Date",
+      title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
 
@@ -2008,7 +2008,7 @@ function AdminPage() {
       },
     },
     {
-      title: "Roll",
+      title: "Role",
       dataIndex: "roll",
       key: "roll",
 
@@ -2017,7 +2017,7 @@ function AdminPage() {
         <Tooltip title={record.roll}>
           <span className="hover:cursor-pointer text-left">
             <div className="truncate" style={{ maxWidth: "100%" }}>
-              {record.roll ? record.roll : "No provided"}
+              {record.roll ? record.roll : ""}
             </div>
           </span>
         </Tooltip>
@@ -2027,13 +2027,12 @@ function AdminPage() {
       title: "Plan",
       dataIndex: "plan",
       key: "plan",
-
       align: "center",
       render: (text, record) => (
-        <Tooltip title={record.plan}>
+        <Tooltip title={record.plan ? record.plan : "Free"}>
           <span className="hover:cursor-pointer text-left">
             <div className="truncate" style={{ maxWidth: "100%" }}>
-              {record.plan}
+              {record.plan ? record.plan : "Free"}
             </div>
           </span>
         </Tooltip>
@@ -2091,6 +2090,21 @@ function AdminPage() {
         record.plan?.toString().toLowerCase().includes(value.toLowerCase()),
     },
     {
+      title: "Subscribed Date",
+      dataIndex: "subscribe",
+      key: "subscribe",
+      align: "center",
+      render: (text, record) => (
+        <Tooltip title={formatDate(record.subscribe)}>
+          <span className="hover:cursor-pointer text-left">
+            <div className="truncate" style={{ maxWidth: "100%" }}>
+              {record.subscribe ? <span>{formatDate(text)}</span> : ""}
+            </div>
+          </span>
+        </Tooltip>
+      ),
+    },
+    {
       title: "Plan status",
       dataIndex: "subscription_status",
       key: "subscription_status",
@@ -2102,7 +2116,7 @@ function AdminPage() {
             <div className="truncate" style={{ maxWidth: "100%" }}>
               {record.subscription_status
                 ? capitalizeFirstLetter(record.subscription_status)
-                : "No subscription"}
+                : ""}
             </div>
           </span>
         </Tooltip>
@@ -2118,7 +2132,7 @@ function AdminPage() {
         <Tooltip title={record.code}>
           <span className="hover:cursor-pointer text-left">
             <div className="truncate" style={{ maxWidth: "100%" }}>
-              {record.code ? record.code : "No code"}
+              {record.code ? record.code : ""}
             </div>
           </span>
         </Tooltip>
@@ -2222,7 +2236,7 @@ function AdminPage() {
   const [isUpgradePlanModalOpen, setIsUpgradePlanModalOpen] = useState(false);
   const [isDeleteClientModalOpen, setIsDeleteClientModalOpen] = useState(false);
 
-  const [clientStatus, setClientStatus] = useState("");
+  const [clientStatus, setClientStatus] = useState("FundFlow Premium");
   const [subscriptionStatus, setSubscriptionStatus] = useState("");
 
   const handleUpgradePlan = (client) => {
@@ -2243,18 +2257,26 @@ function AdminPage() {
 
   const confirmUpgrade = async () => {
     try {
-      const { error } = await supabase
+      const { data: upgradedClientData, error } = await supabase
         .from("users")
         .update({ plan: clientStatus, subscription_status: subscriptionStatus })
-        .eq("id", selectedClient.id);
+        .eq("id", selectedClient.id)
+        .select();
 
       if (error) {
-        console.error("Error fetching users:", error.message);
+        console.error("Error upgrading client plan:", error.message);
       } else {
         message.success(`Upgraded client's plan successfully.`);
+
+        // Update the dataClientSource state with the upgraded client data
+        setDataClientSource((prevData) =>
+          prevData.map((client) =>
+            client.id === selectedClient.id ? upgradedClientData[0] : client
+          )
+        );
       }
     } catch (error) {
-      message.error(error);
+      message.error(error.message);
     } finally {
       setSelectedClient("");
       setIsUpgradePlanModalOpen(false);
@@ -2545,7 +2567,7 @@ function AdminPage() {
 
                     <Radio value="FundFlow Premium">FundFlow Premium</Radio>
 
-                    <Radio value="FundFlow Platinum">FundFlow Platinum</Radio>
+                    <Radio value="FundFlow Growth">FundFlow Growth</Radio>
                   </Radio.Group>
                 </div>
               </div>

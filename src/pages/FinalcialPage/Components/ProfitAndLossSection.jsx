@@ -131,6 +131,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
       numberOfMonths,
       revenueData
     );
+
     dispatch(setCostTableData(costTableData));
   }, [costInputs, numberOfMonths]);
 
@@ -236,6 +237,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
     return `${monthIndex + 1}-${year}`;
   });
+
   const profitAndLossData = [
     { key: "Revenue" },
     { key: "Total Revenue", values: totalRevenue },
@@ -295,6 +297,8 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     }
     return text.substring(0, maxLength) + "...";
   };
+
+  console.log("costInputs", costInputs);
 
   const transposedData = [
     { key: "Revenue" },

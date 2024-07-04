@@ -12,6 +12,7 @@ function SideBarWorkSpace({
 
   const handleItemClick = (tab) => {
     setCurrentTab(tab);
+    toggleSidebar();
   };
 
   return (

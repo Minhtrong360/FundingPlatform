@@ -69,6 +69,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
     [isContentChanged]
   );
 
+  console.log("currentProject", currentProject);
   useEffect(() => {
     window.addEventListener("beforeunload", handleBeforeUnload);
 

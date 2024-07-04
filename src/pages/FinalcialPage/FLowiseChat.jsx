@@ -40,10 +40,33 @@ const theme = {
   },
 };
 
-const FlowiseChat = () => {
+// const FlowiseChat = () => {
+//   return (
+//     <BubbleChat
+//       chatflowid="39943ce9-4b02-44a9-be58-b53010dbf83b"
+//       apiHost="https://flowise-ngy8.onrender.com"
+//       theme={theme}
+//     />
+//   );
+// };
+
+// export default FlowiseChat;
+
+const FlowiseChat = ({ page }) => {
+  let chatflowid;
+  if (page === 'Home') {
+    chatflowid = 'd07c777f-6204-4699-92ea-9c0abb67d157';
+  } else if (page === 'FM') {
+    chatflowid = '39943ce9-4b02-44a9-be58-b53010dbf83b';
+  } else if (page === '-') {
+    chatflowid = '';
+  } else {
+    chatflowid = 'd07c777f-6204-4699-92ea-9c0abb67d157'; // Default to Home if no valid type is provided
+  }
+
   return (
     <BubbleChat
-      chatflowid="39943ce9-4b02-44a9-be58-b53010dbf83b"
+      chatflowid={chatflowid}
       apiHost="https://flowise-ngy8.onrender.com"
       theme={theme}
     />

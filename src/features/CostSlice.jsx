@@ -177,7 +177,7 @@ export const transformCostDataForTable = (
         transformedTableData[rowKey] = {
           key: rowKey,
           costName: rowKey,
-          costGroup: costItem.costGroup.toUpperCase(), // Include the cost group for grouping
+          costGroup: costItem.costGroup?.toUpperCase(), // Include the cost group for grouping
         };
       }
       transformedTableData[rowKey][`month${monthData.month}`] = formatNumber(
@@ -188,7 +188,7 @@ export const transformCostDataForTable = (
 
   // Group costs by costGroup
   const costGroups = [
-    ...new Set(tempCostInput.map((input) => input.costGroup.toUpperCase())),
+    ...new Set(tempCostInput.map((input) => input.costGroup?.toUpperCase())),
   ];
   const categorizedTableData = [];
 
@@ -200,7 +200,7 @@ export const transformCostDataForTable = (
     });
 
     const costsOfGroup = Object.values(transformedTableData).filter(
-      (data) => data.costGroup.toUpperCase() === group.toUpperCase()
+      (data) => data.costGroup?.toUpperCase() === group?.toUpperCase()
     );
 
     costsOfGroup.forEach((data) => categorizedTableData.push(data));

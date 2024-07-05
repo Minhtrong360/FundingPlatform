@@ -36,6 +36,11 @@ const HeroUniversities = ({
   setSelectedCodeFull,
   filteredProjectList,
   setFilteredProjectList,
+  selectedRound,
+  setSelectedRound,
+  filterProjectsByRound,
+  projectList,
+  setProjectList,
 }) => {
   const { Option } = Select;
 
@@ -56,7 +61,6 @@ const HeroUniversities = ({
   const [codeToDelete, setCodeToDelete] = useState(null);
   const [codeData, setCodeData] = useState([]);
   const [projectCounts, setProjectCounts] = useState({});
-  const [projectList, setProjectList] = useState([]);
 
   const [judgeName, setJudgeName] = useState("");
   const [judgeEmail, setJudgeEmail] = useState("");
@@ -267,8 +271,24 @@ const HeroUniversities = ({
   };
 
   const handleAddRound = () => {
-    if (rounds[rounds.length - 1]?.name || !rounds.length) {
+    if (rounds[rounds.length - 1]?.name || rounds.length === 0) {
       setRounds([...rounds, { id: uuidv4(), name: "" }]);
+    } else {
+      message.error(
+        "Please enter a name for the current round before adding a new one."
+      );
+    }
+  };
+
+  const handleAddEditRound = () => {
+    if (
+      JSON.parse(editRounds[editRounds.length - 1])?.name ||
+      editRounds.length === 0
+    ) {
+      setEditRounds([
+        ...editRounds,
+        JSON.stringify({ id: uuidv4(), name: "" }),
+      ]);
     } else {
       message.error(
         "Please enter a name for the current round before adding a new one."
@@ -278,6 +298,9 @@ const HeroUniversities = ({
 
   const handleRemoveRound = (index) => {
     setRounds(rounds.filter((_, i) => i !== index));
+  };
+  const handleRemoveEditRound = (index) => {
+    setEditRounds(editRounds.filter((_, i) => i !== index));
   };
   const handleRoundNameChange = (index, name) => {
     setRounds(
@@ -753,8 +776,8 @@ const HeroUniversities = ({
     const filteredScoringInfo = scoringInfo.filter((info) => {
       const parsedInfo = JSON.parse(info);
       return (
-        parsedInfo.codeId === selectedCode.id &&
-        parsedInfo.round === selectedRound.id
+        parsedInfo.codeId === selectedCode?.id &&
+        parsedInfo.round === selectedRound?.id
       );
     });
 
@@ -806,8 +829,6 @@ const HeroUniversities = ({
     setIsQualifiedModalOpen(true);
   };
 
-  const [selectedRound, setSelectedRound] = useState([]);
-
   const handleQualified = async () => {
     const updatedApplyInfo = projectToQualify.applyInfo.map((info) => {
       if (info.universityCode === selectedCode.id) {
@@ -840,36 +861,6 @@ const HeroUniversities = ({
       message.error("Failed to qualify project");
       console.error("Error qualifying project:", error);
     }
-  };
-
-  const filterProjectsByRound = (round) => {
-    if (!round) {
-      setFilteredProjectList(projectList);
-      return;
-    }
-
-    const selectedRoundIndex = selectedCode.rounds.findIndex(
-      (r) => JSON.parse(r).id === round.id
-    );
-
-    const filteredProjects = projectList.filter((project) =>
-      project.applyInfo.some((info) => {
-        if (info.universityCode !== selectedCode.id) {
-          return false;
-        }
-        if (!info.passRound) {
-          return selectedRoundIndex === 0;
-        }
-
-        const passRoundIndex = selectedCode.rounds.findIndex(
-          (r) => JSON.parse(r).id === info.passRound
-        );
-
-        return passRoundIndex >= selectedRoundIndex - 1;
-      })
-    );
-
-    setFilteredProjectList(filteredProjects);
   };
 
   useEffect(() => {
@@ -1052,14 +1043,14 @@ const HeroUniversities = ({
                     Qualified
                   </div>
                 </Menu.Item>
-                <Menu.Item key="score">
+                {/* <Menu.Item key="score">
                   <div
                     onClick={() => openScoreModal(record)}
                     style={{ fontSize: "12px" }}
                   >
                     Score
                   </div>
-                </Menu.Item>
+                </Menu.Item> */}
               </>
             </Menu>
           }
@@ -1298,28 +1289,28 @@ const HeroUniversities = ({
     setSelectedRound(parsedRounds[0] || null);
   }, [selectedCode]);
 
-  const [totalScore, setTotalScore] = useState(0);
+  // const [totalScore, setTotalScore] = useState(0);
 
-  useEffect(() => {
-    const initialTotalScore = scoringRules.reduce(
-      (acc, rule) => acc + (rule.score || 0) * (Number(rule.rate) / 100),
-      0
-    );
+  // useEffect(() => {
+  //   const initialTotalScore = scoringRules.reduce(
+  //     (acc, rule) => acc + (rule.score || 0) * (Number(rule.rate) / 100),
+  //     0
+  //   );
 
-    setTotalScore(initialTotalScore.toFixed(2));
-  }, [scoringRules]);
+  //   setTotalScore(initialTotalScore.toFixed(2));
+  // }, [scoringRules]);
 
-  const handleScoreChange = (index, value) => {
-    const newScore = Number(value);
-    const updatedScoringRules = [...scoringRules];
-    updatedScoringRules[index].score = newScore;
+  // const handleScoreChange = (index, value) => {
+  //   const newScore = Number(value);
+  //   const updatedScoringRules = [...scoringRules];
+  //   updatedScoringRules[index].score = newScore;
 
-    const newTotalScore = updatedScoringRules.reduce(
-      (acc, rule) => acc + (rule.score || 0) * (Number(rule.rate) / 100),
-      0
-    );
-    setTotalScore(newTotalScore);
-  };
+  //   const newTotalScore = updatedScoringRules.reduce(
+  //     (acc, rule) => acc + (rule.score || 0) * (Number(rule.rate) / 100),
+  //     0
+  //   );
+  //   setTotalScore(newTotalScore);
+  // };
 
   // const handleScoreChange = (index, value) => {
   //   const updatedScoringRules = [...scoringRules];
@@ -1801,7 +1792,11 @@ const HeroUniversities = ({
                     >
                       <Input
                         placeholder={`Round ${index + 1} Name`}
-                        value={JSON.parse(round)?.name}
+                        value={
+                          typeof round === "string"
+                            ? JSON.parse(round)?.name
+                            : round?.name
+                        }
                         onChange={(e) =>
                           handleEditRoundNameChange(index, e.target.value)
                         }
@@ -1809,7 +1804,7 @@ const HeroUniversities = ({
                       />
                       <Button
                         type="danger"
-                        onClick={() => handleRemoveRound(index)}
+                        onClick={() => handleRemoveEditRound(index)}
                         style={{ fontSize: "12px", padding: 0 }}
                       >
                         <CloseOutlined />
@@ -1823,7 +1818,7 @@ const HeroUniversities = ({
                       backgroundColor: "#2563EB",
                       marginTop: "12px",
                     }}
-                    onClick={handleAddRound}
+                    onClick={handleAddEditRound}
                   >
                     <PlusCircleOutlined />
                     Add Round
@@ -2048,7 +2043,7 @@ const HeroUniversities = ({
           </div>
         </Modal>
 
-        <Modal
+        {/* <Modal
           title={`Giving Score for ${selectedProject?.name?.toUpperCase()}`}
           open={isScoreModalOpen}
           onOk={() => handleScoreProject(selectedProject.id)}
@@ -2106,7 +2101,7 @@ const HeroUniversities = ({
               </div>
             </form>
           </div>
-        </Modal>
+        </Modal> */}
 
         <Modal
           title="Judge Scores"

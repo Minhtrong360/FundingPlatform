@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Card from "../Home/Components/Card";
 import { supabase } from "../../supabase";
-import { LinearProgress, Tabs, Tab } from "@mui/material";
-import { message } from "antd";
+import { LinearProgress } from "@mui/material";
+import { Dropdown, Menu, message, Spin, Tabs } from "antd";
 import HeroUniversities from "./HeroUniversities";
 import CredentialModal from "./CredentialModal";
 import { useLocation, useNavigate } from "react-router-dom";
 import SideBarWorkSpace from "./SideBarWorkSpace";
 import UniSearch from "./UniSearch";
 import UniEditorTool from "./UniEditorTool"; // Assuming this is the component for editing rules
+import TabPane from "antd/es/tabs/TabPane";
+import { useAuth } from "../../context/AuthContext";
 
 const UniversitiesPage = () => {
   const [companies, setCompanies] = useState([]);
@@ -211,6 +213,70 @@ const UniversitiesPage = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const [selectedRound, setSelectedRound] = useState(null); // New state for selected round from dropdown
+  const [projectList, setProjectList] = useState([]);
+
+  const filterProjectsByRound = (round) => {
+    if (!round) {
+      setFilteredProjectList(projectList);
+      return;
+    }
+
+    const selectedRoundIndex = selectedCodeFull?.rounds.findIndex(
+      (r) => JSON.parse(r).id === round.id
+    );
+
+    const filteredProjects = projectList.filter((project) =>
+      project.applyInfo.some((info) => {
+        if (info.universityCode !== selectedCodeFull?.id) {
+          return false;
+        }
+        if (!info.passRound) {
+          return selectedRoundIndex === 0;
+        }
+
+        const passRoundIndex = selectedCodeFull?.rounds.findIndex(
+          (r) => JSON.parse(r).id === info.passRound
+        );
+
+        return passRoundIndex >= selectedRoundIndex - 1;
+      })
+    );
+
+    setFilteredProjectList(filteredProjects);
+  };
+
+  const handleRoundSelect = (round) => {
+    setSelectedRound(round);
+    filterProjectsByRound(round);
+    setSelectedTab("Listing");
+  };
+
+  // Dropdown menu for rounds
+  const roundsMenu = (
+    <Menu>
+      {selectedCodeFull?.rounds?.map((round, index) => (
+        <Menu.Item
+          key={index}
+          onClick={() => handleRoundSelect(JSON.parse(round))}
+          className={
+            selectedRound && JSON.parse(round).id === selectedRound.id
+              ? "bg-gray-300 text-white hover:bg-gray-300"
+              : "hover:bg-gray-200"
+          }
+        >
+          Round: {JSON.parse(round).name}
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
+
+  const { user } = useAuth();
+  // Check if the user is a judge
+  const isJudge = selectedCodeFull?.judges?.some(
+    (judge) => JSON.parse(judge)?.email === user?.email
+  );
+
   return (
     <div className=" bg-white darkBg antialiased !p-0">
       <div id="exampleWrapper">
@@ -237,6 +303,11 @@ const UniversitiesPage = () => {
               setSelectedCodeFull={setSelectedCodeFull}
               filteredProjectList={filteredProjectList}
               setFilteredProjectList={setFilteredProjectList}
+              selectedRound={selectedRound}
+              setSelectedRound={setSelectedRound}
+              filterProjectsByRound={filterProjectsByRound}
+              projectList={projectList}
+              setProjectList={setProjectList}
             />
             <UniSearch
               onSearch={handleSearch}
@@ -249,60 +320,79 @@ const UniversitiesPage = () => {
             />
 
             <Tabs
-              value={selectedTab}
-              onChange={(event, newValue) => setSelectedTab(newValue)}
-              indicatorColor="primary"
-              textColor="primary"
+              activeKey={selectedTab}
+              onChange={(key) => setSelectedTab(key)}
               centered
             >
-              <Tab label="Listing" value="Listing" />
-              <Tab label="Rules" value="Rules" />
-            </Tabs>
-
-            {isLoading ? (
-              <LinearProgress className="my-20" />
-            ) : selectedTab === "Listing" ? (
-              <>
-                {companiesToRender.length === 0 ? (
-                  <div className="mt-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
-                    No result
-                  </div>
+              <TabPane
+                tab={
+                  <Dropdown
+                    overlay={roundsMenu}
+                    trigger={["hover"]}
+                    // onOpenChange={(visible) =>
+                    //   setHoveredTab(visible ? "Listing" : "")
+                    // }
+                  >
+                    <span>Listing</span>
+                  </Dropdown>
+                }
+                key="Listing"
+              >
+                {isLoading ? (
+                  <LinearProgress className="my-20" />
                 ) : (
-                  <div className="mx-auto max-w-[85rem] mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
-                    {companiesToRender.map((company, index) => (
-                      <div
-                        key={company.id}
-                        className="group flex justify-center"
-                      >
-                        {company ? (
-                          <Card
+                  <>
+                    <h2 className="text-center font-semibold text-lg">
+                      Round: {selectedRound?.name}
+                    </h2>
+                    <div className="mx-auto max-w-[85rem] mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
+                      {companiesToRender.length > 0 ? (
+                        companiesToRender.map((company, index) => (
+                          <div
                             key={company.id}
-                            title={company.name}
-                            description={company.description}
-                            imageUrl={company.card_url}
-                            buttonText="More"
-                            project_id={company.project_id}
-                            verified={company.verifiedStatus}
-                            status={company.status}
-                          />
-                        ) : (
-                          <div className="w-[30vw] h-[55vh]"></div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                            className="group flex justify-center"
+                          >
+                            {company ? (
+                              <Card
+                                key={company.id}
+                                title={company.name}
+                                description={company.description}
+                                imageUrl={company.card_url}
+                                buttonText="More"
+                                project_id={company.project_id}
+                                verified={company.verifiedStatus}
+                                status={company.status}
+                                selectedCodeFull={selectedCodeFull}
+                                projectList={projectList}
+                                selectedRound={selectedRound}
+                                setProjectList={setProjectList}
+                                isJudge={isJudge}
+                              />
+                            ) : (
+                              <div className="w-[30vw] h-[55vh]"></div>
+                            )}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="mt-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
+                          No result
+                        </div>
+                      )}
+                    </div>
+                  </>
                 )}
-              </>
-            ) : (
-              <div className="flex justify-center items-center">
-                <UniEditorTool
-                  selectedCode={selectedCodeFull}
-                  setSelectedCode={setSelectedCodeFull}
-                  unChange={currentItem === "View" ? true : false}
-                  handleUpdateRules={handleUpdateRules}
-                />
-              </div>
-            )}
+              </TabPane>
+              <TabPane tab="Rules" key="Rules">
+                <div className="flex justify-center items-center">
+                  <UniEditorTool
+                    selectedCode={selectedCodeFull}
+                    setSelectedCode={setSelectedCodeFull}
+                    unChange={currentItem === "View" ? true : false}
+                    handleUpdateRules={handleUpdateRules}
+                  />
+                </div>
+              </TabPane>
+            </Tabs>
 
             <CredentialModal
               visible={isModalVisible}

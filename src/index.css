@@ -336,3 +336,7 @@ code {
 .ant-table-content::-webkit-scrollbar {
   display: none; /* for Chrome, Safari, and Opera */
 }
+
+.ant-tabs-nav::before {
+  border-bottom: none !important;
+}

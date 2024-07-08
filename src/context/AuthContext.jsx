@@ -127,17 +127,13 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (currentUser) {
       if (
-        !currentUser[0]?.plan ||
-        currentUser[0]?.plan == "Free" ||
-        currentUser[0]?.plan == null ||
-        currentUser[0]?.plan == undefined ||
-        !currentUser[0]?.subscription_status ||
-        currentUser[0]?.subscription_status == "canceled" ||
-        currentUser[0]?.subscription_status == "cancelled"
+        currentUser[0]?.plan === "FundFlow Premium" &&
+        (currentUser[0]?.subscription_status?.toLowerCase() === "active" ||
+          currentUser[0]?.subscription_status?.toLowerCase() === "on_trial")
       ) {
-        setSubscribed(false);
-      } else {
         setSubscribed(true);
+      } else {
+        setSubscribed(false);
       }
       if (currentUser[0].admin == true) {
         setAdmin(true);

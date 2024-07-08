@@ -218,6 +218,7 @@ function FilesList() {
 
   useEffect(() => {
     if (
+      !currentUser?.plan ||
       currentUser?.plan === "Free" ||
       currentUser?.plan === null ||
       currentUser?.plan === undefined ||

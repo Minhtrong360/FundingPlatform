@@ -112,8 +112,8 @@ export const transformPersonnelCostDataForTable = (tempPersonnelCostData) => {
 
   for (const [department, items] of Object.entries(groupedByDepartment)) {
     transformedPersonnelTableData.push({
-      key: department.toUpperCase(),
-      jobTitle: department.toUpperCase(),
+      key: department?.toUpperCase(),
+      jobTitle: department?.toUpperCase(),
       department: department,
       isDepartment: true,
     });

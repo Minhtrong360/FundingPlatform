@@ -7,9 +7,9 @@ function PermissionRequired({ children, message }) {
   if (!subscribed) {
     return (
       <AnnouncePage
-        title="Free trial"
-        announce="Subscribe now."
-        describe="Subscribe now."
+        title="Upgrade to FunFlow Premium"
+        announce="Access Financial Model with AI"
+        describe="Upgrade to the FunFlow Premium plan to unlock the Financial Model with AI feature and enhance your financial analysis capabilities."
       />
     );
   }

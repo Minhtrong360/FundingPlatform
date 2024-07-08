@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import ReactModal from "react-modal";
-
 import { Tooltip, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { Radio } from "antd";
@@ -19,15 +18,14 @@ const Modal = ({
   setSelectedProject,
 }) => {
   const [projectName, setProjectName] = useState("");
-  const [projectStatus, setProjectStatus] = useState("public"); // Use a flag to indicate private project
-  const [isPrivateDisabled, setIsPrivateDisabled] = useState(false); // New state for disabling private option
+  const [projectStatus, setProjectStatus] = useState("public"); // Default to public
+  const [isPrivateDisabled, setIsPrivateDisabled] = useState(false); // Disable private option by default
   const { user } = useAuth();
-
-  const [isEditing, setIsEditing] = useState(false); // Thêm state để kiểm tra xem có đang chỉnh sửa hay không
+  const [isEditing, setIsEditing] = useState(false); // State to check if editing
 
   useEffect(() => {
     if (selectedProject) {
-      setIsEditing(true); // Nếu có dự án được chọn, đang chỉnh sửa
+      setIsEditing(true); // If a project is selected, it's in edit mode
       setProjectName(selectedProject.name);
       setProjectStatus(selectedProject.status);
     }
@@ -37,7 +35,7 @@ const Modal = ({
     e.preventDefault();
 
     try {
-      // Kiểm tra nếu là dự án riêng tư và người dùng không đáp ứng điều kiện
+      // Check if it's a private project and the user doesn't meet the conditions
       if (projectStatus === "private" && isPrivateDisabled) {
         setIsPricingOpen(true);
         message.warning(
@@ -46,12 +44,11 @@ const Modal = ({
         return;
       }
 
-      // Cập nhật dự án trong cơ sở dữ liệu
       const { error } = await supabase
         .from("projects")
         .update({
           name: projectName,
-          status: projectStatus, // Invert lại trạng thái cho công khai/riêng tư
+          status: projectStatus, // Update status
         })
         .eq("id", selectedProject.id);
 
@@ -59,11 +56,9 @@ const Modal = ({
         message.error(error.message);
         console.error("Error saving project:", error);
       } else {
-        // Cập nhật dự án thành công, đóng modal
         message.success("Saved successfully.");
         onClose();
 
-        // Cập nhật dự án đã chỉnh sửa vào updatedProjects
         const updatedProjectIndex = updatedProjects.findIndex(
           (project) => project.id === selectedProject.id
         );
@@ -84,18 +79,16 @@ const Modal = ({
   };
 
   const handleCancel = () => {
-    setSelectedProject(null); // Đặt selectedProject thành null để hủy bỏ chỉnh sửa
-    onClose(); // Đóng modal
+    setSelectedProject(null); // Reset selected project
+    onClose(); // Close modal
   };
 
   useEffect(() => {
-    // Check if the user doesn't meet the conditions to create a private project
     if (
       currentUser?.plan === "Free" ||
       currentUser?.plan === null ||
       currentUser?.plan === undefined ||
-      currentUser?.subscription_status === "canceled" ||
-      currentUser?.subscription_status === "cancelled"
+      currentUser?.plan === ""
     ) {
       setIsPrivateDisabled(true);
     } else {
@@ -106,7 +99,6 @@ const Modal = ({
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      // Check if it's a private project and the user doesn't meet the conditions
       if (projectStatus === "private" && isPrivateDisabled) {
         setIsPricingOpen(true);
         message.warning(
@@ -121,8 +113,8 @@ const Modal = ({
           {
             name: projectName,
             user_id: user.id,
-            status: projectStatus, // Invert the status for public/private
-            user_email: user.email, // Thêm giá trị is_public
+            status: projectStatus, // Set status
+            user_email: user.email,
           },
         ])
         .select();
@@ -130,10 +122,7 @@ const Modal = ({
       if (error) {
         message.error(error.message);
         console.error("Error creating project:", error);
-        // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
       } else {
-        // Tạo dự án thành công, đóng modal sau khi tạo
-
         onClose();
         setUpdatedProjects([data[0], ...updatedProjects]);
         message.success("Project created successfully.");
@@ -141,7 +130,6 @@ const Modal = ({
     } catch (error) {
       message.error(error.message);
       console.error("Error creating project:", error);
-      // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }
   };
 
@@ -257,32 +245,41 @@ export default function AddProject({
 
   useEffect(() => {
     if (currentUser && updatedProjects) {
-      const hasProjectWithCurrentUser = updatedProjects.some(
+      const userProjects = updatedProjects.filter(
         (project) => project.user_id === currentUser?.id
       );
-      const isFreeUser =
-        currentUser?.plan === "Free" ||
-        currentUser?.plan === null ||
-        currentUser?.plan === undefined;
-      const isSubscriptionInactive =
-        currentUser?.subscription_status === "canceled" ||
-        currentUser?.subscription_status === "cancelled";
 
+      const planLimits = {
+        1: { maxProjects: 1, allowedStatus: ["public"] },
+        2: { maxProjects: 5, allowedStatus: ["public", "private", "stealth"] },
+        3: { maxProjects: 10, allowedStatus: ["public", "private", "stealth"] },
+      };
+      let userPlanType = 1;
       if (
-        hasProjectWithCurrentUser &&
-        myProjects.length >= 1 &&
-        (isFreeUser || isSubscriptionInactive)
+        currentUser?.plan === "FundFlow Growth" &&
+        (currentUser?.subscription_status?.toLowerCase() === "active" ||
+          currentUser?.subscription_status?.toLowerCase() === "on_trial")
       ) {
-        setIsButtonDisabled(true);
-      } else {
-        setIsButtonDisabled(false);
+        userPlanType = 2;
+      } else if (
+        currentUser?.plan === "FundFlow Premium" &&
+        (currentUser?.subscription_status?.toLowerCase() === "active" ||
+          currentUser?.subscription_status?.toLowerCase() === "on_trial")
+      ) {
+        userPlanType = 3;
       }
+
+      const isButtonDisabled =
+        userProjects.length >= planLimits[userPlanType].maxProjects;
+
+      setIsButtonDisabled(isButtonDisabled);
+      setAllowedStatus(planLimits[userPlanType].allowedStatus);
     }
   }, [currentUser, updatedProjects]);
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
-  const [isPricingOpen, setIsPricingOpen] = useState(false); // State để kiểm soát modal Pricing
+  const [allowedStatus, setAllowedStatus] = useState(["public"]);
+  const [isPricingOpen, setIsPricingOpen] = useState(false); // State for pricing modal
 
   const handleClickAddNew = () => {
     if (!isButtonDisabled) {
@@ -341,7 +338,6 @@ export default function AddProject({
           content: {
             border: "none", // Để ẩn border của nội dung Modal
             background: "none", // Để ẩn background của nội dung Modal
-            // margin: "auto", // Để căn giữa
           },
         }}
       >
@@ -354,6 +350,7 @@ export default function AddProject({
           setUpdatedProjects={setUpdatedProjects}
           selectedProject={selectedProject}
           setSelectedProject={setSelectedProject}
+          allowedStatus={allowedStatus} // Pass allowedStatus to Modal
         />
       </ReactModal>
 
@@ -374,7 +371,6 @@ export default function AddProject({
           content: {
             border: "none", // Để ẩn border của nội dung Modal
             background: "none", // Để ẩn background của nội dung Modal
-            // margin: "auto", // Để căn giữa
           },
         }}
       >

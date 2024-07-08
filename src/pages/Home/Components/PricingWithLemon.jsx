@@ -19,7 +19,7 @@ const PricingCard = ({ plan, onClick }) => {
     "Startup Valuation with AI",
     "AI Chatbot for fundraising profile content",
     "Private Data room for Due Diligence",
-    "Private listing for fundraising",
+    "Private listing for fundraising (up-to 05 profiles)",
   ];
 
   const price_30 = [

@@ -227,7 +227,11 @@ function Router() {
         <Route
           key={location.key}
           path="/founders/market-research"
-          element={<MarketResearch />}
+          element={
+            <AuthRequire message="Sign in required!">
+              <MarketResearch />
+            </AuthRequire>
+          }
         />
 
         {/* For universities */}
@@ -235,7 +239,11 @@ function Router() {
         <Route
           key={location.key}
           path="/workspace"
-          element={<UniversitiesPage location={location} />}
+          element={
+            <AuthRequire message="Sign in required!">
+              <UniversitiesPage location={location} />
+            </AuthRequire>
+          }
         />
         <Route
           key={location.key}

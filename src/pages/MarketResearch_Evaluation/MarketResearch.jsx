@@ -27,7 +27,6 @@ export default function MarketResearch() {
   };
 
   const { currentUser } = useAuth();
-  console.log("currentUser", currentUser);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   useEffect(() => {
@@ -44,7 +43,6 @@ export default function MarketResearch() {
       setIsButtonDisabled(false);
     }
   }, [currentUser[0]?.plan, currentUser[0]?.subscription_status]);
-  console.log("isButtonDisabled", isButtonDisabled);
 
   return (
     <>

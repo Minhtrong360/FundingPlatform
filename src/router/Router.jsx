@@ -47,6 +47,7 @@ import MarketResearch from "../pages/MarketResearch_Evaluation/MarketResearch.js
 import UniversitiesPage from "../pages/University/UniversitiesPage.jsx";
 import CompetitionPosts from "../pages/University/CompetitionPosts.jsx";
 import DraggableChart from "../pages/FinalcialPage/Components/DraggableChart.jsx";
+import { useEffect } from "react";
 
 function Router() {
   const location = useLocation();

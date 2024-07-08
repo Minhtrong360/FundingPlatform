@@ -279,20 +279,23 @@ const HeroUniversities = ({
       );
     }
   };
-
   const handleAddEditRound = () => {
-    if (
-      JSON.parse(editRounds[editRounds.length - 1])?.name ||
-      editRounds.length === 0
-    ) {
+    if (editRounds?.length === 0) {
       setEditRounds([
         ...editRounds,
         JSON.stringify({ id: uuidv4(), name: "" }),
       ]);
     } else {
-      message.error(
-        "Please enter a name for the current round before adding a new one."
-      );
+      if (JSON.parse(editRounds[editRounds?.length - 1])?.name) {
+        setEditRounds([
+          ...editRounds,
+          JSON.stringify({ id: uuidv4(), name: "" }),
+        ]);
+      } else {
+        message.error(
+          "Please enter a name for the current round before adding a new one."
+        );
+      }
     }
   };
 

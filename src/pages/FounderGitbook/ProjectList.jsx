@@ -781,7 +781,14 @@ function ProjectList({ projects }) {
           }}
           centered={true}
         >
-          Are you sure you want to delete this project?
+          Are you sure you want to delete this{" "}
+          <span style={{ fontWeight: "bold", color: "#2563EB" }}>
+            {
+              updatedProjects?.find((project) => project.id === SelectedID)
+                ?.name
+            }
+          </span>{" "}
+          project?
         </Modal>
       )}
 

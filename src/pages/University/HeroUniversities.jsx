@@ -1884,7 +1884,7 @@ const HeroUniversities = ({
         >
           {selectedCode?.publish
             ? "Are you sure to un-publish this code?"
-            : 'Other users can see all projects that relate to this code on "Competition". Are you sure to publish?'}
+            : 'Other users can see all projects that relate to this code on "Competition" Tab on BeeKrowd platform. Are you sure to publish?'}
         </Modal>
 
         <Modal

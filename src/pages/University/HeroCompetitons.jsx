@@ -1,30 +1,19 @@
 import { useAuth } from "../../context/AuthContext";
-import { Button, DatePicker, Input, Modal, Select, Table, message } from "antd";
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
-import moment from "moment";
 import UniCard from "./UniCard";
-import {
-  CloseOutlined,
-  LeftOutlined,
-  PlusCircleOutlined,
-  RightOutlined,
-} from "@ant-design/icons";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
-import { v4 as uuidv4 } from "uuid"; // Import uuid
 import { useNavigate } from "react-router-dom";
 
 const HeroCompetitions = ({
   onSelectCode,
-  setCompanies,
-  credentials,
+
   selectedCode,
   setSelectedCodeFull,
-  setFilteredProjectList,
-  selectedRound,
+
   setSelectedRound,
   filterProjectsByRound,
-  projectList,
   setProjectList,
 }) => {
   const { user } = useAuth();
@@ -61,45 +50,47 @@ const HeroCompetitions = ({
     fetchCodeData();
   }, []);
   const filterProjectsByCode = async (codeId) => {
-    try {
-      const { data: projects, error: projectsError } = await supabase
-        .from("projects")
-        .select("*")
-        .contains("universityCode", [codeId]);
+    if (codeId) {
+      try {
+        const { data: projects, error: projectsError } = await supabase
+          .from("projects")
+          .select("*")
+          .contains("universityCode", [codeId]);
 
-      if (projectsError) {
-        throw projectsError;
+        if (projectsError) {
+          throw projectsError;
+        }
+
+        const projectIds = projects.map((project) => project.id);
+
+        const { data: companies, error: companiesError } = await supabase
+          .from("company")
+          .select("*")
+          .in("project_id", projectIds);
+
+        if (companiesError) {
+          throw companiesError;
+        }
+
+        const combinedProjects = projects.map((project) => {
+          const parsedApplyInfo = project.applyInfo.map((info) =>
+            JSON.parse(info)
+          );
+          const companyInfo = companies.find(
+            (company) => company.project_id === project.id
+          );
+
+          return {
+            ...project,
+            applyInfo: parsedApplyInfo,
+            company: companyInfo,
+          };
+        });
+
+        setProjectList(combinedProjects);
+      } catch (error) {
+        console.error("Error fetching projects and companies for code:", error);
       }
-
-      const projectIds = projects.map((project) => project.id);
-
-      const { data: companies, error: companiesError } = await supabase
-        .from("company")
-        .select("*")
-        .in("project_id", projectIds);
-
-      if (companiesError) {
-        throw companiesError;
-      }
-
-      const combinedProjects = projects.map((project) => {
-        const parsedApplyInfo = project.applyInfo.map((info) =>
-          JSON.parse(info)
-        );
-        const companyInfo = companies.find(
-          (company) => company.project_id === project.id
-        );
-
-        return {
-          ...project,
-          applyInfo: parsedApplyInfo,
-          company: companyInfo,
-        };
-      });
-
-      setProjectList(combinedProjects);
-    } catch (error) {
-      console.error("Error fetching projects and companies for code:", error);
     }
   };
 
@@ -229,49 +220,50 @@ const HeroCompetitions = ({
             </div>
           </div>
         </section>
-
-        <>
-          <section className="container px-4 mx-auto mt-14 max-w-3xl">
-            <div className="flex flex-col mb-5">
-              <h3 className="font-bold text-xl text-left">Code listing</h3>
-              <div className="mt-5 grid sm:grid-cols-2 gap-14 transition-all duration-600 ease-out transform translate-x-0">
-                {selectedCodes.map((code) => (
-                  <div
-                    key={code.id}
-                    className="group flex-grow justify-center w-full"
+        {codeData.length > 0 && (
+          <>
+            <section className="container px-4 mx-auto mt-14 max-w-3xl">
+              <div className="flex flex-col mb-5">
+                <h3 className="font-bold text-xl text-left">Code listing</h3>
+                <div className="mt-5 grid sm:grid-cols-2 gap-14 transition-all duration-600 ease-out transform translate-x-0">
+                  {selectedCodes.map((code) => (
+                    <div
+                      key={code.id}
+                      className="group flex-grow justify-center w-full"
+                    >
+                      <UniCard
+                        data={code}
+                        setSelectedCodeFull={setSelectedCodeFull}
+                        onSelectCode={onSelectCode}
+                        filterProjectsByCode={filterProjectsByCode}
+                        projectCounts={projectCounts}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="flex justify-between mt-5">
+                  <button
+                    onClick={handlePrevious}
+                    disabled={currentCodePage === 0}
+                    className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${currentCodePage === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
                   >
-                    <UniCard
-                      data={code}
-                      setSelectedCodeFull={setSelectedCodeFull}
-                      onSelectCode={onSelectCode}
-                      filterProjectsByCode={filterProjectsByCode}
-                      projectCounts={projectCounts}
-                    />
-                  </div>
-                ))}
+                    <LeftOutlined /> Previous
+                  </button>
+                  <button
+                    onClick={handleNext}
+                    disabled={
+                      (currentCodePage + 1) * itemsPerPage >= codeData.length
+                    }
+                    className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${(currentCodePage + 1) * itemsPerPage >= codeData.length ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
+                    Next
+                    <RightOutlined className="ml-2" />
+                  </button>
+                </div>
               </div>
-              <div className="flex justify-between mt-5">
-                <button
-                  onClick={handlePrevious}
-                  disabled={currentCodePage === 0}
-                  className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${currentCodePage === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
-                >
-                  <LeftOutlined /> Previous
-                </button>
-                <button
-                  onClick={handleNext}
-                  disabled={
-                    (currentCodePage + 1) * itemsPerPage >= codeData.length
-                  }
-                  className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${(currentCodePage + 1) * itemsPerPage >= codeData.length ? "opacity-50 cursor-not-allowed" : ""}`}
-                >
-                  Next
-                  <RightOutlined className="ml-2" />
-                </button>
-              </div>
-            </div>
-          </section>
-        </>
+            </section>
+          </>
+        )}
       </div>
     </section>
   );

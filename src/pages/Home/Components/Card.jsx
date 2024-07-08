@@ -137,9 +137,18 @@ const Card = ({
     setTotalScore(newTotalScore);
   };
 
+  const handleClick = () => {
+    if (canClick !== false) {
+      navigate(`/founder/${project_id}`);
+    } else return;
+  };
+
   return (
     <div className="flex flex-col h-full max-w-sm bg-white border rounded-md shadow-md transition-all duration-300  hover:shadow-lg cursor-pointer">
-      <div className="relative pt-[50%] sm:pt-[70%] rounded-t-lg overflow-hidden">
+      <div
+        className="relative pt-[50%] sm:pt-[70%] rounded-t-lg overflow-hidden"
+        onClick={handleClick}
+      >
         {imageUrl ? (
           <>
             {canClick !== false ? (
@@ -147,7 +156,6 @@ const Card = ({
                 className=" h-full w-full  absolute top-0 start-0 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out "
                 src={imageUrl}
                 alt="Company Avatar"
-                onClick={() => navigate(`/founder/${project_id}`)}
               />
             ) : (
               <img
@@ -169,12 +177,13 @@ const Card = ({
       </div>
 
       <div className="flex-grow p-5">
-        <h5
+        <a
           className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 "
           onClick={() => navigate(`/founder/${project_id}`)}
+          href={`/founder/${project_id}`}
         >
           {title}
-        </h5>
+        </a>
         <p className="mb-2 text-sm font-normal text-gray-700  overflow-hidden text-ellipsis line-clamp-6">
           {description}
         </p>

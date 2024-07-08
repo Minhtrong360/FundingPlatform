@@ -2,17 +2,14 @@ import React, { useEffect, useState } from "react";
 import Card from "../Home/Components/Card";
 import { supabase } from "../../supabase";
 import { LinearProgress } from "@mui/material";
-import { Dropdown, Menu, message, Spin, Tabs } from "antd";
-import HeroUniversities from "./HeroUniversities";
-import CredentialModal from "./CredentialModal";
+import { Dropdown, Menu, message, Tabs } from "antd";
+
 import { useLocation, useNavigate } from "react-router-dom";
-import SideBarWorkSpace from "./SideBarWorkSpace";
 import UniSearch from "./UniSearch";
 import UniEditorTool from "./UniEditorTool"; // Assuming this is the component for editing rules
 import TabPane from "antd/es/tabs/TabPane";
 import { useAuth } from "../../context/AuthContext";
 import Header2 from "../Home/Header2";
-import HeroCompetition from "./HeroCompetition";
 import HeroCompetitions from "./HeroCompetitons";
 
 const CompetitionPost = () => {
@@ -22,65 +19,64 @@ const CompetitionPost = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const [selectedCodeFull, setSelectedCodeFull] = useState("");
-  const [isModalVisible, setIsModalVisible] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [currentTab, setCurrentTab] = useState("All");
-  const [currentItem, setCurrentItem] = useState("View");
   const [companiesToRender, setCompaniesToRender] = useState([]);
   const [visibleItemCount, setVisibleItemCount] = useState(itemsPerPage);
   const [selectedTab, setSelectedTab] = useState("Listing"); // New state for tab selection
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [credentials, setCredentials] = useState();
   const [filteredProjectList, setFilteredProjectList] = useState([]);
 
   // Update fetchCompanies function
-  const fetchCompanies = async (codeId = "") => {
+  const fetchCompanies = async (codeId) => {
     setIsLoading(true);
-    try {
-      const { data: projects, error: projectsError } = await supabase
-        .from("projects")
-        .select("id, verified, status")
-        .neq("status", "stealth")
-        .contains("universityCode", [codeId]);
+    if (codeId) {
+      try {
+        const { data: projects, error: projectsError } = await supabase
+          .from("projects")
+          .select("id, verified, status")
+          .neq("status", "stealth")
+          .contains("universityCode", [codeId]);
 
-      if (projectsError) {
-        message.error(projectsError.message);
-        return;
+        if (projectsError) {
+          message.error(projectsError.message);
+          return;
+        }
+
+        const projectIds = projects.map((project) => project.id);
+
+        const { data: fetchedCompanies, error: companiesError } = await supabase
+          .from("company")
+          .select("*")
+          .in("project_id", projectIds)
+          .order("created_at", { ascending: false });
+
+        if (companiesError) {
+          message.error(companiesError.message);
+          return;
+        }
+
+        const verifiedStatusMap = new Map();
+        const statusMap = new Map();
+
+        projects.forEach((project) => {
+          verifiedStatusMap.set(project.id, project.verified);
+          statusMap.set(project.id, project.status);
+        });
+
+        fetchedCompanies.forEach((company) => {
+          company.verifiedStatus =
+            verifiedStatusMap.get(company.project_id) || false;
+          company.status = statusMap.get(company.project_id) || "Unknown";
+        });
+
+        setCompanies(fetchedCompanies);
+      } catch (error) {
+        message.error("An error occurred while fetching companies.");
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
       }
-
-      const projectIds = projects.map((project) => project.id);
-
-      const { data: fetchedCompanies, error: companiesError } = await supabase
-        .from("company")
-        .select("*")
-        .in("project_id", projectIds)
-        .order("created_at", { ascending: false });
-
-      if (companiesError) {
-        message.error(companiesError.message);
-        return;
-      }
-
-      const verifiedStatusMap = new Map();
-      const statusMap = new Map();
-
-      projects.forEach((project) => {
-        verifiedStatusMap.set(project.id, project.verified);
-        statusMap.set(project.id, project.status);
-      });
-
-      fetchedCompanies.forEach((company) => {
-        company.verifiedStatus =
-          verifiedStatusMap.get(company.project_id) || false;
-        company.status = statusMap.get(company.project_id) || "Unknown";
-      });
-
-      setCompanies(fetchedCompanies);
-    } catch (error) {
-      message.error("An error occurred while fetching companies.");
-      console.error("Error fetching data:", error);
-    } finally {
+    } else {
       setIsLoading(false);
     }
   };
@@ -114,15 +110,13 @@ const CompetitionPost = () => {
       );
     }
 
-    if (filteredProjectList.length > 0) {
+    if (filteredProjectList) {
       data = data.filter((company) =>
         filteredProjectList.some(
           (project) => project?.id === company.project_id
         )
       );
     }
-    console.log("filteredProjectList", filteredProjectList);
-    console.log("data", data);
 
     const visibleCompanies = data.slice(0, visibleItemCount);
     setCompaniesToRender(visibleCompanies);
@@ -172,8 +166,10 @@ const CompetitionPost = () => {
       console.error("Error updating rules:", error);
     }
   };
+  console.log("projectList", projectList);
 
   const filterProjectsByRound = (round) => {
+    console.log("round", round);
     if (!round) {
       setFilteredProjectList(projectList);
       return;
@@ -182,6 +178,7 @@ const CompetitionPost = () => {
     const selectedRoundIndex = selectedCodeFull?.rounds.findIndex(
       (r) => JSON.parse(r).id === round.id
     );
+    console.log("projectList", projectList);
 
     const filteredProjects = projectList.filter((project) =>
       project.applyInfo.some((info) => {
@@ -199,7 +196,7 @@ const CompetitionPost = () => {
         return passRoundIndex >= selectedRoundIndex - 1;
       })
     );
-
+    console.log("filteredProjects", filteredProjects);
     setFilteredProjectList(filteredProjects);
   };
 
@@ -209,6 +206,9 @@ const CompetitionPost = () => {
     setSelectedTab("Listing");
   };
 
+  useEffect(() => {
+    filterProjectsByRound(selectedRound);
+  }, [projectList, selectedRound]);
   // Dropdown menu for rounds
   const roundsMenu = (
     <Menu>
@@ -243,8 +243,6 @@ const CompetitionPost = () => {
             <HeroCompetitions
               onSelectCode={handleSelectCode}
               setCompanies={setCompanies}
-              credentials={credentials}
-              currentTab={currentItem}
               selectedCode={selectedCodeFull}
               setSelectedCodeFull={setSelectedCodeFull}
               filteredProjectList={filteredProjectList}
@@ -255,90 +253,97 @@ const CompetitionPost = () => {
               projectList={projectList}
               setProjectList={setProjectList}
             />
-            <UniSearch
-              onSearch={handleSearch}
-              companies={companiesToRender}
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-              currentTab={currentTab}
-              setCurrentTab={setCurrentTab}
-              selectedCode={selectedCodeFull}
-            />
+            {projectList?.length > 0 && (
+              <>
+                <UniSearch
+                  onSearch={handleSearch}
+                  companies={companiesToRender}
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                  currentTab={currentTab}
+                  setCurrentTab={setCurrentTab}
+                  selectedCode={selectedCodeFull}
+                />
 
-            <Tabs
-              activeKey={selectedTab}
-              onChange={(key) => setSelectedTab(key)}
-              centered
-            >
-              <TabPane
-                tab={
-                  <Dropdown
-                    overlay={roundsMenu}
-                    trigger={["hover"]}
-                    // onOpenChange={(visible) =>
-                    //   setHoveredTab(visible ? "Listing" : "")
-                    // }
+                <Tabs
+                  activeKey={selectedTab}
+                  onChange={(key) => setSelectedTab(key)}
+                  centered
+                >
+                  <TabPane
+                    tab={
+                      <Dropdown
+                        overlay={roundsMenu}
+                        trigger={["hover"]}
+                        // onOpenChange={(visible) =>
+                        //   setHoveredTab(visible ? "Listing" : "")
+                        // }
+                      >
+                        <span>Listing</span>
+                      </Dropdown>
+                    }
+                    key="Listing"
                   >
-                    <span>Listing</span>
-                  </Dropdown>
-                }
-                key="Listing"
-              >
-                {isLoading ? (
-                  <LinearProgress className="my-20" />
-                ) : (
-                  <>
-                    <h2 className="text-center font-semibold text-lg">
-                      Round: {selectedRound?.name}
-                    </h2>
-                    <div className="mx-auto max-w-[85rem] mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
-                      {companiesToRender.length > 0 ? (
-                        companiesToRender.map((company, index) => (
-                          <div
-                            key={company.id}
-                            className="group flex justify-center"
-                          >
-                            {company ? (
-                              <Card
+                    {isLoading ? (
+                      <LinearProgress className="my-20" />
+                    ) : (
+                      <>
+                        <h2 className="text-center font-semibold text-lg">
+                          Round: {selectedRound?.name}
+                        </h2>
+                        <div className="mx-auto max-w-[85rem] my-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
+                          {companiesToRender.length > 0 ? (
+                            companiesToRender.map((company, index) => (
+                              <div
                                 key={company.id}
-                                title={company.name}
-                                description={company.description}
-                                imageUrl={company.card_url}
-                                buttonText="More"
-                                project_id={company.project_id}
-                                verified={company.verifiedStatus}
-                                status={company.status}
-                                selectedCodeFull={selectedCodeFull}
-                                projectList={projectList}
-                                selectedRound={selectedRound}
-                                setProjectList={setProjectList}
-                                isJudge={isJudge}
-                              />
-                            ) : (
-                              <div className="w-[30vw] h-[55vh]"></div>
-                            )}
-                          </div>
-                        ))
-                      ) : (
-                        <div className="mx-auto mt-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
-                          No result
+                                className="group flex justify-center"
+                              >
+                                {company ? (
+                                  <Card
+                                    key={company.id}
+                                    title={company.name}
+                                    description={company.description}
+                                    imageUrl={company.card_url}
+                                    buttonText="More"
+                                    project_id={company.project_id}
+                                    verified={company.verifiedStatus}
+                                    status={company.status}
+                                    selectedCodeFull={selectedCodeFull}
+                                    projectList={projectList}
+                                    selectedRound={selectedRound}
+                                    setProjectList={setProjectList}
+                                    isJudge={isJudge}
+                                  />
+                                ) : (
+                                  <div className="w-[30vw] h-[55vh]"></div>
+                                )}
+                              </div>
+                            ))
+                          ) : (
+                            <>
+                              <div></div>
+                              <div className="mx-auto my-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
+                                No result
+                              </div>
+                            </>
+                          )}
                         </div>
-                      )}
+                      </>
+                    )}
+                  </TabPane>
+                  <TabPane tab="Rules" key="Rules">
+                    <div className="flex justify-center items-center">
+                      <UniEditorTool
+                        selectedCode={selectedCodeFull}
+                        setSelectedCode={setSelectedCodeFull}
+                        unChange={true}
+                        handleUpdateRules={handleUpdateRules}
+                      />
                     </div>
-                  </>
-                )}
-              </TabPane>
-              <TabPane tab="Rules" key="Rules">
-                <div className="flex justify-center items-center">
-                  <UniEditorTool
-                    selectedCode={selectedCodeFull}
-                    setSelectedCode={setSelectedCodeFull}
-                    unChange={currentItem === "View" ? true : false}
-                    handleUpdateRules={handleUpdateRules}
-                  />
-                </div>
-              </TabPane>
-            </Tabs>
+                  </TabPane>
+                </Tabs>
+              </>
+            )}
           </div>
         </div>
       </div>

@@ -345,7 +345,7 @@ const UniversitiesPage = () => {
                     <h2 className="text-center font-semibold text-lg">
                       Round: {selectedRound?.name}
                     </h2>
-                    <div className="mx-auto max-w-[85rem] mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
+                    <div className="mx-auto max-w-[85rem] my-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
                       {companiesToRender.length > 0 ? (
                         companiesToRender.map((company, index) => (
                           <div
@@ -374,9 +374,12 @@ const UniversitiesPage = () => {
                           </div>
                         ))
                       ) : (
-                        <div className="mt-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
-                          No result
-                        </div>
+                        <>
+                          <div></div>
+                          <div className="mx-auto my-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
+                            No result
+                          </div>
+                        </>
                       )}
                     </div>
                   </>

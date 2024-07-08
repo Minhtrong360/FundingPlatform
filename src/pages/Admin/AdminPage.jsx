@@ -2565,9 +2565,9 @@ function AdminPage() {
                   >
                     <Radio value="Free">Free</Radio>
 
-                    <Radio value="FundFlow Premium">FundFlow Premium</Radio>
-
                     <Radio value="FundFlow Growth">FundFlow Growth</Radio>
+
+                    <Radio value="FundFlow Premium">FundFlow Premium</Radio>
                   </Radio.Group>
                 </div>
               </div>

@@ -191,7 +191,7 @@ function Router() {
           path="/announce"
           element={
             <AnnouncePage
-              title="Free trial"
+              title="Subscribe Now"
               announce="Subscribe now."
               describe="Subscribe available."
             />

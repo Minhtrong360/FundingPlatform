@@ -84,6 +84,7 @@ const CompetitionPost = () => {
   // Update handleSelectCode function
   const handleSelectCode = (codeId) => {
     fetchCompanies(codeId);
+    handlePricingClick();
   };
 
   const handleSearch = (searchTerm) => {
@@ -166,10 +167,8 @@ const CompetitionPost = () => {
       console.error("Error updating rules:", error);
     }
   };
-  console.log("projectList", projectList);
 
   const filterProjectsByRound = (round) => {
-    console.log("round", round);
     if (!round) {
       setFilteredProjectList(projectList);
       return;
@@ -178,7 +177,6 @@ const CompetitionPost = () => {
     const selectedRoundIndex = selectedCodeFull?.rounds.findIndex(
       (r) => JSON.parse(r).id === round.id
     );
-    console.log("projectList", projectList);
 
     const filteredProjects = projectList.filter((project) =>
       project.applyInfo.some((info) => {
@@ -196,7 +194,6 @@ const CompetitionPost = () => {
         return passRoundIndex >= selectedRoundIndex - 1;
       })
     );
-    console.log("filteredProjects", filteredProjects);
     setFilteredProjectList(filteredProjects);
   };
 
@@ -234,6 +231,22 @@ const CompetitionPost = () => {
     (judge) => JSON.parse(judge)?.email === user?.email
   );
 
+  const handlePricingClick = () => {
+    // Lấy đối tượng ref của phần tử "Financial Product" từ Home component
+    const codeRef = document.getElementById("codeCompetition"); // Đặt ID tương ứng với ref của bạn
+
+    if (codeRef) {
+      // Sử dụng `scrollIntoView()` để cuộn đến phần tử "Financial Product"
+      const elementRect = codeRef.getBoundingClientRect();
+      const bodyRect = document.body.getBoundingClientRect();
+      const offsetTop = elementRect.top - bodyRect.top;
+      window.scrollTo({
+        top: offsetTop - (window.innerHeight - elementRect.height) / 90,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
     <div className=" bg-white darkBg antialiased !p-0">
       <div id="exampleWrapper">
@@ -269,6 +282,7 @@ const CompetitionPost = () => {
                   activeKey={selectedTab}
                   onChange={(key) => setSelectedTab(key)}
                   centered
+                  id="codeCompetition"
                 >
                   <TabPane
                     tab={

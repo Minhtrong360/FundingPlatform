@@ -25,6 +25,7 @@ import FilesList from "../FilesList";
 import * as Y from "yjs";
 import { WebrtcProvider } from "y-webrtc";
 import YPartyKitProvider from "y-partykit/provider";
+import axios from "axios";
 
 function LoaderIcon(props) {
   return (
@@ -235,11 +236,70 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
     //   },
     // },
 
-    onEditorContentChange: function (editor) {
-      setBlocks(editor.topLevelBlocks);
-      setIsContentChanged(true); // Đánh dấu nội dung đã thay đổi
+    onEditorContentChange: async function (editor) {
+      const blocks = editor.topLevelBlocks;
+      for (const block of blocks) {
+        if (
+          block.type === "image" &&
+          block.props.url &&
+          !block.props.url.includes("beekrowd_storage")
+        ) {
+          const newUrl = await uploadImageFromURLToSupabase(block.props.url);
+          if (newUrl) {
+            block.props.url = newUrl;
+          }
+        }
+      }
+
+      setBlocks(blocks);
+      if (
+        user?.id === currentProject?.user_id ||
+        currentProject?.collabs?.includes(user.email)
+      ) {
+        setIsContentChanged(true); // Đánh dấu nội dung đã thay đổi
+      }
     },
   });
+
+  // Function to upload image to Supabase from URL
+  const uploadImageFromURLToSupabase = async (imageUrl) => {
+    try {
+      // Download image from URL
+      const response = await axios.get(imageUrl, {
+        responseType: "arraybuffer",
+      });
+
+      // Create Blob from downloaded image data
+      const blob = new Blob([response.data], {
+        type: response.headers["content-type"],
+      });
+
+      // Get current timestamp
+      const timestamp = Date.now();
+
+      // Create File object from Blob with filename as "img-{timestamp}"
+      const file = new File([blob], `img-${timestamp}`, {
+        type: response.headers["content-type"],
+      });
+
+      // Upload image file to Supabase storage
+      const { data, error } = await supabase.storage
+        .from("beekrowd_storage")
+        .upload(`beekrowd_images/${file.name}`, file);
+
+      if (error) {
+        console.error("Error uploading image to Supabase:", error);
+        return null;
+      }
+
+      // Return Supabase URL of the uploaded image
+      const imageUrlFromSupabase = `https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/${data.fullPath}`;
+      return imageUrlFromSupabase;
+    } catch (error) {
+      console.error("Error uploading image from URL to Supabase:", error);
+      return null;
+    }
+  };
 
   const handleInsertYouTubeLink = () => {
     if (youtubeLink.trim() !== "") {

@@ -340,3 +340,10 @@ code {
 .ant-tabs-nav::before {
   border-bottom: none !important;
 }
+
+#google_translate_element {
+  position: fixed !important;
+  bottom: 80px !important;
+  right: 20px !important;
+  z-index: 1000 !important;
+}

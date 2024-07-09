@@ -101,14 +101,16 @@ function Footer() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const googleTranslateElementInit = () => {
-    new window.google.translate.TranslateElement(
-      {
-        pageLanguage: "en",
-        autoDisplay: false,
-        layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
-      },
-      "google_translate_element"
-    );
+    if (window.google && window.google.translate) {
+      new window.google.translate.TranslateElement(
+        {
+          pageLanguage: "en",
+          autoDisplay: false,
+          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+        },
+        "google_translate_element"
+      );
+    }
   };
 
   const policies = [
@@ -943,7 +945,7 @@ function Footer() {
   }, []);
 
   return (
-    <footer className="bg-white dark1:bg-gray-900">
+    <footer className="bg-gray-200 dark1:bg-gray-900">
       <div className="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
         <div className="md:flex md:justify-between">
           <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-4">
@@ -995,12 +997,12 @@ function Footer() {
               <ul className="text-gray-500 dark1:text-gray-400 font-medium">
                 {Vipolicies.map((policy, index) => (
                   <li key={index} className="mb-4">
-                    <a
+                    <div
                       onClick={() => showModal(policy.content)}
                       className="hover:underline hover:cursor-pointer"
                     >
                       {policy.title}
-                    </a>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -1018,20 +1020,20 @@ function Footer() {
               </h2>
               <ul className="text-gray-500 dark1:text-gray-400 font-medium">
                 <li className="mb-4">
-                  <a className="hover:underline hover:cursor-pointer">
+                  <div className="hover:underline hover:cursor-pointer">
                     BeeKrowd Joint Stock Company
-                  </a>
+                  </div>
                 </li>
                 <li className="mb-4">
-                  <a className="hover:underline hover:cursor-pointer">
+                  <div className="hover:underline hover:cursor-pointer">
                     Head office: Dreamplex 21 Nguyen Trung Ngan, Ben Nghe Ward,
                     District 1, Ho Chi Minh City.
-                  </a>
+                  </div>
                 </li>
                 <li className="mb-4">
-                  <a className="hover:underline hover:cursor-pointer">
+                  <div className="hover:underline hover:cursor-pointer">
                     Hotline: +84 376.372.727{" "}
-                  </a>
+                  </div>
                 </li>
                 <li className="mb-4">
                   <a
@@ -1042,12 +1044,12 @@ function Footer() {
                   </a>
                 </li>
                 <li className="mb-4">
-                  <a
+                  <div
                     href="Email: support@beekrowd.com"
                     className="hover:underline hover:cursor-pointer"
                   >
                     Email: support@beekrowd.com
-                  </a>
+                  </div>
                 </li>
               </ul>
             </div>

@@ -387,3 +387,8 @@ code {
 .VIpgJd-ZVi9od-vH1Gmf {
   border: 1px solid #fff !important;
 }
+
+.policy-content {
+  line-height: 2; /* Adjust the value as needed */
+  margin-bottom: 1rem; /* Add some margin at the bottom for better spacing */
+}

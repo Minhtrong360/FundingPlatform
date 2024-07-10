@@ -465,8 +465,8 @@ const Vipolicies = [
   {
     title: "Purchasing Service Guide",
     content: (
-      <div>
-        <h3 className="font-semibold text-2xl">HƯỚNG DẪN MUA DỊCH VỤ</h3>
+      <div className="policy-content">
+        <h3 className="font-semibold text-2xl mb-6">HƯỚNG DẪN MUA DỊCH VỤ</h3>
         <ol className="my-4 gap-2">
           <li>
             1. Chọn gói dịch vụ phù hợp và bấm vào “Đặt mua” và điền thông tin
@@ -525,8 +525,10 @@ const Vipolicies = [
     title: "General Policies and Regulations",
     content: (
       <div>
-        <h3 className="font-semibold text-2xl">CHÍNH SÁCH VÀ QUY ĐỊNH CHUNG</h3>
-        <h4 className="font-semibold text-lg my-4">1. Nguyên tắc chung</h4>
+        <h3 className="font-semibold text-2xl mb-6">
+          CHÍNH SÁCH VÀ QUY ĐỊNH CHUNG
+        </h3>
+        <h4 className="font-semibold text-lg my-6">1. Nguyên tắc chung</h4>
         <ol>
           <li>
             Website thương mại điện tử beekrowd.com do công ty BeeKrowd sở hữu.
@@ -546,7 +548,7 @@ const Vipolicies = [
             kinh doanh, cấm quảng cáo theo quy định của pháp luật.
           </li>
         </ol>
-        <h4 className="font-semibold text-lg my-4">2. Quy định chung</h4>
+        <h4 className="font-semibold text-lg my-6">2. Quy định chung</h4>
         <ol>
           <li>
             Quý khách hàng khi truy cập vào website của chúng tôi tại
@@ -592,11 +594,11 @@ const Vipolicies = [
     title: "Privacy Terms",
     content: (
       <div>
-        <h3 className="font-semibold text-2xl">ĐIỀU KHOẢN BẢO MẬT</h3>
-        <h4 className="font-semibold text-lg my-4">
+        <h3 className="font-semibold text-2xl mb-6">ĐIỀU KHOẢN BẢO MẬT</h3>
+        <h4 className="font-semibold text-lg my-6">
           1. Mục đích, phạm vi sử dụng và thời gian lưu trữ thông tin
         </h4>
-        <h5 className="font-semibold text-base my-2">
+        <h5 className="font-semibold text-base my-4">
           1.1. Mục đích, phạm vi sử dụng thông tin
         </h5>
         <p>
@@ -631,7 +633,7 @@ const Vipolicies = [
           mục đích đó tại thời điểm chúng tôi xin sự cho phép của bạn, trừ khi
           được phép theo quy định của pháp luật.
         </p>
-        <h5 className="font-semibold text-base my-2">
+        <h5 className="font-semibold text-base my-4">
           1.2. Những người hoặc tổ chức có thể được tiếp cận với thông tin đó
         </h5>
         <p>
@@ -654,7 +656,7 @@ const Vipolicies = [
           của bạn cho cơ quan nhà nước có thẩm quyền khi được yêu cầu theo quy
           định của pháp luật.
         </p>
-        <h5 className="font-semibold text-base my-2">
+        <h5 className="font-semibold text-base my-4">
           1.3. Chúng tôi sẽ có thể thu thập dữ liệu cá nhân của bạn khi:
         </h5>
         <p>
@@ -663,18 +665,18 @@ const Vipolicies = [
           để tạo tài khoản cho bạn.
         </p>
         <p>
-          Khi bạn tương tác với chúng tôi: BeeKrowd thu thập thông tin cá nhân
+          Khi bạn tương tác với chúng tôi, BeeKrowd thu thập thông tin cá nhân
           khi bạn thực hiện các hành động sau:
         </p>
-        <ul>
+        <ul className="ml-2">
           <li>
-            Gọi điện thoại đến hotline của BeeKrowd (có thể được ghi âm lại)
+            - Gọi điện thoại đến hotline của BeeKrowd (có thể được ghi âm lại)
           </li>
-          <li>Gửi email cho BeeKrowd</li>
-          <li>Sử dụng các ứng dụng truyền thông xã hội của BeeKrowd</li>
-          <li>Gửi thư từ cho BeeKrowd</li>
-          <li>Gặp gỡ trực tiếp với nhân viên BeeKrowd</li>
-          <li>Cung cấp phản hồi hoặc khiếu nại cho BeeKrowd</li>
+          <li>- Gửi email cho BeeKrowd</li>
+          <li>- Sử dụng các ứng dụng truyền thông xã hội của BeeKrowd</li>
+          <li>- Gửi thư từ cho BeeKrowd</li>
+          <li>- Gặp gỡ trực tiếp với nhân viên BeeKrowd</li>
+          <li>- Cung cấp phản hồi hoặc khiếu nại cho BeeKrowd</li>
         </ul>
         <p>
           Khi bạn liên kết tài khoản BeeKrowd với các tài khoản khác: BeeKrowd
@@ -695,7 +697,7 @@ const Vipolicies = [
           mà chỉ đưa ra một số trường hợp phổ biến về thời điểm dữ liệu cá nhân
           của bạn có thể bị thu thập.
         </p>
-        <h5 className="font-semibold text-base my-2">
+        <h5 className="font-semibold text-base my-4">
           1.4. Phạm vi thu thập dữ liệu
         </h5>
         <p>
@@ -725,7 +727,7 @@ const Vipolicies = [
           giám hộ, chúng tôi sẽ xóa thông tin này khỏi dữ liệu của chúng tôi mà
           không cần thông báo trước.
         </p>
-        <h5 className="font-semibold text-base my-2">
+        <h5 className="font-semibold text-base my-4">
           1.5. Thời gian lưu trữ và cam kết bảo mật:
         </h5>
         <p>
@@ -743,7 +745,7 @@ const Vipolicies = [
           chúng tôi có thể tiến hành tiêu hủy dữ liệu cá nhân của bạn một cách
           an toàn mà không cần thông báo trước.
         </p>
-        <h4 className="font-semibold text-lg my-4">2. Thương hiệu bản quyền</h4>
+        <h4 className="font-semibold text-lg my-6">2. Thương hiệu bản quyền</h4>
         <p>
           Mọi quyền sở hữu trí tuệ (bao gồm cả những thành phẩm đã đăng ký hoặc
           chưa đăng ký) như nội dung thông tin, thiết kế, văn bản, đồ họa, phần
@@ -751,7 +753,7 @@ const Vipolicies = [
           và phần mềm cơ bản là tài sản của chúng tôi. Toàn bộ nội dung của
           trang web được bảo vệ bởi luật pháp Việt Nam và các công ước quốc tế.
         </p>
-        <h4 className="font-semibold text-lg my-4">
+        <h4 className="font-semibold text-lg my-6">
           3. Quy định sửa đổi thông tin và xoá tài khoản
         </h4>
         <p>
@@ -765,7 +767,7 @@ const Vipolicies = [
           dịch vụ trên website, quý khách vui lòng liên hệ với chúng tôi qua
           email: support@beekrowd.com
         </p>
-        <h4 className="font-semibold text-lg my-4">
+        <h4 className="font-semibold text-lg my-6">
           4. Thay đổi về chính sách
         </h4>
         <p>
@@ -773,7 +775,7 @@ const Vipolicies = [
           nhu cầu của BeeKrowd và khách hàng, cũng như tuân thủ các quy định
           pháp luật mà không cần thông báo trước (nếu có).
         </p>
-        <h4 className="font-semibold text-lg my-4">
+        <h4 className="font-semibold text-lg my-6">
           5. Đơn vị thu thập, quản lý thông tin
         </h4>
         <p>Công Ty Cổ Phần BeeKrowd</p>
@@ -797,7 +799,7 @@ const Vipolicies = [
     title: "Delivery and Warranty Policy",
     content: (
       <div>
-        <h3 className="font-semibold text-2xl">
+        <h3 className="font-semibold text-2xl mb-6">
           CHÍNH SÁCH GIAO NHẬN VÀ BẢO HÀNH
         </h3>
         <ol>
@@ -823,11 +825,11 @@ const Vipolicies = [
               3. BeeKrowd chỉ nhận bảo hành dịch vụ khi lỗi đến từ phía chúng
               tôi như:
             </h4>
-            <ul>
-              <li>Dịch vụ không được cung cấp đúng theo cam kết.</li>
-              <li>Dịch vụ bị tạm ngưng hoặc chấm dứt do lỗi của BeeKrowd.</li>
+            <ul className="ml-2">
+              <li>- Dịch vụ không được cung cấp đúng theo cam kết.</li>
+              <li>- Dịch vụ bị tạm ngưng hoặc chấm dứt do lỗi của BeeKrowd.</li>
             </ul>
-            <p>
+            <p className="mt-2">
               Chúng tôi sẽ liên lạc với bạn để hướng dẫn quy cách hoàn trả hoặc
               bảo hành. Lưu ý, chúng tôi chỉ hỗ trợ đổi trả dịch vụ với điều
               kiện yêu cầu đổi trả không quá 03 ngày kể từ ngày bạn nhận được
@@ -835,13 +837,13 @@ const Vipolicies = [
               trong vòng 14 ngày tính từ ngày nhận được yêu cầu của bạn.
             </p>
           </li>
-          <li>
+          <li className="mt-2">
             <p>BeeKrowd sẽ không bảo hành cho các trường hợp sau:</p>
-            <ul>
-              <li>Sử dụng dịch vụ của chúng tôi sai mục đích.</li>
+            <ul className="ml-2">
+              <li>- Sử dụng dịch vụ của chúng tôi sai mục đích.</li>
               <li>
-                Dịch vụ bị một số rủi ro do phần mềm hoặc phần cứng của bên thứ
-                ba.
+                - Dịch vụ bị một số rủi ro do phần mềm hoặc phần cứng của bên
+                thứ ba.
               </li>
             </ul>
           </li>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Header from "../Home/Header";
 import { supabase } from "../../supabase"; // Import supabase connection
 import { useAuth } from "../../context/AuthContext";
+import Header2 from "../Home/Header2";
 
 const NotificationItem = ({ notification, isLiked }) => {
   const parsedContent = JSON.parse(notification?.content);
@@ -111,7 +112,7 @@ const NotificationsPage = () => {
 
   return (
     <>
-      <Header />
+      <Header2 />
       <div className="min-h-screen bg-gray-100 p-8 mt-24 lg:w-[50vw] w-full mx-auto">
         <div className="bg-white shadow overflow-hidden sm:rounded-md">
           <h1 className="text-xl font-semibold text-gray-900 p-4 border-b border-gray-300">

@@ -1,11 +1,12 @@
 import React from "react";
 import Header from "../Home/Header";
 import { Avatar } from "antd";
+import Header2 from "../Home/Header2";
 
 function StaticNews() {
   return (
     <div className="max-w-3xl px-4 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
-      <Header />
+      <Header2 />
       <article className="max-w-2xl mx-auto mt-16 p-4">
         <header className="flex items-center mb-8">
           <Avatar

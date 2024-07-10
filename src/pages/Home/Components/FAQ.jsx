@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Header from "../Header";
+import Header2 from "../Header2";
 
 const FAQ = () => {
   const [activeAccordion, setActiveAccordion] = useState(null);
@@ -7,8 +8,7 @@ const FAQ = () => {
   const faqData = [
     {
       question: "What is the customer support email?",
-      answer:
-        "Our customer support email is support@beekrowd.com",
+      answer: "Our customer support email is support@beekrowd.com",
     },
     {
       question: "What is BeeKrowd service all about?",
@@ -38,7 +38,7 @@ const FAQ = () => {
 
   return (
     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-      <Header />
+      <Header2 />
       <div className="grid md:grid-cols-5 gap-10 mt-28">
         <div className="md:col-span-2">
           <div className="max-w-xs">

@@ -281,7 +281,7 @@ code {
 }
 
 * {
-  font-family: "Sora", sans-serif !important;
+  font-family: "Roboto Slab", serif !important;
 }
 
 .ant-carousel .slick-dots-bottom {
@@ -339,4 +339,56 @@ code {
 
 .ant-tabs-nav::before {
   border-bottom: none !important;
+}
+
+.goog-te-gadget {
+  font-size: 12px !important;
+}
+
+.skiptranslate .goog-te-gadget {
+  display: none !important;
+}
+
+.VIpgJd-ZVi9od-ORHb-OEVmcd {
+  display: none !important;
+}
+
+.goog-te-gadget-icon {
+  display: none !important;
+}
+
+.VIpgJd-ZVi9od-xl07Ob-lTBxed {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+}
+
+.goog-te-gadget-simple {
+  white-space: nowrap !important;
+  border-radius: 6px !important;
+  color: white !important;
+  font-size: 12px !important;
+  font-family: "Sora", sans-serif !important;
+  padding: 4px !important;
+  border-radius: 6px !important;
+  border-width: 1px !important;
+  border-color: #bfbfbf !important;
+  flex-wrap: nowrap;
+}
+
+.VIpgJd-suEOdc {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q {
+  display: none !important;
+}
+
+.VIpgJd-ZVi9od-vH1Gmf {
+  border: 1px solid #fff !important;
+}
+
+.policy-content {
+  line-height: 2; /* Adjust the value as needed */
+  margin-bottom: 1rem; /* Add some margin at the bottom for better spacing */
 }

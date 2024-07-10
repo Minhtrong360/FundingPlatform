@@ -19,7 +19,7 @@ const NavbarButton = ({ children, onClick, className }) => {
   );
 };
 
-const Header2 = ({ position }) => {
+const Header2 = ({ noFixedHeader }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -148,7 +148,7 @@ const Header2 = ({ position }) => {
     <>
       <nav
         className={`${
-          position === "notFixed" ? "absolute" : "fixed "
+          noFixedHeader === "notFixed" ? "absolute" : "fixed"
         } z-50 top-0 start-0 bg-white darkBg w-full border-b border-gray-300 darkBorderGray transition-transform duration-100 ease-in-out ${
           !isVisible ? "-translate-y-full" : "translate-y-0"
         }`}

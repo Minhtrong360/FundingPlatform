@@ -15,19 +15,18 @@ const PricingCard = ({ plan, onClick }) => {
   ];
 
   const price_10 = [
-    "14-day free trial",
-    "Financial Model with AI access",
-    "Unlimited business profiles",
-    "Private Data room (access control)",
-    "Private listing (access control)",
+    "Market Research with AI",
+    "Startup Valuation with AI",
+    "AI Chatbot for fundraising profile content",
+    "Private Data room for Due Diligence",
+    "Private listing for fundraising (up-to 05 profiles)",
   ];
 
-  const price_50 = [
-    "Premium features included",
-    "Signature Dealroom listing",
-    "What if scenario analysis",
-    "Customer-facing analytics",
-    "BeeKrowd customer support",
+  const price_30 = [
+    "All features in FundFlow Growth",
+    "Financial Model with AI feature",
+    "Financial Model Guide chatbot",
+    "Financial Analysis",
   ];
 
   return (
@@ -40,11 +39,13 @@ const PricingCard = ({ plan, onClick }) => {
         <span className="font-medium text-lg"> /month</span>
       </span>
       <div className="flex-grow">
-        {plan.price_formatted.includes("$100") && (
+        {plan.price_formatted.includes("$30") && (
           <>
-            <p className="mt-2 text-sm text-gray-500">For Enterprise</p>
+            <p className="mt-2 text-sm text-gray-500">
+              For building financial model and fundraising
+            </p>
             <ul className="mt-7 space-y-2.5 text-sm">
-              {price_50.map((feature, index) => (
+              {price_30.map((feature, index) => (
                 <li
                   key={index}
                   className="flex space-x-2 justify-start items-center"
@@ -72,7 +73,7 @@ const PricingCard = ({ plan, onClick }) => {
           </>
         )}
 
-        {plan.price_formatted.includes("$30") && (
+        {plan.price_formatted.includes("$10") && (
           <>
             <p className="mt-2 text-sm text-gray-500">
               For Startups, small project owners
@@ -149,11 +150,7 @@ const PricingCard = ({ plan, onClick }) => {
           plan.price / 100 === 0 || plan.price_formatted.includes("$100")
         }
       >
-        {plan.price / 100 === 0
-          ? "Free"
-          : plan.price / 100 === 30
-          ? "14-day free trial"
-          : "Coming soon"}
+        {plan.price / 100 === 0 ? "Free" : "Subscribe"}
       </button>
     </div>
   );

@@ -347,7 +347,7 @@ const HomePage = () => {
     <>
       {/* <Header /> */}
       <Header2 />
-      <FlowiseChat />
+      <FlowiseChat page="Home" />
       {/* {user && <BubleChatBot />} */}
       <HeroSection />
 

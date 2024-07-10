@@ -7,6 +7,7 @@ import {
   Input,
   Menu,
   Modal,
+  Select,
   Table,
   message,
 } from "antd";
@@ -16,7 +17,15 @@ import moment from "moment";
 import { formatDate } from "../../features/DurationSlice";
 import { IconButton } from "@mui/material";
 import UniCard from "./UniCard";
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import {
+  CloseOutlined,
+  EyeTwoTone,
+  LeftOutlined,
+  PlusCircleOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
+
+import { v4 as uuidv4 } from "uuid"; // Import uuid
 
 const HeroUniversities = ({
   onSelectCode,
@@ -25,13 +34,23 @@ const HeroUniversities = ({
   currentTab,
   selectedCode,
   setSelectedCodeFull,
+  filteredProjectList,
+  setFilteredProjectList,
+  selectedRound,
+  setSelectedRound,
+  filterProjectsByRound,
+  projectList,
+  setProjectList,
 }) => {
+  const { Option } = Select;
+
   const { user } = useAuth();
   const [isAddNewModalOpen, setIsAddNewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
   const [isJudgeModalOpen, setIsJudgeModalOpen] = useState(false);
+  const [isScoringRulesModalOpen, setIsScoringRulesModalOpen] = useState(false);
   const [isScoreModalOpen, setIsScoreModalOpen] = useState(false);
 
   const [newCode, setNewCode] = useState("");
@@ -42,15 +61,15 @@ const HeroUniversities = ({
   const [codeToDelete, setCodeToDelete] = useState(null);
   const [codeData, setCodeData] = useState([]);
   const [projectCounts, setProjectCounts] = useState({});
-  const [projectList, setProjectList] = useState([]);
 
-  const [score, setScore] = useState(0);
   const [judgeName, setJudgeName] = useState("");
   const [judgeEmail, setJudgeEmail] = useState("");
 
   const [universityName, setUniversityName] = useState(credentials?.university);
   const [description, setDescription] = useState(credentials?.description);
 
+  const [scoringRules, setScoringRules] = useState([]);
+  const [editRounds, setEditRounds] = useState([]);
   useEffect(() => {
     const fetchCodeData = async () => {
       try {
@@ -149,9 +168,10 @@ const HeroUniversities = ({
       !expirationDate ||
       !competitionName ||
       !competitionDescription ||
-      !codeAvatarUrl
+      !codeAvatarUrl ||
+      rounds.some((round) => !round.name) // Check if any round names are empty
     ) {
-      message.error("Please enter all required fields");
+      message.error("Please enter all required fields, including round names.");
       return;
     }
 
@@ -165,6 +185,7 @@ const HeroUniversities = ({
           name: competitionName,
           description: competitionDescription,
           avatar_url: codeAvatarUrl,
+          rounds: rounds.map((round) => ({ id: uuidv4(), name: round.name })), // Generate UUID for each round
         },
       ])
       .select();
@@ -190,6 +211,7 @@ const HeroUniversities = ({
       setCompetitionName("");
       setCompetitionDescription("");
       setCodeAvatarUrl("");
+      setRounds([{ id: uuidv4(), name: "" }]); // Reset rounds with new UUID
     }
   };
 
@@ -199,9 +221,10 @@ const HeroUniversities = ({
       !newCode ||
       !newExpirationDate ||
       !competitionName ||
-      !codeAvatarUrl
+      !codeAvatarUrl ||
+      editRounds.some((round) => !JSON.parse(round)?.name) // Check if any round names are empty
     ) {
-      message.error("Please enter all required fields");
+      message.error("Please enter all required fields, including round names.");
       return;
     }
 
@@ -213,6 +236,10 @@ const HeroUniversities = ({
         name: competitionName,
         description: competitionDescription,
         avatar_url: codeAvatarUrl,
+        rounds: editRounds.map((round) => ({
+          id: JSON.parse(round)?.id || uuidv4(),
+          name: JSON.parse(round)?.name,
+        })), // Generate UUID if missing
       })
       .eq("id", selectedCode?.id)
       .select();
@@ -241,6 +268,57 @@ const HeroUniversities = ({
       setCodeAvatarUrl("");
       setSelectedCodeFull(data[0]);
     }
+  };
+
+  const handleAddRound = () => {
+    if (rounds[rounds.length - 1]?.name || rounds.length === 0) {
+      setRounds([...rounds, { id: uuidv4(), name: "" }]);
+    } else {
+      message.error(
+        "Please enter a name for the current round before adding a new one."
+      );
+    }
+  };
+
+  const handleAddEditRound = () => {
+    if (
+      JSON.parse(editRounds[editRounds.length - 1])?.name ||
+      editRounds.length === 0
+    ) {
+      setEditRounds([
+        ...editRounds,
+        JSON.stringify({ id: uuidv4(), name: "" }),
+      ]);
+    } else {
+      message.error(
+        "Please enter a name for the current round before adding a new one."
+      );
+    }
+  };
+
+  const handleRemoveRound = (index) => {
+    setRounds(rounds.filter((_, i) => i !== index));
+  };
+  const handleRemoveEditRound = (index) => {
+    setEditRounds(editRounds.filter((_, i) => i !== index));
+  };
+  const handleRoundNameChange = (index, name) => {
+    setRounds(
+      rounds.map((round, i) => (i === index ? { ...round, name } : round))
+    );
+  };
+
+  const handleEditRoundNameChange = (index, name) => {
+    setEditRounds(
+      editRounds.map((round, i) => {
+        if (i === index) {
+          const parsedRound =
+            typeof round === "string" ? JSON.parse(round) : round;
+          return JSON.stringify({ ...parsedRound, name });
+        }
+        return round;
+      })
+    );
   };
 
   const handleDeleteCode = async () => {
@@ -325,7 +403,6 @@ const HeroUniversities = ({
 
   const handleRemoveProjectCode = async (projectId, codeToRemove) => {
     try {
-      // Fetch the project data
       const { data: project, error: fetchError } = await supabase
         .from("projects")
         .select("universityCode")
@@ -336,12 +413,10 @@ const HeroUniversities = ({
         throw fetchError;
       }
 
-      // Remove the specific code from the universityCode array
       const updatedUniversityCode = project.universityCode.filter(
         (code) => code !== codeToRemove
       );
 
-      // Update the project with the new universityCode array
       const { error: updateError } = await supabase
         .from("projects")
         .update({ universityCode: updatedUniversityCode })
@@ -364,46 +439,59 @@ const HeroUniversities = ({
   const handleScoreProject = async (projectId) => {
     const project = projectList.find((proj) => proj.id === projectId);
     if (
-      !project ||
       !selectedCode.judges.some(
         (judge) => JSON.parse(judge).email === user.email
       )
     ) {
-      message.error("You can not score this project");
+      message.error(
+        "You are not the JUDGE of this contest, so you cannot score this project"
+      );
       return;
     }
 
-    // Parse applyInfo array
-    const applyInfoArray = project?.applyInfo;
-    const applyInfoIndex = applyInfoArray.findIndex(
-      (info) => info.universityCode === selectedCode?.id
-    );
+    const scoringInfo = project.scoringInfo || [];
+    const newScoringEntry = {
+      judgeEmail: user.email,
+      codeId: selectedCode.id,
+      round: selectedRound.id,
+      scores: scoringRules.reduce((acc, rule) => {
+        acc[rule.feature] = rule.score;
+        return acc;
+      }, {}),
+    };
 
-    if (applyInfoIndex === -1) {
-      message.error("No matching applyInfo found for this universityCode");
-      return;
+    const existingIndex = scoringInfo.findIndex((entry) => {
+      const parsedEntry = JSON.parse(entry);
+      return (
+        parsedEntry.judgeEmail === user.email &&
+        parsedEntry.round === selectedRound.id
+      );
+    });
+
+    let updatedScoringInfo;
+    if (existingIndex >= 0) {
+      // Replace the existing entry
+      updatedScoringInfo = [...scoringInfo];
+      updatedScoringInfo[existingIndex] = JSON.stringify(newScoringEntry);
+    } else {
+      // Add the new entry
+      updatedScoringInfo = [...scoringInfo, JSON.stringify(newScoringEntry)];
     }
-
-    // Update the score in the correct applyInfo object
-    applyInfoArray[applyInfoIndex].score = score;
 
     try {
-      // Update the project in the database
       const { error } = await supabase
         .from("projects")
-        .update({
-          applyInfo: applyInfoArray.map((info) => JSON.stringify(info)),
-        })
-        .eq("id", projectId)
-        .select();
+        .update({ scoringInfo: updatedScoringInfo })
+        .eq("id", projectId);
 
       if (error) {
         throw error;
       }
 
-      // Update the project list in the local state
       const updatedProjects = projectList.map((proj) =>
-        proj.id === projectId ? { ...proj, applyInfo: applyInfoArray } : proj
+        proj.id === projectId
+          ? { ...proj, scoringInfo: updatedScoringInfo }
+          : proj
       );
       setProjectList(updatedProjects);
       message.success("Score updated successfully");
@@ -412,7 +500,6 @@ const HeroUniversities = ({
       console.error("Error updating score:", error);
     } finally {
       setIsScoreModalOpen(false);
-      setScore(0);
     }
   };
 
@@ -424,6 +511,7 @@ const HeroUniversities = ({
     setExpirationDate(record.expired_at ? moment(record.expired_at) : null);
     setNewExpirationDate(null);
     setCodeAvatarUrl(record.avatar_url);
+    setEditRounds(record.rounds ? record.rounds : [{ name: "" }]);
     setIsEditModalOpen(true);
   };
 
@@ -442,15 +530,25 @@ const HeroUniversities = ({
     setIsJudgeModalOpen(true);
   };
 
-  const [selectedProject, setSelectedProject] = useState();
-  const openScoreModal = (record) => {
-    setSelectedProject(record);
-    const applyInfo = record?.applyInfo?.find(
-      (info) => info.universityCode === selectedCode?.id
-    );
+  const openScoringRulesModal = (record) => {
+    setSelectedCodeFull(record);
+    const parsedScoringRules =
+      record?.scoringRules.map((rule) => JSON.parse(rule)) || [];
+    setScoringRules(parsedScoringRules);
+    setIsScoringRulesModalOpen(true);
+  };
 
-    // Set score from the found applyInfo or default to 0
-    setScore(applyInfo?.score || 0);
+  const [selectedProject, setSelectedProject] = useState();
+  const openScoreModal = async (record) => {
+    setSelectedProject(record);
+
+    const scoringRulesForCode =
+      selectedCode?.scoringRules?.map((rule) => ({
+        ...JSON.parse(rule),
+        score: 0, // Initialize score to 0 or an appropriate default value
+      })) || [];
+
+    setScoringRules(scoringRulesForCode);
     setIsScoreModalOpen(true);
   };
 
@@ -472,7 +570,7 @@ const HeroUniversities = ({
       setCodeData((prev) =>
         prev.map((item) => (item.id === selectedCode?.id ? data[0] : item))
       );
-      setSelectedCodeFull(data[0]); // Update the selectedCode state to reflect the change
+      setSelectedCodeFull(data[0]);
     }
   };
 
@@ -580,6 +678,20 @@ const HeroUniversities = ({
       ),
     },
     {
+      title: "Scoring Rules",
+      dataIndex: "scoringRules",
+      key: "scoringRules",
+      align: "center",
+      render: (text, record) => (
+        <Button
+          style={{ fontSize: "12px" }}
+          onClick={() => openScoringRulesModal(record)}
+        >
+          View
+        </Button>
+      ),
+    },
+    {
       title: "Publish status",
       dataIndex: "publish",
       key: "publish",
@@ -625,6 +737,14 @@ const HeroUniversities = ({
                     Judges
                   </div>
                 </Menu.Item>
+                <Menu.Item key="scoringRules">
+                  <div
+                    onClick={() => openScoringRulesModal(record)}
+                    style={{ fontSize: "12px" }}
+                  >
+                    Scoring Rules
+                  </div>
+                </Menu.Item>
                 <Menu.Item key="delete">
                   <div
                     onClick={() => openDeleteModal(record.id)}
@@ -649,6 +769,110 @@ const HeroUniversities = ({
     return applyInfo.find((info) => info.universityCode === code) || {};
   };
 
+  const calculateWeightedAverageScore = (scoringInfo, scoringRules) => {
+    if (!scoringInfo || !scoringRules) return 0;
+
+    // Lọc scoringInfo theo selectedCode.id và selectedRound.id
+    const filteredScoringInfo = scoringInfo.filter((info) => {
+      const parsedInfo = JSON.parse(info);
+      return (
+        parsedInfo.codeId === selectedCode?.id &&
+        parsedInfo.round === selectedRound?.id
+      );
+    });
+
+    if (filteredScoringInfo.length === 0) return 0;
+
+    let totalJudgeScores = 0;
+    let totalJudges = filteredScoringInfo.length;
+
+    filteredScoringInfo.forEach((info) => {
+      const parsedInfo = JSON.parse(info);
+      let totalScore = 0;
+
+      Object.entries(parsedInfo.scores).forEach(([feature, score]) => {
+        const rule = scoringRules.find(
+          (rule) => JSON.parse(rule).feature === feature
+        );
+        if (rule) {
+          const parsedRule = JSON.parse(rule);
+          totalScore += score * (parsedRule.rate / 100);
+        }
+      });
+
+      totalJudgeScores += totalScore;
+    });
+
+    return totalJudges ? (totalJudgeScores / totalJudges).toFixed(2) : 0;
+  };
+
+  const [isRemoveProjectModalOpen, setIsRemoveProjectModalOpen] =
+    useState(false);
+  const [projectToRemove, setProjectToRemove] = useState(null);
+
+  const openRemoveProjectModal = (project) => {
+    setProjectToRemove(project);
+    setIsRemoveProjectModalOpen(true);
+  };
+
+  const confirmRemoveProject = async () => {
+    await handleRemoveProjectCode(projectToRemove.id, selectedCode.id);
+    setIsRemoveProjectModalOpen(false);
+    setProjectToRemove(null);
+  };
+
+  const [isQualifiedModalOpen, setIsQualifiedModalOpen] = useState(false);
+  const [projectToQualify, setProjectToQualify] = useState(null);
+
+  const openQualifiedModal = (record) => {
+    setProjectToQualify(record);
+    setIsQualifiedModalOpen(true);
+  };
+
+  const handleQualified = async () => {
+    const updatedApplyInfo = projectToQualify.applyInfo.map((info) => {
+      if (info.universityCode === selectedCode.id) {
+        return { ...info, passRound: selectedRound.id };
+      }
+      return info;
+    });
+
+    try {
+      const { data, error } = await supabase
+        .from("projects")
+        .update({ applyInfo: updatedApplyInfo })
+        .eq("id", projectToQualify.id);
+
+      if (error) {
+        throw error;
+      }
+
+      const updatedProjects = projectList.map((proj) =>
+        proj.id === projectToQualify.id
+          ? { ...proj, applyInfo: updatedApplyInfo }
+          : proj
+      );
+
+      setProjectList(updatedProjects);
+      message.success("Project qualified successfully");
+      setIsQualifiedModalOpen(false);
+      filterProjectsByRound(selectedRound);
+    } catch (error) {
+      message.error("Failed to qualify project");
+      console.error("Error qualifying project:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (projectList.length > 0) {
+      if (selectedRound) {
+        filterProjectsByRound(selectedRound);
+      } else {
+        setFilteredProjectList(projectList);
+      }
+    }
+  }, [selectedRound, projectList]);
+
   const projectByCodeColumns = [
     {
       title: "No",
@@ -656,7 +880,7 @@ const HeroUniversities = ({
       key: "index",
       align: "center",
       render: (text, record, index) => (
-        <span>{projectList?.indexOf(record) + 1}</span>
+        <span>{filteredProjectList?.indexOf(record) + 1}</span>
       ),
     },
     {
@@ -782,17 +1006,15 @@ const HeroUniversities = ({
       dataIndex: "score",
       key: "score",
       align: "center",
-      render: (text, record) => {
-        const applyInfo = getApplyInfoByCode(
-          record.applyInfo,
-          selectedCode?.id
-        );
-        return (
-          <span className="flex justify-center items-center">
-            {applyInfo.score || 0}
-          </span>
-        );
-      },
+      render: (text, record) => (
+        <span>
+          {calculateWeightedAverageScore(
+            record.scoringInfo,
+            selectedCode?.scoringRules
+          )}{" "}
+          <EyeTwoTone onClick={() => openJudgeScoreModal(record)} />
+        </span>
+      ),
     },
     {
       title: "Action",
@@ -807,22 +1029,28 @@ const HeroUniversities = ({
               <>
                 <Menu.Item key="remove">
                   <div
-                    onClick={() =>
-                      handleRemoveProjectCode(record.id, selectedCode?.id)
-                    }
+                    onClick={() => openRemoveProjectModal(record)}
                     style={{ fontSize: "12px" }}
                   >
                     Remove
                   </div>
                 </Menu.Item>
-                <Menu.Item key="score">
+                <Menu.Item key="qualified">
+                  <div
+                    onClick={() => openQualifiedModal(record)}
+                    style={{ fontSize: "12px" }}
+                  >
+                    Qualified
+                  </div>
+                </Menu.Item>
+                {/* <Menu.Item key="score">
                   <div
                     onClick={() => openScoreModal(record)}
                     style={{ fontSize: "12px" }}
                   >
                     Score
                   </div>
-                </Menu.Item>
+                </Menu.Item> */}
               </>
             </Menu>
           }
@@ -835,8 +1063,8 @@ const HeroUniversities = ({
     },
   ];
 
-  const [avatarUrl, setAvatarUrl] = useState(credentials?.avatar_url); // State to store project image URL
-  const [codeAvatarUrl, setCodeAvatarUrl] = useState(); // State to store project image URL
+  const [avatarUrl, setAvatarUrl] = useState(credentials?.avatar_url);
+  const [codeAvatarUrl, setCodeAvatarUrl] = useState();
   useEffect(() => {
     setAvatarUrl(credentials?.avatar_url);
     setUniversityName(credentials?.university);
@@ -850,8 +1078,8 @@ const HeroUniversities = ({
     for (let i = 0; i < byteString.length; i++) {
       ia[i] = byteString.charCodeAt(i);
     }
-    const extension = dataURI.split(",")[0].split("/")[1].split(";")[0]; // Lấy phần mở rộng của tệp từ data URI
-    const fileName = `${fileNamePrefix}-${Date.now()}.${extension}`; // Tạo tên tệp duy nhất với ngày giờ hiện tại và phần mở rộng
+    const extension = dataURI.split(",")[0].split("/")[1].split(";")[0];
+    const fileName = `${fileNamePrefix}-${Date.now()}.${extension}`;
     const blob = new Blob([ab], { type: `image/${extension}` });
     return new File([blob], fileName, { type: `image/${extension}` });
   };
@@ -859,16 +1087,13 @@ const HeroUniversities = ({
   const uploadImageToSupabase = async (file) => {
     try {
       const { data, error } = await supabase.storage
-        .from("beekrowd_storage") // Chọn bucket
-        .upload(`beekrowd_images/${file.name}`, file); // Lưu ảnh vào folder beekrowd_images
+        .from("beekrowd_storage")
+        .upload(`beekrowd_images/${file.name}`, file);
 
       if (error) {
         console.error("Error uploading image to Supabase:", error);
         return null;
       }
-
-      // Trả về liên kết ảnh từ Supabase
-      // Lấy URL của ảnh đã lưu
 
       const imageUrl = `https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/${data.fullPath}`;
 
@@ -880,21 +1105,18 @@ const HeroUniversities = ({
   };
 
   const handleProjectImageUpload = (event) => {
-    const file = event.target.files[0]; // Get the uploaded file
-    // Assuming you're using FileReader to read the uploaded file as data URL
+    const file = event.target.files[0];
     const reader = new FileReader();
     reader.onload = async (e) => {
-      setAvatarUrl(e.target.result); // Set the project image URL in state
+      setAvatarUrl(e.target.result);
 
-      // Upload the image to Supabase
       const uploadedAvatarUrl = await uploadImageToSupabase(
         dataURItoFile(e.target.result, "img")
       );
 
       if (uploadedAvatarUrl) {
-        setAvatarUrl(uploadedAvatarUrl); // Update the state with the uploaded image URL
+        setAvatarUrl(uploadedAvatarUrl);
 
-        // Update the avatar_url field in the workspace table
         const { error } = await supabase
           .from("workspace")
           .update({ avatar_url: uploadedAvatarUrl })
@@ -909,27 +1131,25 @@ const HeroUniversities = ({
       }
     };
 
-    reader.readAsDataURL(file); // Read the uploaded file
+    reader.readAsDataURL(file);
   };
 
   const handleCodeAvatarUpload = (event) => {
-    const file = event.target.files[0]; // Get the uploaded file
-    // Assuming you're using FileReader to read the uploaded file as data URL
+    const file = event.target.files[0];
     const reader = new FileReader();
     reader.onload = async (e) => {
-      setCodeAvatarUrl(e.target.result); // Set the project image URL in state
+      setCodeAvatarUrl(e.target.result);
 
-      // Upload the image to Supabase
       const uploadedAvatarUrl = await uploadImageToSupabase(
         dataURItoFile(e.target.result, "img")
       );
 
       if (uploadedAvatarUrl) {
-        setCodeAvatarUrl(uploadedAvatarUrl); // Update the state with the uploaded image URL
+        setCodeAvatarUrl(uploadedAvatarUrl);
       }
     };
 
-    reader.readAsDataURL(file); // Read the uploaded file
+    reader.readAsDataURL(file);
   };
 
   const handleUniversityNameChange = async (newName) => {
@@ -942,10 +1162,9 @@ const HeroUniversities = ({
     if (error) {
       message.error("Failed to update university name in the database");
       console.error("Error updating university name:", error);
-    } else {
-      // message.success("University name updated successfully");
     }
   };
+
   const handleDescriptionChange = async (newDescription) => {
     setDescription(newDescription);
     const { error } = await supabase
@@ -956,8 +1175,6 @@ const HeroUniversities = ({
     if (error) {
       message.error("Failed to update university name in the database");
       console.error("Error updating university name:", error);
-    } else {
-      // message.success("University name updated successfully");
     }
   };
 
@@ -979,6 +1196,127 @@ const HeroUniversities = ({
   const startIndex = currentCodePage * itemsPerPage;
   const selectedCodes = codeData.slice(startIndex, startIndex + itemsPerPage);
 
+  const handleScoringRuleChange = (index, field, value) => {
+    const newScoringRules = [...scoringRules];
+    newScoringRules[index][field] = value;
+    setScoringRules(newScoringRules);
+  };
+
+  const handleAddScoringRule = () => {
+    setScoringRules([...scoringRules, { feature: "", rate: "" }]);
+  };
+
+  const handleRemoveScoringRule = (index) => {
+    setScoringRules(scoringRules.filter((_, i) => i !== index));
+  };
+
+  const [judgeScores, setJudgeScores] = useState("");
+  const [isJudgeScoreModalOpen, setIsJudgeScoreModalOpen] = useState(false);
+
+  const handleSaveScoringRules = async () => {
+    try {
+      const stringifiedScoringRules = scoringRules.map((rule) =>
+        JSON.stringify(rule)
+      );
+      const { data, error } = await supabase
+        .from("code")
+        .update({ scoringRules: stringifiedScoringRules })
+        .eq("id", selectedCode.id)
+        .select();
+
+      if (error) {
+        message.error("Failed to save scoring rules");
+        console.error("Error saving scoring rules:", error);
+      } else {
+        message.success("Scoring rules saved successfully");
+        setCodeData((prev) =>
+          prev.map((item) => (item.id === selectedCode.id ? data[0] : item))
+        );
+        setSelectedCodeFull(data[0]);
+        setIsScoringRulesModalOpen(false);
+      }
+    } catch (error) {
+      message.error("Failed to save scoring rules");
+      console.error("Error saving scoring rules:", error);
+    }
+  };
+
+  const openJudgeScoreModal = (record) => {
+    setSelectedProject(record);
+    const scoringInfo =
+      record?.scoringInfo?.map((info) => JSON.parse(info)) || [];
+
+    const judgeScores = scoringInfo.map((info) => ({
+      judgeEmail: info.judgeEmail,
+      scores: info.scores,
+    }));
+
+    setJudgeScores(judgeScores);
+    setIsJudgeScoreModalOpen(true);
+  };
+
+  const judgeScoreColumns = [
+    {
+      title: "Judge Email",
+      dataIndex: "judgeEmail",
+      key: "judgeEmail",
+    },
+    {
+      title: "Scores",
+      dataIndex: "scores",
+      key: "scores",
+      render: (text, record) => (
+        <div>
+          {Object.entries(record.scores).map(([feature, score]) => (
+            <div key={feature}>
+              {feature}: {score}
+            </div>
+          ))}
+        </div>
+      ),
+    },
+  ];
+
+  const [rounds, setRounds] = useState([{ id: uuidv4(), name: "" }]); // Use uuidv4 to generate initial round ID
+
+  useEffect(() => {
+    // Parse rounds if they are stringified JSON
+    const parsedRounds =
+      selectedCode?.rounds?.map((round) =>
+        typeof round === "string" ? JSON.parse(round) : round
+      ) || [];
+
+    setSelectedRound(parsedRounds[0] || null);
+  }, [selectedCode]);
+
+  // const [totalScore, setTotalScore] = useState(0);
+
+  // useEffect(() => {
+  //   const initialTotalScore = scoringRules.reduce(
+  //     (acc, rule) => acc + (rule.score || 0) * (Number(rule.rate) / 100),
+  //     0
+  //   );
+
+  //   setTotalScore(initialTotalScore.toFixed(2));
+  // }, [scoringRules]);
+
+  // const handleScoreChange = (index, value) => {
+  //   const newScore = Number(value);
+  //   const updatedScoringRules = [...scoringRules];
+  //   updatedScoringRules[index].score = newScore;
+
+  //   const newTotalScore = updatedScoringRules.reduce(
+  //     (acc, rule) => acc + (rule.score || 0) * (Number(rule.rate) / 100),
+  //     0
+  //   );
+  //   setTotalScore(newTotalScore);
+  // };
+
+  // const handleScoreChange = (index, value) => {
+  //   const updatedScoringRules = [...scoringRules];
+  //   updatedScoringRules[index].score = value;
+  //   setScoringRules(updatedScoringRules);
+  // };
   return (
     <section className="bg-white">
       <div className="sm:px-6 px-3 mx-auto text-center">
@@ -1053,6 +1391,7 @@ const HeroUniversities = ({
                   setCompetitionDescription("");
                   setCodeAvatarUrl("");
                   setIsAddNewModalOpen(true);
+                  setRounds([]);
                 }}
               >
                 Create A Competition
@@ -1093,10 +1432,32 @@ const HeroUniversities = ({
                   <h2 className="text-xl font-bold text-left">
                     Project listing by {selectedCode?.code}
                   </h2>
+                  <div className="flex items-center mt-2">
+                    <label className="text-sm mr-2">Select round:</label>
+                    <Select
+                      id="round-select"
+                      className="rounded-md p-1 text-xs"
+                      value={selectedRound?.name}
+                      onChange={(value) => {
+                        const foundRound = selectedCode?.rounds.find(
+                          (round) =>
+                            JSON.parse(round)?.id === JSON.parse(value).id
+                        );
+                        return setSelectedRound(JSON.parse(foundRound));
+                      }}
+                      style={{ width: 200 }}
+                    >
+                      {selectedCode?.rounds?.map((round, index) => (
+                        <Option key={index} value={round}>
+                          {JSON.parse(round).name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </div>
                   <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
                     <Table
                       columns={projectByCodeColumns}
-                      dataSource={projectList}
+                      dataSource={filteredProjectList}
                       pagination={{
                         position: ["bottomLeft"],
                       }}
@@ -1119,7 +1480,7 @@ const HeroUniversities = ({
             <section className="container px-4 mx-auto mt-14 max-w-3xl">
               <div className="flex flex-col mb-5">
                 <h3 className="font-bold text-xl text-left">Code listing</h3>
-                <div className="mx-auto mt-5 grid sm:grid-cols-2 gap-32 transition-all duration-600 ease-out transform translate-x-0">
+                <div className="mt-5 grid sm:grid-cols-2 gap-14 transition-all duration-600 ease-out transform translate-x-0">
                   {selectedCodes.map((code) => (
                     <div
                       key={code.id}
@@ -1166,27 +1527,9 @@ const HeroUniversities = ({
           onCancel={() => setIsAddNewModalOpen(false)}
           okText="Save"
           cancelText="Cancel"
-          cancelButtonProps={{
-            style: {
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-            },
-          }}
-          okButtonProps={{
-            style: {
-              background: "#2563EB",
-              borderColor: "#2563EB",
-              color: "#fff",
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-            },
-          }}
           centered={true}
         >
-          <div
-            key="1"
-            className="w-full max-w-2xl mx-auto p-6 space-y-6 grid grid-cols-1 md:grid-cols-2 gap-6"
-          >
+          <div className="w-full max-w-2xl mx-auto p-6 space-y-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <form className="grid gap-6 col-span-1 md:col-span-2">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
@@ -1239,7 +1582,7 @@ const HeroUniversities = ({
                     id="competition_description"
                     placeholder="Enter competition description"
                     required
-                    className="border-gray-300 rounded-md text-sm"
+                    className="border-gray-300 rounded-md text-sm mr-6"
                     value={competitionDescription}
                     onChange={(e) => setCompetitionDescription(e.target.value)}
                     autoSize
@@ -1251,9 +1594,9 @@ const HeroUniversities = ({
                 <div className="flex items-center">
                   <Input
                     id="cover"
-                    placeholder="Code Cover"
+                    placeholder="Replace your cover link"
                     required
-                    className="border-gray-300 rounded-md text-sm"
+                    className="border-gray-300 rounded-md text-sm mr-6"
                     value={
                       codeAvatarUrl?.length > 20
                         ? codeAvatarUrl?.substring(0, 20) + "..."
@@ -1262,13 +1605,52 @@ const HeroUniversities = ({
                     onChange={(e) => setCodeAvatarUrl(e.target.value)}
                   />
                 </div>
-                <span className="py-1 px-2 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "></span>
+                <span className="py-1 px-2 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkTextGray400 "></span>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleCodeAvatarUpload}
-                  className="py-1 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
+                  className="py-1 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkTextGray400 "
                 />
+              </div>
+              <div className="space-y-1">
+                <label htmlFor="rounds">Rounds</label>
+                <div>
+                  {rounds.map((round, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center space-x-2 mt-2"
+                    >
+                      <Input
+                        placeholder={`Round ${index + 1} Name`}
+                        value={round?.name}
+                        onChange={(e) =>
+                          handleRoundNameChange(index, e.target.value)
+                        }
+                        className="border-gray-300 rounded-md text-sm"
+                      />
+                      <Button
+                        type="danger"
+                        onClick={() => handleRemoveRound(index)}
+                        style={{ fontSize: "12px", padding: 0 }}
+                      >
+                        <CloseOutlined />
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    type="primary"
+                    style={{
+                      fontSize: "12px",
+                      backgroundColor: "#2563EB",
+                      marginTop: "12px",
+                    }}
+                    onClick={handleAddRound}
+                  >
+                    <PlusCircleOutlined />
+                    Add Round
+                  </Button>
+                </div>
               </div>
             </form>
           </div>
@@ -1345,7 +1727,6 @@ const HeroUniversities = ({
                     />
                   </div>
                 </div>
-
                 <div className="space-y-2">
                   <label htmlFor="new_expired_at">Expired at (New)</label>
                   <div className="flex items-center">
@@ -1360,48 +1741,88 @@ const HeroUniversities = ({
                     />
                   </div>
                 </div>
-
-                <div className="space-y-1 md:col-span-2">
-                  <label htmlFor="competition_description">
-                    Competition Description
-                  </label>
-                  <div className="flex items-center">
-                    <Input.TextArea
-                      id="competition_description"
-                      placeholder="Enter competition description"
-                      required
-                      className="border-gray-300 rounded-md text-sm"
-                      value={competitionDescription}
-                      onChange={(e) =>
-                        setCompetitionDescription(e.target.value)
-                      }
-                      autoSize
-                    />
-                  </div>
-                </div>
-                <div className="space-y-1 md:col-span-2">
-                  <label htmlFor="cover">Competition Cover</label>
-                  <div className="flex items-center">
-                    <Input
-                      id="cover"
-                      placeholder="Code Cover"
-                      required
-                      className="border-gray-300 rounded-md text-sm"
-                      value={
-                        codeAvatarUrl?.length > 20
-                          ? codeAvatarUrl?.substring(0, 20) + "..."
-                          : codeAvatarUrl
-                      }
-                      onChange={(e) => setCodeAvatarUrl(e.target.value)}
-                    />
-                  </div>
-                  <span className="py-1 px-2 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "></span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleCodeAvatarUpload}
-                    className="py-1 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
+              </div>
+              <div className="space-y-1 md:col-span-2">
+                <label htmlFor="competition_description">
+                  Competition Description
+                </label>
+                <div className="flex items-center">
+                  <Input.TextArea
+                    id="competition_description"
+                    placeholder="Enter competition description"
+                    required
+                    className="border-gray-300 rounded-md text-sm mr-6"
+                    value={competitionDescription}
+                    onChange={(e) => setCompetitionDescription(e.target.value)}
+                    autoSize
                   />
+                </div>
+              </div>
+              <div className="space-y-1 md:col-span-2">
+                <label htmlFor="cover">Competition Cover</label>
+                <div className="flex items-center">
+                  <Input
+                    id="cover"
+                    placeholder="Replace your cover link"
+                    required
+                    className="border-gray-300 rounded-md text-sm mr-6"
+                    value={
+                      codeAvatarUrl?.length > 20
+                        ? codeAvatarUrl?.substring(0, 20) + "..."
+                        : codeAvatarUrl
+                    }
+                    onChange={(e) => setCodeAvatarUrl(e.target.value)}
+                  />
+                </div>
+                <span className="py-1 px-2 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkTextGray400 "></span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleCodeAvatarUpload}
+                  className="py-1 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkTextGray400 "
+                />
+              </div>
+              <div className="space-y-1">
+                <label htmlFor="rounds">Rounds</label>
+                <div>
+                  {editRounds.map((round, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center space-x-2 mt-2"
+                    >
+                      <Input
+                        placeholder={`Round ${index + 1} Name`}
+                        value={
+                          typeof round === "string"
+                            ? JSON.parse(round)?.name
+                            : round?.name
+                        }
+                        onChange={(e) =>
+                          handleEditRoundNameChange(index, e.target.value)
+                        }
+                        className="border-gray-300 rounded-md text-sm"
+                      />
+                      <Button
+                        type="danger"
+                        onClick={() => handleRemoveEditRound(index)}
+                        style={{ fontSize: "12px", padding: 0 }}
+                      >
+                        <CloseOutlined />
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    type="primary"
+                    style={{
+                      fontSize: "12px",
+                      backgroundColor: "#2563EB",
+                      marginTop: "12px",
+                    }}
+                    onClick={handleAddEditRound}
+                  >
+                    <PlusCircleOutlined />
+                    Add Round
+                  </Button>
                 </div>
               </div>
             </form>
@@ -1463,7 +1884,7 @@ const HeroUniversities = ({
         >
           {selectedCode?.publish
             ? "Are you sure to un-publish this code?"
-            : 'Other users can see all projects that relate to this code on "Competition". Are you sure to publish?'}
+            : 'Other users can see all projects that relate to this code on "Competition" Tab on BeeKrowd platform. Are you sure to publish?'}
         </Modal>
 
         <Modal
@@ -1473,7 +1894,7 @@ const HeroUniversities = ({
           onCancel={() => setIsJudgeModalOpen(false)}
           footer={null}
           centered={true}
-          styles={{ body: { minHeight: "84vh" } }} // Use bodyStyle to style the body
+          styles={{ body: { minHeight: "84vh" } }}
           width={600}
         >
           <div className="w-full mx-auto p-6 space-y-6 ">
@@ -1556,11 +1977,11 @@ const HeroUniversities = ({
         </Modal>
 
         <Modal
-          title="Score Project"
-          open={isScoreModalOpen}
-          onOk={() => handleScoreProject(selectedProject.id)}
-          onCancel={() => setIsScoreModalOpen(false)}
-          okText="Score"
+          title="Manage Scoring Rules"
+          open={isScoringRulesModalOpen}
+          onOk={handleSaveScoringRules}
+          onCancel={() => setIsScoringRulesModalOpen(false)}
+          okText="Save"
           cancelText="Cancel"
           cancelButtonProps={{
             style: {
@@ -1578,24 +1999,168 @@ const HeroUniversities = ({
             },
           }}
           centered={true}
+          width={600}
         >
-          <div className="w-full max-w-2xl mx-auto p-6 space-y-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="w-full mx-auto p-6 space-y-6 ">
             <form className="grid gap-6 col-span-1 md:col-span-2">
-              <div className="space-y-2">
-                <label htmlFor="score">Score</label>
-                <div className="flex items-center">
+              {scoringRules.map((rule, index) => (
+                <div key={index} className="flex items-center space-x-2">
                   <Input
-                    id="score"
-                    placeholder="Enter score"
-                    required
-                    type="number"
+                    placeholder="Feature"
+                    value={rule.feature}
+                    onChange={(e) =>
+                      handleScoringRuleChange(index, "feature", e.target.value)
+                    }
                     className="border-gray-300 rounded-md text-sm"
-                    value={score}
-                    onChange={(e) => setScore(e.target.value)}
+                  />
+                  <Input
+                    placeholder="Rate (%)"
+                    type="number"
+                    value={rule.rate}
+                    onChange={(e) =>
+                      handleScoringRuleChange(index, "rate", e.target.value)
+                    }
+                    className="border-gray-300 rounded-md text-sm"
+                  />
+                  <Button
+                    type="danger"
+                    onClick={() => handleRemoveScoringRule(index)}
+                    style={{ fontSize: "12px", padding: 0 }}
+                  >
+                    <CloseOutlined />{" "}
+                  </Button>
+                </div>
+              ))}
+              <Button
+                type="primary"
+                style={{ backgroundColor: "#2563EB" }}
+                onClick={handleAddScoringRule}
+              >
+                <PlusCircleOutlined />
+                Add Rule
+              </Button>
+            </form>
+          </div>
+        </Modal>
+
+        {/* <Modal
+          title={`Giving Score for ${selectedProject?.name?.toUpperCase()}`}
+          open={isScoreModalOpen}
+          onOk={() => handleScoreProject(selectedProject.id)}
+          onCancel={() => setIsScoreModalOpen(false)}
+          okText="Save"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              borderRadius: "0.375rem",
+              cursor: "pointer",
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#2563EB",
+              borderColor: "#2563EB",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer",
+            },
+          }}
+          centered={true}
+          width={600}
+        >
+          <div className="w-full mx-auto p-6 space-y-6">
+            <form className="grid gap-6 col-span-1 md:col-span-2">
+              {scoringRules.map((rule, index) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <Input
+                    placeholder="Feature"
+                    value={rule.feature}
+                    disabled
+                    className="border-gray-300 rounded-md text-sm"
+                  />
+                  <Input
+                    placeholder="Rate (%)"
+                    type="number"
+                    value={rule.rate}
+                    disabled
+                    className="border-gray-300 rounded-md text-sm"
+                  />
+                  <Input
+                    placeholder="Score"
+                    type="number"
+                    value={rule.score}
+                    onChange={(e) => handleScoreChange(index, e.target.value)}
+                    className="border-gray-300 rounded-md text-sm"
                   />
                 </div>
+              ))}
+              <div className="flex justify-end">
+                <span className="text-lg font-semibold">
+                  Total Score: {totalScore}
+                </span>
               </div>
             </form>
+          </div>
+        </Modal> */}
+
+        <Modal
+          title="Judge Scores"
+          open={isJudgeScoreModalOpen}
+          onOk={() => setIsJudgeScoreModalOpen(false)}
+          onCancel={() => setIsJudgeScoreModalOpen(false)}
+          okText="Close"
+          cancelText="Cancel"
+          centered={true}
+          width={600}
+        >
+          <Table
+            columns={judgeScoreColumns}
+            dataSource={judgeScores}
+            rowKey="judgeEmail"
+            pagination={false}
+          />
+        </Modal>
+
+        <Modal
+          title="Confirm Remove"
+          open={isRemoveProjectModalOpen}
+          onOk={confirmRemoveProject}
+          onCancel={() => setIsRemoveProjectModalOpen(false)}
+          okText="Remove"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              borderRadius: "0.375rem",
+              cursor: "pointer",
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#f5222d",
+              borderColor: "#f5222d",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer",
+            },
+          }}
+          centered={true}
+        >
+          Are you sure to remove "{projectToRemove?.name}" from "
+          {selectedCode?.code}"? "{projectToRemove?.name}" will no longer exist
+          in this code.
+        </Modal>
+
+        <Modal
+          title="Qualified project"
+          open={isQualifiedModalOpen}
+          onOk={handleQualified}
+          onCancel={() => setIsQualifiedModalOpen(false)}
+          okText="Confirm"
+          cancelText="Cancel"
+          centered={true}
+        >
+          <div className="w-full mx-auto p-6 space-y-6">
+            <p>{`Is this "${projectToQualify?.name}" moved to next round?`}</p>
           </div>
         </Modal>
       </div>

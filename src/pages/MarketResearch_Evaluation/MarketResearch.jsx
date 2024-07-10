@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Tabs } from "antd";
 
 import Flowise from "../FinalcialPage/Components/Flowise";
 import Header2 from "../Home/Header2";
 import Valuation from "../FinalcialPage/Components/Perflexity";
+import { useAuth } from "../../context/AuthContext";
 
 const { TabPane } = Tabs;
 
@@ -25,6 +26,26 @@ export default function MarketResearch() {
     }
   };
 
+  const { currentUser } = useAuth();
+  console.log("currentUser", currentUser);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+  useEffect(() => {
+    if (
+      !currentUser[0]?.plan ||
+      currentUser[0]?.plan === "Free" ||
+      currentUser[0]?.plan === null ||
+      currentUser[0]?.plan === undefined ||
+      currentUser[0]?.subscription_status === "canceled" ||
+      currentUser[0]?.subscription_status === "cancelled"
+    ) {
+      setIsButtonDisabled(true);
+    } else {
+      setIsButtonDisabled(false);
+    }
+  }, [currentUser[0]?.plan, currentUser[0]?.subscription_status]);
+  console.log("isButtonDisabled", isButtonDisabled);
+
   return (
     <>
       {/* <Header /> */}
@@ -40,12 +61,18 @@ export default function MarketResearch() {
         <Tabs defaultActiveKey="1" onChange={handleTabChange}>
           <TabPane tab="Market Research" style={{ fontSize: "14px" }} key="1">
             <div className="flex flex-col">
-              <Flowise button={"Research"} />
+              <Flowise
+                button={"Research"}
+                isButtonDisabled={isButtonDisabled}
+              />
             </div>
           </TabPane>
           <TabPane tab="Valuation" style={{ fontSize: "14px" }} key="2">
             <div className="flex flex-col">
-              <Valuation button={"Valuation"} />
+              <Valuation
+                button={"Valuation"}
+                isButtonDisabled={isButtonDisabled}
+              />
             </div>
           </TabPane>
         </Tabs>

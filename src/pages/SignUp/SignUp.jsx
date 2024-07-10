@@ -108,7 +108,7 @@ const HeroSignUp = () => {
                   <div className="p-4 sm:p-7 flex flex-col bg-white rounded-2xl shadow-lg darkBgBlue">
                     <div className="text-center">
                       <h1 className="block text-2xl font-semibold text-gray-800 darkTextWhite">
-                        Start your free trial
+                        Start your Subscribe Now
                       </h1>
                       <p className="mt-2 text-sm text-gray-600 darkTextGray">
                         Already have an account?

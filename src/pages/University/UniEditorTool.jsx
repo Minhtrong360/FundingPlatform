@@ -11,6 +11,7 @@ import { supabase } from "../../supabase";
 import { YoutubeOutlined } from "@ant-design/icons";
 import { Button, message } from "antd";
 import ReactModal from "react-modal";
+import axios from "axios";
 
 // Create the YouTube Link block
 const YouTubeLinkBlock = createReactBlockSpec(
@@ -57,6 +58,46 @@ const YouTubeLinkBlock = createReactBlockSpec(
     },
   }
 );
+
+// Function to upload image to Supabase from URL
+const uploadImageFromURLToSupabase = async (imageUrl) => {
+  try {
+    // Download image from URL
+    const response = await axios.get(imageUrl, {
+      responseType: "arraybuffer",
+    });
+
+    // Create Blob from downloaded image data
+    const blob = new Blob([response.data], {
+      type: response.headers["content-type"],
+    });
+
+    // Get current timestamp
+    const timestamp = Date.now();
+
+    // Create File object from Blob with filename as "img-{timestamp}"
+    const file = new File([blob], `img-${timestamp}`, {
+      type: response.headers["content-type"],
+    });
+
+    // Upload image file to Supabase storage
+    const { data, error } = await supabase.storage
+      .from("beekrowd_storage")
+      .upload(`beekrowd_images/${file.name}`, file);
+
+    if (error) {
+      console.error("Error uploading image to Supabase:", error);
+      return null;
+    }
+
+    // Return Supabase URL of the uploaded image
+    const imageUrlFromSupabase = `https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/${data.fullPath}`;
+    return imageUrlFromSupabase;
+  } catch (error) {
+    console.error("Error uploading image from URL to Supabase:", error);
+    return null;
+  }
+};
 
 // Our block schema, which contains the configs for blocks that we want our editor to use.
 const blockSchema = {
@@ -136,10 +177,23 @@ export default function UniEditorTool({
       ...getDefaultReactSlashMenuItems(blockSchema),
       insertYouTubeLink,
     ],
-    onEditorContentChange: (editor) => {
+    onEditorContentChange: async (editor) => {
+      const blocks = editor.topLevelBlocks;
+      for (const block of blocks) {
+        if (
+          block.type === "image" &&
+          block.props.url &&
+          !block.props.url.includes("beekrowd_storage")
+        ) {
+          const newUrl = await uploadImageFromURLToSupabase(block.props.url);
+          if (newUrl) {
+            block.props.url = newUrl;
+          }
+        }
+      }
       setSelectedCode((prevCode) => ({
         ...prevCode,
-        rules: JSON.stringify(editor.topLevelBlocks),
+        rules: JSON.stringify(blocks),
       }));
     },
   });

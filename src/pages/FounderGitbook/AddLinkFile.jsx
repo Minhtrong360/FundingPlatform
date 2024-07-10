@@ -44,7 +44,6 @@ const Modal = ({
     setFileName("File 1"); // Đặt lại giá trị của fileName sau khi thêm
     onClose(); // Đóng modal sau khi thêm
   };
-
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
       <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">

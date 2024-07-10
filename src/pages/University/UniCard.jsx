@@ -86,11 +86,11 @@ const UniCard = ({
           Number candidate: {projectCounts[data.id] || 0}
         </p>
         <div className="flex justify-between items-center">
-          <Tooltip title={universityInfo.university}>
+          <Tooltip title={universityInfo?.university}>
             <Tag
               className={`max-w-32 mt-1 inline-flex items-center px-3 py-1 text-sm font-medium text-center   rounded-3xl truncate`}
             >
-              {universityInfo.university}
+              {universityInfo?.university}
             </Tag>
           </Tooltip>
 

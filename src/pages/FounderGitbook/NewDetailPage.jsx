@@ -130,7 +130,7 @@ export default function NewDetailPage({ location }) {
       </div>
     );
   }
-  const position = "notFixed";
+  const noFixedHeader = "notFixed";
 
   return (
     <div className="min-h-screen bg-white max-w-6xl mx-auto">
@@ -148,8 +148,8 @@ export default function NewDetailPage({ location }) {
           </button> */}
           {fullScreen === false ? (
             <div>
-              {/* <Header position={position} /> */}
-              <Header2 position={position} />
+              {/* <Header noFixedHeader={noFixedHeader} /> */}
+              <Header2 noFixedHeader={noFixedHeader} />
               <ProfileInfo
                 company={company}
                 currentProject={currentProject}

@@ -105,6 +105,7 @@ function Footer() {
       new window.google.translate.TranslateElement(
         {
           pageLanguage: "en",
+          includedLanguages: "vi,en,ru,es,fr,de,ja,ko,zh-CN,zh-TW",
           autoDisplay: false,
           layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
         },

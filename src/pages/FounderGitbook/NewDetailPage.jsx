@@ -101,6 +101,12 @@ export default function NewDetailPage({ location }) {
       setIsLoading(false);
     } finally {
       setIsLoading(false);
+      const removeBodyStyle = () => {
+        document.body.removeAttribute("style");
+      };
+
+      // Initial check
+      removeBodyStyle();
     }
   };
 

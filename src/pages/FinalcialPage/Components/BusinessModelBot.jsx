@@ -54,7 +54,7 @@ const BusinessModelBot = ({
       // Set the chatbot response to the latest messag
 
       setChatbotResponse(dataJS);
-      setIsLoading(false);
+      // setIsLoading(false);
       setSpinning(false);
     } catch (error) {
       console.log("Error sending message:", error);

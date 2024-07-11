@@ -501,6 +501,7 @@ const SalesSection = ({
       }
       return input;
     });
+
     setTempChannelInputs(newInputs);
   };
 
@@ -765,7 +766,10 @@ const SalesSection = ({
           (record) =>
             record.key !== "Total" &&
             record.key !== "Total Cash Inflow" &&
-            record.key !== "Total Receivables"
+            record.key !== "Total Receivables" &&
+            record.channelName !== "Cash Inflow" &&
+            record.channelName !== "Receivables" &&
+            record.key !== " "
         )
       : revenueTableData;
 
@@ -1026,7 +1030,7 @@ const SalesSection = ({
               </Modal>
               <span>
                 <h3 className="text-lg font-semibold mt-20 my-4">
-                  II. Customer Table
+                  II. Revenue Table
                 </h3>
 
                 <div className="flex justify-between items-center">

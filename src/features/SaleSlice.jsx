@@ -362,8 +362,6 @@ export const transformRevenueDataForTable = (
         const receivablesRowKey = `Receivables`;
         const productName = `Product Name`;
         const blank = ` `;
-        
-
 
         transformedRevenueTableData[productName] = {
           key: channelProductKey,
@@ -457,7 +455,7 @@ export const transformRevenueDataForTable = (
             ).toFixed(2)
           );
         });
-        
+
         calculatedChannelRevenue.receivablesByChannelAndProduct[
           channelProductKey
         ]?.forEach((value, index) => {

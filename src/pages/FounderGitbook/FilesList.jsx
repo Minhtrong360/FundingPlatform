@@ -247,6 +247,11 @@ function FilesList() {
     return false;
   };
 
+  const truncate = (text, maxLength) => {
+    if (text?.length <= maxLength) return text;
+    return `${text?.substring(0, maxLength)}...`;
+  };
+
   const columns = [
     {
       title: "No.",
@@ -280,7 +285,7 @@ function FilesList() {
             whiteSpace: "nowrap",
           }}
         >
-          {calculateCanClick(record) ? text : "***********"}
+          {calculateCanClick(record) ? truncate(text, 20) : "***********"}
         </span>
       ),
     },

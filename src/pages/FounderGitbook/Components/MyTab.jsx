@@ -115,7 +115,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
                 className="absolute top-0 left-0 w-full h-full"
                 src={`https://www.youtube.com/embed/${block.props.videoId}`}
                 title="YouTube video player"
-                frameborder="0"
+                frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               ></iframe>
@@ -126,7 +126,7 @@ const MyTab = ({ blocks, setBlocks, company, fullScreen, currentProject }) => {
       toExternalHTML: ({ block }) => {
         // Generate the HTML code for the YouTube video player
         if (block.props.videoId) {
-          return `<div><iframe width="560" height="315" src="https://www.youtube.com/embed/${block.props.videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+          return `<div><iframe width="560" height="315" src="https://www.youtube.com/embed/${block.props.videoId}" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
         }
         return "";
       },

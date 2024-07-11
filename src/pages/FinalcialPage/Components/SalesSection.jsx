@@ -207,14 +207,14 @@ const ChannelInputForm = ({
                 type="number"
                 min={0}
                 max={100}
-                value={formatNumber(input.channelAllocation * 100)}
-                onChange={(e) =>
+                value={formatNumber(input.channelAllocation)}
+                onChange={(e) => {
                   handleChannelInputChange(
                     input.id,
                     "channelAllocation",
-                    parseNumber(e.target.value) / 100
-                  )
-                }
+                    parseNumber(e.target.value)
+                  );
+                }}
               />
             </div>
 
@@ -497,6 +497,7 @@ const SalesSection = ({
             selectedChannel: channelNames.find((name) => name.id === value),
           };
         }
+
         return { ...input, [field]: value };
       }
       return input;
@@ -504,6 +505,7 @@ const SalesSection = ({
 
     setTempChannelInputs(newInputs);
   };
+  console.log("tempChannelInputs", tempChannelInputs);
 
   const [chartStartMonth, setChartStartMonth] = useState(1);
   const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);

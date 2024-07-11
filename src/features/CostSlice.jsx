@@ -69,7 +69,6 @@ export const formatNumber = (value) => {
   try {
     if (value == null) return "0";
     const stringValue = value.toString().replace(/,/g, "");
-    console.log("formatNumber", value);
     return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   } catch (error) {
     console.error("Error formatting number:", error);
@@ -82,9 +81,11 @@ export const parseNumber = (value) => {
     if (typeof value === "string") {
       const numberString = value.replace(/,/g, "");
       const parsedNumber = parseFloat(numberString);
+
       if (isNaN(parsedNumber)) {
         return 0;
       }
+
       return parsedNumber;
     } else {
       return value;

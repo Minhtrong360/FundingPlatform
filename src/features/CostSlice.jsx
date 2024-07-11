@@ -69,6 +69,7 @@ export const formatNumber = (value) => {
   try {
     if (value == null) return "0";
     const stringValue = value.toString().replace(/,/g, "");
+    console.log("formatNumber", value);
     return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   } catch (error) {
     console.error("Error formatting number:", error);

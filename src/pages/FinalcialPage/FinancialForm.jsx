@@ -186,7 +186,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     }
   }, [chatbotResponse]);
 
-  console.log("isLoading", isLoading);
   //CustomerState
   const months = [
     "01",
@@ -879,6 +878,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const handleTabChangeA = (tabName) => {
     setActiveTabA(tabName);
   };
+
   return (
     <div className="min-h-screen">
       {spinning ? (

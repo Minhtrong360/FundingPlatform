@@ -889,70 +889,70 @@ function Footer() {
     setModalContent("");
   };
 
-  const googleTranslateElementInit = () => {
-    if (window.google && window.google.translate) {
-      new window.google.translate.TranslateElement(
-        {
-          pageLanguage: "en",
-          includedLanguages: "vi,en,ru,es,fr,de,ja,ko,zh-CN,zh-TW",
-          autoDisplay: true,
-          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
-        },
-        "google_translate_element"
-      );
-    }
-  };
+  // const googleTranslateElementInit = () => {
+  //   if (window.google && window.google.translate) {
+  //     new window.google.translate.TranslateElement(
+  //       {
+  //         pageLanguage: "en",
+  //         includedLanguages: "vi,en,ru,es,fr,de,ja,ko,zh-CN,zh-TW",
+  //         autoDisplay: true,
+  //         layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+  //       },
+  //       "google_translate_element"
+  //     );
+  //   }
+  // };
 
-  useEffect(() => {
-    // Set cookies to enforce translation to Vietnamese
-    const lang = "vi";
-    document.cookie = `googtrans=/en/${lang}; path=/`;
-    document.cookie = `googtrans=/en/${lang}; expires=${new Date(Date.now() + 3600 * 1000).toUTCString()}; path=/`;
+  // useEffect(() => {
+  //   // Set cookies to enforce translation to Vietnamese
+  //   const lang = "vi";
+  //   document.cookie = `googtrans=/en/${lang}; path=/`;
+  //   document.cookie = `googtrans=/en/${lang}; expires=${new Date(Date.now() + 3600 * 1000).toUTCString()}; path=/`;
 
-    const addScript = document.createElement("script");
-    addScript.setAttribute(
-      "src",
-      "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-    );
-    addScript.async = true;
-    addScript.defer = true;
+  //   const addScript = document.createElement("script");
+  //   addScript.setAttribute(
+  //     "src",
+  //     "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+  //   );
+  //   addScript.async = true;
+  //   addScript.defer = true;
 
-    addScript.onload = () => {
-      window.googleTranslateElementInit = googleTranslateElementInit;
-    };
+  //   addScript.onload = () => {
+  //     window.googleTranslateElementInit = googleTranslateElementInit;
+  //   };
 
-    addScript.onerror = (error) => {
-      console.error(
-        "An error occurred while loading the Google Translate script:",
-        error
-      );
-    };
+  //   addScript.onerror = (error) => {
+  //     console.error(
+  //       "An error occurred while loading the Google Translate script:",
+  //       error
+  //     );
+  //   };
 
-    document.body.appendChild(addScript);
+  //   document.body.appendChild(addScript);
 
-    const observer = new MutationObserver((mutationsList) => {
-      for (const mutation of mutationsList) {
-        if (mutation.type === "childList") {
-          const anchorElement = document.querySelector(
-            ".VIpgJd-ZVi9od-xl07Ob-lTBxed"
-          );
-          if (anchorElement) {
-            anchorElement.removeAttribute("href");
-          }
-        }
-      }
-    });
+  //   const observer = new MutationObserver((mutationsList) => {
+  //     for (const mutation of mutationsList) {
+  //       if (mutation.type === "childList") {
+  //         const anchorElement = document.querySelector(
+  //           ".VIpgJd-ZVi9od-xl07Ob-lTBxed"
+  //         );
+  //         if (anchorElement) {
+  //           anchorElement.removeAttribute("href");
+  //         }
+  //       }
+  //     }
+  //   });
 
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
+  //   observer.observe(document.body, {
+  //     childList: true,
+  //     subtree: true,
+  //   });
 
-    return () => {
-      document.body.removeChild(addScript);
-      observer.disconnect();
-    };
-  }, []);
+  //   return () => {
+  //     document.body.removeChild(addScript);
+  //     observer.disconnect();
+  //   };
+  // }, []);
 
   return (
     <footer className="bg-gray-200 dark1:bg-gray-900">
@@ -960,11 +960,11 @@ function Footer() {
         <div className="md:flex md:justify-between">
           <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-4">
             <div className="mb-6 md:mb-0">
-              <a href="https://flowbite.com/" className="flex items-center">
+              <div className="flex items-center">
                 <span className="self-center text-2xl font-semibold whitespace-nowrap text-blue-600">
-                  BEEKROWD
+                  BeeKrowd
                 </span>
-              </a>
+              </div>
             </div>
             <div>
               <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase ">
@@ -1056,7 +1056,7 @@ function Footer() {
                   <div>
                     Business Registration Certificate No. 0315434177 issued by
                     Ho Chi Minh City Department of Planning and Investment on
-                    May 22, 2024
+                    December 14, 2018
                   </div>
                 </li>
               </ul>

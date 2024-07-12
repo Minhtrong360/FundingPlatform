@@ -207,14 +207,14 @@ const ChannelInputForm = ({
                 type="number"
                 min={0}
                 max={100}
-                value={formatNumber(input.channelAllocation * 100)}
-                onChange={(e) =>
+                value={formatNumber(input.channelAllocation)}
+                onChange={(e) => {
                   handleChannelInputChange(
                     input.id,
                     "channelAllocation",
-                    parseNumber(e.target.value) / 100
-                  )
-                }
+                    parseNumber(e.target.value)
+                  );
+                }}
               />
             </div>
 
@@ -497,12 +497,15 @@ const SalesSection = ({
             selectedChannel: channelNames.find((name) => name.id === value),
           };
         }
+
         return { ...input, [field]: value };
       }
       return input;
     });
+
     setTempChannelInputs(newInputs);
   };
+  console.log("tempChannelInputs", tempChannelInputs);
 
   const [chartStartMonth, setChartStartMonth] = useState(1);
   const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
@@ -765,7 +768,10 @@ const SalesSection = ({
           (record) =>
             record.key !== "Total" &&
             record.key !== "Total Cash Inflow" &&
-            record.key !== "Total Receivables"
+            record.key !== "Total Receivables" &&
+            record.channelName !== "Cash Inflow" &&
+            record.channelName !== "Receivables" &&
+            record.key !== " "
         )
       : revenueTableData;
 
@@ -1026,7 +1032,7 @@ const SalesSection = ({
               </Modal>
               <span>
                 <h3 className="text-lg font-semibold mt-20 my-4">
-                  II. Customer Table
+                  II. Revenue Table
                 </h3>
 
                 <div className="flex justify-between items-center">

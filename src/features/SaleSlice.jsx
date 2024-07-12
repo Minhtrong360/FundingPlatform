@@ -11,7 +11,7 @@ const initialState = {
       deductionPercentage: 5,
       cogsPercentage: 30,
       selectedChannel: { id: 1, channelName: "Online" },
-      channelAllocation: 0.4,
+      channelAllocation: 40,
       daysGetPaid: 0,
     },
     {
@@ -22,7 +22,7 @@ const initialState = {
       deductionPercentage: 4,
       cogsPercentage: 35,
       selectedChannel: { id: 2, channelName: "Offline" },
-      channelAllocation: 0.3,
+      channelAllocation: 30,
       daysGetPaid: 0,
     },
     {
@@ -33,7 +33,7 @@ const initialState = {
       deductionPercentage: 6,
       cogsPercentage: 25,
       selectedChannel: { id: 2, channelName: "Offline" },
-      channelAllocation: 0.6,
+      channelAllocation: 60,
       daysGetPaid: 0,
     },
   ],
@@ -133,7 +133,7 @@ export const calculateChannelRevenue =
                     data.customers *
                     parseFloat(channel.price) *
                     parseFloat(channel.multiples) *
-                    parseFloat(channel.channelAllocation);
+                    parseFloat(channel.channelAllocation / 100);
                   revenueArray[data.month - 1] = revenue;
 
                   revenueDeductionArray[data.month - 1] =
@@ -362,8 +362,6 @@ export const transformRevenueDataForTable = (
         const receivablesRowKey = `Receivables`;
         const productName = `Product Name`;
         const blank = ` `;
-        
-
 
         transformedRevenueTableData[productName] = {
           key: channelProductKey,
@@ -457,7 +455,7 @@ export const transformRevenueDataForTable = (
             ).toFixed(2)
           );
         });
-        
+
         calculatedChannelRevenue.receivablesByChannelAndProduct[
           channelProductKey
         ]?.forEach((value, index) => {

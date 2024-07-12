@@ -2,6 +2,85 @@ import React, { useState } from "react";
 import { Modal } from "antd";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 import { useSelector } from "react-redux";
+import { Apple } from "lucide-react";
+
+
+
+const FileUploadComponent = () => {
+  const [file, setFile] = useState(null);
+  const [response, setResponse] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const positionDataWithNetIncome = {Apple:1}; // Replace with actual data
+  const positionDataWithNetIncome2 = {Banana:1}; // Replace with actual data
+  const transposedData = {Brocoli:1}; // Replace with actual data
+
+    const content = `
+  Cash Flow Statement:
+  ${JSON.stringify(positionDataWithNetIncome, null, 2)}
+
+  Balance Sheet Statement:
+  ${JSON.stringify(positionDataWithNetIncome2, null, 2)}
+
+  Profit and Loss Statement:
+  ${JSON.stringify(transposedData, null, 2)}
+    `;
+    console.log("content", content)
+ 
+  // Convert content to a Blob
+    const blob = new Blob([content], { type: 'text/plain' });
+
+    // Create a File object from Blob
+    const txtFile = new File([blob], 'financial_statements.txt', { type: 'text/plain' });
+
+    // Update state with the File object
+   
+  const handleSubmit = async () => {
+    setFile(txtFile);
+
+    let formData = new FormData();
+    
+    formData.append("files", file);
+    formData.append("chunkSize", 1000);
+    formData.append("returnSourceDocuments", true);
+    console.log("formData", formData)
+    try {
+      setLoading(true);
+      const response = await fetch(
+        "https://flowise-ngy8.onrender.com/api/v1/vector/upsert/5d297588-8b13-4452-8c68-a7288bfbbbe2",
+        {
+          method: "POST",
+          body: formData
+        }
+      );
+      const result = await response.json();
+      setResponse(result);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      setResponse({ error: 'Error uploading file' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      {/* <input type="file" onChange={handleFileChange} /> */}
+      <button className="ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleSubmit} disabled={loading}>
+        {loading ? 'Uploading...' : 'Embed'}
+      </button>
+      {response && (
+        <div>
+          <h3>Response:</h3>
+          <pre>{JSON.stringify(response, null, 2)}</pre>
+        </div>
+      )}
+    </div>
+  );
+};
+
+
+
 
 const GroqJS = ({ datasrc, inputUrl }) => {
   const [messages, setMessages] = useState([]);
@@ -28,13 +107,13 @@ const GroqJS = ({ datasrc, inputUrl }) => {
       let url;
       if (inputUrl === "urlPNL") {
         url =
-          "https://flowise-ngy8.onrender.com/api/v1/prediction/af577d02-be0e-477f-94ad-303c5bdb451e";
+          "https://flowise-ngy8.onrender.com/api/v1/prediction/5d297588-8b13-4452-8c68-a7288bfbbbe2";
       } else if (inputUrl === "urlCF") {
         url =
-          "https://flowise-ngy8.onrender.com/api/v1/prediction/cf33a36d-0f2e-40a1-b668-4074ab08e2cd";
+          "https://flowise-ngy8.onrender.com/api/v1/prediction/5d297588-8b13-4452-8c68-a7288bfbbbe2";
       } else if (inputUrl === "urlBS") {
         url =
-          "https://flowise-ngy8.onrender.com/api/v1/prediction/26a1b357-632b-4551-9f60-9d2e9b216738";
+          "https://flowise-ngy8.onrender.com/api/v1/prediction/5d297588-8b13-4452-8c68-a7288bfbbbe2";
       } else if (inputUrl === "urlCus") {
         url = "http://localhost:300/";
       } else if (inputUrl === "urlSale") {
@@ -122,6 +201,7 @@ const GroqJS = ({ datasrc, inputUrl }) => {
           />
         )}
       </Modal>
+      <FileUploadComponent/>
     </div>
   );
 };

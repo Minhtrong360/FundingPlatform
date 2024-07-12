@@ -862,7 +862,58 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   };
 
   const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
-
+  //////////
+  const [compactData, setCompactData] = useState({});
+  useEffect(() => {
+    const transformedData = transformData(transposedData);
+        setCompactData(transformedData);
+  }, []);
+  const transformData = (data) => {
+    const compactRepresentation = {
+      metrics: [],
+    };
+  
+    data.forEach((item) => {
+      compactRepresentation.metrics.push(item.metric || '');
+  
+      Object.keys(item).forEach((key) => {
+        if (key !== 'metric' && key !== 'children') {
+          if (!compactRepresentation[key]) {
+            compactRepresentation[key] = [];
+          }
+          compactRepresentation[key].push(item[key]);
+        }
+      });
+  
+      if (item.children) {
+        item.children.forEach((child) => {
+          compactRepresentation.metrics.push(child.metric || '');
+  
+          Object.keys(child).forEach((key) => {
+            if (key !== 'metric') {
+              if (!compactRepresentation[key]) {
+                compactRepresentation[key] = [];
+              }
+              compactRepresentation[key].push(child[key]);
+            }
+          });
+        });
+      }
+    });
+  
+    const orderedRepresentation = { metrics: compactRepresentation.metrics };
+    Object.keys(compactRepresentation).forEach((key) => {
+      if (key !== 'metrics') {
+        orderedRepresentation[key] = compactRepresentation[key];
+      }
+    });
+  
+    return orderedRepresentation;
+  };
+  
+  // console.log("transposedData",transposedData)
+  // console.log("profitAndLossData",profitAndLossData)
+  // console.log("compactData",compactData)
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">
       <div className="w-full xl:w-3/4 sm:p-4 p-0 ">

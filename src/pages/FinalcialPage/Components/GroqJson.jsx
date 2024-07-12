@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Modal } from "antd";
 import SpinnerBtn from "../../../components/SpinnerBtn";
+import { useSelector } from "react-redux";
 
 const GroqJS = ({ datasrc, inputUrl }) => {
   const [messages, setMessages] = useState([]);
@@ -89,6 +90,13 @@ const GroqJS = ({ datasrc, inputUrl }) => {
       setIsLoading(false);
     }
   };
+  const {positionDataWithNetIncome} = useSelector((state) => state.cashFlow);
+  console.log("CF", positionDataWithNetIncome);
+  const {positionDataWithNetIncome2} = useSelector((state) => state.balanceSheet);
+  console.log("BS", positionDataWithNetIncome2);
+  const {transposedData} = useSelector((state) => state.profitAndLoss);
+  console.log("PL", transposedData);
+
 
   return (
     <div className=" flex flex-col rounded-md  ">

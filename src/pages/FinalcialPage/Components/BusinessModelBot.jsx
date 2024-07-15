@@ -42,10 +42,14 @@ const BusinessModelBot = ({
           }),
         }
       );
-
+      
       const data = await response.json();
-      const jsonString = data.text.match(/```json([\s\S]*?)```/)[1].trim();
-      const parsedJson = JSON.parse(jsonString);
+      console.log("response", response);
+      console.log("data", data);
+      // const jsonString = data.text.match(/```json([\s\S]*?)```/)[1].trim();
+      const parsedJson = JSON.parse(data.text);
+
+      console.log("parsedJson", parsedJson);
       const dataJS = JSON.stringify(parsedJson);
       if (data.error) {
         throw new Error(data.error);

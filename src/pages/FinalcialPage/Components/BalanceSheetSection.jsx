@@ -21,16 +21,12 @@ import {
   setCogsData,
   setRevenueData,
   setRevenueDeductionData,
-  setRevenueTableData,
-  transformRevenueDataForTable,
 } from "../../../features/SaleSlice";
 import {
   calculateCostData,
   formatNumber,
   parseNumber,
   setCostData,
-  setCostTableData,
-  transformCostDataForTable,
 } from "../../../features/CostSlice";
 import {
   calculatePersonnelCostData,
@@ -172,20 +168,10 @@ function BalanceSheetSection({ numberOfMonths }) {
   }, [fundraisingInputs, numberOfMonths]);
 
   const {
-    totalRevenue,
-    totalDeductions,
-    netRevenue,
-    totalCOGS,
-    grossProfit,
-    totalCosts,
-    totalPersonnelCosts,
-    detailedPersonnelCosts, // Added detailed personnel costs
     totalInvestmentDepreciation,
-    totalInterestPayments,
-    ebitda,
-    earningsBeforeTax,
+
     totalPrincipal,
-    incomeTax,
+
     netIncome,
   } = calculateProfitAndLoss(
     numberOfMonths,
@@ -199,6 +185,18 @@ function BalanceSheetSection({ numberOfMonths }) {
     incomeTaxRate,
     startingCashBalance
   );
+
+  const calculateCashBalances = (startingCash, netCashChanges) => {
+    const cashBalances = netCashChanges?.reduce((acc, netCashChange, index) => {
+      if (index === 0) {
+        acc.push(parseFloat(startingCash) + netCashChange);
+      } else {
+        acc.push(acc[index - 1] + netCashChange);
+      }
+      return acc;
+    }, []);
+    return cashBalances;
+  };
 
   const commonStockArr = [];
   const preferredStockArr = [];
@@ -283,18 +281,6 @@ function BalanceSheetSection({ numberOfMonths }) {
       cfLoanArray.push(0);
     }
   }
-
-  const calculateCashBalances = (startingCash, netCashChanges) => {
-    const cashBalances = netCashChanges?.reduce((acc, netCashChange, index) => {
-      if (index === 0) {
-        acc.push(parseFloat(startingCash) + netCashChange);
-      } else {
-        acc.push(acc[index - 1] + netCashChange);
-      }
-      return acc;
-    }, []);
-    return cashBalances;
-  };
 
   const netCashChanges = netIncome.map((_, index) => {
     const cfOperations =
@@ -1033,288 +1019,6 @@ function BalanceSheetSection({ numberOfMonths }) {
   };
 
   const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
-
-  // add positionDataWithNetIncome vào GroqJS
-
-  const CFOperationsArray = netIncome.map(
-    (value, index) =>
-      value +
-      totalInvestmentDepreciation[index] +
-      0 /* Inventory */ +
-      0 /* AR */ -
-      0 /* AP */
-  );
-
-  const cashBeginBalances = [
-    parseFloat(startingCashBalance),
-    ...calculateCashBalances(startingCashBalance, netCashChanges)?.slice(0, -1),
-  ];
-
-  const positionDataWithNetIncome = [
-    { key: "Operating Activities" },
-    { key: "Net Income", values: netIncome },
-    { key: "Depreciation", values: totalInvestmentDepreciation },
-    {
-      key: "Decrease (Increase) in Inventory",
-      values: new Array(numberOfMonths).fill(0),
-    },
-    {
-      key: "Decrease (Increase) in AR",
-      values: new Array(numberOfMonths).fill(0),
-    },
-    {
-      key: "Decrease (Increase) in AP",
-      values: new Array(numberOfMonths).fill(0),
-    },
-    {
-      key: "CF Operations",
-      values: CFOperationsArray,
-    },
-    { key: "1" },
-    { key: "Investing Activities" },
-    {
-      key: "CF Investments",
-      values: cfInvestmentsArray,
-    },
-    { key: "1" },
-    { key: "Financing Activities" },
-    {
-      key: "CF Loans",
-      values: cfLoanArray,
-    },
-    {
-      key: "Total Principal", // Updated key to Total Principal
-      values: totalPrincipal, // Updated values with totalPrincipal
-    },
-    {
-      key: "Increase in Common Stock",
-      values: commonStockArr, // Placeholder values
-    },
-    {
-      key: "Increase in Preferred Stock",
-      values: preferredStockArr, // Placeholder values
-    },
-    {
-      key: "Increase in Paid in Capital",
-      values: capitalArr, // Placeholder values
-    },
-    {
-      key: "CF Financing",
-      values: netIncome.map((_, index) => {
-        const cfLoan = cfLoanArray[index] || 0;
-        const increaseCommonStock = commonStockArr[index] || 0; // Placeholder value
-        const increasePreferredStock = preferredStockArr[index] || 0; // Placeholder value
-        const increasePaidInCapital = capitalArr[index] || 0; // Placeholder value
-        return (
-          cfLoan -
-          totalPrincipal[index] +
-          increaseCommonStock +
-          increasePreferredStock +
-          increasePaidInCapital
-        );
-      }),
-    },
-    { key: "1" },
-    {
-      key: "Net +/- in Cash",
-      values: netIncome.map((_, index) => {
-        const cfLoan = cfLoanArray[index] || 0;
-        const increaseCommonStock = commonStockArr[index] || 0; // Placeholder value
-        const increasePreferredStock = preferredStockArr[index] || 0; // Placeholder value
-        const increasePaidInCapital = capitalArr[index] || 0; // Placeholder value
-        const cfOperations =
-          netIncome[index] + totalInvestmentDepreciation[index] + 0 - 0 - 0; // Placeholder values
-        const cfInvestment = cfInvestmentsArray[index] || 0;
-        const cfFinancing =
-          cfLoan -
-          totalPrincipal[index] +
-          increaseCommonStock +
-          increasePreferredStock +
-          increasePaidInCapital;
-        return cfOperations - cfInvestment + cfFinancing;
-      }),
-    },
-    {
-      key: "Cash Begin",
-      values: cashBeginBalances,
-    },
-    {
-      key: "Cash End",
-      values: cashEndBalances,
-    },
-  ].map((item, index) => ({
-    metric: item.key,
-    ...item.values?.reduce(
-      (acc, value, i) => ({
-        ...acc,
-        [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
-      }),
-      {}
-    ),
-  }));
-
-  console.log("CF", positionDataWithNetIncome);
-  console.log("BS", positionDataWithNetIncome2);
-
-  // add transposedData vào GroqJS
-
-  const { revenueTableData } = useSelector((state) => state.sales);
-
-  useEffect(() => {
-    const {
-      revenueByChannelAndProduct,
-      DeductionByChannelAndProduct,
-      cogsByChannelAndProduct,
-      netRevenueByChannelAndProduct,
-      grossProfitByChannelAndProduct,
-      cashInflowByChannelAndProduct,
-      receivablesByChannelAndProduct,
-    } = dispatch(
-      calculateChannelRevenue(
-        numberOfMonths,
-        customerGrowthData,
-        customerInputs,
-        channelInputs
-      )
-    );
-    const calculateRevenueTableData = transformRevenueDataForTable(
-      {
-        revenueByChannelAndProduct,
-        DeductionByChannelAndProduct,
-        cogsByChannelAndProduct,
-        netRevenueByChannelAndProduct,
-        grossProfitByChannelAndProduct,
-        cashInflowByChannelAndProduct,
-        receivablesByChannelAndProduct,
-      },
-      channelInputs,
-      "all"
-    );
-    dispatch(setRevenueTableData(calculateRevenueTableData));
-
-    dispatch(setRevenueData(revenueByChannelAndProduct));
-    dispatch(setRevenueDeductionData(DeductionByChannelAndProduct));
-    dispatch(setCogsData(cogsByChannelAndProduct));
-  }, [customerGrowthData, channelInputs, numberOfMonths]);
-
-  const { costTableData } = useSelector((state) => state.cost);
-  useEffect(() => {
-    const calculatedData = calculateCostData(
-      costInputs,
-      numberOfMonths,
-      revenueData
-    );
-    dispatch(setCostData(calculatedData));
-    const costTableData = transformCostDataForTable(
-      costInputs,
-      numberOfMonths,
-      revenueData
-    );
-
-    dispatch(setCostTableData(costTableData));
-  }, [costInputs, numberOfMonths]);
-
-  const transposedData = [
-    { key: "Revenue" },
-    // { key: "Total Revenue", values: totalRevenue },
-    {
-      key: "Total Revenue",
-      values: totalRevenue,
-      children: revenueTableData
-        .filter(
-          (item) =>
-            item.key.includes("Revenue - ") &&
-            !item.key.includes("Net Revenue -")
-        )
-        .map((item) => ({
-          key: item.key,
-          metric: item.key,
-          ...Object.keys(item).reduce((acc, key) => {
-            if (key.startsWith("month")) {
-              const monthIndex = key.replace("month", "").trim();
-              acc[`Month ${monthIndex}`] = item[key];
-            }
-            return acc;
-          }, {}),
-        })),
-    },
-    { key: "Deductions", values: totalDeductions },
-    { key: "Net Revenue", values: netRevenue },
-    { key: "" },
-    { key: "Cost of Revenue" },
-    { key: "Total COGS", values: totalCOGS },
-    { key: "Gross Profit", values: grossProfit },
-    { key: "" },
-    { key: "Operating Expenses" },
-
-    // { key: "Operating Costs", values: totalCosts },
-    {
-      key: "Operating Costs",
-      values: totalCosts,
-      children: costTableData.map((item) => ({
-        key: item.key,
-        metric: item.costName,
-        ...Object.keys(item).reduce((acc, key) => {
-          if (key.startsWith("month")) {
-            const monthIndex = key.replace("month", "").trim();
-            acc[`Month ${monthIndex}`] = item[key];
-          }
-          return acc;
-        }, {}),
-      })),
-    },
-    {
-      key: "Personnel",
-      values: totalPersonnelCosts,
-      children: Object.keys(detailedPersonnelCosts).map((jobTitle) => ({
-        key: jobTitle,
-        values: detailedPersonnelCosts[jobTitle],
-        metric: jobTitle,
-        ...detailedPersonnelCosts[jobTitle].reduce(
-          (acc, value, i) => ({
-            ...acc,
-            [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
-          }),
-          {}
-        ),
-      })),
-    },
-    { key: "EBITDA", values: ebitda },
-    { key: "" },
-    { key: "Additional Expenses" },
-    { key: "Depreciation", values: totalInvestmentDepreciation },
-    { key: "Interest", values: totalInterestPayments },
-    { key: "EBT", values: earningsBeforeTax },
-    { key: "" },
-    { key: "Income Tax", values: incomeTax },
-    { key: "Net Income", values: netIncome },
-  ].map((item, index) => ({
-    metric: item.key,
-    ...item.values?.reduce(
-      (acc, value, i) => ({
-        ...acc,
-        [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
-      }),
-      {}
-    ),
-    children: item.children?.map((child) => ({
-      metric: child.metric,
-      ...child.values?.reduce(
-        (acc, value, i) => ({
-          ...acc,
-          [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
-        }),
-        {}
-      ),
-      ...Object.keys(child).reduce((acc, key) => {
-        if (key.startsWith("Month")) {
-          acc[key] = child[key];
-        }
-        return acc;
-      }, {}),
-    })),
-  }));
-  console.log("PL", transposedData);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row">

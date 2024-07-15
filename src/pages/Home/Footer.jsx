@@ -85,12 +85,12 @@ import { Modal } from "antd";
 const PolicyModal = ({ isVisible, content, onClose }) => {
   return (
     <Modal
-      width={1000}
+      width={700}
       // title="Policy Details"
       open={isVisible}
       onCancel={onClose}
       footer={null}
-      style={{ width: "100%" }} // Adjust the width as needed
+      // style={{ width: "70%" }} // Adjust the width as needed
       centered
     >
       <div>{content}</div>
@@ -465,34 +465,35 @@ const Vipolicies = [
   {
     title: "Purchasing Service Guide",
     content: (
-      <div>
-        <h3 className="font-semibold">HƯỚNG DẪN MUA DỊCH VỤ</h3>
-        <ol>
+      <div className="policy-content">
+        <h3 className="font-semibold text-2xl mb-6">HƯỚNG DẪN MUA DỊCH VỤ</h3>
+        <ol className="my-4 gap-2">
           <li>
-            Chọn gói dịch vụ phù hợp và bấm vào “Đặt mua” và điền thông tin đăng
-            kí tài khoản mua dịch vụ bằng email (nếu bạn chưa đăng ký BeeKrowd)
+            1. Chọn gói dịch vụ phù hợp và bấm vào “Đặt mua” và điền thông tin
+            đăng kí tài khoản mua dịch vụ bằng email (nếu bạn chưa đăng ký
+            BeeKrowd)
           </li>
           <li>
-            Chọn phương thức thanh toán: Khi thanh toán cho dịch vụ BeeKrowd,
+            2. Chọn phương thức thanh toán: Khi thanh toán cho dịch vụ BeeKrowd,
             bạn chọn phương thức thanh toán bằng thẻ tín dụng.
           </li>
           <li>
-            Nhập thông tin thẻ: Sau khi chọn thanh toán bằng thẻ tín dụng, bạn
-            sẽ được chuyển đến trang thanh toán của bên thứ ba. Tại đây, bạn cần
-            nhập đầy đủ thông tin thẻ tín dụng của mình (số thẻ, tên chủ thẻ,
-            ngày hết hạn thẻ, mã CVV/CVC…)
+            3. Nhập thông tin thẻ: Sau khi chọn thanh toán bằng thẻ tín dụng,
+            bạn sẽ được chuyển đến trang thanh toán của bên thứ ba. Tại đây, bạn
+            cần nhập đầy đủ thông tin thẻ tín dụng của mình (số thẻ, tên chủ
+            thẻ, ngày hết hạn thẻ, mã CVV/CVC…)
           </li>
-          <li>Xác nhận thanh toán.</li>
+          <li>4. Xác nhận thanh toán.</li>
           <li>
-            Hoàn tất thanh toán: Nếu thanh toán thành công, bạn sẽ nhận được
+            5. Hoàn tất thanh toán: Nếu thanh toán thành công, bạn sẽ nhận được
             thông báo xác nhận từ BeeKrowd và bên thứ ba cung cấp dịch vụ thanh
             toán.
           </li>
         </ol>
-        <h4 className="font-medium">
+        <h4 className="font-semibold">
           Ưu điểm của thanh toán bằng thẻ tín dụng:
         </h4>
-        <ul>
+        <ul className="my-4">
           <li>
             Nhanh chóng và tiện lợi: Thanh toán bằng thẻ tín dụng chỉ mất vài
             phút để hoàn tất.
@@ -524,8 +525,10 @@ const Vipolicies = [
     title: "General Policies and Regulations",
     content: (
       <div>
-        <h3 className="font-semibold">CHÍNH SÁCH VÀ QUY ĐỊNH CHUNG</h3>
-        <h4 className="font-medium">1. Nguyên tắc chung</h4>
+        <h3 className="font-semibold text-2xl mb-6">
+          CHÍNH SÁCH VÀ QUY ĐỊNH CHUNG
+        </h3>
+        <h4 className="font-semibold text-lg my-6">1. Nguyên tắc chung</h4>
         <ol>
           <li>
             Website thương mại điện tử beekrowd.com do công ty BeeKrowd sở hữu.
@@ -545,7 +548,7 @@ const Vipolicies = [
             kinh doanh, cấm quảng cáo theo quy định của pháp luật.
           </li>
         </ol>
-        <h4 className="font-medium">2. Quy định chung</h4>
+        <h4 className="font-semibold text-lg my-6">2. Quy định chung</h4>
         <ol>
           <li>
             Quý khách hàng khi truy cập vào website của chúng tôi tại
@@ -591,11 +594,13 @@ const Vipolicies = [
     title: "Privacy Terms",
     content: (
       <div>
-        <h3 className="font-semibold">ĐIỀU KHOẢN BẢO MẬT</h3>
-        <h4 className="font-medium">
+        <h3 className="font-semibold text-2xl mb-6">ĐIỀU KHOẢN BẢO MẬT</h3>
+        <h4 className="font-semibold text-lg my-6">
           1. Mục đích, phạm vi sử dụng và thời gian lưu trữ thông tin
         </h4>
-        <h5 className="font-medium">1.1 Mục đích, phạm vi sử dụng thông tin</h5>
+        <h5 className="font-semibold text-base my-4">
+          1.1. Mục đích, phạm vi sử dụng thông tin
+        </h5>
         <p>
           Cung cấp dịch vụ: BeeKrowd sử dụng thông tin của bạn để quản lý, điều
           hành, xem xét và/hoặc xử lý giao dịch của bạn với chúng tôi hoặc với
@@ -628,8 +633,8 @@ const Vipolicies = [
           mục đích đó tại thời điểm chúng tôi xin sự cho phép của bạn, trừ khi
           được phép theo quy định của pháp luật.
         </p>
-        <h5 className="font-medium">
-          1.2 Những người hoặc tổ chức có thể được tiếp cận với thông tin đó
+        <h5 className="font-semibold text-base my-4">
+          1.2. Những người hoặc tổ chức có thể được tiếp cận với thông tin đó
         </h5>
         <p>
           Nhân viên BeeKrowd: BeeKrowd chỉ cho phép nhân viên của BeeKrowd truy
@@ -651,8 +656,8 @@ const Vipolicies = [
           của bạn cho cơ quan nhà nước có thẩm quyền khi được yêu cầu theo quy
           định của pháp luật.
         </p>
-        <h5 className="font-medium">
-          1.3 Chúng tôi sẽ có thể thu thập dữ liệu cá nhân của bạn khi:
+        <h5 className="font-semibold text-base my-4">
+          1.3. Chúng tôi sẽ có thể thu thập dữ liệu cá nhân của bạn khi:
         </h5>
         <p>
           Khi bạn đăng ký tài khoản trên Website của chúng tôi: BeeKrowd thu
@@ -660,18 +665,18 @@ const Vipolicies = [
           để tạo tài khoản cho bạn.
         </p>
         <p>
-          Khi bạn tương tác với chúng tôi: BeeKrowd thu thập thông tin cá nhân
+          Khi bạn tương tác với chúng tôi, BeeKrowd thu thập thông tin cá nhân
           khi bạn thực hiện các hành động sau:
         </p>
-        <ul>
+        <ul className="ml-2">
           <li>
-            Gọi điện thoại đến hotline của BeeKrowd (có thể được ghi âm lại)
+            - Gọi điện thoại đến hotline của BeeKrowd (có thể được ghi âm lại)
           </li>
-          <li>Gửi email cho BeeKrowd</li>
-          <li>Sử dụng các ứng dụng truyền thông xã hội của BeeKrowd</li>
-          <li>Gửi thư từ cho BeeKrowd</li>
-          <li>Gặp gỡ trực tiếp với nhân viên BeeKrowd</li>
-          <li>Cung cấp phản hồi hoặc khiếu nại cho BeeKrowd</li>
+          <li>- Gửi email cho BeeKrowd</li>
+          <li>- Sử dụng các ứng dụng truyền thông xã hội của BeeKrowd</li>
+          <li>- Gửi thư từ cho BeeKrowd</li>
+          <li>- Gặp gỡ trực tiếp với nhân viên BeeKrowd</li>
+          <li>- Cung cấp phản hồi hoặc khiếu nại cho BeeKrowd</li>
         </ul>
         <p>
           Khi bạn liên kết tài khoản BeeKrowd với các tài khoản khác: BeeKrowd
@@ -692,7 +697,9 @@ const Vipolicies = [
           mà chỉ đưa ra một số trường hợp phổ biến về thời điểm dữ liệu cá nhân
           của bạn có thể bị thu thập.
         </p>
-        <h5 className="font-medium">1.4 Phạm vi thu thập dữ liệu</h5>
+        <h5 className="font-semibold text-base my-4">
+          1.4. Phạm vi thu thập dữ liệu
+        </h5>
         <p>
           a. Các loại dữ liệu cá nhân mà chúng tôi có thể thu thập bao gồm: họ
           tên, địa chỉ email, địa chỉ giao nhận hàng hóa và/hoặc thanh toán, tài
@@ -720,8 +727,8 @@ const Vipolicies = [
           giám hộ, chúng tôi sẽ xóa thông tin này khỏi dữ liệu của chúng tôi mà
           không cần thông báo trước.
         </p>
-        <h5 className="font-medium">
-          1.5 Thời gian lưu trữ và cam kết bảo mật:
+        <h5 className="font-semibold text-base my-4">
+          1.5. Thời gian lưu trữ và cam kết bảo mật:
         </h5>
         <p>
           a. Chúng tôi áp dụng các biện pháp bảo mật phù hợp để bảo vệ dữ liệu
@@ -738,7 +745,7 @@ const Vipolicies = [
           chúng tôi có thể tiến hành tiêu hủy dữ liệu cá nhân của bạn một cách
           an toàn mà không cần thông báo trước.
         </p>
-        <h4 className="font-medium">2. Thương hiệu bản quyền</h4>
+        <h4 className="font-semibold text-lg my-6">2. Thương hiệu bản quyền</h4>
         <p>
           Mọi quyền sở hữu trí tuệ (bao gồm cả những thành phẩm đã đăng ký hoặc
           chưa đăng ký) như nội dung thông tin, thiết kế, văn bản, đồ họa, phần
@@ -746,7 +753,7 @@ const Vipolicies = [
           và phần mềm cơ bản là tài sản của chúng tôi. Toàn bộ nội dung của
           trang web được bảo vệ bởi luật pháp Việt Nam và các công ước quốc tế.
         </p>
-        <h4 className="font-medium">
+        <h4 className="font-semibold text-lg my-6">
           3. Quy định sửa đổi thông tin và xoá tài khoản
         </h4>
         <p>
@@ -760,13 +767,17 @@ const Vipolicies = [
           dịch vụ trên website, quý khách vui lòng liên hệ với chúng tôi qua
           email: support@beekrowd.com
         </p>
-        <h4 className="font-medium">4. Thay đổi về chính sách</h4>
+        <h4 className="font-semibold text-lg my-6">
+          4. Thay đổi về chính sách
+        </h4>
         <p>
           Chính sách bảo mật thông tin này có thể được điều chỉnh để phù hợp với
           nhu cầu của BeeKrowd và khách hàng, cũng như tuân thủ các quy định
           pháp luật mà không cần thông báo trước (nếu có).
         </p>
-        <h4 className="font-medium">5. Đơn vị thu thập, quản lý thông tin</h4>
+        <h4 className="font-semibold text-lg my-6">
+          5. Đơn vị thu thập, quản lý thông tin
+        </h4>
         <p>Công Ty Cổ Phần BeeKrowd</p>
         <p>
           Trụ sở chính: Dreamplex, 21 Nguyễn Trung Ngạn, Phường Bến Nghé, Quận
@@ -788,10 +799,12 @@ const Vipolicies = [
     title: "Delivery and Warranty Policy",
     content: (
       <div>
-        <h3 className="font-semibold">CHÍNH SÁCH GIAO NHẬN VÀ BẢO HÀNH</h3>
+        <h3 className="font-semibold text-2xl mb-6">
+          CHÍNH SÁCH GIAO NHẬN VÀ BẢO HÀNH
+        </h3>
         <ol>
           <li>
-            <h4>
+            <h4 className="my-4">
               1. Nếu trường hợp việc đăng ký dịch vụ thành công mà không sử dụng
               được trong vòng 3 ngày vui lòng liên hệ chúng tôi qua số điện
               thoại, email, website để có phương án giải quyết hoặc hoàn trả các
@@ -799,7 +812,7 @@ const Vipolicies = [
             </h4>
           </li>
           <li>
-            <h4>
+            <h4 className="my-4">
               2. Chúng tôi cam kết dùng mọi biện pháp nhằm bảo mật những chứng
               từ, hình ảnh chúng tôi thu thập của khách hàng và chỉ sử dụng cho
               mục đích lưu trữ, giải quyết khiếu nại, hỗ trợ khách hàng hoặc các
@@ -808,15 +821,15 @@ const Vipolicies = [
             </h4>
           </li>
           <li>
-            <h4>
+            <h4 className="my-4">
               3. BeeKrowd chỉ nhận bảo hành dịch vụ khi lỗi đến từ phía chúng
               tôi như:
             </h4>
-            <ul>
-              <li>Dịch vụ không được cung cấp đúng theo cam kết.</li>
-              <li>Dịch vụ bị tạm ngưng hoặc chấm dứt do lỗi của BeeKrowd.</li>
+            <ul className="ml-2">
+              <li>- Dịch vụ không được cung cấp đúng theo cam kết.</li>
+              <li>- Dịch vụ bị tạm ngưng hoặc chấm dứt do lỗi của BeeKrowd.</li>
             </ul>
-            <p>
+            <p className="mt-2">
               Chúng tôi sẽ liên lạc với bạn để hướng dẫn quy cách hoàn trả hoặc
               bảo hành. Lưu ý, chúng tôi chỉ hỗ trợ đổi trả dịch vụ với điều
               kiện yêu cầu đổi trả không quá 03 ngày kể từ ngày bạn nhận được
@@ -824,25 +837,25 @@ const Vipolicies = [
               trong vòng 14 ngày tính từ ngày nhận được yêu cầu của bạn.
             </p>
           </li>
-          <li>
+          <li className="mt-2">
             <p>BeeKrowd sẽ không bảo hành cho các trường hợp sau:</p>
-            <ul>
-              <li>Sử dụng dịch vụ của chúng tôi sai mục đích.</li>
+            <ul className="ml-2">
+              <li>- Sử dụng dịch vụ của chúng tôi sai mục đích.</li>
               <li>
-                Dịch vụ bị một số rủi ro do phần mềm hoặc phần cứng của bên thứ
-                ba.
+                - Dịch vụ bị một số rủi ro do phần mềm hoặc phần cứng của bên
+                thứ ba.
               </li>
             </ul>
           </li>
           <li>
-            <h4>
+            <h4 className="my-4">
               4. Mọi thông tin về việc thay đổi hay hủy bỏ gói dịch vụ, quý
               khách có thể tự thay đổi hoặc hủy đăng ký dịch vụ hoặc thông báo
               với chúng tôi hỗ trợ thay đổi và hủy cho bạn kịp thời.
             </h4>
           </li>
           <li>
-            <h4>
+            <h4 className="my-4">
               5. Để kiểm tra mọi thông tin liên quan đến dịch vụ của BeeKrowd
               xin vui lòng nhắn tin vào Website, gửi Email hoặc gọi số Hotline
               và cung cấp tên, số điện thoại hoặc mã đơn hàng để được chúng tôi
@@ -866,20 +879,6 @@ function Footer() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalContent, setModalContent] = useState("");
 
-  const googleTranslateElementInit = () => {
-    if (window.google && window.google.translate) {
-      new window.google.translate.TranslateElement(
-        {
-          pageLanguage: "en",
-          includedLanguages: "vi,en,ru,es,fr,de,ja,ko,zh-CN,zh-TW",
-          autoDisplay: false,
-          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
-        },
-        "google_translate_element"
-      );
-    }
-  };
-
   const showModal = (content) => {
     setModalContent(content);
     setIsModalVisible(true);
@@ -890,52 +889,70 @@ function Footer() {
     setModalContent("");
   };
 
-  useEffect(() => {
-    const addScript = document.createElement("script");
-    addScript.setAttribute(
-      "src",
-      "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit&tl=vi"
-    );
-    addScript.async = true;
-    addScript.defer = true;
+  // const googleTranslateElementInit = () => {
+  //   if (window.google && window.google.translate) {
+  //     new window.google.translate.TranslateElement(
+  //       {
+  //         pageLanguage: "en",
+  //         includedLanguages: "vi,en,ru,es,fr,de,ja,ko,zh-CN,zh-TW",
+  //         autoDisplay: true,
+  //         layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+  //       },
+  //       "google_translate_element"
+  //     );
+  //   }
+  // };
 
-    addScript.onload = () => {
-      window.googleTranslateElementInit = googleTranslateElementInit;
-    };
+  // useEffect(() => {
+  //   // Set cookies to enforce translation to Vietnamese
+  //   const lang = "vi";
+  //   document.cookie = `googtrans=/en/${lang}; path=/`;
+  //   document.cookie = `googtrans=/en/${lang}; expires=${new Date(Date.now() + 3600 * 1000).toUTCString()}; path=/`;
 
-    addScript.onerror = (error) => {
-      console.error(
-        "An error occurred while loading the Google Translate script:",
-        error
-      );
-    };
+  //   const addScript = document.createElement("script");
+  //   addScript.setAttribute(
+  //     "src",
+  //     "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+  //   );
+  //   addScript.async = true;
+  //   addScript.defer = true;
 
-    document.body.appendChild(addScript);
+  //   addScript.onload = () => {
+  //     window.googleTranslateElementInit = googleTranslateElementInit;
+  //   };
 
-    // MutationObserver to remove href attribute when the element is added to DOM
-    const observer = new MutationObserver((mutationsList) => {
-      for (const mutation of mutationsList) {
-        if (mutation.type === "childList") {
-          const anchorElement = document.querySelector(
-            ".VIpgJd-ZVi9od-xl07Ob-lTBxed"
-          );
-          if (anchorElement) {
-            anchorElement.removeAttribute("href");
-          }
-        }
-      }
-    });
+  //   addScript.onerror = (error) => {
+  //     console.error(
+  //       "An error occurred while loading the Google Translate script:",
+  //       error
+  //     );
+  //   };
 
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
+  //   document.body.appendChild(addScript);
 
-    return () => {
-      document.body.removeChild(addScript);
-      observer.disconnect();
-    };
-  }, []);
+  //   const observer = new MutationObserver((mutationsList) => {
+  //     for (const mutation of mutationsList) {
+  //       if (mutation.type === "childList") {
+  //         const anchorElement = document.querySelector(
+  //           ".VIpgJd-ZVi9od-xl07Ob-lTBxed"
+  //         );
+  //         if (anchorElement) {
+  //           anchorElement.removeAttribute("href");
+  //         }
+  //       }
+  //     }
+  //   });
+
+  //   observer.observe(document.body, {
+  //     childList: true,
+  //     subtree: true,
+  //   });
+
+  //   return () => {
+  //     document.body.removeChild(addScript);
+  //     observer.disconnect();
+  //   };
+  // }, []);
 
   return (
     <footer className="bg-gray-200 dark1:bg-gray-900">
@@ -943,11 +960,11 @@ function Footer() {
         <div className="md:flex md:justify-between">
           <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-4">
             <div className="mb-6 md:mb-0">
-              <a href="https://flowbite.com/" className="flex items-center">
+              <div className="flex items-center">
                 <span className="self-center text-2xl font-semibold whitespace-nowrap text-blue-600">
-                  BEEKROWD
+                  BeeKrowd
                 </span>
-              </a>
+              </div>
             </div>
             <div>
               <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase ">
@@ -1013,20 +1030,16 @@ function Footer() {
               </h2>
               <ul className="text-gray-500 dark1:text-gray-400 font-medium">
                 <li className="mb-4">
-                  <div className="hover:underline hover:cursor-pointer">
-                    BeeKrowd Joint Stock Company
-                  </div>
+                  <div>BeeKrowd Joint Stock Company</div>
                 </li>
                 <li className="mb-4">
-                  <div className="hover:underline hover:cursor-pointer">
+                  <div>
                     Head office: Dreamplex 21 Nguyen Trung Ngan, Ben Nghe Ward,
                     District 1, Ho Chi Minh City.
                   </div>
                 </li>
                 <li className="mb-4">
-                  <div className="hover:underline hover:cursor-pointer">
-                    Hotline: +84 376.372.727{" "}
-                  </div>
+                  <div>Hotline: +84 376.372.727</div>
                 </li>
                 <li className="mb-4">
                   <a
@@ -1037,11 +1050,13 @@ function Footer() {
                   </a>
                 </li>
                 <li className="mb-4">
-                  <div
-                    href="Email: support@beekrowd.com"
-                    className="hover:underline hover:cursor-pointer"
-                  >
-                    Email: support@beekrowd.com
+                  <div>Email: support@beekrowd.com</div>
+                </li>
+                <li className="mb-4">
+                  <div>
+                    Business Registration Certificate No. 0315434177 issued by
+                    Ho Chi Minh City Department of Planning and Investment on
+                    December 14, 2018
                   </div>
                 </li>
               </ul>
@@ -1054,7 +1069,7 @@ function Footer() {
             © 2024 <a className="hover:underline">BeeKrowd™</a>. All Rights
             Reserved.
           </span>
-          <div className="flex mt-4 sm:justify-center sm:mt-0">
+          <div className="flex my-4 sm:justify-center sm:my-0">
             <div id="google_translate_element"></div>
 
             <a

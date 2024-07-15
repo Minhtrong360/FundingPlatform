@@ -298,8 +298,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     return text.substring(0, maxLength) + "...";
   };
 
-  console.log("costInputs", costInputs);
-
   const transposedData = [
     { key: "Revenue" },
     // { key: "Total Revenue", values: totalRevenue },

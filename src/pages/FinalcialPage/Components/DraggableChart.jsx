@@ -137,7 +137,13 @@ const DraggableChart = ({ data, onDataChange }) => {
     });
 
     columnTemplate.adapter.add("fill", (fill, target) => {
-      return chart.colors.getIndex(target.dataItem.index).saturate(0.3);
+      const colors = ["#00A2FF"];
+      return am4core.color(colors[target.dataItem.index % colors.length]);
+    });
+
+    bullet.adapter.add("fill", (fill, target) => {
+      const colors = ["#00A2FF"];
+      return am4core.color(colors[target.dataItem.index % colors.length]);
     });
 
     bullet.adapter.add("fill", (fill, target) => {

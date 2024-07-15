@@ -177,10 +177,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           )
         );
       }
-      setIsLoading(false);
       setTimeout(() => {
         setSpinning(false);
-      }, 1000);
+        setIsLoading(false);
+      }, 10000);
     } catch (error) {
       console.log("Error parsing JSON:", error);
     }
@@ -878,6 +878,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const handleTabChangeA = (tabName) => {
     setActiveTabA(tabName);
   };
+
   return (
     <div className="min-h-screen">
       {spinning ? (
@@ -895,7 +896,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               setSpinning={setSpinning}
             />
           </div>
-          <FlowiseChat page='FM'/>
+          <FlowiseChat page="FM" />
 
           <div className="my-4 ">
             {/* <div className="rounded-lg bg-green-500 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">

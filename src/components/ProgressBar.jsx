@@ -10,7 +10,9 @@ const ProgressBar = ({ spinning, isLoading }) => {
   useEffect(() => {
     const updateProgress = () => {
       setProgress((prevProgress) => {
-        if (prevProgress >= 100) {
+        if (isLoading && prevProgress >= 99) {
+          return 99;
+        } else if (!isLoading && prevProgress >= 100) {
           clearInterval(interval); // Stop interval when progress reaches 100
           return 100;
         }
@@ -21,19 +23,17 @@ const ProgressBar = ({ spinning, isLoading }) => {
     const interval = setInterval(updateProgress, loadingInterval);
 
     return () => clearInterval(interval);
-  }, [loadingInterval]); // Re-run effect when loadingInterval changes
+  }, [loadingInterval, isLoading]); // Re-run effect when loadingInterval or isLoading changes
 
   useEffect(() => {
     // Reset progress to 0 when isLoading becomes true
     if (isLoading) {
       setProgress(0);
-      setLoadingInterval(200); // Start with the fast loading interval
+      setLoadingInterval(700); // Start with the fast loading interval
       clearTimeout(closingTimeout); // Clear any existing closing timeout
     } else {
-      // Set progress to 100 immediately when isLoading becomes false
-      setProgress(100);
-      // Optionally, you can set a timeout to close the ProgressBar after a delay
-      setClosingTimeout(setTimeout(() => setProgress(100), 750));
+      // Set a timeout to set progress to 100 after 5 seconds when isLoading becomes false
+      setClosingTimeout(setTimeout(() => setProgress(100), 5000));
     }
   }, [isLoading]);
 

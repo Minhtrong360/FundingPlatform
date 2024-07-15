@@ -5,11 +5,12 @@ import image from "../Home/Components/founder&Business.jpg";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 
 import Header from "../Home/Header";
+import Header2 from "../Home/Header2";
 
 function BlogPost({ articles, blogs }) {
   return (
     <div className="max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto mt-28">
-      <Header />
+      <Header2 />
       <section className="bg-white darkBg">
         <div className="container sm:px-6 py-10 mx-auto">
           <h1 className="text-2xl font-semibold text-gray-800 capitalize lg:text-3xl darkTextWhite">

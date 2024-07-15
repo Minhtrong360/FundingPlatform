@@ -81,9 +81,11 @@ export const parseNumber = (value) => {
     if (typeof value === "string") {
       const numberString = value.replace(/,/g, "");
       const parsedNumber = parseFloat(numberString);
+
       if (isNaN(parsedNumber)) {
         return 0;
       }
+
       return parsedNumber;
     } else {
       return value;

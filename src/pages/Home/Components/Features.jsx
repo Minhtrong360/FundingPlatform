@@ -19,9 +19,12 @@ function Features() {
         <h3
           id="platform"
           className="block text-3xl font-extrabold text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl darkTextWhite"
+          style={{ lineHeight: "1.5" }}
         >
           A{" "}
-          <span className="text-blue-600 bg-yellow-300 h-6">data-centric </span>{" "}
+          <span className="text-blue-600 bg-yellow-300 h-6 mt-2">
+            data-centric{" "}
+          </span>{" "}
           platform for users.
         </h3>
         <p className="mt-6 text-lg text-gray-800">

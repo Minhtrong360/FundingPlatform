@@ -33,19 +33,18 @@ import {
   setFundraisingTableData,
   transformFundraisingDataForTable,
 } from "../../../features/FundraisingSlice";
+import { useAuth } from "../../../context/AuthContext";
 
-
-
-const FileUploadComponent = ({BS,CF,PNL, Source}) => {
+const FileUploadComponent = ({ BS, CF, PNL, Source }) => {
   const [file, setFile] = useState(null);
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const positionDataWithNetIncome = {Apple:1}; // Replace with actual data
-  const positionDataWithNetIncome2 = {Banana:1}; // Replace with actual data
-  const transposedData = {Brocoli:1}; // Replace with actual data
- 
-    const content = `
+  const positionDataWithNetIncome = { Apple: 1 }; // Replace with actual data
+  const positionDataWithNetIncome2 = { Banana: 1 }; // Replace with actual data
+  const transposedData = { Brocoli: 1 }; // Replace with actual data
+
+  const content = `
       Cash Flow Statement:
       ${JSON.stringify(CF, null, 2)}
 
@@ -55,40 +54,40 @@ const FileUploadComponent = ({BS,CF,PNL, Source}) => {
       Profit and Loss Statement:
       ${JSON.stringify(PNL, null, 2)}
         `;
-        console.log("content", content)
- 
+
   // Convert content to a Blob
-    const blob = new Blob([content], { type: 'text/plain' });
+  const blob = new Blob([content], { type: "text/plain" });
 
-    // Create a File object from Blob
-    const txtFile = new File([blob], 'financial_statements.txt', { type: 'text/plain' });
+  // Create a File object from Blob
+  const txtFile = new File([blob], "financial_statements.txt", {
+    type: "text/plain",
+  });
 
-    // Update state with the File object
-   
+  // Update state with the File object
+
   const handleSubmit = async () => {
     setFile(txtFile);
 
     let formData = new FormData();
-    
+
     formData.append("files", file);
     formData.append("chunkSize", 1000);
     formData.append("returnSourceDocuments", true);
-    formData.append("metadata", "{ \"source\": \"businessname\" }");
-    console.log("formData", formData)
+    formData.append("metadata", '{ "source": "businessname" }');
     try {
       setLoading(true);
       const response = await fetch(
         "https://flowise-ngy8.onrender.com/api/v1/vector/upsert/5d297588-8b13-4452-8c68-a7288bfbbbe2",
         {
           method: "POST",
-          body: formData
+          body: formData,
         }
       );
       const result = await response.json();
       setResponse(result);
     } catch (error) {
-      console.error('Error uploading file:', error);
-      setResponse({ error: 'Error uploading file' });
+      console.error("Error uploading file:", error);
+      setResponse({ error: "Error uploading file" });
     } finally {
       setLoading(false);
     }
@@ -97,8 +96,12 @@ const FileUploadComponent = ({BS,CF,PNL, Source}) => {
   return (
     <div>
       {/* <input type="file" onChange={handleFileChange} /> */}
-      <button className="ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleSubmit} disabled={loading}>
-        {loading ? 'Uploading...' : 'Embed'}
+      <button
+        className="ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        onClick={handleSubmit}
+        disabled={loading}
+      >
+        {loading ? "Uploading..." : "Embed"}
       </button>
       {/* {response && (
         <div>
@@ -110,14 +113,12 @@ const FileUploadComponent = ({BS,CF,PNL, Source}) => {
   );
 };
 
-
-
-
 const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState("");
   const dispatch = useDispatch();
+  const { currentUser } = useAuth();
 
   // Add the following state for controlling the modal visibility
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -555,8 +556,6 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
     ),
   }));
 
-  console.log("CF", positionDataWithNetIncome);
-
   // Add positionDataWithNetIncome2
 
   const currentAssets = cashEndBalances.map((cashEnd, index) => {
@@ -799,8 +798,6 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
     ),
   }));
 
-  console.log("BS", positionDataWithNetIncome2);
-
   // Add transposedData
 
   const { revenueTableData } = useSelector((state) => state.sales);
@@ -960,42 +957,48 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
       }, {}),
     })),
   }));
-  console.log("PL", transposedData);
-  const { financialProjectName } = useSelector(
-    (state) => state.durationSelect
-  );
+  const { financialProjectName } = useSelector((state) => state.durationSelect);
+
+  console.log("currentUser", currentUser[0]);
+
   return (
-    <div className=" flex flex-col rounded-md  ">
-      <input
-      className=" p-2 rounded m-4 border-gray-300 border"
-       
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      />
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-4"
-        onClick={handleSubmit}
-      >
-        {isLoading ? <SpinnerBtn /> : "Send"}
-      </button>
-      <Modal
-        open={isModalVisible}
-        footer={null}
-        centered
-        onCancel={() => setIsModalVisible(false)}
-        width="60%"
-        style={{ top: 20 }}
-      >
-        {messages.length > 0 && (
-          <div
-            dangerouslySetInnerHTML={{
-              __html: messages[messages.length - 1].content,
-            }}
-          />
-        )}
-      </Modal>
-      <FileUploadComponent BS={positionDataWithNetIncome2} CF={positionDataWithNetIncome} PNL={transposedData} Source={financialProjectName}/>
-    </div>
+    currentUser[0]?.admin && (
+      <div className="flex flex-col rounded-md">
+        <input
+          className="p-2 rounded m-4 border-gray-300 border"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-4"
+          onClick={handleSubmit}
+        >
+          {isLoading ? <SpinnerBtn /> : "Send"}
+        </button>
+        <Modal
+          open={isModalVisible}
+          footer={null}
+          centered
+          onCancel={() => setIsModalVisible(false)}
+          width="60%"
+          style={{ top: 20 }}
+        >
+          {messages.length > 0 && (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: messages[messages.length - 1].content,
+              }}
+            />
+          )}
+        </Modal>
+        <FileUploadComponent
+          BS={positionDataWithNetIncome2}
+          CF={positionDataWithNetIncome}
+          PNL={transposedData}
+          Source={financialProjectName}
+        />
+      </div>
+    )
   );
 };
 

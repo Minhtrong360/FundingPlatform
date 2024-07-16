@@ -4,15 +4,15 @@ import { supabase } from "../../supabase";
 import { LinearProgress } from "@mui/material";
 import { Dropdown, Menu, message, Tabs } from "antd";
 
-import { useLocation, useNavigate } from "react-router-dom";
-import UniSearch from "./UniSearch";
-import UniEditorTool from "./UniEditorTool"; // Assuming this is the component for editing rules
 import TabPane from "antd/es/tabs/TabPane";
 import { useAuth } from "../../context/AuthContext";
 import Header2 from "../Home/Header2";
-import HeroCompetitions from "./HeroCompetitons";
+import HeroVC from "./HeroVC";
+import VCSearch from "./VCSearch";
+import VCEditorTool from "./VCEditorTool";
+import HeroCohort from "./HeroCohort";
 
-const CompetitionPost = () => {
+const CohortPost = () => {
   const [companies, setCompanies] = useState([]);
   const [page, setPage] = useState(1);
   const itemsPerPage = 6;
@@ -253,7 +253,7 @@ const CompetitionPost = () => {
         <Header2 />
         <div className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0 ">
           <div className="px-3 py-2 lg:px-8 lg:py-1 mx-auto flex-grow">
-            <HeroCompetitions
+            <HeroCohort
               onSelectCode={handleSelectCode}
               setCompanies={setCompanies}
               selectedCode={selectedCodeFull}
@@ -268,7 +268,7 @@ const CompetitionPost = () => {
             />
 
             <>
-              <UniSearch
+              <VCSearch
                 onSearch={handleSearch}
                 companies={companiesToRender}
                 searchTerm={searchTerm}
@@ -307,6 +307,7 @@ const CompetitionPost = () => {
                           Round: {selectedRound?.name}
                         </h2>
                       )}
+
                       <div className="mx-auto max-w-[85rem] my-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
                         {companiesToRender.length > 0 ? (
                           companiesToRender.map((company, index) => (
@@ -349,7 +350,7 @@ const CompetitionPost = () => {
                 </TabPane>
                 <TabPane tab="Rules" key="Rules">
                   <div className="flex justify-center items-center">
-                    <UniEditorTool
+                    <VCEditorTool
                       selectedCode={selectedCodeFull}
                       setSelectedCode={setSelectedCodeFull}
                       unChange={true}
@@ -366,4 +367,4 @@ const CompetitionPost = () => {
   );
 };
 
-export default CompetitionPost;
+export default CohortPost;

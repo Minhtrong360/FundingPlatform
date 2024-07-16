@@ -16,7 +16,7 @@ import { supabase } from "../../supabase";
 import moment from "moment";
 import { formatDate } from "../../features/DurationSlice";
 import { IconButton } from "@mui/material";
-import UniCard from "./UniCard";
+import UniCard from "./VCCard";
 import {
   CloseOutlined,
   EyeTwoTone,
@@ -27,7 +27,7 @@ import {
 
 import { v4 as uuidv4 } from "uuid"; // Import uuid
 
-const HeroUniversities = ({
+const HeroVC = ({
   onSelectCode,
   setCompanies,
   credentials,
@@ -591,7 +591,7 @@ const HeroUniversities = ({
       ),
     },
     {
-      title: "Competition Name",
+      title: "Cohort Name",
       dataIndex: "name",
       key: "name",
       render: (text, record) => (
@@ -640,7 +640,7 @@ const HeroUniversities = ({
       ),
     },
     {
-      title: "Judges Name",
+      title: "Analyzers",
       dataIndex: "judges",
       key: "judges_name",
       render: (text, record) => (
@@ -662,7 +662,7 @@ const HeroUniversities = ({
       ),
     },
     {
-      title: "Judges Email",
+      title: "Analyzer's Emails",
       dataIndex: "judges",
       key: "judges_email",
       render: (text, record) => (
@@ -1400,7 +1400,7 @@ const HeroUniversities = ({
                   setRounds([]);
                 }}
               >
-                Create A Competition
+                Create A Cohort
               </button>
             )}
           </div>
@@ -1527,7 +1527,7 @@ const HeroUniversities = ({
         )}
 
         <Modal
-          title="Add new Competition"
+          title="Add new Cohort"
           open={isAddNewModalOpen}
           onOk={handleAddNewCode}
           onCancel={() => setIsAddNewModalOpen(false)}
@@ -1539,11 +1539,11 @@ const HeroUniversities = ({
             <form className="grid gap-6 col-span-1 md:col-span-2">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label htmlFor="competition_name">Competition Name</label>
+                  <label htmlFor="competition_name">Cohort Name</label>
                   <div className="flex items-center">
                     <Input
                       id="competition_name"
-                      placeholder="Enter competition name"
+                      placeholder="Enter cohort name"
                       required
                       className="border-gray-300 rounded-md text-sm"
                       value={competitionName}
@@ -1581,7 +1581,7 @@ const HeroUniversities = ({
               </div>
               <div className="space-y-1 md:col-span-2">
                 <label htmlFor="competition_description">
-                  Competition Description
+                  Cohort Description
                 </label>
                 <div className="flex items-center">
                   <Input.TextArea
@@ -1596,7 +1596,7 @@ const HeroUniversities = ({
                 </div>
               </div>
               <div className="space-y-1 md:col-span-2">
-                <label htmlFor="cover">Competition Cover</label>
+                <label htmlFor="cover">Cohort Cover</label>
                 <div className="flex items-center">
                   <Input
                     id="cover"
@@ -1890,7 +1890,7 @@ const HeroUniversities = ({
         >
           {selectedCode?.publish
             ? "Are you sure to un-publish this code?"
-            : 'Other users can see all projects that relate to this code on "Competition" Tab on BeeKrowd platform. Are you sure to publish?'}
+            : 'Other users can see all projects that relate to this code on "Apply VC" Tab on BeeKrowd platform. Are you sure to publish?'}
         </Modal>
 
         <Modal
@@ -2174,4 +2174,4 @@ const HeroUniversities = ({
   );
 };
 
-export default HeroUniversities;
+export default HeroVC;

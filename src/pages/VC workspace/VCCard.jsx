@@ -2,7 +2,7 @@ import { Tag, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 
-const UniCard = ({
+const VCCard = ({
   data,
   codeInCompetition,
   setSelectedCodeFull,
@@ -32,6 +32,7 @@ const UniCard = ({
     fetchCodeData();
   }, [data]);
 
+  console.log("data", data);
   return (
     <div
       onClick={() => {
@@ -83,7 +84,7 @@ const UniCard = ({
 
       <div className="px-5 pb-5  rounded-b-lg">
         <p
-          className={`mb-2 text-sm text-blue-600 font-normal  overflow-hidden text-ellipsis line-clamp-6`}
+          className={`mb-2 text-sm font-normal overflow-hidden text-ellipsis line-clamp-6 text-blue-600`}
         >
           Expired At:{" "}
           <span
@@ -119,4 +120,4 @@ const UniCard = ({
   );
 };
 
-export default UniCard;
+export default VCCard;

@@ -103,6 +103,11 @@ const Header2 = ({ noFixedHeader }) => {
           label: "List Private Shares",
           path: "/Flea-Market",
         },
+        {
+          key: "5",
+          label: "Apply VC",
+          path: "/cohort",
+        },
       ],
     },
     {
@@ -117,6 +122,15 @@ const Header2 = ({ noFixedHeader }) => {
           key: "2",
           label: "Buy Private Shares",
           path: "/Listing-Flea-Market",
+        },
+        {
+          key: "3",
+          label: (
+            <>
+              VC Work Space <LockOutlined />
+            </>
+          ),
+          path: "/vc_workspace",
         },
       ],
     },

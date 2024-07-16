@@ -100,46 +100,54 @@ const HeroUniversities = ({
   }, [credentials]);
 
   const filterProjectsByCode = async (codeId) => {
-    try {
-      const { data: projects, error: projectsError } = await supabase
-        .from("projects")
-        .select("*")
-        .contains("universityCode", [codeId]);
-
-      if (projectsError) {
-        throw projectsError;
+    console.log("codeId", codeId);
+    if (codeId) {
+      try {
+        const { data: projects, error: projectsError } = await supabase
+          .from("projects")
+          .select("*")
+          .contains("universityCode", [codeId]);
+  
+        if (projectsError) {
+          throw projectsError;
+        }
+  
+  
+        const projectIds = projects.map((project) => project.id);
+  
+        const { data: companies, error: companiesError } = await supabase
+          .from("company")
+          .select("*")
+          .in("project_id", projectIds);
+  
+        if (companiesError) {
+          throw companiesError;
+        }
+  
+        const combinedProjects = projects.map((project) => {
+          const parsedApplyInfo = project.applyInfo.map((info) =>
+            JSON.parse(info)
+          );
+          const companyInfo = companies.find(
+            (company) => company.project_id === project.id
+          );
+  
+          return {
+            ...project,
+            applyInfo: parsedApplyInfo,
+            company: companyInfo,
+          };
+        });
+  
+        setProjectList(combinedProjects);
+      } catch (error) {
+        console.error("Error fetching projects and companies for code:", error);
       }
+    } else {
+      setProjectList([]);
 
-      const projectIds = projects.map((project) => project.id);
-
-      const { data: companies, error: companiesError } = await supabase
-        .from("company")
-        .select("*")
-        .in("project_id", projectIds);
-
-      if (companiesError) {
-        throw companiesError;
-      }
-
-      const combinedProjects = projects.map((project) => {
-        const parsedApplyInfo = project.applyInfo.map((info) =>
-          JSON.parse(info)
-        );
-        const companyInfo = companies.find(
-          (company) => company.project_id === project.id
-        );
-
-        return {
-          ...project,
-          applyInfo: parsedApplyInfo,
-          company: companyInfo,
-        };
-      });
-
-      setProjectList(combinedProjects);
-    } catch (error) {
-      console.error("Error fetching projects and companies for code:", error);
     }
+    
   };
 
   const fetchProjectCounts = async (codes) => {

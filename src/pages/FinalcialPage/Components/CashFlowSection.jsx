@@ -946,11 +946,11 @@ function CashFlowSection({ numberOfMonths }) {
 
           {showAdvancedInputs && (
             <>
-              <div className="w-full lg:w-[20%] md:w-[50%] my-5 mt-20">
-                <h3 className="text-lg font-semibold my-5">
-                  III. Cash Flow By Years
-                </h3>
+              <h3 className="text-lg font-semibold my-5 mt-20">
+                III. Cash Flow By Years
+              </h3>
 
+              <div className="w-full lg:w-[20%] md:w-[50%] my-5">
                 <SelectField
                   label="Select Cut Month:"
                   id="Select Cut Month:"
@@ -987,7 +987,11 @@ function CashFlowSection({ numberOfMonths }) {
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section className="mb-8 NOsticky NOtop-8">
-          <GroqJS datasrc={cashFlowData} inputUrl="urlCF" />
+          <GroqJS
+            datasrc={cashFlowData}
+            inputUrl="urlCF"
+            numberOfMonths={numberOfMonths}
+          />
         </section>
       </div>
 

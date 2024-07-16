@@ -33,11 +33,92 @@ import {
   setFundraisingTableData,
   transformFundraisingDataForTable,
 } from "../../../features/FundraisingSlice";
+import { useAuth } from "../../../context/AuthContext";
+
+const FileUploadComponent = ({ BS, CF, PNL, Source }) => {
+  const [file, setFile] = useState(null);
+  const [response, setResponse] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const positionDataWithNetIncome = { Apple: 1 }; // Replace with actual data
+  const positionDataWithNetIncome2 = { Banana: 1 }; // Replace with actual data
+  const transposedData = { Brocoli: 1 }; // Replace with actual data
+
+  const content = `
+      Cash Flow Statement:
+      ${JSON.stringify(CF, null, 2)}
+
+      Balance Sheet Statement:
+      ${JSON.stringify(BS, null, 2)}
+
+      Profit and Loss Statement:
+      ${JSON.stringify(PNL, null, 2)}
+        `;
+
+  // Convert content to a Blob
+  const blob = new Blob([content], { type: "text/plain" });
+
+  // Create a File object from Blob
+  const txtFile = new File([blob], "financial_statements.txt", {
+    type: "text/plain",
+  });
+
+  // Update state with the File object
+
+  const handleSubmit = async () => {
+    setFile(txtFile);
+
+    let formData = new FormData();
+
+    formData.append("files", file);
+    formData.append("chunkSize", 1000);
+    formData.append("returnSourceDocuments", true);
+    formData.append("metadata", '{ "source": "businessname" }');
+    try {
+      setLoading(true);
+      const response = await fetch(
+        "https://flowise-ngy8.onrender.com/api/v1/vector/upsert/5d297588-8b13-4452-8c68-a7288bfbbbe2",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const result = await response.json();
+      setResponse(result);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      setResponse({ error: "Error uploading file" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      {/* <input type="file" onChange={handleFileChange} /> */}
+      <button
+        className="ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        onClick={handleSubmit}
+        disabled={loading}
+      >
+        {loading ? "Uploading..." : "Embed"}
+      </button>
+      {/* {response && (
+        <div>
+          <h3>Response:</h3>
+          <pre>{JSON.stringify(response, null, 2)}</pre>
+        </div>
+      )} */}
+    </div>
+  );
+};
 
 const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [input, setInput] = useState("");
   const dispatch = useDispatch();
+  const { currentUser } = useAuth();
 
   // Add the following state for controlling the modal visibility
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -60,13 +141,13 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
       let url;
       if (inputUrl === "urlPNL") {
         url =
-          "https://flowise-ngy8.onrender.com/api/v1/prediction/af577d02-be0e-477f-94ad-303c5bdb451e";
+          "https://flowise-ngy8.onrender.com/api/v1/prediction/5d297588-8b13-4452-8c68-a7288bfbbbe2";
       } else if (inputUrl === "urlCF") {
         url =
-          "https://flowise-ngy8.onrender.com/api/v1/prediction/cf33a36d-0f2e-40a1-b668-4074ab08e2cd";
+          "https://flowise-ngy8.onrender.com/api/v1/prediction/5d297588-8b13-4452-8c68-a7288bfbbbe2";
       } else if (inputUrl === "urlBS") {
         url =
-          "https://flowise-ngy8.onrender.com/api/v1/prediction/26a1b357-632b-4551-9f60-9d2e9b216738";
+          "https://flowise-ngy8.onrender.com/api/v1/prediction/5d297588-8b13-4452-8c68-a7288bfbbbe2";
       } else if (inputUrl === "urlCus") {
         url = "http://localhost:300/";
       } else if (inputUrl === "urlSale") {
@@ -94,7 +175,8 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ question: [JSON.stringify(datasrc)] }),
+          // body: JSON.stringify({ question: [JSON.stringify(datasrc)] }),
+          body: JSON.stringify({ question: input }),
         }
       );
 
@@ -212,7 +294,6 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
 
   const {
     totalPrincipal,
-
     totalRevenue,
     totalDeductions,
     netRevenue,
@@ -475,8 +556,6 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
     ),
   }));
 
-  console.log("CF", positionDataWithNetIncome);
-
   // Add positionDataWithNetIncome2
 
   const currentAssets = cashEndBalances.map((cashEnd, index) => {
@@ -719,8 +798,6 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
     ),
   }));
 
-  console.log("BS", positionDataWithNetIncome2);
-
   // Add transposedData
 
   const { revenueTableData } = useSelector((state) => state.sales);
@@ -880,33 +957,48 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
       }, {}),
     })),
   }));
-  console.log("PL", transposedData);
+  const { financialProjectName } = useSelector((state) => state.durationSelect);
+
+  console.log("currentUser", currentUser[0]);
 
   return (
-    <div className=" flex flex-col rounded-md  ">
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-4"
-        onClick={handleSubmit}
-      >
-        {isLoading ? <SpinnerBtn /> : "Analyze"}
-      </button>
-      <Modal
-        open={isModalVisible}
-        footer={null}
-        centered
-        onCancel={() => setIsModalVisible(false)}
-        width="60%"
-        style={{ top: 20 }}
-      >
-        {messages.length > 0 && (
-          <div
-            dangerouslySetInnerHTML={{
-              __html: messages[messages.length - 1].content,
-            }}
-          />
-        )}
-      </Modal>
-    </div>
+    currentUser[0]?.admin && (
+      <div className="flex flex-col rounded-md">
+        <input
+          className="p-2 rounded m-4 border-gray-300 border"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-4"
+          onClick={handleSubmit}
+        >
+          {isLoading ? <SpinnerBtn /> : "Send"}
+        </button>
+        <Modal
+          open={isModalVisible}
+          footer={null}
+          centered
+          onCancel={() => setIsModalVisible(false)}
+          width="60%"
+          style={{ top: 20 }}
+        >
+          {messages.length > 0 && (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: messages[messages.length - 1].content,
+              }}
+            />
+          )}
+        </Modal>
+        <FileUploadComponent
+          BS={positionDataWithNetIncome2}
+          CF={positionDataWithNetIncome}
+          PNL={transposedData}
+          Source={financialProjectName}
+        />
+      </div>
+    )
   );
 };
 

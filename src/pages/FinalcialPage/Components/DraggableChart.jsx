@@ -2,14 +2,19 @@ import React, { useEffect, useRef } from "react";
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 
-const DraggableChart = ({ data, onDataChange }) => {
+const DraggableChart = ({ data, onDataChange, beginMonth, endMonth }) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
     let chart = am4core.create(chartRef.current, am4charts.XYChart);
     chart.hiddenState.properties.opacity = 0;
 
-    chart.data = data.map((item) => ({
+    const filteredData = data.filter((item) => {
+      const monthNumber = parseInt(item.month.replace("Month ", ""), 10);
+      return monthNumber >= beginMonth && monthNumber <= endMonth;
+    });
+
+    chart.data = filteredData.map((item) => ({
       ...item,
       customers: parseFloat(item.customers),
     }));
@@ -86,7 +91,7 @@ const DraggableChart = ({ data, onDataChange }) => {
       dataItem.column.hideTooltip(0);
       event.target.isHover = true;
 
-      const newData = chart.data.map((item) => {
+      const newData = data.map((item) => {
         if (item.month === dataItem.categoryX) {
           return { ...item, customers: value };
         }
@@ -154,7 +159,7 @@ const DraggableChart = ({ data, onDataChange }) => {
     return () => {
       chart.dispose();
     };
-  }, [data, onDataChange]);
+  }, [data, onDataChange, beginMonth, endMonth]);
 
   return (
     <div

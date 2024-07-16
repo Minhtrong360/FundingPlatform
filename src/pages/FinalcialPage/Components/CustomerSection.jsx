@@ -60,6 +60,8 @@ const CustomerInputsForm = React.memo(
   }) => {
     const [isModalCustomOpen, setIsModalCustomOpen] = useState(false);
     const [temporaryData, setTemporaryData] = useState([]);
+    const [temporaryBeginMonth, setTemporaryBeginMonth] = useState([]);
+    const [temporaryEndMonth, setTemporaryEndMonth] = useState([]);
 
     useEffect(() => {
       const input = tempCustomerInputs.find(
@@ -89,6 +91,8 @@ const CustomerInputsForm = React.memo(
                 .find((data) => data[0]?.channelName === input.channelName)
                 ?.map((monthData) => monthData.add) || []
         );
+        setTemporaryBeginMonth(input?.beginMonth);
+        setTemporaryEndMonth(input?.endMonth);
       }
     }, [renderCustomerForm]);
 
@@ -268,9 +272,10 @@ const CustomerInputsForm = React.memo(
                   type="number"
                   min={1}
                   value={input.beginMonth}
-                  onChange={(e) =>
-                    handleInputChange(input?.id, "beginMonth", e.target.value)
-                  }
+                  onChange={(e) => {
+                    handleInputChange(input?.id, "beginMonth", e.target.value);
+                    setTemporaryBeginMonth(e.target.value);
+                  }}
                 />
               </div>
               <div className="grid grid-cols-2 gap-4 mb-3">
@@ -280,9 +285,10 @@ const CustomerInputsForm = React.memo(
                   type="number"
                   min={1}
                   value={input.endMonth}
-                  onChange={(e) =>
-                    handleInputChange(input?.id, "endMonth", e.target.value)
-                  }
+                  onChange={(e) => {
+                    handleInputChange(input?.id, "endMonth", e.target.value);
+                    setTemporaryEndMonth(e.target.value);
+                  }}
                 />
               </div>
               <div className="grid grid-cols-2 gap-4 mb-3">
@@ -373,6 +379,8 @@ const CustomerInputsForm = React.memo(
                   <DraggableChart
                     data={temporaryData}
                     onDataChange={(newData) => setTemporaryData(newData)}
+                    beginMonth={temporaryBeginMonth}
+                    endMonth={temporaryEndMonth}
                   />
                 </Modal>
               )}

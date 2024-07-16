@@ -40,6 +40,66 @@ const theme = {
   },
 };
 
+const themes={
+  button: {
+      backgroundColor: "#3B81F6",
+      right: 20,
+      bottom: 20,
+      size: 48, // small | medium | large | number
+      dragAndDrop: true,
+      iconColor: "white",
+      customIconSrc: "https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/google-messages.svg",
+  },
+  tooltip: {
+      showTooltip: false,
+      tooltipMessage: 'Hi There 👋!',
+      tooltipBackgroundColor: 'blue',
+      tooltipTextColor: 'white',
+      tooltipFontSize: 16,
+  },
+  chatWindow: {
+      showTitle: true,
+      title: 'BeeKrowd agent',
+      titleAvatarSrc: 'https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/google-messages.svg',
+      welcomeMessage: 'Hello! I am your CFO agent. How can I help you?',
+      errorMessage: 'There is error, please try again',
+      backgroundColor: "#ffffff",
+      height: 600,
+      width: 400,
+      fontSize: 14,
+      poweredByTextColor: "#2527EE",
+      botMessage: {
+          backgroundColor: "#f7f8ff",
+          textColor: "#303235",
+          showAvatar: true,
+          avatarSrc: "https://img.icons8.com/?size=100&id=xaquNfre75yC&format=png&color=000000",
+      },
+      userMessage: {
+          backgroundColor: "#3B81F6",
+          textColor: "#ffffff",
+          showAvatar: false,
+          avatarSrc: "",
+      },
+      textInput: {
+          placeholder: 'Type your question',
+          backgroundColor: '#ffffff',
+          textColor: '#303235',
+          sendButtonColor: '#3B81F6',
+          maxChars: 100,
+          maxCharsWarningMessage: 'You exceeded the characters limit. Please input less than 50 characters.',
+          autoFocus: true, // If not used, autofocus is disabled on mobile and enabled on desktop. true enables it on both, false disables it on both.
+      },
+      feedback: {
+          color: '#303235',
+      },
+      footer: {
+          textColor: '#303235',
+          text: 'Powered by',
+          company: 'BeeKrowd',
+          companyLink: 'https://beekrowd.com',
+      }
+  }
+}
 // const FlowiseChat = () => {
 //   return (
 //     <BubbleChat
@@ -68,7 +128,7 @@ const FlowiseChat = ({ page }) => {
     <BubbleChat
       chatflowid={chatflowid}
       apiHost="https://flowise-ngy8.onrender.com"
-      theme={theme}
+      theme={themes}
     />
   );
 };

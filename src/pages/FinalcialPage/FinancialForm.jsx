@@ -528,7 +528,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 deductionPercentage: 5,
                 cogsPercentage: 30,
                 selectedChannel: { id: 1, channelName: "Online" },
-                channelAllocation: 0.4,
+                channelAllocation: 40,
                 daysGetPaid: 0,
               },
               {
@@ -539,7 +539,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 deductionPercentage: 4,
                 cogsPercentage: 35,
                 selectedChannel: { id: 2, channelName: "Offline" },
-                channelAllocation: 0.3,
+                channelAllocation: 30,
                 daysGetPaid: 0,
               },
               {
@@ -550,7 +550,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 deductionPercentage: 6,
                 cogsPercentage: 25,
                 selectedChannel: { id: 2, channelName: "Offline" },
-                channelAllocation: 0.6,
+                channelAllocation: 60,
                 daysGetPaid: 0,
               },
             ]

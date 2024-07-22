@@ -107,9 +107,13 @@ export const calculateCostData = (
     let currentCost = parseFloat(costInput.costValue);
     for (let month = 1; month <= numberOfMonths; month++) {
       if (costInput.applyAdditionalInfo && costInput.gptResponseArray?.length) {
-        // Use gptResponseArray if applyAdditionalInfo is true and gptResponseArray exists
-        currentCost = costInput.gptResponseArray[month - 1] || 0;
-        monthlyCosts.push({ month: month, cost: currentCost });
+        if (month >= costInput.beginMonth && month <= costInput.endMonth) {
+          // Use gptResponseArray if applyAdditionalInfo is true and gptResponseArray exists
+          currentCost = costInput.gptResponseArray[month - 1] || 0;
+          monthlyCosts.push({ month: month, cost: currentCost });
+        } else {
+          monthlyCosts.push({ month: month, cost: 0 });
+        }
       } else if (
         costInput.costType === "Based on Revenue" &&
         month >= costInput.beginMonth &&

@@ -1,12 +1,12 @@
 import { useAuth } from "../../context/AuthContext";
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
-import UniCard from "./UniCard";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 import { useNavigate } from "react-router-dom";
+import VCCard from "./VCCard";
 
-const HeroCompetitions = ({
+const HeroCohort = ({
   onSelectCode,
 
   selectedCode,
@@ -28,7 +28,7 @@ const HeroCompetitions = ({
           .from("code")
           .select("*")
           .eq("publish", true)
-          .eq("for", "UNI");
+          .eq("for", "VC");
 
         if (error) {
           throw error;
@@ -172,7 +172,8 @@ const HeroCompetitions = ({
                 <span className="text-blue-600 bg-yellow-300 h-6">
                   Profile listing for
                 </span>{" "}
-                Competitions.
+                <br />
+                VC.
               </h1>
               <p className="mt-6 text-lg text-gray-800">
                 Create a fundraising profile and get the reward from
@@ -232,7 +233,7 @@ const HeroCompetitions = ({
                       key={code.id}
                       className="group flex-grow justify-center w-full"
                     >
-                      <UniCard
+                      <VCCard
                         data={code}
                         setSelectedCodeFull={setSelectedCodeFull}
                         onSelectCode={onSelectCode}
@@ -270,4 +271,4 @@ const HeroCompetitions = ({
   );
 };
 
-export default HeroCompetitions;
+export default HeroCohort;

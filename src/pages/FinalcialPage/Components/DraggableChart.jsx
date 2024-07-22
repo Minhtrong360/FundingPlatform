@@ -1,13 +1,33 @@
 import React, { useEffect, useRef } from "react";
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
+import { useSelector } from "react-redux";
 
 const DraggableChart = ({ data, onDataChange, beginMonth, endMonth }) => {
   const chartRef = useRef(null);
 
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+
   useEffect(() => {
     let chart = am4core.create(chartRef.current, am4charts.XYChart);
     chart.hiddenState.properties.opacity = 0;
+
+    const months = [
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "08",
+      "09",
+      "10",
+      "11",
+      "12",
+    ];
 
     const filteredData = data.filter((item) => {
       const monthNumber = parseInt(item.month.replace("Month ", ""), 10);
@@ -17,13 +37,21 @@ const DraggableChart = ({ data, onDataChange, beginMonth, endMonth }) => {
     chart.data = filteredData.map((item) => ({
       ...item,
       customers: parseFloat(item.customers),
+      month: item.month,
+      formattedMonth: (() => {
+        const monthNumber = parseInt(item.month.replace("Month ", ""), 10);
+        const monthIndex = (startMonth + monthNumber - 2) % 12;
+        const year =
+          startYear + Math.floor((startMonth + monthNumber - 2) / 12);
+        return `${months[monthIndex]}/${year}`;
+      })(),
     }));
 
     chart.padding(40, 40, 0, 0);
     chart.maskBullets = false;
 
     var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-    categoryAxis.dataFields.category = "month";
+    categoryAxis.dataFields.category = "formattedMonth";
     categoryAxis.renderer.grid.template.disabled = true;
     categoryAxis.renderer.minGridDistance = 50;
 
@@ -33,7 +61,7 @@ const DraggableChart = ({ data, onDataChange, beginMonth, endMonth }) => {
     valueAxis.renderer.minWidth = 60;
 
     var series = chart.series.push(new am4charts.ColumnSeries());
-    series.dataFields.categoryX = "month";
+    series.dataFields.categoryX = "formattedMonth";
     series.dataFields.valueY = "customers";
     series.tooltip.pointerOrientation = "vertical";
     series.tooltip.dy = -8;
@@ -92,7 +120,7 @@ const DraggableChart = ({ data, onDataChange, beginMonth, endMonth }) => {
       event.target.isHover = true;
 
       const newData = data.map((item) => {
-        if (item.month === dataItem.categoryX) {
+        if (item.month === dataItem._dataContext.month) {
           return { ...item, customers: value };
         }
         return item;
@@ -159,7 +187,7 @@ const DraggableChart = ({ data, onDataChange, beginMonth, endMonth }) => {
     return () => {
       chart.dispose();
     };
-  }, [data, onDataChange, beginMonth, endMonth]);
+  }, [data, onDataChange, beginMonth, endMonth, startMonth, startYear]);
 
   return (
     <div

@@ -100,7 +100,7 @@ const CustomerInputsForm = React.memo(
       const input = tempCustomerInputs.find(
         (input) => input?.id == renderCustomerForm
       );
-
+      console.log("temporaryData", temporaryData);
       if (input) {
         // Update gptResponseArray and applyCustom first and ensure state update is completed before next update
         setTempCustomerInputs((prevInputs) => {
@@ -120,7 +120,7 @@ const CustomerInputsForm = React.memo(
               return {
                 ...i,
                 customersPerMonth: Number(
-                  temporaryData[0].customers.toFixed(0)
+                  temporaryData[0]?.customers?.toFixed(0)
                 ),
               };
             }

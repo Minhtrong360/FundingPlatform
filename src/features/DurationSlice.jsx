@@ -16,6 +16,7 @@ const initialState = {
   cutMonth: 4,
   description: "",
   location: "",
+  inputData: {},
 };
 
 const durationSelectSlice = createSlice({
@@ -64,6 +65,9 @@ const durationSelectSlice = createSlice({
     setLocation(state, action) {
       state.location = action.payload;
     },
+    setInputData(state, action) {
+      state.inputData = action.payload;
+    },
     // Thêm reducers khác nếu cần
   },
 });
@@ -83,6 +87,7 @@ export const {
   setCutMonth,
   setDescription,
   setLocation,
+  setInputData,
 } = durationSelectSlice.actions;
 
 export function formatDate(inputDateString) {

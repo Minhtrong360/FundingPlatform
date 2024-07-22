@@ -22,6 +22,7 @@ import SpinnerBtn from "../../../components/SpinnerBtn";
 
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
+import { setInputData } from "../../../features/DurationSlice";
 
 const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const { investmentInputs, investmentData } = useSelector(
@@ -130,7 +131,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     "11",
     "12",
   ];
-  const { startMonth, startYear } = useSelector(
+  const { startMonth, startYear, inputData } = useSelector(
     (state) => state.durationSelect
   );
 
@@ -386,13 +387,16 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         );
         dispatch(setInvestmentTableData(tableData));
 
-        const newInputData = JSON.parse(existingData[0].inputData);
+        const updatedInputData = {
+          ...inputData,
+          investmentInputs: tempInvestmentInputs,
+        };
 
-        newInputData.investmentInputs = tempInvestmentInputs;
+        dispatch(setInputData(updatedInputData));
 
         const { error: updateError } = await supabase
           .from("finance")
-          .update({ inputData: newInputData })
+          .update({ inputData: updatedInputData })
           .eq("id", existingData[0]?.id)
           .select();
 

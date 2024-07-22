@@ -802,8 +802,6 @@ function FinancialList() {
     (project) => project.user_id !== user.id
   );
 
-  console.log("myProjects", myProjects);
-
   return (
     <div className=" bg-white darkBg antialiased !p-0 ">
       <div id="exampleWrapper">

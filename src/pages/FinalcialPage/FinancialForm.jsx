@@ -729,7 +729,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     });
   }, [id]);
 
-  console.log("inputData", inputData);
   useEffect(() => {
     const calculatedData = calculateCustomerGrowth(
       customerInputs,
@@ -807,7 +806,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   }, [numberOfMonths, customerInputs, channelInputs]);
 
   const saveOrUpdateFinanceData = async (inputData) => {
-    console.log("inputData", inputData);
     try {
       setIsLoading(true);
       const { data: existingData, error: selectError } = await supabase

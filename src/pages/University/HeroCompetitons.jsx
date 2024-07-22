@@ -243,23 +243,18 @@ const HeroCompetitions = ({
                   ))}
                 </div>
                 <div className="flex justify-between mt-5">
-                  <button
+                  <LeftOutlined
                     onClick={handlePrevious}
                     disabled={currentCodePage === 0}
-                    className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${currentCodePage === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
-                  >
-                    <LeftOutlined /> Previous
-                  </button>
-                  <button
+                    className={` ${currentCodePage === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+                  />
+                  <RightOutlined
                     onClick={handleNext}
                     disabled={
                       (currentCodePage + 1) * itemsPerPage >= codeData.length
                     }
-                    className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${(currentCodePage + 1) * itemsPerPage >= codeData.length ? "opacity-50 cursor-not-allowed" : ""}`}
-                  >
-                    Next
-                    <RightOutlined className="ml-2" />
-                  </button>
+                    className={` ${(currentCodePage + 1) * itemsPerPage >= codeData.length ? "opacity-50 cursor-not-allowed" : ""}`}
+                  />
                 </div>
               </div>
             </section>

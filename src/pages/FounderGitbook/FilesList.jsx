@@ -408,7 +408,10 @@ function FilesList() {
         }}
         centered={true}
       >
-        Are you sure you want to delete this file {deleteFileId?.name} ?
+        Are you sure you want to delete this file
+        <span className="text-[#f5222d] font-semibold">
+          {deleteFileId?.name} ?
+        </span>
       </Modal>
     </main>
   );

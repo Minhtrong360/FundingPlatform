@@ -42,7 +42,8 @@ const StepByStepModal = () => {
             className="w-full h-auto border rounded-lg"
           />
           <div className="text-lg font-semibold">
-            Step 2: Choose "Action" &gt; "Submit"
+            Step 2: Choose "Action" of the project that you want to apply &gt;
+            "Submit"
           </div>
           <img
             src={step2}

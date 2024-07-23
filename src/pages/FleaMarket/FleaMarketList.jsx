@@ -146,7 +146,7 @@ function FleaMarketList() {
     },
 
     {
-      title: "Price",
+      title: "Price ($)",
       dataIndex: "price",
       key: "price",
       render: (text, record) => (
@@ -446,7 +446,15 @@ function FleaMarketList() {
                   }}
                   centered={true}
                 >
-                  Are you sure you want to delete this project?
+                  Are you sure you want to delete this{" "}
+                  <span className="text-[#f5222d] font-semibold">
+                    {
+                      fleaMarketData?.find(
+                        (project) => project.id === SelectedID
+                      )?.name
+                    }
+                  </span>{" "}
+                  project?
                 </Modal>
               )}
 

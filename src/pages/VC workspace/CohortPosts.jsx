@@ -266,7 +266,7 @@ const CohortPost = () => {
               projectList={projectList}
               setProjectList={setProjectList}
             />
-            {selectedCodeFull && (
+            {selectedCodeFull ? (
               <>
                 <VCSearch
                   onSearch={handleSearch}
@@ -366,6 +366,10 @@ const CohortPost = () => {
                   </TabPane>
                 </Tabs>
               </>
+            ) : (
+              <div className="flex justify-center items-center text-3xl my-8 color-changing-text">
+                Coming soon!
+              </div>
             )}
           </div>
         </div>

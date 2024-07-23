@@ -47,7 +47,8 @@ import MarketResearch from "../pages/MarketResearch_Evaluation/MarketResearch.js
 import UniversitiesPage from "../pages/University/UniversitiesPage.jsx";
 import CompetitionPosts from "../pages/University/CompetitionPosts.jsx";
 import DraggableChart from "../pages/FinalcialPage/Components/DraggableChart.jsx";
-import { useEffect } from "react";
+import VCPage from "../pages/VC workspace/VCPage.jsx";
+import CohortPost from "../pages/VC workspace/CohortPosts.jsx";
 
 function Router() {
   const location = useLocation();
@@ -251,6 +252,22 @@ function Router() {
           path="/competitions"
           element={<CompetitionPosts location={location} />}
         />
+
+        <Route
+          key={location.key}
+          path="/vc_workspace"
+          element={
+            <AuthRequire message="Sign in required!">
+              <VCPage location={location} />
+            </AuthRequire>
+          }
+        />
+        <Route
+          key={location.key}
+          path="/cohort"
+          element={<CohortPost location={location} />}
+        />
+
         <Route
           key={location.key}
           path="/dragChart"

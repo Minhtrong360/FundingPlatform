@@ -4,16 +4,15 @@ import { supabase } from "../../supabase";
 import { LinearProgress } from "@mui/material";
 import { Dropdown, Menu, message, Tabs } from "antd";
 
-import { useLocation, useNavigate } from "react-router-dom";
-import UniSearch from "./UniSearch";
-import UniEditorTool from "./UniEditorTool"; // Assuming this is the component for editing rules
 import TabPane from "antd/es/tabs/TabPane";
 import { useAuth } from "../../context/AuthContext";
 import Header2 from "../Home/Header2";
-import HeroCompetitions from "./HeroCompetitons";
-import SubmitProjectModal from "./components/SubmitProjectComponent";
+import VCSearch from "./VCSearch";
+import VCEditorTool from "./VCEditorTool";
+import HeroCohort from "./HeroCohort";
+import SubmitProjectModal from "../University/components/SubmitProjectComponent";
 
-const CompetitionPost = () => {
+const CohortPost = () => {
   const [companies, setCompanies] = useState([]);
   const [page, setPage] = useState(1);
   const itemsPerPage = 6;
@@ -247,14 +246,14 @@ const CompetitionPost = () => {
       });
     }
   };
-
+  console.log("selectedCodeFull", selectedCodeFull);
   return (
-    <div className="bg-white darkBg antialiased !p-0">
+    <div className=" bg-white darkBg antialiased !p-0">
       <div id="exampleWrapper">
         <Header2 />
-        <div className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0">
+        <div className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0 ">
           <div className="px-3 py-2 lg:px-8 lg:py-1 mx-auto flex-grow">
-            <HeroCompetitions
+            <HeroCohort
               onSelectCode={handleSelectCode}
               setCompanies={setCompanies}
               selectedCode={selectedCodeFull}
@@ -267,99 +266,111 @@ const CompetitionPost = () => {
               projectList={projectList}
               setProjectList={setProjectList}
             />
+            {selectedCodeFull ? (
+              <>
+                <VCSearch
+                  onSearch={handleSearch}
+                  companies={companiesToRender}
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                  currentTab={currentTab}
+                  setCurrentTab={setCurrentTab}
+                  selectedCode={selectedCodeFull}
+                />
 
-            <>
-              <UniSearch
-                onSearch={handleSearch}
-                companies={companiesToRender}
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-                currentTab={currentTab}
-                setCurrentTab={setCurrentTab}
-                selectedCode={selectedCodeFull}
-              />
-
-              <Tabs
-                activeKey={selectedTab}
-                onChange={(key) => setSelectedTab(key)}
-                centered
-                id="codeCompetition"
-              >
-                <TabPane
-                  tab={
-                    <Dropdown overlay={roundsMenu} trigger={["hover"]}>
-                      <span>Listing</span>
-                    </Dropdown>
-                  }
-                  key="Listing"
+                <Tabs
+                  activeKey={selectedTab}
+                  onChange={(key) => setSelectedTab(key)}
+                  centered
+                  id="codeCompetition"
                 >
-                  {isLoading ? (
-                    <LinearProgress className="my-20" />
-                  ) : (
-                    <>
-                      {selectedRound && (
-                        <h2 className="text-center font-semibold text-lg">
-                          Round: {selectedRound?.name}
-                        </h2>
-                      )}
-                      <div className="mx-auto max-w-[85rem] my-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
-                        {companiesToRender.length > 0 ? (
-                          companiesToRender.map((company, index) => (
-                            <div
-                              key={company.id}
-                              className="group flex justify-center"
-                            >
-                              {company ? (
-                                <Card
-                                  key={company.id}
-                                  title={company.name}
-                                  description={company.description}
-                                  imageUrl={company.card_url}
-                                  buttonText="More"
-                                  project_id={company.project_id}
-                                  verified={company.verifiedStatus}
-                                  status={company.status}
-                                  selectedCodeFull={selectedCodeFull}
-                                  projectList={projectList}
-                                  selectedRound={selectedRound}
-                                  setProjectList={setProjectList}
-                                  isJudge={isJudge}
-                                />
-                              ) : (
-                                <div className="w-[30vw] h-[55vh]"></div>
-                              )}
-                            </div>
-                          ))
-                        ) : (
-                          <>
-                            <div></div>
-                            <div className="mx-auto my-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
-                              No result
-                            </div>
-                          </>
+                  <TabPane
+                    tab={
+                      <Dropdown
+                        overlay={roundsMenu}
+                        trigger={["hover"]}
+                        // onOpenChange={(visible) =>
+                        //   setHoveredTab(visible ? "Listing" : "")
+                        // }
+                      >
+                        <span>Listing</span>
+                      </Dropdown>
+                    }
+                    key="Listing"
+                  >
+                    {isLoading ? (
+                      <LinearProgress className="my-20" />
+                    ) : (
+                      <>
+                        {selectedRound && (
+                          <h2 className="text-center font-semibold text-lg">
+                            Round: {selectedRound?.name}
+                          </h2>
                         )}
-                      </div>
-                      <div className="sticky bottom-8 left-8">
-                        <SubmitProjectModal />
-                      </div>
-                    </>
-                  )}
-                </TabPane>
-                <TabPane tab="Rules" key="Rules">
-                  <div className="flex justify-center items-center">
-                    <UniEditorTool
-                      selectedCode={selectedCodeFull}
-                      setSelectedCode={setSelectedCodeFull}
-                      unChange={true}
-                      handleUpdateRules={handleUpdateRules}
-                    />
-                  </div>
-                  <div className="sticky bottom-8 left-8">
-                    <SubmitProjectModal />
-                  </div>
-                </TabPane>
-              </Tabs>
-            </>
+
+                        <div className="mx-auto max-w-[85rem] my-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
+                          {companiesToRender.length > 0 ? (
+                            companiesToRender.map((company, index) => (
+                              <div
+                                key={company.id}
+                                className="group flex justify-center"
+                              >
+                                {company ? (
+                                  <Card
+                                    key={company.id}
+                                    title={company.name}
+                                    description={company.description}
+                                    imageUrl={company.card_url}
+                                    buttonText="More"
+                                    project_id={company.project_id}
+                                    verified={company.verifiedStatus}
+                                    status={company.status}
+                                    selectedCodeFull={selectedCodeFull}
+                                    projectList={projectList}
+                                    selectedRound={selectedRound}
+                                    setProjectList={setProjectList}
+                                    isJudge={isJudge}
+                                  />
+                                ) : (
+                                  <div className="w-[30vw] h-[55vh]"></div>
+                                )}
+                              </div>
+                            ))
+                          ) : (
+                            <>
+                              <div></div>
+                              <div className="mx-auto my-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
+                                No result
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        <div className="sticky bottom-8 left-8">
+                          <SubmitProjectModal />
+                        </div>
+                      </>
+                    )}
+                  </TabPane>
+                  <TabPane tab="Rules" key="Rules">
+                    <div className="flex justify-center items-center">
+                      <VCEditorTool
+                        selectedCode={selectedCodeFull}
+                        setSelectedCode={setSelectedCodeFull}
+                        unChange={true}
+                        handleUpdateRules={handleUpdateRules}
+                      />
+                    </div>
+                    <div className="sticky bottom-8 left-8">
+                      <SubmitProjectModal />
+                    </div>
+                  </TabPane>
+                </Tabs>
+              </>
+            ) : (
+              <div className="flex justify-center items-center text-3xl my-8 color-changing-text">
+                Coming soon!
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -367,4 +378,4 @@ const CompetitionPost = () => {
   );
 };
 
-export default CompetitionPost;
+export default CohortPost;

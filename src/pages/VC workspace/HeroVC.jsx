@@ -16,7 +16,7 @@ import { supabase } from "../../supabase";
 import moment from "moment";
 import { formatDate } from "../../features/DurationSlice";
 import { IconButton } from "@mui/material";
-import UniCard from "./UniCard";
+import UniCard from "./VCCard";
 import {
   CloseOutlined,
   EyeTwoTone,
@@ -27,7 +27,7 @@ import {
 
 import { v4 as uuidv4 } from "uuid"; // Import uuid
 
-const HeroUniversities = ({
+const HeroVC = ({
   onSelectCode,
   setCompanies,
   credentials,
@@ -285,23 +285,20 @@ const HeroUniversities = ({
       );
     }
   };
+
   const handleAddEditRound = () => {
-    if (editRounds?.length === 0) {
+    if (
+      JSON.parse(editRounds[editRounds.length - 1])?.name ||
+      editRounds.length === 0
+    ) {
       setEditRounds([
         ...editRounds,
         JSON.stringify({ id: uuidv4(), name: "" }),
       ]);
     } else {
-      if (JSON.parse(editRounds[editRounds?.length - 1])?.name) {
-        setEditRounds([
-          ...editRounds,
-          JSON.stringify({ id: uuidv4(), name: "" }),
-        ]);
-      } else {
-        message.error(
-          "Please enter a name for the current round before adding a new one."
-        );
-      }
+      message.error(
+        "Please enter a name for the current round before adding a new one."
+      );
     }
   };
 
@@ -594,7 +591,7 @@ const HeroUniversities = ({
       ),
     },
     {
-      title: "Competition Name",
+      title: "Cohort Name",
       dataIndex: "name",
       key: "name",
       render: (text, record) => (
@@ -643,8 +640,8 @@ const HeroUniversities = ({
       ),
     },
     {
-      title: "Judges Name",
-      dataIndex: "judges",
+      title: "Analyzers",
+      dataIndex: "judges_name",
       key: "judges_name",
       render: (text, record) => (
         <span
@@ -665,8 +662,8 @@ const HeroUniversities = ({
       ),
     },
     {
-      title: "Judges Email",
-      dataIndex: "judges",
+      title: "Analyzer's Emails",
+      dataIndex: "judges_email",
       key: "judges_email",
       render: (text, record) => (
         <span
@@ -743,7 +740,7 @@ const HeroUniversities = ({
                     onClick={() => openJudgeModal(record)}
                     style={{ fontSize: "12px" }}
                   >
-                    Judges
+                    Analyzers
                   </div>
                 </Menu.Item>
                 <Menu.Item key="scoringRules">
@@ -1403,7 +1400,7 @@ const HeroUniversities = ({
                   setRounds([]);
                 }}
               >
-                Create A Competition
+                Create A Cohort
               </button>
             )}
           </div>
@@ -1525,7 +1522,7 @@ const HeroUniversities = ({
         )}
 
         <Modal
-          title="Add new Competition"
+          title="Add new Cohort"
           open={isAddNewModalOpen}
           onOk={handleAddNewCode}
           onCancel={() => setIsAddNewModalOpen(false)}
@@ -1537,11 +1534,11 @@ const HeroUniversities = ({
             <form className="grid gap-6 col-span-1 md:col-span-2">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label htmlFor="competition_name">Competition Name</label>
+                  <label htmlFor="competition_name">Cohort Name</label>
                   <div className="flex items-center">
                     <Input
                       id="competition_name"
-                      placeholder="Enter competition name"
+                      placeholder="Enter cohort name"
                       required
                       className="border-gray-300 rounded-md text-sm"
                       value={competitionName}
@@ -1579,7 +1576,7 @@ const HeroUniversities = ({
               </div>
               <div className="space-y-1 md:col-span-2">
                 <label htmlFor="competition_description">
-                  Competition Description
+                  Cohort Description
                 </label>
                 <div className="flex items-center">
                   <Input.TextArea
@@ -1594,7 +1591,7 @@ const HeroUniversities = ({
                 </div>
               </div>
               <div className="space-y-1 md:col-span-2">
-                <label htmlFor="cover">Competition Cover</label>
+                <label htmlFor="cover">Cohort Cover</label>
                 <div className="flex items-center">
                   <Input
                     id="cover"
@@ -1691,13 +1688,11 @@ const HeroUniversities = ({
             <form className="grid gap-6 col-span-1 md:col-span-2">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label htmlFor="edit_competition_name">
-                    Competition Name
-                  </label>
+                  <label htmlFor="edit_competition_name">Cohort Name</label>
                   <div className="flex items-center">
                     <Input
                       id="edit_competition_name"
-                      placeholder="Enter competition name"
+                      placeholder="Enter Cohort name"
                       required
                       className="border-gray-300 rounded-md text-sm"
                       value={competitionName}
@@ -1748,7 +1743,7 @@ const HeroUniversities = ({
               </div>
               <div className="space-y-1 md:col-span-2">
                 <label htmlFor="competition_description">
-                  Competition Description
+                  Cohort Description
                 </label>
                 <div className="flex items-center">
                   <Input.TextArea
@@ -1763,7 +1758,7 @@ const HeroUniversities = ({
                 </div>
               </div>
               <div className="space-y-1 md:col-span-2">
-                <label htmlFor="cover">Competition Cover</label>
+                <label htmlFor="cover">Cohort Cover</label>
                 <div className="flex items-center">
                   <Input
                     id="cover"
@@ -1888,11 +1883,10 @@ const HeroUniversities = ({
         >
           {selectedCode?.publish
             ? "Are you sure to un-publish this code?"
-            : 'Other users can see all projects that relate to this code on "Competition" Tab on BeeKrowd platform. Are you sure to publish?'}
+            : 'Other users can see all projects that relate to this code on "Apply VC" Tab on BeeKrowd platform. Are you sure to publish?'}
         </Modal>
 
         <Modal
-          title="Manage Judges"
           open={isJudgeModalOpen}
           onOk={() => setIsJudgeModalOpen(false)}
           onCancel={() => setIsJudgeModalOpen(false)}
@@ -1902,14 +1896,14 @@ const HeroUniversities = ({
           width={600}
         >
           <div className="w-full mx-auto p-6 space-y-6 ">
-            <h3 className="text-lg font-semibold">Add Judge</h3>
+            <h3 className="text-lg font-semibold">Add new Analyzer</h3>
             <form className="grid gap-6 col-span-1 md:col-span-2">
               <div className="space-y-2">
-                <label htmlFor="judge_name">Judge Name</label>
+                <label htmlFor="judge_name">Name</label>
                 <div className="flex items-center">
                   <Input
                     id="judge_name"
-                    placeholder="Enter judge name"
+                    placeholder="Enter their name"
                     required
                     className="border-gray-300 rounded-md text-sm"
                     value={judgeName}
@@ -1918,11 +1912,11 @@ const HeroUniversities = ({
                 </div>
               </div>
               <div className="space-y-2">
-                <label htmlFor="judge_email">Judge Email</label>
+                <label htmlFor="judge_email">Email</label>
                 <div className="flex items-center">
                   <Input
                     id="judge_email"
-                    placeholder="Enter judge email"
+                    placeholder="Enter their email"
                     required
                     className="border-gray-300 rounded-md text-sm"
                     value={judgeEmail}
@@ -1931,11 +1925,11 @@ const HeroUniversities = ({
                 </div>
               </div>
               <Button type="primary" onClick={handleAddJudge}>
-                Add Judge
+                Add Analyzer
               </Button>
             </form>
 
-            <h3 className="text-lg font-semibold mt-6">Judge Listing</h3>
+            <h3 className="text-lg font-semibold mt-6">Analyzers Listing</h3>
             <div>
               <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
                 <Table
@@ -2172,4 +2166,4 @@ const HeroUniversities = ({
   );
 };
 
-export default HeroUniversities;
+export default HeroVC;

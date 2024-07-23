@@ -18,8 +18,8 @@ function FilesList() {
   const [deleteFileId, setDeleteFileId] = useState(null);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
-  const showDeleteModal = (fileId) => {
-    setDeleteFileId(fileId);
+  const showDeleteModal = (file) => {
+    setDeleteFileId(file);
     setIsDeleteModalVisible(true);
   };
 
@@ -32,26 +32,42 @@ function FilesList() {
 
       const { data: fileData, error: fileError } = await supabase
         .from("files")
-        .select("user_id")
-        .eq("id", deleteFileId)
+        .select("user_id, link")
+        .eq("id", deleteFileId?.id)
         .single();
 
       if (fileError) {
         console.log("Error fetching file data:", fileError);
       } else {
         if (fileData.user_id === user.id) {
-          const { error } = await supabase
-            .from("files")
-            .delete()
-            .eq("id", deleteFileId);
+          // Extract the file path from the URL
+          const filePath = fileData.link.split(
+            "/storage/v1/object/public/beekrowd_storage"
+          )[1];
 
-          if (error) {
-            console.log("Error deleting file:", error);
+          // Delete the file from storage
+          const { error: storageError } = await supabase.storage
+            .from("beekrowd_storage")
+            .remove([filePath]);
+          console.log("filePath", filePath);
+          if (storageError) {
+            console.log("Error deleting file from storage:", storageError);
           } else {
-            const updatedLinks = projectLinks.filter(
-              (link) => link.id !== deleteFileId
-            );
-            setProjectLinks(updatedLinks);
+            // Delete the file record from the database
+            const { error } = await supabase
+              .from("files")
+              .delete()
+              .eq("id", deleteFileId?.id);
+
+            if (error) {
+              console.log("Error deleting file record:", error);
+            } else {
+              const updatedLinks = projectLinks.filter(
+                (link) => link.id !== deleteFileId?.id
+              );
+              setProjectLinks(updatedLinks);
+              message.success("Deleted file successfully.");
+            }
           }
         } else {
           message.error("User does not have permission to delete this file.");
@@ -247,6 +263,11 @@ function FilesList() {
     return false;
   };
 
+  const truncate = (text, maxLength) => {
+    if (text?.length <= maxLength) return text;
+    return `${text?.substring(0, maxLength)}...`;
+  };
+
   const columns = [
     {
       title: "No.",
@@ -280,7 +301,7 @@ function FilesList() {
             whiteSpace: "nowrap",
           }}
         >
-          {calculateCanClick(record) ? text : "***********"}
+          {calculateCanClick(record) ? truncate(text, 20) : "***********"}
         </span>
       ),
     },
@@ -307,7 +328,7 @@ function FilesList() {
         <Button
           style={{ fontSize: "12px" }}
           danger
-          onClick={() => showDeleteModal(record.id)}
+          onClick={() => showDeleteModal(record)}
         >
           Delete
         </Button>
@@ -334,7 +355,7 @@ function FilesList() {
         ),
     },
   ];
-
+  // console.log("deleteFileId", deleteFileId);
   return (
     <main className="w-full ml-2">
       <section className="px-4 mx-auto">
@@ -387,7 +408,10 @@ function FilesList() {
         }}
         centered={true}
       >
-        Are you sure you want to delete this link?
+        Are you sure you want to delete this file
+        <span className="text-[#f5222d] font-semibold">
+          {deleteFileId?.name} ?
+        </span>
       </Modal>
     </main>
   );

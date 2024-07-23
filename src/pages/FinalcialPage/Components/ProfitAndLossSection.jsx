@@ -298,8 +298,6 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     return text.substring(0, maxLength) + "...";
   };
 
-  console.log("costInputs", costInputs);
-
   const transposedData = [
     { key: "Revenue" },
     // { key: "Total Revenue", values: totalRevenue },
@@ -1064,11 +1062,10 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           </div>
           {showAdvancedInputs && (
             <>
-              <div className="w-full lg:w-[20%] md:w-[50%] my-5 mt-20">
-                <h3 className="text-lg font-semibold my-5">
-                  III. Profit and Loss By Years
-                </h3>
-
+              <h3 className="text-lg font-semibold my-5 mt-20">
+                III. Profit and Loss By Years
+              </h3>
+              <div className="w-full lg:w-[20%] md:w-[50%] my-5">
                 <SelectField
                   label="Select Cut Month:"
                   id="Select Cut Month:"
@@ -1107,7 +1104,11 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
 
       <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
         <section className="mb-8 NOsticky NOtop-8">
-          <GroqJS datasrc={profitAndLossData} inputUrl="urlPNL" />
+          <GroqJS
+            datasrc={profitAndLossData}
+            inputUrl="urlPNL"
+            numberOfMonths={numberOfMonths}
+          />
         </section>
       </div>
 

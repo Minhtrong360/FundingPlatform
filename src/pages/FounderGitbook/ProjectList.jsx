@@ -7,10 +7,11 @@ import { useNavigate } from "react-router-dom";
 // import InvitedUserProject from "../../components/InvitedUserProject";
 
 // import ProjectGiven from "../../components/ProjectGiven";
-import { Dropdown, Menu, message, Table, Modal } from "antd";
+import { Dropdown, Menu, message, Table, Modal, Select } from "antd";
 import { formatDate } from "../../features/DurationSlice";
 import InputField from "../../components/InputField";
 import apiService from "../../app/apiService";
+import { Option } from "antd/es/mentions";
 
 function ProjectList({ projects }) {
   const { user } = useAuth();
@@ -185,7 +186,7 @@ function ProjectList({ projects }) {
       }
 
       if (!contestCode) {
-        message.error("Please fill in the contest code.");
+        message.error("Please select a contest code.");
         return;
       }
 
@@ -753,6 +754,25 @@ function ProjectList({ projects }) {
       console.error("Error checking company:", error.message);
     }
   };
+  const [contestCodes, setContestCodes] = useState([]);
+
+  useEffect(() => {
+    const fetchContestCodes = async () => {
+      const { data, error } = await supabase
+        .from("code")
+        .select("id, code")
+        .eq("publish", true);
+
+      if (error) {
+        console.error("Error fetching contest codes:", error);
+        return;
+      }
+
+      setContestCodes(data);
+    };
+
+    fetchContestCodes();
+  }, []);
 
   return (
     <main className="w-full min-h-[92.5vh]">
@@ -782,7 +802,7 @@ function ProjectList({ projects }) {
           centered={true}
         >
           Are you sure you want to delete this{" "}
-          <span style={{ fontWeight: "bold", color: "#2563EB" }}>
+          <span className="text-[#f5222d] font-semibold">
             {
               updatedProjects?.find((project) => project.id === SelectedID)
                 ?.name
@@ -854,16 +874,31 @@ function ProjectList({ projects }) {
           }}
           centered={true}
         >
-          <InputField
-            style={{ marginBottom: "6px" }}
-            label="Submit this project to:"
-            id="contestCode"
-            name="contestCode"
+          <div>
+            <label
+              htmlFor={contestCode}
+              className="block mb-2 text-sm darkTextWhite"
+            >
+              Submit this project to:
+            </label>
+          </div>
+          <Select
+            style={{
+              width: "100%",
+              marginBottom: "6px",
+              minHeight: "46px",
+            }}
+            placeholder="Select a contest code"
             value={contestCode}
-            onChange={(e) => setContestCode(e.target.value)}
-            type="text"
+            onChange={(value) => setContestCode(value)}
             required
-          />
+          >
+            {contestCodes.map((code) => (
+              <Option key={code.id} value={code.code}>
+                {code.code}
+              </Option>
+            ))}
+          </Select>
           {/* <InputField
                       style={{ marginBottom: "6px" }}
 

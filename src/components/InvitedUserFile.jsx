@@ -3,7 +3,7 @@ import { supabase } from "../supabase";
 
 import ReactModal from "react-modal";
 import apiService from "../app/apiService";
-import { message } from "antd";
+import { Button, message } from "antd";
 
 const Modal = ({ isOpen, onClose, fileId }) => {
   const [email, setEmail] = useState("elonmusk@gmail.com");
@@ -124,12 +124,14 @@ export default function InvitedUser({ fileId }) {
 
   return (
     <div className="App">
-      <button
-        className={`text-white text-xs bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+      <Button
+        type="primary"
+        style={{ backgroundColor: "#2563EB", fontSize: "12px" }}
         onClick={() => setIsModalOpen(true)}
       >
         Invite
-      </button>
+      </Button>
+
       <ReactModal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}

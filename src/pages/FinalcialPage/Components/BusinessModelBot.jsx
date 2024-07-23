@@ -38,19 +38,19 @@ const BusinessModelBot = ({
           },
 
           body: JSON.stringify({
-            question: [
-              `${inputValue}`,
-            ],
+            question: [`${inputValue}`],
           }),
         }
       );
 
       const data = await response.json();
-      console.log("data", data)
+      console.log("response", response);
+      console.log("data", data);
       const jsonString = data.text.match(/```json([\s\S]*?)```/)[1].trim();
-      const parsedJson = JSON.parse(jsonString)
+      const parsedJson = JSON.parse(jsonString);
+
+      console.log("parsedJson", parsedJson);
       const dataJS = JSON.stringify(parsedJson);
-      console.log("dataJS", dataJS)
       if (data.error) {
         throw new Error(data.error);
       }
@@ -58,7 +58,7 @@ const BusinessModelBot = ({
       // Set the chatbot response to the latest messag
 
       setChatbotResponse(dataJS);
-      setIsLoading(false);
+      // setIsLoading(false);
       setSpinning(false);
     } catch (error) {
       console.log("Error sending message:", error);

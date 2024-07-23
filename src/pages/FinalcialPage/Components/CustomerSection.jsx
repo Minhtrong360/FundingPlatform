@@ -42,6 +42,7 @@ import SpinnerBtn from "../../../components/SpinnerBtn";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import DraggableChart from "./DraggableChart";
+import { setInputData } from "../../../features/DurationSlice";
 
 const CustomerInputsForm = React.memo(
   ({
@@ -60,6 +61,8 @@ const CustomerInputsForm = React.memo(
   }) => {
     const [isModalCustomOpen, setIsModalCustomOpen] = useState(false);
     const [temporaryData, setTemporaryData] = useState([]);
+    const [temporaryBeginMonth, setTemporaryBeginMonth] = useState([]);
+    const [temporaryEndMonth, setTemporaryEndMonth] = useState([]);
 
     useEffect(() => {
       const input = tempCustomerInputs.find(
@@ -89,6 +92,8 @@ const CustomerInputsForm = React.memo(
                 .find((data) => data[0]?.channelName === input.channelName)
                 ?.map((monthData) => monthData.add) || []
         );
+        setTemporaryBeginMonth(input?.beginMonth);
+        setTemporaryEndMonth(input?.endMonth);
       }
     }, [renderCustomerForm]);
 
@@ -96,7 +101,7 @@ const CustomerInputsForm = React.memo(
       const input = tempCustomerInputs.find(
         (input) => input?.id == renderCustomerForm
       );
-
+      console.log("temporaryData", temporaryData);
       if (input) {
         // Update gptResponseArray and applyCustom first and ensure state update is completed before next update
         setTempCustomerInputs((prevInputs) => {
@@ -116,7 +121,7 @@ const CustomerInputsForm = React.memo(
               return {
                 ...i,
                 customersPerMonth: Number(
-                  temporaryData[0].customers.toFixed(0)
+                  temporaryData[0]?.customers?.toFixed(0)
                 ),
               };
             }
@@ -268,9 +273,10 @@ const CustomerInputsForm = React.memo(
                   type="number"
                   min={1}
                   value={input.beginMonth}
-                  onChange={(e) =>
-                    handleInputChange(input?.id, "beginMonth", e.target.value)
-                  }
+                  onChange={(e) => {
+                    handleInputChange(input?.id, "beginMonth", e.target.value);
+                    setTemporaryBeginMonth(e.target.value);
+                  }}
                 />
               </div>
               <div className="grid grid-cols-2 gap-4 mb-3">
@@ -280,9 +286,10 @@ const CustomerInputsForm = React.memo(
                   type="number"
                   min={1}
                   value={input.endMonth}
-                  onChange={(e) =>
-                    handleInputChange(input?.id, "endMonth", e.target.value)
-                  }
+                  onChange={(e) => {
+                    handleInputChange(input?.id, "endMonth", e.target.value);
+                    setTemporaryEndMonth(e.target.value);
+                  }}
                 />
               </div>
               <div className="grid grid-cols-2 gap-4 mb-3">
@@ -373,6 +380,8 @@ const CustomerInputsForm = React.memo(
                   <DraggableChart
                     data={temporaryData}
                     onDataChange={(newData) => setTemporaryData(newData)}
+                    beginMonth={temporaryBeginMonth}
+                    endMonth={temporaryEndMonth}
                   />
                 </Modal>
               )}
@@ -447,7 +456,7 @@ const CustomerSection = React.memo(
     const { customerInputs, customerGrowthData, customerTableData } =
       useSelector((state) => state.customer);
 
-    const { startMonth, startYear } = useSelector(
+    const { startMonth, startYear, inputData } = useSelector(
       (state) => state.durationSelect
     );
     const [tempCustomerInputs, setTempCustomerInputs] =
@@ -710,7 +719,7 @@ const CustomerSection = React.memo(
         }
 
         if (existingData && existingData.length > 0) {
-          const { user_email, collabs, inputData } = existingData[0];
+          const { user_email, collabs } = existingData[0];
 
           if (user.email !== user_email && !collabs?.includes(user.email)) {
             message.error("You do not have permission to update this record.");
@@ -747,8 +756,6 @@ const CustomerSection = React.memo(
           dispatch(setYearlySales(yearlySale));
           dispatch(setRevenueData(revenueByChannelAndProduct));
 
-          const newInputData = JSON.parse(inputData);
-
           const calculatedData = calculateCustomerGrowth(
             tempCustomerInputs,
             numberOfMonths
@@ -761,14 +768,20 @@ const CustomerSection = React.memo(
           );
 
           dispatch(setChannelInputs(updatedChannelInputs));
-          newInputData.customerInputs = tempCustomerInputs;
-          newInputData.yearlyAverageCustomers = averages;
-          newInputData.yearlySales = yearlySale;
-          newInputData.channelInputs = updatedChannelInputs;
+
+          const updatedInputData = {
+            ...inputData,
+            channelInputs: updatedChannelInputs,
+            customerInputs: tempCustomerInputs,
+            yearlyAverageCustomers: averages,
+            yearlySales: yearlySale,
+          };
+
+          dispatch(setInputData(updatedInputData));
 
           const { error: updateError } = await supabase
             .from("finance")
-            .update({ inputData: newInputData })
+            .update({ inputData: updatedInputData })
             .eq("id", existingData[0]?.id)
             .select();
 

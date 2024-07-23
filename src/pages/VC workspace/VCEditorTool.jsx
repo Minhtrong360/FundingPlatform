@@ -111,7 +111,7 @@ const blockSpecs = {
   youtubeLink: YouTubeLinkBlock,
 };
 
-export default function UniEditorTool({
+export default function VCEditorTool({
   selectedCode,
   setSelectedCode,
   unChange,

@@ -33,11 +33,13 @@ import {
   CheckCircleOutlined,
   DownloadOutlined,
   FullscreenOutlined,
+  CopyOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
+import { setInputData } from "../../../features/DurationSlice";
 
 const ChannelInputForm = ({
   tempChannelInputs,
@@ -52,7 +54,14 @@ const ChannelInputForm = ({
   handleSave,
   isLoading,
   setIsDeleteModalOpen,
+  duplicateChannelInput,
 }) => {
+  const getUnavailableChannels = (productName) => {
+    return tempChannelInputs
+      .filter((input) => input.productName === productName)
+      .map((input) => input.selectedChannel.id);
+  };
+
   return (
     <section aria-labelledby="sales-heading" className="mb-8 NOsticky NOtop-8">
       <h2
@@ -190,7 +199,13 @@ const ChannelInputForm = ({
                 </SelectTrigger>
                 <SelectContent position="popper">
                   {channelNames?.map((channelName) => (
-                    <SelectItem key={channelName.id} value={channelName.id}>
+                    <SelectItem
+                      key={channelName.id}
+                      value={channelName.id}
+                      disabled={getUnavailableChannels(
+                        input.productName
+                      ).includes(channelName.id)}
+                    >
                       {channelName.channelName}
                     </SelectItem>
                   ))}
@@ -207,14 +222,14 @@ const ChannelInputForm = ({
                 type="number"
                 min={0}
                 max={100}
-                value={formatNumber(input.channelAllocation * 100)}
-                onChange={(e) =>
+                value={formatNumber(input.channelAllocation)}
+                onChange={(e) => {
                   handleChannelInputChange(
                     input.id,
                     "channelAllocation",
-                    parseNumber(e.target.value) / 100
-                  )
-                }
+                    parseNumber(e.target.value)
+                  );
+                }}
               />
             </div>
 
@@ -272,6 +287,20 @@ const ChannelInputForm = ({
             }}
           />
           Add
+        </button>
+
+        <button
+          className="bg-green-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+          onClick={duplicateChannelInput}
+        >
+          <CopyOutlined
+            style={{
+              fontSize: "12px",
+              color: "#FFFFFF",
+              marginRight: "4px",
+            }}
+          />
+          Duplicate
         </button>
 
         <button
@@ -393,6 +422,16 @@ const SalesSection = ({
   const handleSave = async () => {
     try {
       setIsLoading(true);
+
+      // Validation to check if any Sales Channel is empty
+      for (const input of tempChannelInputs) {
+        if (!input.selectedChannel.id) {
+          message.error("Sales Channel cannot be empty.");
+          setIsLoading(false);
+          return;
+        }
+      }
+
       const { data: existingData, error: selectError } = await supabase
         .from("finance")
         .select("*")
@@ -428,14 +467,17 @@ const SalesSection = ({
         const sales = calculateYearlySales(tempRevenueData);
         dispatch(setYearlySales(sales));
 
-        const newInputData = JSON.parse(existingData[0].inputData);
+        const updatedInputData = {
+          ...inputData,
+          channelInputs: updatedChannelInputs,
+          yearlySales: sales,
+        };
 
-        newInputData.channelInputs = updatedChannelInputs;
-        newInputData.yearlySales = sales;
+        dispatch(setInputData(updatedInputData));
 
         const { error: updateError } = await supabase
           .from("finance")
-          .update({ inputData: newInputData })
+          .update({ inputData: updatedInputData })
           .eq("id", existingData[0]?.id)
           .select();
 
@@ -462,12 +504,29 @@ const SalesSection = ({
       multiples: 1,
       deductionPercentage: 0,
       cogsPercentage: 30,
-      selectedChannel: channelNames[0],
+      selectedChannel: { id: null }, // Reset selected channel
       channelAllocation: 0.8,
       daysGetPaid: 0, // Default to 0 day
     };
     setTempChannelInputs([...tempChannelInputs, newChannel]);
     setRenderChannelForm(newId.toString());
+  };
+
+  const duplicateChannelInput = () => {
+    const inputToDuplicate = tempChannelInputs.find(
+      (input) => input?.id == renderChannelForm
+    );
+    if (inputToDuplicate) {
+      const maxId = Math.max(...tempChannelInputs.map((input) => input?.id));
+      const newId = maxId !== -Infinity ? maxId + 1 : 1;
+      const duplicatedChannel = {
+        ...inputToDuplicate,
+        id: newId,
+        selectedChannel: { id: null },
+      };
+      setTempChannelInputs([...tempChannelInputs, duplicatedChannel]);
+      setRenderChannelForm(newId.toString());
+    }
   };
 
   const removeChannelInput = (id) => {
@@ -497,6 +556,7 @@ const SalesSection = ({
             selectedChannel: channelNames.find((name) => name.id === value),
           };
         }
+
         return { ...input, [field]: value };
       }
       return input;
@@ -522,7 +582,7 @@ const SalesSection = ({
     "11",
     "12",
   ];
-  const { startMonth, startYear } = useSelector(
+  const { startMonth, startYear, inputData } = useSelector(
     (state) => state.durationSelect
   );
   const startingMonth = startMonth;
@@ -687,8 +747,8 @@ const SalesSection = ({
     setIsDeleteModalOpen(false);
   };
 
-  const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
-  const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
+  const [isChartModalVisible, setIsChartModalVisible] = useState(false);
+  const [selectedChart, setSelectedChart] = useState(null);
 
   const handleChartClick = (chart) => {
     setSelectedChart(chart);
@@ -704,7 +764,6 @@ const SalesSection = ({
   const downloadExcel = () => {
     const workBook = XLSX.utils.book_new();
 
-    // Create worksheet data in the desired format
     const worksheetData = [
       [
         "Revenue Table",
@@ -716,7 +775,6 @@ const SalesSection = ({
       ],
     ];
 
-    // Add rows for each channel
     revenueTableData.forEach((record) => {
       const row = [record.channelName];
       for (let i = 1; i <= numberOfMonths; i++) {
@@ -725,13 +783,8 @@ const SalesSection = ({
       worksheetData.push(row);
     });
 
-    // Convert data to worksheet
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-
-    // Add worksheet to workbook
     XLSX.utils.book_append_sheet(workBook, worksheet, "Revenue Data");
-
-    // Write workbook and trigger download
     const wbout = XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
 
     function s2ab(s) {
@@ -906,8 +959,10 @@ const SalesSection = ({
                       (chart) => chart.options.chart.id !== "allChannels"
                     )
                     .map((chart, index) => (
-                      <div className="ml-2">
-                        <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}</h5>
+                      <div className="ml-2" key={index}>
+                        <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(
+                          65 + index
+                        )}. ${chart.options.title.text}`}</h5>
 
                         <Card
                           key={index}
@@ -1019,7 +1074,6 @@ const SalesSection = ({
                   <Chart
                     options={{
                       ...selectedChart.options,
-                      // ... other options
                     }}
                     series={selectedChart.series}
                     type="area"
@@ -1116,20 +1170,9 @@ const SalesSection = ({
                 handleSave={handleSave}
                 isLoading={isLoading}
                 setIsDeleteModalOpen={setIsDeleteModalOpen}
+                duplicateChannelInput={duplicateChannelInput}
               />
             </div>
-
-            {/* <div className="xl:hidden block">
-              <FloatButton
-                tooltip={<div>Input values</div>}
-                style={{ position: "fixed", bottom: "30px", right: "30px" }}
-                onClick={() => {
-                  setIsInputFormOpen(true);
-                }}
-              >
-                <Button type="primary" shape="circle" icon={<FileOutlined />} />
-              </FloatButton>
-            </div> */}
 
             {isInputFormOpen && (
               <Modal
@@ -1174,6 +1217,7 @@ const SalesSection = ({
                   handleSave={handleSave}
                   isLoading={isLoading}
                   setIsDeleteModalOpen={setIsDeleteModalOpen}
+                  duplicateChannelInput={duplicateChannelInput}
                 />
               </Modal>
             )}
@@ -1189,7 +1233,7 @@ const SalesSection = ({
                 cancelButtonProps={{
                   style: {
                     borderRadius: "0.375rem",
-                    cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                    cursor: "pointer",
                   },
                 }}
                 okButtonProps={{
@@ -1198,7 +1242,7 @@ const SalesSection = ({
                     borderColor: "#f5222d",
                     color: "#fff",
                     borderRadius: "0.375rem",
-                    cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                    cursor: "pointer",
                   },
                 }}
                 centered={true}

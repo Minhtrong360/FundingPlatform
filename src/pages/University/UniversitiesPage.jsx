@@ -326,94 +326,98 @@ const UniversitiesPage = () => {
               projectList={projectList}
               setProjectList={setProjectList}
             />
-            <UniSearch
-              onSearch={handleSearch}
-              companies={companiesToRender}
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-              currentTab={currentTab}
-              setCurrentTab={setCurrentTab}
-              selectedCode={selectedCodeFull}
-            />
+            {projectList?.length > 0 && (
+              <>
+                <UniSearch
+                  onSearch={handleSearch}
+                  companies={companiesToRender}
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                  currentTab={currentTab}
+                  setCurrentTab={setCurrentTab}
+                  selectedCode={selectedCodeFull}
+                />
 
-            <Tabs
-              activeKey={selectedTab}
-              onChange={(key) => setSelectedTab(key)}
-              centered
-              id="codeSelected"
-            >
-              <TabPane
-                tab={
-                  <Dropdown
-                    overlay={roundsMenu}
-                    trigger={["hover"]}
-                    // onOpenChange={(visible) =>
-                    //   setHoveredTab(visible ? "Listing" : "")
-                    // }
+                <Tabs
+                  activeKey={selectedTab}
+                  onChange={(key) => setSelectedTab(key)}
+                  centered
+                  id="codeSelected"
+                >
+                  <TabPane
+                    tab={
+                      <Dropdown
+                        overlay={roundsMenu}
+                        trigger={["hover"]}
+                        // onOpenChange={(visible) =>
+                        //   setHoveredTab(visible ? "Listing" : "")
+                        // }
+                      >
+                        <span>Listing</span>
+                      </Dropdown>
+                    }
+                    key="Listing"
                   >
-                    <span>Listing</span>
-                  </Dropdown>
-                }
-                key="Listing"
-              >
-                {isLoading ? (
-                  <LinearProgress className="my-20" />
-                ) : (
-                  <>
-                    <h2 className="text-center font-semibold text-lg">
-                      Round: {selectedRound?.name}
-                    </h2>
-                    <div className="mx-auto max-w-[85rem] my-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
-                      {companiesToRender.length > 0 ? (
-                        companiesToRender.map((company, index) => (
-                          <div
-                            key={company.id}
-                            className="group flex justify-center"
-                          >
-                            {company ? (
-                              <Card
+                    {isLoading ? (
+                      <LinearProgress className="my-20" />
+                    ) : (
+                      <>
+                        <h2 className="text-center font-semibold text-lg">
+                          Round: {selectedRound?.name}
+                        </h2>
+                        <div className="mx-auto max-w-[85rem] my-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
+                          {companiesToRender.length > 0 ? (
+                            companiesToRender.map((company, index) => (
+                              <div
                                 key={company.id}
-                                title={company.name}
-                                description={company.description}
-                                imageUrl={company.card_url}
-                                buttonText="More"
-                                project_id={company.project_id}
-                                verified={company.verifiedStatus}
-                                status={company.status}
-                                selectedCodeFull={selectedCodeFull}
-                                projectList={projectList}
-                                selectedRound={selectedRound}
-                                setProjectList={setProjectList}
-                                isJudge={isJudge}
-                              />
-                            ) : (
-                              <div className="w-[30vw] h-[55vh]"></div>
-                            )}
-                          </div>
-                        ))
-                      ) : (
-                        <>
-                          <div></div>
-                          <div className="mx-auto my-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
-                            No result
-                          </div>
-                        </>
-                      )}
+                                className="group flex justify-center"
+                              >
+                                {company ? (
+                                  <Card
+                                    key={company.id}
+                                    title={company.name}
+                                    description={company.description}
+                                    imageUrl={company.card_url}
+                                    buttonText="More"
+                                    project_id={company.project_id}
+                                    verified={company.verifiedStatus}
+                                    status={company.status}
+                                    selectedCodeFull={selectedCodeFull}
+                                    projectList={projectList}
+                                    selectedRound={selectedRound}
+                                    setProjectList={setProjectList}
+                                    isJudge={isJudge}
+                                  />
+                                ) : (
+                                  <div className="w-[30vw] h-[55vh]"></div>
+                                )}
+                              </div>
+                            ))
+                          ) : (
+                            <>
+                              <div></div>
+                              <div className="mx-auto my-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
+                                No result
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </TabPane>
+                  <TabPane tab="Rules" key="Rules">
+                    <div className="flex justify-center items-center">
+                      <UniEditorTool
+                        selectedCode={selectedCodeFull}
+                        setSelectedCode={setSelectedCodeFull}
+                        unChange={currentItem === "View" ? true : false}
+                        handleUpdateRules={handleUpdateRules}
+                      />
                     </div>
-                  </>
-                )}
-              </TabPane>
-              <TabPane tab="Rules" key="Rules">
-                <div className="flex justify-center items-center">
-                  <UniEditorTool
-                    selectedCode={selectedCodeFull}
-                    setSelectedCode={setSelectedCodeFull}
-                    unChange={currentItem === "View" ? true : false}
-                    handleUpdateRules={handleUpdateRules}
-                  />
-                </div>
-              </TabPane>
-            </Tabs>
+                  </TabPane>
+                </Tabs>
+              </>
+            )}
 
             <CredentialModal
               visible={isModalVisible}

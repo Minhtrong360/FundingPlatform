@@ -34,6 +34,7 @@ import SpinnerBtn from "../../../components/SpinnerBtn";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import DraggableChart from "./DraggableChart";
+import { setInputData } from "../../../features/DurationSlice";
 
 const CostInputForm = ({
   tempCostInput,
@@ -54,6 +55,9 @@ const CostInputForm = ({
 }) => {
   const [isModalCustomOpen, setIsModalCustomOpen] = useState(false);
   const [temporaryData, setTemporaryData] = useState([]);
+  const [temporaryBeginMonth, setTemporaryBeginMonth] = useState();
+  const [temporaryEndMonth, setTemporaryEndMonth] = useState();
+
   useEffect(() => {
     const input = tempCostInput.find((input) => input?.id == renderCostForm);
 
@@ -76,6 +80,8 @@ const CostInputForm = ({
       );
 
       handleCostInputChange(input?.id, "gptResponseArray", gptResponseArray);
+      setTemporaryBeginMonth(input?.beginMonth);
+      setTemporaryEndMonth(input?.endMonth);
     }
   }, [renderCostForm]);
 
@@ -256,16 +262,15 @@ const CostInputForm = ({
                   <Input
                     className="col-start-2 border-gray-300"
                     type="number"
-                    min="1"
-                    max="12"
                     value={input.beginMonth}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       handleCostInputChange(
                         input?.id,
                         "beginMonth",
                         parseInt(e.target.value, 10)
-                      )
-                    }
+                      );
+                      setTemporaryBeginMonth(e.target.value);
+                    }}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-3">
@@ -273,16 +278,15 @@ const CostInputForm = ({
                   <Input
                     className="col-start-2 border-gray-300"
                     type="number"
-                    min="1"
-                    max="12"
                     value={input.endMonth}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       handleCostInputChange(
                         input?.id,
                         "endMonth",
                         parseInt(e.target.value, 10)
-                      )
-                    }
+                      );
+                      setTemporaryEndMonth(e.target.value);
+                    }}
                   />
                 </div>
               </>
@@ -374,16 +378,15 @@ const CostInputForm = ({
                   <Input
                     className="col-start-2 border-gray-300"
                     type="number"
-                    min="1"
-                    max="12"
                     value={input.beginMonth}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       handleCostInputChange(
                         input?.id,
                         "beginMonth",
                         parseInt(e.target.value, 10)
-                      )
-                    }
+                      );
+                      setTemporaryBeginMonth(e.target.value);
+                    }}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-3">
@@ -394,32 +397,33 @@ const CostInputForm = ({
                     min="1"
                     max="12"
                     value={input.endMonth}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       handleCostInputChange(
                         input?.id,
                         "endMonth",
                         parseInt(e.target.value, 10)
-                      )
-                    }
+                      );
+                      setTemporaryEndMonth(e.target.value);
+                    }}
                   />
-                  <div className="flex items-center gap-2 mb-3">
-                    <Checkbox
-                      checked={input.applyAdditionalInfo}
-                      onChange={(e) => {
-                        handleCostInputChange(
-                          input?.id,
-                          "applyAdditionalInfo",
-                          e.target.checked
-                        );
-                      }}
-                    ></Checkbox>
-                    <span
-                      className="text-sm hover:cursor-pointer"
-                      onClick={() => setIsModalCustomOpen(true)}
-                    >
-                      Apply Custom
-                    </span>
-                  </div>
+                </div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Checkbox
+                    checked={input.applyAdditionalInfo}
+                    onChange={(e) => {
+                      handleCostInputChange(
+                        input?.id,
+                        "applyAdditionalInfo",
+                        e.target.checked
+                      );
+                    }}
+                  ></Checkbox>
+                  <span
+                    className="text-sm hover:cursor-pointer"
+                    onClick={() => setIsModalCustomOpen(true)}
+                  >
+                    Apply Custom
+                  </span>
                 </div>
               </>
             )}
@@ -458,6 +462,8 @@ const CostInputForm = ({
                 <DraggableChart
                   data={temporaryData}
                   onDataChange={(newData) => setTemporaryData(newData)}
+                  beginMonth={temporaryBeginMonth}
+                  endMonth={temporaryEndMonth}
                 />
               </Modal>
             )}
@@ -648,7 +654,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
     "11",
     "12",
   ];
-  const { startMonth, startYear } = useSelector(
+  const { startMonth, startYear, inputData } = useSelector(
     (state) => state.durationSelect
   );
 
@@ -851,13 +857,16 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
 
         dispatch(setCostInputs(tempCostInput));
 
-        const newInputData = JSON.parse(existingData[0].inputData);
+        const updatedInputData = {
+          ...inputData,
+          costInputs: tempCostInput,
+        };
 
-        newInputData.costInputs = tempCostInput;
+        dispatch(setInputData(updatedInputData));
 
         const { error: updateError } = await supabase
           .from("finance")
-          .update({ inputData: newInputData })
+          .update({ inputData: updatedInputData })
           .eq("id", existingData[0]?.id)
           .select();
 

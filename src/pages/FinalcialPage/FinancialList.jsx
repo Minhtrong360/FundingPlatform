@@ -841,7 +841,14 @@ function FinancialList() {
                   }}
                   centered={true}
                 >
-                  Are you sure you want to delete this project?
+                  Are you sure you want to delete this project{" "}
+                  <span className="text-[#f5222d] font-semibold">
+                    {
+                      myProjects.find((project) => project.id === SelectedID)
+                        ?.name
+                    }
+                  </span>
+                  ?
                 </Modal>
               )}
               {isAddNewModalOpen && (

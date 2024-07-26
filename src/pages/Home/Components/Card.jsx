@@ -223,7 +223,16 @@ const Card = ({
         </div>
       </div>
       <Modal
-        title={`Giving Score for ${selectedProject?.name?.toUpperCase()}`}
+        title={
+          <div>
+            Giving Score for{" "}
+            <span className="text-[#2563EB] font-semibold">
+              {/* {selectedProject?.name?.toUpperCase()} ( */}
+              {selectedProject?.company?.name?.toUpperCase()}
+              {/* ) */}
+            </span>
+          </div>
+        }
         open={isScoreModalOpen}
         onOk={() => handleScoreProject(selectedProject)}
         onCancel={() => setIsScoreModalOpen(false)}

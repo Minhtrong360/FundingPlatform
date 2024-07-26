@@ -1908,7 +1908,11 @@ const HeroVC = ({
           }}
           centered={true}
         >
-          Are you sure you want to delete it?
+          Are you sure you want to delete{" "}
+          <span className="text-[#f5222d] font-semibold">
+            {codeData?.find((data) => data.id === codeToDelete)?.name}
+          </span>
+          ?
         </Modal>
 
         <Modal

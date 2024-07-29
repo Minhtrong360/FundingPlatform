@@ -118,6 +118,8 @@ const CostInputForm = ({
     }
   };
 
+  console.log("revenueData", revenueData);
+
   return (
     <section aria-labelledby="costs-heading" className="mb-8 NOsticky NOtop-8">
       <h2
@@ -228,6 +230,9 @@ const CostInputForm = ({
                       <SelectValue placeholder="Select Related Revenue" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="Total Revenue">
+                        Total Revenue
+                      </SelectItem>
                       {Object.keys(revenueData).map((revenueKey) => (
                         <SelectItem key={revenueKey} value={revenueKey}>
                           {revenueKey}

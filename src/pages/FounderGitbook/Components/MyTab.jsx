@@ -1,6 +1,6 @@
 import { Badge, message, Button } from "antd";
 import Modal from "react-modal";
-import { useCreateBlockNote, createReactBlockSpec } from "@blocknote/react";
+import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
 
@@ -71,8 +71,6 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
           .upload(uniqueFileName, file);
 
         if (error) {
-          console.log("error", error.message);
-
           throw error;
         }
 
@@ -87,9 +85,6 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
       }
     },
   });
-
-  console.log("editor", editor);
-  console.log("blocks", blocks);
 
   // Function to upload image to Supabase from URL
   const uploadImageFromURLToSupabase = async (imageUrl) => {
@@ -148,7 +143,7 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
             .match({ id: params.id })
             .single();
           if (error) {
-            console.log(error.message);
+            throw error;
           } else {
             // Nếu có dữ liệu Markdown trong cơ sở dữ liệu, cập nhật giá trị của markdown
             if (data && data.markdown) {
@@ -367,7 +362,7 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
   return (
     <div className={`px-8  flex flex-col justify-center items-center`}>
       <>
-        <aside className="sticky z-20 top-0 bg-white">
+        <aside className="w-full sticky z-20 top-0 bg-white">
           <div className="w-full  py-8 overflow-x-auto">
             <nav className="flex justify-between sm:space-x-4 sm:px-14">
               {/* Navbar */}

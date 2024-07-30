@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import {
-  BlockNoteView,
+  BlockNoteViewRaw,
   createReactBlockSpec,
   getDefaultReactSlashMenuItems,
-  useBlockNote,
+  useCreateBlockNote,
 } from "@blocknote/react";
 import { defaultBlockSchema, defaultBlockSpecs } from "@blocknote/core";
 import "@blocknote/core/style.css";
@@ -170,7 +170,7 @@ export default function VCEditorTool({
     }
   };
 
-  const editor = useBlockNote({
+  const editor = useCreateBlockNote({
     blockSpecs: blockSpecs,
     uploadFile: uploadToCustomDatabase,
     slashMenuItems: [
@@ -219,7 +219,7 @@ export default function VCEditorTool({
   return (
     <>
       <div className="flex-grow items-center justify-center max-w-[85rem] py-10 ">
-        <BlockNoteView
+        <BlockNoteViewRaw
           editor={editor}
           theme={"light"}
           className={`${unChange ? "pointer-events-none" : ""}`}

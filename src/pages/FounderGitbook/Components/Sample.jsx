@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import {
-  BlockNoteView,
+  BlockNoteViewRaw,
   createReactBlockSpec,
-  useBlockNote,
+  useCreateBlockNote,
 } from "@blocknote/react";
 import "@blocknote/core/style.css";
 
@@ -170,7 +170,7 @@ export default function Sample() {
 
   // Creates a new editor instance.
 
-  const editor = useBlockNote({
+  const editor = useCreateBlockNote({
     blockSpecs: blockSpecs,
     uploadFile: uploadToCustomDatabase,
   });
@@ -183,7 +183,11 @@ export default function Sample() {
         <LoadingButtonClick isLoading={isLoading} />
       ) : (
         <div className="flex-grow items-center justify-center pb-10 ">
-          <BlockNoteView editor={editor} theme={"light"} className="w-full " />
+          <BlockNoteViewRaw
+            editor={editor}
+            theme={"light"}
+            className="w-full "
+          />
         </div>
       )}
     </>

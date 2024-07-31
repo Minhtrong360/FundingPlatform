@@ -34,24 +34,273 @@ import {
   transformFundraisingDataForTable,
 } from "../../../features/FundraisingSlice";
 import { useAuth } from "../../../context/AuthContext";
+import { message } from "antd";
+
+import Papa from "papaparse";
+import { saveAs } from "file-saver";
+
+import { Parser } from "@json2csv/plainjs";
+import { useParams } from "react-router-dom";
+import { createClient } from "@supabase/supabase-js";
+
+const SUPABASE_URL = process.env.REACT_APP_PUBLIC_SUPABASE_URL;
+const SUPABASE_KEY = process.env.REACT_APP_PUBLIC_SUPABASE_ANON_KEY;
+  
+// Create a Supabase client
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const FileUploadComponent = ({ BS, CF, PNL, Source }) => {
   const [file, setFile] = useState(null);
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [restructuredData, setRestructuredData] = useState([]);
 
-  const positionDataWithNetIncome = { Apple: 1 }; // Replace with actual data
-  const positionDataWithNetIncome2 = { Banana: 1 }; // Replace with actual data
-  const transposedData = { Brocoli: 1 }; // Replace with actual data
+  const restructureData = (data) => {
+    let result = [];
+
+    const processItem = (item) => {
+      if (item.children) {
+        item.children.forEach((child) => processItem(child));
+        delete item.children;
+      }
+      // Remove keys with undefined values
+      let cleanedItem = {};
+      Object.keys(item).forEach((key) => {
+        if (item[key] !== undefined) {
+          cleanedItem[key] = item[key];
+        }
+      });
+      result.push(cleanedItem);
+    };
+
+    data.forEach((item) => processItem(item));
+
+    return result;
+  };
+
+  // const newData = restructureData(PNL);
+  const RemoveChildren = (obj) => {
+    // Helper function to recursively clean the object
+    const cleanObject = (input) => {
+      // Check if the input is an object
+      if (typeof input === "object" && input !== null) {
+        // Iterate over the keys of the object
+        for (const key in input) {
+          // Recursively clean the children array if it exists
+          if (key === "children" && Array.isArray(input[key])) {
+            input[key] = input[key].map(cleanObject);
+          } else if (
+            input[key] === undefined ||
+            input[key] === "Revenue" ||
+            input[key] === "Cost of Revenue" ||
+            input[key] === "Operating Expenses" ||
+            input[key] === "Additional Expenses"
+          ) {
+            // Delete the key if its value is undefined
+            delete input[key];
+          } else if (typeof input[key] === "object") {
+            // Recursively clean the nested object
+            input[key] = cleanObject(input[key]);
+          }
+        }
+      }
+      return input;
+    };
+
+    return cleanObject(obj);
+  };
+
+  const transformData = (data) => {
+    const transformedData = data.map((item) => {
+      if (
+        (item.metric === "Total Revenue" ||
+          item.metric === "Operating Costs" ||
+          item.metric === "Personnel") &&
+        item.children
+      ) {
+        const transformedChildren = {};
+
+        item.children.forEach((child) => {
+          Object.keys(child).forEach((key) => {
+            if (key !== "metric") {
+              if (!transformedChildren[key]) {
+                transformedChildren[key] = {};
+              }
+              transformedChildren[key][child.metric] = child[key];
+            }
+          });
+        });
+
+        const transformedItem = {
+          metric: item.metric,
+        };
+
+        Object.keys(item).forEach((key) => {
+          if (key !== "metric" && key !== "children") {
+            transformedItem[key] = transformedChildren[key] || {};
+            transformedItem[key]["Total"] = item[key];
+          }
+        });
+
+        return transformedItem;
+      }
+      return item;
+    });
+
+    return transformedData;
+  };
+
+  const transformedData = transformData(PNL);
+  const PNLChanged = RemoveChildren(transformedData);
+  console.log("transformedData", PNLChanged);
+
+  const jsonData = {
+    CashFlowStatement: CF,
+    BalanceSheetStatement: BS,
+    IncomeStatement: PNLChanged,
+  };
+  console.log("jsonData", jsonData);
+  const convertToCSV = (json) => {
+    const opts = { delimiter: "|" };
+    const parser = new Parser(opts);
+    return parser?.parse(json);
+  };
+
+  const transposeData = (csv) => {
+    const rows = csv.split("\n").map((row) => row.split("|"));
+    const transposed = rows[0].map((_, colIndex) =>
+      rows.map((row) => row[colIndex])
+    );
+    return transposed.map((row) => row.join(",")).join("\n");
+  };
+
+  const createCSVBlob = (data) => {
+    const csv = convertToCSV(data);
+    const transposedData = transposeData(csv);
+    // console.log("csv", csv);
+    return new Blob([transposedData], { type: "text/csv;charset=utf-8;" });
+  };
+
+  const downloadCSV = (data, filename) => {
+    const blob = createCSVBlob(data);
+    saveAs(blob, `${filename}.csv`);
+  };
+
+  const csvBlobs = {
+    "CashFlowStatement.csv": createCSVBlob(jsonData.CashFlowStatement),
+    "BalanceSheetStatement.csv": createCSVBlob(jsonData.BalanceSheetStatement),
+    "IncomeStatement.csv": createCSVBlob(jsonData.IncomeStatement),
+  };
+
+  const transformKeysAndCleanValues = (obj) => {
+    const transformedObj = {};
+    Object.keys(obj).forEach(key => {
+      let newKey = key.toLowerCase().replace(/ /g, '_');
+      if (newKey === 'metric') {
+        newKey = 'month';
+      }
+      let value = obj[key];
+      if (typeof value === 'string' && value.includes(',')) {
+        value = value.replace(/,/g, '');
+      }
+      transformedObj[newKey] = value;
+    });
+    return transformedObj;
+  };
+  
+  
+
+  const DownloadCSVButton = () => {
+    const handleDownload = (type) => {
+      downloadCSV(jsonData[type], type);
+    };
+
+    const CsvUploader = () => {
+      const saveToSupabase = async () => {
+        try {
+          const cashFlowData = csvBlobs["CashFlowStatement.csv"];
+          const balanceSheetData = csvBlobs["BalanceSheetStatement.csv"];
+          const incomeStatementData = csvBlobs["IncomeStatement.csv"];
+
+          // Parse the CSV blobs back to JSON
+          const parseCSVToJson = (blob) => {
+            return new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => {
+                const text = reader.result;
+                Papa.parse(text, {
+                  header: true,
+                  complete: (results) => resolve(results.data),
+                  error: (error) => reject(error),
+                });
+              };
+              reader.readAsText(blob);
+            });
+          };
+
+          const cashFlowJson = (await parseCSVToJson(cashFlowData)).map(transformKeysAndCleanValues);
+          const balanceSheetJson = (await parseCSVToJson(balanceSheetData)).map(transformKeysAndCleanValues);
+          const incomeStatementJson = (await parseCSVToJson(incomeStatementData)).map(transformKeysAndCleanValues);
+
+          if (balanceSheetJson) {
+            await supabase.from("balancesheet").insert(balanceSheetJson);
+          }
+          if (incomeStatementJson) {
+            await supabase.from("profitandloss").insert(incomeStatementJson);
+          }
+          if (cashFlowJson) {
+            await supabase.from("cashflow").insert(cashFlowJson);
+          }
+
+          alert("CSV files uploaded successfully!");
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      return (
+        <div>
+          
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={saveToSupabase}>Save Supabase</button>
+        </div>
+      );
+    };
+
+    return (
+      <div className="flex flex-col mt-4 p-2">
+        {/* <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => handleDownload("CashFlowStatement")}
+        >
+          {" "}
+          Cash Flow CSV
+        </button>
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => handleDownload("BalanceSheetStatement")}
+        >
+          Balance Sheet CSV
+        </button>
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => handleDownload("IncomeStatement")}
+        >
+          Income Statement CSV
+        </button> */}
+        <CsvUploader/>
+      </div>
+    );
+  };
+  /////////////
 
   const content = `
-      Cash Flow Statement:
+      CashFlowStatement=
       ${JSON.stringify(CF, null, 2)}
 
-      Balance Sheet Statement:
+      BalanceSheetStatement=
       ${JSON.stringify(BS, null, 2)}
 
-      Profit and Loss Statement:
+      ProfitandLossStatement=
       ${JSON.stringify(PNL, null, 2)}
         `;
 
@@ -63,17 +312,39 @@ const FileUploadComponent = ({ BS, CF, PNL, Source }) => {
     type: "text/plain",
   });
 
+  const downloadFile = () => {
+    // Create a URL for the file
+    const fileURL = URL.createObjectURL(txtFile);
+
+    // Create an anchor element and click it programmatically
+    const link = document.createElement("a");
+    link.href = fileURL;
+    link.download = txtFile.name;
+    document.body.appendChild(link);
+    link.click();
+
+    // Clean up by removing the link and revoking the object URL
+    document.body.removeChild(link);
+    URL.revokeObjectURL(fileURL);
+  };
   // Update state with the File object
 
   const handleSubmit = async () => {
     setFile(txtFile);
 
     let formData = new FormData();
-
-    formData.append("files", file);
+    Object.keys(csvBlobs).forEach((filename) => {
+      console.log(`Appending file: ${filename}`);
+      console.log(csvBlobs[filename]);
+      console.log(new File([csvBlobs[filename]], filename));
+      formData.append("files", new File([csvBlobs[filename]], filename));
+    });
+    // formData.append("files", file);
     formData.append("chunkSize", 1000);
+    formData.append("chunkOverlap", 200);
     formData.append("returnSourceDocuments", true);
     formData.append("metadata", '{ "source": "businessname" }');
+
     try {
       setLoading(true);
       const response = await fetch(
@@ -85,6 +356,9 @@ const FileUploadComponent = ({ BS, CF, PNL, Source }) => {
       );
       const result = await response.json();
       setResponse(result);
+      if (result && result.numAdded > 0) {
+        message.success("Embedding successful");
+      }
     } catch (error) {
       console.error("Error uploading file:", error);
       setResponse({ error: "Error uploading file" });
@@ -92,17 +366,26 @@ const FileUploadComponent = ({ BS, CF, PNL, Source }) => {
       setLoading(false);
     }
   };
-
+  console.log("response", response);
   return (
-    <div>
+    <div className="md:ml-2">
       {/* <input type="file" onChange={handleFileChange} /> */}
-      <button
+      {/* <button
         className="ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         onClick={handleSubmit}
         disabled={loading}
       >
         {loading ? "Uploading..." : "Embed"}
       </button>
+      <div>
+        <button
+          className="ml-4 mt-4 rounded bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4"
+          onClick={downloadFile}
+        >
+          TXT
+        </button>
+      </div> */}
+      <DownloadCSVButton />
       {/* {response && (
         <div>
           <h3>Response:</h3>
@@ -122,6 +405,9 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
 
   // Add the following state for controlling the modal visibility
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const params = useParams();
+  const paramsID = params.id;
+
   // Update the handleSubmit function to set modal visibility and response content
   const handleSubmit = async () => {
     try {
@@ -453,8 +739,19 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
     netCashChanges
   );
 
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+
+  const realDate = Array.from({ length: numberOfMonths }, (_, i) => {
+    const monthIndex = (startMonth - 1 + i) % 12; // Adjusted monthIndex calculation
+    const year = startYear + Math.floor((startMonth - 1 + i) / 12);
+    return `${monthIndex + 1}-${year}`;
+  });
+
   const positionDataWithNetIncome = [
-    { key: "Operating Activities" },
+    // { key: "Operating Activities" },
+    { key: "Project ID", values: Array(cashEndBalances.length).fill(paramsID) },
     { key: "Net Income", values: netIncome },
     { key: "Depreciation", values: totalInvestmentDepreciation },
     {
@@ -473,14 +770,14 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
       key: "CF Operations",
       values: CFOperationsArray,
     },
-    { key: "1" },
-    { key: "Investing Activities" },
+    // { key: "1" },
+    // { key: "Investing Activities" },
     {
       key: "CF Investments",
       values: cfInvestmentsArray,
     },
-    { key: "1" },
-    { key: "Financing Activities" },
+    // { key: "1" },
+    // { key: "Financing Activities" },
     {
       key: "CF Loans",
       values: cfLoanArray,
@@ -517,7 +814,7 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
         );
       }),
     },
-    { key: "1" },
+    // { key: "1" },
     {
       key: "Net +/- in Cash",
       values: netIncome.map((_, index) => {
@@ -550,7 +847,8 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
     ...item.values?.reduce(
       (acc, value, i) => ({
         ...acc,
-        [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+        [realDate[i]]:
+          typeof value === "number" ? formatNumber(value.toFixed(2)) : value,
       }),
       {}
     ),
@@ -667,12 +965,9 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
   );
 
   const positionDataWithNetIncome2 = [
-    {
-      key: "Assets",
-    },
-    {
-      key: "Current-Assets",
-    },
+    // {key: "Assets",},
+    // {key: "Current-Assets",},
+    { key: "Project ID", values: Array(cashEndBalances.length).fill(paramsID) },
     {
       key: "Cash",
       values: cashEndBalances, // Set values to zero
@@ -689,10 +984,8 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
       key: "Current Assets", // Added Current Assets row
       values: currentAssets,
     },
-    { key: "1" },
-    {
-      key: "Long-Term Assets",
-    },
+    // { key: "1" },
+    // {key: "Long-Term Assets",},
     // insert BS Total investment here
     { key: "Total Investment", values: totalAssetValue }, // New row for total investment
 
@@ -712,21 +1005,15 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
       key: "Total Assets",
       values: totalAssets,
     },
-    { key: "1" },
+    // { key: "1" },
+    // {key: "Liabilities & Equity",},
+    // {key: "Current Liabilities",},
     {
-      key: "Liabilities & Equity",
-    },
-    {
-      key: "Current Liabilities",
-    },
-    {
-      key: "Account Payable", // Added Inventory row
+      key: "Accounts Payable", // Added Inventory row
       values: new Array(numberOfMonths).fill(0), // Set values to zero
     },
 
-    {
-      key: "Long-Term Liabilities",
-    },
+    // {key: "Long-Term Liabilities",},
     {
       key: "Long term liabilities",
       values: bsTotalRemainingBalance, // New row for long term liabilities
@@ -736,12 +1023,8 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
       key: "Total Liabilities", // Added Inventory row
       values: totalLiabilities,
     },
-    {
-      key: "1",
-    },
-    {
-      key: "Shareholders Equity",
-    },
+    // {key: "1",},
+    // {key: "Shareholders Equity",},
     {
       key: "Paid in Capital",
       values: Array.from({ length: numberOfMonths }, (_, i) => {
@@ -792,7 +1075,8 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
     ...item.values?.reduce(
       (acc, value, i) => ({
         ...acc,
-        [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+        [realDate[i]]:
+          typeof value === "number" ? formatNumber(value.toFixed(2)) : value,
       }),
       {}
     ),
@@ -858,8 +1142,9 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
   }, [costInputs, numberOfMonths]);
 
   const transposedData = [
-    { key: "Revenue" },
+    // { key: "Revenue" },
     // { key: "Total Revenue", values: totalRevenue },
+    { key: "Project ID", values: Array(cashEndBalances.length).fill(paramsID) },
     {
       key: "Total Revenue",
       values: totalRevenue,
@@ -875,7 +1160,7 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
           ...Object.keys(item).reduce((acc, key) => {
             if (key.startsWith("month")) {
               const monthIndex = key.replace("month", "").trim();
-              acc[`Month ${monthIndex}`] = item[key];
+              acc[realDate[monthIndex - 1]] = item[key];
             }
             return acc;
           }, {}),
@@ -883,12 +1168,12 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
     },
     { key: "Deductions", values: totalDeductions },
     { key: "Net Revenue", values: netRevenue },
-    { key: "" },
-    { key: "Cost of Revenue" },
+    // { key: "" },
+    // { key: "Cost of Revenue" },
     { key: "Total COGS", values: totalCOGS },
     { key: "Gross Profit", values: grossProfit },
-    { key: "" },
-    { key: "Operating Expenses" },
+    // { key: "" },
+    // { key: "Operating Expenses" },
 
     // { key: "Operating Costs", values: totalCosts },
     {
@@ -900,7 +1185,7 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
         ...Object.keys(item).reduce((acc, key) => {
           if (key.startsWith("month")) {
             const monthIndex = key.replace("month", "").trim();
-            acc[`Month ${monthIndex}`] = item[key];
+            acc[realDate[monthIndex - 1]] = item[key];
           }
           return acc;
         }, {}),
@@ -923,12 +1208,12 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
       })),
     },
     { key: "EBITDA", values: ebitda },
-    { key: "" },
-    { key: "Additional Expenses" },
+    // { key: "" },
+    // { key: "Additional Expenses" },
     { key: "Depreciation", values: totalInvestmentDepreciation },
     { key: "Interest", values: totalInterestPayments },
     { key: "EBT", values: earningsBeforeTax },
-    { key: "" },
+    // { key: "" },
     { key: "Income Tax", values: incomeTax },
     { key: "Net Income", values: netIncome },
   ].map((item, index) => ({
@@ -936,7 +1221,8 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
     ...item.values?.reduce(
       (acc, value, i) => ({
         ...acc,
-        [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+        [realDate[i]]:
+          typeof value === "number" ? formatNumber(value.toFixed(2)) : value,
       }),
       {}
     ),
@@ -945,12 +1231,13 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
       ...child.values?.reduce(
         (acc, value, i) => ({
           ...acc,
-          [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+          [realDate[i]]:
+            typeof value === "number" ? formatNumber(value.toFixed(2)) : value,
         }),
         {}
       ),
       ...Object.keys(child).reduce((acc, key) => {
-        if (key.startsWith("Month")) {
+        if (key.match("-")) {
           acc[key] = child[key];
         }
         return acc;
@@ -958,13 +1245,22 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
     })),
   }));
   const { financialProjectName } = useSelector((state) => state.durationSelect);
+  const filterMetrics = (data) => {
+    return data?.filter((item) => item.metric !== "1" && item.metric !== "");
+  };
 
-  console.log("currentUser", currentUser[0]);
+  const BS = filterMetrics(positionDataWithNetIncome2);
+
+  const CF = filterMetrics(positionDataWithNetIncome);
+
+  const PNL = filterMetrics(transposedData);
+
+  console.log("params", paramsID);
 
   return (
     currentUser[0]?.admin && (
       <div className="flex flex-col rounded-md">
-        <input
+        {/* <input
           className="p-2 rounded m-4 border-gray-300 border"
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -990,11 +1286,11 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
               }}
             />
           )}
-        </Modal>
+        </Modal> */}
         <FileUploadComponent
-          BS={positionDataWithNetIncome2}
-          CF={positionDataWithNetIncome}
-          PNL={transposedData}
+          BS={BS}
+          CF={CF}
+          PNL={PNL}
           Source={financialProjectName}
         />
       </div>

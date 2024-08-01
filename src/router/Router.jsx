@@ -49,6 +49,7 @@ import CompetitionPosts from "../pages/University/CompetitionPosts.jsx";
 import DraggableChart from "../pages/FinalcialPage/Components/DraggableChart.jsx";
 import VCPage from "../pages/VC workspace/VCPage.jsx";
 import CohortPost from "../pages/VC workspace/CohortPosts.jsx";
+import CoursePosts from "../pages/StartUps/CoursePosts.jsx";
 
 function Router() {
   const location = useLocation();
@@ -272,6 +273,11 @@ function Router() {
           key={location.key}
           path="/dragChart"
           element={<DraggableChart />}
+        />
+        <Route
+          key={location.key}
+          path="/course"
+          element={<CoursePosts location={location} />}
         />
       </Routes>
     </>

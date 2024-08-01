@@ -1295,35 +1295,6 @@ const HeroUniversities = ({
     setSelectedRound(parsedRounds[0] || null);
   }, [selectedCode]);
 
-  // const [totalScore, setTotalScore] = useState(0);
-
-  // useEffect(() => {
-  //   const initialTotalScore = scoringRules.reduce(
-  //     (acc, rule) => acc + (rule.score || 0) * (Number(rule.rate) / 100),
-  //     0
-  //   );
-
-  //   setTotalScore(initialTotalScore.toFixed(2));
-  // }, [scoringRules]);
-
-  // const handleScoreChange = (index, value) => {
-  //   const newScore = Number(value);
-  //   const updatedScoringRules = [...scoringRules];
-  //   updatedScoringRules[index].score = newScore;
-
-  //   const newTotalScore = updatedScoringRules.reduce(
-  //     (acc, rule) => acc + (rule.score || 0) * (Number(rule.rate) / 100),
-  //     0
-  //   );
-  //   setTotalScore(newTotalScore);
-  // };
-
-  // const handleScoreChange = (index, value) => {
-  //   const updatedScoringRules = [...scoringRules];
-  //   updatedScoringRules[index].score = value;
-  //   setScoringRules(updatedScoringRules);
-  // };
-
   const [isUndoQualifiedModalOpen, setIsUndoQualifiedModalOpen] =
     useState(false);
 

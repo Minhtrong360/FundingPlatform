@@ -3,8 +3,6 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import Footer from "./Footer";
 
-import Header from "./Header";
-
 import HeroSection from "./Components/HeroSection";
 import Features from "./Components/Features";
 
@@ -14,7 +12,6 @@ import { Avatar, Card, Modal, message } from "antd";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
-import NewUserPage from "../UserProfile/NewUserPage";
 import { CardContent, IconButton } from "@mui/material";
 import InputField from "../../components/InputField";
 import SelectField from "../../components/SelectField";
@@ -23,7 +20,7 @@ import MultiSelectField from "../../components/MultiSelectField";
 import industries from "../../components/Industries";
 import { formatNumber } from "../../features/CostSlice";
 import SpinnerBtn from "../../components/SpinnerBtn";
-import Header2 from "./Header2";
+import Header from "./Header";
 import FlowiseChat from "../FinalcialPage/FLowiseChat";
 // import BubleChatBot from "./Components/BubleChatBot";
 
@@ -346,7 +343,7 @@ const HomePage = () => {
   return (
     <>
       {/* <Header /> */}
-      <Header2 />
+      <Header />
       <FlowiseChat page="Home" />
       {/* {user && <BubleChatBot />} */}
       <HeroSection />

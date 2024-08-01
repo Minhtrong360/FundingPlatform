@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../../supabase";
 // import image from "../Home/Components/founder&Business.jpg";
-import Header from "../Home/Header";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { Avatar } from "antd";
 import { formatDate } from "../../features/DurationSlice";
-import Header2 from "../Home/Header2";
+import Header from "../Home/Header";
 
 const renderContentWithLineBreaks = (content) => {
   // Replace newline characters with <br> elements
@@ -52,7 +51,7 @@ function DetailBlog() {
         <LoadingButtonClick isLoading={isLoading} />
       ) : (
         <div className="max-w-3xl px-4 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
-          <Header2 />
+          <Header />
           <article className="max-w-2xl mx-auto mt-16 p-4">
             <header className="flex items-center mb-8">
               <Avatar

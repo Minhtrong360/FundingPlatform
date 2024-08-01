@@ -13,7 +13,7 @@ import InputField from "../../components/InputField";
 import apiService from "../../app/apiService";
 import { Option } from "antd/es/mentions";
 
-function ProjectList({ projects }) {
+function ProjectList({ projects, isLoading }) {
   const { user } = useAuth();
 
   const [updatedProjects, setUpdatedProjects] = useState([]);
@@ -1089,6 +1089,7 @@ function ProjectList({ projects }) {
                   rowKey="id"
                   size="small"
                   bordered
+                  loading={isLoading}
                 />
               </div>
             </div>
@@ -1111,6 +1112,7 @@ function ProjectList({ projects }) {
                   rowKey="id"
                   size="small"
                   bordered
+                  loading={isLoading}
                 />
               </div>
             </div>

@@ -8,7 +8,7 @@ import { LinearProgress } from "@mui/material";
 import { message } from "antd";
 import HeroStartup from "./HeroStartup";
 import regions from "../../components/Regions";
-import Header2 from "../Home/Header2";
+import Header from "../Home/Header";
 
 const NewProjectPosts = ({ location }) => {
   const [companies, setCompanies] = useState(
@@ -69,8 +69,6 @@ const NewProjectPosts = ({ location }) => {
         .select("id, verified, status") // Get verified status and status along with id
         .neq("status", "stealth")
         .neq("stamp", "lesson");
-
-      console.log("projects", projects);
 
       if (projectsError) {
         message.error(projectsError.message);
@@ -249,7 +247,7 @@ const NewProjectPosts = ({ location }) => {
   return (
     <div className="lg:px-8 mx-auto my-12">
       {/* <Header /> */}
-      <Header2 />
+      <Header />
       <div className="px-3 py-2 lg:px-8 lg:py-1 mx-auto">
         <HeroStartup />
         <Search

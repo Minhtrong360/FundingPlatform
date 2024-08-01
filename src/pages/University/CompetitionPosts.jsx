@@ -2,16 +2,16 @@ import React, { useEffect, useState } from "react";
 import Card from "../Home/Components/Card";
 import { supabase } from "../../supabase";
 import { LinearProgress } from "@mui/material";
-import { Dropdown, Menu, message, Tabs } from "antd";
+import { Button, Dropdown, Menu, message, Table, Tabs } from "antd";
 
-import { useLocation, useNavigate } from "react-router-dom";
 import UniSearch from "./UniSearch";
 import UniEditorTool from "./UniEditorTool"; // Assuming this is the component for editing rules
 import TabPane from "antd/es/tabs/TabPane";
 import { useAuth } from "../../context/AuthContext";
-import Header2 from "../Home/Header2";
+import Header2 from "../Home/Header";
 import HeroCompetitions from "./HeroCompetitons";
 import SubmitProjectModal from "./components/SubmitProjectComponent";
+import { formatDate } from "../../features/DurationSlice";
 
 const CompetitionPost = () => {
   const [companies, setCompanies] = useState([]);
@@ -248,6 +248,127 @@ const CompetitionPost = () => {
     }
   };
 
+  const DiaryColumns = [
+    {
+      title: "No",
+      dataIndex: "index",
+      key: "index",
+      align: "center",
+      render: (text, record, index) => <span>{text}</span>,
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text, record) => (
+        <span className="hover:cursor-pointer">{record.name}</span>
+      ),
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      render: (text, record) => (
+        <span className="hover:cursor-pointer">{record.email}</span>
+      ),
+    },
+    {
+      title: "Date",
+      dataIndex: "created_at",
+      key: "created_at",
+      align: "center",
+      render: (text, record) => (
+        <span className="hover:cursor-pointer">
+          {formatDate(record.created_at)}
+        </span>
+      ),
+    },
+    {
+      title: "Project name",
+      dataIndex: "projectName",
+      key: "projectName",
+      align: "center",
+      render: (text, record) => (
+        <span className="hover:cursor-pointer">{record.projectName}</span>
+      ),
+    },
+    {
+      title: "Diaries",
+      dataIndex: "diaries",
+      key: "diaries",
+      align: "center",
+      render: (text, record) => (
+        <Button
+          style={{ fontSize: "12px" }}
+          // onClick={() => openScoringRulesModal(record)}
+        >
+          View
+        </Button>
+      ),
+    },
+    // {
+    //   title: "Action",
+    //   dataIndex: "action",
+    //   key: "action",
+    //   align: "center",
+    //   render: (text, record) => (
+    //     <Dropdown
+    //       className="flex items-center justify-center"
+    //       overlay={
+    //         <Menu>
+    //           <>
+    //             <Menu.Item key="edit">
+    //               <div
+    //                 // onClick={() => openEditModal(record)}
+    //                 style={{ fontSize: "12px" }}
+    //               >
+    //                 Edit
+    //               </div>
+    //             </Menu.Item>
+    //             <Menu.Item key="publish">
+    //               <div
+    //                 // onClick={() => openPublishModal(record)}
+    //                 style={{ fontSize: "12px" }}
+    //               >
+    //                 {record.publish ? "Un-publish" : "Publish"}
+    //               </div>
+    //             </Menu.Item>
+    //             <Menu.Item key="judges">
+    //               <div
+    //                 // onClick={() => openJudgeModal(record)}
+    //                 style={{ fontSize: "12px" }}
+    //               >
+    //                 Manage Judges
+    //               </div>
+    //             </Menu.Item>
+    //             <Menu.Item key="scoringRules">
+    //               <div
+    //                 // onClick={() => openScoringRulesModal(record)}
+    //                 style={{ fontSize: "12px" }}
+    //               >
+    //                 Scoring Rules
+    //               </div>
+    //             </Menu.Item>
+    //             <Menu.Item key="delete">
+    //               <div
+    //                 // onClick={() => openDeleteModal(record.id)}
+    //                 style={{ fontSize: "12px" }}
+    //               >
+    //                 Delete
+    //               </div>
+    //             </Menu.Item>
+    //           </>
+    //         </Menu>
+    //       }
+    //     >
+    //       <Button className="bg-blue-600 rounded-md max-w-[5rem] text-white py-1 hover:cursor-pointer text-xs">
+    //         Action
+    //       </Button>
+    //     </Dropdown>
+    //   ),
+    // },
+  ];
+
   return (
     <div className="bg-white darkBg antialiased !p-0">
       <div id="exampleWrapper">
@@ -358,6 +479,31 @@ const CompetitionPost = () => {
                     <SubmitProjectModal />
                   </div>
                 </TabPane>
+                {isJudge && (
+                  <TabPane tab="Tracking" key="tracking">
+                    <section className="container px-4 mx-auto mt-14 max-w-[85rem]">
+                      <div className="flex flex-col mb-5">
+                        <h3 className="font-bold text-xl text-left">
+                          Participants listing
+                        </h3>
+
+                        <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
+                          <Table
+                            columns={DiaryColumns}
+                            // dataSource={codeData}
+                            pagination={{
+                              position: ["bottomLeft"],
+                            }}
+                            rowKey="id"
+                            size="small"
+                            bordered
+                            loading={isLoading}
+                          />
+                        </div>
+                      </div>
+                    </section>
+                  </TabPane>
+                )}
               </Tabs>
             </>
           </div>

@@ -1,12 +1,8 @@
-import { Badge, message, Button } from "antd";
-import Modal from "react-modal";
+import { Badge, message, Button, Input, Modal } from "antd";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
 
-import { YoutubeOutlined } from "@ant-design/icons";
-
-import Sample from "./Sample";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../../../supabase";
 import { useAuth } from "../../../context/AuthContext";
@@ -14,12 +10,23 @@ import FilesList from "../FilesList";
 
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import LoadingButtonClick from "../../../components/LoadingButtonClick";
+import SpinnerBtn from "../../../components/SpinnerBtn";
+import Sample from "./Sample";
 
 const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
   const [activeTab, setActiveTab] = useState("Your Profile");
+  const [tabs, setTabs] = useState([
+    { key: "Your Profile", title: "Your Profile", editable: false },
+    { key: "Sample PitchDeck", title: "Sample PitchDeck", editable: false },
+    { key: "Data Room", title: "Data Room", editable: false },
+  ]);
 
   const [isContentChanged, setIsContentChanged] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [newTabTitle, setNewTabTitle] = useState("");
+  const [tabToDelete, setTabToDelete] = useState(null);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+
   const handleBeforeUnload = useCallback(
     (event) => {
       if (isContentChanged) {
@@ -135,22 +142,42 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
           message.error("No internet access.");
           return;
         }
+        setIsLoading(true);
         if (params) {
           // Kiểm tra xem project có tồn tại không
           const { data, error } = await supabase
             .from("projects")
-            .select("markdown")
+            .select("*")
             .match({ id: params.id })
             .single();
           if (error) {
             throw error;
           } else {
+            console.log("data", data);
             // Nếu có dữ liệu Markdown trong cơ sở dữ liệu, cập nhật giá trị của markdown
             if (data && data.markdown) {
-              editor.replaceBlocks(
-                editor.topLevelBlocks,
-                JSON.parse(data.markdown)
-              );
+              const updatedTabs = tabs.map((tab) => {
+                if (tab.key === "Your Profile") {
+                  return { ...tab, content: data.markdown };
+                }
+                return tab;
+              });
+              setTabs(updatedTabs);
+            }
+            if (data && data.tabs) {
+              const customTabs = JSON.parse(data.tabs).map((tab) => ({
+                ...tab,
+                content: tab.content || JSON.stringify([]),
+              }));
+              setTabs((prevTabs) => {
+                const defaultTabs = prevTabs.filter(
+                  (tab) =>
+                    tab.key === "Your Profile" ||
+                    tab.key === "Sample PitchDeck" ||
+                    tab.key === "Data Room"
+                );
+                return [...defaultTabs, ...customTabs];
+              }); // Cập nhật tabs từ Supabase
             }
           }
         }
@@ -171,9 +198,23 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
   const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
   const params = useParams();
 
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
+  const handleTabChange = (tabKey) => {
+    setActiveTab(tabKey);
   };
+
+  useEffect(() => {
+    if (
+      !isLoading &&
+      activeTab !== "Sample PitchDeck" &&
+      activeTab !== "Data Room"
+    ) {
+      const tab = tabs.find((tab) => tab.key === activeTab);
+      console.log("tab", tab);
+      if (tab?.content) {
+        editor.replaceBlocks(editor.topLevelBlocks, JSON.parse(tab.content));
+      }
+    }
+  }, [activeTab, isLoading]);
 
   const handleSave = async () => {
     try {
@@ -196,9 +237,19 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
         (projectData.user_id === user.id ||
           projectData.collabs.includes(user.email))
       ) {
+        const tabsToSave = tabs.filter(
+          (tab) =>
+            tab.key !== "Your Profile" &&
+            tab.key !== "Sample PitchDeck" &&
+            tab.key !== "Data Room"
+        );
+
         const { error } = await supabase
           .from("projects")
-          .update({ markdown: blocks })
+          .update({
+            markdown: JSON.stringify(blocks),
+            tabs: tabsToSave,
+          })
           .match({ id: params.id });
 
         if (error) {
@@ -236,6 +287,39 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
     }
   }, [isDemo]);
 
+  const addNewTab = () => {
+    setIsModalVisible(true);
+  };
+
+  const deleteTab = () => {
+    const filteredTabs = tabs.filter((tab) => tab.key !== tabToDelete.key);
+    setTabs(filteredTabs);
+    setActiveTab("Your Profile");
+    setIsDeleteModalVisible(false);
+    setTabToDelete(null);
+  };
+
+  const handleOk = () => {
+    const newTabKey = `New Tab ${tabs.length - 2}`;
+    setTabs([
+      ...tabs,
+      {
+        key: newTabKey,
+        title: newTabTitle,
+        editable: true,
+        content: JSON.stringify([]),
+      },
+    ]);
+    setActiveTab(newTabKey);
+    setIsModalVisible(false);
+    setNewTabTitle("");
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    setNewTabTitle("");
+  };
+
   const tabContents = {
     ...(isDemo && user.email !== "ha.pham@beekrowd.com"
       ? {}
@@ -245,7 +329,7 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
               <BlockNoteView
                 editor={editor}
                 theme={"light"}
-                className="w-full lg:w-8/12"
+                className="w-full"
                 onChange={async function (editor) {
                   const blocks = editor.topLevelBlocks;
                   for (const block of blocks) {
@@ -333,7 +417,7 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
                       type="button"
                     >
                       {isLoading ? (
-                        <LoadingButtonClick isLoading={isLoading} />
+                        <SpinnerBtn isLoading={isLoading} />
                       ) : (
                         "Save profile"
                       )}
@@ -353,12 +437,138 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
 
     "Data Room": (
       <div>
-        {" "}
         <FilesList />
       </div>
     ),
   };
 
+  tabs.forEach((tab) => {
+    if (!tabContents[tab.key]) {
+      tabContents[tab.key] = (
+        <div className="relative">
+          <BlockNoteView
+            editor={editor}
+            theme={"light"}
+            className="w-full"
+            onChange={async function (editor) {
+              const blocks = editor.topLevelBlocks;
+              for (const block of blocks) {
+                if (
+                  block.type === "image" &&
+                  block.props.url &&
+                  !block.props.url.includes("beekrowd_storage")
+                ) {
+                  const newUrl = await uploadImageFromURLToSupabase(
+                    block.props.url
+                  );
+                  if (newUrl) {
+                    block.props.url = newUrl;
+                  }
+                }
+              }
+
+              // Handle video blocks
+              blocks.forEach((block) => {
+                if (block.type === "video") {
+                  const videoElement = document.querySelector(
+                    `video[src="${block.props.url}"]`
+                  );
+                  if (videoElement && block.props.url.includes("youtube.com")) {
+                    const videoId = block.props.url.split("v=")[1];
+                    const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                    const iframe = document.createElement("iframe");
+                    iframe.width = block.props.previewWidth || "100%";
+                    iframe.height = "315";
+                    iframe.src = embedUrl;
+                    iframe.frameBorder = "0";
+                    iframe.allow =
+                      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                    iframe.allowFullscreen = true;
+                    videoElement.replaceWith(iframe);
+                  }
+                }
+              });
+
+              // Update content of the current tab
+              const updatedTabs = tabs.map((t) => {
+                if (t.key === tab.key) {
+                  return {
+                    ...t,
+                    content: JSON.stringify(blocks),
+                  };
+                }
+                return t;
+              });
+
+              setTabs(updatedTabs);
+
+              if (
+                user?.id === currentProject?.user_id ||
+                currentProject?.collabs?.includes(user.email)
+              ) {
+                setIsContentChanged(true); // Mark content as changed
+              }
+            }}
+          />
+          {company?.keyWords && (
+            <div className="mt-28 px-5">
+              <div className="text-black font-semibold">Keywords:</div>
+
+              <div className="mt-2">
+                {company.keyWords.split(",").map((keyWord, index) => {
+                  const trimmedKeyword = keyWord.trim(); // Trim whitespace
+                  if (trimmedKeyword) {
+                    return (
+                      <Badge
+                        key={index}
+                        className="mx-2 bg-yellow-300 border border-gray-300 truncate text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
+                      >
+                        {trimmedKeyword}
+                      </Badge>
+                    );
+                  }
+                  return null; // Ignore empty keywords
+                })}
+              </div>
+            </div>
+          )}
+          <div className="sm:px-5 sticky bottom-5 left-5">
+            {user?.id === currentProject?.user_id ||
+            currentProject?.collabs?.includes(user.email) ? (
+              <>
+                <button
+                  className={`min-w-[110px] mt-8 hover:cursor-pointer py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent ${
+                    isLoading
+                      ? "bg-gray-600 disabled:opacity-50 disabled:pointer-events-none"
+                      : "bg-blue-600 text-white hover:bg-blue-700"
+                  }  `}
+                  onClick={handleSave}
+                  type="button"
+                >
+                  {isLoading ? (
+                    <SpinnerBtn isLoading={isLoading} />
+                  ) : (
+                    "Save profile"
+                  )}
+                </button>
+              </>
+            ) : null}
+          </div>
+        </div>
+      );
+    }
+  });
+
+  const confirmDeleteTab = (tab) => {
+    setTabToDelete(tab);
+    setIsDeleteModalVisible(true);
+  };
+  const handleDeleteCancel = () => {
+    setIsDeleteModalVisible(false);
+    setTabToDelete(null);
+  };
+
+  console.log("tabs", tabs);
   return (
     <div className={`px-8  flex flex-col justify-center items-center`}>
       <>
@@ -366,19 +576,36 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
           <div className="w-full  py-8 overflow-x-auto">
             <nav className="flex justify-between sm:space-x-4 sm:px-14">
               {/* Navbar */}
-              {Object.keys(tabContents).map((tab) => (
+              {tabs.map((tab) => (
                 <div
-                  key={tab}
+                  key={tab.key}
                   className={`cursor-pointer flex items-center sm:px-3 px-1 py-2 text-sm font-medium ${
-                    activeTab === tab
+                    activeTab === tab.key
                       ? "text-blue-600 bg-blue-100 rounded-md"
                       : "text-gray-600"
                   }`}
-                  onClick={() => handleTabChange(tab)}
+                  onClick={() => handleTabChange(tab.key)}
                 >
-                  {tab}
+                  {tab.title}
+                  {tab.editable && (
+                    <button
+                      className="ml-2 text-red-600"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        confirmDeleteTab(tab);
+                      }}
+                    >
+                      x
+                    </button>
+                  )}
                 </div>
               ))}
+              <button
+                className="bg-green-500 text-white px-4 py-2 rounded-md ml-4"
+                onClick={addNewTab}
+              >
+                + Add Tab
+              </button>
             </nav>
           </div>
         </aside>
@@ -387,6 +614,31 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
           {tabContents[activeTab]}
         </div>
       </>
+      <Modal
+        title="Enter Tab Title"
+        open={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        centered
+      >
+        <Input
+          value={newTabTitle}
+          onChange={(e) => setNewTabTitle(e.target.value)}
+        />
+      </Modal>
+
+      <Modal
+        title="Confirm Delete"
+        open={isDeleteModalVisible}
+        onOk={deleteTab}
+        onCancel={handleDeleteCancel}
+      >
+        Are you sure you want to delete{" "}
+        <span className="text-[#f5222d] font-semibold">
+          {tabToDelete?.title}
+        </span>
+        ?
+      </Modal>
     </div>
   );
 };

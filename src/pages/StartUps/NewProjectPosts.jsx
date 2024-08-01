@@ -5,7 +5,6 @@ import { supabase } from "../../supabase";
 import Search from "../Home/Components/Search";
 
 import { LinearProgress } from "@mui/material";
-import Header from "../Home/Header";
 import { message } from "antd";
 import HeroStartup from "./HeroStartup";
 import regions from "../../components/Regions";
@@ -68,7 +67,10 @@ const NewProjectPosts = ({ location }) => {
       const { data: projects, error: projectsError } = await supabase
         .from("projects")
         .select("id, verified, status") // Get verified status and status along with id
-        .neq("status", "stealth");
+        .neq("status", "stealth")
+        .neq("stamp", "lesson");
+
+      console.log("projects", projects);
 
       if (projectsError) {
         message.error(projectsError.message);

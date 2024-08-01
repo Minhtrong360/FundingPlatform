@@ -226,6 +226,17 @@ code {
 .bn-block-content {
   padding: 8px !important;
 }
+.bn-block-content::before {
+  font-size: 18px;
+}
+
+.bn-side-menu {
+  position: absolute !important;
+  display: flex !important;
+  flex-direction: column-reverse !important;
+  top: 3px !important;
+  left: -40px !important;
+}
 
 /* Styles for mobile screens */
 @media screen and (max-width: 600px) {

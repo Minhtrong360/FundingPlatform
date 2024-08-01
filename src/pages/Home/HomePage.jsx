@@ -25,6 +25,7 @@ import { formatNumber } from "../../features/CostSlice";
 import SpinnerBtn from "../../components/SpinnerBtn";
 import Header2 from "./Header2";
 import FlowiseChat from "../FinalcialPage/FLowiseChat";
+import PartnerMarquee from "./Components/PartnerMarquee/"
 // import BubleChatBot from "./Components/BubleChatBot";
 
 const HomePage = () => {
@@ -356,6 +357,8 @@ const HomePage = () => {
 
       <PricingWithLemon />
 
+      <PartnerMarquee/>
+
       <Footer />
       {user && (
         <Modal
@@ -365,10 +368,10 @@ const HomePage = () => {
           footer={null}
         >
           <div className="flex-col justify-center">
-            <div className="flex flex-col justify-center items-center space-y-6 mb-4">
+            <div className="flex flex-col items-center justify-center mb-4 space-y-6">
               <Card className="sm:w-[350px] w-full sm:mb-0 mb-10">
-                <CardContent className="flex flex-col  items-center text-center">
-                  <h3 className="mt-4 font-semibold text-lg">
+                <CardContent className="flex flex-col items-center text-center">
+                  <h3 className="mt-4 text-lg font-semibold">
                     {userData.full_name}
                   </h3>
 
@@ -415,7 +418,7 @@ const HomePage = () => {
             <form onSubmit={handleSubmit}>
               <div className="flex flex-col w-full max-w-4xl space-y-4 sm:ml-0">
                 <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                     <div className="flex flex-col">
                       <div className="mt-4">
                         <InputField
@@ -449,7 +452,7 @@ const HomePage = () => {
                           name="roll"
                           value={userData.roll}
                           onChange={handleRollChange}
-                          className="py-3 px-4 block w-full border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500  darkTextGray400 "
+                          className="block w-full px-4 py-3 text-sm border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 darkTextGray400 "
                         >
                           <option value="Founder">Founder</option>
                           <option value="Investor">Investor</option>
@@ -497,7 +500,7 @@ const HomePage = () => {
                         * For better startups matching, please fill in the
                         following information.
                       </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                         <div className="flex flex-col">
                           <div className="mt-4">
                             <MultiSelectField
@@ -552,7 +555,7 @@ const HomePage = () => {
                           <div className="mt-4">
                             <label
                               htmlFor="type"
-                              className="block mb-2 text-sm  darkTextWhite"
+                              className="block mb-2 text-sm darkTextWhite"
                             >
                               Type of Organization
                             </label>
@@ -671,7 +674,7 @@ const HomePage = () => {
                   <div>
                     <label
                       htmlFor="hs-about-hire-us-2"
-                      className="block mb-2 text-sm text-gray-700 font-medium darkTextWhite mt-2"
+                      className="block mt-2 mb-2 text-sm font-medium text-gray-700 darkTextWhite"
                     >
                       Tell something about you
                     </label>
@@ -679,13 +682,13 @@ const HomePage = () => {
                       id="hs-about-hire-us-2"
                       name="detail"
                       rows="4"
-                      className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
+                      className="block w-full px-4 py-3 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none darkTextGray400 "
                       value={userData.detail}
                       onChange={handleInputChange}
                     ></textarea>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-4 lg:gap-6 mt-6 ">
+                  <div className="grid grid-cols-1 gap-4 mt-6 lg:gap-6 ">
                     <button
                       type="submit"
                       className={`w-full sm:w-[30%] py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none   ${

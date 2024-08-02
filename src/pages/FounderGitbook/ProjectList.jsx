@@ -47,7 +47,7 @@ function ProjectList({ projects, isLoading }) {
     contactEmail: "",
     contactPhone: "",
     university: "",
-    teamSize: "",
+    teamName: "",
     teamEmails: "",
   });
 
@@ -195,7 +195,7 @@ function ProjectList({ projects, isLoading }) {
         contactEmail: "Contact Email",
         contactPhone: "Contact Phone",
         university: "University",
-        teamSize: "Team Size",
+        teamName: "Team Name",
         teamEmails: "Team Emails",
       };
 
@@ -251,8 +251,17 @@ function ProjectList({ projects, isLoading }) {
         };
         updatedApplyInfo.push(newApplyInfo);
       } else {
-        message.warning("You submitted this project to this contest.");
-        return;
+        // Update the applyInfo that corresponds to the existing codeId
+        updatedApplyInfo = updatedApplyInfo.map((info) => {
+          if (JSON.parse(info).universityCode === codeId) {
+            info = applyInfo;
+            info.applyAt = new Date().toISOString();
+            info.universityCode = codeId;
+
+            return info;
+          }
+          return info;
+        });
       }
 
       const { error: updateError } = await supabase
@@ -975,12 +984,12 @@ function ProjectList({ projects, isLoading }) {
           />
           <InputField
             style={{ marginBottom: "6px" }}
-            label="Team Size"
-            id="teamSize"
-            name="teamSize"
-            value={applyInfo.teamSize}
+            label="Team Name"
+            id="teamName"
+            name="teamName"
+            value={applyInfo.teamName}
             onChange={(e) =>
-              setApplyInfo({ ...applyInfo, teamSize: e.target.value })
+              setApplyInfo({ ...applyInfo, teamName: e.target.value })
             }
             type="text"
             required

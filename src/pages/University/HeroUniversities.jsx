@@ -9,6 +9,7 @@ import {
   Modal,
   Select,
   Table,
+  Tooltip,
   message,
 } from "antd";
 import { useEffect, useState } from "react";
@@ -100,7 +101,6 @@ const HeroUniversities = ({
   }, [credentials]);
 
   const filterProjectsByCode = async (codeId) => {
-    console.log("codeId", codeId);
     if (codeId) {
       try {
         const { data: projects, error: projectsError } = await supabase
@@ -829,7 +829,6 @@ const HeroUniversities = ({
 
   const [isQualifiedModalOpen, setIsQualifiedModalOpen] = useState(false);
   const [projectToQualify, setProjectToQualify] = useState(null);
-  console.log("projectToQualify", projectToQualify);
   const openQualifiedModal = (record) => {
     setProjectToQualify(record);
     setIsQualifiedModalOpen(true);
@@ -898,7 +897,7 @@ const HeroUniversities = ({
       ),
     },
     {
-      title: "Team Name",
+      title: "Company Name",
       dataIndex: "companyName",
       key: "companyName",
       render: (text, record) => (
@@ -986,9 +985,14 @@ const HeroUniversities = ({
           record.applyInfo,
           selectedCode?.id
         );
+        const teamEmails = applyInfo.teamEmails;
+        const emailArray = teamEmails
+          ?.split(/\s*,\s*/)
+          .map((email) => email.trim());
+
         return (
           <span className="hover:cursor-pointer flex justify-center items-center">
-            {applyInfo.teamSize}
+            {emailArray?.length}
           </span>
         );
       },
@@ -1003,7 +1007,20 @@ const HeroUniversities = ({
           selectedCode?.id
         );
         return (
-          <span className="hover:cursor-pointer">{applyInfo.teamEmails}</span>
+          <span
+            className="hover:cursor-pointer truncate"
+            style={{
+              maxWidth: "200px",
+              display: "inline-block",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            <Tooltip title={applyInfo.teamEmails}>
+              {applyInfo.teamEmails}
+            </Tooltip>
+          </span>
         );
       },
     },
@@ -2177,9 +2194,15 @@ const HeroUniversities = ({
           }}
           centered={true}
         >
-          Are you sure to remove "{projectToRemove?.name}" from "
-          {selectedCode?.code}"? "{projectToRemove?.name}" will no longer exist
-          in this code.
+          Are you sure to remove{" "}
+          <span className="text-[#f5222d] font-semibold">
+            {projectToRemove?.name}
+          </span>{" "}
+          from <span className="font-semibold">{selectedCode?.code}</span>?{" "}
+          <span className="text-[#f5222d] font-semibold">
+            {projectToRemove?.name}
+          </span>{" "}
+          will no longer exist in this code.
         </Modal>
 
         <Modal

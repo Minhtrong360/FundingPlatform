@@ -337,9 +337,10 @@ const CompetitionPost = () => {
 
   const handleRemoveProjectCode = async (projectId, codeToRemove) => {
     try {
+      // Fetch the project data
       const { data: project, error: fetchError } = await supabase
         .from("projects")
-        .select("universityCode")
+        .select("universityCode, applyInfo")
         .eq("id", projectId)
         .single();
 
@@ -347,18 +348,29 @@ const CompetitionPost = () => {
         throw fetchError;
       }
 
+      // Update the universityCode field
       const updatedUniversityCode = project.universityCode.filter(
         (code) => code !== codeToRemove
       );
 
+      // Update the applyInfo field
+      const updatedApplyInfo = project.applyInfo.filter(
+        (info) => JSON.parse(info).universityCode !== codeToRemove
+      );
+
+      // Update the project in the database
       const { error: updateError } = await supabase
         .from("projects")
-        .update({ universityCode: updatedUniversityCode })
+        .update({
+          universityCode: updatedUniversityCode,
+          applyInfo: updatedApplyInfo,
+        })
         .eq("id", projectId);
 
       if (updateError) {
         throw updateError;
       }
+
       message.success("Project code removed successfully");
       setProjectList((prev) => prev.filter((item) => item.id !== projectId));
       setCompanies((prev) =>

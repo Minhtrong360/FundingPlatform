@@ -333,6 +333,7 @@ const CompetitionPost = () => {
     await handleRemoveProjectCode(projectToRemove.id, selectedCodeFull?.id);
     setIsRemoveProjectModalOpen(false);
     setProjectToRemove(null);
+    setSelectedProject(null);
   };
 
   const handleRemoveProjectCode = async (projectId, codeToRemove) => {

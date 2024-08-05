@@ -341,7 +341,7 @@ const CompetitionPost = () => {
       // Fetch the project data
       const { data: project, error: fetchError } = await supabase
         .from("projects")
-        .select("universityCode, applyInfo")
+        .select("universityCode, applyInfo, scoringInfo")
         .eq("id", projectId)
         .single();
 
@@ -358,6 +358,9 @@ const CompetitionPost = () => {
       const updatedApplyInfo = project.applyInfo.filter(
         (info) => JSON.parse(info).universityCode !== codeToRemove
       );
+      const updatedScoringInfo = project.scoringInfo.filter(
+        (info) => JSON.parse(info).codeId !== codeToRemove
+      );
 
       // Update the project in the database
       const { error: updateError } = await supabase
@@ -365,6 +368,7 @@ const CompetitionPost = () => {
         .update({
           universityCode: updatedUniversityCode,
           applyInfo: updatedApplyInfo,
+          scoringInfo: updatedScoringInfo,
         })
         .eq("id", projectId);
 
@@ -372,13 +376,48 @@ const CompetitionPost = () => {
         throw updateError;
       }
 
-      message.success("Project code removed successfully");
+      // Fetch the code entry
+      const { data: codeData, error: codeFetchError } = await supabase
+        .from("code")
+        .select("diary")
+        .eq("id", codeToRemove)
+        .single();
+
+      if (codeFetchError) {
+        throw codeFetchError;
+      }
+
+      // Extract emails from the applyInfo
+      const emailsToRemove = project.applyInfo
+        .filter((info) => JSON.parse(info).universityCode === codeToRemove)
+        .map((info) => JSON.parse(info).teamEmails.split(/\s*,\s*/))
+        .flat();
+
+      // Filter out diary entries that match the emails
+      const updatedDiaries = codeData.diary.filter((diary) => {
+        const diaryObj = JSON.parse(diary);
+        return !emailsToRemove.includes(diaryObj.email);
+      });
+
+      // Update the code entry with the filtered diaries
+      const { error: diaryUpdateError } = await supabase
+        .from("code")
+        .update({ diary: updatedDiaries })
+        .eq("id", codeToRemove);
+
+      if (diaryUpdateError) {
+        throw diaryUpdateError;
+      }
+
+      message.success(
+        "Project code removed successfully, and diaries updated."
+      );
       setProjectList((prev) => prev.filter((item) => item.id !== projectId));
       setCompanies((prev) =>
         prev.filter((item) => item.project_id !== projectId)
       );
     } catch (error) {
-      message.error("Failed to remove project code");
+      message.error("Failed to remove project code and update diaries");
       console.error(error);
     }
   };

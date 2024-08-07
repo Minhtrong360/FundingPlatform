@@ -12,6 +12,8 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 import Sample from "./Sample";
+// import * as Y from "yjs";
+// import { WebsocketProvider } from "y-websocket";
 
 const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
   const [activeTab, setActiveTab] = useState("Your Profile");
@@ -61,6 +63,14 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
     };
   }, [handleBeforeUnload, isContentChanged]);
 
+  // const doc = new Y.Doc();
+
+  // const provider = new WebsocketProvider(
+  //   "https://y-websocket-uznm.onrender.com",
+  //   "my-roomname",
+  //   doc
+  // );
+
   const editor = useCreateBlockNote({
     uploadFile: async (file) => {
       try {
@@ -91,6 +101,17 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
         // Xử lý lỗi tại đây
       }
     },
+    // collaboration: {
+    //   // The Yjs Provider responsible for transporting updates:
+    //   provider,
+    //   // Where to store BlockNote data in the Y.Doc:
+    //   fragment: doc.getXmlFragment("document-store"),
+    //   // Information (name and color) for this user:
+    //   user: {
+    //     name: "My Username",
+    //     color: "#ff0000",
+    //   },
+    // },
   });
 
   // Function to upload image to Supabase from URL
@@ -153,7 +174,6 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
           if (error) {
             throw error;
           } else {
-            console.log("data", data);
             // Nếu có dữ liệu Markdown trong cơ sở dữ liệu, cập nhật giá trị của markdown
             if (data && data.markdown) {
               const updatedTabs = tabs.map((tab) => {
@@ -209,7 +229,6 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
       activeTab !== "Data Room"
     ) {
       const tab = tabs.find((tab) => tab.key === activeTab);
-      console.log("tab", tab);
       if (tab?.content) {
         editor.replaceBlocks(editor.topLevelBlocks, JSON.parse(tab.content));
       }
@@ -568,7 +587,6 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
     setTabToDelete(null);
   };
 
-  console.log("tabs", tabs);
   return (
     <div className={`px-8  flex flex-col justify-center items-center`}>
       <>

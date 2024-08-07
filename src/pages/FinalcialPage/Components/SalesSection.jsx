@@ -300,7 +300,7 @@ const ChannelInputForm = ({
               marginRight: "4px",
             }}
           />
-          Duplicate
+          Dupl.
         </button>
 
         <button

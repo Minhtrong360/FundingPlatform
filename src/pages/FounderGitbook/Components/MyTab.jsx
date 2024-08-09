@@ -3,7 +3,7 @@ import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "../../../supabase";
 import { useAuth } from "../../../context/AuthContext";
 import FilesList from "../FilesList";
@@ -12,9 +12,9 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 import Sample from "./Sample";
-// import * as Y from "yjs";
-// import { WebsocketProvider } from "y-websocket";
-
+import * as Y from "yjs";
+import { WebsocketProvider } from "y-websocket";
+import debounce from "lodash.debounce";
 const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
   const [activeTab, setActiveTab] = useState("Your Profile");
   const [tabs, setTabs] = useState([
@@ -22,6 +22,7 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
     { key: "Sample PitchDeck", title: "Sample PitchDeck", editable: false },
     { key: "Data Room", title: "Data Room", editable: false },
   ]);
+  const { user } = useAuth();
 
   const [isContentChanged, setIsContentChanged] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -63,13 +64,13 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
     };
   }, [handleBeforeUnload, isContentChanged]);
 
-  // const doc = new Y.Doc();
+  const doc = new Y.Doc();
 
-  // const provider = new WebsocketProvider(
-  //   "https://y-websocket-uznm.onrender.com",
-  //   "my-roomname",
-  //   doc
-  // );
+  const provider = new WebsocketProvider(
+    "https://y-websocket-uznm.onrender.com",
+    "my-roomname",
+    doc
+  );
 
   const editor = useCreateBlockNote({
     uploadFile: async (file) => {
@@ -101,17 +102,17 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
         // Xử lý lỗi tại đây
       }
     },
-    // collaboration: {
-    //   // The Yjs Provider responsible for transporting updates:
-    //   provider,
-    //   // Where to store BlockNote data in the Y.Doc:
-    //   fragment: doc.getXmlFragment("document-store"),
-    //   // Information (name and color) for this user:
-    //   user: {
-    //     name: "My Username",
-    //     color: "#ff0000",
-    //   },
-    // },
+    collaboration: {
+      // The Yjs Provider responsible for transporting updates:
+      provider,
+      // Where to store BlockNote data in the Y.Doc:
+      fragment: doc.getXmlFragment("document-store"),
+      // Information (name and color) for this user:
+      user: {
+        name: user?.email,
+        color: "#ff0000",
+      },
+    },
   });
 
   // Function to upload image to Supabase from URL
@@ -214,7 +215,6 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
     fetchMarkdown();
   }, []);
 
-  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
   const params = useParams();
 
@@ -339,6 +339,68 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
     setNewTabTitle("");
   };
 
+  const handleChange = useCallback(
+    async (editor) => {
+      const blocks = editor.topLevelBlocks;
+      const updatedBlocks = [...blocks]; // Create a shallow copy of blocks
+
+      const imagePromises = updatedBlocks.map(async (block) => {
+        if (
+          block.type === "image" &&
+          block.props.url &&
+          !block.props.url.includes("beekrowd_storage")
+        ) {
+          const newUrl = await uploadImageFromURLToSupabase(block.props.url);
+          if (newUrl) {
+            block.props.url = newUrl;
+          }
+        }
+      });
+
+      await Promise.all(imagePromises);
+
+      updatedBlocks.forEach((block) => {
+        if (block.type === "video") {
+          const videoElement = document.querySelector(
+            `video[src="${block.props.url}"]`
+          );
+          if (videoElement && block.props.url.includes("youtube.com")) {
+            const videoId = block.props.url.split("v=")[1];
+            const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+            const iframe = document.createElement("iframe");
+            iframe.width = block.props.previewWidth || "100%";
+            iframe.height = "315";
+            iframe.src = embedUrl;
+            iframe.frameBorder = "0";
+            iframe.allow =
+              "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+            iframe.allowFullscreen = true;
+            videoElement.replaceWith(iframe);
+          }
+        }
+      });
+
+      setBlocks(updatedBlocks);
+      if (
+        user?.id === currentProject?.user_id ||
+        currentProject?.collabs?.includes(user.email)
+      ) {
+        setIsContentChanged(true); // Mark content as changed
+      }
+    },
+    [
+      user?.id,
+      currentProject?.user_id,
+      currentProject?.collabs,
+      setBlocks,
+      setIsContentChanged,
+      uploadImageFromURLToSupabase,
+    ]
+  );
+
+  // Use debounce to optimize the onChange handler
+  const debouncedHandleChange = useRef(debounce(handleChange, 300)).current;
+
   const tabContents = {
     ...(isDemo && user.email !== "ha.pham@beekrowd.com"
       ? {}
@@ -348,57 +410,8 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
               <BlockNoteView
                 editor={editor}
                 theme={"light"}
-                className="w-full"
-                onChange={async function (editor) {
-                  const blocks = editor.topLevelBlocks;
-                  for (const block of blocks) {
-                    if (
-                      block.type === "image" &&
-                      block.props.url &&
-                      !block.props.url.includes("beekrowd_storage")
-                    ) {
-                      const newUrl = await uploadImageFromURLToSupabase(
-                        block.props.url
-                      );
-                      if (newUrl) {
-                        block.props.url = newUrl;
-                      }
-                    }
-                  }
-
-                  // Handle video blocks
-                  blocks.forEach((block) => {
-                    if (block.type === "video") {
-                      const videoElement = document.querySelector(
-                        `video[src="${block.props.url}"]`
-                      );
-                      if (
-                        videoElement &&
-                        block.props.url.includes("youtube.com")
-                      ) {
-                        const videoId = block.props.url.split("v=")[1];
-                        const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-                        const iframe = document.createElement("iframe");
-                        iframe.width = block.props.previewWidth || "100%";
-                        iframe.height = "315";
-                        iframe.src = embedUrl;
-                        iframe.frameBorder = "0";
-                        iframe.allow =
-                          "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                        iframe.allowFullscreen = true;
-                        videoElement.replaceWith(iframe);
-                      }
-                    }
-                  });
-
-                  setBlocks(blocks);
-                  if (
-                    user?.id === currentProject?.user_id ||
-                    currentProject?.collabs?.includes(user.email)
-                  ) {
-                    setIsContentChanged(true); // Đánh dấu nội dung đã thay đổi
-                  }
-                }}
+                className="w-full lg:w-8/12"
+                onChange={debouncedHandleChange}
               />
               {company?.keyWords && (
                 <div className="mt-28 px-5">

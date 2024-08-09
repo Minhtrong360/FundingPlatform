@@ -68,7 +68,7 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
   const doc = new Y.Doc();
 
   const provider = new WebsocketProvider(
-    "https://y-websocket-uznm.onrender.com",
+    "https://ywss-collab.onrender.com",
     params?.id,
     doc
   );

@@ -2433,7 +2433,7 @@ function AdminPage() {
   return (
     <>
       <div className=" bg-white darkBg antialiased !p-0 ">
-        <LoadingButtonClick isLoading={isLoading} />
+        {/* <LoadingButtonClick isLoading={isLoading} /> */}
         <div id="exampleWrapper">
           <SideBar
             isSidebarOpen={isSidebarOpen}

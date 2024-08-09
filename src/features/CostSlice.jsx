@@ -108,7 +108,6 @@ export const calculateCostData = (
     for (let month = 1; month <= numberOfMonths; month++) {
       if (costInput.applyAdditionalInfo && costInput.gptResponseArray?.length) {
         if (month >= costInput.beginMonth && month <= costInput.endMonth) {
-          // Use gptResponseArray if applyAdditionalInfo is true and gptResponseArray exists
           currentCost = costInput.gptResponseArray[month - 1] || 0;
           monthlyCosts.push({ month: month, cost: currentCost });
         } else {
@@ -119,8 +118,18 @@ export const calculateCostData = (
         month >= costInput.beginMonth &&
         month <= costInput.endMonth
       ) {
-        const relatedRevenue = revenueData[costInput.relatedRevenue] || [];
-        const revenueForMonth = relatedRevenue[month - 1] || 0;
+        let revenueForMonth = 0;
+        if (costInput.relatedRevenue === "Total Revenue") {
+          revenueForMonth = Object.values(revenueData).reduce(
+            (total, revenueArray) => {
+              return total + (revenueArray[month - 1] || 0);
+            },
+            0
+          );
+        } else {
+          revenueForMonth =
+            revenueData[costInput.relatedRevenue]?.[month - 1] || 0;
+        }
         currentCost = (costInput.salePercentage / 100) * revenueForMonth;
         monthlyCosts.push({ month: month, cost: currentCost });
       } else {
@@ -158,7 +167,7 @@ export const calculateCostData = (
       costName: costInput.costName,
       monthlyCosts,
       costType: costInput.costType,
-      costGroup: costInput.costGroup?.toUpperCase(), // Include the cost group in the cost data
+      costGroup: costInput.costGroup?.toUpperCase(),
     });
   });
   return allCosts;

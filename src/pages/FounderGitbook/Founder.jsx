@@ -16,6 +16,7 @@ const FounderGitbook = () => {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // Import Supabase client và thiết lập nó
@@ -27,7 +28,7 @@ const FounderGitbook = () => {
           message.error("No internet access.");
           return;
         }
-
+        setIsLoading(true);
         // Lấy các dự án có user_id = user.id
         let { data: projects1, error: error1 } = await supabase
           .from("projects")
@@ -69,9 +70,11 @@ const FounderGitbook = () => {
         ).map((id) => combinedProjects.find((project) => project.id === id));
 
         setProjects(uniqueProjects);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching projects:", error);
         message.error(error.message);
+        setIsLoading(false);
       }
     };
 
@@ -90,7 +93,7 @@ const FounderGitbook = () => {
           onClick={() => setIsSidebarOpen(false)}
         >
           <div className="p-4 border-gray-300 border-dashed rounded-md darkBorderGray">
-            <ProjectList projects={projects} />
+            <ProjectList projects={projects} isLoading={isLoading} />
           </div>
         </div>
       </div>

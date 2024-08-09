@@ -72,6 +72,25 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
     doc
   );
 
+  const colors = [
+    "#958DF1",
+    "#F98181",
+    "#FBBC88",
+    "#FAF594",
+    "#70CFF8",
+    "#94FADB",
+    "#B9F18D",
+    "#FACF5A",
+    "#F29E4A",
+    "#E2717D",
+    "#C94C4C",
+  ];
+
+  const getRandomElement = (list) =>
+    list[Math.floor(Math.random() * list.length)];
+
+  const getRandomColor = () => getRandomElement(colors);
+
   const editor = useCreateBlockNote({
     uploadFile: async (file) => {
       try {
@@ -110,7 +129,7 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
       // Information (name and color) for this user:
       user: {
         name: user?.email,
-        color: "#ff0000",
+        color: getRandomColor(),
       },
     },
   });

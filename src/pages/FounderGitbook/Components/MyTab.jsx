@@ -23,6 +23,7 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
     { key: "Data Room", title: "Data Room", editable: false },
   ]);
   const { user } = useAuth();
+  const params = useParams();
 
   const [isContentChanged, setIsContentChanged] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -68,7 +69,7 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
 
   const provider = new WebsocketProvider(
     "https://y-websocket-uznm.onrender.com",
-    "my-roomname",
+    params?.id,
     doc
   );
 
@@ -235,7 +236,6 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
   }, []);
 
   const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
-  const params = useParams();
 
   const handleTabChange = (tabKey) => {
     setActiveTab(tabKey);

@@ -152,10 +152,6 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
     },
   });
 
-  console.log("editor", editor);
-  console.log("doc", doc);
-  console.log("provider", provider);
-
   const uploadImageFromURLToSupabase = async (imageUrl) => {
     try {
       const response = await axios.get(imageUrl, {

@@ -35,7 +35,7 @@ const PricingCard = ({ plan, onClick }) => {
         {plan?.name}
       </h4>
       <span className="mt-5 font-semibold text-5xl text-gray-800 darkTextGray">
-        ${plan.price / 100}
+        {(plan.price / 100) * 25}k VNĐ
         <span className="font-medium text-lg"> /month</span>
       </span>
       <div className="flex-grow">

@@ -15,6 +15,7 @@ import Sample from "./Sample";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 import debounce from "lodash.debounce";
+
 const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
   const [activeTab, setActiveTab] = useState("Your Profile");
   const [tabs, setTabs] = useState([
@@ -30,6 +31,163 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
   const [newTabTitle, setNewTabTitle] = useState("");
   const [tabToDelete, setTabToDelete] = useState(null);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const doc = useRef(new Y.Doc()).current;
+
+  // Initialize the Yjs WebsocketProvider
+  const provider = new WebsocketProvider(
+    "https://ywss-collab.onrender.com",
+    params?.id,
+    doc
+  );
+
+  const loadContentFromSupabase = async () => {
+    try {
+      if (!navigator.onLine) {
+        message.error("No internet access.");
+        return;
+      }
+
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("projects")
+        .select("*")
+        .match({ id: params.id })
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      if (data && data.markdown) {
+        const initialContent = JSON.parse(data.markdown);
+        const fragment = doc.getXmlFragment("document-store");
+        if (fragment.length === 0) {
+          // Only load content from Supabase if the document is empty
+          setBlocks(initialContent);
+          fragment.push(JSON.stringify(initialContent));
+        }
+      }
+
+      if (data && data.tabs) {
+        const customTabs = JSON.parse(data.tabs).map((tab) => ({
+          ...tab,
+          content: tab.content || JSON.stringify([]),
+        }));
+        setTabs((prevTabs) => {
+          const defaultTabs = prevTabs.filter(
+            (tab) =>
+              tab.key === "Your Profile" ||
+              tab.key === "Sample PitchDeck" ||
+              tab.key === "Data Room"
+          );
+          return [...defaultTabs, ...customTabs];
+        });
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error.message);
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Load content from Supabase if the Yjs document is empty
+    if (doc.getXmlFragment("document-store").length === 0) {
+      loadContentFromSupabase();
+    }
+  }, [doc]);
+
+  const colors = [
+    "#958DF1",
+    "#F98181",
+    "#FBBC88",
+    "#FAF594",
+    "#70CFF8",
+    "#94FADB",
+    "#B9F18D",
+    "#FACF5A",
+    "#F29E4A",
+    "#E2717D",
+    "#C94C4C",
+  ];
+
+  const getRandomElement = (list) =>
+    list[Math.floor(Math.random() * list.length)];
+
+  const getRandomColor = () => getRandomElement(colors);
+
+  // Initialize the BlockNote editor with the collaboration provider
+  const editor = useCreateBlockNote({
+    uploadFile: async (file) => {
+      try {
+        if (!navigator.onLine) {
+          message.error("No internet access.");
+          return;
+        }
+        const uniqueFileName = `profile_images/${Date.now()}`;
+        let { error, data } = await supabase.storage
+          .from("beekrowd_storage")
+          .upload(uniqueFileName, file);
+
+        if (error) {
+          throw error;
+        }
+
+        return `${process.env.REACT_APP_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
+      } catch (error) {
+        if (error.message === "The object exceeded the maximum allowed size") {
+          message.error("The object exceeded the maximum allowed size (5MB).");
+        } else message.error(error.message);
+      }
+    },
+    collaboration: {
+      provider,
+      fragment: doc.getXmlFragment("document-store"),
+      user: {
+        name: user?.email,
+        color: getRandomColor(),
+      },
+    },
+  });
+
+  console.log("editor", editor);
+  console.log("doc", doc);
+  console.log("provider", provider);
+
+  const uploadImageFromURLToSupabase = async (imageUrl) => {
+    try {
+      const response = await axios.get(imageUrl, {
+        responseType: "arraybuffer",
+      });
+
+      const blob = new Blob([response.data], {
+        type: response.headers["content-type"],
+      });
+
+      const timestamp = Date.now();
+
+      const file = new File([blob], `img-${timestamp}`, {
+        type: response.headers["content-type"],
+      });
+
+      const { data, error } = await supabase.storage
+        .from("beekrowd_storage")
+        .upload(`beekrowd_images/${file.name}`, file);
+
+      if (error) {
+        console.error("Error uploading image to Supabase:", error);
+        return null;
+      }
+
+      const imageUrlFromSupabase = `https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/${data.fullPath}`;
+      return imageUrlFromSupabase;
+    } catch (error) {
+      console.error("Error uploading image from URL to Supabase:", error);
+      return null;
+    }
+  };
 
   const handleBeforeUnload = useCallback(
     (event) => {
@@ -51,7 +209,6 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
         const confirmationMessage =
           "You have unsaved changes. Are you sure you want to leave?";
         if (!window.confirm(confirmationMessage)) {
-          // Ngăn người dùng quay lại trang trước đó
           window.history.pushState(null, "", window.location.href);
         }
       }
@@ -65,179 +222,11 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
     };
   }, [handleBeforeUnload, isContentChanged]);
 
-  const doc = new Y.Doc();
-
-  const provider = new WebsocketProvider(
-    "https://ywss-collab.onrender.com",
-    params?.id,
-    doc
-  );
-
-  const colors = [
-    "#958DF1",
-    "#F98181",
-    "#FBBC88",
-    "#FAF594",
-    "#70CFF8",
-    "#94FADB",
-    "#B9F18D",
-    "#FACF5A",
-    "#F29E4A",
-    "#E2717D",
-    "#C94C4C",
-  ];
-
-  const getRandomElement = (list) =>
-    list[Math.floor(Math.random() * list.length)];
-
-  const getRandomColor = () => getRandomElement(colors);
-
-  const editor = useCreateBlockNote({
-    uploadFile: async (file) => {
-      try {
-        if (!navigator.onLine) {
-          // Không có kết nối Internet
-          message.error("No internet access.");
-          return;
-        }
-        // Tạo tên file độc đáo để tránh xung đột
-        const uniqueFileName = `profile_images/${Date.now()}`;
-
-        // Upload file lên Supabase Storage
-        let { error, data } = await supabase.storage
-          .from("beekrowd_storage")
-          .upload(uniqueFileName, file);
-
-        if (error) {
-          throw error;
-        }
-
-        // Trả về URL của file
-        return `${process.env.REACT_APP_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
-      } catch (error) {
-        if (error.message === "The object exceeded the maximum allowed size") {
-          message.error("The object exceeded the maximum allowed size (5MB).");
-        } else message.error(error.message);
-
-        // Xử lý lỗi tại đây
-      }
-    },
-    collaboration: {
-      // The Yjs Provider responsible for transporting updates:
-      provider,
-      // Where to store BlockNote data in the Y.Doc:
-      fragment: doc.getXmlFragment("document-store"),
-      // Information (name and color) for this user:
-      user: {
-        name: user?.email,
-        color: getRandomColor(),
-      },
-    },
-  });
-
-  console.log("editor", editor);
-
-  // Function to upload image to Supabase from URL
-  const uploadImageFromURLToSupabase = async (imageUrl) => {
-    try {
-      // Download image from URL
-      const response = await axios.get(imageUrl, {
-        responseType: "arraybuffer",
-      });
-
-      // Create Blob from downloaded image data
-      const blob = new Blob([response.data], {
-        type: response.headers["content-type"],
-      });
-
-      // Get current timestamp
-      const timestamp = Date.now();
-
-      // Create File object from Blob with filename as "img-{timestamp}"
-      const file = new File([blob], `img-${timestamp}`, {
-        type: response.headers["content-type"],
-      });
-
-      // Upload image file to Supabase storage
-      const { data, error } = await supabase.storage
-        .from("beekrowd_storage")
-        .upload(`beekrowd_images/${file.name}`, file);
-
-      if (error) {
-        console.error("Error uploading image to Supabase:", error);
-        return null;
-      }
-
-      // Return Supabase URL of the uploaded image
-      const imageUrlFromSupabase = `https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/${data.fullPath}`;
-      return imageUrlFromSupabase;
-    } catch (error) {
-      console.error("Error uploading image from URL to Supabase:", error);
-      return null;
-    }
-  };
-
   useEffect(() => {
-    // Hàm để lấy dữ liệu Markdown từ cơ sở dữ liệu
-    async function fetchMarkdown() {
-      try {
-        if (!navigator.onLine) {
-          // Không có kết nối Internet
-          message.error("No internet access.");
-          return;
-        }
-        setIsLoading(true);
-        if (params) {
-          // Kiểm tra xem project có tồn tại không
-          const { data, error } = await supabase
-            .from("projects")
-            .select("*")
-            .match({ id: params.id })
-            .single();
-          if (error) {
-            throw error;
-          } else {
-            // Nếu có dữ liệu Markdown trong cơ sở dữ liệu, cập nhật giá trị của markdown
-            if (data && data.markdown) {
-              const updatedTabs = tabs.map((tab) => {
-                if (tab.key === "Your Profile") {
-                  return { ...tab, content: data.markdown };
-                }
-                return tab;
-              });
-              setTabs(updatedTabs);
-            }
-            if (data && data.tabs) {
-              const customTabs = JSON.parse(data.tabs).map((tab) => ({
-                ...tab,
-                content: tab.content || JSON.stringify([]),
-              }));
-              setTabs((prevTabs) => {
-                const defaultTabs = prevTabs.filter(
-                  (tab) =>
-                    tab.key === "Your Profile" ||
-                    tab.key === "Sample PitchDeck" ||
-                    tab.key === "Data Room"
-                );
-                return [...defaultTabs, ...customTabs];
-              }); // Cập nhật tabs từ Supabase
-            }
-          }
-        }
-        setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu
-      } catch (error) {
-        console.log(error.message);
-
-        setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu (có lỗi)
-      }
+    if (doc.getXmlFragment("document-store").length === 0) {
+      loadContentFromSupabase();
     }
-
-    // Gọi hàm để lấy Markdown khi component được mount
-
-    fetchMarkdown();
   }, []);
-
-  const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
 
   const handleTabChange = (tabKey) => {
     setActiveTab(tabKey);
@@ -259,7 +248,6 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
   const handleSave = async () => {
     try {
       if (!navigator.onLine) {
-        // Không có kết nối Internet
         message.error("No internet access.");
         return;
       }
@@ -297,16 +285,13 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
         } else {
           setIsLoading(false);
           message.success("Saved successfully.");
-          setIsContentChanged(false); // Đánh dấu nội dung đã được lưu
-
-          // Reset isSaved to false after 1 second
+          setIsContentChanged(false);
         }
       } else {
         message.error("You do not have permission to save this project.");
         setIsLoading(false);
       }
     } catch (error) {
-      // Xử lý lỗi mạng
       if (!navigator.onLine) {
         message.error("No internet access.");
       } else {
@@ -363,7 +348,7 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
   const handleChange = useCallback(
     async (editor) => {
       const blocks = editor.topLevelBlocks;
-      const updatedBlocks = [...blocks]; // Create a shallow copy of blocks
+      const updatedBlocks = [...blocks];
 
       const imagePromises = updatedBlocks.map(async (block) => {
         if (
@@ -406,7 +391,7 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
         user?.id === currentProject?.user_id ||
         currentProject?.collabs?.includes(user.email)
       ) {
-        setIsContentChanged(true); // Mark content as changed
+        setIsContentChanged(true);
       }
     },
     [
@@ -419,7 +404,6 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
     ]
   );
 
-  // Use debounce to optimize the onChange handler
   const debouncedHandleChange = useRef(debounce(handleChange, 300)).current;
 
   const tabContents = {
@@ -440,7 +424,7 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
 
                   <div className="mt-2">
                     {company.keyWords.split(",").map((keyWord, index) => {
-                      const trimmedKeyword = keyWord.trim(); // Loại bỏ khoảng trắng ở đầu và cuối
+                      const trimmedKeyword = keyWord.trim();
                       if (trimmedKeyword) {
                         return (
                           <Badge
@@ -451,7 +435,7 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
                           </Badge>
                         );
                       }
-                      return null; // Loại bỏ từ khóa nếu chỉ còn khoảng trắng
+                      return null;
                     })}
                   </div>
                 </div>
@@ -520,7 +504,6 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
                 }
               }
 
-              // Handle video blocks
               blocks.forEach((block) => {
                 if (block.type === "video") {
                   const videoElement = document.querySelector(
@@ -542,7 +525,6 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
                 }
               });
 
-              // Update content of the current tab
               const updatedTabs = tabs.map((t) => {
                 if (t.key === tab.key) {
                   return {
@@ -559,7 +541,7 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
                 user?.id === currentProject?.user_id ||
                 currentProject?.collabs?.includes(user.email)
               ) {
-                setIsContentChanged(true); // Mark content as changed
+                setIsContentChanged(true);
               }
             }}
           />
@@ -569,7 +551,7 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
 
               <div className="mt-2">
                 {company.keyWords.split(",").map((keyWord, index) => {
-                  const trimmedKeyword = keyWord.trim(); // Trim whitespace
+                  const trimmedKeyword = keyWord.trim();
                   if (trimmedKeyword) {
                     return (
                       <Badge
@@ -580,7 +562,7 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
                       </Badge>
                     );
                   }
-                  return null; // Ignore empty keywords
+                  return null;
                 })}
               </div>
             </div>

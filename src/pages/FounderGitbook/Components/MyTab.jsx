@@ -31,6 +31,8 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
   const [tabToDelete, setTabToDelete] = useState(null);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
+  const [isInitialized, setIsInitialized] = useState(false);
+
   const handleBeforeUnload = useCallback(
     (event) => {
       if (isContentChanged) {
@@ -65,13 +67,61 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
     };
   }, [handleBeforeUnload, isContentChanged]);
 
-  const doc = new Y.Doc();
+  // Initialize Yjs document and WebSocket provider
+  const doc = useRef(new Y.Doc()).current;
+  const provider = useRef(
+    new WebsocketProvider("https://ywss-collab.onrender.com", params?.id, doc)
+  ).current;
 
-  const provider = new WebsocketProvider(
-    "https://ywss-collab.onrender.com",
-    params?.id,
-    doc
-  );
+  useEffect(() => {
+    if (!isInitialized) return;
+
+    async function fetchInitialContent() {
+      setIsLoading(true);
+      try {
+        if (!navigator.onLine) {
+          message.error("No internet access.");
+          return;
+        }
+        const { data, error } = await supabase
+          .from("projects")
+          .select("*")
+          .match({ id: params.id })
+          .single();
+
+        if (error) throw error;
+
+        if (data && data.markdown) {
+          // Ensure the content being set is valid and correctly formatted
+          if (doc.getXmlFragment("document-store")) {
+            doc.getXmlFragment("document-store").setInnerHTML(data.markdown);
+          }
+        }
+
+        if (data && data.tabs) {
+          const customTabs = JSON.parse(data.tabs).map((tab) => ({
+            ...tab,
+            content: tab.content || JSON.stringify([]),
+          }));
+          setTabs((prevTabs) => {
+            const defaultTabs = prevTabs.filter(
+              (tab) =>
+                tab.key === "Your Profile" ||
+                tab.key === "Sample PitchDeck" ||
+                tab.key === "Data Room"
+            );
+            return [...defaultTabs, ...customTabs];
+          });
+        }
+      } catch (error) {
+        message.error("Error fetching initial content: " + error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchInitialContent();
+  }, [isInitialized]);
 
   const colors = [
     "#958DF1",
@@ -123,17 +173,33 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
       }
     },
     collaboration: {
-      // The Yjs Provider responsible for transporting updates:
       provider,
-      // Where to store BlockNote data in the Y.Doc:
       fragment: doc.getXmlFragment("document-store"),
-      // Information (name and color) for this user:
       user: {
         name: user?.email,
         color: getRandomColor(),
       },
     },
+    onCreate: () => {
+      // Ensure the editor is initialized properly
+      setIsInitialized(true);
+    },
   });
+
+  useEffect(() => {
+    if (editor && editor.view && editor.view.state) {
+      const { state } = editor.view;
+      // Ensure that all plugins are correctly initialized before reconfiguring
+      if (state.plugins) {
+        editor.view.dispatch(
+          state.tr.setMeta("reconfigure", {
+            doc: state.doc,
+            selection: state.selection,
+          })
+        );
+      }
+    }
+  }, [editor]);
 
   // Function to upload image to Supabase from URL
   const uploadImageFromURLToSupabase = async (imageUrl) => {
@@ -257,7 +323,6 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
   const handleSave = async () => {
     try {
       if (!navigator.onLine) {
-        // Không có kết nối Internet
         message.error("No internet access.");
         return;
       }
@@ -285,7 +350,7 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
         const { error } = await supabase
           .from("projects")
           .update({
-            markdown: JSON.stringify(blocks),
+            markdown: doc.getXmlFragment("document-store").innerHTML,
             tabs: tabsToSave,
           })
           .match({ id: params.id });
@@ -295,16 +360,13 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
         } else {
           setIsLoading(false);
           message.success("Saved successfully.");
-          setIsContentChanged(false); // Đánh dấu nội dung đã được lưu
-
-          // Reset isSaved to false after 1 second
+          setIsContentChanged(false);
         }
       } else {
         message.error("You do not have permission to save this project.");
         setIsLoading(false);
       }
     } catch (error) {
-      // Xử lý lỗi mạng
       if (!navigator.onLine) {
         message.error("No internet access.");
       } else {

@@ -135,6 +135,8 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
     },
   });
 
+  console.log("editor", editor);
+
   // Function to upload image to Supabase from URL
   const uploadImageFromURLToSupabase = async (imageUrl) => {
     try {

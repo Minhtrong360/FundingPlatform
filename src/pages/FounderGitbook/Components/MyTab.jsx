@@ -16,13 +16,14 @@ import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 import debounce from "lodash.debounce";
 
-const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
+const MyTab = ({ company, currentProject }) => {
   const [activeTab, setActiveTab] = useState("Your Profile");
   const [tabs, setTabs] = useState([
     { key: "Your Profile", title: "Your Profile", editable: false },
     { key: "Sample PitchDeck", title: "Sample PitchDeck", editable: false },
     { key: "Data Room", title: "Data Room", editable: false },
   ]);
+
   const { user } = useAuth();
   const params = useParams();
 
@@ -65,9 +66,15 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
         const fragment = doc.getXmlFragment("document-store");
         if (fragment.length === 0) {
           // Only load content from Supabase if the document is empty
-          setBlocks(initialContent);
           fragment.push(JSON.stringify(initialContent));
         }
+        const updatedTabs = tabs.map((tab) => {
+          if (tab.key === "Your Profile") {
+            return { ...tab, content: data.markdown };
+          }
+          return tab;
+        });
+        setTabs(updatedTabs);
       }
 
       if (data && data.tabs) {
@@ -271,7 +278,7 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
         const { error } = await supabase
           .from("projects")
           .update({
-            markdown: doc.getXmlFragment("document-store").innerHTML,
+            markdown: tabs.find((tab) => tab.key === "Your Profile")?.content,
             tabs: tabsToSave,
           })
           .match({ id: params.id });
@@ -382,7 +389,17 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
         }
       });
 
-      setBlocks(updatedBlocks);
+      setTabs((prevTabs) => {
+        return prevTabs.map((tab) => {
+          if (tab.key === "Your Profile") {
+            return {
+              ...tab,
+              content: JSON.stringify(updatedBlocks),
+            };
+          }
+          return tab;
+        });
+      });
       if (
         user?.id === currentProject?.user_id ||
         currentProject?.collabs?.includes(user.email)
@@ -394,7 +411,6 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
       user?.id,
       currentProject?.user_id,
       currentProject?.collabs,
-      setBlocks,
       setIsContentChanged,
       uploadImageFromURLToSupabase,
     ]

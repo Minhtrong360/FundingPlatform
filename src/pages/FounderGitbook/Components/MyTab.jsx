@@ -77,21 +77,21 @@ const MyTab = ({ company, currentProject }) => {
         setTabs(updatedTabs);
       }
 
-      if (data && data.tabs) {
-        const customTabs = JSON.parse(data.tabs).map((tab) => ({
-          ...tab,
-          content: tab.content || JSON.stringify([]),
-        }));
-        setTabs((prevTabs) => {
-          const defaultTabs = prevTabs.filter(
-            (tab) =>
-              tab.key === "Your Profile" ||
-              tab.key === "Sample PitchDeck" ||
-              tab.key === "Data Room"
-          );
-          return [...defaultTabs, ...customTabs];
-        });
-      }
+      // if (data && data.tabs) {
+      //   const customTabs = JSON.parse(data.tabs).map((tab) => ({
+      //     ...tab,
+      //     content: tab.content || JSON.stringify([]),
+      //   }));
+      //   setTabs((prevTabs) => {
+      //     const defaultTabs = prevTabs.filter(
+      //       (tab) =>
+      //         tab.key === "Your Profile" ||
+      //         tab.key === "Sample PitchDeck" ||
+      //         tab.key === "Data Room"
+      //     );
+      //     return [...defaultTabs, ...customTabs];
+      //   });
+      // }
       setIsLoading(false);
     } catch (error) {
       console.error(error.message);
@@ -235,18 +235,18 @@ const MyTab = ({ company, currentProject }) => {
     setActiveTab(tabKey);
   };
 
-  useEffect(() => {
-    if (
-      !isLoading &&
-      activeTab !== "Sample PitchDeck" &&
-      activeTab !== "Data Room"
-    ) {
-      const tab = tabs.find((tab) => tab.key === activeTab);
-      if (tab?.content) {
-        editor.replaceBlocks(editor.topLevelBlocks, JSON.parse(tab.content));
-      }
-    }
-  }, [activeTab, isLoading]);
+  // useEffect(() => {
+  //   if (
+  //     !isLoading &&
+  //     activeTab !== "Sample PitchDeck" &&
+  //     activeTab !== "Data Room"
+  //   ) {
+  //     const tab = tabs.find((tab) => tab.key === activeTab);
+  //     if (tab?.content) {
+  //       editor.replaceBlocks(editor.topLevelBlocks, JSON.parse(tab.content));
+  //     }
+  //   }
+  // }, [activeTab, isLoading]);
 
   const handleSave = async () => {
     try {
@@ -315,33 +315,33 @@ const MyTab = ({ company, currentProject }) => {
     }
   }, [isDemo]);
 
-  const addNewTab = () => {
-    setIsModalVisible(true);
-  };
+  // const addNewTab = () => {
+  //   setIsModalVisible(true);
+  // };
 
-  const deleteTab = () => {
-    const filteredTabs = tabs.filter((tab) => tab.key !== tabToDelete.key);
-    setTabs(filteredTabs);
-    setActiveTab("Your Profile");
-    setIsDeleteModalVisible(false);
-    setTabToDelete(null);
-  };
+  // const deleteTab = () => {
+  //   const filteredTabs = tabs.filter((tab) => tab.key !== tabToDelete.key);
+  //   setTabs(filteredTabs);
+  //   setActiveTab("Your Profile");
+  //   setIsDeleteModalVisible(false);
+  //   setTabToDelete(null);
+  // };
 
-  const handleOk = () => {
-    const newTabKey = `New Tab ${tabs.length - 2}`;
-    setTabs([
-      ...tabs,
-      {
-        key: newTabKey,
-        title: newTabTitle,
-        editable: true,
-        content: JSON.stringify([]),
-      },
-    ]);
-    setActiveTab(newTabKey);
-    setIsModalVisible(false);
-    setNewTabTitle("");
-  };
+  // const handleOk = () => {
+  //   const newTabKey = `New Tab ${tabs.length - 2}`;
+  //   setTabs([
+  //     ...tabs,
+  //     {
+  //       key: newTabKey,
+  //       title: newTabTitle,
+  //       editable: true,
+  //       content: JSON.stringify([]),
+  //     },
+  //   ]);
+  //   setActiveTab(newTabKey);
+  //   setIsModalVisible(false);
+  //   setNewTabTitle("");
+  // };
 
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -491,120 +491,120 @@ const MyTab = ({ company, currentProject }) => {
     ),
   };
 
-  tabs.forEach((tab) => {
-    if (!tabContents[tab.key]) {
-      tabContents[tab.key] = (
-        <div className="relative">
-          <BlockNoteView
-            editor={editor}
-            theme={"light"}
-            className="w-full"
-            onChange={async function (editor) {
-              const blocks = editor.topLevelBlocks;
-              for (const block of blocks) {
-                if (
-                  block.type === "image" &&
-                  block.props.url &&
-                  !block.props.url.includes("beekrowd_storage")
-                ) {
-                  const newUrl = await uploadImageFromURLToSupabase(
-                    block.props.url
-                  );
-                  if (newUrl) {
-                    block.props.url = newUrl;
-                  }
-                }
-              }
+  // tabs.forEach((tab) => {
+  //   if (!tabContents[tab.key]) {
+  //     tabContents[tab.key] = (
+  //       <div className="relative">
+  //         <BlockNoteView
+  //           editor={editor}
+  //           theme={"light"}
+  //           className="w-full"
+  //           onChange={async function (editor) {
+  //             const blocks = editor.topLevelBlocks;
+  //             for (const block of blocks) {
+  //               if (
+  //                 block.type === "image" &&
+  //                 block.props.url &&
+  //                 !block.props.url.includes("beekrowd_storage")
+  //               ) {
+  //                 const newUrl = await uploadImageFromURLToSupabase(
+  //                   block.props.url
+  //                 );
+  //                 if (newUrl) {
+  //                   block.props.url = newUrl;
+  //                 }
+  //               }
+  //             }
 
-              blocks.forEach((block) => {
-                if (block.type === "video") {
-                  const videoElement = document.querySelector(
-                    `video[src="${block.props.url}"]`
-                  );
-                  if (videoElement && block.props.url.includes("youtube.com")) {
-                    const videoId = block.props.url.split("v=")[1];
-                    const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-                    const iframe = document.createElement("iframe");
-                    iframe.width = block.props.previewWidth || "100%";
-                    iframe.height = "315";
-                    iframe.src = embedUrl;
-                    iframe.frameBorder = "0";
-                    iframe.allow =
-                      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                    iframe.allowFullscreen = true;
-                    videoElement.replaceWith(iframe);
-                  }
-                }
-              });
+  //             blocks.forEach((block) => {
+  //               if (block.type === "video") {
+  //                 const videoElement = document.querySelector(
+  //                   `video[src="${block.props.url}"]`
+  //                 );
+  //                 if (videoElement && block.props.url.includes("youtube.com")) {
+  //                   const videoId = block.props.url.split("v=")[1];
+  //                   const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+  //                   const iframe = document.createElement("iframe");
+  //                   iframe.width = block.props.previewWidth || "100%";
+  //                   iframe.height = "315";
+  //                   iframe.src = embedUrl;
+  //                   iframe.frameBorder = "0";
+  //                   iframe.allow =
+  //                     "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+  //                   iframe.allowFullscreen = true;
+  //                   videoElement.replaceWith(iframe);
+  //                 }
+  //               }
+  //             });
 
-              const updatedTabs = tabs.map((t) => {
-                if (t.key === tab.key) {
-                  return {
-                    ...t,
-                    content: JSON.stringify(blocks),
-                  };
-                }
-                return t;
-              });
+  //             const updatedTabs = tabs.map((t) => {
+  //               if (t.key === tab.key) {
+  //                 return {
+  //                   ...t,
+  //                   content: JSON.stringify(blocks),
+  //                 };
+  //               }
+  //               return t;
+  //             });
 
-              setTabs(updatedTabs);
+  //             setTabs(updatedTabs);
 
-              if (
-                user?.id === currentProject?.user_id ||
-                currentProject?.collabs?.includes(user.email)
-              ) {
-                setIsContentChanged(true);
-              }
-            }}
-          />
-          {company?.keyWords && (
-            <div className="mt-28 px-5">
-              <div className="text-black font-semibold">Keywords:</div>
+  //             if (
+  //               user?.id === currentProject?.user_id ||
+  //               currentProject?.collabs?.includes(user.email)
+  //             ) {
+  //               setIsContentChanged(true);
+  //             }
+  //           }}
+  //         />
+  //         {company?.keyWords && (
+  //           <div className="mt-28 px-5">
+  //             <div className="text-black font-semibold">Keywords:</div>
 
-              <div className="mt-2">
-                {company.keyWords.split(",").map((keyWord, index) => {
-                  const trimmedKeyword = keyWord.trim();
-                  if (trimmedKeyword) {
-                    return (
-                      <Badge
-                        key={index}
-                        className="mx-2 bg-yellow-300 border border-gray-300 truncate text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
-                      >
-                        {trimmedKeyword}
-                      </Badge>
-                    );
-                  }
-                  return null;
-                })}
-              </div>
-            </div>
-          )}
-          <div className="sm:px-5 sticky bottom-5 left-5">
-            {user?.id === currentProject?.user_id ||
-            currentProject?.collabs?.includes(user.email) ? (
-              <>
-                <button
-                  className={`min-w-[110px] mt-8 hover:cursor-pointer py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent ${
-                    isLoading
-                      ? "bg-gray-600 disabled:opacity-50 disabled:pointer-events-none"
-                      : "bg-blue-600 text-white hover:bg-blue-700"
-                  }  `}
-                  onClick={handleSave}
-                  type="button"
-                >
-                  {isLoading ? (
-                    <SpinnerBtn isLoading={isLoading} />
-                  ) : (
-                    "Save profile"
-                  )}
-                </button>
-              </>
-            ) : null}
-          </div>
-        </div>
-      );
-    }
-  });
+  //             <div className="mt-2">
+  //               {company.keyWords.split(",").map((keyWord, index) => {
+  //                 const trimmedKeyword = keyWord.trim();
+  //                 if (trimmedKeyword) {
+  //                   return (
+  //                     <Badge
+  //                       key={index}
+  //                       className="mx-2 bg-yellow-300 border border-gray-300 truncate text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
+  //                     >
+  //                       {trimmedKeyword}
+  //                     </Badge>
+  //                   );
+  //                 }
+  //                 return null;
+  //               })}
+  //             </div>
+  //           </div>
+  //         )}
+  //         <div className="sm:px-5 sticky bottom-5 left-5">
+  //           {user?.id === currentProject?.user_id ||
+  //           currentProject?.collabs?.includes(user.email) ? (
+  //             <>
+  //               <button
+  //                 className={`min-w-[110px] mt-8 hover:cursor-pointer py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent ${
+  //                   isLoading
+  //                     ? "bg-gray-600 disabled:opacity-50 disabled:pointer-events-none"
+  //                     : "bg-blue-600 text-white hover:bg-blue-700"
+  //                 }  `}
+  //                 onClick={handleSave}
+  //                 type="button"
+  //               >
+  //                 {isLoading ? (
+  //                   <SpinnerBtn isLoading={isLoading} />
+  //                 ) : (
+  //                   "Save profile"
+  //                 )}
+  //               </button>
+  //             </>
+  //           ) : null}
+  //         </div>
+  //       </div>
+  //     );
+  //   }
+  // });
 
   const confirmDeleteTab = (tab) => {
     setTabToDelete(tab);
@@ -621,7 +621,6 @@ const MyTab = ({ company, currentProject }) => {
         <aside className="w-full sticky z-20 top-0 bg-white">
           <div className="w-full  py-8 overflow-x-auto">
             <nav className="flex justify-between sm:space-x-4 sm:px-14">
-              {/* Navbar */}
               {tabs.map((tab) => (
                 <div
                   key={tab.key}
@@ -646,12 +645,12 @@ const MyTab = ({ company, currentProject }) => {
                   )}
                 </div>
               ))}
-              <button
+              {/* <button
                 className="bg-green-500 text-white px-4 py-2 rounded-md ml-4"
                 onClick={addNewTab}
               >
                 + Add Tab
-              </button>
+              </button> */}
             </nav>
           </div>
         </aside>
@@ -660,7 +659,7 @@ const MyTab = ({ company, currentProject }) => {
           {tabContents[activeTab]}
         </div>
       </>
-      <Modal
+      {/* <Modal
         title="Enter Tab Title"
         open={isModalVisible}
         onOk={handleOk}
@@ -684,7 +683,7 @@ const MyTab = ({ company, currentProject }) => {
           {tabToDelete?.title}
         </span>
         ?
-      </Modal>
+      </Modal> */}
     </div>
   );
 };

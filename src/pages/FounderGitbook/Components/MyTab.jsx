@@ -225,12 +225,6 @@ const MyTab = ({ company, currentProject }) => {
     };
   }, [handleBeforeUnload, isContentChanged]);
 
-  useEffect(() => {
-    if (doc.getXmlFragment("document-store").length === 0) {
-      loadContentFromSupabase();
-    }
-  }, []);
-
   const handleTabChange = (tabKey) => {
     setActiveTab(tabKey);
   };
@@ -349,7 +343,7 @@ const MyTab = ({ company, currentProject }) => {
   };
 
   const handleChange = useCallback(
-    async (editor) => {
+    async (editor, tabKey) => {
       const blocks = editor.topLevelBlocks;
       const updatedBlocks = [...blocks];
 
@@ -391,7 +385,7 @@ const MyTab = ({ company, currentProject }) => {
 
       setTabs((prevTabs) => {
         return prevTabs.map((tab) => {
-          if (tab.key === "Your Profile") {
+          if (tab.key === tabKey) {
             return {
               ...tab,
               content: JSON.stringify(updatedBlocks),
@@ -400,6 +394,7 @@ const MyTab = ({ company, currentProject }) => {
           return tab;
         });
       });
+
       if (
         user?.id === currentProject?.user_id ||
         currentProject?.collabs?.includes(user.email)
@@ -408,16 +403,15 @@ const MyTab = ({ company, currentProject }) => {
       }
     },
     [
-      user?.id,
+      uploadImageFromURLToSupabase,
       currentProject?.user_id,
       currentProject?.collabs,
-      setIsContentChanged,
-      uploadImageFromURLToSupabase,
+      user?.email,
     ]
   );
 
   const debouncedHandleChange = useRef(debounce(handleChange, 300)).current;
-
+  console.log("tabs", tabs);
   const tabContents = {
     ...(isDemo && user.email !== "ha.pham@beekrowd.com"
       ? {}
@@ -428,7 +422,9 @@ const MyTab = ({ company, currentProject }) => {
                 editor={editor}
                 theme={"light"}
                 className="w-full lg:w-8/12"
-                onChange={debouncedHandleChange}
+                onChange={(editor) =>
+                  debouncedHandleChange(editor, "Your Profile")
+                }
               />
               {company?.keyWords && (
                 <div className="mt-28 px-5">
@@ -499,63 +495,7 @@ const MyTab = ({ company, currentProject }) => {
             editor={editor}
             theme={"light"}
             className="w-full"
-            onChange={async function (editor) {
-              const blocks = editor.topLevelBlocks;
-              for (const block of blocks) {
-                if (
-                  block.type === "image" &&
-                  block.props.url &&
-                  !block.props.url.includes("beekrowd_storage")
-                ) {
-                  const newUrl = await uploadImageFromURLToSupabase(
-                    block.props.url
-                  );
-                  if (newUrl) {
-                    block.props.url = newUrl;
-                  }
-                }
-              }
-
-              blocks.forEach((block) => {
-                if (block.type === "video") {
-                  const videoElement = document.querySelector(
-                    `video[src="${block.props.url}"]`
-                  );
-                  if (videoElement && block.props.url.includes("youtube.com")) {
-                    const videoId = block.props.url.split("v=")[1];
-                    const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-                    const iframe = document.createElement("iframe");
-                    iframe.width = block.props.previewWidth || "100%";
-                    iframe.height = "315";
-                    iframe.src = embedUrl;
-                    iframe.frameBorder = "0";
-                    iframe.allow =
-                      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                    iframe.allowFullscreen = true;
-                    videoElement.replaceWith(iframe);
-                  }
-                }
-              });
-
-              const updatedTabs = tabs.map((t) => {
-                if (t.key === tab.key) {
-                  return {
-                    ...t,
-                    content: JSON.stringify(blocks),
-                  };
-                }
-                return t;
-              });
-
-              setTabs(updatedTabs);
-
-              if (
-                user?.id === currentProject?.user_id ||
-                currentProject?.collabs?.includes(user.email)
-              ) {
-                setIsContentChanged(true);
-              }
-            }}
+            onChange={(editor) => debouncedHandleChange(editor, tab.key)}
           />
           {company?.keyWords && (
             <div className="mt-28 px-5">
@@ -678,6 +618,7 @@ const MyTab = ({ company, currentProject }) => {
         open={isDeleteModalVisible}
         onOk={deleteTab}
         onCancel={handleDeleteCancel}
+        centered
       >
         Are you sure you want to delete{" "}
         <span className="text-[#f5222d] font-semibold">

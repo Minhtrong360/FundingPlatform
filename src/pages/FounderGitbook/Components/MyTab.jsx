@@ -28,10 +28,10 @@ const MyTab = ({ company, currentProject }) => {
   const params = useParams();
 
   const [isContentChanged, setIsContentChanged] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [newTabTitle, setNewTabTitle] = useState("");
-  const [tabToDelete, setTabToDelete] = useState(null);
-  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  // const [isModalVisible, setIsModalVisible] = useState(false);
+  // const [newTabTitle, setNewTabTitle] = useState("");
+  // const [tabToDelete, setTabToDelete] = useState(null);
+  // const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const doc = useRef(new Y.Doc()).current;
@@ -337,10 +337,10 @@ const MyTab = ({ company, currentProject }) => {
   //   setNewTabTitle("");
   // };
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
-    setNewTabTitle("");
-  };
+  // const handleCancel = () => {
+  //   setIsModalVisible(false);
+  //   setNewTabTitle("");
+  // };
 
   const handleChange = useCallback(
     async (editor, tabKey) => {
@@ -602,14 +602,14 @@ const MyTab = ({ company, currentProject }) => {
   //   }
   // });
 
-  const confirmDeleteTab = (tab) => {
-    setTabToDelete(tab);
-    setIsDeleteModalVisible(true);
-  };
-  const handleDeleteCancel = () => {
-    setIsDeleteModalVisible(false);
-    setTabToDelete(null);
-  };
+  // const confirmDeleteTab = (tab) => {
+  //   setTabToDelete(tab);
+  //   setIsDeleteModalVisible(true);
+  // };
+  // const handleDeleteCancel = () => {
+  //   setIsDeleteModalVisible(false);
+  //   setTabToDelete(null);
+  // };
 
   return (
     <div className={`px-8  flex flex-col justify-center items-center`}>
@@ -628,7 +628,7 @@ const MyTab = ({ company, currentProject }) => {
                   onClick={() => handleTabChange(tab.key)}
                 >
                   {tab.title}
-                  {tab.editable && (
+                  {/* {tab.editable && (
                     <button
                       className="ml-2 text-red-600"
                       onClick={(e) => {
@@ -638,7 +638,7 @@ const MyTab = ({ company, currentProject }) => {
                     >
                       x
                     </button>
-                  )}
+                  )} */}
                 </div>
               ))}
               {/* <button

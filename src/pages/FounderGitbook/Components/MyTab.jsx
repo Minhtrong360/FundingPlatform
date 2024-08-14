@@ -16,18 +16,21 @@ import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 import debounce from "lodash.debounce";
 
-const MyTab = ({ company, currentProject }) => {
+const MyTab = ({
+  company,
+  currentProject,
+  isContentChanged,
+  setIsContentChanged,
+}) => {
   const [activeTab, setActiveTab] = useState("Your Profile");
   const [tabs, setTabs] = useState([
     { key: "Your Profile", title: "Your Profile", editable: false },
     { key: "Sample PitchDeck", title: "Sample PitchDeck", editable: false },
     { key: "Data Room", title: "Data Room", editable: false },
   ]);
-
   const { user } = useAuth();
   const params = useParams();
 
-  const [isContentChanged, setIsContentChanged] = useState(false);
   // const [isModalVisible, setIsModalVisible] = useState(false);
   // const [newTabTitle, setNewTabTitle] = useState("");
   // const [tabToDelete, setTabToDelete] = useState(null);

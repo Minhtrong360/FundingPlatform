@@ -229,18 +229,18 @@ const MyTab = ({ company, currentProject }) => {
     setActiveTab(tabKey);
   };
 
-  // useEffect(() => {
-  //   if (
-  //     !isLoading &&
-  //     activeTab !== "Sample PitchDeck" &&
-  //     activeTab !== "Data Room"
-  //   ) {
-  //     const tab = tabs.find((tab) => tab.key === activeTab);
-  //     if (tab?.content) {
-  //       editor.replaceBlocks(editor.topLevelBlocks, JSON.parse(tab.content));
-  //     }
-  //   }
-  // }, [activeTab, isLoading]);
+  useEffect(() => {
+    if (
+      !isLoading &&
+      activeTab !== "Sample PitchDeck" &&
+      activeTab !== "Data Room"
+    ) {
+      const tab = tabs.find((tab) => tab.key === activeTab);
+      if (tab?.content) {
+        editor.replaceBlocks(editor.topLevelBlocks, JSON.parse(tab.content));
+      }
+    }
+  }, [activeTab, isLoading]);
 
   const handleSave = async () => {
     try {

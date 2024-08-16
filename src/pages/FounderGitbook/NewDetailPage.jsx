@@ -108,6 +108,7 @@ export default function NewDetailPage({ location }) {
       removeBodyStyle();
     }
   };
+  const [isContentChanged, setIsContentChanged] = useState(false);
 
   if (viewError) {
     return (
@@ -154,12 +155,16 @@ export default function NewDetailPage({ location }) {
           {fullScreen === false ? (
             <div>
               {/* <Header noFixedHeader={noFixedHeader} /> */}
-              <Header noFixedHeader={noFixedHeader} />
+              <Header
+                noFixedHeader={noFixedHeader}
+                isContentChanged={isContentChanged}
+              />
               <ProfileInfo
                 company={company}
                 currentProject={currentProject}
                 setCurrentProject={setCurrentProject}
                 blocks={blocks}
+                isContentChanged={isContentChanged}
               />
               <div className="mt-4 sm:max-w-7xl w-full mx-auto">
                 <MyTab
@@ -168,6 +173,8 @@ export default function NewDetailPage({ location }) {
                   company={company}
                   fullScreen={fullScreen}
                   currentProject={currentProject}
+                  isContentChanged={isContentChanged}
+                  setIsContentChanged={setIsContentChanged}
                 />
               </div>
             </div>
@@ -178,6 +185,8 @@ export default function NewDetailPage({ location }) {
               company={company}
               fullScreen={fullScreen}
               currentProject={currentProject}
+              isContentChanged={isContentChanged}
+              setIsContentChanged={setIsContentChanged}
             />
           )}
         </>

@@ -16,22 +16,20 @@ import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 import debounce from "lodash.debounce";
 
-const MyTab = ({ company, currentProject }) => {
+const MyTab = ({
+  company,
+  currentProject,
+  isContentChanged,
+  setIsContentChanged,
+}) => {
   const [activeTab, setActiveTab] = useState("Your Profile");
   const [tabs, setTabs] = useState([
     { key: "Your Profile", title: "Your Profile", editable: false },
     { key: "Sample PitchDeck", title: "Sample PitchDeck", editable: false },
     { key: "Data Room", title: "Data Room", editable: false },
   ]);
-
   const { user } = useAuth();
   const params = useParams();
-
-  const [isContentChanged, setIsContentChanged] = useState(false);
-  // const [isModalVisible, setIsModalVisible] = useState(false);
-  // const [newTabTitle, setNewTabTitle] = useState("");
-  // const [tabToDelete, setTabToDelete] = useState(null);
-  // const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const doc = useRef(new Y.Doc()).current;
@@ -42,6 +40,20 @@ const MyTab = ({ company, currentProject }) => {
     params?.id,
     doc
   );
+
+  // Function to check if the document exists on the WebSocket server
+  const checkIfDocExistsOnProvider = () => {
+    return new Promise((resolve) => {
+      const fragment = doc.getXmlFragment("document-store");
+      if (fragment.length > 0) {
+        resolve(true); // Document exists
+      } else {
+        provider.on("sync", () => {
+          resolve(fragment.length > 0);
+        });
+      }
+    });
+  };
 
   const loadContentFromSupabase = async () => {
     try {
@@ -76,22 +88,6 @@ const MyTab = ({ company, currentProject }) => {
         });
         setTabs(updatedTabs);
       }
-
-      // if (data && data.tabs) {
-      //   const customTabs = JSON.parse(data.tabs).map((tab) => ({
-      //     ...tab,
-      //     content: tab.content || JSON.stringify([]),
-      //   }));
-      //   setTabs((prevTabs) => {
-      //     const defaultTabs = prevTabs.filter(
-      //       (tab) =>
-      //         tab.key === "Your Profile" ||
-      //         tab.key === "Sample PitchDeck" ||
-      //         tab.key === "Data Room"
-      //     );
-      //     return [...defaultTabs, ...customTabs];
-      //   });
-      // }
       setIsLoading(false);
     } catch (error) {
       console.error(error.message);
@@ -100,10 +96,15 @@ const MyTab = ({ company, currentProject }) => {
   };
 
   useEffect(() => {
-    // Load content from Supabase if the Yjs document is empty
-    if (doc.getXmlFragment("document-store").length === 0) {
-      loadContentFromSupabase();
-    }
+    const initEditorContent = async () => {
+      const docExists = await checkIfDocExistsOnProvider();
+
+      if (!docExists) {
+        await loadContentFromSupabase(); // Load from DB if document does not exist
+      }
+    };
+
+    initEditorContent();
   }, [doc]);
 
   const colors = [
@@ -309,39 +310,6 @@ const MyTab = ({ company, currentProject }) => {
     }
   }, [isDemo]);
 
-  // const addNewTab = () => {
-  //   setIsModalVisible(true);
-  // };
-
-  // const deleteTab = () => {
-  //   const filteredTabs = tabs.filter((tab) => tab.key !== tabToDelete.key);
-  //   setTabs(filteredTabs);
-  //   setActiveTab("Your Profile");
-  //   setIsDeleteModalVisible(false);
-  //   setTabToDelete(null);
-  // };
-
-  // const handleOk = () => {
-  //   const newTabKey = `New Tab ${tabs.length - 2}`;
-  //   setTabs([
-  //     ...tabs,
-  //     {
-  //       key: newTabKey,
-  //       title: newTabTitle,
-  //       editable: true,
-  //       content: JSON.stringify([]),
-  //     },
-  //   ]);
-  //   setActiveTab(newTabKey);
-  //   setIsModalVisible(false);
-  //   setNewTabTitle("");
-  // };
-
-  // const handleCancel = () => {
-  //   setIsModalVisible(false);
-  //   setNewTabTitle("");
-  // };
-
   const handleChange = useCallback(
     async (editor, tabKey) => {
       const blocks = editor.topLevelBlocks;
@@ -487,130 +455,6 @@ const MyTab = ({ company, currentProject }) => {
     ),
   };
 
-  // tabs.forEach((tab) => {
-  //   if (!tabContents[tab.key]) {
-  //     tabContents[tab.key] = (
-  //       <div className="relative">
-  //         <BlockNoteView
-  //           editor={editor}
-  //           theme={"light"}
-  //           className="w-full"
-  //           onChange={async function (editor) {
-  //             const blocks = editor.topLevelBlocks;
-  //             for (const block of blocks) {
-  //               if (
-  //                 block.type === "image" &&
-  //                 block.props.url &&
-  //                 !block.props.url.includes("beekrowd_storage")
-  //               ) {
-  //                 const newUrl = await uploadImageFromURLToSupabase(
-  //                   block.props.url
-  //                 );
-  //                 if (newUrl) {
-  //                   block.props.url = newUrl;
-  //                 }
-  //               }
-  //             }
-
-  //             blocks.forEach((block) => {
-  //               if (block.type === "video") {
-  //                 const videoElement = document.querySelector(
-  //                   `video[src="${block.props.url}"]`
-  //                 );
-  //                 if (videoElement && block.props.url.includes("youtube.com")) {
-  //                   const videoId = block.props.url.split("v=")[1];
-  //                   const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-  //                   const iframe = document.createElement("iframe");
-  //                   iframe.width = block.props.previewWidth || "100%";
-  //                   iframe.height = "315";
-  //                   iframe.src = embedUrl;
-  //                   iframe.frameBorder = "0";
-  //                   iframe.allow =
-  //                     "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-  //                   iframe.allowFullscreen = true;
-  //                   videoElement.replaceWith(iframe);
-  //                 }
-  //               }
-  //             });
-
-  //             const updatedTabs = tabs.map((t) => {
-  //               if (t.key === tab.key) {
-  //                 return {
-  //                   ...t,
-  //                   content: JSON.stringify(blocks),
-  //                 };
-  //               }
-  //               return t;
-  //             });
-
-  //             setTabs(updatedTabs);
-
-  //             if (
-  //               user?.id === currentProject?.user_id ||
-  //               currentProject?.collabs?.includes(user.email)
-  //             ) {
-  //               setIsContentChanged(true);
-  //             }
-  //           }}
-  //         />
-  //         {company?.keyWords && (
-  //           <div className="mt-28 px-5">
-  //             <div className="text-black font-semibold">Keywords:</div>
-
-  //             <div className="mt-2">
-  //               {company.keyWords.split(",").map((keyWord, index) => {
-  //                 const trimmedKeyword = keyWord.trim();
-  //                 if (trimmedKeyword) {
-  //                   return (
-  //                     <Badge
-  //                       key={index}
-  //                       className="mx-2 bg-yellow-300 border border-gray-300 truncate text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
-  //                     >
-  //                       {trimmedKeyword}
-  //                     </Badge>
-  //                   );
-  //                 }
-  //                 return null;
-  //               })}
-  //             </div>
-  //           </div>
-  //         )}
-  //         <div className="sm:px-5 sticky bottom-5 left-5">
-  //           {user?.id === currentProject?.user_id ||
-  //           currentProject?.collabs?.includes(user.email) ? (
-  //             <>
-  //               <button
-  //                 className={`min-w-[110px] mt-8 hover:cursor-pointer py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent ${
-  //                   isLoading
-  //                     ? "bg-gray-600 disabled:opacity-50 disabled:pointer-events-none"
-  //                     : "bg-blue-600 text-white hover:bg-blue-700"
-  //                 }  `}
-  //                 onClick={handleSave}
-  //                 type="button"
-  //               >
-  //                 {isLoading ? (
-  //                   <SpinnerBtn isLoading={isLoading} />
-  //                 ) : (
-  //                   "Save profile"
-  //                 )}
-  //               </button>
-  //             </>
-  //           ) : null}
-  //         </div>
-  //       </div>
-  //     );
-  //   }
-  // });
-
-  // const confirmDeleteTab = (tab) => {
-  //   setTabToDelete(tab);
-  //   setIsDeleteModalVisible(true);
-  // };
-  // const handleDeleteCancel = () => {
-  //   setIsDeleteModalVisible(false);
-  //   setTabToDelete(null);
-  // };
-
   return (
     <div className={`px-8  flex flex-col justify-center items-center`}>
       <>
@@ -628,25 +472,8 @@ const MyTab = ({ company, currentProject }) => {
                   onClick={() => handleTabChange(tab.key)}
                 >
                   {tab.title}
-                  {/* {tab.editable && (
-                    <button
-                      className="ml-2 text-red-600"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        confirmDeleteTab(tab);
-                      }}
-                    >
-                      x
-                    </button>
-                  )} */}
                 </div>
               ))}
-              {/* <button
-                className="bg-green-500 text-white px-4 py-2 rounded-md ml-4"
-                onClick={addNewTab}
-              >
-                + Add Tab
-              </button> */}
             </nav>
           </div>
         </aside>
@@ -655,32 +482,6 @@ const MyTab = ({ company, currentProject }) => {
           {tabContents[activeTab]}
         </div>
       </>
-      {/* <Modal
-        title="Enter Tab Title"
-        open={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        centered
-      >
-        <Input
-          value={newTabTitle}
-          onChange={(e) => setNewTabTitle(e.target.value)}
-        />
-      </Modal>
-
-      <Modal
-        title="Confirm Delete"
-        open={isDeleteModalVisible}
-        onOk={deleteTab}
-        onCancel={handleDeleteCancel}
-        centered
-      >
-        Are you sure you want to delete{" "}
-        <span className="text-[#f5222d] font-semibold">
-          {tabToDelete?.title}
-        </span>
-        ?
-      </Modal> */}
     </div>
   );
 };

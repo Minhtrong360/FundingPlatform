@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { Dropdown, Button, Menu } from "antd";
@@ -19,19 +19,29 @@ const NavbarButton = ({ children, onClick, className }) => {
   );
 };
 
-const Header = ({ noFixedHeader }) => {
+const Header = ({ noFixedHeader, isContentChanged }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
+  const handleNavigation = (path) => {
+    if (isContentChanged) {
+      const confirmLeave = window.confirm(
+        "You have unsaved changes. Are you sure you want to leave this page?"
+      );
+      if (!confirmLeave) return;
+    }
+    navigate(path);
+  };
+
   const handleLoginButtonClick = () => {
-    navigate("/login");
+    handleNavigation("/login");
   };
 
   const handleClickHome = (e) => {
     e.preventDefault();
-    navigate("/");
+    handleNavigation("/");
   };
 
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
@@ -156,7 +166,9 @@ const Header = ({ noFixedHeader }) => {
         items={subItems.map((subItem) => ({
           key: subItem.key,
           label: (
-            <div onClick={() => navigate(subItem.path)}>{subItem.label}</div>
+            <div onClick={() => handleNavigation(subItem.path)}>
+              {subItem.label}
+            </div>
           ),
         }))}
       />
@@ -185,7 +197,7 @@ const Header = ({ noFixedHeader }) => {
             } space-x-3 rtl:space-x-reverse`}
           >
             {user ? (
-              <ImageDropdown />
+              <ImageDropdown isContentChanged={isContentChanged} />
             ) : (
               <NavbarButton onClick={handleLoginButtonClick}>
                 Sign in
@@ -267,7 +279,7 @@ const Header = ({ noFixedHeader }) => {
                           ? "text-[#2563EB]"
                           : "text-black"
                       }`}
-                      onClick={() => navigate(item.path)}
+                      onClick={() => handleNavigation(item.path)}
                     >
                       {item.title}
                     </Button>

@@ -72,14 +72,8 @@ const MyTab = ({
       if (error) {
         throw error;
       }
-
+      console.log("data", data);
       if (data && data.markdown) {
-        const initialContent = JSON.parse(data.markdown);
-        const fragment = doc.getXmlFragment("document-store");
-        if (fragment.length === 0) {
-          // Only load content from Supabase if the document is empty
-          fragment.push(JSON.stringify(initialContent));
-        }
         const updatedTabs = tabs.map((tab) => {
           if (tab.key === "Your Profile") {
             return { ...tab, content: data.markdown };
@@ -98,7 +92,7 @@ const MyTab = ({
   useEffect(() => {
     const initEditorContent = async () => {
       const docExists = await checkIfDocExistsOnProvider();
-
+      console.log("docExists", docExists);
       if (!docExists) {
         await loadContentFromSupabase(); // Load from DB if document does not exist
       }
@@ -237,8 +231,28 @@ const MyTab = ({
       activeTab !== "Data Room"
     ) {
       const tab = tabs.find((tab) => tab.key === activeTab);
-      if (tab?.content) {
-        editor.replaceBlocks(editor.topLevelBlocks, JSON.parse(tab.content));
+      if (tab?.content && tab?.content.length > 0) {
+        console.log("Tabs", tabs);
+        console.log("Your profile", tab?.content);
+
+        const markdown = JSON.parse(tab?.content);
+        const updatedBlocks = markdown.map((block) => {
+          if (block.type === "youtubeLink") {
+            return {
+              ...block,
+              type: "video",
+            };
+          }
+          return block;
+        });
+
+        editor.replaceBlocks(editor.topLevelBlocks, updatedBlocks);
+
+        // const fragment = doc.getXmlFragment("document-store");
+        // if (fragment.length === 0) {
+        //   // Only load content from Supabase if the document is empty
+        //   fragment.push(JSON.stringify(markdown));
+        // }
       }
     }
   }, [activeTab, isLoading]);
@@ -379,7 +393,6 @@ const MyTab = ({
   );
 
   const debouncedHandleChange = useRef(debounce(handleChange, 300)).current;
-  console.log("tabs", tabs);
   const tabContents = {
     ...(isDemo && user.email !== "ha.pham@beekrowd.com"
       ? {}

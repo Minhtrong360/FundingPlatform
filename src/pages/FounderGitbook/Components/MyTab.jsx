@@ -72,7 +72,6 @@ const MyTab = ({
       if (error) {
         throw error;
       }
-      console.log("data", data);
       if (data && data.markdown) {
         const updatedTabs = tabs.map((tab) => {
           if (tab.key === "Your Profile") {
@@ -92,7 +91,6 @@ const MyTab = ({
   useEffect(() => {
     const initEditorContent = async () => {
       const docExists = await checkIfDocExistsOnProvider();
-      console.log("docExists", docExists);
       if (!docExists) {
         await loadContentFromSupabase(); // Load from DB if document does not exist
       }
@@ -232,9 +230,6 @@ const MyTab = ({
     ) {
       const tab = tabs.find((tab) => tab.key === activeTab);
       if (tab?.content && tab?.content.length > 0) {
-        console.log("Tabs", tabs);
-        console.log("Your profile", tab?.content);
-
         const markdown = JSON.parse(tab?.content);
         const updatedBlocks = markdown.map((block) => {
           if (block.type === "youtubeLink") {
@@ -402,7 +397,7 @@ const MyTab = ({
               <BlockNoteView
                 editor={editor}
                 theme={"light"}
-                className="w-full lg:w-8/12"
+                className="w-full"
                 onChange={(editor) =>
                   debouncedHandleChange(editor, "Your Profile")
                 }

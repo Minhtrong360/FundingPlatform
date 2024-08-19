@@ -136,7 +136,7 @@ export default function VCEditorTool({
         <BlockNoteView
           editor={editor}
           theme={"light"}
-          className="w-full lg:w-8/12"
+          className="w-full"
           onChange={async function (editor) {
             const blocks = editor.topLevelBlocks;
             for (const block of blocks) {

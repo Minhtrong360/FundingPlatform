@@ -72,14 +72,7 @@ const MyTab = ({
       if (error) {
         throw error;
       }
-
       if (data && data.markdown) {
-        const initialContent = JSON.parse(data.markdown);
-        const fragment = doc.getXmlFragment("document-store");
-        if (fragment.length === 0) {
-          // Only load content from Supabase if the document is empty
-          fragment.push(JSON.stringify(initialContent));
-        }
         const updatedTabs = tabs.map((tab) => {
           if (tab.key === "Your Profile") {
             return { ...tab, content: data.markdown };
@@ -98,7 +91,6 @@ const MyTab = ({
   useEffect(() => {
     const initEditorContent = async () => {
       const docExists = await checkIfDocExistsOnProvider();
-
       if (!docExists) {
         await loadContentFromSupabase(); // Load from DB if document does not exist
       }
@@ -237,8 +229,25 @@ const MyTab = ({
       activeTab !== "Data Room"
     ) {
       const tab = tabs.find((tab) => tab.key === activeTab);
-      if (tab?.content) {
-        editor.replaceBlocks(editor.topLevelBlocks, JSON.parse(tab.content));
+      if (tab?.content && tab?.content.length > 0) {
+        const markdown = JSON.parse(tab?.content);
+        const updatedBlocks = markdown.map((block) => {
+          if (block.type === "youtubeLink") {
+            return {
+              ...block,
+              type: "video",
+            };
+          }
+          return block;
+        });
+
+        editor.replaceBlocks(editor.topLevelBlocks, updatedBlocks);
+
+        // const fragment = doc.getXmlFragment("document-store");
+        // if (fragment.length === 0) {
+        //   // Only load content from Supabase if the document is empty
+        //   fragment.push(JSON.stringify(markdown));
+        // }
       }
     }
   }, [activeTab, isLoading]);
@@ -311,7 +320,7 @@ const MyTab = ({
   }, [isDemo]);
 
   const handleChange = useCallback(
-    async (editor) => {
+    async (editor, tabKey) => {
       const blocks = editor.topLevelBlocks;
       const updatedBlocks = [...blocks];
 
@@ -353,7 +362,7 @@ const MyTab = ({
 
       setTabs((prevTabs) => {
         return prevTabs.map((tab) => {
-          if (tab.key === "Your Profile") {
+          if (tab.key === tabKey) {
             return {
               ...tab,
               content: JSON.stringify(updatedBlocks),
@@ -362,6 +371,7 @@ const MyTab = ({
           return tab;
         });
       });
+
       if (
         user?.id === currentProject?.user_id ||
         currentProject?.collabs?.includes(user.email)
@@ -370,16 +380,14 @@ const MyTab = ({
       }
     },
     [
-      user?.id,
+      uploadImageFromURLToSupabase,
       currentProject?.user_id,
       currentProject?.collabs,
-      setIsContentChanged,
-      uploadImageFromURLToSupabase,
+      user?.email,
     ]
   );
 
   const debouncedHandleChange = useRef(debounce(handleChange, 300)).current;
-
   const tabContents = {
     ...(isDemo && user.email !== "ha.pham@beekrowd.com"
       ? {}
@@ -389,8 +397,10 @@ const MyTab = ({
               <BlockNoteView
                 editor={editor}
                 theme={"light"}
-                className="w-full lg:w-8/12"
-                onChange={debouncedHandleChange}
+                className="w-full"
+                onChange={(editor) =>
+                  debouncedHandleChange(editor, "Your Profile")
+                }
               />
               {company?.keyWords && (
                 <div className="mt-28 px-5">

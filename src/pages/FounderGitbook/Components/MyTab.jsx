@@ -150,6 +150,13 @@ const MyTab = ({
         color: getRandomColor(),
       },
     },
+    onCommand: () => {
+      if (unChange) {
+        // Prevent any command that would modify content
+        return false;
+      }
+      return true;
+    },
   });
 
   const uploadImageFromURLToSupabase = async (imageUrl) => {
@@ -386,6 +393,16 @@ const MyTab = ({
       user?.email,
     ]
   );
+  const [unChange, setUnChange] = useState(true);
+
+  useEffect(() => {
+    if (
+      user?.id === currentProject?.user_id ||
+      currentProject?.collabs?.includes(user.email)
+    ) {
+      setUnChange(false);
+    }
+  }, []);
 
   const debouncedHandleChange = useRef(debounce(handleChange, 300)).current;
   const tabContents = {
@@ -397,11 +414,12 @@ const MyTab = ({
               <BlockNoteView
                 editor={editor}
                 theme={"light"}
-                className="w-full"
+                className={`w-full ${unChange ? "pointer-events-none" : ""}`}
                 onChange={(editor) =>
                   debouncedHandleChange(editor, "Your Profile")
                 }
               />
+
               {company?.keyWords && (
                 <div className="mt-28 px-5">
                   <div className="text-black font-semibold">Keywords:</div>
@@ -485,6 +503,7 @@ const MyTab = ({
             </nav>
           </div>
         </aside>
+
         <div className="w-full py-8 px-0 md:px-8">
           {/* Content */}
           {tabContents[activeTab]}

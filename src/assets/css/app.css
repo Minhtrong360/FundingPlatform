@@ -3872,6 +3872,11 @@ span.zubuz-title-shape {
   border-radius: 10px;
   overflow: hidden;
   position: relative;
+  max-height: 500px;
+}
+.zubuz-team-thumb img {
+  object-fit: contain;
+  object-position: center;
 }
 .zubuz-team-data {
   left: 20px;
@@ -5592,6 +5597,8 @@ a.zubuz-connect-login img {
 }
 
 .zubuz-errors-wrap {
+  display: grid;
+  place-items: center;
   text-align: center;
   max-width: 900px;
   margin: 0 auto;

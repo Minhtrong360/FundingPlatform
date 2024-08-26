@@ -2433,7 +2433,7 @@ function AdminPage() {
   return (
     <>
       <div className=" bg-white darkBg antialiased !p-0 ">
-        <LoadingButtonClick isLoading={isLoading} />
+        {/* <LoadingButtonClick isLoading={isLoading} /> */}
         <div id="exampleWrapper">
           <SideBar
             isSidebarOpen={isSidebarOpen}
@@ -2453,6 +2453,7 @@ function AdminPage() {
             dataClientSource={dataClientSource}
             codeData={codeData}
             setCodeData={setCodeData}
+            isLoading={isLoading}
           />
         </div>
 
@@ -2481,7 +2482,11 @@ function AdminPage() {
             }}
             centered={true}
           >
-            Are you sure you want to delete this project?
+            Are you sure you want to delete this project{" "}
+            <span className="text-[#f5222d] font-semibold">
+              {dataSource?.find((data) => data.project_id === SelectedID)?.name}
+            </span>{" "}
+            ?
           </Modal>
         )}
 
@@ -2513,7 +2518,11 @@ function AdminPage() {
             }}
             centered={true}
           >
-            Are you sure you want to delete this project?
+            Are you sure you want to delete this project{" "}
+            <span className="text-[#f5222d] font-semibold">
+              {dataFinanceSource?.find((data) => data.id === SelectedID)?.name}
+            </span>{" "}
+            ?
           </Modal>
         )}
 
@@ -2603,7 +2612,11 @@ function AdminPage() {
             }}
             centered={true}
           >
-            Are you sure you want to delete this user?
+            Are you sure you want to delete this user{" "}
+            <span className="text-[#f5222d] font-semibold">
+              {dataClientSource?.find((user) => user.id === SelectedID)?.email}
+            </span>{" "}
+            ?
           </Modal>
         )}
       </div>

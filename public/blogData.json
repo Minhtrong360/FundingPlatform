@@ -1,0 +1,23 @@
+[
+  {
+    "category": "Financial Planning",
+    "date": "June 18, 2024",
+    "title": "How to build a financial plan?",
+    "image": "/images/blog/blog1.png",
+    "link": ""
+  },
+  {
+    "category": "Fundraising",
+    "date": "June 18, 2024",
+    "title": "Financial model for fundraising",
+    "image": "/images/blog/blog2.png",
+    "link": ""
+  },
+  {
+    "category": "Startup Valuation",
+    "date": "June 18, 2024",
+    "title": "How to value your startup?",
+    "image": "/images/blog/blog3.png",
+    "link": ""
+  }
+]

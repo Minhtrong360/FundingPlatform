@@ -13,7 +13,7 @@ import InputField from "../../components/InputField";
 import apiService from "../../app/apiService";
 import { Option } from "antd/es/mentions";
 
-function ProjectList({ projects }) {
+function ProjectList({ projects, isLoading }) {
   const { user } = useAuth();
 
   const [updatedProjects, setUpdatedProjects] = useState([]);
@@ -47,7 +47,7 @@ function ProjectList({ projects }) {
     contactEmail: "",
     contactPhone: "",
     university: "",
-    teamSize: "",
+    teamName: "",
     teamEmails: "",
   });
 
@@ -195,7 +195,7 @@ function ProjectList({ projects }) {
         contactEmail: "Contact Email",
         contactPhone: "Contact Phone",
         university: "University",
-        teamSize: "Team Size",
+        teamName: "Team Name",
         teamEmails: "Team Emails",
       };
 
@@ -251,8 +251,17 @@ function ProjectList({ projects }) {
         };
         updatedApplyInfo.push(newApplyInfo);
       } else {
-        message.warning("You submitted this project to this contest.");
-        return;
+        // Update the applyInfo that corresponds to the existing codeId
+        updatedApplyInfo = updatedApplyInfo.map((info) => {
+          if (JSON.parse(info).universityCode === codeId) {
+            info = applyInfo;
+            info.applyAt = new Date().toISOString();
+            info.universityCode = codeId;
+
+            return info;
+          }
+          return info;
+        });
       }
 
       const { error: updateError } = await supabase
@@ -802,7 +811,7 @@ function ProjectList({ projects }) {
           centered={true}
         >
           Are you sure you want to delete this{" "}
-          <span style={{ fontWeight: "bold", color: "#2563EB" }}>
+          <span className="text-[#f5222d] font-semibold">
             {
               updatedProjects?.find((project) => project.id === SelectedID)
                 ?.name
@@ -975,12 +984,12 @@ function ProjectList({ projects }) {
           />
           <InputField
             style={{ marginBottom: "6px" }}
-            label="Team Size"
-            id="teamSize"
-            name="teamSize"
-            value={applyInfo.teamSize}
+            label="Team Name"
+            id="teamName"
+            name="teamName"
+            value={applyInfo.teamName}
             onChange={(e) =>
-              setApplyInfo({ ...applyInfo, teamSize: e.target.value })
+              setApplyInfo({ ...applyInfo, teamName: e.target.value })
             }
             type="text"
             required
@@ -1089,6 +1098,7 @@ function ProjectList({ projects }) {
                   rowKey="id"
                   size="small"
                   bordered
+                  loading={isLoading}
                 />
               </div>
             </div>
@@ -1111,6 +1121,7 @@ function ProjectList({ projects }) {
                   rowKey="id"
                   size="small"
                   bordered
+                  loading={isLoading}
                 />
               </div>
             </div>

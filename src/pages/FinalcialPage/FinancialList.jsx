@@ -21,6 +21,7 @@ function FinancialList() {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+  const [isLoading, setIsLoading] = useState(false);
 
   const [finances, setFinances] = useState([]);
   const { user } = useAuth();
@@ -35,6 +36,7 @@ function FinancialList() {
       //   .filter("user_id", "eq", user?.id);
 
       // Lấy các dự án có user_id = user.id
+      setIsLoading(true);
       let { data: projects1, error: error1 } = await supabase
         .from("finance")
         .select("*")
@@ -81,6 +83,7 @@ function FinancialList() {
         return dateB - dateA;
       });
       setFinances(sortedProjects);
+      setIsLoading(false);
     };
     if (user) {
       loadFinances();
@@ -1057,6 +1060,7 @@ function FinancialList() {
                           rowKey="id"
                           size="small"
                           bordered
+                          loading={isLoading}
                         />
                       </div>
                     </div>
@@ -1079,6 +1083,7 @@ function FinancialList() {
                           rowKey="id"
                           size="small"
                           bordered
+                          loading={isLoading}
                         />
                       </div>
                     </div>

@@ -32,6 +32,7 @@ function FleaMarketList() {
   const [isAddNewModalOpen, setIsAddNewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [email, setEmail] = useState("elonmusk@gmail.com");
 
@@ -41,6 +42,7 @@ function FleaMarketList() {
     // Function to fetch Flea Market data from Supabase
     const fetchFleaMarketData = async () => {
       try {
+        setIsLoading(true);
         const { data, error } = await supabase
           .from("fleamarket")
           .select("*")
@@ -49,8 +51,10 @@ function FleaMarketList() {
           throw error;
         }
         setFleaMarketData(data);
+        setIsLoading(false);
       } catch (error) {
         console.log("Error fetching Flea Market data:", error);
+        setIsLoading(false);
       }
     };
 
@@ -146,7 +150,7 @@ function FleaMarketList() {
     },
 
     {
-      title: "Price",
+      title: "Price ($)",
       dataIndex: "price",
       key: "price",
       render: (text, record) => (
@@ -398,6 +402,7 @@ function FleaMarketList() {
                           rowKey="id"
                           size="small"
                           bordered
+                          loading={isLoading}
                         />
                       </div>
                     </div>
@@ -446,7 +451,15 @@ function FleaMarketList() {
                   }}
                   centered={true}
                 >
-                  Are you sure you want to delete this project?
+                  Are you sure you want to delete this{" "}
+                  <span className="text-[#f5222d] font-semibold">
+                    {
+                      fleaMarketData?.find(
+                        (project) => project.id === SelectedID
+                      )?.name
+                    }
+                  </span>{" "}
+                  project?
                 </Modal>
               )}
 

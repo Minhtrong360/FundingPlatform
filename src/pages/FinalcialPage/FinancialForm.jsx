@@ -35,6 +35,7 @@ import {
   setStartYear,
   setDescription,
   setLocation,
+  setInputData,
 } from "../../features/DurationSlice";
 import {
   calculateCustomerGrowth,
@@ -85,6 +86,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     cutMonth,
     description,
     location,
+    inputData,
   } = useSelector((state) => state.durationSelect);
   // const generatePrompt = () => {
   //   return `Given ${description} and ${location}, list all facts and figures related to the revenue, cost, personnel, margin, salary related to in bullet points. Each bullet points no more than 10 words. `;
@@ -693,6 +695,34 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             ]
           )
         );
+        dispatch(
+          setInputData(
+            inputData.inputData || {
+              selectedDuration,
+              startingCashBalance,
+              status,
+              industry,
+              incomeTax,
+              payrollTax,
+              currency,
+              startMonth,
+              startYear,
+              financialProjectName,
+              cutMonth,
+              customerInputs,
+              channelInputs,
+              costInputs,
+              personnelInputs,
+              investmentInputs,
+              loanInputs,
+              fundraisingInputs,
+              yearlyAverageCustomers,
+              yearlySales,
+              description,
+              location,
+            }
+          )
+        );
       }
 
       setTemIsLoading(false);
@@ -859,6 +889,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       description,
       location,
     };
+
+    dispatch(setInputData(financeData));
 
     await saveOrUpdateFinanceData(financeData);
 

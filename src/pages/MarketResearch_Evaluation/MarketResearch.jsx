@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Tabs } from "antd";
 
 import Flowise from "../FinalcialPage/Components/Flowise";
-import Header2 from "../Home/Header2";
+import Header from "../Home/Header";
 import Valuation from "../FinalcialPage/Components/Perflexity";
 import { useAuth } from "../../context/AuthContext";
 
@@ -27,7 +27,6 @@ export default function MarketResearch() {
   };
 
   const { currentUser } = useAuth();
-  console.log("currentUser", currentUser);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   useEffect(() => {
@@ -44,12 +43,11 @@ export default function MarketResearch() {
       setIsButtonDisabled(false);
     }
   }, [currentUser[0]?.plan, currentUser[0]?.subscription_status]);
-  console.log("isButtonDisabled", isButtonDisabled);
 
   return (
     <>
       {/* <Header /> */}
-      <Header2 />
+      <Header />
 
       <div
         key="1"

@@ -7,7 +7,6 @@ import ForgotPassword from "../pages/SignUp/ForgotPassword";
 import UpdatePassword from "../pages/SignUp/UpdatePassword";
 
 import Founder from "../pages/FounderGitbook/Founder";
-import NotFoundPage from "../pages/NotFoundPage";
 import PaymentSuccess from "../pages/PaymentSuccess";
 
 import Trial from "../pages/DashBoard/trial";
@@ -73,222 +72,222 @@ import TeamPage from "./../pages/team/page";
 import TestimonialPage from "./../pages/testimonials/page";
 import AboutPage from "./../pages/about-us/page";
 import SignUpPage from "../pages/sign-up/page.js";
+import NotFoundPage from "../pages/not-found/page.js";
 
 function Router() {
-  const location = useLocation();
+	const location = useLocation();
 
-  return (
-    <>
-      <Routes>
-        {/* New */}
-        <Route key={location.key} index element={<Home />} />
-        <Route key={location.key} path="/home-2" element={<HomeTwoPage />} />
-        <Route key={location.key} path="/home-3" element={<HomeThreePage />} />
-        <Route key={location.key} path="/blog" element={<BlogPage />} />
-        <Route key={location.key} path="/about-us" element={<AboutPage />} />
-        <Route
-          key={location.key}
-          path="/blog-column-one"
-          element={<BlogOnePage />}
-        />
-        <Route
-          key={location.key}
-          path="/blog-column-two"
-          element={<BlogTwoPage />}
-        />
-        <Route key={location.key} path="/career" element={<CareerPage />} />
-        <Route
-          key={location.key}
-          path="/coming-soon"
-          element={<ComingSoonPage />}
-        />
-        <Route
-          key={location.key}
-          path="/contact-us"
-          element={<ContactUsPage />}
-        />
-        <Route key={location.key} path="/faq" element={<FAQ />} />
-        <Route
-          key={location.key}
-          path="/integrations"
-          element={<IntegrationPage />}
-        />
-        <Route
-          key={location.key}
-          path="/portfolio-classic"
-          element={<PortfolioClassicPage />}
-        />
-        <Route
-          key={location.key}
-          path="/portfolio-grid"
-          element={<PortfolioGridPage />}
-        />
-        <Route key={location.key} path="/pricing" element={<PricingPage />} />
-        <Route
-          key={location.key}
-          path="/reset-password"
-          element={<ResetPasswordPage />}
-        />
-        <Route key={location.key} path="/service" element={<ServicePage />} />
-        <Route key={location.key} path="/sign-in" element={<SignInPage />} />
-        <Route key={location.key} path="/sign-up" element={<SignUpPage />} />
-        <Route
-          key={location.key}
-          path="/single-blog"
-          element={<SingleBlogPage />}
-        />
-        <Route
-          key={location.key}
-          path="/single-career"
-          element={<SingleCareerPage />}
-        />
-        <Route
-          key={location.key}
-          path="/single-portfolio"
-          element={<SinglePortfolioPage />}
-        />
-        <Route
-          key={location.key}
-          path="/single-service"
-          element={<SingleServicePage />}
-        />
-        <Route
-          key={location.key}
-          path="/single-team"
-          element={<SingleTeamPage />}
-        />
-        <Route key={location.key} path="/team" element={<TeamPage />} />
-        <Route
-          key={location.key}
-          path="/testimonials"
-          element={<TestimonialPage />}
-        />
+	return (
+		<>
+			<Routes>
+				{/* New */}
+				<Route key={location.key} index element={<Home />} />
+				<Route key={location.key} path="/home-2" element={<HomeTwoPage />} />
+				<Route key={location.key} path="/home-3" element={<HomeThreePage />} />
+				<Route key={location.key} path="/blog" element={<BlogPage />} />
+				<Route key={location.key} path="/about-us" element={<AboutPage />} />
+				<Route
+					key={location.key}
+					path="/blog-column-one"
+					element={<BlogOnePage />}
+				/>
+				<Route
+					key={location.key}
+					path="/blog-column-two"
+					element={<BlogTwoPage />}
+				/>
+				<Route key={location.key} path="/career" element={<CareerPage />} />
+				<Route
+					key={location.key}
+					path="/coming-soon"
+					element={<ComingSoonPage />}
+				/>
+				<Route
+					key={location.key}
+					path="/contact-us"
+					element={<ContactUsPage />}
+				/>
+				<Route key={location.key} path="/faq" element={<FAQ />} />
+				<Route
+					key={location.key}
+					path="/integrations"
+					element={<IntegrationPage />}
+				/>
+				<Route
+					key={location.key}
+					path="/portfolio-classic"
+					element={<PortfolioClassicPage />}
+				/>
+				<Route
+					key={location.key}
+					path="/portfolio-grid"
+					element={<PortfolioGridPage />}
+				/>
+				<Route key={location.key} path="/pricing" element={<PricingPage />} />
+				<Route
+					key={location.key}
+					path="/reset-password"
+					element={<ResetPasswordPage />}
+				/>
+				<Route key={location.key} path="/service" element={<ServicePage />} />
+				<Route key={location.key} path="/sign-in" element={<SignInPage />} />
+				<Route key={location.key} path="/sign-up" element={<SignUpPage />} />
+				<Route
+					key={location.key}
+					path="/single-blog"
+					element={<SingleBlogPage />}
+				/>
+				<Route
+					key={location.key}
+					path="/single-career"
+					element={<SingleCareerPage />}
+				/>
+				<Route
+					key={location.key}
+					path="/single-portfolio"
+					element={<SinglePortfolioPage />}
+				/>
+				<Route
+					key={location.key}
+					path="/single-service"
+					element={<SingleServicePage />}
+				/>
+				<Route
+					key={location.key}
+					path="/single-team"
+					element={<SingleTeamPage />}
+				/>
+				<Route key={location.key} path="/team" element={<TeamPage />} />
+				<Route
+					key={location.key}
+					path="/testimonials"
+					element={<TestimonialPage />}
+				/>
 
-        {/* Routes definition */}
-        {/* <Route index element={<HomePage />} /> */}
-        <Route
-          key={location.key}
-          path="/founder"
-          element={
-            <AuthRequire message="Sign in required!">
-              <Founder />
-            </AuthRequire>
-          }
-        />
-        <Route
-          key={location.key}
-          path="/Flea-Market"
-          element={
-            <AuthRequire message="Sign in required!">
-              <FleaMarketList />
-            </AuthRequire>
-          }
-        />
-        <Route
-          key={location.key}
-          path="/Listing-Flea-Market"
-          element={
-            <AuthRequire message="Sign in required!">
-              <FleaMarketListAll />
-            </AuthRequire>
-          }
-        />
-        <Route
-          key={location.key}
-          path="/user-info"
-          element={
-            <AuthRequire message="Sign in required!">
-              <UserPage />
-            </AuthRequire>
-          }
-        />
-        <Route
-          key={location.key}
-          path="/founder/:id"
-          element={
-            <AuthRequire message="Sign in required!">
-              <NewDetailPage location={location} />
-            </AuthRequire>
-          }
-        />
-        <Route
-          key={location.key}
-          path="/notifications"
-          element={
-            <AuthRequire message="Sign in required!">
-              <NotificationsPage />
-            </AuthRequire>
-          }
-        />
-        {/* <Route path="/fundraising" element={<FundraisingRecords />} />   */}
-        <Route key={location.key} path="/login" element={<Login />} />
-        <Route key={location.key} path="/signup" element={<SignUp />} />
-        <Route key={location.key} path="/confirmed" element={<Confirmed />} />
-        <Route
-          key={location.key}
-          path="/dashboard"
-          element={
-            <AuthRequire message="Sign in required!">
-              <DashBoardPage />
-            </AuthRequire>
-          }
-        />
-        <Route
-          key={location.key}
-          path="/forgot-password"
-          element={<ForgotPassword />}
-        />
-        <Route
-          key={location.key}
-          path="/update-password"
-          element={<UpdatePassword />}
-        />
-        {/* <Route  key={location.key} path="/content" element={<ChatBotTest />} /> */}
-        <Route
-          key={location.key}
-          path="/success"
-          element={<PaymentSuccess />}
-        />
-        <Route key={location.key} path="*" element={<NotFoundPage />} />
-        <Route
-          key={location.key}
-          path="/company/:id"
-          element={
-            <AuthRequire message="Sign in required!">
-              <CompanySetting />
-            </AuthRequire>
-          }
-        />
-        {/* <Route path="/linkedin" element={<LinkedInLoginComponent />} /> */}
-        <Route key={location.key} path="/trials" element={<Trial />} />
-        <Route
-          key={location.key}
-          path="/terms"
-          element={<TermsAndConditions />}
-        />
-        <Route
-          key={location.key}
-          path="/financials/:id"
-          element={
-            <AuthRequire message="Sign in required!">
-              <PermissionRequired>
-                <FinancialPage />
-              </PermissionRequired>
-            </AuthRequire>
-          }
-        />
-        <Route
-          key={location.key}
-          path="/financials"
-          element={
-            <AuthRequire message="Sign in required!">
-              <PermissionRequired>
-                <FinancialList />
-              </PermissionRequired>
-            </AuthRequire>
-          }
-        />
-        {/* <Route
+				{/* Routes definition */}
+				{/* <Route index element={<HomePage />} /> */}
+				<Route
+					key={location.key}
+					path="/founder"
+					element={
+						<AuthRequire message="Sign in required!">
+							<Founder />
+						</AuthRequire>
+					}
+				/>
+				<Route
+					key={location.key}
+					path="/Flea-Market"
+					element={
+						<AuthRequire message="Sign in required!">
+							<FleaMarketList />
+						</AuthRequire>
+					}
+				/>
+				<Route
+					key={location.key}
+					path="/Listing-Flea-Market"
+					element={
+						<AuthRequire message="Sign in required!">
+							<FleaMarketListAll />
+						</AuthRequire>
+					}
+				/>
+				<Route
+					key={location.key}
+					path="/user-info"
+					element={
+						<AuthRequire message="Sign in required!">
+							<UserPage />
+						</AuthRequire>
+					}
+				/>
+				<Route
+					key={location.key}
+					path="/founder/:id"
+					element={
+						<AuthRequire message="Sign in required!">
+							<NewDetailPage location={location} />
+						</AuthRequire>
+					}
+				/>
+				<Route
+					key={location.key}
+					path="/notifications"
+					element={
+						<AuthRequire message="Sign in required!">
+							<NotificationsPage />
+						</AuthRequire>
+					}
+				/>
+				{/* <Route path="/fundraising" element={<FundraisingRecords />} />   */}
+				<Route key={location.key} path="/login" element={<Login />} />
+				<Route key={location.key} path="/signup" element={<SignUp />} />
+				<Route key={location.key} path="/confirmed" element={<Confirmed />} />
+				<Route
+					key={location.key}
+					path="/dashboard"
+					element={
+						<AuthRequire message="Sign in required!">
+							<DashBoardPage />
+						</AuthRequire>
+					}
+				/>
+				<Route
+					key={location.key}
+					path="/forgot-password"
+					element={<ForgotPassword />}
+				/>
+				<Route
+					key={location.key}
+					path="/update-password"
+					element={<UpdatePassword />}
+				/>
+				{/* <Route  key={location.key} path="/content" element={<ChatBotTest />} /> */}
+				<Route
+					key={location.key}
+					path="/success"
+					element={<PaymentSuccess />}
+				/>
+				<Route
+					key={location.key}
+					path="/company/:id"
+					element={
+						<AuthRequire message="Sign in required!">
+							<CompanySetting />
+						</AuthRequire>
+					}
+				/>
+				{/* <Route path="/linkedin" element={<LinkedInLoginComponent />} /> */}
+				<Route key={location.key} path="/trials" element={<Trial />} />
+				<Route
+					key={location.key}
+					path="/terms"
+					element={<TermsAndConditions />}
+				/>
+				<Route
+					key={location.key}
+					path="/financials/:id"
+					element={
+						<AuthRequire message="Sign in required!">
+							<PermissionRequired>
+								<FinancialPage />
+							</PermissionRequired>
+						</AuthRequire>
+					}
+				/>
+				<Route
+					key={location.key}
+					path="/financials"
+					element={
+						<AuthRequire message="Sign in required!">
+							<PermissionRequired>
+								<FinancialList />
+							</PermissionRequired>
+						</AuthRequire>
+					}
+				/>
+				{/* <Route
           key={location.key}
           path="/announce"
           element={
@@ -299,77 +298,79 @@ function Router() {
             />
           }
         /> */}
-        <Route key={location.key} path="/news" element={<News />} />
-        <Route key={location.key} path="/news/:id" element={<DetailBlog />} />
-        <Route
-          key={location.key}
-          path="/startups"
-          element={<NewProjectPosts location={location} />}
-        />
-        <Route key={location.key} path="/pricing" element={<PricingPage />} />
-        <Route
-          key={location.key}
-          path="/admin"
-          element={
-            <AuthRequire message="Sign in required!">
-              <AdminRequired>
-                <AdminPage />
-              </AdminRequired>
-            </AuthRequire>
-          }
-        />
-        {/* <Route  key={location.key} path="/example" element={<StaticNews />} /> */}
-        <Route key={location.key} path="/FAQ" element={<FAQ />} />
-        {/* <Route  key={location.key} path="/brochure" element={<Brochure />} /> */}
-        <Route key={location.key} path="/mytabs" element={<NewDetailPage />} />
-        {/* <Route  key={location.key} path="/app" element={<App />} /> */}
-        {/* <Route  key={location.key} path="/tour" element={<TourComponent />} /> */}
-        <Route
-          key={location.key}
-          path="/founders/market-research"
-          element={
-            <AuthRequire message="Sign in required!">
-              <MarketResearch />
-            </AuthRequire>
-          }
-        />
-        {/* For universities */}
-        <Route
-          key={location.key}
-          path="/workspace"
-          element={
-            <AuthRequire message="Sign in required!">
-              <UniversitiesPage location={location} />
-            </AuthRequire>
-          }
-        />
-        <Route
-          key={location.key}
-          path="/competitions"
-          element={<CompetitionPosts location={location} />}
-        />
-        <Route
-          key={location.key}
-          path="/vc_workspace"
-          element={
-            <AuthRequire message="Sign in required!">
-              <VCPage location={location} />
-            </AuthRequire>
-          }
-        />
-        <Route
-          key={location.key}
-          path="/cohort"
-          element={<CohortPost location={location} />}
-        />
-        <Route
-          key={location.key}
-          path="/dragChart"
-          element={<DraggableChart />}
-        />
-      </Routes>
-    </>
-  );
+				<Route key={location.key} path="/news" element={<News />} />
+				<Route key={location.key} path="/news/:id" element={<DetailBlog />} />
+				<Route
+					key={location.key}
+					path="/startups"
+					element={<NewProjectPosts location={location} />}
+				/>
+				<Route key={location.key} path="/pricing" element={<PricingPage />} />
+				<Route
+					key={location.key}
+					path="/admin"
+					element={
+						<AuthRequire message="Sign in required!">
+							<AdminRequired>
+								<AdminPage />
+							</AdminRequired>
+						</AuthRequire>
+					}
+				/>
+				{/* <Route  key={location.key} path="/example" element={<StaticNews />} /> */}
+				<Route key={location.key} path="/FAQ" element={<FAQ />} />
+				{/* <Route  key={location.key} path="/brochure" element={<Brochure />} /> */}
+				<Route key={location.key} path="/mytabs" element={<NewDetailPage />} />
+				{/* <Route  key={location.key} path="/app" element={<App />} /> */}
+				{/* <Route  key={location.key} path="/tour" element={<TourComponent />} /> */}
+				<Route
+					key={location.key}
+					path="/founders/market-research"
+					element={
+						<AuthRequire message="Sign in required!">
+							<MarketResearch />
+						</AuthRequire>
+					}
+				/>
+				{/* For universities */}
+				<Route
+					key={location.key}
+					path="/workspace"
+					element={
+						<AuthRequire message="Sign in required!">
+							<UniversitiesPage location={location} />
+						</AuthRequire>
+					}
+				/>
+				<Route
+					key={location.key}
+					path="/competitions"
+					element={<CompetitionPosts location={location} />}
+				/>
+				<Route
+					key={location.key}
+					path="/vc_workspace"
+					element={
+						<AuthRequire message="Sign in required!">
+							<VCPage location={location} />
+						</AuthRequire>
+					}
+				/>
+				<Route
+					key={location.key}
+					path="/cohort"
+					element={<CohortPost location={location} />}
+				/>
+				<Route
+					key={location.key}
+					path="/dragChart"
+					element={<DraggableChart />}
+				/>
+
+				<Route key={location.key} path="*" element={<NotFoundPage />} />
+			</Routes>
+		</>
+	);
 }
 
 export default Router;

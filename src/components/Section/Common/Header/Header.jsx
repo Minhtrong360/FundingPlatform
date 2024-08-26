@@ -157,11 +157,6 @@ const Header = ({ logoSrc }) => {
                     </li>
                   </ul>
                 </li>
-                <li className="nav-item">
-                  <Link to="/about-us" className="nav-link-item">
-                    About Us
-                  </Link>
-                </li>
                 <li className="nav-item nav-item-has-children">
                   <Link to="#" className="nav-link-item drop-trigger">
                     Pages{" "}
@@ -368,6 +363,11 @@ const Header = ({ logoSrc }) => {
                       </Link>
                     </li>
                   </ul>
+                </li>
+                <li className="nav-item">
+                  <Link to="/about-us" className="nav-link-item">
+                    About Us
+                  </Link>
                 </li>
                 <li className="nav-item">
                   <Link to="/contact-us" className="nav-link-item">

@@ -41,23 +41,20 @@ const Footer = () => {
             <div className="col-xl-3 col-md-4">
               <div className="zubuz-footer-menu extar-margin">
                 <div className="zubuz-footer-title">
-                  <p>Navigation</p>
+                  <p>ABOUT US</p>
                 </div>
                 <ul>
                   <li>
-                    <Link to="">Demos</Link>
+                    <Link to="/about-us">About</Link>
                   </li>
                   <li>
-                    <Link to="">About Us</Link>
+                    <Link to="/blog">Blog</Link>
                   </li>
                   <li>
-                    <Link to="">Services</Link>
+                    <Link to="https://beekrowd.canny.io/beekrowd-feedback">Feedback</Link>
                   </li>
                   <li>
-                    <Link to="">Pages</Link>
-                  </li>
-                  <li>
-                    <Link to="">Contact</Link>
+                    <Link to="https://beekrowd.gitbook.io/beekrowd-financial-model-guide">Guide</Link>
                   </li>
                 </ul>
               </div>
@@ -65,23 +62,20 @@ const Footer = () => {
             <div className="col-xl-2 col-md-4">
               <div className="zubuz-footer-menu">
                 <div className="zubuz-footer-title">
-                  <p>Utility pages</p>
+                  <p>POLICIES AND TERMS</p>
                 </div>
                 <ul>
                   <li>
-                    <Link to="">Instructions</Link>
+                    <Link to="">Purchasing Service Guide</Link>
                   </li>
                   <li>
-                    <Link to="">Style guide</Link>
+                    <Link to="">General Policies and Regulations</Link>
                   </li>
                   <li>
-                    <Link to="">Licenses</Link>
+                    <Link to="">Privacy Terms</Link>
                   </li>
                   <li>
-                    <Link to="">404 Not found</Link>
-                  </li>
-                  <li>
-                    <Link to="">Password protected</Link>
+                    <Link to="">Delivery and Warranty Policy</Link>
                   </li>
                 </ul>
               </div>
@@ -89,23 +83,23 @@ const Footer = () => {
             <div className="col-xl-3 col-md-4">
               <div className="zubuz-footer-menu extar-margin">
                 <div className="zubuz-footer-title">
-                  <p>Resources</p>
+                  <p>CONTACT</p>
                 </div>
                 <ul>
                   <li>
-                    <Link to="">Support</Link>
+                    BeeKrowd Joint Stock Company
                   </li>
                   <li>
-                    <Link to="">Privacy policy</Link>
+                    Head office: Dreamplex 21 Nguyen Trung Ngan, Ben Nghe Ward, District 1, Ho Chi Minh City.
                   </li>
                   <li>
-                    <Link to="">Terms & Conditions</Link>
+                    <Link to="tel:+84376372727">Hotline: +84 376.372.727</Link>
                   </li>
                   <li>
-                    <Link to="">Strategic finance</Link>
+                    <Link to="https://www.beekrowd.com/">Website: beekrowd.com</Link>
                   </li>
                   <li>
-                    <Link to="">Video guide</Link>
+                    <Link to="mailto:support@beekrowd.com">Email: support@beekrowd.com</Link>
                   </li>
                 </ul>
               </div>
@@ -116,37 +110,37 @@ const Footer = () => {
           <div className="zubuz-social-icon order-md-2">
             <ul>
               <li>
-                <a href="https://twitter.com/" target="_blank">
+                <a href="https://x.com/BeeKrowd" target="_blank" rel="noreferrer">
                   <FaTwitter />
                 </a>
               </li>
               <li>
-                <a href="https://facebook.com/" target="_blank">
+                <a href="https://facebook.com/BeeKrowd" target="_blank" rel="noreferrer">
                   <FaFacebookF />
                 </a>
               </li>
               <li>
-                <a href="https://www.instagram.com/" target="_blank">
-                  <FaInstagram />
-                </a>
-              </li>
-              <li>
-                <a href="https://www.linkedin.com/" target="_blank">
-                  <FaLinkedin />
-                </a>
-              </li>
-              <li>
-                <a href="https://github.com/" target="_blank">
-                  <FaGithub />
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div className="zubuz-copywright">
-            <p> &copy;Copyright 2024, All Rights Reserved by BeeKrowd</p>
+                  <a href="https://www.instagram.com/" target="_blank" rel="noreferrer">
+                    <FaInstagram />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.linkedin.com/company/beekrowd/posts/?feedView=all" target="_blank" rel="noreferrer">
+                    <FaLinkedin />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://github.com/" target="_blank" rel="noreferrer">
+                    <FaGithub />
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div className="zubuz-copywright">
+              <p> &copy;Copyright 2024, All Rights Reserved by BeeKrowd</p>
+            </div>
           </div>
         </div>
-      </div>
     </footer>
   );
 };

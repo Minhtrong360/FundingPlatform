@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FaAngleDown, FaAngleLeft } from "react-icons/fa";
 import BrandLogo from "./../../../ui/Logo/BrandLogo";
+import ImageDropdown from "../../../../pages/Home/ImageDropdown";
+import { useAuth } from "../../../../context/AuthContext";
 
 const Header = ({ logoSrc }) => {
   const [isActive, setIsActive] = useState(false);
@@ -108,6 +110,8 @@ const Header = ({ logoSrc }) => {
     };
   }, [isActive]);
 
+  const { user } = useAuth();
+
   return (
     <header
       className="site-header site-header--menu-center zubuz-header-section dark-bg white-menu"
@@ -117,7 +121,7 @@ const Header = ({ logoSrc }) => {
         <nav className="navbar site-navbar">
           <BrandLogo imageSrc="/images/logo/logo-white.svg" />
           <div className="menu-block-wrapper">
-            <div className="menu-overlay"></div>
+            <div className="menu-overlay" onClick={closeMenuClickHandler}></div>
             <nav
               className={`menu-block ${isActive ? "active" : ""}`}
               id="append-menu-header"
@@ -160,11 +164,6 @@ const Header = ({ logoSrc }) => {
                       </Link>
                     </li>
                   </ul>
-                </li>
-                <li className="nav-item">
-                  <Link to="/about-us" className="nav-link-item">
-                    About Us
-                  </Link>
                 </li>
                 <li className="nav-item nav-item-has-children">
                   <Link to="#" className="nav-link-item drop-trigger">
@@ -381,6 +380,11 @@ const Header = ({ logoSrc }) => {
                   </ul>
                 </li>
                 <li className="nav-item">
+                  <Link to="/about-us" className="nav-link-item">
+                    About Us
+                  </Link>
+                </li>
+                <li className="nav-item">
                   <Link to="/contact-us" className="nav-link-item">
                     Contact Us
                   </Link>
@@ -389,18 +393,16 @@ const Header = ({ logoSrc }) => {
             </nav>
           </div>
 
-          <div className="header-btn header-btn-l1 ms-auto d-none d-xs-inline-flex">
+          <div className="header-btn header-btn-l1 ms-auto">
             <div className="zubuz-header-btn-wrap">
-              <Link className="zubuz-login-btn" to="/sign-in">
-                Login
-              </Link>
+              {user ? (
+                <ImageDropdown />
+              ) : (
+                <Link className="zubuz-login-btn" to="sign-in">
+                  Login
+                </Link>
+              )}
             </div>
-            {/* <Link
-              className="zubuz-default-btn zubuz-header-btn"
-              to="/contact-us"
-            >
-              <span>Get Started</span>
-            </Link> */}
           </div>
           <div
             className="mobile-menu-trigger light"

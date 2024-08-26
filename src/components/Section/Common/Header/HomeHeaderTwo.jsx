@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaAngleDown, FaAngleLeft } from "react-icons/fa";
 import BrandLogo from "../../../ui/Logo/BrandLogo";
+import { useAuth } from "../../../../context/AuthContext";
+import ImageDropdown from "../../../../pages/Home/ImageDropdown";
 const HomeHeaderTwo = ({ logoSrc }) => {
   const [isActive, setIsActive] = useState(false);
   const [subMenuArray, setSubMenuArray] = useState([]);
@@ -124,6 +126,8 @@ const HomeHeaderTwo = ({ logoSrc }) => {
     };
   }, [isActive]);
 
+  const { user } = useAuth();
+
   return (
     <header
       className={`site-header  zubuz-header-section bg-white ${scrollClassName}`}
@@ -133,7 +137,7 @@ const HomeHeaderTwo = ({ logoSrc }) => {
         <nav className="navbar site-navbar">
           <BrandLogo imageSrc={logoSrc} />
           <div className="menu-block-wrapper">
-            <div className="menu-overlay"></div>
+            <div className="menu-overlay" onClick={closeMenuClickHandler}></div>
             <nav
               className={`menu-block ${isActive ? "active" : ""}`}
               id="append-menu-header"
@@ -397,18 +401,16 @@ const HomeHeaderTwo = ({ logoSrc }) => {
             </nav>
           </div>
 
-          <div className="header-btn header-btn-l1 ms-auto d-none d-xs-inline-flex">
+          <div className="header-btn header-btn-l1 ms-auto">
             <div className="zubuz-header-btn-wrap">
-              <Link className="zubuz-login-btn" to="sign-in">
-                Login
-              </Link>
+              {user ? (
+                <ImageDropdown />
+              ) : (
+                <Link className="zubuz-login-btn" to="sign-in">
+                  Login
+                </Link>
+              )}
             </div>
-            {/* <Link
-              className="zubuz-default-btn zubuz-header-btn pill"
-              href="contact-us"
-            >
-              <span>Get Started</span>
-            </Link> */}
           </div>
           <div
             className="mobile-menu-trigger light"

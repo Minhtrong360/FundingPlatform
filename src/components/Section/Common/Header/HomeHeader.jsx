@@ -138,7 +138,7 @@ const HomeHeader = ({ logoSrc, roundedBtn }) => {
         <nav className="navbar site-navbar">
           <BrandLogo imageSrc={logoSrc} />
           <div className="menu-block-wrapper">
-            <div className="menu-overlay"></div>
+            <div className="menu-overlay" onClick={closeMenuClickHandler}></div>
             <nav
               className={`menu-block ${isActive ? "active" : ""}`}
               id="append-menu-header"

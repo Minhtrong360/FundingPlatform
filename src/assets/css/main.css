@@ -846,6 +846,11 @@
   }
 }
 
+.nav-item-has-children a > i {
+  display: grid;
+  place-items: center;
+}
+
 .nav-item-has-children a {
   display: flex;
   justify-content: space-between;

@@ -27,6 +27,8 @@
   --blue-bg: #0000ff;
   --light-bg: #fafafa;
   --white-bg: #fff;
+  --font-inter: "Inter Variable", sans-serif;
+  --font-raleway: "Raleway Variable", sans-serif;
 }
 
 /*1.0 base css*/

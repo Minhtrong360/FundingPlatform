@@ -1,11 +1,11 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
-
-@import url("https://fonts.googleapis.com/css2?family=Hanken Grotesk:wght@100..800&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap"); */
 body {
   margin: 0;
-  font-family: "Hanken Grotesk", sans-serif;
+  /* font-family: "Inter Variable", sans-serif; */
+  font-family: "Inter Variable", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -42,9 +42,7 @@ code {
 
   .bn-default-styles p {
     font-size: 14px !important;
-    font-family:
-      Hanken Grotesk,
-      sans-serif !important;
+    font-family: "Inter Variable", sans-serif !important;
     font-weight: 400 !important;
     color: #1a202c !important;
     line-height: 1.2 !important;
@@ -78,7 +76,7 @@ code {
 }
 
 .ant-table-cell {
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "Inter Variable", sans-serif;
   font-size: "16px";
   color: black;
 }
@@ -113,15 +111,15 @@ code {
 
 .ant-select-selection-placeholder {
   font-size: 14px;
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "Inter Variable", sans-serif;
 }
 
 .ant-card {
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "Inter Variable", sans-serif;
 }
 
 .ant-switch {
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "Inter Variable", sans-serif;
   background-color: gray; /* Đặt lại màu nền cho button */
   border-color: inherit; /* Đặt lại màu viền cho button */
   opacity: 1; /* Đặt lại độ trong suốt */
@@ -142,7 +140,7 @@ code {
 }
 
 .ant-switch {
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "Inter Variable", sans-serif;
   background-color: gray; /* Đặt lại màu nền cho button */
   border-color: inherit; /* Đặt lại màu viền cho button */
   opacity: 1; /* Đặt lại độ trong suốt */
@@ -164,7 +162,7 @@ code {
 
 .ant-tabs-tab-btn {
   font-size: 14px;
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "Inter Variable", sans-serif;
 }
 
 ::-webkit-scrollbar {
@@ -218,9 +216,7 @@ code {
 
 .bn-default-styles p {
   font-size: 18px !important;
-  font-family:
-    Hanken Grotesk,
-    sans-serif !important;
+  font-family: "Inter Variable", sans-serif !important;
   font-weight: 400 !important;
   color: #1a202c !important;
   line-height: 1.6 !important;
@@ -270,15 +266,11 @@ code {
 }
 
 .ant-modal {
-  font-family:
-    Hanken Grotesk,
-    sans-serif !important;
+  font-family: "Inter Variable", sans-serif !important;
 }
 
 .ant-btn {
-  font-family:
-    Hanken Grotesk,
-    sans-serif !important;
+  font-family: "Inter Variable", sans-serif !important;
 }
 
 .ant-tabs-nav-wrap {
@@ -300,7 +292,7 @@ code {
 }
 
 * {
-  font-family: "Hanken Grotesk", serif !important;
+  font-family: "Inter Variable", serif;
 }
 
 .ant-carousel .slick-dots-bottom {
@@ -334,7 +326,7 @@ code {
 }
 
 .chatbot-container {
-  font-family: "Hanken Grotesk", sans-serif !important;
+  font-family: "Inter Variable", sans-serif !important;
 }
 
 /* Add this CSS to your global stylesheet or component-specific CSS file */
@@ -386,7 +378,7 @@ code {
   border-radius: 6px !important;
   color: white !important;
   font-size: 12px !important;
-  font-family: "Hanken Grotesk", sans-serif !important;
+  font-family: "Inter Variable", sans-serif !important;
   padding: 4px !important;
   border-radius: 6px !important;
   border-width: 1px !important;

@@ -3,12 +3,12 @@ import Footer from "../../components/Section/Common/Footer";
 import AboutSection from "../../components/Section/SingleTeam/About/About";
 import ExperienceSection from "../../components/Section/SingleTeam/Experience/Experience";
 import Header from "../../components/Section/Common/Header/Header";
-
+import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
 
 export default function SingleTeamPage() {
   return (
     <>
-      <Header />
+      <HomeHeader />
       <PageHeader title="Team Details" />
       <AboutSection />
       <ExperienceSection />

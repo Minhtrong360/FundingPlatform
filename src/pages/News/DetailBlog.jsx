@@ -6,6 +6,7 @@ import LoadingButtonClick from "../../components/LoadingButtonClick";
 import { Avatar } from "antd";
 import { formatDate } from "../../features/DurationSlice";
 import Header from "../Home/Header";
+import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
 
 const renderContentWithLineBreaks = (content) => {
   // Replace newline characters with <br> elements
@@ -51,7 +52,7 @@ function DetailBlog() {
         <LoadingButtonClick isLoading={isLoading} />
       ) : (
         <div className="max-w-3xl px-4 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
-          <Header />
+          <HomeHeader />
           <article className="max-w-2xl mx-auto mt-16 p-4">
             <header className="flex items-center mb-8">
               <Avatar

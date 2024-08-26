@@ -7,11 +7,10 @@ import Footer from "../../components/Section/Common/Footer";
 import PageHeader from "../../components/Section/Common/PageHeader";
 import Header from "../../components/Section/Common/Header/Header";
 
-
 const AboutPage = () => {
   return (
     <>
-      <Header />
+      <HomeHeader />
       <PageHeader title="About Us" />
       <AboutSection />
       <StateSection />

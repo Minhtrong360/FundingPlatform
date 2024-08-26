@@ -5,12 +5,12 @@ import TestimonialSection from "../../components/Section/Common/Testimonial/Test
 import ContentSection from "../../components/Section/SingleService/Content/Content";
 import IntegrationSection from "../../components/Section/Common/Integration/Integration";
 import Header from "../../components/Section/Common/Header/Header";
-
+import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
 
 export default function SingleServicePage() {
   return (
     <>
-      <Header />
+      <HomeHeader />
       <PageHeader title="Services Details" />
       <SupportSection />
       <ContentSection />

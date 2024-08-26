@@ -411,9 +411,21 @@ const HomeHeader = ({ logoSrc, roundedBtn }) => {
               {user ? (
                 <ImageDropdown />
               ) : (
-                <Link className="zubuz-login-btn" to="sign-in">
-                  Login
-                </Link>
+                <>
+                  <Link className="zubuz-login-btn" to="sign-in">
+                    Login
+                  </Link>
+                  <Link
+                    className={` ${
+                      roundedBtn
+                        ? "zubuz-default-btn zubuz-header-btn pill"
+                        : "zubuz-default-btn zubuz-header-btn"
+                    }`}
+                    to="/sign-up"
+                  >
+                    <span>Get Started</span>
+                  </Link>
+                </>
               )}
             </div>
           </div>

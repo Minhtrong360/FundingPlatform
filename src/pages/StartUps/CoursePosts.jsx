@@ -119,7 +119,7 @@ const CoursePosts = () => {
   return (
     <div className="bg-white darkBg antialiased !p-0">
       <div id="exampleWrapper">
-        <Header />
+        <HomeHeader />
         <div className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0">
           <div className="px-3 py-2 lg:px-8 lg:py-1 mx-auto flex-grow">
             {/* <HeroCompetitions

@@ -1,5 +1,4 @@
-
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaAngleDown, FaAngleLeft } from "react-icons/fa";
 import BrandLogo from "../../../ui/Logo/BrandLogo";
@@ -27,7 +26,7 @@ const HomeHeaderTwo = ({ logoSrc }) => {
 
   const menuMainClickHandler = (e) => {
     if (typeof window !== "undefined" && window.innerWidth <= 991) {
-      document.querySelectorAll(".nav-item").forEach(item => {
+      document.querySelectorAll(".nav-item").forEach((item) => {
         item.classList.remove("active");
       });
 
@@ -77,11 +76,11 @@ const HomeHeaderTwo = ({ logoSrc }) => {
   const closeMenuClickHandler = () => {
     toggleMenu();
     const submenuAll = document.querySelectorAll(".sub-menu");
-    submenuAll.forEach(submenu => {
+    submenuAll.forEach((submenu) => {
       submenu.classList.remove("active");
       submenu.style.animation = "";
     });
-  
+
     document.querySelector(".go-back").classList.remove("active");
   };
 
@@ -109,7 +108,11 @@ const HomeHeaderTwo = ({ logoSrc }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (typeof window !== "undefined" && window.innerWidth > 991 && isActive) {
+      if (
+        typeof window !== "undefined" &&
+        window.innerWidth > 991 &&
+        isActive
+      ) {
         toggleMenu();
       }
     };
@@ -400,12 +403,12 @@ const HomeHeaderTwo = ({ logoSrc }) => {
                 Login
               </Link>
             </div>
-            <Link
+            {/* <Link
               className="zubuz-default-btn zubuz-header-btn pill"
               href="contact-us"
             >
               <span>Get Started</span>
-            </Link>
+            </Link> */}
           </div>
           <div
             className="mobile-menu-trigger light"

@@ -1,6 +1,6 @@
- ;
 import { useEffect, useState } from "react";
 import CountUp from "react-countup";
+
 const StateSection = () => {
   const [isVisible, setIsVisible] = useState(false);
 

@@ -1,8 +1,9 @@
-
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaAngleDown, FaAngleLeft } from "react-icons/fa";
 import BrandLogo from "../../../ui/Logo/BrandLogo";
+import ImageDropdown from "../../../../pages/Home/ImageDropdown";
+import { useAuth } from "../../../../context/AuthContext";
 
 const HomeHeader = ({ logoSrc, roundedBtn }) => {
   const [isActive, setIsActive] = useState(false);
@@ -126,6 +127,8 @@ const HomeHeader = ({ logoSrc, roundedBtn }) => {
     };
   }, [isActive]);
 
+  const { user } = useAuth();
+
   return (
     <header
       className={`site-header site-header--menu-center zubuz-header-section bg-white ${scrollClassName}`}
@@ -169,12 +172,16 @@ const HomeHeader = ({ logoSrc, roundedBtn }) => {
                     </li>
                     <li className="sub-menu--item">
                       <Link to="/home-2">
-                        <span className="menu-item-text">BeeKrowd Education</span>
+                        <span className="menu-item-text">
+                          BeeKrowd Education
+                        </span>
                       </Link>
                     </li>
                     <li className="sub-menu--item">
                       <Link to="/home-3">
-                        <span className="menu-item-text">BeeKrowd Startups</span>
+                        <span className="menu-item-text">
+                          BeeKrowd Startups
+                        </span>
                       </Link>
                     </li>
                   </ul>
@@ -399,22 +406,16 @@ const HomeHeader = ({ logoSrc, roundedBtn }) => {
             </nav>
           </div>
 
-          <div className="header-btn header-btn-l1 ms-auto d-none d-xs-inline-flex">
+          <div className="header-btn header-btn-l1 ms-auto">
             <div className="zubuz-header-btn-wrap">
-              <Link className="zubuz-login-btn" to="sign-in">
-                Login
-              </Link>
+              {user ? (
+                <ImageDropdown />
+              ) : (
+                <Link className="zubuz-login-btn" to="sign-in">
+                  Login
+                </Link>
+              )}
             </div>
-            <Link
-              className={` ${
-                roundedBtn
-                  ? "zubuz-default-btn zubuz-header-btn pill"
-                  : "zubuz-default-btn zubuz-header-btn"
-              }`}
-              href="contact-us"
-            >
-              <span>Get Started</span>
-            </Link>
           </div>
           <div
             className="mobile-menu-trigger light"

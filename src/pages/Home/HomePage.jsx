@@ -22,7 +22,7 @@ import { formatNumber } from "../../features/CostSlice";
 import SpinnerBtn from "../../components/SpinnerBtn";
 import Header from "./Header";
 import FlowiseChat from "../FinalcialPage/FLowiseChat";
-import PartnerMarquee from "./Components/PartnerMarquee/"
+import PartnerMarquee from "./Components/PartnerMarquee/";
 // import BubleChatBot from "./Components/BubleChatBot";
 
 const HomePage = () => {
@@ -354,7 +354,7 @@ const HomePage = () => {
 
       <PricingWithLemon />
 
-      <PartnerMarquee/>
+      <PartnerMarquee />
 
       <Footer />
       {user && (

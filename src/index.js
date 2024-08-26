@@ -7,6 +7,11 @@ import Router from "./router/Router.jsx";
 import AuthProvider from "./context/AuthContext.jsx";
 import { Provider } from "react-redux";
 import store from "./app/store.jsx";
+import "./assets/css/bootstrap.min.css";
+import "./assets/css/app.css";
+import "./assets/css/main.css";
+import "./assets/css/react-adjustment.css";
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

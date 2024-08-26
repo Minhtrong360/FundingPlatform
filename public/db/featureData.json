@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Prompt to build",
+    "icon": "/images/v1/icon3.png",
+    "description": "Users can create financial models by simply describing what they want to build."
+  },
+  {
+    "title": "Formula free",
+    "icon": "/images/v1/icon4.png",
+    "description": "The tool automatically handles all the necessary calculations behind the scenes."
+  },
+  {
+    "title": "Personal virtual CFO",
+    "icon": "/images/v1/icon5.png",
+    "description": "Interact with financial data as if having a conversation with a knowledgeable financial advisor."
+  },
+  {
+    "title": "Dashboards & Charts",
+    "icon": "/images/v1/icon6.png",
+    "description": "Visualize, analyze, and interact with financial data in intuitive and meaningful ways."
+  },
+  {
+    "title": "Unlimited scenarios",
+    "icon": "/images/v1/icon7.png",
+    "description": "Create and analyze financial scenarios to better understand the potential outcomes."
+  },
+  {
+    "title": "Build investor trust",
+    "icon": "/images/v1/icon8.png",
+    "description": "Consistent demonstration of strong financial management and growth potential."
+  }
+]

@@ -1,5 +1,4 @@
-
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FaAngleDown, FaAngleLeft } from "react-icons/fa";
 import BrandLogo from './../../../ui/Logo/BrandLogo';
@@ -8,7 +7,6 @@ const Header = ({ logoSrc }) => {
   const [isActive, setIsActive] = useState(false);
   const [subMenuArray, setSubMenuArray] = useState([]);
   const [subMenuTextArray, setSubMenuTextArray] = useState([]);
-
 
   const menuMainClickHandler = (e) => {
     if (typeof window !== "undefined" && window.innerWidth <= 991) {
@@ -165,7 +163,7 @@ const Header = ({ logoSrc }) => {
                   </Link>
                 </li>
                 <li className="nav-item nav-item-has-children">
-                  <Link to="" className="nav-link-item drop-trigger">
+                  <Link to="#" className="nav-link-item drop-trigger">
                     Pages{" "}
                     <i>
                       <FaAngleDown />
@@ -184,8 +182,7 @@ const Header = ({ logoSrc }) => {
                     </li>
                     <li className="sub-menu--item nav-item-has-children">
                       <Link
-                        href="#"
-                        data-menu-get="h3"
+                        to="#"
                         className="drop-trigger"
                       >
                         blog{" "}
@@ -220,124 +217,122 @@ const Header = ({ logoSrc }) => {
                         </li>
                       </ul>
                     </li>
-                    <li class="sub-menu--item nav-item-has-children">
-                      <Link to="#" data-menu-get="h3" class="drop-trigger">
+                    <li className="sub-menu--item nav-item-has-children">
+                      <Link to="#" className="drop-trigger">
                         Service
                         <i>
                           <FaAngleDown />
                         </i>
                       </Link>
-                      <ul class="sub-menu shape-none" id="submenu-4">
-                        <li class="sub-menu--item">
+                      <ul className="sub-menu shape-none" id="submenu-4">
+                        <li className="sub-menu--item">
                           <Link to="/service">
-                            <span class="menu-item-text">service</span>
+                            <span className="menu-item-text">service</span>
                           </Link>
                         </li>
-                        <li class="sub-menu--item">
+                        <li className="sub-menu--item">
                           <Link to="/single-service">
-                            <span class="menu-item-text">service details</span>
+                            <span className="menu-item-text">service details</span>
                           </Link>
                         </li>
                       </ul>
                     </li>
-                    <li class="sub-menu--item nav-item-has-children">
-                      <Link to="#" data-menu-get="h3" class="drop-trigger">
+                    <li className="sub-menu--item nav-item-has-children">
+                      <Link to="#" className="drop-trigger">
                         Team
                         <i>
                           <FaAngleDown />
                         </i>
                       </Link>
-                      <ul class="sub-menu shape-none" id="submenu-5">
-                        <li class="sub-menu--item">
+                      <ul className="sub-menu shape-none" id="submenu-5">
+                        <li className="sub-menu--item">
                           <Link to="/team">
-                            <span class="menu-item-text">team</span>
+                            <span className="menu-item-text">team</span>
                           </Link>
                         </li>
-                        <li class="sub-menu--item">
+                        <li className="sub-menu--item">
                           <Link to="/single-team">
-                            <span class="menu-item-text">team details</span>
+                            <span className="menu-item-text">team details</span>
                           </Link>
                         </li>
                       </ul>
                     </li>
-                    <li class="sub-menu--item nav-item-has-children">
-                      <Link to="#" data-menu-get="h3" class="drop-trigger">
+                    <li className="sub-menu--item nav-item-has-children">
+                      <Link to="#" className="drop-trigger">
                         Career
                         <i>
                           <FaAngleDown />
                         </i>
                       </Link>
-                      <ul class="sub-menu shape-none" id="submenu-6">
-                        <li class="sub-menu--item">
+                      <ul className="sub-menu shape-none" id="submenu-6">
+                        <li className="sub-menu--item">
                           <Link to="/career">
-                            <span class="menu-item-text">Career</span>
+                            <span className="menu-item-text">Career</span>
                           </Link>
                         </li>
-                        <li class="sub-menu--item">
-                          <Link to="s/ingle-career">
-                            <span class="menu-item-text">Career details</span>
+                        <li className="sub-menu--item">
+                          <Link to="/single-career">
+                            <span className="menu-item-text">Career details</span>
                           </Link>
                         </li>
                       </ul>
                     </li>
-                    <li class="sub-menu--item nav-item-has-children">
-                      <Link to="#" data-menu-get="h3" class="drop-trigger">
+                    <li className="sub-menu--item nav-item-has-children">
+                      <Link to="#" className="drop-trigger">
                         Portfolio
                         <i>
                           <FaAngleDown />
                         </i>
                       </Link>
-                      <ul class="sub-menu shape-none" id="submenu-7">
-                        <li class="sub-menu--item">
+                      <ul className="sub-menu shape-none" id="submenu-7">
+                        <li className="sub-menu--item">
                           <Link to="/portfolio-grid">
-                            <span class="menu-item-text">portfolio gird</span>
+                            <span className="menu-item-text">portfolio grid</span>
                           </Link>
                         </li>
-                        <li class="sub-menu--item">
-                          <Link to="portfolio-classic">
-                            <span class="menu-item-text">
-                              portfolio classic
-                            </span>
+                        <li className="sub-menu--item">
+                          <Link to="/portfolio-classic">
+                            <span className="menu-item-text">portfolio classic</span>
                           </Link>
                         </li>
-                        <li class="sub-menu--item">
+                        <li className="sub-menu--item">
                           <Link to="/single-portfolio">
-                            <span class="menu-item-text">Single Portfolio</span>
+                            <span className="menu-item-text">Single Portfolio</span>
                           </Link>
                         </li>
                       </ul>
                     </li>
-                    <li class="sub-menu--item nav-item-has-children">
-                      <Link to="#" data-menu-get="h3" class="drop-trigger">
+                    <li className="sub-menu--item nav-item-has-children">
+                      <Link to="#" className="drop-trigger">
                         Utility
                         <i>
                           <FaAngleDown />
                         </i>
                       </Link>
-                      <ul class="sub-menu shape-none" id="submenu-8">
-                        <li class="sub-menu--item">
+                      <ul className="sub-menu shape-none" id="submenu-8">
+                        <li className="sub-menu--item">
                           <Link to="/faq">
-                            <span class="menu-item-text">faq</span>
+                            <span className="menu-item-text">faq</span>
                           </Link>
                         </li>
-                        <li class="sub-menu--item">
+                        <li className="sub-menu--item">
                           <Link to="/errors-404">
-                            <span class="menu-item-text">Error 404</span>
+                            <span className="menu-item-text">Error 404</span>
                           </Link>
                         </li>
-                        <li class="sub-menu--item">
-                          <Link to="integrations">
-                            <span class="menu-item-text">integrations</span>
+                        <li className="sub-menu--item">
+                          <Link to="/integrations">
+                            <span className="menu-item-text">integrations</span>
                           </Link>
                         </li>
-                        <li class="sub-menu--item">
+                        <li className="sub-menu--item">
                           <Link to="/testimonials">
-                            <span class="menu-item-text">testimonials</span>
+                            <span className="menu-item-text">testimonials</span>
                           </Link>
                         </li>
-                        <li class="sub-menu--item">
+                        <li className="sub-menu--item">
                           <Link to="/coming-soon">
-                            <span class="menu-item-text">Coming Soon</span>
+                            <span className="menu-item-text">Coming Soon</span>
                           </Link>
                         </li>
                       </ul>
@@ -385,13 +380,13 @@ const Header = ({ logoSrc }) => {
 
           <div className="header-btn header-btn-l1 ms-auto d-none d-xs-inline-flex">
             <div className="zubuz-header-btn-wrap">
-              <Link className="zubuz-login-btn" to="sign-in">
+              <Link className="zubuz-login-btn" to="/sign-in">
                 Login
               </Link>
             </div>
             <Link
               className="zubuz-default-btn zubuz-header-btn"
-              href="contact-us"
+              to="/contact-us"
             >
               <span>Get Started</span>
             </Link>

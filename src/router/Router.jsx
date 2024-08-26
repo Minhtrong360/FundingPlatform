@@ -71,6 +71,7 @@ import SingleServicePage from "./../pages/single-service/page";
 import SingleTeamPage from "./../pages/single-team/page";
 import TeamPage from "./../pages/team/page";
 import TestimonialPage from "./../pages/testimonials/page";
+import AboutPage from './../pages/about-us/page';
 
 function Router() {
 	const location = useLocation();
@@ -83,6 +84,7 @@ function Router() {
 				<Route key={location.key} path="/home-2" element={<HomeTwoPage />} />
 				<Route key={location.key} path="/home-3" element={<HomeThreePage />} />
 				<Route key={location.key} path="/blog" element={<BlogPage />} />
+				<Route key={location.key} path="/about-us" element={<AboutPage />} />
 				<Route key={location.key} path="/blog-column-one" element={<BlogOnePage />} />
 				<Route key={location.key} path="/blog-column-two" element={<BlogTwoPage />} />
 				<Route key={location.key} path="/career" element={<CareerPage />} />

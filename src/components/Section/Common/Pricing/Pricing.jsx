@@ -75,7 +75,7 @@ const PricingSection = () => {
                   </li>
                 </ul>
               </div>
-              <Link className="zubuz-pricing-btn" to="contact-us">
+              <Link className="zubuz-pricing-btn" to="/contact-us">
                 Try it for free
               </Link>
             </div>
@@ -122,7 +122,7 @@ const PricingSection = () => {
                   </li>
                 </ul>
               </div>
-              <Link className="zubuz-pricing-btn" to="contact-us">
+              <Link className="zubuz-pricing-btn" to="/contact-us">
                 Try it for free
               </Link>
             </div>
@@ -169,7 +169,7 @@ const PricingSection = () => {
                   </li>
                 </ul>
               </div>
-              <Link className="zubuz-pricing-btn active" to="contact-us">
+              <Link className="zubuz-pricing-btn active" to="/contact-us">
                 Try it for free
               </Link>
             </div>
@@ -216,7 +216,7 @@ const PricingSection = () => {
                   </li>
                 </ul>
               </div>
-              <Link className="zubuz-pricing-btn" to="contact-us">
+              <Link className="zubuz-pricing-btn" to="/contact-us">
                 Try it for free
               </Link>
             </div>

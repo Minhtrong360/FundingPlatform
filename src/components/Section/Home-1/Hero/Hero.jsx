@@ -39,7 +39,7 @@ const HeroSection = () => {
               purposes related to personal and business finance.
             </p>
             <div className="zubuz-hero-btn-wrap center">
-              <Link className="zubuz-default-btn" to="contact-us">
+              <Link className="zubuz-default-btn" to="/contact-us">
                 <span>Start Your Free Trial</span>
               </Link>
               <button

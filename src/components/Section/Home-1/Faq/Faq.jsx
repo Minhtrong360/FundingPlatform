@@ -21,7 +21,7 @@ const Faq = () => {
                 people save time.
               </p>
               <div className="zubuz-extara-mt">
-                <Link className="zubuz-default-btn" to="contact-us">
+                <Link className="zubuz-default-btn" to="/contact-us">
                   <span>Start Your Free Trial</span>
                 </Link>
               </div>

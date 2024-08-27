@@ -52,7 +52,7 @@ const NotificationItem = ({ notification, isLiked }) => {
         {Object.keys(parsedContent).map((key, index) => (
           <span
             key={index}
-            className="mr-3 ant-tag bg-bg-gray-50 border border-gray-300 text-black mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center rounded-md"
+            className="mr-3 ant-tag bg-bg-gray-50 border border-gray-300 text-black inline-flex items-center px-3 py-1 text-sm font-medium text-center rounded-md"
           >
             <span
               className="font-semibold text-sm hover:cursor-pointer"

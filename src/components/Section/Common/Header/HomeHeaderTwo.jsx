@@ -157,7 +157,7 @@ const HomeHeaderTwo = ({ logoSrc }) => {
               </div>
               <ul className="site-menu-main" onClick={menuMainClickHandler}>
                 <li className="nav-item nav-item-has-children">
-                  <Link to="" className="nav-link-item drop-trigger">
+                  <Link to="/" className="nav-link-item drop-trigger">
                     Demo{" "}
                     <i>
                       <FaAngleDown />
@@ -170,12 +170,12 @@ const HomeHeaderTwo = ({ logoSrc }) => {
                       </Link>
                     </li>
                     <li className="sub-menu--item">
-                      <Link to="home-2">
+                      <Link to="/home-2">
                         <span className="menu-item-text">CRM Platform</span>
                       </Link>
                     </li>
                     <li className="sub-menu--item">
-                      <Link to="home-3">
+                      <Link to="/home-3">
                         <span className="menu-item-text">SaaS Startups</span>
                       </Link>
                     </li>
@@ -187,7 +187,7 @@ const HomeHeaderTwo = ({ logoSrc }) => {
                   </Link>
                 </li>
                 <li className="nav-item nav-item-has-children">
-                  <Link to="" className="nav-link-item drop-trigger">
+                  <Link to="/" className="nav-link-item drop-trigger">
                     Pages{" "}
                     <i>
                       <FaAngleDown />
@@ -205,7 +205,7 @@ const HomeHeaderTwo = ({ logoSrc }) => {
                       </Link>
                     </li>
                     <li className="sub-menu--item nav-item-has-children">
-                      <Link to="" data-menu-get="h3" className="drop-trigger">
+                      <Link to="/" data-menu-get="h3" className="drop-trigger">
                         blog{" "}
                         <i>
                           <FaAngleDown />
@@ -239,7 +239,7 @@ const HomeHeaderTwo = ({ logoSrc }) => {
                       </ul>
                     </li>
                     <li class="sub-menu--item nav-item-has-children">
-                      <Link to="" data-menu-get="h3" class="drop-trigger">
+                      <Link to="/" data-menu-get="h3" class="drop-trigger">
                         Service
                         <i>
                           <FaAngleDown />
@@ -259,7 +259,7 @@ const HomeHeaderTwo = ({ logoSrc }) => {
                       </ul>
                     </li>
                     <li class="sub-menu--item nav-item-has-children">
-                      <Link to="" data-menu-get="h3" class="drop-trigger">
+                      <Link to="/" data-menu-get="h3" class="drop-trigger">
                         Team
                         <i>
                           <FaAngleDown />
@@ -279,7 +279,7 @@ const HomeHeaderTwo = ({ logoSrc }) => {
                       </ul>
                     </li>
                     <li class="sub-menu--item nav-item-has-children">
-                      <Link to="" data-menu-get="h3" class="drop-trigger">
+                      <Link to="/" data-menu-get="h3" class="drop-trigger">
                         Career
                         <i>
                           <FaAngleDown />
@@ -299,7 +299,7 @@ const HomeHeaderTwo = ({ logoSrc }) => {
                       </ul>
                     </li>
                     <li class="sub-menu--item nav-item-has-children">
-                      <Link to="" data-menu-get="h3" class="drop-trigger">
+                      <Link to="/" data-menu-get="h3" class="drop-trigger">
                         Portfolio
                         <i>
                           <FaAngleDown />
@@ -326,7 +326,7 @@ const HomeHeaderTwo = ({ logoSrc }) => {
                       </ul>
                     </li>
                     <li class="sub-menu--item nav-item-has-children">
-                      <Link to="" data-menu-get="h3" class="drop-trigger">
+                      <Link to="/" data-menu-get="h3" class="drop-trigger">
                         Utility
                         <i>
                           <FaAngleDown />
@@ -363,7 +363,7 @@ const HomeHeaderTwo = ({ logoSrc }) => {
                   </ul>
                 </li>
                 <li className="nav-item nav-item-has-children">
-                  <Link to="" className="nav-link-item drop-trigger">
+                  <Link to="/" className="nav-link-item drop-trigger">
                     Blog{" "}
                     <i>
                       <FaAngleDown />
@@ -406,7 +406,7 @@ const HomeHeaderTwo = ({ logoSrc }) => {
               {user ? (
                 <ImageDropdown />
               ) : (
-                <Link className="zubuz-login-btn" to="sign-in">
+                <Link className="zubuz-login-btn" to="/sign-in">
                   Login
                 </Link>
               )}

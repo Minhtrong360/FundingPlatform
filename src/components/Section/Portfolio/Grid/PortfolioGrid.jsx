@@ -1,6 +1,5 @@
- 
 import { useRef, useState, useEffect } from "react";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import PortfolioFilterNav from "../Components/PortfolioFilterNav";
 
 const PortfolioGrid = () => {
@@ -53,7 +52,7 @@ const PortfolioGrid = () => {
               <div className="zubuz-portfolio-thumb">
                 <img src="/images/portfolio/p_1.png" alt="" />
                 <div className="zubuz-portfolio-data">
-                  <Link to="single-portfolio">
+                  <Link to="/single-portfolio">
                     <h3>E-commerce System</h3>
                   </Link>
                   <p>Website</p>
@@ -72,7 +71,7 @@ const PortfolioGrid = () => {
               <div className="zubuz-portfolio-thumb">
                 <img src="/images/portfolio/p_2.png" alt="" />
                 <div className="zubuz-portfolio-data">
-                  <Link to="single-portfolio">
+                  <Link to="/single-portfolio">
                     <h3>Digital Art</h3>
                   </Link>
                   <p>Branding</p>
@@ -91,7 +90,7 @@ const PortfolioGrid = () => {
               <div className="zubuz-portfolio-thumb">
                 <img src="/images/portfolio/p_3.png" alt="" />
                 <div className="zubuz-portfolio-data">
-                  <Link to="single-portfolio">
+                  <Link to="/single-portfolio">
                     <h3>Creative Work</h3>
                   </Link>
                   <p>UI/UX</p>
@@ -110,7 +109,7 @@ const PortfolioGrid = () => {
               <div className="zubuz-portfolio-thumb">
                 <img src="/images/portfolio/p_4.png" alt="" />
                 <div className="zubuz-portfolio-data">
-                  <Link to="single-portfolio">
+                  <Link to="/single-portfolio">
                     <h3>Development</h3>
                   </Link>
                   <p>Technology</p>

@@ -1,4 +1,4 @@
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const CareerCard = ({ job }) => {
   return (
@@ -15,7 +15,7 @@ const CareerCard = ({ job }) => {
       </div>
       <div className="zubuz-jobs-item-content">
         <div className="zubuz-jobs-apply-btn">
-          <Link className="zubuz-default-btn" to="contact-us">
+          <Link className="zubuz-default-btn" to="/contact-us">
             <span>Apply now</span>
           </Link>
         </div>

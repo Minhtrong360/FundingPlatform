@@ -1,7 +1,6 @@
-
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import TwoBlogCard from './../../../ui/Cards/TwoBlogCard';
+import TwoBlogCard from "./../../../ui/Cards/TwoBlogCard";
 import CategoryCard from "../../../ui/Cards/CategoryCard";
 import PostCard from "../../../ui/Cards/PostCard";
 import TagCard from "../../../ui/Cards/TagCard";
@@ -72,7 +71,7 @@ const BlogSection = () => {
                   We are here to help you! Tell us how we can help and we’ll get
                   in touch within next 24hrs
                 </p>
-                <Link to="contact-us">Contact Us</Link>
+                <Link to="/contact-us">Contact Us</Link>
               </div>
             </div>
           </div>

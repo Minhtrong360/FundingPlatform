@@ -227,11 +227,11 @@ const HeroCohort = ({
             <section className="container px-4 mx-auto mt-14 max-w-3xl">
               <div className="flex flex-col mb-5">
                 <h3 className="font-bold text-xl text-left">Code listing</h3>
-                <div className="mt-5 grid sm:grid-cols-2 gap-14 transition-all duration-600 ease-out transform translate-x-0">
+                <div className="mt-5 grid sm:grid-cols-2 gap-14 transition-all duration-600 ease-out transform translate-x-0 justify-items-center">
                   {selectedCodes.map((code) => (
                     <div
                       key={code.id}
-                      className="group flex-grow justify-center w-full"
+                      className="group flex flex-col items-center justify-center  max-w-96"
                     >
                       <VCCard
                         data={code}

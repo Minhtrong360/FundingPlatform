@@ -56,10 +56,10 @@ const ButtonGroup = ({
       <div
         className={`bg-yellow-300 text-black focus:ring-4 focus:outline-none font-medium rounded-md text-sm py-3 text-center px-2 hover:cursor-pointer`}
       >
-        <span className="sm:block hidden">
+        <span className="sm:!block !hidden">
           <SettingOutlined /> Profile Settings
         </span>
-        <span className="sm:hidden block">
+        <span className="sm:!hidden !block">
           <SettingOutlined />
         </span>
       </div>

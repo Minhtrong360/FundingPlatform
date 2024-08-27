@@ -1,4 +1,4 @@
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const PricingCard = () => {
   return (
@@ -48,7 +48,7 @@ const PricingCard = () => {
           </li>
         </ul>
       </div>
-      <Link to="pricing" className="zubuz-pricing-btn">
+      <Link to="/pricing" className="zubuz-pricing-btn">
         Select the plan
       </Link>
     </div>

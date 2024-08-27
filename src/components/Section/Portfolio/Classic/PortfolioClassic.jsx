@@ -1,6 +1,5 @@
- 
 import { useRef, useState, useEffect } from "react";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import PortfolioFilterNav from "../Components/PortfolioFilterNav";
 const PortfolioClassic = () => {
   const isotopeRef = useRef(null);
@@ -60,11 +59,11 @@ const PortfolioClassic = () => {
                 <img src="/images/portfolio/p_1.png" alt="" />
               </div>
               <div className="zubuz-portfolio-data2">
-                <Link to="single-portfolio">
+                <Link to="/single-portfolio">
                   <h3>E-commerce System</h3>
                 </Link>
                 <p>Website</p>
-                <Link className="zubuz-portfolio-icon2" to="single-portfolio">
+                <Link className="zubuz-portfolio-icon2" to="/single-portfolio">
                   <svg
                     width="48"
                     height="38"
@@ -90,11 +89,11 @@ const PortfolioClassic = () => {
                 <img src="/images/portfolio/p_2.png" alt="" />
               </div>
               <div className="zubuz-portfolio-data2">
-                <Link to="single-portfolio">
+                <Link to="/single-portfolio">
                   <h3>Digital Art</h3>
                 </Link>
                 <p>Branding</p>
-                <Link className="zubuz-portfolio-icon2" to="single-portfolio">
+                <Link className="zubuz-portfolio-icon2" to="/single-portfolio">
                   <svg
                     width="48"
                     height="38"
@@ -120,11 +119,11 @@ const PortfolioClassic = () => {
                 <img src="/images/portfolio/p_3.png" alt="" />
               </div>
               <div className="zubuz-portfolio-data2">
-                <Link to="single-portfolio">
+                <Link to="/single-portfolio">
                   <h3>Creative Work</h3>
                 </Link>
                 <p>UI/UX</p>
-                <Link className="zubuz-portfolio-icon2" to="single-portfolio">
+                <Link className="zubuz-portfolio-icon2" to="/single-portfolio">
                   <svg
                     width="48"
                     height="38"
@@ -150,11 +149,11 @@ const PortfolioClassic = () => {
                 <img src="/images/portfolio/p_4.png" alt="" />
               </div>
               <div className="zubuz-portfolio-data2">
-                <Link to="single-portfolio">
+                <Link to="/single-portfolio">
                   <h3>Development</h3>
                 </Link>
                 <p>Technology</p>
-                <Link className="zubuz-portfolio-icon2" to="single-portfolio">
+                <Link className="zubuz-portfolio-icon2" to="/single-portfolio">
                   <svg
                     width="48"
                     height="38"

@@ -159,7 +159,7 @@ const HomeHeader = ({ logoSrc, roundedBtn }) => {
               </div>
               <ul className="site-menu-main" onClick={menuMainClickHandler}>
                 <li className="nav-item nav-item-has-children">
-                  <Link to="" className="nav-link-item drop-trigger">
+                  <Link to="/" className="nav-link-item drop-trigger">
                     Platforms{" "}
                     <i>
                       <FaAngleDown />
@@ -186,7 +186,7 @@ const HomeHeader = ({ logoSrc, roundedBtn }) => {
                       </Link>
                     </li>
                     <li class="sub-menu--item nav-item-has-children">
-                      <Link to="" data-menu-get="h3" class="drop-trigger">
+                      <Link to="/" data-menu-get="h3" class="drop-trigger">
                         BeeKrowd Workspace
                         <i>
                           <FaAngleDown />
@@ -211,7 +211,7 @@ const HomeHeader = ({ logoSrc, roundedBtn }) => {
                 </li>
 
                 <li className="nav-item nav-item-has-children">
-                  <Link to="" className="nav-link-item drop-trigger">
+                  <Link to="/" className="nav-link-item drop-trigger">
                     Founders{" "}
                     <i>
                       <FaAngleDown />

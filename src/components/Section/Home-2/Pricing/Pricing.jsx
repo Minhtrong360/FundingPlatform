@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 
 const PricingSection = () => {
-  const [isMonthly, setIsMonthly] = useState(true);
+  const [isMonthly, setIsMonthly] = useState(false);
   const priceToggole = () => {
     setIsMonthly(!isMonthly);
   };
@@ -12,7 +12,7 @@ const PricingSection = () => {
         <div className="zubuz-section-title center">
           <h2>Rational planning for learners</h2>
         </div>
-        {/* <div className="pricing-btn">
+        <div className="pricing-btn">
           <label>Billed monthly</label>
           <div className="toggle-btn">
             <input
@@ -26,7 +26,7 @@ const PricingSection = () => {
             />
           </div>
           <label>Billed annually</label>
-        </div> */}
+        </div>
         <div
           className="row"
           id="table-price-value"
@@ -36,41 +36,47 @@ const PricingSection = () => {
           <div className="col-xl-4 col-md-6">
             <div className="zubuz-pricing-wrap">
               <div className="zubuz-pricing-header">
-                <h5>FundFlow Free</h5>
+                <h5>Basic</h5>
               </div>
               <div className="zubuz-pricing-price">
                 <h2>$</h2>
                 <div className="zubuz-price dynamic-value">
-                  {isMonthly ? 0 : 39}
+                  {isMonthly ? 19 : 39}
                 </div>
                 <p className="dynamic-value">
                   USD/Billed{isMonthly ? " Monthly" : " Yearly"}
                 </p>
               </div>
               <div className="zubuz-pricing-description">
-                <p>Free forever</p>
+                <p>Works perfect for small teams</p>
               </div>
               <div className="zubuz-pricing-body">
                 <ul>
                   <li>
                     <img src="/images/v2/check2.png" alt="" />
-                    01 profile (Public mode)
+                    All multimedia channels
                   </li>
                   <li>
                     <img src="/images/v2/check2.png" alt="" />
-                    Profile listing (Public mode)
+                    All enterprise CRM features
                   </li>
                   <li>
                     <img src="/images/v2/check2.png" alt="" />
-                    Invite collaborators
+                    Up to 25,000 contacts
                   </li>
                   <li>
                     <img src="/images/v2/check2.png" alt="" />
-                    Data room (Public mode)
+                    Flow + AI base chatbot
+                  </li>
+                  <li>
+                    <img src="/images/v2/check2.png" alt="" />
+                    24/7 Support (Live, Email, Chat)
                   </li>
                 </ul>
               </div>
-              <Link className="zubuz-pricing-btn">Free</Link>
+              <Link className="zubuz-pricing-btn" to="pricing">
+                Select the plan
+              </Link>
             </div>
           </div>
           <div className="col-xl-4 col-md-6">

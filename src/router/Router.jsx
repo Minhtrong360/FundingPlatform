@@ -175,7 +175,7 @@ function Router() {
             </AuthRequire>
           }
         />
-        <Route
+        {/* <Route
           key={location.key}
           path="/Flea-Market"
           element={
@@ -192,7 +192,7 @@ function Router() {
               <FleaMarketListAll />
             </AuthRequire>
           }
-        />
+        /> */}
         <Route
           key={location.key}
           path="/user-info"

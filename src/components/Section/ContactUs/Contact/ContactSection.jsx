@@ -1,4 +1,4 @@
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FaTwitter, FaFacebookF, FaLinkedin, FaGithub } from "react-icons/fa";
 
 const ContactSection = () => {
@@ -27,22 +27,22 @@ const ContactSection = () => {
                     <div className="zubuz-social-icon social-box">
                       <ul>
                         <li>
-                          <Link to="https://twitter.com/">
+                          <Link to="/https://twitter.com/">
                             <FaTwitter />
                           </Link>
                         </li>
                         <li>
-                          <Link to="https://facebook.com/">
+                          <Link to="/https://facebook.com/">
                             <FaFacebookF />
                           </Link>
                         </li>
                         <li>
-                          <Link to="https://www.linkedin.com/">
+                          <Link to="/https://www.linkedin.com/">
                             <FaLinkedin />
                           </Link>
                         </li>
                         <li>
-                          <Link to="https://github.com/">
+                          <Link to="/https://github.com/">
                             <FaGithub />
                           </Link>
                         </li>

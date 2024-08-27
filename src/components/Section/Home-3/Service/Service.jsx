@@ -1,7 +1,6 @@
- 
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import SerciveCard from './../../../ui/Cards/Sercive';
+import SerciveCard from "./../../../ui/Cards/Sercive";
 
 const ServiceSection = () => {
   const [serviceDatas, setServiceDatas] = useState([]);
@@ -24,7 +23,7 @@ const ServiceSection = () => {
             </div>
             <div className="col-lg-5 d-flex align-items-center">
               <div className="zubuz-title-btn">
-                <Link className="zubuz-default-btn pill" to="service">
+                <Link className="zubuz-default-btn pill" to="/service">
                   <span>View all services</span>
                 </Link>
               </div>

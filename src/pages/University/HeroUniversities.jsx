@@ -1195,7 +1195,7 @@ const HeroUniversities = ({
     setDescription(newDescription);
     const { error } = await supabase
       .from("workspace")
-      .update({ description: description })
+      .update({ description: newDescription })
       .eq("UniID", credentials?.UniID);
 
     if (error) {
@@ -1406,20 +1406,25 @@ const HeroUniversities = ({
           >
             Profile listing for
             <Input.TextArea
-              className="text-blue-600 bg-yellow-300 inline-block text-3xl sm:text-4xl md:text-5xl lg:text-7xl"
+              className="!text-blue-600 !bg-yellow-300 inline-block text-3xl sm:text-4xl md:text-5xl lg:text-7xl"
               value={universityName}
               onChange={(e) => handleUniversityNameChange(e.target.value)}
               style={{
                 border: "none",
-                backgroundColor: "#FDE047",
+                backgroundColor: "transparent !important",
                 textAlign: "center",
                 fontWeight: "bold",
-                color: "#2563EB",
+                color: "#2563EB !important",
                 outline: "none",
+                padding: "0px",
+                lineHeight: "1.25",
+                resize: "none", // Disable manual resizing
+                overflow: "hidden", // Prevent overflow
               }}
-              autoSize
+              autoSize={{ minRows: 1, maxRows: 10 }} // Adjust to fit content
             />
           </h1>
+
           <Input.TextArea
             value={description}
             onChange={(e) => handleDescriptionChange(e.target.value)}
@@ -1432,6 +1437,7 @@ const HeroUniversities = ({
               lineHeight: "28px",
             }}
             autoSize
+            className="!border-none"
           />
           <div className="mt-7 text-lg flex justify-center">
             {user && (
@@ -1533,11 +1539,11 @@ const HeroUniversities = ({
             <section className="container px-4 mx-auto mt-14 max-w-3xl">
               <div className="flex flex-col mb-5">
                 <h3 className="font-bold text-xl text-left">Code listing</h3>
-                <div className="mt-5 grid sm:grid-cols-2 gap-14 transition-all duration-600 ease-out transform translate-x-0">
+                <div className="mt-5 grid sm:grid-cols-2 gap-14 transition-all duration-600 ease-out transform translate-x-0 justify-items-center">
                   {selectedCodes.map((code) => (
                     <div
                       key={code.id}
-                      className="group flex-grow justify-center w-full"
+                      className="group flex flex-col items-center justify-center  max-w-96"
                     >
                       <UniCard
                         data={code}

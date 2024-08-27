@@ -398,7 +398,7 @@ const Header = ({ logoSrc }) => {
               {user ? (
                 <ImageDropdown />
               ) : (
-                <Link className="zubuz-login-btn" to="sign-in">
+                <Link className="zubuz-login-btn" to="/sign-in">
                   Login
                 </Link>
               )}

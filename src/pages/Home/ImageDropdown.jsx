@@ -75,7 +75,7 @@ const ImageDropdown = ({ isContentChanged }) => {
   };
 
   const handleClickProject = (e) => {
-    handleNavigation("/founder");
+    handleNavigation("/profile");
   };
 
   const handleClickFleaMarket = (e) => {

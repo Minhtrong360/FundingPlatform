@@ -30,7 +30,7 @@ const NotificationItem = ({ notification, isLiked }) => {
   };
 
   const navigateToFounderPage = (founderId) => {
-    window.location.href = `/founder/${founderId}`;
+    window.location.href = `/profile/${founderId}`;
   };
 
   return (

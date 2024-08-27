@@ -392,7 +392,7 @@
   transform: translatey(20px);
   opacity: 0;
   visibility: hidden;
-  min-width: 205px;
+  min-width: 250px;
   border-radius: 6px;
 }
 .site-menu-main .sub-menu:before {
@@ -631,7 +631,7 @@
     display: flex;
     height: 30px;
     width: 30px;
-    /* margin-left: 40px; */
+    margin-left: 20px;
     cursor: pointer;
     align-items: center;
     justify-content: center;
@@ -733,7 +733,7 @@
     top: 0;
   }
   .site-header .menu-block .mobile-menu-head .go-back {
-    display: grid!important;
+    display: grid !important;
     place-items: center;
     height: 50px;
     width: 50px;

@@ -10,7 +10,7 @@ import PricingSection from "../../components/Section/Home-2/Pricing/Pricing";
 import TestimonialSection from "../../components/Section/Home-2/Testimonial/Testimonial";
 import HomeHeaderTwo from "../../components/Section/Common/Header/HomeHeaderTwo";
 import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
-import Footer from "../Home/Footer";
+import Footer from "../../components/Section/Common/Footer";
 
 export default function HomeTwoPage() {
   return (

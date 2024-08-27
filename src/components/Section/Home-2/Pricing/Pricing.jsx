@@ -1,10 +1,8 @@
- 
-
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 
 const PricingSection = () => {
-  const [isMonthly, setIsMonthly] = useState(false);
+  const [isMonthly, setIsMonthly] = useState(true);
   const priceToggole = () => {
     setIsMonthly(!isMonthly);
   };
@@ -14,7 +12,7 @@ const PricingSection = () => {
         <div className="zubuz-section-title center">
           <h2>Rational planning for learners</h2>
         </div>
-        <div className="pricing-btn">
+        {/* <div className="pricing-btn">
           <label>Billed monthly</label>
           <div className="toggle-btn">
             <input
@@ -28,7 +26,7 @@ const PricingSection = () => {
             />
           </div>
           <label>Billed annually</label>
-        </div>
+        </div> */}
         <div
           className="row"
           id="table-price-value"
@@ -38,51 +36,41 @@ const PricingSection = () => {
           <div className="col-xl-4 col-md-6">
             <div className="zubuz-pricing-wrap">
               <div className="zubuz-pricing-header">
-                <h5>Basic</h5>
+                <h5>FundFlow Free</h5>
               </div>
               <div className="zubuz-pricing-price">
                 <h2>$</h2>
-                <div
-                  className="zubuz-price dynamic-value"
-                >
-                  {isMonthly ? 19 : 39}
+                <div className="zubuz-price dynamic-value">
+                  {isMonthly ? 0 : 39}
                 </div>
-                <p
-                  className="dynamic-value"
-                >
+                <p className="dynamic-value">
                   USD/Billed{isMonthly ? " Monthly" : " Yearly"}
                 </p>
               </div>
               <div className="zubuz-pricing-description">
-                <p>Works perfect for small teams</p>
+                <p>Free forever</p>
               </div>
               <div className="zubuz-pricing-body">
                 <ul>
                   <li>
                     <img src="/images/v2/check2.png" alt="" />
-                    All multimedia channels
+                    01 profile (Public mode)
                   </li>
                   <li>
                     <img src="/images/v2/check2.png" alt="" />
-                    All enterprise CRM features
+                    Profile listing (Public mode)
                   </li>
                   <li>
                     <img src="/images/v2/check2.png" alt="" />
-                    Up to 25,000 contacts
+                    Invite collaborators
                   </li>
                   <li>
                     <img src="/images/v2/check2.png" alt="" />
-                    Flow + AI base chatbot
-                  </li>
-                  <li>
-                    <img src="/images/v2/check2.png" alt="" />
-                    24/7 Support (Live, Email, Chat)
+                    Data room (Public mode)
                   </li>
                 </ul>
               </div>
-              <Link className="zubuz-pricing-btn" to="pricing">
-                Select the plan
-              </Link>
+              <Link className="zubuz-pricing-btn">Free</Link>
             </div>
           </div>
           <div className="col-xl-4 col-md-6">
@@ -92,14 +80,10 @@ const PricingSection = () => {
               </div>
               <div className="zubuz-pricing-price">
                 <h2>$</h2>
-                <div
-                  className="zubuz-price dynamic-value"
-                >
+                <div className="zubuz-price dynamic-value">
                   {isMonthly ? 49 : 69}
                 </div>
-                <p
-                  className="dynamic-value"
-                >
+                <p className="dynamic-value">
                   USD/Billed{isMonthly ? " Monthly" : " Yearly"}
                 </p>
               </div>
@@ -142,14 +126,10 @@ const PricingSection = () => {
               </div>
               <div className="zubuz-pricing-price">
                 <h2>$</h2>
-                <div
-                  className="zubuz-price dynamic-value"
-                >
+                <div className="zubuz-price dynamic-value">
                   {isMonthly ? 89 : 99}
                 </div>
-                <p
-                  className="dynamic-value"
-                >
+                <p className="dynamic-value">
                   USD/Billed{isMonthly ? " Monthly" : " Yearly"}
                 </p>
               </div>

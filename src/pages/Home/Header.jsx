@@ -100,9 +100,9 @@ const Header = ({ noFixedHeader, isContentChanged }) => {
         {
           key: "1",
           label: "Market Research",
-          path: "/founders/market-research",
+          path: "/profiles/market-research",
         },
-        { key: "2", label: "Build Profile", path: "/founder" },
+        { key: "2", label: "Build Profile", path: "/profile" },
         {
           key: "3",
           label: "Build Financial Model",

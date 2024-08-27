@@ -149,12 +149,12 @@ const HeroCohort = ({
     if (!user) {
       navigate("/login");
     } else {
-      navigate(`/founder/${"3ec3f142-f33c-4977-befd-30d4ce2b764d"}`);
+      navigate(`/profile/${"3ec3f142-f33c-4977-befd-30d4ce2b764d"}`);
     }
   };
 
   const handleClickProfile = () => {
-    navigate(`/founder`);
+    navigate(`/profile`);
   };
 
   return (

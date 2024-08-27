@@ -107,7 +107,7 @@ function AdminPage() {
 
   const navigate = useNavigate();
   const handleProjectClick = (project) => {
-    navigate(`/founder/${project.project_id}`);
+    navigate(`/profile/${project.project_id}`);
   };
 
   const handleVerifyToggle = async (project) => {

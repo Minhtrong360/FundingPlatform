@@ -1898,7 +1898,7 @@ blockquote {
 /*1.1 layout css*/
 header.zubuz-header-section {
   position: fixed;
-  z-index: 9;
+  z-index: 11;
   width: 100%;
   top: 0;
   padding: 15px 0;

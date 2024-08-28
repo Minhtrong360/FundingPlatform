@@ -1,7 +1,7 @@
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const BrandLogo = ({ imageSrc }) => {
-  const defaultImageSrc = "/images/logo/logo-dark.svg";
+  const defaultImageSrc = "/images/logo/logo-dark.png";
   const logoSrc = imageSrc || defaultImageSrc;
 
   return (

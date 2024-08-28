@@ -153,7 +153,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
             <ProfileOutlined />
             <span className="sidebar-text">Project list</span>
           </button>
-          <button
+          {/* <button
             className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm  ${
               selectedItem?.includes("/Flea-Market")
                 ? "bg-gray-300"
@@ -163,7 +163,7 @@ function SideBar({ toggleSidebar, isSidebarOpen }) {
           >
             <ShopOutlined />
             <span className="sidebar-text">Flea Market</span>
-          </button>
+          </button> */}
           <button
             className={`mt-2 mb-2 w-full p-2 group flex items-center rounded-md text-sm  ${
               selectedItem?.includes("/workspace")

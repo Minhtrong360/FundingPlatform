@@ -31,7 +31,7 @@ import Faq from "../../components/Section/Home-1/Faq/Faq";
 import TestimonialSection from "../../components/Section/Common/Testimonial/Testimonial";
 import NewsSection from "../../components/Section/Home-1/News/News";
 import Cta from "../../components/Section/Common/Cta";
-import HomeHeader from "../../components/Section/Common/Header/HomeHeader"
+import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
 // import BubleChatBot from "./Components/BubleChatBot";
 
 const HomePage = () => {

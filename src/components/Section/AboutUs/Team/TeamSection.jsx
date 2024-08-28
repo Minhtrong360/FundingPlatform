@@ -1,7 +1,6 @@
-
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import TeamCard from './../../../ui/Cards/TeamCard';
+import TeamCard from "./../../../ui/Cards/TeamCard";
 
 const TeamSection = () => {
   const [teamData, setTeamData] = useState([]);
@@ -31,7 +30,7 @@ const TeamSection = () => {
             </div>
             <div className="col-lg-6 d-flex align-items-center">
               <div className="zubuz-title-btn">
-                <Link className="zubuz-default-btn pill" to="team">
+                <Link className="zubuz-default-btn pill" to="/team">
                   <span>Join Our Team</span>
                 </Link>
               </div>

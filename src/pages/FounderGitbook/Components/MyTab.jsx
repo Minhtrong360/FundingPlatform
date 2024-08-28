@@ -484,7 +484,7 @@ const MyTab = ({
   return (
     <div className={`px-8  flex flex-col justify-center items-center`}>
       <>
-        <aside className="w-full sticky z-20 top-0 bg-white">
+        <aside className="w-full bg-white">
           <div className="w-full  py-8 overflow-x-auto">
             <nav className="flex justify-between sm:space-x-4 sm:px-14">
               {tabs.map((tab) => (

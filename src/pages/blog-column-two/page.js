@@ -3,12 +3,12 @@ import PageHeader from "../../components/Section/Common/PageHeader";
 import ArticleSection from "../../components/Section/blogColumnTwo/Article/ArticleSection";
 import BlogSection from "../../components/Section/blogColumnTwo/Blog/BlogSection";
 import Header from "../../components/Section/Common/Header/Header";
-
+import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
 
 const BlogTwoPage = () => {
   return (
     <>
-      <Header />
+      <HomeHeader />
       <PageHeader title="Our Blog" />
       <BlogSection />
       <ArticleSection />

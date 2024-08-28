@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabase"; // Import supabase connection
 import { useAuth } from "../../context/AuthContext";
 import Header from "../Home/Header";
+import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
 
 const NotificationItem = ({ notification, isLiked }) => {
   const parsedContent = JSON.parse(notification?.content);
@@ -29,7 +30,7 @@ const NotificationItem = ({ notification, isLiked }) => {
   };
 
   const navigateToFounderPage = (founderId) => {
-    window.location.href = `/founder/${founderId}`;
+    window.location.href = `/profile/${founderId}`;
   };
 
   return (
@@ -51,7 +52,7 @@ const NotificationItem = ({ notification, isLiked }) => {
         {Object.keys(parsedContent).map((key, index) => (
           <span
             key={index}
-            className="mr-3 ant-tag bg-bg-gray-50 border border-gray-300 text-black mt-4 inline-flex items-center px-3 py-1 text-sm font-medium text-center rounded-md"
+            className="mr-3 ant-tag bg-bg-gray-50 border border-gray-300 text-black inline-flex items-center px-3 py-1 text-sm font-medium text-center rounded-md"
           >
             <span
               className="font-semibold text-sm hover:cursor-pointer"
@@ -111,7 +112,7 @@ const NotificationsPage = () => {
 
   return (
     <>
-      <Header />
+      <HomeHeader />
       <div className="min-h-screen bg-gray-100 p-8 mt-24 lg:w-[50vw] w-full mx-auto">
         <div className="bg-white shadow overflow-hidden sm:rounded-md">
           <h1 className="text-xl font-semibold text-gray-900 p-4 border-b border-gray-300">

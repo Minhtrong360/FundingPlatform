@@ -12,7 +12,9 @@ const HeroSection = () => {
             </span>
           </h1>
           <p>
-          Our platform offers a user-friendly interface that allows you to easily showcase your business, highlighting key aspects such as your value proposition, market potential, and growth strategy.
+            Our platform offers a user-friendly interface that allows you to
+            easily showcase your business, highlighting key aspects such as your
+            value proposition, market potential, and growth strategy.
           </p>
           <div className="zubuz-extara-mt">
             <div className="zubuz-subscribe-three">
@@ -37,7 +39,8 @@ const HeroSection = () => {
                   required.
                 </li>
                 <li>
-                  <img src="/images/v3/check.png" alt="" /> Free trial available.
+                  <img src="/images/v3/check.png" alt="" /> Free trial
+                  available.
                 </li>
               </ul>
             </div>

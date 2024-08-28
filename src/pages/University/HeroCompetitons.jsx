@@ -149,12 +149,12 @@ const HeroCompetitions = ({
     if (!user) {
       navigate("/login");
     } else {
-      navigate(`/founder/${"3ec3f142-f33c-4977-befd-30d4ce2b764d"}`);
+      navigate(`/profile/${"3ec3f142-f33c-4977-befd-30d4ce2b764d"}`);
     }
   };
 
   const handleClickProfile = () => {
-    navigate(`/founder`);
+    navigate(`/profile`);
   };
 
   return (
@@ -226,11 +226,11 @@ const HeroCompetitions = ({
             <section className="container px-4 mx-auto mt-14 max-w-3xl">
               <div className="flex flex-col mb-5">
                 <h3 className="font-bold text-xl text-left">Code listing</h3>
-                <div className="mt-5 grid sm:grid-cols-2 gap-14 transition-all duration-600 ease-out transform translate-x-0">
+                <div className="mt-5 grid sm:grid-cols-2 gap-14 transition-all duration-600 ease-out transform translate-x-0 justify-items-center">
                   {selectedCodes.map((code) => (
                     <div
                       key={code.id}
-                      className="group flex-grow justify-center w-full"
+                      className="group flex flex-col items-center justify-center  max-w-96"
                     >
                       <UniCard
                         data={code}
@@ -246,14 +246,22 @@ const HeroCompetitions = ({
                   <LeftOutlined
                     onClick={handlePrevious}
                     disabled={currentCodePage === 0}
-                    className={` ${currentCodePage === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+                    className={` ${
+                      currentCodePage === 0
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
                   />
                   <RightOutlined
                     onClick={handleNext}
                     disabled={
                       (currentCodePage + 1) * itemsPerPage >= codeData.length
                     }
-                    className={` ${(currentCodePage + 1) * itemsPerPage >= codeData.length ? "opacity-50 cursor-not-allowed" : ""}`}
+                    className={` ${
+                      (currentCodePage + 1) * itemsPerPage >= codeData.length
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
                   />
                 </div>
               </div>

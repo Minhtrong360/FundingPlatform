@@ -1,4 +1,4 @@
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import ArrowRightIcon from "../Icon/ArrowRight";
 
 const TwoBlogCard = ({ post }) => {
@@ -18,7 +18,7 @@ const TwoBlogCard = ({ post }) => {
           <h3 className="entry-title">{post?.title}</h3>
         </a>
         <p>{post?.description}</p>
-        <Link to="" className="post-read-more">
+        <Link to="/" className="post-read-more">
           <ArrowRightIcon />
         </Link>
       </div>

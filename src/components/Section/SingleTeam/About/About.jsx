@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FaFacebookF, FaLinkedin, FaTwitter } from "react-icons/fa";
 
 const AboutSection = () => {
@@ -30,17 +30,17 @@ const AboutSection = () => {
                 <div className="zubuz-social-icon social-box">
                   <ul>
                     <li>
-                      <Link to="" target="_blank">
+                      <Link to="/" target="_blank">
                         <FaTwitter />
                       </Link>
                     </li>
                     <li>
-                      <Link to="" target="_blank">
+                      <Link to="/" target="_blank">
                         <FaFacebookF />
                       </Link>
                     </li>
                     <li>
-                      <Link to="" target="_blank">
+                      <Link to="/" target="_blank">
                         <FaLinkedin />
                       </Link>
                     </li>

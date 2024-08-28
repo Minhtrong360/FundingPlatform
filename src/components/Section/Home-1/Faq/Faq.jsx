@@ -1,5 +1,4 @@
- 
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import Accordion from "react-bootstrap/Accordion";
 
 const Faq = () => {
@@ -9,16 +8,20 @@ const Faq = () => {
         <div className="row">
           <div className="col-lg-7 order-lg-2">
             <div className="zubuz-default-content">
-              <h2>Suitable platform for founders, business owners and learners.</h2>
+              <h2>
+                Suitable platform for founders, business owners and learners.
+              </h2>
               <p>
-                This platform is for everyone, from beginners to experts. We help founder, business owners and learners manage financial tasks
-                easier.
+                This platform is for everyone, from beginners to experts. We
+                help founder, business owners and learners manage financial
+                tasks easier.
               </p>
               <p>
-                This platfrom is convenient and offer financial insights to help people save time.
+                This platfrom is convenient and offer financial insights to help
+                people save time.
               </p>
               <div className="zubuz-extara-mt">
-                <Link className="zubuz-default-btn" to="contact-us">
+                <Link className="zubuz-default-btn" to="/contact-us">
                   <span>Start Your Free Trial</span>
                 </Link>
               </div>
@@ -123,13 +126,15 @@ const Faq = () => {
                 <Accordion.Item eventKey="1">
                   <Accordion.Header>Make a financial plan</Accordion.Header>
                   <Accordion.Body>
-                    Prompt to build a financial model for your business. It’s customizable and convenient.
+                    Prompt to build a financial model for your business. It’s
+                    customizable and convenient.
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey="2">
                   <Accordion.Header>Enjoy less stress</Accordion.Header>
                   <Accordion.Body>
-                  Experience a significant reduction in stress when managing your finances.
+                    Experience a significant reduction in stress when managing
+                    your finances.
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>

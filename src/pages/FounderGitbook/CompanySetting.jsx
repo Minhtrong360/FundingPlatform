@@ -287,7 +287,7 @@ function CompanySetting() {
             throw error;
           } else {
             setIsLoading(false);
-            navigate(`/founder/${params.id}`);
+            navigate(`/profile/${params.id}`);
           }
         } else {
           // Nếu công ty chưa tồn tại, thêm mới thông tin công ty
@@ -339,7 +339,7 @@ function CompanySetting() {
           } else {
             createNotifications({ createdCompany: data[0] });
             setIsLoading(false);
-            navigate(`/founder/${params.id}`);
+            navigate(`/profile/${params.id}`);
           }
         }
       }

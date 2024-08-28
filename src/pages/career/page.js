@@ -6,12 +6,12 @@ import CtaThree from "../../components/Section/Common/Cta-3/CtaThree";
 import Footer from "../../components/Section/Common/Footer";
 import PageHeader from "../../components/Section/Common/PageHeader";
 import Header from "../../components/Section/Common/Header/Header";
-
+import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
 
 const CareerPage = () => {
   return (
     <>
-      <Header />
+      <HomeHeader />
       <PageHeader title="Career" />
       <CareerSection />
       <ContentSection />

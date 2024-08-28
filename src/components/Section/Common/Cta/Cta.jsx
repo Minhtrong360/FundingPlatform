@@ -14,10 +14,10 @@ const Cta = () => {
               </p>
               <div className="zubuz-extara-mt">
                 <div className="zubuz-app-wrap">
-                  <Link className="zubuz-app" to="contact-us">
+                  <Link className="zubuz-app" to="/contact-us">
                     <img src="/images/v1/play-store.png" alt="" />
                   </Link>
-                  <Link className="zubuz-app" to="contact-us">
+                  <Link className="zubuz-app" to="/contact-us">
                     <img src="/images/v1/app-store.png" alt="" />
                   </Link>
                   <div className="zubuz-cta-shape">

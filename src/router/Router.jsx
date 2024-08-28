@@ -7,7 +7,6 @@ import ForgotPassword from "../pages/SignUp/ForgotPassword";
 import UpdatePassword from "../pages/SignUp/UpdatePassword";
 
 import Founder from "../pages/FounderGitbook/Founder";
-import NotFoundPage from "../pages/NotFoundPage";
 import PaymentSuccess from "../pages/PaymentSuccess";
 
 import Trial from "../pages/DashBoard/trial";
@@ -73,6 +72,7 @@ import TeamPage from "./../pages/team/page";
 import TestimonialPage from "./../pages/testimonials/page";
 import AboutPage from "./../pages/about-us/page";
 import SignUpPage from "../pages/sign-up/page.js";
+import NotFoundPage from "../pages/not-found/page.js";
 
 function Router() {
   const location = useLocation();
@@ -168,14 +168,14 @@ function Router() {
         {/* <Route index element={<HomePage />} /> */}
         <Route
           key={location.key}
-          path="/founder"
+          path="/profile"
           element={
             <AuthRequire message="Sign in required!">
               <Founder />
             </AuthRequire>
           }
         />
-        <Route
+        {/* <Route
           key={location.key}
           path="/Flea-Market"
           element={
@@ -192,7 +192,7 @@ function Router() {
               <FleaMarketListAll />
             </AuthRequire>
           }
-        />
+        /> */}
         <Route
           key={location.key}
           path="/user-info"
@@ -204,7 +204,7 @@ function Router() {
         />
         <Route
           key={location.key}
-          path="/founder/:id"
+          path="/profile/:id"
           element={
             <AuthRequire message="Sign in required!">
               <NewDetailPage location={location} />
@@ -221,8 +221,8 @@ function Router() {
           }
         />
         {/* <Route path="/fundraising" element={<FundraisingRecords />} />   */}
-        <Route key={location.key} path="/login" element={<Login />} />
-        <Route key={location.key} path="/signup" element={<SignUp />} />
+        <Route key={location.key} path="/login" element={<SignInPage />} />
+        {/* <Route key={location.key} path="/signup" element={<SignUp />} /> */}
         <Route key={location.key} path="/confirmed" element={<Confirmed />} />
         <Route
           key={location.key}
@@ -249,7 +249,6 @@ function Router() {
           path="/success"
           element={<PaymentSuccess />}
         />
-        <Route key={location.key} path="*" element={<NotFoundPage />} />
         <Route
           key={location.key}
           path="/company/:id"
@@ -326,7 +325,7 @@ function Router() {
         {/* <Route  key={location.key} path="/tour" element={<TourComponent />} /> */}
         <Route
           key={location.key}
-          path="/founders/market-research"
+          path="/profile/market-research"
           element={
             <AuthRequire message="Sign in required!">
               <MarketResearch />
@@ -367,6 +366,8 @@ function Router() {
           path="/dragChart"
           element={<DraggableChart />}
         />
+
+        <Route key={location.key} path="*" element={<NotFoundPage />} />
       </Routes>
     </>
   );

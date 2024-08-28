@@ -15,7 +15,8 @@ const ContentSectionTwo = () => {
             <div className="zubuz-default-content">
               <h2>Automate financial statements and analysis.</h2>
               <p>
-              The ability to automatically generate and customize financial statements is a game-changer for businesses of all sizes.
+                The ability to automatically generate and customize financial
+                statements is a game-changer for businesses of all sizes.
               </p>
               <div className="zubuz-extara-mt">
                 <div className="zubuz-iconbox-wrap-left">
@@ -25,7 +26,8 @@ const ContentSectionTwo = () => {
                   <div className="zubuz-iconbox-data">
                     <span>One-click reporting</span>
                     <p>
-                    A feature designed to make financial reporting as effortless and instantaneous as possible.
+                      A feature designed to make financial reporting as
+                      effortless and instantaneous as possible.
                     </p>
                   </div>
                 </div>
@@ -36,7 +38,8 @@ const ContentSectionTwo = () => {
                   <div className="zubuz-iconbox-data">
                     <span>Strategic Insights</span>
                     <p>
-                    It helps business leaders make informed decisions that align with long-term goals.
+                      It helps business leaders make informed decisions that
+                      align with long-term goals.
                     </p>
                   </div>
                 </div>

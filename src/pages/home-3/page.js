@@ -7,13 +7,13 @@ import ServiceSection from "../../components/Section/Home-3/Service/Service";
 import FAQSection from "../../components/Section/Common/FAQ/FAQSection";
 import Pricing from "../../components/Section/Common/Pricing";
 import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
-import FooterSectionThree from './../../components/Section/Common/Footer-3/FooterThree';
-
+import FooterSectionThree from "./../../components/Section/Common/Footer-3/FooterThree";
+import Footer from "../Home/Footer";
 
 export default function HomeThreePage() {
   return (
     <>
-      <HomeHeader roundedBtn = "true" />
+      <HomeHeader roundedBtn="true" />
       <HeroSection />
       <ServiceSection />
       <ContentSection />
@@ -22,7 +22,7 @@ export default function HomeThreePage() {
       <Pricing />
       <IntegrationSection />
       <FAQSection />
-      <FooterSectionThree />
+      <Footer />
     </>
   );
 }

@@ -9,12 +9,13 @@ import HeroSection from "../../components/Section/Home-2/Hero/Hero";
 import PricingSection from "../../components/Section/Home-2/Pricing/Pricing";
 import TestimonialSection from "../../components/Section/Home-2/Testimonial/Testimonial";
 import HomeHeaderTwo from "../../components/Section/Common/Header/HomeHeaderTwo";
-
+import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
+import Footer from "../../components/Section/Common/Footer";
 
 export default function HomeTwoPage() {
   return (
     <>
-      <HomeHeaderTwo />
+      <HomeHeader />
       <HeroSection />
       <BrandSection />
       <FeatureSection />
@@ -24,7 +25,7 @@ export default function HomeTwoPage() {
       <PricingSection />
       <IntegrationSection />
       <CtaTwo />
-      <FooterTwo />
+      <Footer />
     </>
   );
 }

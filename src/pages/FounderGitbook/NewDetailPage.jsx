@@ -8,6 +8,7 @@ import Author from "./Components/Author";
 import MyTab from "./Components/MyTab";
 import { useParams } from "react-router";
 import Header from "../Home/Header";
+import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
 
 export default function NewDetailPage({ location }) {
   const [company, setCompany] = useState(
@@ -139,7 +140,7 @@ export default function NewDetailPage({ location }) {
   const noFixedHeader = "notFixed";
 
   return (
-    <div className="min-h-screen bg-white max-w-6xl mx-auto">
+    <div>
       {isLoading ? (
         <LoadingButtonClick isLoading={isLoading} />
       ) : (
@@ -155,7 +156,7 @@ export default function NewDetailPage({ location }) {
           {fullScreen === false ? (
             <div>
               {/* <Header noFixedHeader={noFixedHeader} /> */}
-              <Header
+              <HomeHeader
                 noFixedHeader={noFixedHeader}
                 isContentChanged={isContentChanged}
               />

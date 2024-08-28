@@ -1,6 +1,4 @@
-
-
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 
 const PricingSection = () => {
@@ -42,14 +40,10 @@ const PricingSection = () => {
               </div>
               <div className="zubuz-pricing-price">
                 <h2>$</h2>
-                <div
-                  className="zubuz-price dynamic-value"
-                >
+                <div className="zubuz-price dynamic-value">
                   {isMonthly ? 0 : 19}
                 </div>
-                <p
-                  className="dynamic-value"
-                >
+                <p className="dynamic-value">
                   /{isMonthly ? "Monthly" : "Yearly"}
                 </p>
               </div>
@@ -81,7 +75,7 @@ const PricingSection = () => {
                   </li>
                 </ul>
               </div>
-              <Link className="zubuz-pricing-btn" to="contact-us">
+              <Link className="zubuz-pricing-btn" to="/contact-us">
                 Try it for free
               </Link>
             </div>
@@ -93,14 +87,10 @@ const PricingSection = () => {
               </div>
               <div className="zubuz-pricing-price">
                 <h2>$</h2>
-                <div
-                  className="zubuz-price dynamic-value"
-                >
+                <div className="zubuz-price dynamic-value">
                   {isMonthly ? 19 : 39}
                 </div>
-                <p
-                  className="dynamic-value"
-                >
+                <p className="dynamic-value">
                   /{isMonthly ? "Monthly" : "Yearly"}
                 </p>
               </div>
@@ -132,7 +122,7 @@ const PricingSection = () => {
                   </li>
                 </ul>
               </div>
-              <Link className="zubuz-pricing-btn" to="contact-us">
+              <Link className="zubuz-pricing-btn" to="/contact-us">
                 Try it for free
               </Link>
             </div>
@@ -144,14 +134,10 @@ const PricingSection = () => {
               </div>
               <div className="zubuz-pricing-price">
                 <h2>$</h2>
-                <div
-                  className="zubuz-price dynamic-value"
-                >
+                <div className="zubuz-price dynamic-value">
                   {isMonthly ? 29 : 59}
                 </div>
-                <p
-                  className="dynamic-value"
-                >
+                <p className="dynamic-value">
                   /{isMonthly ? "Monthly" : "Yearly"}
                 </p>
               </div>
@@ -183,7 +169,7 @@ const PricingSection = () => {
                   </li>
                 </ul>
               </div>
-              <Link className="zubuz-pricing-btn active" to="contact-us">
+              <Link className="zubuz-pricing-btn active" to="/contact-us">
                 Try it for free
               </Link>
             </div>
@@ -195,14 +181,10 @@ const PricingSection = () => {
               </div>
               <div className="zubuz-pricing-price">
                 <h2>$</h2>
-                <div
-                  className="zubuz-price dynamic-value"
-                >
+                <div className="zubuz-price dynamic-value">
                   {isMonthly ? 59 : 99}
                 </div>
-                <p
-                  className="dynamic-value"
-                >
+                <p className="dynamic-value">
                   /{isMonthly ? "Monthly" : "Yearly"}
                 </p>
               </div>
@@ -234,7 +216,7 @@ const PricingSection = () => {
                   </li>
                 </ul>
               </div>
-              <Link className="zubuz-pricing-btn" to="contact-us">
+              <Link className="zubuz-pricing-btn" to="/contact-us">
                 Try it for free
               </Link>
             </div>

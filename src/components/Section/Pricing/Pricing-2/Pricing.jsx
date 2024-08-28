@@ -1,4 +1,4 @@
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const PricingSectionTwo = () => {
   return (
@@ -9,7 +9,7 @@ const PricingSectionTwo = () => {
         <div className="container">
           <div className="zubuz-section-title zubuz-two-column-title">
             <div className="row">
-              <div className="col-lg-7">  
+              <div className="col-lg-7">
                 <h2>Wide range of business solutions</h2>
               </div>
               <div className="col-lg-5 d-flex align-items-center">
@@ -102,17 +102,17 @@ const PricingSectionTwo = () => {
                 <tr>
                   <td></td>
                   <td>
-                    <Link className="zubuz-default-btn" to="contact-us">
+                    <Link className="zubuz-default-btn" to="/contact-us">
                       <span>Get Started Now</span>
                     </Link>
                   </td>
                   <td>
-                    <Link className="zubuz-default-btn" to="contact-us">
+                    <Link className="zubuz-default-btn" to="/contact-us">
                       <span>Get Started Now</span>
                     </Link>
                   </td>
                   <td>
-                    <Link className="zubuz-default-btn" to="contact-us">
+                    <Link className="zubuz-default-btn" to="/contact-us">
                       <span>Get Started Now</span>
                     </Link>
                   </td>

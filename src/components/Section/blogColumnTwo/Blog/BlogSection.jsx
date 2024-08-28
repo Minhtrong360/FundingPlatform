@@ -124,7 +124,7 @@ const BlogSection = () => {
                   We are here to help you! Tell us how we can help and we’ll get
                   in touch within next 24hrs
                 </p>
-                <Link to="contact-us">Contact Us</Link>
+                <Link to="/contact-us">Contact Us</Link>
               </div>
             </div>
           </div>

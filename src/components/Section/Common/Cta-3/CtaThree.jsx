@@ -1,4 +1,4 @@
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const CtaThree = ({ title, btnText }) => {
   return (
@@ -12,7 +12,7 @@ const CtaThree = ({ title, btnText }) => {
           </div>
           <div className="col-lg-5 d-flex align-items-center">
             <div className="zubuz-title-btn">
-              <Link className="zubuz-default-btn" to="single-team">
+              <Link className="zubuz-default-btn" to="/single-team">
                 <span>{btnText}</span>
               </Link>
             </div>

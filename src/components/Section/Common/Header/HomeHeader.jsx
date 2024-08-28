@@ -4,6 +4,7 @@ import { FaAngleDown, FaAngleLeft } from "react-icons/fa";
 import BrandLogo from "../../../ui/Logo/BrandLogo";
 import ImageDropdown from "../../../../pages/Home/ImageDropdown";
 import { useAuth } from "../../../../context/AuthContext";
+import { LockOutlined } from "@ant-design/icons";
 
 const HomeHeader = ({ logoSrc, roundedBtn }) => {
   const [isActive, setIsActive] = useState(false);
@@ -158,7 +159,7 @@ const HomeHeader = ({ logoSrc, roundedBtn }) => {
               </div>
               <ul className="site-menu-main" onClick={menuMainClickHandler}>
                 <li className="nav-item nav-item-has-children">
-                  <Link to="" className="nav-link-item drop-trigger">
+                  <Link to="/" className="nav-link-item drop-trigger">
                     Platforms{" "}
                     <i>
                       <FaAngleDown />
@@ -184,222 +185,67 @@ const HomeHeader = ({ logoSrc, roundedBtn }) => {
                         </span>
                       </Link>
                     </li>
-                  </ul>
-                </li>
-                <li className="nav-item">
-                  <Link to="/about-us" className="nav-link-item">
-                    About Us
-                  </Link>
-                </li>
-                <li className="nav-item nav-item-has-children">
-                  <Link to="" className="nav-link-item drop-trigger">
-                    Pages{" "}
-                    <i>
-                      <FaAngleDown />
-                    </i>
-                  </Link>
-                  <ul className="sub-menu" id="submenu-2">
-                    <li className="sub-menu--item">
-                      <Link to="/about-us">
-                        <span className="menu-item-text">About Us</span>
-                      </Link>
-                    </li>
-                    <li className="sub-menu--item">
-                      <Link to="pricing">
-                        <span className="menu-item-text">Pricing</span>
-                      </Link>
-                    </li>
-                    <li className="sub-menu--item nav-item-has-children">
-                      <Link to="" data-menu-get="h3" className="drop-trigger">
-                        blog{" "}
-                        <i>
-                          <FaAngleDown />
-                        </i>
-                      </Link>
-                      <ul className="sub-menu shape-none" id="submenu-3">
-                        <li className="sub-menu--item">
-                          <Link to="/blog">
-                            <span className="menu-item-text">Our Blog</span>
-                          </Link>
-                        </li>
-                        <li className="sub-menu--item">
-                          <Link to="/blog-column-one">
-                            <span className="menu-item-text">
-                              blog column one
-                            </span>
-                          </Link>
-                        </li>
-                        <li className="sub-menu--item">
-                          <Link to="/blog-column-two">
-                            <span className="menu-item-text">
-                              blog column two
-                            </span>
-                          </Link>
-                        </li>
-                        <li className="sub-menu--item">
-                          <Link to="/single-blog">
-                            <span className="menu-item-text">blog details</span>
-                          </Link>
-                        </li>
-                      </ul>
-                    </li>
                     <li class="sub-menu--item nav-item-has-children">
-                      <Link to="" data-menu-get="h3" class="drop-trigger">
-                        Service
+                      <Link to="/" data-menu-get="h3" class="drop-trigger">
+                        BeeKrowd Workspace
                         <i>
                           <FaAngleDown />
                         </i>
                       </Link>
                       <ul class="sub-menu shape-none" id="submenu-4">
                         <li class="sub-menu--item">
-                          <Link to="/service">
-                            <span class="menu-item-text">service</span>
+                          <Link to="/competitions">
+                            <span class="menu-item-text">Competitions</span>
                           </Link>
                         </li>
                         <li class="sub-menu--item">
-                          <Link to="/single-service">
-                            <span class="menu-item-text">service details</span>
-                          </Link>
-                        </li>
-                      </ul>
-                    </li>
-                    <li class="sub-menu--item nav-item-has-children">
-                      <Link to="" data-menu-get="h3" class="drop-trigger">
-                        Team
-                        <i>
-                          <FaAngleDown />
-                        </i>
-                      </Link>
-                      <ul class="sub-menu shape-none" id="submenu-5">
-                        <li class="sub-menu--item">
-                          <Link to="/team">
-                            <span class="menu-item-text">team</span>
-                          </Link>
-                        </li>
-                        <li class="sub-menu--item">
-                          <Link to="/single-team">
-                            <span class="menu-item-text">team details</span>
-                          </Link>
-                        </li>
-                      </ul>
-                    </li>
-                    <li class="sub-menu--item nav-item-has-children">
-                      <Link to="" data-menu-get="h3" class="drop-trigger">
-                        Career
-                        <i>
-                          <FaAngleDown />
-                        </i>
-                      </Link>
-                      <ul class="sub-menu shape-none" id="submenu-6">
-                        <li class="sub-menu--item">
-                          <Link to="/career">
-                            <span class="menu-item-text">Career</span>
-                          </Link>
-                        </li>
-                        <li class="sub-menu--item">
-                          <Link to="/single-career">
-                            <span class="menu-item-text">Career details</span>
-                          </Link>
-                        </li>
-                      </ul>
-                    </li>
-                    <li class="sub-menu--item nav-item-has-children">
-                      <Link to="" data-menu-get="h3" class="drop-trigger">
-                        Portfolio
-                        <i>
-                          <FaAngleDown />
-                        </i>
-                      </Link>
-                      <ul class="sub-menu shape-none" id="submenu-7">
-                        <li class="sub-menu--item">
-                          <Link to="/portfolio-grid">
-                            <span class="menu-item-text">portfolio gird</span>
-                          </Link>
-                        </li>
-                        <li class="sub-menu--item">
-                          <Link to="/portfolio-classic">
+                          <Link to="/workspace">
                             <span class="menu-item-text">
-                              portfolio classic
+                              workspace <LockOutlined />
                             </span>
-                          </Link>
-                        </li>
-                        <li class="sub-menu--item">
-                          <Link to="/single-portfolio">
-                            <span class="menu-item-text">Single Portfolio</span>
-                          </Link>
-                        </li>
-                      </ul>
-                    </li>
-                    <li class="sub-menu--item nav-item-has-children">
-                      <Link to="" data-menu-get="h3" class="drop-trigger">
-                        Utility
-                        <i>
-                          <FaAngleDown />
-                        </i>
-                      </Link>
-                      <ul class="sub-menu shape-none" id="submenu-8">
-                        <li class="sub-menu--item">
-                          <Link to="/faq">
-                            <span class="menu-item-text">faq</span>
-                          </Link>
-                        </li>
-                        <li class="sub-menu--item">
-                          <Link to="/errors-404">
-                            <span class="menu-item-text">Error 404</span>
-                          </Link>
-                        </li>
-                        <li class="sub-menu--item">
-                          <Link to="/integrations">
-                            <span class="menu-item-text">integrations</span>
-                          </Link>
-                        </li>
-                        <li class="sub-menu--item">
-                          <Link to="/testimonials">
-                            <span class="menu-item-text">testimonials</span>
-                          </Link>
-                        </li>
-                        <li class="sub-menu--item">
-                          <Link to="/coming-soon">
-                            <span class="menu-item-text">Coming Soon</span>
                           </Link>
                         </li>
                       </ul>
                     </li>
                   </ul>
                 </li>
+
                 <li className="nav-item nav-item-has-children">
-                  <Link to="" className="nav-link-item drop-trigger">
-                    Blog{" "}
+                  <Link to="/" className="nav-link-item drop-trigger">
+                    Founders{" "}
                     <i>
                       <FaAngleDown />
                     </i>
                   </Link>
-                  <ul className="sub-menu" id="submenu-10">
+                  <ul className="sub-menu" id="submenu-2">
                     <li className="sub-menu--item">
-                      <Link to="/blog">
-                        <span className="menu-item-text">Our Blog</span>
+                      <Link to="/financials">
+                        <span className="menu-item-text">
+                          Build Financial Model
+                        </span>
                       </Link>
                     </li>
                     <li className="sub-menu--item">
-                      <Link to="blog-column-one">
-                        <span className="menu-item-text">blog column one</span>
+                      <Link to="/profile">
+                        <span className="menu-item-text">Build Profile</span>
                       </Link>
                     </li>
                     <li className="sub-menu--item">
-                      <Link to="/blog-column-two">
-                        <span className="menu-item-text">blog column two</span>
-                      </Link>
-                    </li>
-                    <li className="sub-menu--item">
-                      <Link to="/single-blog">
-                        <span className="menu-item-text">blog details</span>
+                      <Link to="/home-2">
+                        <span className="menu-item-text">Startup Course</span>
                       </Link>
                     </li>
                   </ul>
                 </li>
                 <li className="nav-item">
-                  <Link to="/contact-us" className="nav-link-item">
-                    Contact Us
+                  <Link to="/startups" className="nav-link-item">
+                    Investors
+                  </Link>
+                </li>
+
+                <li className="nav-item">
+                  <Link to="/about-us" className="nav-link-item">
+                    About Us
                   </Link>
                 </li>
               </ul>
@@ -411,9 +257,21 @@ const HomeHeader = ({ logoSrc, roundedBtn }) => {
               {user ? (
                 <ImageDropdown />
               ) : (
-                <Link className="zubuz-login-btn" to="sign-in">
-                  Login
-                </Link>
+                <>
+                  <Link className="zubuz-login-btn" to="/sign-in">
+                    Login
+                  </Link>
+                  <Link
+                    className={` ${
+                      roundedBtn
+                        ? "zubuz-default-btn zubuz-header-btn pill"
+                        : "zubuz-default-btn zubuz-header-btn"
+                    } sm:!block !hidden`}
+                    to="/sign-up"
+                  >
+                    <span>Get Started</span>
+                  </Link>
+                </>
               )}
             </div>
           </div>

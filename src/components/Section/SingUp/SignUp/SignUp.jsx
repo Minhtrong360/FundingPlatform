@@ -133,7 +133,7 @@ const SignUpForm = () => {
             <button
               id="zubuz-account-btn"
               type="submit"
-              className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
+              // className="zubuz-account-btn"
               disabled={isLoading}
             >
               {isLoading ? "Creating account..." : "Create account"}

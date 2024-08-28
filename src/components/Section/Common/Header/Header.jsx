@@ -141,7 +141,7 @@ const Header = ({ logoSrc }) => {
               </div>
               <ul className="site-menu-main" onClick={menuMainClickHandler}>
                 <li className="nav-item nav-item-has-children">
-                  <Link to="#" className="nav-link-item drop-trigger">
+                  <Link to="/#" className="nav-link-item drop-trigger">
                     Demo{" "}
                     <i>
                       <FaAngleDown />
@@ -166,7 +166,7 @@ const Header = ({ logoSrc }) => {
                   </ul>
                 </li>
                 <li className="nav-item nav-item-has-children">
-                  <Link to="#" className="nav-link-item drop-trigger">
+                  <Link to="/#" className="nav-link-item drop-trigger">
                     Pages{" "}
                     <i>
                       <FaAngleDown />
@@ -184,7 +184,7 @@ const Header = ({ logoSrc }) => {
                       </Link>
                     </li>
                     <li className="sub-menu--item nav-item-has-children">
-                      <Link to="#" className="drop-trigger">
+                      <Link to="/#" className="drop-trigger">
                         blog{" "}
                         <i>
                           <FaAngleDown />
@@ -218,7 +218,7 @@ const Header = ({ logoSrc }) => {
                       </ul>
                     </li>
                     <li className="sub-menu--item nav-item-has-children">
-                      <Link to="#" className="drop-trigger">
+                      <Link to="/#" className="drop-trigger">
                         Service
                         <i>
                           <FaAngleDown />
@@ -240,7 +240,7 @@ const Header = ({ logoSrc }) => {
                       </ul>
                     </li>
                     <li className="sub-menu--item nav-item-has-children">
-                      <Link to="#" className="drop-trigger">
+                      <Link to="/#" className="drop-trigger">
                         Team
                         <i>
                           <FaAngleDown />
@@ -260,7 +260,7 @@ const Header = ({ logoSrc }) => {
                       </ul>
                     </li>
                     <li className="sub-menu--item nav-item-has-children">
-                      <Link to="#" className="drop-trigger">
+                      <Link to="/#" className="drop-trigger">
                         Career
                         <i>
                           <FaAngleDown />
@@ -282,7 +282,7 @@ const Header = ({ logoSrc }) => {
                       </ul>
                     </li>
                     <li className="sub-menu--item nav-item-has-children">
-                      <Link to="#" className="drop-trigger">
+                      <Link to="/#" className="drop-trigger">
                         Portfolio
                         <i>
                           <FaAngleDown />
@@ -313,7 +313,7 @@ const Header = ({ logoSrc }) => {
                       </ul>
                     </li>
                     <li className="sub-menu--item nav-item-has-children">
-                      <Link to="#" className="drop-trigger">
+                      <Link to="/#" className="drop-trigger">
                         Utility
                         <i>
                           <FaAngleDown />
@@ -350,7 +350,7 @@ const Header = ({ logoSrc }) => {
                   </ul>
                 </li>
                 <li className="nav-item nav-item-has-children">
-                  <Link to="#" className="nav-link-item drop-trigger">
+                  <Link to="/#" className="nav-link-item drop-trigger">
                     Blog{" "}
                     <i>
                       <FaAngleDown />
@@ -398,7 +398,7 @@ const Header = ({ logoSrc }) => {
               {user ? (
                 <ImageDropdown />
               ) : (
-                <Link className="zubuz-login-btn" to="sign-in">
+                <Link className="zubuz-login-btn" to="/sign-in">
                   Login
                 </Link>
               )}

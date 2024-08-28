@@ -4,12 +4,12 @@ import Footer from "../../components/Section/Common/Footer";
 import ServiceSection from "../../components/Section/Service/Service/Service";
 import PricingSection from "../../components/Section/Common/Pricing/Pricing";
 import Header from "../../components/Section/Common/Header/Header";
-
+import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
 
 export default function ServicePage() {
   return (
     <>
-      <Header />
+      <HomeHeader />
       <PageHeader title="Our Services" />
       <ServiceSection />
       <PricingSection />

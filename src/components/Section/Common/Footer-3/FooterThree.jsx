@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   FaFacebookF,
   FaGithub,
@@ -22,7 +22,7 @@ const FooterSectionThree = () => {
             </div>
             <div className="col-lg-5 d-flex align-items-center">
               <div className="zubuz-footer-btn">
-                <Link className="zubuz-default-btn pill" to="contact-us">
+                <Link className="zubuz-default-btn pill" to="/contact-us">
                   <span>Get started now</span>
                 </Link>
               </div>

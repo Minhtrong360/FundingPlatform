@@ -38,7 +38,7 @@ const IntegrationSectionTwo = () => {
               </div>
               <div className="col-lg-4 d-flex align-items-center">
                 <div className="zubuz-title-btn">
-                  <Link className="zubuz-default-btn pill" to="integrations">
+                  <Link className="zubuz-default-btn pill" to="/integrations">
                     <span>Browse all integrations</span>
                   </Link>
                 </div>

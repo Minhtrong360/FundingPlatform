@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Header from "../Header";
+import HomeHeader from "../../../components/Section/Common/Header/HomeHeader";
 
 const FAQ = () => {
   const [activeAccordion, setActiveAccordion] = useState(null);
@@ -37,7 +38,7 @@ const FAQ = () => {
 
   return (
     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-      <Header />
+      <HomeHeader />
       <div className="grid md:grid-cols-5 gap-10 mt-28">
         <div className="md:col-span-2">
           <div className="max-w-xs">

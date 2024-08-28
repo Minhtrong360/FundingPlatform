@@ -755,7 +755,7 @@ function ProjectList({ projects, isLoading }) {
       }
 
       if (companies.length > 0) {
-        navigate(`/founder/${project.id}`);
+        navigate(`/profile/${project.id}`);
       } else {
         navigate(`/company/${project.id}`);
       }

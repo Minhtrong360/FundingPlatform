@@ -200,9 +200,7 @@ const HomeHeader = ({ logoSrc, roundedBtn }) => {
                         </li>
                         <li class="sub-menu--item">
                           <Link to="/workspace">
-                            <span class="menu-item-text">
-                              workspace <LockOutlined />
-                            </span>
+                            <span class="menu-item-text">workspace</span>
                           </Link>
                         </li>
                       </ul>

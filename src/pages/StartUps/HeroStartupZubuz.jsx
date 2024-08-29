@@ -32,11 +32,13 @@ const HeroSectionZubuz = () => {
       >
         <div className="container">
           <div className="zubuz-hero-content center position-relative">
-            <h1>Build your financial model under 5' with AI</h1>
+            <h1>Focusing on highly vetted startup deals</h1>
             <p>
-              Our platform is designed to help individuals &amp; businesses
-              manage their financial plans and reports. It serves various
-              purposes related to personal and business finance.
+              Investing in startups can be a lucrative venture, but it also
+              carries significant risks. One way to mitigate these risks is to
+              focus on highly vetted deals. This involves investing in startups
+              that have undergone rigorous due diligence and have been selected
+              by.
             </p>
             <div className="zubuz-hero-btn-wrap center">
               <Link className="zubuz-default-btn" to="/contact-us">

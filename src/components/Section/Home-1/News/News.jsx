@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 
- 
-import {Link} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ArrowRightIcon from "../../../ui/Icon/ArrowRight";
 
@@ -16,15 +15,20 @@ const NewsSection = () => {
     blogData();
   }, []);
 
+  const navigate = useNavigate();
   return (
-    <div className="section zubuz-section-padding2 light-bg">
+    <div className="section zubuz-section-padding2 white-bg">
       <div className="container">
         <div className="zubuz-section-title center">
           <h2>Master financial planning with our trusted resources.</h2>
         </div>
         <div className="row">
           {blogDatas?.map((blog, index) => (
-            <div className="col-xl-4 col-lg-6" key={index}>
+            <div
+              className="col-xl-4 col-lg-6"
+              key={index}
+              onClick={() => navigate("/blog")}
+            >
               <div className="zubuz-blog-wrap">
                 <Link href={blog?.link}>
                   <div className="zubuz-blog-thumb">

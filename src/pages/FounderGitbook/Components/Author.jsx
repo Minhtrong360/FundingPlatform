@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "../../../components/ui/Button";
+import { Button } from "../../../components/ui/button";
 import { supabase } from "../../../supabase";
 import { StarOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";

@@ -9,6 +9,7 @@ import HeroSection from "../../components/Section/Home-1/Hero/Hero";
 import NewsSection from "../../components/Section/Home-1/News/News";
 import TestimonialSection from "../../components/Section/Common/Testimonial/Testimonial";
 import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
+import PricingWithLemon from "../Home/Components/PricingWithLemon";
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
       <Faq />
       <TestimonialSection />
       <NewsSection />
+      <PricingWithLemon />
       <Cta />
       <Footer />
     </>

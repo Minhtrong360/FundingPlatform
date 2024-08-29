@@ -15,7 +15,7 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-} from "../../../components/ui/Select";
+} from "../../../components/ui/select";
 
 import { useDispatch, useSelector } from "react-redux";
 

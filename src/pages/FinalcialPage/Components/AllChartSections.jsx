@@ -12,11 +12,11 @@ import {
 } from "../../../features/CostSlice";
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectItem,
-} from "../../../components/ui/Select";
+  SelectTrigger,
+  SelectValue,
+} from "../../../components/ui/select";
 
 import { calculateProfitAndLoss } from "../../../features/ProfitAndLossSlice";
 import {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Input } from "../../../components/ui/Input";
+import { Input } from "../../../components/ui/input";
 import { Card, Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
@@ -17,7 +17,7 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-} from "../../../components/ui/Select";
+} from "../../../components/ui/select";
 import { useParams } from "react-router-dom";
 import { DownloadOutlined, FullscreenOutlined } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";

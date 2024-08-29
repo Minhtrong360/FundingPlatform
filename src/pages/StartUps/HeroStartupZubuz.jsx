@@ -38,7 +38,7 @@ const HeroSectionZubuz = () => {
               carries significant risks. One way to mitigate these risks is to
               focus on highly vetted deals. This involves investing in startups
               that have undergone rigorous due diligence and have been selected
-              by.
+              by us.
             </p>
             <div className="zubuz-hero-btn-wrap center">
               <Link className="zubuz-default-btn" to="/contact-us">

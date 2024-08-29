@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { message } from "antd";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import AnnounceFMPage from "./Components/AnnounceFMPage";
+import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
 
 function FinancialPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -99,22 +100,13 @@ function FinancialPage() {
   }
 
   return (
-    <div className=" bg-gray-50 darkBg antialiased !p-0">
-      <div id="exampleWrapper">
-        <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-        <div
-          className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0  "
-          onClick={() => setIsSidebarOpen(false)}
-        >
-          <div className="p-4 border-gray-300 border-dashed rounded-md darkBorderGray">
-            <FinancialForm
-              currentUser={currentUser}
-              setCurrentUser={setCurrentUser}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+    <>
+      <HomeHeader />
+      <FinancialForm
+        currentUser={currentUser}
+        setCurrentUser={setCurrentUser}
+      />
+    </>
   );
 }
 

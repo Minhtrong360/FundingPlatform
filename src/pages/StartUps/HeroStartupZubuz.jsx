@@ -32,7 +32,7 @@ const HeroSectionZubuz = () => {
       >
         <div className="container">
           <div className="zubuz-hero-content center position-relative">
-            <h1>Build your financial model under 5' with AI</h1>
+            <h1>Focusing on highly vetted startup deals</h1>
             <p>
               Our platform is designed to help individuals &amp; businesses
               manage their financial plans and reports. It serves various

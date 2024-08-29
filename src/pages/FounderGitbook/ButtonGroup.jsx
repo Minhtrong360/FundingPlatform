@@ -1,6 +1,8 @@
 import React from "react";
 import { Dropdown, Menu } from "antd";
 import { SettingOutlined } from "@ant-design/icons";
+import { Settings } from "lucide-react";
+import { Button } from "../../components/ui/button";
 
 const ButtonGroup = ({
   handleDrawChart,
@@ -46,23 +48,16 @@ const ButtonGroup = ({
 
   return (
     <Dropdown
-      className={`bg-yellow-300 text-black focus:ring-4 focus:outline-none font-medium rounded-md text-sm py-3 text-center px-2 hover:cursor-pointer`}
       overlay={menuItems}
       placement="bottomRight"
       disabled={isLoading}
       // icon={<SettingOutlined />}
       onClick={(e) => e.preventDefault()} // Prevents the dropdown from closing when clicking the button
     >
-      <div
-        className={`bg-yellow-300 text-black focus:ring-4 focus:outline-none font-medium rounded-md text-sm py-3 text-center px-2 hover:cursor-pointer`}
-      >
-        <span className="sm:!block !hidden">
-          <SettingOutlined /> Profile Settings
-        </span>
-        <span className="sm:!hidden !block">
-          <SettingOutlined />
-        </span>
-      </div>
+      <Button variant="outline" className="items-center">
+        <Settings className="mr-2 h-4 w-4" />
+        <span className="sm:!block !hidden">Profile Settings</span>
+      </Button>
     </Dropdown>
   );
 };

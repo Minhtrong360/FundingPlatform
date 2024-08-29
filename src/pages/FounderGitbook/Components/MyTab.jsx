@@ -16,6 +16,14 @@ import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 import debounce from "lodash.debounce";
 
+import { Card, CardContent } from "../../../components/ui/card";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../../components/ui/tabs";
+
 const MyTab = ({
   company,
   currentProject,
@@ -411,14 +419,16 @@ const MyTab = ({
       : {
           "Your Profile": (
             <div className="relative">
-              <BlockNoteView
-                editor={editor}
-                theme={"light"}
-                className={`w-full ${unChange ? "pointer-events-none" : ""}`}
-                onChange={(editor) =>
-                  debouncedHandleChange(editor, "Your Profile")
-                }
-              />
+              <Card>
+                <BlockNoteView
+                  editor={editor}
+                  theme={"light"}
+                  className={`w-full ${unChange ? "pointer-events-none" : ""} my-4`}
+                  onChange={(editor) =>
+                    debouncedHandleChange(editor, "Your Profile")
+                  }
+                />
+              </Card>
 
               {company?.keyWords && (
                 <div className="mt-28 px-5">
@@ -442,7 +452,7 @@ const MyTab = ({
                   </div>
                 </div>
               )}
-              <div className="sm:px-5 sticky bottom-5 left-5">
+              <div>
                 {user?.id === currentProject?.user_id ||
                 currentProject?.collabs?.includes(user.email) ? (
                   <>
@@ -450,7 +460,7 @@ const MyTab = ({
                       className={`min-w-[110px] mt-8 hover:cursor-pointer py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent ${
                         isLoading
                           ? "bg-gray-600 disabled:opacity-50 disabled:pointer-events-none"
-                          : "bg-blue-600 text-white hover:bg-blue-700"
+                          : "bg-slate-700 text-white hover:bg-slate-900"
                       }  `}
                       onClick={handleSave}
                       type="button"
@@ -470,7 +480,9 @@ const MyTab = ({
 
     "Sample PitchDeck": (
       <div>
-        <Sample />
+        <Card>
+          <Sample />
+        </Card>
       </div>
     ),
 
@@ -482,34 +494,26 @@ const MyTab = ({
   };
 
   return (
-    <div className={`px-8  flex flex-col justify-center items-center`}>
-      <>
-        <aside className="w-full bg-white">
-          <div className="w-full  py-8 overflow-x-auto">
-            <nav className="flex justify-between sm:space-x-4 sm:px-14">
-              {tabs.map((tab) => (
-                <div
-                  key={tab.key}
-                  className={`cursor-pointer flex items-center sm:px-3 px-1 py-2 text-sm font-medium ${
-                    activeTab === tab.key
-                      ? "text-blue-600 bg-blue-100 rounded-md"
-                      : "text-gray-600"
-                  }`}
-                  onClick={() => handleTabChange(tab.key)}
-                >
-                  {tab.title}
-                </div>
-              ))}
-            </nav>
-          </div>
-        </aside>
+    <Card>
+      <CardContent className="p-6">
+        <Tabs defaultValue="profile" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-6 bg-gray-50 rounded-md">
+            {tabs.map((tab) => (
+              <TabsTrigger
+                value={tab.title}
+                onClick={() => handleTabChange(tab.key)}
+                className={`${activeTab === tab.key ? "bg-white" : ""} rounded-md`}
+              >
+                {tab.title}
+              </TabsTrigger>
+            ))}
+          </TabsList>
 
-        <div className="w-full py-8 px-0 md:px-8">
           {/* Content */}
           {tabContents[activeTab]}
-        </div>
-      </>
-    </div>
+        </Tabs>
+      </CardContent>
+    </Card>
   );
 };
 

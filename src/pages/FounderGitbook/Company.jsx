@@ -110,363 +110,432 @@ function Company({
   }, []);
 
   return (
-    <Card className="w-full max-w-3xl mx-auto">
-      <CardHeader>
-        <CardTitle>Company Information</CardTitle>
-        <CardDescription>
-          Please fill in the basic information below.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="min-h-screen flex flex-col justify-between">
+      <Card className="w-full max-w-3xl mx-auto my-10">
+        <CardHeader>
+          <CardTitle>Company Information</CardTitle>
+          <CardDescription>
+            Please fill in the basic information below.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="font-semibold" htmlFor="name">
+                  Company name
+                </Label>
+                <Input
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  type="text"
+                  placeholder="Enter company name"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="font-semibold" htmlFor="country">
+                  Country
+                </Label>
+                <Select
+                  id="country"
+                  name="country"
+                  value={formData.country || countries[0]}
+                  onValueChange={(value) =>
+                    handleInputChange({ target: { name: "country", value } })
+                  }
+                >
+                  <SelectTrigger className="h-[60px] rounded-lg text-base">
+                    <SelectValue>
+                      {formData.country ? (
+                        <span>{formData.country}</span>
+                      ) : (
+                        <span className="text-gray-500">{countries[0]}</span>
+                      )}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent className="bg-white">
+                    {countries.map((country) => (
+                      <SelectItem key={country} value={country}>
+                        {country}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
             <div className="space-y-2">
-              <Label htmlFor="name">Company name</Label>
-              <Input
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                type="text"
-                placeholder="Enter company name"
+              <Label className="font-semibold" htmlFor="showAdditionalFields">
+                Do you want to raise funds?
+              </Label>
+              <Switch
+                id="showAdditionalFields"
+                name="showAdditionalFields"
+                checked={formData.showAdditionalFields === "Yes"}
+                onCheckedChange={(checked) =>
+                  handleInputChange({
+                    target: {
+                      name: "showAdditionalFields",
+                      value: checked ? "Yes" : "No",
+                    },
+                  })
+                }
+              />
+            </div>
+
+            {formData.showAdditionalFields === "Yes" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="font-semibold" htmlFor="target-amount">
+                    Target amount
+                  </Label>
+                  <Input
+                    id="target-amount"
+                    name="target_amount"
+                    value={formatNumber(formData.target_amount)}
+                    onChange={handleInputChange}
+                    type="text"
+                    placeholder="0"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-semibold" htmlFor="offer_type">
+                    Type offering
+                  </Label>
+                  <Select
+                    id="offer_type"
+                    name="offer_type"
+                    value={formData.offer_type}
+                    onValueChange={(value) =>
+                      handleInputChange({
+                        target: { name: "offer_type", value },
+                      })
+                    }
+                  >
+                    <SelectTrigger className="h-[60px] rounded-lg text-base">
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white">
+                      {typeOfferingOptions.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-semibold" htmlFor="ticket_size">
+                    Min ticket size
+                  </Label>
+                  <Input
+                    id="ticket_size"
+                    name="ticket_size"
+                    value={formatNumber(formData.ticket_size)}
+                    onChange={handleInputChange}
+                    type="text"
+                    placeholder="0"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-semibold" htmlFor="no_ticket">
+                    No. ticket
+                  </Label>
+
+                  <Input
+                    id="no_ticket"
+                    name="no_ticket"
+                    value={formatNumber(formData.no_ticket)}
+                    type="text"
+                    readOnly
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-semibold" htmlFor="revenueStatus">
+                    Annual revenue last year
+                  </Label>
+                  <Select
+                    id="revenueStatus"
+                    name="revenueStatus"
+                    value={formData.revenueStatus}
+                    onValueChange={(value) =>
+                      handleInputChange({
+                        target: { name: "revenueStatus", value },
+                      })
+                    }
+                  >
+                    <SelectTrigger className="h-[60px] rounded-lg text-base">
+                      <SelectValue placeholder="Select range" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white">
+                      <SelectItem value="$0 - $10k">$0 - $10k</SelectItem>
+                      {/* Add more revenue ranges as needed */}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-semibold" htmlFor="keyWords">
+                    Keywords
+                  </Label>
+                  <Input
+                    id="keyWords"
+                    name="keyWords"
+                    value={formData.keyWords}
+                    onChange={handleInputChange}
+                    type="text"
+                    placeholder="Enter keywords"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-semibold" htmlFor="offer">
+                    Offer
+                  </Label>
+                  <Input
+                    id="offer"
+                    name="offer"
+                    value={formData.offer}
+                    onChange={handleInputChange}
+                    type="text"
+                    placeholder="Describe your offer"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-semibold" htmlFor="website">
+                    Website
+                  </Label>
+                  <Input
+                    id="website"
+                    name="website"
+                    value={formData.website}
+                    onChange={handleInputChange}
+                    type="url"
+                    placeholder="https://example.com"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-semibold" htmlFor="teamSize">
+                    Team size
+                  </Label>
+                  <Select
+                    id="teamSize"
+                    name="teamSize"
+                    value={formData.teamSize}
+                    onValueChange={(value) =>
+                      handleInputChange({ target: { name: "teamSize", value } })
+                    }
+                  >
+                    <SelectTrigger className="h-[60px] rounded-lg text-base">
+                      <SelectValue placeholder="Select size" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white">
+                      <SelectItem value="1-10">1-10</SelectItem>
+                      {/* Add more team sizes as needed */}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-semibold" htmlFor="amountRaised">
+                    Raised before
+                  </Label>
+                  <Input
+                    id="amountRaised"
+                    name="amountRaised"
+                    value={formatNumber(formData.amountRaised)}
+                    onChange={handleInputChange}
+                    type="text"
+                    placeholder="0"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-semibold" htmlFor="operationTime">
+                    Founded year
+                  </Label>
+                  <Select
+                    id="operationTime"
+                    name="operationTime"
+                    value={formData.operationTime}
+                    onValueChange={(value) =>
+                      handleInputChange({
+                        target: { name: "operationTime", value },
+                      })
+                    }
+                  >
+                    <SelectTrigger className="h-[60px] rounded-lg text-base">
+                      <SelectValue placeholder="Select year" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white">
+                      {years.map((year) => (
+                        <SelectItem key={year} value={year}>
+                          {year}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-semibold" htmlFor="round">
+                    Round
+                  </Label>
+                  <Select
+                    id="round"
+                    name="round"
+                    value={formData.round}
+                    onValueChange={(value) =>
+                      handleInputChange({ target: { name: "round", value } })
+                    }
+                  >
+                    <SelectTrigger className="h-[60px] rounded-lg text-base">
+                      <SelectValue placeholder="Select round" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white">
+                      <SelectItem value="Pre-seed">Pre-seed</SelectItem>
+                      {/* Add more rounds as needed */}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <Label className="font-semibold">Company logo</Label>
+              <Tabs defaultValue="link" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 bg-gray-50">
+                  <TabsTrigger
+                    value="link"
+                    className="bg-gray-50 data-[state=active]:bg-white rounded-md"
+                  >
+                    Link
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="upload"
+                    className="bg-gray-50 data-[state=active]:bg-white rounded-md"
+                  >
+                    Upload
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="link">
+                  <Input
+                    placeholder="Enter logo URL"
+                    value={formData.project_url}
+                    onChange={(e) =>
+                      handleInputChange({
+                        target: { name: "project_url", value: e.target.value },
+                      })
+                    }
+                    className="h-[60px] text-base"
+                  />
+                </TabsContent>
+                <TabsContent value="upload">
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProjectImageUpload}
+                    className="h-[60px] text-base"
+                  />
+                </TabsContent>
+              </Tabs>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="font-semibold">Profile Image</Label>
+              <Tabs defaultValue="link" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 bg-gray-50">
+                  <TabsTrigger
+                    value="link"
+                    className="bg-gray-50 data-[state=active]:bg-white rounded-md"
+                  >
+                    Link
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="upload"
+                    className="bg-gray-50 data-[state=active]:bg-white rounded-md"
+                  >
+                    Upload
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="link">
+                  <Input
+                    placeholder="Enter profile image URL"
+                    value={formData.card_url}
+                    onChange={(e) =>
+                      handleInputChange({
+                        target: { name: "card_url", value: e.target.value },
+                      })
+                    }
+                    className="h-[60px] text-base"
+                  />
+                </TabsContent>
+                <TabsContent value="upload">
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleCardImageUpload}
+                    className="h-[60px] text-base"
+                  />
+                </TabsContent>
+              </Tabs>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="font-semibold" htmlFor="industry">
+                Industry
+              </Label>
+              <MultiSelectField
+                id="industry"
+                name="industry"
+                OPTIONS={industries}
+                selectedItems={formData.industry}
+                setSelectedItems={handleIndustryChange}
                 required
               />
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="country">Country</Label>
-              <Select
-                id="country"
-                name="country"
-                value={formData.country}
-                onValueChange={(value) =>
-                  handleInputChange({ target: { name: "country", value } })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select country" />
-                </SelectTrigger>
-                <SelectContent>
-                  {countries.map((country) => (
-                    <SelectItem key={country} value={country}>
-                      {country}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label className="font-semibold" htmlFor="calendly">
+                Calendly
+              </Label>
+              <Input
+                id="calendly"
+                name="calendly"
+                value={formData.calendly}
+                onChange={handleInputChange}
+                type="text"
+                placeholder="Enter Calendly link"
+              />
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="showAdditionalFields">
-              Do you want to raise funds?
-            </Label>
-            <Switch
-              id="showAdditionalFields"
-              name="showAdditionalFields"
-              checked={formData.showAdditionalFields === "Yes"}
-              onCheckedChange={(checked) =>
-                handleInputChange({
-                  target: {
-                    name: "showAdditionalFields",
-                    value: checked ? "Yes" : "No",
-                  },
-                })
-              }
-            />
-          </div>
-
-          {formData.showAdditionalFields === "Yes" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="target-amount">Target amount</Label>
-                <Input
-                  id="target-amount"
-                  name="target_amount"
-                  value={formatNumber(formData.target_amount)}
-                  onChange={handleInputChange}
-                  type="text"
-                  placeholder="0"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="offer_type">Type offering</Label>
-                <Select
-                  id="offer_type"
-                  name="offer_type"
-                  value={formData.offer_type}
-                  onValueChange={(value) =>
-                    handleInputChange({ target: { name: "offer_type", value } })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {typeOfferingOptions.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="ticket_size">Min ticket size</Label>
-                <Input
-                  id="ticket_size"
-                  name="ticket_size"
-                  value={formatNumber(formData.ticket_size)}
-                  onChange={handleInputChange}
-                  type="text"
-                  placeholder="0"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="no_ticket">No. ticket</Label>
-                <Input
-                  id="no_ticket"
-                  name="no_ticket"
-                  value={formData.no_ticket}
-                  type="number"
-                  readOnly
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="revenueStatus">Annual revenue last year</Label>
-                <Select
-                  id="revenueStatus"
-                  name="revenueStatus"
-                  value={formData.revenueStatus}
-                  onValueChange={(value) =>
-                    handleInputChange({
-                      target: { name: "revenueStatus", value },
-                    })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select range" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="$0 - $10k">$0 - $10k</SelectItem>
-                    {/* Add more revenue ranges as needed */}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="keyWords">Keywords</Label>
-                <Input
-                  id="keyWords"
-                  name="keyWords"
-                  value={formData.keyWords}
-                  onChange={handleInputChange}
-                  type="text"
-                  placeholder="Enter keywords"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="offer">Offer</Label>
-                <Input
-                  id="offer"
-                  name="offer"
-                  value={formData.offer}
-                  onChange={handleInputChange}
-                  type="text"
-                  placeholder="Describe your offer"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="website">Website</Label>
-                <Input
-                  id="website"
-                  name="website"
-                  value={formData.website}
-                  onChange={handleInputChange}
-                  type="url"
-                  placeholder="https://example.com"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="teamSize">Team size</Label>
-                <Select
-                  id="teamSize"
-                  name="teamSize"
-                  value={formData.teamSize}
-                  onValueChange={(value) =>
-                    handleInputChange({ target: { name: "teamSize", value } })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select size" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1-10">1-10</SelectItem>
-                    {/* Add more team sizes as needed */}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="amountRaised">Raised before</Label>
-                <Input
-                  id="amountRaised"
-                  name="amountRaised"
-                  value={formatNumber(formData.amountRaised)}
-                  onChange={handleInputChange}
-                  type="text"
-                  placeholder="0"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="operationTime">Founded year</Label>
-                <Select
-                  id="operationTime"
-                  name="operationTime"
-                  value={formData.operationTime}
-                  onValueChange={(value) =>
-                    handleInputChange({
-                      target: { name: "operationTime", value },
-                    })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select year" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {years.map((year) => (
-                      <SelectItem key={year} value={year}>
-                        {year}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="round">Round</Label>
-                <Select
-                  id="round"
-                  name="round"
-                  value={formData.round}
-                  onValueChange={(value) =>
-                    handleInputChange({ target: { name: "round", value } })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select round" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Pre-seed">Pre-seed</SelectItem>
-                    {/* Add more rounds as needed */}
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="space-y-2">
+              <Label className="font-semibold" htmlFor="description">
+                Company description
+              </Label>
+              <Textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                placeholder="Describe your company"
+                className="h-32"
+                required
+                maxLength={700}
+              />
             </div>
-          )}
 
-          <div className="space-y-2">
-            <Label>Company logo</Label>
-            <Tabs defaultValue="link" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="link">Link</TabsTrigger>
-                <TabsTrigger value="upload">Upload</TabsTrigger>
-              </TabsList>
-              <TabsContent value="link">
-                <Input
-                  placeholder="Enter logo URL"
-                  value={formData.project_url}
-                  onChange={(e) =>
-                    handleInputChange({
-                      target: { name: "project_url", value: e.target.value },
-                    })
-                  }
-                />
-              </TabsContent>
-              <TabsContent value="upload">
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleProjectImageUpload}
-                />
-              </TabsContent>
-            </Tabs>
-          </div>
-
-          <div className="space-y-2">
-            <Label>Profile Image</Label>
-            <Tabs defaultValue="link" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="link">Link</TabsTrigger>
-                <TabsTrigger value="upload">Upload</TabsTrigger>
-              </TabsList>
-              <TabsContent value="link">
-                <Input
-                  placeholder="Enter profile image URL"
-                  value={formData.card_url}
-                  onChange={(e) =>
-                    handleInputChange({
-                      target: { name: "card_url", value: e.target.value },
-                    })
-                  }
-                />
-              </TabsContent>
-              <TabsContent value="upload">
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleCardImageUpload}
-                />
-              </TabsContent>
-            </Tabs>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="industry">Industry</Label>
-            <MultiSelectField
-              id="industry"
-              name="industry"
-              OPTIONS={industries}
-              selectedItems={formData.industry}
-              setSelectedItems={handleIndustryChange}
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="calendly">Calendly</Label>
-            <Input
-              id="calendly"
-              name="calendly"
-              value={formData.calendly}
-              onChange={handleInputChange}
-              type="text"
-              placeholder="Enter Calendly link"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="description">Company description</Label>
-            <Textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              placeholder="Describe your company"
-              className="h-32"
-              required
-              maxLength={700}
-            />
-          </div>
-
-          <Button type="submit" className="w-full">
-            Submit
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+            <Button type="submit" className="text-white bg-slate-800 w-full">
+              Submit
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 

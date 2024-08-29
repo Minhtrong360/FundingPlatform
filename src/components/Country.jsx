@@ -150,7 +150,7 @@ const countriesData = [
   { code: "GR", label: "Greece", phone: "30" },
   {
     code: "GS",
-    label: "South Georgia and the South Sandwich Islands",
+    label: "South Georgia and South Sandwich Islands",
     phone: "500",
   },
   { code: "GT", label: "Guatemala", phone: "502" },

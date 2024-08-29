@@ -431,7 +431,7 @@ const MyTab = ({
               </Card>
 
               {company?.keyWords && (
-                <div className="mt-28 px-5">
+                <div className="mt-16">
                   <div className="text-black font-semibold">Keywords:</div>
 
                   <div className="mt-2">
@@ -441,7 +441,7 @@ const MyTab = ({
                         return (
                           <Badge
                             key={index}
-                            className="mx-2 bg-yellow-300 border border-gray-300 truncate text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
+                            className=" bg-yellow-300 border border-gray-300 truncate text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
                           >
                             {trimmedKeyword}
                           </Badge>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Input } from "../../../components/ui/Input";
+import { Input } from "../../../components/ui/input";
 import { Card, Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";

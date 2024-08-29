@@ -608,32 +608,14 @@ function CompanySetting() {
   const canClick = false;
 
   return (
-    <div className="w-full h-full flex flex-col lg:flex-row">
-      <div className="w-full lg:w-1/4 sm:p-4 p-0 ">
-        <Company
-          isLoading={isLoading}
-          handleSubmit={handleSubmit}
-          formData={formData}
-          handleInputChange={handleInputChange}
-          typeOfferingOptions={typeOfferingOptions}
-          handleIndustryChange={handleIndustryChange}
-        />
-      </div>
-      <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
-        <div className="">
-          {" "}
-          {/* Sử dụng lg:grid-cols-3 để chia thành 3 cột, trong đó Company component chiếm 1/3 và các div còn lại chiếm 2/3 */}
-          <LoadingButtonClick isLoading={isLoading} />
-          <div className="">
-            {" "}
-            {/* Sử dụng lg:col-span-2 để các div còn lại chiếm 2/3 */}
-            <div className="flex flex-col">
-              <ProfileInfo company={formData} canClick={canClick} />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Company
+      isLoading={isLoading}
+      handleSubmit={handleSubmit}
+      formData={formData}
+      handleInputChange={handleInputChange}
+      typeOfferingOptions={typeOfferingOptions}
+      handleIndustryChange={handleIndustryChange}
+    />
   );
 }
 

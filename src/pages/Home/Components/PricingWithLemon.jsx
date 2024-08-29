@@ -1,9 +1,9 @@
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
-import LoadingButtonClick from "../../../components/LoadingButtonClick";
-import { message, Carousel } from "antd";
+import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
+import { Carousel, message } from "antd";
+import LoadingButtonClick from "../../../components/LoadingButtonClick";
 
 const PricingCard = ({ plan, onClick }) => {
   const price_0 = [
@@ -29,123 +29,63 @@ const PricingCard = ({ plan, onClick }) => {
     "Financial Analysis",
   ];
 
+  const getFeatures = () => {
+    if (plan.price_formatted.includes("$30")) {
+      return price_30;
+    }
+    if (plan.price_formatted.includes("$10")) {
+      return price_10;
+    }
+    if (plan.price_formatted.includes("$0.0")) {
+      return price_0;
+    }
+    return [];
+  };
+
+  const getDescription = () => {
+    if (plan.price_formatted.includes("$30")) {
+      return "For building fin. model and fundraising";
+    }
+    if (plan.price_formatted.includes("$10")) {
+      return "For Startups, small project owners";
+    }
+    if (plan.price_formatted.includes("$0.0")) {
+      return "Free Forever";
+    }
+    return "";
+  };
+
   return (
-    <div className="flex flex-col border rounded-xl p-8 text-center shadow-xl group hover:scale-105 hover:border-blue-700 transition-transform duration-300 ease-in-out h-full">
-      <h4 className="font-medium text-lg text-gray-800 darkTextGray">
-        {plan?.name}
-      </h4>
-      <span className="mt-5 font-semibold text-5xl text-gray-800 darkTextGray">
-        ${plan.price / 100}
-        <span className="font-medium text-lg"> /month</span>
-      </span>
-      <div className="flex-grow">
-        {plan.price_formatted.includes("$30") && (
-          <>
-            <p className="mt-2 text-sm text-gray-500">
-              For building financial model and fundraising
-            </p>
-            <ul className="mt-7 space-y-2.5 text-sm">
-              {price_30.map((feature, index) => (
-                <li
-                  key={index}
-                  className="flex space-x-2 justify-start items-center"
-                >
-                  <svg
-                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span className="text-gray-800 darkTextGray text-start">
-                    {feature}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
+    <div className="zubuz-pricing-wrap flex flex-col justify-between h-full">
+      <div>
+        <div className="zubuz-pricing-header">
+          <h5>{plan?.name}</h5>
+        </div>
 
-        {plan.price_formatted.includes("$10") && (
-          <>
-            <p className="mt-2 text-sm text-gray-500">
-              For Startups, small project owners
-            </p>
-            <ul className="mt-7 space-y-2.5 text-sm">
-              {price_10.map((feature, index) => (
-                <li
-                  key={index}
-                  className="flex space-x-2 justify-start items-center"
-                >
-                  <svg
-                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span className="text-gray-800 darkTextGray text-start">
-                    {feature}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
+        <div className="zubuz-pricing-price">
+          <h2>$</h2>
+          <div className="zubuz-price dynamic-value">{plan.price / 100}</div>
+          <p className="dynamic-value">/month</p>
+        </div>
 
-        {plan.price_formatted.includes("$0.0") && (
-          <>
-            <p className="mt-2 text-sm text-gray-500">Free Forever</p>
-            <ul className="mt-7 space-y-2.5 text-sm">
-              {price_0.map((feature, index) => (
-                <li
-                  key={index}
-                  className="flex space-x-2 justify-start items-center"
-                >
-                  <svg
-                    className="flex-shrink-0 mt-0.5 h-4 w-4 text-blue-600 darkTextBlue"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span className="text-gray-800 darkTextGray text-start">
-                    {feature}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
+        <div className="zubuz-pricing-description">
+          <p>{getDescription()}</p>
+        </div>
+        <div className="zubuz-pricing-body">
+          <ul>
+            {getFeatures().map((feature, index) => (
+              <li key={index}>
+                <img src="/images/v2/check2.png" alt="" />
+                {feature}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
+
       <button
         onClick={onClick}
-        className={`mt-5 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-md border border-transparent text-white hover:bg-blue-700 disabled:opacity-0.5 disabled:pointer-events-none ${
-          plan.price / 100 === 0 || plan.price_formatted.includes("$100")
-            ? "bg-gray-400"
-            : "bg-blue-600"
-        } darkHoverBgBlue900 darkTextBlue darkFocusOutlineNone darkFocusRing-1 darkFocus`}
+        className="zubuz-pricing-btn"
         disabled={
           plan.price / 100 === 0 || plan.price_formatted.includes("$100")
         }
@@ -215,40 +155,25 @@ const PricingWithLemon = () => {
   };
 
   return (
-    <div className="max-w-[85rem] mx-auto px-3 py-20 sm:px-6 lg:px-8 lg:py-14 md:mt-28">
-      <LoadingButtonClick isLoading={isLoading} />
-      <div className="text-center mb-10 lg:mb-14">
-        <h2
-          className="block text-3xl font-extrabold text-gray-800 sm:text-4xl md:text-5xl lg:text-7xl darkTextWhite"
-          id="pricing"
-        >
-          Pricing
-        </h2>
-        <p className="text-gray-600 mt-4 darkTextGray">
-          Whatever your status, our offers evolve according to your needs.
-        </p>
-      </div>
-      {isDesktop ? (
-        <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-32 lg:items-center">
-          {products?.map((plan, index) => (
-            <PricingCard
-              key={index}
-              plan={plan.attributes}
-              onClick={() => {
-                if (user?.email) {
-                  makePayment(plan.attributes, user?.email);
-                } else {
-                  navigate("/login");
-                }
-              }}
-            />
-          ))}
+    <div className="section zubuz-section-padding3 bg-light position-relative">
+      <div className="container">
+        <LoadingButtonClick isLoading={isLoading} />
+        <div className="zubuz-section-title center">
+          <h2>Rational planning for learners</h2>
+          <p className="text-gray-600 mt-4 darkTextGray">
+            Whatever your status, our offers evolve according to your needs.
+          </p>
         </div>
-      ) : (
-        <Carousel infinite={false} initialSlide={1}>
-          {products?.map((plan, index) => (
-            <div key={index} className="p-4">
+        {isDesktop ? (
+          <div
+            className="grid grid-cols-1 md:grid-cols-3 gap-6"
+            id="table-price-value"
+            data-pricing-dynamic
+            data-value-active="monthly"
+          >
+            {products?.map((plan, index) => (
               <PricingCard
+                key={index}
                 plan={plan.attributes}
                 onClick={() => {
                   if (user?.email) {
@@ -258,10 +183,27 @@ const PricingWithLemon = () => {
                   }
                 }}
               />
-            </div>
-          ))}
-        </Carousel>
-      )}
+            ))}
+          </div>
+        ) : (
+          <Carousel infinite={false} initialSlide={1}>
+            {products?.map((plan, index) => (
+              <div key={index} className="p-4">
+                <PricingCard
+                  plan={plan.attributes}
+                  onClick={() => {
+                    if (user?.email) {
+                      makePayment(plan.attributes, user?.email);
+                    } else {
+                      navigate("/login");
+                    }
+                  }}
+                />
+              </div>
+            ))}
+          </Carousel>
+        )}
+      </div>
     </div>
   );
 };

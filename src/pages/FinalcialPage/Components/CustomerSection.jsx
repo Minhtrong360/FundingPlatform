@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Input } from "../../../components/ui/Input";
+import { Input } from "../../../components/ui/input";
 import { Card, Modal, Table, Tooltip, message, Checkbox } from "antd";
 import Chart from "react-apexcharts";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,7 +28,7 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-} from "../../../components/ui/Select";
+} from "../../../components/ui/select";
 import { useParams } from "react-router-dom";
 import {
   CheckCircleOutlined,

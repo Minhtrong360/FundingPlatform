@@ -4,8 +4,8 @@ import {
   SelectValue as FundraisingSelectValue,
   SelectContent as FundraisingSelectContent,
   SelectItem as FundraisingSelectItem,
-} from "../../../components/ui/Select";
-import { Input as FundraisingInput } from "../../../components/ui/Input";
+} from "../../../components/ui/select";
+import { Input as FundraisingInput } from "../../../components/ui/input";
 import { useEffect, useState } from "react";
 import { Card, Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";

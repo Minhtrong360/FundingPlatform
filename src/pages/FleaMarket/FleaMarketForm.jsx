@@ -1,6 +1,6 @@
 import { Modal, message } from "antd";
 
-import { Input } from "../../components/ui/Input";
+import { Input } from "../../components/ui/input";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import { useEffect, useState } from "react";
@@ -157,26 +157,26 @@ export default function FleaMarketForm({
       const missingField = !name
         ? "Name"
         : !company
-        ? "Company"
-        : !companyLogo
-        ? "Company Logo"
-        : !website
-        ? "Website"
-        : !industry
-        ? "Industry"
-        : !country
-        ? "Country"
-        : !phone
-        ? "Phone Number"
-        : !shares
-        ? "Number of Shares"
-        : !price
-        ? "Price"
-        : !proof
-        ? "Proof Documents"
-        : !timeInvested
-        ? "Time Invested"
-        : "Amount Invested";
+          ? "Company"
+          : !companyLogo
+            ? "Company Logo"
+            : !website
+              ? "Website"
+              : !industry
+                ? "Industry"
+                : !country
+                  ? "Country"
+                  : !phone
+                    ? "Phone Number"
+                    : !shares
+                      ? "Number of Shares"
+                      : !price
+                        ? "Price"
+                        : !proof
+                          ? "Proof Documents"
+                          : !timeInvested
+                            ? "Time Invested"
+                            : "Amount Invested";
 
       // Hiển thị thông báo lỗi với trường đang thiếu dữ liệu
       message.error(`Please fill in the "${missingField}" field.`);

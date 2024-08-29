@@ -252,7 +252,7 @@ const NewProjectPosts = ({ location }) => {
       <HomeHeader />
       <div className="px-3 py-2 lg:px-8 lg:py-1 mx-auto">
         <HeroSectionZubuz />
-        <HeroStartup />
+        {/* <HeroStartup /> */}
         <Search
           onSearch={handleSearch}
           onIndustryChange={handleIndustryChange}

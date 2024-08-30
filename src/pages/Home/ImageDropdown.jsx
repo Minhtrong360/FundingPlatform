@@ -115,7 +115,7 @@ const ImageDropdown = () => {
       >
         {userData.avatar ? (
           <img
-            className="w-8 h-auto rounded-full"
+            className="w-8 h-8 rounded-full"
             src={userData.avatar}
             alt={userData.email}
           />

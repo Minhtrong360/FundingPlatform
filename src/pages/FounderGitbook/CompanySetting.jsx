@@ -143,8 +143,20 @@ function CompanySetting() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData?.name) {
+      message.warning("Please input your company's name.");
+      return;
+    }
+    if (!formData?.card_url) {
+      message.warning("Please input your company's profile image.");
+      return;
+    }
+    if (!formData?.project_url) {
+      message.warning("Please input your company's logo.");
+      return;
+    }
     if (formData?.description?.length < 50) {
-      message.warning("Please input at least 50 characters.");
+      message.warning("Please describe your company at least 50 characters.");
       return;
     }
     setIsLoading(true);

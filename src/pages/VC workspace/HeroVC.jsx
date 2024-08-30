@@ -641,7 +641,7 @@ const HeroVC = ({
     },
     {
       title: "Analyzers",
-      dataIndex: "judges",
+      dataIndex: "judges_name",
       key: "judges_name",
       render: (text, record) => (
         <span
@@ -663,7 +663,7 @@ const HeroVC = ({
     },
     {
       title: "Analyzer's Emails",
-      dataIndex: "judges",
+      dataIndex: "judges_email",
       key: "judges_email",
       render: (text, record) => (
         <span
@@ -740,7 +740,7 @@ const HeroVC = ({
                     onClick={() => openJudgeModal(record)}
                     style={{ fontSize: "12px" }}
                   >
-                    Judges
+                    Manage Analyzers
                   </div>
                 </Menu.Item>
                 <Menu.Item key="scoringRules">
@@ -1323,6 +1323,62 @@ const HeroVC = ({
   //   updatedScoringRules[index].score = value;
   //   setScoringRules(updatedScoringRules);
   // };
+
+  const [isUndoQualifiedModalOpen, setIsUndoQualifiedModalOpen] =
+    useState(false);
+
+  // Existing project to qualify state can be reused for undo qualified as well
+
+  const openUndoQualifiedModal = (record) => {
+    setProjectToQualify(record);
+    setIsUndoQualifiedModalOpen(true);
+  };
+
+  const handleUndoQualified = async () => {
+    const updatedApplyInfo = projectToQualify.applyInfo.map((info) => {
+      if (info.universityCode === selectedCode.id) {
+        // Find the index of the current round
+        const roundIndex = selectedCode.rounds.findIndex(
+          (round) => JSON.parse(round)?.id === info.passRound
+        );
+
+        // Set the passRound to the previous round, if it exists
+        const previousRound =
+          roundIndex > 0 ? selectedCode.rounds[roundIndex - 1] : null;
+        return {
+          ...info,
+          passRound: previousRound ? JSON.parse(previousRound)?.id : null,
+        };
+      }
+      return info;
+    });
+
+    try {
+      const { data, error } = await supabase
+        .from("projects")
+        .update({ applyInfo: updatedApplyInfo })
+        .eq("id", projectToQualify.id);
+
+      if (error) {
+        throw error;
+      }
+
+      const updatedProjects = projectList.map((proj) =>
+        proj.id === projectToQualify.id
+          ? { ...proj, applyInfo: updatedApplyInfo }
+          : proj
+      );
+
+      setProjectList(updatedProjects);
+      message.success("Project moved back to previous round successfully");
+      setIsUndoQualifiedModalOpen(false);
+      filterProjectsByRound(selectedRound);
+    } catch (error) {
+      message.error("Failed to move project back to previous round");
+      console.error("Error moving project back to previous round:", error);
+    }
+  };
+
   return (
     <section className="bg-white">
       <div className="sm:px-6 px-3 mx-auto text-center">
@@ -1503,23 +1559,18 @@ const HeroVC = ({
                   ))}
                 </div>
                 <div className="flex justify-between mt-5">
-                  <button
+                  <LeftOutlined
                     onClick={handlePrevious}
                     disabled={currentCodePage === 0}
-                    className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${currentCodePage === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
-                  >
-                    <LeftOutlined /> Previous
-                  </button>
-                  <button
+                    className={` ${currentCodePage === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+                  />
+                  <RightOutlined
                     onClick={handleNext}
                     disabled={
                       (currentCodePage + 1) * itemsPerPage >= codeData.length
                     }
-                    className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${(currentCodePage + 1) * itemsPerPage >= codeData.length ? "opacity-50 cursor-not-allowed" : ""}`}
-                  >
-                    Next
-                    <RightOutlined className="ml-2" />
-                  </button>
+                    className={` ${(currentCodePage + 1) * itemsPerPage >= codeData.length ? "opacity-50 cursor-not-allowed" : ""}`}
+                  />
                 </div>
               </div>
             </section>
@@ -1693,13 +1744,11 @@ const HeroVC = ({
             <form className="grid gap-6 col-span-1 md:col-span-2">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label htmlFor="edit_competition_name">
-                    Competition Name
-                  </label>
+                  <label htmlFor="edit_competition_name">Cohort Name</label>
                   <div className="flex items-center">
                     <Input
                       id="edit_competition_name"
-                      placeholder="Enter competition name"
+                      placeholder="Enter Cohort name"
                       required
                       className="border-gray-300 rounded-md text-sm"
                       value={competitionName}
@@ -1750,7 +1799,7 @@ const HeroVC = ({
               </div>
               <div className="space-y-1 md:col-span-2">
                 <label htmlFor="competition_description">
-                  Competition Description
+                  Cohort Description
                 </label>
                 <div className="flex items-center">
                   <Input.TextArea
@@ -1765,7 +1814,7 @@ const HeroVC = ({
                 </div>
               </div>
               <div className="space-y-1 md:col-span-2">
-                <label htmlFor="cover">Competition Cover</label>
+                <label htmlFor="cover">Cohort Cover</label>
                 <div className="flex items-center">
                   <Input
                     id="cover"
@@ -1859,7 +1908,11 @@ const HeroVC = ({
           }}
           centered={true}
         >
-          Are you sure you want to delete it?
+          Are you sure you want to delete{" "}
+          <span className="text-[#f5222d] font-semibold">
+            {codeData?.find((data) => data.id === codeToDelete)?.name}
+          </span>
+          ?
         </Modal>
 
         <Modal
@@ -1894,7 +1947,6 @@ const HeroVC = ({
         </Modal>
 
         <Modal
-          title="Manage Judges"
           open={isJudgeModalOpen}
           onOk={() => setIsJudgeModalOpen(false)}
           onCancel={() => setIsJudgeModalOpen(false)}
@@ -1904,14 +1956,14 @@ const HeroVC = ({
           width={600}
         >
           <div className="w-full mx-auto p-6 space-y-6 ">
-            <h3 className="text-lg font-semibold">Add Judge</h3>
+            <h3 className="text-lg font-semibold">Add new Analyzer</h3>
             <form className="grid gap-6 col-span-1 md:col-span-2">
               <div className="space-y-2">
-                <label htmlFor="judge_name">Judge Name</label>
+                <label htmlFor="judge_name">Name</label>
                 <div className="flex items-center">
                   <Input
                     id="judge_name"
-                    placeholder="Enter judge name"
+                    placeholder="Enter their name"
                     required
                     className="border-gray-300 rounded-md text-sm"
                     value={judgeName}
@@ -1920,11 +1972,11 @@ const HeroVC = ({
                 </div>
               </div>
               <div className="space-y-2">
-                <label htmlFor="judge_email">Judge Email</label>
+                <label htmlFor="judge_email">Email</label>
                 <div className="flex items-center">
                   <Input
                     id="judge_email"
-                    placeholder="Enter judge email"
+                    placeholder="Enter their email"
                     required
                     className="border-gray-300 rounded-md text-sm"
                     value={judgeEmail}
@@ -1933,11 +1985,11 @@ const HeroVC = ({
                 </div>
               </div>
               <Button type="primary" onClick={handleAddJudge}>
-                Add Judge
+                Add Analyzer
               </Button>
             </form>
 
-            <h3 className="text-lg font-semibold mt-6">Judge Listing</h3>
+            <h3 className="text-lg font-semibold mt-6">Analyzers Listing</h3>
             <div>
               <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
                 <Table
@@ -2167,6 +2219,24 @@ const HeroVC = ({
         >
           <div className="w-full mx-auto p-6 space-y-6">
             <p>{`Is this "${projectToQualify?.name}" moved to next round?`}</p>
+          </div>
+        </Modal>
+
+        <Modal
+          title="Undo Qualified project"
+          open={isUndoQualifiedModalOpen}
+          onOk={handleUndoQualified}
+          onCancel={() => setIsUndoQualifiedModalOpen(false)}
+          okText="Confirm"
+          cancelText="Cancel"
+          centered={true}
+        >
+          <div className="w-full mx-auto p-6 space-y-6">
+            Are you sure you want to move{" "}
+            <span className="text-[#2563EB] font-semibold">
+              {projectToQualify?.name} ({projectToQualify?.company?.name})
+            </span>{" "}
+            back to the previous round?
           </div>
         </Modal>
       </div>

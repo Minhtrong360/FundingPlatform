@@ -802,7 +802,7 @@ function ProjectList({ projects }) {
           centered={true}
         >
           Are you sure you want to delete this{" "}
-          <span style={{ fontWeight: "bold", color: "#2563EB" }}>
+          <span className="text-[#f5222d] font-semibold">
             {
               updatedProjects?.find((project) => project.id === SelectedID)
                 ?.name

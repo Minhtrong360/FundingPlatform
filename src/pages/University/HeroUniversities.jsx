@@ -176,7 +176,7 @@ const HeroUniversities = ({
       !codeAvatarUrl ||
       rounds.some((round) => !round.name) // Check if any round names are empty
     ) {
-      message.error("Please enter all required fields, including round names.");
+      message.error("Please enter all required fields.");
       return;
     }
 
@@ -740,7 +740,7 @@ const HeroUniversities = ({
                     onClick={() => openJudgeModal(record)}
                     style={{ fontSize: "12px" }}
                   >
-                    Judges
+                    Manage Judges
                   </div>
                 </Menu.Item>
                 <Menu.Item key="scoringRules">
@@ -829,7 +829,7 @@ const HeroUniversities = ({
 
   const [isQualifiedModalOpen, setIsQualifiedModalOpen] = useState(false);
   const [projectToQualify, setProjectToQualify] = useState(null);
-
+  console.log("projectToQualify", projectToQualify);
   const openQualifiedModal = (record) => {
     setProjectToQualify(record);
     setIsQualifiedModalOpen(true);
@@ -1049,14 +1049,14 @@ const HeroUniversities = ({
                     Qualified
                   </div>
                 </Menu.Item>
-                {/* <Menu.Item key="score">
+                <Menu.Item key="undoQualified">
                   <div
-                    onClick={() => openScoreModal(record)}
+                    onClick={() => openUndoQualifiedModal(record)}
                     style={{ fontSize: "12px" }}
                   >
-                    Score
+                    Undo Qualified
                   </div>
-                </Menu.Item> */}
+                </Menu.Item>
               </>
             </Menu>
           }
@@ -1323,6 +1323,62 @@ const HeroUniversities = ({
   //   updatedScoringRules[index].score = value;
   //   setScoringRules(updatedScoringRules);
   // };
+
+  const [isUndoQualifiedModalOpen, setIsUndoQualifiedModalOpen] =
+    useState(false);
+
+  // Existing project to qualify state can be reused for undo qualified as well
+
+  const openUndoQualifiedModal = (record) => {
+    setProjectToQualify(record);
+    setIsUndoQualifiedModalOpen(true);
+  };
+
+  const handleUndoQualified = async () => {
+    const updatedApplyInfo = projectToQualify.applyInfo.map((info) => {
+      if (info.universityCode === selectedCode.id) {
+        // Find the index of the current round
+        const roundIndex = selectedCode.rounds.findIndex(
+          (round) => JSON.parse(round)?.id === info.passRound
+        );
+
+        // Set the passRound to the previous round, if it exists
+        const previousRound =
+          roundIndex > 0 ? selectedCode.rounds[roundIndex - 1] : null;
+        return {
+          ...info,
+          passRound: previousRound ? JSON.parse(previousRound)?.id : null,
+        };
+      }
+      return info;
+    });
+
+    try {
+      const { data, error } = await supabase
+        .from("projects")
+        .update({ applyInfo: updatedApplyInfo })
+        .eq("id", projectToQualify.id);
+
+      if (error) {
+        throw error;
+      }
+
+      const updatedProjects = projectList.map((proj) =>
+        proj.id === projectToQualify.id
+          ? { ...proj, applyInfo: updatedApplyInfo }
+          : proj
+      );
+
+      setProjectList(updatedProjects);
+      message.success("Project moved back to previous round successfully");
+      setIsUndoQualifiedModalOpen(false);
+      filterProjectsByRound(selectedRound);
+    } catch (error) {
+      message.error("Failed to move project back to previous round");
+      console.error("Error moving project back to previous round:", error);
+    }
+  };
+
   return (
     <section className="bg-white">
       <div className="sm:px-6 px-3 mx-auto text-center">
@@ -1503,23 +1559,18 @@ const HeroUniversities = ({
                   ))}
                 </div>
                 <div className="flex justify-between mt-5">
-                  <button
+                  <LeftOutlined
                     onClick={handlePrevious}
                     disabled={currentCodePage === 0}
-                    className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${currentCodePage === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
-                  >
-                    <LeftOutlined /> Previous
-                  </button>
-                  <button
+                    className={` ${currentCodePage === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+                  />
+                  <RightOutlined
                     onClick={handleNext}
                     disabled={
                       (currentCodePage + 1) * itemsPerPage >= codeData.length
                     }
-                    className={`bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] ${(currentCodePage + 1) * itemsPerPage >= codeData.length ? "opacity-50 cursor-not-allowed" : ""}`}
-                  >
-                    Next
-                    <RightOutlined className="ml-2" />
-                  </button>
+                    className={` ${(currentCodePage + 1) * itemsPerPage >= codeData.length ? "opacity-50 cursor-not-allowed" : ""}`}
+                  />
                 </div>
               </div>
             </section>
@@ -1859,7 +1910,11 @@ const HeroUniversities = ({
           }}
           centered={true}
         >
-          Are you sure you want to delete it?
+          Are you sure you want to delete{" "}
+          <span className="text-[#f5222d] font-semibold">
+            {codeData?.find((data) => data.id === codeToDelete)?.name}
+          </span>
+          ?
         </Modal>
 
         <Modal
@@ -2166,7 +2221,29 @@ const HeroUniversities = ({
           centered={true}
         >
           <div className="w-full mx-auto p-6 space-y-6">
-            <p>{`Is this "${projectToQualify?.name}" moved to next round?`}</p>
+            Is this{" "}
+            <span className="text-[#2563EB] font-semibold">
+              {projectToQualify?.name} ({projectToQualify?.company?.name})
+            </span>{" "}
+            moved to next round?
+          </div>
+        </Modal>
+
+        <Modal
+          title="Undo Qualified project"
+          open={isUndoQualifiedModalOpen}
+          onOk={handleUndoQualified}
+          onCancel={() => setIsUndoQualifiedModalOpen(false)}
+          okText="Confirm"
+          cancelText="Cancel"
+          centered={true}
+        >
+          <div className="w-full mx-auto p-6 space-y-6">
+            Are you sure you want to move{" "}
+            <span className="text-[#2563EB] font-semibold">
+              {projectToQualify?.name} ({projectToQualify?.company?.name})
+            </span>{" "}
+            back to the previous round?
           </div>
         </Modal>
       </div>

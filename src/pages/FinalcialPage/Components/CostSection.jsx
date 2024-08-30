@@ -34,6 +34,7 @@ import SpinnerBtn from "../../../components/SpinnerBtn";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import DraggableChart from "./DraggableChart";
+import { setInputData } from "../../../features/DurationSlice";
 
 const CostInputForm = ({
   tempCostInput,
@@ -116,6 +117,8 @@ const CostInputForm = ({
       });
     }
   };
+
+  console.log("revenueData", revenueData);
 
   return (
     <section aria-labelledby="costs-heading" className="mb-8 NOsticky NOtop-8">
@@ -227,6 +230,9 @@ const CostInputForm = ({
                       <SelectValue placeholder="Select Related Revenue" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="Total Revenue">
+                        Total Revenue
+                      </SelectItem>
                       {Object.keys(revenueData).map((revenueKey) => (
                         <SelectItem key={revenueKey} value={revenueKey}>
                           {revenueKey}
@@ -653,7 +659,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
     "11",
     "12",
   ];
-  const { startMonth, startYear } = useSelector(
+  const { startMonth, startYear, inputData } = useSelector(
     (state) => state.durationSelect
   );
 
@@ -856,13 +862,16 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
 
         dispatch(setCostInputs(tempCostInput));
 
-        const newInputData = JSON.parse(existingData[0].inputData);
+        const updatedInputData = {
+          ...inputData,
+          costInputs: tempCostInput,
+        };
 
-        newInputData.costInputs = tempCostInput;
+        dispatch(setInputData(updatedInputData));
 
         const { error: updateError } = await supabase
           .from("finance")
-          .update({ inputData: newInputData })
+          .update({ inputData: updatedInputData })
           .eq("id", existingData[0]?.id)
           .select();
 

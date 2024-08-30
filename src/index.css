@@ -392,3 +392,25 @@ code {
   line-height: 2; /* Adjust the value as needed */
   margin-bottom: 1rem; /* Add some margin at the bottom for better spacing */
 }
+
+@keyframes colorChange {
+  0% {
+    color: red;
+  }
+  25% {
+    color: blue;
+  }
+  50% {
+    color: orange;
+  }
+  75% {
+    color: gray;
+  }
+  100% {
+    color: red;
+  }
+}
+
+.color-changing-text {
+  animation: colorChange 2s infinite;
+}

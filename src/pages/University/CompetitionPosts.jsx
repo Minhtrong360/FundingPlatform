@@ -11,6 +11,7 @@ import TabPane from "antd/es/tabs/TabPane";
 import { useAuth } from "../../context/AuthContext";
 import Header2 from "../Home/Header2";
 import HeroCompetitions from "./HeroCompetitons";
+import SubmitProjectModal from "./components/SubmitProjectComponent";
 
 const CompetitionPost = () => {
   const [companies, setCompanies] = useState([]);
@@ -248,10 +249,10 @@ const CompetitionPost = () => {
   };
 
   return (
-    <div className=" bg-white darkBg antialiased !p-0">
+    <div className="bg-white darkBg antialiased !p-0">
       <div id="exampleWrapper">
         <Header2 />
-        <div className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0 ">
+        <div className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0">
           <div className="px-3 py-2 lg:px-8 lg:py-1 mx-auto flex-grow">
             <HeroCompetitions
               onSelectCode={handleSelectCode}
@@ -286,13 +287,7 @@ const CompetitionPost = () => {
               >
                 <TabPane
                   tab={
-                    <Dropdown
-                      overlay={roundsMenu}
-                      trigger={["hover"]}
-                      // onOpenChange={(visible) =>
-                      //   setHoveredTab(visible ? "Listing" : "")
-                      // }
-                    >
+                    <Dropdown overlay={roundsMenu} trigger={["hover"]}>
                       <span>Listing</span>
                     </Dropdown>
                   }
@@ -344,6 +339,9 @@ const CompetitionPost = () => {
                           </>
                         )}
                       </div>
+                      <div className="sticky bottom-8 left-8">
+                        <SubmitProjectModal />
+                      </div>
                     </>
                   )}
                 </TabPane>
@@ -355,6 +353,9 @@ const CompetitionPost = () => {
                       unChange={true}
                       handleUpdateRules={handleUpdateRules}
                     />
+                  </div>
+                  <div className="sticky bottom-8 left-8">
+                    <SubmitProjectModal />
                   </div>
                 </TabPane>
               </Tabs>

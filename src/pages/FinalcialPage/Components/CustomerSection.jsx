@@ -42,6 +42,7 @@ import SpinnerBtn from "../../../components/SpinnerBtn";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import DraggableChart from "./DraggableChart";
+import { setInputData } from "../../../features/DurationSlice";
 
 const CustomerInputsForm = React.memo(
   ({
@@ -455,7 +456,7 @@ const CustomerSection = React.memo(
     const { customerInputs, customerGrowthData, customerTableData } =
       useSelector((state) => state.customer);
 
-    const { startMonth, startYear } = useSelector(
+    const { startMonth, startYear, inputData } = useSelector(
       (state) => state.durationSelect
     );
     const [tempCustomerInputs, setTempCustomerInputs] =
@@ -718,7 +719,7 @@ const CustomerSection = React.memo(
         }
 
         if (existingData && existingData.length > 0) {
-          const { user_email, collabs, inputData } = existingData[0];
+          const { user_email, collabs } = existingData[0];
 
           if (user.email !== user_email && !collabs?.includes(user.email)) {
             message.error("You do not have permission to update this record.");
@@ -755,8 +756,6 @@ const CustomerSection = React.memo(
           dispatch(setYearlySales(yearlySale));
           dispatch(setRevenueData(revenueByChannelAndProduct));
 
-          const newInputData = JSON.parse(inputData);
-
           const calculatedData = calculateCustomerGrowth(
             tempCustomerInputs,
             numberOfMonths
@@ -769,14 +768,20 @@ const CustomerSection = React.memo(
           );
 
           dispatch(setChannelInputs(updatedChannelInputs));
-          newInputData.customerInputs = tempCustomerInputs;
-          newInputData.yearlyAverageCustomers = averages;
-          newInputData.yearlySales = yearlySale;
-          newInputData.channelInputs = updatedChannelInputs;
+
+          const updatedInputData = {
+            ...inputData,
+            channelInputs: updatedChannelInputs,
+            customerInputs: tempCustomerInputs,
+            yearlyAverageCustomers: averages,
+            yearlySales: yearlySale,
+          };
+
+          dispatch(setInputData(updatedInputData));
 
           const { error: updateError } = await supabase
             .from("finance")
-            .update({ inputData: newInputData })
+            .update({ inputData: updatedInputData })
             .eq("id", existingData[0]?.id)
             .select();
 

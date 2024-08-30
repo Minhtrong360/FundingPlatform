@@ -35,6 +35,7 @@ import {
   setStartYear,
   setDescription,
   setLocation,
+  setInputData,
 } from "../../features/DurationSlice";
 import {
   calculateCustomerGrowth,
@@ -85,6 +86,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     cutMonth,
     description,
     location,
+    inputData,
   } = useSelector((state) => state.durationSelect);
   // const generatePrompt = () => {
   //   return `Given ${description} and ${location}, list all facts and figures related to the revenue, cost, personnel, margin, salary related to in bullet points. Each bullet points no more than 10 words. `;
@@ -528,7 +530,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 deductionPercentage: 5,
                 cogsPercentage: 30,
                 selectedChannel: { id: 1, channelName: "Online" },
-                channelAllocation: 0.4,
+                channelAllocation: 40,
                 daysGetPaid: 0,
               },
               {
@@ -539,7 +541,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 deductionPercentage: 4,
                 cogsPercentage: 35,
                 selectedChannel: { id: 2, channelName: "Offline" },
-                channelAllocation: 0.3,
+                channelAllocation: 30,
                 daysGetPaid: 0,
               },
               {
@@ -550,7 +552,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 deductionPercentage: 6,
                 cogsPercentage: 25,
                 selectedChannel: { id: 2, channelName: "Offline" },
-                channelAllocation: 0.6,
+                channelAllocation: 60,
                 daysGetPaid: 0,
               },
             ]
@@ -691,6 +693,34 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 equityOffered: 0,
               },
             ]
+          )
+        );
+        dispatch(
+          setInputData(
+            inputData.inputData || {
+              selectedDuration,
+              startingCashBalance,
+              status,
+              industry,
+              incomeTax,
+              payrollTax,
+              currency,
+              startMonth,
+              startYear,
+              financialProjectName,
+              cutMonth,
+              customerInputs,
+              channelInputs,
+              costInputs,
+              personnelInputs,
+              investmentInputs,
+              loanInputs,
+              fundraisingInputs,
+              yearlyAverageCustomers,
+              yearlySales,
+              description,
+              location,
+            }
           )
         );
       }
@@ -859,6 +889,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       description,
       location,
     };
+
+    dispatch(setInputData(financeData));
 
     await saveOrUpdateFinanceData(financeData);
 

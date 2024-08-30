@@ -1083,278 +1083,274 @@ const CompetitionPost = () => {
   };
 
   return (
-    <div className="bg-white darkBg antialiased !p-0">
-      <div id="exampleWrapper">
-        <HomeHeader />
-        <div className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0">
-          <div className="px-3 py-2 lg:px-8 lg:py-1 mx-auto flex-grow">
-            <HeroSectionZubuz />
-            <HeroCompetitions
-              onSelectCode={handleSelectCode}
-              setCompanies={setCompanies}
-              selectedCode={selectedCodeFull}
-              setSelectedCodeFull={setSelectedCodeFull}
-              filteredProjectList={filteredProjectList}
-              setFilteredProjectList={setFilteredProjectList}
-              selectedRound={selectedRound}
-              setSelectedRound={setSelectedRound}
-              filterProjectsByRound={filterProjectsByRound}
-              projectList={projectList}
-              setProjectList={setProjectList}
-            />
+    <div>
+      <HomeHeader />
 
-            <>
-              <UniSearch
-                onSearch={handleSearch}
-                companies={companiesToRender}
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-                currentTab={currentTab}
-                setCurrentTab={setCurrentTab}
-                selectedCode={selectedCodeFull}
-              />
+      <div className="py-2 lg:py-1 mx-auto ">
+        <HeroSectionZubuz />
+        <HeroCompetitions
+          onSelectCode={handleSelectCode}
+          setCompanies={setCompanies}
+          selectedCode={selectedCodeFull}
+          setSelectedCodeFull={setSelectedCodeFull}
+          filteredProjectList={filteredProjectList}
+          setFilteredProjectList={setFilteredProjectList}
+          selectedRound={selectedRound}
+          setSelectedRound={setSelectedRound}
+          filterProjectsByRound={filterProjectsByRound}
+          projectList={projectList}
+          setProjectList={setProjectList}
+        />
 
-              <Tabs
-                activeKey={selectedTab}
-                onChange={(key) => setSelectedTab(key)}
-                centered
-                id="codeCompetition"
-              >
-                <TabPane
-                  tab={
-                    <Dropdown overlay={roundsMenu} trigger={["hover"]}>
-                      <span>Listing</span>
-                    </Dropdown>
-                  }
-                  key="Listing"
-                >
-                  {isLoading ? (
-                    <LinearProgress className="my-20" />
-                  ) : (
-                    <>
-                      {selectedRound && (
-                        <h2 className="text-center font-semibold text-lg">
-                          Round: {selectedRound?.name}
-                        </h2>
-                      )}
-                      <div className="mx-auto max-w-[85rem] my-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
-                        {companiesToRender.length > 0 ? (
-                          companiesToRender.map((company, index) => (
-                            <div
-                              key={company.id}
-                              className="group flex justify-center"
-                            >
-                              {company ? (
-                                <Card
-                                  key={company.id}
-                                  title={company.name}
-                                  description={company.description}
-                                  imageUrl={company.card_url}
-                                  buttonText="More"
-                                  project_id={company.project_id}
-                                  verified={company.verifiedStatus}
-                                  status={company.status}
-                                  selectedCodeFull={selectedCodeFull}
-                                  projectList={projectList}
-                                  selectedRound={selectedRound}
-                                  setProjectList={setProjectList}
-                                  isJudge={isJudge}
-                                />
-                              ) : (
-                                <div className="w-[30vw] h-[55vh]"></div>
-                              )}
-                            </div>
-                          ))
-                        ) : (
-                          <>
-                            <div></div>
-                            <div className="mx-auto my-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
-                              No result
-                            </div>
-                          </>
-                        )}
-                      </div>
-                      <div className="sticky bottom-8 left-8">
-                        <SubmitProjectModal />
-                      </div>
-                    </>
+        <>
+          <UniSearch
+            onSearch={handleSearch}
+            companies={companiesToRender}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            currentTab={currentTab}
+            setCurrentTab={setCurrentTab}
+            selectedCode={selectedCodeFull}
+          />
+
+          <Tabs
+            activeKey={selectedTab}
+            onChange={(key) => setSelectedTab(key)}
+            centered
+            id="codeCompetition"
+          >
+            <TabPane
+              tab={
+                <Dropdown overlay={roundsMenu} trigger={["hover"]}>
+                  <span>Listing</span>
+                </Dropdown>
+              }
+              key="Listing"
+            >
+              {isLoading ? (
+                <LinearProgress className="my-20" />
+              ) : (
+                <>
+                  {selectedRound && (
+                    <h2 className="text-center font-semibold text-lg">
+                      Round: {selectedRound?.name}
+                    </h2>
                   )}
-                </TabPane>
-                <TabPane tab="Rules" key="Rules">
-                  <div className="flex justify-center items-center">
-                    <UniEditorTool
-                      selectedCode={selectedCodeFull}
-                      setSelectedCode={setSelectedCodeFull}
-                      unChange={true}
-                      handleUpdateRules={handleUpdateRules}
-                    />
+                  <div className="bg-gray-50">
+                    <div className="container grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
+                      {companiesToRender.length > 0 ? (
+                        companiesToRender.map((company, index) => (
+                          <div
+                            key={company.id}
+                            className="group flex justify-center"
+                          >
+                            {company ? (
+                              <Card
+                                key={company.id}
+                                title={company.name}
+                                description={company.description}
+                                imageUrl={company.card_url}
+                                buttonText="More"
+                                project_id={company.project_id}
+                                verified={company.verifiedStatus}
+                                status={company.status}
+                                selectedCodeFull={selectedCodeFull}
+                                projectList={projectList}
+                                selectedRound={selectedRound}
+                                setProjectList={setProjectList}
+                                isJudge={isJudge}
+                                project={company}
+                              />
+                            ) : (
+                              <div className="w-[30vw] h-[55vh]"></div>
+                            )}
+                          </div>
+                        ))
+                      ) : (
+                        <>
+                          <div></div>
+                          <div className="mx-auto my-20 text-center text-4xl font-semibold text-gray-800 darkTextGray">
+                            No result
+                          </div>
+                        </>
+                      )}
+                    </div>
                   </div>
                   <div className="sticky bottom-8 left-8">
                     <SubmitProjectModal />
                   </div>
-                </TabPane>
-                {isJudge && (
-                  <TabPane tab="Tracking" key="tracking">
-                    <section className="container px-4 mx-auto mt-14 max-w-[85rem]">
-                      <div className="flex flex-col mb5">
-                        <h2 className="text-xl font-bold text-left">
-                          Project listing by {selectedCodeFull?.code}
-                        </h2>
-                        <div className="flex items-center mt-2">
-                          <label className="text-sm mr-2">Select round:</label>
-                          <Select
-                            id="round-select"
-                            className="rounded-md p-1 text-xs"
-                            value={selectedRound?.name}
-                            onChange={(value) => {
-                              const foundRound = selectedCodeFull?.rounds.find(
-                                (round) =>
-                                  JSON.parse(round)?.id === JSON.parse(value).id
-                              );
-                              return setSelectedRound(JSON.parse(foundRound));
-                            }}
-                            style={{ width: 200 }}
-                          >
-                            {selectedCodeFull?.rounds?.map((round, index) => (
-                              <Option key={index} value={round}>
-                                {JSON.parse(round).name}
-                              </Option>
-                            ))}
-                          </Select>
-                        </div>
-                        <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
-                          <Table
-                            columns={projectByCodeColumns}
-                            dataSource={filteredProjectList}
-                            pagination={{
-                              position: ["bottomLeft"],
-                            }}
-                            rowKey="id"
-                            size="small"
-                            bordered
-                            scroll={{
-                              x: true,
-                            }}
-                            onRow={(record) => ({
-                              onClick: () => {
-                                setSelectedProject(record);
-                                handleTeamClick();
-                              },
-                            })}
-                          />
-                        </div>
-                      </div>
-                    </section>
-                    <section className="container px-4 mx-auto mt-14 max-w-[85rem]">
-                      <div className="flex flex-col mb-5">
-                        <h3
-                          className="font-bold text-xl text-left"
-                          id="participants_listing"
-                        >
-                          Participants listing
-                        </h3>
-
-                        <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
-                          <Table
-                            columns={DiaryColumns}
-                            dataSource={participants}
-                            pagination={{
-                              position: ["bottomLeft"],
-                            }}
-                            rowKey="email"
-                            size="small"
-                            bordered
-                            loading={isLoading}
-                          />
-                        </div>
-                      </div>
-                    </section>
-                  </TabPane>
-                )}
-                {showCreateActivitiesTab && (
-                  <TabPane tab="Create Activities" key="createActivities">
-                    <div className="container px-4 mx-auto mt-14 max-w-[85rem]">
-                      <div className="relative">
-                        <BlockNoteView
-                          editor={editor}
-                          theme={"light"}
-                          className="w-full"
-                          onChange={async function (editor) {
-                            const blocks = editor.topLevelBlocks;
-                            for (const block of blocks) {
-                              if (
-                                block.type === "image" &&
-                                block.props.url &&
-                                !block.props.url.includes("beekrowd_storage")
-                              ) {
-                                const newUrl =
-                                  await uploadImageFromURLToSupabase(
-                                    block.props.url
-                                  );
-                                if (newUrl) {
-                                  block.props.url = newUrl;
-                                }
-                              }
-                            }
-
-                            // Handle video blocks
-                            blocks.forEach((block) => {
-                              if (block.type === "video") {
-                                const videoElement = document.querySelector(
-                                  `video[src="${block.props.url}"]`
-                                );
-                                if (
-                                  videoElement &&
-                                  block.props.url.includes("youtube.com")
-                                ) {
-                                  const videoId =
-                                    block.props.url.split("v=")[1];
-                                  const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-                                  const iframe =
-                                    document.createElement("iframe");
-                                  iframe.width =
-                                    block.props.previewWidth || "100%";
-                                  iframe.height = "315";
-                                  iframe.src = embedUrl;
-                                  iframe.frameBorder = "0";
-                                  iframe.allow =
-                                    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                                  iframe.allowFullscreen = true;
-                                  videoElement.replaceWith(iframe);
-                                }
-                              }
-                            });
-                            setContent(blocks);
-                          }}
-                        />
-
-                        <div className="sm:px-5 sticky bottom-5 left-5">
-                          <>
-                            <button
-                              className={`min-w-[110px] mt-8 hover:cursor-pointer py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent ${
-                                isLoading
-                                  ? "bg-gray-600 disabled:opacity-50 disabled:pointer-events-none"
-                                  : "bg-blue-600 text-white hover:bg-blue-700"
-                              }  `}
-                              onClick={handleSaveDiary}
-                              type="button"
-                            >
-                              {isLoading ? (
-                                <SpinnerBtn isLoading={isLoading} />
-                              ) : (
-                                "Save Diary"
-                              )}
-                            </button>
-                          </>
-                        </div>
-                      </div>
+                </>
+              )}
+            </TabPane>
+            <TabPane tab="Rules" key="Rules">
+              <div className="flex justify-center items-center">
+                <UniEditorTool
+                  selectedCode={selectedCodeFull}
+                  setSelectedCode={setSelectedCodeFull}
+                  unChange={true}
+                  handleUpdateRules={handleUpdateRules}
+                />
+              </div>
+              <div className="sticky bottom-8 left-8">
+                <SubmitProjectModal />
+              </div>
+            </TabPane>
+            {isJudge && (
+              <TabPane tab="Tracking" key="tracking">
+                <section className="container px-4 mx-auto mt-14 max-w-[85rem]">
+                  <div className="flex flex-col mb5">
+                    <h2 className="text-xl font-bold text-left">
+                      Project listing by {selectedCodeFull?.code}
+                    </h2>
+                    <div className="flex items-center mt-2">
+                      <label className="text-sm mr-2">Select round:</label>
+                      <Select
+                        id="round-select"
+                        className="rounded-md p-1 text-xs"
+                        value={selectedRound?.name}
+                        onChange={(value) => {
+                          const foundRound = selectedCodeFull?.rounds.find(
+                            (round) =>
+                              JSON.parse(round)?.id === JSON.parse(value).id
+                          );
+                          return setSelectedRound(JSON.parse(foundRound));
+                        }}
+                        style={{ width: 200 }}
+                      >
+                        {selectedCodeFull?.rounds?.map((round, index) => (
+                          <Option key={index} value={round}>
+                            {JSON.parse(round).name}
+                          </Option>
+                        ))}
+                      </Select>
                     </div>
-                  </TabPane>
-                )}
-              </Tabs>
-            </>
-          </div>
-        </div>
+                    <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
+                      <Table
+                        columns={projectByCodeColumns}
+                        dataSource={filteredProjectList}
+                        pagination={{
+                          position: ["bottomLeft"],
+                        }}
+                        rowKey="id"
+                        size="small"
+                        bordered
+                        scroll={{
+                          x: true,
+                        }}
+                        onRow={(record) => ({
+                          onClick: () => {
+                            setSelectedProject(record);
+                            handleTeamClick();
+                          },
+                        })}
+                      />
+                    </div>
+                  </div>
+                </section>
+                <section className="container px-4 mx-auto mt-14 max-w-[85rem]">
+                  <div className="flex flex-col mb-5">
+                    <h3
+                      className="font-bold text-xl text-left"
+                      id="participants_listing"
+                    >
+                      Participants listing
+                    </h3>
+
+                    <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
+                      <Table
+                        columns={DiaryColumns}
+                        dataSource={participants}
+                        pagination={{
+                          position: ["bottomLeft"],
+                        }}
+                        rowKey="email"
+                        size="small"
+                        bordered
+                        loading={isLoading}
+                      />
+                    </div>
+                  </div>
+                </section>
+              </TabPane>
+            )}
+            {showCreateActivitiesTab && (
+              <TabPane tab="Create Activities" key="createActivities">
+                <div className="container px-4 mx-auto mt-14 max-w-[85rem]">
+                  <div className="relative">
+                    <BlockNoteView
+                      editor={editor}
+                      theme={"light"}
+                      className="w-full"
+                      onChange={async function (editor) {
+                        const blocks = editor.topLevelBlocks;
+                        for (const block of blocks) {
+                          if (
+                            block.type === "image" &&
+                            block.props.url &&
+                            !block.props.url.includes("beekrowd_storage")
+                          ) {
+                            const newUrl = await uploadImageFromURLToSupabase(
+                              block.props.url
+                            );
+                            if (newUrl) {
+                              block.props.url = newUrl;
+                            }
+                          }
+                        }
+
+                        // Handle video blocks
+                        blocks.forEach((block) => {
+                          if (block.type === "video") {
+                            const videoElement = document.querySelector(
+                              `video[src="${block.props.url}"]`
+                            );
+                            if (
+                              videoElement &&
+                              block.props.url.includes("youtube.com")
+                            ) {
+                              const videoId = block.props.url.split("v=")[1];
+                              const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                              const iframe = document.createElement("iframe");
+                              iframe.width = block.props.previewWidth || "100%";
+                              iframe.height = "315";
+                              iframe.src = embedUrl;
+                              iframe.frameBorder = "0";
+                              iframe.allow =
+                                "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                              iframe.allowFullscreen = true;
+                              videoElement.replaceWith(iframe);
+                            }
+                          }
+                        });
+                        setContent(blocks);
+                      }}
+                    />
+
+                    <div className="sm:px-5 sticky bottom-5 left-5">
+                      <>
+                        <button
+                          className={`min-w-[110px] mt-8 hover:cursor-pointer py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent ${
+                            isLoading
+                              ? "bg-gray-600 disabled:opacity-50 disabled:pointer-events-none"
+                              : "bg-blue-600 text-white hover:bg-blue-700"
+                          }  `}
+                          onClick={handleSaveDiary}
+                          type="button"
+                        >
+                          {isLoading ? (
+                            <SpinnerBtn isLoading={isLoading} />
+                          ) : (
+                            "Save Diary"
+                          )}
+                        </button>
+                      </>
+                    </div>
+                  </div>
+                </div>
+              </TabPane>
+            )}
+          </Tabs>
+        </>
       </div>
 
       <Modal

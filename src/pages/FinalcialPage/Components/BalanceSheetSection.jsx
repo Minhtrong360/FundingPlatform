@@ -57,6 +57,7 @@ import GroqJS from "./GroqJson";
 
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
+import { Card as CardShadcn } from "../../../components/ui/card";
 
 function BalanceSheetSection({ numberOfMonths }) {
   const dispatch = useDispatch();
@@ -1021,7 +1022,7 @@ function BalanceSheetSection({ numberOfMonths }) {
   const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
 
   return (
-    <div className="w-full h-full flex flex-col lg:flex-row">
+    <CardShadcn className="w-full h-full flex flex-col lg:flex-row p-4">
       <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
         <div className="">
           <h3 className="text-lg font-semibold mb-4">I. Relevant Chart</h3>
@@ -1234,7 +1235,7 @@ function BalanceSheetSection({ numberOfMonths }) {
           <GroqJS datasrc={BalenceSheetData} inputUrl="urlBS" />
         </Modal>
       )}
-    </div>
+    </CardShadcn>
   );
 }
 

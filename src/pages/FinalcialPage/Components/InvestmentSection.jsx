@@ -23,7 +23,8 @@ import SpinnerBtn from "../../../components/SpinnerBtn";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import { setInputData } from "../../../features/DurationSlice";
-
+import { Badge } from "../../../components/ui/badge";
+import { Card as CardShadcn } from "../../../components/ui/card";
 const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const { investmentInputs, investmentData } = useSelector(
     (state) => state.investment
@@ -551,31 +552,23 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
   return (
     <div>
-      <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm NOsticky NOtop-8 z-50">
-        <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
-          <li
-            className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-              activeTab === "input"
-                ? "bg-yellow-300 font-bold"
-                : "bg-yellow-100 hover:bg-yellow-200"
-            } `}
-            onClick={() => handleTabChange("input")}
-          >
-            a. Input
-          </li>
-          <li
-            className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-              activeTab === "table&chart"
-                ? "bg-green-300 font-bold"
-                : "bg-green-100 hover:bg-green-200"
-            } `}
-            onClick={() => handleTabChange("table&chart")}
-          >
-            b. Table and Chart
-          </li>
-        </ul>
+      <div className="flex space-x-2 my-6 mx-auto">
+        <Badge
+          variant="secondary"
+          className={`bg-yellow-100 text-yellow-800 cursor-pointer ${activeTab === "input" ? "bg-yellow-500 text-white" : ""}`}
+          onClick={() => handleTabChange("input")}
+        >
+          Inputs
+        </Badge>
+        <Badge
+          variant="secondary"
+          className={`bg-green-100 text-green-800 cursor-pointer ${activeTab === "table&chart" ? "bg-green-500 text-white" : ""}`}
+          onClick={() => handleTabChange("table&chart")}
+        >
+          Tables and Charts
+        </Badge>
       </div>
-      <div className="w-full h-full flex flex-col lg:flex-row">
+      <Card className="w-full h-full flex flex-col lg:flex-row p-4">
         {activeTab === "table&chart" && (
           <>
             <div className="w-full xl:w-3/4 sm:p-4 p-0">
@@ -987,7 +980,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
             )}
           </>
         )}
-      </div>
+      </Card>
     </div>
   );
 };

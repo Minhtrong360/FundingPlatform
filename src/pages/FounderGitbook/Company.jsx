@@ -10,7 +10,6 @@ import {
 import { Label } from "../../components/ui/label";
 
 import { Input } from "../../components/ui/input";
-import { Switch } from "../../components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -31,7 +30,7 @@ import MultiSelectField from "../../components/MultiSelectField";
 import countries from "../../components/Country";
 import industries from "../../components/Industries";
 import { formatNumber } from "../../features/CostSlice";
-import { message } from "antd";
+import { message, Switch } from "antd";
 
 function Company({
   handleSubmit,
@@ -167,15 +166,12 @@ function Company({
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label className="font-semibold" htmlFor="showAdditionalFields">
-                Do you want to raise funds?
-              </Label>
+            <div className="flex items-center space-x-2">
               <Switch
                 id="showAdditionalFields"
                 name="showAdditionalFields"
                 checked={formData.showAdditionalFields === "Yes"}
-                onCheckedChange={(checked) =>
+                onChange={(checked) =>
                   handleInputChange({
                     target: {
                       name: "showAdditionalFields",
@@ -183,7 +179,15 @@ function Company({
                     },
                   })
                 }
+                className="custom-switch"
+                style={{
+                  backgroundColor:
+                    formData.showAdditionalFields === "Yes"
+                      ? "#1890ff"
+                      : "#d9d9d9",
+                }}
               />
+              <Label htmlFor="raise-funds">Do you want to raise funds?</Label>
             </div>
 
             {formData.showAdditionalFields === "Yes" && (

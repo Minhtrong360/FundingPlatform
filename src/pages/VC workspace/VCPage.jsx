@@ -244,7 +244,19 @@ const VCPage = () => {
         return passRoundIndex >= selectedRoundIndex - 1;
       })
     );
+    filteredProjects.sort((a, b) => {
+      const applyInfoA = a.applyInfo.find(
+        (info) => info.universityCode === selectedCodeFull?.id
+      );
+      const applyInfoB = b.applyInfo.find(
+        (info) => info.universityCode === selectedCodeFull?.id
+      );
 
+      const applyAtA = applyInfoA ? new Date(applyInfoA.applyAt) : new Date(0);
+      const applyAtB = applyInfoB ? new Date(applyInfoB.applyAt) : new Date(0);
+
+      return applyAtB - applyAtA;
+    });
     setFilteredProjectList(filteredProjects);
   };
 

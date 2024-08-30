@@ -5,11 +5,12 @@ import { supabase } from "../../supabase";
 import Search from "../Home/Components/Search";
 
 import { LinearProgress } from "@mui/material";
-import Header from "../Home/Header";
 import { message } from "antd";
 import HeroStartup from "./HeroStartup";
 import regions from "../../components/Regions";
-import Header2 from "../Home/Header2";
+import Header from "../Home/Header";
+import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
+import HeroSectionZubuz from "./HeroStartupZubuz";
 
 const NewProjectPosts = ({ location }) => {
   const [companies, setCompanies] = useState(
@@ -68,7 +69,8 @@ const NewProjectPosts = ({ location }) => {
       const { data: projects, error: projectsError } = await supabase
         .from("projects")
         .select("id, verified, status") // Get verified status and status along with id
-        .neq("status", "stealth");
+        .neq("status", "stealth")
+        .neq("stamp", "lesson");
 
       if (projectsError) {
         message.error(projectsError.message);
@@ -245,11 +247,12 @@ const NewProjectPosts = ({ location }) => {
   ];
 
   return (
-    <div className="lg:px-8 mx-auto my-12">
-      {/* <Header /> */}
-      <Header2 />
+    <div>
+      {/* <HomeHeader /> */}
+      <HomeHeader />
       <div className="px-3 py-2 lg:px-8 lg:py-1 mx-auto">
-        <HeroStartup />
+        <HeroSectionZubuz />
+        {/* <HeroStartup /> */}
         <Search
           onSearch={handleSearch}
           onIndustryChange={handleIndustryChange}

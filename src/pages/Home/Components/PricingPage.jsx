@@ -1,12 +1,12 @@
 import React from "react";
-import Header from "../Header";
 import PricingWithLemon from "./PricingWithLemon";
-import Header2 from "../Header2";
+import Header from "../Header";
+import HomeHeader from "../../../components/Section/Common/Header/HomeHeader";
 
 function PricingPage() {
   return (
     <div>
-      <Header2 />
+      <HomeHeader />
       <PricingWithLemon />
     </div>
   );

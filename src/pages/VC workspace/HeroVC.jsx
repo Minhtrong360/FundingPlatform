@@ -986,9 +986,14 @@ const HeroVC = ({
           record.applyInfo,
           selectedCode?.id
         );
+        const teamEmails = applyInfo.teamEmails;
+        const emailArray = teamEmails
+          ?.split(/\s*,\s*/)
+          .map((email) => email.trim());
+
         return (
           <span className="hover:cursor-pointer flex justify-center items-center">
-            {applyInfo.teamSize}
+            {emailArray?.length}
           </span>
         );
       },
@@ -1415,18 +1420,22 @@ const HeroVC = ({
           >
             Profile listing for
             <Input.TextArea
-              className="text-blue-600 bg-yellow-300 inline-block text-3xl sm:text-4xl md:text-5xl lg:text-7xl"
+              className="!text-blue-600 !bg-yellow-300 inline-block text-3xl sm:text-4xl md:text-5xl lg:text-7xl"
               value={universityName}
               onChange={(e) => handleUniversityNameChange(e.target.value)}
               style={{
                 border: "none",
-                backgroundColor: "#FDE047",
+                backgroundColor: "transparent !important",
                 textAlign: "center",
                 fontWeight: "bold",
-                color: "#2563EB",
+                color: "#2563EB !important",
                 outline: "none",
+                padding: "0px",
+                lineHeight: "1.25",
+                resize: "none", // Disable manual resizing
+                overflow: "hidden", // Prevent overflow
               }}
-              autoSize
+              autoSize={{ minRows: 1, maxRows: 10 }} // Adjust to fit content
             />
           </h1>
           <Input.TextArea
@@ -1542,11 +1551,11 @@ const HeroVC = ({
             <section className="container px-4 mx-auto mt-14 max-w-3xl">
               <div className="flex flex-col mb-5">
                 <h3 className="font-bold text-xl text-left">Code listing</h3>
-                <div className="mt-5 grid sm:grid-cols-2 gap-14 transition-all duration-600 ease-out transform translate-x-0">
+                <div className="mt-5 grid sm:grid-cols-2 gap-14 transition-all duration-600 ease-out transform translate-x-0 justify-items-center">
                   {selectedCodes.map((code) => (
                     <div
                       key={code.id}
-                      className="group flex-grow justify-center w-full"
+                      className="group flex flex-col items-center justify-center  max-w-96"
                     >
                       <UniCard
                         data={code}
@@ -2203,9 +2212,15 @@ const HeroVC = ({
           }}
           centered={true}
         >
-          Are you sure to remove "{projectToRemove?.name}" from "
-          {selectedCode?.code}"? "{projectToRemove?.name}" will no longer exist
-          in this code.
+          Are you sure to remove{" "}
+          <span className="text-[#f5222d] font-semibold">
+            {projectToRemove?.name}
+          </span>{" "}
+          from <span className="font-semibold">{selectedCode?.code}</span>?{" "}
+          <span className="text-[#f5222d] font-semibold">
+            {projectToRemove?.name}
+          </span>{" "}
+          will no longer exist in this code.
         </Modal>
 
         <Modal

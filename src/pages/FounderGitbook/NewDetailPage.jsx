@@ -3,12 +3,12 @@ import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import AnnouncePage from "../../components/AnnouncePage";
-import Header from "../Home/Header";
 import ProfileInfo from "./ProfileInfo";
 import Author from "./Components/Author";
 import MyTab from "./Components/MyTab";
 import { useParams } from "react-router";
-import Header2 from "../Home/Header2";
+import Header from "../Home/Header";
+import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
 
 export default function NewDetailPage({ location }) {
   const [company, setCompany] = useState(
@@ -109,6 +109,7 @@ export default function NewDetailPage({ location }) {
       removeBodyStyle();
     }
   };
+  const [isContentChanged, setIsContentChanged] = useState(false);
 
   if (viewError) {
     return (
@@ -139,36 +140,33 @@ export default function NewDetailPage({ location }) {
   const noFixedHeader = "notFixed";
 
   return (
-    <div className="min-h-screen bg-white max-w-6xl mx-auto">
+    <div className="min-h-screen flex flex-col justify-between">
       {isLoading ? (
         <LoadingButtonClick isLoading={isLoading} />
       ) : (
         <>
-          {/* <button
-            className={`w-[100px] fixed bottom-5 lg:left-5 right-5 p-2 rounded-md ${
-              fullScreen ? "bg-gray-300" : "bg-blue-600 text-white"
-            } z-50 text-sm`}
-            onClick={() => setFullScreen((prev) => !prev)}
-          >
-            Full screen
-          </button> */}
           {fullScreen === false ? (
             <div>
-              {/* <Header noFixedHeader={noFixedHeader} /> */}
-              <Header2 noFixedHeader={noFixedHeader} />
+              <HomeHeader
+                noFixedHeader={noFixedHeader}
+                isContentChanged={isContentChanged}
+              />
               <ProfileInfo
                 company={company}
                 currentProject={currentProject}
                 setCurrentProject={setCurrentProject}
                 blocks={blocks}
+                isContentChanged={isContentChanged}
               />
-              <div className="mt-4 sm:max-w-7xl w-full mx-auto">
+              <div className="flex-grow max-w-7xl mx-auto sm:mt-24 mt-16 px-4 sm:px-6 lg:px-8">
                 <MyTab
                   blocks={blocks}
                   setBlocks={setBlocks}
                   company={company}
                   fullScreen={fullScreen}
                   currentProject={currentProject}
+                  isContentChanged={isContentChanged}
+                  setIsContentChanged={setIsContentChanged}
                 />
               </div>
             </div>
@@ -179,6 +177,8 @@ export default function NewDetailPage({ location }) {
               company={company}
               fullScreen={fullScreen}
               currentProject={currentProject}
+              isContentChanged={isContentChanged}
+              setIsContentChanged={setIsContentChanged}
             />
           )}
         </>

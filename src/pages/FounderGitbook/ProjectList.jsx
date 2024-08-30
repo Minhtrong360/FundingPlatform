@@ -12,8 +12,9 @@ import { formatDate } from "../../features/DurationSlice";
 import InputField from "../../components/InputField";
 import apiService from "../../app/apiService";
 import { Option } from "antd/es/mentions";
+import { width } from "@amcharts/amcharts4/.internal/core/utils/Utils";
 
-function ProjectList({ projects }) {
+function ProjectList({ projects, isLoading }) {
   const { user } = useAuth();
 
   const [updatedProjects, setUpdatedProjects] = useState([]);
@@ -47,7 +48,7 @@ function ProjectList({ projects }) {
     contactEmail: "",
     contactPhone: "",
     university: "",
-    teamSize: "",
+    teamName: "",
     teamEmails: "",
   });
 
@@ -195,7 +196,7 @@ function ProjectList({ projects }) {
         contactEmail: "Contact Email",
         contactPhone: "Contact Phone",
         university: "University",
-        teamSize: "Team Size",
+        teamName: "Team Name",
         teamEmails: "Team Emails",
       };
 
@@ -251,8 +252,17 @@ function ProjectList({ projects }) {
         };
         updatedApplyInfo.push(newApplyInfo);
       } else {
-        message.warning("You submitted this project to this contest.");
-        return;
+        // Update the applyInfo that corresponds to the existing codeId
+        updatedApplyInfo = updatedApplyInfo.map((info) => {
+          if (JSON.parse(info).universityCode === codeId) {
+            info = applyInfo;
+            info.applyAt = new Date().toISOString();
+            info.universityCode = codeId;
+
+            return info;
+          }
+          return info;
+        });
       }
 
       const { error: updateError } = await supabase
@@ -449,11 +459,12 @@ function ProjectList({ projects }) {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      width: "7%",
       render: (text, record) => (
         <>
           <button
             onClick={() => handleProjectClick(record)}
-            className={`w-[5em] ${
+            className={`w-full ${
               record?.status === "public"
                 ? "bg-blue-600 text-white"
                 : record?.status === "private"
@@ -461,7 +472,7 @@ function ProjectList({ projects }) {
                   : record?.status === "stealth"
                     ? "bg-yellow-300 text-black"
                     : ""
-            }   focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+            }   focus:ring-4 focus:outline-none focus:ring-blue-300  font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus`}
             style={{ fontSize: "12px" }}
           >
             {record.status === "public"
@@ -477,6 +488,7 @@ function ProjectList({ projects }) {
       title: "Action/Roles",
       dataIndex: "action",
       key: "action",
+      width: "7%",
       render: (text, record) => (
         <>
           {record.user_id === user.id ? (
@@ -532,22 +544,24 @@ function ProjectList({ projects }) {
                 </Menu>
               }
             >
-              <div className="w-[6rem] bg-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus cursor-pointer">
+              <div
+                className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
+              >
                 Action
               </div>
             </Dropdown>
           ) : (
             <div
               onClick={() => handleProjectClick(record)}
-              className={`w-[6rem] bg-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus cursor-pointer`}
+              className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
             >
               {record.invited_user?.includes(user.email) &&
               record.collabs?.includes(user.email)
-                ? "Collaboration"
+                ? "Collab."
                 : record.invited_user?.includes(user.email)
                   ? "View only"
                   : record.collabs?.includes(user.email)
-                    ? "Collaboration"
+                    ? "Collab."
                     : "Default Label"}
             </div>
           )}
@@ -626,11 +640,12 @@ function ProjectList({ projects }) {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      width: "7%",
       render: (text, record) => (
         <>
           <button
             onClick={() => handleProjectClick(record)}
-            className={`w-[5em] ${
+            className={`w-full ${
               record?.status === "public"
                 ? "bg-blue-600 text-white"
                 : record?.status === "private"
@@ -638,7 +653,7 @@ function ProjectList({ projects }) {
                   : record?.status === "stealth"
                     ? "bg-yellow-300 text-black"
                     : ""
-            }   focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+            }   focus:ring-4 focus:outline-none focus:ring-blue-300  font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus`}
             style={{ fontSize: "12px" }}
           >
             {record.status === "public"
@@ -654,6 +669,7 @@ function ProjectList({ projects }) {
       title: "Action/Roles",
       dataIndex: "action",
       key: "action",
+      width: "7%",
       render: (text, record) => (
         <>
           {record.user_id === user.id ? (
@@ -702,14 +718,16 @@ function ProjectList({ projects }) {
                 </Menu>
               }
             >
-              <div className="w-[6rem] bg-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus cursor-pointer">
+              <div
+                className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
+              >
                 Action
               </div>
             </Dropdown>
           ) : (
             <div
               onClick={() => handleProjectClick(record)}
-              className={`w-[6rem] bg-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus cursor-pointer`}
+              className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
             >
               {record.invited_user?.includes(user.email) &&
               record.collabs?.includes(user.email)
@@ -746,7 +764,7 @@ function ProjectList({ projects }) {
       }
 
       if (companies.length > 0) {
-        navigate(`/founder/${project.id}`);
+        navigate(`/profile/${project.id}`);
       } else {
         navigate(`/company/${project.id}`);
       }
@@ -975,12 +993,12 @@ function ProjectList({ projects }) {
           />
           <InputField
             style={{ marginBottom: "6px" }}
-            label="Team Size"
-            id="teamSize"
-            name="teamSize"
-            value={applyInfo.teamSize}
+            label="Team Name"
+            id="teamName"
+            name="teamName"
+            value={applyInfo.teamName}
             onChange={(e) =>
-              setApplyInfo({ ...applyInfo, teamSize: e.target.value })
+              setApplyInfo({ ...applyInfo, teamName: e.target.value })
             }
             type="text"
             required
@@ -1089,6 +1107,7 @@ function ProjectList({ projects }) {
                   rowKey="id"
                   size="small"
                   bordered
+                  loading={isLoading}
                 />
               </div>
             </div>
@@ -1111,6 +1130,7 @@ function ProjectList({ projects }) {
                   rowKey="id"
                   size="small"
                   bordered
+                  loading={isLoading}
                 />
               </div>
             </div>

@@ -5,7 +5,7 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-} from "../../../components/ui/Select";
+} from "../../../components/ui/select";
 import React, { useEffect, useState } from "react";
 import {
   calculateCostData,

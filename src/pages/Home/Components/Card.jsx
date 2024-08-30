@@ -27,7 +27,7 @@ const Card = ({
     if (isJudge) {
       openScoreModal(selectedCodeFull);
     } else {
-      navigate(`/founder/${project_id}`);
+      navigate(`/profile/${project_id}`);
     }
   };
   const [selectedProject, setSelectedProject] = useState();
@@ -139,7 +139,7 @@ const Card = ({
 
   const handleClick = () => {
     if (canClick !== false) {
-      navigate(`/founder/${project_id}`);
+      navigate(`/profile/${project_id}`);
     } else return;
   };
 
@@ -179,8 +179,8 @@ const Card = ({
       <div className="flex-grow p-5">
         <a
           className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 "
-          onClick={() => navigate(`/founder/${project_id}`)}
-          href={`/founder/${project_id}`}
+          onClick={() => navigate(`/profile/${project_id}`)}
+          href={`/profile/${project_id}`}
         >
           {title}
         </a>
@@ -212,7 +212,7 @@ const Card = ({
                 ? "bg-yellow-300 text-black"
                 : "bg-bg-gray-50 border border-gray-300 text-black"
             } mt-1 inline-flex items-center px-3 py-1 text-sm font-medium text-center   rounded-3xl`}
-            onClick={() => navigate(`/founder/${project_id}`)}
+            onClick={() => navigate(`/profile/${project_id}`)}
           >
             {status === "public"
               ? "Public"

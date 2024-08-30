@@ -34,14 +34,25 @@ export default function Sample() {
             const markdown = JSON.parse(data.markdown);
             const updatedBlocks = markdown.map((block) => {
               if (block.type === "youtubeLink") {
-                return {
-                  ...block,
-                  type: "video",
-                };
+                const videoIdMatch = block.props.videoId
+                  ? block.props.videoId.match(/([^?&/]+)$/)
+                  : null;
+                const videoId = videoIdMatch ? videoIdMatch[0] : null;
+
+                if (videoId) {
+                  return {
+                    ...block,
+                    type: "video",
+                    props: {
+                      ...block.props,
+                      url: `https://www.youtube.com/embed/${videoId}`,
+                      previewWidth: "100%",
+                    },
+                  };
+                }
               }
               return block;
             });
-
             editor.replaceBlocks(editor.topLevelBlocks, updatedBlocks);
           }
         }
@@ -63,11 +74,11 @@ export default function Sample() {
       {isLoading ? (
         <LoadingButtonClick isLoading={isLoading} />
       ) : (
-        <div className="flex-grow items-center justify-center pb-10 ">
+        <div className="flex-grow items-center justify-center pb-10 my-4">
           <BlockNoteView
             editor={editor}
             theme={"light"}
-            className="w-full lg:w-8/12"
+            className="w-full"
             onChange={async function (editor) {
               const blocks = editor.topLevelBlocks;
 

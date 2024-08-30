@@ -107,7 +107,7 @@ function AdminPage() {
 
   const navigate = useNavigate();
   const handleProjectClick = (project) => {
-    navigate(`/founder/${project.project_id}`);
+    navigate(`/profile/${project.project_id}`);
   };
 
   const handleVerifyToggle = async (project) => {
@@ -2433,7 +2433,7 @@ function AdminPage() {
   return (
     <>
       <div className=" bg-white darkBg antialiased !p-0 ">
-        <LoadingButtonClick isLoading={isLoading} />
+        {/* <LoadingButtonClick isLoading={isLoading} /> */}
         <div id="exampleWrapper">
           <SideBar
             isSidebarOpen={isSidebarOpen}

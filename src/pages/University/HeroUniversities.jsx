@@ -9,6 +9,7 @@ import {
   Modal,
   Select,
   Table,
+  Tooltip,
   message,
 } from "antd";
 import { useEffect, useState } from "react";
@@ -100,7 +101,6 @@ const HeroUniversities = ({
   }, [credentials]);
 
   const filterProjectsByCode = async (codeId) => {
-    console.log("codeId", codeId);
     if (codeId) {
       try {
         const { data: projects, error: projectsError } = await supabase
@@ -285,20 +285,23 @@ const HeroUniversities = ({
       );
     }
   };
-
   const handleAddEditRound = () => {
-    if (
-      JSON.parse(editRounds[editRounds.length - 1])?.name ||
-      editRounds.length === 0
-    ) {
+    if (editRounds?.length === 0) {
       setEditRounds([
         ...editRounds,
         JSON.stringify({ id: uuidv4(), name: "" }),
       ]);
     } else {
-      message.error(
-        "Please enter a name for the current round before adding a new one."
-      );
+      if (JSON.parse(editRounds[editRounds?.length - 1])?.name) {
+        setEditRounds([
+          ...editRounds,
+          JSON.stringify({ id: uuidv4(), name: "" }),
+        ]);
+      } else {
+        message.error(
+          "Please enter a name for the current round before adding a new one."
+        );
+      }
     }
   };
 
@@ -829,7 +832,6 @@ const HeroUniversities = ({
 
   const [isQualifiedModalOpen, setIsQualifiedModalOpen] = useState(false);
   const [projectToQualify, setProjectToQualify] = useState(null);
-  console.log("projectToQualify", projectToQualify);
   const openQualifiedModal = (record) => {
     setProjectToQualify(record);
     setIsQualifiedModalOpen(true);
@@ -898,7 +900,7 @@ const HeroUniversities = ({
       ),
     },
     {
-      title: "Team Name",
+      title: "Company Name",
       dataIndex: "companyName",
       key: "companyName",
       render: (text, record) => (
@@ -986,9 +988,14 @@ const HeroUniversities = ({
           record.applyInfo,
           selectedCode?.id
         );
+        const teamEmails = applyInfo.teamEmails;
+        const emailArray = teamEmails
+          ?.split(/\s*,\s*/)
+          .map((email) => email.trim());
+
         return (
           <span className="hover:cursor-pointer flex justify-center items-center">
-            {applyInfo.teamSize}
+            {emailArray?.length}
           </span>
         );
       },
@@ -1003,7 +1010,20 @@ const HeroUniversities = ({
           selectedCode?.id
         );
         return (
-          <span className="hover:cursor-pointer">{applyInfo.teamEmails}</span>
+          <span
+            className="hover:cursor-pointer truncate"
+            style={{
+              maxWidth: "200px",
+              display: "inline-block",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            <Tooltip title={applyInfo.teamEmails}>
+              {applyInfo.teamEmails}
+            </Tooltip>
+          </span>
         );
       },
     },
@@ -1175,7 +1195,7 @@ const HeroUniversities = ({
     setDescription(newDescription);
     const { error } = await supabase
       .from("workspace")
-      .update({ description: description })
+      .update({ description: newDescription })
       .eq("UniID", credentials?.UniID);
 
     if (error) {
@@ -1295,35 +1315,6 @@ const HeroUniversities = ({
     setSelectedRound(parsedRounds[0] || null);
   }, [selectedCode]);
 
-  // const [totalScore, setTotalScore] = useState(0);
-
-  // useEffect(() => {
-  //   const initialTotalScore = scoringRules.reduce(
-  //     (acc, rule) => acc + (rule.score || 0) * (Number(rule.rate) / 100),
-  //     0
-  //   );
-
-  //   setTotalScore(initialTotalScore.toFixed(2));
-  // }, [scoringRules]);
-
-  // const handleScoreChange = (index, value) => {
-  //   const newScore = Number(value);
-  //   const updatedScoringRules = [...scoringRules];
-  //   updatedScoringRules[index].score = newScore;
-
-  //   const newTotalScore = updatedScoringRules.reduce(
-  //     (acc, rule) => acc + (rule.score || 0) * (Number(rule.rate) / 100),
-  //     0
-  //   );
-  //   setTotalScore(newTotalScore);
-  // };
-
-  // const handleScoreChange = (index, value) => {
-  //   const updatedScoringRules = [...scoringRules];
-  //   updatedScoringRules[index].score = value;
-  //   setScoringRules(updatedScoringRules);
-  // };
-
   const [isUndoQualifiedModalOpen, setIsUndoQualifiedModalOpen] =
     useState(false);
 
@@ -1415,20 +1406,25 @@ const HeroUniversities = ({
           >
             Profile listing for
             <Input.TextArea
-              className="text-blue-600 bg-yellow-300 inline-block text-3xl sm:text-4xl md:text-5xl lg:text-7xl"
+              className="!text-blue-600 !bg-yellow-300 inline-block text-3xl sm:text-4xl md:text-5xl lg:text-7xl"
               value={universityName}
               onChange={(e) => handleUniversityNameChange(e.target.value)}
               style={{
                 border: "none",
-                backgroundColor: "#FDE047",
+                backgroundColor: "transparent !important",
                 textAlign: "center",
                 fontWeight: "bold",
-                color: "#2563EB",
+                color: "#2563EB !important",
                 outline: "none",
+                padding: "0px",
+                lineHeight: "1.25",
+                resize: "none", // Disable manual resizing
+                overflow: "hidden", // Prevent overflow
               }}
-              autoSize
+              autoSize={{ minRows: 1, maxRows: 10 }} // Adjust to fit content
             />
           </h1>
+
           <Input.TextArea
             value={description}
             onChange={(e) => handleDescriptionChange(e.target.value)}
@@ -1441,6 +1437,7 @@ const HeroUniversities = ({
               lineHeight: "28px",
             }}
             autoSize
+            className="!border-none"
           />
           <div className="mt-7 text-lg flex justify-center">
             {user && (
@@ -1542,11 +1539,11 @@ const HeroUniversities = ({
             <section className="container px-4 mx-auto mt-14 max-w-3xl">
               <div className="flex flex-col mb-5">
                 <h3 className="font-bold text-xl text-left">Code listing</h3>
-                <div className="mt-5 grid sm:grid-cols-2 gap-14 transition-all duration-600 ease-out transform translate-x-0">
+                <div className="mt-5 grid sm:grid-cols-2 gap-14 transition-all duration-600 ease-out transform translate-x-0 justify-items-center">
                   {selectedCodes.map((code) => (
                     <div
                       key={code.id}
-                      className="group flex-grow justify-center w-full"
+                      className="group flex flex-col items-center justify-center  max-w-96"
                     >
                       <UniCard
                         data={code}
@@ -2206,9 +2203,15 @@ const HeroUniversities = ({
           }}
           centered={true}
         >
-          Are you sure to remove "{projectToRemove?.name}" from "
-          {selectedCode?.code}"? "{projectToRemove?.name}" will no longer exist
-          in this code.
+          Are you sure to remove{" "}
+          <span className="text-[#f5222d] font-semibold">
+            {projectToRemove?.name}
+          </span>{" "}
+          from <span className="font-semibold">{selectedCode?.code}</span>?{" "}
+          <span className="text-[#f5222d] font-semibold">
+            {projectToRemove?.name}
+          </span>{" "}
+          will no longer exist in this code.
         </Modal>
 
         <Modal

@@ -19,7 +19,7 @@ const PaymentSuccess = () => {
 
             <div className="flex items-center mt-6 gap-x-3">
               <button
-                onClick={() => navigate("/founder")}
+                onClick={() => navigate("/profile")}
                 className="flex items-center justify-center w-1/2 px-5 py-1 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-md gap-x-2 sm:w-auto darkHoverBgBlue darkBg hover:bg-gray-100 darkTextGray darkBorderGray"
               >
                 <span>Go back</span>

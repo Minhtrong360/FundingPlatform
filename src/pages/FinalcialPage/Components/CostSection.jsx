@@ -4,8 +4,8 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-} from "../../../components/ui/Select";
-import { Input } from "../../../components/ui/Input";
+} from "../../../components/ui/select";
+import { Input } from "../../../components/ui/input";
 import { useEffect, useState } from "react";
 import { Card, Checkbox, Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";

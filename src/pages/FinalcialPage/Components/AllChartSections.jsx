@@ -12,11 +12,11 @@ import {
 } from "../../../features/CostSlice";
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectItem,
-} from "../../../components/ui/Select";
+  SelectTrigger,
+  SelectValue,
+} from "../../../components/ui/select";
 
 import { calculateProfitAndLoss } from "../../../features/ProfitAndLossSlice";
 import {
@@ -552,7 +552,7 @@ const AllChartSections = ({
               </p>
             </div>
 
-            <Chart
+            {/* <Chart
               type="area"
               series={customerGrowthChart.series}
               options={{
@@ -583,7 +583,7 @@ const AllChartSections = ({
                 stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
               height={300}
-            />
+            /> */}
 
             <Modal
               centered

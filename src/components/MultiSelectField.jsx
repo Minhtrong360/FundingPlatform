@@ -36,6 +36,7 @@ const MultiSelectField = ({
         onChange={handleSelectChange}
         style={{
           width: "100%",
+          height: "60px",
         }}
         options={filteredOptions.map((item) => ({
           value: item,

@@ -214,13 +214,13 @@ const Modal = ({
             <button
               type="button"
               onClick={handleCancel}
-              className="w-20 text-black bg-white hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-md text-sm px-3 py-2 text-center border border-gray-300"
+              className="w-20 text-black bg-white hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-md text-xs px-3 py-2 text-center border border-gray-300"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className={`w-20 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
+              className={`w-20 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
             >
               {isEditing ? "Save" : "Create"}
             </button>
@@ -302,7 +302,7 @@ export default function AddProject({
           zIndex={20000}
         >
           <button
-            className={`text-white opacity-50 bg-gray-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
+            className={`text-white opacity-50 bg-gray-600  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
             onClick={handleClickAddNew}
           >
             <PlusOutlined className="mr-1" />
@@ -312,7 +312,7 @@ export default function AddProject({
       ) : (
         <>
           <button
-            className={`text-white bg-blue-600 "hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
+            className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
             onClick={handleClickAddNew}
           >
             <PlusOutlined className="mr-1" />

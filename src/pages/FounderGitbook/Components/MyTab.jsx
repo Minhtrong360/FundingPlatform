@@ -1,25 +1,205 @@
-import { Badge, message, Button } from "antd";
-import Modal from "react-modal";
+import { Badge, message, Button, Input, Modal } from "antd";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
 
-import { YoutubeOutlined } from "@ant-design/icons";
-
-import Sample from "./Sample";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "../../../supabase";
 import { useAuth } from "../../../context/AuthContext";
 import FilesList from "../FilesList";
 
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import LoadingButtonClick from "../../../components/LoadingButtonClick";
+import SpinnerBtn from "../../../components/SpinnerBtn";
+import Sample from "./Sample";
+import * as Y from "yjs";
+import { WebsocketProvider } from "y-websocket";
+import debounce from "lodash.debounce";
 
-const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
+import { Card, CardContent } from "../../../components/ui/card";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../../components/ui/tabs";
+
+const MyTab = ({
+  company,
+  currentProject,
+  isContentChanged,
+  setIsContentChanged,
+}) => {
   const [activeTab, setActiveTab] = useState("Your Profile");
+  const [tabs, setTabs] = useState([
+    { key: "Your Profile", title: "Your Profile", editable: false },
+    { key: "Sample PitchDeck", title: "Sample PitchDeck", editable: false },
+    { key: "Data Room", title: "Data Room", editable: false },
+  ]);
+  const { user } = useAuth();
+  const params = useParams();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [isContentChanged, setIsContentChanged] = useState(false);
+  const doc = useRef(new Y.Doc()).current;
+
+  // Initialize the Yjs WebsocketProvider
+  const provider = new WebsocketProvider(
+    "https://ywss-collab.onrender.com",
+    params?.id,
+    doc
+  );
+
+  // Function to check if the document exists on the WebSocket server
+  const checkIfDocExistsOnProvider = () => {
+    return new Promise((resolve) => {
+      const fragment = doc.getXmlFragment("document-store");
+      if (fragment.length > 0) {
+        resolve(true); // Document exists
+      } else {
+        provider.on("sync", () => {
+          resolve(fragment.length > 0);
+        });
+      }
+    });
+  };
+
+  const loadContentFromSupabase = async () => {
+    try {
+      if (!navigator.onLine) {
+        message.error("No internet access.");
+        return;
+      }
+
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("projects")
+        .select("*")
+        .match({ id: params.id })
+        .single();
+
+      if (error) {
+        throw error;
+      }
+      if (data && data.markdown) {
+        const updatedTabs = tabs.map((tab) => {
+          if (tab.key === "Your Profile") {
+            return { ...tab, content: data.markdown };
+          }
+          return tab;
+        });
+        setTabs(updatedTabs);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error.message);
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const initEditorContent = async () => {
+      const docExists = await checkIfDocExistsOnProvider();
+      if (!docExists) {
+        await loadContentFromSupabase(); // Load from DB if document does not exist
+      }
+    };
+
+    initEditorContent();
+  }, [doc]);
+
+  const colors = [
+    "#958DF1",
+    "#F98181",
+    "#FBBC88",
+    "#FAF594",
+    "#70CFF8",
+    "#94FADB",
+    "#B9F18D",
+    "#FACF5A",
+    "#F29E4A",
+    "#E2717D",
+    "#C94C4C",
+  ];
+
+  const getRandomElement = (list) =>
+    list[Math.floor(Math.random() * list.length)];
+
+  const getRandomColor = () => getRandomElement(colors);
+
+  // Initialize the BlockNote editor with the collaboration provider
+  const editor = useCreateBlockNote({
+    uploadFile: async (file) => {
+      try {
+        if (!navigator.onLine) {
+          message.error("No internet access.");
+          return;
+        }
+        const uniqueFileName = `profile_images/${Date.now()}`;
+        let { error, data } = await supabase.storage
+          .from("beekrowd_storage")
+          .upload(uniqueFileName, file);
+
+        if (error) {
+          throw error;
+        }
+
+        return `${process.env.REACT_APP_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
+      } catch (error) {
+        if (error.message === "The object exceeded the maximum allowed size") {
+          message.error("The object exceeded the maximum allowed size (5MB).");
+        } else message.error(error.message);
+      }
+    },
+    collaboration: {
+      provider,
+      fragment: doc.getXmlFragment("document-store"),
+      user: {
+        name: user?.email,
+        color: getRandomColor(),
+      },
+    },
+    onCommand: () => {
+      if (unChange) {
+        // Prevent any command that would modify content
+        return false;
+      }
+      return true;
+    },
+  });
+
+  const uploadImageFromURLToSupabase = async (imageUrl) => {
+    try {
+      const response = await axios.get(imageUrl, {
+        responseType: "arraybuffer",
+      });
+
+      const blob = new Blob([response.data], {
+        type: response.headers["content-type"],
+      });
+
+      const timestamp = Date.now();
+
+      const file = new File([blob], `img-${timestamp}`, {
+        type: response.headers["content-type"],
+      });
+
+      const { data, error } = await supabase.storage
+        .from("beekrowd_storage")
+        .upload(`beekrowd_images/${file.name}`, file);
+
+      if (error) {
+        console.error("Error uploading image to Supabase:", error);
+        return null;
+      }
+
+      const imageUrlFromSupabase = `https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/${data.fullPath}`;
+      return imageUrlFromSupabase;
+    } catch (error) {
+      console.error("Error uploading image from URL to Supabase:", error);
+      return null;
+    }
+  };
+
   const handleBeforeUnload = useCallback(
     (event) => {
       if (isContentChanged) {
@@ -40,7 +220,6 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
         const confirmationMessage =
           "You have unsaved changes. Are you sure you want to leave?";
         if (!window.confirm(confirmationMessage)) {
-          // Ngăn người dùng quay lại trang trước đó
           window.history.pushState(null, "", window.location.href);
         }
       }
@@ -54,131 +233,43 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
     };
   }, [handleBeforeUnload, isContentChanged]);
 
-  const editor = useCreateBlockNote({
-    uploadFile: async (file) => {
-      try {
-        if (!navigator.onLine) {
-          // Không có kết nối Internet
-          message.error("No internet access.");
-          return;
-        }
-        // Tạo tên file độc đáo để tránh xung đột
-        const uniqueFileName = `profile_images/${Date.now()}`;
-
-        // Upload file lên Supabase Storage
-        let { error, data } = await supabase.storage
-          .from("beekrowd_storage")
-          .upload(uniqueFileName, file);
-
-        if (error) {
-          throw error;
-        }
-
-        // Trả về URL của file
-        return `${process.env.REACT_APP_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
-      } catch (error) {
-        if (error.message === "The object exceeded the maximum allowed size") {
-          message.error("The object exceeded the maximum allowed size (5MB).");
-        } else message.error(error.message);
-
-        // Xử lý lỗi tại đây
-      }
-    },
-  });
-
-  // Function to upload image to Supabase from URL
-  const uploadImageFromURLToSupabase = async (imageUrl) => {
-    try {
-      // Download image from URL
-      const response = await axios.get(imageUrl, {
-        responseType: "arraybuffer",
-      });
-
-      // Create Blob from downloaded image data
-      const blob = new Blob([response.data], {
-        type: response.headers["content-type"],
-      });
-
-      // Get current timestamp
-      const timestamp = Date.now();
-
-      // Create File object from Blob with filename as "img-{timestamp}"
-      const file = new File([blob], `img-${timestamp}`, {
-        type: response.headers["content-type"],
-      });
-
-      // Upload image file to Supabase storage
-      const { data, error } = await supabase.storage
-        .from("beekrowd_storage")
-        .upload(`beekrowd_images/${file.name}`, file);
-
-      if (error) {
-        console.error("Error uploading image to Supabase:", error);
-        return null;
-      }
-
-      // Return Supabase URL of the uploaded image
-      const imageUrlFromSupabase = `https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/${data.fullPath}`;
-      return imageUrlFromSupabase;
-    } catch (error) {
-      console.error("Error uploading image from URL to Supabase:", error);
-      return null;
-    }
+  const handleTabChange = (tabKey) => {
+    setActiveTab(tabKey);
   };
 
   useEffect(() => {
-    // Hàm để lấy dữ liệu Markdown từ cơ sở dữ liệu
-    async function fetchMarkdown() {
-      try {
-        if (!navigator.onLine) {
-          // Không có kết nối Internet
-          message.error("No internet access.");
-          return;
-        }
-        if (params) {
-          // Kiểm tra xem project có tồn tại không
-          const { data, error } = await supabase
-            .from("projects")
-            .select("markdown")
-            .match({ id: params.id })
-            .single();
-          if (error) {
-            throw error;
-          } else {
-            // Nếu có dữ liệu Markdown trong cơ sở dữ liệu, cập nhật giá trị của markdown
-            if (data && data.markdown) {
-              editor.replaceBlocks(
-                editor.topLevelBlocks,
-                JSON.parse(data.markdown)
-              );
-            }
+    if (
+      !isLoading &&
+      activeTab !== "Sample PitchDeck" &&
+      activeTab !== "Data Room"
+    ) {
+      const tab = tabs.find((tab) => tab.key === activeTab);
+      if (tab?.content && tab?.content.length > 0) {
+        const markdown = JSON.parse(tab?.content);
+        const updatedBlocks = markdown.map((block) => {
+          if (block.type === "youtubeLink") {
+            return {
+              ...block,
+              type: "video",
+            };
           }
-        }
-        setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu
-      } catch (error) {
-        console.log(error.message);
+          return block;
+        });
 
-        setIsLoading(false); // Đánh dấu là đã tải xong dữ liệu (có lỗi)
+        editor.replaceBlocks(editor.topLevelBlocks, updatedBlocks);
+
+        // const fragment = doc.getXmlFragment("document-store");
+        // if (fragment.length === 0) {
+        //   // Only load content from Supabase if the document is empty
+        //   fragment.push(JSON.stringify(markdown));
+        // }
       }
     }
-
-    // Gọi hàm để lấy Markdown khi component được mount
-
-    fetchMarkdown();
-  }, []);
-
-  const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
-  const params = useParams();
-
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-  };
+  }, [activeTab, isLoading]);
 
   const handleSave = async () => {
     try {
       if (!navigator.onLine) {
-        // Không có kết nối Internet
         message.error("No internet access.");
         return;
       }
@@ -196,9 +287,19 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
         (projectData.user_id === user.id ||
           projectData.collabs.includes(user.email))
       ) {
+        const tabsToSave = tabs.filter(
+          (tab) =>
+            tab.key !== "Your Profile" &&
+            tab.key !== "Sample PitchDeck" &&
+            tab.key !== "Data Room"
+        );
+
         const { error } = await supabase
           .from("projects")
-          .update({ markdown: blocks })
+          .update({
+            markdown: tabs.find((tab) => tab.key === "Your Profile")?.content,
+            tabs: tabsToSave,
+          })
           .match({ id: params.id });
 
         if (error) {
@@ -206,16 +307,13 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
         } else {
           setIsLoading(false);
           message.success("Saved successfully.");
-          setIsContentChanged(false); // Đánh dấu nội dung đã được lưu
-
-          // Reset isSaved to false after 1 second
+          setIsContentChanged(false);
         }
       } else {
         message.error("You do not have permission to save this project.");
         setIsLoading(false);
       }
     } catch (error) {
-      // Xử lý lỗi mạng
       if (!navigator.onLine) {
         message.error("No internet access.");
       } else {
@@ -236,90 +334,125 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
     }
   }, [isDemo]);
 
+  const handleChange = useCallback(
+    async (editor, tabKey) => {
+      const blocks = editor.topLevelBlocks;
+      const updatedBlocks = [...blocks];
+
+      const imagePromises = updatedBlocks.map(async (block) => {
+        if (
+          block.type === "image" &&
+          block.props.url &&
+          !block.props.url.includes("beekrowd_storage")
+        ) {
+          const newUrl = await uploadImageFromURLToSupabase(block.props.url);
+          if (newUrl) {
+            block.props.url = newUrl;
+          }
+        }
+      });
+
+      await Promise.all(imagePromises);
+
+      updatedBlocks.forEach((block) => {
+        if (block.type === "video") {
+          const videoElement = document.querySelector(
+            `video[src="${block.props.url}"]`
+          );
+          if (videoElement && block.props.url.includes("youtube.com")) {
+            const videoId = block.props.url.split("v=")[1];
+            const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+            const iframe = document.createElement("iframe");
+            iframe.width = block.props.previewWidth || "100%";
+            iframe.height = "315";
+            iframe.src = embedUrl;
+            iframe.frameBorder = "0";
+            iframe.allow =
+              "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+            iframe.allowFullscreen = true;
+            videoElement.replaceWith(iframe);
+          }
+        }
+      });
+
+      setTabs((prevTabs) => {
+        return prevTabs.map((tab) => {
+          if (tab.key === tabKey) {
+            return {
+              ...tab,
+              content: JSON.stringify(updatedBlocks),
+            };
+          }
+          return tab;
+        });
+      });
+
+      if (
+        user?.id === currentProject?.user_id ||
+        currentProject?.collabs?.includes(user.email)
+      ) {
+        setIsContentChanged(true);
+      }
+    },
+    [
+      uploadImageFromURLToSupabase,
+      currentProject?.user_id,
+      currentProject?.collabs,
+      user?.email,
+    ]
+  );
+  const [unChange, setUnChange] = useState(true);
+
+  useEffect(() => {
+    if (
+      user?.id === currentProject?.user_id ||
+      currentProject?.collabs?.includes(user.email)
+    ) {
+      setUnChange(false);
+    }
+  }, []);
+
+  const debouncedHandleChange = useRef(debounce(handleChange, 300)).current;
   const tabContents = {
     ...(isDemo && user.email !== "ha.pham@beekrowd.com"
       ? {}
       : {
           "Your Profile": (
             <div className="relative">
-              <BlockNoteView
-                editor={editor}
-                theme={"light"}
-                className="w-full lg:w-8/12"
-                onChange={async function (editor) {
-                  const blocks = editor.topLevelBlocks;
-                  for (const block of blocks) {
-                    if (
-                      block.type === "image" &&
-                      block.props.url &&
-                      !block.props.url.includes("beekrowd_storage")
-                    ) {
-                      const newUrl = await uploadImageFromURLToSupabase(
-                        block.props.url
-                      );
-                      if (newUrl) {
-                        block.props.url = newUrl;
-                      }
-                    }
+              <Card>
+                <BlockNoteView
+                  editor={editor}
+                  theme={"light"}
+                  className={`w-full ${unChange ? "pointer-events-none" : ""} my-4`}
+                  onChange={(editor) =>
+                    debouncedHandleChange(editor, "Your Profile")
                   }
+                />
+              </Card>
 
-                  // Handle video blocks
-                  blocks.forEach((block) => {
-                    if (block.type === "video") {
-                      const videoElement = document.querySelector(
-                        `video[src="${block.props.url}"]`
-                      );
-                      if (
-                        videoElement &&
-                        block.props.url.includes("youtube.com")
-                      ) {
-                        const videoId = block.props.url.split("v=")[1];
-                        const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-                        const iframe = document.createElement("iframe");
-                        iframe.width = block.props.previewWidth || "100%";
-                        iframe.height = "315";
-                        iframe.src = embedUrl;
-                        iframe.frameBorder = "0";
-                        iframe.allow =
-                          "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                        iframe.allowFullscreen = true;
-                        videoElement.replaceWith(iframe);
-                      }
-                    }
-                  });
-
-                  setBlocks(blocks);
-                  if (
-                    user?.id === currentProject?.user_id ||
-                    currentProject?.collabs?.includes(user.email)
-                  ) {
-                    setIsContentChanged(true); // Đánh dấu nội dung đã thay đổi
-                  }
-                }}
-              />
               {company?.keyWords && (
-                <div className="mt-28 px-5">
+                <div className="mt-16">
                   <div className="text-black font-semibold">Keywords:</div>
 
                   <div className="mt-2">
                     {company.keyWords.split(",").map((keyWord, index) => {
-                      const trimmedKeyword = keyWord.trim(); // Loại bỏ khoảng trắng ở đầu và cuối
+                      const trimmedKeyword = keyWord.trim();
                       if (trimmedKeyword) {
                         return (
                           <Badge
                             key={index}
-                            className="mx-2 bg-yellow-300 border border-gray-300 truncate text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
+                            className=" bg-yellow-300 border border-gray-300 truncate text-black mt-4 inline-flex justify-center items-center gap-x-2 px-2 py-1 text-sm text-center rounded-3xl"
                           >
                             {trimmedKeyword}
                           </Badge>
                         );
                       }
-                      return null; // Loại bỏ từ khóa nếu chỉ còn khoảng trắng
+                      return null;
                     })}
                   </div>
                 </div>
               )}
-              <div className="sm:px-5 sticky bottom-5 left-5">
+              <div>
                 {user?.id === currentProject?.user_id ||
                 currentProject?.collabs?.includes(user.email) ? (
                   <>
@@ -327,13 +460,13 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
                       className={`min-w-[110px] mt-8 hover:cursor-pointer py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent ${
                         isLoading
                           ? "bg-gray-600 disabled:opacity-50 disabled:pointer-events-none"
-                          : "bg-blue-600 text-white hover:bg-blue-700"
+                          : "bg-slate-700 text-white hover:bg-slate-900"
                       }  `}
                       onClick={handleSave}
                       type="button"
                     >
                       {isLoading ? (
-                        <LoadingButtonClick isLoading={isLoading} />
+                        <SpinnerBtn isLoading={isLoading} />
                       ) : (
                         "Save profile"
                       )}
@@ -347,47 +480,40 @@ const MyTab = ({ blocks, setBlocks, company, currentProject }) => {
 
     "Sample PitchDeck": (
       <div>
-        <Sample />
+        <Card>
+          <Sample />
+        </Card>
       </div>
     ),
 
     "Data Room": (
       <div>
-        {" "}
         <FilesList />
       </div>
     ),
   };
 
   return (
-    <div className={`px-8  flex flex-col justify-center items-center`}>
-      <>
-        <aside className="w-full sticky z-20 top-0 bg-white">
-          <div className="w-full  py-8 overflow-x-auto">
-            <nav className="flex justify-between sm:space-x-4 sm:px-14">
-              {/* Navbar */}
-              {Object.keys(tabContents).map((tab) => (
-                <div
-                  key={tab}
-                  className={`cursor-pointer flex items-center sm:px-3 px-1 py-2 text-sm font-medium ${
-                    activeTab === tab
-                      ? "text-blue-600 bg-blue-100 rounded-md"
-                      : "text-gray-600"
-                  }`}
-                  onClick={() => handleTabChange(tab)}
-                >
-                  {tab}
-                </div>
-              ))}
-            </nav>
-          </div>
-        </aside>
-        <div className="w-full py-8 px-0 md:px-8">
+    <Card>
+      <CardContent className="p-6">
+        <Tabs defaultValue="profile" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-6 bg-gray-50 rounded-md">
+            {tabs.map((tab) => (
+              <TabsTrigger
+                value={tab.title}
+                onClick={() => handleTabChange(tab.key)}
+                className={`${activeTab === tab.key ? "bg-white" : ""} rounded-md`}
+              >
+                {tab.title}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
           {/* Content */}
           {tabContents[activeTab]}
-        </div>
-      </>
-    </div>
+        </Tabs>
+      </CardContent>
+    </Card>
   );
 };
 

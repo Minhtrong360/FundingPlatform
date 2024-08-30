@@ -21,6 +21,7 @@ function FinancialList() {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+  const [isLoading, setIsLoading] = useState(false);
 
   const [finances, setFinances] = useState([]);
   const { user } = useAuth();
@@ -35,6 +36,7 @@ function FinancialList() {
       //   .filter("user_id", "eq", user?.id);
 
       // Lấy các dự án có user_id = user.id
+      setIsLoading(true);
       let { data: projects1, error: error1 } = await supabase
         .from("finance")
         .select("*")
@@ -81,6 +83,7 @@ function FinancialList() {
         return dateB - dateA;
       });
       setFinances(sortedProjects);
+      setIsLoading(false);
     };
     if (user) {
       loadFinances();
@@ -293,14 +296,16 @@ function FinancialList() {
                 </Menu>
               }
             >
-              <div className="w-[6rem] bg-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus cursor-pointer">
+              <div
+                className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
+              >
                 Action
               </div>
             </Dropdown>
           ) : (
             <div
               onClick={() => handleProjectClick(record)}
-              className={`w-[6rem] bg-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus cursor-pointer`}
+              className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
             >
               {record.invited_user?.includes(user.email) &&
               record.collabs?.includes(user.email)
@@ -516,7 +521,9 @@ function FinancialList() {
                 </Menu>
               }
             >
-              <div className="w-[6rem] bg-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus cursor-pointer">
+              <div
+                className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
+              >
                 Action
               </div>
             </Dropdown>
@@ -1026,7 +1033,7 @@ function FinancialList() {
                 </div>
               </ReactModal>
 
-              <section className="container px-4 mx-auto">
+              <section className="px-4 mx-auto">
                 <h1 className="text-4xl text-center my-2 font-bold">
                   Financial Listing Dashboard
                 </h1>
@@ -1037,11 +1044,11 @@ function FinancialList() {
                   </h2>
 
                   <button
-                    className={`text-white bg-blue-600 "hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkFocus`}
+                    className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
                     onClick={handleClickAddNew}
                   >
                     <PlusOutlined className="mr-1" />
-                    Add
+                    Add new
                   </button>
                 </div>
                 <div className="flex flex-col mb-8">
@@ -1057,6 +1064,7 @@ function FinancialList() {
                           rowKey="id"
                           size="small"
                           bordered
+                          loading={isLoading}
                         />
                       </div>
                     </div>
@@ -1079,6 +1087,7 @@ function FinancialList() {
                           rowKey="id"
                           size="small"
                           bordered
+                          loading={isLoading}
                         />
                       </div>
                     </div>

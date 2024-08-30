@@ -425,3 +425,7 @@ code {
 .color-changing-text {
   animation: colorChange 2s infinite;
 }
+
+.ant-select-selection-search-input {
+  display: none;
+}

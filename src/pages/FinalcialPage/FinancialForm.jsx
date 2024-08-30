@@ -962,7 +962,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           </div>
           <FlowiseChat page="FM" />
 
-          <div className="my-4 ">
+          <Card className="my-4 ">
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>Dashboard</span>
@@ -1010,79 +1010,75 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </Button>
               </div>
 
-              <Card className="mt-6">
-                <CardContent>
-                  <div className="">
-                    {activeTab === "overview" && (
-                      <div>
-                        <div className="flex space-x-2 my-6 mx-auto">
-                          <Badge
-                            variant="secondary"
-                            className={`bg-yellow-100 text-yellow-800 cursor-pointer ${activeTabA === "input" ? "bg-yellow-500 text-white" : ""}`}
-                            onClick={() => handleTabChangeA("input")}
-                          >
-                            Inputs
-                          </Badge>
-                          <Badge
-                            variant="secondary"
-                            className={`bg-green-100 text-green-800 cursor-pointer ${activeTabA === "table&chart" ? "bg-green-500 text-white" : ""}`}
-                            onClick={() => handleTabChangeA("table&chart")}
-                          >
-                            Tables and Charts
-                          </Badge>
-                        </div>
+              <div className="p-6">
+                {activeTab === "overview" && (
+                  <div>
+                    <div className="flex space-x-2 my-6 mx-auto">
+                      <Badge
+                        variant="secondary"
+                        className={`bg-yellow-100 text-yellow-800 cursor-pointer ${activeTabA === "input" ? "bg-yellow-500 text-white" : ""}`}
+                        onClick={() => handleTabChangeA("input")}
+                      >
+                        Inputs
+                      </Badge>
+                      <Badge
+                        variant="secondary"
+                        className={`bg-green-100 text-green-800 cursor-pointer ${activeTabA === "table&chart" ? "bg-green-500 text-white" : ""}`}
+                        onClick={() => handleTabChangeA("table&chart")}
+                      >
+                        Tables and Charts
+                      </Badge>
+                    </div>
 
-                        <Card className="w-full h-full flex flex-col lg:flex-row p-4">
-                          {activeTabA === "table&chart" && (
-                            <>
-                              <div className="w-full xl:w-3/4 sm:p-4 p-0">
-                                <MetricsFM
-                                  customerGrowthChart={customerGrowthChart}
-                                  revenue={revenue}
-                                  numberOfMonths={numberOfMonths}
-                                />
-                              </div>
-                              <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
-                                <button
-                                  className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
-                                  style={{
-                                    bottom: "20px",
-                                    right: "80px",
-                                    position: "fixed",
-                                  }}
-                                  onClick={handleSubmit}
-                                >
-                                  {isLoading ? (
-                                    <SpinnerBtn />
-                                  ) : (
-                                    <>
-                                      <CheckCircleOutlined
-                                        style={{
-                                          fontSize: "12px",
-                                          color: "#FFFFFF",
-                                          marginRight: "4px",
-                                        }}
-                                      />
-                                      Save
-                                    </>
-                                  )}
-                                </button>
-                              </div>
-                            </>
-                          )}
-                          {activeTabA === "input" && (
-                            <>
-                              <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
-                                {" "}
-                              </div>
+                    <Card className="w-full h-full flex flex-col lg:flex-row p-4">
+                      {activeTabA === "table&chart" && (
+                        <>
+                          <div className="w-full xl:w-3/4 sm:p-4 p-0">
+                            <MetricsFM
+                              customerGrowthChart={customerGrowthChart}
+                              revenue={revenue}
+                              numberOfMonths={numberOfMonths}
+                            />
+                          </div>
+                          <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
+                            <button
+                              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
+                              style={{
+                                bottom: "20px",
+                                right: "80px",
+                                position: "fixed",
+                              }}
+                              onClick={handleSubmit}
+                            >
+                              {isLoading ? (
+                                <SpinnerBtn />
+                              ) : (
+                                <>
+                                  <CheckCircleOutlined
+                                    style={{
+                                      fontSize: "12px",
+                                      color: "#FFFFFF",
+                                      marginRight: "4px",
+                                    }}
+                                  />
+                                  Save
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        </>
+                      )}
+                      {activeTabA === "input" && (
+                        <>
+                          <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
 
-                              <div className="w-full xl:w-1/4 sm:p-4 p-0">
-                                <DurationSelect
-                                  handleSubmit={handleSubmit}
-                                  isLoading={isLoading}
-                                />
-                              </div>
-                              {/* <div className="xl:hidden block">
+                          <div className="w-full xl:w-1/4 sm:p-4 p-0">
+                            <DurationSelect
+                              handleSubmit={handleSubmit}
+                              isLoading={isLoading}
+                            />
+                          </div>
+                          {/* <div className="xl:hidden block">
                           <FloatButton
                             tooltip={<div>Input values</div>}
                             style={{
@@ -1102,123 +1098,121 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                           </FloatButton>
                         </div> */}
 
-                              {isInputFormOpen && (
-                                <Modal
-                                  // title="Customer channel"
-                                  open={isInputFormOpen}
-                                  onOk={() => {
-                                    handleSubmit();
-                                    setIsInputFormOpen(false);
-                                  }}
-                                  onCancel={() => {
-                                    setIsInputFormOpen(false);
-                                  }}
-                                  okText="Save"
-                                  cancelText="Close"
-                                  cancelButtonProps={{
-                                    style: {
-                                      borderRadius: "0.375rem",
-                                      cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                                    },
-                                  }}
-                                  okButtonProps={{
-                                    style: {
-                                      background: "#2563EB",
-                                      borderColor: "#2563EB",
-                                      color: "#fff",
-                                      borderRadius: "0.375rem",
-                                      cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                                    },
-                                  }}
-                                  centered={true}
-                                  zIndex={50}
-                                >
-                                  <DurationSelect
-                                    handleSubmit={handleSubmit}
-                                    isInputFormOpen="Ok"
-                                  />
-                                </Modal>
-                              )}
-                            </>
+                          {isInputFormOpen && (
+                            <Modal
+                              // title="Customer channel"
+                              open={isInputFormOpen}
+                              onOk={() => {
+                                handleSubmit();
+                                setIsInputFormOpen(false);
+                              }}
+                              onCancel={() => {
+                                setIsInputFormOpen(false);
+                              }}
+                              okText="Save"
+                              cancelText="Close"
+                              cancelButtonProps={{
+                                style: {
+                                  borderRadius: "0.375rem",
+                                  cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                                },
+                              }}
+                              okButtonProps={{
+                                style: {
+                                  background: "#2563EB",
+                                  borderColor: "#2563EB",
+                                  color: "#fff",
+                                  borderRadius: "0.375rem",
+                                  cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                                },
+                              }}
+                              centered={true}
+                              zIndex={50}
+                            >
+                              <DurationSelect
+                                handleSubmit={handleSubmit}
+                                isInputFormOpen="Ok"
+                              />
+                            </Modal>
                           )}
-                        </Card>
-                      </div>
-                    )}
-                    {activeTab === "customer" && (
-                      <CustomerSection
-                        numberOfMonths={numberOfMonths}
-                        isSaved={isSaved}
-                        setIsSaved={setIsSaved}
-                        customerGrowthChart={customerGrowthChart}
-                        setCustomerGrowthChart={setCustomerGrowthChart}
-                        handleSubmit={handleSubmit}
-                      />
-                    )}
-                    {activeTab === "sales" && (
-                      <SalesSection
-                        numberOfMonths={numberOfMonths}
-                        isSaved={isSaved}
-                        setIsSaved={setIsSaved}
-                        revenue={revenue}
-                        setRevenue={setRevenue}
-                        handleSubmit={handleSubmit}
-                      />
-                    )}
-                    {activeTab === "cost" && (
-                      <CostSection
-                        numberOfMonths={numberOfMonths}
-                        isSaved={isSaved}
-                        setIsSaved={setIsSaved}
-                        handleSubmit={handleSubmit}
-                      />
-                    )}
-                    {activeTab === "personnel" && (
-                      <PersonnelSection
-                        numberOfMonths={numberOfMonths}
-                        isSaved={isSaved}
-                        setIsSaved={setIsSaved}
-                        handleSubmit={handleSubmit}
-                      />
-                    )}
-                    {activeTab === "investment" && (
-                      <InvestmentSection
-                        numberOfMonths={numberOfMonths}
-                        isSaved={isSaved}
-                        setIsSaved={setIsSaved}
-                        handleSubmit={handleSubmit}
-                      />
-                    )}
-                    {activeTab === "loan" && (
-                      <LoanSection
-                        numberOfMonths={numberOfMonths}
-                        isSaved={isSaved}
-                        setIsSaved={setIsSaved}
-                        handleSubmit={handleSubmit}
-                      />
-                    )}
-                    {activeTab === "fundraising" && (
-                      <FundraisingSection
-                        numberOfMonths={numberOfMonths}
-                        isSaved={isSaved}
-                        setIsSaved={setIsSaved}
-                        handleSubmit={handleSubmit}
-                      />
-                    )}
-
-                    {activeTab === "profitAndLoss" && (
-                      <ProfitAndLossSection numberOfMonths={numberOfMonths} />
-                    )}
-                    {activeTab === "cashFlow" && (
-                      <CashFlowSection numberOfMonths={numberOfMonths} />
-                    )}
-                    {activeTab === "balanceSheet" && (
-                      <BalanceSheetSection numberOfMonths={numberOfMonths} />
-                    )}
+                        </>
+                      )}
+                    </Card>
                   </div>
-                </CardContent>
-              </Card>
+                )}
+                {activeTab === "customer" && (
+                  <CustomerSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    customerGrowthChart={customerGrowthChart}
+                    setCustomerGrowthChart={setCustomerGrowthChart}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {activeTab === "sales" && (
+                  <SalesSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    revenue={revenue}
+                    setRevenue={setRevenue}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {activeTab === "cost" && (
+                  <CostSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {activeTab === "personnel" && (
+                  <PersonnelSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {activeTab === "investment" && (
+                  <InvestmentSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {activeTab === "loan" && (
+                  <LoanSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {activeTab === "fundraising" && (
+                  <FundraisingSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+
+                {activeTab === "profitAndLoss" && (
+                  <ProfitAndLossSection numberOfMonths={numberOfMonths} />
+                )}
+                {activeTab === "cashFlow" && (
+                  <CashFlowSection numberOfMonths={numberOfMonths} />
+                )}
+                {activeTab === "balanceSheet" && (
+                  <BalanceSheetSection numberOfMonths={numberOfMonths} />
+                )}
+              </div>
             </Tabs>
-          </div>
+          </Card>
         </div>
       )}
     </div>

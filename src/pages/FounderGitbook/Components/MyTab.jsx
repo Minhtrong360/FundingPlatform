@@ -502,7 +502,7 @@ const MyTab = ({
               <TabsTrigger
                 value={tab.title}
                 onClick={() => handleTabChange(tab.key)}
-                className={`${activeTab === tab.key ? "bg-white" : ""} rounded-md`}
+                className={`${activeTab === tab.key ? "bg-white" : ""} rounded-md w-[50%] mx-auto`}
               >
                 {tab.title}
               </TabsTrigger>

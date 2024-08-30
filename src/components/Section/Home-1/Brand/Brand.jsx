@@ -15,22 +15,19 @@ const BrandSection = () => {
           <div className="col-lg-7">
             <Marquee speed="30" className="zubuz-brand-slider">
               <div className="zubuz-brand-item">
-                <img src="/images/v1/1.png" alt="" className="h-32" />
+                <p className="text-white">FOODMAP</p>
               </div>
               <div className="zubuz-brand-item">
-                <img src="/images/v1/2.png" alt="" className="h-32" />
+                <p className="text-white">VAN LANG UNIVERSITY</p>
               </div>
               <div className="zubuz-brand-item">
-                <img src="/images/v1/3.png" alt="" className="h-32" />
+                <p className="text-white">MEGASHOP</p>
               </div>
               <div className="zubuz-brand-item">
-                <img src="/images/v1/4.png" alt="" className="h-32" />
+                <p className="text-white">HOLOLAB</p>
               </div>
               <div className="zubuz-brand-item">
-                <img src="/images/v1/5.png" alt="" className="h-32" />
-              </div>
-              <div className="zubuz-brand-item">
-                <img src="/images/v1/6.png" alt="" className="h-32" />
+                <p className="text-white">BOSGAURUS</p>
               </div>
             </Marquee>
             <Marquee
@@ -40,22 +37,19 @@ const BrandSection = () => {
               style={{ marginTop: "25px" }}
             >
               <div className="zubuz-brand-item">
-                <img src="/images/v1/1.png" alt="" className="h-32" />
+                <p className="text-white">FOODMAP</p>
               </div>
               <div className="zubuz-brand-item">
-                <img src="/images/v1/2.png" alt="" className="h-32" />
+                <p className="text-white">VAN LANG UNIVERSITY</p>
               </div>
               <div className="zubuz-brand-item">
-                <img src="/images/v1/3.png" alt="" className="h-32" />
+                <p className="text-white">MEGASHOP</p>
               </div>
               <div className="zubuz-brand-item">
-                <img src="/images/v1/4.png" alt="" className="h-32" />
+                <p className="text-white">HOLOLAB</p>
               </div>
               <div className="zubuz-brand-item">
-                <img src="/images/v1/5.png" alt="" className="h-32" />
-              </div>
-              <div className="zubuz-brand-item">
-                <img src="/images/v1/6.png" alt="" className="h-32" />
+                <p className="text-white">BOSGAURUS</p>
               </div>
             </Marquee>
           </div>

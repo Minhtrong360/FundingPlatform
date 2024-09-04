@@ -5,7 +5,7 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-} from "../../../components/ui/Select";
+} from "../../../components/ui/select";
 import React, { useEffect, useState } from "react";
 import {
   calculateCostData,
@@ -49,6 +49,7 @@ import GroqJS from "./GroqJson";
 
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
+import { Card as CardShadcn } from "../../../components/ui/card";
 
 function CashFlowSection({ numberOfMonths }) {
   const dispatch = useDispatch();
@@ -830,7 +831,7 @@ function CashFlowSection({ numberOfMonths }) {
   const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
 
   return (
-    <div className="w-full h-full flex flex-col lg:flex-row">
+    <CardShadcn className="w-full h-full flex flex-col lg:flex-row p-4">
       <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
         <div className="">
           <h3 className="text-lg font-semibold mb-4">I. Relevant Chart</h3>
@@ -845,7 +846,7 @@ function CashFlowSection({ numberOfMonths }) {
                 <SelectValue />
               </SelectTrigger>
 
-              <SelectContent position="popper">
+              <SelectContent position="popper" className="bg-white">
                 <SelectItem
                   className="hover:cursor-pointer"
                   value="cash-flow-chart"
@@ -1041,7 +1042,7 @@ function CashFlowSection({ numberOfMonths }) {
           <GroqJS datasrc={cashFlowData} inputUrl="urlCF" />
         </Modal>
       )}
-    </div>
+    </CardShadcn>
   );
 }
 

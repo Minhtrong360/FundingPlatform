@@ -8,6 +8,7 @@ import { useAuth } from "../../context/AuthContext";
 import SideBar from "../../components/SideBar";
 
 import { message } from "antd";
+import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
 
 const FounderGitbook = () => {
   const { user } = useAuth();
@@ -85,17 +86,9 @@ const FounderGitbook = () => {
 
   return (
     <div className=" bg-white darkBg antialiased !p-0">
-      <div id="exampleWrapper">
-        <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-
-        <div
-          className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0 "
-          onClick={() => setIsSidebarOpen(false)}
-        >
-          <div className="p-4 border-gray-300 border-dashed rounded-md darkBorderGray">
-            <ProjectList projects={projects} isLoading={isLoading} />
-          </div>
-        </div>
+      <HomeHeader />
+      <div className="mt-24 p-4 border-gray-300 border-dashed rounded-md darkBorderGray">
+        <ProjectList projects={projects} isLoading={isLoading} />
       </div>
     </div>
   );

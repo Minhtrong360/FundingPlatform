@@ -22,7 +22,16 @@ import { formatNumber } from "../../features/CostSlice";
 import SpinnerBtn from "../../components/SpinnerBtn";
 import Header from "./Header";
 import FlowiseChat from "../FinalcialPage/FLowiseChat";
-import PartnerMarquee from "./Components/PartnerMarquee/"
+import PartnerMarquee from "./Components/PartnerMarquee/";
+import BrandSection from "../../components/Section/Home-1/Brand/Brand";
+import ContentSectionOne from "../../components/Section/Home-1/Content/ContentOne";
+import ContentSectionTwo from "../../components/Section/Home-1/Content/ContentTwo";
+import FeatureSection from "../../components/Section/Home-1/Feature/Feature";
+import Faq from "../../components/Section/Home-1/Faq/Faq";
+import TestimonialSection from "../../components/Section/Common/Testimonial/Testimonial";
+import NewsSection from "../../components/Section/Home-1/News/News";
+import Cta from "../../components/Section/Common/Cta";
+import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
 // import BubleChatBot from "./Components/BubleChatBot";
 
 const HomePage = () => {
@@ -343,18 +352,19 @@ const HomePage = () => {
 
   return (
     <>
-      {/* <Header /> */}
-      <Header />
+      {/* <HomeHeader /> */}
+      <HomeHeader />
       <FlowiseChat page="Home" />
       {/* {user && <BubleChatBot />} */}
       <HeroSection />
-
-      <HeroCard />
-      <Features />
-
-      <PricingWithLemon />
-
-      <PartnerMarquee/>
+      <BrandSection />
+      <ContentSectionOne />
+      <ContentSectionTwo />
+      <FeatureSection />
+      <Faq />
+      <TestimonialSection />
+      <NewsSection />
+      <Cta />
 
       <Footer />
       {user && (

@@ -75,7 +75,7 @@ const ImageDropdown = ({ isContentChanged }) => {
   };
 
   const handleClickProject = (e) => {
-    handleNavigation("/founder");
+    handleNavigation("/profile");
   };
 
   const handleClickFleaMarket = (e) => {
@@ -118,7 +118,7 @@ const ImageDropdown = ({ isContentChanged }) => {
       <button
         id="hs-dropdown-custom-trigger"
         type="button"
-        className="hs-dropdown-toggle py-1 ps-1 pe-3 inline-flex items-center gap-x-2 text-sm  rounded-md border border-gray-300 bg-white text-gray-800 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
+        className="hs-dropdown-toggle inline-flex items-center gap-x-2 text-sm   bg-white text-gray-800 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
         onClick={toggleDropdown}
       >
         {userData.avatar ? (
@@ -131,10 +131,10 @@ const ImageDropdown = ({ isContentChanged }) => {
           <AccountCircleIcon fontSize="large" />
         )}
 
-        <span className="text-gray-600 text-sm truncate sm:max-w-[7.5rem] max-w-[4rem] darkTextGray">
+        {/* <span className="text-gray-600 text-sm truncate sm:max-w-[7.5rem] max-w-[4rem] darkTextGray">
           {userData.email ? userData.email : ""}
-        </span>
-        <svg
+        </span> */}
+        {/* <svg
           className={`hs-dropdown-open:${isOpen ? "rotate-180" : ""} w-4 h-4`}
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -147,13 +147,13 @@ const ImageDropdown = ({ isContentChanged }) => {
           strokeLinejoin="round"
         >
           <path d="m6 9 6 6 6-6" />
-        </svg>
+        </svg> */}
       </button>
 
       {isOpen && (
         <div
           style={{ minWidth: "100%" }}
-          className="hs-dropdown-menu transition-[opacity,margin] duration-300 opacity-100  bg-white shadow-md rounded-lg p-2 mt-2 absolute left-0 top-full"
+          className="hs-dropdown-menu transition-[opacity,margin] duration-300 opacity-100  bg-white shadow-md rounded-lg p-2 mt-2 absolute top-full -left-4"
         >
           {userData.admin && (
             <button
@@ -199,14 +199,14 @@ const ImageDropdown = ({ isContentChanged }) => {
             <ProfileOutlined />
             Project List
           </button>
-          <button
+          {/* <button
             style={{ minWidth: "100%" }}
             className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
             onClick={handleClickFleaMarket}
           >
             <ShopOutlined />
             Angel's Share
-          </button>
+          </button> */}
 
           <button
             style={{ minWidth: "100%" }}

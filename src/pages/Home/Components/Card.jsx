@@ -4,6 +4,27 @@ import { Input, Modal, Tag, message } from "antd";
 import { useAuth } from "../../../context/AuthContext";
 import { useEffect, useState } from "react";
 import { supabase } from "../../../supabase";
+import { Button } from "../../../components/ui/button";
+import { Badge } from "../../../components/ui/badge";
+import {
+  CalendarIcon,
+  UsersIcon,
+  CodeIcon,
+  ChevronRightIcon,
+} from "lucide-react";
+import {
+  Card as CardShadcn,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../../../components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../../../components/ui/tooltip";
 
 const Card = ({
   title,
@@ -19,6 +40,7 @@ const Card = ({
   setProjectList,
   selectedRound,
   isJudge,
+  project,
 }) => {
   const navigate = useNavigate();
   const { user } = useAuth(); // Get the logged-in user
@@ -27,7 +49,7 @@ const Card = ({
     if (isJudge) {
       openScoreModal(selectedCodeFull);
     } else {
-      navigate(`/founder/${project_id}`);
+      navigate(`/profile/${project_id}`);
     }
   };
   const [selectedProject, setSelectedProject] = useState();
@@ -58,7 +80,6 @@ const Card = ({
     //   );
     //   return;
     // }
-    console.log("project", project);
 
     const scoringInfo = project.scoringInfo || [];
     const newScoringEntry = {
@@ -139,89 +160,65 @@ const Card = ({
 
   const handleClick = () => {
     if (canClick !== false) {
-      navigate(`/founder/${project_id}`);
+      navigate(`/profile/${project.project_id}`);
     } else return;
   };
+  console.log("projectList", projectList);
+  console.log("selectedCodeFull", selectedCodeFull);
 
   return (
-    <div className="flex flex-col h-full max-w-sm bg-white border rounded-md shadow-md transition-all duration-300  hover:shadow-lg cursor-pointer">
-      <div
-        className="relative pt-[50%] sm:pt-[70%] rounded-t-lg overflow-hidden"
-        onClick={handleClick}
+    <>
+      <CardShadcn
+        key={project?.id}
+        className="bg-white overflow-hidden transition-all duration-300 hover:shadow-xl flex flex-col justify-between h-full"
       >
-        {imageUrl ? (
-          <>
-            {canClick !== false ? (
-              <img
-                className=" h-full w-full  absolute top-0 start-0 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out "
-                src={imageUrl}
-                alt="Company Avatar"
-              />
-            ) : (
-              <img
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-in-out"
-                src={imageUrl}
-                alt="Company Avatar"
-              />
-            )}
-          </>
-        ) : (
-          <div className=" h-full w-full  absolute top-0 start-0 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out "></div>
-        )}
+        <CardHeader className="p-0">
+          <img
+            src={project?.card_url}
+            alt={project?.name}
+            width={300}
+            height={200}
+            className="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
+          />
+        </CardHeader>
+        <CardContent className="p-4 flex-grow">
+          <div className="flex justify-between items-center mb-2">
+            <CardTitle className="text-xl font-bold">{project?.name}</CardTitle>
 
-        {verified && (
-          <span className="absolute top-0 right-0 bg-yellow-300 text-gray-800 text-sm font-bold py-1.5 px-3 rounded-bl-lg">
-            Verified profile
-          </span>
-        )}
-      </div>
-
-      <div className="flex-grow p-5">
-        <a
-          className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 "
-          onClick={() => navigate(`/founder/${project_id}`)}
-          href={`/founder/${project_id}`}
-        >
-          {title}
-        </a>
-        <p className="mb-2 text-sm font-normal text-gray-700  overflow-hidden text-ellipsis line-clamp-6">
-          {description}
-        </p>
-      </div>
-
-      <div className="px-5 pb-5  rounded-b-lg">
-        <div className="flex justify-between items-center">
-          {canClick !== false ? (
-            <button
-              onClick={handleButtonClick}
-              className="mt-1 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white bg-blue-600 rounded-md hover:bg-blue-700 darkBgBlue darkHoverBgBlue darkFocus"
+            <Badge
+              className={
+                project?.status === "public" ? "text-white" : "bg-[#ABFB4F]"
+              }
             >
-              {isJudge ? "Giving Score" : buttonText}
-            </button>
-          ) : (
-            <button
-              className="mt-1 inline-flex items-center px-3 py-1 text-sm font-medium text-center text-black bg-gray-100 rounded-md cursor-not-allowed darkBgBlue"
-              disabled
-            >
-              {isJudge ? "Giving Score" : buttonText}
-            </button>
-          )}
-          <Tag
-            className={` ${
-              status === "public"
-                ? "bg-yellow-300 text-black"
-                : "bg-bg-gray-50 border border-gray-300 text-black"
-            } mt-1 inline-flex items-center px-3 py-1 text-sm font-medium text-center   rounded-3xl`}
-            onClick={() => navigate(`/founder/${project_id}`)}
+              {project?.status}
+            </Badge>
+          </div>
+          <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
+            {project?.description}
+          </p>
+        </CardContent>
+        <CardFooter className="flex justify-between p-4">
+          <Button
+            variant="outline"
+            className="w-full group flex-1 mr-2"
+            onClick={handleClick}
           >
-            {status === "public"
-              ? "Public"
-              : status === "private"
-                ? "Private"
-                : "Stealth"}
-          </Tag>
-        </div>
-      </div>
+            View
+            <ChevronRightIcon className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Button>
+          {selectedCodeFull && isJudge && (
+            <Button
+              variant="outline"
+              className="w-full group flex-1 ml-2"
+              onClick={handleButtonClick}
+            >
+              Giving Score
+              <ChevronRightIcon className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+          )}
+        </CardFooter>
+      </CardShadcn>
+
       <Modal
         title={
           <div>
@@ -290,7 +287,7 @@ const Card = ({
           </form>
         </div>
       </Modal>
-    </div>
+    </>
   );
 };
 

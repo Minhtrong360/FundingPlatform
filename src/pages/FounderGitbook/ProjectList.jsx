@@ -12,6 +12,7 @@ import { formatDate } from "../../features/DurationSlice";
 import InputField from "../../components/InputField";
 import apiService from "../../app/apiService";
 import { Option } from "antd/es/mentions";
+import { width } from "@amcharts/amcharts4/.internal/core/utils/Utils";
 
 function ProjectList({ projects, isLoading }) {
   const { user } = useAuth();
@@ -458,11 +459,12 @@ function ProjectList({ projects, isLoading }) {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      width: "7%",
       render: (text, record) => (
         <>
           <button
             onClick={() => handleProjectClick(record)}
-            className={`w-[5em] ${
+            className={`w-full ${
               record?.status === "public"
                 ? "bg-blue-600 text-white"
                 : record?.status === "private"
@@ -470,7 +472,7 @@ function ProjectList({ projects, isLoading }) {
                   : record?.status === "stealth"
                     ? "bg-yellow-300 text-black"
                     : ""
-            }   focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+            }   focus:ring-4 focus:outline-none focus:ring-blue-300  font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus`}
             style={{ fontSize: "12px" }}
           >
             {record.status === "public"
@@ -486,6 +488,7 @@ function ProjectList({ projects, isLoading }) {
       title: "Action/Roles",
       dataIndex: "action",
       key: "action",
+      width: "7%",
       render: (text, record) => (
         <>
           {record.user_id === user.id ? (
@@ -541,22 +544,24 @@ function ProjectList({ projects, isLoading }) {
                 </Menu>
               }
             >
-              <div className="w-[6rem] bg-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus cursor-pointer">
+              <div
+                className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
+              >
                 Action
               </div>
             </Dropdown>
           ) : (
             <div
               onClick={() => handleProjectClick(record)}
-              className={`w-[6rem] bg-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus cursor-pointer`}
+              className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
             >
               {record.invited_user?.includes(user.email) &&
               record.collabs?.includes(user.email)
-                ? "Collaboration"
+                ? "Collab."
                 : record.invited_user?.includes(user.email)
                   ? "View only"
                   : record.collabs?.includes(user.email)
-                    ? "Collaboration"
+                    ? "Collab."
                     : "Default Label"}
             </div>
           )}
@@ -635,11 +640,12 @@ function ProjectList({ projects, isLoading }) {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      width: "7%",
       render: (text, record) => (
         <>
           <button
             onClick={() => handleProjectClick(record)}
-            className={`w-[5em] ${
+            className={`w-full ${
               record?.status === "public"
                 ? "bg-blue-600 text-white"
                 : record?.status === "private"
@@ -647,7 +653,7 @@ function ProjectList({ projects, isLoading }) {
                   : record?.status === "stealth"
                     ? "bg-yellow-300 text-black"
                     : ""
-            }   focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+            }   focus:ring-4 focus:outline-none focus:ring-blue-300  font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus`}
             style={{ fontSize: "12px" }}
           >
             {record.status === "public"
@@ -663,6 +669,7 @@ function ProjectList({ projects, isLoading }) {
       title: "Action/Roles",
       dataIndex: "action",
       key: "action",
+      width: "7%",
       render: (text, record) => (
         <>
           {record.user_id === user.id ? (
@@ -711,14 +718,16 @@ function ProjectList({ projects, isLoading }) {
                 </Menu>
               }
             >
-              <div className="w-[6rem] bg-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus cursor-pointer">
+              <div
+                className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
+              >
                 Action
               </div>
             </Dropdown>
           ) : (
             <div
               onClick={() => handleProjectClick(record)}
-              className={`w-[6rem] bg-blue-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md py-1 text-center darkBgBlue darkHoverBgBlue darkFocus cursor-pointer`}
+              className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
             >
               {record.invited_user?.includes(user.email) &&
               record.collabs?.includes(user.email)
@@ -755,7 +764,7 @@ function ProjectList({ projects, isLoading }) {
       }
 
       if (companies.length > 0) {
-        navigate(`/founder/${project.id}`);
+        navigate(`/profile/${project.id}`);
       } else {
         navigate(`/company/${project.id}`);
       }

@@ -64,6 +64,24 @@ import { useParams } from "react-router-dom";
 // import Perflexity from "./Components/Perflexity";
 import SpinnerBtn from "../../components/SpinnerBtn";
 import FlowiseChat from "./FLowiseChat";
+import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../components/ui/tabs";
+import { ScrollArea, ScrollBar } from "../../components/ui/scroll-area";
+import { Button } from "../../components/ui/button";
+import { Badge } from "../../components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -911,12 +929,29 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     setActiveTabA(tabName);
   };
 
+  const tabs = [
+    { name: "Overview", key: "overview" },
+    { name: "Customer", key: "customer" },
+    { name: "Sales", key: "sales" },
+    { name: "Costs", key: "cost" },
+    { name: "Personnel", key: "personnel" },
+    { name: "CapEx", key: "investment" },
+    { name: "Loans", key: "loan" },
+    { name: "Funding", key: "fundraising" },
+    { name: "Profit & Loss", key: "profitAndLoss" },
+    { name: "Cash Flow", key: "cashFlow" },
+    { name: "Balance Sheet", key: "balanceSheet" },
+  ];
+
+  const params = useParams();
+  const paramsID = params.id;
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white my-28 sm:px-32 px-2">
       {spinning ? (
         <ProgressBar spinning={spinning} isLoading={isLoading} />
       ) : (
-        <>
+        <div>
           {temIsLoading && <LoadingButtonClick isLoading={temIsLoading} />}
           <div className="w-full h-full flex flex-col lg:flex-row">
             <BusinessModelBot
@@ -928,223 +963,125 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               setSpinning={setSpinning}
             />
           </div>
-          <FlowiseChat page="FM" />
+          <FlowiseChat page="FM" projectid={paramsID} />
 
-          <div className="my-4 ">
-            {/* <div className="rounded-lg bg-green-500 text-white shadow-lg p-4 mr-4 w-10 py-2 mb-4 flex items-center justify-center">
-              <button onClick={startTour}>
-                <QuestionCircleOutlined />
-              </button>
-            </div> */}
-            <h3 className="text-md text-center font-md mb-2">
-              <span className="bg-yellow-100">Yellow parts</span> are inputs.{" "}
-              <span className="bg-green-100">Green parts</span> are
-              automatically generated results.
-            </h3>
-            <h3 className="text-md text-center font-md mb-2">
-              <span className="font-semibold">Modules</span> are listed with 1,
-              2, 3...<span className="font-semibold"> Sub-modules</span> are
-              listed with a, b, c...
-            </h3>
-            <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
-              <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
-                <li
-                  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-                    activeTab === "overview"
-                      ? "bg-yellow-300 font-bold"
-                      : "bg-yellow-100 hover:bg-yellow-200"
-                  }`}
-                  onClick={() => handleTabChange("overview")}
-                >
-                  1. Overview
-                </li>
-                {/* Repeat for other tabs */}
-                <li
-                  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-                    activeTab === "customer"
-                      ? "bg-yellow-300 font-bold"
-                      : "bg-yellow-100 hover:bg-yellow-200"
-                  }`}
-                  onClick={() => handleTabChange("customer")}
-                >
-                  2. Customer
-                </li>
+          <Card className="my-4 ">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <span>Dashboard</span>
+                <div className="flex items-center space-x-2">
+                  <Badge
+                    variant="outline"
+                    className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
+                  >
+                    Inputs
+                  </Badge>
+                  <Badge
+                    variant="outline"
+                    className="bg-green-100 text-green-800 hover:bg-green-200"
+                  >
+                    Generated Results
+                  </Badge>
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <Tabs
+              value={activeTab}
+              onValueChange={handleTabChange}
+              className="w-full"
+            >
+              <div className="flex items-center px-4 py-2 bg-gray-50">
+                <Button variant="ghost" size="icon" className="mr-2">
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <ScrollArea className="w-full whitespace-nowrap">
+                  <TabsList className="w-full justify-between bg-transparent text-gray-700">
+                    {tabs.map((tab) => (
+                      <TabsTrigger
+                        key={tab.key}
+                        value={tab.key}
+                        className="px-4 py-2 data-[state=active]:bg-white data-[state=active]:text-black rounded-lg"
+                      >
+                        {tab.name}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
+                <Button variant="ghost" size="icon" className="ml-2">
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
 
-                <li
-                  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-                    activeTab === "sales"
-                      ? "bg-yellow-300 font-bold"
-                      : "bg-yellow-100 hover:bg-yellow-200"
-                  }`}
-                  onClick={() => handleTabChange("sales")}
-                >
-                  3. Sales
-                </li>
-                <li
-                  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-                    activeTab === "cost"
-                      ? "bg-yellow-300 font-bold"
-                      : "bg-yellow-100 hover:bg-yellow-200"
-                  }`}
-                  onClick={() => handleTabChange("cost")}
-                >
-                  4. Costs
-                </li>
-                <li
-                  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-                    activeTab === "personnel"
-                      ? "bg-yellow-300 font-bold"
-                      : "bg-yellow-100 hover:bg-yellow-200"
-                  }`}
-                  onClick={() => handleTabChange("personnel")}
-                >
-                  5. Personnel
-                </li>
-                <li
-                  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-                    activeTab === "investment"
-                      ? "bg-yellow-300 font-bold"
-                      : "bg-yellow-100 hover:bg-yellow-200"
-                  }`}
-                  onClick={() => handleTabChange("investment")}
-                >
-                  6. CapEx
-                </li>
-                <li
-                  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-                    activeTab === "loan"
-                      ? "bg-yellow-300 font-bold"
-                      : "bg-yellow-100 hover:bg-yellow-200"
-                  }`}
-                  onClick={() => handleTabChange("loan")}
-                >
-                  7. Loans
-                </li>
-                <li
-                  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-                    activeTab === "fundraising"
-                      ? "bg-yellow-300 font-bold"
-                      : "bg-yellow-100 hover:bg-yellow-200"
-                  }`}
-                  onClick={() => handleTabChange("fundraising")}
-                >
-                  8. Funding
-                </li>
-                <li
-                  className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-                    activeTab === "profitAndLoss"
-                      ? "bg-green-300 font-bold"
-                      : "bg-green-100 hover:bg-green-200"
-                  }`}
-                  onClick={() => handleTabChange("profitAndLoss")}
-                >
-                  9. Profit & Loss
-                </li>
-                <li
-                  className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-green-200 ${
-                    activeTab === "cashFlow"
-                      ? "bg-green-300 font-bold"
-                      : "bg-green-100 hover:bg-green-200"
-                  }`}
-                  onClick={() => handleTabChange("cashFlow")}
-                >
-                  10. Cash Flow
-                </li>
-                <li
-                  className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-green-200 ${
-                    activeTab === "balanceSheet"
-                      ? "bg-green-300 font-bold"
-                      : "bg-green-100 hover:bg-green-200"
-                  }`}
-                  onClick={() => handleTabChange("balanceSheet")}
-                >
-                  11. Balance Sheet
-                </li>
-              </ul>
-            </div>
-
-            <div className="">
-              {activeTab === "overview" && (
-                <div>
-                  <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm NOsticky NOtop-8 z-50">
-                    <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
-                      <li
-                        className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
-                          activeTabA === "input"
-                            ? "bg-yellow-300 font-bold"
-                            : "bg-yellow-100"
-                        }`}
+              <div className="p-6">
+                {activeTab === "overview" && (
+                  <div>
+                    <div className="flex space-x-2 my-6 mx-auto">
+                      <Badge
+                        variant="secondary"
+                        className={`bg-yellow-100 text-yellow-800 cursor-pointer ${activeTabA === "input" ? "bg-yellow-500 text-white" : ""}`}
                         onClick={() => handleTabChangeA("input")}
                       >
-                        a. Inputs
-                      </li>
-                      <li
-                        className={`hover:cursor-pointer px-2 py-1 rounded-md ${
-                          activeTabA === "table&chart"
-                            ? "bg-green-300 font-bold"
-                            : "bg-green-100"
-                        } hover:bg-green-200`}
+                        Inputs
+                      </Badge>
+                      <Badge
+                        variant="secondary"
+                        className={`bg-green-100 text-green-800 cursor-pointer ${activeTabA === "table&chart" ? "bg-green-500 text-white" : ""}`}
                         onClick={() => handleTabChangeA("table&chart")}
                       >
-                        b. Charts
-                      </li>
-                      {/* Repeat for other tabs */}
-                    </ul>
-                  </div>
-                  <div className="w-full h-full flex flex-col lg:flex-row">
-                    {activeTabA === "table&chart" && (
-                      <>
-                        <div className="w-full xl:w-3/4 sm:p-4 p-0">
-                          {/* <N8NChat/> */}
-                          {/* <DraggableChart/> */}
-                          {/* <AmChart5/> */}
-                          {/* <Perflexity prompt={generatePrompt()} button={"Benchmark"} /> */}
+                        Tables and Charts
+                      </Badge>
+                    </div>
 
-                          <MetricsFM
-                            customerGrowthChart={customerGrowthChart}
-                            revenue={revenue}
-                            numberOfMonths={numberOfMonths}
-                          />
-                        </div>
-                        <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
-                          <button
-                            className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
-                            style={{
-                              bottom: "20px",
-                              right: "80px",
-                              position: "fixed",
-                            }}
-                            onClick={handleSubmit}
-                          >
-                            {isLoading ? (
-                              <SpinnerBtn />
-                            ) : (
-                              <>
-                                <CheckCircleOutlined
-                                  style={{
-                                    fontSize: "12px",
-                                    color: "#FFFFFF",
-                                    marginRight: "4px",
-                                  }}
-                                />
-                                Save
-                              </>
-                            )}
-                          </button>
-                        </div>
-                      </>
-                    )}
-                    {activeTabA === "input" && (
-                      <>
-                        <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
+                    <Card className="w-full h-full flex flex-col lg:flex-row p-4">
+                      {activeTabA === "table&chart" && (
+                        <>
+                          <div className="w-full xl:w-3/4 sm:p-4 p-0">
+                            <MetricsFM
+                              customerGrowthChart={customerGrowthChart}
+                              revenue={revenue}
+                              numberOfMonths={numberOfMonths}
+                            />
+                          </div>
+                          <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
+                            <button
+                              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
+                              style={{
+                                bottom: "20px",
+                                right: "80px",
+                                position: "fixed",
+                              }}
+                              onClick={handleSubmit}
+                            >
+                              {isLoading ? (
+                                <SpinnerBtn />
+                              ) : (
+                                <>
+                                  <CheckCircleOutlined
+                                    style={{
+                                      fontSize: "12px",
+                                      color: "#FFFFFF",
+                                      marginRight: "4px",
+                                    }}
+                                  />
+                                  Save
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        </>
+                      )}
+                      {activeTabA === "input" && (
+                        <>
+                          <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
 
-                        <div className="w-full xl:w-1/4 sm:p-4 p-0">
-                          <DurationSelect
-                            handleSubmit={handleSubmit}
-                            isLoading={isLoading}
-                          />
-                        </div>
-                        {/* <div className="xl:hidden block">
+                          <div className="w-full xl:w-1/4 sm:p-4 p-0">
+                            <DurationSelect
+                              handleSubmit={handleSubmit}
+                              isLoading={isLoading}
+                            />
+                          </div>
+                          {/* <div className="xl:hidden block">
                           <FloatButton
                             tooltip={<div>Input values</div>}
                             style={{
@@ -1164,121 +1101,122 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                           </FloatButton>
                         </div> */}
 
-                        {isInputFormOpen && (
-                          <Modal
-                            // title="Customer channel"
-                            open={isInputFormOpen}
-                            onOk={() => {
-                              handleSubmit();
-                              setIsInputFormOpen(false);
-                            }}
-                            onCancel={() => {
-                              setIsInputFormOpen(false);
-                            }}
-                            okText="Save"
-                            cancelText="Close"
-                            cancelButtonProps={{
-                              style: {
-                                borderRadius: "0.375rem",
-                                cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                              },
-                            }}
-                            okButtonProps={{
-                              style: {
-                                background: "#2563EB",
-                                borderColor: "#2563EB",
-                                color: "#fff",
-                                borderRadius: "0.375rem",
-                                cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                              },
-                            }}
-                            centered={true}
-                            zIndex={50}
-                          >
-                            <DurationSelect
-                              handleSubmit={handleSubmit}
-                              isInputFormOpen="Ok"
-                            />
-                          </Modal>
-                        )}
-                      </>
-                    )}
+                          {isInputFormOpen && (
+                            <Modal
+                              // title="Customer channel"
+                              open={isInputFormOpen}
+                              onOk={() => {
+                                handleSubmit();
+                                setIsInputFormOpen(false);
+                              }}
+                              onCancel={() => {
+                                setIsInputFormOpen(false);
+                              }}
+                              okText="Save"
+                              cancelText="Close"
+                              cancelButtonProps={{
+                                style: {
+                                  borderRadius: "0.375rem",
+                                  cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                                },
+                              }}
+                              okButtonProps={{
+                                style: {
+                                  background: "#2563EB",
+                                  borderColor: "#2563EB",
+                                  color: "#fff",
+                                  borderRadius: "0.375rem",
+                                  cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                                },
+                              }}
+                              centered={true}
+                              zIndex={50}
+                            >
+                              <DurationSelect
+                                handleSubmit={handleSubmit}
+                                isInputFormOpen="Ok"
+                              />
+                            </Modal>
+                          )}
+                        </>
+                      )}
+                    </Card>
                   </div>
-                </div>
-              )}
-              {activeTab === "customer" && (
-                <CustomerSection
-                  numberOfMonths={numberOfMonths}
-                  isSaved={isSaved}
-                  setIsSaved={setIsSaved}
-                  customerGrowthChart={customerGrowthChart}
-                  setCustomerGrowthChart={setCustomerGrowthChart}
-                  handleSubmit={handleSubmit}
-                />
-              )}
-              {activeTab === "sales" && (
-                <SalesSection
-                  numberOfMonths={numberOfMonths}
-                  isSaved={isSaved}
-                  setIsSaved={setIsSaved}
-                  revenue={revenue}
-                  setRevenue={setRevenue}
-                  handleSubmit={handleSubmit}
-                />
-              )}
-              {activeTab === "cost" && (
-                <CostSection
-                  numberOfMonths={numberOfMonths}
-                  isSaved={isSaved}
-                  setIsSaved={setIsSaved}
-                  handleSubmit={handleSubmit}
-                />
-              )}
-              {activeTab === "personnel" && (
-                <PersonnelSection
-                  numberOfMonths={numberOfMonths}
-                  isSaved={isSaved}
-                  setIsSaved={setIsSaved}
-                  handleSubmit={handleSubmit}
-                />
-              )}
-              {activeTab === "investment" && (
-                <InvestmentSection
-                  numberOfMonths={numberOfMonths}
-                  isSaved={isSaved}
-                  setIsSaved={setIsSaved}
-                  handleSubmit={handleSubmit}
-                />
-              )}
-              {activeTab === "loan" && (
-                <LoanSection
-                  numberOfMonths={numberOfMonths}
-                  isSaved={isSaved}
-                  setIsSaved={setIsSaved}
-                  handleSubmit={handleSubmit}
-                />
-              )}
-              {activeTab === "fundraising" && (
-                <FundraisingSection
-                  numberOfMonths={numberOfMonths}
-                  isSaved={isSaved}
-                  setIsSaved={setIsSaved}
-                  handleSubmit={handleSubmit}
-                />
-              )}
+                )}
+                {activeTab === "customer" && (
+                  <CustomerSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    customerGrowthChart={customerGrowthChart}
+                    setCustomerGrowthChart={setCustomerGrowthChart}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {activeTab === "sales" && (
+                  <SalesSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    revenue={revenue}
+                    setRevenue={setRevenue}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {activeTab === "cost" && (
+                  <CostSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {activeTab === "personnel" && (
+                  <PersonnelSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {activeTab === "investment" && (
+                  <InvestmentSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {activeTab === "loan" && (
+                  <LoanSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {activeTab === "fundraising" && (
+                  <FundraisingSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
 
-              {activeTab === "profitAndLoss" && (
-                <ProfitAndLossSection numberOfMonths={numberOfMonths} />
-              )}
-              {activeTab === "cashFlow" && (
-                <CashFlowSection numberOfMonths={numberOfMonths} />
-              )}
-              {activeTab === "balanceSheet" && (
-                <BalanceSheetSection numberOfMonths={numberOfMonths} />
-              )}
-            </div>
-          </div>
-        </>
+                {activeTab === "profitAndLoss" && (
+                  <ProfitAndLossSection numberOfMonths={numberOfMonths} />
+                )}
+                {activeTab === "cashFlow" && (
+                  <CashFlowSection numberOfMonths={numberOfMonths} />
+                )}
+                {activeTab === "balanceSheet" && (
+                  <BalanceSheetSection numberOfMonths={numberOfMonths} />
+                )}
+              </div>
+            </Tabs>
+          </Card>
+        </div>
       )}
     </div>
   );

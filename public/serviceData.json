@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Market Research",
+    "icon": "/images/v3/icon1.svg",
+    "description": "Identify target audience, analyze competitors, assess trends, and market size.",
+    "link": "single-service"
+  },
+  {
+    "title": "Business Consulting",
+    "icon": "/images/v3/icon2.png",
+    "description": "Provide strategic advice, optimize operations and drive growth.",
+    "link": "single-service"
+  },
+  {
+    "title": "Financial Consulting",
+    "icon": "/images/v3/icon3.png",
+    "description": "Provide budgeting, forecasting, cash flow management, FP&A.",
+    "link": "single-service"
+  },
+  {
+    "title": "Startup Valuation",
+    "icon": "/images/v3/icon4.png",
+    "description": "Using discounted cash flow, comparables, or venture capital method.",
+    "link": "single-service"
+  },
+  {
+    "title": "Investor matching",
+    "icon": "/images/v3/icon5.png",
+    "description": "Connect startups with suitable investors based on industry, stage, goals, and funding.",
+    "link": "single-service"
+  },
+  {
+    "title": "Investor Relations",
+    "icon": "/images/v3/icon6.png",
+    "description": "Provide updates, manage expectations, and ensure transparency.",
+    "link": "single-service"
+  },
+  {
+    "title": "Security features",
+    "icon": "/images/v3/icon7.png",
+    "description": "Security is a crucial aspect of our app security measures.",
+    "link": "single-service"
+  },
+  {
+    "title": "Integration support",
+    "icon": "/images/v3/icon8.png",
+    "description": "Ability to connect with other financial tools of accounting.",
+    "link": "single-service"
+  },
+  {
+    "title": "Currency conversion",
+    "icon": "/images/v3/icon9.png",
+    "description": "Our finance app also offers all currency conversion tools.",
+    "link": "single-service"
+  }
+]

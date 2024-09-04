@@ -5,6 +5,7 @@ import Flowise from "../FinalcialPage/Components/Flowise";
 import Header from "../Home/Header";
 import Valuation from "../FinalcialPage/Components/Perflexity";
 import { useAuth } from "../../context/AuthContext";
+import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
 
 const { TabPane } = Tabs;
 
@@ -46,8 +47,8 @@ export default function MarketResearch() {
 
   return (
     <>
-      {/* <Header /> */}
-      <Header />
+      {/* <HomeHeader /> */}
+      <HomeHeader />
 
       <div
         key="1"

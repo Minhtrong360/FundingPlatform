@@ -7,7 +7,6 @@ import ForgotPassword from "../pages/SignUp/ForgotPassword";
 import UpdatePassword from "../pages/SignUp/UpdatePassword";
 
 import Founder from "../pages/FounderGitbook/Founder";
-import NotFoundPage from "../pages/NotFoundPage";
 import PaymentSuccess from "../pages/PaymentSuccess";
 
 import Trial from "../pages/DashBoard/trial";
@@ -49,7 +48,31 @@ import CompetitionPosts from "../pages/University/CompetitionPosts.jsx";
 import DraggableChart from "../pages/FinalcialPage/Components/DraggableChart.jsx";
 import VCPage from "../pages/VC workspace/VCPage.jsx";
 import CohortPost from "../pages/VC workspace/CohortPosts.jsx";
-import CoursePosts from "../pages/StartUps/CoursePosts.jsx";
+import Home from "../pages/home-1/page.js";
+import HomeTwoPage from "./../pages/home-2/page";
+import HomeThreePage from "./../pages/home-3/page";
+import BlogOnePage from "../pages/blog-column-one/page.js";
+import BlogTwoPage from "./../pages/blog-column-two/page";
+import BlogPage from "../pages/blog/page.js";
+import CareerPage from "./../pages/career/page";
+import ComingSoonPage from "./../pages/coming-soon/page";
+import ContactUsPage from "./../pages/contact-us/page";
+import IntegrationPage from "../pages/integrations/page.js";
+import PortfolioClassicPage from "./../pages/portfolio-classic/page";
+import PortfolioGridPage from "./../pages/portfolio-grid/page";
+import ResetPasswordPage from "./../pages/reset-password/page";
+import ServicePage from "./../pages/service/page";
+import SignInPage from "./../pages/sign-in/page";
+import SingleBlogPage from "./../pages/single-blog/page";
+import SingleCareerPage from "./../pages/single-career/page";
+import SinglePortfolioPage from "./../pages/single-portfolio/page";
+import SingleServicePage from "./../pages/single-service/page";
+import SingleTeamPage from "./../pages/single-team/page";
+import TeamPage from "./../pages/team/page";
+import TestimonialPage from "./../pages/testimonials/page";
+import AboutPage from "./../pages/about-us/page";
+import SignUpPage from "../pages/sign-up/page.js";
+import NotFoundPage from "../pages/not-found/page.js";
 
 function Router() {
   const location = useLocation();
@@ -57,20 +80,102 @@ function Router() {
   return (
     <>
       <Routes>
-        {/* Routes definition */}
-        <Route index element={<HomePage />} />
-
+        {/* New */}
+        <Route key={location.key} index element={<Home />} />
+        <Route key={location.key} path="/home-2" element={<HomeTwoPage />} />
+        <Route key={location.key} path="/home-3" element={<HomeThreePage />} />
+        <Route key={location.key} path="/blog" element={<BlogPage />} />
+        <Route key={location.key} path="/about-us" element={<AboutPage />} />
         <Route
           key={location.key}
-          path="/founder"
+          path="/blog-column-one"
+          element={<BlogOnePage />}
+        />
+        <Route
+          key={location.key}
+          path="/blog-column-two"
+          element={<BlogTwoPage />}
+        />
+        <Route key={location.key} path="/career" element={<CareerPage />} />
+        <Route
+          key={location.key}
+          path="/coming-soon"
+          element={<ComingSoonPage />}
+        />
+        <Route
+          key={location.key}
+          path="/contact-us"
+          element={<ContactUsPage />}
+        />
+        <Route key={location.key} path="/faq" element={<FAQ />} />
+        <Route
+          key={location.key}
+          path="/integrations"
+          element={<IntegrationPage />}
+        />
+        <Route
+          key={location.key}
+          path="/portfolio-classic"
+          element={<PortfolioClassicPage />}
+        />
+        <Route
+          key={location.key}
+          path="/portfolio-grid"
+          element={<PortfolioGridPage />}
+        />
+        <Route key={location.key} path="/pricing" element={<PricingPage />} />
+        <Route
+          key={location.key}
+          path="/reset-password"
+          element={<ResetPasswordPage />}
+        />
+        <Route key={location.key} path="/service" element={<ServicePage />} />
+        <Route key={location.key} path="/sign-in" element={<SignInPage />} />
+        <Route key={location.key} path="/sign-up" element={<SignUpPage />} />
+        <Route
+          key={location.key}
+          path="/single-blog"
+          element={<SingleBlogPage />}
+        />
+        <Route
+          key={location.key}
+          path="/single-career"
+          element={<SingleCareerPage />}
+        />
+        <Route
+          key={location.key}
+          path="/single-portfolio"
+          element={<SinglePortfolioPage />}
+        />
+        <Route
+          key={location.key}
+          path="/single-service"
+          element={<SingleServicePage />}
+        />
+        <Route
+          key={location.key}
+          path="/single-team"
+          element={<SingleTeamPage />}
+        />
+        <Route key={location.key} path="/team" element={<TeamPage />} />
+        <Route
+          key={location.key}
+          path="/testimonials"
+          element={<TestimonialPage />}
+        />
+
+        {/* Routes definition */}
+        {/* <Route index element={<HomePage />} /> */}
+        <Route
+          key={location.key}
+          path="/profile"
           element={
             <AuthRequire message="Sign in required!">
               <Founder />
             </AuthRequire>
           }
         />
-
-        <Route
+        {/* <Route
           key={location.key}
           path="/Flea-Market"
           element={
@@ -87,8 +192,7 @@ function Router() {
               <FleaMarketListAll />
             </AuthRequire>
           }
-        />
-
+        /> */}
         <Route
           key={location.key}
           path="/user-info"
@@ -98,10 +202,9 @@ function Router() {
             </AuthRequire>
           }
         />
-
         <Route
           key={location.key}
-          path="/founder/:id"
+          path="/profile/:id"
           element={
             <AuthRequire message="Sign in required!">
               <NewDetailPage location={location} />
@@ -117,10 +220,9 @@ function Router() {
             </AuthRequire>
           }
         />
-
         {/* <Route path="/fundraising" element={<FundraisingRecords />} />   */}
-        <Route key={location.key} path="/login" element={<Login />} />
-        <Route key={location.key} path="/signup" element={<SignUp />} />
+        <Route key={location.key} path="/login" element={<SignInPage />} />
+        {/* <Route key={location.key} path="/signup" element={<SignUp />} /> */}
         <Route key={location.key} path="/confirmed" element={<Confirmed />} />
         <Route
           key={location.key}
@@ -147,7 +249,6 @@ function Router() {
           path="/success"
           element={<PaymentSuccess />}
         />
-        <Route key={location.key} path="*" element={<NotFoundPage />} />
         <Route
           key={location.key}
           path="/company/:id"
@@ -158,14 +259,12 @@ function Router() {
           }
         />
         {/* <Route path="/linkedin" element={<LinkedInLoginComponent />} /> */}
-
         <Route key={location.key} path="/trials" element={<Trial />} />
         <Route
           key={location.key}
           path="/terms"
           element={<TermsAndConditions />}
         />
-
         <Route
           key={location.key}
           path="/financials/:id"
@@ -177,7 +276,6 @@ function Router() {
             </AuthRequire>
           }
         />
-
         <Route
           key={location.key}
           path="/financials"
@@ -207,7 +305,6 @@ function Router() {
           path="/startups"
           element={<NewProjectPosts location={location} />}
         />
-
         <Route key={location.key} path="/pricing" element={<PricingPage />} />
         <Route
           key={location.key}
@@ -226,19 +323,16 @@ function Router() {
         <Route key={location.key} path="/mytabs" element={<NewDetailPage />} />
         {/* <Route  key={location.key} path="/app" element={<App />} /> */}
         {/* <Route  key={location.key} path="/tour" element={<TourComponent />} /> */}
-
         <Route
           key={location.key}
-          path="/founders/market-research"
+          path="/profile/market-research"
           element={
             <AuthRequire message="Sign in required!">
               <MarketResearch />
             </AuthRequire>
           }
         />
-
         {/* For universities */}
-
         <Route
           key={location.key}
           path="/workspace"
@@ -253,7 +347,6 @@ function Router() {
           path="/competitions"
           element={<CompetitionPosts location={location} />}
         />
-
         <Route
           key={location.key}
           path="/vc_workspace"
@@ -268,17 +361,13 @@ function Router() {
           path="/cohort"
           element={<CohortPost location={location} />}
         />
-
         <Route
           key={location.key}
           path="/dragChart"
           element={<DraggableChart />}
         />
-        <Route
-          key={location.key}
-          path="/course"
-          element={<CoursePosts location={location} />}
-        />
+
+        <Route key={location.key} path="*" element={<NotFoundPage />} />
       </Routes>
     </>
   );

@@ -106,32 +106,55 @@ const StatBadgeByDay = ({ ggData, setIsLoading }) => {
     options: {
       chart: {
         id: "customer-growth-chart",
-        type: "line",
+        type: "area", // Area chart
         height: 350,
         toolbar: {
-          show: true,
-          tools: {
-            download: true,
-          }
+          show: false, // Hide the toolbar
         },
       },
       xaxis: {
         type: "datetime",
         categories: [],
-      },
-      yaxis: {
         labels: {
-          formatter: function (val) {
-            return Math.floor(val);
-          },
+          show: false, // Show only the x-axis labels
+        },
+        axisBorder: {
+          show: false, // Hide the axis border
+        },
+        axisTicks: {
+          show: false, // Hide the axis ticks
         },
       },
-      legend: { position: "bottom", horizontalAlign: "right" },
-      fill: { type: "gradient" },
-      dataLabels: { enabled: false },
-      stroke: { curve: "straight" },
-      markers: { size: 1 },
-    },
+      yaxis: {
+        show: false, // Hide the y-axis
+      },
+      fill: {
+        type: "gradient", // Gradient fill for smooth transition
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.4,
+          opacityTo: 0.2,
+        },
+      },
+      dataLabels: {
+        enabled: false, // Disable data labels
+      },
+      stroke: {
+        curve: "smooth", // Smooth curve
+        width: 1, // Thin line for the stroke
+      },
+      markers: {
+        size: 0, // No markers on the line
+      },
+      grid: {
+        show: false, // Hide the grid
+      },
+      colors: ["#A2D2FF", "#FFA8A8"], // Colors for the areas
+      tooltip: {
+        enabled: false, // Disable tooltips
+      },
+    }
+    ,
     series: [],
   });
 

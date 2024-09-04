@@ -13,14 +13,14 @@ import {
   setLocation,
 } from "../../../features/DurationSlice";
 import { Tooltip } from "antd";
-import { Input } from "../../../components/ui/Input";
+import { Input } from "../../../components/ui/input";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "../../../components/ui/Select";
+} from "../../../components/ui/select";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import currencyLists from "../../../components/Currency";
 import { CheckCircleOutlined } from "@ant-design/icons";

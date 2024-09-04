@@ -12,11 +12,11 @@ import {
 } from "../../../features/CostSlice";
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectItem,
-} from "../../../components/ui/Select";
+  SelectTrigger,
+  SelectValue,
+} from "../../../components/ui/select";
 
 import { calculateProfitAndLoss } from "../../../features/ProfitAndLossSlice";
 import {
@@ -48,6 +48,13 @@ import {
 import CustomChart from "./CustomChart";
 import { getCurrencyLabelByKey } from "../../../features/DurationSlice";
 import { FullscreenOutlined } from "@ant-design/icons";
+import {
+  Card as CardShadcn,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../../components/ui/card";
+import ReusableChart from "./ReusableChart";
 
 const AllChartSections = ({
   yearlyAverageCustomers,
@@ -533,7 +540,7 @@ const AllChartSections = ({
         >
           I. Overview
         </h2>
-        <div className="grid md:grid-cols-2 gap-6">
+        {/* <div className="grid md:grid-cols-2 gap-6">
           <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
             <div className="absolute top-2 right-2">
               <button
@@ -936,6 +943,199 @@ const AllChartSections = ({
               height={300}
             />
           </div>
+        </div> */}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <ReusableChart
+            title="Total User"
+            description="January - June 2024"
+            series={customerGrowthChart.series}
+            options={{
+              ...customerGrowthChart.options,
+              grid: {
+                show: false,
+              },
+              chart: {
+                zoom: {
+                  enabled: false, // Disable zooming
+                },
+                toolbar: {
+                  show: true,
+                  tools: {
+                    download: true,
+                  },
+                },
+              },
+              xaxis: {
+                ...customerGrowthChart.options.xaxis,
+                categories: Array.from({ length: numberOfMonths }, (_, i) => {
+                  const monthIndex = (startMonth + i - 1) % 12;
+                  const year =
+                    startYear + Math.floor((startMonth + i - 1) / 12);
+                  return `${months[monthIndex]}/${year}`;
+                }),
+              },
+              stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+            }}
+            charttype="area"
+            footerText="Trending up by 5.2% this month"
+            footerSubText="Showing total visitors for the last 6 months"
+          />
+
+          <ReusableChart
+            title="Total Revenue"
+            description="Total Revenue for the last 6 months"
+            series={revenue.series}
+            options={{
+              chart: {
+                zoom: {
+                  enabled: false, // Disable zooming
+                },
+                toolbar: {
+                  show: true,
+                  tools: {
+                    download: true,
+                  },
+                },
+              },
+              ...revenue.options,
+              xaxis: {
+                ...revenue.options.xaxis,
+                categories: Array.from({ length: numberOfMonths }, (_, i) => {
+                  const monthIndex = (startMonth + i - 1) % 12;
+                  const year =
+                    startYear + Math.floor((startMonth + i - 1) / 12);
+                  return `${months[monthIndex]}/${year}`;
+                }),
+              },
+              stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+            }}
+            charttype="area"
+            footerText="$2,404,488"
+            footerSubText="Total revenue for the last 6 months"
+          />
+
+          <ReusableChart
+            title="Total Cost"
+            description="Total Cost for the last 6 months"
+            options={{
+              zoom: {
+                enabled: false, // Disable zooming
+              },
+              toolbar: {
+                show: true,
+                tools: {
+                  download: true,
+                },
+              },
+              ...revenue.options,
+              xaxis: {
+                ...revenue.options.xaxis,
+              },
+              stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+            }}
+            series={[{ data: totalCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
+            charttype="area"
+            footerText="$118,643"
+            footerSubText="Total costs for the last 6 months"
+          />
+
+          <ReusableChart
+            title="Total Personnel Cost"
+            description="Total Personnel Cost for the last 6 months"
+            options={{
+              zoom: {
+                enabled: false, // Disable zooming
+              },
+              toolbar: {
+                show: true,
+                tools: {
+                  download: true,
+                },
+              },
+              ...revenue.options,
+              xaxis: {
+                ...revenue.options.xaxis,
+              },
+              stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+            }}
+            series={[{ data: totalPersonnelCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
+            charttype="area"
+            footerText="$714,960"
+            footerSubText="Total personnel cost for the last 6 months"
+          />
+
+          <ReusableChart
+            title="Total Investment"
+            description="Total Investment for the last 6 months"
+            options={{
+              zoom: {
+                enabled: false, // Disable zooming
+              },
+              toolbar: {
+                show: true,
+                tools: {
+                  download: true,
+                },
+              },
+              ...revenue.options,
+              xaxis: {
+                ...revenue.options.xaxis,
+              },
+              stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+            }}
+            series={[{ data: bsTotalInvestmentValues, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
+            charttype="area"
+            footerText="$10,000"
+            footerSubText="Total investment for the last 6 months"
+          />
+
+          <ReusableChart
+            title="Total Loan"
+            description="Total Loan for the last 6 months"
+            options={{
+              zoom: {
+                enabled: false, // Disable zooming
+              },
+              toolbar: {
+                show: true,
+                tools: {
+                  download: true,
+                },
+              },
+              ...revenue.options,
+              xaxis: {
+                ...revenue.options.xaxis,
+              },
+              yaxis: {
+                axisBorder: {
+                  show: true, // Show y-axis line
+                },
+
+                labels: {
+                  show: true,
+                  style: {
+                    fontFamily: "Sora, sans-serif",
+                  },
+                  formatter: function (val) {
+                    return formatNumber(Math.floor(val));
+                  },
+                },
+                title: {
+                  text: "Remaining Loan ($)",
+                  style: {
+                    fontSize: "12px",
+                    fontFamily: "Sora, sans-serif",
+                  },
+                },
+              },
+              stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+            }}
+            series={[{ data: totalLoanData, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
+            charttype="area"
+            footerText="$40,000"
+            footerSubText="Total loan for the last 6 months"
+          />
         </div>
 
         {/* Các biểu đồ */}
@@ -954,7 +1154,7 @@ const AllChartSections = ({
                 <SelectValue />
               </SelectTrigger>
 
-              <SelectContent position="popper">
+              <SelectContent position="popper" className="bg-white">
                 <SelectItem
                   value="total-revenue-chart"
                   className="hover:cursor-pointer"

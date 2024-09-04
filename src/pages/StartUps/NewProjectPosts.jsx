@@ -250,7 +250,7 @@ const NewProjectPosts = ({ location }) => {
     <div>
       {/* <HomeHeader /> */}
       <HomeHeader />
-      <div className="px-3 py-2 lg:px-8 lg:py-1 mx-auto">
+      <div className="py-2 lg:py-1 mx-auto">
         <HeroSectionZubuz />
         {/* <HeroStartup /> */}
         <Search
@@ -280,25 +280,21 @@ const NewProjectPosts = ({ location }) => {
               </div>
             ) : (
               <>
-                <div className="mx-auto max-w-[85rem] mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-16 transition-all duration-600 ease-out transform translate-x-0">
-                  {companiesToRender.map((company, index) => (
-                    <div key={company.id} className="group flex justify-center">
-                      {company ? (
-                        <Card
-                          key={company.id}
-                          title={company.name}
-                          description={company.description}
-                          imageUrl={company.card_url}
-                          buttonText="More"
-                          project_id={company.project_id}
-                          verified={company.verifiedStatus}
-                          status={company.status}
-                        />
-                      ) : (
-                        <div className="w-[30vw] h-[55vh]"></div>
-                      )}
-                    </div>
-                  ))}
+                <div className="bg-gray-50">
+                  <div className="container grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
+                    {companiesToRender.map((company, index) => (
+                      <div
+                        key={company.id}
+                        className="group flex justify-center"
+                      >
+                        {company ? (
+                          <Card key={company?.id} project={company} />
+                        ) : (
+                          <div className="w-[30vw] h-[55vh]"></div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </>
             )}

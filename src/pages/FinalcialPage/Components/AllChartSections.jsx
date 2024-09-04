@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Card, Modal } from "antd";
+import {  Modal } from "antd";
 
 import Chart from "react-apexcharts";
 import { useDispatch, useSelector } from "react-redux";
@@ -48,6 +48,23 @@ import {
 import CustomChart from "./CustomChart";
 import { getCurrencyLabelByKey } from "../../../features/DurationSlice";
 import { FullscreenOutlined } from "@ant-design/icons";
+
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../../../components/ui/card";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "../../../components/ui/chart";
+import { TrendingUp } from "lucide-react";
+import ReusableChart from "./ShadcnChart";
 
 const AllChartSections = ({
   yearlyAverageCustomers,
@@ -523,6 +540,16 @@ const AllChartSections = ({
   //     setIsChartModalVisible(false);
   //   }, 100);
   // }, []);
+  const mons = [
+    'January', 'February', 'March', 'April', 'May', 'June', 
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  const Catergories = Array.from({ length: numberOfMonths }, (_, i) => {
+    const monthIndex = (startMonth + i - 1) % 12;
+    const year = (startYear + Math.floor((startMonth + i - 1) / 12)).toString().slice(-2); // Extract last two digits of the year
+    const monthShort = mons[monthIndex].substring(0, 3); // Get short month name 'Jul'
+    return `${monthShort} ${year}`; // Format 'Jul 24'
+  })
 
   return (
     <div className="flex flex-col">
@@ -533,107 +560,111 @@ const AllChartSections = ({
         >
           I. Overview
         </h2>
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
-            <div className="absolute top-2 right-2">
-              <button
-                onClick={(event) =>
-                  handleChartClick(customerGrowthChart, event)
-                }
-                className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
-              >
-                <FullscreenOutlined />
-              </button>
-            </div>
-            <div>
-              <div className="text-base">Total User</div>
-              <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
-                {formatNumber(Math.round(sumArray(yearlyAverageCustomers)))}
-              </p>
-            </div>
-
-            {/* <Chart
+        <div className="grid md:grid-cols-3 gap-6">
+          
+              {/* <div className="absolute top-2 right-2">
+                <button
+                  onClick={(event) =>
+                    handleChartClick(customerGrowthChart, event)
+                  }
+                  className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
+                >
+                  <FullscreenOutlined />
+                </button>
+              </div>
+              <div>
+                <div className="text-base">Total User</div>
+                <p className="text-base lg:text-[2.3vw] font-bold text-black my-2">
+                  {formatNumber(Math.round(sumArray(yearlyAverageCustomers)))}
+                </p>
+              </div> */}
+              {/* //////// */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Total User</CardTitle>
+                <CardDescription className="text-gray-500">January - June 2024</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer  config={{}}>
+                <Chart
               type="area"
               series={customerGrowthChart.series}
               options={{
-                ...customerGrowthChart.options,
+                // ...customerGrowthChart.options,
                 grid: {
-                  show: false,
+                  show: true,
+                  borderColor: '#f3f4f5',
+                  strokeDashArray: 0,
+                  position: 'back',
+                 
                 },
                 chart: {
+                  // height: 400,
                   zoom: {
                     enabled: false, // Disable zooming
                   },
                   toolbar: {
-                    show: true,
+                    show: false,
                     tools: {
-                      download: true,
+                      download: false,
                     },
                   },
                 },
+                dataLabels: {
+                  enabled: false,
+                },
+                legend: {
+                  show: false,
+                },
                 xaxis: {
                   ...customerGrowthChart.options.xaxis,
+                  // categories: Array.from({ length: numberOfMonths }, (_, i) => {
+                  //   const monthIndex = (startMonth + i - 1) % 12;
+                  //   const year =
+                  //     startYear + Math.floor((startMonth + i - 1) / 12);
+                  //   return `${months[monthIndex]}/${year}`;
+                  // }),
                   categories: Array.from({ length: numberOfMonths }, (_, i) => {
                     const monthIndex = (startMonth + i - 1) % 12;
-                    const year =
-                      startYear + Math.floor((startMonth + i - 1) / 12);
-                    return `${months[monthIndex]}/${year}`;
+                    const year = (startYear + Math.floor((startMonth + i - 1) / 12)).toString().slice(-2); // Extract last two digits of the year
+                    const monthShort = mons[monthIndex].substring(0, 3); // Get short month name 'Jul'
+                    return `${monthShort} ${year}`; // Format 'Jul 24'
                   }),
+                  title: {
+                    text: undefined, // Disable the title of the x-axis
+                  },
+                  tickAmount: 5,
+                  labels: {
+                    offsetX: 5, // Adjust this value as needed
+                    rotate: 0,
+                  },
+                  
+                },
+                yaxis: {
+                  show: false,
+                  tickAmount: 4
                 },
                 stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
               }}
-              height={300}
-            /> */}
+             
+            /> 
+            </ChartContainer>
+              </CardContent>
+              <CardFooter className="flex-col items-start gap-2 text-sm">
+                <div className="flex gap-2 font-medium leading-none">
+                  Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+                </div>
+                <div className="leading-none text-muted-foreground text-gray-500">
+                  Showing total visitors for the last 6 months
+                </div>
+              </CardFooter>
+            </Card>
+            {/* /////////// */}
+             
 
-            <Modal
-              centered
-              open={isChartModalVisible}
-              footer={null}
-              onCancel={() => setIsChartModalVisible(false)}
-              width="90%"
-              style={{ top: 20 }}
-            >
-              {selectedZoomChart && (
-                <Chart
-                  options={{
-                    ...selectedZoomChart?.options,
-                    grid: {
-                      show: false,
-                    },
-                    chart: {
-                      zoom: {
-                        enabled: false, // Disable zooming
-                      },
-                      toolbar: {
-                        show: true,
-                        tools: {
-                          download: true,
-                        },
-                      },
-                    },
-                    xaxis: {
-                      ...selectedZoomChart?.options?.xaxis,
-                      categories: Array.from(
-                        { length: numberOfMonths },
-                        (_, i) => {
-                          const monthIndex = (startMonth + i - 1) % 12;
-                          const year =
-                            startYear + Math.floor((startMonth + i - 1) / 12);
-                          return `${months[monthIndex]}/${year}`;
-                        }
-                      ),
-                    },
-                    stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-                  }}
-                  series={selectedZoomChart?.series}
-                  type="area"
-                  height={500}
-                  className="p-4"
-                />
-              )}
-            </Modal>
-          </div>
-          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
+           
+          <ReusableChart series={revenue.series} categories={Catergories}  charttype="area" title="Total Revenue" description={"Total Revenue for the last 6 months"} footerText={"Total Revenue for the last 6 months"} footerSubText={ "Total Revenue for the last 6 months"} footerIcon={TrendingUp}/>
+          {/* <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
             <div className="absolute top-2 right-2">
               <button
                 onClick={(event) => handleChartClick(revenue, event)}
@@ -678,7 +709,7 @@ const AllChartSections = ({
               type="area"
               height={300}
             />
-          </div>
+          </div> */}
           <Modal
             centered
             open={isChartModalVisibleVer2}
@@ -715,8 +746,18 @@ const AllChartSections = ({
               />
             )}
           </Modal>
-
-          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
+          
+          <ReusableChart
+          series={[{ data: totalCosts, name: "Total" }] }
+          charttype='area' 
+          categories={Catergories}
+          title="Total Cost"
+          description={"Total Cost for the last 6 months"}
+          footerText={"Total Cost for the last 6 months"}
+          footerSubText={ "Total Cost for the last 6 months"}
+          footerIcon={TrendingUp}
+          />
+          {/* <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
             <div className="absolute top-2 right-2">
               <button
                 onClick={(event) => handleChartClickVer2(totalCosts, event)}
@@ -753,8 +794,19 @@ const AllChartSections = ({
               type="area"
               height={300}
             />
-          </div>
-          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
+          </div> */}
+
+          <ReusableChart
+          series={[{ data: totalPersonnelCosts, name: "Total" }] }
+          charttype='area'
+          categories={Catergories}
+          title="Total Personnel Cost"
+          description={"Total Personnel Cost for the last 6 months"}
+          footerText={"Total Personnel Cost for the last 6 months"}
+          footerSubText={ "Total Personnel Cost for the last 6 months"}
+          footerIcon={TrendingUp}
+          />
+          {/* <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
             <div className="absolute top-2 right-2">
               <button
                 onClick={(event) =>
@@ -793,8 +845,19 @@ const AllChartSections = ({
               type="area"
               height={300}
             />
-          </div>
-          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
+          </div> */}
+
+          <ReusableChart 
+          series={[{ data: cfInvestmentsArray, name: "Total" }] }
+          charttype='area'
+          categories={Catergories}
+          title="Total Investment"
+          description={"Total Investment for the last 6 months"}
+          footerText={"Total Investment for the last 6 months"}
+          footerSubText={ "Total Investment for the last 6 months"}
+          footerIcon={TrendingUp}
+          />
+          {/* <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
             <div className="absolute top-2 right-2">
               <button
                 onClick={(event) =>
@@ -833,8 +896,19 @@ const AllChartSections = ({
               type="area"
               height={300}
             />
-          </div>
-          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
+          </div> */}
+
+          <ReusableChart
+          series={[{ data: cfLoanArray, name: "Total" }] }
+          charttype='area'
+          categories={Catergories}
+          title="Total Loan"
+          description={"Total Loan for the last 6 months"}
+          footerText={"Total Loan for the last 6 months"}
+          footerSubText={ "Total Loan for the last 6 months"}
+          footerIcon={TrendingUp}
+          />
+          {/* <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
             <div className="absolute top-2 right-2">
               <button
                 onClick={(event) => handleChartClickVer2(totalLoanData, event)}
@@ -893,8 +967,20 @@ const AllChartSections = ({
               type="area"
               height={300}
             />
-          </div>
-          <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
+          </div> */}
+
+          <ReusableChart
+          series={[{ data: bsTotalFundingValues, name: "Total" }] }
+          charttype='bar'
+          categories={Catergories}
+          title="Total Fundraising"
+          description={"Total Fundraising for the last 6 months"}
+          footerText={"Total Fundraising for the last 6 months"}
+          footerSubText={ "Total Fundraising for the last 6 months"}
+          footerIcon={TrendingUp}
+          />
+
+          {/* <div className="flex flex-col transition duration-500 bg-white rounded-2xl p-8 relative">
             <div className="absolute top-2 right-2">
               <button
                 onClick={() => {
@@ -935,7 +1021,7 @@ const AllChartSections = ({
               type="bar"
               height={300}
             />
-          </div>
+          </div> */}
         </div>
 
         {/* Các biểu đồ */}
@@ -1223,7 +1309,7 @@ const AllChartSections = ({
           )}
         </div>
       </main>
-    </div>
+    // </div>
   );
 };
 

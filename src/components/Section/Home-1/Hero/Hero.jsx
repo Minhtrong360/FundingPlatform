@@ -46,7 +46,7 @@ const HeroSection = () => {
                 className="video-init zubuz-hero-video !flex items-center"
                 onClick={openPopup}
               >
-                <img src="/images/v1/play-btn.png" alt />
+                <img style={{ width: '30px', height: '30px' }} src="/images/v1/play-btn.svg" alt />
                 Watch A Demo
               </button>
             </div>

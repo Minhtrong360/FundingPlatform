@@ -54,23 +54,23 @@ const PricingSection = () => {
                 <p>Free plan includes:</p>
                 <ul>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     Basic features
                   </li>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     Limited users & usage
                   </li>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     No customer support
                   </li>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     30 day chat history
                   </li>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     10 Integrations
                   </li>
                 </ul>
@@ -101,23 +101,23 @@ const PricingSection = () => {
                 <p>Basic plan includes:</p>
                 <ul>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     Core features
                   </li>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     Increased limits
                   </li>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     Priority support
                   </li>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     Unlimited chat history
                   </li>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     20 Integrations
                   </li>
                 </ul>
@@ -148,23 +148,23 @@ const PricingSection = () => {
                 <p>Standard plan includes:</p>
                 <ul>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     Expanded features
                   </li>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     Increased users
                   </li>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     Priority email support
                   </li>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     Unlimited chat history
                   </li>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     30 Integrations
                   </li>
                 </ul>
@@ -195,23 +195,23 @@ const PricingSection = () => {
                 <p>Enterprise plan includes:</p>
                 <ul>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     Customized features
                   </li>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     Scalability & security{" "}
                   </li>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     Account manager
                   </li>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     Unlimited chat history
                   </li>
                   <li>
-                    <img src="/images/v3/check.png" alt="" />
+                    <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" />
                     50 Integrations
                   </li>
                 </ul>

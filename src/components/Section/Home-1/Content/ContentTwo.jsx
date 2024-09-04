@@ -21,7 +21,7 @@ const ContentSectionTwo = () => {
               <div className="zubuz-extara-mt">
                 <div className="zubuz-iconbox-wrap-left">
                   <div className="zubuz-iconbox-icon">
-                    <img src="/images/v1/icon1.png" alt="" />
+                    <img style={{ width: '40px', height: '40px' }} src="/images/v1/icon1.png" alt="" />
                   </div>
                   <div className="zubuz-iconbox-data">
                     <span>One-click reporting</span>
@@ -33,7 +33,7 @@ const ContentSectionTwo = () => {
                 </div>
                 <div className="zubuz-iconbox-wrap-left">
                   <div className="zubuz-iconbox-icon">
-                    <img src="/images/v1/icon2.png" alt="" />
+                    <img style={{ width: '40px', height: '40px' }} src="/images/v1/icon2.svg" alt="" />
                   </div>
                   <div className="zubuz-iconbox-data">
                     <span>Strategic Insights</span>

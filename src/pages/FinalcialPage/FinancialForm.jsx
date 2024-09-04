@@ -1035,17 +1035,17 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                           </Badge>
                         </div>
 
-                        <Card className="w-full h-full flex flex-col lg:flex-row p-4">
+                        <div className="w-full h-full flex flex-col md:flex-row p-4">
                           {activeTabA === "table&chart" && (
                             <>
-                              <div className="w-full xl:w-3/4 sm:p-4 p-0">
+                              <div className="w-full xl:w-4/4 sm:p-4 p-0">
                                 <MetricsFM
                                   customerGrowthChart={customerGrowthChart}
                                   revenue={revenue}
                                   numberOfMonths={numberOfMonths}
                                 />
                               </div>
-                              <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
+                              {/* <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
                                 <button
                                   className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
                                   style={{
@@ -1070,14 +1070,14 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                                     </>
                                   )}
                                 </button>
-                              </div>
+                              </div> */}
                             </>
                           )}
                           {activeTabA === "input" && (
                             <>
-                              <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
+                              {/* <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
                                 {" "}
-                              </div>
+                              </div> */}
 
                               <div className="w-full xl:w-1/4 sm:p-4 p-0">
                                 <DurationSelect
@@ -1144,7 +1144,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                               )}
                             </>
                           )}
-                        </Card>
+                        </div>
                       </div>
                     )}
                     {activeTab === "customer" && (

@@ -1034,13 +1034,13 @@ const AllChartSections = ({
             <Select
               onValueChange={(value) => handleChartSelect(value)}
               value={selectedChart}
-              className="border-solid border-[1px] border-gray-200"
+              className="border-solid border-[1px] border-gray-200 bg-white"
             >
               <SelectTrigger className="bg-white border-solid border-[1px] border-gray-200 md:w-[20%] w-full">
                 <SelectValue />
               </SelectTrigger>
 
-              <SelectContent position="popper">
+              <SelectContent position="popper" className="bg-white">
                 <SelectItem
                   value="total-revenue-chart"
                   className="hover:cursor-pointer"

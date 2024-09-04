@@ -9,6 +9,7 @@ import MyTab from "./Components/MyTab";
 import { useParams } from "react-router";
 import Header from "../Home/Header";
 import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
+import RightSideBar from "./Components/RightSideBar";
 
 export default function NewDetailPage({ location }) {
   const [company, setCompany] = useState(
@@ -145,42 +146,43 @@ export default function NewDetailPage({ location }) {
         <LoadingButtonClick isLoading={isLoading} />
       ) : (
         <>
-          {fullScreen === false ? (
-            <div>
-              <HomeHeader
-                noFixedHeader={noFixedHeader}
-                isContentChanged={isContentChanged}
-              />
-              <ProfileInfo
-                company={company}
-                currentProject={currentProject}
-                setCurrentProject={setCurrentProject}
-                blocks={blocks}
-                isContentChanged={isContentChanged}
-              />
-              <div className="flex-grow max-w-7xl mx-auto sm:mt-24 mt-16 px-4 sm:px-6 lg:px-8">
-                <MyTab
-                  blocks={blocks}
-                  setBlocks={setBlocks}
+          <div>
+            <HomeHeader
+              noFixedHeader={noFixedHeader}
+              isContentChanged={isContentChanged}
+            />
+            <div className="flex mt-16 space-x-6 justify-center items-start">
+              {/* Left column */}
+              <div className="w-full lg:w-8/12 px-4">
+                <ProfileInfo
                   company={company}
-                  fullScreen={fullScreen}
                   currentProject={currentProject}
+                  setCurrentProject={setCurrentProject}
+                  blocks={blocks}
                   isContentChanged={isContentChanged}
-                  setIsContentChanged={setIsContentChanged}
+                />
+                <div className="flex-grow max-w-7xl mx-auto sm:mt-24 my-16 px-4 sm:px-6 lg:px-8">
+                  <MyTab
+                    blocks={blocks}
+                    setBlocks={setBlocks}
+                    company={company}
+                    fullScreen={fullScreen}
+                    currentProject={currentProject}
+                    isContentChanged={isContentChanged}
+                    setIsContentChanged={setIsContentChanged}
+                  />
+                </div>
+              </div>
+
+              {/* Right column - hidden on small screens, visible on lg screens */}
+              <div className="!hidden lg:!block w-full lg:w-3/12 px-4">
+                <RightSideBar
+                  company={company}
+                  currentProject={currentProject}
                 />
               </div>
             </div>
-          ) : (
-            <MyTab
-              blocks={blocks}
-              setBlocks={setBlocks}
-              company={company}
-              fullScreen={fullScreen}
-              currentProject={currentProject}
-              isContentChanged={isContentChanged}
-              setIsContentChanged={setIsContentChanged}
-            />
-          )}
+          </div>
         </>
       )}
     </div>

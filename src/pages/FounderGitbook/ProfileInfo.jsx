@@ -345,82 +345,95 @@ export default function ProfileInfo({
       {company.showAdditionalFields === "Yes" && (
         <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 transform">
           <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border ">
-            <div className="text-xl font-semibold">
+            <div className="text-xl font-semibold truncate">
               $
               {company?.target_amount
                 ? formatNumber(company?.target_amount)
                 : "1,000,000"}
             </div>
-            <div className="text-black mt-2">Target amount</div>
+            <div className="text-black mt-2 truncate hover:cursor-pointer">
+              Target amount
+            </div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-            <div className="text-xl font-semibold">
+            <div className="text-xl font-semibold truncate">
               $
               {company?.ticket_size
                 ? formatNumber(company?.ticket_size)
                 : "100,000"}
             </div>
-            <div className="text-black mt-2">Min ticket size</div>
+            <div className="text-black mt-2 truncate hover:cursor-pointer">
+              Min ticket size
+            </div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-            <div className="text-xl font-semibold">
+            <div className="text-xl font-semibold truncate">
               {company?.revenueStatus ? company?.revenueStatus : "0k-10k"}
             </div>
-            <div className="text-black mt-2">Revenue range</div>
+            <div className="text-black mt-2 truncate hover:cursor-pointer">
+              Revenue range
+            </div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-            <div className="text-xl font-semibold">
-              {" "}
+            <div className="text-xl font-semibold truncate">
               $
               {company?.amountRaised
                 ? formatNumber(company?.amountRaised)
                 : "0"}
             </div>
-            <div className="text-black mt-2">Raised before</div>
+            <div className="text-black mt-2 truncate hover:cursor-pointer">
+              Raised before
+            </div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-            <div className="text-xl font-semibold">
+            <div className="text-xl font-semibold truncate">
               {company?.teamSize ? company?.teamSize : "1-10"}+
             </div>
-            <div className="text-black mt-2">Team size</div>
+            <div className="text-black mt-2 truncate hover:cursor-pointer">
+              Team size
+            </div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-            <div className="text-xl font-semibold">Round</div>
-            <div className="text-black mt-2">
+            <div className="text-xl font-semibold truncate">Round</div>
+            <div className="text-black mt-2 truncate hover:cursor-pointer">
               {company?.round ? company?.round : "Pre-seed"}
             </div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-            <div className="text-xl font-semibold">Established</div>
-            <div className="text-black mt-2">
+            <div className="text-xl font-semibold truncate">Established</div>
+            <div className="text-black mt-2 truncate hover:cursor-pointer">
               {company?.operationTime ? company?.operationTime : "2024"}
             </div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
             <Tooltip title={company?.offer}>
-              <div className="text-xl font-semibold">Offer</div>
+              <div className="text-xl font-semibold truncate">Offer</div>
               <div className="text-black mt-2 truncate">
                 {company?.offer ? company?.offer : "5% equity"}
               </div>
             </Tooltip>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-            <div className="text-xl font-semibold">Type</div>
-            <div className="text-black mt-2">
+            <div className="text-xl font-semibold truncate">Type</div>
+            <div className="text-black mt-2 truncate hover:cursor-pointer">
               {company?.offer_type ? company?.offer_type : "Investment"}
             </div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
             <Tooltip title={company?.website}>
-              <div className="text-xl font-semibold ">Website</div>
+              <div className="text-xl font-semibold truncate">Website</div>
               <div
                 className="text-black mt-2 truncate hover:cursor-pointer"
                 onClick={() => window.open(company?.website)}
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
               >
-                {company?.websites
+                {company?.website
                   ? company?.website
                       .replace(/^(https?:\/\/)?(www\.)?/i, "")
-                      .replace(/^(http?:\/\/)?(www\.)?/i, "")
                       .replace(/\/+$/, "")
                   : "beekrowd.com"}
               </div>

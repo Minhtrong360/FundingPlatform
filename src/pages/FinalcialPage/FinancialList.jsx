@@ -15,6 +15,7 @@ import InputField from "../../components/InputField";
 import PricingWithLemon from "../Home/Components/PricingWithLemon";
 import { formatNumber } from "../../features/CostSlice";
 import apiService from "../../app/apiService";
+import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
 
 function FinancialList() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -810,293 +811,281 @@ function FinancialList() {
   );
 
   return (
-    <div className=" bg-white darkBg antialiased !p-0 ">
-      <div id="exampleWrapper">
-        <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+    <div className=" bg-white">
+      <HomeHeader />
 
-        <div
-          className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0 "
-          onClick={() => setIsSidebarOpen(false)}
-        >
-          <div className="p-4 border-gray-300 border-dashed rounded-md darkBorderGray min-h-[96vh]">
-            <main className="w-full min-h-[92.5vh]">
-              {isDeleteModalOpen && (
-                <Modal
-                  title="Confirm Delete"
-                  open={isDeleteModalOpen}
-                  onOk={confirmDelete}
-                  onCancel={() => {
-                    setIsDeleteModalOpen(false);
-                    setSelectedID("");
-                  }}
-                  okText="Delete"
-                  cancelText="Cancel"
-                  cancelButtonProps={{
-                    style: {
-                      borderRadius: "0.375rem",
-                      cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                    },
-                  }}
-                  okButtonProps={{
-                    style: {
-                      background: "#f5222d",
-                      borderColor: "#f5222d",
-                      color: "#fff",
-                      borderRadius: "0.375rem",
-                      cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                    },
-                  }}
-                  centered={true}
-                >
-                  Are you sure you want to delete this project{" "}
-                  <span className="text-[#f5222d] font-semibold">
-                    {
-                      myProjects.find((project) => project.id === SelectedID)
-                        ?.name
-                    }
+      <div className="mt-24 p-4 border-gray-300 border-dashed rounded-md darkBorderGray min-h-[96vh]">
+        <main className="w-full min-h-[92.5vh]">
+          {isDeleteModalOpen && (
+            <Modal
+              title="Confirm Delete"
+              open={isDeleteModalOpen}
+              onOk={confirmDelete}
+              onCancel={() => {
+                setIsDeleteModalOpen(false);
+                setSelectedID("");
+              }}
+              okText="Delete"
+              cancelText="Cancel"
+              cancelButtonProps={{
+                style: {
+                  borderRadius: "0.375rem",
+                  cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                },
+              }}
+              okButtonProps={{
+                style: {
+                  background: "#f5222d",
+                  borderColor: "#f5222d",
+                  color: "#fff",
+                  borderRadius: "0.375rem",
+                  cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                },
+              }}
+              centered={true}
+            >
+              Are you sure you want to delete this project{" "}
+              <span className="text-[#f5222d] font-semibold">
+                {myProjects.find((project) => project.id === SelectedID)?.name}
+              </span>
+              ?
+            </Modal>
+          )}
+          {isAddNewModalOpen && (
+            <Modal
+              title="Add new financial project"
+              open={isAddNewModalOpen}
+              onOk={confirmAddNew}
+              onCancel={() => setIsAddNewModalOpen(false)}
+              okText="Create"
+              cancelText="Cancel"
+              cancelButtonProps={{
+                style: {
+                  borderRadius: "0.375rem",
+                  cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                },
+              }}
+              okButtonProps={{
+                style: {
+                  background: "#2563EB",
+                  borderColor: "#2563EB",
+
+                  color: "#fff",
+                  borderRadius: "0.375rem",
+                  cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                },
+              }}
+              centered={true}
+            >
+              <InputField
+                label="Financial name"
+                id="name"
+                name="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                type="text"
+                required
+              />
+            </Modal>
+          )}
+
+          {isAssignModalOpen && (
+            <Modal
+              title="Assign project"
+              open={isAssignModalOpen}
+              onOk={handleConfirmAssign}
+              onCancel={() => setIsAssignModalOpen(false)}
+              okText="Assign"
+              cancelText="Cancel"
+              cancelButtonProps={{
+                style: {
+                  borderRadius: "0.375rem",
+                  cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                },
+              }}
+              okButtonProps={{
+                style: {
+                  background: "#2563EB",
+                  borderColor: "#2563EB",
+                  color: "#fff",
+                  borderRadius: "0.375rem",
+                  cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                },
+              }}
+              centered={true}
+            >
+              <InputField
+                label="Assign this project to:"
+                id="email"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                required
+              />
+            </Modal>
+          )}
+
+          {isInviteModalOpen && (
+            <Modal
+              title="Invite user"
+              open={isInviteModalOpen}
+              onOk={handleConfirmInvite}
+              onCancel={() => setIsInviteModalOpen(false)}
+              okText="Invite"
+              cancelText="Cancel"
+              cancelButtonProps={{
+                style: {
+                  borderRadius: "0.375rem",
+                  cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                },
+              }}
+              okButtonProps={{
+                style: {
+                  background: "#2563EB",
+                  borderColor: "#2563EB",
+                  color: "#fff",
+                  borderRadius: "0.375rem",
+                  cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+                },
+              }}
+              centered={true}
+            >
+              <InputField
+                label="Invite this email to watch/collaborate your profile"
+                id="inviteEmail"
+                name="inviteEmail"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                type="text"
+                required
+              />
+              <div className="mt-5">
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="invitedType"
+                    value="View only"
+                    checked={invited_type === "View only"} // Cập nhật giá trị checked dựa trên giá trị state
+                    onChange={() => setInvited_type("View only")} // Cập nhật loại dự án khi người dùng thay đổi lựa chọn
+                  />
+                  <span className="ml-2 text-gray-700 text-sm">View only</span>
+                </label>
+
+                <label className="inline-flex items-center ml-6">
+                  <input
+                    type="radio"
+                    name="invitedType"
+                    value="Collaborate"
+                    checked={invited_type === "Collaborate"} // Cập nhật giá trị checked dựa trên giá trị state
+                    onChange={() => setInvited_type("Collaborate")} // Cập nhật loại dự án khi người dùng thay đổi lựa chọn
+                  />
+                  <span className="ml-2 text-gray-700 text-sm">
+                    Collaborate
                   </span>
-                  ?
-                </Modal>
-              )}
-              {isAddNewModalOpen && (
-                <Modal
-                  title="Add new financial project"
-                  open={isAddNewModalOpen}
-                  onOk={confirmAddNew}
-                  onCancel={() => setIsAddNewModalOpen(false)}
-                  okText="Create"
-                  cancelText="Cancel"
-                  cancelButtonProps={{
-                    style: {
-                      borderRadius: "0.375rem",
-                      cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                    },
-                  }}
-                  okButtonProps={{
-                    style: {
-                      background: "#2563EB",
-                      borderColor: "#2563EB",
+                </label>
+              </div>
+            </Modal>
+          )}
 
-                      color: "#fff",
-                      borderRadius: "0.375rem",
-                      cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                    },
-                  }}
-                  centered={true}
-                >
-                  <InputField
-                    label="Financial name"
-                    id="name"
-                    name="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    type="text"
-                    required
-                  />
-                </Modal>
-              )}
-
-              {isAssignModalOpen && (
-                <Modal
-                  title="Assign project"
-                  open={isAssignModalOpen}
-                  onOk={handleConfirmAssign}
-                  onCancel={() => setIsAssignModalOpen(false)}
-                  okText="Assign"
-                  cancelText="Cancel"
-                  cancelButtonProps={{
-                    style: {
-                      borderRadius: "0.375rem",
-                      cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                    },
-                  }}
-                  okButtonProps={{
-                    style: {
-                      background: "#2563EB",
-                      borderColor: "#2563EB",
-                      color: "#fff",
-                      borderRadius: "0.375rem",
-                      cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                    },
-                  }}
-                  centered={true}
-                >
-                  <InputField
-                    label="Assign this project to:"
-                    id="email"
-                    name="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    type="text"
-                    required
-                  />
-                </Modal>
-              )}
-
-              {isInviteModalOpen && (
-                <Modal
-                  title="Invite user"
-                  open={isInviteModalOpen}
-                  onOk={handleConfirmInvite}
-                  onCancel={() => setIsInviteModalOpen(false)}
-                  okText="Invite"
-                  cancelText="Cancel"
-                  cancelButtonProps={{
-                    style: {
-                      borderRadius: "0.375rem",
-                      cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                    },
-                  }}
-                  okButtonProps={{
-                    style: {
-                      background: "#2563EB",
-                      borderColor: "#2563EB",
-                      color: "#fff",
-                      borderRadius: "0.375rem",
-                      cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                    },
-                  }}
-                  centered={true}
-                >
-                  <InputField
-                    label="Invite this email to watch/collaborate your profile"
-                    id="inviteEmail"
-                    name="inviteEmail"
-                    value={inviteEmail}
-                    onChange={(e) => setInviteEmail(e.target.value)}
-                    type="text"
-                    required
-                  />
-                  <div className="mt-5">
-                    <label className="inline-flex items-center">
-                      <input
-                        type="radio"
-                        name="invitedType"
-                        value="View only"
-                        checked={invited_type === "View only"} // Cập nhật giá trị checked dựa trên giá trị state
-                        onChange={() => setInvited_type("View only")} // Cập nhật loại dự án khi người dùng thay đổi lựa chọn
-                      />
-                      <span className="ml-2 text-gray-700 text-sm">
-                        View only
-                      </span>
-                    </label>
-
-                    <label className="inline-flex items-center ml-6">
-                      <input
-                        type="radio"
-                        name="invitedType"
-                        value="Collaborate"
-                        checked={invited_type === "Collaborate"} // Cập nhật giá trị checked dựa trên giá trị state
-                        onChange={() => setInvited_type("Collaborate")} // Cập nhật loại dự án khi người dùng thay đổi lựa chọn
-                      />
-                      <span className="ml-2 text-gray-700 text-sm">
-                        Collaborate
-                      </span>
-                    </label>
-                  </div>
-                </Modal>
-              )}
-
-              <ReactModal
-                isOpen={isPricingOpen}
-                onRequestClose={() => setIsPricingOpen(false)}
-                ariaHideApp={false}
-                style={{
-                  overlay: {
-                    backgroundColor: "gray", // Màu nền overlay
-                    position: "fixed", // Để nền overlay cố định
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    zIndex: 9998, // Chỉ số z để đảm bảo nó hiển thị trên cùng
-                  },
-                  content: {
-                    border: "none", // Để ẩn border của nội dung Modal
-                    background: "none", // Để ẩn background của nội dung Modal
-                    // margin: "auto", // Để căn giữa
-                  },
-                }}
-              >
-                <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-                  <div className="relative p-5 bg-white w-full  m-auto flex-col flex rounded-md">
-                    <PricingWithLemon />
-                    <div className="mt-4 flex items-center gap-10">
-                      <button
-                        className="max-w-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
-                        onClick={() => setIsPricingOpen(false)}
-                      >
-                        Close
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </ReactModal>
-
-              <section className="px-4 mx-auto">
-                <h1 className="text-4xl text-center my-2 font-bold">
-                  Financial Listing Dashboard
-                </h1>
-
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-semibold text-center flex justify-center items-center">
-                    My Projects
-                  </h2>
-
+          <ReactModal
+            isOpen={isPricingOpen}
+            onRequestClose={() => setIsPricingOpen(false)}
+            ariaHideApp={false}
+            style={{
+              overlay: {
+                backgroundColor: "gray", // Màu nền overlay
+                position: "fixed", // Để nền overlay cố định
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                zIndex: 9998, // Chỉ số z để đảm bảo nó hiển thị trên cùng
+              },
+              content: {
+                border: "none", // Để ẩn border của nội dung Modal
+                background: "none", // Để ẩn background của nội dung Modal
+                // margin: "auto", // Để căn giữa
+              },
+            }}
+          >
+            <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
+              <div className="relative p-5 bg-white w-full  m-auto flex-col flex rounded-md">
+                <PricingWithLemon />
+                <div className="mt-4 flex items-center gap-10">
                   <button
-                    className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
-                    onClick={handleClickAddNew}
+                    className="max-w-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+                    onClick={() => setIsPricingOpen(false)}
                   >
-                    <PlusOutlined className="mr-1" />
-                    Add new
+                    Close
                   </button>
                 </div>
-                <div className="flex flex-col mb-8">
-                  <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                    <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-                      <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
-                        <Table
-                          columns={myProjectColumns}
-                          dataSource={myProjects}
-                          pagination={{
-                            position: ["bottomLeft"],
-                          }}
-                          rowKey="id"
-                          size="small"
-                          bordered
-                          loading={isLoading}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              </div>
+            </div>
+          </ReactModal>
 
-                <h2 className="text-lg font-semibold mb-4 mt-12">
-                  Projects Shared With Me
-                </h2>
-                <div className="flex flex-col">
-                  <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                    <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-                      <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
-                        <Table
-                          columns={sharedProjectColumns}
-                          dataSource={sharedProjects}
-                          pagination={{
-                            position: ["bottomLeft"],
-                          }}
-                          rowKey="id"
-                          size="small"
-                          bordered
-                          loading={isLoading}
-                        />
-                      </div>
-                    </div>
+          <section className="px-4 mx-auto">
+            <h1 className="text-4xl text-center my-2 font-bold">
+              Financial Listing Dashboard
+            </h1>
+
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold text-center flex justify-center items-center">
+                My Projects
+              </h2>
+
+              <button
+                className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
+                onClick={handleClickAddNew}
+              >
+                <PlusOutlined className="mr-1" />
+                Add new
+              </button>
+            </div>
+            <div className="flex flex-col mb-8">
+              <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
+                  <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
+                    <Table
+                      columns={myProjectColumns}
+                      dataSource={myProjects}
+                      pagination={{
+                        position: ["bottomLeft"],
+                      }}
+                      rowKey="id"
+                      size="small"
+                      bordered
+                      loading={isLoading}
+                    />
                   </div>
                 </div>
-              </section>
-            </main>
-          </div>
-        </div>
+              </div>
+            </div>
+
+            <h2 className="text-lg font-semibold mb-4 mt-12">
+              Projects Shared With Me
+            </h2>
+            <div className="flex flex-col">
+              <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
+                  <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
+                    <Table
+                      columns={sharedProjectColumns}
+                      dataSource={sharedProjects}
+                      pagination={{
+                        position: ["bottomLeft"],
+                      }}
+                      rowKey="id"
+                      size="small"
+                      bordered
+                      loading={isLoading}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
       </div>
     </div>
   );

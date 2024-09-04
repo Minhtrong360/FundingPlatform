@@ -18,7 +18,10 @@ const ContactSection = () => {
                 <div className="zubuz-iconbox-wrap-left d-block">
                   <div className="zubuz-iconbox-data data-small">
                     <span>Office Location:</span>
-                    <p>4132 Thornridge City, New York.</p>
+                    <p>
+                      Dreamplex 21 Nguyen Trung Ngan, Ben Nghe Ward, District 1,
+                      Ho Chi Minh City
+                    </p>
                   </div>
                 </div>
                 <div className="zubuz-iconbox-wrap-left d-block">
@@ -27,25 +30,31 @@ const ContactSection = () => {
                     <div className="zubuz-social-icon social-box">
                       <ul>
                         <li>
-                          <Link to="/https://twitter.com/">
+                          <Link to="https://x.com/BeeKrowd" target="_blank">
                             <FaTwitter />
                           </Link>
                         </li>
                         <li>
-                          <Link to="/https://facebook.com/">
+                          <Link
+                            to="https://facebook.com/BeeKrowd"
+                            target="_blank"
+                          >
                             <FaFacebookF />
                           </Link>
                         </li>
                         <li>
-                          <Link to="/https://www.linkedin.com/">
+                          <Link
+                            to="https://www.linkedin.com/company/beekrowd/posts/?feedView=all"
+                            target="_blank"
+                          >
                             <FaLinkedin />
                           </Link>
                         </li>
-                        <li>
+                        {/* <li>
                           <Link to="/https://github.com/">
                             <FaGithub />
                           </Link>
-                        </li>
+                        </li> */}
                       </ul>
                     </div>
                   </div>

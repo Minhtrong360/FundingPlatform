@@ -35,11 +35,11 @@ const HeroSection = () => {
             <div className="zubuz-icon-list">
               <ul>
                 <li>
-                  <img src="/images/v3/check.png" alt="" /> No credit card
+                  <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" /> No credit card
                   required.
                 </li>
                 <li>
-                  <img src="/images/v3/check.png" alt="" /> Free trial
+                  <img style={{ width: '24px', height: '24px' }} src="/images/v3/check.svg" alt="" /> Free trial
                   available.
                 </li>
               </ul>

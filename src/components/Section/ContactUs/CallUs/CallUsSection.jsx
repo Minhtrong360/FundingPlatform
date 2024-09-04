@@ -11,11 +11,7 @@ const CallUsSection = () => {
                 </div>
                 <div className="zubuz-iconbox-data light">
                   <h3>Call us directly</h3>
-                  <p>
-                    +088-234-6532-789
-                    <br />
-                    +088-456-3217-005
-                  </p>
+                  <p>+84 376.372.727</p>
                 </div>
               </div>
             </a>
@@ -28,11 +24,7 @@ const CallUsSection = () => {
                 </div>
                 <div className="zubuz-iconbox-data light">
                   <h3>Email us</h3>
-                  <p>
-                    example@gmail.com
-                    <br />
-                    example@gmail.com
-                  </p>
+                  <p>support@beekrowd.com</p>
                 </div>
               </div>
             </a>
@@ -45,8 +37,8 @@ const CallUsSection = () => {
               <div className="zubuz-iconbox-data light">
                 <h3>Our office address</h3>
                 <p>
-                  4132 Thornridge City,
-                  <br /> New York.
+                  Dreamplex 21 Nguyen Trung Ngan, Ben Nghe Ward,
+                  <br /> District 1, Ho Chi Minh City.
                 </p>
               </div>
             </div>

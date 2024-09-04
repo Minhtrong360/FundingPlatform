@@ -1024,7 +1024,7 @@ function FinancialList() {
             </div>
           </ReactModal>
 
-          <section className="px-4 mx-auto">
+          <section className="container px-4 mx-auto">
             <h1 className="text-4xl text-center my-2 font-bold">
               Financial Listing Dashboard
             </h1>

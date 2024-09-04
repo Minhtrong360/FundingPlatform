@@ -3,7 +3,7 @@ const FeatureCard = ({ title, icon, description }) => {
     <div className="col-xl-4 col-md-6">
       <div className="zubuz-iconbox-wrap center">
         <div className="zubuz-iconbox-icon">
-          <img src={icon} alt={title} />
+          <img style={{ width: '40px', height: '40px' }} src={icon} alt={title} />
         </div>
         <div className="zubuz-iconbox-data">
           <h3>{title}</h3>

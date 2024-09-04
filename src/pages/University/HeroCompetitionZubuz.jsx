@@ -12,7 +12,7 @@ const HeroSectionZubuz = () => {
     const iframe = document.getElementById("youtube-video");
     if (iframe) {
       iframe.src =
-        "https://www.youtube.com/embed/SixdAQtWJQ8?si=TPxjQ04JgcZ5eEA9";
+        "https://www.youtube.com/embed/8Kp0w_xU7Gw?si=JcYlKNO_vebL__ED";
     }
   };
 
@@ -32,11 +32,13 @@ const HeroSectionZubuz = () => {
       >
         <div className="container">
           <div className="zubuz-hero-content center position-relative">
-            <h1>Build your financial model under 5' with AI</h1>
+            <h1>
+              Driving forward the next generation of innovative solutions.
+            </h1>
             <p>
-              Our platform is designed to help individuals &amp; businesses
-              manage their financial plans and reports. It serves various
-              purposes related to personal and business finance.
+              These contests typically bring together aspiring entrepreneurs,
+              early-stage startups, and seasoned investors in a collaborative
+              environment.
             </p>
             <div className="zubuz-hero-btn-wrap center">
               <Link className="zubuz-default-btn" to="/contact-us">
@@ -46,7 +48,11 @@ const HeroSectionZubuz = () => {
                 className="video-init zubuz-hero-video !flex items-center"
                 onClick={openPopup}
               >
-                <img src="/images/v1/play-btn.png" alt />
+                <img
+                  style={{ width: "30px", height: "30px" }}
+                  src="/images/v1/play-btn.svg"
+                  alt
+                />
                 Watch A Demo
               </button>
             </div>
@@ -57,22 +63,10 @@ const HeroSectionZubuz = () => {
           <div className="zubuz-hero-bottom">
             <div className="zubuz-hero-thumb wow fadeInUpX">
               <img
-                src="/images/v1/hero-mocup1.png"
+                src="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_storage/beekrowd_images/Competition_Cover.jpg"
                 style={{ marginInline: "auto" }}
                 alt
               />
-            </div>
-            <div className="zubuz-hero-card card1 wow zoomIn">
-              <img src="/images/v1/h-card1.png" alt />
-            </div>
-            <div className="zubuz-hero-card card2 wow zoomIn">
-              <img src="/images/v1/h-card2.png" alt />
-            </div>
-            <div className="zubuz-hero-card card3 wow zoomIn">
-              <img src="/images/v1/h-card4.png" alt />
-            </div>
-            <div className="zubuz-hero-card card4 wow zoomIn">
-              <img src="/images/v1/h-card3.png" alt />
             </div>
           </div>
         </div>
@@ -87,7 +81,7 @@ const HeroSectionZubuz = () => {
             className="video"
             width="100%"
             height="100%"
-            src="https://www.youtube.com/embed/SixdAQtWJQ8?si=TPxjQ04JgcZ5eEA9"
+            src="https://www.youtube.com/embed/8Kp0w_xU7Gw?si=JcYlKNO_vebL__ED"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen

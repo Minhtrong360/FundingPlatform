@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import CountUp from "react-countup";
 
@@ -29,28 +28,36 @@ const StatSection = () => {
           <div className="zubuz-counter-data light">
             <h2 className="zubuz-counter-number">
               {" "}
-              <span>{isVisible && <CountUp end={99.5} duration={5} />}</span>
+              <span className="text-[#ABEB4F]">
+                {isVisible && <CountUp end={99.5} duration={5} />}
+              </span>
               <em>%</em>
             </h2>
             <p>Positive user rating</p>
           </div>
           <div className="zubuz-counter-data light">
             <h2 className="zubuz-counter-number">
-              <span>{isVisible && <CountUp end={2} duration={5} />}</span>
+              <span className="text-[#ABEB4F]">
+                {isVisible && <CountUp end={2} duration={5} />}
+              </span>
               <em>K</em>
             </h2>
             <p>Monthly active user</p>
           </div>
           <div className="zubuz-counter-data light">
             <h2 className="zubuz-counter-number">
-              <span>{isVisible && <CountUp end={100} duration={5} />}</span>
+              <span className="text-[#ABEB4F]">
+                {isVisible && <CountUp end={100} duration={5} />}
+              </span>
               <em>%</em>
             </h2>
             <p>Uptime in the last year</p>
           </div>
           <div className="zubuz-counter-data light">
             <h2 className="zubuz-counter-number">
-              <span>{isVisible && <CountUp end={30} duration={5} />}</span>
+              <span className="text-[#ABEB4F]">
+                {isVisible && <CountUp end={30} duration={5} />}
+              </span>
               <em>+</em>
             </h2>
             <p>Fundraising profiles</p>

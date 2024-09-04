@@ -12,7 +12,7 @@ const HeroSection = () => {
     const iframe = document.getElementById("youtube-video");
     if (iframe) {
       iframe.src =
-        "https://www.youtube.com/embed/SixdAQtWJQ8?si=TPxjQ04JgcZ5eEA9";
+        "https://www.youtube.com/embed/8Kp0w_xU7Gw?si=JcYlKNO_vebL__ED";
     }
   };
 
@@ -46,7 +46,11 @@ const HeroSection = () => {
                 className="video-init zubuz-hero-video !flex items-center"
                 onClick={openPopup}
               >
-                <img src="/images/v1/play-btn.png" alt />
+                <img
+                  style={{ width: "30px", height: "30px" }}
+                  src="/images/v1/play-btn.svg"
+                  alt
+                />
                 Watch A Demo
               </button>
             </div>
@@ -87,7 +91,7 @@ const HeroSection = () => {
             className="video"
             width="100%"
             height="100%"
-            src="https://www.youtube.com/embed/SixdAQtWJQ8?si=TPxjQ04JgcZ5eEA9"
+            src="https://www.youtube.com/embed/8Kp0w_xU7Gw?si=JcYlKNO_vebL__ED"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen

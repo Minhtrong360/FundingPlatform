@@ -15,8 +15,8 @@ const PricingCard = ({ plan, onClick }) => {
   ];
 
   const price_10 = [
-    "Market Research with AI",
-    "Startup Valuation with AI",
+    // "Market Research with AI",
+    // "Startup Valuation with AI",
     "AI Chatbot for fundraising profile content",
     "Private Data room for Due Diligence",
     "Private listing for fundraising (up-to 05 profiles)",

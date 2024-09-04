@@ -27,7 +27,7 @@ const NewsSection = () => {
             <div
               className="col-xl-4 col-lg-6"
               key={index}
-              onClick={() => navigate("/blog")}
+              // onClick={() => navigate("/blog")}
             >
               <div className="zubuz-blog-wrap">
                 <Link href={blog?.link}>

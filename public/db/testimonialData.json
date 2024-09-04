@@ -4,9 +4,9 @@
     "title": "Best financial planning tool ever!",
     "description": "It's made financial planning and analyzing my expenses so much easier. I love how intuitive and user-friendly it is.",
     "author": {
-      "name": "Takegawa Pham",
-      "role": "Founder @ BeeKrowd",
-      "avatar": "/images/v1/t_user1.png"
+      "name": "Bill Truong",
+      "role": "Founder @ Suga Group",
+      "avatar": "https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_storage/beekrowd_images/1517056843933.jfif"
     }
   },
   {
@@ -14,9 +14,9 @@
     "title": "Super helpful to watch my financials",
     "description": "I can't thank this tool enough for helping me stay on top of my numbers. The automatic features have saved me from headaches & more organized with my finances.",
     "author": {
-      "name": "Mark Bures",
-      "role": "Businessman",
-      "avatar": "/images/v1/t_user2.png"
+      "name": "Thanh Bui",
+      "role": "CEO @ MEGASOP",
+      "avatar": "https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_storage/beekrowd_images/C%20Thanh.jfif"
     }
   },
   {
@@ -24,9 +24,9 @@
     "title": "Great platform that saves time",
     "description": "The platform's formula-free feature is seamless. I can easily build my own financial plan without having to input complicated Excel formulas.",
     "author": {
-      "name": "William Kolas",
-      "role": "Student",
-      "avatar": "/images/v1/t_user3.png"
+      "name": "Phong Vu",
+      "role": "Founder & CEO @ HOLOLAB",
+      "avatar": "https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_storage/beekrowd_images/phong%20vu.jpg?t=2024-09-04T09%3A26%3A54.960Z"
     }
   },
   {
@@ -34,9 +34,9 @@
     "title": "Seriously life changing concept!",
     "description": "The financial insights and reports have been eye-opening. I now have a better understanding of my financial plan and can make better decision.",
     "author": {
-      "name": "Andrew Chan",
-      "role": "Manager @ AB Company",
-      "avatar": "/images/v1/t_user4.png"
+      "name": "Tung Pham",
+      "role": "Founder @ Foodmap",
+      "avatar": "https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_storage/beekrowd_images/tung%20pham.jpg"
     }
   }
 ]

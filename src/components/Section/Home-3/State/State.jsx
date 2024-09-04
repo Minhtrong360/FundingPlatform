@@ -1,4 +1,3 @@
- 
 import { useEffect, useState } from "react";
 import CountUp from "react-countup";
 
@@ -28,7 +27,10 @@ const StateSection = () => {
         <div className="zubuz-counter-wrap2">
           <div className="zubuz-counter-data light">
             <h2 className="zubuz-counter-number">
-              <span data-percentage="99.5" className="zubuz-counter">
+              <span
+                data-percentage="99.5"
+                className="zubuz-counter text-[#ABEB4F]"
+              >
                 {isVisible ? <CountUp end={99} duration={5} /> : 99.5}
               </span>
               <em>%</em>
@@ -37,7 +39,10 @@ const StateSection = () => {
           </div>
           <div className="zubuz-counter-data light">
             <h2 className="zubuz-counter-number">
-              <span data-percentage="2" className="zubuz-counter">
+              <span
+                data-percentage="2"
+                className="zubuz-counter text-[#ABEB4F]"
+              >
                 {isVisible ? <CountUp end={2} duration={5} /> : 2}
               </span>
               <em>K</em>
@@ -46,7 +51,10 @@ const StateSection = () => {
           </div>
           <div className="zubuz-counter-data light">
             <h2 className="zubuz-counter-number">
-              <span data-percentage="100" className="zubuz-counter">
+              <span
+                data-percentage="100"
+                className="zubuz-counter text-[#ABEB4F]"
+              >
                 {isVisible ? <CountUp end={100} duration={5} /> : 100}
               </span>
               <em>%</em>
@@ -55,7 +63,10 @@ const StateSection = () => {
           </div>
           <div className="zubuz-counter-data light">
             <h2 className="zubuz-counter-number">
-              <span data-percentage="55" className="zubuz-counter">
+              <span
+                data-percentage="55"
+                className="zubuz-counter text-[#ABEB4F]"
+              >
                 {isVisible ? <CountUp end={55} duration={5} /> : 55}
               </span>
               <em>+</em>

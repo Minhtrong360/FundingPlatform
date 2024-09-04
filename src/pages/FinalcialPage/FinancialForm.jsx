@@ -943,6 +943,9 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
     { name: "Balance Sheet", key: "balanceSheet" },
   ];
 
+  const params = useParams();
+  const paramsID = params.id;
+
   return (
     <div className="min-h-screen bg-white my-28 sm:px-32 px-2">
       {spinning ? (
@@ -960,7 +963,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               setSpinning={setSpinning}
             />
           </div>
-          <FlowiseChat page="FM" />
+          <FlowiseChat page="FM" projectid={paramsID} />
 
           <Card className="my-4 ">
             <CardHeader>

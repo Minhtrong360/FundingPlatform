@@ -941,6 +941,11 @@ const CustomerSection = React.memo(
                   id: "allChannels",
                   stacked: false,
                   animated: false,
+                                  
+                  legend: {
+                    show: false
+                  }
+  
                 },
 
                 xaxis: {
@@ -948,7 +953,7 @@ const CustomerSection = React.memo(
                     show: false,
                   },
                   labels: {
-                    show: true,
+                    show: false,
                     rotate: 0,
                     style: {
                       fontFamily: "Sora, sans-serif",
@@ -988,7 +993,7 @@ const CustomerSection = React.memo(
                     show: false,
                   },
                   labels: {
-                    show: true,
+                    show: false,
                     rotate: 0,
                     style: {
                       fontFamily: "Sora, sans-serif",
@@ -1037,9 +1042,9 @@ const CustomerSection = React.memo(
                   id: "yearlyTotal",
                   stacked: false,
                   toolbar: {
-                    show: true,
+                    show: false,
                     tools: {
-                      download: true,
+                      download: false,
                     },
                   },
                 },

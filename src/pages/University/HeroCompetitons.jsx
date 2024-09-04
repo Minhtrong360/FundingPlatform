@@ -160,20 +160,6 @@ const HeroCompetitions = ({
   return (
     <section className="bg-white">
       <div className="sm:px-6 px-3 mx-auto text-center">
-        <div className="min-w-fit mt-5">
-          <div className="zubuz-iconbox-wrap center">
-            <div className="zubuz-iconbox-icon">
-              <img src="/images/v1/icon3.png" alt="Prompt to build" />
-            </div>
-            <div className="zubuz-iconbox-data">
-              <h3>Prompt to build</h3>
-              <p>
-                Users can create financial models by simply describing what they
-                want to build.
-              </p>
-            </div>
-          </div>
-        </div>
         {codeData.length > 0 && (
           <>
             <section className="container px-4 mx-auto mt-14 max-w-3xl">

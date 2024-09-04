@@ -20,7 +20,7 @@ const ContentSection = () => {
               <div className="zubuz-extara-mt">
                 <div className="zubuz-iconbox-wrap-left mw-100">
                   <div className="zubuz-iconbox-icon none-bg">
-                    <img src="/images/v3/icon11.png" alt="" />
+                    <img style={{ width: '40px', height: '40px' }} src="/images/v3/icon11.svg" alt="" />
                   </div>
                   <div className="zubuz-iconbox-data data-small">
                     <span>Notion-like environment:</span>
@@ -31,7 +31,7 @@ const ContentSection = () => {
                 </div>
                 <div className="zubuz-iconbox-wrap-left mw-100">
                   <div className="zubuz-iconbox-icon none-bg">
-                    <img src="/images/v3/icon10.png" alt="" />
+                    <img style={{ width: '40px', height: '40px' }} src="/images/v3/icon10.svg" alt="" />
                   </div>
                   <div className="zubuz-iconbox-data data-small">
                     <span>Deal facilitating features:</span>

@@ -47,18 +47,18 @@ export default function RightSideBar({ company, currentProject }) {
             {[
               {
                 title: "7 businesses for easy money",
-                date: "June 18, 2024",
-                image: "/placeholder.svg?height=40&width=40",
+                date: "May 18, 2024",
+                image: "/images/v2/card-v2-1.png",
               },
               {
                 title: "My 3 tips for business ideas",
                 date: "June 18, 2024",
-                image: "/placeholder.svg?height=40&width=40",
+                image: "/images/v2/card-v2-2.png",
               },
               {
                 title: "12 Halloween costume ideas",
-                date: "June 18, 2024",
-                image: "/placeholder.svg?height=40&width=40",
+                date: "August 18, 2024",
+                image: "/images/v2/card-v2-3.png",
               },
             ].map((post, index) => (
               <li key={index} className="flex items-start space-x-2">

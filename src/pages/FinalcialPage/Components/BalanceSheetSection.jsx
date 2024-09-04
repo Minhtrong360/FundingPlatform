@@ -1037,7 +1037,7 @@ function BalanceSheetSection({ numberOfMonths }) {
                 <SelectValue />
               </SelectTrigger>
 
-              <SelectContent position="popper">
+              <SelectContent position="popper" className="bg-white">
                 <SelectItem
                   className="hover:cursor-pointer"
                   value="total-assets-chart"

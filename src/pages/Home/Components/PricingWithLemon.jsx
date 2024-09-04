@@ -44,7 +44,7 @@ const PricingCard = ({ plan, onClick }) => {
 
   const getDescription = () => {
     if (plan.price_formatted.includes("$30")) {
-      return "For building fin. model and fundraising";
+      return "For building financial model and fundraising";
     }
     if (plan.price_formatted.includes("$10")) {
       return "For Startups, small project owners";
@@ -75,7 +75,7 @@ const PricingCard = ({ plan, onClick }) => {
           <ul>
             {getFeatures().map((feature, index) => (
               <li key={index}>
-                <img src="/images/v2/check2.png" alt="" />
+                <img src="/images/v3/check.png" alt="" />
                 {feature}
               </li>
             ))}

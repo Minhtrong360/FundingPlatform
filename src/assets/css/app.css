@@ -4896,7 +4896,28 @@ span.zubuz-title-shape {
 .zubuz-pricing-wrap:hover {
   border: 1px solid var(--white-color);
   box-shadow: 0px 4px 80px 0px rgba(0, 0, 0, 0.08);
+  background-color: black;
+  color: white;
 }
+
+.zubuz-pricing-wrap:hover h5,
+.zubuz-pricing-wrap:hover h2,
+.zubuz-pricing-wrap:hover p,
+.zubuz-pricing-wrap:hover .zubuz-price,
+.zubuz-pricing-wrap:hover li {
+  color: white;
+}
+
+.zubuz-pricing-wrap:hover .zubuz-pricing-btn {
+  background-color: white;
+  color: black;
+}
+
+.zubuz-pricing-wrap:hover .zubuz-pricing-btn:hover {
+  background-color: #2563eb;
+  color: white;
+}
+
 .zubuz-pricing-wrap.active {
   border: 1px solid var(--white-color);
   box-shadow: 0px 4px 80px 0px rgba(0, 0, 0, 0.08);
@@ -4924,6 +4945,7 @@ span.zubuz-title-shape {
   color: var(--heading-color);
   font-family: var(--font-raleway);
 }
+
 @media (max-width: 1400px) {
   .zubuz-pricing-price .zubuz-price {
     font-size: 60px;
@@ -5026,6 +5048,7 @@ span.zubuz-title-shape {
 .zubuz-pricing-four-column .zubuz-pricing-wrap.active .zubuz-price {
   color: var(--white-color);
 }
+
 .zubuz-pricing-four-column
   .zubuz-pricing-wrap.active
   .zubuz-pricing-description {

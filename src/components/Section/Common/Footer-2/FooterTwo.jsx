@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   FaFacebookF,
   FaGithub,
@@ -18,7 +18,7 @@ const FooterTwo = () => {
             <div className="col-xl-4 col-lg-12">
               <div className="zubuz-footer-textarea">
                 <Link to="/">
-                  <img src="/images/logo/logo-dark.svg" alt="" />
+                  <img src="/images/logo/BeeKrowd.svg" alt="" />
                 </Link>
                 <p>
                   We're your innovation partner, delivering cutting-edge

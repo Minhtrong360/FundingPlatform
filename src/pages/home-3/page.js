@@ -19,7 +19,7 @@ export default function HomeThreePage() {
       <ContentSection />
       <ContentSectionTwo />
       <StateSection />
-      <Pricing />
+      {/* <Pricing /> */}
       <IntegrationSection />
       <FAQSection />
       <Footer />

@@ -186,8 +186,9 @@ const Card = ({
             <CardTitle className="text-xl font-bold">{project?.name}</CardTitle>
 
             <Badge
-              variant={project?.status === "public" ? "primary" : "secondary"}
-              className="ml-2"
+              className={
+                project?.status === "public" ? "text-white" : "bg-[#ABFB4F]"
+              }
             >
               {project?.status}
             </Badge>

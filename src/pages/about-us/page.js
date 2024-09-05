@@ -16,7 +16,7 @@ const AboutPage = () => {
       <AboutSection />
       <StateSection />
       <ContentSection />
-      <TeamSection />
+      {/* <TeamSection /> */}
       <FAQSection />
       <Footer />
     </>

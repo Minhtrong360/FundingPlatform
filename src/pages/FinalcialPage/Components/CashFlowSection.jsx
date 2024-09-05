@@ -846,7 +846,7 @@ function CashFlowSection({ numberOfMonths }) {
                 <SelectValue />
               </SelectTrigger>
 
-              <SelectContent position="popper">
+              <SelectContent position="popper" className="bg-white">
                 <SelectItem
                   className="hover:cursor-pointer"
                   value="cash-flow-chart"

@@ -34,7 +34,7 @@ const ContentSection = () => {
               </div>
               <div className="zubuz-iconbox-wrap-left mw-100">
                 <div className="zubuz-iconbox-icon none-bg">
-                  <img src="/images/v1/icon3.png" alt="" />
+                  <img style={{ width: '40px', height: '40px' }} src="/images/v1/icon3.svg" alt="" />
                 </div>
                 <div className="zubuz-iconbox-data data-small">
                   <span>Resourceful Knowledge Base:</span>

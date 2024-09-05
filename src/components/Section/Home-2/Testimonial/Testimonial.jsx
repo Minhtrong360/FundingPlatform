@@ -1,6 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
 
- 
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -12,7 +11,7 @@ const TestimonialSection = () => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows:false,
+    arrows: false,
   };
   return (
     <div
@@ -46,16 +45,20 @@ const TestimonialSection = () => {
               <p>
                 We've been using this LMS platform for over a year now, and I
                 can't stress enough how transformative it has been for our
-                business. The impact this has had on our training activities and overall efficiency is tremendous.
+                business. The impact this has had on our training activities and
+                overall efficiency is tremendous.
               </p>
             </div>
             <div className="zubuz-testimonial-slider-author">
               <div className="zubuz-testimonial-slider-author-thumb">
-                <img src="/images/v2/t-user.png" alt="" />
+                <img
+                  src="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_storage/beekrowd_images/Sy%20vo.jpg?t=2024-09-04T09%3A48%3A48.797Z"
+                  alt=""
+                />
               </div>
               <div className="zubuz-testimonial-slider-author-data">
-                <span>Jonas Aly</span>
-                <p>Founder @ Company</p>
+                <span>Sy Vo</span>
+                <p>Incubator Manager @ VLIC</p>
               </div>
             </div>
           </div>
@@ -90,11 +93,14 @@ const TestimonialSection = () => {
             </div>
             <div className="zubuz-testimonial-slider-author">
               <div className="zubuz-testimonial-slider-author-thumb">
-                <img src="/images/v2/t-user.png" alt="" />
+                <img
+                  src="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_storage/beekrowd_images/Sy%20vo.jpg?t=2024-09-04T09%3A48%3A48.797Z"
+                  alt=""
+                />
               </div>
               <div className="zubuz-testimonial-slider-author-data">
-                <span>Jonas Aly</span>
-                <p>Founder @ Company</p>
+                <span>Sy Vo</span>
+                <p>Incubator Manager @ VLIC</p>
               </div>
             </div>
           </div>
@@ -129,11 +135,14 @@ const TestimonialSection = () => {
             </div>
             <div className="zubuz-testimonial-slider-author">
               <div className="zubuz-testimonial-slider-author-thumb">
-                <img src="/images/v2/t-user.png" alt="" />
+                <img
+                  src="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_storage/beekrowd_images/Sy%20vo.jpg?t=2024-09-04T09%3A48%3A48.797Z"
+                  alt=""
+                />
               </div>
               <div className="zubuz-testimonial-slider-author-data">
-                <span>Jonas Aly</span>
-                <p>Founder @ Company</p>
+                <span>Sy Vo</span>
+                <p>Incubator Manager @ VLIC</p>
               </div>
             </div>
           </div>

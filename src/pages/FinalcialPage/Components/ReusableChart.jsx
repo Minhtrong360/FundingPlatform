@@ -17,6 +17,7 @@ const ReusableChart = ({
   series,
   charttype,
   options,
+  categories,
   footerText,
   footerSubText,
   footerIcon: FooterIcon = TrendingUp,
@@ -40,7 +41,7 @@ const ReusableChart = ({
       labels: {
         show: false, // Hide x-axis labels
       },
-
+      categories: categories,
       axisTicks: {
         show: false, // Hide x-axis ticks
       },

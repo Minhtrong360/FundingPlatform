@@ -36,7 +36,7 @@ export default function NewDetailPage({ location }) {
     } else {
       setIsLoading(false);
     }
-  }, [params.id]);
+  }, []);
 
   useEffect(() => {
     sessionStorage.setItem("companyDetailPage", JSON.stringify(company));
@@ -54,7 +54,6 @@ export default function NewDetailPage({ location }) {
   }, [currentProject]);
 
   const fetchData = async () => {
-    setIsLoading(true);
     try {
       const { data: projectData, error: projectError } = await supabase
         .from("projects")

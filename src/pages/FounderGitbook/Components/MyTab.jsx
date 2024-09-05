@@ -30,6 +30,8 @@ const MyTab = ({
   isContentChanged,
   setIsContentChanged,
 }) => {
+  console.log("company", company);
+
   const [activeTab, setActiveTab] = useState("Your Profile");
   const [tabs, setTabs] = useState([
     { key: "Your Profile", title: "Your Profile", editable: false },
@@ -105,7 +107,7 @@ const MyTab = ({
     };
 
     initEditorContent();
-  }, [doc, params.id]);
+  }, [doc]);
 
   const colors = [
     "#958DF1",

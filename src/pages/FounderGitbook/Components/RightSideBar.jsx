@@ -95,11 +95,11 @@ export default function RightSideBar({ company, currentProject }) {
 
   const handleSuggestionClick = (company) => {
     navigate(`/profile/${company?.project_id}`);
+    window.location.reload();
     setSuggestions([]);
     setSearchTerm("");
   };
 
-  console.log("searchTerm", searchTerm);
   return (
     <div className="space-y-6 sm:mt-24 mt-16">
       <div className="relative">

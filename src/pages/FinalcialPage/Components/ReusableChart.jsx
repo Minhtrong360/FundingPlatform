@@ -10,6 +10,7 @@ import {
 import { ChartContainer } from "../../../components/ui/chart";
 import { TrendingUp } from "lucide-react";
 import Chart from "react-apexcharts";
+import { formatNumber } from "../../../features/CostSlice";
 
 const ReusableChart = ({
   title,
@@ -48,6 +49,10 @@ const ReusableChart = ({
     },
     yaxis: {
       show: false, // Hide y-axis
+      labels: {
+        show: false,
+        formatter: (val) => formatNumber(Math.floor(val)),
+      },
     },
     legend: {
       show: false, // Hide legend

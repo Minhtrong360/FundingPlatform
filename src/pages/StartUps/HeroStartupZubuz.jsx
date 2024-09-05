@@ -41,7 +41,7 @@ const HeroSectionZubuz = () => {
               by us.
             </p>
             <div className="zubuz-hero-btn-wrap center">
-              <Link className="zubuz-default-btn" to="/contact-us">
+              <Link className="zubuz-default-btn" to="/sign-in">
                 <span>Start Your Free Trial</span>
               </Link>
               <button

@@ -105,7 +105,7 @@ const MyTab = ({
     };
 
     initEditorContent();
-  }, [doc]);
+  }, [doc, params.id]);
 
   const colors = [
     "#958DF1",

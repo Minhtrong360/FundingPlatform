@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import ReactPlayer from "react-player";
 import { IoClose } from "react-icons/io5";
+import { useAuth } from "../../context/AuthContext";
 // import "./hero.css";
 
 const HeroSectionZubuz = () => {
@@ -24,6 +25,7 @@ const HeroSectionZubuz = () => {
     }
   };
 
+  const { user } = useAuth();
   return (
     <>
       <div
@@ -41,9 +43,11 @@ const HeroSectionZubuz = () => {
               by us.
             </p>
             <div className="zubuz-hero-btn-wrap center">
-              <Link className="zubuz-default-btn" to="/sign-in">
-                <span>Start Your Free Trial</span>
-              </Link>
+              {!user && (
+                <Link className="zubuz-default-btn" to="/sign-in">
+                  <span>Start Your Free Trial</span>
+                </Link>
+              )}
               <button
                 className="video-init zubuz-hero-video !flex items-center"
                 onClick={openPopup}

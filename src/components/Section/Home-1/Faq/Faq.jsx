@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import Accordion from "react-bootstrap/Accordion";
+import { useAuth } from "../../../../context/AuthContext";
 
 const Faq = () => {
+  const { user } = useAuth();
   return (
     <div className="scetion zubuz-section-padding2 white-bg">
       <div className="container">
@@ -20,11 +22,13 @@ const Faq = () => {
                 This platfrom is convenient and offer financial insights to help
                 people save time.
               </p>
-              <div className="zubuz-extara-mt">
-                <Link className="zubuz-default-btn" to="/sign-in">
-                  <span>Start Your Free Trial</span>
-                </Link>
-              </div>
+              {!user && (
+                <div className="zubuz-extara-mt">
+                  <Link className="zubuz-default-btn" to="/sign-in">
+                    <span>Start Your Free Trial</span>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
           <div className="col-lg-5">

@@ -950,33 +950,33 @@ const AllChartSections = ({
             title="Total User"
             description="January - June 2024"
             series={customerGrowthChart.series}
-            options={{
-              ...customerGrowthChart.options,
-              grid: {
-                show: false,
-              },
-              chart: {
-                zoom: {
-                  enabled: false, // Disable zooming
-                },
-                toolbar: {
-                  show: true,
-                  tools: {
-                    download: true,
-                  },
-                },
-              },
-              xaxis: {
-                ...customerGrowthChart.options.xaxis,
-                categories: Array.from({ length: numberOfMonths }, (_, i) => {
-                  const monthIndex = (startMonth + i - 1) % 12;
-                  const year =
-                    startYear + Math.floor((startMonth + i - 1) / 12);
-                  return `${months[monthIndex]}/${year}`;
-                }),
-              },
-              stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-            }}
+            // options={{
+            //   ...customerGrowthChart.options,
+            //   grid: {
+            //     show: false,
+            //   },
+            //   chart: {
+            //     zoom: {
+            //       enabled: false, // Disable zooming
+            //     },
+            //     toolbar: {
+            //       show: true,
+            //       tools: {
+            //         download: true,
+            //       },
+            //     },
+            //   },
+            //   xaxis: {
+            //     ...customerGrowthChart.options.xaxis,
+            //     categories: Array.from({ length: numberOfMonths }, (_, i) => {
+            //       const monthIndex = (startMonth + i - 1) % 12;
+            //       const year =
+            //         startYear + Math.floor((startMonth + i - 1) / 12);
+            //       return `${months[monthIndex]}/${year}`;
+            //     }),
+            //   },
+            //   stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+            // }}
             charttype="area"
             footerText="Trending up by 5.2% this month"
             footerSubText="Showing total visitors for the last 6 months"
@@ -986,30 +986,30 @@ const AllChartSections = ({
             title="Total Revenue"
             description="Total Revenue for the last 6 months"
             series={revenue.series}
-            options={{
-              chart: {
-                zoom: {
-                  enabled: false, // Disable zooming
-                },
-                toolbar: {
-                  show: true,
-                  tools: {
-                    download: true,
-                  },
-                },
-              },
-              ...revenue.options,
-              xaxis: {
-                ...revenue.options.xaxis,
-                categories: Array.from({ length: numberOfMonths }, (_, i) => {
-                  const monthIndex = (startMonth + i - 1) % 12;
-                  const year =
-                    startYear + Math.floor((startMonth + i - 1) / 12);
-                  return `${months[monthIndex]}/${year}`;
-                }),
-              },
-              stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-            }}
+            // options={{
+            //   chart: {
+            //     zoom: {
+            //       enabled: false, // Disable zooming
+            //     },
+            //     toolbar: {
+            //       show: true,
+            //       tools: {
+            //         download: true,
+            //       },
+            //     },
+            //   },
+            //   ...revenue.options,
+            //   xaxis: {
+            //     ...revenue.options.xaxis,
+            //     categories: Array.from({ length: numberOfMonths }, (_, i) => {
+            //       const monthIndex = (startMonth + i - 1) % 12;
+            //       const year =
+            //         startYear + Math.floor((startMonth + i - 1) / 12);
+            //       return `${months[monthIndex]}/${year}`;
+            //     }),
+            //   },
+            //   stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+            // }}
             charttype="area"
             footerText="$2,404,488"
             footerSubText="Total revenue for the last 6 months"
@@ -1018,22 +1018,22 @@ const AllChartSections = ({
           <ReusableChart
             title="Total Cost"
             description="Total Cost for the last 6 months"
-            options={{
-              zoom: {
-                enabled: false, // Disable zooming
-              },
-              toolbar: {
-                show: true,
-                tools: {
-                  download: true,
-                },
-              },
-              ...revenue.options,
-              xaxis: {
-                ...revenue.options.xaxis,
-              },
-              stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-            }}
+            // options={{
+            //   zoom: {
+            //     enabled: false, // Disable zooming
+            //   },
+            //   toolbar: {
+            //     show: true,
+            //     tools: {
+            //       download: true,
+            //     },
+            //   },
+            //   ...revenue.options,
+            //   xaxis: {
+            //     ...revenue.options.xaxis,
+            //   },
+            //   stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+            // }}
             series={[{ data: totalCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
             charttype="area"
             footerText="$118,643"
@@ -1043,22 +1043,22 @@ const AllChartSections = ({
           <ReusableChart
             title="Total Personnel Cost"
             description="Total Personnel Cost for the last 6 months"
-            options={{
-              zoom: {
-                enabled: false, // Disable zooming
-              },
-              toolbar: {
-                show: true,
-                tools: {
-                  download: true,
-                },
-              },
-              ...revenue.options,
-              xaxis: {
-                ...revenue.options.xaxis,
-              },
-              stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-            }}
+            // options={{
+            //   zoom: {
+            //     enabled: false, // Disable zooming
+            //   },
+            //   toolbar: {
+            //     show: true,
+            //     tools: {
+            //       download: true,
+            //     },
+            //   },
+            //   ...revenue.options,
+            //   xaxis: {
+            //     ...revenue.options.xaxis,
+            //   },
+            //   stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+            // }}
             series={[{ data: totalPersonnelCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
             charttype="area"
             footerText="$714,960"
@@ -1068,22 +1068,22 @@ const AllChartSections = ({
           <ReusableChart
             title="Total Investment"
             description="Total Investment for the last 6 months"
-            options={{
-              zoom: {
-                enabled: false, // Disable zooming
-              },
-              toolbar: {
-                show: true,
-                tools: {
-                  download: true,
-                },
-              },
-              ...revenue.options,
-              xaxis: {
-                ...revenue.options.xaxis,
-              },
-              stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-            }}
+            // options={{
+            //   zoom: {
+            //     enabled: false, // Disable zooming
+            //   },
+            //   toolbar: {
+            //     show: true,
+            //     tools: {
+            //       download: true,
+            //     },
+            //   },
+            //   ...revenue.options,
+            //   xaxis: {
+            //     ...revenue.options.xaxis,
+            //   },
+            //   stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+            // }}
             series={[{ data: bsTotalInvestmentValues, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
             charttype="area"
             footerText="$10,000"
@@ -1093,44 +1093,44 @@ const AllChartSections = ({
           <ReusableChart
             title="Total Loan"
             description="Total Loan for the last 6 months"
-            options={{
-              zoom: {
-                enabled: false, // Disable zooming
-              },
-              toolbar: {
-                show: true,
-                tools: {
-                  download: true,
-                },
-              },
-              ...revenue.options,
-              xaxis: {
-                ...revenue.options.xaxis,
-              },
-              yaxis: {
-                axisBorder: {
-                  show: true, // Show y-axis line
-                },
+            // options={{
+            //   zoom: {
+            //     enabled: false, // Disable zooming
+            //   },
+            //   toolbar: {
+            //     show: true,
+            //     tools: {
+            //       download: true,
+            //     },
+            //   },
+            //   ...revenue.options,
+            //   xaxis: {
+            //     ...revenue.options.xaxis,
+            //   },
+            //   yaxis: {
+            //     axisBorder: {
+            //       show: true, // Show y-axis line
+            //     },
 
-                labels: {
-                  show: true,
-                  style: {
-                    fontFamily: "Sora, sans-serif",
-                  },
-                  formatter: function (val) {
-                    return formatNumber(Math.floor(val));
-                  },
-                },
-                title: {
-                  text: "Remaining Loan ($)",
-                  style: {
-                    fontSize: "12px",
-                    fontFamily: "Sora, sans-serif",
-                  },
-                },
-              },
-              stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-            }}
+            //     labels: {
+            //       show: true,
+            //       style: {
+            //         fontFamily: "Sora, sans-serif",
+            //       },
+            //       formatter: function (val) {
+            //         return formatNumber(Math.floor(val));
+            //       },
+            //     },
+            //     title: {
+            //       text: "Remaining Loan ($)",
+            //       style: {
+            //         fontSize: "12px",
+            //         fontFamily: "Sora, sans-serif",
+            //       },
+            //     },
+            //   },
+            //   stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
+            // }}
             series={[{ data: totalLoanData, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
             charttype="area"
             footerText="$40,000"

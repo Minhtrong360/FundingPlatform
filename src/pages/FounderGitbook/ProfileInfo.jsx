@@ -15,7 +15,7 @@ import { supabase } from "../../supabase";
 import ButtonGroup from "./ButtonGroup";
 import { useAuth } from "../../context/AuthContext";
 import { UserOutlined } from "@ant-design/icons";
-import { Settings } from "lucide-react";
+import { CalendarClock, Settings } from "lucide-react";
 
 export default function ProfileInfo({
   company,
@@ -284,13 +284,15 @@ export default function ProfileInfo({
                 )}
               </div>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="sm:flex sm:items-end items-center sm:space-x-2 space-x-0">
               <Button
                 className="text-white bg-slate-800"
                 onClick={() => window.open(company?.calendly, "_blank")}
               >
-                Book meeting
+                <CalendarClock className="sm:mr-2 mr-0 h-4 w-4" />
+                <span className="sm:!block !hidden">Book Meeting</span>
               </Button>
+
               <ButtonGroup
                 handleDrawChart={handleDrawChart}
                 handleCompanySettings={handleCompanySettings}

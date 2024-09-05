@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import ReactPlayer from "react-player";
 import { IoClose } from "react-icons/io5";
+import { useAuth } from "../../../../context/AuthContext";
 // import "./hero.css";
 
 const HeroSection = () => {
@@ -15,6 +16,8 @@ const HeroSection = () => {
         "https://www.youtube.com/embed/8Kp0w_xU7Gw?si=JcYlKNO_vebL__ED";
     }
   };
+
+  const { user } = useAuth();
 
   const closePopup = () => {
     setPopup(false);
@@ -39,9 +42,11 @@ const HeroSection = () => {
               purposes related to personal and business finance.
             </p>
             <div className="zubuz-hero-btn-wrap center">
-              <Link className="zubuz-default-btn" to="/sign-in">
-                <span>Start Your Free Trial</span>
-              </Link>
+              {!user && (
+                <Link className="zubuz-default-btn" to="/sign-in">
+                  <span>Start Your Free Trial</span>
+                </Link>
+              )}
               <button
                 className="video-init zubuz-hero-video !flex items-center"
                 onClick={openPopup}

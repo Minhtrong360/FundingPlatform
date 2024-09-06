@@ -10,18 +10,6 @@ import { useParams } from "react-router";
 import Header from "../Home/Header";
 import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
 import RightSideBar from "./Components/RightSideBar";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "../../components/ui/tabs";
 
 export default function NewDetailPage({ location }) {
   const [company, setCompany] = useState(
@@ -153,7 +141,7 @@ export default function NewDetailPage({ location }) {
   const noFixedHeader = "notFixed";
 
   return (
-    <div className="min-h-screen flex flex-col justify-between !bg-gray-100">
+    <div className="min-h-screen flex flex-col justify-between">
       {isLoading ? (
         <LoadingButtonClick isLoading={isLoading} />
       ) : (
@@ -163,38 +151,40 @@ export default function NewDetailPage({ location }) {
               noFixedHeader={noFixedHeader}
               isContentChanged={isContentChanged}
             />
-            <main className="container mx-auto px-4 py-8 mt-24">
-              <div className="grid md:grid-cols-3 gap-8">
-                <div className="md:col-span-2">
-                  <Card className="mb-8 !rounded-2xl !bg-white">
-                    <CardContent className="p-6">
-                      <ProfileInfo
-                        company={company}
-                        currentProject={currentProject}
-                        setCurrentProject={setCurrentProject}
-                        blocks={blocks}
-                        isContentChanged={isContentChanged}
-                      />
-                      <MyTab
-                        blocks={blocks}
-                        setBlocks={setBlocks}
-                        company={company}
-                        fullScreen={fullScreen}
-                        currentProject={currentProject}
-                        isContentChanged={isContentChanged}
-                        setIsContentChanged={setIsContentChanged}
-                      />
-                    </CardContent>
-                  </Card>
-                </div>
-                <div className="md:col-span-1 space-y-8">
-                  <RightSideBar
+            <div className="flex mt-16 space-x-6 justify-center items-start">
+              {/* Left column */}
+              <div className="w-full lg:w-8/12 px-4">
+                <ProfileInfo
+                  company={company}
+                  currentProject={currentProject}
+                  setCurrentProject={setCurrentProject}
+                  blocks={blocks}
+                  isContentChanged={isContentChanged}
+                />
+                <div className="flex-grow max-w-7xl mx-auto sm:mt-24 my-16 px-4 sm:px-6 lg:px-8">
+                  <MyTab
+                    blocks={blocks}
+                    setBlocks={setBlocks}
                     company={company}
+                    fullScreen={fullScreen}
                     currentProject={currentProject}
+                    isContentChanged={isContentChanged}
+                    setIsContentChanged={setIsContentChanged}
                   />
                 </div>
               </div>
-            </main>
+
+              {/* Right column - hidden on small screens, visible on lg screens */}
+              <div
+                className="!hidden lg:!block w-full lg:w-3/12 px-4"
+                style={{ position: "sticky", top: "2px" }}
+              >
+                <RightSideBar
+                  company={company}
+                  currentProject={currentProject}
+                />
+              </div>
+            </div>
           </div>
         </>
       )}

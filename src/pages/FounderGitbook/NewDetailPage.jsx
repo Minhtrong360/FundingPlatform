@@ -167,7 +167,7 @@ export default function NewDetailPage({ location }) {
               <div className="grid md:grid-cols-3 gap-8">
                 <div className="md:col-span-2">
                   <Card className="mb-8 !rounded-2xl !bg-white">
-                    <CardContent className="p-6">
+                    <CardContent className="p-6 px-2">
                       <ProfileInfo
                         company={company}
                         currentProject={currentProject}

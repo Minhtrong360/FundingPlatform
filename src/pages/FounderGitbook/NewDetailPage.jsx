@@ -175,7 +175,10 @@ export default function NewDetailPage({ location }) {
               </div>
 
               {/* Right column - hidden on small screens, visible on lg screens */}
-              <div className="!hidden lg:!block w-full lg:w-3/12 px-4">
+              <div
+                className="!hidden lg:!block w-full lg:w-3/12 px-4"
+                style={{ position: "sticky", top: "2px" }}
+              >
                 <RightSideBar
                   company={company}
                   currentProject={currentProject}

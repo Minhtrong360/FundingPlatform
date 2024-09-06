@@ -101,7 +101,7 @@ export default function RightSideBar({ company, currentProject }) {
   };
 
   return (
-    <div className="space-y-6 sm:mt-24 mt-16">
+    <div className="space-y-4 sm:mt-24 mt-16">
       <div className="relative">
         <Input
           type="search"
@@ -154,7 +154,7 @@ export default function RightSideBar({ company, currentProject }) {
           <h4 className="font-semibold mb-2">Categories:</h4>
           <ul className="space-y-1">
             {company?.industry?.map((category) => (
-              <li key={category} className="ml-2">
+              <li key={category} className="ml-2 !text-sm">
                 - {category}
               </li>
             ))}

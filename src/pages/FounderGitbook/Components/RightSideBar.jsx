@@ -101,7 +101,7 @@ export default function RightSideBar({ company, currentProject }) {
   };
 
   return (
-    <div className="space-y-4 sm:mt-24 mt-16">
+    <div className="space-y-4" style={{ position: "sticky", top: "10px" }}>
       <div className="relative">
         <Input
           type="search"
@@ -149,20 +149,21 @@ export default function RightSideBar({ company, currentProject }) {
           ))}
         </ul>
       )}
-      <Card>
-        <CardContent className="p-4">
-          <h4 className="font-semibold mb-2">Categories:</h4>
+      <Card className="!bg-white">
+        <CardContent className="p-4 ">
+          <h3 className="text-xl font-bold mb-3">Categories</h3>{" "}
           <ul className="space-y-1">
             {company?.industry?.map((category) => (
-              <li key={category} className="ml-2 !text-sm">
-                - {category}
+              <li key={category} className="flex items-center space-x-2">
+                <span className="w-2 h-2 bg-black rounded-full"></span>
+                <span className="text-base">{category}</span>
               </li>
             ))}
           </ul>
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="!bg-white">
         <CardContent className="p-4">
           <h4 className="font-semibold mb-2">Recent Posts:</h4>
           <ul className="space-y-4">
@@ -183,23 +184,20 @@ export default function RightSideBar({ company, currentProject }) {
                 image: "/images/v2/card-v2-3.png",
               },
             ].map((post, index) => (
-              <li key={index} className="flex items-start space-x-2">
-                <img
-                  src={post.image}
-                  alt=""
-                  className="w-10 h-10 object-cover"
-                />
-                <div>
-                  <p className="text-sm font-medium">{post.title}</p>
-                  <p className="text-xs text-muted-foreground">{post.date}</p>
-                </div>
+              <li>
+                <a className="block group">
+                  <h4 className="text-black text-base group-hover:underline font-bold">
+                    {post.title}
+                  </h4>
+                  <div className="text-sm text-gray-500">{post.date}</div>
+                </a>
               </li>
             ))}
           </ul>
         </CardContent>
       </Card>
 
-      <div>
+      {/* <div>
         <h4 className="font-semibold mb-2">Tags:</h4>
         <div className="flex flex-wrap gap-2">
           {company?.keyWords?.split(",").map((keyWord, index) => {
@@ -217,20 +215,21 @@ export default function RightSideBar({ company, currentProject }) {
             return null;
           })}
         </div>
-      </div>
+      </div> */}
 
-      <Card className="bg-black text-white">
-        <CardContent className="p-4">
-          <h4 className="font-semibold mb-2 text-white">
-            How can we help you?
-          </h4>
-          <p className="text-sm mb-4">
+      <Card className="bg-white">
+        <CardContent className="p-6">
+          <h3 className="text-xl font-bold mb-4">How can we help you?</h3>
+          <p className="text-gray-600 mb-4">
             We are here to help you! Tell us how we can help and we'll get in
-            touch within next 24hrs
+            touch within next 24hrs.
           </p>
-          <Button className="w-full bg-gray-100 hover:bg-gray-300 text-black">
-            Contact Us
-          </Button>
+          <form className="space-y-4">
+            <Input placeholder="Enter your email" />
+            <Button className="w-full bg-[#18181B] text-white">
+              Contact Us
+            </Button>
+          </form>
         </CardContent>
       </Card>
     </div>

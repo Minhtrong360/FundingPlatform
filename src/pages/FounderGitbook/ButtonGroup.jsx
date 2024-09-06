@@ -54,12 +54,9 @@ const ButtonGroup = ({
       // icon={<SettingOutlined />}
       onClick={(e) => e.preventDefault()} // Prevents the dropdown from closing when clicking the button
     >
-      <Button
-        variant="outline"
-        className="items-center sm:ml-2 ml-0 sm:mt-0 mt-2"
-      >
-        <Settings className="sm:mr-2 mr-0 h-4 w-4" />
-        <span className="sm:!block !hidden">Profile Settings</span>
+      <Button variant="outline">
+        <Settings className="mr-2 h-4 w-4" />
+        <span>Profile Settings</span>
       </Button>
     </Dropdown>
   );

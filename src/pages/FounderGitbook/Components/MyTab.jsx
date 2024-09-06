@@ -421,16 +421,14 @@ const MyTab = ({
       : {
           "Your Profile": (
             <div className="relative">
-              <Card>
-                <BlockNoteView
-                  editor={editor}
-                  theme={"light"}
-                  className={`w-full ${unChange ? "pointer-events-none" : ""} my-4`}
-                  onChange={(editor) =>
-                    debouncedHandleChange(editor, "Your Profile")
-                  }
-                />
-              </Card>
+              <BlockNoteView
+                editor={editor}
+                theme={"light"}
+                className={`w-full ${unChange ? "pointer-events-none" : ""} my-4`}
+                onChange={(editor) =>
+                  debouncedHandleChange(editor, "Your Profile")
+                }
+              />
 
               <div>
                 {user?.id === currentProject?.user_id ||
@@ -474,26 +472,29 @@ const MyTab = ({
   };
 
   return (
-    <Card>
-      <CardContent className="p-6">
-        <Tabs defaultValue="profile" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6 bg-gray-50 rounded-md">
-            {tabs.map((tab) => (
-              <TabsTrigger
-                value={tab.title}
-                onClick={() => handleTabChange(tab.key)}
-                className={`${activeTab === tab.key ? "bg-white" : ""} rounded-md w-[50%] mx-auto`}
-              >
-                {tab.title}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          {/* Content */}
-          {tabContents[activeTab]}
-        </Tabs>
-      </CardContent>
-    </Card>
+    <Tabs defaultValue="Your Profile" className="w-full">
+      <TabsList className="w-full justify-start mb-4 !bg-gray-100">
+        <TabsTrigger
+          value="Your Profile"
+          onClick={() => handleTabChange("Your Profile")}
+        >
+          Your Profile
+        </TabsTrigger>
+        <TabsTrigger
+          value="Sample PitchDeck"
+          onClick={() => handleTabChange("Sample PitchDeck")}
+        >
+          Sample PitchDeck
+        </TabsTrigger>
+        <TabsTrigger
+          value="Data Room"
+          onClick={() => handleTabChange("Data Room")}
+        >
+          Data Room
+        </TabsTrigger>
+      </TabsList>
+      {tabContents[activeTab]}
+    </Tabs>
   );
 };
 

@@ -6,6 +6,8 @@ import { Tooltip, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { Radio } from "antd";
 import PricingWithLemon from "../Home/Components/PricingWithLemon";
+import { Button } from "../../components/ui/button";
+import { PlusIcon, SearchIcon } from "lucide-react";
 
 const Modal = ({
   isOpen,
@@ -139,10 +141,10 @@ const Modal = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-      <div className="relative p-5 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
-        <h3 className="text-md font-medium leading-6 text-gray-800 capitalize">
+      <div className="relative p-4 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
+        <h4 className="text-md font-medium leading-6 text-gray-800 capitalize">
           Project Name
-        </h3>
+        </h4>
         <form className="mt-2" onSubmit={isEditing ? handleSave : handleCreate}>
           <label className="block mt-2">
             <input
@@ -301,23 +303,15 @@ export default function AddProject({
           color="gray"
           zIndex={20000}
         >
-          <button
-            className={`text-white opacity-50 bg-gray-600  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
-            onClick={handleClickAddNew}
-          >
-            <PlusOutlined className="mr-1" />
-            Add new
-          </button>
+          <Button className="!text-white" onClick={handleClickAddNew}>
+            <PlusIcon className="mr-2 h-4 w-4" /> Add new
+          </Button>
         </Tooltip>
       ) : (
         <>
-          <button
-            className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
-            onClick={handleClickAddNew}
-          >
-            <PlusOutlined className="mr-1" />
-            Add new
-          </button>
+          <Button className="!text-white" onClick={handleClickAddNew}>
+            <PlusIcon className="mr-2 h-4 w-4" /> Add new
+          </Button>
         </>
       )}
       <ReactModal

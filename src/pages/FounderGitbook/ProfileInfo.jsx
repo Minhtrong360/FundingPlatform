@@ -15,7 +15,7 @@ import { supabase } from "../../supabase";
 import ButtonGroup from "./ButtonGroup";
 import { useAuth } from "../../context/AuthContext";
 import { UserOutlined } from "@ant-design/icons";
-import { CalendarClock, Settings } from "lucide-react";
+import { CalendarClock, Heart, Settings, Share2 } from "lucide-react";
 
 export default function ProfileInfo({
   company,
@@ -223,12 +223,7 @@ export default function ProfileInfo({
   };
 
   return (
-    <div
-      key="1"
-      className={`max-w-7xl ${
-        canClick === false ? "mt-4 " : "mx-auto sm:mt-24 mt-16"
-      } px-4 sm:px-6 lg:px-8 `}
-    >
+    <div key="1">
       {showConfirmation && (
         <Modal
           title="Apply verification"
@@ -256,194 +251,156 @@ export default function ProfileInfo({
         ></Modal>
       )}
 
-      <Card className="overflow-hidden">
-        <CardHeader className="border-b">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Avatar
-                shape="square"
-                size={64}
-                src={company.project_url ? company.project_url : null}
-                icon={!company.project_url && <UserOutlined />}
-              />
-              <div>
-                <CardTitle className="text-2xl font-bold">
-                  {company?.name ? company?.name : "VoltDrive (DEMO)"}
-                </CardTitle>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6">
+        <div className="flex items-center space-x-4 !mb-4 sm:!mb-0">
+          <Avatar
+            shape="square"
+            size={64}
+            src={company.project_url ? company.project_url : null}
+            icon={!company.project_url && <UserOutlined />}
+          />
+          <div>
+            <CardTitle className="text-2xl font-bold">
+              {company?.name ? company?.name : "VoltDrive (DEMO)"}
+            </CardTitle>
 
-                {company?.industry.length > 0 ? (
-                  company?.industry?.map((industry, index) => (
-                    <Badge key={index} className="mt-1 mr-2 bg-gray-100">
-                      {industry}
-                    </Badge>
-                  ))
-                ) : (
-                  <Badge key={1} className="mt-1 bg-gray-100">
-                    Technology
-                  </Badge>
-                )}
-              </div>
-            </div>
-            <div className="sm:flex sm:items-end items-center sm:space-x-2 space-x-0">
-              <Button
-                className="text-white bg-slate-800"
-                onClick={() => window.open(company?.calendly, "_blank")}
-              >
-                <CalendarClock className="sm:mr-2 mr-0 h-4 w-4" />
-                <span className="sm:!block !hidden">Book Meeting</span>
-              </Button>
-
-              <ButtonGroup
-                handleDrawChart={handleDrawChart}
-                handleCompanySettings={handleCompanySettings}
-                handleRequired={handleRequired}
-                currentProject={currentProject}
-                isLoading={isLoading}
-              />
+            <div className="text-sm text-gray-500">
+              {company?.industry && company.industry.length > 0
+                ? company.industry.join(" • ")
+                : "Technology"}
             </div>
           </div>
-        </CardHeader>
-        <CardContent className="p-0">
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="p-6 space-y-4">
-              <p
-                className="text-muted-foreground"
-                style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
-              >
-                {company?.description
-                  ? company?.description
-                  : "In the bustling heart of Silicon Valley, nestled among the towering tech giants, lies a beacon of innovation and sustainability: VoltDrive Electric. Founded by visionary engineer, Emily Rodriguez, VoltDrive is not just an electric car company; it's a revolution on wheels. At VoltDrive, every day begins with a dedication to a greener, cleaner future. Their state-of-the-art manufacturing facility, powered entirely by renewable energy, is a testament to their commitment to sustainability. The sleek, modern architecture of the building mirrors the company's ethos: merging cutting-edge technology with eco-conscious design."}
-              </p>
-            </div>
-            <div className="relative aspect-video md:aspect-auto">
-              {company.card_url ? (
-                <img
-                  alt="Insert your cover here"
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-b-lg md:rounded-r-lg md:rounded-bl-none"
-                  src={company.card_url}
-                />
-              ) : (
-                <img
-                  alt="Insert your cover here"
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-b-lg md:rounded-r-lg md:rounded-bl-none"
-                  src="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_storage/beekrowd_images/img-1710146272575"
-                />
-              )}
+        </div>
+        <div className="flex space-x-2">
+          <Button
+            className="text-white bg-slate-800"
+            onClick={() => window.open(company?.calendly, "_blank")}
+          >
+            <CalendarClock className="mr-2 h-4 w-4" />
+            <span>Book Meeting</span>
+          </Button>
 
-              {project?.verified && (
-                <span className="absolute top-0 right-0 bg-[#ABFB4F] text-black text-sm font-medium py-1.5 px-3 rounded-bl-lg">
-                  Verified profile
-                </span>
-              )}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          <ButtonGroup
+            handleDrawChart={handleDrawChart}
+            handleCompanySettings={handleCompanySettings}
+            handleRequired={handleRequired}
+            currentProject={currentProject}
+            isLoading={isLoading}
+          />
+        </div>
+      </div>
+
+      <p
+        className="text-muted-foreground"
+        style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+      >
+        {company?.description
+          ? company?.description
+          : "In the bustling heart of Silicon Valley, nestled among the towering tech giants, lies a beacon of innovation and sustainability: VoltDrive Electric. Founded by visionary engineer, Emily Rodriguez, VoltDrive is not just an electric car company; it's a revolution on wheels. At VoltDrive, every day begins with a dedication to a greener, cleaner future. Their state-of-the-art manufacturing facility, powered entirely by renewable energy, is a testament to their commitment to sustainability. The sleek, modern architecture of the building mirrors the company's ethos: merging cutting-edge technology with eco-conscious design."}
+      </p>
+
+      <div className="relative mb-8 group">
+        {company.card_url ? (
+          <img
+            alt="Insert your cover here"
+            layout="fill"
+            objectFit="cover"
+            width={800}
+            height={400}
+            className="rounded-lg w-full"
+            src={company.card_url}
+          />
+        ) : (
+          <img
+            alt="Insert your cover here"
+            layout="fill"
+            objectFit="cover"
+            width={800}
+            height={400}
+            className="rounded-lg w-full"
+            src="https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/beekrowd_storage/beekrowd_images/img-1710146272575"
+          />
+        )}
+
+        {project?.verified && (
+          <span className="absolute top-0 right-0 bg-[#ABFB4F] text-black text-sm font-medium py-1.5 px-3 rounded-bl-lg">
+            Verified profile
+          </span>
+        )}
+        <div className="absolute top-2 left-2 space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button size="icon" variant="secondary">
+            <Heart className="h-4 w-4" />
+          </Button>
+          <Button size="icon" variant="secondary">
+            <Share2 className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
 
       {company.showAdditionalFields === "Yes" && (
-        <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 transform">
-          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border ">
-            <div className="text-xl font-semibold truncate">
-              $
-              {company?.target_amount
-                ? formatNumber(company?.target_amount)
-                : "1,000,000"}
-            </div>
-            <div className="text-black mt-2 truncate hover:cursor-pointer">
-              Target amount
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-            <div className="text-xl font-semibold truncate">
-              $
-              {company?.ticket_size
-                ? formatNumber(company?.ticket_size)
-                : "100,000"}
-            </div>
-            <div className="text-black mt-2 truncate hover:cursor-pointer">
-              Min ticket size
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-            <div className="text-xl font-semibold truncate">
-              {company?.revenueStatus ? company?.revenueStatus : "0k-10k"}
-            </div>
-            <div className="text-black mt-2 truncate hover:cursor-pointer">
-              Revenue range
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-            <div className="text-xl font-semibold truncate">
-              $
-              {company?.amountRaised
-                ? formatNumber(company?.amountRaised)
-                : "0"}
-            </div>
-            <div className="text-black mt-2 truncate hover:cursor-pointer">
-              Raised before
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-            <div className="text-xl font-semibold truncate">
-              {company?.teamSize ? company?.teamSize : "1-10"}+
-            </div>
-            <div className="text-black mt-2 truncate hover:cursor-pointer">
-              Team size
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-            <div className="text-xl font-semibold truncate">Round</div>
-            <div className="text-black mt-2 truncate hover:cursor-pointer">
-              {company?.round ? company?.round : "Pre-seed"}
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-            <div className="text-xl font-semibold truncate">Established</div>
-            <div className="text-black mt-2 truncate hover:cursor-pointer">
-              {company?.operationTime ? company?.operationTime : "2024"}
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-            <Tooltip title={company?.offer}>
-              <div className="text-xl font-semibold truncate">Offer</div>
-              <div className="text-black mt-2 truncate">
-                {company?.offer ? company?.offer : "5% equity"}
-              </div>
-            </Tooltip>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-            <div className="text-xl font-semibold truncate">Type</div>
-            <div className="text-black mt-2 truncate hover:cursor-pointer">
-              {company?.offer_type ? company?.offer_type : "Investment"}
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md transform transition duration-500 hover:scale-105 border-gray-300 border">
-            <Tooltip title={company?.website}>
-              <div className="text-xl font-semibold truncate">Website</div>
-              <div
-                className="text-black mt-2 truncate hover:cursor-pointer"
-                onClick={() => window.open(company?.website)}
-                style={{
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {company?.website
-                  ? company?.website
-                      .replace(/^(https?:\/\/)?(www\.)?/i, "")
-                      .replace(/\/+$/, "")
-                  : "beekrowd.com"}
-              </div>
-            </Tooltip>
-          </div>
-          {/* Repeat the structure for other statistic cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+          <InfoCard
+            title={`$${company?.target_amount ? formatNumber(company?.target_amount) : "1,000,000"}`}
+            subtitle="Target amount"
+          />
+          <InfoCard
+            title={`$${company?.ticket_size ? formatNumber(company?.ticket_size) : "100,000"}`}
+            subtitle="Min ticket size"
+          />
+          <InfoCard
+            title={
+              company?.revenueStatus ? company?.revenueStatus : "Pre-revenue"
+            }
+            subtitle="Revenue range"
+          />
+          <InfoCard
+            title={`$${company?.amountRaised ? formatNumber(company?.amountRaised) : "0"}`}
+            subtitle="Raised before"
+          />
+          <InfoCard
+            title={`${company?.teamSize ? company?.teamSize : "1-10"}+`}
+            subtitle="Team size"
+          />
+          <InfoCard
+            title={company?.round ? company?.round : "Pre-seed"}
+            subtitle="Round"
+          />
+          <InfoCard
+            title={company?.operationTime ? company?.operationTime : "2024"}
+            subtitle="Established"
+          />
+          <InfoCard
+            title={company?.offer ? company?.offer : "5% equity"}
+            subtitle="Offer"
+          />
+          <InfoCard
+            title={company?.offer_type ? company?.offer_type : "Investment"}
+            subtitle="Type"
+          />
+          {/* <InfoCard
+            title={
+              company?.website
+                ? company.website
+                    .replace(/^(https?:\/\/)?(www\.)?/i, "")
+                    .replace(/\/+$/, "")
+                : "beekrowd.com"
+            }
+            subtitle="Website"
+            onClick={() => window.open(company?.website)}
+          /> */}
         </div>
       )}
     </div>
+  );
+}
+
+function InfoCard({ title, subtitle }) {
+  return (
+    <Card>
+      <CardContent className="p-4">
+        <div className="text-lg font-bold">{title}</div>
+        <div className="text-sm text-gray-500">{subtitle}</div>
+      </CardContent>
+    </Card>
   );
 }

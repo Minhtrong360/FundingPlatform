@@ -341,6 +341,9 @@ function Company({
                     </SelectTrigger>
                     <SelectContent className="bg-white">
                       <SelectItem value="1-10">1-10</SelectItem>
+                      <SelectItem value="11-20">11-20</SelectItem>
+                      <SelectItem value="21-50">21-50</SelectItem>
+                      <SelectItem value=">50">{">50"}</SelectItem>
                       {/* Add more team sizes as needed */}
                     </SelectContent>
                   </Select>

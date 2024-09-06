@@ -1,23 +1,50 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
+import { Badge } from "../../components/ui/badge";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../components/ui/tabs";
+import { PlusIcon, SearchIcon } from "lucide-react";
 import AddProject from "./AddProject";
 import { useNavigate } from "react-router-dom";
-
-// import InvitedUserProject from "../../components/InvitedUserProject";
-
-// import ProjectGiven from "../../components/ProjectGiven";
-import { Dropdown, Menu, message, Table, Modal, Select } from "antd";
-import { formatDate } from "../../features/DurationSlice";
+import { message, Modal } from "antd";
 import InputField from "../../components/InputField";
-import apiService from "../../app/apiService";
 import { Option } from "antd/es/mentions";
-import { width } from "@amcharts/amcharts4/.internal/core/utils/Utils";
+import apiService from "../../app/apiService";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../..//components/ui/dropdown-menu";
 
 function ProjectList({ projects, isLoading }) {
   const { user } = useAuth();
-
   const [updatedProjects, setUpdatedProjects] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [activeTab, setActiveTab] = useState("my-projects");
 
   const navigate = useNavigate();
 
@@ -30,6 +57,44 @@ function ProjectList({ projects, isLoading }) {
     setUpdatedProjects(sortedProjects);
   }, [projects]);
 
+  const myProjects = updatedProjects.filter(
+    (project) => project.user_id === user.id
+  );
+
+  const sharedProjects = updatedProjects.filter(
+    (project) => project.user_id !== user.id
+  );
+
+  const filteredProjects = (
+    activeTab === "my-projects" ? myProjects : sharedProjects
+  ).filter(
+    (project) =>
+      project.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (statusFilter === "all" || project.status.toLowerCase() === statusFilter)
+  );
+
+  const handleProjectClick = async (project) => {
+    try {
+      const { data: companies, error } = await supabase
+        .from("company")
+        .select("id")
+        .eq("project_id", project.id);
+
+      if (error) {
+        throw error;
+      }
+
+      if (companies.length > 0) {
+        navigate(`/profile/${project.id}`);
+      } else {
+        navigate(`/company/${project.id}`);
+      }
+    } catch (error) {
+      console.error("Error checking company:", error.message);
+    }
+  };
+
+  // Lấy từ code cũ
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
@@ -388,390 +453,6 @@ function ProjectList({ projects, isLoading }) {
     setSelectedProject(record); // Truyền thông tin dự án được chọn
   };
 
-  const myColumns = [
-    {
-      title: "No",
-      dataIndex: "index",
-      key: "index",
-      align: "center",
-      render: (text, record, index) => (
-        <span>{myProjects?.indexOf(record) + 1}</span>
-      ),
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      width: "25%",
-      render: (text, record) => (
-        <>
-          <span
-            className="hover:cursor-pointer"
-            onClick={() => handleProjectClick(record)}
-          >
-            <div
-              className="truncate"
-              style={{ maxWidth: "100%" }}
-              title={record.name}
-            >
-              {record.name}
-            </div>
-          </span>
-        </>
-      ),
-    },
-    {
-      title: "Date",
-      dataIndex: "created_at",
-      key: "created_at",
-      render: (text, record) => (
-        <span
-          className="hover:cursor-pointer"
-          onClick={() => handleProjectClick(record)}
-        >
-          {formatDate(record.created_at)}
-        </span>
-      ),
-    },
-    {
-      title: "Customer",
-      dataIndex: "user_email",
-      key: "user_email",
-      width: "25%",
-      render: (text, record) => (
-        <>
-          <span
-            className="hover:cursor-pointer"
-            onClick={() => handleProjectClick(record)}
-          >
-            <div
-              className="truncate"
-              style={{ maxWidth: "100%" }}
-              title={record.user_email}
-            >
-              {record.user_email}
-            </div>
-          </span>
-        </>
-      ),
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      width: "7%",
-      render: (text, record) => (
-        <>
-          <button
-            onClick={() => handleProjectClick(record)}
-            className={`w-full ${
-              record?.status === "public"
-                ? "bg-blue-600 text-white"
-                : record?.status === "private"
-                  ? "bg-red-600 text-white"
-                  : record?.status === "stealth"
-                    ? "bg-yellow-300 text-black"
-                    : ""
-            }   focus:ring-4 focus:outline-none focus:ring-blue-300  font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-            style={{ fontSize: "12px" }}
-          >
-            {record.status === "public"
-              ? "Public"
-              : record.status === "private"
-                ? "Private"
-                : "Stealth"}
-          </button>
-        </>
-      ),
-    },
-    {
-      title: "Action/Roles",
-      dataIndex: "action",
-      key: "action",
-      width: "7%",
-      render: (text, record) => (
-        <>
-          {record.user_id === user.id ? (
-            <Dropdown
-              overlay={
-                <Menu>
-                  <>
-                    <Menu.Item key="Edit Project">
-                      <div
-                        onClick={() => handleEdit(record)}
-                        style={{ fontSize: "12px" }}
-                      >
-                        Edit Project
-                      </div>
-                    </Menu.Item>
-                    <Menu.Item key="delete">
-                      <div
-                        onClick={() => handleDelete(record.id)}
-                        style={{ fontSize: "12px" }}
-                      >
-                        Delete Project
-                      </div>
-                    </Menu.Item>
-                    <Menu.Item key="assign">
-                      <div
-                        onClick={() => handleAssign(record.id)}
-                        style={{ fontSize: "12px" }}
-                      >
-                        Assign
-                      </div>
-                    </Menu.Item>
-                    <Menu.Item key="submit">
-                      <div
-                        onClick={() => handleSubmit(record.id)}
-                        style={{ fontSize: "12px" }}
-                      >
-                        Submit
-                      </div>
-                    </Menu.Item>
-                    {record.user_id === user.id ? (
-                      <Menu.Item key="invite">
-                        <div
-                          onClick={() => handleInvite(record.id)}
-                          style={{ fontSize: "12px" }}
-                        >
-                          Invite
-                        </div>
-                      </Menu.Item>
-                    ) : (
-                      ""
-                    )}
-                  </>
-                </Menu>
-              }
-            >
-              <div
-                className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
-              >
-                Action
-              </div>
-            </Dropdown>
-          ) : (
-            <div
-              onClick={() => handleProjectClick(record)}
-              className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
-            >
-              {record.invited_user?.includes(user.email) &&
-              record.collabs?.includes(user.email)
-                ? "Collab."
-                : record.invited_user?.includes(user.email)
-                  ? "View only"
-                  : record.collabs?.includes(user.email)
-                    ? "Collab."
-                    : "Default Label"}
-            </div>
-          )}
-        </>
-      ),
-    },
-  ];
-  const sharedColumns = [
-    {
-      title: "No",
-      dataIndex: "index",
-      key: "index",
-      align: "center",
-      render: (text, record, index) => (
-        <span>{sharedProjects?.indexOf(record) + 1}</span>
-      ),
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      width: "25%",
-      render: (text, record) => (
-        <>
-          <span
-            className="hover:cursor-pointer"
-            onClick={() => handleProjectClick(record)}
-          >
-            <div
-              className="truncate"
-              style={{ maxWidth: "100%" }}
-              title={record.name}
-            >
-              {record.name}
-            </div>
-          </span>
-        </>
-      ),
-    },
-    {
-      title: "Date",
-      dataIndex: "created_at",
-      key: "created_at",
-      render: (text, record) => (
-        <span
-          className="hover:cursor-pointer"
-          onClick={() => handleProjectClick(record)}
-        >
-          {formatDate(record.created_at)}
-        </span>
-      ),
-    },
-    {
-      title: "Customer",
-      dataIndex: "user_email",
-      key: "user_email",
-      width: "25%",
-      render: (text, record) => (
-        <>
-          <span
-            className="hover:cursor-pointer"
-            onClick={() => handleProjectClick(record)}
-          >
-            <div
-              className="truncate"
-              style={{ maxWidth: "100%" }}
-              title={record.user_email}
-            >
-              {record.user_email}
-            </div>
-          </span>
-        </>
-      ),
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      width: "7%",
-      render: (text, record) => (
-        <>
-          <button
-            onClick={() => handleProjectClick(record)}
-            className={`w-full ${
-              record?.status === "public"
-                ? "bg-blue-600 text-white"
-                : record?.status === "private"
-                  ? "bg-red-600 text-white"
-                  : record?.status === "stealth"
-                    ? "bg-yellow-300 text-black"
-                    : ""
-            }   focus:ring-4 focus:outline-none focus:ring-blue-300  font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus`}
-            style={{ fontSize: "12px" }}
-          >
-            {record.status === "public"
-              ? "Public"
-              : record.status === "private"
-                ? "Private"
-                : "Stealth"}
-          </button>
-        </>
-      ),
-    },
-    {
-      title: "Action/Roles",
-      dataIndex: "action",
-      key: "action",
-      width: "7%",
-      render: (text, record) => (
-        <>
-          {record.user_id === user.id ? (
-            <Dropdown
-              overlay={
-                <Menu>
-                  <>
-                    <Menu.Item key="Edit Project">
-                      <div
-                        onClick={() => handleEdit(record)}
-                        style={{ fontSize: "12px" }}
-                      >
-                        Edit Project
-                      </div>
-                    </Menu.Item>
-                    <Menu.Item key="delete">
-                      <div
-                        onClick={() => handleDelete(record.id)}
-                        style={{ fontSize: "12px" }}
-                      >
-                        Delete Project
-                      </div>
-                    </Menu.Item>
-                    <Menu.Item key="assign">
-                      <div
-                        onClick={() => handleAssign(record.id)}
-                        style={{ fontSize: "12px" }}
-                      >
-                        Assign
-                      </div>
-                    </Menu.Item>
-
-                    {record.user_id === user.id ? (
-                      <Menu.Item key="invite">
-                        <div
-                          onClick={() => handleInvite(record.id)}
-                          style={{ fontSize: "12px" }}
-                        >
-                          Invite
-                        </div>
-                      </Menu.Item>
-                    ) : (
-                      ""
-                    )}
-                  </>
-                </Menu>
-              }
-            >
-              <div
-                className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
-              >
-                Action
-              </div>
-            </Dropdown>
-          ) : (
-            <div
-              onClick={() => handleProjectClick(record)}
-              className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
-            >
-              {record.invited_user?.includes(user.email) &&
-              record.collabs?.includes(user.email)
-                ? "Collaboration"
-                : record.invited_user?.includes(user.email)
-                  ? "View only"
-                  : record.collabs?.includes(user.email)
-                    ? "Collaboration"
-                    : "Default Label"}
-            </div>
-          )}
-        </>
-      ),
-    },
-  ];
-
-  const myProjects = updatedProjects.filter(
-    (project) => project.user_id === user.id
-  );
-
-  const sharedProjects = updatedProjects.filter(
-    (project) => project.user_id !== user.id
-  );
-
-  const handleProjectClick = async (project) => {
-    try {
-      const { data: companies, error } = await supabase
-        .from("company")
-        .select("id")
-        .eq("project_id", project.id);
-
-      if (error) {
-        throw error;
-      }
-
-      if (companies.length > 0) {
-        navigate(`/profile/${project.id}`);
-      } else {
-        navigate(`/company/${project.id}`);
-      }
-    } catch (error) {
-      console.error("Error checking company:", error.message);
-    }
-  };
   const [contestCodes, setContestCodes] = useState([]);
 
   useEffect(() => {
@@ -793,7 +474,61 @@ function ProjectList({ projects, isLoading }) {
   }, []);
 
   return (
-    <main className="w-full min-h-[92.5vh]">
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8 text-center -tracking-normal">
+        Fundraising Profile Listing Dashboard
+      </h1>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full ">
+        <TabsList className="grid w-full grid-cols-2 bg-gray-50 mb-4">
+          <TabsTrigger
+            value="my-projects"
+            className="data-[state=active]:bg-white data-[state=active]:text-black sm:w-[50%] w-full mx-auto rounded-md text-gray-800"
+          >
+            My Projects
+          </TabsTrigger>
+          <TabsTrigger
+            value="shared-projects"
+            className="data-[state=active]:bg-white data-[state=active]:text-black sm:w-[50%] w-full mx-auto rounded-md text-gray-800"
+          >
+            Projects Shared With Me
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="my-projects">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold">My Projects</h2>
+            <AddProject
+              updatedProjects={updatedProjects}
+              setUpdatedProjects={setUpdatedProjects}
+              isModalOpen={isModalOpen}
+              setIsModalOpen={setIsModalOpen}
+              selectedProject={selectedProject}
+              setSelectedProject={setSelectedProject}
+              myProjects={myProjects}
+            />
+          </div>
+          {renderContent()}
+        </TabsContent>
+        <TabsContent value="shared-projects">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold">Projects Shared With Me</h2>
+            <div style={{ visibility: "hidden" }}>
+              <AddProject
+                updatedProjects={updatedProjects}
+                setUpdatedProjects={setUpdatedProjects}
+                isModalOpen={isModalOpen}
+                setIsModalOpen={setIsModalOpen}
+                selectedProject={selectedProject}
+                setSelectedProject={setSelectedProject}
+                myProjects={myProjects}
+              />
+            </div>
+          </div>
+
+          {renderContent()}
+        </TabsContent>
+      </Tabs>
+
       {isDeleteModalOpen && (
         <Modal
           title="Confirm Delete"
@@ -1052,7 +787,7 @@ function ProjectList({ projects, isLoading }) {
             type="text"
             required
           />
-          <div className="mt-5">
+          <div className="mt-4">
             <label className="inline-flex items-center">
               <input
                 type="radio"
@@ -1077,68 +812,139 @@ function ProjectList({ projects, isLoading }) {
           </div>
         </Modal>
       )}
-
-      <section className="container px-4 mx-auto">
-        <h1 className="text-4xl text-center my-2 font-bold">
-          Fundraising Profile Listing Dashboard
-        </h1>
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold mb-4">My Projects</h2>
-          <AddProject
-            updatedProjects={updatedProjects}
-            setUpdatedProjects={setUpdatedProjects}
-            isModalOpen={isModalOpen}
-            setIsModalOpen={setIsModalOpen}
-            selectedProject={selectedProject}
-            setSelectedProject={setSelectedProject}
-            myProjects={myProjects}
-          />
-        </div>
-        <div className="flex flex-col mb-8">
-          <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-              <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
-                <Table
-                  columns={myColumns}
-                  dataSource={myProjects}
-                  pagination={{
-                    position: ["bottomLeft"],
-                  }}
-                  rowKey="id"
-                  size="small"
-                  bordered
-                  loading={isLoading}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <h2 className="text-lg font-semibold mb-4 mt-12">
-          Projects Shared With Me
-        </h2>
-        <div className="flex flex-col">
-          <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-              <div className="overflow-hidden border border-gray-300 darkBorderGray md:rounded-lg">
-                <Table
-                  columns={sharedColumns}
-                  dataSource={sharedProjects}
-                  pagination={{
-                    position: ["bottomLeft"],
-                  }}
-                  rowKey="id"
-                  size="small"
-                  bordered
-                  loading={isLoading}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
+    </div>
   );
+
+  function renderContent() {
+    return (
+      <>
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0 sm:space-x-4">
+          <div className="relative w-full sm:w-64">
+            <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <Input
+              type="text"
+              placeholder="Search projects..."
+              className="!pl-10 !h-10"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-full sm:w-40">
+              <SelectValue placeholder="Filter by status" />
+            </SelectTrigger>
+            <SelectContent className="bg-white">
+              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="private">Private</SelectItem>
+              <SelectItem value="public">Public</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[50px]">No</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Customer</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Action/Roles</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredProjects.map((project, index) => (
+                <TableRow key={project.id}>
+                  <TableCell
+                    className="hover:cursor-pointer"
+                    onClick={() => handleProjectClick(project)}
+                  >
+                    {index + 1}
+                  </TableCell>
+                  <TableCell
+                    className="font-medium hover:cursor-pointer"
+                    onClick={() => handleProjectClick(project)}
+                  >
+                    {project.name}
+                  </TableCell>
+                  <TableCell className="hover:cursor-pointer">
+                    {new Date(project.created_at).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>{project.user_email}</TableCell>
+                  <TableCell>
+                    <Badge
+                      className={
+                        project.status.toLowerCase() === "private"
+                          ? "bg-red-600 text-white"
+                          : "bg-black text-white"
+                      }
+                    >
+                      {project.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {project.user_id === user.id ? (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline" size="sm">
+                            Action
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="bg-white" align="end">
+                          <DropdownMenuItem
+                            className="hover:cursor-pointer"
+                            onClick={() => handleEdit(project)}
+                          >
+                            Edit Project
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="hover:cursor-pointer"
+                            onClick={() => handleDelete(project.id)}
+                          >
+                            Delete Project
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="hover:cursor-pointer"
+                            onClick={() => handleAssign(project.id)}
+                          >
+                            Assign
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="hover:cursor-pointer"
+                            onClick={() => handleSubmit(project.id)}
+                          >
+                            Submit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="hover:cursor-pointer"
+                            onClick={() => handleInvite(project.id)}
+                          >
+                            Invite
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    ) : (
+                      <Button variant="outline" size="sm">
+                        {project.invited_user?.includes(user.email) &&
+                        project.collabs?.includes(user.email)
+                          ? "Collaboration"
+                          : project.invited_user?.includes(user.email)
+                            ? "View only"
+                            : project.collabs?.includes(user.email)
+                              ? "Collaboration"
+                              : "Default Label"}
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </>
+    );
+  }
 }
 
 export default ProjectList;

@@ -57,12 +57,10 @@ const CustomChart = ({
   useEffect(() => {
     setChartEndMonth(numberOfMonths);
   }, [numberOfMonths]);
-  console.log("RenderData", RenderData);
   const filteredData = RenderData?.slice(
     chartStartMonth - 1,
     chartEndMonth
   )?.map((value) => parseFloat(value?.toFixed(0)));
-  console.log("filteredData", filteredData);
 
   const chartOptions = {
     chart: {
@@ -71,7 +69,7 @@ const CustomChart = ({
       type: "area",
       height: 350,
       toolbar: {
-        show: true,
+        show: false,
         tools: {
           download: true,
         },
@@ -88,27 +86,28 @@ const CustomChart = ({
       categories: xaxisCategories,
       axisTicks: { show: false },
       labels: {
+        show: false,
         rotate: 0,
         style: { fontFamily: "Sora, sans-serif" },
       },
-      title: {
-        text: "Month",
-        style: { fontSize: "12px", fontFamily: "Sora, sans-serif" },
-      },
     },
     yaxis: {
+      show: false, // Hide y-axis
       min: 0,
-      axisBorder: { show: true },
+      axisBorder: { show: false },
       labels: {
+        show: false,
         formatter: (val) => formatNumber(Math.floor(val)),
         style: { fontFamily: "Sora, sans-serif" },
       },
       title: {
+        show: false,
         text: yaxisTitle,
         style: { fontSize: "12px", fontFamily: "Sora, sans-serif" },
       },
     },
     legend: {
+      show: false,
       position: "bottom",
       horizontalAlign: "right",
       fontFamily: "Sora, sans-serif",
@@ -142,11 +141,7 @@ const CustomChart = ({
 
           <div className="flex justify-between items-center">
             <div className="min-w-[10vw] mb-2">
-              <label
-                htmlFor="startMonthSelect"
-                className="text-sm"
-                className="text-sm"
-              >
+              <label htmlFor="startMonthSelect" className="text-sm">
                 Start Month:
               </label>
               <select
@@ -176,11 +171,7 @@ const CustomChart = ({
               </select>
             </div>
             <div className="min-w-[10vw] mb-2">
-              <label
-                htmlFor="endMonthSelect"
-                className="text-sm"
-                className="text-sm"
-              >
+              <label htmlFor="endMonthSelect" className="text-sm">
                 End Month:
               </label>
               <select

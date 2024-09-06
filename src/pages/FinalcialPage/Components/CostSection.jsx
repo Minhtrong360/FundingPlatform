@@ -178,7 +178,7 @@ const CostInputForm = ({
                 >
                   <SelectValue placeholder="Select Cost Category" />
                 </SelectTrigger>
-                <SelectContent position="popper">
+                <SelectContent position="popper" className="bg-white">
                   <SelectItem value="Not related to revenue">
                     Not related to revenue
                   </SelectItem>
@@ -236,7 +236,7 @@ const CostInputForm = ({
                     <SelectTrigger>
                       <SelectValue placeholder="Select Related Revenue" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                       <SelectItem value="Total Revenue">
                         Total Revenue
                       </SelectItem>
@@ -373,7 +373,7 @@ const CostInputForm = ({
                     >
                       <SelectValue placeholder="Select Growth Frequency" />
                     </SelectTrigger>
-                    <SelectContent position="popper">
+                    <SelectContent position="popper" className="bg-white">
                       <SelectItem value="Monthly">Monthly</SelectItem>
                       <SelectItem value="Quarterly">Quarterly</SelectItem>
                       <SelectItem value="Semi-Annually">

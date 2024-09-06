@@ -158,42 +158,44 @@ export default function NewDetailPage({ location }) {
         <LoadingButtonClick isLoading={isLoading} />
       ) : (
         <>
-          <HomeHeader
-            noFixedHeader={noFixedHeader}
-            isContentChanged={isContentChanged}
-          />
-          <main className="container mx-auto px-4 py-8 mt-24">
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="md:col-span-2">
-                <Card className="mb-8 !rounded-2xl !bg-white">
-                  <CardContent className="p-6">
-                    <ProfileInfo
-                      company={company}
-                      currentProject={currentProject}
-                      setCurrentProject={setCurrentProject}
-                      blocks={blocks}
-                      isContentChanged={isContentChanged}
-                    />
-                    <MyTab
-                      blocks={blocks}
-                      setBlocks={setBlocks}
-                      company={company}
-                      fullScreen={fullScreen}
-                      currentProject={currentProject}
-                      isContentChanged={isContentChanged}
-                      setIsContentChanged={setIsContentChanged}
-                    />
-                  </CardContent>
-                </Card>
+          <div>
+            <HomeHeader
+              noFixedHeader={noFixedHeader}
+              isContentChanged={isContentChanged}
+            />
+            <main className="container mx-auto px-4 py-8 mt-24">
+              <div className="grid md:grid-cols-3 gap-8">
+                <div className="md:col-span-2">
+                  <Card className="mb-8 !rounded-2xl !bg-white">
+                    <CardContent className="p-6 px-2">
+                      <ProfileInfo
+                        company={company}
+                        currentProject={currentProject}
+                        setCurrentProject={setCurrentProject}
+                        blocks={blocks}
+                        isContentChanged={isContentChanged}
+                      />
+                      <MyTab
+                        blocks={blocks}
+                        setBlocks={setBlocks}
+                        company={company}
+                        fullScreen={fullScreen}
+                        currentProject={currentProject}
+                        isContentChanged={isContentChanged}
+                        setIsContentChanged={setIsContentChanged}
+                      />
+                    </CardContent>
+                  </Card>
+                </div>
+                <div className="md:col-span-1 space-y-8">
+                  <RightSideBar
+                    company={company}
+                    currentProject={currentProject}
+                  />
+                </div>
               </div>
-              <div className="md:col-span-1 space-y-8">
-                <RightSideBar
-                  company={company}
-                  currentProject={currentProject}
-                />
-              </div>
-            </div>
-          </main>
+            </main>
+          </div>
         </>
       )}
     </div>

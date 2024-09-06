@@ -142,6 +142,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
             <span className="flex items-center text-sm">Start Month :</span>
           </Tooltip>
           <Select
+            className="bg-white"
             onValueChange={(value) => {
               const selectedMonthIndex = months.indexOf(value);
               dispatch(setStartMonth(selectedMonthIndex + 1));
@@ -154,7 +155,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
             >
               <SelectValue />
             </SelectTrigger>
-            <SelectContent position="popper">
+            <SelectContent position="popper" className="bg-white">
               {months.map((month, index) => (
                 <SelectItem
                   className="hover:cursor-pointer"
@@ -182,7 +183,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
             >
               <SelectValue />
             </SelectTrigger>
-            <SelectContent position="popper">
+            <SelectContent position="popper" className="bg-white">
               {years.map((year, index) => (
                 <SelectItem
                   className="hover:cursor-pointer"
@@ -209,7 +210,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
             >
               <SelectValue placeholder={selectedDuration} />
             </SelectTrigger>
-            <SelectContent position="popper">
+            <SelectContent position="popper" className="bg-white">
               <SelectItem className="hover:cursor-pointer" value="3 years">
                 3 years
               </SelectItem>
@@ -246,7 +247,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
             <SelectTrigger className="border-solid border-[1px] border-gray-300">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent position="popper">
+            <SelectContent position="popper" className="bg-white">
               <SelectItem className="hover:cursor-pointer" value="active">
                 Active
               </SelectItem>
@@ -273,7 +274,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
             >
               <SelectValue />
             </SelectTrigger>
-            <SelectContent position="popper">
+            <SelectContent position="popper" className="bg-white">
               {industries.map((industry, index) => (
                 <SelectItem
                   className="hover:cursor-pointer"
@@ -312,7 +313,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
             <SelectTrigger className="border-solid border-[1px] border-gray-300">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent position="popper">
+            <SelectContent position="popper" className="bg-white">
               {currencyLists?.map((option) => (
                 <SelectItem
                   key={option.key}

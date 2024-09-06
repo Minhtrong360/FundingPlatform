@@ -165,7 +165,7 @@ const PersonnelInputForm = ({
                 >
                   <SelectValue placeholder="Select Growth Frequency" />
                 </SelectTrigger>
-                <SelectContent position="popper">
+                <SelectContent position="popper" className="bg-white">
                   <SelectItem value="Monthly">Monthly</SelectItem>
                   <SelectItem value="Quarterly">Quarterly</SelectItem>
                   <SelectItem value="Semi-Annually">Semi-Annually</SelectItem>

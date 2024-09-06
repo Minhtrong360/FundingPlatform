@@ -204,7 +204,7 @@ const ChannelInputForm = ({
                 >
                   <SelectValue placeholder="Select Channel" />
                 </SelectTrigger>
-                <SelectContent position="popper">
+                <SelectContent position="popper" className="bg-white">
                   {channelNames?.map((channelName) => (
                     <SelectItem
                       key={channelName.id}
@@ -256,7 +256,7 @@ const ChannelInputForm = ({
                 >
                   <SelectValue placeholder="Select Days" />
                 </SelectTrigger>
-                <SelectContent position="popper">
+                <SelectContent position="popper" className="bg-white">
                   {daysOptions.map((days) => (
                     <SelectItem key={days} value={days}>
                       {days} days

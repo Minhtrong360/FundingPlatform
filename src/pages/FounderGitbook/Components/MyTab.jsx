@@ -456,19 +456,9 @@ const MyTab = ({
           ),
         }),
 
-    "Sample PitchDeck": (
-      <div>
-        <Card>
-          <Sample />
-        </Card>
-      </div>
-    ),
+    "Sample PitchDeck": <Sample />,
 
-    "Data Room": (
-      <div>
-        <FilesList />
-      </div>
-    ),
+    "Data Room": <FilesList />,
   };
 
   return (

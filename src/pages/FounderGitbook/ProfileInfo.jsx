@@ -251,8 +251,8 @@ export default function ProfileInfo({
         ></Modal>
       )}
 
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6">
-        <div className="flex items-center space-x-4 !mb-4 sm:!mb-0">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-6">
+        <div className="flex items-center space-x-4 !mb-4 lg:!mb-0">
           <Avatar
             shape="square"
             size={64}

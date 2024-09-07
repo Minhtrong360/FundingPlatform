@@ -64,7 +64,6 @@ import { DownloadOutlined, FileOutlined } from "@ant-design/icons";
 
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
-import { Card as CardShadcn } from "../../../components/ui/card";
 
 const ProfitAndLossSection = ({ numberOfMonths }) => {
   const dispatch = useDispatch();
@@ -863,7 +862,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
 
   return (
-    <CardShadcn className="w-full h-full flex flex-col lg:flex-row p-4">
+    <section className="w-full h-full flex flex-col lg:flex-row p-0 sm:px-4">
       <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
         <div>
           <h3 className="text-lg font-semibold mb-4">I. Relevant Chart</h3>
@@ -1159,7 +1158,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           <GroqJS datasrc={profitAndLossData} inputUrl="urlPNL" />
         </Modal>
       )}
-    </CardShadcn>
+    </section>
   );
 };
 

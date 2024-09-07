@@ -74,11 +74,11 @@ export default function Sample() {
       {isLoading ? (
         <LoadingButtonClick isLoading={isLoading} />
       ) : (
-        <div className="flex-grow items-center justify-center pb-10 my-4">
+        <div className="flex-grow items-center justify-center pb-10 my-4 max-w-[80vw]">
           <BlockNoteView
             editor={editor}
             theme={"light"}
-            className="w-full"
+            className="w-full max-w-full "
             onChange={async function (editor) {
               const blocks = editor.topLevelBlocks;
 

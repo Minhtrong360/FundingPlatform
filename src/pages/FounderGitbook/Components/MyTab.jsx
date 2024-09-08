@@ -18,8 +18,8 @@ import debounce from "lodash.debounce";
 
 import { Card } from "../../../components/ui/card";
 import {
-  Tabs, TabsList,
-  TabsTrigger
+	Tabs, TabsList,
+	TabsTrigger
 } from "../../../components/ui/tabs";
 
 const MyTab = ({
@@ -371,6 +371,7 @@ const MyTab = ({
 							"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
 						iframe.allowFullscreen = true;
 						videoElement.replaceWith(iframe);
+						iframe.style.maxWidth = "85vw"
 					}
 				}
 			});
@@ -418,14 +419,15 @@ const MyTab = ({
 			? {}
 			: {
 					"Your Profile": (
-						<div className="relative">
+						<div className="relative ">
 							<BlockNoteView
 								editor={editor}
 								theme={"light"}
-								className={`w-full ${unChange ? "pointer-events-none" : ""} my-4`}
+								className={`w-full max-w-[85vw] overflow-x-scroll ${unChange ? "pointer-events-none" : ""} my-4`}
 								onChange={(editor) =>
 									debouncedHandleChange(editor, "Your Profile")
 								}
+								
 							/>
 
 							<div>

@@ -831,7 +831,7 @@ function CashFlowSection({ numberOfMonths }) {
   const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
 
   return (
-    <CardShadcn className="w-full h-full flex flex-col lg:flex-row p-4">
+    <section className="w-full h-full flex flex-col lg:flex-row p-0 sm:p-4">
       <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
         <div className="">
           <h3 className="text-lg font-semibold mb-4">I. Relevant Chart</h3>
@@ -1042,7 +1042,7 @@ function CashFlowSection({ numberOfMonths }) {
           <GroqJS datasrc={cashFlowData} inputUrl="urlCF" />
         </Modal>
       )}
-    </CardShadcn>
+    </section>
   );
 }
 

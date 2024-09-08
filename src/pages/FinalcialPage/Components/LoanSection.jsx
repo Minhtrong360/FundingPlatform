@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { Input } from "../../../components/ui/input";
-import { Card, Modal, Table, message } from "antd";
+import { Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  calculateLoanData,
-  setLoanData,
-  setLoanInputs,
-  setLoanTableData,
-  transformLoanDataForTable,
+	calculateLoanData,
+	setLoanData,
+	setLoanInputs,
+	setLoanTableData,
+	transformLoanDataForTable,
 } from "../../../features/LoanSlice";
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
@@ -25,1065 +25,1065 @@ import * as XLSX from "xlsx";
 import { setInputData } from "../../../features/DurationSlice";
 import { Badge } from "../../../components/ui/badge";
 import {
-  CardContent,
-  CardHeader,
-  Card as CardShadcn,
+	CardContent,
+	CardHeader,
+	Card as CardShadcn,
 } from "../../../components/ui/card";
 
 const LoanInputForm = ({
-  tempLoanInputs,
-  renderLoanForm,
-  setRenderLoanForm,
-  handleLoanInputChange,
-  addNewLoanInput,
-  confirmDelete,
-  setIsDeleteModalOpen,
-  isDeleteModalOpen,
-  handleSave,
-  isLoading,
+	tempLoanInputs,
+	renderLoanForm,
+	setRenderLoanForm,
+	handleLoanInputChange,
+	addNewLoanInput,
+	confirmDelete,
+	setIsDeleteModalOpen,
+	isDeleteModalOpen,
+	handleSave,
+	isLoading,
 }) => {
-  return (
-    <section aria-labelledby="loan-heading" className="mb-8 NOsticky NOtop-8">
-      <h2
-        className="text-lg font-semibold mb-8 flex items-center"
-        id="loan-heading"
-      >
-        Loan
-      </h2>
+	return (
+		<section aria-labelledby="loan-heading" className="mb-8 NOsticky NOtop-8">
+			<h2
+				className="text-lg font-semibold mb-8 flex items-center"
+				id="loan-heading"
+			>
+				Loan
+			</h2>
 
-      <div>
-        <label
-          htmlFor="selectedChannel"
-          className="block my-4 text-base  darkTextWhite"
-        ></label>
-        <select
-          id="selectedChannel"
-          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
-          value={renderLoanForm}
-          onChange={(e) => setRenderLoanForm(e.target.value)}
-        >
-          <option value="all">All</option>
-          {tempLoanInputs.map((input) => (
-            <option key={input?.id} value={input?.id}>
-              {input.loanName}
-            </option>
-          ))}
-        </select>
-      </div>
+			<div>
+				<label
+					htmlFor="selectedChannel"
+					className="block my-4 text-base  darkTextWhite"
+				></label>
+				<select
+					id="selectedChannel"
+					className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+					value={renderLoanForm}
+					onChange={(e) => setRenderLoanForm(e.target.value)}
+				>
+					<option value="all">All</option>
+					{tempLoanInputs.map((input) => (
+						<option key={input?.id} value={input?.id}>
+							{input.loanName}
+						</option>
+					))}
+				</select>
+			</div>
 
-      {tempLoanInputs
-        .filter((input) => input?.id == renderLoanForm)
-        .map((input) => (
-          <div key={input?.id} className="bg-white rounded-2xl p-6 border my-4">
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <span className="flex items-center text-sm">Loan Name:</span>
-              <Input
-                required
-                className="border p-2 rounded-2xl border-gray-300"
-                value={input.loanName}
-                onChange={(e) =>
-                  handleLoanInputChange(input?.id, "loanName", e.target.value)
-                }
-              />
-            </div>
+			{tempLoanInputs
+				.filter((input) => input?.id == renderLoanForm)
+				.map((input) => (
+					<div key={input?.id} className="bg-white rounded-2xl p-6 border my-4">
+						<div className="grid grid-cols-2 gap-4 mb-3">
+							<span className="flex items-center text-sm">Loan Name:</span>
+							<Input
+								required
+								className="border p-2 rounded-2xl border-gray-300"
+								value={input.loanName}
+								onChange={(e) =>
+									handleLoanInputChange(input?.id, "loanName", e.target.value)
+								}
+							/>
+						</div>
 
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <span className="flex items-center text-sm">Loan Amount:</span>
-              <Input
-                required
-                className="border p-2 rounded-2xl border-gray-300"
-                value={formatNumber(input.loanAmount)}
-                onChange={(e) =>
-                  handleLoanInputChange(
-                    input?.id,
-                    "loanAmount",
-                    parseNumber(e.target.value)
-                  )
-                }
-              />
-            </div>
+						<div className="grid grid-cols-2 gap-4 mb-3">
+							<span className="flex items-center text-sm">Loan Amount:</span>
+							<Input
+								required
+								className="border p-2 rounded-2xl border-gray-300"
+								value={formatNumber(input.loanAmount)}
+								onChange={(e) =>
+									handleLoanInputChange(
+										input?.id,
+										"loanAmount",
+										parseNumber(e.target.value)
+									)
+								}
+							/>
+						</div>
 
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <span className="flex items-center text-sm">
-                Interest Rate (%):
-              </span>
-              <Input
-                required
-                className="border p-2 rounded-2xl border-gray-300"
-                value={formatNumber(input.interestRate)}
-                onChange={(e) =>
-                  handleLoanInputChange(
-                    input?.id,
-                    "interestRate",
-                    parseNumber(e.target.value)
-                  )
-                }
-              />
-            </div>
+						<div className="grid grid-cols-2 gap-4 mb-3">
+							<span className="flex items-center text-sm">
+								Interest Rate (%):
+							</span>
+							<Input
+								required
+								className="border p-2 rounded-2xl border-gray-300"
+								value={formatNumber(input.interestRate)}
+								onChange={(e) =>
+									handleLoanInputChange(
+										input?.id,
+										"interestRate",
+										parseNumber(e.target.value)
+									)
+								}
+							/>
+						</div>
 
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <span className="flex items-center text-sm">
-                Month Loan Begins:
-              </span>
-              <Input
-                required
-                type="number"
-                className="border p-2 rounded-2xl border-gray-300"
-                value={input.loanBeginMonth}
-                onChange={(e) =>
-                  handleLoanInputChange(
-                    input?.id,
-                    "loanBeginMonth",
-                    e.target.value
-                  )
-                }
-              />
-            </div>
+						<div className="grid grid-cols-2 gap-4 mb-3">
+							<span className="flex items-center text-sm">
+								Month Loan Begins:
+							</span>
+							<Input
+								required
+								type="number"
+								className="border p-2 rounded-2xl border-gray-300"
+								value={input.loanBeginMonth}
+								onChange={(e) =>
+									handleLoanInputChange(
+										input?.id,
+										"loanBeginMonth",
+										e.target.value
+									)
+								}
+							/>
+						</div>
 
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <span className="flex items-center text-sm">
-                Month Loan Ends:
-              </span>
-              <Input
-                required
-                type="number"
-                className="border p-2 rounded-2xl border-gray-300"
-                value={input.loanEndMonth}
-                onChange={(e) =>
-                  handleLoanInputChange(
-                    input?.id,
-                    "loanEndMonth",
-                    e.target.value
-                  )
-                }
-              />
-            </div>
-            <div className="flex justify-center items-center"></div>
-          </div>
-        ))}
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <button
-          className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
-          onClick={() => setIsDeleteModalOpen(true)}
-        >
-          <DeleteOutlined
-            style={{
-              fontSize: "12px",
-              color: "#FFFFFF",
-              marginRight: "4px",
-            }}
-          />
-          Remove
-        </button>
+						<div className="grid grid-cols-2 gap-4 mb-3">
+							<span className="flex items-center text-sm">
+								Month Loan Ends:
+							</span>
+							<Input
+								required
+								type="number"
+								className="border p-2 rounded-2xl border-gray-300"
+								value={input.loanEndMonth}
+								onChange={(e) =>
+									handleLoanInputChange(
+										input?.id,
+										"loanEndMonth",
+										e.target.value
+									)
+								}
+							/>
+						</div>
+						<div className="flex justify-center items-center"></div>
+					</div>
+				))}
+			<div style={{ display: "flex", justifyContent: "space-between" }}>
+				<button
+					className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
+					onClick={() => setIsDeleteModalOpen(true)}
+				>
+					<DeleteOutlined
+						style={{
+							fontSize: "12px",
+							color: "#FFFFFF",
+							marginRight: "4px",
+						}}
+					/>
+					Remove
+				</button>
 
-        <button
-          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
-          onClick={addNewLoanInput}
-        >
-          <PlusOutlined
-            style={{
-              fontSize: "12px",
-              color: "#FFFFFF",
-              marginRight: "4px",
-            }}
-          />
-          Add
-        </button>
+				<button
+					className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+					onClick={addNewLoanInput}
+				>
+					<PlusOutlined
+						style={{
+							fontSize: "12px",
+							color: "#FFFFFF",
+							marginRight: "4px",
+						}}
+					/>
+					Add
+				</button>
 
-        <button
-          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw]"
-          onClick={handleSave}
-        >
-          {isLoading ? (
-            <SpinnerBtn />
-          ) : (
-            <>
-              <CheckCircleOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />
-              Save
-            </>
-          )}
-        </button>
-      </div>
-    </section>
-  );
+				<button
+					className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw]"
+					onClick={handleSave}
+				>
+					{isLoading ? (
+						<SpinnerBtn />
+					) : (
+						<>
+							<CheckCircleOutlined
+								style={{
+									fontSize: "12px",
+									color: "#FFFFFF",
+									marginRight: "4px",
+								}}
+							/>
+							Save
+						</>
+					)}
+				</button>
+			</div>
+		</section>
+	);
 };
 
 const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
-  const dispatch = useDispatch();
-  const { loanInputs } = useSelector((state) => state.loan);
-  const [tempLoanInputs, setTempLoanInputs] = useState(loanInputs);
-  const [renderLoanForm, setRenderLoanForm] = useState(loanInputs[0]?.id);
+	const dispatch = useDispatch();
+	const { loanInputs } = useSelector((state) => state.loan);
+	const [tempLoanInputs, setTempLoanInputs] = useState(loanInputs);
+	const [renderLoanForm, setRenderLoanForm] = useState(loanInputs[0]?.id);
 
-  const addNewLoanInput = () => {
-    const maxId = Math.max(...tempLoanInputs.map((input) => input?.id));
-    const newId = maxId !== -Infinity ? maxId + 1 : 1;
-    const newLoan = {
-      id: newId,
-      loanName: "New loan",
-      loanAmount: "0",
-      interestRate: "0",
-      loanBeginMonth: "0",
-      loanEndMonth: "0",
-    };
-    setTempLoanInputs([...tempLoanInputs, newLoan]);
-    setRenderLoanForm(newId.toString());
-  };
+	const addNewLoanInput = () => {
+		const maxId = Math.max(...tempLoanInputs.map((input) => input?.id));
+		const newId = maxId !== -Infinity ? maxId + 1 : 1;
+		const newLoan = {
+			id: newId,
+			loanName: "New loan",
+			loanAmount: "0",
+			interestRate: "0",
+			loanBeginMonth: "0",
+			loanEndMonth: "0",
+		};
+		setTempLoanInputs([...tempLoanInputs, newLoan]);
+		setRenderLoanForm(newId.toString());
+	};
 
-  const removeLoanInput = (id) => {
-    const indexToRemove = tempLoanInputs.findIndex((input) => input?.id == id);
-    if (indexToRemove !== -1) {
-      const newInputs = [
-        ...tempLoanInputs.slice(0, indexToRemove),
-        ...tempLoanInputs.slice(indexToRemove + 1),
-      ];
-      const prevInputId =
-        indexToRemove === 0
-          ? newInputs[0]?.id
-          : newInputs[indexToRemove - 1]?.id;
+	const removeLoanInput = (id) => {
+		const indexToRemove = tempLoanInputs.findIndex((input) => input?.id == id);
+		if (indexToRemove !== -1) {
+			const newInputs = [
+				...tempLoanInputs.slice(0, indexToRemove),
+				...tempLoanInputs.slice(indexToRemove + 1),
+			];
+			const prevInputId =
+				indexToRemove === 0
+					? newInputs[0]?.id
+					: newInputs[indexToRemove - 1]?.id;
 
-      setTempLoanInputs(newInputs);
-      setRenderLoanForm(prevInputId);
-    }
-  };
+			setTempLoanInputs(newInputs);
+			setRenderLoanForm(prevInputId);
+		}
+	};
 
-  const handleLoanInputChange = (id, field, value) => {
-    const newInputs = tempLoanInputs.map((input) => {
-      if (input?.id === id) {
-        return {
-          ...input,
-          [field]: value,
-        };
-      }
-      return input;
-    });
-    setTempLoanInputs(newInputs);
-  };
+	const handleLoanInputChange = (id, field, value) => {
+		const newInputs = tempLoanInputs.map((input) => {
+			if (input?.id === id) {
+				return {
+					...input,
+					[field]: value,
+				};
+			}
+			return input;
+		});
+		setTempLoanInputs(newInputs);
+	};
 
-  useEffect(() => {
-    const calculatedData = calculateLoanData(loanInputs, numberOfMonths);
-    dispatch(setLoanData(calculatedData));
-    const tableData = transformLoanDataForTable(
-      loanInputs,
-      renderLoanForm,
-      numberOfMonths
-    );
-    dispatch(setLoanTableData(tableData));
-  }, [loanInputs, numberOfMonths, renderLoanForm]);
+	useEffect(() => {
+		const calculatedData = calculateLoanData(loanInputs, numberOfMonths);
+		dispatch(setLoanData(calculatedData));
+		const tableData = transformLoanDataForTable(
+			loanInputs,
+			renderLoanForm,
+			numberOfMonths
+		);
+		dispatch(setLoanTableData(tableData));
+	}, [loanInputs, numberOfMonths, renderLoanForm]);
 
-  const months = [
-    "01",
-    "02",
-    "03",
-    "04",
-    "05",
-    "06",
-    "07",
-    "08",
-    "09",
-    "10",
-    "11",
-    "12",
-  ];
-  const { startMonth, startYear, inputData } = useSelector(
-    (state) => state.durationSelect
-  );
+	const months = [
+		"01",
+		"02",
+		"03",
+		"04",
+		"05",
+		"06",
+		"07",
+		"08",
+		"09",
+		"10",
+		"11",
+		"12",
+	];
+	const { startMonth, startYear, inputData } = useSelector(
+		(state) => state.durationSelect
+	);
 
-  const startingMonth = startMonth;
-  const startingYear = startYear;
+	const startingMonth = startMonth;
+	const startingYear = startYear;
 
-  const loanColumns = [
-    {
-      fixed: "left",
-      title: <div>Type</div>,
-      dataIndex: "type",
-      key: "type",
-    },
-    ...Array.from({ length: numberOfMonths }, (_, i) => {
-      const monthIndex = (startingMonth + i - 1) % 12;
-      const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
-      return {
-        title: `${months[monthIndex]}/${year}`,
-        dataIndex: `Month ${i + 1}`,
-        key: `Month ${i + 1}`,
-        align: "right",
-      };
-    }),
-  ];
+	const loanColumns = [
+		{
+			fixed: "left",
+			title: <div>Type</div>,
+			dataIndex: "type",
+			key: "type",
+		},
+		...Array.from({ length: numberOfMonths }, (_, i) => {
+			const monthIndex = (startingMonth + i - 1) % 12;
+			const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+			return {
+				title: `${months[monthIndex]}/${year}`,
+				dataIndex: `Month ${i + 1}`,
+				key: `Month ${i + 1}`,
+				align: "right",
+			};
+		}),
+	];
 
-  const [loanChart, setLoanChart] = useState({
-    options: {
-      chart: {
-        id: "loan-chart",
-        type: "line",
-        height: 350,
-        fontFamily: "Sora, sans-serif",
-        toolbar: {
-          show: true,
-          tools: {
-            download: true,
-          },
-        },
-        zoom: { enabled: false },
-        animations: { enabled: false },
-      },
-      colors: [
-        "#00A2FF",
-        "#14F584",
-        "#FFB303",
-        "#DBFE01",
-        "#FF474C",
-        "#D84FE4",
-      ],
-      xaxis: {
-        labels: {
-          show: true,
-          rotate: 0,
-          style: {
-            fontFamily: "Sora, sans-serif",
-          },
-        },
-        axisTicks: {
-          show: false,
-        },
-        categories: Array.from({ length: numberOfMonths }, (_, i) => {
-          const monthIndex = (startingMonth + i - 1) % 12;
-          const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
-          return `${months[monthIndex]}/${year}`;
-        }),
-        title: {
-          text: "Month",
-          style: {
-            fontFamily: "Sora, sans-serif",
-            fontsize: "12px",
-          },
-        },
-      },
-      yaxis: {
-        axisBorder: {
-          show: true,
-        },
-        labels: {
-          formatter: function (val) {
-            return formatNumber(Math.floor(val));
-          },
-        },
-        title: {
-          text: "Amount ($)",
-          style: {
-            fontFamily: "Sora, sans-serif",
-            fontsize: "12px",
-          },
-        },
-      },
-      grid: { show: false },
-      legend: {
-        position: "bottom",
-        horizontalAlign: "right",
-        fontFamily: "Sora, sans-serif",
-      },
-      dataLabels: { enabled: false },
-      stroke: { width: 1, curve: "straight" },
-    },
-    series: [],
-  });
+	const [loanChart, setLoanChart] = useState({
+		options: {
+			chart: {
+				id: "loan-chart",
+				type: "line",
+				height: 350,
+				fontFamily: "Sora, sans-serif",
+				toolbar: {
+					show: true,
+					tools: {
+						download: true,
+					},
+				},
+				zoom: { enabled: false },
+				animations: { enabled: false },
+			},
+			colors: [
+				"#00A2FF",
+				"#14F584",
+				"#FFB303",
+				"#DBFE01",
+				"#FF474C",
+				"#D84FE4",
+			],
+			xaxis: {
+				labels: {
+					show: true,
+					rotate: 0,
+					style: {
+						fontFamily: "Sora, sans-serif",
+					},
+				},
+				axisTicks: {
+					show: false,
+				},
+				categories: Array.from({ length: numberOfMonths }, (_, i) => {
+					const monthIndex = (startingMonth + i - 1) % 12;
+					const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+					return `${months[monthIndex]}/${year}`;
+				}),
+				title: {
+					text: "Month",
+					style: {
+						fontFamily: "Sora, sans-serif",
+						fontsize: "12px",
+					},
+				},
+			},
+			yaxis: {
+				axisBorder: {
+					show: true,
+				},
+				labels: {
+					formatter: function (val) {
+						return formatNumber(Math.floor(val));
+					},
+				},
+				title: {
+					text: "Amount ($)",
+					style: {
+						fontFamily: "Sora, sans-serif",
+						fontsize: "12px",
+					},
+				},
+			},
+			grid: { show: false },
+			legend: {
+				position: "bottom",
+				horizontalAlign: "right",
+				fontFamily: "Sora, sans-serif",
+			},
+			dataLabels: { enabled: false },
+			stroke: { width: 1, curve: "straight" },
+		},
+		series: [],
+	});
 
-  const [chartStartMonth, setChartStartMonth] = useState(1);
-  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+	const [chartStartMonth, setChartStartMonth] = useState(1);
+	const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
 
-  useEffect(() => {
-    const filteredMonths = Array.from(
-      { length: chartEndMonth - chartStartMonth + 1 },
-      (_, i) => {
-        const monthIndex = (startingMonth + chartStartMonth + i - 2) % 12;
-        const year =
-          startingYear +
-          Math.floor((startingMonth + chartStartMonth + i - 2) / 12);
-        return `${months[monthIndex]}/${year}`;
-      }
-    );
+	useEffect(() => {
+		const filteredMonths = Array.from(
+			{ length: chartEndMonth - chartStartMonth + 1 },
+			(_, i) => {
+				const monthIndex = (startingMonth + chartStartMonth + i - 2) % 12;
+				const year =
+					startingYear +
+					Math.floor((startingMonth + chartStartMonth + i - 2) / 12);
+				return `${months[monthIndex]}/${year}`;
+			}
+		);
 
-    const seriesData = calculateLoanData(tempLoanInputs, numberOfMonths).map(
-      (loan) => {
-        const data = Array(filteredMonths.length).fill(0);
-        const dataPayment = Array(filteredMonths.length).fill(0);
-        const dataPrincipal = Array(filteredMonths.length).fill(0);
-        const dataInterest = Array(filteredMonths.length).fill(0);
-        const dataRemainingBalance = Array(filteredMonths.length).fill(0);
+		const seriesData = calculateLoanData(tempLoanInputs, numberOfMonths).map(
+			(loan) => {
+				const data = Array(filteredMonths.length).fill(0);
+				const dataPayment = Array(filteredMonths.length).fill(0);
+				const dataPrincipal = Array(filteredMonths.length).fill(0);
+				const dataInterest = Array(filteredMonths.length).fill(0);
+				const dataRemainingBalance = Array(filteredMonths.length).fill(0);
 
-        loan.loanDataPerMonth
-          .slice(chartStartMonth - 1, chartEndMonth)
-          .forEach((monthData, index) => {
-            data[index] = monthData.balance;
-            dataPayment[index] = monthData.payment;
-            dataPrincipal[index] = monthData.principal;
-            dataInterest[index] = monthData.interest;
-            dataRemainingBalance[index] = monthData.balance;
-          });
+				loan.loanDataPerMonth
+					.slice(chartStartMonth - 1, chartEndMonth)
+					.forEach((monthData, index) => {
+						data[index] = monthData.balance;
+						dataPayment[index] = monthData.payment;
+						dataPrincipal[index] = monthData.principal;
+						dataInterest[index] = monthData.interest;
+						dataRemainingBalance[index] = monthData.balance;
+					});
 
-        return {
-          name: loan.loanName,
-          data,
-          dataPayment,
-          dataPrincipal,
-          dataInterest,
-          dataRemainingBalance,
-        };
-      }
-    );
+				return {
+					name: loan.loanName,
+					data,
+					dataPayment,
+					dataPrincipal,
+					dataInterest,
+					dataRemainingBalance,
+				};
+			}
+		);
 
-    const totalLoanData = seriesData.reduce((acc, channel) => {
-      channel.data.forEach((amount, index) => {
-        acc[index] = (acc[index] || 0) + amount;
-      });
-      return acc;
-    }, Array(filteredMonths.length).fill(0));
+		const totalLoanData = seriesData.reduce((acc, channel) => {
+			channel.data.forEach((amount, index) => {
+				acc[index] = (acc[index] || 0) + amount;
+			});
+			return acc;
+		}, Array(filteredMonths.length).fill(0));
 
-    setLoanChart((prevState) => ({
-      ...prevState,
-      series: seriesData,
-      charts: [
-        {
-          options: {
-            ...prevState.options,
-            xaxis: {
-              ...prevState.options.xaxis,
-              categories: filteredMonths,
-            },
-            chart: {
-              ...prevState.options.chart,
-              id: "allLoans",
-              stacked: false,
-            },
-            title: {
-              ...prevState.options.title,
-              text: "All Remaining Loans",
-            },
-          },
-          series: [
-            ...seriesData,
-            {
-              name: "Total",
-              data: totalLoanData,
-            },
-          ],
-        },
-        ...seriesData.map((channelSeries) => ({
-          options: {
-            ...prevState.options,
-            xaxis: {
-              ...prevState.options.xaxis,
-              categories: filteredMonths,
-            },
-            chart: {
-              ...prevState.options.chart,
-              id: channelSeries.name,
-            },
-            title: {
-              ...prevState.options.title,
-              text: channelSeries.name,
-            },
-          },
-          series: [
-            {
-              name: "Payment",
-              data: channelSeries.dataPayment,
-            },
-            {
-              name: "Principal",
-              data: channelSeries.dataPrincipal,
-            },
-            {
-              name: "Interest",
-              data: channelSeries.dataInterest,
-            },
-            {
-              name: "Remaining Balance",
-              data: channelSeries.dataRemainingBalance,
-            },
-          ],
-        })),
-      ],
-    }));
-  }, [
-    tempLoanInputs,
-    chartStartMonth,
-    chartEndMonth,
-    startingMonth,
-    startingYear,
-    numberOfMonths,
-  ]);
+		setLoanChart((prevState) => ({
+			...prevState,
+			series: seriesData,
+			charts: [
+				{
+					options: {
+						...prevState.options,
+						xaxis: {
+							...prevState.options.xaxis,
+							categories: filteredMonths,
+						},
+						chart: {
+							...prevState.options.chart,
+							id: "allLoans",
+							stacked: false,
+						},
+						title: {
+							...prevState.options.title,
+							text: "All Remaining Loans",
+						},
+					},
+					series: [
+						...seriesData,
+						{
+							name: "Total",
+							data: totalLoanData,
+						},
+					],
+				},
+				...seriesData.map((channelSeries) => ({
+					options: {
+						...prevState.options,
+						xaxis: {
+							...prevState.options.xaxis,
+							categories: filteredMonths,
+						},
+						chart: {
+							...prevState.options.chart,
+							id: channelSeries.name,
+						},
+						title: {
+							...prevState.options.title,
+							text: channelSeries.name,
+						},
+					},
+					series: [
+						{
+							name: "Payment",
+							data: channelSeries.dataPayment,
+						},
+						{
+							name: "Principal",
+							data: channelSeries.dataPrincipal,
+						},
+						{
+							name: "Interest",
+							data: channelSeries.dataInterest,
+						},
+						{
+							name: "Remaining Balance",
+							data: channelSeries.dataRemainingBalance,
+						},
+					],
+				})),
+			],
+		}));
+	}, [
+		tempLoanInputs,
+		chartStartMonth,
+		chartEndMonth,
+		startingMonth,
+		startingYear,
+		numberOfMonths,
+	]);
 
-  const tableData = transformLoanDataForTable(
-    tempLoanInputs,
-    renderLoanForm,
-    numberOfMonths
-  );
+	const tableData = transformLoanDataForTable(
+		tempLoanInputs,
+		renderLoanForm,
+		numberOfMonths
+	);
 
-  const { id } = useParams();
-  const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
+	const { id } = useParams();
+	const { user } = useAuth();
+	const [isLoading, setIsLoading] = useState(false);
 
-  const handleSave = async () => {
-    try {
-      setIsLoading(true);
-      const { data: existingData, error: selectError } = await supabase
-        .from("finance")
-        .select("*")
-        .eq("id", id);
-      if (selectError) {
-        throw selectError;
-      }
+	const handleSave = async () => {
+		try {
+			setIsLoading(true);
+			const { data: existingData, error: selectError } = await supabase
+				.from("finance")
+				.select("*")
+				.eq("id", id);
+			if (selectError) {
+				throw selectError;
+			}
 
-      if (existingData && existingData.length > 0) {
-        const { user_email, collabs } = existingData[0];
+			if (existingData && existingData.length > 0) {
+				const { user_email, collabs } = existingData[0];
 
-        if (user.email !== user_email && !collabs?.includes(user.email)) {
-          message.error("You do not have permission to update this record.");
-          return;
-        }
+				if (user.email !== user_email && !collabs?.includes(user.email)) {
+					message.error("You do not have permission to update this record.");
+					return;
+				}
 
-        dispatch(setLoanInputs(tempLoanInputs));
-        dispatch(setLoanTableData(tableData));
+				dispatch(setLoanInputs(tempLoanInputs));
+				dispatch(setLoanTableData(tableData));
 
-        const updatedInputData = {
-          ...inputData,
-          loanInputs: tempLoanInputs,
-        };
+				const updatedInputData = {
+					...inputData,
+					loanInputs: tempLoanInputs,
+				};
 
-        dispatch(setInputData(updatedInputData));
+				dispatch(setInputData(updatedInputData));
 
-        const { error: updateError } = await supabase
-          .from("finance")
-          .update({ inputData: updatedInputData })
-          .eq("id", existingData[0]?.id)
-          .select();
+				const { error: updateError } = await supabase
+					.from("finance")
+					.update({ inputData: updatedInputData })
+					.eq("id", existingData[0]?.id)
+					.select();
 
-        if (updateError) {
-          throw updateError;
-        } else {
-          message.success("Data saved successfully!");
-        }
-      }
-    } catch (error) {
-      message.error(error);
-    } finally {
-      setIsSaved(false);
-      setIsLoading(false);
-      setIsInputFormOpen(false);
-    }
-  };
+				if (updateError) {
+					throw updateError;
+				} else {
+					message.success("Data saved successfully!");
+				}
+			}
+		} catch (error) {
+			message.error(error);
+		} finally {
+			setIsSaved(false);
+			setIsLoading(false);
+			setIsInputFormOpen(false);
+		}
+	};
 
-  const [isInputFormOpen, setIsInputFormOpen] = useState(false);
+	const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const confirmDelete = () => {
-    removeLoanInput(renderLoanForm);
-    setIsDeleteModalOpen(false);
-  };
+	const confirmDelete = () => {
+		removeLoanInput(renderLoanForm);
+		setIsDeleteModalOpen(false);
+	};
 
-  const [isChartModalVisible, setIsChartModalVisible] = useState(false);
-  const [selectedChart, setSelectedChart] = useState(null);
+	const [isChartModalVisible, setIsChartModalVisible] = useState(false);
+	const [selectedChart, setSelectedChart] = useState(null);
 
-  const handleChartClick = (chart) => {
-    setSelectedChart(chart);
-    setIsChartModalVisible(true);
-  };
+	const handleChartClick = (chart) => {
+		setSelectedChart(chart);
+		setIsChartModalVisible(true);
+	};
 
-  const [activeTab, setActiveTab] = useState("table&chart");
+	const [activeTab, setActiveTab] = useState("table&chart");
 
-  const handleTabChange = (tabName) => {
-    setActiveTab(tabName);
-  };
+	const handleTabChange = (tabName) => {
+		setActiveTab(tabName);
+	};
 
-  const downloadExcel = () => {
-    const workBook = XLSX.utils.book_new();
+	const downloadExcel = () => {
+		const workBook = XLSX.utils.book_new();
 
-    // Create worksheet data in the desired format
-    const worksheetData = [
-      [
-        "Channel Name",
-        ...Array.from({ length: numberOfMonths }, (_, i) => {
-          const monthIndex = (startingMonth + i - 1) % 12;
-          const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
-          return `${months[monthIndex]}/${year}`;
-        }),
-      ],
-    ];
+		// Create worksheet data in the desired format
+		const worksheetData = [
+			[
+				"Channel Name",
+				...Array.from({ length: numberOfMonths }, (_, i) => {
+					const monthIndex = (startingMonth + i - 1) % 12;
+					const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+					return `${months[monthIndex]}/${year}`;
+				}),
+			],
+		];
 
-    // Add rows for each channel
-    transformLoanDataForTable(
-      tempLoanInputs,
-      renderLoanForm,
-      numberOfMonths
-    ).forEach((record) => {
-      const row = [record.type];
-      for (let i = 1; i <= numberOfMonths; i++) {
-        row.push(record[`Month ${i}`] || "");
-      }
-      worksheetData.push(row);
-    });
+		// Add rows for each channel
+		transformLoanDataForTable(
+			tempLoanInputs,
+			renderLoanForm,
+			numberOfMonths
+		).forEach((record) => {
+			const row = [record.type];
+			for (let i = 1; i <= numberOfMonths; i++) {
+				row.push(record[`Month ${i}`] || "");
+			}
+			worksheetData.push(row);
+		});
 
-    // Convert data to worksheet
-    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+		// Convert data to worksheet
+		const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
 
-    // Add worksheet to workbook
-    XLSX.utils.book_append_sheet(workBook, worksheet, "Loan Data");
+		// Add worksheet to workbook
+		XLSX.utils.book_append_sheet(workBook, worksheet, "Loan Data");
 
-    // Write workbook and trigger download
-    const wbout = XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
+		// Write workbook and trigger download
+		const wbout = XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
 
-    function s2ab(s) {
-      const buf = new ArrayBuffer(s.length);
-      const view = new Uint8Array(buf);
-      for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
-      return buf;
-    }
+		function s2ab(s) {
+			const buf = new ArrayBuffer(s.length);
+			const view = new Uint8Array(buf);
+			for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+			return buf;
+		}
 
-    saveAs(
-      new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
-      "loan_data.xlsx"
-    );
-  };
+		saveAs(
+			new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
+			"loan_data.xlsx"
+		);
+	};
 
-  const downloadJSON = () => {
-    const loanTableData = transformLoanDataForTable(
-      tempLoanInputs,
-      renderLoanForm,
-      numberOfMonths
-    );
+	const downloadJSON = () => {
+		const loanTableData = transformLoanDataForTable(
+			tempLoanInputs,
+			renderLoanForm,
+			numberOfMonths
+		);
 
-    // Update personnel inputs with formatted job begin and end months
-    const updateLoanInputs = tempLoanInputs.map((input) => {
-      const monthIndexStart =
-        (Number(startingMonth) + Number(input.loanBeginMonth) - 2) % 12;
+		// Update personnel inputs with formatted job begin and end months
+		const updateLoanInputs = tempLoanInputs.map((input) => {
+			const monthIndexStart =
+				(Number(startingMonth) + Number(input.loanBeginMonth) - 2) % 12;
 
-      const yearStart =
-        Number(startingYear) +
-        Math.floor(
-          (Number(startingMonth) + Number(input.loanBeginMonth) - 2) / 12
-        );
+			const yearStart =
+				Number(startingYear) +
+				Math.floor(
+					(Number(startingMonth) + Number(input.loanBeginMonth) - 2) / 12
+				);
 
-      const monthIndexEnd =
-        (Number(startingMonth) + Number(input.loanEndMonth) - 2) % 12;
-      const yearEnd =
-        Number(startingYear) +
-        Math.floor(
-          (Number(startingMonth) + Number(input.loanEndMonth) - 2) / 12
-        );
+			const monthIndexEnd =
+				(Number(startingMonth) + Number(input.loanEndMonth) - 2) % 12;
+			const yearEnd =
+				Number(startingYear) +
+				Math.floor(
+					(Number(startingMonth) + Number(input.loanEndMonth) - 2) / 12
+				);
 
-      return {
-        ...input,
-        loanBeginMonth: `${months[monthIndexStart]}/${yearStart}`,
-        loanEndMonth: `${months[monthIndexEnd]}/${yearEnd}`,
-      };
-    });
-    const data = {
-      loanInputs: updateLoanInputs,
-      loanTableData,
-    };
+			return {
+				...input,
+				loanBeginMonth: `${months[monthIndexStart]}/${yearStart}`,
+				loanEndMonth: `${months[monthIndexEnd]}/${yearEnd}`,
+			};
+		});
+		const data = {
+			loanInputs: updateLoanInputs,
+			loanTableData,
+		};
 
-    const jsonBlob = new Blob([JSON.stringify(data, null, 2)], {
-      type: "application/json",
-    });
+		const jsonBlob = new Blob([JSON.stringify(data, null, 2)], {
+			type: "application/json",
+		});
 
-    saveAs(jsonBlob, "loan_data.json");
-  };
+		saveAs(jsonBlob, "loan_data.json");
+	};
 
-  const filteredTableData =
-    renderLoanForm !== "all"
-      ? transformLoanDataForTable(
-          tempLoanInputs,
-          renderLoanForm,
-          numberOfMonths
-        ).filter(
-          (record) =>
-            record.key !== "CF Loans" &&
-            record.key !== "Total Remaining Balance"
-        )
-      : transformLoanDataForTable(
-          tempLoanInputs,
-          renderLoanForm,
-          numberOfMonths
-        );
-  return (
-    <div>
-      <div className="flex space-x-2 my-6 mx-auto">
-        <Badge
-          variant="secondary"
-          className={`bg-yellow-100 text-yellow-800 cursor-pointer ${activeTab === "input" ? "bg-yellow-500 text-white" : ""}`}
-          onClick={() => handleTabChange("input")}
-        >
-          Inputs
-        </Badge>
-        <Badge
-          variant="secondary"
-          className={`bg-green-100 text-green-800 cursor-pointer ${activeTab === "table&chart" ? "bg-green-500 text-white" : ""}`}
-          onClick={() => handleTabChange("table&chart")}
-        >
-          Tables and Charts
-        </Badge>
-      </div>
-      <CardShadcn className="w-full h-full flex flex-col lg:flex-row p-4">
-        {activeTab === "table&chart" && (
-          <>
-            <div className="w-full xl:w-3/4 sm:p-4 p-0">
-              <h3 className="text-lg font-semibold mb-8">I. Loan Chart</h3>
-              <div className="ml-4 mt-20">
-                <h4 className="text-base font-semibold mb-4">
-                  1. All loan chart
-                </h4>
-                {loanChart?.charts
-                  ?.filter((chart) => chart.options.chart.id === "allLoans")
-                  .map((series, index) => (
-                    <CardShadcn
-                      key={index}
-                      className="flex flex-col transition duration-500 rounded-2xl relative"
-                    >
-                      <CardHeader>
-                        <div className="absolute top-2 right-2">
-                          <button
-                            onClick={(event) => handleChartClick(series, event)}
-                            className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
-                          >
-                            <FullscreenOutlined />
-                          </button>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <div className="min-w-[10vw] mb-2">
-                            <label
-                              htmlFor="startMonthSelect"
-                              className="text-sm"
-                            >
-                              Start Month:
-                            </label>
-                            <select
-                              id="startMonthSelect"
-                              value={chartStartMonth}
-                              onChange={(e) =>
-                                setChartStartMonth(
-                                  Math.max(
-                                    1,
-                                    Math.min(e.target.value, chartEndMonth)
-                                  )
-                                )
-                              }
-                              className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
-                            >
-                              {Array.from(
-                                { length: numberOfMonths },
-                                (_, i) => {
-                                  const monthIndex =
-                                    (startingMonth + i - 1) % 12;
-                                  const year =
-                                    startingYear +
-                                    Math.floor((startingMonth + i - 1) / 12);
-                                  return (
-                                    <option key={i + 1} value={i + 1}>
-                                      {`${months[monthIndex]}/${year}`}
-                                    </option>
-                                  );
-                                }
-                              )}
-                            </select>
-                          </div>
-                          <div className="min-w-[10vw] mb-2">
-                            <label htmlFor="endMonthSelect" className="text-sm">
-                              End Month:
-                            </label>
-                            <select
-                              id="endMonthSelect"
-                              value={chartEndMonth}
-                              onChange={(e) =>
-                                setChartEndMonth(
-                                  Math.max(
-                                    chartStartMonth,
-                                    Math.min(e.target.value, numberOfMonths)
-                                  )
-                                )
-                              }
-                              className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
-                            >
-                              {Array.from(
-                                { length: numberOfMonths },
-                                (_, i) => {
-                                  const monthIndex =
-                                    (startingMonth + i - 1) % 12;
-                                  const year =
-                                    startingYear +
-                                    Math.floor((startingMonth + i - 1) / 12);
-                                  return (
-                                    <option key={i + 1} value={i + 1}>
-                                      {`${months[monthIndex]}/${year}`}
-                                    </option>
-                                  );
-                                }
-                              )}
-                            </select>
-                          </div>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <Chart
-                          options={{
-                            ...series.options,
+	const filteredTableData =
+		renderLoanForm !== "all"
+			? transformLoanDataForTable(
+					tempLoanInputs,
+					renderLoanForm,
+					numberOfMonths
+				).filter(
+					(record) =>
+						record.key !== "CF Loans" &&
+						record.key !== "Total Remaining Balance"
+				)
+			: transformLoanDataForTable(
+					tempLoanInputs,
+					renderLoanForm,
+					numberOfMonths
+				);
+	return (
+		<div>
+			<div className="flex space-x-2 my-6 mx-auto justify-center">
+				<Badge
+					variant="secondary"
+					className={`bg-green-100 text-green-800 cursor-pointer ${activeTab === "table&chart" ? "bg-green-500 text-white" : ""}`}
+					onClick={() => handleTabChange("table&chart")}
+				>
+					Tables and Charts
+				</Badge>
+				<Badge
+					variant="secondary"
+					className={`bg-yellow-100 text-yellow-800 cursor-pointer ${activeTab === "input" ? "bg-yellow-500 text-white" : ""}`}
+					onClick={() => handleTabChange("input")}
+				>
+					Inputs
+				</Badge>
+			</div>
+			<section className="w-full h-full flex flex-col lg:flex-row p-0 sm:p-4">
+				{activeTab === "table&chart" && (
+					<>
+						<div className="w-full xl:w-3/4 sm:p-4 p-0">
+							<h3 className="text-lg font-semibold mb-8">I. Loan Chart</h3>
+							<div className="ml-0 sm:ml-4 mb-20">
+								<h4 className="text-base font-semibold mb-4">
+									1. All loan chart
+								</h4>
+								{loanChart?.charts
+									?.filter((chart) => chart.options.chart.id === "allLoans")
+									.map((series, index) => (
+										<CardShadcn
+											key={index}
+											className="flex flex-col transition duration-500 rounded-2xl relative"
+										>
+											<CardHeader>
+												<div className="absolute top-2 right-2">
+													<button
+														onClick={(event) => handleChartClick(series, event)}
+														className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
+													>
+														<FullscreenOutlined />
+													</button>
+												</div>
+												<div className="flex justify-between items-center">
+													<div className="min-w-[10vw] mb-2">
+														<label
+															htmlFor="startMonthSelect"
+															className="text-sm"
+														>
+															Start Month:
+														</label>
+														<select
+															id="startMonthSelect"
+															value={chartStartMonth}
+															onChange={(e) =>
+																setChartStartMonth(
+																	Math.max(
+																		1,
+																		Math.min(e.target.value, chartEndMonth)
+																	)
+																)
+															}
+															className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+														>
+															{Array.from(
+																{ length: numberOfMonths },
+																(_, i) => {
+																	const monthIndex =
+																		(startingMonth + i - 1) % 12;
+																	const year =
+																		startingYear +
+																		Math.floor((startingMonth + i - 1) / 12);
+																	return (
+																		<option key={i + 1} value={i + 1}>
+																			{`${months[monthIndex]}/${year}`}
+																		</option>
+																	);
+																}
+															)}
+														</select>
+													</div>
+													<div className="min-w-[10vw] mb-2">
+														<label htmlFor="endMonthSelect" className="text-sm">
+															End Month:
+														</label>
+														<select
+															id="endMonthSelect"
+															value={chartEndMonth}
+															onChange={(e) =>
+																setChartEndMonth(
+																	Math.max(
+																		chartStartMonth,
+																		Math.min(e.target.value, numberOfMonths)
+																	)
+																)
+															}
+															className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+														>
+															{Array.from(
+																{ length: numberOfMonths },
+																(_, i) => {
+																	const monthIndex =
+																		(startingMonth + i - 1) % 12;
+																	const year =
+																		startingYear +
+																		Math.floor((startingMonth + i - 1) / 12);
+																	return (
+																		<option key={i + 1} value={i + 1}>
+																			{`${months[monthIndex]}/${year}`}
+																		</option>
+																	);
+																}
+															)}
+														</select>
+													</div>
+												</div>
+											</CardHeader>
+											<CardContent>
+												<Chart
+													options={{
+														...series.options,
 
-                            xaxis: {
-                              ...series.options.xaxis,
-                            },
-                            stroke: {
-                              width: 1,
-                              curve: "straight",
-                            },
-                          }}
-                          series={series.series}
-                          type="area"
-                          height={350}
-                        />
-                      </CardContent>
-                    </CardShadcn>
-                  ))}
-              </div>
-              <div className="ml-4 mt-20">
-                <h4 className="text-base font-semibold mb-4">
-                  2. Component charts
-                </h4>
-                <div className="grid md:grid-cols-2 gap-6">
-                  {loanChart?.charts
-                    ?.filter((chart) => chart.options.chart.id !== "allLoans")
-                    .map((series, index) => (
-                      <div className="ml-2">
-                        <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${series.options.title.text}`}</h5>
+														xaxis: {
+															...series.options.xaxis,
+														},
+														stroke: {
+															width: 1,
+															curve: "straight",
+														},
+													}}
+													series={series.series}
+													type="area"
+													height={350}
+												/>
+											</CardContent>
+										</CardShadcn>
+									))}
+							</div>
+							<div className="ml-0 sm:ml-4 mb-20">
+								<h4 className="text-base font-semibold mb-4">
+									2. Component charts
+								</h4>
+								<div className="grid md:grid-cols-2 gap-6">
+									{loanChart?.charts
+										?.filter((chart) => chart.options.chart.id !== "allLoans")
+										.map((series, index) => (
+											<div className="ml-2">
+												<h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${series.options.title.text}`}</h5>
 
-                        <CardShadcn
-                          key={index}
-                          className="flex flex-col transition duration-500 rounded-2xl relative"
-                        >
-                          <CardHeader>
-                            <div className="absolute top-2 right-2">
-                              <button
-                                onClick={(event) =>
-                                  handleChartClick(series, event)
-                                }
-                                className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
-                              >
-                                <FullscreenOutlined />
-                              </button>
-                            </div>
-                            <div className="flex justify-between items-center">
-                              <div className="min-w-[10vw] mb-2">
-                                <label
-                                  htmlFor="startMonthSelect"
-                                  className="text-sm"
-                                >
-                                  Start Month:
-                                </label>
-                                <select
-                                  id="startMonthSelect"
-                                  value={chartStartMonth}
-                                  onChange={(e) =>
-                                    setChartStartMonth(
-                                      Math.max(
-                                        1,
-                                        Math.min(e.target.value, chartEndMonth)
-                                      )
-                                    )
-                                  }
-                                  className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
-                                >
-                                  {Array.from(
-                                    { length: numberOfMonths },
-                                    (_, i) => {
-                                      const monthIndex =
-                                        (startingMonth + i - 1) % 12;
-                                      const year =
-                                        startingYear +
-                                        Math.floor(
-                                          (startingMonth + i - 1) / 12
-                                        );
-                                      return (
-                                        <option key={i + 1} value={i + 1}>
-                                          {`${months[monthIndex]}/${year}`}
-                                        </option>
-                                      );
-                                    }
-                                  )}
-                                </select>
-                              </div>
-                              <div className="min-w-[10vw] mb-2">
-                                <label
-                                  htmlFor="endMonthSelect"
-                                  className="text-sm"
-                                >
-                                  End Month:
-                                </label>
-                                <select
-                                  id="endMonthSelect"
-                                  value={chartEndMonth}
-                                  onChange={(e) =>
-                                    setChartEndMonth(
-                                      Math.max(
-                                        chartStartMonth,
-                                        Math.min(e.target.value, numberOfMonths)
-                                      )
-                                    )
-                                  }
-                                  className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
-                                >
-                                  {Array.from(
-                                    { length: numberOfMonths },
-                                    (_, i) => {
-                                      const monthIndex =
-                                        (startingMonth + i - 1) % 12;
-                                      const year =
-                                        startingYear +
-                                        Math.floor(
-                                          (startingMonth + i - 1) / 12
-                                        );
-                                      return (
-                                        <option key={i + 1} value={i + 1}>
-                                          {`${months[monthIndex]}/${year}`}
-                                        </option>
-                                      );
-                                    }
-                                  )}
-                                </select>
-                              </div>
-                            </div>
-                          </CardHeader>
-                          <CardContent>
-                            <Chart
-                              options={{
-                                ...series.options,
+												<CardShadcn
+													key={index}
+													className="flex flex-col transition duration-500 rounded-2xl relative"
+												>
+													<CardHeader>
+														<div className="absolute top-2 right-2">
+															<button
+																onClick={(event) =>
+																	handleChartClick(series, event)
+																}
+																className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
+															>
+																<FullscreenOutlined />
+															</button>
+														</div>
+														<div className="flex justify-between items-center">
+															<div className="min-w-[10vw] mb-2">
+																<label
+																	htmlFor="startMonthSelect"
+																	className="text-sm"
+																>
+																	Start Month:
+																</label>
+																<select
+																	id="startMonthSelect"
+																	value={chartStartMonth}
+																	onChange={(e) =>
+																		setChartStartMonth(
+																			Math.max(
+																				1,
+																				Math.min(e.target.value, chartEndMonth)
+																			)
+																		)
+																	}
+																	className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+																>
+																	{Array.from(
+																		{ length: numberOfMonths },
+																		(_, i) => {
+																			const monthIndex =
+																				(startingMonth + i - 1) % 12;
+																			const year =
+																				startingYear +
+																				Math.floor(
+																					(startingMonth + i - 1) / 12
+																				);
+																			return (
+																				<option key={i + 1} value={i + 1}>
+																					{`${months[monthIndex]}/${year}`}
+																				</option>
+																			);
+																		}
+																	)}
+																</select>
+															</div>
+															<div className="min-w-[10vw] mb-2">
+																<label
+																	htmlFor="endMonthSelect"
+																	className="text-sm"
+																>
+																	End Month:
+																</label>
+																<select
+																	id="endMonthSelect"
+																	value={chartEndMonth}
+																	onChange={(e) =>
+																		setChartEndMonth(
+																			Math.max(
+																				chartStartMonth,
+																				Math.min(e.target.value, numberOfMonths)
+																			)
+																		)
+																	}
+																	className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+																>
+																	{Array.from(
+																		{ length: numberOfMonths },
+																		(_, i) => {
+																			const monthIndex =
+																				(startingMonth + i - 1) % 12;
+																			const year =
+																				startingYear +
+																				Math.floor(
+																					(startingMonth + i - 1) / 12
+																				);
+																			return (
+																				<option key={i + 1} value={i + 1}>
+																					{`${months[monthIndex]}/${year}`}
+																				</option>
+																			);
+																		}
+																	)}
+																</select>
+															</div>
+														</div>
+													</CardHeader>
+													<CardContent>
+														<Chart
+															options={{
+																...series.options,
 
-                                xaxis: {
-                                  ...series.options.xaxis,
-                                },
-                                stroke: {
-                                  width: 1,
-                                  curve: "straight",
-                                },
-                              }}
-                              series={series.series}
-                              type="area"
-                              height={350}
-                            />
-                          </CardContent>
-                        </CardShadcn>
-                      </div>
-                    ))}
-                </div>
-              </div>
-              <Modal
-                centered
-                open={isChartModalVisible}
-                footer={null}
-                onCancel={() => setIsChartModalVisible(false)}
-                width="90%"
-                style={{ top: 20 }}
-              >
-                {selectedChart && (
-                  <Chart
-                    options={{
-                      ...selectedChart.options,
-                    }}
-                    series={selectedChart.series}
-                    type="area"
-                    height={500}
-                    className="p-4"
-                  />
-                )}
-              </Modal>
-              <span>
-                <h3 className="text-lg font-semibold mt-20 my-4">
-                  II. Loan Table
-                </h3>
+																xaxis: {
+																	...series.options.xaxis,
+																},
+																stroke: {
+																	width: 1,
+																	curve: "straight",
+																},
+															}}
+															series={series.series}
+															type="area"
+															height={350}
+														/>
+													</CardContent>
+												</CardShadcn>
+											</div>
+										))}
+								</div>
+							</div>
+							<Modal
+								centered
+								open={isChartModalVisible}
+								footer={null}
+								onCancel={() => setIsChartModalVisible(false)}
+								width="90%"
+								style={{ top: 20 }}
+							>
+								{selectedChart && (
+									<Chart
+										options={{
+											...selectedChart.options,
+										}}
+										series={selectedChart.series}
+										type="area"
+										height={500}
+										className="p-4"
+									/>
+								)}
+							</Modal>
+							<span>
+								<h3 className="text-lg font-semibold mt-20 my-4">
+									II. Loan Table
+								</h3>
 
-                <div className="flex justify-between items-center">
-                  <select
-                    id="selectedChannel"
-                    className="py-2 px-4 block w-80 border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
-                    value={renderLoanForm}
-                    onChange={(e) => setRenderLoanForm(e.target.value)}
-                  >
-                    <option value="all">All</option>
-                    {tempLoanInputs.map((input) => (
-                      <option key={input?.id} value={input?.id}>
-                        {input.loanName}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    onClick={downloadExcel}
-                    className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
-                  >
-                    <DownloadOutlined className="mr-1" />
-                    Download Excel
-                  </button>
-                </div>
-              </span>
-              <Table
-                className="custom-table bg-white overflow-auto my-8 rounded-md"
-                size="small"
-                dataSource={filteredTableData}
-                columns={loanColumns}
-                pagination={false}
-                bordered={false} // Tắt border mặc định của antd
-                rowClassName={(record) =>
-                  record.key === record.type ? "font-bold" : ""
-                }
-              />
-            </div>
-            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
-              <button
-                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
-                style={{ bottom: "20px", right: "80px", position: "fixed" }}
-                onClick={handleSave}
-              >
-                {isLoading ? (
-                  <SpinnerBtn />
-                ) : (
-                  <>
-                    <CheckCircleOutlined
-                      style={{
-                        fontSize: "12px",
-                        color: "#FFFFFF",
-                        marginRight: "4px",
-                      }}
-                    />
-                    Save
-                  </>
-                )}
-              </button>
-            </div>
-          </>
-        )}
-        {activeTab === "input" && (
-          <>
-            <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
+								<div className="flex justify-between items-center">
+									<select
+										id="selectedChannel"
+										className="py-2 px-4 block w-80 border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+										value={renderLoanForm}
+										onChange={(e) => setRenderLoanForm(e.target.value)}
+									>
+										<option value="all">All</option>
+										{tempLoanInputs.map((input) => (
+											<option key={input?.id} value={input?.id}>
+												{input.loanName}
+											</option>
+										))}
+									</select>
+									<button
+										onClick={downloadExcel}
+										className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
+									>
+										<DownloadOutlined className="mr-1" />
+										Download Excel
+									</button>
+								</div>
+							</span>
+							<Table
+								className="custom-table bg-white overflow-auto my-8 rounded-md"
+								size="small"
+								dataSource={filteredTableData}
+								columns={loanColumns}
+								pagination={false}
+								bordered={false} // Tắt border mặc định của antd
+								rowClassName={(record) =>
+									record.key === record.type ? "font-bold" : ""
+								}
+							/>
+						</div>
+						<div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
+							<button
+								className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
+								style={{ bottom: "20px", right: "80px", position: "fixed" }}
+								onClick={handleSave}
+							>
+								{isLoading ? (
+									<SpinnerBtn />
+								) : (
+									<>
+										<CheckCircleOutlined
+											style={{
+												fontSize: "12px",
+												color: "#FFFFFF",
+												marginRight: "4px",
+											}}
+										/>
+										Save
+									</>
+								)}
+							</button>
+						</div>
+					</>
+				)}
+				{activeTab === "input" && (
+					<>
+						<div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
 
-            <div className="w-full xl:w-1/4 sm:p-4 p-0">
-              <LoanInputForm
-                tempLoanInputs={tempLoanInputs}
-                renderLoanForm={renderLoanForm}
-                setRenderLoanForm={setRenderLoanForm}
-                handleLoanInputChange={handleLoanInputChange}
-                addNewLoanInput={addNewLoanInput}
-                confirmDelete={confirmDelete}
-                setIsDeleteModalOpen={setIsDeleteModalOpen}
-                isDeleteModalOpen={isDeleteModalOpen}
-                handleSave={handleSave}
-                isLoading={isLoading}
-              />
-            </div>
+						<div className="w-full xl:w-1/4 sm:p-4 p-0">
+							<LoanInputForm
+								tempLoanInputs={tempLoanInputs}
+								renderLoanForm={renderLoanForm}
+								setRenderLoanForm={setRenderLoanForm}
+								handleLoanInputChange={handleLoanInputChange}
+								addNewLoanInput={addNewLoanInput}
+								confirmDelete={confirmDelete}
+								setIsDeleteModalOpen={setIsDeleteModalOpen}
+								isDeleteModalOpen={isDeleteModalOpen}
+								handleSave={handleSave}
+								isLoading={isLoading}
+							/>
+						</div>
 
-            {/* <div className="xl:hidden block">
+						{/* <div className="xl:hidden block">
               <FloatButton
                 tooltip={<div>Input values</div>}
                 style={{
@@ -1099,87 +1099,87 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               </FloatButton>
             </div> */}
 
-            {isInputFormOpen && (
-              <Modal
-                open={isInputFormOpen}
-                onOk={() => {
-                  handleSave();
-                  setIsInputFormOpen(false);
-                }}
-                onCancel={() => {
-                  setTempLoanInputs(loanInputs);
-                  setRenderLoanForm(loanInputs[0]?.id);
-                  setIsInputFormOpen(false);
-                }}
-                okText={isLoading ? <SpinnerBtn /> : "Save Change"}
-                cancelText="Cancel"
-                cancelButtonProps={{
-                  style: {
-                    borderRadius: "0.375rem",
-                    cursor: "pointer",
-                  },
-                }}
-                okButtonProps={{
-                  style: {
-                    background: "#2563EB",
-                    borderColor: "#2563EB",
-                    color: "#fff",
-                    borderRadius: "0.375rem",
-                    cursor: "pointer",
-                    minWidth: "5vw",
-                  },
-                }}
-                footer={null}
-                centered={true}
-                zIndex={50}
-              >
-                <LoanInputForm
-                  tempLoanInputs={tempLoanInputs}
-                  renderLoanForm={renderLoanForm}
-                  setRenderLoanForm={setRenderLoanForm}
-                  handleLoanInputChange={handleLoanInputChange}
-                  addNewLoanInput={addNewLoanInput}
-                  confirmDelete={confirmDelete}
-                  setIsDeleteModalOpen={setIsDeleteModalOpen}
-                  isDeleteModalOpen={isDeleteModalOpen}
-                  handleSave={handleSave}
-                  isLoading={isLoading}
-                />
-              </Modal>
-            )}
-            {isDeleteModalOpen && (
-              <Modal
-                title="Confirm Delete"
-                open={isDeleteModalOpen}
-                onOk={confirmDelete}
-                onCancel={() => setIsDeleteModalOpen(false)}
-                okText="Delete"
-                cancelText="Cancel"
-                cancelButtonProps={{
-                  style: {
-                    borderRadius: "0.375rem",
-                    cursor: "pointer",
-                  },
-                }}
-                okButtonProps={{
-                  style: {
-                    background: "#f5222d",
-                    borderColor: "#f5222d",
-                    color: "#fff",
-                    borderRadius: "0.375rem",
-                    cursor: "pointer",
-                  },
-                }}
-                centered={true}
-              >
-                Are you sure you want to delete it?
-              </Modal>
-            )}
-          </>
-        )}
-      </CardShadcn>
-    </div>
-  );
+						{isInputFormOpen && (
+							<Modal
+								open={isInputFormOpen}
+								onOk={() => {
+									handleSave();
+									setIsInputFormOpen(false);
+								}}
+								onCancel={() => {
+									setTempLoanInputs(loanInputs);
+									setRenderLoanForm(loanInputs[0]?.id);
+									setIsInputFormOpen(false);
+								}}
+								okText={isLoading ? <SpinnerBtn /> : "Save Change"}
+								cancelText="Cancel"
+								cancelButtonProps={{
+									style: {
+										borderRadius: "0.375rem",
+										cursor: "pointer",
+									},
+								}}
+								okButtonProps={{
+									style: {
+										background: "#2563EB",
+										borderColor: "#2563EB",
+										color: "#fff",
+										borderRadius: "0.375rem",
+										cursor: "pointer",
+										minWidth: "5vw",
+									},
+								}}
+								footer={null}
+								centered={true}
+								zIndex={50}
+							>
+								<LoanInputForm
+									tempLoanInputs={tempLoanInputs}
+									renderLoanForm={renderLoanForm}
+									setRenderLoanForm={setRenderLoanForm}
+									handleLoanInputChange={handleLoanInputChange}
+									addNewLoanInput={addNewLoanInput}
+									confirmDelete={confirmDelete}
+									setIsDeleteModalOpen={setIsDeleteModalOpen}
+									isDeleteModalOpen={isDeleteModalOpen}
+									handleSave={handleSave}
+									isLoading={isLoading}
+								/>
+							</Modal>
+						)}
+						{isDeleteModalOpen && (
+							<Modal
+								title="Confirm Delete"
+								open={isDeleteModalOpen}
+								onOk={confirmDelete}
+								onCancel={() => setIsDeleteModalOpen(false)}
+								okText="Delete"
+								cancelText="Cancel"
+								cancelButtonProps={{
+									style: {
+										borderRadius: "0.375rem",
+										cursor: "pointer",
+									},
+								}}
+								okButtonProps={{
+									style: {
+										background: "#f5222d",
+										borderColor: "#f5222d",
+										color: "#fff",
+										borderRadius: "0.375rem",
+										cursor: "pointer",
+									},
+								}}
+								centered={true}
+							>
+								Are you sure you want to delete it?
+							</Modal>
+						)}
+					</>
+				)}
+			</section>
+		</div>
+	);
 };
 
 export default LoanSection;

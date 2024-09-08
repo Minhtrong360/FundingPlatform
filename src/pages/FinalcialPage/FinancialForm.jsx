@@ -64,23 +64,15 @@ import { useParams } from "react-router-dom";
 // import Perflexity from "./Components/Perflexity";
 import SpinnerBtn from "../../components/SpinnerBtn";
 import FlowiseChat from "./FLowiseChat";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
+  Tabs, TabsList,
+  TabsTrigger
 } from "../../components/ui/tabs";
 import { ScrollArea, ScrollBar } from "../../components/ui/scroll-area";
 import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../components/ui/card";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const dispatch = useDispatch();
@@ -964,12 +956,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             />
           </div>
           <FlowiseChat page="FM" projectid={paramsID} />
-
-          <Card className="my-4 ">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span>Dashboard</span>
-                <div className="flex items-center space-x-2">
+          <section className="my-4 px-2 sm:px-4">
+              <div className="flex items-center justify-center mb-4">
+                <h2 className="flex items-center justify-between text-4xl font-bold">Dashboard</h2>
+                {/* <div className="flex items-center space-x-2">
                   <Badge
                     variant="outline"
                     className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
@@ -982,9 +972,8 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                   >
                     Generated Results
                   </Badge>
-                </div>
-              </CardTitle>
-            </CardHeader>
+                </div> */}
+              </div>
             <Tabs
               value={activeTab}
               onValueChange={handleTabChange}
@@ -1013,17 +1002,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </Button>
               </div>
 
-              <div className="p-6">
+              <div className="sm:p-6">
                 {activeTab === "overview" && (
                   <div>
-                    <div className="flex space-x-2 my-6 mx-auto">
-                      <Badge
-                        variant="secondary"
-                        className={`bg-yellow-100 text-yellow-800 cursor-pointer ${activeTabA === "input" ? "bg-yellow-500 text-white" : ""}`}
-                        onClick={() => handleTabChangeA("input")}
-                      >
-                        Inputs
-                      </Badge>
+                    <div className="flex space-x-2 my-6 mx-auto justify-center">
                       <Badge
                         variant="secondary"
                         className={`bg-green-100 text-green-800 cursor-pointer ${activeTabA === "table&chart" ? "bg-green-500 text-white" : ""}`}
@@ -1031,9 +1013,16 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                       >
                         Tables and Charts
                       </Badge>
+                      <Badge
+                        variant="secondary"
+                        className={`bg-yellow-100 text-yellow-800 cursor-pointer ${activeTabA === "input" ? "bg-yellow-500 text-white" : ""}`}
+                        onClick={() => handleTabChangeA("input")}
+                      >
+                        Inputs
+                      </Badge>
                     </div>
 
-                    <Card className="w-full h-full flex flex-col lg:flex-row p-4">
+                    <section className="w-full h-full flex flex-col lg:flex-row p-0 sm:p-4">
                       {activeTabA === "table&chart" && (
                         <>
                           <div className="w-full xl:w-3/4 sm:p-4 p-0">
@@ -1140,7 +1129,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                           )}
                         </>
                       )}
-                    </Card>
+                    </section>
                   </div>
                 )}
                 {activeTab === "customer" && (
@@ -1215,7 +1204,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 )}
               </div>
             </Tabs>
-          </Card>
+          </section>
         </div>
       )}
     </div>

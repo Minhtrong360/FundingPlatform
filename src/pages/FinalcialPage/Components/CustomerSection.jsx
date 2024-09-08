@@ -45,15 +45,10 @@ import DraggableChart from "./DraggableChart";
 import { setInputData } from "../../../features/DurationSlice";
 
 import { Badge } from "../../../components/ui/badge";
-import { Card as CardShadcn } from "../../../components/ui/card";
 
 import {
   Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
+  CardContent, CardHeader
 } from "../../../components/ui/card";
 
 const CustomerInputsForm = React.memo(
@@ -1221,7 +1216,14 @@ const CustomerSection = React.memo(
 
     return (
       <div>
-        <div className="flex space-x-2 my-6 mx-auto">
+        <div className="flex space-x-2 my-6 mx-auto justify-center">
+        <Badge
+            variant="secondary"
+            className={`bg-green-100 text-green-800 cursor-pointer ${activeTab === "table&chart" ? "bg-green-500 text-white" : ""}`}
+            onClick={() => handleTabChange("table&chart")}
+          >
+            Tables and Charts
+          </Badge>
           <Badge
             variant="secondary"
             className={`bg-yellow-100 text-yellow-800 cursor-pointer ${activeTab === "input" ? "bg-yellow-500 text-white" : ""}`}
@@ -1229,15 +1231,9 @@ const CustomerSection = React.memo(
           >
             Inputs
           </Badge>
-          <Badge
-            variant="secondary"
-            className={`bg-green-100 text-green-800 cursor-pointer ${activeTab === "table&chart" ? "bg-green-500 text-white" : ""}`}
-            onClick={() => handleTabChange("table&chart")}
-          >
-            Tables and Charts
-          </Badge>
+          
         </div>
-        <CardShadcn className="w-full h-full flex flex-col lg:flex-row p-4">
+        <section className="w-full h-full flex flex-col lg:flex-row p-0 sm:p-4">
           {activeTab === "table&chart" && (
             <>
               <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
@@ -1245,7 +1241,7 @@ const CustomerSection = React.memo(
                   I. Customer Chart
                 </h3>
 
-                <div className="ml-4 mt-20">
+                <div className="ml-0 sm:ml-4 mb-20">
                   <h4 className="text-base font-semibold mb-4">
                     1. All channels chart
                   </h4>
@@ -1382,7 +1378,7 @@ const CustomerSection = React.memo(
                       </>
                     ))}
                 </div>
-                <div className="ml-4 mt-20">
+                <div className="ml-0 sm:ml-4 mb-20">
                   <h4 className="text-base font-semibold mb-4">
                     2. Component charts
                   </h4>
@@ -1529,7 +1525,7 @@ const CustomerSection = React.memo(
                   </div>
                 </div>
 
-                <div className="ml-4 mt-20">
+                <div className="ml-0 sm:ml-4 mb-20">
                   <h4 className="text-base font-semibold mb-4">
                     3. Advanced charts
                   </h4>
@@ -1814,7 +1810,7 @@ const CustomerSection = React.memo(
               )}
             </>
           )}
-        </CardShadcn>
+        </section>
       </div>
     );
   }

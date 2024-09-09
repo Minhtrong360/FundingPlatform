@@ -4,24 +4,11 @@ import { supabase } from "../../supabase";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import AnnouncePage from "../../components/AnnouncePage";
 import ProfileInfo from "./ProfileInfo";
-import Author from "./Components/Author";
 import MyTab from "./Components/MyTab";
 import { useParams } from "react-router";
-import Header from "../Home/Header";
 import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
 import RightSideBar from "./Components/RightSideBar";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "../../components/ui/tabs";
+import { Card, CardContent } from "../../components/ui/card";
 
 export default function NewDetailPage({ location }) {
   const [company, setCompany] = useState(
@@ -163,11 +150,11 @@ export default function NewDetailPage({ location }) {
               noFixedHeader={noFixedHeader}
               isContentChanged={isContentChanged}
             />
-            <main className="container mx-auto px-4 py-8 mt-24">
+            <main className="container mx-auto px-2 sm:px-4 sm:py-8 mt-24">
               <div className="grid md:grid-cols-3 gap-8">
                 <div className="md:col-span-2">
                   <Card className="mb-8 !rounded-2xl !bg-white">
-                    <CardContent className="p-6 px-2">
+                    <CardContent className="p-2 sm:p-6">
                       <ProfileInfo
                         company={company}
                         currentProject={currentProject}

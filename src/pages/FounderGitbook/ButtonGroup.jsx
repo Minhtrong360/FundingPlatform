@@ -1,6 +1,5 @@
 import React from "react";
 import { Dropdown, Menu } from "antd";
-import { SettingOutlined } from "@ant-design/icons";
 import { Settings } from "lucide-react";
 import { Button } from "../../components/ui/button";
 
@@ -53,6 +52,7 @@ const ButtonGroup = ({
       disabled={isLoading}
       // icon={<SettingOutlined />}
       onClick={(e) => e.preventDefault()} // Prevents the dropdown from closing when clicking the button
+      className="m-0"
     >
       <Button variant="outline">
         <Settings className="mr-2 h-4 w-4" />

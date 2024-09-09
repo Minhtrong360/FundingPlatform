@@ -87,7 +87,7 @@ const FounderGitbook = () => {
   return (
     <div className=" bg-white darkBg antialiased !p-0">
       <HomeHeader />
-      <div className="mt-24 p-4 border-gray-300 border-dashed rounded-md darkBorderGray">
+      <div className="mt-24 sm:p-4 p-0 border-gray-300 border-dashed rounded-md darkBorderGray">
         <ProjectList projects={projects} isLoading={isLoading} />
       </div>
     </div>

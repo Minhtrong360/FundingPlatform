@@ -146,7 +146,7 @@ function Company({
                     handleInputChange({ target: { name: "country", value } })
                   }
                 >
-                  <SelectTrigger className="h-[60px] rounded-lg text-base">
+                  <SelectTrigger className=" rounded-lg ">
                     <SelectValue>
                       {formData.country ? (
                         <span>{formData.country}</span>
@@ -220,7 +220,7 @@ function Company({
                       })
                     }
                   >
-                    <SelectTrigger className="h-[60px] rounded-lg text-base">
+                    <SelectTrigger className=" rounded-lg ">
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
@@ -273,12 +273,24 @@ function Company({
                       })
                     }
                   >
-                    <SelectTrigger className="h-[60px] rounded-lg text-base">
+                    <SelectTrigger className=" rounded-lg ">
                       <SelectValue placeholder="Select range" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
-                      <SelectItem value="$0 - $10k">$0 - $10k</SelectItem>
-                      {/* Add more revenue ranges as needed */}
+                      {[
+                        "$0 - $10k",
+                        "$10k - $50k",
+                        "$50k - $100k",
+                        "$100k - $500k",
+                        "$500k - $1M",
+                        "$1M - $5M",
+                        ">$5M",
+                        "Non-Profit",
+                      ].map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -336,15 +348,17 @@ function Company({
                       handleInputChange({ target: { name: "teamSize", value } })
                     }
                   >
-                    <SelectTrigger className="h-[60px] rounded-lg text-base">
+                    <SelectTrigger className=" rounded-lg ">
                       <SelectValue placeholder="Select size" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
-                      <SelectItem value="1-10">1-10</SelectItem>
-                      <SelectItem value="11-20">11-20</SelectItem>
-                      <SelectItem value="21-50">21-50</SelectItem>
-                      <SelectItem value=">50">{">50"}</SelectItem>
-                      {/* Add more team sizes as needed */}
+                      {["1-10", "11-50", "51-200", "201-500", ">500"].map(
+                        (type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
+                        )
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
@@ -376,7 +390,7 @@ function Company({
                       })
                     }
                   >
-                    <SelectTrigger className="h-[60px] rounded-lg text-base">
+                    <SelectTrigger className=" rounded-lg ">
                       <SelectValue placeholder="Select year" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
@@ -400,12 +414,22 @@ function Company({
                       handleInputChange({ target: { name: "round", value } })
                     }
                   >
-                    <SelectTrigger className="h-[60px] rounded-lg text-base">
+                    <SelectTrigger className=" rounded-lg ">
                       <SelectValue placeholder="Select round" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
-                      <SelectItem value="Pre-seed">Pre-seed</SelectItem>
-                      {/* Add more rounds as needed */}
+                      {[
+                        "Pre-seed",
+                        "Seed",
+                        "Series A",
+                        "Series B",
+                        "Series C",
+                        "Non-Profit",
+                      ].map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -438,7 +462,7 @@ function Company({
                         target: { name: "project_url", value: e.target.value },
                       })
                     }
-                    className="h-[60px] text-base"
+                    className=" "
                   />
                 </TabsContent>
                 <TabsContent value="upload">
@@ -446,7 +470,7 @@ function Company({
                     type="file"
                     accept="image/*"
                     onChange={handleProjectImageUpload}
-                    className="h-[60px] text-base"
+                    className="file:mx-4 file:px-4 file:rounded-md file:border-[0.5px] file:border-gray-300 file:bg-white file:text-gray-700 hover:file:bg-gray-50 hover:file:cursor-pointer"
                   />
                 </TabsContent>
               </Tabs>
@@ -478,7 +502,7 @@ function Company({
                         target: { name: "card_url", value: e.target.value },
                       })
                     }
-                    className="h-[60px] text-base"
+                    className=" "
                   />
                 </TabsContent>
                 <TabsContent value="upload">
@@ -486,7 +510,7 @@ function Company({
                     type="file"
                     accept="image/*"
                     onChange={handleCardImageUpload}
-                    className="h-[60px] text-base"
+                    className="file:mx-4 file:px-4 file:rounded-md file:border-[0.5px] file:border-gray-300 file:bg-white file:text-gray-700 hover:file:bg-gray-50 hover:file:cursor-pointer"
                   />
                 </TabsContent>
               </Tabs>

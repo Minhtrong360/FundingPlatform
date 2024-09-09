@@ -1,28 +1,44 @@
-import { CardContent } from "@mui/material";
-import { Avatar, Card, Modal, Tooltip, message } from "antd";
-import React, { useEffect, useState } from "react";
+import {
+  Avatar as UiAvatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../components/ui/avatar";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent, CardHeader } from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../components/ui/tabs";
+import { Textarea } from "../../components/ui/textarea";
+import { CameraIcon, CreditCardIcon, LockIcon, UserIcon } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { message } from "antd";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
-
-import InputField from "../../components/InputField";
-
-import apiService from "../../app/apiService";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 
-import industries from "../../components/Industries";
-import countries from "../../components/Country";
-import MultiSelectField from "../../components/MultiSelectField";
-import SelectField from "../../components/SelectField";
-
-import { IconButton } from "@mui/material";
-import { formatDate } from "../../features/DurationSlice";
-import { formatNumber } from "../../features/CostSlice";
+const getBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 
 function NewUserPage() {
   const { user } = useAuth();
-
   const [isLoading, setIsLoading] = useState(false);
-
   const [userData, setUserData] = useState({
     full_name: "",
     email: "",
@@ -37,7 +53,7 @@ function NewUserPage() {
     investment_size: ["$0-$10,000"],
     country: ["US"],
     subscription_status: "",
-    type: "Individual", // Default value for type
+    type: "Individual",
     revenueStatusWanted: "$0 - $10k",
     notification_count: 0,
     facebook: "",
@@ -52,25 +68,10 @@ function NewUserPage() {
     round: "",
     code: "",
   });
-  const handleIndustryChange = (selectedItems) => {
-    setUserData({
-      ...userData,
-      interested_in: selectedItems,
-    });
-  };
-  const handleCountryChange = (selectedItems) => {
-    setUserData({
-      ...userData,
-      country: selectedItems,
-    });
-  };
 
-  const handleInvestmentChange = (selectedItems) => {
-    setUserData({
-      ...userData,
-      investment_size: selectedItems,
-    });
-  };
+  const [avatarUrl, setAvatarUrl] = useState(userData.avatar);
+  const [avatarFile, setAvatarFile] = useState(null); // To store the uploaded file
+  const inputRef = useRef(null);
 
   useEffect(() => {
     async function fetchUserData() {
@@ -104,11 +105,10 @@ function NewUserPage() {
             interested_in: data.interested_in || ["Technology"],
             investment_size: data.investment_size || ["$0-$10,000"],
             country: data.country || "US",
-            type: data.type || "Individual", // Default value for type
+            type: data.type || "Individual",
             subscription_status: data.subscription_status || "",
             revenueStatusWanted: data.revenueStatusWanted || "$0 - $10k",
             notification_count: data.notification_count || 0,
-            subscription_id: data.subscription_id || "",
             facebook: data.facebook || "",
             twitter: data.twitter || "",
             linkedin: data.linkedin || "",
@@ -121,60 +121,37 @@ function NewUserPage() {
             round: data.round || "Pre-seed",
             code: data.code || "",
           });
+          setAvatarUrl(data.avatar); // Set initial avatar URL
         }
       } catch (error) {
         message.error(error.message);
-        console.error("Error fetching user data:", error);
       }
       setIsLoading(false);
     }
 
     fetchUserData();
-  }, [user.id, user.created_at]);
+  }, [user.id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
     setUserData((prevUserData) => ({
       ...prevUserData,
       [name]: value,
     }));
   };
 
-  const dataURItoFile = (dataURI, fileNamePrefix) => {
-    const byteString = atob(dataURI.split(",")[1]);
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-    const extension = dataURI.split(",")[0].split("/")[1].split(";")[0]; // Lấy phần mở rộng của tệp từ data URI
-    const fileName = `${fileNamePrefix}-${Date.now()}.${extension}`; // Tạo tên tệp duy nhất với ngày giờ hiện tại và phần mở rộng
-    const blob = new Blob([ab], { type: `image/${extension}` });
-    return new File([blob], fileName, { type: `image/${extension}` });
+  const handleAvatarChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const preview = await getBase64(file);
+    setAvatarUrl(preview); // Show preview of the uploaded image
+    setAvatarFile(file); // Set file for uploading later
   };
 
-  const uploadImageToSupabase = async (file) => {
-    try {
-      const { data, error } = await supabase.storage
-        .from("beekrowd_storage") // Chọn bucket
-        .upload(`beekrowd_images/${file.name}`, file); // Lưu ảnh vào folder beekrowd_images
-
-      if (error) {
-        console.error("Error uploading image to Supabase:", error);
-        return null;
-      }
-
-      // Trả về liên kết ảnh từ Supabase
-      // Lấy URL của ảnh đã lưu
-
-      const imageUrl = `https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/${data.fullPath}`;
-
-      return imageUrl;
-    } catch (error) {
-      console.error("Error uploading image to Supabase:", error);
-      return null;
-    }
+  const getTimestampFileName = () => {
+    const timestamp = Date.now(); // Get the current timestamp
+    return `${timestamp}.png`; // Return a file name like 'timestamp.png'
   };
 
   const handleSubmit = async (e) => {
@@ -185,84 +162,19 @@ function NewUserPage() {
         throw new Error("No internet access.");
       }
 
-      if (!userData.full_name) {
-        message.warning(`Please full-fill your full name`);
-        return;
-      }
-      if (!userData.roll) {
-        message.warning(`Please full-fill your role`);
-        return;
-      }
+      let avatarUrlToSave = userData.avatar;
 
-      let avatarUrl = userData.avatar;
-      if (avatarUrl && avatarUrl.startsWith("data:image")) {
-        const file = dataURItoFile(avatarUrl, "img");
-        const uploadedAvatarUrl = await uploadImageToSupabase(file);
-        if (uploadedAvatarUrl) {
-          avatarUrl = uploadedAvatarUrl;
+      if (avatarFile) {
+        const fileName = getTimestampFileName(); // Generate the file name with the timestamp
+
+        const { data: avatarData, error: avatarError } = await supabase.storage
+          .from("beekrowd_storage") // Supabase bucket
+          .upload(`beekrowd_images/${fileName}`, avatarFile); // Use the timestamp-based file name
+
+        if (avatarError) {
+          throw new Error("Avatar upload failed");
         }
-      }
-
-      const { data: companies, error: companyError } = await supabase
-        .from("company")
-        .select("*")
-        .eq("revenueStatus", userData.revenueStatusWanted);
-
-      if (companyError) {
-        throw new Error("Error fetching companies: " + companyError.message);
-      }
-      const industryCondition = userData.interested_in;
-      const investmentSizeCondition = userData.investment_size.map((size) => {
-        const min = parseInt(
-          size.split("-")[0].replace("$", "").replace(/,/g, "")
-        );
-        const max = parseInt(
-          size.split("-")[1].replace("$", "").replace(/,/g, "")
-        );
-        return { min, max };
-      });
-
-      const filteredCompanies = companies.filter(
-        (company) =>
-          company.industry.some((industry) =>
-            industryCondition.includes(industry)
-          ) &&
-          investmentSizeCondition.some(
-            (size) =>
-              company.ticket_size >= size.min && company.ticket_size <= size.max
-          ) &&
-          company.revenueStatus === userData.revenueStatusWanted
-      );
-
-      const notifications = await supabase
-        .from("notifications")
-        .select("*")
-        .eq("receivedUser", userData.email);
-      const notifiedCompanies = notifications.data.flatMap((notification) =>
-        JSON.parse(notification.content)
-      );
-      const notifiedCompanyNames = notifiedCompanies.map(
-        (company) => company.name
-      );
-      const newCompanies = filteredCompanies.filter(
-        (company) => !notifiedCompanyNames.includes(company.name)
-      );
-      const notificationContent = newCompanies.map((company) => ({
-        id: company.id,
-        name: company.name,
-        project_id: company.project_id,
-      }));
-      let currentNotificationCount = userData.notification_count;
-      if (notificationContent.length > 0) {
-        const notificationsToInsert = [
-          {
-            receivedUser: userData.email,
-            content: JSON.stringify(notificationContent),
-          },
-        ];
-
-        await supabase.from("notifications").insert(notificationsToInsert);
-        currentNotificationCount = userData.notification_count + 1;
+        avatarUrlToSave = `https://dheunoflmddynuaxiksw.supabase.co/storage/v1/object/public/${avatarData.fullPath}`;
       }
 
       const { error } = await supabase
@@ -276,13 +188,12 @@ function NewUserPage() {
           company_website: userData.company_website,
           detail: userData.detail,
           roll: userData.roll,
-          avatar: avatarUrl,
+          avatar: avatarUrlToSave, // Update avatar URL in database
           interested_in: userData.interested_in,
           investment_size: userData.investment_size,
           country: userData.country,
           type: userData.type,
           revenueStatusWanted: userData.revenueStatusWanted,
-          notification_count: currentNotificationCount,
           facebook: userData.facebook,
           twitter: userData.twitter,
           linkedin: userData.linkedin,
@@ -304,729 +215,311 @@ function NewUserPage() {
       message.success("Updated successfully!");
     } catch (error) {
       message.error(error.message);
-      console.log("Error handling form submission:", error);
     }
     setIsLoading(false);
   };
 
-  const handleRollChange = (e) => {
-    const { value } = e.target;
-    setUserData((prevUserData) => ({
-      ...prevUserData,
-      roll: value,
-    }));
-  };
-
-  const handleBilling = async () => {
-    try {
-      if (!navigator.onLine) {
-        // Không có kết nối Internet
-        message.error("No internet access.");
-        return;
-      }
-      setIsLoading(true);
-
-      if (!userData.subscription_id) {
-        throw Error("User does not subscribe.");
-      }
-      const response = await apiService.post("/request/customers", {
-        subscription_id: userData.subscription_id,
-      });
-
-      window.open(response.data.data.urls.customer_portal, "_blank");
-    } catch (error) {
-      console.log("error", error);
-      message.warning("User does not subscribe.");
-    }
-    setIsLoading(false);
-  };
-
-  const investment_size = [
-    "$0-$10,000",
-    "$10,000-$50,000",
-    "$50,000-$200,000",
-    "$200,000-$500,000",
-    "Greater than $500,000",
-  ];
-
-  const [avatarUrl, setAvatarUrl] = useState(userData.avatar); // State to store project image URL
-  useEffect(() => {
-    setAvatarUrl(userData.avatar);
-  }, [userData.avatar]);
-  const handleProjectImageUpload = (event) => {
-    const file = event.target.files[0]; // Get the uploaded file
-    // Assuming you're using FileReader to read the uploaded file as data URL
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setAvatarUrl(e.target.result); // Set the project image URL in state
-    };
-    reader.readAsDataURL(file); // Read the uploaded file
-    // Update formData with the project image URL
-  };
-
-  useEffect(() => {
-    handleInputChange({
-      target: { name: "avatar", value: avatarUrl },
-    });
-  }, [avatarUrl]);
-
-  const [currentTab, setCurrentTab] = useState("user-info");
-
-  const capitalizeFirstLetter = (str) => {
-    if (!str) return ""; // Bảo vệ trường hợp giá trị null hoặc undefined
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  };
-
-  const [years, setYears] = useState([]);
-
-  useEffect(() => {
-    // Hàm để tạo danh sách các năm từ năm bắt đầu đến năm hiện tại
-    const generateYears = () => {
-      const currentYear = new Date().getFullYear();
-
-      const startYear = 1900; // Bạn có thể thay đổi năm bắt đầu tại đây
-      const yearsArray = [];
-      for (let year = startYear; year <= currentYear; year++) {
-        yearsArray.push(year.toString());
-      }
-      return yearsArray;
-    };
-
-    // Gọi hàm generateYears để tạo danh sách các năm và cập nhật state
-    const yearsList = generateYears();
-    setYears(yearsList);
-  }, []);
-
-  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] =
-    useState(false);
-
+  const [currentPassword, setCurrentPassword] = useState(""); // New current password state
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleNewPasswordChange = (event) => {
-    setNewPassword(event.target.value);
-  };
-
-  const handleConfirmPasswordChange = (event) => {
-    setConfirmPassword(event.target.value);
-  };
-
-  const confirmSave = async (event) => {
-    event.preventDefault();
-    setIsLoading(true); // Bắt đầu loading
-    if (newPassword === confirmPassword) {
-      try {
-        if (!navigator.onLine) {
-          // Không có kết nối Internet
-          message.error("No internet access.");
-          return;
-        }
-        const { error } = await supabase.auth.updateUser({
-          password: newPassword,
-        });
-
-        if (error) {
-          console.log("error supabase", error);
-          message.error(error.message);
-        } else {
-          message.success("Password updated successfully.");
-          setNewPassword("");
-          setConfirmPassword("");
-          setIsChangePasswordModalOpen(false);
-        }
-      } catch (error) {
-        message.error(error.message);
-      }
-    } else {
-      message.error("Passwords do not match.");
+  const handlePasswordChange = async () => {
+    if (!currentPassword) {
+      message.error("Please enter your current password.");
+      return;
     }
-    setIsLoading(false);
-  };
 
-  const changePassword = true;
+    try {
+      // Step 1: Re-authenticate the user with the current password
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: currentPassword, // Verifying the current password
+      });
+
+      if (signInError) {
+        message.error("Current password is incorrect.");
+        return;
+      }
+
+      // Step 2: Check if new password matches confirm password
+      if (newPassword !== confirmPassword) {
+        message.error("New passwords do not match.");
+        return;
+      }
+
+      // Step 3: Update the password
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+
+      if (error) {
+        message.error("Password update failed: " + error.message);
+      } else {
+        message.success("Password updated successfully.");
+        setCurrentPassword(""); // Clear current password
+        setNewPassword(""); // Clear new password fields
+        setConfirmPassword("");
+      }
+    } catch (error) {
+      message.error("An error occurred: " + error.message);
+    }
+  };
 
   return (
-    <>
-      {isLoading ? (
-        <LoadingButtonClick isLoading={isLoading} />
-      ) : (
-        <div className="flex-row justify-center sm:flex py-10 min-h-screen">
-          <div className="flex flex-col space-y-6">
-            <Card className="sm:w-[350px] w-full sm:mb-0 mb-10">
-              <CardContent className="flex flex-col items-center text-center">
-                <h3 className="mt-4 font-semibold text-lg">
-                  {userData.full_name}
-                </h3>
-
-                <div className="flex flex-col items-center justify-center mt-4">
-                  <input
-                    type="file"
-                    onChange={handleProjectImageUpload}
-                    id="upload"
-                    accept="image/*"
-                    style={{ display: "none" }}
+    <div className="min-h-screen py-12 px-3 sm:px-6 lg:px-8 mt-14">
+      {isLoading && <LoadingButtonClick isLoading={isLoading} />}
+      <div className="max-w-4xl mx-auto">
+        <Card>
+          <CardHeader>
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <UiAvatar className="w-24 h-24">
+                  <AvatarImage
+                    alt="User avatar"
+                    src={avatarUrl || "/placeholder.svg?height=96&width=96"}
                   />
-                  <label htmlFor="upload">
-                    <IconButton
-                      color="primary"
-                      aria-label="upload picture"
-                      component="span"
-                    >
-                      <Avatar
-                        id="avatar"
-                        src={avatarUrl}
-                        style={{
-                          width: "150px",
-                          height: "150px",
-                        }}
-                      />
-                    </IconButton>
-                  </label>
-                  <label htmlFor="avatar" />
-                </div>
-
-                {/* <p className="text-sm text-gray-500">Maximum upload size is 1 MB</p> */}
-                <p className="mt-4 text-sm text-gray-800">
-                  Member Since:{" "}
+                  <AvatarFallback>PH</AvatarFallback>
+                </UiAvatar>
+                <input
+                  type="file"
+                  ref={inputRef}
+                  accept="image/*"
+                  onChange={handleAvatarChange}
+                  style={{ display: "none" }} // Hidden input
+                />
+                <Button
+                  size="icon"
+                  className="absolute bottom-0 right-0 rounded-full bg-black text-white"
+                  onClick={() => inputRef.current.click()} // Trigger file input click
+                >
+                  <CameraIcon className="h-4 w-4" />
+                </Button>
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold -tracking-normal !mb-0">
+                  {userData?.full_name?.toUpperCase() || "User Name"}
+                </h1>
+                <p className="text-muted-foreground text-base">
+                  Member since:{" "}
                   {new Date(user.created_at).toISOString().split("T")[0]}
                 </p>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="p-3">
+            <Tabs defaultValue="user-info" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-3 gap-4">
+                <TabsTrigger value="user-info">
+                  <UserIcon className="mr-2 h-4 w-4" />
+                  User Info
+                </TabsTrigger>
+                <TabsTrigger value="security">
+                  <LockIcon className="mr-2 h-4 w-4" />
+                  Security
+                </TabsTrigger>
+                <TabsTrigger value="billing">
+                  <CreditCardIcon className="mr-2 h-4 w-4" />
+                  Billing
+                </TabsTrigger>
+              </TabsList>
 
-          <form onSubmit={handleSubmit} className="sm:ml-10">
-            <div className="flex flex-col w-full max-w-4xl space-y-4 sm:ml-0">
-              <h2 className="text-2xl font-semibold">User Profile</h2>
-
-              <ul className="py-4 flex  justify-start items-center border-y-2">
-                <li
-                  className={`cursor-pointer mr-4 ${
-                    currentTab === "user-info"
-                      ? "border-b-2 border-black font-bold"
-                      : ""
-                  }`}
-                  onClick={() => setCurrentTab("user-info")}
-                >
-                  User info
-                </li>
-                <li
-                  className={`cursor-pointer mr-4 ${
-                    currentTab === "billing"
-                      ? "border-b-2 border-black font-bold"
-                      : ""
-                  }`}
-                  onClick={() => setCurrentTab("billing")}
-                >
-                  Billing Information
-                </li>
-              </ul>
-
-              {currentTab === "user-info" && (
-                <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div className="flex flex-col">
-                      <div className="mt-4">
-                        <InputField
-                          label="Full name *"
-                          id="full_name"
-                          name="full_name"
-                          value={userData.full_name}
-                          onChange={handleInputChange}
-                          type="text"
-                        />
-                      </div>
-                      <div className="mt-4">
-                        <InputField
-                          label="Email"
-                          id="email"
-                          name="email"
-                          value={userData.email}
-                          type="text"
-                          disabled
-                          changePassword={changePassword}
-                          setIsChangePasswordModalOpen={
-                            setIsChangePasswordModalOpen
-                          }
-                        />
-                      </div>
-                      <div className="mt-4">
-                        <label
-                          htmlFor="roll"
-                          className="block mb-2 text-sm text-gray-700 font-medium darkTextWhite"
-                        >
-                          Role <span className="font-semibold">*</span>
-                        </label>
-                        <select
-                          id="roll"
-                          name="roll"
-                          value={userData.roll}
-                          onChange={handleRollChange}
-                          className="py-3 px-4 block w-full border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500  darkTextGray400 "
-                        >
-                          <option value="Founder">Founder</option>
-                          <option value="Investor">Investor</option>
-                          <option value="Other">Other</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="flex flex-col">
-                      <div className="mt-4">
-                        <InputField
-                          label="Company"
-                          id="company"
-                          name="company"
-                          value={userData.company}
-                          onChange={handleInputChange}
-                          type="text"
-                        />
-                      </div>
-                      <div className="mt-4">
-                        <InputField
-                          label="Company website"
-                          id="company_website"
-                          name="company_website"
-                          value={userData.company_website}
-                          onChange={handleInputChange}
-                          type="text"
-                        />
-                      </div>
-
-                      <div className="mt-4" style={{ visibility: "hidden" }}>
-                        <SelectField
-                          label="Country"
-                          id="country"
-                          name="country"
-                          required
-                          options={countries} // Thay thế bằng danh sách các tùy chọn bạn muốn
-                        />
-                      </div>
-                    </div>
+              {/* User Info Tab */}
+              <TabsContent value="user-info" className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="full-name">Full name</Label>
+                    <Input
+                      id="full-name"
+                      name="full_name"
+                      value={userData.full_name}
+                      onChange={handleInputChange}
+                    />
                   </div>
-
-                  {userData.roll === "Investor" && (
-                    <>
-                      <div className="text-xs italic text-blue-600">
-                        * For better startups matching, please fill in the
-                        following information.
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div className="flex flex-col">
-                          <div className="mt-4">
-                            <MultiSelectField
-                              label="Industry"
-                              id="industry"
-                              name="industry"
-                              OPTIONS={industries}
-                              selectedItems={userData.interested_in}
-                              setSelectedItems={handleIndustryChange}
-                              required
-                            />
-                          </div>
-                          <div className="mt-4">
-                            <MultiSelectField
-                              label="Investment size"
-                              id="investment_size"
-                              name="investment_size"
-                              OPTIONS={investment_size}
-                              selectedItems={userData.investment_size}
-                              setSelectedItems={handleInvestmentChange}
-                              required
-                            />
-                          </div>
-                          <div className="mt-4">
-                            <SelectField
-                              label="Team size"
-                              id="teamSize"
-                              name="teamSize"
-                              value={userData.teamSize}
-                              onChange={handleInputChange}
-                              type="text"
-                              options={[
-                                "1-10",
-                                "11-50",
-                                "51-200",
-                                "201-500",
-                                ">500",
-                              ]}
-                            />
-                          </div>
-                          <div className="mt-4">
-                            <SelectField
-                              label="Founded year"
-                              id="operationTime"
-                              name="operationTime"
-                              value={userData.operationTime}
-                              onChange={handleInputChange}
-                              options={years}
-                              type="text"
-                            />
-                          </div>
-                          <div className="mt-4">
-                            <label
-                              htmlFor="type"
-                              className="block mb-2 text-sm  darkTextWhite"
-                            >
-                              Type of Organization
-                            </label>
-                            <div className="flex items-center">
-                              <input
-                                type="radio"
-                                id="individual"
-                                name="type"
-                                value="Individual"
-                                checked={userData.type === "Individual"}
-                                onChange={handleInputChange}
-                                className="mr-2"
-                              />
-                              <label
-                                htmlFor="individual"
-                                className="mr-4 text-sm"
-                              >
-                                Individual
-                              </label>
-                              <input
-                                type="radio"
-                                id="institutional"
-                                name="type"
-                                value="Institutional"
-                                checked={userData.type === "Institutional"}
-                                onChange={handleInputChange}
-                                className="mr-2"
-                              />
-                              <label
-                                htmlFor="institutional"
-                                className="text-sm"
-                              >
-                                Institutional
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex flex-col">
-                          <div className="mt-4">
-                            <SelectField
-                              label="Expected revenue range"
-                              id="revenueStatusWanted"
-                              name="revenueStatusWanted"
-                              value={userData.revenueStatusWanted}
-                              onChange={handleInputChange}
-                              required
-                              options={[
-                                "$0 - $10k",
-                                "$10k - $50k",
-                                "$50k - $100k",
-                                "$100k - $500k",
-                                "$500k - $1M",
-                                "$1M - $5M",
-                                ">$5M",
-                              ]} // Thay thế bằng danh sách các tùy chọn bạn muốn
-                            />
-                          </div>
-                          <div className="mt-4">
-                            <MultiSelectField
-                              label="Country"
-                              id="country"
-                              name="country"
-                              selectedItems={userData.country}
-                              setSelectedItems={handleCountryChange}
-                              required
-                              OPTIONS={countries} // Thay thế bằng danh sách các tùy chọn bạn muốn
-                            />
-                          </div>
-                          <div className="mt-4">
-                            <InputField
-                              label="Raised before"
-                              id="amountRaised"
-                              name="amountRaised"
-                              value={formatNumber(userData.amountRaised)}
-                              onChange={handleInputChange}
-                              type="text"
-                              required
-                            />
-                          </div>
-                          <div className="mt-4">
-                            <SelectField
-                              label="Round"
-                              id="round"
-                              name="round"
-                              options={[
-                                "Pre-seed",
-                                "Seed",
-                                "Series A",
-                                "Series B",
-                                "Series C",
-                                "Non-Profit",
-                              ]}
-                              value={userData.round}
-                              onChange={handleInputChange}
-                              type="text"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  )}
-
-                  <div className="text-xs italic text-blue-600">
-                    * SPECIAL CODE
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" value={userData.email} readOnly />
                   </div>
-                  <div className="mt-4">
-                    <InputField
-                      label="FundFlow Premium code"
-                      id="code"
+                  <div className="space-y-2">
+                    <Label htmlFor="company">Company</Label>
+                    <Input
+                      id="company"
+                      name="company"
+                      value={userData.company}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="website">Company website</Label>
+                    <Input
+                      id="website"
+                      name="company_website"
+                      value={userData.company_website}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="role">Role</Label>
+                    <Select
+                      value={userData.roll} // Bind the value to userData.roll
+                      onValueChange={
+                        (value) =>
+                          setUserData((prevUserData) => ({
+                            ...prevUserData,
+                            roll: value,
+                          })) // Update userData.roll when a new value is selected
+                      }
+                    >
+                      <SelectTrigger id="role">
+                        <SelectValue placeholder="Select a role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="founder">Founder</SelectItem>
+                        <SelectItem value="employee">Employee</SelectItem>
+                        <SelectItem value="investor">Investor</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="premium-code">FundFlow Premium code</Label>
+                    <Input
+                      id="premium-code"
                       name="code"
                       value={userData.code}
                       onChange={handleInputChange}
-                      type="text"
+                      placeholder="Enter premium code"
                     />
                   </div>
-                  <div>
-                    <label
-                      htmlFor="hs-about-hire-us-2"
-                      className="block mb-2 text-sm text-gray-700 font-medium darkTextWhite mt-2"
-                    >
-                      Tell something about you
-                    </label>
-                    <textarea
-                      id="hs-about-hire-us-2"
-                      name="detail"
-                      rows="4"
-                      className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
-                      value={userData.detail}
-                      onChange={handleInputChange}
-                    ></textarea>
-                  </div>
+                </div>
 
-                  <div className="grid grid-cols-1 gap-4 lg:gap-6 mt-6 ">
-                    <button
-                      type="submit"
-                      className={`w-full sm:w-[30%] py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none   ${
-                        isLoading ? "bg-gray-500 disabled" : ""
-                      }`}
-                      style={{ justifySelf: "end" }} // Canh phải
-                    >
-                      Save
-                    </button>
-                  </div>
-                </>
-              )}
+                <div className="space-y-2">
+                  <Label htmlFor="about">Tell something about you</Label>
+                  <Textarea
+                    id="about"
+                    name="detail"
+                    value={userData.detail}
+                    onChange={handleInputChange}
+                    placeholder="Tell us about yourself"
+                    className="min-h-[100px]"
+                  />
+                </div>
+                <Button className="bg-black text-white" onClick={handleSubmit}>
+                  Save Changes
+                </Button>
+              </TabsContent>
 
-              {currentTab === "billing" && (
-                <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div className="flex flex-col">
-                      <div className="mt-4">
-                        <InputField
-                          label="Plan"
+              {/* Security Tab */}
+              <TabsContent value="security" className="space-y-6">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="current-password">Current Password</Label>
+                    <Input
+                      id="current-password"
+                      type="password"
+                      placeholder="Enter current password"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="new-password">New Password</Label>
+                    <Input
+                      id="new-password"
+                      type="password"
+                      placeholder="Enter new password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="confirm-password">
+                      Confirm New Password
+                    </Label>
+                    <Input
+                      id="confirm-password"
+                      type="password"
+                      placeholder="Confirm new password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <Button
+                  onClick={handlePasswordChange}
+                  className="bg-black text-white"
+                >
+                  Update Password
+                </Button>
+              </TabsContent>
+              {/* Billing Tab */}
+              <TabsContent value="billing" className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <h3 className="text-lg font-semibold">
+                      Subscription Details
+                    </h3>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="plan">Plan</Label>
+                        <Input
                           id="plan"
-                          name="plan"
                           value={userData.plan}
-                          type="text"
-                          disabled
+                          readOnly
+                          className="bg-muted"
                         />
                       </div>
-                      <div className="mt-4">
-                        <InputField
-                          label="Subscription status"
-                          id="subscription_status"
-                          name="subscription_status"
+                      <div className="space-y-2">
+                        <Label htmlFor="subscribe-date">Subscribe date</Label>
+                        <Input
+                          id="subscribe-date"
+                          value={
+                            userData.subscribe ||
+                            new Date(user.created_at)
+                              .toISOString()
+                              .split("T")[0]
+                          }
+                          readOnly
+                          className="bg-muted"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="subscription-status">
+                          Subscription status
+                        </Label>
+                        <Input
+                          id="subscription-status"
                           value={
                             userData.subscription_status
-                              ? capitalizeFirstLetter(
-                                  userData.subscription_status
-                                )
-                              : "Active"
+                              .trim()
+                              .charAt(0)
+                              .toUpperCase() +
+                              userData.subscription_status.slice(1) || "Active"
                           }
-                          type="text"
-                          disabled
+                          readOnly
+                          className="bg-muted"
                         />
                       </div>
-                      <div style={{ visibility: "hidden" }}>
-                        <SelectField
-                          options={countries} // Thay thế bằng danh sách các tùy chọn bạn muốn
+                      <div className="space-y-2">
+                        <Label htmlFor="next-billing-date">
+                          Next billing date
+                        </Label>
+                        <Input
+                          id="next-billing-date"
+                          value={userData.next_billing_date || "N/A"}
+                          readOnly
+                          className="bg-muted"
                         />
                       </div>
                     </div>
-                    <div className="flex flex-col">
-                      <Tooltip title="DD-MM-YYYY">
-                        <div className="mt-4">
-                          <InputField
-                            label="Subscribe date"
-                            id="subscribe"
-                            name="subscribe"
-                            value={
-                              userData.subscribe
-                                ? formatDate(userData.subscribe)
-                                : formatDate(user.created_at)
-                            }
-                            disabled
-                          />
-                        </div>
-                      </Tooltip>
-
-                      <Tooltip title="DD-MM-YYYY">
-                        <div className="mt-4">
-                          <InputField
-                            label="Next billing date"
-                            id="next_billing_date"
-                            name="next_billing_date"
-                            value={
-                              userData.next_billing_date
-                                ? formatDate(userData.next_billing_date)
-                                : "01/01/2050"
-                            }
-                            disabled
-                          />
-                        </div>
-                      </Tooltip>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 gap-4 lg:gap-6 mt-6">
-                    <button
-                      type="button"
-                      className={`w-full sm:w-[30%] py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none   ${
-                        isLoading ? "bg-gray-500 disabled" : ""
-                      }`}
-                      onClick={handleBilling}
-                      style={{ justifySelf: "end" }}
-                    >
-                      Billing Portal
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          </form>
-        </div>
-      )}
-      {isChangePasswordModalOpen && (
-        <Modal
-          title="Change Password"
-          open={isChangePasswordModalOpen}
-          onOk={confirmSave}
-          onCancel={() => setIsChangePasswordModalOpen(false)}
-          okText="Save"
-          cancelText="Cancel"
-          cancelButtonProps={{
-            style: {
-              borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-            },
-          }}
-          okButtonProps={{
-            style: {
-              background: "#2563EB",
-              borderColor: "#2563EB",
-              color: "#fff",
-              borderRadius: "0.375rem",
-              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-            },
-          }}
-          centered={true}
-        >
-          <div className="grid gap-y-4">
-            <InputField
-              label="New password"
-              type="password"
-              name="newPassword"
-              value={newPassword}
-              onChange={handleNewPasswordChange}
-            />
-            <InputField
-              label="Confirm password"
-              type="password"
-              name="confirmPassword"
-              value={confirmPassword}
-              onChange={handleConfirmPasswordChange}
-            />
-            <LoadingButtonClick isLoading={isLoading} />
-          </div>
-        </Modal>
-      )}
-    </>
-  );
-}
-
-export function FacebookIcon(props) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      x="0px"
-      y="0px"
-      width="48"
-      height="48"
-      viewBox="0 0 48 48"
-    >
-      <linearGradient
-        id="Ld6sqrtcxMyckEl6xeDdMa_uLWV5A9vXIPu_gr1"
-        x1="9.993"
-        x2="40.615"
-        y1="9.993"
-        y2="40.615"
-        gradientUnits="userSpaceOnUse"
-      >
-        <stop offset="0" stopColor="#2aa4f4"></stop>
-        <stop offset="1" stopColor="#007ad9"></stop>
-      </linearGradient>
-      <path
-        fill="url(#Ld6sqrtcxMyckEl6xeDdMa_uLWV5A9vXIPu_gr1)"
-        d="M24,4C12.954,4,4,12.954,4,24s8.954,20,20,20s20-8.954,20-20S35.046,4,24,4z"
-      ></path>
-      <path
-        fill="#fff"
-        d="M26.707,29.301h5.176l0.813-5.258h-5.989v-2.874c0-2.184,0.714-4.121,2.757-4.121h3.283V12.46 c-0.577-0.078-1.797-0.248-4.102-0.248c-4.814,0-7.636,2.542-7.636,8.334v3.498H16.06v5.258h4.948v14.452 C21.988,43.9,22.981,44,24,44c0.921,0,1.82-0.084,2.707-0.204V29.301z"
-      ></path>
-    </svg>
-  );
-}
-
-export function TwitterIcon(props) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      x="0px"
-      y="0px"
-      width="48"
-      height="48"
-      viewBox="0 0 48 48"
-    >
-      <polygon
-        fill="#616161"
-        points="41,6 9.929,42 6.215,42 37.287,6"
-      ></polygon>
-      <polygon
-        fill="#fff"
-        fillRule="evenodd"
-        points="31.143,41 7.82,7 16.777,7 40.1,41"
-        clipRule="evenodd"
-      ></polygon>
-      <path
-        fill="#616161"
-        d="M15.724,9l20.578,30h-4.106L11.618,9H15.724 M17.304,6H5.922l24.694,36h11.382L17.304,6L17.304,6z"
-      ></path>
-    </svg>
-  );
-}
-
-export function LinkedinIcon(props) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      x="0px"
-      y="0px"
-      width="48"
-      height="48"
-      viewBox="0 0 48 48"
-    >
-      <path
-        fill="#0288D1"
-        d="M42,37c0,2.762-2.238,5-5,5H11c-2.761,0-5-2.238-5-5V11c0-2.762,2.239-5,5-5h26c2.762,0,5,2.238,5,5V37z"
-      ></path>
-      <path
-        fill="#FFF"
-        d="M12 19H17V36H12zM14.485 17h-.028C12.965 17 12 15.888 12 14.499 12 13.08 12.995 12 14.514 12c1.521 0 2.458 1.08 2.486 2.499C17 15.887 16.035 17 14.485 17zM36 36h-5v-9.099c0-2.198-1.225-3.698-3.192-3.698-1.501 0-2.313 1.012-2.707 1.99C24.957 25.543 25 26.511 25 27v9h-5V19h5v2.616C25.721 20.5 26.85 19 29.738 19c3.578 0 6.261 2.25 6.261 7.274L36 36 36 36z"
-      ></path>
-    </svg>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 }
 

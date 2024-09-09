@@ -79,6 +79,7 @@ code {
   font-family: "Inter Variable", sans-serif;
   font-size: "16px";
   color: black;
+  padding: 16px 16px !important;
 }
 
 /* Default styling for the table */
@@ -446,4 +447,9 @@ code {
   border-left: none;
   border-right: none;
   border-bottom: 1px solid #d9d9d9; /* Giữ lại border-bottom cho tiêu đề */
+}
+
+.ant-table-thead > tr > th {
+  background-color: white !important;
+  border-right: none !important;
 }

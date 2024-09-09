@@ -118,7 +118,7 @@ const BusinessModelBot = ({
 
   return (
     <div className=" mx-auto w-full">
-      <div className="input-container p-4">
+      <div className="input-container sm:p-4 p-0">
         <h2 className="text-3xl sm:text-5xl font-semibold text-gray-800 darkTextGray mb-6 text-center">
           Financial model with AI
         </h2>

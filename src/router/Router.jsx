@@ -129,7 +129,7 @@ function Router() {
           path="/reset-password"
           element={<ResetPasswordPage />}
         />
-        <Route key={location.key} path="/service" element={<ServicePage />} />
+        {/* <Route key={location.key} path="/service" element={<ServicePage />} /> */}
         <Route key={location.key} path="/sign-in" element={<SignInPage />} />
         <Route key={location.key} path="/sign-up" element={<SignUpPage />} />
         <Route

@@ -43,6 +43,8 @@ import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import DraggableChart from "./DraggableChart";
 import { setInputData } from "../../../features/DurationSlice";
+import { Button as ButtonV0 } from "../../../components/ui/button";
+import { Download } from "lucide-react";
 
 const CustomerInputsForm = React.memo(
   ({
@@ -658,7 +660,7 @@ const CustomerSection = React.memo(
                 <Tooltip title={tooltipTitle} placement="topLeft">
                   <div style={cellStyle}>
                     <input
-                      className="border-white p-0 text-xs text-right w-full h-full"
+                      className="border-white p-0 text-xs text-right w-full h-full rounded-none"
                       value={record[`month${i + 1}`]}
                       onChange={(e) => {
                         handleInputChange(record?.id, "applyCustom", true);
@@ -929,11 +931,10 @@ const CustomerSection = React.memo(
                   id: "allChannels",
                   stacked: false,
                   animated: false,
-                                  
+
                   legend: {
-                    show: false
-                  }
-  
+                    show: false,
+                  },
                 },
 
                 xaxis: {
@@ -1654,28 +1655,29 @@ const CustomerSection = React.memo(
                   <h3 className="text-lg font-semibold mt-20 my-4">
                     II. Customer Table
                   </h3>
-
-                  <div className="flex justify-between items-center">
-                    <select
-                      id="selectedChannel"
-                      className="py-2 px-4 block w-80 border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                  <div className="flex justify-between items-center mb-4">
+                    <Select
                       value={renderCustomerForm}
-                      onChange={(e) => setRenderCustomerForm(e.target.value)}
+                      onValueChange={(e) => {
+                        setRenderCustomerForm(e);
+                      }}
                     >
-                      <option value="all">All</option>
-                      {tempCustomerInputs.map((input) => (
-                        <option key={input?.id} value={input?.id}>
-                          {input?.channelName}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      onClick={downloadExcel}
-                      className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
-                    >
-                      <DownloadOutlined className="mr-1" />
+                      <SelectTrigger className="w-[200px]">
+                        <SelectValue placeholder="Offline" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All</SelectItem>
+                        {tempCustomerInputs.map((input) => (
+                          <SelectItem key={input?.id} value={input?.id}>
+                            {input?.channelName}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <ButtonV0 variant="outline" onClick={downloadExcel}>
+                      <Download className="mr-2 h-4 w-4" />
                       Download Excel
-                    </button>
+                    </ButtonV0>
                   </div>
                 </span>
 
@@ -1685,16 +1687,14 @@ const CustomerSection = React.memo(
                   dataSource={filteredTableData}
                   columns={customerColumns}
                   pagination={false}
-                  bordered
                   rowClassName={(record) =>
                     record.key === record.channelName ? "font-bold" : ""
                   }
                 />
-              </div>
-              <div className="w-full xl:w-1/4 sm:p-4 p-0   ">
+
                 <button
                   className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
-                  style={{ bottom: "20px", right: "80px", position: "fixed" }}
+                  // style={{ bottom: "20px", right: "80px", position: "fixed" }}
                   onClick={handleSave}
                 >
                   {isLoading ? (

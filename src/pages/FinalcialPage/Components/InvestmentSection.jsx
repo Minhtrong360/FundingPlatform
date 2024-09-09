@@ -29,6 +29,16 @@ import {
   CardHeader,
   CardContent,
 } from "../../../components/ui/card";
+import { Download } from "lucide-react";
+import { Button as ButtonV0 } from "../../../components/ui/button";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../components/ui/select";
 const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const { investmentInputs, investmentData } = useSelector(
     (state) => state.investment
@@ -839,26 +849,28 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                 </h3>
 
                 <div className="flex justify-between items-center">
-                  <select
-                    id="selectedChannel"
-                    className="py-2 px-4 block w-80 border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                  <Select
                     value={renderInvestmentForm}
-                    onChange={(e) => setRenderInvestmentForm(e.target.value)}
+                    onValueChange={(e) => {
+                      setRenderInvestmentForm(e);
+                    }}
                   >
-                    <option value="all">All</option>
-                    {tempInvestmentInputs.map((input) => (
-                      <option key={input?.id} value={input?.id}>
-                        {input.purchaseName}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    onClick={downloadExcel}
-                    className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
-                  >
-                    <DownloadOutlined className="mr-1" />
+                    <SelectTrigger className="w-[200px]">
+                      <SelectValue placeholder="Offline" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      {tempInvestmentInputs.map((input) => (
+                        <SelectItem key={input?.id} value={input?.id}>
+                          {input.purchaseName}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <ButtonV0 variant="outline" onClick={downloadExcel}>
+                    <Download className="mr-2 h-4 w-4" />
                     Download Excel
-                  </button>
+                  </ButtonV0>
                 </div>
               </span>
               <Table

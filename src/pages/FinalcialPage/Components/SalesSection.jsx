@@ -47,6 +47,8 @@ import {
   CardHeader,
   CardContent,
 } from "../../../components/ui/card";
+import { Button as ButtonV0 } from "../../../components/ui/button";
+import { Download } from "lucide-react";
 
 const ChannelInputForm = ({
   tempChannelInputs,
@@ -1115,32 +1117,34 @@ const SalesSection = ({
                   II. Revenue Table
                 </h3>
 
-                <div className="flex justify-between items-center">
-                  <select
-                    id="renderChannelForm"
-                    className="py-2 px-4 block w-80 border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                <div className="flex justify-between items-center mb-4">
+                  <Select
                     value={renderChannelForm}
-                    onChange={(e) => setRenderChannelForm(e.target.value)}
+                    onValueChange={(e) => {
+                      setRenderChannelForm(e);
+                    }}
                   >
-                    <option value="all">All</option>
-                    {tempChannelInputs.map((input) => {
-                      const channelName = channelNames.find(
-                        (channel) => channel.id === input.selectedChannel.id
-                      )?.channelName;
-                      return (
-                        <option key={input.id} value={input.id}>
-                          {`${input.productName} - ${channelName}`}
-                        </option>
-                      );
-                    })}
-                  </select>
-                  <button
-                    onClick={downloadExcel}
-                    className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
-                  >
-                    <DownloadOutlined className="mr-1" />
+                    <SelectTrigger className="w-[200px]">
+                      <SelectValue placeholder="Offline" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      {tempChannelInputs.map((input) => {
+                        const channelName = channelNames.find(
+                          (channel) => channel.id === input.selectedChannel.id
+                        )?.channelName;
+                        return (
+                          <SelectItem key={input.id} value={input.id}>
+                            {`${input.productName} - ${channelName}`}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                  <ButtonV0 variant="outline" onClick={downloadExcel}>
+                    <Download className="mr-2 h-4 w-4" />
                     Download Excel
-                  </button>
+                  </ButtonV0>
                 </div>
               </span>
               <Table

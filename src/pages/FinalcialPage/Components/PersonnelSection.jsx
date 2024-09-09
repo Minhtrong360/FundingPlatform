@@ -36,6 +36,8 @@ import {
   CardHeader,
   CardContent,
 } from "../../../components/ui/card";
+import { Download } from "lucide-react";
+import { Button as ButtonV0 } from "../../../components/ui/button";
 
 const PersonnelInputForm = ({
   tempPersonnelInputs,
@@ -821,13 +823,10 @@ const PersonnelSection = ({ numberOfMonths }) => {
                 <h3 className="text-lg font-semibold">
                   II. Personnel Cost Table
                 </h3>
-                <button
-                  onClick={downloadExcel}
-                  className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
-                >
-                  <DownloadOutlined className="mr-1" />
+                <ButtonV0 variant="outline" onClick={downloadExcel}>
+                  <Download className="mr-2 h-4 w-4" />
                   Download Excel
-                </button>
+                </ButtonV0>
               </div>
               <Table
                 className="custom-table bg-white overflow-auto my-8 rounded-md"

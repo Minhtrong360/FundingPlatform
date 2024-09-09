@@ -58,6 +58,8 @@ import GroqJS from "./GroqJson";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import { Card as CardShadcn } from "../../../components/ui/card";
+import { Download } from "lucide-react";
+import { Button as ButtonV0 } from "../../../components/ui/button";
 
 function BalanceSheetSection({ numberOfMonths }) {
   const dispatch = useDispatch();
@@ -1109,13 +1111,10 @@ function BalanceSheetSection({ numberOfMonths }) {
 
           <div className="flex justify-between items-center my-4 mt-20">
             <h3 className="text-lg font-semibold">II. Balance Sheet</h3>
-            <button
-              onClick={downloadExcel}
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl min-w-[6vw] "
-            >
-              <DownloadOutlined className="mr-1" />
+            <ButtonV0 variant="outline" onClick={downloadExcel}>
+              <Download className="mr-2 h-4 w-4" />
               Download Excel
-            </button>
+            </ButtonV0>
           </div>
 
           <Table

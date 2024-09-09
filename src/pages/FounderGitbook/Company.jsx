@@ -277,8 +277,20 @@ function Company({
                       <SelectValue placeholder="Select range" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
-                      <SelectItem value="$0 - $10k">$0 - $10k</SelectItem>
-                      {/* Add more revenue ranges as needed */}
+                      {[
+                        "$0 - $10k",
+                        "$10k - $50k",
+                        "$50k - $100k",
+                        "$100k - $500k",
+                        "$500k - $1M",
+                        "$1M - $5M",
+                        ">$5M",
+                        "Non-Profit",
+                      ].map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -340,11 +352,13 @@ function Company({
                       <SelectValue placeholder="Select size" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
-                      <SelectItem value="1-10">1-10</SelectItem>
-                      <SelectItem value="11-20">11-20</SelectItem>
-                      <SelectItem value="21-50">21-50</SelectItem>
-                      <SelectItem value=">50">{">50"}</SelectItem>
-                      {/* Add more team sizes as needed */}
+                      {["1-10", "11-50", "51-200", "201-500", ">500"].map(
+                        (type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
+                        )
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
@@ -404,8 +418,18 @@ function Company({
                       <SelectValue placeholder="Select round" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
-                      <SelectItem value="Pre-seed">Pre-seed</SelectItem>
-                      {/* Add more rounds as needed */}
+                      {[
+                        "Pre-seed",
+                        "Seed",
+                        "Series A",
+                        "Series B",
+                        "Series C",
+                        "Non-Profit",
+                      ].map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>

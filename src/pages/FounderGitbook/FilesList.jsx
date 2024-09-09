@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
-import AddLinkFile from "./AddLinkFile";
 import { useParams } from "react-router-dom";
 import InvitedUserFile from "../../components/InvitedUserFile";
 import apiService from "../../app/apiService";
@@ -273,12 +272,15 @@ function FilesList() {
       title: "No.",
       dataIndex: "no",
       key: "no",
+      width: 80, // Set fixed width
       render: (_, __, index) => <span>#{index + 1}</span>,
     },
     {
       title: "File name",
       dataIndex: "name",
       key: "name",
+      width: 200, // Set fixed width
+      ellipsis: true, // Truncate text if too long
       render: (text) => (
         <Tooltip title={text} color="geekblue" zIndex={20000}>
           {text}
@@ -289,6 +291,8 @@ function FilesList() {
       title: "File link",
       dataIndex: "link",
       key: "link",
+      width: 250, // Set fixed width
+      ellipsis: true,
       render: (text, record) => (
         <span
           onClick={() => calculateCanClick(record) && handleLinkClick(record)}
@@ -309,6 +313,8 @@ function FilesList() {
       title: "Owner",
       dataIndex: "owner_email",
       key: "owner_email",
+      width: 200, // Set fixed width
+      ellipsis: true,
       render: (text) => (
         <Tooltip title={text} color="geekblue" zIndex={20000}>
           {text}
@@ -319,11 +325,13 @@ function FilesList() {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      width: 100, // Set fixed width
       render: (text) => (text ? "Public" : "Private"),
     },
     {
       title: "Action",
       key: "action",
+      width: 100, // Set fixed width
       render: (_, record) => (
         <Button
           style={{ fontSize: "12px" }}
@@ -337,6 +345,7 @@ function FilesList() {
     {
       title: "Invite",
       key: "invite",
+      width: 150, // Set fixed width
       render: (_, record) =>
         record.status ? (
           ""
@@ -357,17 +366,23 @@ function FilesList() {
   ];
   // console.log("deleteFileId", deleteFileId);
   return (
-    <main className="w-full ml-2">
-      <section className="px-4 mx-auto">
-        <div className="flex justify-end my-5 items-end">
-          <AddLinkFile
-            isLoading={isLoading}
-            currentProject={currentProject}
-            handleAddLinks={handleAddLinks}
-            isPrivateDisabled={isPrivateDisabled}
-          />
-        </div>
-        <div className="overflow-hidden overflow-x-scroll scrollbar-hide my-8 rounded-md bg-white">
+    <main className="w-full max-w-full overflow-hidden">
+      <section className="mx-auto">
+        {/* <div className="flex justify-end my-5 items-end">
+					<AddLinkFile
+						isLoading={isLoading}
+						currentProject={currentProject}
+						handleAddLinks={handleAddLinks}
+						isPrivateDisabled={isPrivateDisabled}
+					/>
+				</div> */}
+        <div
+          className="overflow-hidden overflow-x-auto w-full mx-auto max-w-full scrollbar-hide my-8 rounded-md bg-white"
+          style={{
+            maxWidth: "80vw", // Ensure the container fits within the viewport width
+            overflowX: "auto", // Enable horizontal scrolling if needed
+          }}
+        >
           <Table
             columns={columns}
             dataSource={projectLinks.map((link, index) => ({
@@ -377,10 +392,12 @@ function FilesList() {
             }))}
             loading={isLoading}
             rowKey="id"
-            scroll={{
-              x: true,
-            }}
+            scroll={{ x: "max-content" }} // Allow the table to scroll based on content size
             size="small"
+            style={{
+              width: "100%", // Ensure the table takes full width of the container
+              tableLayout: "auto", // Let the table adjust column sizes automatically
+            }}
           />
         </div>
       </section>

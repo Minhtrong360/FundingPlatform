@@ -1,21 +1,15 @@
-import { Avatar, Modal, Tooltip, message } from "antd";
+import { Avatar, Modal, message } from "antd";
 
 import { useNavigate, useParams } from "react-router-dom";
 import { formatNumber } from "../../features/CostSlice";
 import { Button } from "../../components/ui/button";
-import { Badge } from "../../components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../components/ui/card";
+import { Card, CardContent, CardTitle } from "../../components/ui/card";
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 import ButtonGroup from "./ButtonGroup";
 import { useAuth } from "../../context/AuthContext";
 import { UserOutlined } from "@ant-design/icons";
-import { CalendarClock, Heart, Settings, Share2 } from "lucide-react";
+import { CalendarClock, Heart, Share2 } from "lucide-react";
 
 export default function ProfileInfo({
   company,
@@ -251,8 +245,8 @@ export default function ProfileInfo({
         ></Modal>
       )}
 
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-6">
-        <div className="flex items-center space-x-4 !mb-4 lg:!mb-0">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6">
+        <div className="flex items-center space-x-4 !mb-4 sm:!mb-0">
           <Avatar
             shape="square"
             size={64}
@@ -271,7 +265,7 @@ export default function ProfileInfo({
             </div>
           </div>
         </div>
-        <div className="flex space-x-2">
+        <div className="grid gap-2 grid-cols-1 w-full sm:w-fit sm:grid-cols-2">
           <Button
             className="text-white bg-slate-800"
             onClick={() => window.open(company?.calendly, "_blank")}

@@ -1,4 +1,4 @@
-import { Badge, message, Button, Input, Modal } from "antd";
+import { message } from "antd";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
@@ -16,13 +16,8 @@ import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 import debounce from "lodash.debounce";
 
-import { Card, CardContent } from "../../../components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "../../../components/ui/tabs";
+import { Card } from "../../../components/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "../../../components/ui/tabs";
 
 const MyTab = ({
   company,
@@ -373,6 +368,7 @@ const MyTab = ({
               "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
             iframe.allowFullscreen = true;
             videoElement.replaceWith(iframe);
+            iframe.style.maxWidth = "85vw";
           }
         }
       });
@@ -420,11 +416,11 @@ const MyTab = ({
       ? {}
       : {
           "Your Profile": (
-            <div className="relative">
+            <div className="relative ">
               <BlockNoteView
                 editor={editor}
                 theme={"light"}
-                className={`w-full ${unChange ? "pointer-events-none" : ""} my-4`}
+                className={`w-full max-w-[85vw] overflow-x-scroll ${unChange ? "pointer-events-none" : ""} my-4`}
                 onChange={(editor) =>
                   debouncedHandleChange(editor, "Your Profile")
                 }
@@ -456,31 +452,41 @@ const MyTab = ({
           ),
         }),
 
-    "Sample PitchDeck": <Sample />,
+    "Sample PitchDeck": (
+      <div>
+        <Card>
+          <Sample />
+        </Card>
+      </div>
+    ),
 
-    "Data Room": <FilesList />,
+    "Data Room": (
+      <div>
+        <FilesList />
+      </div>
+    ),
   };
 
   return (
     <Tabs defaultValue="Your Profile" className="w-full">
-      <TabsList className="w-full justify-start mb-4 !bg-gray-100">
+      <TabsList className="w-full grid grid-cols-3 mb-4 !bg-gray-100">
         <TabsTrigger
           value="Your Profile"
           onClick={() => handleTabChange("Your Profile")}
         >
-          Your Profile
+          <span className="text-xs">Your Profile</span>
         </TabsTrigger>
         <TabsTrigger
           value="Sample PitchDeck"
           onClick={() => handleTabChange("Sample PitchDeck")}
         >
-          Sample PitchDeck
+          <span className="text-xs">Sample PitchDeck</span>
         </TabsTrigger>
         <TabsTrigger
           value="Data Room"
           onClick={() => handleTabChange("Data Room")}
         >
-          Data Room
+          <span className="text-xs">Data Room</span>
         </TabsTrigger>
       </TabsList>
       {tabContents[activeTab]}

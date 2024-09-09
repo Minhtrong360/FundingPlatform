@@ -21,7 +21,7 @@ const BrandSection = () => {
                 <p className="text-white">VAN LANG UNIVERSITY</p>
               </div>
               <div className="zubuz-brand-item">
-                <p className="text-white">Megasop</p>
+                <p className="text-white">MEGASOP</p>
               </div>
               <div className="zubuz-brand-item">
                 <p className="text-white">HOLOLAB</p>
@@ -43,7 +43,7 @@ const BrandSection = () => {
                 <p className="text-white">VAN LANG UNIVERSITY</p>
               </div>
               <div className="zubuz-brand-item">
-                <p className="text-white">Megasop</p>
+                <p className="text-white">MEGASOP</p>
               </div>
               <div className="zubuz-brand-item">
                 <p className="text-white">HOLOLAB</p>

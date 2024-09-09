@@ -151,7 +151,7 @@ function Company({
                       {formData.country ? (
                         <span>{formData.country}</span>
                       ) : (
-                        <span className="text-gray-500">{countries[0]}</span>
+                        <span className="">{countries[0]}</span>
                       )}
                     </SelectValue>
                   </SelectTrigger>

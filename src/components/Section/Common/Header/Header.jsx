@@ -217,7 +217,7 @@ const Header = ({ logoSrc }) => {
                         </li>
                       </ul>
                     </li>
-                    <li className="sub-menu--item nav-item-has-children">
+                    {/* <li className="sub-menu--item nav-item-has-children">
                       <Link to="/#" className="drop-trigger">
                         Service
                         <i>
@@ -238,7 +238,7 @@ const Header = ({ logoSrc }) => {
                           </Link>
                         </li>
                       </ul>
-                    </li>
+                    </li> */}
                     <li className="sub-menu--item nav-item-has-children">
                       <Link to="/#" className="drop-trigger">
                         Team

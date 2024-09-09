@@ -10,6 +10,14 @@ import {
 } from "antd";
 import React from "react";
 import Dashboard from "./Dashboard";
+import {
+  Tabs as TabsUi,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../../components/ui/tabs";
+import { Button } from "../../../components/ui/button";
+import { PlusIcon } from "lucide-react";
 // import { supabase } from "../../../supabase";
 // import { formatDate } from "../../../features/DurationSlice";
 // import { PlusOutlined } from "@ant-design/icons";
@@ -32,52 +40,48 @@ function Tabs({
 }) {
   return (
     <div
-      className="p-4 pl-4 sm:pl-0 sm:ml-16 ml-0 "
+      className="p-4 sm:pl-0 sm:ml-16 ml-0 "
       onClick={() => setIsSidebarOpen(false)}
     >
-      <div className="p-4 border-gray-300 rounded-md darkBorderGray min-h-[96vh]">
+      <div className="sm:container mx-auto border-gray-300 rounded-md darkBorderGray min-h-[96vh]">
         <h1 className="text-4xl text-center my-2 font-bold">Admin Dashboard</h1>
-        <section className="container px-2 mx-auto mt-14">
-          <div className="overflow-x-auto whitespace-nowrap border-yellow-300 text-sm">
-            <ul className="py-4 flex xl:justify-center justify-start items-center space-x-4">
-              <li
-                className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
-                  activeTab === "fundraising" ? "bg-yellow-300 font-bold" : ""
-                }`}
-                onClick={() => handleTabChange("fundraising")}
-              >
-                Fundraising profiles
-              </li>
-              <li
-                className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
-                  activeTab === "financial" ? "bg-yellow-300 font-bold" : ""
-                }`}
-                onClick={() => handleTabChange("financial")}
-              >
-                Financial profiles
-              </li>
-              <li
-                className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
-                  activeTab === "client" ? "bg-yellow-300 font-bold" : ""
-                }`}
-                onClick={() => handleTabChange("client")}
-              >
-                Client profiles
-              </li>
-              <li
-                className={`hover:cursor-pointer px-2 py-1 rounded-md hover:bg-yellow-200 ${
-                  activeTab === "adminChart" ? "bg-yellow-300 font-bold" : ""
-                }`}
-                onClick={() => handleTabChange("adminChart")}
-              >
-                Admin charts
-              </li>
-            </ul>
-          </div>
-        </section>
+
+        <TabsUi
+          value={activeTab}
+          onValueChange={handleTabChange}
+          className="w-full flex justify-center items-center mt-12"
+        >
+          <TabsList className="w-full bg-gray-50 mb-4 overflow-x-auto flex sm:grid sm:grid-cols-4 sm:min-h-full min-h-12 sm:justify-center justify-start">
+            <TabsTrigger
+              value="fundraising"
+              className="data-[state=active]:bg-white data-[state=active]:text-black w-full text-center mx-auto rounded-md text-gray-800 whitespace-nowrap"
+            >
+              Fundraising profiles
+            </TabsTrigger>
+            <TabsTrigger
+              value="financial"
+              className="data-[state=active]:bg-white data-[state=active]:text-black w-full text-center mx-auto rounded-md text-gray-800 whitespace-nowrap"
+            >
+              Financial profiles
+            </TabsTrigger>
+            <TabsTrigger
+              value="client"
+              className="data-[state=active]:bg-white data-[state=active]:text-black w-full text-center mx-auto rounded-md text-gray-800 whitespace-nowrap"
+            >
+              Client profiles
+            </TabsTrigger>
+            <TabsTrigger
+              value="adminChart"
+              className="data-[state=active]:bg-white data-[state=active]:text-black w-full text-center mx-auto rounded-md text-gray-800 whitespace-nowrap"
+            >
+              Admin charts
+            </TabsTrigger>
+          </TabsList>
+        </TabsUi>
+
         {activeTab === "fundraising" && (
           <main className="w-full min-h-[92.5vh]">
-            <section className="container px-4 mx-auto mt-14">
+            <section className="mx-auto mt-14">
               <div className="flex flex-col mb-8">
                 <h2 className="text-2xl font-semibold">
                   Fundraising profiles table
@@ -103,7 +107,7 @@ function Tabs({
           </main>
         )}
         {activeTab === "financial" && (
-          <section className="container px-4 mx-auto mt-14">
+          <section className="mx-auto mt-14">
             <div className="flex flex-col mb-8">
               {/* <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
@@ -135,7 +139,7 @@ function Tabs({
           </section>
         )}
         {activeTab === "client" && (
-          <section className="container px-4 mx-auto mt-14">
+          <section className="mx-auto mt-14">
             <div className="flex flex-col mb-8">
               {/* <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
@@ -170,7 +174,7 @@ function Tabs({
           </div>
         )}
         {/* {activeTab === "code" && (
-          <section className="container px-4 mx-auto mt-14">
+          <section className="mx-auto mt-14">
             <div className="flex flex-col mb-8">
               <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">

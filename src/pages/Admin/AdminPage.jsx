@@ -2220,9 +2220,12 @@ function AdminPage() {
             </Menu>
           }
         >
-          <div className="bg-blue-600 rounded-md text-white py-1 hover:cursor-pointer">
+          <Button
+            style={{ fontSize: "12px" }}
+            className="hover:cursor-pointer bg-blue-600 text-white"
+          >
             Action
-          </div>
+          </Button>
         </Dropdown>
       ),
     },

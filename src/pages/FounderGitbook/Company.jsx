@@ -146,7 +146,7 @@ function Company({
                     handleInputChange({ target: { name: "country", value } })
                   }
                 >
-                  <SelectTrigger className=" rounded-lg text-base">
+                  <SelectTrigger className=" rounded-lg ">
                     <SelectValue>
                       {formData.country ? (
                         <span>{formData.country}</span>
@@ -220,7 +220,7 @@ function Company({
                       })
                     }
                   >
-                    <SelectTrigger className=" rounded-lg text-base">
+                    <SelectTrigger className=" rounded-lg ">
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
@@ -273,7 +273,7 @@ function Company({
                       })
                     }
                   >
-                    <SelectTrigger className=" rounded-lg text-base">
+                    <SelectTrigger className=" rounded-lg ">
                       <SelectValue placeholder="Select range" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
@@ -336,7 +336,7 @@ function Company({
                       handleInputChange({ target: { name: "teamSize", value } })
                     }
                   >
-                    <SelectTrigger className=" rounded-lg text-base">
+                    <SelectTrigger className=" rounded-lg ">
                       <SelectValue placeholder="Select size" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
@@ -376,7 +376,7 @@ function Company({
                       })
                     }
                   >
-                    <SelectTrigger className=" rounded-lg text-base">
+                    <SelectTrigger className=" rounded-lg ">
                       <SelectValue placeholder="Select year" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
@@ -400,7 +400,7 @@ function Company({
                       handleInputChange({ target: { name: "round", value } })
                     }
                   >
-                    <SelectTrigger className=" rounded-lg text-base">
+                    <SelectTrigger className=" rounded-lg ">
                       <SelectValue placeholder="Select round" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
@@ -438,7 +438,7 @@ function Company({
                         target: { name: "project_url", value: e.target.value },
                       })
                     }
-                    className=" text-base"
+                    className=" "
                   />
                 </TabsContent>
                 <TabsContent value="upload">
@@ -446,7 +446,7 @@ function Company({
                     type="file"
                     accept="image/*"
                     onChange={handleProjectImageUpload}
-                    className=" text-base"
+                    className="file:mx-4 file:px-4 file:rounded-md file:border-[0.5px] file:border-gray-300 file:bg-white file:text-gray-700 hover:file:bg-gray-50 hover:file:cursor-pointer"
                   />
                 </TabsContent>
               </Tabs>
@@ -478,7 +478,7 @@ function Company({
                         target: { name: "card_url", value: e.target.value },
                       })
                     }
-                    className=" text-base"
+                    className=" "
                   />
                 </TabsContent>
                 <TabsContent value="upload">
@@ -486,7 +486,7 @@ function Company({
                     type="file"
                     accept="image/*"
                     onChange={handleCardImageUpload}
-                    className=" text-base"
+                    className="file:mx-4 file:px-4 file:rounded-md file:border-[0.5px] file:border-gray-300 file:bg-white file:text-gray-700 hover:file:bg-gray-50 hover:file:cursor-pointer"
                   />
                 </TabsContent>
               </Tabs>

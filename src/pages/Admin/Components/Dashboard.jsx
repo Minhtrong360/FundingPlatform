@@ -225,9 +225,8 @@ function Dashboard({ dataSource }) {
     processData();
   }, [dataSource]);
 
-  console.log("dataSource", dataSource);
   return (
-    <div className="w-[90%] flex flex-col gap-8 md:p-8 p-0 bg-white">
+    <div className="w-full flex flex-col gap-8 md:p-8 p-0 bg-white">
       <h2 className="text-3xl font-semibold">Overview Charts</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {chartData.map((chart, index) => (

@@ -238,7 +238,7 @@ const HomeHeaderTwo = ({ logoSrc }) => {
                         </li>
                       </ul>
                     </li>
-                    <li class="sub-menu--item nav-item-has-children">
+                    {/* <li class="sub-menu--item nav-item-has-children">
                       <Link to="/" data-menu-get="h3" class="drop-trigger">
                         Service
                         <i>
@@ -257,7 +257,7 @@ const HomeHeaderTwo = ({ logoSrc }) => {
                           </Link>
                         </li>
                       </ul>
-                    </li>
+                    </li> */}
                     <li class="sub-menu--item nav-item-has-children">
                       <Link to="/" data-menu-get="h3" class="drop-trigger">
                         Team

@@ -480,18 +480,18 @@ function ProjectList({ projects, isLoading }) {
       </h1>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full ">
-        <TabsList className="grid w-full grid-cols-2 bg-gray-50 mb-4">
+        <TabsList className="grid sm:w-[50%] w-full grid-cols-2 bg-gray-50 mb-4">
           <TabsTrigger
             value="my-projects"
-            className="data-[state=active]:bg-white data-[state=active]:text-black sm:w-[50%] w-full mx-auto rounded-md text-gray-800"
+            className="data-[state=active]:bg-white data-[state=active]:text-black w-full mx-auto rounded-md text-gray-800"
           >
             My Projects
           </TabsTrigger>
           <TabsTrigger
             value="shared-projects"
-            className="data-[state=active]:bg-white data-[state=active]:text-black sm:w-[50%] w-full mx-auto rounded-md text-gray-800"
+            className="data-[state=active]:bg-white data-[state=active]:text-black w-full mx-auto rounded-md text-gray-800"
           >
-            Projects Shared With Me
+            Shared Projects
           </TabsTrigger>
         </TabsList>
         <TabsContent value="my-projects">
@@ -880,7 +880,8 @@ function ProjectList({ projects, isLoading }) {
                           : "bg-black text-white"
                       }
                     >
-                      {project.status}
+                      {project?.status.trim().charAt(0).toUpperCase() +
+                        project?.status.slice(1)}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">

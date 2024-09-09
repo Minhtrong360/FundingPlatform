@@ -293,7 +293,7 @@ function FinancialList() {
   return (
     <>
       <HomeHeader />
-      <div className="mt-24 p-4 border-gray-300 border-dashed rounded-md darkBorderGray">
+      <div className="mt-24 sm:p-4 p-0 border-gray-300 border-dashed rounded-md darkBorderGray">
         <div className="container mx-auto px-4 py-8">
           <h1 className="text-3xl font-bold mb-8 text-center -tracking-normal">
             Financial Projects Dashboard
@@ -304,16 +304,16 @@ function FinancialList() {
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-2 bg-gray-50 mb-4">
+            <TabsList className="grid sm:w-[50%] w-full grid-cols-2 bg-gray-50 mb-4">
               <TabsTrigger
                 value="my-finances"
-                className="data-[state=active]:bg-white data-[state=active]:text-black sm:w-[50%] w-full mx-auto rounded-md text-gray-800"
+                className="data-[state=active]:bg-white data-[state=active]:text-black w-full mx-auto rounded-md text-gray-800"
               >
                 My Financials
               </TabsTrigger>
               <TabsTrigger
                 value="shared-finances"
-                className="data-[state=active]:bg-white data-[state=active]:text-black sm:w-[50%] w-full mx-auto rounded-md text-gray-800"
+                className="data-[state=active]:bg-white data-[state=active]:text-black w-full mx-auto rounded-md text-gray-800"
               >
                 Shared Financials
               </TabsTrigger>
@@ -471,16 +471,6 @@ function FinancialList() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          {/* <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full sm:w-40">
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent className="bg-white">
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="private">Private</SelectItem>
-              <SelectItem value="public">Public</SelectItem>
-            </SelectContent>
-          </Select> */}
         </div>
 
         <div className="overflow-x-auto">
@@ -503,27 +493,31 @@ function FinancialList() {
               {filteredFinances.map((finance, index) => (
                 <TableRow key={finance.id}>
                   <TableCell
-                    className="hover:cursor-pointer"
+                    className="hover:cursor-pointer whitespace-nowrap"
                     onClick={() => handleProjectClick(finance)}
                   >
                     {index + 1}
                   </TableCell>
                   <TableCell
-                    className="hover:cursor-pointer"
+                    className="hover:cursor-pointer whitespace-nowrap"
                     onClick={() => handleProjectClick(finance)}
                   >
                     {finance.name}
                   </TableCell>
-                  <TableCell>{formatDate(finance.created_at)}</TableCell>
-                  <TableCell>{finance.user_email}</TableCell>
-                  <TableCell>
+                  <TableCell className="whitespace-nowrap">
+                    {formatDate(finance.created_at)}
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap">
+                    {finance.user_email}
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap">
                     {finance?.inputData?.industry || "Waiting for setup"}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="whitespace-nowrap">
                     {finance?.inputData?.selectedDuration ||
                       "Waiting for setup"}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="whitespace-nowrap">
                     {finance?.inputData?.startMonth &&
                     finance?.inputData?.startYear ? (
                       <>
@@ -536,7 +530,7 @@ function FinancialList() {
                       "Waiting for setup"
                     )}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="whitespace-nowrap">
                     <Tooltip title="Customer of 1st year">
                       {finance?.inputData?.yearlyAverageCustomers
                         ? formatNumber(
@@ -545,14 +539,16 @@ function FinancialList() {
                         : "Waiting for setup"}
                     </Tooltip>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="whitespace-nowrap">
                     <Tooltip title="Revenue of 1st year">
                       {finance?.inputData?.yearlySales
-                        ? `${getCurrencyLabelByKey(finance?.inputData?.currency)}${formatNumber(finance?.inputData?.yearlySales[0])}`
+                        ? `${getCurrencyLabelByKey(
+                            finance?.inputData?.currency
+                          )}${formatNumber(finance?.inputData?.yearlySales[0])}`
                         : "Waiting for setup"}
                     </Tooltip>
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="whitespace-nowrap text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="sm">

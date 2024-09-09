@@ -146,7 +146,7 @@ function Company({
                     handleInputChange({ target: { name: "country", value } })
                   }
                 >
-                  <SelectTrigger className="h-[60px] rounded-lg text-base">
+                  <SelectTrigger className=" rounded-lg text-base">
                     <SelectValue>
                       {formData.country ? (
                         <span>{formData.country}</span>
@@ -220,7 +220,7 @@ function Company({
                       })
                     }
                   >
-                    <SelectTrigger className="h-[60px] rounded-lg text-base">
+                    <SelectTrigger className=" rounded-lg text-base">
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
@@ -273,7 +273,7 @@ function Company({
                       })
                     }
                   >
-                    <SelectTrigger className="h-[60px] rounded-lg text-base">
+                    <SelectTrigger className=" rounded-lg text-base">
                       <SelectValue placeholder="Select range" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
@@ -336,7 +336,7 @@ function Company({
                       handleInputChange({ target: { name: "teamSize", value } })
                     }
                   >
-                    <SelectTrigger className="h-[60px] rounded-lg text-base">
+                    <SelectTrigger className=" rounded-lg text-base">
                       <SelectValue placeholder="Select size" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
@@ -376,7 +376,7 @@ function Company({
                       })
                     }
                   >
-                    <SelectTrigger className="h-[60px] rounded-lg text-base">
+                    <SelectTrigger className=" rounded-lg text-base">
                       <SelectValue placeholder="Select year" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
@@ -400,7 +400,7 @@ function Company({
                       handleInputChange({ target: { name: "round", value } })
                     }
                   >
-                    <SelectTrigger className="h-[60px] rounded-lg text-base">
+                    <SelectTrigger className=" rounded-lg text-base">
                       <SelectValue placeholder="Select round" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
@@ -438,7 +438,7 @@ function Company({
                         target: { name: "project_url", value: e.target.value },
                       })
                     }
-                    className="h-[60px] text-base"
+                    className=" text-base"
                   />
                 </TabsContent>
                 <TabsContent value="upload">
@@ -446,7 +446,7 @@ function Company({
                     type="file"
                     accept="image/*"
                     onChange={handleProjectImageUpload}
-                    className="h-[60px] text-base"
+                    className=" text-base"
                   />
                 </TabsContent>
               </Tabs>
@@ -478,7 +478,7 @@ function Company({
                         target: { name: "card_url", value: e.target.value },
                       })
                     }
-                    className="h-[60px] text-base"
+                    className=" text-base"
                   />
                 </TabsContent>
                 <TabsContent value="upload">
@@ -486,7 +486,7 @@ function Company({
                     type="file"
                     accept="image/*"
                     onChange={handleCardImageUpload}
-                    className="h-[60px] text-base"
+                    className=" text-base"
                   />
                 </TabsContent>
               </Tabs>

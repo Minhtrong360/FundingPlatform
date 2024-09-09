@@ -1,6 +1,6 @@
 import { BubbleChat } from "flowise-embed-react";
-import customIcon from "../../../src/assets/icon/chat-bot.svg";
-import support from "../../../src/assets/icon/support.svg";
+import customIcon from "../../../src/assets/icon/User, Chat, Messages, Bubble.svg";
+import support from "../../../src/assets/icon/User, Chat, Messages, Bubble.svg";
 // const apiUrl = process.env.REACT_APP_PUBLIC_SUPABASE_URL;
 // const apiKey = process.env.REACT_APP_PUBLIC_SUPABASE_ANON_KEY;
 //

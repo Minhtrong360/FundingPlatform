@@ -26,6 +26,32 @@ const CustomChart = ({
     (state) => state.durationSelect
   );
 
+  const getDynamicMinMax = (seriesData) => {
+    let min = Number.POSITIVE_INFINITY;
+    let max = Number.NEGATIVE_INFINITY;
+
+    // Check if seriesData is an array and not empty
+    if (Array.isArray(seriesData) && seriesData.length > 0) {
+      seriesData.forEach(serie => {
+        // Safely check if data is an array
+        if (Array.isArray(serie.data)) {
+          serie.data.forEach(value => {
+            if (value < min) min = value;
+            if (value > max) max = value;
+          });
+        }
+      });
+    } else {
+      // Set default min and max if seriesData is empty or undefined
+      min = 0;
+      max = 10; // You can adjust this default range
+    }
+
+    return { min, max };
+  };
+
+
+
   const months = [
     "01",
     "02",
@@ -62,6 +88,9 @@ const CustomChart = ({
     chartEndMonth
   )?.map((value) => parseFloat(value?.toFixed(0)));
 
+   // Get dynamic min and max based on series data
+   const { min, max } = getDynamicMinMax([{ name: seriesTitle, data: filteredData }]);
+
   const chartOptions = {
     chart: {
       fontFamily: "Sora, sans-serif",
@@ -93,7 +122,11 @@ const CustomChart = ({
     },
     yaxis: {
       show: false, // Hide y-axis
-      min: 0,
+      // min: 0,
+      
+      min: min < 0 ? min - 10 : 0,  // Adjust for negative values with padding
+      max: max + 10,  // Add padding to the max value
+      
       axisBorder: { show: false },
       labels: {
         show: false,

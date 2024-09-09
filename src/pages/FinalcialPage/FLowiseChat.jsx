@@ -1,6 +1,6 @@
 import { BubbleChat } from "flowise-embed-react";
 import customIcon from "../../../src/assets/icon/User, Chat, Messages, Bubble.svg";
-import support from "../../../src/assets/icon/User, Chat, Messages, Bubble.svg";
+import support from "../../../src/assets/icon/User, Chat, Messages, Bubble2.svg";
 // const apiUrl = process.env.REACT_APP_PUBLIC_SUPABASE_URL;
 // const apiKey = process.env.REACT_APP_PUBLIC_SUPABASE_ANON_KEY;
 //
@@ -110,7 +110,7 @@ const FlowiseChat = ({ page, projectid }) => {
             dragAndDrop: true,
             iconColor: "white",
             // customIconSrc: "https://img.icons8.com/?size=100&id=NspKf9KAs70I&format=png&color=FFFFFF",
-            customIconSrc: customIcon,
+            customIconSrc: support,
         },
         tooltip: {
             showTooltip: false,
@@ -123,7 +123,7 @@ const FlowiseChat = ({ page, projectid }) => {
             showTitle: true,
             title: title,
             // titleAvatarSrc: 'https://img.icons8.com/?size=100&id=xaquNfre75yC&format=png&color=000000',
-            titleAvatarSrc: customIcon,
+            titleAvatarSrc: customIcon, 
             welcomeMessage: welcomeMessage,
             errorMessage: 'There is error, please try again',
             backgroundColor: "#ffffff",
@@ -137,6 +137,8 @@ const FlowiseChat = ({ page, projectid }) => {
                 showAvatar: true,
                 // avatarSrc: "https://img.icons8.com/?size=100&id=xaquNfre75yC&format=png&color=000000",
                 avatarSrc: support,
+                
+                
             },
             userMessage: {
                 backgroundColor: "#3B81F6",

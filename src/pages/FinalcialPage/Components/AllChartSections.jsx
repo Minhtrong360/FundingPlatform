@@ -544,7 +544,7 @@ const AllChartSections = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <ReusableChart
             title="Total User"
-            description="January - June 2024"
+            description="Customers by channel"
             series={customerGrowthChart.series}
             // options={{
             //   ...customerGrowthChart.options,
@@ -579,13 +579,13 @@ const AllChartSections = ({
               return `${months[monthIndex]}/${year}`;
             })}
             charttype="area"
-            footerText="Trending up by 5.2% this month"
-            footerSubText="Showing total visitors for the last 6 months"
+            footerText=""
+            footerSubText=""
           />
 
           <ReusableChart
             title="Total Revenue"
-            description="Total Revenue for the last 6 months"
+            description="Revenue by channel"
             series={revenue.series}
             // options={{
             //   chart: {
@@ -617,13 +617,13 @@ const AllChartSections = ({
               return `${months[monthIndex]}/${year}`;
             })}
             charttype="area"
-            footerText="$2,404,488"
-            footerSubText="Total revenue for the last 6 months"
+            footerText=""
+            footerSubText=""
           />
 
           <ReusableChart
-            title="Total Cost"
-            description="Total Cost for the last 6 months"
+            title="Operating Cost"
+            description="Total Cost"
             // options={{
             //   zoom: {
             //     enabled: false, // Disable zooming
@@ -647,13 +647,13 @@ const AllChartSections = ({
             })}
             series={[{ data: totalCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
             charttype="area"
-            footerText="$118,643"
-            footerSubText="Total costs for the last 6 months"
+            footerText=""
+            footerSubText=""
           />
 
           <ReusableChart
-            title="Total Personnel Cost"
-            description="Total Personnel Cost for the last 6 months"
+            title="Personnel"
+            description="Total Personnel"
             // options={{
             //   zoom: {
             //     enabled: false, // Disable zooming
@@ -677,13 +677,13 @@ const AllChartSections = ({
             })}
             series={[{ data: totalPersonnelCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
             charttype="area"
-            footerText="$714,960"
-            footerSubText="Total personnel cost for the last 6 months"
+            footerText=""
+            footerSubText=""
           />
 
           <ReusableChart
-            title="Total Investment"
-            description="Total Investment for the last 6 months"
+            title="CapEx"
+            description="Total Capital Expenditures"
             // options={{
             //   zoom: {
             //     enabled: false, // Disable zooming
@@ -707,13 +707,13 @@ const AllChartSections = ({
             })}
             series={[{ data: bsTotalInvestmentValues, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
             charttype="area"
-            footerText="$10,000"
-            footerSubText="Total investment for the last 6 months"
+            footerText=""
+            footerSubText=""
           />
 
           <ReusableChart
-            title="Total Loan"
-            description="Total Loan for the last 6 months"
+            title="Loans"
+            description="Total Loan"
             // options={{
             //   zoom: {
             //     enabled: false, // Disable zooming
@@ -759,8 +759,8 @@ const AllChartSections = ({
             })}
             series={[{ data: totalLoanData, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
             charttype="area"
-            footerText="$40,000"
-            footerSubText="Total loan for the last 6 months"
+            footerText=""
+            footerSubText=""
           />
         </div>
 

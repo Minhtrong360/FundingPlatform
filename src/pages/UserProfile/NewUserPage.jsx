@@ -266,7 +266,7 @@ function NewUserPage() {
   };
 
   return (
-    <div className="min-h-screen py-12 px-3 sm:px-6 lg:px-8 mt-14">
+    <div className="min-h-screen py-12 px-3 md:!px-6 l!g:px-8 mt-14">
       {isLoading && <LoadingButtonClick isLoading={isLoading} />}
       <div className="max-w-4xl mx-auto">
         <Card>
@@ -310,15 +310,15 @@ function NewUserPage() {
             <Tabs defaultValue="user-info" className="space-y-6">
               <TabsList className="grid w-full grid-cols-3 gap-4">
                 <TabsTrigger value="user-info">
-                  <UserIcon className="mr-2 h-4 w-4" />
+                  <UserIcon className="mr-2 h-4 w-4 md:!block !hidden" />
                   User Info
                 </TabsTrigger>
                 <TabsTrigger value="security">
-                  <LockIcon className="mr-2 h-4 w-4" />
+                  <LockIcon className="mr-2 h-4 w-4 md:!block !hidden" />
                   Security
                 </TabsTrigger>
                 <TabsTrigger value="billing">
-                  <CreditCardIcon className="mr-2 h-4 w-4" />
+                  <CreditCardIcon className="mr-2 h-4 w-4 md:!block !hidden" />
                   Billing
                 </TabsTrigger>
               </TabsList>

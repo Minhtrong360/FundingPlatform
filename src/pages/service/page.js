@@ -12,7 +12,7 @@ export default function ServicePage() {
       <HomeHeader />
       <PageHeader title="Our Services" />
       <ServiceSection />
-      <PricingSection />
+      {/* <PricingSection /> */}
       <IntegrationSection />
       <Footer />
     </>

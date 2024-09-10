@@ -304,7 +304,7 @@ function FinancialList() {
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="grid sm:w-[50%] w-full grid-cols-2 bg-gray-50 mb-4">
+            <TabsList className="grid sm:w-[50%] w-full grid-cols-2 bg-gray-50 mb-4 mx-auto">
               <TabsTrigger
                 value="my-finances"
                 className="data-[state=active]:bg-white data-[state=active]:text-black w-full mx-auto rounded-md text-gray-800"

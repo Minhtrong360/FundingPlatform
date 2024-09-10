@@ -1148,7 +1148,7 @@ const SalesSection = ({
                 </div>
               </span>
               <Table
-                className="bg-white overflow-auto my-8 rounded-md shadow-xl"
+                className="custom-table bg-white overflow-auto my-8 rounded-md"
                 size="small"
                 dataSource={filteredTableData}
                 columns={revenueColumns}

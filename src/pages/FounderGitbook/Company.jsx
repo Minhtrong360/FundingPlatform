@@ -326,7 +326,7 @@ function Company({
                   Funding Information
                 </h2>
                 <div className="space-y-2">
-                  <Label className="font-semibold" htmlFor="annual-revenue">
+                  <Label className="font-semibold" htmlFor="revenueStatus">
                     Annual revenue last year
                   </Label>
                   <Select

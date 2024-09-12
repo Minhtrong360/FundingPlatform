@@ -61,6 +61,7 @@ const SignInForm = () => {
               <input
                 type="email"
                 placeholder="example@gmail.com"
+                className="placeholder:text-gray-400"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -72,6 +73,7 @@ const SignInForm = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter Password"
+                  className="placeholder:text-gray-400"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required

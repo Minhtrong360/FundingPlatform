@@ -163,16 +163,14 @@ const Card = ({
       navigate(`/profile/${project.project_id}`);
     } else return;
   };
-  console.log("projectList", projectList);
-  console.log("selectedCodeFull", selectedCodeFull);
-
+  console.log("project", project);
   return (
     <>
       <CardShadcn
         key={project?.id}
         className="bg-white overflow-hidden transition-all duration-300 hover:shadow-xl flex flex-col justify-between h-full"
       >
-        <CardHeader className="p-0">
+        <CardHeader className="p-0 relative !space-y-0">
           <img
             src={project?.card_url}
             alt={project?.name}
@@ -180,6 +178,11 @@ const Card = ({
             height={200}
             className="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
           />
+          {project?.verifiedStatus && (
+            <span className="absolute top-0 right-0 bg-[#ABFB4F] text-black text-sm font-medium py-1.5 px-3 rounded-bl-lg">
+              Verified profile
+            </span>
+          )}
         </CardHeader>
         <CardContent className="p-4 flex-grow">
           <div className="flex justify-between items-center mb-2">

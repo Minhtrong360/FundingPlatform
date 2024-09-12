@@ -73,6 +73,7 @@ const ResetPasswordForm = () => {
                   <input
                     type="email"
                     placeholder="example@gmail.com"
+                    className="placeholder:text-gray-400"
                     value={email}
                     onChange={handleEmailChange}
                   />

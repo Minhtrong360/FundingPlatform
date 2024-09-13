@@ -706,17 +706,17 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         );
   return (
     <div>
-      <div className="flex space-x-2 my-6 mx-auto px-6">
+      <div className="flex space-x-2 my-6 mx-auto justify-center item-center">
         <Badge
           variant="secondary"
-          className={`bg-yellow-100 text-yellow-800 cursor-pointer ${activeTab === "input" ? "bg-yellow-500 text-white" : ""}`}
+          className={`bg-yellow-100 text-yellow-800 cursor-pointer text-sm ${activeTab === "input" ? "bg-yellow-500 text-white" : ""}`}
           onClick={() => handleTabChange("input")}
         >
           Inputs
         </Badge>
         <Badge
           variant="secondary"
-          className={`bg-green-100 text-green-800 cursor-pointer ${activeTab === "table&chart" ? "bg-green-500 text-white" : ""}`}
+          className={`bg-green-100 text-green-800 cursor-pointer text-sm ${activeTab === "table&chart" ? "bg-green-500 text-white" : ""}`}
           onClick={() => handleTabChange("table&chart")}
         >
           Tables and Charts

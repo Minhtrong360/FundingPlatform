@@ -1131,7 +1131,7 @@ function BalanceSheetSection({ numberOfMonths }) {
               checked={showAdvancedInputs}
               onChange={(e) => setShowAdvancedInputs(e.target.checked)}
             >
-              Show More Detail Result
+              Advanced
             </Checkbox>
           </div>
           {showAdvancedInputs && (
@@ -1178,7 +1178,7 @@ function BalanceSheetSection({ numberOfMonths }) {
     </div> */}
       </div>
 
-      <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden">
+      <div className="w-full xl:w-1/4 sm:p-4 p-0 ">
         <section className="mb-8 NOsticky NOtop-8 ">
           <GroqJS
             datasrc={BalenceSheetData}

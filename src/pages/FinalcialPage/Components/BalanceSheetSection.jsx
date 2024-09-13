@@ -1131,7 +1131,7 @@ function BalanceSheetSection({ numberOfMonths }) {
               checked={showAdvancedInputs}
               onChange={(e) => setShowAdvancedInputs(e.target.checked)}
             >
-              Show More Detail Result
+              Advanced
             </Checkbox>
           </div>
           {showAdvancedInputs && (

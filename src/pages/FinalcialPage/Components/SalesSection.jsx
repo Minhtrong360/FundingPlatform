@@ -47,8 +47,8 @@ import {
   CardHeader,
   CardContent,
 } from "../../../components/ui/card";
-import { Button as ButtonV0 } from "../../../components/ui/button";
-import { Download } from "lucide-react";
+import { Button, Button as ButtonV0 } from "../../../components/ui/button";
+import { Check, Download, Plus, Trash2 } from "lucide-react";
 
 const ChannelInputForm = ({
   tempChannelInputs,
@@ -270,35 +270,38 @@ const ChannelInputForm = ({
           </div>
         ))}
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <button
-          className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
+        <Button
+          variant="destructive"
           onClick={() => setIsDeleteModalOpen(true)}
+          style={{ backgroundColor: "#EF4444", color: "white" }}
         >
-          <DeleteOutlined
-            style={{
-              fontSize: "12px",
-              color: "#FFFFFF",
-              marginRight: "4px",
-            }}
-          />
+          <Trash2 className="mr-2 h-4 w-4" />
           Remove
-        </button>
-
-        <button
-          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+        </Button>
+        <Button
+          variant="destructive"
           onClick={addNewChannelInput}
+          style={{ backgroundColor: "#18181B", color: "white" }}
         >
-          <PlusOutlined
-            style={{
-              fontSize: "12px",
-              color: "#FFFFFF",
-              marginRight: "4px",
-            }}
-          />
+          <Plus className="mr-2 h-4 w-4" />
           Add
-        </button>
-
-        <button
+        </Button>
+        <Button
+          variant="destructive"
+          onClick={handleSave}
+          style={{ backgroundColor: "#18181B", color: "white" }}
+        >
+          {isLoading ? (
+            <SpinnerBtn />
+          ) : (
+            <>
+              <Check className="mr-2 h-4 w-4" />
+              Save
+            </>
+          )}
+        </Button>
+      </div>
+      {/* <button
           className="bg-green-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
           onClick={duplicateChannelInput}
         >
@@ -310,28 +313,7 @@ const ChannelInputForm = ({
             }}
           />
           Dupl.
-        </button>
-
-        <button
-          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw]"
-          onClick={handleSave}
-        >
-          {isLoading ? (
-            <SpinnerBtn />
-          ) : (
-            <>
-              <CheckCircleOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />
-              Save
-            </>
-          )}
-        </button>
-      </div>
+        </button> */}
     </section>
   );
 };
@@ -832,7 +814,7 @@ const SalesSection = ({
 
   return (
     <div>
-      <div className="flex space-x-2 my-6 mx-auto">
+      <div className="flex space-x-2 my-6 mx-auto px-6">
         <Badge
           variant="secondary"
           className={`bg-yellow-100 text-yellow-800 cursor-pointer ${activeTab === "input" ? "bg-yellow-500 text-white" : ""}`}
@@ -848,12 +830,12 @@ const SalesSection = ({
           Tables and Charts
         </Badge>
       </div>
-      <CardShadcn className="w-full h-full flex flex-col lg:flex-row p-4">
+      <div className="w-full h-full flex flex-col lg:flex-row p-4">
         {activeTab === "table&chart" && (
           <>
             <div className="w-full xl:w-3/4 sm:p-4 p-0">
               <h3 className="text-lg font-semibold mb-4">I. Revenue Chart</h3>
-              <div className="ml-4 mt-20">
+              <div className="sm:ml-4 ml-0 mt-20">
                 <h4 className="text-base font-semibold mb-4">
                   1. All revenue chart
                 </h4>
@@ -865,14 +847,30 @@ const SalesSection = ({
                       className="flex flex-col transition duration-500  rounded-2xl relative"
                     >
                       <CardHeader>
-                        <div className="absolute top-2 right-2">
-                          <button
-                            onClick={(event) => handleChartClick(chart, event)}
-                            className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="absolute top-2 right-2 z-50"
+                          onClick={(event) => handleChartClick(chart, event)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="w-4 h-4"
                           >
-                            <FullscreenOutlined />
-                          </button>
-                        </div>
+                            <path d="M15 3h6v6" />
+                            <path d="M10 14 21 3" />
+                            <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                          </svg>
+                          <span className="sr-only">Fullscreen</span>
+                        </Button>
                         <div className="flex justify-between items-center">
                           <div className="min-w-[10vw] mb-2">
                             <label
@@ -892,7 +890,7 @@ const SalesSection = ({
                                   )
                                 )
                               }
-                              className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                              className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                             >
                               {Array.from(
                                 { length: numberOfMonths },
@@ -926,7 +924,7 @@ const SalesSection = ({
                                   )
                                 )
                               }
-                              className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                              className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                             >
                               {Array.from(
                                 { length: numberOfMonths },
@@ -963,7 +961,7 @@ const SalesSection = ({
                     </CardShadcn>
                   ))}
               </div>
-              <div className="ml-4 mt-20">
+              <div className="sm:ml-4 ml-0 mt-20">
                 <h4 className="text-base font-semibold mb-4">
                   2. Component charts
                 </h4>
@@ -983,16 +981,32 @@ const SalesSection = ({
                           className="flex flex-col transition duration-500  rounded-2xl relative"
                         >
                           <CardHeader>
-                            <div className="absolute top-2 right-2">
-                              <button
-                                onClick={(event) =>
-                                  handleChartClick(chart, event)
-                                }
-                                className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="absolute top-2 right-2 z-50"
+                              onClick={(event) =>
+                                handleChartClick(chart, event)
+                              }
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="w-4 h-4"
                               >
-                                <FullscreenOutlined />
-                              </button>
-                            </div>
+                                <path d="M15 3h6v6" />
+                                <path d="M10 14 21 3" />
+                                <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                              </svg>
+                              <span className="sr-only">Fullscreen</span>
+                            </Button>
                             <div className="flex justify-between items-center">
                               <div className="min-w-[10vw] mb-2">
                                 <label
@@ -1012,7 +1026,7 @@ const SalesSection = ({
                                       )
                                     )
                                   }
-                                  className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                                  className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                                 >
                                   {Array.from(
                                     { length: numberOfMonths },
@@ -1051,7 +1065,7 @@ const SalesSection = ({
                                       )
                                     )
                                   }
-                                  className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                                  className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                                 >
                                   {Array.from(
                                     { length: numberOfMonths },
@@ -1283,7 +1297,7 @@ const SalesSection = ({
             )}
           </>
         )}
-      </CardShadcn>
+      </div>
     </div>
   );
 };

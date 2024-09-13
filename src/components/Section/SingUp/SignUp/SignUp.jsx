@@ -86,6 +86,7 @@ const SignUpForm = () => {
               <input
                 type="text"
                 placeholder="Adam Smith"
+                className="placeholder:text-gray-400"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 required
@@ -96,6 +97,7 @@ const SignUpForm = () => {
               <input
                 type="email"
                 placeholder="example@gmail.com"
+                className="placeholder:text-gray-400"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -106,6 +108,7 @@ const SignUpForm = () => {
               <input
                 type="password"
                 placeholder="Enter Password"
+                className="placeholder:text-gray-400"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required

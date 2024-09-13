@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../../../components/ui/card";
+import { Button } from "../../../components/ui/button";
 
 const CustomChart = ({
   numberOfMonths,
@@ -132,12 +133,30 @@ const CustomChart = ({
         className="flex flex-col transition duration-500  rounded-2xl relative"
       >
         <CardHeader>
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-2 right-2 z-50"
             onClick={(event) => handleChartClick(filteredData, event)}
-            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200 z-50"
           >
-            <FullscreenOutlined />
-          </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-4 h-4"
+            >
+              <path d="M15 3h6v6" />
+              <path d="M10 14 21 3" />
+              <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+            </svg>
+            <span className="sr-only">Fullscreen</span>
+          </Button>
 
           <div className="flex justify-between items-center">
             <div className="min-w-[10vw] mb-2">
@@ -155,7 +174,7 @@ const CustomChart = ({
                     )
                   )
                 }
-                className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500"
+                className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500"
               >
                 {Array.from({ length: numberOfMonths }, (_, i) => {
                   const monthIndex = (startMonth + i - 1) % 12;
@@ -185,7 +204,7 @@ const CustomChart = ({
                     )
                   )
                 }
-                className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500"
+                className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500"
               >
                 {Array.from({ length: numberOfMonths }, (_, i) => {
                   const monthIndex = (startMonth + i - 1) % 12;

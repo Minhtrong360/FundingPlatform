@@ -722,7 +722,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           Tables and Charts
         </Badge>
       </div>
-      <CardShadcn className="w-full h-full flex flex-col lg:flex-row p-4">
+      <div className="w-full h-full flex flex-col lg:flex-row p-4">
         {activeTab === "table&chart" && (
           <>
             <div className="w-full xl:w-3/4 sm:p-4 p-0">
@@ -739,14 +739,30 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                       className="flex flex-col transition duration-500 rounded-2xl relative"
                     >
                       <CardHeader>
-                        <div className="absolute top-2 right-2">
-                          <button
-                            onClick={(event) => handleChartClick(series, event)}
-                            className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="absolute top-2 right-2 z-50"
+                          onClick={(event) => handleChartClick(series, event)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="w-4 h-4"
                           >
-                            <FullscreenOutlined />
-                          </button>
-                        </div>
+                            <path d="M15 3h6v6" />
+                            <path d="M10 14 21 3" />
+                            <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                          </svg>
+                          <span className="sr-only">Fullscreen</span>
+                        </Button>
                         <div className="flex justify-between items-center">
                           <div className="min-w-[10vw] mb-2">
                             <label
@@ -766,7 +782,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                                   )
                                 )
                               }
-                              className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                              className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                             >
                               {Array.from(
                                 { length: numberOfMonths },
@@ -800,7 +816,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                                   )
                                 )
                               }
-                              className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                              className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                             >
                               {Array.from(
                                 { length: numberOfMonths },
@@ -858,16 +874,32 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                           className="flex flex-col transition duration-500 rounded-2xl relative"
                         >
                           <CardHeader>
-                            <div className="absolute top-2 right-2">
-                              <button
-                                onClick={(event) =>
-                                  handleChartClick(series, event)
-                                }
-                                className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="absolute top-2 right-2 z-50"
+                              onClick={(event) =>
+                                handleChartClick(series, event)
+                              }
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="w-4 h-4"
                               >
-                                <FullscreenOutlined />
-                              </button>
-                            </div>
+                                <path d="M15 3h6v6" />
+                                <path d="M10 14 21 3" />
+                                <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                              </svg>
+                              <span className="sr-only">Fullscreen</span>
+                            </Button>
                             <div className="flex justify-between items-center">
                               <div className="min-w-[10vw] mb-2">
                                 <label
@@ -887,7 +919,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                                       )
                                     )
                                   }
-                                  className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                                  className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                                 >
                                   {Array.from(
                                     { length: numberOfMonths },
@@ -926,7 +958,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                                       )
                                     )
                                   }
-                                  className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                                  className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                                 >
                                   {Array.from(
                                     { length: numberOfMonths },
@@ -1171,7 +1203,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
             )}
           </>
         )}
-      </CardShadcn>
+      </div>
     </div>
   );
 };

@@ -45,7 +45,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Button, Button as ButtonV0 } from "../../../components/ui/button";
 const SUPABASE_URL = process.env.REACT_APP_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.REACT_APP_PUBLIC_SUPABASE_ANON_KEY;
-  
+
 // Create a Supabase client
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -194,21 +194,19 @@ const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
 
   const transformKeysAndCleanValues = (obj) => {
     const transformedObj = {};
-    Object.keys(obj).forEach(key => {
-      let newKey = key.toLowerCase().replace(/ /g, '_');
-      if (newKey === 'metric') {
-        newKey = 'month';
+    Object.keys(obj).forEach((key) => {
+      let newKey = key.toLowerCase().replace(/ /g, "_");
+      if (newKey === "metric") {
+        newKey = "month";
       }
       let value = obj[key];
-      if (typeof value === 'string' && value.includes(',')) {
-        value = value.replace(/,/g, '');
+      if (typeof value === "string" && value.includes(",")) {
+        value = value.replace(/,/g, "");
       }
       transformedObj[newKey] = value;
     });
     return transformedObj;
   };
-  
-  
 
   const DownloadCSVButton = () => {
     const handleDownload = (type) => {
@@ -238,9 +236,15 @@ const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
             });
           };
 
-          const cashFlowJson = (await parseCSVToJson(cashFlowData)).map(transformKeysAndCleanValues);
-          const balanceSheetJson = (await parseCSVToJson(balanceSheetData)).map(transformKeysAndCleanValues);
-          const incomeStatementJson = (await parseCSVToJson(incomeStatementData)).map(transformKeysAndCleanValues);
+          const cashFlowJson = (await parseCSVToJson(cashFlowData)).map(
+            transformKeysAndCleanValues
+          );
+          const balanceSheetJson = (await parseCSVToJson(balanceSheetData)).map(
+            transformKeysAndCleanValues
+          );
+          const incomeStatementJson = (
+            await parseCSVToJson(incomeStatementData)
+          ).map(transformKeysAndCleanValues);
 
           if (balanceSheetJson) {
             await supabase.from("balancesheet").insert(balanceSheetJson);
@@ -252,39 +256,36 @@ const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
             await supabase.from("cashflow").insert(cashFlowJson);
           }
 
-          alert("CSV files uploaded successfully!");
+          message.success("Submit successfully!");
         } catch (err) {
           console.log(err);
         }
       };
 
       return (
-        <div style={{ 
-          display: "flex", 
-          justifyContent: "space-between", 
-          gap: "10px", 
-          flexWrap: "wrap" 
-        }}>
-          <ClearButton 
-            paramsID={paramsID} 
-            
-          />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            gap: "10px",
+            flexWrap: "wrap",
+          }}
+        >
+          <ClearButton paramsID={paramsID} />
           <Button
             variant="destructive"
-            style={{ 
-              backgroundColor: "#18181B", 
-              color: "white", 
-              flex: 1, 
-              minWidth: "150px", 
-              maxWidth: "300px" 
+            style={{
+              backgroundColor: "#18181B",
+              color: "white",
+              flex: 1,
+              minWidth: "150px",
+              maxWidth: "300px",
             }}
             onClick={saveToSupabase}
           >
             Submit
           </Button>
         </div>
-        
-
       );
     };
 
@@ -309,7 +310,7 @@ const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
         >
           Income Statement CSV
         </button> */}
-        <CsvUploader/>
+        <CsvUploader />
       </div>
     );
   };
@@ -421,36 +422,36 @@ const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
 // clear button
 const ClearButton = (paramsID) => {
   const [loading, setLoading] = useState(false); // Manage loading state
-  const [message, setMessage] = useState(''); // Display success or error messages
+  const [message, setMessage] = useState(""); // Display success or error messages
 
   const deleteProjectData = async () => {
     setLoading(true);
-    setMessage(''); // Reset message
-    console.log('paramsID clear:', paramsID);
+    setMessage(""); // Reset message
+    console.log("paramsID clear:", paramsID);
     // Access the actual ID from the paramsID object
     const projectIDString = paramsID.paramsID;
     try {
       // Delete from cashflow where project_id matches paramsID
       const { error: cashflowError } = await supabase
-        .from('cashflow')
+        .from("cashflow")
         .delete()
-        .eq('project_id', projectIDString);
+        .eq("project_id", projectIDString);
 
       if (cashflowError) throw cashflowError;
 
       // Delete from profitandloss where project_id matches projectIDString
       const { error: profitAndLossError } = await supabase
-        .from('profitandloss')
+        .from("profitandloss")
         .delete()
-        .eq('project_id', projectIDString);
+        .eq("project_id", projectIDString);
 
       if (profitAndLossError) throw profitAndLossError;
 
       // Delete from balancesheet where project_id matches projectIDString
       const { error: balanceSheetError } = await supabase
-        .from('balancesheet')
+        .from("balancesheet")
         .delete()
-        .eq('project_id', projectIDString);
+        .eq("project_id", projectIDString);
 
       if (balanceSheetError) throw balanceSheetError;
 
@@ -466,16 +467,17 @@ const ClearButton = (paramsID) => {
     <div>
       <Button
         variant="destructive"
-        
-        style={{ backgroundColor: "#18181B", color: "white", flex: 1, 
-              minWidth: "150px", 
-              maxWidth: "300px"  }}
-      
+        style={{
+          backgroundColor: "#18181B",
+          color: "white",
+          flex: 1,
+          minWidth: "150px",
+          maxWidth: "300px",
+        }}
         onClick={deleteProjectData}
         disabled={loading}
-        
       >
-        {loading ? 'Clearing...' : 'Clear'}
+        {loading ? "Clearing..." : "Clear"}
       </Button>
 
       {/* {message && <p>{message}</p>} */}
@@ -1382,7 +1384,6 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
           Source={financialProjectName}
           paramsID={paramsID}
         />
-        
       </div>
     )
   );

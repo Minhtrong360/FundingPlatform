@@ -4,8 +4,8 @@ import support from "../../../src/assets/icon/User, Chat, Messages, Bubble2.svg"
 // const apiUrl = process.env.REACT_APP_PUBLIC_SUPABASE_URL;
 // const apiKey = process.env.REACT_APP_PUBLIC_SUPABASE_ANON_KEY;
 //
-const apiUrl = process.env.REACT_APP_SUPABASE_URL;
-const apiKey = process.env.REACT_APP_SUPABASE_KEY;
+const apiUrl = process.env.REACT_APP_PUBLIC_SUPABASE_URL;
+const apiKey = process.env.REACT_APP_PUBLIC_SUPABASE_ANON_KEY;
 // console.log("apiUrl", apiUrl)
 // console.log("key" , apiKey);
 const themes={

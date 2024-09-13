@@ -49,7 +49,7 @@ const SUPABASE_KEY = process.env.REACT_APP_PUBLIC_SUPABASE_ANON_KEY;
 // Create a Supabase client
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const FileUploadComponent = ({ BS, CF, PNL, Source }) => {
+const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
   const [file, setFile] = useState(null);
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -260,8 +260,8 @@ const FileUploadComponent = ({ BS, CF, PNL, Source }) => {
 
       return (
         <div>
-          
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={saveToSupabase}>Save Supabase</button>
+          <ClearButton paramsID={paramsID} />
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={saveToSupabase}>Submit to Agent</button>
         </div>
       );
     };
@@ -396,7 +396,71 @@ const FileUploadComponent = ({ BS, CF, PNL, Source }) => {
   );
 };
 ///////////////
+// clear button
+const ClearButton = (paramsID) => {
+  const [loading, setLoading] = useState(false); // Manage loading state
+  const [message, setMessage] = useState(''); // Display success or error messages
 
+  const deleteProjectData = async () => {
+    setLoading(true);
+    setMessage(''); // Reset message
+    console.log('paramsID clear:', paramsID);
+    // Access the actual ID from the paramsID object
+    const projectIDString = paramsID.paramsID;
+    try {
+      // Delete from cashflow where project_id matches paramsID
+      const { error: cashflowError } = await supabase
+        .from('cashflow')
+        .delete()
+        .eq('project_id', projectIDString);
+
+      if (cashflowError) throw cashflowError;
+
+      // Delete from profitandloss where project_id matches projectIDString
+      const { error: profitAndLossError } = await supabase
+        .from('profitandloss')
+        .delete()
+        .eq('project_id', projectIDString);
+
+      if (profitAndLossError) throw profitAndLossError;
+
+      // Delete from balancesheet where project_id matches projectIDString
+      const { error: balanceSheetError } = await supabase
+        .from('balancesheet')
+        .delete()
+        .eq('project_id', projectIDString);
+
+      if (balanceSheetError) throw balanceSheetError;
+
+      setMessage(`Successfully deleted all records for project`);
+    } catch (error) {
+      setMessage(`Error deleting project data: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <button
+        onClick={deleteProjectData}
+        disabled={loading}
+        style={{
+          padding: '10px 20px',
+          backgroundColor: '#007bff',
+          color: '#fff',
+          border: 'none',
+          cursor: 'pointer',
+          borderRadius: '5px',
+        }}
+      >
+        {loading ? 'Clearing...' : 'Clear Project Data'}
+      </button>
+
+      {message && <p>{message}</p>}
+    </div>
+  );
+};
 
 ///////////////
 const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
@@ -1295,7 +1359,9 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
           CF={CF}
           PNL={PNL}
           Source={financialProjectName}
+          paramsID={paramsID}
         />
+        
       </div>
     )
   );

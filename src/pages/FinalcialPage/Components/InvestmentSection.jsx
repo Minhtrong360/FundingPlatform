@@ -29,8 +29,7 @@ import {
   CardHeader,
   CardContent,
 } from "../../../components/ui/card";
-import { Download } from "lucide-react";
-import { Button as ButtonV0 } from "../../../components/ui/button";
+import { Check, Download, Plus, Trash2 } from "lucide-react";
 
 import {
   Select,
@@ -39,6 +38,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../components/ui/select";
+import { Button } from "../../../components/ui/button";
 const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const { investmentInputs, investmentData } = useSelector(
     (state) => state.investment
@@ -867,10 +867,10 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                       ))}
                     </SelectContent>
                   </Select>
-                  <ButtonV0 variant="outline" onClick={downloadExcel}>
+                  <Button variant="outline" onClick={downloadExcel}>
                     <Download className="mr-2 h-4 w-4" />
                     Download Excel
-                  </ButtonV0>
+                  </Button>
                 </div>
               </span>
               <Table
@@ -1166,53 +1166,36 @@ const InvestmentInputForm = ({
           </div>
         ))}
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <button
-          className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
+        <Button
+          variant="destructive"
           onClick={() => setIsDeleteModalOpen(true)}
+          style={{ backgroundColor: "#EF4444", color: "white" }}
         >
-          <DeleteOutlined
-            style={{
-              fontSize: "12px",
-              color: "#FFFFFF",
-              marginRight: "4px",
-            }}
-          />
+          <Trash2 className="mr-2 h-4 w-4" />
           Remove
-        </button>
-
-        <button
-          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+        </Button>
+        <Button
+          variant="destructive"
           onClick={addNewInvestmentInput}
+          style={{ backgroundColor: "#18181B", color: "white" }}
         >
-          <PlusOutlined
-            style={{
-              fontSize: "12px",
-              color: "#FFFFFF",
-              marginRight: "4px",
-            }}
-          />
+          <Plus className="mr-2 h-4 w-4" />
           Add
-        </button>
-
-        <button
-          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw]"
+        </Button>
+        <Button
+          variant="destructive"
           onClick={handleSave}
+          style={{ backgroundColor: "#18181B", color: "white" }}
         >
           {isLoading ? (
             <SpinnerBtn />
           ) : (
             <>
-              <CheckCircleOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />
+              <Check className="mr-2 h-4 w-4" />
               Save
             </>
           )}
-        </button>
+        </Button>
       </div>
     </section>
   );

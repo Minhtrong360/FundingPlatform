@@ -42,8 +42,8 @@ import {
   CardHeader,
   CardContent,
 } from "../../../components/ui/card";
-import { Download } from "lucide-react";
-import { Button as ButtonV0 } from "../../../components/ui/button";
+import { Check, Download, Plus, Trash2 } from "lucide-react";
+import { Button, Button as ButtonV0 } from "../../../components/ui/button";
 
 const CostInputForm = ({
   tempCostInput,
@@ -483,44 +483,37 @@ const CostInputForm = ({
             )}
           </div>
         ))}
-      <div className="flex justify-between items-center">
-        <button
-          className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4 flex items-center"
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Button
+          variant="destructive"
           onClick={() => setIsDeleteModalOpen(true)}
+          style={{ backgroundColor: "#EF4444", color: "white" }}
         >
-          <DeleteOutlined
-            style={{ fontSize: "12px", color: "#FFFFFF", marginRight: "4px" }}
-          />
+          <Trash2 className="mr-2 h-4 w-4" />
           Remove
-        </button>
-        <button
-          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+        </Button>
+        <Button
+          variant="destructive"
           onClick={addNewCostInput}
+          style={{ backgroundColor: "#18181B", color: "white" }}
         >
-          <PlusOutlined
-            style={{ fontSize: "12px", color: "#FFFFFF", marginRight: "4px" }}
-          />
+          <Plus className="mr-2 h-4 w-4" />
           Add
-        </button>
-        <button
-          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw]"
+        </Button>
+        <Button
+          variant="destructive"
           onClick={handleSave}
+          style={{ backgroundColor: "#18181B", color: "white" }}
         >
           {isLoading ? (
             <SpinnerBtn />
           ) : (
             <>
-              <CheckCircleOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />{" "}
+              <Check className="mr-2 h-4 w-4" />
               Save
             </>
           )}
-        </button>
+        </Button>
       </div>
     </section>
   );

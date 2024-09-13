@@ -43,8 +43,8 @@ import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import DraggableChart from "./DraggableChart";
 import { setInputData } from "../../../features/DurationSlice";
-import { Button as ButtonV0 } from "../../../components/ui/button";
-import { Download } from "lucide-react";
+import { Button, Button as ButtonV0 } from "../../../components/ui/button";
+import { Check, Download, Plus, Trash2 } from "lucide-react";
 import { Badge } from "../../../components/ui/badge";
 import {
   Card as CardShadcn,
@@ -155,7 +155,6 @@ const CustomerInputsForm = React.memo(
             Customer channel{" "}
           </h2>
         </Tooltip>
-
         <div>
           <label
             htmlFor="selectedChannel"
@@ -175,7 +174,6 @@ const CustomerInputsForm = React.memo(
             ))}
           </select>
         </div>
-
         {tempCustomerInputs
           .filter((input) => input?.id == renderCustomerForm)
           .map((input) => (
@@ -395,51 +393,37 @@ const CustomerInputsForm = React.memo(
               )}
             </div>
           ))}
-
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <div className="flex justify-center items-center">
-            <button
-              className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
-              onClick={() => setIsDeleteModalOpen(true)}
-            >
-              <DeleteOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />
-              Remove
-            </button>
-          </div>
-          <button
-            className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
-            onClick={handleAddNewCustomer}
+          <Button
+            variant="destructive"
+            onClick={() => setIsDeleteModalOpen(true)}
+            style={{ backgroundColor: "#EF4444", color: "white" }}
           >
-            <PlusOutlined
-              style={{ fontSize: "12px", color: "#FFFFFF", marginRight: "4px" }}
-            />
+            <Trash2 className="mr-2 h-4 w-4" />
+            Remove
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={handleAddNewCustomer}
+            style={{ backgroundColor: "#18181B", color: "white" }}
+          >
+            <Plus className="mr-2 h-4 w-4" />
             Add
-          </button>
-          <button
-            className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw]"
+          </Button>
+          <Button
+            variant="destructive"
             onClick={handleSave}
+            style={{ backgroundColor: "#18181B", color: "white" }}
           >
             {isLoading ? (
               <SpinnerBtn />
             ) : (
               <>
-                <CheckCircleOutlined
-                  style={{
-                    fontSize: "12px",
-                    color: "#FFFFFF",
-                    marginRight: "4px",
-                  }}
-                />
+                <Check className="mr-2 h-4 w-4" />
                 Save
               </>
             )}
-          </button>
+          </Button>
         </div>
       </section>
     );
@@ -1266,7 +1250,10 @@ const CustomerSection = React.memo(
                           </div>
                           <div className="flex justify-between items-center">
                             <div className="min-w-[10vw] mb-2">
-                              <label htmlFor="startMonthSelect">
+                              <label
+                                htmlFor="startMonthSelect"
+                                className="text-sm"
+                              >
                                 Start Month:
                               </label>
                               <select
@@ -1300,7 +1287,12 @@ const CustomerSection = React.memo(
                               </select>
                             </div>
                             <div className="min-w-[10vw] mb-2">
-                              <label htmlFor="endMonthSelect">End Month:</label>
+                              <label
+                                htmlFor="endMonthSelect"
+                                className="text-sm"
+                              >
+                                End Month:
+                              </label>
                               <select
                                 id="endMonthSelect"
                                 value={chartEndMonth}
@@ -1392,7 +1384,10 @@ const CustomerSection = React.memo(
                               </div>
                               <div className="flex justify-between items-center">
                                 <div className="min-w-[10vw] mb-2">
-                                  <label htmlFor="startMonthSelect">
+                                  <label
+                                    htmlFor="startMonthSelect"
+                                    className="text-sm"
+                                  >
                                     Start Month:
                                   </label>
                                   <select
@@ -1431,7 +1426,10 @@ const CustomerSection = React.memo(
                                   </select>
                                 </div>
                                 <div className="min-w-[10vw] mb-2">
-                                  <label htmlFor="endMonthSelect">
+                                  <label
+                                    htmlFor="endMonthSelect"
+                                    className="text-sm"
+                                  >
                                     End Month:
                                   </label>
                                   <select
@@ -1530,7 +1528,10 @@ const CustomerSection = React.memo(
                               </div>
                               <div className="flex justify-between items-center">
                                 <div className="min-w-[10vw] mb-2">
-                                  <label htmlFor="startMonthSelect">
+                                  <label
+                                    htmlFor="startMonthSelect"
+                                    className="text-sm"
+                                  >
                                     Start Month:
                                   </label>
                                   <select
@@ -1569,7 +1570,10 @@ const CustomerSection = React.memo(
                                   </select>
                                 </div>
                                 <div className="min-w-[10vw] mb-2">
-                                  <label htmlFor="endMonthSelect">
+                                  <label
+                                    htmlFor="endMonthSelect"
+                                    className="text-sm"
+                                  >
                                     End Month:
                                   </label>
                                   <select
@@ -1703,26 +1707,20 @@ const CustomerSection = React.memo(
                   }
                 />
 
-                <button
-                  className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
-                  // style={{ bottom: "20px", right: "80px", position: "fixed" }}
+                <Button
+                  variant="destructive"
                   onClick={handleSave}
+                  style={{ backgroundColor: "#18181B", color: "white" }}
                 >
                   {isLoading ? (
                     <SpinnerBtn />
                   ) : (
                     <>
-                      <CheckCircleOutlined
-                        style={{
-                          fontSize: "12px",
-                          color: "#FFFFFF",
-                          marginRight: "4px",
-                        }}
-                      />
+                      <Check className="mr-2 h-4 w-4" />
                       Save
                     </>
                   )}
-                </button>
+                </Button>
               </div>
             </>
           )}

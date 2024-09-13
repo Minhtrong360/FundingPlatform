@@ -47,8 +47,8 @@ import {
   CardHeader,
   CardContent,
 } from "../../../components/ui/card";
-import { Button as ButtonV0 } from "../../../components/ui/button";
-import { Download } from "lucide-react";
+import { Button, Button as ButtonV0 } from "../../../components/ui/button";
+import { Check, Download, Plus, Trash2 } from "lucide-react";
 
 const ChannelInputForm = ({
   tempChannelInputs,
@@ -270,35 +270,38 @@ const ChannelInputForm = ({
           </div>
         ))}
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <button
-          className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
+        <Button
+          variant="destructive"
           onClick={() => setIsDeleteModalOpen(true)}
+          style={{ backgroundColor: "#EF4444", color: "white" }}
         >
-          <DeleteOutlined
-            style={{
-              fontSize: "12px",
-              color: "#FFFFFF",
-              marginRight: "4px",
-            }}
-          />
+          <Trash2 className="mr-2 h-4 w-4" />
           Remove
-        </button>
-
-        <button
-          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+        </Button>
+        <Button
+          variant="destructive"
           onClick={addNewChannelInput}
+          style={{ backgroundColor: "#18181B", color: "white" }}
         >
-          <PlusOutlined
-            style={{
-              fontSize: "12px",
-              color: "#FFFFFF",
-              marginRight: "4px",
-            }}
-          />
+          <Plus className="mr-2 h-4 w-4" />
           Add
-        </button>
-
-        <button
+        </Button>
+        <Button
+          variant="destructive"
+          onClick={handleSave}
+          style={{ backgroundColor: "#18181B", color: "white" }}
+        >
+          {isLoading ? (
+            <SpinnerBtn />
+          ) : (
+            <>
+              <Check className="mr-2 h-4 w-4" />
+              Save
+            </>
+          )}
+        </Button>
+      </div>
+      {/* <button
           className="bg-green-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
           onClick={duplicateChannelInput}
         >
@@ -310,28 +313,7 @@ const ChannelInputForm = ({
             }}
           />
           Dupl.
-        </button>
-
-        <button
-          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw]"
-          onClick={handleSave}
-        >
-          {isLoading ? (
-            <SpinnerBtn />
-          ) : (
-            <>
-              <CheckCircleOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />
-              Save
-            </>
-          )}
-        </button>
-      </div>
+        </button> */}
     </section>
   );
 };

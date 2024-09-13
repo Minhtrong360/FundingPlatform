@@ -26,6 +26,8 @@ import currencyLists from "../../../components/Currency";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 import TextArea from "antd/es/input/TextArea";
+import { Button } from "../../../components/ui/button";
+import { Check } from "lucide-react";
 
 const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
   const dispatch = useDispatch();
@@ -351,25 +353,20 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
       </div>
       {isInputFormOpen !== "Ok" && (
         <div className="flex justify-end">
-          <button
-            className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[5vw]"
+          <Button
+            variant="destructive"
             onClick={handleSubmit}
+            style={{ backgroundColor: "#18181B", color: "white" }}
           >
             {isLoading ? (
               <SpinnerBtn />
             ) : (
               <>
-                <CheckCircleOutlined
-                  style={{
-                    fontSize: "12px",
-                    color: "#FFFFFF",
-                    marginRight: "4px",
-                  }}
-                />
+                <Check className="mr-2 h-4 w-4" />
                 Save
               </>
             )}
-          </button>
+          </Button>
         </div>
       )}
     </section>

@@ -34,8 +34,8 @@ import {
   CardHeader,
   Card as CardShadcn,
 } from "../../../components/ui/card";
-import { Download } from "lucide-react";
-import { Button as ButtonV0 } from "../../../components/ui/button";
+import { Check, Download, Plus, Trash2 } from "lucide-react";
+import { Button, Button as ButtonV0 } from "../../../components/ui/button";
 
 const FundraisingInputForm = ({
   tempFundraisingInputs,
@@ -199,58 +199,40 @@ const FundraisingInputForm = ({
                 }
               />
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <button
-                className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
-                onClick={() => setIsDeleteModalOpen(true)}
-              >
-                {" "}
-                <DeleteOutlined
-                  style={{
-                    fontSize: "12px",
-                    color: "#FFFFFF",
-                    marginRight: "4px",
-                  }}
-                />
-                Remove
-              </button>
-
-              <button
-                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
-                onClick={addNewFundraisingInput}
-              >
-                <PlusOutlined
-                  style={{
-                    fontSize: "12px",
-                    color: "#FFFFFF",
-                    marginRight: "4px",
-                  }}
-                />
-                Add
-              </button>
-
-              <button
-                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw]"
-                onClick={handleSave}
-              >
-                {isLoading ? (
-                  <SpinnerBtn />
-                ) : (
-                  <>
-                    <CheckCircleOutlined
-                      style={{
-                        fontSize: "12px",
-                        color: "#FFFFFF",
-                        marginRight: "4px",
-                      }}
-                    />
-                    Save
-                  </>
-                )}
-              </button>
-            </div>
           </div>
         ))}
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Button
+          variant="destructive"
+          onClick={() => setIsDeleteModalOpen(true)}
+          style={{ backgroundColor: "#EF4444", color: "white" }}
+        >
+          <Trash2 className="mr-2 h-4 w-4" />
+          Remove
+        </Button>
+        <Button
+          variant="destructive"
+          onClick={addNewFundraisingInput}
+          style={{ backgroundColor: "#18181B", color: "white" }}
+        >
+          <Plus className="mr-2 h-4 w-4" />
+          Add
+        </Button>
+        <Button
+          variant="destructive"
+          onClick={handleSave}
+          style={{ backgroundColor: "#18181B", color: "white" }}
+        >
+          {isLoading ? (
+            <SpinnerBtn />
+          ) : (
+            <>
+              <Check className="mr-2 h-4 w-4" />
+              Save
+            </>
+          )}
+        </Button>
+      </div>
       <Modal
         title="Confirm Delete"
         open={isDeleteModalOpen}

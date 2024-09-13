@@ -42,7 +42,7 @@ import { saveAs } from "file-saver";
 import { Parser } from "@json2csv/plainjs";
 import { useParams } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
-
+import { Button, Button as ButtonV0 } from "../../../components/ui/button";
 const SUPABASE_URL = process.env.REACT_APP_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.REACT_APP_PUBLIC_SUPABASE_ANON_KEY;
   
@@ -259,10 +259,32 @@ const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
       };
 
       return (
-        <div>
-          <ClearButton paramsID={paramsID} />
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={saveToSupabase}>Submit to Agent</button>
+        <div style={{ 
+          display: "flex", 
+          justifyContent: "space-between", 
+          gap: "10px", 
+          flexWrap: "wrap" 
+        }}>
+          <ClearButton 
+            paramsID={paramsID} 
+            
+          />
+          <Button
+            variant="destructive"
+            style={{ 
+              backgroundColor: "#18181B", 
+              color: "white", 
+              flex: 1, 
+              minWidth: "150px", 
+              maxWidth: "300px" 
+            }}
+            onClick={saveToSupabase}
+          >
+            Submit
+          </Button>
         </div>
+        
+
       );
     };
 
@@ -442,22 +464,21 @@ const ClearButton = (paramsID) => {
 
   return (
     <div>
-      <button
+      <Button
+        variant="destructive"
+        
+        style={{ backgroundColor: "#18181B", color: "white", flex: 1, 
+              minWidth: "150px", 
+              maxWidth: "300px"  }}
+      
         onClick={deleteProjectData}
         disabled={loading}
-        style={{
-          padding: '10px 20px',
-          backgroundColor: '#007bff',
-          color: '#fff',
-          border: 'none',
-          cursor: 'pointer',
-          borderRadius: '5px',
-        }}
+        
       >
-        {loading ? 'Clearing...' : 'Clear Project Data'}
-      </button>
+        {loading ? 'Clearing...' : 'Clear'}
+      </Button>
 
-      {message && <p>{message}</p>}
+      {/* {message && <p>{message}</p>} */}
     </div>
   );
 };

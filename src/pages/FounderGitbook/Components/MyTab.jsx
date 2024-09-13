@@ -25,8 +25,6 @@ const MyTab = ({
   isContentChanged,
   setIsContentChanged,
 }) => {
-  console.log("company", company);
-
   const [activeTab, setActiveTab] = useState("Your Profile");
   const [tabs, setTabs] = useState([
     { key: "Your Profile", title: "Your Profile", editable: false },

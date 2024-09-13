@@ -865,7 +865,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
 
   return (
-    <CardShadcn className="w-full h-full flex flex-col lg:flex-row p-4">
+    <div className="w-full h-full flex flex-col lg:flex-row p-4">
       <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
         <div>
           <h3 className="text-lg font-semibold mb-4">I. Relevant Chart</h3>
@@ -1158,7 +1158,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           <GroqJS datasrc={profitAndLossData} inputUrl="urlPNL" />
         </Modal>
       )}
-    </CardShadcn>
+    </div>
   );
 };
 

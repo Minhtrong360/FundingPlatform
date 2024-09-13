@@ -1033,7 +1033,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                       </Badge>
                     </div>
 
-                    <Card className="w-full h-full flex flex-col lg:flex-row p-4">
+                    <div className="w-full h-full flex flex-col lg:flex-row p-4">
                       {activeTabA === "table&chart" && (
                         <>
                           <div className="w-full xl:w-3/4 sm:p-4 p-0">
@@ -1140,7 +1140,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                           )}
                         </>
                       )}
-                    </Card>
+                    </div>
                   </div>
                 )}
                 {activeTab === "customer" && (

@@ -1,48 +1,38 @@
-const PostCard = () => {
-    return (
-        <div class="widget zubuz_recent_posts_Widget">
-        <h3 class="wp-block-heading">Recent Posts:</h3>
-        <div class="post-item">
-          <div class="post-thumb">
-            <a href="">
-              <img src="/images/blog/blog1.png" alt=""/>
-            </a>
+import { formatDate } from "../../../features/DurationSlice";
+
+const PostCard = ({ blogs, handleCategoryClick }) => {
+  return (
+    <div className="widget zubuz_recent_posts_Widget">
+      <h3 className="wp-block-heading">Recent Posts:</h3>
+      {blogs.slice(0, 3).map((blog) => (
+        <div
+          key={blog.id}
+          className="post-item hover:cursor-pointer"
+          onClick={() => handleCategoryClick(blog.category)}
+        >
+          <div className="post-thumb">
+            <img src={blog.cover} alt={blog.title} />
           </div>
-          <div class="post-text">
-            <div class="post-date">
-              June 18, 2024
+          <div className="post-text">
+            {/* Add truncate styling and click event */}
+            <div
+              className="post-title "
+              style={{
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                WebkitLineClamp: 2,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {blog.title}
             </div>
-            <a class="post-title" href="">7 businesses for easy money</a>
+            <div className="post-date">{formatDate(blog.created_at)}</div>
           </div>
         </div>
-        <div class="post-item">
-          <div class="post-thumb">
-            <a href="">
-              <img src="/images/blog/blog2.png" alt=""/>
-            </a>
-          </div>
-          <div class="post-text">
-            <div class="post-date">
-              June 18, 2024
-            </div>
-            <a class="post-title" href="">My 3 tips for business ideas</a>
-          </div>
-        </div>
-        <div class="post-item">
-          <div class="post-thumb">
-            <a href="">
-              <img src="/images/blog/blog3.png" alt=""/>
-            </a>
-          </div>
-          <div class="post-text">
-            <div class="post-date">
-              June 18, 2024
-            </div>
-            <a class="post-title" href="">12 Halloween costume ideas</a>
-          </div>
-        </div>
-      </div>
-    );
+      ))}
+    </div>
+  );
 };
 
 export default PostCard;

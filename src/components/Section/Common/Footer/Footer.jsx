@@ -431,7 +431,7 @@ const Footer = () => {
             <div className="col-xl-4 col-lg-12">
               <div className="zubuz-footer-textarea">
                 <Link to="">
-                  <img src="/images/logo/BeeKrowd.svg" alt="" />
+                  <img src="/images/logo/EcoBee.svg" alt="" />
                 </Link>
                 <p>
                   We're your innovation partner, delivering cutting-edge

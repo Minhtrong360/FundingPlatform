@@ -36,8 +36,8 @@ import {
   CardHeader,
   CardContent,
 } from "../../../components/ui/card";
-import { Download } from "lucide-react";
-import { Button as ButtonV0 } from "../../../components/ui/button";
+import { Check, Download, Plus, Trash2 } from "lucide-react";
+import { Button, Button as ButtonV0 } from "../../../components/ui/button";
 
 const PersonnelInputForm = ({
   tempPersonnelInputs,
@@ -227,53 +227,36 @@ const PersonnelInputForm = ({
           </div>
         ))}
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <button
-          className="bg-red-600 text-white py-2 px-2 rounded-2xl text-sm mt-4"
+        <Button
+          variant="destructive"
           onClick={() => setIsDeleteModalOpen(true)}
+          style={{ backgroundColor: "#EF4444", color: "white" }}
         >
-          <DeleteOutlined
-            style={{
-              fontSize: "12px",
-              color: "#FFFFFF",
-              marginRight: "4px",
-            }}
-          />
+          <Trash2 className="mr-2 h-4 w-4" />
           Remove
-        </button>
-
-        <button
-          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4"
+        </Button>
+        <Button
+          variant="destructive"
           onClick={addNewPersonnelInput}
+          style={{ backgroundColor: "#18181B", color: "white" }}
         >
-          <PlusOutlined
-            style={{
-              fontSize: "12px",
-              color: "#FFFFFF",
-              marginRight: "4px",
-            }}
-          />
+          <Plus className="mr-2 h-4 w-4" />
           Add
-        </button>
-
-        <button
-          className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw]"
+        </Button>
+        <Button
+          variant="destructive"
           onClick={handleSave}
+          style={{ backgroundColor: "#18181B", color: "white" }}
         >
           {isLoading ? (
             <SpinnerBtn />
           ) : (
             <>
-              <CheckCircleOutlined
-                style={{
-                  fontSize: "12px",
-                  color: "#FFFFFF",
-                  marginRight: "4px",
-                }}
-              />
+              <Check className="mr-2 h-4 w-4" />
               Save
             </>
           )}
-        </button>
+        </Button>
       </div>
     </section>
   );
@@ -697,7 +680,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
           Tables and Charts
         </Badge>
       </div>
-      <CardShadcn className="w-full h-full flex flex-col lg:flex-row p-4">
+      <div className="w-full h-full flex flex-col lg:flex-row p-4">
         {activeTab === "table&chart" && (
           <>
             <div className="w-full xl:w-3/4 sm:p-4 p-0">
@@ -707,16 +690,32 @@ const PersonnelSection = ({ numberOfMonths }) => {
               <div className="grid md:grid-cols-2 gap-6">
                 <CardShadcn className="flex flex-col transition duration-500 rounded-2xl relative">
                   <CardHeader>
-                    <div className="absolute top-2 right-2">
-                      <button
-                        onClick={(event) =>
-                          handleChartClick(personnelChart, event)
-                        }
-                        className="text-gray-500 hover:text-gray-700 dark1:text-gray-400 dark1:hover:text-gray-200"
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute top-2 right-2 z-50"
+                      onClick={(event) =>
+                        handleChartClick(personnelChart, event)
+                      }
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="w-4 h-4"
                       >
-                        <FullscreenOutlined />
-                      </button>
-                    </div>
+                        <path d="M15 3h6v6" />
+                        <path d="M10 14 21 3" />
+                        <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                      </svg>
+                      <span className="sr-only">Fullscreen</span>
+                    </Button>
                     <div className="flex justify-between items-center">
                       <div className="min-w-[10vw] mb-2">
                         <label htmlFor="startMonthSelect" className="text-sm">
@@ -733,7 +732,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
                               )
                             )
                           }
-                          className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                          className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                         >
                           {Array.from({ length: numberOfMonths }, (_, i) => {
                             const monthIndex = (startingMonth + i - 1) % 12;
@@ -763,7 +762,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
                               )
                             )
                           }
-                          className="py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                          className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                         >
                           {Array.from({ length: numberOfMonths }, (_, i) => {
                             const monthIndex = (startingMonth + i - 1) % 12;
@@ -976,7 +975,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
             )}
           </>
         )}
-      </CardShadcn>
+      </div>
     </div>
   );
 };

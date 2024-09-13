@@ -16,6 +16,7 @@ import industries from "../../components/Industries";
 import SideBar from "../../components/SideBar";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import Tabs from "./Components/Tabs";
+import { useMediaQuery } from "react-responsive";
 const { RangePicker } = DatePicker;
 
 function AdminPage() {
@@ -257,13 +258,15 @@ function AdminPage() {
     applyFilters();
   }, [dataSource, filters]);
 
+  // Sử dụng useMediaQuery để kiểm tra kích thước màn hình
+  const isMobile = useMediaQuery({ maxWidth: 768 }); // Màn hình nhỏ hơn hoặc bằng 768px được coi là điện thoại
+
   const columns = [
     {
       title: "No",
       key: "index",
-
       align: "center",
-      fixed: "left",
+      fixed: isMobile ? false : "left", // Bỏ fixed ở màn hình nhỏ
       render: (text, record, index) => (
         <span
           className={`  hover:cursor-pointer text-left`}
@@ -281,7 +284,7 @@ function AdminPage() {
       width: "15%",
       key: "name",
       align: "center",
-      fixed: "left",
+      fixed: isMobile ? false : "left", // Bỏ fixed ở màn hình nhỏ
       sorter: true,
       render: (text, record) => (
         <>
@@ -1519,7 +1522,7 @@ function AdminPage() {
       dataIndex: "index",
       key: "index",
       align: "center",
-      fixed: "left",
+      fixed: isMobile ? false : "left", // Bỏ fixed ở màn hình nhỏ
       render: (text, record, index) => (
         <span>{dataFinanceSource?.indexOf(record) + 1}</span>
       ),
@@ -1530,7 +1533,7 @@ function AdminPage() {
       key: "name",
       width: "20%",
       align: "center",
-      fixed: "left",
+      fixed: isMobile ? false : "left", // Bỏ fixed ở màn hình nhỏ
       render: (text, record) => (
         <>
           <span
@@ -1606,7 +1609,7 @@ function AdminPage() {
       key: "user_email",
       width: "20",
       align: "center",
-      fixed: "left",
+      fixed: isMobile ? false : "left", // Bỏ fixed ở màn hình nhỏ
       render: (text, record) => (
         <>
           <span
@@ -1804,7 +1807,7 @@ function AdminPage() {
       dataIndex: "index",
       key: "index",
       align: "center",
-      fixed: "left",
+      fixed: isMobile ? false : "left", // Bỏ fixed ở màn hình nhỏ
       render: (text, record, index) => (
         <span>{dataClientSource?.indexOf(record) + 1}</span>
       ),
@@ -1815,7 +1818,7 @@ function AdminPage() {
       key: "full_name",
       width: "20%",
       align: "center",
-      fixed: "left",
+      fixed: isMobile ? false : "left", // Bỏ fixed ở màn hình nhỏ
 
       render: (text, record) => (
         <Tooltip title={record.full_name}>
@@ -1887,7 +1890,7 @@ function AdminPage() {
       key: "email",
       width: "20%",
       align: "center",
-      fixed: "left",
+      fixed: isMobile ? false : "left", // Bỏ fixed ở màn hình nhỏ
 
       render: (text, record) => (
         <Tooltip title={record.email}>

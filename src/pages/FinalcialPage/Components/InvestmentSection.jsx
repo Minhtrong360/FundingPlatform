@@ -561,7 +561,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
   return (
     <div>
-      <div className="flex space-x-2 my-6 mx-auto">
+      <div className="flex space-x-2 my-6 mx-auto px-6">
         <Badge
           variant="secondary"
           className={`bg-yellow-100 text-yellow-800 cursor-pointer ${activeTab === "input" ? "bg-yellow-500 text-white" : ""}`}
@@ -584,7 +584,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               <h3 className="text-lg font-semibold mb-8">
                 I. Investment Chart
               </h3>
-              <div className="ml-4 mt-20">
+              <div className="sm:ml-4 ml-0 mt-20">
                 <h4 className="text-base font-semibold mb-4">
                   1. All investments chart
                 </h4>
@@ -716,7 +716,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                     </CardShadcn>
                   ))}
               </div>
-              <div className="ml-4 mt-20">
+              <div className="sm:ml-4 ml-0 mt-20">
                 <h4 className="text-base font-semibold mb-4">
                   2. Component charts
                 </h4>

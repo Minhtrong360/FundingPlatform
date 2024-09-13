@@ -1013,10 +1013,10 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 </Button>
               </div>
 
-              <div className="p-6">
+              <>
                 {activeTab === "overview" && (
                   <div>
-                    <div className="flex space-x-2 my-6 mx-auto">
+                    <div className="flex space-x-2 my-6 mx-auto px-6">
                       <Badge
                         variant="secondary"
                         className={`bg-yellow-100 text-yellow-800 cursor-pointer ${activeTabA === "input" ? "bg-yellow-500 text-white" : ""}`}
@@ -1213,7 +1213,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 {activeTab === "balanceSheet" && (
                   <BalanceSheetSection numberOfMonths={numberOfMonths} />
                 )}
-              </div>
+              </>
             </Tabs>
           </Card>
         </div>

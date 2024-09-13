@@ -42,14 +42,14 @@ import { saveAs } from "file-saver";
 import { Parser } from "@json2csv/plainjs";
 import { useParams } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
-
+import { Button, Button as ButtonV0 } from "../../../components/ui/button";
 const SUPABASE_URL = process.env.REACT_APP_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.REACT_APP_PUBLIC_SUPABASE_ANON_KEY;
   
 // Create a Supabase client
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const FileUploadComponent = ({ BS, CF, PNL, Source }) => {
+const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
   const [file, setFile] = useState(null);
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -259,10 +259,32 @@ const FileUploadComponent = ({ BS, CF, PNL, Source }) => {
       };
 
       return (
-        <div>
-          
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={saveToSupabase}>Save Supabase</button>
+        <div style={{ 
+          display: "flex", 
+          justifyContent: "space-between", 
+          gap: "10px", 
+          flexWrap: "wrap" 
+        }}>
+          <ClearButton 
+            paramsID={paramsID} 
+            
+          />
+          <Button
+            variant="destructive"
+            style={{ 
+              backgroundColor: "#18181B", 
+              color: "white", 
+              flex: 1, 
+              minWidth: "150px", 
+              maxWidth: "300px" 
+            }}
+            onClick={saveToSupabase}
+          >
+            Submit
+          </Button>
         </div>
+        
+
       );
     };
 
@@ -396,7 +418,70 @@ const FileUploadComponent = ({ BS, CF, PNL, Source }) => {
   );
 };
 ///////////////
+// clear button
+const ClearButton = (paramsID) => {
+  const [loading, setLoading] = useState(false); // Manage loading state
+  const [message, setMessage] = useState(''); // Display success or error messages
 
+  const deleteProjectData = async () => {
+    setLoading(true);
+    setMessage(''); // Reset message
+    console.log('paramsID clear:', paramsID);
+    // Access the actual ID from the paramsID object
+    const projectIDString = paramsID.paramsID;
+    try {
+      // Delete from cashflow where project_id matches paramsID
+      const { error: cashflowError } = await supabase
+        .from('cashflow')
+        .delete()
+        .eq('project_id', projectIDString);
+
+      if (cashflowError) throw cashflowError;
+
+      // Delete from profitandloss where project_id matches projectIDString
+      const { error: profitAndLossError } = await supabase
+        .from('profitandloss')
+        .delete()
+        .eq('project_id', projectIDString);
+
+      if (profitAndLossError) throw profitAndLossError;
+
+      // Delete from balancesheet where project_id matches projectIDString
+      const { error: balanceSheetError } = await supabase
+        .from('balancesheet')
+        .delete()
+        .eq('project_id', projectIDString);
+
+      if (balanceSheetError) throw balanceSheetError;
+
+      setMessage(`Successfully deleted all records for project`);
+    } catch (error) {
+      setMessage(`Error deleting project data: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <Button
+        variant="destructive"
+        
+        style={{ backgroundColor: "#18181B", color: "white", flex: 1, 
+              minWidth: "150px", 
+              maxWidth: "300px"  }}
+      
+        onClick={deleteProjectData}
+        disabled={loading}
+        
+      >
+        {loading ? 'Clearing...' : 'Clear'}
+      </Button>
+
+      {/* {message && <p>{message}</p>} */}
+    </div>
+  );
+};
 
 ///////////////
 const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
@@ -1295,7 +1380,9 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
           CF={CF}
           PNL={PNL}
           Source={financialProjectName}
+          paramsID={paramsID}
         />
+        
       </div>
     )
   );

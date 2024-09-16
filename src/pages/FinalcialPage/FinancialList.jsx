@@ -294,7 +294,7 @@ function FinancialList() {
     <>
       <HomeHeader />
       <div className="mt-24 sm:p-4 p-0 border-gray-300 border-dashed rounded-md darkBorderGray">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto py-8">
           <h1 className="text-3xl font-bold mb-8 text-center -tracking-normal">
             Financial Projects Dashboard
           </h1>
@@ -478,9 +478,9 @@ function FinancialList() {
             <TableHeader>
               <TableRow>
                 <TableHead>No</TableHead>
-                <TableHead>Name</TableHead>
+                <TableHead className="max-w-40">Name</TableHead>
                 <TableHead>Date</TableHead>
-                <TableHead>Owner</TableHead>
+                <TableHead className="max-w-40">Owner</TableHead>
                 <TableHead>Industry</TableHead>
                 <TableHead>Duration</TableHead>
                 <TableHead>Start Year</TableHead>
@@ -499,16 +499,18 @@ function FinancialList() {
                     {index + 1}
                   </TableCell>
                   <TableCell
-                    className="hover:cursor-pointer whitespace-nowrap"
+                    className="hover:cursor-pointer whitespace-nowrap truncate max-w-40"
                     onClick={() => handleProjectClick(finance)}
                   >
-                    {finance.name}
+                    <Tooltip title={finance.name}>{finance.name}</Tooltip>
                   </TableCell>
                   <TableCell className="whitespace-nowrap">
                     {formatDate(finance.created_at)}
                   </TableCell>
-                  <TableCell className="whitespace-nowrap">
-                    {finance.user_email}
+                  <TableCell className="whitespace-nowrap truncate max-w-40">
+                    <Tooltip title={finance.user_email}>
+                      {finance.user_email}
+                    </Tooltip>
                   </TableCell>
                   <TableCell className="whitespace-nowrap">
                     {finance?.inputData?.industry || "Waiting for setup"}

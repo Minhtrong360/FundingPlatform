@@ -117,19 +117,28 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   }, [investmentInputs, numberOfMonths, renderInvestmentForm]);
 
   useEffect(() => {
-    const calculatedData = calculateInvestmentData(
-      tempInvestmentInputs,
-      numberOfMonths
-    );
+    const timer = setTimeout(() => {
+      const calculatedData = calculateInvestmentData(
+        tempInvestmentInputs,
+        numberOfMonths
+      );
 
-    setTempInvestmentData(calculatedData);
-    const tableData = transformInvestmentDataForTable(
-      tempInvestmentInputs,
-      renderInvestmentForm,
-      tempInvestmentData,
-      numberOfMonths
-    );
-    dispatch(setInvestmentTableData(tableData));
+      setTempInvestmentData(calculatedData);
+      const tableData = transformInvestmentDataForTable(
+        tempInvestmentInputs,
+        renderInvestmentForm,
+        tempInvestmentData,
+        numberOfMonths
+      );
+      dispatch(setInvestmentTableData(tableData));
+
+      // Sử dụng setTimeout để setIsLoading(false) sau 2 giây
+
+      setIsLoading(false);
+    }, 500);
+
+    // Cleanup function để clear timeout khi component unmount
+    return () => clearTimeout(timer);
   }, [tempInvestmentInputs, numberOfMonths, renderInvestmentForm]);
 
   const months = [
@@ -559,6 +568,11 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           numberOfMonths
         );
 
+  const handleRenderFormChange = (e) => {
+    setIsLoading(true);
+    setRenderInvestmentForm(e);
+  };
+
   return (
     <div>
       <div className="flex space-x-2 my-6 mx-auto justify-center item-center">
@@ -882,7 +896,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                   <Select
                     value={renderInvestmentForm}
                     onValueChange={(e) => {
-                      setRenderInvestmentForm(e);
+                      handleRenderFormChange(e);
                     }}
                   >
                     <SelectTrigger className="w-[200px]">
@@ -909,6 +923,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                 dataSource={filteredTableData}
                 columns={investmentColumns}
                 pagination={false}
+                loading={isLoading}
                 bordered={false} // Tắt border mặc định của antd
                 rowClassName={(record) =>
                   record.key === record.type ? "font-bold" : ""

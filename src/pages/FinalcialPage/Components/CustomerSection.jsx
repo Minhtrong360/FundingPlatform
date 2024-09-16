@@ -109,7 +109,6 @@ const CustomerInputsForm = React.memo(
       const input = tempCustomerInputs.find(
         (input) => input?.id == renderCustomerForm
       );
-      console.log("temporaryData", temporaryData);
       if (input) {
         // Update gptResponseArray and applyCustom first and ensure state update is completed before next update
         setTempCustomerInputs((prevInputs) => {
@@ -315,7 +314,7 @@ const CustomerInputsForm = React.memo(
                   }
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4 mb-3">
+              {/* <div className="grid grid-cols-2 gap-4 mb-3">
                 <span className="flex items-center text-sm">
                   Acquisition cost:
                 </span>
@@ -332,7 +331,7 @@ const CustomerInputsForm = React.memo(
                   }
                   disabled
                 />
-              </div>
+              </div> */}
 
               <div className="flex items-center gap-2 mb-3">
                 <Checkbox
@@ -531,26 +530,35 @@ const CustomerSection = React.memo(
     const [showCustomInputs, setShowCustomInputs] = useState(false);
 
     useEffect(() => {
-      const calculatedData = calculateCustomerGrowth(
-        tempCustomerInputs,
-        numberOfMonths
-      );
+      const timer = setTimeout(() => {
+        const calculatedData = calculateCustomerGrowth(
+          tempCustomerInputs,
+          numberOfMonths
+        );
 
-      const calculateTransformedCustomerTableData = transformCustomerData(
-        calculatedData,
-        tempCustomerInputs
-      );
+        const calculateTransformedCustomerTableData = transformCustomerData(
+          calculatedData,
+          tempCustomerInputs
+        );
 
-      const calculateCustomerTableData = generateCustomerTableData(
-        calculateTransformedCustomerTableData,
-        tempCustomerInputs,
-        numberOfMonths,
-        renderCustomerForm
-      );
+        const calculateCustomerTableData = generateCustomerTableData(
+          calculateTransformedCustomerTableData,
+          tempCustomerInputs,
+          numberOfMonths,
+          renderCustomerForm
+        );
 
-      dispatch(setCustomerTableData(calculateCustomerTableData));
+        dispatch(setCustomerTableData(calculateCustomerTableData));
 
-      setTempCustomerGrowthData(calculatedData);
+        setTempCustomerGrowthData(calculatedData);
+
+        // Sử dụng setTimeout để setIsLoading(false) sau 2 giây
+
+        setIsLoading(false);
+      }, 2000);
+
+      // Cleanup function để clear timeout khi component unmount
+      return () => clearTimeout(timer);
     }, [tempCustomerInputs, renderCustomerForm, showCustomInputs]);
 
     const months = [
@@ -1198,6 +1206,10 @@ const CustomerSection = React.memo(
         ? customerTableData.filter((record) => record.key !== "Total")
         : customerTableData;
 
+    const handleRenderFormChange = (e) => {
+      setIsLoading(true);
+      setRenderCustomerForm(e);
+    };
     return (
       <div>
         <div className="flex space-x-2 my-6 mx-auto justify-center item-center">
@@ -1721,7 +1733,7 @@ const CustomerSection = React.memo(
                     <Select
                       value={renderCustomerForm}
                       onValueChange={(e) => {
-                        setRenderCustomerForm(e);
+                        handleRenderFormChange(e);
                       }}
                     >
                       <SelectTrigger className="w-[200px]">
@@ -1752,6 +1764,7 @@ const CustomerSection = React.memo(
                   rowClassName={(record) =>
                     record.key === record.channelName ? "font-bold" : ""
                   }
+                  loading={isLoading}
                 />
 
                 <Button

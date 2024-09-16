@@ -54,11 +54,13 @@ const DraggableChart = ({ data, onDataChange, beginMonth, endMonth }) => {
     categoryAxis.dataFields.category = "formattedMonth";
     categoryAxis.renderer.grid.template.disabled = true;
     categoryAxis.renderer.minGridDistance = 50;
+    categoryAxis.renderer.labels.template.fontSize = 12; // Giảm kích thước font chữ trục X
 
     var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
     valueAxis.strictMinMax = true;
     valueAxis.min = 0;
     valueAxis.renderer.minWidth = 60;
+    valueAxis.renderer.labels.template.fontSize = 12; // Giảm kích thước font chữ trục Y
 
     var series = chart.series.push(new am4charts.ColumnSeries());
     series.dataFields.categoryX = "formattedMonth";
@@ -75,6 +77,7 @@ const DraggableChart = ({ data, onDataChange, beginMonth, endMonth }) => {
     labelBullet.strokeOpacity = 0;
     labelBullet.stroke = am4core.color("#dadada");
     labelBullet.dy = -20;
+    labelBullet.label.fontSize = 12; // Giảm kích thước font của các label trên cột
 
     var bullet = series.bullets.create();
     bullet.stroke = am4core.color("#ffffff");

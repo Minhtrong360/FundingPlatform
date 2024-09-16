@@ -403,7 +403,14 @@ const SalesSection = ({
   ]);
 
   useEffect(() => {
-    calculateAndDispatchRevenueData();
+    const timer = setTimeout(() => {
+      calculateAndDispatchRevenueData();
+
+      setIsLoading(false);
+    }, 2000);
+
+    // Cleanup function để clear timeout khi component unmount
+    return () => clearTimeout(timer);
   }, [tempChannelInputs, renderChannelForm]);
 
   const { id } = useParams();
@@ -812,6 +819,10 @@ const SalesSection = ({
         )
       : revenueTableData;
 
+  const handleRenderFormChange = (e) => {
+    setIsLoading(true);
+    setRenderChannelForm(e);
+  };
   return (
     <div>
       <div className="flex space-x-2 my-6 mx-auto justify-center item-center">
@@ -1135,7 +1146,7 @@ const SalesSection = ({
                   <Select
                     value={renderChannelForm}
                     onValueChange={(e) => {
-                      setRenderChannelForm(e);
+                      handleRenderFormChange(e);
                     }}
                   >
                     <SelectTrigger className="w-[200px]">
@@ -1166,6 +1177,7 @@ const SalesSection = ({
                 size="small"
                 dataSource={filteredTableData}
                 columns={revenueColumns}
+                loading={isLoading}
                 pagination={false}
                 rowClassName={(record) =>
                   record.key === record.channelName ? "font-bold" : ""

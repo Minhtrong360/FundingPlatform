@@ -258,14 +258,23 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   };
 
   useEffect(() => {
-    const calculatedData = calculateLoanData(loanInputs, numberOfMonths);
-    dispatch(setLoanData(calculatedData));
-    const tableData = transformLoanDataForTable(
-      loanInputs,
-      renderLoanForm,
-      numberOfMonths
-    );
-    dispatch(setLoanTableData(tableData));
+    const timer = setTimeout(() => {
+      const calculatedData = calculateLoanData(loanInputs, numberOfMonths);
+      dispatch(setLoanData(calculatedData));
+      const tableData = transformLoanDataForTable(
+        loanInputs,
+        renderLoanForm,
+        numberOfMonths
+      );
+      dispatch(setLoanTableData(tableData));
+
+      // Sử dụng setTimeout để setIsLoading(false) sau 2 giây
+
+      setIsLoading(false);
+    }, 500);
+
+    // Cleanup function để clear timeout khi component unmount
+    return () => clearTimeout(timer);
   }, [loanInputs, numberOfMonths, renderLoanForm]);
 
   const months = [
@@ -704,6 +713,11 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           renderLoanForm,
           numberOfMonths
         );
+
+  const handleRenderFormChange = (e) => {
+    setIsLoading(true);
+    setRenderLoanForm(e);
+  };
   return (
     <div>
       <div className="flex space-x-2 my-6 mx-auto justify-center item-center">
@@ -1033,7 +1047,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                   <Select
                     value={renderLoanForm}
                     onValueChange={(e) => {
-                      setRenderLoanForm(e);
+                      handleRenderFormChange(e);
                     }}
                   >
                     <SelectTrigger className="w-[200px]">
@@ -1060,6 +1074,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                 dataSource={filteredTableData}
                 columns={loanColumns}
                 pagination={false}
+                loading={isLoading}
                 bordered={false} // Tắt border mặc định của antd
                 rowClassName={(record) =>
                   record.key === record.type ? "font-bold" : ""

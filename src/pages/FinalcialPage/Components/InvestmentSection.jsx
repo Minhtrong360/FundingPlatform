@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Input } from "../../../components/ui/input";
-import { Card, Modal, Table, message } from "antd";
+import { Card, FloatButton, Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,7 +13,11 @@ import {
 } from "../../../features/InvestmentSlice";
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
-import { DownloadOutlined, FullscreenOutlined } from "@ant-design/icons";
+import {
+  DownloadOutlined,
+  FileOutlined,
+  FullscreenOutlined,
+} from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
@@ -62,7 +66,7 @@ const InvestmentInputForm = ({
   const debouncedHandleInputChange = useCallback(
     debounce((id, field, value) => {
       handleInvestmentInputChange(id, field, value);
-    }, 500),
+    }, 1000),
     [handleInvestmentInputChange]
   );
 
@@ -763,478 +767,398 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   };
 
   return (
-    <div>
-      <div className="flex space-x-2 my-6 mx-auto justify-center item-center">
-        <Badge
-          variant="secondary"
-          className={`bg-yellow-100 text-yellow-800 cursor-pointer text-sm ${activeTab === "input" ? "bg-yellow-500 text-white" : ""}`}
-          onClick={() => handleTabChange("input")}
-        >
-          Inputs
-        </Badge>
-        <Badge
-          variant="secondary"
-          className={`bg-green-100 text-green-800 cursor-pointer text-sm ${activeTab === "table&chart" ? "bg-green-500 text-white" : ""}`}
-          onClick={() => handleTabChange("table&chart")}
-        >
-          Tables and Charts
-        </Badge>
-      </div>
-      <div className="w-full h-full flex flex-col lg:flex-row p-4">
-        <>
-          <div className="w-full xl:w-3/4 sm:p-4 p-0">
-            <h3 className="text-lg font-semibold mb-8">I. Investment Chart</h3>
-            <div className="sm:ml-4 ml-0 mt-20">
-              <h4 className="text-base font-semibold mb-4">
-                1. All investments chart
-              </h4>
-              {investmentChart?.charts
-                ?.filter((chart) => chart.options.chart.id === "allInvestments")
-                .map((series, index) => (
-                  <CardShadcn
-                    key={index}
-                    className="flex flex-col transition duration-500  rounded-2xl relative"
-                  >
-                    <CardHeader>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute top-2 right-2 z-50"
-                        onClick={(event) => handleChartClick(series, event)}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="w-4 h-4"
-                        >
-                          <path d="M15 3h6v6" />
-                          <path d="M10 14 21 3" />
-                          <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
-                        </svg>
-                        <span className="sr-only">Fullscreen</span>
-                      </Button>
-                      <div className="flex justify-between items-center">
-                        <div className="min-w-[10vw] mb-2">
-                          <label htmlFor="startMonthSelect" className="text-sm">
-                            Start Month:
-                          </label>
-                          <select
-                            id="startMonthSelect"
-                            value={chartStartMonth}
-                            onChange={(e) =>
-                              setChartStartMonth(
-                                Math.max(
-                                  1,
-                                  Math.min(e.target.value, chartEndMonth)
-                                )
-                              )
-                            }
-                            className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
-                          >
-                            {Array.from({ length: numberOfMonths }, (_, i) => {
-                              const monthIndex = (startingMonth + i - 1) % 12;
-                              const year =
-                                startingYear +
-                                Math.floor((startingMonth + i - 1) / 12);
-                              return (
-                                <option key={i + 1} value={i + 1}>
-                                  {`${months[monthIndex]}/${year}`}
-                                </option>
-                              );
-                            })}
-                          </select>
-                        </div>
-                        <div className="min-w-[10vw] mb-2">
-                          <label htmlFor="endMonthSelect" className="text-sm">
-                            End Month:
-                          </label>
-                          <select
-                            id="endMonthSelect"
-                            value={chartEndMonth}
-                            onChange={(e) =>
-                              setChartEndMonth(
-                                Math.max(
-                                  chartStartMonth,
-                                  Math.min(e.target.value, numberOfMonths)
-                                )
-                              )
-                            }
-                            className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
-                          >
-                            {Array.from({ length: numberOfMonths }, (_, i) => {
-                              const monthIndex = (startingMonth + i - 1) % 12;
-                              const year =
-                                startingYear +
-                                Math.floor((startingMonth + i - 1) / 12);
-                              return (
-                                <option key={i + 1} value={i + 1}>
-                                  {`${months[monthIndex]}/${year}`}
-                                </option>
-                              );
-                            })}
-                          </select>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <Chart
-                        options={{
-                          ...series.options,
-                          xaxis: {
-                            ...series.options.xaxis,
-                          },
-                          stroke: {
-                            width: 1,
-                            curve: "straight",
-                          },
-                        }}
-                        series={series.series}
-                        type="area"
-                        height={350}
-                      />
-                    </CardContent>
-                  </CardShadcn>
-                ))}
-            </div>
-            <div className="sm:ml-4 ml-0 mt-20">
-              <h4 className="text-base font-semibold mb-4">
-                2. Component charts
-              </h4>
-              <div className="grid md:grid-cols-2 gap-6">
-                {investmentChart?.charts
-                  ?.filter(
-                    (chart) => chart.options.chart.id !== "allInvestments"
-                  )
-                  .map((series, index) => (
-                    <CardShadcn
-                      key={index}
-                      className="flex flex-col transition duration-500  rounded-2xl relative"
-                    >
-                      <CardHeader>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute top-2 right-2 z-50"
-                          onClick={(event) => handleChartClick(series, event)}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="w-4 h-4"
-                          >
-                            <path d="M15 3h6v6" />
-                            <path d="M10 14 21 3" />
-                            <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
-                          </svg>
-                          <span className="sr-only">Fullscreen</span>
-                        </Button>
-                        <div className="flex justify-between items-center">
-                          <div className="min-w-[10vw] mb-2">
-                            <label
-                              htmlFor="startMonthSelect"
-                              className="text-sm"
-                            >
-                              Start Month:
-                            </label>
-                            <select
-                              id="startMonthSelect"
-                              value={chartStartMonth}
-                              onChange={(e) =>
-                                setChartStartMonth(
-                                  Math.max(
-                                    1,
-                                    Math.min(e.target.value, chartEndMonth)
-                                  )
-                                )
-                              }
-                              className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
-                            >
-                              {Array.from(
-                                { length: numberOfMonths },
-                                (_, i) => {
-                                  const monthIndex =
-                                    (startingMonth + i - 1) % 12;
-                                  const year =
-                                    startingYear +
-                                    Math.floor((startingMonth + i - 1) / 12);
-                                  return (
-                                    <option key={i + 1} value={i + 1}>
-                                      {`${months[monthIndex]}/${year}`}
-                                    </option>
-                                  );
-                                }
-                              )}
-                            </select>
-                          </div>
-                          <div className="min-w-[10vw] mb-2">
-                            <label htmlFor="endMonthSelect" className="text-sm">
-                              End Month:
-                            </label>
-                            <select
-                              id="endMonthSelect"
-                              value={chartEndMonth}
-                              onChange={(e) =>
-                                setChartEndMonth(
-                                  Math.max(
-                                    chartStartMonth,
-                                    Math.min(e.target.value, numberOfMonths)
-                                  )
-                                )
-                              }
-                              className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
-                            >
-                              {Array.from(
-                                { length: numberOfMonths },
-                                (_, i) => {
-                                  const monthIndex =
-                                    (startingMonth + i - 1) % 12;
-                                  const year =
-                                    startingYear +
-                                    Math.floor((startingMonth + i - 1) / 12);
-                                  return (
-                                    <option key={i + 1} value={i + 1}>
-                                      {`${months[monthIndex]}/${year}`}
-                                    </option>
-                                  );
-                                }
-                              )}
-                            </select>
-                          </div>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <Chart
-                          options={{
-                            ...series.options,
-                            xaxis: {
-                              ...series.options.xaxis,
-                            },
-                            stroke: {
-                              width: 1,
-                              curve: "straight",
-                            },
-                          }}
-                          series={series.series}
-                          type="area"
-                          height={350}
-                        />
-                      </CardContent>
-                    </CardShadcn>
-                  ))}
-              </div>
-            </div>
-            <Modal
-              centered
-              open={isChartModalVisible}
-              footer={null}
-              onCancel={() => setIsChartModalVisible(false)}
-              width="90%"
-              style={{ top: 20 }}
-            >
-              {selectedChart && (
-                <Chart
-                  options={{
-                    ...selectedChart.options,
-                  }}
-                  series={selectedChart.series}
-                  type="area"
-                  height={500}
-                  className="p-4"
-                />
-              )}
-            </Modal>
-            <span>
-              <h3 className="text-lg font-semibold mt-20 my-4">
-                II. Investment Table
-              </h3>
-
-              <div className="flex justify-between items-center">
-                <Select
-                  value={renderInvestmentForm}
-                  onValueChange={(e) => {
-                    handleRenderFormChange(e);
-                  }}
-                >
-                  <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Offline" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All</SelectItem>
-                    {tempInvestmentInputs.map((input) => (
-                      <SelectItem key={input?.id} value={input?.id}>
-                        {input.purchaseName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Button variant="outline" onClick={downloadExcel}>
-                  <Download className="mr-2 h-4 w-4" />
-                  Download Excel
-                </Button>
-              </div>
-            </span>
-            <Table
-              className="custom-table bg-white overflow-auto my-8 rounded-md"
-              size="small"
-              dataSource={filteredTableData}
-              columns={investmentColumns}
-              pagination={false}
-              loading={isLoading}
-              bordered={false} // Tắt border mặc định của antd
-              rowClassName={(record) =>
-                record.key === record.type ? "font-bold" : ""
-              }
-            />
-          </div>
-          <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
-            <button
-              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
-              style={{ bottom: "20px", right: "80px", position: "fixed" }}
-              onClick={handleSave}
-            >
-              {isLoading ? (
-                <SpinnerBtn />
-              ) : (
-                <>
-                  <CheckCircleOutlined
-                    style={{
-                      fontSize: "12px",
-                      color: "#FFFFFF",
-                      marginRight: "4px",
-                    }}
-                  />
-                  Save
-                </>
-              )}
-            </button>
-          </div>
-        </>
-
-        <>
-          <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
-
-          <div className="w-full xl:w-1/4 sm:p-4 p-0">
-            <InvestmentInputForm
-              tempInvestmentInputs={tempInvestmentInputs}
-              renderInvestmentForm={renderInvestmentForm}
-              setRenderInvestmentForm={setRenderInvestmentForm}
-              handleInvestmentInputChange={handleInvestmentInputChange}
-              formatNumber={formatNumber}
-              parseNumber={parseNumber}
-              addNewInvestmentInput={addNewInvestmentInput}
-              handleSave={handleSave}
-              isLoading={isLoading}
-              setIsDeleteModalOpen={setIsDeleteModalOpen}
-            />
-          </div>
-          {/* <div className="xl:hidden block">
-              <FloatButton
-                tooltip={<div>Input values</div>}
-                style={{
-                  position: "fixed",
-                  bottom: "30px",
-                  right: "30px",
-                }}
-                onClick={() => {
-                  setIsInputFormOpen(true);
-                }}
+    <div className="w-full h-full flex flex-col lg:flex-row p-4">
+      <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
+        <h3 className="text-lg font-semibold mb-8">I. Investment Chart</h3>
+        <div className="sm:ml-4 ml-0 mt-20">
+          <h4 className="text-base font-semibold mb-4">
+            1. All investments chart
+          </h4>
+          {investmentChart?.charts
+            ?.filter((chart) => chart.options.chart.id === "allInvestments")
+            .map((series, index) => (
+              <CardShadcn
+                key={index}
+                className="flex flex-col transition duration-500  rounded-2xl relative"
               >
-                <Button type="primary" shape="circle" icon={<FileOutlined />} />
-              </FloatButton>
-            </div> */}
+                <CardHeader>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 z-50"
+                    onClick={(event) => handleChartClick(series, event)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-4 h-4"
+                    >
+                      <path d="M15 3h6v6" />
+                      <path d="M10 14 21 3" />
+                      <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                    </svg>
+                    <span className="sr-only">Fullscreen</span>
+                  </Button>
+                  <div className="flex justify-between items-center">
+                    <div className="min-w-[10vw] mb-2">
+                      <label htmlFor="startMonthSelect" className="text-sm">
+                        Start Month:
+                      </label>
+                      <select
+                        id="startMonthSelect"
+                        value={chartStartMonth}
+                        onChange={(e) =>
+                          setChartStartMonth(
+                            Math.max(1, Math.min(e.target.value, chartEndMonth))
+                          )
+                        }
+                        className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                      >
+                        {Array.from({ length: numberOfMonths }, (_, i) => {
+                          const monthIndex = (startingMonth + i - 1) % 12;
+                          const year =
+                            startingYear +
+                            Math.floor((startingMonth + i - 1) / 12);
+                          return (
+                            <option key={i + 1} value={i + 1}>
+                              {`${months[monthIndex]}/${year}`}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                    <div className="min-w-[10vw] mb-2">
+                      <label htmlFor="endMonthSelect" className="text-sm">
+                        End Month:
+                      </label>
+                      <select
+                        id="endMonthSelect"
+                        value={chartEndMonth}
+                        onChange={(e) =>
+                          setChartEndMonth(
+                            Math.max(
+                              chartStartMonth,
+                              Math.min(e.target.value, numberOfMonths)
+                            )
+                          )
+                        }
+                        className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                      >
+                        {Array.from({ length: numberOfMonths }, (_, i) => {
+                          const monthIndex = (startingMonth + i - 1) % 12;
+                          const year =
+                            startingYear +
+                            Math.floor((startingMonth + i - 1) / 12);
+                          return (
+                            <option key={i + 1} value={i + 1}>
+                              {`${months[monthIndex]}/${year}`}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <Chart
+                    options={{
+                      ...series.options,
+                      xaxis: {
+                        ...series.options.xaxis,
+                      },
+                      stroke: {
+                        width: 1,
+                        curve: "straight",
+                      },
+                    }}
+                    series={series.series}
+                    type="area"
+                    height={350}
+                  />
+                </CardContent>
+              </CardShadcn>
+            ))}
+        </div>
+        <div className="sm:ml-4 ml-0 mt-20">
+          <h4 className="text-base font-semibold mb-4">2. Component charts</h4>
+          <div className="grid md:grid-cols-2 gap-6">
+            {investmentChart?.charts
+              ?.filter((chart) => chart.options.chart.id !== "allInvestments")
+              .map((series, index) => (
+                <CardShadcn
+                  key={index}
+                  className="flex flex-col transition duration-500  rounded-2xl relative"
+                >
+                  <CardHeader>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute top-2 right-2 z-50"
+                      onClick={(event) => handleChartClick(series, event)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="w-4 h-4"
+                      >
+                        <path d="M15 3h6v6" />
+                        <path d="M10 14 21 3" />
+                        <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                      </svg>
+                      <span className="sr-only">Fullscreen</span>
+                    </Button>
+                    <div className="flex justify-between items-center">
+                      <div className="min-w-[10vw] mb-2">
+                        <label htmlFor="startMonthSelect" className="text-sm">
+                          Start Month:
+                        </label>
+                        <select
+                          id="startMonthSelect"
+                          value={chartStartMonth}
+                          onChange={(e) =>
+                            setChartStartMonth(
+                              Math.max(
+                                1,
+                                Math.min(e.target.value, chartEndMonth)
+                              )
+                            )
+                          }
+                          className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                        >
+                          {Array.from({ length: numberOfMonths }, (_, i) => {
+                            const monthIndex = (startingMonth + i - 1) % 12;
+                            const year =
+                              startingYear +
+                              Math.floor((startingMonth + i - 1) / 12);
+                            return (
+                              <option key={i + 1} value={i + 1}>
+                                {`${months[monthIndex]}/${year}`}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                      <div className="min-w-[10vw] mb-2">
+                        <label htmlFor="endMonthSelect" className="text-sm">
+                          End Month:
+                        </label>
+                        <select
+                          id="endMonthSelect"
+                          value={chartEndMonth}
+                          onChange={(e) =>
+                            setChartEndMonth(
+                              Math.max(
+                                chartStartMonth,
+                                Math.min(e.target.value, numberOfMonths)
+                              )
+                            )
+                          }
+                          className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                        >
+                          {Array.from({ length: numberOfMonths }, (_, i) => {
+                            const monthIndex = (startingMonth + i - 1) % 12;
+                            const year =
+                              startingYear +
+                              Math.floor((startingMonth + i - 1) / 12);
+                            return (
+                              <option key={i + 1} value={i + 1}>
+                                {`${months[monthIndex]}/${year}`}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <Chart
+                      options={{
+                        ...series.options,
+                        xaxis: {
+                          ...series.options.xaxis,
+                        },
+                        stroke: {
+                          width: 1,
+                          curve: "straight",
+                        },
+                      }}
+                      series={series.series}
+                      type="area"
+                      height={350}
+                    />
+                  </CardContent>
+                </CardShadcn>
+              ))}
+          </div>
+        </div>
+        <Modal
+          centered
+          open={isChartModalVisible}
+          footer={null}
+          onCancel={() => setIsChartModalVisible(false)}
+          width="90%"
+          style={{ top: 20 }}
+        >
+          {selectedChart && (
+            <Chart
+              options={{
+                ...selectedChart.options,
+              }}
+              series={selectedChart.series}
+              type="area"
+              height={500}
+              className="p-4"
+            />
+          )}
+        </Modal>
+        <span>
+          <h3 className="text-lg font-semibold mt-20 my-4">
+            II. Investment Table
+          </h3>
 
-          {isInputFormOpen && (
-            <Modal
-              open={isInputFormOpen}
-              onOk={() => {
-                handleSave();
-                setIsInputFormOpen(false);
+          <div className="flex justify-between items-center">
+            <Select
+              value={renderInvestmentForm}
+              onValueChange={(e) => {
+                handleRenderFormChange(e);
               }}
-              onCancel={() => {
-                setTempInvestmentInputs(investmentInputs);
-                setRenderInvestmentForm(investmentInputs[0]?.id);
-                setIsInputFormOpen(false);
-              }}
-              okText={isLoading ? <SpinnerBtn /> : "Save Change"}
-              cancelText="Cancel"
-              cancelButtonProps={{
-                style: {
-                  borderRadius: "0.375rem",
-                  cursor: "pointer",
-                },
-              }}
-              okButtonProps={{
-                style: {
-                  background: "#2563EB",
-                  borderColor: "#2563EB",
-                  color: "#fff",
-                  borderRadius: "0.375rem",
-                  cursor: "pointer",
-                  minWidth: "5vw",
-                },
-              }}
-              footer={null}
-              centered={true}
-              zIndex={50}
             >
-              <InvestmentInputForm
-                tempInvestmentInputs={tempInvestmentInputs}
-                renderInvestmentForm={renderInvestmentForm}
-                setRenderInvestmentForm={setRenderInvestmentForm}
-                handleInvestmentInputChange={handleInvestmentInputChange}
-                formatNumber={formatNumber}
-                parseNumber={parseNumber}
-                addNewInvestmentInput={addNewInvestmentInput}
-                handleSave={handleSave}
-                isLoading={isLoading}
-                setIsDeleteModalOpen={setIsDeleteModalOpen}
-              />
-            </Modal>
-          )}
-          {isDeleteModalOpen && (
-            <Modal
-              title="Confirm Delete"
-              open={isDeleteModalOpen}
-              onOk={confirmDelete}
-              onCancel={() => setIsDeleteModalOpen(false)}
-              okText="Delete"
-              cancelText="Cancel"
-              cancelButtonProps={{
-                style: {
-                  borderRadius: "0.375rem",
-                  cursor: "pointer",
-                },
-              }}
-              okButtonProps={{
-                style: {
-                  background: "#f5222d",
-                  borderColor: "#f5222d",
-                  color: "#fff",
-                  borderRadius: "0.375rem",
-                  cursor: "pointer",
-                },
-              }}
-              centered={true}
-            >
-              Are you sure you want to delete it?
-            </Modal>
-          )}
-        </>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Offline" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                {tempInvestmentInputs.map((input) => (
+                  <SelectItem key={input?.id} value={input?.id}>
+                    {input.purchaseName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button variant="outline" onClick={downloadExcel}>
+              <Download className="mr-2 h-4 w-4" />
+              Download Excel
+            </Button>
+          </div>
+        </span>
+        <Table
+          className="custom-table bg-white overflow-auto my-8 rounded-md"
+          size="small"
+          dataSource={filteredTableData}
+          columns={investmentColumns}
+          pagination={false}
+          loading={isLoading}
+          bordered={false} // Tắt border mặc định của antd
+          rowClassName={(record) =>
+            record.key === record.type ? "font-bold" : ""
+          }
+        />
       </div>
+
+      <div className="relative w-full xl:w-1/4">
+        <div className="sm:!p-4 !p-0 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
+          <InvestmentInputForm
+            tempInvestmentInputs={tempInvestmentInputs}
+            renderInvestmentForm={renderInvestmentForm}
+            setRenderInvestmentForm={setRenderInvestmentForm}
+            handleInvestmentInputChange={handleInvestmentInputChange}
+            formatNumber={formatNumber}
+            parseNumber={parseNumber}
+            addNewInvestmentInput={addNewInvestmentInput}
+            handleSave={handleSave}
+            isLoading={isLoading}
+            setIsDeleteModalOpen={setIsDeleteModalOpen}
+          />
+        </div>
+      </div>
+      <div className="xl:!hidden !block">
+        {" "}
+        <FloatButton
+          tooltip={<div>Input values</div>}
+          style={{
+            position: "fixed",
+            bottom: "20px",
+            right: "80px",
+            width: "48px",
+            height: "48px",
+          }}
+          className="!shadow-md !bg-[#f3f4f6]"
+          onClick={() => {
+            setIsInputFormOpen(true);
+          }}
+        >
+          <Button type="primary" shape="circle" icon={<FileOutlined />} />
+        </FloatButton>
+      </div>
+
+      {isInputFormOpen && (
+        <Modal
+          open={isInputFormOpen}
+          onCancel={() => {
+            setTempInvestmentInputs(investmentInputs);
+            setRenderInvestmentForm(investmentInputs[0]?.id);
+            setIsInputFormOpen(false);
+          }}
+          footer={null}
+          centered={true}
+          zIndex={50}
+        >
+          <InvestmentInputForm
+            tempInvestmentInputs={tempInvestmentInputs}
+            renderInvestmentForm={renderInvestmentForm}
+            setRenderInvestmentForm={setRenderInvestmentForm}
+            handleInvestmentInputChange={handleInvestmentInputChange}
+            formatNumber={formatNumber}
+            parseNumber={parseNumber}
+            addNewInvestmentInput={addNewInvestmentInput}
+            handleSave={handleSave}
+            isLoading={isLoading}
+            setIsDeleteModalOpen={setIsDeleteModalOpen}
+          />
+        </Modal>
+      )}
+      {isDeleteModalOpen && (
+        <Modal
+          title="Confirm Delete"
+          open={isDeleteModalOpen}
+          onOk={confirmDelete}
+          onCancel={() => setIsDeleteModalOpen(false)}
+          okText="Delete"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              borderRadius: "0.375rem",
+              cursor: "pointer",
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#f5222d",
+              borderColor: "#f5222d",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer",
+            },
+          }}
+          centered={true}
+        >
+          Are you sure you want to delete it?
+        </Modal>
+      )}
     </div>
   );
 };

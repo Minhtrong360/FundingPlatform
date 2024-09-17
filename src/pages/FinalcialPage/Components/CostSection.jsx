@@ -7,7 +7,7 @@ import {
 } from "../../../components/ui/select";
 import { Input } from "../../../components/ui/input";
 import { useCallback, useEffect, useState } from "react";
-import { Card, Checkbox, Modal, Table, message } from "antd";
+import { Card, Checkbox, FloatButton, Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import {
   setCostInputs,
@@ -39,6 +39,7 @@ import {
 import { Check, Download, Plus, Trash2 } from "lucide-react";
 import { Button, Button as ButtonV0 } from "../../../components/ui/button";
 import { debounce } from "lodash";
+import { FileOutlined } from "@ant-design/icons";
 
 const CostInputForm = ({
   tempCostInput,
@@ -131,7 +132,7 @@ const CostInputForm = ({
   const debouncedHandleInputChange = useCallback(
     debounce((id, field, value) => {
       handleCostInputChange(id, field, value);
-    }, 500),
+    }, 1000),
     [handleCostInputChange]
   );
 
@@ -1043,159 +1044,141 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
     saveAs(jsonBlob, "cost_data.json");
   };
 
+  const [isInputFormOpen, setIsInputFormOpen] = useState(false);
+
   return (
-    <div>
-      <div className="flex space-x-2 my-6 mx-auto justify-center item-center">
-        <Badge
-          variant="secondary"
-          className={`bg-yellow-100 text-yellow-800 cursor-pointer text-sm ${activeTab === "input" ? "bg-yellow-500 text-white" : ""}`}
-          onClick={() => handleTabChange("input")}
-        >
-          Inputs
-        </Badge>
-        <Badge
-          variant="secondary"
-          className={`bg-green-100 text-green-800 cursor-pointer text-sm ${activeTab === "table&chart" ? "bg-green-500 text-white" : ""}`}
-          onClick={() => handleTabChange("table&chart")}
-        >
-          Tables and Charts
-        </Badge>
-      </div>
-      <div className="w-full h-full flex flex-col lg:flex-row p-4">
-        <>
-          <div className="w-full xl:w-3/4 sm:p-4 p-0">
-            <h3 className="text-lg font-semibold mb-8">I. Cost Chart</h3>
-            <div className="grid md:grid-cols-2 gap-6">
-              <CardShadcn className="flex flex-col transition duration-500 rounded-2xl relative">
-                <CardHeader>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute top-2 right-2 z-50"
-                    onClick={(event) => handleChartClick(costChart, event)}
+    <div className="w-full h-full flex flex-col lg:flex-row p-4">
+      <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
+        <h3 className="text-lg font-semibold mb-8">I. Cost Chart</h3>
+        <div className="grid md:grid-cols-2 gap-6">
+          <CardShadcn className="flex flex-col transition duration-500 rounded-2xl relative">
+            <CardHeader>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-2 right-2 z-50"
+                onClick={(event) => handleChartClick(costChart, event)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-4 h-4"
+                >
+                  <path d="M15 3h6v6" />
+                  <path d="M10 14 21 3" />
+                  <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                </svg>
+                <span className="sr-only">Fullscreen</span>
+              </Button>
+              <div className="flex justify-between items-center">
+                <div className="min-w-[10vw] mb-2">
+                  <label htmlFor="startMonthSelect" className="text-sm">
+                    Start Month:
+                  </label>
+                  <select
+                    id="startMonthSelect"
+                    value={chartStartMonth}
+                    onChange={(e) =>
+                      setChartStartMonth(
+                        Math.max(1, Math.min(e.target.value, chartEndMonth))
+                      )
+                    }
+                    className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="w-4 h-4"
-                    >
-                      <path d="M15 3h6v6" />
-                      <path d="M10 14 21 3" />
-                      <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
-                    </svg>
-                    <span className="sr-only">Fullscreen</span>
-                  </Button>
-                  <div className="flex justify-between items-center">
-                    <div className="min-w-[10vw] mb-2">
-                      <label htmlFor="startMonthSelect" className="text-sm">
-                        Start Month:
-                      </label>
-                      <select
-                        id="startMonthSelect"
-                        value={chartStartMonth}
-                        onChange={(e) =>
-                          setChartStartMonth(
-                            Math.max(1, Math.min(e.target.value, chartEndMonth))
-                          )
-                        }
-                        className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
-                      >
-                        {Array.from({ length: numberOfMonths }, (_, i) => {
-                          const monthIndex = (startingMonth + i - 1) % 12;
-                          const year =
-                            startingYear +
-                            Math.floor((startingMonth + i - 1) / 12);
-                          return (
-                            <option key={i + 1} value={i + 1}>
-                              {`${months[monthIndex]}/${year}`}
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </div>
-                    <div className="min-w-[10vw] mb-2">
-                      <label htmlFor="endMonthSelect" className="text-sm">
-                        End Month:
-                      </label>
-                      <select
-                        id="endMonthSelect"
-                        value={chartEndMonth}
-                        onChange={(e) =>
-                          setChartEndMonth(
-                            Math.max(
-                              chartStartMonth,
-                              Math.min(e.target.value, numberOfMonths)
-                            )
-                          )
-                        }
-                        className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
-                      >
-                        {Array.from({ length: numberOfMonths }, (_, i) => {
-                          const monthIndex = (startingMonth + i - 1) % 12;
-                          const year =
-                            startingYear +
-                            Math.floor((startingMonth + i - 1) / 12);
-                          return (
-                            <option key={i + 1} value={i + 1}>
-                              {`${months[monthIndex]}/${year}`}
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <Chart
-                    options={{
-                      ...costChart.options,
-                      xaxis: {
-                        ...costChart.options.xaxis,
-                      },
-                      stroke: { width: 1, curve: "straight" },
-                    }}
-                    series={costChart.series}
-                    type="area"
-                    height={350}
-                  />
-                </CardContent>
-              </CardShadcn>
-            </div>
-            <Modal
-              centered
-              open={isChartModalVisible}
-              footer={null}
-              onCancel={() => setIsChartModalVisible(false)}
-              width="90%"
-              style={{ top: 20 }}
-            >
-              {selectedChart && (
-                <Chart
-                  options={{
-                    ...selectedChart.options,
-                  }}
-                  series={selectedChart.series}
-                  type="area"
-                  height={500}
-                  className="p-4"
-                />
-              )}
-            </Modal>
-            <div className="flex justify-between items-center my-4 mt-20">
-              <h3 className="text-lg font-semibold">II. Cost Table</h3>
-              <ButtonV0 variant="outline" onClick={downloadExcel}>
-                <Download className="mr-2 h-4 w-4" />
-                Download Excel
-              </ButtonV0>
-            </div>{" "}
-            {/* <div>
+                    {Array.from({ length: numberOfMonths }, (_, i) => {
+                      const monthIndex = (startingMonth + i - 1) % 12;
+                      const year =
+                        startingYear + Math.floor((startingMonth + i - 1) / 12);
+                      return (
+                        <option key={i + 1} value={i + 1}>
+                          {`${months[monthIndex]}/${year}`}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+                <div className="min-w-[10vw] mb-2">
+                  <label htmlFor="endMonthSelect" className="text-sm">
+                    End Month:
+                  </label>
+                  <select
+                    id="endMonthSelect"
+                    value={chartEndMonth}
+                    onChange={(e) =>
+                      setChartEndMonth(
+                        Math.max(
+                          chartStartMonth,
+                          Math.min(e.target.value, numberOfMonths)
+                        )
+                      )
+                    }
+                    className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                  >
+                    {Array.from({ length: numberOfMonths }, (_, i) => {
+                      const monthIndex = (startingMonth + i - 1) % 12;
+                      const year =
+                        startingYear + Math.floor((startingMonth + i - 1) / 12);
+                      return (
+                        <option key={i + 1} value={i + 1}>
+                          {`${months[monthIndex]}/${year}`}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Chart
+                options={{
+                  ...costChart.options,
+                  xaxis: {
+                    ...costChart.options.xaxis,
+                  },
+                  stroke: { width: 1, curve: "straight" },
+                }}
+                series={costChart.series}
+                type="area"
+                height={350}
+              />
+            </CardContent>
+          </CardShadcn>
+        </div>
+        <Modal
+          centered
+          open={isChartModalVisible}
+          footer={null}
+          onCancel={() => setIsChartModalVisible(false)}
+          width="90%"
+          style={{ top: 20 }}
+        >
+          {selectedChart && (
+            <Chart
+              options={{
+                ...selectedChart.options,
+              }}
+              series={selectedChart.series}
+              type="area"
+              height={500}
+              className="p-4"
+            />
+          )}
+        </Modal>
+        <div className="flex justify-between items-center my-4 mt-20">
+          <h3 className="text-lg font-semibold">II. Cost Table</h3>
+          <ButtonV0 variant="outline" onClick={downloadExcel}>
+            <Download className="mr-2 h-4 w-4" />
+            Download Excel
+          </ButtonV0>
+        </div>{" "}
+        {/* <div>
                 <label
                   htmlFor="selectedChannel"
                   className="block my-4 text-base darkTextWhite"
@@ -1213,105 +1196,137 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
                   ))}
                 </select>
               </div> */}
-            <Table
-              className="custom-table bg-white overflow-auto my-8 rounded-md"
-              size="small"
-              dataSource={costTableData}
-              columns={costColumns}
-              pagination={false}
-              bordered={false} // Tắt border mặc định của antd
-              rowClassName={(record) =>
-                record.key === "Total" || record.isHeader ? "font-bold" : ""
-              }
-            />
-            <Button
-              variant="destructive"
-              onClick={handleSave}
-              style={{ backgroundColor: "#18181B", color: "white" }}
-            >
-              {isLoading ? (
-                <SpinnerBtn />
-              ) : (
-                <>
-                  <Check className="mr-2 h-4 w-4" />
-                  Save
-                </>
-              )}
-            </Button>
-          </div>
-        </>
-
-        <>
-          <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
-
-          <div className="w-full xl:w-1/4 sm:p-4 p-0 ">
-            <CostInputForm
-              tempCostInput={tempCostInput}
-              setTempCostInput={setTempCostInput}
-              costChart={costChart}
-              renderCostForm={renderCostForm}
-              setRenderCostForm={setRenderCostForm}
-              handleCostInputChange={handleCostInputChange}
-              formatNumber={formatNumber}
-              parseNumber={parseNumber}
-              costGroupArray={costGroupArray}
-              revenueData={revenueData}
-              addNewCostInput={addNewCostInput}
-              handleSave={handleSave}
-              isLoading={isLoading}
-              setIsDeleteModalOpen={setIsDeleteModalOpen}
-              handleCostTypeChange={handleCostTypeChange}
-              showAdvancedInputs={showAdvancedInputs}
-              setShowAdvancedInputs={setShowAdvancedInputs}
-            />
-          </div>
-
-          {/* <div className="xl:hidden block">
-              <FloatButton
-                tooltip={<div>Input values</div>}
-                style={{
-                  position: "fixed",
-                  bottom: "30px",
-                  right: "30px",
-                }}
-                onClick={() => {
-                  setIsInputFormOpen(true);
-                }}
-              >
-                <Button type="primary" shape="circle" icon={<FileOutlined />} />
-              </FloatButton>
-            </div> */}
-
-          {isDeleteModalOpen && (
-            <Modal
-              title="Confirm Delete"
-              open={isDeleteModalOpen}
-              onOk={confirmDelete}
-              onCancel={() => setIsDeleteModalOpen(false)}
-              okText="Delete"
-              cancelText="Cancel"
-              cancelButtonProps={{
-                style: {
-                  borderRadius: "0.375rem",
-                  cursor: "pointer",
-                },
-              }}
-              okButtonProps={{
-                style: {
-                  background: "#f5222d",
-                  borderColor: "#f5222d",
-                  color: "#fff",
-                  borderRadius: "0.375rem",
-                  cursor: "pointer",
-                },
-              }}
-              centered={true}
-            >
-              Are you sure you want to delete it?
-            </Modal>
+        <Table
+          className="custom-table bg-white overflow-auto my-8 rounded-md"
+          size="small"
+          dataSource={costTableData}
+          columns={costColumns}
+          pagination={false}
+          bordered={false} // Tắt border mặc định của antd
+          rowClassName={(record) =>
+            record.key === "Total" || record.isHeader ? "font-bold" : ""
+          }
+        />
+        <Button
+          variant="destructive"
+          onClick={handleSave}
+          style={{ backgroundColor: "#18181B", color: "white" }}
+        >
+          {isLoading ? (
+            <SpinnerBtn />
+          ) : (
+            <>
+              <Check className="mr-2 h-4 w-4" />
+              Save
+            </>
           )}
-        </>
+        </Button>
       </div>
+
+      <div className="relative w-full xl:w-1/4">
+        <div className="sm:!p-4 !p-0 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
+          <CostInputForm
+            tempCostInput={tempCostInput}
+            setTempCostInput={setTempCostInput}
+            costChart={costChart}
+            renderCostForm={renderCostForm}
+            setRenderCostForm={setRenderCostForm}
+            handleCostInputChange={handleCostInputChange}
+            formatNumber={formatNumber}
+            parseNumber={parseNumber}
+            costGroupArray={costGroupArray}
+            revenueData={revenueData}
+            addNewCostInput={addNewCostInput}
+            handleSave={handleSave}
+            isLoading={isLoading}
+            setIsDeleteModalOpen={setIsDeleteModalOpen}
+            handleCostTypeChange={handleCostTypeChange}
+            showAdvancedInputs={showAdvancedInputs}
+            setShowAdvancedInputs={setShowAdvancedInputs}
+          />
+        </div>
+      </div>
+
+      <div className="xl:!hidden !block">
+        <FloatButton
+          tooltip={<div>Input values</div>}
+          style={{
+            position: "fixed",
+            bottom: "20px",
+            right: "80px",
+            width: "48px",
+            height: "48px",
+          }}
+          className="!shadow-md !bg-[#f3f4f6]"
+          onClick={() => {
+            setIsInputFormOpen(true);
+          }}
+        >
+          <Button type="primary" shape="circle" icon={<FileOutlined />} />
+        </FloatButton>
+      </div>
+
+      {isInputFormOpen && (
+        <Modal
+          open={isInputFormOpen}
+          onCancel={() => {
+            setTempCostInput(costInputs);
+            setIsInputFormOpen(false);
+          }}
+          centered={true}
+          zIndex={50}
+          footer={null}
+        >
+          <CostInputForm
+            tempCostInput={tempCostInput}
+            setTempCostInput={setTempCostInput}
+            costChart={costChart}
+            renderCostForm={renderCostForm}
+            setRenderCostForm={setRenderCostForm}
+            handleCostInputChange={handleCostInputChange}
+            formatNumber={formatNumber}
+            parseNumber={parseNumber}
+            costGroupArray={costGroupArray}
+            revenueData={revenueData}
+            addNewCostInput={addNewCostInput}
+            handleSave={handleSave}
+            isLoading={isLoading}
+            setIsDeleteModalOpen={setIsDeleteModalOpen}
+            handleCostTypeChange={handleCostTypeChange}
+            showAdvancedInputs={showAdvancedInputs}
+            setShowAdvancedInputs={setShowAdvancedInputs}
+          />
+        </Modal>
+      )}
+
+      {isDeleteModalOpen && (
+        <Modal
+          title="Confirm Delete"
+          open={isDeleteModalOpen}
+          onOk={confirmDelete}
+          onCancel={() => setIsDeleteModalOpen(false)}
+          okText="Delete"
+          cancelText="Cancel"
+          cancelButtonProps={{
+            style: {
+              borderRadius: "0.375rem",
+              cursor: "pointer",
+            },
+          }}
+          okButtonProps={{
+            style: {
+              background: "#f5222d",
+              borderColor: "#f5222d",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer",
+            },
+          }}
+          centered={true}
+        >
+          Are you sure you want to delete it?
+        </Modal>
+      )}
     </div>
   );
 };

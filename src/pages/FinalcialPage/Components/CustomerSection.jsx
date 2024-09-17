@@ -1,7 +1,15 @@
 import React, { useCallback, useEffect, useState } from "react";
 
 import { Input } from "../../../components/ui/input";
-import { Card, Modal, Table, Tooltip, message, Checkbox } from "antd";
+import {
+  Card,
+  Modal,
+  Table,
+  Tooltip,
+  message,
+  Checkbox,
+  FloatButton,
+} from "antd";
 import Chart from "react-apexcharts";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -30,13 +38,7 @@ import {
   SelectItem,
 } from "../../../components/ui/select";
 import { useParams } from "react-router-dom";
-import {
-  CheckCircleOutlined,
-  DeleteOutlined,
-  DownloadOutlined,
-  FullscreenOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { FileOutlined } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 import { saveAs } from "file-saver";
@@ -151,7 +153,7 @@ const CustomerInputsForm = React.memo(
     const debouncedHandleInputChange = useCallback(
       debounce((id, field, value) => {
         handleCustomerInputChange(id, field, value);
-      }, 500),
+      }, 1000),
       [handleCustomerInputChange]
     );
 
@@ -176,7 +178,7 @@ const CustomerInputsForm = React.memo(
             className="text-lg font-semibold mb-8 flex items-center"
             id="customers-heading"
           >
-            Customer channel{" "}
+            Customer channel
           </h2>
         </Tooltip>
         <div>
@@ -1244,38 +1246,153 @@ const CustomerSection = React.memo(
       setIsLoading(true);
       setRenderCustomerForm(e);
     };
-    return (
-      <div>
-        <div className="flex space-x-2 my-6 mx-auto justify-center item-center">
-          <Badge
-            variant="secondary"
-            className={`bg-yellow-100 text-yellow-800 cursor-pointer text-sm ${activeTab === "input" ? "bg-yellow-500 text-white" : ""}`}
-            onClick={() => handleTabChange("input")}
-          >
-            Inputs
-          </Badge>
-          <Badge
-            variant="secondary"
-            className={`bg-green-100 text-green-800 cursor-pointer text-sm ${activeTab === "table&chart" ? "bg-green-500 text-white" : ""}`}
-            onClick={() => handleTabChange("table&chart")}
-          >
-            Tables and Charts
-          </Badge>
-        </div>
-        <div className="w-full h-full flex flex-col lg:flex-row p-4">
-          <>
-            <div className="w-full xl:w-3/4 sm:p-4 p-0 ">
-              <h3 className="text-lg font-semibold mb-4">I. Customer Chart</h3>
 
-              <div className="sm:ml-4 ml-0 mt-20">
-                <h4 className="text-base font-semibold mb-4">
-                  1. All channels chart
-                </h4>
-                {customerGrowthChart?.charts
-                  ?.filter(
-                    (chart) => chart?.options?.chart?.id === "allChannels"
-                  )
-                  .map((chart, index) => (
+    const [isInputFormOpen, setIsInputFormOpen] = useState(false);
+
+    return (
+      <div className="w-full h-full flex flex-col lg:flex-row p-4">
+        <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
+          <h3 className="text-lg font-semibold mb-4">I. Customer Chart</h3>
+
+          <div className="sm:ml-4 ml-0 mt-20">
+            <h4 className="text-base font-semibold mb-4">
+              1. All channels chart
+            </h4>
+            {customerGrowthChart?.charts
+              ?.filter((chart) => chart?.options?.chart?.id === "allChannels")
+              .map((chart, index) => (
+                <CardShadcn
+                  key={index}
+                  className="flex flex-col transition duration-500 rounded-2xl relative"
+                >
+                  <CardHeader>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute top-2 right-2 z-50"
+                      onClick={(event) => handleChartClick(chart, event)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="w-4 h-4"
+                      >
+                        <path d="M15 3h6v6" />
+                        <path d="M10 14 21 3" />
+                        <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                      </svg>
+                      <span className="sr-only">Fullscreen</span>
+                    </Button>
+                    <div className="flex justify-between items-center">
+                      <div className="min-w-[10vw] mb-2">
+                        <label htmlFor="startMonthSelect" className="text-sm">
+                          Start Month:
+                        </label>
+                        <select
+                          id="startMonthSelect"
+                          value={chartStartMonth}
+                          onChange={(e) =>
+                            setChartStartMonth(
+                              Math.max(
+                                1,
+                                Math.min(e.target.value, chartEndMonth)
+                              )
+                            )
+                          }
+                          className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark1:bg-slate-900 dark1:border-gray-700 dark1:text-gray-400 dark1:focus:ring-gray-600"
+                        >
+                          {Array.from({ length: numberOfMonths }, (_, i) => {
+                            const monthIndex = (startingMonth + i - 1) % 12;
+                            const year =
+                              startingYear +
+                              Math.floor((startingMonth + i - 1) / 12);
+                            return (
+                              <option key={i + 1} value={i + 1}>
+                                {`${months[monthIndex]}/${year}`}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                      <div className="min-w-[10vw] mb-2">
+                        <label htmlFor="endMonthSelect" className="text-sm">
+                          End Month:
+                        </label>
+                        <select
+                          id="endMonthSelect"
+                          value={chartEndMonth}
+                          onChange={(e) =>
+                            setChartEndMonth(
+                              Math.max(
+                                chartStartMonth,
+                                Math.min(e.target.value, numberOfMonths)
+                              )
+                            )
+                          }
+                          className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark1:bg-slate-900 dark1:border-gray-700 dark1:text-gray-400 dark1:focus:ring-gray-600"
+                        >
+                          {Array.from({ length: numberOfMonths }, (_, i) => {
+                            const monthIndex = (startingMonth + i - 1) % 12;
+                            const year =
+                              startingYear +
+                              Math.floor((startingMonth + i - 1) / 12);
+                            return (
+                              <option key={i + 1} value={i + 1}>
+                                {`${months[monthIndex]}/${year}`}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <Chart
+                      options={{
+                        ...chart.options,
+                        fill: {
+                          type: "gradient",
+                          gradient: {
+                            shade: "light",
+                            shadeIntensity: 0.5,
+                            opacityFrom: 0.75,
+                            opacityTo: 0.65,
+                            stops: [0, 90, 100],
+                          },
+                        },
+                        xaxis: {
+                          ...chart.options.xaxis,
+                        },
+                        stroke: {
+                          width: 1,
+                          curve: "straight",
+                        },
+                      }}
+                      series={chart.series}
+                      type="area"
+                      height={350}
+                    />
+                  </CardContent>
+                </CardShadcn>
+              ))}
+          </div>
+          <div className="sm:ml-4 ml-0 mt-20">
+            <h4 className="text-base font-semibold mb-4">
+              2. Component charts
+            </h4>
+            <div className="grid md:grid-cols-2 gap-6">
+              {customerGrowthChart?.charts
+                ?.filter((chart) => chart?.options?.chart?.id !== "allChannels")
+                .map((chart, index) => (
+                  <div className="ml-2">
+                    <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}</h5>
                     <CardShadcn
                       key={index}
                       className="flex flex-col transition duration-500 rounded-2xl relative"
@@ -1305,6 +1422,7 @@ const CustomerSection = React.memo(
                           </svg>
                           <span className="sr-only">Fullscreen</span>
                         </Button>
+
                         <div className="flex justify-between items-center">
                           <div className="min-w-[10vw] mb-2">
                             <label
@@ -1407,445 +1525,320 @@ const CustomerSection = React.memo(
                         />
                       </CardContent>
                     </CardShadcn>
-                  ))}
-              </div>
-              <div className="sm:ml-4 ml-0 mt-20">
-                <h4 className="text-base font-semibold mb-4">
-                  2. Component charts
-                </h4>
-                <div className="grid md:grid-cols-2 gap-6">
-                  {customerGrowthChart?.charts
-                    ?.filter(
-                      (chart) => chart?.options?.chart?.id !== "allChannels"
-                    )
-                    .map((chart, index) => (
-                      <div className="ml-2">
-                        <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}</h5>
-                        <CardShadcn
-                          key={index}
-                          className="flex flex-col transition duration-500 rounded-2xl relative"
-                        >
-                          <CardHeader>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="absolute top-2 right-2 z-50"
-                              onClick={(event) =>
-                                handleChartClick(chart, event)
-                              }
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="w-4 h-4"
-                              >
-                                <path d="M15 3h6v6" />
-                                <path d="M10 14 21 3" />
-                                <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
-                              </svg>
-                              <span className="sr-only">Fullscreen</span>
-                            </Button>
+                  </div>
+                ))}
+            </div>
+          </div>
 
-                            <div className="flex justify-between items-center">
-                              <div className="min-w-[10vw] mb-2">
-                                <label
-                                  htmlFor="startMonthSelect"
-                                  className="text-sm"
-                                >
-                                  Start Month:
-                                </label>
-                                <select
-                                  id="startMonthSelect"
-                                  value={chartStartMonth}
-                                  onChange={(e) =>
-                                    setChartStartMonth(
-                                      Math.max(
-                                        1,
-                                        Math.min(e.target.value, chartEndMonth)
-                                      )
-                                    )
-                                  }
-                                  className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark1:bg-slate-900 dark1:border-gray-700 dark1:text-gray-400 dark1:focus:ring-gray-600"
-                                >
-                                  {Array.from(
-                                    { length: numberOfMonths },
-                                    (_, i) => {
-                                      const monthIndex =
-                                        (startingMonth + i - 1) % 12;
-                                      const year =
-                                        startingYear +
-                                        Math.floor(
-                                          (startingMonth + i - 1) / 12
-                                        );
-                                      return (
-                                        <option key={i + 1} value={i + 1}>
-                                          {`${months[monthIndex]}/${year}`}
-                                        </option>
-                                      );
-                                    }
-                                  )}
-                                </select>
-                              </div>
-                              <div className="min-w-[10vw] mb-2">
-                                <label
-                                  htmlFor="endMonthSelect"
-                                  className="text-sm"
-                                >
-                                  End Month:
-                                </label>
-                                <select
-                                  id="endMonthSelect"
-                                  value={chartEndMonth}
-                                  onChange={(e) =>
-                                    setChartEndMonth(
-                                      Math.max(
-                                        chartStartMonth,
-                                        Math.min(e.target.value, numberOfMonths)
-                                      )
-                                    )
-                                  }
-                                  className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark1:bg-slate-900 dark1:border-gray-700 dark1:text-gray-400 dark1:focus:ring-gray-600"
-                                >
-                                  {Array.from(
-                                    { length: numberOfMonths },
-                                    (_, i) => {
-                                      const monthIndex =
-                                        (startingMonth + i - 1) % 12;
-                                      const year =
-                                        startingYear +
-                                        Math.floor(
-                                          (startingMonth + i - 1) / 12
-                                        );
-                                      return (
-                                        <option key={i + 1} value={i + 1}>
-                                          {`${months[monthIndex]}/${year}`}
-                                        </option>
-                                      );
-                                    }
-                                  )}
-                                </select>
-                              </div>
-                            </div>
-                          </CardHeader>
-                          <CardContent>
-                            <Chart
-                              options={{
-                                ...chart.options,
-                                fill: {
-                                  type: "gradient",
-                                  gradient: {
-                                    shade: "light",
-                                    shadeIntensity: 0.5,
-                                    opacityFrom: 0.75,
-                                    opacityTo: 0.65,
-                                    stops: [0, 90, 100],
-                                  },
-                                },
-                                xaxis: {
-                                  ...chart.options.xaxis,
-                                },
-                                stroke: {
-                                  width: 1,
-                                  curve: "straight",
-                                },
-                              }}
-                              series={chart.series}
-                              type="area"
-                              height={350}
-                            />
-                          </CardContent>
-                        </CardShadcn>
-                      </div>
-                    ))}
-                </div>
-              </div>
-
-              <div className="sm:ml-4 ml-0 mt-20">
-                <h4 className="text-base font-semibold mb-4">
-                  3. Advanced charts
-                </h4>
-                <div className="grid md:grid-cols-2 gap-6">
-                  {customerGrowthChart?.chartsNoFilter?.map((chart, index) => (
-                    <div className="ml-2">
-                      <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}</h5>
-                      <CardShadcn
-                        key={index}
-                        className="flex flex-col transition duration-500 rounded-2xl relative"
-                      >
-                        <CardHeader>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="absolute top-2 right-2 z-50"
-                            onClick={(event) => handleChartClick(chart, event)}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="w-4 h-4"
-                            >
-                              <path d="M15 3h6v6" />
-                              <path d="M10 14 21 3" />
-                              <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
-                            </svg>
-                            <span className="sr-only">Fullscreen</span>
-                          </Button>
-                          <div className="flex justify-between items-center">
-                            <div className="min-w-[10vw] mb-2">
-                              <label
-                                htmlFor="startMonthSelect"
-                                className="text-sm"
-                              >
-                                Start Month:
-                              </label>
-                              <select
-                                id="startMonthSelect"
-                                value={chartStartMonth}
-                                onChange={(e) =>
-                                  setChartStartMonth(
-                                    Math.max(
-                                      1,
-                                      Math.min(e.target.value, chartEndMonth)
-                                    )
-                                  )
-                                }
-                                className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark1:bg-slate-900 dark1:border-gray-700 dark1:text-gray-400 dark1:focus:ring-gray-600"
-                              >
-                                {Array.from(
-                                  { length: numberOfMonths },
-                                  (_, i) => {
-                                    const monthIndex =
-                                      (startingMonth + i - 1) % 12;
-                                    const year =
-                                      startingYear +
-                                      Math.floor((startingMonth + i - 1) / 12);
-                                    return (
-                                      <option key={i + 1} value={i + 1}>
-                                        {`${months[monthIndex]}/${year}`}
-                                      </option>
-                                    );
-                                  }
-                                )}
-                              </select>
-                            </div>
-                            <div className="min-w-[10vw] mb-2">
-                              <label
-                                htmlFor="endMonthSelect"
-                                className="text-sm"
-                              >
-                                End Month:
-                              </label>
-                              <select
-                                id="endMonthSelect"
-                                value={chartEndMonth}
-                                onChange={(e) =>
-                                  setChartEndMonth(
-                                    Math.max(
-                                      chartStartMonth,
-                                      Math.min(e.target.value, numberOfMonths)
-                                    )
-                                  )
-                                }
-                                className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark1:bg-slate-900 dark1:border-gray-700 dark1:text-gray-400 dark1:focus:ring-gray-600"
-                              >
-                                {Array.from(
-                                  { length: numberOfMonths },
-                                  (_, i) => {
-                                    const monthIndex =
-                                      (startingMonth + i - 1) % 12;
-                                    const year =
-                                      startingYear +
-                                      Math.floor((startingMonth + i - 1) / 12);
-                                    return (
-                                      <option key={i + 1} value={i + 1}>
-                                        {`${months[monthIndex]}/${year}`}
-                                      </option>
-                                    );
-                                  }
-                                )}
-                              </select>
-                            </div>
-                          </div>
-                        </CardHeader>
-                        <CardContent>
-                          <Chart
-                            options={{
-                              ...chart.options,
-                              fill: {
-                                type: "gradient",
-                                gradient: {
-                                  shade: "light",
-                                  shadeIntensity: 0.5,
-                                  opacityFrom: 0.75,
-                                  opacityTo: 0.65,
-                                  stops: [0, 90, 100],
-                                },
-                              },
-                              xaxis: {
-                                ...chart.options.xaxis,
-                              },
-                              stroke: {
-                                width: 1,
-                                curve: "straight",
-                              },
-                            }}
-                            series={chart.series}
-                            type="area"
-                            height={350}
-                          />
-                        </CardContent>
-                      </CardShadcn>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <Modal
-                open={isChartModalVisible}
-                footer={null}
-                centered
-                onCancel={() => setIsChartModalVisible(false)}
-                width="90%"
-                style={{ top: 20 }}
-              >
-                {selectedChart && (
-                  <Chart
-                    options={{
-                      ...selectedChart.options,
-                    }}
-                    className="p-4"
-                    series={selectedChart.series}
-                    type="area"
-                    height={500}
-                  />
-                )}
-              </Modal>
-              <span>
-                <h3 className="text-lg font-semibold mt-20 my-4">
-                  II. Customer Table
-                </h3>
-                <div className="flex justify-between items-center mb-4">
-                  <Select
-                    value={renderCustomerForm}
-                    onValueChange={(e) => {
-                      handleRenderFormChange(e);
-                    }}
+          <div className="sm:ml-4 ml-0 mt-20">
+            <h4 className="text-base font-semibold mb-4">3. Advanced charts</h4>
+            <div className="grid md:grid-cols-2 gap-6">
+              {customerGrowthChart?.chartsNoFilter?.map((chart, index) => (
+                <div className="ml-2">
+                  <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}</h5>
+                  <CardShadcn
+                    key={index}
+                    className="flex flex-col transition duration-500 rounded-2xl relative"
                   >
-                    <SelectTrigger className="w-[200px]">
-                      <SelectValue placeholder="Offline" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All</SelectItem>
-                      {tempCustomerInputs.map((input) => (
-                        <SelectItem key={input?.id} value={input?.id}>
-                          {input?.channelName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <ButtonV0 variant="outline" onClick={downloadExcel}>
-                    <Download className="mr-2 h-4 w-4" />
-                    Download Excel
-                  </ButtonV0>
+                    <CardHeader>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-2 right-2 z-50"
+                        onClick={(event) => handleChartClick(chart, event)}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="w-4 h-4"
+                        >
+                          <path d="M15 3h6v6" />
+                          <path d="M10 14 21 3" />
+                          <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                        </svg>
+                        <span className="sr-only">Fullscreen</span>
+                      </Button>
+                      <div className="flex justify-between items-center">
+                        <div className="min-w-[10vw] mb-2">
+                          <label htmlFor="startMonthSelect" className="text-sm">
+                            Start Month:
+                          </label>
+                          <select
+                            id="startMonthSelect"
+                            value={chartStartMonth}
+                            onChange={(e) =>
+                              setChartStartMonth(
+                                Math.max(
+                                  1,
+                                  Math.min(e.target.value, chartEndMonth)
+                                )
+                              )
+                            }
+                            className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark1:bg-slate-900 dark1:border-gray-700 dark1:text-gray-400 dark1:focus:ring-gray-600"
+                          >
+                            {Array.from({ length: numberOfMonths }, (_, i) => {
+                              const monthIndex = (startingMonth + i - 1) % 12;
+                              const year =
+                                startingYear +
+                                Math.floor((startingMonth + i - 1) / 12);
+                              return (
+                                <option key={i + 1} value={i + 1}>
+                                  {`${months[monthIndex]}/${year}`}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                        <div className="min-w-[10vw] mb-2">
+                          <label htmlFor="endMonthSelect" className="text-sm">
+                            End Month:
+                          </label>
+                          <select
+                            id="endMonthSelect"
+                            value={chartEndMonth}
+                            onChange={(e) =>
+                              setChartEndMonth(
+                                Math.max(
+                                  chartStartMonth,
+                                  Math.min(e.target.value, numberOfMonths)
+                                )
+                              )
+                            }
+                            className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark1:bg-slate-900 dark1:border-gray-700 dark1:text-gray-400 dark1:focus:ring-gray-600"
+                          >
+                            {Array.from({ length: numberOfMonths }, (_, i) => {
+                              const monthIndex = (startingMonth + i - 1) % 12;
+                              const year =
+                                startingYear +
+                                Math.floor((startingMonth + i - 1) / 12);
+                              return (
+                                <option key={i + 1} value={i + 1}>
+                                  {`${months[monthIndex]}/${year}`}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <Chart
+                        options={{
+                          ...chart.options,
+                          fill: {
+                            type: "gradient",
+                            gradient: {
+                              shade: "light",
+                              shadeIntensity: 0.5,
+                              opacityFrom: 0.75,
+                              opacityTo: 0.65,
+                              stops: [0, 90, 100],
+                            },
+                          },
+                          xaxis: {
+                            ...chart.options.xaxis,
+                          },
+                          stroke: {
+                            width: 1,
+                            curve: "straight",
+                          },
+                        }}
+                        series={chart.series}
+                        type="area"
+                        height={350}
+                      />
+                    </CardContent>
+                  </CardShadcn>
                 </div>
-              </span>
-
-              <Table
-                className="custom-table bg-white overflow-auto  my-8 rounded-md"
-                size="small"
-                dataSource={filteredTableData}
-                columns={customerColumns}
-                pagination={false}
-                rowClassName={(record) =>
-                  record.key === record.channelName ? "font-bold" : ""
-                }
-                loading={isLoading}
-              />
-
-              <Button
-                variant="destructive"
-                onClick={handleSave}
-                style={{ backgroundColor: "#18181B", color: "white" }}
-              >
-                {isLoading ? (
-                  <SpinnerBtn />
-                ) : (
-                  <>
-                    <Check className="mr-2 h-4 w-4" />
-                    Save
-                  </>
-                )}
-              </Button>
+              ))}
             </div>
-          </>
-
-          <>
-            <div className="w-full xl:w-3/4 sm:p-4 p-0 "></div>
-
-            <div className="w-full xl:w-1/4 sm:p-4 p-0   ">
-              <CustomerInputsForm
-                tempCustomerInputs={tempCustomerInputs}
-                setTempCustomerInputs={setTempCustomerInputs}
-                renderCustomerForm={renderCustomerForm}
-                setRenderCustomerForm={setRenderCustomerForm}
-                handleCustomerInputChange={handleCustomerInputChange}
-                formatNumber={formatNumber}
-                parseNumber={parseNumber}
-                handleAddNewCustomer={handleAddNewCustomer}
-                handleSave={handleSave}
-                isLoading={isLoading}
-                showCustomInputs={showCustomInputs}
-                setShowCustomInputs={setShowCustomInputs}
-                isDeleteModalOpen={isDeleteModalOpen}
-                setIsDeleteModalOpen={setIsDeleteModalOpen}
-                confirmDelete={confirmDelete}
-                tempCustomerGrowthData={tempCustomerGrowthData}
+          </div>
+          <Modal
+            open={isChartModalVisible}
+            footer={null}
+            centered
+            onCancel={() => setIsChartModalVisible(false)}
+            width="90%"
+            style={{ top: 20 }}
+          >
+            {selectedChart && (
+              <Chart
+                options={{
+                  ...selectedChart.options,
+                }}
+                className="p-4"
+                series={selectedChart.series}
+                type="area"
+                height={500}
               />
-            </div>
-
-            {isDeleteModalOpen && (
-              <Modal
-                title="Confirm Delete"
-                open={isDeleteModalOpen}
-                onOk={confirmDelete}
-                onCancel={() => setIsDeleteModalOpen(false)}
-                okText="Delete"
-                cancelText="Cancel"
-                cancelButtonProps={{
-                  style: {
-                    borderRadius: "0.375rem",
-                    cursor: "pointer",
-                  },
-                }}
-                okButtonProps={{
-                  style: {
-                    background: "#f5222d",
-                    borderColor: "#f5222d",
-                    color: "#fff",
-                    borderRadius: "0.375rem",
-                    cursor: "pointer",
-                  },
-                }}
-                centered={true}
-              >
-                Are you sure you want to delete it?
-              </Modal>
             )}
-          </>
+          </Modal>
+          <span>
+            <h3 className="text-lg font-semibold mt-20 my-4">
+              II. Customer Table
+            </h3>
+            <div className="flex justify-between items-center mb-4">
+              <Select
+                value={renderCustomerForm}
+                onValueChange={(e) => {
+                  handleRenderFormChange(e);
+                }}
+              >
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue placeholder="Offline" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  {tempCustomerInputs.map((input) => (
+                    <SelectItem key={input?.id} value={input?.id}>
+                      {input?.channelName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <ButtonV0 variant="outline" onClick={downloadExcel}>
+                <Download className="mr-2 h-4 w-4" />
+                Download Excel
+              </ButtonV0>
+            </div>
+          </span>
+
+          <Table
+            className="custom-table bg-white overflow-auto  my-8 rounded-md"
+            size="small"
+            dataSource={filteredTableData}
+            columns={customerColumns}
+            pagination={false}
+            rowClassName={(record) =>
+              record.key === record.channelName ? "font-bold" : ""
+            }
+            loading={isLoading}
+          />
+
+          <Button
+            variant="destructive"
+            onClick={handleSave}
+            style={{ backgroundColor: "#18181B", color: "white" }}
+          >
+            {isLoading ? (
+              <SpinnerBtn />
+            ) : (
+              <>
+                <Check className="mr-2 h-4 w-4" />
+                Save
+              </>
+            )}
+          </Button>
         </div>
+        <div className="relative w-full xl:w-1/4">
+          <div className="sm:!p-4 !p-0 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
+            <CustomerInputsForm
+              tempCustomerInputs={tempCustomerInputs}
+              setTempCustomerInputs={setTempCustomerInputs}
+              renderCustomerForm={renderCustomerForm}
+              setRenderCustomerForm={setRenderCustomerForm}
+              handleCustomerInputChange={handleCustomerInputChange}
+              formatNumber={formatNumber}
+              parseNumber={parseNumber}
+              handleAddNewCustomer={handleAddNewCustomer}
+              handleSave={handleSave}
+              isLoading={isLoading}
+              showCustomInputs={showCustomInputs}
+              setShowCustomInputs={setShowCustomInputs}
+              isDeleteModalOpen={isDeleteModalOpen}
+              setIsDeleteModalOpen={setIsDeleteModalOpen}
+              confirmDelete={confirmDelete}
+              tempCustomerGrowthData={tempCustomerGrowthData}
+            />
+          </div>
+        </div>
+
+        <div className="xl:!hidden !block">
+          <FloatButton
+            tooltip={<div>Input values</div>}
+            style={{
+              position: "fixed",
+              bottom: "20px",
+              right: "80px",
+              width: "48px",
+              height: "48px",
+            }}
+            className="!shadow-md !bg-[#f3f4f6]"
+            onClick={() => {
+              setIsInputFormOpen(true);
+            }}
+          >
+            <Button type="primary" shape="circle" icon={<FileOutlined />} />
+          </FloatButton>
+        </div>
+
+        {isInputFormOpen && (
+          <Modal
+            open={isInputFormOpen}
+            onCancel={() => {
+              setTempCustomerInputs(customerInputs);
+              setIsInputFormOpen(false);
+            }}
+            centered={true}
+            zIndex={50}
+            footer={null}
+          >
+            <CustomerInputsForm
+              tempCustomerInputs={tempCustomerInputs}
+              setTempCustomerInputs={setTempCustomerInputs}
+              renderCustomerForm={renderCustomerForm}
+              setRenderCustomerForm={setRenderCustomerForm}
+              handleCustomerInputChange={handleCustomerInputChange}
+              formatNumber={formatNumber}
+              parseNumber={parseNumber}
+              handleAddNewCustomer={handleAddNewCustomer}
+              handleSave={handleSave}
+              isLoading={isLoading}
+              showCustomInputs={showCustomInputs}
+              setShowCustomInputs={setShowCustomInputs}
+              isDeleteModalOpen={isDeleteModalOpen}
+              setIsDeleteModalOpen={setIsDeleteModalOpen}
+              confirmDelete={confirmDelete}
+              tempCustomerGrowthData={tempCustomerGrowthData}
+            />
+          </Modal>
+        )}
+
+        {isDeleteModalOpen && (
+          <Modal
+            title="Confirm Delete"
+            open={isDeleteModalOpen}
+            onOk={confirmDelete}
+            onCancel={() => setIsDeleteModalOpen(false)}
+            okText="Delete"
+            cancelText="Cancel"
+            cancelButtonProps={{
+              style: {
+                borderRadius: "0.375rem",
+                cursor: "pointer",
+              },
+            }}
+            okButtonProps={{
+              style: {
+                background: "#f5222d",
+                borderColor: "#f5222d",
+                color: "#fff",
+                borderRadius: "0.375rem",
+                cursor: "pointer",
+              },
+            }}
+            centered={true}
+          >
+            Are you sure you want to delete it?
+          </Modal>
+        )}
       </div>
     );
   }

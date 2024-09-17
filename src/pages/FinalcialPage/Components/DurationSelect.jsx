@@ -118,9 +118,12 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
   ];
 
   return (
-    <section aria-labelledby="duration-heading" className="mb-8 sticky top-8">
+    <section
+      aria-labelledby="duration-heading"
+      className="mb-8 NOsticky NOtop-8"
+    >
       <h2
-        className="text-lg font-semibold mb-7 flex items-center"
+        className="text-lg font-semibold flex items-center"
         id="duration-heading"
       >
         General Setup
@@ -128,7 +131,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
       <div className="bg-white rounded-2xl p-6 border my-4">
         <div className="grid grid-cols-2 gap-4 mb-3">
           <Tooltip title="Enter the name of your business">
-            <span className=" flex items-center text-sm">Business name :</span>
+            <span className=" flex items-center text-sm">Business name:</span>
           </Tooltip>
 
           <Input
@@ -141,7 +144,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
 
         <div className="grid grid-cols-2 gap-4 mb-3">
           <Tooltip title="Enter the starting month of the business">
-            <span className="flex items-center text-sm">Start Month :</span>
+            <span className="flex items-center text-sm">Start Month:</span>
           </Tooltip>
           <Select
             className="bg-white"
@@ -173,7 +176,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
 
         <div className="grid grid-cols-2 gap-4 mb-3">
           <Tooltip title="Enter the starting year of the business">
-            <span className="flex items-center text-sm">Start Year :</span>
+            <span className="flex items-center text-sm">Start Year:</span>
           </Tooltip>
           <Select
             onValueChange={(value) => dispatch(setStartYear(value))}
@@ -201,7 +204,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
 
         <div className="grid grid-cols-2 gap-4 mb-3">
           <Tooltip title="Select the duration 3 years or 5 years">
-            <span className="flex items-center text-sm">Duration :</span>
+            <span className="flex items-center text-sm">Duration:</span>
           </Tooltip>
           <Select
             onValueChange={(value) => dispatch(setSelectedDuration(value))}
@@ -226,7 +229,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
         <div className="grid grid-cols-2 gap-4 mb-3">
           <Tooltip title="Enter the starting cash balance, e.g. $10,000">
             <span className="flex items-center text-sm">
-              Starting Cash Balance :
+              Starting Cash Balance:
             </span>
           </Tooltip>
           <Input
@@ -240,7 +243,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
         </div>
         <div className="grid grid-cols-2 gap-4 mb-3">
           <Tooltip title="Select the status of the business">
-            <span className="flex items-center text-sm">Status :</span>
+            <span className="flex items-center text-sm">Status:</span>
           </Tooltip>
           <Select
             onValueChange={(value) => dispatch(setStatus(value))}
@@ -292,7 +295,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
 
         <div className="grid grid-cols-2 gap-4 mb-3">
           <Tooltip title="Input the income tax, e.g. 10">
-            <span className="flex items-center text-sm">Income Tax(%) :</span>
+            <span className="flex items-center text-sm">Income Tax(%):</span>
           </Tooltip>
           <Input
             className="border-gray-300"
@@ -306,7 +309,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
 
         <div className="grid grid-cols-2 gap-4 mb-3">
           <Tooltip title="Select the currency, e.g. USD">
-            <span className="flex items-center text-sm">Currency :</span>
+            <span className="flex items-center text-sm">Currency:</span>
           </Tooltip>
           <Select
             onValueChange={(value) => dispatch(setCurrency(value))}
@@ -330,7 +333,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
         </div>
         <div className="grid grid-cols-2 gap-4 mb-3 min-h-[7rem]">
           <Tooltip title="Input the income tax, e.g. 10">
-            <span className="flex items-center text-sm">Description :</span>
+            <span className="flex items-center text-sm">Description:</span>
           </Tooltip>
           <TextArea
             className="border-gray-300 rounded-2xl text-sm"
@@ -341,7 +344,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
         </div>
         <div className="grid grid-cols-2 gap-4 mb-3">
           <Tooltip title="Input the income tax, e.g. 10">
-            <span className="flex items-center text-sm">Location :</span>
+            <span className="flex items-center text-sm">Location:</span>
           </Tooltip>
           <Input
             className="border-gray-300"

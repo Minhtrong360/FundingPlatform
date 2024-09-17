@@ -660,12 +660,15 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
                 labels: {
                   rotate: 0,
                   show: true,
-                  style: { fontFamily: "Sora, sans-serif" },
+                  style: { fontFamily: "Raleway Variable, sans-serif" },
                 },
                 categories: filteredCategories,
                 title: {
                   text: "Month",
-                  style: { fontSize: "12px", fontFamily: "Sora, sans-serif" },
+                  style: {
+                    fontSize: "12px",
+                    fontFamily: "Raleway Variable, sans-serif",
+                  },
                 },
               },
               title: { ...prevState.options.title, text: "Revenues" },
@@ -687,12 +690,15 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
                 labels: {
                   rotate: 0,
                   show: true,
-                  style: { fontFamily: "Sora, sans-serif" },
+                  style: { fontFamily: "Raleway Variable, sans-serif" },
                 },
                 categories: filteredCategories,
                 title: {
                   text: "Month",
-                  style: { fontSize: "12px", fontFamily: "Sora, sans-serif" },
+                  style: {
+                    fontSize: "12px",
+                    fontFamily: "Raleway Variable, sans-serif",
+                  },
                 },
               },
               title: { ...prevState.options.title, text: channelSeries.name },
@@ -825,7 +831,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
     <div className="w-full h-full flex flex-col lg:flex-row p-4">
       <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
         <h3 className="text-lg font-semibold mb-4">I. Revenue Chart</h3>
-        <div className="sm:ml-4 ml-0 mt-20">
+        <div className="sm:ml-4 ml-0 mt-16">
           <h4 className="text-base font-semibold mb-4">1. All revenue chart</h4>
           {revenue.charts
             ?.filter((chart) => chart.options.chart.id === "allChannels")
@@ -935,7 +941,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
               </CardShadcn>
             ))}
         </div>
-        <div className="sm:ml-4 ml-0 mt-20">
+        <div className="sm:ml-4 ml-0 mt-16">
           <h4 className="text-base font-semibold mb-4">2. Component charts</h4>
           <div className="grid md:grid-cols-2 gap-6">
             {revenue.charts
@@ -1125,7 +1131,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
       </div>
 
       <div className="relative w-full xl:w-1/4">
-        <div className="sm:!p-4 !p-0 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
+        <div className="!py-4 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
           <ChannelInputForm
             tempChannelInputs={tempChannelInputs}
             renderChannelForm={renderChannelForm}

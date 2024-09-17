@@ -393,7 +393,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
           },
         },
         zoom: { enabled: false },
-        fontFamily: "Sora, sans-serif",
+        fontFamily: "Raleway Variable, sans-serif",
         animations: {
           enabled: false,
         },
@@ -414,7 +414,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
         labels: {
           show: true,
           rotate: 0,
-          style: { fontFamily: "Sora, sans-serif" },
+          style: { fontFamily: "Raleway Variable, sans-serif" },
         },
         categories: Array.from({ length: numberOfMonths }, (_, i) => {
           const monthIndex = (startingMonth + i - 1) % 12;
@@ -424,7 +424,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
         title: {
           text: "Month",
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
             fontsize: "12px",
           },
         },
@@ -436,7 +436,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
         },
         labels: {
           show: true,
-          style: { fontFamily: "Sora, sans-serif" },
+          style: { fontFamily: "Raleway Variable, sans-serif" },
           formatter: function (val) {
             return formatNumber(Math.floor(val));
           },
@@ -444,7 +444,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
         title: {
           text: "Salary ($)",
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
             fontsize: "12px",
           },
         },
@@ -452,7 +452,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
       legend: {
         position: "bottom",
         horizontalAlign: "right",
-        fontFamily: "Sora, sans-serif",
+        fontFamily: "Raleway Variable, sans-serif",
       },
       dataLabels: { enabled: false },
       stroke: { width: 1, curve: "straight" },
@@ -822,7 +822,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
       </div>
 
       <div className="relative w-full xl:w-1/4">
-        <div className="sm:!p-4 !p-0 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
+        <div className="!py-4 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
           <PersonnelInputForm
             tempPersonnelInputs={tempPersonnelInputs}
             renderPersonnelForm={renderPersonnelForm}

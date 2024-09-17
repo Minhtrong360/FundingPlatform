@@ -408,7 +408,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         },
         labels: {
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
           },
           rotate: 0,
         },
@@ -420,7 +420,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         title: {
           text: "Month",
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
             fontsize: "12px",
           },
         },
@@ -431,7 +431,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         },
         labels: {
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
           },
           formatter: function (val) {
             return formatNumber(Math.floor(val));
@@ -440,7 +440,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         title: {
           text: "Fundraising Amount ($)",
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
             fontsize: "12px",
           },
         },
@@ -448,7 +448,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       legend: {
         position: "bottom",
         horizontalAlign: "right",
-        fontFamily: "Sora, sans-serif",
+        fontFamily: "Raleway Variable, sans-serif",
       },
       dataLabels: { enabled: false },
       stroke: { width: 1, curve: "smooth" },
@@ -848,7 +848,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       </div>
 
       <div className="relative w-full xl:w-1/4">
-        <div className="sm:!p-4 !p-0 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
+        <div className="!py-4 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
           <FundraisingInputForm
             tempFundraisingInputs={tempFundraisingInputs}
             selectedFundraisingId={selectedFundraisingId}

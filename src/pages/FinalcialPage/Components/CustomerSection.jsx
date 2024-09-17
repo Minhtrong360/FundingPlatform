@@ -979,7 +979,7 @@ const CustomerSection = React.memo(
                     show: false,
                     rotate: 0,
                     style: {
-                      fontFamily: "Sora, sans-serif",
+                      fontFamily: "Raleway Variable, sans-serif",
                     },
                   },
                   categories: filteredCategories,
@@ -987,7 +987,7 @@ const CustomerSection = React.memo(
                     text: "Month",
                     style: {
                       fontSize: "12px",
-                      fontFamily: "Sora, sans-serif",
+                      fontFamily: "Raleway Variable, sans-serif",
                     },
                   },
                 },
@@ -996,7 +996,7 @@ const CustomerSection = React.memo(
                   text: "All Channels",
                   style: {
                     fontSize: "14px",
-                    fontFamily: "Sora, sans-serif",
+                    fontFamily: "Raleway Variable, sans-serif",
                   },
                 },
               },
@@ -1019,7 +1019,7 @@ const CustomerSection = React.memo(
                     show: false,
                     rotate: 0,
                     style: {
-                      fontFamily: "Sora, sans-serif",
+                      fontFamily: "Raleway Variable, sans-serif",
                     },
                   },
                   categories: filteredCategories,
@@ -1027,7 +1027,7 @@ const CustomerSection = React.memo(
                     text: "Month",
                     style: {
                       fontSize: "12px",
-                      fontFamily: "Sora, sans-serif",
+                      fontFamily: "Raleway Variable, sans-serif",
                     },
                   },
                 },
@@ -1254,7 +1254,7 @@ const CustomerSection = React.memo(
         <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
           <h3 className="text-lg font-semibold mb-4">I. Customer Chart</h3>
 
-          <div className="sm:ml-4 ml-0 mt-20">
+          <div className="sm:ml-4 ml-0 mt-16">
             <h4 className="text-base font-semibold mb-4">
               1. All channels chart
             </h4>
@@ -1383,7 +1383,7 @@ const CustomerSection = React.memo(
                 </CardShadcn>
               ))}
           </div>
-          <div className="sm:ml-4 ml-0 mt-20">
+          <div className="sm:ml-4 ml-0 mt-16">
             <h4 className="text-base font-semibold mb-4">
               2. Component charts
             </h4>
@@ -1530,7 +1530,7 @@ const CustomerSection = React.memo(
             </div>
           </div>
 
-          <div className="sm:ml-4 ml-0 mt-20">
+          <div className="sm:ml-4 ml-0 mt-16">
             <h4 className="text-base font-semibold mb-4">3. Advanced charts</h4>
             <div className="grid md:grid-cols-2 gap-6">
               {customerGrowthChart?.chartsNoFilter?.map((chart, index) => (
@@ -1738,7 +1738,7 @@ const CustomerSection = React.memo(
           </Button>
         </div>
         <div className="relative w-full xl:w-1/4">
-          <div className="sm:!p-4 !p-0 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
+          <div className="!py-4 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
             <CustomerInputsForm
               tempCustomerInputs={tempCustomerInputs}
               setTempCustomerInputs={setTempCustomerInputs}

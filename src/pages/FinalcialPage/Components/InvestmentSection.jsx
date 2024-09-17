@@ -387,7 +387,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
             download: true,
           },
         },
-        fontFamily: "Sora, sans-serif",
+        fontFamily: "Raleway Variable, sans-serif",
       },
       grid: { show: false },
       colors: [
@@ -404,7 +404,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         },
         labels: {
           show: true,
-          style: { fontFamily: "Sora, sans-serif" },
+          style: { fontFamily: "Raleway Variable, sans-serif" },
           rotate: 0,
         },
         categories: Array.from({ length: numberOfMonths }, (_, i) => {
@@ -414,7 +414,10 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         }),
         title: {
           text: "Month",
-          style: { fontFamily: "Sora, sans-serif", fontsize: "12px" },
+          style: {
+            fontFamily: "Raleway Variable, sans-serif",
+            fontsize: "12px",
+          },
         },
       },
       yaxis: {
@@ -423,7 +426,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         },
         labels: {
           show: true,
-          style: { fontFamily: "Sora, sans-serif" },
+          style: { fontFamily: "Raleway Variable, sans-serif" },
           rotate: 0,
           formatter: function (val) {
             return formatNumber(Math.floor(val));
@@ -431,13 +434,16 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         },
         title: {
           text: "Amount ($)",
-          style: { fontFamily: "Sora, sans-serif", fontsize: "12px" },
+          style: {
+            fontFamily: "Raleway Variable, sans-serif",
+            fontsize: "12px",
+          },
         },
       },
       legend: {
         position: "bottom",
         horizontalAlign: "right",
-        fontFamily: "Sora, sans-serif",
+        fontFamily: "Raleway Variable, sans-serif",
       },
       dataLabels: { enabled: false },
       stroke: { width: 1, curve: "straight" },
@@ -770,7 +776,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     <div className="w-full h-full flex flex-col lg:flex-row p-4">
       <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
         <h3 className="text-lg font-semibold mb-8">I. Investment Chart</h3>
-        <div className="sm:ml-4 ml-0 mt-20">
+        <div className="sm:ml-4 ml-0 mt-16">
           <h4 className="text-base font-semibold mb-4">
             1. All investments chart
           </h4>
@@ -886,7 +892,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               </CardShadcn>
             ))}
         </div>
-        <div className="sm:ml-4 ml-0 mt-20">
+        <div className="sm:ml-4 ml-0 mt-16">
           <h4 className="text-base font-semibold mb-4">2. Component charts</h4>
           <div className="grid md:grid-cols-2 gap-6">
             {investmentChart?.charts
@@ -1070,7 +1076,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       </div>
 
       <div className="relative w-full xl:w-1/4">
-        <div className="sm:!p-4 !p-0 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
+        <div className="!py-4 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
           <InvestmentInputForm
             tempInvestmentInputs={tempInvestmentInputs}
             renderInvestmentForm={renderInvestmentForm}

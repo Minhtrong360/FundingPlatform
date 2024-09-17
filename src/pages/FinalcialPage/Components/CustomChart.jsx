@@ -33,10 +33,10 @@ const CustomChart = ({
 
     // Check if seriesData is an array and not empty
     if (Array.isArray(seriesData) && seriesData.length > 0) {
-      seriesData.forEach(serie => {
+      seriesData.forEach((serie) => {
         // Safely check if data is an array
         if (Array.isArray(serie.data)) {
-          serie.data.forEach(value => {
+          serie.data.forEach((value) => {
             if (value < min) min = value;
             if (value > max) max = value;
           });
@@ -50,8 +50,6 @@ const CustomChart = ({
 
     return { min, max };
   };
-
-
 
   const months = [
     "01",
@@ -89,12 +87,14 @@ const CustomChart = ({
     chartEndMonth
   )?.map((value) => parseFloat(value?.toFixed(0)));
 
-   // Get dynamic min and max based on series data
-   const { min, max } = getDynamicMinMax([{ name: seriesTitle, data: filteredData }]);
+  // Get dynamic min and max based on series data
+  const { min, max } = getDynamicMinMax([
+    { name: seriesTitle, data: filteredData },
+  ]);
 
   const chartOptions = {
     chart: {
-      fontFamily: "Sora, sans-serif",
+      fontFamily: "Raleway Variable, sans-serif",
       id,
       type: "area",
       height: 350,
@@ -118,33 +118,33 @@ const CustomChart = ({
       labels: {
         show: false,
         rotate: 0,
-        style: { fontFamily: "Sora, sans-serif" },
+        style: { fontFamily: "Raleway Variable, sans-serif" },
       },
     },
     yaxis: {
       show: false, // Hide y-axis
       // min: 0,
-      
-      min: min < 0 ? min - 10 : 0,  // Adjust for negative values with padding
-      max: max + 10,  // Add padding to the max value
-      
+
+      min: min < 0 ? min - 10 : 0, // Adjust for negative values with padding
+      max: max + 10, // Add padding to the max value
+
       axisBorder: { show: false },
       labels: {
         show: false,
         formatter: (val) => formatNumber(Math.floor(val)),
-        style: { fontFamily: "Sora, sans-serif" },
+        style: { fontFamily: "Raleway Variable, sans-serif" },
       },
       title: {
         show: false,
         text: yaxisTitle,
-        style: { fontSize: "12px", fontFamily: "Sora, sans-serif" },
+        style: { fontSize: "12px", fontFamily: "Raleway Variable, sans-serif" },
       },
     },
     legend: {
       show: false,
       position: "bottom",
       horizontalAlign: "right",
-      fontFamily: "Sora, sans-serif",
+      fontFamily: "Raleway Variable, sans-serif",
     },
 
     stroke: { curve: "straight", width: 1 },

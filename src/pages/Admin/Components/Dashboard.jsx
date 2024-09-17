@@ -235,7 +235,7 @@ function Dashboard({ dataSource }) {
             <Chart
               options={{
                 chart: {
-                  fontFamily: "Sora, sans-serif",
+                  fontFamily: "Raleway Variable, sans-serif",
                   zoom: {
                     enabled: false, // Disable zooming
                   },
@@ -259,7 +259,7 @@ function Dashboard({ dataSource }) {
 
                   style: {
                     fontSize: "12px",
-                    fontFamily: "Sora, sans-serif",
+                    fontFamily: "Raleway Variable, sans-serif",
                     fontWeight: "bold",
                     colors: ["#000000"],
                   },
@@ -304,13 +304,13 @@ function Dashboard({ dataSource }) {
                     show: true,
                     rotate: 0,
                     style: {
-                      fontFamily: "Sora, sans-serif",
+                      fontFamily: "Raleway Variable, sans-serif",
                     },
                   },
                   title: {
                     style: {
                       fontSize: "12px",
-                      fontFamily: "Sora, sans-serif",
+                      fontFamily: "Raleway Variable, sans-serif",
                     },
                   },
                 },

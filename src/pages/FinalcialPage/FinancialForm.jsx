@@ -227,7 +227,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [customerGrowthChart, setCustomerGrowthChart] = useState({
     options: {
       chart: {
-        fontFamily: "Sora, sans-serif",
+        fontFamily: "Raleway Variable, sans-serif",
         zoom: {
           enabled: false, // Disable zooming
         },
@@ -255,7 +255,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           show: true,
           rotate: 0,
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
           },
         },
         categories: Array.from({ length: numberOfMonths }, (_, i) => {
@@ -267,7 +267,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           text: "Month",
           style: {
             fontSize: "12px",
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
           },
         },
       },
@@ -278,7 +278,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
         labels: {
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
           },
           show: true,
           formatter: function (val) {
@@ -288,7 +288,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         title: {
           text: "Customers",
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
             fontSize: "12px",
           },
         },
@@ -297,7 +297,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       legend: {
         position: "bottom",
         horizontalAlign: "right",
-        fontFamily: "Sora, sans-serif",
+        fontFamily: "Raleway Variable, sans-serif",
       },
 
       grid: {
@@ -328,7 +328,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [revenue, setRevenue] = useState({
     options: {
       chart: {
-        fontFamily: "Sora, sans-serif",
+        fontFamily: "Raleway Variable, sans-serif",
         id: "revenue-chart",
         type: "bar",
         height: 350,
@@ -360,7 +360,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
       legend: {
         position: "bottom",
         horizontalAlign: "right",
-        fontFamily: "Sora, sans-serif",
+        fontFamily: "Raleway Variable, sans-serif",
       },
 
       xaxis: {
@@ -371,7 +371,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           show: true,
           rotate: 0,
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
           },
         },
         categories: Array.from({ length: numberOfMonths }, (_, i) => {
@@ -383,7 +383,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           text: "Month",
           style: {
             fontSize: "12px",
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
           },
         },
       },
@@ -395,7 +395,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
         labels: {
           show: true,
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
           },
           formatter: function (val) {
             return formatNumber(Math.floor(val));
@@ -405,7 +405,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           text: "Amount ($)",
           style: {
             fontSize: "12px",
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
           },
         },
       },
@@ -1026,7 +1026,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                       </div>
 
                       <div className="relative w-full xl:w-1/4">
-                        <div className="sm:!p-4 !p-0 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
+                        <div className="!py-4 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
                           <DurationSelect
                             handleSubmit={handleSubmit}
                             isLoading={isLoading}

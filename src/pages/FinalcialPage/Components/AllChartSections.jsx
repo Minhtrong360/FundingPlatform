@@ -736,7 +736,7 @@ const AllChartSections = ({
             //     labels: {
             //       show: true,
             //       style: {
-            //         fontFamily: "Sora, sans-serif",
+            //         fontFamily: "Raleway Variable, sans-serif",
             //       },
             //       formatter: function (val) {
             //         return formatNumber(Math.floor(val));
@@ -746,7 +746,7 @@ const AllChartSections = ({
             //       text: "Remaining Loan ($)",
             //       style: {
             //         fontSize: "12px",
-            //         fontFamily: "Sora, sans-serif",
+            //         fontFamily: "Raleway Variable, sans-serif",
             //       },
             //     },
             //   },

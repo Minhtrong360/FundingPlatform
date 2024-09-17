@@ -758,7 +758,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
   const [costChart, setCostChart] = useState({
     options: {
       chart: {
-        fontFamily: "Sora, sans-serif",
+        fontFamily: "Raleway Variable, sans-serif",
         id: "cost-chart",
         type: "bar",
         height: 350,
@@ -790,7 +790,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
           rotate: 0,
           show: true,
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
           },
         },
         categories: Array.from({ length: numberOfMonths }, (_, i) => {
@@ -801,7 +801,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
         title: {
           text: "Month",
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
             fontsize: "12px",
           },
         },
@@ -813,7 +813,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
         labels: {
           show: true,
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
           },
           formatter: function (val) {
             return formatNumber(val.toFixed(2));
@@ -822,7 +822,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
         title: {
           text: "Cost ($)",
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
             fontsize: "12px",
           },
         },
@@ -830,7 +830,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
       legend: {
         position: "bottom",
         horizontalAlign: "right",
-        fontFamily: "Sora, sans-serif",
+        fontFamily: "Raleway Variable, sans-serif",
       },
       dataLabels: { enabled: false },
       stroke: { curve: "straight", width: 1 },
@@ -1224,7 +1224,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
       </div>
 
       <div className="relative w-full xl:w-1/4">
-        <div className="sm:!p-4 !p-0 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
+        <div className="!py-4 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
           <CostInputForm
             tempCostInput={tempCostInput}
             setTempCostInput={setTempCostInput}

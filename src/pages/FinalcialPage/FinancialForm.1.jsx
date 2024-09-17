@@ -98,7 +98,7 @@ export const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
   // Gemini
   const [chatbotResponse, setChatbotResponse] = useState("");
-  
+
   // Gemini useEffect
   useEffect(() => {
     // Ensure chatbotResponse is only processed when it's a valid string
@@ -193,7 +193,7 @@ export const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [customerGrowthChart, setCustomerGrowthChart] = useState({
     options: {
       chart: {
-        fontFamily: "Sora, sans-serif",
+        fontFamily: "Raleway Variable, sans-serif",
         zoom: {
           enabled: false, // Disable zooming
         },
@@ -221,7 +221,7 @@ export const FinancialForm = ({ currentUser, setCurrentUser }) => {
           show: true,
           rotate: 0,
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
           },
         },
         categories: Array.from({ length: numberOfMonths }, (_, i) => {
@@ -233,7 +233,7 @@ export const FinancialForm = ({ currentUser, setCurrentUser }) => {
           text: "Month",
           style: {
             fontSize: "12px",
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
           },
         },
       },
@@ -244,7 +244,7 @@ export const FinancialForm = ({ currentUser, setCurrentUser }) => {
 
         labels: {
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
           },
           show: true,
           formatter: function (val) {
@@ -254,7 +254,7 @@ export const FinancialForm = ({ currentUser, setCurrentUser }) => {
         title: {
           text: "Customers",
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
             fontSize: "12px",
           },
         },
@@ -263,7 +263,7 @@ export const FinancialForm = ({ currentUser, setCurrentUser }) => {
       legend: {
         position: "bottom",
         horizontalAlign: "right",
-        fontFamily: "Sora, sans-serif",
+        fontFamily: "Raleway Variable, sans-serif",
       },
 
       grid: {
@@ -294,7 +294,7 @@ export const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const [revenue, setRevenue] = useState({
     options: {
       chart: {
-        fontFamily: "Sora, sans-serif",
+        fontFamily: "Raleway Variable, sans-serif",
         id: "revenue-chart",
         type: "bar",
         height: 350,
@@ -326,7 +326,7 @@ export const FinancialForm = ({ currentUser, setCurrentUser }) => {
       legend: {
         position: "bottom",
         horizontalAlign: "right",
-        fontFamily: "Sora, sans-serif",
+        fontFamily: "Raleway Variable, sans-serif",
       },
 
       xaxis: {
@@ -337,7 +337,7 @@ export const FinancialForm = ({ currentUser, setCurrentUser }) => {
           show: true,
           rotate: 0,
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
           },
         },
         categories: Array.from({ length: numberOfMonths }, (_, i) => {
@@ -349,7 +349,7 @@ export const FinancialForm = ({ currentUser, setCurrentUser }) => {
           text: "Month",
           style: {
             fontSize: "12px",
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
           },
         },
       },
@@ -361,7 +361,7 @@ export const FinancialForm = ({ currentUser, setCurrentUser }) => {
         labels: {
           show: true,
           style: {
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
           },
           formatter: function (val) {
             return formatNumber(Math.floor(val));
@@ -371,7 +371,7 @@ export const FinancialForm = ({ currentUser, setCurrentUser }) => {
           text: "Amount ($)",
           style: {
             fontSize: "12px",
-            fontFamily: "Sora, sans-serif",
+            fontFamily: "Raleway Variable, sans-serif",
           },
         },
       },

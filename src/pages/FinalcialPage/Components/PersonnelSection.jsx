@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Input } from "../../../components/ui/input";
 import { Card, Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";
@@ -38,6 +38,7 @@ import {
 } from "../../../components/ui/card";
 import { Check, Download, Plus, Trash2 } from "lucide-react";
 import { Button, Button as ButtonV0 } from "../../../components/ui/button";
+import { debounce } from "lodash";
 
 const PersonnelInputForm = ({
   tempPersonnelInputs,
@@ -51,6 +52,30 @@ const PersonnelInputForm = ({
   isLoading,
   setIsDeleteModalOpen,
 }) => {
+  const [debouncedInputs, setDebouncedInputs] = useState(tempPersonnelInputs);
+  // Thêm useEffect để đồng bộ hóa debouncedInputs khi tempFundraisingInputs thay đổi
+  useEffect(() => {
+    setDebouncedInputs(tempPersonnelInputs);
+  }, [tempPersonnelInputs]);
+  // Debounced function to update state after 1 second
+  const debouncedHandleInputChange = useCallback(
+    debounce((id, field, value) => {
+      handlePersonnelInputChange(id, field, value);
+    }, 500),
+    [handlePersonnelInputChange]
+  );
+
+  const handleInputChange = (id, field, value) => {
+    setDebouncedInputs((prevInputs) =>
+      prevInputs.map((input) =>
+        input.id === id ? { ...input, [field]: value } : input
+      )
+    );
+
+    // Call debounced state update
+    debouncedHandleInputChange(id, field, value);
+  };
+
   return (
     <section
       aria-labelledby="personnel-heading"
@@ -74,7 +99,7 @@ const PersonnelInputForm = ({
           value={renderPersonnelForm}
           onChange={(e) => setRenderPersonnelForm(e.target.value)}
         >
-          {tempPersonnelInputs.map((input) => (
+          {debouncedInputs.map((input) => (
             <option key={input?.id} value={input?.id}>
               {input.jobTitle}
             </option>
@@ -82,7 +107,7 @@ const PersonnelInputForm = ({
         </select>
       </div>
 
-      {tempPersonnelInputs
+      {debouncedInputs
         .filter((input) => input?.id == renderPersonnelForm)
         .map((input) => (
           <div key={input?.id} className="bg-white rounded-2xl p-6 border my-4">
@@ -93,11 +118,7 @@ const PersonnelInputForm = ({
                 placeholder="Enter Job Title"
                 value={input.jobTitle}
                 onChange={(e) =>
-                  handlePersonnelInputChange(
-                    input.id,
-                    "jobTitle",
-                    e.target.value
-                  )
+                  handleInputChange(input.id, "jobTitle", e.target.value)
                 }
               />
             </div>
@@ -108,11 +129,7 @@ const PersonnelInputForm = ({
                 placeholder="Enter Department"
                 value={input.department}
                 onChange={(e) =>
-                  handlePersonnelInputChange(
-                    input.id,
-                    "department",
-                    e.target.value
-                  )
+                  handleInputChange(input.id, "department", e.target.value)
                 }
               />
             </div>
@@ -123,7 +140,7 @@ const PersonnelInputForm = ({
                 placeholder="Enter Salary per Month"
                 value={formatNumber(input.salaryPerMonth)}
                 onChange={(e) =>
-                  handlePersonnelInputChange(
+                  handleInputChange(
                     input.id,
                     "salaryPerMonth",
                     parseNumber(e.target.value)
@@ -140,7 +157,7 @@ const PersonnelInputForm = ({
                 placeholder="Growth rate"
                 value={formatNumber(input.increasePerYear)}
                 onChange={(e) =>
-                  handlePersonnelInputChange(
+                  handleInputChange(
                     input.id,
                     "increasePerYear",
                     parseNumber(e.target.value)
@@ -153,11 +170,7 @@ const PersonnelInputForm = ({
               <Select
                 className="border-gray-300"
                 onValueChange={(value) =>
-                  handlePersonnelInputChange(
-                    input?.id,
-                    "growthSalaryFrequency",
-                    value
-                  )
+                  handleInputChange(input?.id, "growthSalaryFrequency", value)
                 }
                 value={input.growthSalaryFrequency}
               >
@@ -182,7 +195,7 @@ const PersonnelInputForm = ({
                 placeholder="Enter Number of Hires"
                 value={formatNumber(input.numberOfHires)}
                 onChange={(e) =>
-                  handlePersonnelInputChange(
+                  handleInputChange(
                     input.id,
                     "numberOfHires",
                     parseNumber(e.target.value)
@@ -199,11 +212,7 @@ const PersonnelInputForm = ({
                 placeholder="Enter Job Begin Month"
                 value={input.jobBeginMonth}
                 onChange={(e) =>
-                  handlePersonnelInputChange(
-                    input.id,
-                    "jobBeginMonth",
-                    e.target.value
-                  )
+                  handleInputChange(input.id, "jobBeginMonth", e.target.value)
                 }
               />
             </div>
@@ -216,11 +225,7 @@ const PersonnelInputForm = ({
                 placeholder="Enter Job Ending Month"
                 value={input.jobEndMonth}
                 onChange={(e) =>
-                  handlePersonnelInputChange(
-                    input.id,
-                    "jobEndMonth",
-                    e.target.value
-                  )
+                  handleInputChange(input.id, "jobEndMonth", e.target.value)
                 }
               />
             </div>
@@ -681,209 +686,202 @@ const PersonnelSection = ({ numberOfMonths }) => {
         </Badge>
       </div>
       <div className="w-full h-full flex flex-col lg:flex-row p-4">
-        {activeTab === "table&chart" && (
-          <>
-            <div className="w-full xl:w-3/4 sm:p-4 p-0">
-              <h3 className="text-lg font-semibold mb-8">
-                I. Personnel Cost Chart
-              </h3>
-              <div className="grid md:grid-cols-2 gap-6">
-                <CardShadcn className="flex flex-col transition duration-500 rounded-2xl relative">
-                  <CardHeader>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute top-2 right-2 z-50"
-                      onClick={(event) =>
-                        handleChartClick(personnelChart, event)
-                      }
+        <>
+          <div className="w-full xl:w-3/4 sm:p-4 p-0">
+            <h3 className="text-lg font-semibold mb-8">
+              I. Personnel Cost Chart
+            </h3>
+            <div className="grid md:grid-cols-2 gap-6">
+              <CardShadcn className="flex flex-col transition duration-500 rounded-2xl relative">
+                <CardHeader>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 z-50"
+                    onClick={(event) => handleChartClick(personnelChart, event)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-4 h-4"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="w-4 h-4"
+                      <path d="M15 3h6v6" />
+                      <path d="M10 14 21 3" />
+                      <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                    </svg>
+                    <span className="sr-only">Fullscreen</span>
+                  </Button>
+                  <div className="flex justify-between items-center">
+                    <div className="min-w-[10vw] mb-2">
+                      <label htmlFor="startMonthSelect" className="text-sm">
+                        Start Month:
+                      </label>
+                      <select
+                        id="startMonthSelect"
+                        value={chartStartMonth}
+                        onChange={(e) =>
+                          setChartStartMonth(
+                            Math.max(1, Math.min(e.target.value, chartEndMonth))
+                          )
+                        }
+                        className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
                       >
-                        <path d="M15 3h6v6" />
-                        <path d="M10 14 21 3" />
-                        <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
-                      </svg>
-                      <span className="sr-only">Fullscreen</span>
-                    </Button>
-                    <div className="flex justify-between items-center">
-                      <div className="min-w-[10vw] mb-2">
-                        <label htmlFor="startMonthSelect" className="text-sm">
-                          Start Month:
-                        </label>
-                        <select
-                          id="startMonthSelect"
-                          value={chartStartMonth}
-                          onChange={(e) =>
-                            setChartStartMonth(
-                              Math.max(
-                                1,
-                                Math.min(e.target.value, chartEndMonth)
-                              )
-                            )
-                          }
-                          className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
-                        >
-                          {Array.from({ length: numberOfMonths }, (_, i) => {
-                            const monthIndex = (startingMonth + i - 1) % 12;
-                            const year =
-                              startingYear +
-                              Math.floor((startingMonth + i - 1) / 12);
-                            return (
-                              <option key={i + 1} value={i + 1}>
-                                {`${months[monthIndex]}/${year}`}
-                              </option>
-                            );
-                          })}
-                        </select>
-                      </div>
-                      <div className="min-w-[10vw] mb-2">
-                        <label htmlFor="endMonthSelect" className="text-sm">
-                          End Month:
-                        </label>
-                        <select
-                          id="endMonthSelect"
-                          value={chartEndMonth}
-                          onChange={(e) =>
-                            setChartEndMonth(
-                              Math.max(
-                                chartStartMonth,
-                                Math.min(e.target.value, numberOfMonths)
-                              )
-                            )
-                          }
-                          className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
-                        >
-                          {Array.from({ length: numberOfMonths }, (_, i) => {
-                            const monthIndex = (startingMonth + i - 1) % 12;
-                            const year =
-                              startingYear +
-                              Math.floor((startingMonth + i - 1) / 12);
-                            return (
-                              <option key={i + 1} value={i + 1}>
-                                {`${months[monthIndex]}/${year}`}
-                              </option>
-                            );
-                          })}
-                        </select>
-                      </div>
+                        {Array.from({ length: numberOfMonths }, (_, i) => {
+                          const monthIndex = (startingMonth + i - 1) % 12;
+                          const year =
+                            startingYear +
+                            Math.floor((startingMonth + i - 1) / 12);
+                          return (
+                            <option key={i + 1} value={i + 1}>
+                              {`${months[monthIndex]}/${year}`}
+                            </option>
+                          );
+                        })}
+                      </select>
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <Chart
-                      options={{
-                        ...personnelChart.options,
-                        stroke: {
-                          width: 1,
-                          curve: "straight",
-                        },
-                        xaxis: {
-                          ...personnelChart.options.xaxis,
-                        },
-                      }}
-                      series={personnelChart.series}
-                      type="area"
-                      height={350}
-                    />
-                  </CardContent>
-                </CardShadcn>
-                <Modal
-                  centered
-                  open={isChartModalVisible}
-                  footer={null}
-                  onCancel={() => setIsChartModalVisible(false)}
-                  width="90%"
-                  style={{ top: 20 }}
-                >
-                  {selectedChart && (
-                    <Chart
-                      options={{
-                        ...selectedChart.options,
-                      }}
-                      series={selectedChart.series}
-                      type="area"
-                      height={500}
-                      className="p-4"
-                    />
-                  )}
-                </Modal>
-              </div>
-              <div className="flex justify-between items-center my-4 mt-20">
-                <h3 className="text-lg font-semibold">
-                  II. Personnel Cost Table
-                </h3>
-                <ButtonV0 variant="outline" onClick={downloadExcel}>
-                  <Download className="mr-2 h-4 w-4" />
-                  Download Excel
-                </ButtonV0>
-              </div>
-              <Table
-                className="custom-table bg-white overflow-auto my-8 rounded-md"
-                size="small"
-                dataSource={personnelCostTableData}
-                columns={personnelCostColumns}
-                pagination={false}
-                bordered={false} // Tắt border mặc định của antd
-                rowClassName={(record) =>
-                  record.key === "Total" || record.isDepartment === true
-                    ? "font-bold"
-                    : ""
-                }
-              />
-            </div>
-            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
-              <button
-                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
-                style={{ bottom: "20px", right: "80px", position: "fixed" }}
-                onClick={handleSave}
+                    <div className="min-w-[10vw] mb-2">
+                      <label htmlFor="endMonthSelect" className="text-sm">
+                        End Month:
+                      </label>
+                      <select
+                        id="endMonthSelect"
+                        value={chartEndMonth}
+                        onChange={(e) =>
+                          setChartEndMonth(
+                            Math.max(
+                              chartStartMonth,
+                              Math.min(e.target.value, numberOfMonths)
+                            )
+                          )
+                        }
+                        className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                      >
+                        {Array.from({ length: numberOfMonths }, (_, i) => {
+                          const monthIndex = (startingMonth + i - 1) % 12;
+                          const year =
+                            startingYear +
+                            Math.floor((startingMonth + i - 1) / 12);
+                          return (
+                            <option key={i + 1} value={i + 1}>
+                              {`${months[monthIndex]}/${year}`}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <Chart
+                    options={{
+                      ...personnelChart.options,
+                      stroke: {
+                        width: 1,
+                        curve: "straight",
+                      },
+                      xaxis: {
+                        ...personnelChart.options.xaxis,
+                      },
+                    }}
+                    series={personnelChart.series}
+                    type="area"
+                    height={350}
+                  />
+                </CardContent>
+              </CardShadcn>
+              <Modal
+                centered
+                open={isChartModalVisible}
+                footer={null}
+                onCancel={() => setIsChartModalVisible(false)}
+                width="90%"
+                style={{ top: 20 }}
               >
-                {isLoading ? (
-                  <SpinnerBtn />
-                ) : (
-                  <>
-                    <CheckCircleOutlined
-                      style={{
-                        fontSize: "12px",
-                        color: "#FFFFFF",
-                        marginRight: "4px",
-                      }}
-                    />
-                    Save
-                  </>
+                {selectedChart && (
+                  <Chart
+                    options={{
+                      ...selectedChart.options,
+                    }}
+                    series={selectedChart.series}
+                    type="area"
+                    height={500}
+                    className="p-4"
+                  />
                 )}
-              </button>
+              </Modal>
             </div>
-          </>
-        )}
-        {activeTab === "input" && (
-          <>
-            <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
+            <div className="flex justify-between items-center my-4 mt-20">
+              <h3 className="text-lg font-semibold">
+                II. Personnel Cost Table
+              </h3>
+              <ButtonV0 variant="outline" onClick={downloadExcel}>
+                <Download className="mr-2 h-4 w-4" />
+                Download Excel
+              </ButtonV0>
+            </div>
+            <Table
+              className="custom-table bg-white overflow-auto my-8 rounded-md"
+              size="small"
+              dataSource={personnelCostTableData}
+              columns={personnelCostColumns}
+              pagination={false}
+              bordered={false} // Tắt border mặc định của antd
+              rowClassName={(record) =>
+                record.key === "Total" || record.isDepartment === true
+                  ? "font-bold"
+                  : ""
+              }
+            />
+          </div>
+          <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
+            <button
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
+              style={{ bottom: "20px", right: "80px", position: "fixed" }}
+              onClick={handleSave}
+            >
+              {isLoading ? (
+                <SpinnerBtn />
+              ) : (
+                <>
+                  <CheckCircleOutlined
+                    style={{
+                      fontSize: "12px",
+                      color: "#FFFFFF",
+                      marginRight: "4px",
+                    }}
+                  />
+                  Save
+                </>
+              )}
+            </button>
+          </div>
+        </>
 
-            <div className="w-full xl:w-1/4 sm:p-4 p-0">
-              <PersonnelInputForm
-                tempPersonnelInputs={tempPersonnelInputs}
-                renderPersonnelForm={renderPersonnelForm}
-                setRenderPersonnelForm={setRenderPersonnelForm}
-                handlePersonnelInputChange={handlePersonnelInputChange}
-                formatNumber={formatNumber}
-                parseNumber={parseNumber}
-                addNewPersonnelInput={addNewPersonnelInput}
-                handleSave={handleSave}
-                isLoading={isLoading}
-                setIsDeleteModalOpen={setIsDeleteModalOpen}
-              />
-            </div>
-            {/* <div className="xl:hidden block">
+        <>
+          <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
+
+          <div className="w-full xl:w-1/4 sm:p-4 p-0">
+            <PersonnelInputForm
+              tempPersonnelInputs={tempPersonnelInputs}
+              renderPersonnelForm={renderPersonnelForm}
+              setRenderPersonnelForm={setRenderPersonnelForm}
+              handlePersonnelInputChange={handlePersonnelInputChange}
+              formatNumber={formatNumber}
+              parseNumber={parseNumber}
+              addNewPersonnelInput={addNewPersonnelInput}
+              handleSave={handleSave}
+              isLoading={isLoading}
+              setIsDeleteModalOpen={setIsDeleteModalOpen}
+            />
+          </div>
+          {/* <div className="xl:hidden block">
               <FloatButton
                 tooltip={<div>Input values</div>}
                 style={{
@@ -898,83 +896,82 @@ const PersonnelSection = ({ numberOfMonths }) => {
                 <Button type="primary" shape="circle" icon={<FileOutlined />} />
               </FloatButton>
             </div> */}
-            {isInputFormOpen && (
-              <Modal
-                open={isInputFormOpen}
-                onOk={() => {
-                  handleSave();
-                  setIsInputFormOpen(false);
-                }}
-                onCancel={() => {
-                  setTempPersonnelInputs(personnelInputs);
-                  setIsInputFormOpen(false);
-                }}
-                okText={isLoading ? <SpinnerBtn /> : "Save Change"}
-                cancelText="Cancel"
-                cancelButtonProps={{
-                  style: {
-                    borderRadius: "0.375rem",
-                    cursor: "pointer",
-                  },
-                }}
-                okButtonProps={{
-                  style: {
-                    background: "#2563EB",
-                    borderColor: "#2563EB",
-                    color: "#fff",
-                    borderRadius: "0.375rem",
-                    cursor: "pointer",
-                    minWidth: "5vw",
-                  },
-                }}
-                footer={null}
-                centered={true}
-                zIndex={50}
-              >
-                <PersonnelInputForm
-                  tempPersonnelInputs={tempPersonnelInputs}
-                  renderPersonnelForm={renderPersonnelForm}
-                  setRenderPersonnelForm={setRenderPersonnelForm}
-                  handlePersonnelInputChange={handlePersonnelInputChange}
-                  formatNumber={formatNumber}
-                  parseNumber={parseNumber}
-                  addNewPersonnelInput={addNewPersonnelInput}
-                  handleSave={handleSave}
-                  isLoading={isLoading}
-                  setIsDeleteModalOpen={setIsDeleteModalOpen}
-                />
-              </Modal>
-            )}
-            {isDeleteModalOpen && (
-              <Modal
-                title="Confirm Delete"
-                open={isDeleteModalOpen}
-                onOk={confirmDelete}
-                onCancel={() => setIsDeleteModalOpen(false)}
-                okText="Delete"
-                cancelText="Cancel"
-                cancelButtonProps={{
-                  style: {
-                    borderRadius: "0.375rem",
-                    cursor: "pointer",
-                  },
-                }}
-                okButtonProps={{
-                  style: {
-                    background: "#f5222d",
-                    borderColor: "#f5222d",
-                    color: "#fff",
-                    borderRadius: "0.375rem",
-                    cursor: "pointer",
-                  },
-                }}
-                centered={true}
-              >
-                Are you sure you want to delete it?
-              </Modal>
-            )}
-          </>
-        )}
+          {isInputFormOpen && (
+            <Modal
+              open={isInputFormOpen}
+              onOk={() => {
+                handleSave();
+                setIsInputFormOpen(false);
+              }}
+              onCancel={() => {
+                setTempPersonnelInputs(personnelInputs);
+                setIsInputFormOpen(false);
+              }}
+              okText={isLoading ? <SpinnerBtn /> : "Save Change"}
+              cancelText="Cancel"
+              cancelButtonProps={{
+                style: {
+                  borderRadius: "0.375rem",
+                  cursor: "pointer",
+                },
+              }}
+              okButtonProps={{
+                style: {
+                  background: "#2563EB",
+                  borderColor: "#2563EB",
+                  color: "#fff",
+                  borderRadius: "0.375rem",
+                  cursor: "pointer",
+                  minWidth: "5vw",
+                },
+              }}
+              footer={null}
+              centered={true}
+              zIndex={50}
+            >
+              <PersonnelInputForm
+                tempPersonnelInputs={tempPersonnelInputs}
+                renderPersonnelForm={renderPersonnelForm}
+                setRenderPersonnelForm={setRenderPersonnelForm}
+                handlePersonnelInputChange={handlePersonnelInputChange}
+                formatNumber={formatNumber}
+                parseNumber={parseNumber}
+                addNewPersonnelInput={addNewPersonnelInput}
+                handleSave={handleSave}
+                isLoading={isLoading}
+                setIsDeleteModalOpen={setIsDeleteModalOpen}
+              />
+            </Modal>
+          )}
+          {isDeleteModalOpen && (
+            <Modal
+              title="Confirm Delete"
+              open={isDeleteModalOpen}
+              onOk={confirmDelete}
+              onCancel={() => setIsDeleteModalOpen(false)}
+              okText="Delete"
+              cancelText="Cancel"
+              cancelButtonProps={{
+                style: {
+                  borderRadius: "0.375rem",
+                  cursor: "pointer",
+                },
+              }}
+              okButtonProps={{
+                style: {
+                  background: "#f5222d",
+                  borderColor: "#f5222d",
+                  color: "#fff",
+                  borderRadius: "0.375rem",
+                  cursor: "pointer",
+                },
+              }}
+              centered={true}
+            >
+              Are you sure you want to delete it?
+            </Modal>
+          )}
+        </>
       </div>
     </div>
   );

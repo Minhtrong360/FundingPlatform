@@ -6,7 +6,7 @@ import {
   SelectItem as FundraisingSelectItem,
 } from "../../../components/ui/select";
 import { Input as FundraisingInput } from "../../../components/ui/input";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Card, Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
@@ -18,9 +18,7 @@ import {
 } from "../../../features/FundraisingSlice";
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
-import { DownloadOutlined, FullscreenOutlined } from "@ant-design/icons";
-import { PlusOutlined } from "@ant-design/icons";
-import { DeleteOutlined } from "@ant-design/icons";
+
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
 import SpinnerBtn from "../../../components/SpinnerBtn";
@@ -36,6 +34,7 @@ import {
 } from "../../../components/ui/card";
 import { Check, Download, Plus, Trash2 } from "lucide-react";
 import { Button, Button as ButtonV0 } from "../../../components/ui/button";
+import { debounce } from "lodash";
 
 const FundraisingInputForm = ({
   tempFundraisingInputs,
@@ -49,6 +48,32 @@ const FundraisingInputForm = ({
   handleSave,
   isLoading,
 }) => {
+  const [debouncedInputs, setDebouncedInputs] = useState(tempFundraisingInputs);
+
+  // Thêm useEffect để đồng bộ hóa debouncedInputs khi tempFundraisingInputs thay đổi
+  useEffect(() => {
+    setDebouncedInputs(tempFundraisingInputs);
+  }, [tempFundraisingInputs]);
+
+  // Debounced function to update state after 1 second
+  const debouncedHandleInputChange = useCallback(
+    debounce((id, field, value) => {
+      handleFundraisingInputChange(id, field, value);
+    }, 500),
+    [handleFundraisingInputChange]
+  );
+
+  const handleInputChange = (id, field, value) => {
+    setDebouncedInputs((prevInputs) =>
+      prevInputs.map((input) =>
+        input.id === id ? { ...input, [field]: value } : input
+      )
+    );
+
+    // Call debounced state update
+    debouncedHandleInputChange(id, field, value);
+  };
+
   return (
     <section
       aria-labelledby="fundraising-heading"
@@ -72,7 +97,7 @@ const FundraisingInputForm = ({
           value={selectedFundraisingId}
           onChange={(e) => setSelectedFundraisingId(e.target.value)}
         >
-          {tempFundraisingInputs.map((input) => (
+          {debouncedInputs.map((input) => (
             <option key={input?.id} value={input?.id}>
               {input.name}
             </option>
@@ -80,7 +105,7 @@ const FundraisingInputForm = ({
         </select>
       </div>
 
-      {tempFundraisingInputs
+      {debouncedInputs
         .filter((input) => input?.id == selectedFundraisingId)
         .map((input) => (
           <div key={input?.id} className="bg-white rounded-2xl p-6 border my-4">
@@ -92,11 +117,7 @@ const FundraisingInputForm = ({
                 className="col-start-2 border-gray-300"
                 value={input.name}
                 onChange={(e) =>
-                  handleFundraisingInputChange(
-                    input?.id,
-                    "name",
-                    e.target.value
-                  )
+                  handleInputChange(input?.id, "name", e.target.value)
                 }
               />
             </div>
@@ -112,7 +133,7 @@ const FundraisingInputForm = ({
                 max={100}
                 value={formatNumber(input.equityOffered)}
                 onChange={(e) =>
-                  handleFundraisingInputChange(
+                  handleInputChange(
                     input?.id,
                     "equityOffered",
                     parseNumber(e.target.value)
@@ -129,7 +150,7 @@ const FundraisingInputForm = ({
                 className="col-start-2 border-gray-300"
                 value={formatNumber(input.fundraisingAmount)}
                 onChange={(e) =>
-                  handleFundraisingInputChange(
+                  handleInputChange(
                     input?.id,
                     "fundraisingAmount",
                     parseNumber(e.target.value)
@@ -144,11 +165,7 @@ const FundraisingInputForm = ({
               <FundraisingSelect
                 className="border-gray-300"
                 onValueChange={(value) =>
-                  handleFundraisingInputChange(
-                    input?.id,
-                    "fundraisingType",
-                    value
-                  )
+                  handleInputChange(input?.id, "fundraisingType", value)
                 }
                 value={input.fundraisingType}
               >
@@ -191,7 +208,7 @@ const FundraisingInputForm = ({
                 max="12"
                 value={input.fundraisingBeginMonth}
                 onChange={(e) =>
-                  handleFundraisingInputChange(
+                  handleInputChange(
                     input?.id,
                     "fundraisingBeginMonth",
                     parseInt(e.target.value, 10)
@@ -287,7 +304,6 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     setTempFundraisingInputs([...tempFundraisingInputs, newFundraising]);
     setSelectedFundraisingId(newId.toString());
   };
-
   const removeFundraisingInput = (id) => {
     const indexToRemove = tempFundraisingInputs.findIndex(
       (input) => input?.id == id
@@ -700,208 +716,201 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         </Badge>
       </div>
       <div className="w-full h-full flex flex-col lg:flex-row p-4">
-        {activeTab === "table&chart" && (
-          <>
-            <div className="w-full xl:w-3/4 sm:p-4 p-0">
-              <h3 className="text-lg font-semibold mb-8">
-                I. Fundraising Chart
-              </h3>
-              <div className="grid md:grid-cols-2 gap-6">
-                <CardShadcn className="flex flex-col transition duration-500  rounded-2xl relative">
-                  <CardHeader>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute top-2 right-2 z-50"
-                      onClick={(event) =>
-                        handleChartClick(fundraisingChart, event)
-                      }
+        <>
+          <div className="w-full xl:w-3/4 sm:p-4 p-0">
+            <h3 className="text-lg font-semibold mb-8">I. Fundraising Chart</h3>
+            <div className="grid md:grid-cols-2 gap-6">
+              <CardShadcn className="flex flex-col transition duration-500  rounded-2xl relative">
+                <CardHeader>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 z-50"
+                    onClick={(event) =>
+                      handleChartClick(fundraisingChart, event)
+                    }
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-4 h-4"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="w-4 h-4"
-                      >
-                        <path d="M15 3h6v6" />
-                        <path d="M10 14 21 3" />
-                        <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
-                      </svg>
-                      <span className="sr-only">Fullscreen</span>
-                    </Button>
+                      <path d="M15 3h6v6" />
+                      <path d="M10 14 21 3" />
+                      <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                    </svg>
+                    <span className="sr-only">Fullscreen</span>
+                  </Button>
 
-                    <div className="flex justify-between items-center">
-                      <div className="min-w-[10vw] mb-2">
-                        <label htmlFor="startMonthSelect" className="text-sm">
-                          Start Month:
-                        </label>
-                        <select
-                          id="startMonthSelect"
-                          value={chartStartMonth}
-                          onChange={(e) =>
-                            setChartStartMonth(
-                              Math.max(
-                                1,
-                                Math.min(e.target.value, chartEndMonth)
-                              )
-                            )
-                          }
-                          className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
-                        >
-                          {Array.from({ length: numberOfMonths }, (_, i) => {
-                            const monthIndex = (startingMonth + i - 1) % 12;
-                            const year =
-                              startingYear +
-                              Math.floor((startingMonth + i - 1) / 12);
-                            return (
-                              <option key={i + 1} value={i + 1}>
-                                {`${months[monthIndex]}/${year}`}
-                              </option>
-                            );
-                          })}
-                        </select>
-                      </div>
-                      <div className="min-w-[10vw] mb-2">
-                        <label htmlFor="endMonthSelect" className="text-sm">
-                          End Month:
-                        </label>
-                        <select
-                          id="endMonthSelect"
-                          value={chartEndMonth}
-                          onChange={(e) =>
-                            setChartEndMonth(
-                              Math.max(
-                                chartStartMonth,
-                                Math.min(e.target.value, numberOfMonths)
-                              )
-                            )
-                          }
-                          className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
-                        >
-                          {Array.from({ length: numberOfMonths }, (_, i) => {
-                            const monthIndex = (startingMonth + i - 1) % 12;
-                            const year =
-                              startingYear +
-                              Math.floor((startingMonth + i - 1) / 12);
-                            return (
-                              <option key={i + 1} value={i + 1}>
-                                {`${months[monthIndex]}/${year}`}
-                              </option>
-                            );
-                          })}
-                        </select>
-                      </div>
+                  <div className="flex justify-between items-center">
+                    <div className="min-w-[10vw] mb-2">
+                      <label htmlFor="startMonthSelect" className="text-sm">
+                        Start Month:
+                      </label>
+                      <select
+                        id="startMonthSelect"
+                        value={chartStartMonth}
+                        onChange={(e) =>
+                          setChartStartMonth(
+                            Math.max(1, Math.min(e.target.value, chartEndMonth))
+                          )
+                        }
+                        className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                      >
+                        {Array.from({ length: numberOfMonths }, (_, i) => {
+                          const monthIndex = (startingMonth + i - 1) % 12;
+                          const year =
+                            startingYear +
+                            Math.floor((startingMonth + i - 1) / 12);
+                          return (
+                            <option key={i + 1} value={i + 1}>
+                              {`${months[monthIndex]}/${year}`}
+                            </option>
+                          );
+                        })}
+                      </select>
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <Chart
-                      options={{
-                        ...fundraisingChart.options,
-                        xaxis: {
-                          ...fundraisingChart.options.xaxis,
-                          // tickAmount: 6, // Set the number of ticks on the x-axis to 12
-                        },
-                      }}
-                      series={fundraisingChart.series}
-                      type="bar"
-                      height={350}
-                    />
-                  </CardContent>
-                </CardShadcn>
-              </div>
-              <Modal
-                centered
-                open={isChartModalVisible}
-                footer={null}
-                onCancel={() => setIsChartModalVisible(false)}
-                width="90%"
-                style={{ top: 20 }}
-              >
-                {selectedChart && (
+                    <div className="min-w-[10vw] mb-2">
+                      <label htmlFor="endMonthSelect" className="text-sm">
+                        End Month:
+                      </label>
+                      <select
+                        id="endMonthSelect"
+                        value={chartEndMonth}
+                        onChange={(e) =>
+                          setChartEndMonth(
+                            Math.max(
+                              chartStartMonth,
+                              Math.min(e.target.value, numberOfMonths)
+                            )
+                          )
+                        }
+                        className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+                      >
+                        {Array.from({ length: numberOfMonths }, (_, i) => {
+                          const monthIndex = (startingMonth + i - 1) % 12;
+                          const year =
+                            startingYear +
+                            Math.floor((startingMonth + i - 1) / 12);
+                          return (
+                            <option key={i + 1} value={i + 1}>
+                              {`${months[monthIndex]}/${year}`}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
                   <Chart
                     options={{
-                      ...selectedChart.options,
-                      // ... other options
+                      ...fundraisingChart.options,
+                      xaxis: {
+                        ...fundraisingChart.options.xaxis,
+                        // tickAmount: 6, // Set the number of ticks on the x-axis to 12
+                      },
                     }}
-                    series={selectedChart.series}
+                    series={fundraisingChart.series}
                     type="bar"
-                    height={500}
-                    className="p-4"
+                    height={350}
                   />
-                )}
-              </Modal>
-              <div className="flex justify-between items-center my-4 mt-20">
-                <h3 className="text-lg font-semibold">II. Fundraising Table</h3>
-                <ButtonV0 variant="outline" onClick={downloadExcel}>
-                  <Download className="mr-2 h-4 w-4" />
-                  Download Excel
-                </ButtonV0>
-              </div>{" "}
-              <Table
-                className="custom-table bg-white overflow-auto my-8 rounded-md"
-                size="small"
-                dataSource={transformFundraisingDataForTable(
-                  tempFundraisingInputs,
-                  numberOfMonths
-                )}
-                columns={fundraisingColumns}
-                bordered={false} // Tắt border mặc định của antd
-                pagination={false}
-                rowClassName={(record) =>
-                  record.key === "Total funding" ? "font-bold" : ""
-                }
-              />
+                </CardContent>
+              </CardShadcn>
             </div>
-            <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
-              <button
-                className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
-                style={{ bottom: "20px", right: "80px", position: "fixed" }}
-                onClick={handleSave}
-              >
-                {isLoading ? (
-                  <SpinnerBtn />
-                ) : (
-                  <>
-                    <CheckCircleOutlined
-                      style={{
-                        fontSize: "12px",
-                        color: "#FFFFFF",
-                        marginRight: "4px",
-                      }}
-                    />
-                    Save
-                  </>
-                )}
-              </button>
-            </div>
-          </>
-        )}
-        {activeTab === "input" && (
-          <>
-            <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
+            <Modal
+              centered
+              open={isChartModalVisible}
+              footer={null}
+              onCancel={() => setIsChartModalVisible(false)}
+              width="90%"
+              style={{ top: 20 }}
+            >
+              {selectedChart && (
+                <Chart
+                  options={{
+                    ...selectedChart.options,
+                    // ... other options
+                  }}
+                  series={selectedChart.series}
+                  type="bar"
+                  height={500}
+                  className="p-4"
+                />
+              )}
+            </Modal>
+            <div className="flex justify-between items-center my-4 mt-20">
+              <h3 className="text-lg font-semibold">II. Fundraising Table</h3>
+              <ButtonV0 variant="outline" onClick={downloadExcel}>
+                <Download className="mr-2 h-4 w-4" />
+                Download Excel
+              </ButtonV0>
+            </div>{" "}
+            <Table
+              className="custom-table bg-white overflow-auto my-8 rounded-md"
+              size="small"
+              dataSource={transformFundraisingDataForTable(
+                tempFundraisingInputs,
+                numberOfMonths
+              )}
+              columns={fundraisingColumns}
+              bordered={false} // Tắt border mặc định của antd
+              pagination={false}
+              rowClassName={(record) =>
+                record.key === "Total funding" ? "font-bold" : ""
+              }
+            />
+          </div>
+          <div className="w-full xl:w-1/4 sm:p-4 p-0 xl:block hidden ">
+            <button
+              className="bg-blue-600 text-white py-2 px-2 text-sm rounded-2xl mt-4 min-w-[6vw] "
+              style={{ bottom: "20px", right: "80px", position: "fixed" }}
+              onClick={handleSave}
+            >
+              {isLoading ? (
+                <SpinnerBtn />
+              ) : (
+                <>
+                  <CheckCircleOutlined
+                    style={{
+                      fontSize: "12px",
+                      color: "#FFFFFF",
+                      marginRight: "4px",
+                    }}
+                  />
+                  Save
+                </>
+              )}
+            </button>
+          </div>
+        </>
 
-            <div className="w-full xl:w-1/4 sm:p-4 p-0">
-              <FundraisingInputForm
-                tempFundraisingInputs={tempFundraisingInputs}
-                selectedFundraisingId={selectedFundraisingId}
-                setSelectedFundraisingId={setSelectedFundraisingId}
-                handleFundraisingInputChange={handleFundraisingInputChange}
-                addNewFundraisingInput={addNewFundraisingInput}
-                confirmDelete={confirmDelete}
-                setIsDeleteModalOpen={setIsDeleteModalOpen}
-                isDeleteModalOpen={isDeleteModalOpen}
-                handleSave={handleSave}
-                isLoading={isLoading}
-              />
-            </div>
+        <>
+          <div className="w-full xl:w-3/4 sm:p-4 p-0 "> </div>
 
-            {/* <div className="xl:hidden block">
+          <div className="w-full xl:w-1/4 sm:p-4 p-0">
+            <FundraisingInputForm
+              tempFundraisingInputs={tempFundraisingInputs}
+              selectedFundraisingId={selectedFundraisingId}
+              setSelectedFundraisingId={setSelectedFundraisingId}
+              handleFundraisingInputChange={handleFundraisingInputChange}
+              addNewFundraisingInput={addNewFundraisingInput}
+              confirmDelete={confirmDelete}
+              setIsDeleteModalOpen={setIsDeleteModalOpen}
+              isDeleteModalOpen={isDeleteModalOpen}
+              handleSave={handleSave}
+              isLoading={isLoading}
+            />
+          </div>
+
+          {/* <div className="xl:hidden block">
               <FloatButton
                 tooltip={<div>Input values</div>}
                 style={{
@@ -917,56 +926,55 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               </FloatButton>
             </div> */}
 
-            {isInputFormOpen && (
-              <Modal
-                open={isInputFormOpen}
-                onOk={() => {
-                  handleSave();
-                  setIsInputFormOpen(false);
-                }}
-                onCancel={() => {
-                  setTempFundraisingInputs(fundraisingInputs);
-                  setSelectedFundraisingId(fundraisingInputs[0]?.id);
-                  setIsInputFormOpen(false);
-                }}
-                okText={isLoading ? <SpinnerBtn /> : "Save Change"}
-                cancelText="Cancel"
-                cancelButtonProps={{
-                  style: {
-                    borderRadius: "0.375rem",
-                    cursor: "pointer",
-                  },
-                }}
-                okButtonProps={{
-                  style: {
-                    background: "#2563EB",
-                    borderColor: "#2563EB",
-                    color: "#fff",
-                    borderRadius: "0.375rem",
-                    cursor: "pointer",
-                    minWidth: "5vw",
-                  },
-                }}
-                footer={null}
-                centered={true}
-                zIndex={50}
-              >
-                <FundraisingInputForm
-                  tempFundraisingInputs={tempFundraisingInputs}
-                  selectedFundraisingId={selectedFundraisingId}
-                  setSelectedFundraisingId={setSelectedFundraisingId}
-                  handleFundraisingInputChange={handleFundraisingInputChange}
-                  addNewFundraisingInput={addNewFundraisingInput}
-                  confirmDelete={confirmDelete}
-                  setIsDeleteModalOpen={setIsDeleteModalOpen}
-                  isDeleteModalOpen={isDeleteModalOpen}
-                  handleSave={handleSave}
-                  isLoading={isLoading}
-                />
-              </Modal>
-            )}
-          </>
-        )}
+          {isInputFormOpen && (
+            <Modal
+              open={isInputFormOpen}
+              onOk={() => {
+                handleSave();
+                setIsInputFormOpen(false);
+              }}
+              onCancel={() => {
+                setTempFundraisingInputs(fundraisingInputs);
+                setSelectedFundraisingId(fundraisingInputs[0]?.id);
+                setIsInputFormOpen(false);
+              }}
+              okText={isLoading ? <SpinnerBtn /> : "Save Change"}
+              cancelText="Cancel"
+              cancelButtonProps={{
+                style: {
+                  borderRadius: "0.375rem",
+                  cursor: "pointer",
+                },
+              }}
+              okButtonProps={{
+                style: {
+                  background: "#2563EB",
+                  borderColor: "#2563EB",
+                  color: "#fff",
+                  borderRadius: "0.375rem",
+                  cursor: "pointer",
+                  minWidth: "5vw",
+                },
+              }}
+              footer={null}
+              centered={true}
+              zIndex={50}
+            >
+              <FundraisingInputForm
+                tempFundraisingInputs={tempFundraisingInputs}
+                selectedFundraisingId={selectedFundraisingId}
+                setSelectedFundraisingId={setSelectedFundraisingId}
+                handleFundraisingInputChange={handleFundraisingInputChange}
+                addNewFundraisingInput={addNewFundraisingInput}
+                confirmDelete={confirmDelete}
+                setIsDeleteModalOpen={setIsDeleteModalOpen}
+                isDeleteModalOpen={isDeleteModalOpen}
+                handleSave={handleSave}
+                isLoading={isLoading}
+              />
+            </Modal>
+          )}
+        </>
       </div>
     </div>
   );

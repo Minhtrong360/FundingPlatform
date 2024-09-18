@@ -4,14 +4,18 @@ import SideBar from "../../components/SideBar";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 import FinancialForm from "./FinancialForm";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import AnnounceFMPage from "./Components/AnnounceFMPage";
 import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
+import { HomeIcon } from "lucide-react";
+import { Button } from "../../components/ui/button";
 
 function FinancialPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const navigate = useNavigate();
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -101,7 +105,16 @@ function FinancialPage() {
 
   return (
     <>
-      <HomeHeader />
+      {/* <HomeHeader /> */}
+      <Button
+        variant="destructive"
+        onClick={() => navigate("/")}
+        style={{ backgroundColor: "#f4f4f6", color: "black" }}
+        className="fixed top-2 left-2"
+      >
+        <HomeIcon />
+      </Button>
+
       <FinancialForm
         currentUser={currentUser}
         setCurrentUser={setCurrentUser}

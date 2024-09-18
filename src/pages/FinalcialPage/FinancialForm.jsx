@@ -947,7 +947,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
   const paramsID = params.id;
 
   return (
-    <div className="min-h-screen bg-white my-28 sm:px-32 px-2">
+    <div className="min-h-screen bg-white my-14 sm:px-32 px-2">
       {spinning ? (
         <ProgressBar spinning={spinning} isLoading={isLoading} />
       ) : (

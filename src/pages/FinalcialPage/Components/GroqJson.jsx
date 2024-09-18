@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal } from "antd";
+import { Modal, message } from "antd";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 import {
   calculateCostData,
@@ -10,8 +10,7 @@ import {
   transformCostDataForTable,
 } from "../../../features/CostSlice";
 import { calculateProfitAndLoss } from "../../../features/ProfitAndLossSlice";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   calculateChannelRevenue,
   setCogsData,
@@ -34,7 +33,6 @@ import {
   transformFundraisingDataForTable,
 } from "../../../features/FundraisingSlice";
 import { useAuth } from "../../../context/AuthContext";
-import { message } from "antd";
 
 import Papa from "papaparse";
 import { saveAs } from "file-saver";
@@ -42,7 +40,8 @@ import { saveAs } from "file-saver";
 import { Parser } from "@json2csv/plainjs";
 import { useParams } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
-import { Button, Button as ButtonV0 } from "../../../components/ui/button";
+import { Button } from "../../../components/ui/button";
+
 const SUPABASE_URL = process.env.REACT_APP_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.REACT_APP_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -96,7 +95,7 @@ const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
             input[key] === "Operating Expenses" ||
             input[key] === "Additional Expenses"
           ) {
-            // Delete the key if its value is undefined
+            // Delete the key if its value is undefined or matches specific strings
             delete input[key];
           } else if (typeof input[key] === "object") {
             // Recursively clean the nested object
@@ -160,6 +159,7 @@ const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
     IncomeStatement: PNLChanged,
   };
   console.log("jsonData", jsonData);
+
   const convertToCSV = (json) => {
     const opts = { delimiter: "|" };
     const parser = new Parser(opts);
@@ -259,6 +259,7 @@ const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
           message.success("Submit successfully!");
         } catch (err) {
           console.log(err);
+          message.error("Error submitting data.");
         }
       };
 
@@ -266,54 +267,38 @@ const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
             gap: "10px",
-            flexWrap: "wrap",
+            width: "100%", // Ensure the parent takes full width
           }}
         >
-          <ClearButton paramsID={paramsID} />
-          <Button
-            variant="destructive"
-            style={{
-              backgroundColor: "#18181B",
-              color: "white",
-              flex: 1,
-              minWidth: "150px",
-              maxWidth: "300px",
-            }}
-            onClick={saveToSupabase}
-          >
-            Submit
-          </Button>
+          <div style={{ flex: 1 }}>
+            <ClearButton paramsID={paramsID} />
+          </div>
+          <div style={{ flex: 1 }}>
+            <Button
+              variant="destructive"
+              style={{
+                backgroundColor: "#18181B",
+                color: "white",
+                width: "100%", // Make the button fill its container
+              }}
+              onClick={saveToSupabase}
+            >
+              Submit
+            </Button>
+          </div>
         </div>
       );
     };
 
     return (
       <div className="flex flex-col">
-        {/* <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => handleDownload("CashFlowStatement")}
-        >
-          {" "}
-          Cash Flow CSV
-        </button>
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => handleDownload("BalanceSheetStatement")}
-        >
-          Balance Sheet CSV
-        </button>
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => handleDownload("IncomeStatement")}
-        >
-          Income Statement CSV
-        </button> */}
+        {/* Commented out individual download buttons for clarity */}
         <CsvUploader />
       </div>
     );
   };
+
   /////////////
 
   const content = `
@@ -390,46 +375,25 @@ const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
     }
   };
   console.log("response", response);
+
   return (
     <div className="md:ml-2">
-      {/* <input type="file" onChange={handleFileChange} /> */}
-      {/* <button
-        className="ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        onClick={handleSubmit}
-        disabled={loading}
-      >
-        {loading ? "Uploading..." : "Embed"}
-      </button>
-      <div>
-        <button
-          className="ml-4 mt-4 rounded bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4"
-          onClick={downloadFile}
-        >
-          TXT
-        </button>
-      </div> */}
       <DownloadCSVButton />
-      {/* {response && (
-        <div>
-          <h3>Response:</h3>
-          <pre>{JSON.stringify(response, null, 2)}</pre>
-        </div>
-      )} */}
     </div>
   );
 };
-///////////////
-// clear button
-const ClearButton = (paramsID) => {
+
+// ClearButton Component
+const ClearButton = ({ paramsID }) => {
   const [loading, setLoading] = useState(false); // Manage loading state
-  const [message, setMessage] = useState(""); // Display success or error messages
+  const [messageText, setMessageText] = useState(""); // Display success or error messages
 
   const deleteProjectData = async () => {
     setLoading(true);
-    setMessage(""); // Reset message
+    setMessageText(""); // Reset message
     console.log("paramsID clear:", paramsID);
     // Access the actual ID from the paramsID object
-    const projectIDString = paramsID.paramsID;
+    const projectIDString = paramsID;
     try {
       // Delete from cashflow where project_id matches paramsID
       const { error: cashflowError } = await supabase
@@ -455,37 +419,33 @@ const ClearButton = (paramsID) => {
 
       if (balanceSheetError) throw balanceSheetError;
 
-      setMessage(`Successfully deleted all records for project`);
+      setMessageText(`Successfully deleted all records for project`);
+      message.success("Successfully deleted all records for project");
     } catch (error) {
-      setMessage(`Error deleting project data: ${error.message}`);
+      setMessageText(`Error deleting project data: ${error.message}`);
+      message.error(`Error deleting project data: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div>
-      <Button
-        variant="destructive"
-        style={{
-          backgroundColor: "#18181B",
-          color: "white",
-          flex: 1,
-          minWidth: "150px",
-          maxWidth: "300px",
-        }}
-        onClick={deleteProjectData}
-        disabled={loading}
-      >
-        {loading ? "Clearing..." : "Clear"}
-      </Button>
-
-      {/* {message && <p>{message}</p>} */}
-    </div>
+    <Button
+      variant="destructive"
+      style={{
+        backgroundColor: "#18181B",
+        color: "white",
+        width: "100%", // Make the button fill its container
+      }}
+      onClick={deleteProjectData}
+      disabled={loading}
+    >
+      {loading ? "Clearing..." : "Clear"}
+    </Button>
   );
 };
 
-///////////////
+// Main Component
 const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -607,7 +567,7 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
     dispatch(setRevenueData(revenueByChannelAndProduct));
     dispatch(setRevenueDeductionData(DeductionByChannelAndProduct));
     dispatch(setCogsData(cogsByChannelAndProduct));
-  }, [customerGrowthData, channelInputs, numberOfMonths]);
+  }, [customerGrowthData, channelInputs, numberOfMonths, dispatch]);
 
   const { costData, costInputs } = useSelector((state) => state.cost);
   useEffect(() => {
@@ -617,7 +577,7 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
       revenueData
     );
     dispatch(setCostData(calculatedData));
-  }, [costInputs, numberOfMonths]);
+  }, [costInputs, numberOfMonths, revenueData, dispatch]);
 
   const { personnelCostData, personnelInputs } = useSelector(
     (state) => state.personnel
@@ -629,7 +589,7 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
       numberOfMonths
     );
     dispatch(setPersonnelCostData(calculatedData));
-  }, [personnelInputs, numberOfMonths]);
+  }, [personnelInputs, numberOfMonths, dispatch]);
 
   const { investmentData, investmentTableData, investmentInputs } = useSelector(
     (state) => state.investment
@@ -640,7 +600,7 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
       numberOfMonths
     );
     dispatch(setInvestmentData(calculatedData));
-  }, [investmentInputs, numberOfMonths]);
+  }, [investmentInputs, numberOfMonths, dispatch]);
 
   const { loanInputs, loanData, loanTableData } = useSelector(
     (state) => state.loan
@@ -649,7 +609,7 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
   useEffect(() => {
     const calculatedData = calculateLoanData(loanInputs, numberOfMonths);
     dispatch(setLoanData(calculatedData));
-  }, [loanInputs, numberOfMonths]);
+  }, [loanInputs, numberOfMonths, dispatch]);
 
   const { incomeTax: incomeTaxRate, startingCashBalance } = useSelector(
     (state) => state.durationSelect
@@ -666,7 +626,7 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
     );
 
     dispatch(setFundraisingTableData(tableData));
-  }, [fundraisingInputs, numberOfMonths]);
+  }, [fundraisingInputs, numberOfMonths, dispatch]);
 
   const {
     totalPrincipal,
@@ -718,8 +678,7 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
       }
     });
   } else {
-    // Trường hợp investmentTableData.length = 0, tạo mảng với giá trị 0
-    // Giả sử bạn muốn tạo một mảng gồm 12 phần tử có giá trị 0
+    // If investmentTableData.length = 0, create an array with 0s
     for (let i = 0; i < numberOfMonths; i++) {
       cfInvestmentsArray.push(0);
     }
@@ -736,8 +695,7 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
       }
     });
   } else {
-    // Trường hợp investmentTableData.length = 0, tạo mảng với giá trị 0
-    // Giả sử bạn muốn tạo một mảng gồm 12 phần tử có giá trị 0
+    // If loanTableData.length = 0, create an array with 0s
     for (let i = 0; i < numberOfMonths; i++) {
       cfLoanArray.push(0);
     }
@@ -840,7 +798,6 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
   });
 
   const positionDataWithNetIncome = [
-    // { key: "Operating Activities" },
     { key: "Project ID", values: Array(cashEndBalances.length).fill(paramsID) },
     { key: "Net Income", values: netIncome },
     { key: "Depreciation", values: totalInvestmentDepreciation },
@@ -860,14 +817,10 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
       key: "CF Operations",
       values: CFOperationsArray,
     },
-    // { key: "1" },
-    // { key: "Investing Activities" },
     {
       key: "CF Investments",
       values: cfInvestmentsArray,
     },
-    // { key: "1" },
-    // { key: "Financing Activities" },
     {
       key: "CF Loans",
       values: cfLoanArray,
@@ -904,7 +857,6 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
         );
       }),
     },
-    // { key: "1" },
     {
       key: "Net +/- in Cash",
       values: netIncome.map((_, index) => {
@@ -954,16 +906,14 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
 
   let totalAssetValue = [];
 
-  // Kiểm tra nếu investmentData không có giá trị hoặc investmentData[0]?.assetValue không tồn tại
+  // Check if investmentData has assetValue
   if (!investmentData || !investmentData[0]?.assetValue) {
-    // Tạo một mảng mới với các phần tử có giá trị là 0
-    // Ví dụ: Tạo một mảng gồm 12 phần tử có giá trị 0
+    // Create an array with 0s
     for (let i = 0; i < numberOfMonths; i++) {
       totalAssetValue.push(0);
     }
   } else {
-    // Nếu investmentData có giá trị và investmentData[0]?.assetValue tồn tại
-    // Thực hiện tính tổng của từng phần tử tại index trong mảng assetValue của mỗi phần tử trong investmentData
+    // Sum assetValue across all investmentData entries
     totalAssetValue = investmentData[0]?.assetValue?.map((_, index) =>
       investmentData.reduce(
         (acc, data) => acc + (data?.assetValue ? data.assetValue[index] : 0),
@@ -976,14 +926,13 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
   const bsTotalNetFixedAssets = [];
 
   if (investmentTableData.length === 0) {
-    // Trường hợp không có dữ liệu trong investmentTableData, tạo mảng mới với các phần tử có giá trị là 0
-    // Giả sử bạn muốn tạo một mảng gồm 12 phần tử có giá trị 0
+    // Create arrays with 0s
     for (let i = 0; i < numberOfMonths; i++) {
       bsTotalDepreciation.push(0);
       bsTotalNetFixedAssets.push(0);
     }
   } else {
-    // Nếu có dữ liệu trong investmentTableData, thực hiện vòng lặp để xử lý dữ liệu
+    // Extract data from investmentTableData
     investmentTableData.forEach((data) => {
       if (data.key === "BS Total Accumulated Depreciation") {
         Object.keys(data).forEach((key) => {
@@ -1008,13 +957,12 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
   const bsTotalRemainingBalance = [];
 
   if (loanTableData.length === 0) {
-    // Trường hợp không có dữ liệu trong loanTableData, tạo mảng mới với các phần tử có giá trị là 0
-    // Giả sử bạn muốn tạo một mảng gồm 12 phần tử có giá trị 0
+    // Create an array with 0s
     for (let i = 0; i < numberOfMonths; i++) {
       bsTotalRemainingBalance.push(0);
     }
   } else {
-    // Nếu có dữ liệu trong loanTableData, thực hiện vòng lặp để xử lý dữ liệu
+    // Extract data from loanTableData
     loanTableData.forEach((data) => {
       if (data.key === "Total Remaining Balance") {
         Object.keys(data).forEach((key) => {
@@ -1049,14 +997,12 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
       earnings // Placeholder values
   );
 
-  //calculate the total liabilities and shareholders equity = total liabilities + total shareholders equity
+  // Calculate total liabilities and shareholders equity
   const totalLiabilitiesAndShareholdersEquity = totalLiabilities.map(
     (totalLiability, index) => totalLiability + totalShareholdersEquity[index]
   );
 
   const positionDataWithNetIncome2 = [
-    // {key: "Assets",},
-    // {key: "Current-Assets",},
     { key: "Project ID", values: Array(cashEndBalances.length).fill(paramsID) },
     {
       key: "Cash",
@@ -1074,9 +1020,7 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
       key: "Current Assets", // Added Current Assets row
       values: currentAssets,
     },
-    // { key: "1" },
-    // {key: "Long-Term Assets",},
-    // insert BS Total investment here
+    // Insert BS Total investment here
     { key: "Total Investment", values: totalAssetValue }, // New row for total investment
 
     { key: "Total Accumulated Depreciation", values: bsTotalDepreciation },
@@ -1095,45 +1039,41 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
       key: "Total Assets",
       values: totalAssets,
     },
-    // { key: "1" },
-    // {key: "Liabilities & Equity",},
-    // {key: "Current Liabilities",},
+
     {
-      key: "Accounts Payable", // Added Inventory row
+      key: "Accounts Payable", // Added Accounts Payable row
       values: new Array(numberOfMonths).fill(0), // Set values to zero
     },
 
-    // {key: "Long-Term Liabilities",},
     {
       key: "Long term liabilities",
       values: bsTotalRemainingBalance, // New row for long term liabilities
     },
 
     {
-      key: "Total Liabilities", // Added Inventory row
+      key: "Total Liabilities", // Added Total Liabilities row
       values: totalLiabilities,
     },
-    // {key: "1",},
-    // {key: "Shareholders Equity",},
+
     {
       key: "Paid in Capital",
       values: Array.from({ length: numberOfMonths }, (_, i) => {
         const currentValue = i === 0 ? startingPaidInCapital.toFixed(2) : "0";
         const currentValueFloat = parseFloat(currentValue);
-        const capitalArrValue = capitalArr[i] || 0; // If capitalArr doesn't have value at index i, default to 0
+        const capitalArrValue = capitalArr[i] || 0; // Default to 0 if undefined
         return (currentValueFloat + capitalArrValue).toFixed(2);
       }).map((value) => parseFloat(value)),
     },
     {
-      key: "Common Stock", // Added Inventory row
+      key: "Common Stock", // Added Common Stock row
       values: commonStockArr,
     },
     {
-      key: "Preferred Stock", // Added Inventory row
+      key: "Preferred Stock", // Added Preferred Stock row
       values: preferredStockArr,
     },
     {
-      key: "Retain Earnings", // Added Inventory row
+      key: "Retain Earnings", // Added Retain Earnings row
       values: netIncome,
     },
 
@@ -1211,7 +1151,7 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
     dispatch(setRevenueData(revenueByChannelAndProduct));
     dispatch(setRevenueDeductionData(DeductionByChannelAndProduct));
     dispatch(setCogsData(cogsByChannelAndProduct));
-  }, [customerGrowthData, channelInputs, numberOfMonths]);
+  }, [customerGrowthData, channelInputs, numberOfMonths, dispatch]);
 
   const { costTableData } = useSelector((state) => state.cost);
 
@@ -1229,11 +1169,9 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
     );
 
     dispatch(setCostTableData(costTableData));
-  }, [costInputs, numberOfMonths]);
+  }, [costInputs, numberOfMonths, revenueData, dispatch]);
 
   const transposedData = [
-    // { key: "Revenue" },
-    // { key: "Total Revenue", values: totalRevenue },
     { key: "Project ID", values: Array(cashEndBalances.length).fill(paramsID) },
     {
       key: "Total Revenue",
@@ -1258,14 +1196,8 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
     },
     { key: "Deductions", values: totalDeductions },
     { key: "Net Revenue", values: netRevenue },
-    // { key: "" },
-    // { key: "Cost of Revenue" },
     { key: "Total COGS", values: totalCOGS },
     { key: "Gross Profit", values: grossProfit },
-    // { key: "" },
-    // { key: "Operating Expenses" },
-
-    // { key: "Operating Costs", values: totalCosts },
     {
       key: "Operating Costs",
       values: totalCosts,
@@ -1291,19 +1223,16 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
         ...detailedPersonnelCosts[jobTitle].reduce(
           (acc, value, i) => ({
             ...acc,
-            [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+            [`${realDate[i]}`]: formatNumber(value?.toFixed(2)),
           }),
           {}
         ),
       })),
     },
     { key: "EBITDA", values: ebitda },
-    // { key: "" },
-    // { key: "Additional Expenses" },
     { key: "Depreciation", values: totalInvestmentDepreciation },
     { key: "Interest", values: totalInterestPayments },
     { key: "EBT", values: earningsBeforeTax },
-    // { key: "" },
     { key: "Income Tax", values: incomeTax },
     { key: "Net Income", values: netIncome },
   ].map((item, index) => ({
@@ -1334,6 +1263,7 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
       }, {}),
     })),
   }));
+
   const { financialProjectName } = useSelector((state) => state.durationSelect);
   const filterMetrics = (data) => {
     return data?.filter((item) => item.metric !== "1" && item.metric !== "");
@@ -1350,7 +1280,9 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
   return (
     currentUser[0]?.admin && (
       <div className="flex flex-col rounded-md">
-        {/* <input
+        {/* 
+        // Uncomment the following block if you need input and button for sending questions
+        <input
           className="p-2 rounded m-4 border-gray-300 border"
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -1376,7 +1308,8 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
               }}
             />
           )}
-        </Modal> */}
+        </Modal>
+        */}
         <FileUploadComponent
           BS={BS}
           CF={CF}

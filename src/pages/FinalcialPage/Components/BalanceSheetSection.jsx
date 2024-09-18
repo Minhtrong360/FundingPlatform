@@ -1357,7 +1357,7 @@ function BalanceSheetSection({ numberOfMonths }) {
     </div> */}
       </div>
 
-      <div className="w-full xl:w-1/4 sm:!p-4 !p-0 ">
+      <div className="w-full xl:w-1/4 sm:!p-4 !p-0 xl:!block !hidden">
         <section className="mb-8 NOsticky NOtop-8 ">
           <GroqJS
             datasrc={BalenceSheetData}
@@ -1367,7 +1367,7 @@ function BalanceSheetSection({ numberOfMonths }) {
         </section>
       </div>
 
-      <div className="xl:hidden block">
+      <div className="xl:!hidden !block">
         <FloatButton
           tooltip={<div>Input values</div>}
           style={{

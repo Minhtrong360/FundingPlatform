@@ -4,6 +4,11 @@ import {
   SelectValue as FundraisingSelectValue,
   SelectContent as FundraisingSelectContent,
   SelectItem as FundraisingSelectItem,
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
 } from "../../../components/ui/select";
 import { Input as FundraisingInput } from "../../../components/ui/input";
 import { useCallback, useEffect, useState } from "react";
@@ -86,24 +91,24 @@ const FundraisingInputForm = ({
         Fundraising
       </h2>
 
-      <div>
-        <label
-          htmlFor="selectedFundraising"
-          className="block my-4 text-base darkTextWhite"
-        ></label>
-        <select
-          id="selectedFundraising"
-          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
-          value={selectedFundraisingId}
-          onChange={(e) => setSelectedFundraisingId(e.target.value)}
-        >
+      <Select
+        value={selectedFundraisingId}
+        onValueChange={(e) => {
+          setSelectedFundraisingId(e);
+        }}
+      >
+        <SelectTrigger className="!rounded-2xl">
+          <SelectValue placeholder="Offline" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All</SelectItem>
           {debouncedInputs.map((input) => (
-            <option key={input?.id} value={input?.id}>
-              {input.name}
-            </option>
+            <SelectItem key={input?.id} value={input?.id}>
+              {input?.name}
+            </SelectItem>
           ))}
-        </select>
-      </div>
+        </SelectContent>
+      </Select>
 
       {debouncedInputs
         .filter((input) => input?.id == selectedFundraisingId)
@@ -848,7 +853,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       </div>
 
       <div className="relative w-full xl:w-1/4">
-        <div className="!py-4 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
+        <div className="!py-4 xl:!block !hidden border-white !sticky !top-28">
           <FundraisingInputForm
             tempFundraisingInputs={tempFundraisingInputs}
             selectedFundraisingId={selectedFundraisingId}

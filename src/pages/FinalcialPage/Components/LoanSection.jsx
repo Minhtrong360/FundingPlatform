@@ -47,7 +47,7 @@ import { debounce } from "lodash";
 const LoanInputForm = ({
   tempLoanInputs,
   renderLoanForm,
-  setRenderLoanForm,
+  handleRenderFormChange,
   handleLoanInputChange,
   addNewLoanInput,
   confirmDelete,
@@ -93,19 +93,24 @@ const LoanInputForm = ({
           htmlFor="selectedChannel"
           className="block my-4 text-base  darkTextWhite"
         ></label>
-        <select
-          id="selectedChannel"
-          className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  "
+        <Select
           value={renderLoanForm}
-          onChange={(e) => setRenderLoanForm(e.target.value)}
+          onValueChange={(e) => {
+            handleRenderFormChange(e);
+          }}
         >
-          <option value="all">All</option>
-          {debouncedInputs.map((input) => (
-            <option key={input?.id} value={input?.id}>
-              {input.loanName}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="!rounded-2xl">
+            <SelectValue placeholder="Offline" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            {tempLoanInputs.map((input) => (
+              <SelectItem key={input?.id} value={input?.id}>
+                {input.loanName}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {debouncedInputs
@@ -742,7 +747,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     <div className="w-full h-full flex flex-col lg:flex-row p-4">
       <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
         <h3 className="text-lg font-semibold mb-8">I. Loan Chart</h3>
-        <div className="sm:ml-4 ml-0 mt-16">
+        <div className="sm:ml-4 ml-0 mt-12">
           <h4 className="text-base font-semibold mb-4">1. All loan chart</h4>
           {loanChart?.charts
             ?.filter((chart) => chart.options.chart.id === "allLoans")
@@ -857,7 +862,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               </CardShadcn>
             ))}
         </div>
-        <div className="sm:ml-4 ml-0 mt-16">
+        <div className="sm:ml-4 ml-0 mt-12">
           <h4 className="text-base font-semibold mb-4">2. Component charts</h4>
           <div className="grid md:grid-cols-2 gap-6">
             {loanChart?.charts
@@ -1044,11 +1049,11 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       </div>
 
       <div className="relative w-full xl:w-1/4">
-        <div className="!py-4 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
+        <div className="!py-4 xl:!block !hidden border-white !sticky !top-28">
           <LoanInputForm
             tempLoanInputs={tempLoanInputs}
             renderLoanForm={renderLoanForm}
-            setRenderLoanForm={setRenderLoanForm}
+            handleRenderFormChange={handleRenderFormChange}
             handleLoanInputChange={handleLoanInputChange}
             addNewLoanInput={addNewLoanInput}
             confirmDelete={confirmDelete}
@@ -1084,7 +1089,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           <LoanInputForm
             tempLoanInputs={tempLoanInputs}
             renderLoanForm={renderLoanForm}
-            setRenderLoanForm={setRenderLoanForm}
+            handleRenderFormChange={handleRenderFormChange}
             handleLoanInputChange={handleLoanInputChange}
             addNewLoanInput={addNewLoanInput}
             confirmDelete={confirmDelete}

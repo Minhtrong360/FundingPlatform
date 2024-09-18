@@ -397,7 +397,7 @@ export function generateCustomerTableData(
           let growthRate = parseFloat(customerInput?.growthPerMonth);
 
           if (i === customerInput?.beginMonth) {
-            currentCustomers = customerInput?.customersPerMonth;
+            currentCustomers = Number(customerInput?.customersPerMonth);
             startRow[`month${i}`] = formatNumber(
               parseFloat(customerInput?.beginCustomer).toFixed(0)
             );
@@ -405,7 +405,7 @@ export function generateCustomerTableData(
               parseFloat(customerInput?.beginCustomer).toFixed(0)
             );
             channelAddRow[`month${i}`] = formatNumber(
-              currentCustomers.toFixed(0)
+              currentCustomers?.toFixed(0)
             );
           } else {
             if (

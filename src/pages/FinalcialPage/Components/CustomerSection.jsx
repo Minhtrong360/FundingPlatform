@@ -60,7 +60,7 @@ const CustomerInputsForm = React.memo(
     tempCustomerInputs,
     setTempCustomerInputs,
     renderCustomerForm,
-    setRenderCustomerForm,
+    handleRenderFormChange,
     handleCustomerInputChange,
     formatNumber,
     parseNumber,
@@ -74,7 +74,6 @@ const CustomerInputsForm = React.memo(
     const [temporaryData, setTemporaryData] = useState([]);
     const [temporaryBeginMonth, setTemporaryBeginMonth] = useState([]);
     const [temporaryEndMonth, setTemporaryEndMonth] = useState([]);
-
     useEffect(() => {
       const input = tempCustomerInputs.find(
         (input) => input?.id == renderCustomerForm
@@ -82,26 +81,19 @@ const CustomerInputsForm = React.memo(
 
       if (input) {
         setTemporaryData(
-          input?.gptResponseArray?.length
-            ? input?.gptResponseArray.map((value, index) => ({
-                month: `Month ${index + 1}`,
-                customers: value,
-              }))
-            : tempCustomerGrowthData
-                .find((data) => data[0]?.channelName === input.channelName)
-                ?.map((monthData, index) => ({
-                  month: `Month ${index + 1}`,
-                  customers: monthData.add,
-                })) || []
+          tempCustomerGrowthData
+            .find((data) => data[0]?.channelName === input.channelName)
+            ?.map((monthData, index) => ({
+              month: `Month ${index + 1}`,
+              customers: monthData.add,
+            })) || []
         );
         handleCustomerInputChange(
           input?.id,
           "gptResponseArray",
-          input?.gptResponseArray?.length
-            ? input?.gptResponseArray
-            : tempCustomerGrowthData
-                .find((data) => data[0]?.channelName === input.channelName)
-                ?.map((monthData) => monthData.add) || []
+          tempCustomerGrowthData
+            .find((data) => data[0]?.channelName === input.channelName)
+            ?.map((monthData) => monthData.add) || []
         );
         setTemporaryBeginMonth(input?.beginMonth);
         setTemporaryEndMonth(input?.endMonth);
@@ -125,13 +117,14 @@ const CustomerInputsForm = React.memo(
             }
             return i;
           });
+
           // After updating gptResponseArray and applyCustom, update customersPerMonth
-          const updatedInputs = newInputs.map((i) => {
+          const updatedInputs = newInputs?.map((i) => {
             if (i?.id === input?.id) {
               return {
                 ...i,
-                customersPerMonth: Number(
-                  temporaryData[0]?.customers?.toFixed(0)
+                customersPerMonth: Number(temporaryData[0]?.customers)?.toFixed(
+                  0
                 ),
               };
             }
@@ -181,25 +174,26 @@ const CustomerInputsForm = React.memo(
             Customer channel
           </h2>
         </Tooltip>
-        <div>
-          <label
-            htmlFor="selectedChannel"
-            className="block my-4 text-base darkTextWhite"
-          ></label>
-          <select
-            id="selectedChannel"
-            className="py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
-            value={renderCustomerForm}
-            onChange={(e) => setRenderCustomerForm(e.target.value)}
-          >
-            <option value="all">All</option>
+
+        <Select
+          value={renderCustomerForm}
+          onValueChange={(e) => {
+            handleRenderFormChange(e);
+          }}
+        >
+          <SelectTrigger className="!rounded-2xl">
+            <SelectValue placeholder="Offline" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
             {debouncedInputs.map((input) => (
-              <option key={input?.id} value={input?.id}>
+              <SelectItem key={input?.id} value={input?.id}>
                 {input?.channelName}
-              </option>
+              </SelectItem>
             ))}
-          </select>
-        </div>
+          </SelectContent>
+        </Select>
+
         {debouncedInputs
           .filter((input) => input?.id == renderCustomerForm)
           .map((input) => (
@@ -364,7 +358,7 @@ const CustomerInputsForm = React.memo(
                 <Checkbox
                   checked={input.applyCustom}
                   onChange={(e) => {
-                    handleInputChange(
+                    handleCustomerInputChange(
                       input?.id,
                       "applyCustom",
                       e.target.checked
@@ -1254,7 +1248,7 @@ const CustomerSection = React.memo(
         <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
           <h3 className="text-lg font-semibold mb-4">I. Customer Chart</h3>
 
-          <div className="sm:ml-4 ml-0 mt-16">
+          <div className="sm:ml-4 ml-0 mt-12">
             <h4 className="text-base font-semibold mb-4">
               1. All channels chart
             </h4>
@@ -1383,7 +1377,7 @@ const CustomerSection = React.memo(
                 </CardShadcn>
               ))}
           </div>
-          <div className="sm:ml-4 ml-0 mt-16">
+          <div className="sm:ml-4 ml-0 mt-12">
             <h4 className="text-base font-semibold mb-4">
               2. Component charts
             </h4>
@@ -1530,7 +1524,7 @@ const CustomerSection = React.memo(
             </div>
           </div>
 
-          <div className="sm:ml-4 ml-0 mt-16">
+          <div className="sm:ml-4 ml-0 mt-12">
             <h4 className="text-base font-semibold mb-4">3. Advanced charts</h4>
             <div className="grid md:grid-cols-2 gap-6">
               {customerGrowthChart?.chartsNoFilter?.map((chart, index) => (
@@ -1738,12 +1732,12 @@ const CustomerSection = React.memo(
           </Button>
         </div>
         <div className="relative w-full xl:w-1/4">
-          <div className="!py-4 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
+          <div className="!py-4 xl:!block !hidden border-white !sticky !top-28">
             <CustomerInputsForm
               tempCustomerInputs={tempCustomerInputs}
               setTempCustomerInputs={setTempCustomerInputs}
               renderCustomerForm={renderCustomerForm}
-              setRenderCustomerForm={setRenderCustomerForm}
+              handleRenderFormChange={handleRenderFormChange}
               handleCustomerInputChange={handleCustomerInputChange}
               formatNumber={formatNumber}
               parseNumber={parseNumber}
@@ -1794,7 +1788,7 @@ const CustomerSection = React.memo(
               tempCustomerInputs={tempCustomerInputs}
               setTempCustomerInputs={setTempCustomerInputs}
               renderCustomerForm={renderCustomerForm}
-              setRenderCustomerForm={setRenderCustomerForm}
+              handleRenderFormChange={handleRenderFormChange}
               handleCustomerInputChange={handleCustomerInputChange}
               formatNumber={formatNumber}
               parseNumber={parseNumber}

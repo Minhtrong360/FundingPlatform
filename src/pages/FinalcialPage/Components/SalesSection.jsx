@@ -48,7 +48,7 @@ const ChannelInputForm = React.memo(
   ({
     tempChannelInputs,
     renderChannelForm,
-    setRenderChannelForm,
+    handleRenderFormChange,
     handleChannelInputChange,
     formatNumber,
     parseNumber,
@@ -102,30 +102,29 @@ const ChannelInputForm = React.memo(
           Sales Section
         </h2>
 
-        <div>
-          <label
-            htmlFor="renderChannelForm"
-            className="block my-4 text-base darkTextWhite"
-          ></label>
-          <select
-            id="renderChannelForm"
-            className="block w-full px-4 py-3 text-sm border-gray-300 rounded-2xl focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none "
-            value={renderChannelForm}
-            onChange={(e) => setRenderChannelForm(e.target.value)}
-          >
-            <option value="all">All</option>
-            {debouncedInputs.map((input) => {
+        <Select
+          value={renderChannelForm}
+          onValueChange={(e) => {
+            handleRenderFormChange(e);
+          }}
+        >
+          <SelectTrigger className="!rounded-2xl">
+            <SelectValue placeholder="Offline" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            {tempChannelInputs.map((input) => {
               const channelName = channelNames.find(
                 (channel) => channel.id === input.selectedChannel.id
               )?.channelName;
               return (
-                <option key={input.id} value={input.id}>
+                <SelectItem key={input.id} value={input.id}>
                   {`${input.productName} - ${channelName}`}
-                </option>
+                </SelectItem>
               );
             })}
-          </select>
-        </div>
+          </SelectContent>
+        </Select>
 
         {debouncedInputs
           .filter((input) => input?.id == renderChannelForm)
@@ -831,7 +830,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
     <div className="w-full h-full flex flex-col lg:flex-row p-4">
       <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
         <h3 className="text-lg font-semibold mb-4">I. Revenue Chart</h3>
-        <div className="sm:ml-4 ml-0 mt-16">
+        <div className="sm:ml-4 ml-0 mt-12">
           <h4 className="text-base font-semibold mb-4">1. All revenue chart</h4>
           {revenue.charts
             ?.filter((chart) => chart.options.chart.id === "allChannels")
@@ -941,7 +940,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
               </CardShadcn>
             ))}
         </div>
-        <div className="sm:ml-4 ml-0 mt-16">
+        <div className="sm:ml-4 ml-0 mt-12">
           <h4 className="text-base font-semibold mb-4">2. Component charts</h4>
           <div className="grid md:grid-cols-2 gap-6">
             {revenue.charts
@@ -1131,11 +1130,11 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
       </div>
 
       <div className="relative w-full xl:w-1/4">
-        <div className="!py-4 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
+        <div className="!py-4 xl:!block !hidden border-white !sticky !top-28">
           <ChannelInputForm
             tempChannelInputs={tempChannelInputs}
             renderChannelForm={renderChannelForm}
-            setRenderChannelForm={setRenderChannelForm}
+            handleRenderFormChange={handleRenderFormChange}
             handleChannelInputChange={handleChannelInputChange}
             formatNumber={formatNumber}
             parseNumber={parseNumber}
@@ -1202,7 +1201,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
           <ChannelInputForm
             tempChannelInputs={tempChannelInputs}
             renderChannelForm={renderChannelForm}
-            setRenderChannelForm={setRenderChannelForm}
+            handleRenderFormChange={handleRenderFormChange}
             handleChannelInputChange={handleChannelInputChange}
             formatNumber={formatNumber}
             parseNumber={parseNumber}

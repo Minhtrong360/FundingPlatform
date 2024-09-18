@@ -14,7 +14,7 @@ export default function SelectField({
       )}
       <select
         id={id}
-        className="hover:cursor-pointer py-3 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
+        className="hover:cursor-pointer py-2 px-4 block w-full border-gray-300 rounded-2xl text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
         {...rest}
       >
         {options.map((option) => (

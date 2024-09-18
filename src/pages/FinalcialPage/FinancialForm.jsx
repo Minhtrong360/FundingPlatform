@@ -969,20 +969,6 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>Dashboard</span>
-                <div className="flex items-center space-x-2">
-                  <Badge
-                    variant="outline"
-                    className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
-                  >
-                    Inputs
-                  </Badge>
-                  <Badge
-                    variant="outline"
-                    className="bg-green-100 text-green-800 hover:bg-green-200"
-                  >
-                    Generated Results
-                  </Badge>
-                </div>
               </CardTitle>
             </CardHeader>
             <Tabs
@@ -1026,7 +1012,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                       </div>
 
                       <div className="relative w-full xl:w-1/4">
-                        <div className="!py-4 xl:!block !hidden border-r-8 border-l-8 border-white !sticky !top-28">
+                        <div className="!py-4 xl:!block !hidden border-white !sticky !top-28">
                           <DurationSelect
                             handleSubmit={handleSubmit}
                             isLoading={isLoading}

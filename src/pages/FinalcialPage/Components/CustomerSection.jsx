@@ -1763,6 +1763,7 @@ const CustomerSection = React.memo(
               right: "80px",
               width: "48px",
               height: "48px",
+              backgroundColor: "#F3f4f6 !important",
             }}
             className="!shadow-md !bg-[#f3f4f6]"
             onClick={() => {
@@ -1781,7 +1782,7 @@ const CustomerSection = React.memo(
               setIsInputFormOpen(false);
             }}
             centered={true}
-            zIndex={50}
+            zIndex={42424243}
             footer={null}
           >
             <CustomerInputsForm

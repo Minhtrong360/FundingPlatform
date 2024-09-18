@@ -1121,7 +1121,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           }}
           footer={null}
           centered={true}
-          zIndex={50}
+          zIndex={42424243}
         >
           <InvestmentInputForm
             tempInvestmentInputs={tempInvestmentInputs}

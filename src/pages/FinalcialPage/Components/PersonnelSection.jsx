@@ -864,7 +864,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
           }}
           footer={null}
           centered={true}
-          zIndex={50}
+          zIndex={42424243}
         >
           <PersonnelInputForm
             tempPersonnelInputs={tempPersonnelInputs}

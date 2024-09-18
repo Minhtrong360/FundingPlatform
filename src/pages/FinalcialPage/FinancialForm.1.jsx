@@ -1182,7 +1182,7 @@ export const FinancialForm = ({ currentUser, setCurrentUser }) => {
                         },
                       }}
                       centered={true}
-                      zIndex={50}
+                      zIndex={42424243}
                     >
                       <DurationSelect
                         handleSubmit={handleSubmit}

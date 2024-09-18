@@ -1085,7 +1085,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       </div>
 
       {isInputFormOpen && (
-        <Modal open={isInputFormOpen} centered={true} zIndex={50}>
+        <Modal open={isInputFormOpen} centered={true} zIndex={42424243}>
           <LoanInputForm
             tempLoanInputs={tempLoanInputs}
             renderLoanForm={renderLoanForm}

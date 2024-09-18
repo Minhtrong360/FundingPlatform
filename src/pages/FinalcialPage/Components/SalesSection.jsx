@@ -1196,7 +1196,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
           }}
           footer={null}
           centered={true}
-          zIndex={50}
+          zIndex={42424243}
         >
           <ChannelInputForm
             tempChannelInputs={tempChannelInputs}

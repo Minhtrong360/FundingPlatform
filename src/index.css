@@ -166,6 +166,10 @@ code {
   font-family: "Inter Variable", sans-serif;
 }
 
+.ant-float-btn-body {
+  background-color: #f3f4f6 !important;
+}
+
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;

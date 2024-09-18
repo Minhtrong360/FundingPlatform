@@ -1276,7 +1276,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
             setIsInputFormOpen(false);
           }}
           centered={true}
-          zIndex={50}
+          zIndex={42424243}
           footer={null}
         >
           <CostInputForm

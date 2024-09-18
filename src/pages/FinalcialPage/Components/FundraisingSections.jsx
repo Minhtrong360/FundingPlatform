@@ -920,7 +920,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           }}
           footer={null}
           centered={true}
-          zIndex={50}
+          zIndex={42424243}
         >
           <FundraisingInputForm
             tempFundraisingInputs={tempFundraisingInputs}

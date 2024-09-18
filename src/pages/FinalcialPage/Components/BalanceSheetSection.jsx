@@ -1229,7 +1229,7 @@ function BalanceSheetSection({ numberOfMonths }) {
             },
           }}
           centered={true}
-          zIndex={50}
+          zIndex={42424243}
         >
           <GroqJS datasrc={BalenceSheetData} inputUrl="urlBS" />
         </Modal>

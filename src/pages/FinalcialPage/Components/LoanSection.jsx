@@ -99,7 +99,7 @@ const LoanInputForm = ({
             handleRenderFormChange(e);
           }}
         >
-          <SelectTrigger className="!rounded-2xl">
+          <SelectTrigger>
             <SelectValue placeholder="Offline" />
           </SelectTrigger>
           <SelectContent>
@@ -116,7 +116,7 @@ const LoanInputForm = ({
       {debouncedInputs
         .filter((input) => input?.id == renderLoanForm)
         .map((input) => (
-          <div key={input?.id} className="bg-white rounded-2xl p-6 border my-4">
+          <div key={input?.id} className="bg-white rounded-md p-6 border my-4">
             <div className="grid grid-cols-2 gap-4 mb-3">
               <span className="flex items-center text-sm">Loan Name:</span>
               <Input
@@ -760,7 +760,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
             .map((series, index) => (
               <CardShadcn
                 key={index}
-                className="flex flex-col transition duration-500 rounded-2xl relative"
+                className="flex flex-col transition duration-500 !rounded-md relative"
               >
                 <CardHeader>
                   <Button
@@ -879,7 +879,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
                   <CardShadcn
                     key={index}
-                    className="flex flex-col transition duration-500 rounded-2xl relative"
+                    className="flex flex-col transition duration-500 !rounded-md relative"
                   >
                     <CardHeader>
                       <Button

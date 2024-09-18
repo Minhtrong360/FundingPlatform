@@ -162,7 +162,7 @@ const CostInputForm = ({
           setRenderCostForm(e);
         }}
       >
-        <SelectTrigger className="!rounded-2xl">
+        <SelectTrigger>
           <SelectValue placeholder="Offline" />
         </SelectTrigger>
         <SelectContent>
@@ -178,7 +178,7 @@ const CostInputForm = ({
       {debouncedInputs
         .filter((input) => input?.id == renderCostForm)
         .map((input) => (
-          <div key={input?.id} className="bg-white rounded-2xl p-6 border my-4">
+          <div key={input?.id} className="bg-white rounded-md p-6 border my-4">
             <div className="grid grid-cols-2 gap-4 mb-3">
               <span className="flex items-center text-sm">
                 Cost dependence:
@@ -1059,7 +1059,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
       <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
         <h3 className="text-lg font-semibold mb-8">I. Cost Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
-          <CardShadcn className="flex flex-col transition duration-500 rounded-2xl relative">
+          <CardShadcn className="flex flex-col transition duration-500 !rounded-md relative">
             <CardHeader>
               <Button
                 variant="ghost"

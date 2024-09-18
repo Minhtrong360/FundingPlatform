@@ -181,7 +181,7 @@ const CustomerInputsForm = React.memo(
             handleRenderFormChange(e);
           }}
         >
-          <SelectTrigger className="!rounded-2xl">
+          <SelectTrigger>
             <SelectValue placeholder="Offline" />
           </SelectTrigger>
           <SelectContent>
@@ -199,7 +199,7 @@ const CustomerInputsForm = React.memo(
           .map((input) => (
             <div
               key={input?.id}
-              className="bg-white rounded-2xl p-6 border my-4"
+              className="bg-white rounded-md p-6 border my-4"
             >
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <span className="flex items-center text-sm">Channel Name:</span>
@@ -1263,7 +1263,7 @@ const CustomerSection = React.memo(
               .map((chart, index) => (
                 <CardShadcn
                   key={index}
-                  className="flex flex-col transition duration-500 rounded-2xl relative"
+                  className="flex flex-col transition duration-500 !rounded-md relative"
                 >
                   <CardHeader>
                     <Button
@@ -1395,7 +1395,7 @@ const CustomerSection = React.memo(
                     <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}</h5>
                     <CardShadcn
                       key={index}
-                      className="flex flex-col transition duration-500 rounded-2xl relative"
+                      className="flex flex-col transition duration-500 !rounded-md relative"
                     >
                       <CardHeader>
                         <Button
@@ -1538,7 +1538,7 @@ const CustomerSection = React.memo(
                   <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}</h5>
                   <CardShadcn
                     key={index}
-                    className="flex flex-col transition duration-500 rounded-2xl relative"
+                    className="flex flex-col transition duration-500 !rounded-md relative"
                   >
                     <CardHeader>
                       <Button

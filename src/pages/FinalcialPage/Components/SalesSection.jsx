@@ -108,7 +108,7 @@ const ChannelInputForm = React.memo(
             handleRenderFormChange(e);
           }}
         >
-          <SelectTrigger className="!rounded-2xl">
+          <SelectTrigger>
             <SelectValue placeholder="Offline" />
           </SelectTrigger>
           <SelectContent>
@@ -129,10 +129,7 @@ const ChannelInputForm = React.memo(
         {debouncedInputs
           .filter((input) => input?.id == renderChannelForm)
           .map((input, index) => (
-            <div
-              key={input.id}
-              className="p-6 my-4 bg-white border rounded-2xl"
-            >
+            <div key={input.id} className="p-6 my-4 bg-white border rounded-md">
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <span className="flex items-center text-sm">Product Name:</span>
                 <Input
@@ -843,7 +840,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
             .map((chart, index) => (
               <CardShadcn
                 key={index}
-                className="flex flex-col transition duration-500  rounded-2xl relative"
+                className="flex flex-col transition duration-500  !rounded-md relative"
               >
                 <CardHeader>
                   <Button
@@ -959,7 +956,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
 
                   <CardShadcn
                     key={index}
-                    className="flex flex-col transition duration-500  rounded-2xl relative"
+                    className="flex flex-col transition duration-500  !rounded-md relative"
                   >
                     <CardHeader>
                       <Button

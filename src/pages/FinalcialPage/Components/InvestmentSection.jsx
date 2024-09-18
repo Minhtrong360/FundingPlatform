@@ -99,7 +99,7 @@ const InvestmentInputForm = ({
           handleRenderFormChange(e);
         }}
       >
-        <SelectTrigger className="!rounded-2xl">
+        <SelectTrigger>
           <SelectValue placeholder="Offline" />
         </SelectTrigger>
         <SelectContent>
@@ -115,7 +115,7 @@ const InvestmentInputForm = ({
       {debouncedInputs
         .filter((input) => input?.id == renderInvestmentForm)
         .map((input) => (
-          <div key={input?.id} className="bg-white rounded-2xl p-6 border my-4">
+          <div key={input?.id} className="bg-white rounded-md p-6 border my-4">
             <div className="grid grid-cols-2 gap-4 mb-3">
               <span className="flex items-center text-sm">
                 Name of Purchase
@@ -791,7 +791,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
             .map((series, index) => (
               <CardShadcn
                 key={index}
-                className="flex flex-col transition duration-500  rounded-2xl relative"
+                className="flex flex-col transition duration-500  !rounded-md relative"
               >
                 <CardHeader>
                   <Button
@@ -906,7 +906,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               .map((series, index) => (
                 <CardShadcn
                   key={index}
-                  className="flex flex-col transition duration-500  rounded-2xl relative"
+                  className="flex flex-col transition duration-500  !rounded-md relative"
                 >
                   <CardHeader>
                     <Button

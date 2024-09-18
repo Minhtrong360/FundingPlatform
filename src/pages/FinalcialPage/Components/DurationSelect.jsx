@@ -128,7 +128,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
       >
         General Setup
       </h2>
-      <div className="bg-white rounded-2xl p-6 border my-4">
+      <div className="bg-white rounded-md p-6 border my-4">
         <div className="grid grid-cols-2 gap-4 mb-3">
           <Tooltip title="Enter the name of your business">
             <span className=" flex items-center text-sm">Business name:</span>

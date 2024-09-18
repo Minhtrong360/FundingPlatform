@@ -163,7 +163,7 @@ const CustomChart = ({
     <div className="grid md:grid-cols-2 gap-6 mt-6">
       <Card
         title={title}
-        className="flex flex-col transition duration-500  rounded-2xl relative"
+        className="flex flex-col transition duration-500  !rounded-md relative"
       >
         <CardHeader>
           <Button

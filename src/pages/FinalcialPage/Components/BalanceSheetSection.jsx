@@ -1121,15 +1121,16 @@ function BalanceSheetSection({ numberOfMonths }) {
         <section className="mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-[1.25rem]">
             <h2 className="text-lg font-semibold">I. Metrics</h2>
-            <div className="flex items-center space-x-4 justify-between">
+            <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
               {/* Bộ chọn khoảng thời gian */}
               <Select
                 defaultValue="7d"
                 onValueChange={(value) => {
                   /* Xử lý chọn thời gian */
                 }}
+                className="flex-1 md:flex-none md:w-[180px] bg-white"
               >
-                <SelectTrigger className="w-[180px] bg-white">
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select time range" />
                 </SelectTrigger>
                 <SelectContent>
@@ -1143,7 +1144,7 @@ function BalanceSheetSection({ numberOfMonths }) {
               {/* Popover để chọn metrics hiển thị */}
               <Popover>
                 <PopoverTrigger asChild>
-                  <ButtonV0 variant="outline">
+                  <ButtonV0 variant="outline" className="w-full md:w-auto">
                     <Settings className="mr-2 h-4 w-4" />
                     Options
                   </ButtonV0>

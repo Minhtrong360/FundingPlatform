@@ -43,7 +43,7 @@ const FlowiseChat = ({ page, projectid }) => {
       }}
       theme={{
         button: {
-          backgroundColor: "#800000",
+          backgroundColor: "#3EB489",
           right: 20,
           bottom: 20,
           size: 48, // small | medium | large | number

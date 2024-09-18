@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Input } from "../../../components/ui/input";
-import { Card, FloatButton, Modal, Table, message } from "antd";
+import { Card, Checkbox, FloatButton, Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import {
@@ -39,10 +39,31 @@ import {
   Card as CardShadcn,
   CardHeader,
   CardContent,
+  CardTitle,
 } from "../../../components/ui/card";
 import { Check, Download, Plus, Trash2 } from "lucide-react";
 import { Button, Button as ButtonV0 } from "../../../components/ui/button";
 import { debounce } from "lodash";
+import {
+  Search,
+  MessageSquare,
+  PhoneCall,
+  Mail,
+  Globe,
+  CalendarIcon,
+  Users,
+  Clock,
+  ThumbsUp,
+  Settings,
+  UserPlus,
+  UserMinus,
+} from "lucide-react";
+// Thêm các import cần thiết cho metrics
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../../components/ui/popover";
 
 const PersonnelInputForm = ({
   tempPersonnelInputs,
@@ -677,10 +698,161 @@ const PersonnelSection = ({ numberOfMonths }) => {
     saveAs(jsonBlob, "personnel_data.json");
   };
 
+  const [visibleMetrics, setVisibleMetrics] = useState({
+    existingCustomers: true,
+    numberOfChannels: true,
+    previousMonthUsers: true,
+    addedUsers: true,
+    churnedUsers: true,
+    totalUsers: true,
+    customerSatisfaction: true,
+  });
+
+  const toggleMetric = (metric) => {
+    setVisibleMetrics((prev) => ({ ...prev, [metric]: !prev[metric] }));
+  };
+
+  const metrics = [
+    {
+      key: "existingCustomers",
+      title: "Existing Customers",
+      value: "1,234",
+      change: "+10%",
+      icon: Users,
+    },
+    {
+      key: "numberOfChannels",
+      title: "Number of Channels",
+      value: "5",
+      change: "+1",
+      icon: MessageSquare,
+    },
+    {
+      key: "previousMonthUsers",
+      title: "Previous month users",
+      value: "10,987",
+      change: "-",
+      icon: Users,
+    },
+    {
+      key: "addedUsers",
+      title: "Added Users",
+      value: "1,345",
+      change: "+22%",
+      icon: UserPlus,
+    },
+    {
+      key: "churnedUsers",
+      title: "No. of User Churned",
+      value: "201",
+      change: "-5%",
+      icon: UserMinus,
+    },
+    {
+      key: "totalUsers",
+      title: "No. of Users",
+      value: "12,131",
+      change: "+11%",
+      icon: Users,
+    },
+    {
+      key: "customerSatisfaction",
+      title: "Customer Satisfaction",
+      value: "92%",
+      change: "+3%",
+      icon: ThumbsUp,
+    },
+  ];
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row p-4">
       <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
-        <h3 className="text-lg font-semibold mb-8">I. Personnel Cost Chart</h3>
+        <section className="mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-[1.25rem]">
+            <h2 className="text-lg font-semibold">I. Metrics</h2>
+            <div className="flex items-center space-x-4 justify-between">
+              {/* Bộ chọn khoảng thời gian */}
+              <Select
+                defaultValue="7d"
+                onValueChange={(value) => {
+                  /* Xử lý chọn thời gian */
+                }}
+              >
+                <SelectTrigger className="w-[180px] bg-white">
+                  <SelectValue placeholder="Select time range" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="7d">Last 7 days</SelectItem>
+                  <SelectItem value="30d">Last 30 days</SelectItem>
+                  <SelectItem value="90d">Last 90 days</SelectItem>
+                  <SelectItem value="12m">Last 12 months</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Popover để chọn metrics hiển thị */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Options
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="bg-white right-0 left-auto"
+                  align="end"
+                >
+                  <div className="grid gap-4">
+                    <h4 className="font-medium leading-none">
+                      Visible Metrics
+                    </h4>
+                    {metrics.map((metric) => (
+                      <div
+                        key={metric.key}
+                        className="flex items-center space-x-2"
+                      >
+                        <Checkbox
+                          id={metric.key}
+                          checked={visibleMetrics[metric.key]}
+                          onChange={() => toggleMetric(metric.key)}
+                        />
+                        <label
+                          htmlFor={metric.key}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          {metric.title}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+
+          {/* Hiển thị các metrics */}
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {metrics.map(
+              (metric) =>
+                visibleMetrics[metric.key] && (
+                  <CardShadcn key={metric.key}>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">
+                        {metric.title}
+                      </CardTitle>
+                      <metric.icon className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{metric.value}</div>
+                      <p className="text-xs text-muted-foreground">
+                        {metric.change} from last period
+                      </p>
+                    </CardContent>
+                  </CardShadcn>
+                )
+            )}
+          </div>
+        </section>
+        <h3 className="text-lg font-semibold mb-8">II. Personnel Cost Chart</h3>
         <div className="grid md:grid-cols-2 gap-6">
           <CardShadcn className="flex flex-col transition duration-500 !rounded-md relative">
             <CardHeader>
@@ -806,7 +978,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
           </Modal>
         </div>
         <div className="flex justify-between items-center my-4 mt-20">
-          <h3 className="text-lg font-semibold">II. Personnel Cost Table</h3>
+          <h3 className="text-lg font-semibold">III. Personnel Cost Table</h3>
           <ButtonV0 variant="outline" onClick={downloadExcel}>
             <Download className="mr-2 h-4 w-4" />
             Download Excel

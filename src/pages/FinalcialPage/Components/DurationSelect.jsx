@@ -123,7 +123,7 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
       className="mb-8 NOsticky NOtop-8"
     >
       <h2
-        className="text-lg font-semibold flex items-center"
+        className="text-lg font-semibold mb-8 flex items-center"
         id="duration-heading"
       >
         General Setup

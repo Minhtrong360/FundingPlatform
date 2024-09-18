@@ -8,70 +8,7 @@ const apiUrl = process.env.REACT_APP_PUBLIC_SUPABASE_URL;
 const apiKey = process.env.REACT_APP_PUBLIC_SUPABASE_ANON_KEY;
 // console.log("apiUrl", apiUrl)
 // console.log("key" , apiKey);
-const themes = {
-  button: {
-    backgroundColor: "#3B81F6",
-    right: 20,
-    bottom: 20,
-    size: 48, // small | medium | large | number
-    dragAndDrop: true,
-    iconColor: "white",
-    customIconSrc:
-      "https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/google-messages.svg",
-  },
-  tooltip: {
-    showTooltip: false,
-    tooltipMessage: "Hi There 👋!",
-    tooltipBackgroundColor: "blue",
-    tooltipTextColor: "white",
-    tooltipFontSize: 16,
-  },
-  chatWindow: {
-    showTitle: true,
-    title: "BeeKrowd agent",
-    titleAvatarSrc:
-      "https://img.icons8.com/?size=100&id=xaquNfre75yC&format=png&color=000000",
-    welcomeMessage: "Hello! I am your CFO agent. How can I help you?",
-    errorMessage: "There is error, please try again",
-    backgroundColor: "#ffffff",
-    height: 600,
-    width: 400,
-    fontSize: 14,
-    poweredByTextColor: "#2527EE",
-    botMessage: {
-      backgroundColor: "#f7f8ff",
-      textColor: "#303235",
-      showAvatar: true,
-      avatarSrc:
-        "https://img.icons8.com/?size=100&id=xaquNfre75yC&format=png&color=000000",
-    },
-    userMessage: {
-      backgroundColor: "#3B81F6",
-      textColor: "#ffffff",
-      showAvatar: false,
-      avatarSrc: "",
-    },
-    textInput: {
-      placeholder: "Type your question",
-      backgroundColor: "#ffffff",
-      textColor: "#303235",
-      sendButtonColor: "#3B81F6",
-      maxChars: 100,
-      maxCharsWarningMessage:
-        "You exceeded the characters limit. Please input less than 50 characters.",
-      autoFocus: true, // If not used, autofocus is disabled on mobile and enabled on desktop. true enables it on both, false disables it on both.
-    },
-    feedback: {
-      color: "#303235",
-    },
-    footer: {
-      textColor: "#303235",
-      text: "Powered by",
-      company: "BeeKrowd",
-      companyLink: "https://beekrowd.com",
-    },
-  },
-};
+
 // d07c777f-6204-4699-92ea-9c0abb67d157
 // 39943ce9-4b02-44a9-be58-b53010dbf83b
 const FlowiseChat = ({ page, projectid }) => {
@@ -106,7 +43,7 @@ const FlowiseChat = ({ page, projectid }) => {
       }}
       theme={{
         button: {
-          backgroundColor: "#f3f4f6",
+          backgroundColor: "#800000",
           right: 20,
           bottom: 20,
           size: 48, // small | medium | large | number

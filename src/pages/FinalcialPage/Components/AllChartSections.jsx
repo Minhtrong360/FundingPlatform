@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Card, Modal } from "antd";
+import { Card, Checkbox, Modal } from "antd";
 
 import Chart from "react-apexcharts";
 import { useDispatch, useSelector } from "react-redux";
@@ -55,6 +55,27 @@ import {
   CardTitle,
 } from "../../../components/ui/card";
 import ReusableChart from "./ReusableChart";
+import {
+  Search,
+  MessageSquare,
+  PhoneCall,
+  Mail,
+  Globe,
+  CalendarIcon,
+  Users,
+  Clock,
+  ThumbsUp,
+  Settings,
+  UserPlus,
+  UserMinus,
+} from "lucide-react";
+// Thêm các import cần thiết cho metrics
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../../components/ui/popover";
+import { Button } from "../../../components/ui/button";
 
 const AllChartSections = ({
   yearlyAverageCustomers,
@@ -530,15 +551,163 @@ const AllChartSections = ({
   //     setIsChartModalVisible(false);
   //   }, 100);
   // }, []);
+  const [visibleMetrics, setVisibleMetrics] = useState({
+    existingCustomers: true,
+    numberOfChannels: true,
+    previousMonthUsers: true,
+    addedUsers: true,
+    churnedUsers: true,
+    totalUsers: true,
+    customerSatisfaction: true,
+  });
 
+  const toggleMetric = (metric) => {
+    setVisibleMetrics((prev) => ({ ...prev, [metric]: !prev[metric] }));
+  };
+
+  const metrics = [
+    {
+      key: "existingCustomers",
+      title: "Existing Customers",
+      value: "1,234",
+      change: "+10%",
+      icon: Users,
+    },
+    {
+      key: "numberOfChannels",
+      title: "Number of Channels",
+      value: "5",
+      change: "+1",
+      icon: MessageSquare,
+    },
+    {
+      key: "previousMonthUsers",
+      title: "Previous month users",
+      value: "10,987",
+      change: "-",
+      icon: Users,
+    },
+    {
+      key: "addedUsers",
+      title: "Added Users",
+      value: "1,345",
+      change: "+22%",
+      icon: UserPlus,
+    },
+    {
+      key: "churnedUsers",
+      title: "No. of User Churned",
+      value: "201",
+      change: "-5%",
+      icon: UserMinus,
+    },
+    {
+      key: "totalUsers",
+      title: "No. of Users",
+      value: "12,131",
+      change: "+11%",
+      icon: Users,
+    },
+    {
+      key: "customerSatisfaction",
+      title: "Customer Satisfaction",
+      value: "92%",
+      change: "+3%",
+      icon: ThumbsUp,
+    },
+  ];
   return (
     <div className="flex flex-col">
+      <section className="mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-[1.25rem]">
+          <h2 className="text-lg font-semibold">I. Metrics</h2>
+          <div className="flex items-center space-x-4 justify-between">
+            {/* Bộ chọn khoảng thời gian */}
+            <Select
+              defaultValue="7d"
+              onValueChange={(value) => {
+                /* Xử lý chọn thời gian */
+              }}
+            >
+              <SelectTrigger className="w-[180px] bg-white">
+                <SelectValue placeholder="Select time range" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="7d">Last 7 days</SelectItem>
+                <SelectItem value="30d">Last 30 days</SelectItem>
+                <SelectItem value="90d">Last 90 days</SelectItem>
+                <SelectItem value="12m">Last 12 months</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Popover để chọn metrics hiển thị */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline">
+                  <Settings className="mr-2 h-4 w-4" />
+                  Options
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                className="bg-white right-0 left-auto"
+                align="end"
+              >
+                <div className="grid gap-4">
+                  <h4 className="font-medium leading-none">Visible Metrics</h4>
+                  {metrics.map((metric) => (
+                    <div
+                      key={metric.key}
+                      className="flex items-center space-x-2"
+                    >
+                      <Checkbox
+                        id={metric.key}
+                        checked={visibleMetrics[metric.key]}
+                        onChange={() => toggleMetric(metric.key)}
+                      />
+                      <label
+                        htmlFor={metric.key}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {metric.title}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+        </div>
+
+        {/* Hiển thị các metrics */}
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {metrics.map(
+            (metric) =>
+              visibleMetrics[metric.key] && (
+                <CardShadcn key={metric.key}>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                      {metric.title}
+                    </CardTitle>
+                    <metric.icon className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{metric.value}</div>
+                    <p className="text-xs text-muted-foreground">
+                      {metric.change} from last period
+                    </p>
+                  </CardContent>
+                </CardShadcn>
+              )
+          )}
+        </div>
+      </section>
+
       <main className="flex flex-1 flex-col gap-4  mb-4 md:gap-8 ">
         <h2
           className="text-lg font-semibold flex items-center"
           id="duration-heading"
         >
-          I. Overview
+          II. Overview
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -546,33 +715,6 @@ const AllChartSections = ({
             title="Total User"
             description="Customers by channel"
             series={customerGrowthChart.series}
-            // options={{
-            //   ...customerGrowthChart.options,
-            //   grid: {
-            //     show: false,
-            //   },
-            //   chart: {
-            //     zoom: {
-            //       enabled: false, // Disable zooming
-            //     },
-            //     toolbar: {
-            //       show: true,
-            //       tools: {
-            //         download: true,
-            //       },
-            //     },
-            //   },
-            //   xaxis: {
-            //     ...customerGrowthChart.options.xaxis,
-            //     categories: Array.from({ length: numberOfMonths }, (_, i) => {
-            //       const monthIndex = (startMonth + i - 1) % 12;
-            //       const year =
-            //         startYear + Math.floor((startMonth + i - 1) / 12);
-            //       return `${months[monthIndex]}/${year}`;
-            //     }),
-            //   },
-            //   stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-            // }}
             categories={Array.from({ length: numberOfMonths }, (_, i) => {
               const monthIndex = (startMonth + i - 1) % 12;
               const year = startYear + Math.floor((startMonth + i - 1) / 12);
@@ -587,30 +729,6 @@ const AllChartSections = ({
             title="Total Revenue"
             description="Revenue by channel"
             series={revenue.series}
-            // options={{
-            //   chart: {
-            //     zoom: {
-            //       enabled: false, // Disable zooming
-            //     },
-            //     toolbar: {
-            //       show: true,
-            //       tools: {
-            //         download: true,
-            //       },
-            //     },
-            //   },
-            //   ...revenue.options,
-            //   xaxis: {
-            //     ...revenue.options.xaxis,
-            //     categories: Array.from({ length: numberOfMonths }, (_, i) => {
-            //       const monthIndex = (startMonth + i - 1) % 12;
-            //       const year =
-            //         startYear + Math.floor((startMonth + i - 1) / 12);
-            //       return `${months[monthIndex]}/${year}`;
-            //     }),
-            //   },
-            //   stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-            // }}
             categories={Array.from({ length: numberOfMonths }, (_, i) => {
               const monthIndex = (startMonth + i - 1) % 12;
               const year = startYear + Math.floor((startMonth + i - 1) / 12);
@@ -624,22 +742,6 @@ const AllChartSections = ({
           <ReusableChart
             title="Operating Cost"
             description="Total Cost"
-            // options={{
-            //   zoom: {
-            //     enabled: false, // Disable zooming
-            //   },
-            //   toolbar: {
-            //     show: true,
-            //     tools: {
-            //       download: true,
-            //     },
-            //   },
-            //   ...revenue.options,
-            //   xaxis: {
-            //     ...revenue.options.xaxis,
-            //   },
-            //   stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-            // }}
             categories={Array.from({ length: numberOfMonths }, (_, i) => {
               const monthIndex = (startMonth + i - 1) % 12;
               const year = startYear + Math.floor((startMonth + i - 1) / 12);
@@ -654,22 +756,6 @@ const AllChartSections = ({
           <ReusableChart
             title="Personnel"
             description="Total Personnel"
-            // options={{
-            //   zoom: {
-            //     enabled: false, // Disable zooming
-            //   },
-            //   toolbar: {
-            //     show: true,
-            //     tools: {
-            //       download: true,
-            //     },
-            //   },
-            //   ...revenue.options,
-            //   xaxis: {
-            //     ...revenue.options.xaxis,
-            //   },
-            //   stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-            // }}
             categories={Array.from({ length: numberOfMonths }, (_, i) => {
               const monthIndex = (startMonth + i - 1) % 12;
               const year = startYear + Math.floor((startMonth + i - 1) / 12);
@@ -684,22 +770,6 @@ const AllChartSections = ({
           <ReusableChart
             title="CapEx"
             description="Total Capital Expenditures"
-            // options={{
-            //   zoom: {
-            //     enabled: false, // Disable zooming
-            //   },
-            //   toolbar: {
-            //     show: true,
-            //     tools: {
-            //       download: true,
-            //     },
-            //   },
-            //   ...revenue.options,
-            //   xaxis: {
-            //     ...revenue.options.xaxis,
-            //   },
-            //   stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-            // }}
             categories={Array.from({ length: numberOfMonths }, (_, i) => {
               const monthIndex = (startMonth + i - 1) % 12;
               const year = startYear + Math.floor((startMonth + i - 1) / 12);
@@ -714,44 +784,6 @@ const AllChartSections = ({
           <ReusableChart
             title="Loans"
             description="Total Loan"
-            // options={{
-            //   zoom: {
-            //     enabled: false, // Disable zooming
-            //   },
-            //   toolbar: {
-            //     show: true,
-            //     tools: {
-            //       download: true,
-            //     },
-            //   },
-            //   ...revenue.options,
-            //   xaxis: {
-            //     ...revenue.options.xaxis,
-            //   },
-            //   yaxis: {
-            //     axisBorder: {
-            //       show: true, // Show y-axis line
-            //     },
-
-            //     labels: {
-            //       show: true,
-            //       style: {
-            //         fontFamily: "Raleway Variable, sans-serif",
-            //       },
-            //       formatter: function (val) {
-            //         return formatNumber(Math.floor(val));
-            //       },
-            //     },
-            //     title: {
-            //       text: "Remaining Loan ($)",
-            //       style: {
-            //         fontSize: "12px",
-            //         fontFamily: "Raleway Variable, sans-serif",
-            //       },
-            //     },
-            //   },
-            //   stroke: { width: 1, curve: "straight" }, // Set the stroke curve to straight
-            // }}
             categories={Array.from({ length: numberOfMonths }, (_, i) => {
               const monthIndex = (startMonth + i - 1) % 12;
               const year = startYear + Math.floor((startMonth + i - 1) / 12);
@@ -767,8 +799,8 @@ const AllChartSections = ({
         {/* Các biểu đồ */}
 
         <div>
-          <h3 className="text-lg font-semibold mb-4 mt-20">
-            II. Relevant Chart
+          <h3 className="text-lg font-semibold mb-4 mt-8">
+            III. Relevant Chart
           </h3>
           <div className=" gap-4 mb-3">
             <Select

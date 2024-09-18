@@ -413,7 +413,13 @@ const CustomerInputsForm = React.memo(
               )}
             </div>
           ))}
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: "1rem",
+          }}
+        >
           <Button
             variant="destructive"
             onClick={() => setIsDeleteModalOpen(true)}

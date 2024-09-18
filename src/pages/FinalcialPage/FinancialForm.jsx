@@ -1053,23 +1053,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                           onCancel={() => {
                             setIsInputFormOpen(false);
                           }}
-                          okText="Save"
-                          cancelText="Close"
-                          cancelButtonProps={{
-                            style: {
-                              borderRadius: "0.375rem",
-                              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                            },
-                          }}
-                          okButtonProps={{
-                            style: {
-                              background: "#2563EB",
-                              borderColor: "#2563EB",
-                              color: "#fff",
-                              borderRadius: "0.375rem",
-                              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
-                            },
-                          }}
+                          footer={null}
                           centered={true}
                           zIndex={42424243}
                         >

@@ -354,24 +354,29 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
           />
         </div>
       </div>
-      {isInputFormOpen !== "Ok" && (
-        <div className="flex justify-end">
-          <Button
-            variant="destructive"
-            onClick={handleSubmit}
-            style={{ backgroundColor: "#18181B", color: "white" }}
-          >
-            {isLoading ? (
-              <SpinnerBtn />
-            ) : (
-              <>
-                <Check className="mr-2 h-4 w-4" />
-                Save
-              </>
-            )}
-          </Button>
-        </div>
-      )}
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "end",
+          marginTop: "1rem",
+        }}
+      >
+        <Button
+          variant="destructive"
+          onClick={handleSubmit}
+          style={{ backgroundColor: "#18181B", color: "white" }}
+        >
+          {isLoading ? (
+            <SpinnerBtn />
+          ) : (
+            <>
+              <Check className="mr-2 h-4 w-4" />
+              Save
+            </>
+          )}
+        </Button>
+      </div>
     </section>
   );
 };

@@ -965,7 +965,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
           </div>
           <FlowiseChat page="FM" projectid={paramsID} />
 
-          <Card className="my-4 ">
+          <div className="my-4 ">
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>Dashboard</span>
@@ -1138,7 +1138,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
                 )}
               </>
             </Tabs>
-          </Card>
+          </div>
         </div>
       )}
     </div>

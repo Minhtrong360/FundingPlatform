@@ -963,6 +963,7 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               setSpinning={setSpinning}
             />
           </div>
+
           <FlowiseChat page="FM" projectid={paramsID} />
 
           <div className="my-4 ">

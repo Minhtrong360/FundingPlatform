@@ -452,7 +452,7 @@ export function generateCustomerTableData(
             (customerInput?.churnRate / 100)
           ).toFixed(0);
 
-          churnRow[`month${i}`] = churnValue;
+          churnRow[`month${i}`] = formatNumber(churnValue);
 
           endRow[`month${i}`] = formatNumber(
             beginValue + addValue - parseNumber(churnRow[`month${i}`])

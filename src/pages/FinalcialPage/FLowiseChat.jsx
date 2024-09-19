@@ -32,6 +32,7 @@ const FlowiseChat = ({ page, projectid }) => {
 
   return (
     <BubbleChat
+      className="custom-chat-bubble"
       chatflowid={chatflowid}
       apiHost="https://flowise-ngy8.onrender.com"
       chatflowConfig={{
@@ -42,11 +43,13 @@ const FlowiseChat = ({ page, projectid }) => {
         },
       }}
       theme={{
+        zIndex: 49,
         button: {
           backgroundColor: "#3EB489",
           right: 20,
           bottom: 20,
           size: 48, // small | medium | large | number
+          zIndex: 49,
           dragAndDrop: true,
           iconColor: "white",
           // customIconSrc: "https://img.icons8.com/?size=100&id=NspKf9KAs70I&format=png&color=FFFFFF",
@@ -60,6 +63,7 @@ const FlowiseChat = ({ page, projectid }) => {
           tooltipFontSize: 16,
         },
         chatWindow: {
+          zIndex: 49,
           showTitle: true,
           title: title,
           // titleAvatarSrc: 'https://img.icons8.com/?size=100&id=xaquNfre75yC&format=png&color=000000',

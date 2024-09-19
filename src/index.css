@@ -169,6 +169,13 @@ code {
 .ant-float-btn-body {
   background-color: #f3f4f6 !important;
 }
+.ant-float-btn {
+  z-index: 49 !important;
+}
+
+.custom-chat-bubble {
+  z-index: 49 !important;
+}
 
 .px-3.whitespace-pre-wrap.font-semibold.max-w-full {
   color: #000000 !important; /* Màu đen */

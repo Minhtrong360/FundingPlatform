@@ -100,7 +100,7 @@ const CustomerInputsForm = React.memo(
         (input) => input?.id == renderCustomerForm
       );
 
-      if (input) {
+      if (input && isModalCustomOpen) {
         setTemporaryData(
           tempCustomerGrowthData
             .find((data) => data[0]?.channelName === input.channelName)
@@ -119,7 +119,7 @@ const CustomerInputsForm = React.memo(
         setTemporaryBeginMonth(input?.beginMonth);
         setTemporaryEndMonth(input?.endMonth);
       }
-    }, [renderCustomerForm]);
+    }, [renderCustomerForm, isModalCustomOpen]);
 
     const handleApply = () => {
       const input = tempCustomerInputs.find(

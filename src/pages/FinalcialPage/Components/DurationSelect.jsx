@@ -28,6 +28,8 @@ import SpinnerBtn from "../../../components/SpinnerBtn";
 import TextArea from "antd/es/input/TextArea";
 import { Button } from "../../../components/ui/button";
 import { Check } from "lucide-react";
+import { debounce } from "lodash";
+import { useCallback, useEffect, useState } from "react";
 
 const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
   const dispatch = useDispatch();
@@ -117,6 +119,72 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
     "Human Resources",
   ];
 
+  const [debouncedFinancialProjectName, setDebouncedFinancialProjectName] =
+    useState(financialProjectName);
+  const [debouncedStartMonth, setDebouncedStartMonth] = useState(startMonth);
+  const [debouncedStartYear, setDebouncedStartYear] = useState(startYear);
+  const [debouncedSelectedDuration, setDebouncedSelectedDuration] =
+    useState(selectedDuration);
+  const [debouncedStartingCashBalance, setDebouncedStartingCashBalance] =
+    useState(startingCashBalance);
+  const [debouncedStatus, setDebouncedStatus] = useState(status);
+  const [debouncedIndustry, setDebouncedIndustry] = useState(industry);
+  const [debouncedIncomeTax, setDebouncedIncomeTax] = useState(incomeTax);
+  const [debouncedCurrency, setDebouncedCurrency] = useState(currency);
+  const [debouncedDescription, setDebouncedDescription] = useState(description);
+  const [debouncedLocation, setDebouncedLocation] = useState(location);
+
+  const debouncedDispatch = useCallback(
+    debounce((dispatchFunc, value) => {
+      dispatch(dispatchFunc(value));
+    }, 500),
+    []
+  );
+
+  useEffect(() => {
+    debouncedDispatch(setFinancialProjectName, debouncedFinancialProjectName);
+  }, [debouncedFinancialProjectName]);
+
+  useEffect(() => {
+    debouncedDispatch(setStartMonth, debouncedStartMonth);
+  }, [debouncedStartMonth]);
+
+  useEffect(() => {
+    debouncedDispatch(setStartYear, debouncedStartYear);
+  }, [debouncedStartYear]);
+
+  useEffect(() => {
+    debouncedDispatch(setSelectedDuration, debouncedSelectedDuration);
+  }, [debouncedSelectedDuration]);
+
+  useEffect(() => {
+    debouncedDispatch(setStartingCashBalance, debouncedStartingCashBalance);
+  }, [debouncedStartingCashBalance]);
+
+  useEffect(() => {
+    debouncedDispatch(setStatus, debouncedStatus);
+  }, [debouncedStatus]);
+
+  useEffect(() => {
+    debouncedDispatch(setIndustry, debouncedIndustry);
+  }, [debouncedIndustry]);
+
+  useEffect(() => {
+    debouncedDispatch(setIncomeTax, debouncedIncomeTax);
+  }, [debouncedIncomeTax]);
+
+  useEffect(() => {
+    debouncedDispatch(setCurrency, debouncedCurrency);
+  }, [debouncedCurrency]);
+
+  useEffect(() => {
+    debouncedDispatch(setDescription, debouncedDescription);
+  }, [debouncedDescription]);
+
+  useEffect(() => {
+    debouncedDispatch(setLocation, debouncedLocation);
+  }, [debouncedLocation]);
+
   return (
     <section
       aria-labelledby="duration-heading"
@@ -136,8 +204,8 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
 
           <Input
             className="border-gray-300"
-            value={financialProjectName}
-            onChange={(e) => dispatch(setFinancialProjectName(e.target.value))}
+            value={debouncedFinancialProjectName}
+            onChange={(e) => setDebouncedFinancialProjectName(e.target.value)}
             type="text"
           />
         </div>
@@ -148,11 +216,10 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
           </Tooltip>
           <Select
             className="bg-white"
-            onValueChange={(value) => {
-              const selectedMonthIndex = months.indexOf(value);
-              dispatch(setStartMonth(selectedMonthIndex + 1));
-            }}
-            value={months[startMonth - 1]}
+            onValueChange={(value) =>
+              setDebouncedStartMonth(months.indexOf(value) + 1)
+            }
+            value={months[debouncedStartMonth - 1]}
           >
             <SelectTrigger
               id="start-month"
@@ -179,8 +246,8 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
             <span className="flex items-center text-sm">Start Year:</span>
           </Tooltip>
           <Select
-            onValueChange={(value) => dispatch(setStartYear(value))}
-            value={startYear}
+            onValueChange={(value) => setDebouncedStartYear(value)}
+            value={debouncedStartYear}
           >
             <SelectTrigger
               id="start-year"
@@ -207,13 +274,13 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
             <span className="flex items-center text-sm">Duration:</span>
           </Tooltip>
           <Select
-            onValueChange={(value) => dispatch(setSelectedDuration(value))}
+            onValueChange={(value) => setDebouncedSelectedDuration(value)}
           >
             <SelectTrigger
               id="start-date-year"
               className="border-solid border-[1px] border-gray-300"
             >
-              <SelectValue placeholder={selectedDuration} />
+              <SelectValue placeholder={debouncedSelectedDuration} />
             </SelectTrigger>
             <SelectContent position="popper" className="bg-white">
               <SelectItem className="hover:cursor-pointer" value="3 years">
@@ -234,9 +301,9 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
           </Tooltip>
           <Input
             className="border-gray-300"
-            value={formatNumber(startingCashBalance)}
+            value={formatNumber(debouncedStartingCashBalance)}
             onChange={(e) =>
-              dispatch(setStartingCashBalance(parseNumber(e.target.value)))
+              setDebouncedStartingCashBalance(parseNumber(e.target.value))
             }
             type="text"
           />
@@ -246,8 +313,8 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
             <span className="flex items-center text-sm">Status:</span>
           </Tooltip>
           <Select
-            onValueChange={(value) => dispatch(setStatus(value))}
-            value={status}
+            onValueChange={(value) => setDebouncedStatus(value)}
+            value={debouncedStatus}
           >
             <SelectTrigger className="border-solid border-[1px] border-gray-300">
               <SelectValue />
@@ -270,8 +337,8 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
             </span>
           </Tooltip>
           <Select
-            onValueChange={(value) => dispatch(setIndustry(value))}
-            value={industry}
+            onValueChange={(value) => setDebouncedIndustry(value)}
+            value={debouncedIndustry}
           >
             <SelectTrigger
               id="industry"
@@ -300,10 +367,8 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
           <Input
             className="border-gray-300"
             type="text"
-            value={formatNumber(incomeTax)}
-            onChange={(e) =>
-              dispatch(setIncomeTax(parseNumber(e.target.value)))
-            }
+            value={formatNumber(debouncedIncomeTax)}
+            onChange={(e) => setDebouncedIncomeTax(parseNumber(e.target.value))}
           />
         </div>
 
@@ -312,8 +377,8 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
             <span className="flex items-center text-sm">Currency:</span>
           </Tooltip>
           <Select
-            onValueChange={(value) => dispatch(setCurrency(value))}
-            value={currency}
+            onValueChange={(value) => setDebouncedCurrency(value)}
+            value={debouncedCurrency}
           >
             <SelectTrigger className="border-solid border-[1px] border-gray-300">
               <SelectValue />
@@ -338,8 +403,8 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
           <TextArea
             className="border-gray-300 rounded-2xl text-sm"
             type="text"
-            value={description}
-            onChange={(e) => dispatch(setDescription(e.target.value))}
+            value={debouncedDescription}
+            onChange={(e) => setDebouncedDescription(e.target.value)}
           />
         </div>
         <div className="grid grid-cols-2 gap-4 mb-3">
@@ -349,8 +414,8 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
           <Input
             className="border-gray-300"
             type="text"
-            value={location}
-            onChange={(e) => dispatch(setLocation(e.target.value))}
+            value={debouncedLocation}
+            onChange={(e) => setDebouncedLocation(e.target.value)}
           />
         </div>
       </div>

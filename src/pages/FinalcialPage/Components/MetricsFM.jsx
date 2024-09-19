@@ -7,16 +7,13 @@ const MetricsFM = ({ customerGrowthChart, revenue, numberOfMonths }) => {
   const { yearlySales } = useSelector((state) => state.sales);
 
   return (
-    <div className="sm:max-w-[85rem] max-w-full px-0  mx-auto">
-      {/* End Grid */}
-      <AllChartSections
-        yearlyAverageCustomers={yearlyAverageCustomers}
-        customerGrowthChart={customerGrowthChart}
-        yearlySales={yearlySales}
-        revenue={revenue}
-        numberOfMonths={numberOfMonths}
-      />
-    </div>
+    <AllChartSections
+      yearlyAverageCustomers={yearlyAverageCustomers}
+      customerGrowthChart={customerGrowthChart}
+      yearlySales={yearlySales}
+      revenue={revenue}
+      numberOfMonths={numberOfMonths}
+    />
   );
 };
 

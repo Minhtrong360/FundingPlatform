@@ -1003,68 +1003,66 @@ const FinancialForm = ({ currentUser, setCurrentUser }) => {
               <>
                 {activeTab === "overview" && (
                   <div className="w-full h-full flex flex-col lg:flex-row p-4">
-                    <>
-                      <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
-                        <MetricsFM
-                          customerGrowthChart={customerGrowthChart}
-                          revenue={revenue}
-                          numberOfMonths={numberOfMonths}
+                    <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
+                      <MetricsFM
+                        customerGrowthChart={customerGrowthChart}
+                        revenue={revenue}
+                        numberOfMonths={numberOfMonths}
+                      />
+                    </div>
+
+                    <div className="relative w-full xl:w-1/4 xl:!block !hidden">
+                      <div className="!py-4 border-white !sticky !top-28">
+                        <DurationSelect
+                          handleSubmit={handleSubmit}
+                          isLoading={isLoading}
                         />
                       </div>
+                    </div>
+                    <div className="xl:!hidden !block">
+                      <FloatButton
+                        tooltip={<div>Input values</div>}
+                        style={{
+                          position: "fixed",
+                          bottom: "20px",
+                          right: "80px",
+                          width: "48px",
+                          height: "48px",
+                        }}
+                        className="!shadow-md !bg-[#f3f4f6]"
+                        onClick={() => {
+                          setIsInputFormOpen(true);
+                        }}
+                      >
+                        <Button
+                          type="primary"
+                          shape="circle"
+                          icon={<FileOutlined />}
+                        />
+                      </FloatButton>
+                    </div>
 
-                      <div className="relative w-full xl:w-1/4">
-                        <div className="!py-4 xl:!block !hidden border-white !sticky !top-28">
-                          <DurationSelect
-                            handleSubmit={handleSubmit}
-                            isLoading={isLoading}
-                          />
-                        </div>
-                      </div>
-                      <div className="xl:!hidden !block">
-                        <FloatButton
-                          tooltip={<div>Input values</div>}
-                          style={{
-                            position: "fixed",
-                            bottom: "20px",
-                            right: "80px",
-                            width: "48px",
-                            height: "48px",
-                          }}
-                          className="!shadow-md !bg-[#f3f4f6]"
-                          onClick={() => {
-                            setIsInputFormOpen(true);
-                          }}
-                        >
-                          <Button
-                            type="primary"
-                            shape="circle"
-                            icon={<FileOutlined />}
-                          />
-                        </FloatButton>
-                      </div>
-
-                      {isInputFormOpen && (
-                        <Modal
-                          // title="Customer channel"
-                          open={isInputFormOpen}
-                          onOk={() => {
-                            handleSubmit();
-                            setIsInputFormOpen(false);
-                          }}
-                          onCancel={() => {
-                            setIsInputFormOpen(false);
-                          }}
-                          footer={null}
-                          centered={true}
-                          zIndex={42424243}
-                        >
-                          <DurationSelect
-                            handleSubmit={handleSubmit}
-                            isInputFormOpen="Ok"
-                          />
-                        </Modal>
-                      )}
-                    </>
+                    {isInputFormOpen && (
+                      <Modal
+                        // title="Customer channel"
+                        open={isInputFormOpen}
+                        onOk={() => {
+                          handleSubmit();
+                          setIsInputFormOpen(false);
+                        }}
+                        onCancel={() => {
+                          setIsInputFormOpen(false);
+                        }}
+                        footer={null}
+                        centered={true}
+                        zIndex={42424243}
+                      >
+                        <DurationSelect
+                          handleSubmit={handleSubmit}
+                          isInputFormOpen="Ok"
+                        />
+                      </Modal>
+                    )}
                   </div>
                 )}
                 {activeTab === "customer" && (

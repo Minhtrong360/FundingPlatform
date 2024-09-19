@@ -505,6 +505,7 @@ const CostInputForm = ({
                 centered={true}
                 width="90%"
                 style={{ top: 20 }}
+                zIndex={42424243}
               >
                 <DraggableChart
                   data={temporaryData}

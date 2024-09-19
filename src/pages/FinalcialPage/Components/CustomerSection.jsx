@@ -423,6 +423,7 @@ const CustomerInputsForm = React.memo(
                   centered={true}
                   width="90%"
                   style={{ top: 20 }}
+                  zIndex={42424243}
                 >
                   <DraggableChart
                     data={temporaryData}
@@ -1337,9 +1338,6 @@ const CustomerSection = React.memo(
         icon: ThumbsUp,
       },
     ];
-
-    console.log("tempCustomerInputs", tempCustomerInputs);
-    console.log("customerTableData", customerTableData);
 
     return (
       <div className="w-full h-full flex flex-col lg:flex-row p-4">

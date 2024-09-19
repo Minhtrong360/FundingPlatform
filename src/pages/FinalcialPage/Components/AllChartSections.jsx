@@ -617,7 +617,7 @@ const AllChartSections = ({
     },
   ];
   return (
-    <div className="flex flex-col">
+    <>
       <section className="mb-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-[1.25rem]">
           <h2 className="text-lg font-semibold">I. Metrics</h2>
@@ -702,387 +702,379 @@ const AllChartSections = ({
           )}
         </div>
       </section>
+      <h2
+        className="text-lg font-semibold flex items-center"
+        id="duration-heading"
+      >
+        II. Overview
+      </h2>
 
-      <main className="flex flex-1 flex-col gap-4  mb-4 md:gap-8 ">
-        <h2
-          className="text-lg font-semibold flex items-center"
-          id="duration-heading"
-        >
-          II. Overview
-        </h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <ReusableChart
+          title="Total User"
+          description="Customers by channel"
+          series={customerGrowthChart.series}
+          categories={Array.from({ length: numberOfMonths }, (_, i) => {
+            const monthIndex = (startMonth + i - 1) % 12;
+            const year = startYear + Math.floor((startMonth + i - 1) / 12);
+            return `${months[monthIndex]}/${year}`;
+          })}
+          charttype="area"
+          footerText=""
+          footerSubText=""
+        />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <ReusableChart
-            title="Total User"
-            description="Customers by channel"
-            series={customerGrowthChart.series}
-            categories={Array.from({ length: numberOfMonths }, (_, i) => {
-              const monthIndex = (startMonth + i - 1) % 12;
-              const year = startYear + Math.floor((startMonth + i - 1) / 12);
-              return `${months[monthIndex]}/${year}`;
-            })}
-            charttype="area"
-            footerText=""
-            footerSubText=""
-          />
+        <ReusableChart
+          title="Total Revenue"
+          description="Revenue by channel"
+          series={revenue.series}
+          categories={Array.from({ length: numberOfMonths }, (_, i) => {
+            const monthIndex = (startMonth + i - 1) % 12;
+            const year = startYear + Math.floor((startMonth + i - 1) / 12);
+            return `${months[monthIndex]}/${year}`;
+          })}
+          charttype="area"
+          footerText=""
+          footerSubText=""
+        />
 
-          <ReusableChart
-            title="Total Revenue"
-            description="Revenue by channel"
-            series={revenue.series}
-            categories={Array.from({ length: numberOfMonths }, (_, i) => {
-              const monthIndex = (startMonth + i - 1) % 12;
-              const year = startYear + Math.floor((startMonth + i - 1) / 12);
-              return `${months[monthIndex]}/${year}`;
-            })}
-            charttype="area"
-            footerText=""
-            footerSubText=""
-          />
+        <ReusableChart
+          title="Operating Cost"
+          description="Total Cost"
+          categories={Array.from({ length: numberOfMonths }, (_, i) => {
+            const monthIndex = (startMonth + i - 1) % 12;
+            const year = startYear + Math.floor((startMonth + i - 1) / 12);
+            return `${months[monthIndex]}/${year}`;
+          })}
+          series={[{ data: totalCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
+          charttype="area"
+          footerText=""
+          footerSubText=""
+        />
 
-          <ReusableChart
-            title="Operating Cost"
-            description="Total Cost"
-            categories={Array.from({ length: numberOfMonths }, (_, i) => {
-              const monthIndex = (startMonth + i - 1) % 12;
-              const year = startYear + Math.floor((startMonth + i - 1) / 12);
-              return `${months[monthIndex]}/${year}`;
-            })}
-            series={[{ data: totalCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
-            charttype="area"
-            footerText=""
-            footerSubText=""
-          />
+        <ReusableChart
+          title="Personnel"
+          description="Total Personnel"
+          categories={Array.from({ length: numberOfMonths }, (_, i) => {
+            const monthIndex = (startMonth + i - 1) % 12;
+            const year = startYear + Math.floor((startMonth + i - 1) / 12);
+            return `${months[monthIndex]}/${year}`;
+          })}
+          series={[{ data: totalPersonnelCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
+          charttype="area"
+          footerText=""
+          footerSubText=""
+        />
 
-          <ReusableChart
-            title="Personnel"
-            description="Total Personnel"
-            categories={Array.from({ length: numberOfMonths }, (_, i) => {
-              const monthIndex = (startMonth + i - 1) % 12;
-              const year = startYear + Math.floor((startMonth + i - 1) / 12);
-              return `${months[monthIndex]}/${year}`;
-            })}
-            series={[{ data: totalPersonnelCosts, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
-            charttype="area"
-            footerText=""
-            footerSubText=""
-          />
+        <ReusableChart
+          title="CapEx"
+          description="Total Capital Expenditures"
+          categories={Array.from({ length: numberOfMonths }, (_, i) => {
+            const monthIndex = (startMonth + i - 1) % 12;
+            const year = startYear + Math.floor((startMonth + i - 1) / 12);
+            return `${months[monthIndex]}/${year}`;
+          })}
+          series={[{ data: bsTotalInvestmentValues, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
+          charttype="area"
+          footerText=""
+          footerSubText=""
+        />
 
-          <ReusableChart
-            title="CapEx"
-            description="Total Capital Expenditures"
-            categories={Array.from({ length: numberOfMonths }, (_, i) => {
-              const monthIndex = (startMonth + i - 1) % 12;
-              const year = startYear + Math.floor((startMonth + i - 1) / 12);
-              return `${months[monthIndex]}/${year}`;
-            })}
-            series={[{ data: bsTotalInvestmentValues, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
-            charttype="area"
-            footerText=""
-            footerSubText=""
-          />
+        <ReusableChart
+          title="Loans"
+          description="Total Loan"
+          categories={Array.from({ length: numberOfMonths }, (_, i) => {
+            const monthIndex = (startMonth + i - 1) % 12;
+            const year = startYear + Math.floor((startMonth + i - 1) / 12);
+            return `${months[monthIndex]}/${year}`;
+          })}
+          series={[{ data: totalLoanData, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
+          charttype="area"
+          footerText=""
+          footerSubText=""
+        />
+      </div>
 
-          <ReusableChart
-            title="Loans"
-            description="Total Loan"
-            categories={Array.from({ length: numberOfMonths }, (_, i) => {
-              const monthIndex = (startMonth + i - 1) % 12;
-              const year = startYear + Math.floor((startMonth + i - 1) / 12);
-              return `${months[monthIndex]}/${year}`;
-            })}
-            series={[{ data: totalLoanData, name: "Total" }]} // Replace 'revenue.series' with appropriate data structure
-            charttype="area"
-            footerText=""
-            footerSubText=""
-          />
+      {/* Các biểu đồ */}
+
+      <div>
+        <h3 className="text-lg font-semibold mb-4 mt-8">III. Relevant Chart</h3>
+        <div className=" gap-4 mb-3">
+          <Select
+            onValueChange={(value) => handleChartSelect(value)}
+            value={selectedChart}
+            className="border-solid border-[1px] border-gray-200 bg-white"
+          >
+            <SelectTrigger className="bg-white border-solid border-[1px] border-gray-200 md:w-[20%] w-full">
+              <SelectValue />
+            </SelectTrigger>
+
+            <SelectContent position="popper" className="bg-white">
+              <SelectItem
+                value="total-revenue-chart"
+                className="hover:cursor-pointer"
+              >
+                Total Revenue
+              </SelectItem>
+              <SelectItem
+                value="total-costs-chart"
+                className="hover:cursor-pointer"
+              >
+                Total Costs
+              </SelectItem>
+              <SelectItem
+                value="net-income-chart"
+                className="hover:cursor-pointer"
+              >
+                Net Income
+              </SelectItem>
+              <SelectItem
+                value="gross-profit-chart"
+                className="hover:cursor-pointer"
+              >
+                Gross Profit
+              </SelectItem>
+              <SelectItem value="ebitda-chart" className="hover:cursor-pointer">
+                EBITDA
+              </SelectItem>
+              <SelectItem
+                value="earnings-before-tax-chart"
+                className="hover:cursor-pointer"
+              >
+                Earnings Before Tax
+              </SelectItem>
+              <SelectItem
+                value="income-tax-chart"
+                className="hover:cursor-pointer"
+              >
+                Income Tax
+              </SelectItem>
+              <SelectItem
+                value="total-investment-depreciation-chart"
+                className="hover:cursor-pointer"
+              >
+                Total Investment Depreciation
+              </SelectItem>
+              <SelectItem
+                value="total-interest-payments-chart"
+                className="hover:cursor-pointer"
+              >
+                Total Interest Payments
+              </SelectItem>
+              <SelectItem
+                value="cash-flow-chart"
+                className="hover:cursor-pointer"
+              >
+                Cash Flow
+              </SelectItem>
+              <SelectItem
+                value="cash-begin-balances-chart"
+                className="hover:cursor-pointer"
+              >
+                Cash Begin
+              </SelectItem>
+              <SelectItem
+                value="cash-end-balances-chart"
+                className="hover:cursor-pointer"
+              >
+                Cash End
+              </SelectItem>
+              <SelectItem
+                value="total-principal-chart"
+                className="hover:cursor-pointer"
+              >
+                Total principal
+              </SelectItem>
+              <SelectItem
+                value="total-assets-chart"
+                className="hover:cursor-pointer"
+              >
+                Total Asset
+              </SelectItem>
+
+              <SelectItem
+                value="total-liabilities-chart"
+                className="hover:cursor-pointer"
+              >
+                Total Liabilities
+              </SelectItem>
+              <SelectItem
+                value="total-shareholders-equity-chart"
+                className="hover:cursor-pointer"
+              >
+                Total Shareholders Equity
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
-        {/* Các biểu đồ */}
+        {/* Sử dụng selectedChart để render biểu đồ tương ứng */}
+        {selectedChart === "total-revenue-chart" && (
+          <CustomChart
+            numberOfMonths={numberOfMonths}
+            id="total-revenue-chart"
+            yaxisTitle="Total Revenue ($)"
+            seriesTitle="Total Revenue"
+            RenderData={totalRevenue}
+            title="Total Revenue Over Time"
+          />
+        )}
+        {selectedChart === "total-costs-chart" && (
+          <CustomChart
+            numberOfMonths={numberOfMonths}
+            id="total-costs-chart"
+            yaxisTitle="Total Costs ($)"
+            seriesTitle="Total Costs"
+            RenderData={totalCosts}
+            title="Total Costs Over Time"
+          />
+        )}
+        {selectedChart === "net-income-chart" && (
+          <CustomChart
+            numberOfMonths={numberOfMonths}
+            id="net-income-chart"
+            yaxisTitle="Net Income ($)"
+            seriesTitle="Net Income"
+            RenderData={netIncome}
+            title="Net Income Over Time"
+          />
+        )}
+        {selectedChart === "gross-profit-chart" && (
+          <CustomChart
+            numberOfMonths={numberOfMonths}
+            id="gross-profit-chart"
+            yaxisTitle="Gross Profit ($)"
+            seriesTitle="Gross Profit"
+            RenderData={grossProfit}
+            title="Gross Profit Over Time"
+          />
+        )}
+        {selectedChart === "ebitda-chart" && (
+          <CustomChart
+            numberOfMonths={numberOfMonths}
+            id="ebitda-chart"
+            yaxisTitle="EBITDA ($)"
+            seriesTitle="EBITDA"
+            RenderData={ebitda}
+            title="EBITDA Over Time"
+          />
+        )}
+        {selectedChart === "earnings-before-tax-chart" && (
+          <CustomChart
+            numberOfMonths={numberOfMonths}
+            id="earnings-before-tax-chart"
+            yaxisTitle="Earnings Before Tax ($)"
+            seriesTitle="Earnings Before Tax"
+            RenderData={earningsBeforeTax}
+            title="Earnings Before Tax Over Time"
+          />
+        )}
+        {selectedChart === "income-tax-chart" && (
+          <CustomChart
+            numberOfMonths={numberOfMonths}
+            id="income-tax-chart"
+            yaxisTitle="Income Tax ($)"
+            seriesTitle="Income Tax"
+            RenderData={incomeTax}
+            title="Income Tax Over Time"
+          />
+        )}
+        {selectedChart === "total-investment-depreciation-chart" && (
+          <CustomChart
+            numberOfMonths={numberOfMonths}
+            id="total-investment-depreciation-chart"
+            yaxisTitle="Total Investment Depreciation ($)"
+            seriesTitle="Total Investment Depreciation"
+            RenderData={totalInvestmentDepreciation}
+            title="Total Investment Depreciation Over Time"
+          />
+        )}
+        {selectedChart === "total-interest-payments-chart" && (
+          <CustomChart
+            numberOfMonths={numberOfMonths}
+            id="total-interest-payments-chart"
+            yaxisTitle="TotalInterest Payments ($)"
+            seriesTitle="Total Interest Payments"
+            RenderData={totalInterestPayments}
+            title="Total Interest Payments Over Time"
+          />
+        )}
+        {selectedChart === "cash-flow-chart" && (
+          <CustomChart
+            numberOfMonths
+            id="cash-flow-chart"
+            yaxisTitle="Cash Flow ($)"
+            seriesTitle="Net Cash Change"
+            RenderData={netCashChanges}
+            title="Cash Flow Overview"
+          />
+        )}
 
-        <div>
-          <h3 className="text-lg font-semibold mb-4 mt-8">
-            III. Relevant Chart
-          </h3>
-          <div className=" gap-4 mb-3">
-            <Select
-              onValueChange={(value) => handleChartSelect(value)}
-              value={selectedChart}
-              className="border-solid border-[1px] border-gray-200 bg-white"
-            >
-              <SelectTrigger className="bg-white border-solid border-[1px] border-gray-200 md:w-[20%] w-full">
-                <SelectValue />
-              </SelectTrigger>
+        {selectedChart === "total-principal-chart" && (
+          <CustomChart
+            numberOfMonths
+            id="total-principal-chart"
+            yaxisTitle="Total Principal ($)"
+            seriesTitle="Total Principal"
+            RenderData={totalPrincipal}
+            title="Total Principal Over Time"
+          />
+        )}
 
-              <SelectContent position="popper" className="bg-white">
-                <SelectItem
-                  value="total-revenue-chart"
-                  className="hover:cursor-pointer"
-                >
-                  Total Revenue
-                </SelectItem>
-                <SelectItem
-                  value="total-costs-chart"
-                  className="hover:cursor-pointer"
-                >
-                  Total Costs
-                </SelectItem>
-                <SelectItem
-                  value="net-income-chart"
-                  className="hover:cursor-pointer"
-                >
-                  Net Income
-                </SelectItem>
-                <SelectItem
-                  value="gross-profit-chart"
-                  className="hover:cursor-pointer"
-                >
-                  Gross Profit
-                </SelectItem>
-                <SelectItem
-                  value="ebitda-chart"
-                  className="hover:cursor-pointer"
-                >
-                  EBITDA
-                </SelectItem>
-                <SelectItem
-                  value="earnings-before-tax-chart"
-                  className="hover:cursor-pointer"
-                >
-                  Earnings Before Tax
-                </SelectItem>
-                <SelectItem
-                  value="income-tax-chart"
-                  className="hover:cursor-pointer"
-                >
-                  Income Tax
-                </SelectItem>
-                <SelectItem
-                  value="total-investment-depreciation-chart"
-                  className="hover:cursor-pointer"
-                >
-                  Total Investment Depreciation
-                </SelectItem>
-                <SelectItem
-                  value="total-interest-payments-chart"
-                  className="hover:cursor-pointer"
-                >
-                  Total Interest Payments
-                </SelectItem>
-                <SelectItem
-                  value="cash-flow-chart"
-                  className="hover:cursor-pointer"
-                >
-                  Cash Flow
-                </SelectItem>
-                <SelectItem
-                  value="cash-begin-balances-chart"
-                  className="hover:cursor-pointer"
-                >
-                  Cash Begin
-                </SelectItem>
-                <SelectItem
-                  value="cash-end-balances-chart"
-                  className="hover:cursor-pointer"
-                >
-                  Cash End
-                </SelectItem>
-                <SelectItem
-                  value="total-principal-chart"
-                  className="hover:cursor-pointer"
-                >
-                  Total principal
-                </SelectItem>
-                <SelectItem
-                  value="total-assets-chart"
-                  className="hover:cursor-pointer"
-                >
-                  Total Asset
-                </SelectItem>
+        {selectedChart === "cash-begin-balances-chart" && (
+          <CustomChart
+            numberOfMonths
+            id="cash-begin-balances-chart"
+            yaxisTitle="Cash Begin Balances ($)"
+            seriesTitle="Cash Begin"
+            RenderData={cashBeginBalances}
+            title="Cash Begin Balances Over Time"
+          />
+        )}
 
-                <SelectItem
-                  value="total-liabilities-chart"
-                  className="hover:cursor-pointer"
-                >
-                  Total Liabilities
-                </SelectItem>
-                <SelectItem
-                  value="total-shareholders-equity-chart"
-                  className="hover:cursor-pointer"
-                >
-                  Total Shareholders Equity
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        {selectedChart === "cash-end-balances-chart" && (
+          <CustomChart
+            numberOfMonths
+            id="cash-end-balances-chart"
+            yaxisTitle="Cash End Balances ($)"
+            seriesTitle="Cash End"
+            RenderData={cashEndBalances}
+            title="Cash End Balances Over Time"
+          />
+        )}
 
-          {/* Sử dụng selectedChart để render biểu đồ tương ứng */}
-          {selectedChart === "total-revenue-chart" && (
-            <CustomChart
-              numberOfMonths={numberOfMonths}
-              id="total-revenue-chart"
-              yaxisTitle="Total Revenue ($)"
-              seriesTitle="Total Revenue"
-              RenderData={totalRevenue}
-              title="Total Revenue Over Time"
-            />
-          )}
-          {selectedChart === "total-costs-chart" && (
-            <CustomChart
-              numberOfMonths={numberOfMonths}
-              id="total-costs-chart"
-              yaxisTitle="Total Costs ($)"
-              seriesTitle="Total Costs"
-              RenderData={totalCosts}
-              title="Total Costs Over Time"
-            />
-          )}
-          {selectedChart === "net-income-chart" && (
-            <CustomChart
-              numberOfMonths={numberOfMonths}
-              id="net-income-chart"
-              yaxisTitle="Net Income ($)"
-              seriesTitle="Net Income"
-              RenderData={netIncome}
-              title="Net Income Over Time"
-            />
-          )}
-          {selectedChart === "gross-profit-chart" && (
-            <CustomChart
-              numberOfMonths={numberOfMonths}
-              id="gross-profit-chart"
-              yaxisTitle="Gross Profit ($)"
-              seriesTitle="Gross Profit"
-              RenderData={grossProfit}
-              title="Gross Profit Over Time"
-            />
-          )}
-          {selectedChart === "ebitda-chart" && (
-            <CustomChart
-              numberOfMonths={numberOfMonths}
-              id="ebitda-chart"
-              yaxisTitle="EBITDA ($)"
-              seriesTitle="EBITDA"
-              RenderData={ebitda}
-              title="EBITDA Over Time"
-            />
-          )}
-          {selectedChart === "earnings-before-tax-chart" && (
-            <CustomChart
-              numberOfMonths={numberOfMonths}
-              id="earnings-before-tax-chart"
-              yaxisTitle="Earnings Before Tax ($)"
-              seriesTitle="Earnings Before Tax"
-              RenderData={earningsBeforeTax}
-              title="Earnings Before Tax Over Time"
-            />
-          )}
-          {selectedChart === "income-tax-chart" && (
-            <CustomChart
-              numberOfMonths={numberOfMonths}
-              id="income-tax-chart"
-              yaxisTitle="Income Tax ($)"
-              seriesTitle="Income Tax"
-              RenderData={incomeTax}
-              title="Income Tax Over Time"
-            />
-          )}
-          {selectedChart === "total-investment-depreciation-chart" && (
-            <CustomChart
-              numberOfMonths={numberOfMonths}
-              id="total-investment-depreciation-chart"
-              yaxisTitle="Total Investment Depreciation ($)"
-              seriesTitle="Total Investment Depreciation"
-              RenderData={totalInvestmentDepreciation}
-              title="Total Investment Depreciation Over Time"
-            />
-          )}
-          {selectedChart === "total-interest-payments-chart" && (
-            <CustomChart
-              numberOfMonths={numberOfMonths}
-              id="total-interest-payments-chart"
-              yaxisTitle="TotalInterest Payments ($)"
-              seriesTitle="Total Interest Payments"
-              RenderData={totalInterestPayments}
-              title="Total Interest Payments Over Time"
-            />
-          )}
-          {selectedChart === "cash-flow-chart" && (
-            <CustomChart
-              numberOfMonths
-              id="cash-flow-chart"
-              yaxisTitle="Cash Flow ($)"
-              seriesTitle="Net Cash Change"
-              RenderData={netCashChanges}
-              title="Cash Flow Overview"
-            />
-          )}
-
-          {selectedChart === "total-principal-chart" && (
-            <CustomChart
-              numberOfMonths
-              id="total-principal-chart"
-              yaxisTitle="Total Principal ($)"
-              seriesTitle="Total Principal"
-              RenderData={totalPrincipal}
-              title="Total Principal Over Time"
-            />
-          )}
-
-          {selectedChart === "cash-begin-balances-chart" && (
-            <CustomChart
-              numberOfMonths
-              id="cash-begin-balances-chart"
-              yaxisTitle="Cash Begin Balances ($)"
-              seriesTitle="Cash Begin"
-              RenderData={cashBeginBalances}
-              title="Cash Begin Balances Over Time"
-            />
-          )}
-
-          {selectedChart === "cash-end-balances-chart" && (
-            <CustomChart
-              numberOfMonths
-              id="cash-end-balances-chart"
-              yaxisTitle="Cash End Balances ($)"
-              seriesTitle="Cash End"
-              RenderData={cashEndBalances}
-              title="Cash End Balances Over Time"
-            />
-          )}
-
-          {selectedChart === "total-assets-chart" && (
-            <CustomChart
-              numberOfMonths
-              id="total-assets-chart"
-              yaxisTitle="Total Assets ($)"
-              seriesTitle="Total Assets"
-              RenderData={totalAssets}
-              title="Total Assets Over Time"
-            />
-          )}
-          {selectedChart === "total-liabilities-chart" && (
-            <CustomChart
-              numberOfMonths
-              id="total-liabilities-chart"
-              yaxisTitle="Total Liabilities ($)"
-              seriesTitle="Total Liabilities"
-              RenderData={totalLiabilities}
-              title="Total Liabilities Over Time"
-            />
-          )}
-          {selectedChart === "total-shareholders-equity-chart" && (
-            <CustomChart
-              numberOfMonths
-              id="total-shareholders-equity-chart"
-              yaxisTitle="Total Shareholders Equity ($)"
-              seriesTitle="Total Shareholders Equity"
-              RenderData={totalShareholdersEquity}
-              title="Total Shareholders Equity Over Time"
-            />
-          )}
-        </div>
-      </main>
-    </div>
+        {selectedChart === "total-assets-chart" && (
+          <CustomChart
+            numberOfMonths
+            id="total-assets-chart"
+            yaxisTitle="Total Assets ($)"
+            seriesTitle="Total Assets"
+            RenderData={totalAssets}
+            title="Total Assets Over Time"
+          />
+        )}
+        {selectedChart === "total-liabilities-chart" && (
+          <CustomChart
+            numberOfMonths
+            id="total-liabilities-chart"
+            yaxisTitle="Total Liabilities ($)"
+            seriesTitle="Total Liabilities"
+            RenderData={totalLiabilities}
+            title="Total Liabilities Over Time"
+          />
+        )}
+        {selectedChart === "total-shareholders-equity-chart" && (
+          <CustomChart
+            numberOfMonths
+            id="total-shareholders-equity-chart"
+            yaxisTitle="Total Shareholders Equity ($)"
+            seriesTitle="Total Shareholders Equity"
+            RenderData={totalShareholdersEquity}
+            title="Total Shareholders Equity Over Time"
+          />
+        )}
+      </div>
+    </>
   );
 };
 

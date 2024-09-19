@@ -190,7 +190,6 @@ export function transformCustomerData(
   tempCustomerInputs
 ) {
   const transformedCustomerTableData = {};
-
   tempCustomerGrowthData.forEach((channelData) => {
     channelData.forEach((data) => {
       const customerInput = tempCustomerInputs.find(
@@ -216,7 +215,6 @@ export function transformCustomerData(
       }
     });
   });
-
   return transformedCustomerTableData;
 }
 
@@ -226,8 +224,17 @@ export function generateCustomerTableData(
   numberOfMonths,
   renderCustomerForm
 ) {
-  const allRows = Object.values(transformedCustomerTableData).flatMap(
-    (curr) => {
+  const allRows = Object.values(transformedCustomerTableData)
+    .filter((data) =>
+      renderCustomerForm === "all"
+        ? true
+        : tempCustomerInputs.find(
+            (input) =>
+              input.id == renderCustomerForm &&
+              input.channelName === data.channelName
+          )
+    )
+    .flatMap((curr) => {
       const customerInput = tempCustomerInputs.find(
         (input) => input.channelName === curr.channelName
       );
@@ -305,7 +312,6 @@ export function generateCustomerTableData(
               parseNumber(endRow[`month${i - 1}`])
             );
           }
-
           const beginValue = parseNumber(beginRow[`month${i}`]);
           const addValue = parseNumber(channelAddRow[`month${i}`]);
           const churnValue = (
@@ -328,8 +334,7 @@ export function generateCustomerTableData(
       }
 
       return [channelRow, startRow, beginRow, channelAddRow, churnRow, endRow];
-    }
-  );
+    });
 
   // Calculate the totals
   const totalRow = {
@@ -348,130 +353,7 @@ export function generateCustomerTableData(
 
   allRows.push(totalRow);
 
-  const filteredRows = Object.values(transformedCustomerTableData)
-    .filter((data) =>
-      renderCustomerForm === "all"
-        ? true
-        : tempCustomerInputs.find(
-            (input) =>
-              input.id == renderCustomerForm &&
-              input.channelName === data.channelName
-          )
-    )
-    .flatMap((curr) => {
-      const customerInput = tempCustomerInputs.find(
-        (input) => input.channelName === curr.channelName
-      );
-
-      const channelRow = {
-        key: curr.channelName,
-        channelName: curr.channelName,
-      };
-
-      const startRow = {
-        key: `${curr.channelName}-start`,
-        channelName: `${curr.channelName} (Existing)`,
-      };
-      const beginRow = {
-        key: `${curr.channelName}-begin`,
-        channelName: `${curr.channelName} (Begin)`,
-      };
-      const churnRow = {
-        key: `${curr.channelName}-churn`,
-        channelName: `${curr.channelName} (Churn)`,
-      };
-      const endRow = {
-        ...curr,
-        key: `${curr.channelName}-end`,
-        channelName: `${curr.channelName} (End)`,
-      };
-      const channelAddRow = {
-        key: `${curr.channelName}-add`,
-        channelName: `${curr.channelName} (Add)`,
-      };
-
-      let currentCustomers = parseFloat(customerInput?.customersPerMonth);
-
-      for (let i = 1; i <= numberOfMonths; i++) {
-        if (i >= customerInput?.beginMonth && i <= customerInput?.endMonth) {
-          let growthRate = parseFloat(customerInput?.growthPerMonth);
-
-          if (i === customerInput?.beginMonth) {
-            currentCustomers = Number(customerInput?.customersPerMonth);
-            startRow[`month${i}`] = formatNumber(
-              parseFloat(customerInput?.beginCustomer).toFixed(0)
-            );
-            beginRow[`month${i}`] = formatNumber(
-              parseFloat(customerInput?.beginCustomer).toFixed(0)
-            );
-            channelAddRow[`month${i}`] = formatNumber(
-              currentCustomers?.toFixed(0)
-            );
-          } else {
-            if (
-              i >= customerInput?.eventBeginMonth &&
-              i <= customerInput?.eventEndMonth
-            ) {
-              growthRate = customerInput?.localGrowthRate;
-            }
-
-            if (customerInput?.applyCustom) {
-              currentCustomers = parseFloat(
-                customerInput?.gptResponseArray[i - 1]
-              );
-            } else if (customerInput?.customerGrowthFrequency === "Monthly") {
-              currentCustomers *= 1 + growthRate / 100;
-            } else {
-              let frequency = 12; // Default to Annually
-              if (customerInput?.customerGrowthFrequency === "Quarterly")
-                frequency = 3;
-              else if (
-                customerInput?.customerGrowthFrequency === "Semi-Annually"
-              )
-                frequency = 6;
-
-              if ((i - customerInput?.beginMonth) % frequency === 0) {
-                currentCustomers *= 1 + growthRate / 100;
-              }
-            }
-
-            startRow[`month${i}`] = 0;
-
-            channelAddRow[`month${i}`] = formatNumber(
-              currentCustomers.toFixed(0)
-            );
-            beginRow[`month${i}`] = formatNumber(
-              parseNumber(endRow[`month${i - 1}`])
-            );
-          }
-
-          const beginValue = parseNumber(beginRow[`month${i}`]);
-          const addValue = parseNumber(channelAddRow[`month${i}`]);
-          const churnValue = (
-            beginValue *
-            (customerInput?.churnRate / 100)
-          ).toFixed(0);
-
-          churnRow[`month${i}`] = formatNumber(churnValue);
-
-          endRow[`month${i}`] = formatNumber(
-            beginValue + addValue - parseNumber(churnRow[`month${i}`])
-          );
-        } else {
-          channelAddRow[`month${i}`] = "0";
-          startRow[`month${i}`] = "0";
-          beginRow[`month${i}`] = "0";
-          churnRow[`month${i}`] = "0";
-          endRow[`month${i}`] = "0";
-        }
-      }
-
-      return [channelRow, startRow, beginRow, channelAddRow, churnRow, endRow];
-    });
-
-  filteredRows.push(totalRow);
-
-  return filteredRows;
+  return allRows;
 }
 
 export const {

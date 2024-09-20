@@ -552,13 +552,13 @@ const AllChartSections = ({
   //   }, 100);
   // }, []);
   const [visibleMetrics, setVisibleMetrics] = useState({
-    existingCustomers: false,
-    numberOfChannels: false,
-    previousMonthUsers: false,
-    addedUsers: false,
-    churnedUsers: false,
-    totalUsers: false,
-    customerSatisfaction: false,
+    existingCustomers: true,
+    numberOfChannels: true,
+    previousMonthUsers: true,
+    addedUsers: true,
+    churnedUsers: true,
+    totalUsers: true,
+    customerSatisfaction: true,
   });
 
   const toggleMetric = (metric) => {
@@ -623,7 +623,9 @@ const AllChartSections = ({
     <>
       <section className="mb-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-[1.25rem]">
-          <h2 className="text-lg font-semibold">I. Metrics</h2>
+          <h2 className="text-lg font-semibold">
+            I. Metrics (Under Constructions)
+          </h2>
           <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col">
             {/* Bộ chọn khoảng thời gian */}
 

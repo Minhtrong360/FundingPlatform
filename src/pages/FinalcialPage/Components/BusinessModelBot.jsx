@@ -129,7 +129,7 @@ const BusinessModelBot = ({
                 type="text"
                 name="hs-search-article-1"
                 id="hs-search-article-1"
-                className=" px-4 block w-full h-full border-transparent rounded-md focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
+                className=" px-4 block w-full h-full border-transparent !rounded-md focus:border-blue-500 focus:ring-blue-500 darkBgBlue darkBorderGray darkTextGray darkFocus"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Your business model"
@@ -139,7 +139,7 @@ const BusinessModelBot = ({
             <div className="flex-[0_0_auto] flex justify-center items-center">
               <button
                 type="submit"
-                className="w-full h-full px-4 inline-flex justify-center items-center gap-x-2 text-base font-semibold rounded-[10px] bg-slate-800 text-white hover:bg-slate-950 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
+                className="w-full h-full px-4 inline-flex justify-center items-center gap-x-2 text-base font-semibold !rounded-md bg-slate-800 text-white hover:bg-slate-950 disabled:opacity-50 disabled:pointer-events-none darkFocusOutlineNone darkFocusRing-1 darkFocus"
               >
                 Generate <SendOutlined />
               </button>

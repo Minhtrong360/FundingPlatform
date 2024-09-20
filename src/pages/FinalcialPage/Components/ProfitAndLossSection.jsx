@@ -890,13 +890,13 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
   const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
 
   const [visibleMetrics, setVisibleMetrics] = useState({
-    existingCustomers: true,
-    numberOfChannels: true,
-    previousMonthUsers: true,
-    addedUsers: true,
-    churnedUsers: true,
-    totalUsers: true,
-    customerSatisfaction: true,
+    existingCustomers: false,
+    numberOfChannels: false,
+    previousMonthUsers: false,
+    addedUsers: false,
+    churnedUsers: false,
+    totalUsers: false,
+    customerSatisfaction: false,
   });
 
   const toggleMetric = (metric) => {
@@ -955,39 +955,96 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     },
   ];
 
+  const [chartStartMonth, setChartStartMonth] = useState(1);
+  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row p-4">
       <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
         <section className="mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-[1.25rem]">
             <h2 className="text-lg font-semibold">I. Metrics</h2>
-            <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
+            <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col">
               {/* Bộ chọn khoảng thời gian */}
-              <Select
-                defaultValue="7d"
-                onValueChange={(value) => {
-                  /* Xử lý chọn thời gian */
-                }}
-                className="flex-1 md:flex-none md:w-[180px] bg-white"
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select time range" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="7d">Last 7 days</SelectItem>
-                  <SelectItem value="30d">Last 30 days</SelectItem>
-                  <SelectItem value="90d">Last 90 days</SelectItem>
-                  <SelectItem value="12m">Last 12 months</SelectItem>
-                </SelectContent>
-              </Select>
 
+              <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
+                <div className="min-w-[10vw] w-full flex flex-row sm:!mr-0 !mr-1">
+                  <label
+                    htmlFor="startMonthSelect"
+                    className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
+                  >
+                    From:
+                  </label>
+                  <Select
+                    value={chartStartMonth}
+                    onValueChange={(value) => {
+                      setChartStartMonth(
+                        Math.max(1, Math.min(value, chartEndMonth))
+                      );
+                    }}
+                  >
+                    <SelectTrigger className="w-full sm:!justify-between !justify-center">
+                      <SelectValue placeholder="Select month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from({ length: numberOfMonths }, (_, i) => {
+                        const monthIndex = (startingMonth + i - 1) % 12;
+                        const year =
+                          startingYear +
+                          Math.floor((startingMonth + i - 1) / 12);
+                        return (
+                          <SelectItem key={i + 1} value={i + 1}>
+                            {`${months[monthIndex]}/${year}`}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="min-w-[10vw] w-full flex flex-row sm:!ml-0 !ml-1">
+                  <label
+                    htmlFor="endMonthSelect"
+                    className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
+                  >
+                    To:
+                  </label>
+                  <Select
+                    value={chartEndMonth}
+                    onValueChange={(value) => {
+                      setChartEndMonth(
+                        Math.max(
+                          chartStartMonth,
+                          Math.min(value, numberOfMonths)
+                        )
+                      );
+                    }}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from({ length: numberOfMonths }, (_, i) => {
+                        const monthIndex = (startingMonth + i - 1) % 12;
+                        const year =
+                          startingYear +
+                          Math.floor((startingMonth + i - 1) / 12);
+                        return (
+                          <SelectItem key={i + 1} value={i + 1}>
+                            {`${months[monthIndex]}/${year}`}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
               {/* Popover để chọn metrics hiển thị */}
               <Popover>
                 <PopoverTrigger asChild>
-                  <ButtonV0 variant="outline" className="w-full md:w-auto">
+                  <Button variant="outline" className="w-full md:w-auto">
                     <Settings className="mr-2 h-4 w-4" />
                     Options
-                  </ButtonV0>
+                  </Button>
                 </PopoverTrigger>
                 <PopoverContent
                   className="bg-white right-0 left-auto"
@@ -1122,6 +1179,8 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           {/* Sử dụng selectedChart để render biểu đồ tương ứng */}
           {selectedChart === "total-revenue-chart" && (
             <CustomChart
+              chartStartMonth={chartStartMonth}
+              chartEndMonth={chartEndMonth}
               numberOfMonths={numberOfMonths}
               id="total-revenue-chart"
               yaxisTitle="Total Revenue ($)"
@@ -1132,6 +1191,8 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           )}
           {selectedChart === "total-costs-chart" && (
             <CustomChart
+              chartStartMonth={chartStartMonth}
+              chartEndMonth={chartEndMonth}
               numberOfMonths={numberOfMonths}
               id="total-costs-chart"
               yaxisTitle="Total Costs ($)"
@@ -1142,6 +1203,8 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           )}
           {selectedChart === "net-income-chart" && (
             <CustomChart
+              chartStartMonth={chartStartMonth}
+              chartEndMonth={chartEndMonth}
               numberOfMonths={numberOfMonths}
               id="net-income-chart"
               yaxisTitle="Net Income ($)"
@@ -1152,6 +1215,8 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           )}
           {selectedChart === "gross-profit-chart" && (
             <CustomChart
+              chartStartMonth={chartStartMonth}
+              chartEndMonth={chartEndMonth}
               numberOfMonths={numberOfMonths}
               id="gross-profit-chart"
               yaxisTitle="Gross Profit ($)"
@@ -1162,6 +1227,8 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           )}
           {selectedChart === "ebitda-chart" && (
             <CustomChart
+              chartStartMonth={chartStartMonth}
+              chartEndMonth={chartEndMonth}
               numberOfMonths={numberOfMonths}
               id="ebitda-chart"
               yaxisTitle="EBITDA ($)"
@@ -1172,6 +1239,8 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           )}
           {selectedChart === "earnings-before-tax-chart" && (
             <CustomChart
+              chartStartMonth={chartStartMonth}
+              chartEndMonth={chartEndMonth}
               numberOfMonths={numberOfMonths}
               id="earnings-before-tax-chart"
               yaxisTitle="Earnings Before Tax ($)"
@@ -1182,6 +1251,8 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           )}
           {selectedChart === "income-tax-chart" && (
             <CustomChart
+              chartStartMonth={chartStartMonth}
+              chartEndMonth={chartEndMonth}
               numberOfMonths={numberOfMonths}
               id="income-tax-chart"
               yaxisTitle="Income Tax ($)"
@@ -1192,6 +1263,8 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           )}
           {selectedChart === "total-investment-depreciation-chart" && (
             <CustomChart
+              chartStartMonth={chartStartMonth}
+              chartEndMonth={chartEndMonth}
               numberOfMonths={numberOfMonths}
               id="total-investment-depreciation-chart"
               yaxisTitle="Total Investment Depreciation ($)"
@@ -1202,6 +1275,8 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
           )}
           {selectedChart === "total-interest-payments-chart" && (
             <CustomChart
+              chartStartMonth={chartStartMonth}
+              chartEndMonth={chartEndMonth}
               numberOfMonths={numberOfMonths}
               id="total-interest-payments-chart"
               yaxisTitle="TotalInterest Payments ($)"

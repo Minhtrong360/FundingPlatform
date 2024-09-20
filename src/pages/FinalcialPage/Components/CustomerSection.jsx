@@ -390,7 +390,7 @@ const CustomerInputsForm = React.memo(
                   className="text-sm hover:cursor-pointer"
                   onClick={() => setIsModalCustomOpen(true)}
                 >
-                  Apply Custom
+                  Custom Input
                 </span>
               </div>
               {isModalCustomOpen && (
@@ -1274,13 +1274,13 @@ const CustomerSection = React.memo(
     const [searchTerm, setSearchTerm] = useState("");
     const [date, setDate] = useState(new Date());
     const [visibleMetrics, setVisibleMetrics] = useState({
-      existingCustomers: true,
-      numberOfChannels: true,
-      previousMonthUsers: true,
-      addedUsers: true,
-      churnedUsers: true,
-      totalUsers: true,
-      customerSatisfaction: true,
+      existingCustomers: false,
+      numberOfChannels: false,
+      previousMonthUsers: false,
+      addedUsers: false,
+      churnedUsers: false,
+      totalUsers: false,
+      customerSatisfaction: false,
     });
 
     const toggleMetric = (metric) => {
@@ -1346,25 +1346,80 @@ const CustomerSection = React.memo(
           <section className="mb-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-[1.25rem]">
               <h2 className="text-lg font-semibold">I. Metrics</h2>
-              <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
+              <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col">
                 {/* Bộ chọn khoảng thời gian */}
-                <Select
-                  defaultValue="7d"
-                  onValueChange={(value) => {
-                    /* Xử lý chọn thời gian */
-                  }}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select time range" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="7d">Last 7 days</SelectItem>
-                    <SelectItem value="30d">Last 30 days</SelectItem>
-                    <SelectItem value="90d">Last 90 days</SelectItem>
-                    <SelectItem value="12m">Last 12 months</SelectItem>
-                  </SelectContent>
-                </Select>
 
+                <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
+                  <div className="min-w-[10vw] w-full flex flex-row sm:!mr-0 !mr-1">
+                    <label
+                      htmlFor="startMonthSelect"
+                      className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
+                    >
+                      From:
+                    </label>
+                    <Select
+                      value={chartStartMonth}
+                      onValueChange={(value) => {
+                        setChartStartMonth(
+                          Math.max(1, Math.min(value, chartEndMonth))
+                        );
+                      }}
+                    >
+                      <SelectTrigger className="w-full sm:!justify-between !justify-center">
+                        <SelectValue placeholder="Select month" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: numberOfMonths }, (_, i) => {
+                          const monthIndex = (startingMonth + i - 1) % 12;
+                          const year =
+                            startingYear +
+                            Math.floor((startingMonth + i - 1) / 12);
+                          return (
+                            <SelectItem key={i + 1} value={i + 1}>
+                              {`${months[monthIndex]}/${year}`}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="min-w-[10vw] w-full flex flex-row sm:!ml-0 !ml-1">
+                    <label
+                      htmlFor="endMonthSelect"
+                      className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
+                    >
+                      To:
+                    </label>
+                    <Select
+                      value={chartEndMonth}
+                      onValueChange={(value) => {
+                        setChartEndMonth(
+                          Math.max(
+                            chartStartMonth,
+                            Math.min(value, numberOfMonths)
+                          )
+                        );
+                      }}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select month" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: numberOfMonths }, (_, i) => {
+                          const monthIndex = (startingMonth + i - 1) % 12;
+                          const year =
+                            startingYear +
+                            Math.floor((startingMonth + i - 1) / 12);
+                          return (
+                            <SelectItem key={i + 1} value={i + 1}>
+                              {`${months[monthIndex]}/${year}`}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
                 {/* Popover để chọn metrics hiển thị */}
                 <Popover>
                   <PopoverTrigger asChild>
@@ -1467,68 +1522,71 @@ const CustomerSection = React.memo(
                       </svg>
                       <span className="sr-only">Fullscreen</span>
                     </Button>
-                    <div className="flex justify-between items-center">
+                    {/* <div className="flex justify-between items-center">
                       <div className="min-w-[10vw] mb-2">
                         <label htmlFor="startMonthSelect" className="text-sm">
                           Start Month:
                         </label>
-                        <select
-                          id="startMonthSelect"
+                        <Select
                           value={chartStartMonth}
-                          onChange={(e) =>
+                          onValueChange={(value) => {
                             setChartStartMonth(
-                              Math.max(
-                                1,
-                                Math.min(e.target.value, chartEndMonth)
-                              )
-                            )
-                          }
-                          className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark1:bg-slate-900 dark1:border-gray-700 dark1:text-gray-400 dark1:focus:ring-gray-600"
-                        >
-                          {Array.from({ length: numberOfMonths }, (_, i) => {
-                            const monthIndex = (startingMonth + i - 1) % 12;
-                            const year =
-                              startingYear +
-                              Math.floor((startingMonth + i - 1) / 12);
-                            return (
-                              <option key={i + 1} value={i + 1}>
-                                {`${months[monthIndex]}/${year}`}
-                              </option>
+                              Math.max(1, Math.min(value, chartEndMonth))
                             );
-                          })}
-                        </select>
+                          }}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select month" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Array.from({ length: numberOfMonths }, (_, i) => {
+                              const monthIndex = (startingMonth + i - 1) % 12;
+                              const year =
+                                startingYear +
+                                Math.floor((startingMonth + i - 1) / 12);
+                              return (
+                                <SelectItem key={i + 1} value={i + 1}>
+                                  {`${months[monthIndex]}/${year}`}
+                                </SelectItem>
+                              );
+                            })}
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div className="min-w-[10vw] mb-2">
                         <label htmlFor="endMonthSelect" className="text-sm">
                           End Month:
                         </label>
-                        <select
-                          id="endMonthSelect"
+                        <Select
                           value={chartEndMonth}
-                          onChange={(e) =>
+                          onValueChange={(value) => {
                             setChartEndMonth(
                               Math.max(
                                 chartStartMonth,
-                                Math.min(e.target.value, numberOfMonths)
+                                Math.min(value, numberOfMonths)
                               )
-                            )
-                          }
-                          className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark1:bg-slate-900 dark1:border-gray-700 dark1:text-gray-400 dark1:focus:ring-gray-600"
-                        >
-                          {Array.from({ length: numberOfMonths }, (_, i) => {
-                            const monthIndex = (startingMonth + i - 1) % 12;
-                            const year =
-                              startingYear +
-                              Math.floor((startingMonth + i - 1) / 12);
-                            return (
-                              <option key={i + 1} value={i + 1}>
-                                {`${months[monthIndex]}/${year}`}
-                              </option>
                             );
-                          })}
-                        </select>
+                          }}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select month" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Array.from({ length: numberOfMonths }, (_, i) => {
+                              const monthIndex = (startingMonth + i - 1) % 12;
+                              const year =
+                                startingYear +
+                                Math.floor((startingMonth + i - 1) / 12);
+                              return (
+                                <SelectItem key={i + 1} value={i + 1}>
+                                  {`${months[monthIndex]}/${year}`}
+                                </SelectItem>
+                              );
+                            })}
+                          </SelectContent>
+                        </Select>
                       </div>
-                    </div>
+                    </div> */}
                   </CardHeader>
                   <CardContent>
                     <Chart
@@ -1600,7 +1658,7 @@ const CustomerSection = React.memo(
                           <span className="sr-only">Fullscreen</span>
                         </Button>
 
-                        <div className="flex justify-between items-center">
+                        {/* <div className="flex justify-between items-center">
                           <div className="min-w-[10vw] mb-2">
                             <label
                               htmlFor="startMonthSelect"
@@ -1608,71 +1666,74 @@ const CustomerSection = React.memo(
                             >
                               Start Month:
                             </label>
-                            <select
-                              id="startMonthSelect"
+                            <Select
                               value={chartStartMonth}
-                              onChange={(e) =>
+                              onValueChange={(value) => {
                                 setChartStartMonth(
-                                  Math.max(
-                                    1,
-                                    Math.min(e.target.value, chartEndMonth)
-                                  )
-                                )
-                              }
-                              className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark1:bg-slate-900 dark1:border-gray-700 dark1:text-gray-400 dark1:focus:ring-gray-600"
+                                  Math.max(1, Math.min(value, chartEndMonth))
+                                );
+                              }}
                             >
-                              {Array.from(
-                                { length: numberOfMonths },
-                                (_, i) => {
-                                  const monthIndex =
-                                    (startingMonth + i - 1) % 12;
-                                  const year =
-                                    startingYear +
-                                    Math.floor((startingMonth + i - 1) / 12);
-                                  return (
-                                    <option key={i + 1} value={i + 1}>
-                                      {`${months[monthIndex]}/${year}`}
-                                    </option>
-                                  );
-                                }
-                              )}
-                            </select>
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select month" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {Array.from(
+                                  { length: numberOfMonths },
+                                  (_, i) => {
+                                    const monthIndex =
+                                      (startingMonth + i - 1) % 12;
+                                    const year =
+                                      startingYear +
+                                      Math.floor((startingMonth + i - 1) / 12);
+                                    return (
+                                      <SelectItem key={i + 1} value={i + 1}>
+                                        {`${months[monthIndex]}/${year}`}
+                                      </SelectItem>
+                                    );
+                                  }
+                                )}
+                              </SelectContent>
+                            </Select>
                           </div>
                           <div className="min-w-[10vw] mb-2">
                             <label htmlFor="endMonthSelect" className="text-sm">
                               End Month:
                             </label>
-                            <select
-                              id="endMonthSelect"
+                            <Select
                               value={chartEndMonth}
-                              onChange={(e) =>
+                              onValueChange={(value) => {
                                 setChartEndMonth(
                                   Math.max(
                                     chartStartMonth,
-                                    Math.min(e.target.value, numberOfMonths)
+                                    Math.min(value, numberOfMonths)
                                   )
-                                )
-                              }
-                              className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark1:bg-slate-900 dark1:border-gray-700 dark1:text-gray-400 dark1:focus:ring-gray-600"
+                                );
+                              }}
                             >
-                              {Array.from(
-                                { length: numberOfMonths },
-                                (_, i) => {
-                                  const monthIndex =
-                                    (startingMonth + i - 1) % 12;
-                                  const year =
-                                    startingYear +
-                                    Math.floor((startingMonth + i - 1) / 12);
-                                  return (
-                                    <option key={i + 1} value={i + 1}>
-                                      {`${months[monthIndex]}/${year}`}
-                                    </option>
-                                  );
-                                }
-                              )}
-                            </select>
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select month" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {Array.from(
+                                  { length: numberOfMonths },
+                                  (_, i) => {
+                                    const monthIndex =
+                                      (startingMonth + i - 1) % 12;
+                                    const year =
+                                      startingYear +
+                                      Math.floor((startingMonth + i - 1) / 12);
+                                    return (
+                                      <SelectItem key={i + 1} value={i + 1}>
+                                        {`${months[monthIndex]}/${year}`}
+                                      </SelectItem>
+                                    );
+                                  }
+                                )}
+                              </SelectContent>
+                            </Select>
                           </div>
-                        </div>
+                        </div> */}
                       </CardHeader>
                       <CardContent>
                         <Chart
@@ -1742,68 +1803,79 @@ const CustomerSection = React.memo(
                         </svg>
                         <span className="sr-only">Fullscreen</span>
                       </Button>
-                      <div className="flex justify-between items-center">
+                      {/* <div className="flex justify-between items-center">
                         <div className="min-w-[10vw] mb-2">
                           <label htmlFor="startMonthSelect" className="text-sm">
                             Start Month:
                           </label>
-                          <select
-                            id="startMonthSelect"
+                          <Select
                             value={chartStartMonth}
-                            onChange={(e) =>
+                            onValueChange={(value) => {
                               setChartStartMonth(
-                                Math.max(
-                                  1,
-                                  Math.min(e.target.value, chartEndMonth)
-                                )
-                              )
-                            }
-                            className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark1:bg-slate-900 dark1:border-gray-700 dark1:text-gray-400 dark1:focus:ring-gray-600"
-                          >
-                            {Array.from({ length: numberOfMonths }, (_, i) => {
-                              const monthIndex = (startingMonth + i - 1) % 12;
-                              const year =
-                                startingYear +
-                                Math.floor((startingMonth + i - 1) / 12);
-                              return (
-                                <option key={i + 1} value={i + 1}>
-                                  {`${months[monthIndex]}/${year}`}
-                                </option>
+                                Math.max(1, Math.min(value, chartEndMonth))
                               );
-                            })}
-                          </select>
+                            }}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select month" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {Array.from(
+                                { length: numberOfMonths },
+                                (_, i) => {
+                                  const monthIndex =
+                                    (startingMonth + i - 1) % 12;
+                                  const year =
+                                    startingYear +
+                                    Math.floor((startingMonth + i - 1) / 12);
+                                  return (
+                                    <SelectItem key={i + 1} value={i + 1}>
+                                      {`${months[monthIndex]}/${year}`}
+                                    </SelectItem>
+                                  );
+                                }
+                              )}
+                            </SelectContent>
+                          </Select>
                         </div>
                         <div className="min-w-[10vw] mb-2">
                           <label htmlFor="endMonthSelect" className="text-sm">
                             End Month:
                           </label>
-                          <select
-                            id="endMonthSelect"
+                          <Select
                             value={chartEndMonth}
-                            onChange={(e) =>
+                            onValueChange={(value) => {
                               setChartEndMonth(
                                 Math.max(
                                   chartStartMonth,
-                                  Math.min(e.target.value, numberOfMonths)
+                                  Math.min(value, numberOfMonths)
                                 )
-                              )
-                            }
-                            className="py-2 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark1:bg-slate-900 dark1:border-gray-700 dark1:text-gray-400 dark1:focus:ring-gray-600"
-                          >
-                            {Array.from({ length: numberOfMonths }, (_, i) => {
-                              const monthIndex = (startingMonth + i - 1) % 12;
-                              const year =
-                                startingYear +
-                                Math.floor((startingMonth + i - 1) / 12);
-                              return (
-                                <option key={i + 1} value={i + 1}>
-                                  {`${months[monthIndex]}/${year}`}
-                                </option>
                               );
-                            })}
-                          </select>
+                            }}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select month" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {Array.from(
+                                { length: numberOfMonths },
+                                (_, i) => {
+                                  const monthIndex =
+                                    (startingMonth + i - 1) % 12;
+                                  const year =
+                                    startingYear +
+                                    Math.floor((startingMonth + i - 1) / 12);
+                                  return (
+                                    <SelectItem key={i + 1} value={i + 1}>
+                                      {`${months[monthIndex]}/${year}`}
+                                    </SelectItem>
+                                  );
+                                }
+                              )}
+                            </SelectContent>
+                          </Select>
                         </div>
-                      </div>
+                      </div> */}
                     </CardHeader>
                     <CardContent>
                       <Chart

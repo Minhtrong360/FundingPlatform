@@ -1201,10 +1201,10 @@ function BalanceSheetSection({ numberOfMonths }) {
               {/* Popover để chọn metrics hiển thị */}
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full md:w-auto">
+                  <ButtonV0 variant="outline" className="w-full md:w-auto">
                     <Settings className="mr-2 h-4 w-4" />
                     Options
-                  </Button>
+                  </ButtonV0>
                 </PopoverTrigger>
                 <PopoverContent
                   className="bg-white right-0 left-auto"

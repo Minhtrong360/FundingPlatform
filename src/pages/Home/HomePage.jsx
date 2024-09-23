@@ -43,7 +43,6 @@ const HomePage = () => {
         <div style={animationStyle}>
           <div>
             <p className="text-sm font-medium mr-20">
-              {" "}
               📣 Update: Our new Fundraising Profile as a Service is now
               available!
             </p>

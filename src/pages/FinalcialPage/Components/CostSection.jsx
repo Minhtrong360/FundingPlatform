@@ -1102,7 +1102,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
       key: "numberOfChannels",
       title: "Number of Channels",
       value: "5",
-      change: "+1",
+      change: "+2",
       icon: MessageSquare,
     },
     {

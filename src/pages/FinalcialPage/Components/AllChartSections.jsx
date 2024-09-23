@@ -619,6 +619,9 @@ const AllChartSections = ({
 
   const [chartStartMonth, setChartStartMonth] = useState(1);
   const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
+  useEffect(() => {
+    setChartEndMonth(numberOfMonths);
+  }, [numberOfMonths]);
   return (
     <>
       <section className="mb-8">

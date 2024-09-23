@@ -22,8 +22,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        body: ["Inter", "ui-sans-serif"],
-        sans: ["Inter", "ui-sans-serif"],
+        body: ["Raleway", "sans-serif"],
+        sans: ["Raleway", "sans-serif"],
       },
     },
   },

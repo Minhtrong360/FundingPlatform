@@ -1,9 +1,15 @@
 import { useState } from "react";
+import Header from "../Header";
+import HomeHeader from "../../../components/Section/Common/Header/HomeHeader";
 
 const FAQ = () => {
   const [activeAccordion, setActiveAccordion] = useState(null);
 
   const faqData = [
+    {
+      question: "What is the customer support email?",
+      answer: "Our customer support email is support@beekrowd.com",
+    },
     {
       question: "What is BeeKrowd service all about?",
       answer:
@@ -32,7 +38,8 @@ const FAQ = () => {
 
   return (
     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-      <div className="grid md:grid-cols-5 gap-10">
+      <HomeHeader />
+      <div className="grid md:grid-cols-5 gap-10 mt-28">
         <div className="md:col-span-2">
           <div className="max-w-xs">
             <h2
@@ -59,7 +66,7 @@ const FAQ = () => {
                 key={index}
               >
                 <button
-                  className="mt-3 hs-accordion-toggle group pb-3 inline-flex items-center justify-between gap-x-3 w-full md:text-lg font-semibold text-start text-gray-800 rounded-lg transition hover:text-gray-500 darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
+                  className="mt-3 hs-accordion-toggle group pb-3 inline-flex items-center justify-between gap-x-3 w-full md:text-lg font-semibold text-start text-gray-800 rounded-md transition hover:text-gray-500 darkTextGray darkHoverTextWhite darkFocusOutlineNone darkFocusRing-1 darkFocus"
                   aria-controls={`hs-basic-with-title-and-arrow-stretched-collapse-${index}`}
                   onClick={() => toggleAccordion(index)}
                 >

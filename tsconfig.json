@@ -1,10 +1,9 @@
-
-
 {
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]},
+      "@/*": ["./*"]
+    },
     "target": "ESNext",
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
@@ -21,7 +20,7 @@
     "jsx": "react-jsxdev",
     "outDir": "dist",
     "declaration": true,
-    "declarationMap": true,
+    "declarationMap": true
   },
-  "include": ["src"],
+  "include": ["src"]
 }

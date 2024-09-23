@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { saveAs } from "file-saver";
+// import { saveAs } from "file-saver";
+// import Joyride, { STATUS, CallBackProps, Step } from "react-joyride";
+import { CheckCircleOutlined, FileOutlined } from "@ant-design/icons";
 
 import DurationSelect from "./Components/DurationSelect";
 import CustomerSection from "./Components/CustomerSection";
@@ -11,845 +13,1133 @@ import LoanSection from "./Components/LoanSection";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
 
-import { toast } from "react-toastify";
-import AlertMsg from "../../components/AlertMsg";
 import ProgressBar from "../../components/ProgressBar";
-import Gemini from "./Components/Gemini";
-import MetricsFM from "../MetricsFM";
+import BusinessModelBot from "./Components/BusinessModelBot";
+import MetricsFM from "./Components/MetricsFM";
 import ProfitAndLossSection from "./Components/ProfitAndLossSection";
-import * as XLSX from "xlsx";
+// import * as XLSX from "xlsx";
+import BalanceSheetSection from "./Components/BalanceSheetSection";
+import LoadingButtonClick from "../../components/LoadingButtonClick";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setSelectedDuration,
+  setStartingCashBalance,
+  setStatus,
+  setIndustry,
+  setIncomeTax,
+  setPayrollTax,
+  setCurrency,
+  setFinancialProjectName,
+  setCutMonth,
+  setStartMonth,
+  setStartYear,
+  setDescription,
+  setLocation,
+  setInputData,
+} from "../../features/DurationSlice";
+import {
+  calculateCustomerGrowth,
+  calculateYearlyAverage,
+  setCustomerGrowthData,
+  setCustomerInputs,
+  setYearlyAverageCustomers,
+} from "../../features/CustomerSlice";
+import {
+  calculateChannelRevenue,
+  calculateYearlySales,
+  setChannelInputs,
+  setChannelNames,
+  setYearlySales,
+} from "../../features/SaleSlice";
+import FundraisingSection from "./Components/FundraisingSections";
+import { formatNumber, setCostInputs } from "../../features/CostSlice";
+import { setPersonnelInputs } from "../../features/PersonnelSlice";
+import { setInvestmentInputs } from "../../features/InvestmentSlice";
+import { setLoanInputs } from "../../features/LoanSlice";
+import { setFundraisingInputs } from "../../features/FundraisingSlice";
+import CashFlowSection from "./Components/CashFlowSection";
+import { FloatButton, Modal, message } from "antd";
+import { useParams } from "react-router-dom";
+// import AnnounceFMPage from "./Components/AnnounceFMPage";
+// import Perflexity from "./Components/Perflexity";
+import SpinnerBtn from "../../components/SpinnerBtn";
+import FlowiseChat from "./FLowiseChat";
+import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../components/ui/tabs";
+import { ScrollArea, ScrollBar } from "../../components/ui/scroll-area";
+import { Button } from "../../components/ui/button";
+import { Badge } from "../../components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
 
 const FinancialForm = ({ currentUser, setCurrentUser }) => {
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [spinning, setSpinning] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [temIsLoading, setTemIsLoading] = useState(true);
 
   //DurationSection
-  const [selectedDuration, setSelectedDuration] = useState("3 years");
+  const {
+    selectedDuration,
+    startingCashBalance,
+    status,
+    industry,
+    incomeTax,
+    payrollTax,
+    currency,
+    startMonth,
+    startYear,
+    financialProjectName,
+    cutMonth,
+    description,
+    location,
+    inputData,
+  } = useSelector((state) => state.durationSelect);
+  // const generatePrompt = () => {
+  //   return `Given ${description} and ${location}, list all facts and figures related to the revenue, cost, personnel, margin, salary related to in bullet points. Each bullet points no more than 10 words. `;
+  // };
+  const { yearlyAverageCustomers } = useSelector((state) => state.customer);
+  const { yearlySales } = useSelector((state) => state.sales);
+
   const [numberOfMonths, setNumberOfMonths] = useState(0);
 
   useEffect(() => {
-    if (selectedDuration === "3 years") {
-      setNumberOfMonths(36);
-    }
-    if (selectedDuration === "5 years") {
-      setNumberOfMonths(60);
-    }
+    // Chuyển đổi selectedDuration từ dạng "3 years" sang số
+    const extractNumber = (durationString) => {
+      const numberPattern = /\d+/; // Mẫu để trích xuất số từ chuỗi
+      const matches = durationString.match(numberPattern); // Tìm các số trong chuỗi
+      if (matches) {
+        return Number(matches[0]); // Chuyển đổi số thành kiểu số
+      }
+      return 0; // Trả về 0 nếu không tìm thấy số trong chuỗi
+    };
+
+    const years = extractNumber(selectedDuration);
+    const month = years * 12;
+    setNumberOfMonths(month);
   }, [selectedDuration]);
 
-  const [startingCashBalance, setStartingCashBalance] = useState([]);
-  const [status, setStatus] = useState([]);
-  const [industry, setIndustry] = useState([]);
-  const [incomeTax, setIncomeTax] = useState(10);
-  const [payrollTax, setPayrollTax] = useState(0);
-  const [currency, setCurrency] = useState("USD");
-  const [startMonth, setStartMonth] = useState([]);
-  const [startYear, setStartYear] = useState(2024);
-  const [financialProjectName, setFinancialProjectName] = useState([]);
-
-  // Gemini
+  // BusinessModelBot
   const [chatbotResponse, setChatbotResponse] = useState("");
-  // Gemini useEffect
+  // BusinessModelBot useEffect
   useEffect(() => {
     // Ensure chatbotResponse is only processed when it's a valid string
-    if (!chatbotResponse || chatbotResponse.trim() === "") return;
+    // if (!chatbotResponse || chatbotResponse.trim() === "") return;
     try {
-      const data = JSON.parse(chatbotResponse);
-
+      const data = JSON?.parse(chatbotResponse);
+      // console.log("chatbotResponse", chatbotResponse);
+      // console.log("data", data);
       if (data.DurationSelect)
-        setSelectedDuration(data.DurationSelect.selectedDuration);
+        // dispatch(setSelectedDuration(data.DurationSelect.selectedDuration));
+        dispatch(
+          setStartingCashBalance(data.DurationSelect.startingCashBalance)
+        );
+      dispatch(setStatus(data.DurationSelect.status));
+      // dispatch(setIndustry(data.DurationSelect.industry));
+      // dispatch(setStartMonth(data.DurationSelect.startMonth));
+      // dispatch(setStartYear(data.DurationSelect.startYear));
+      dispatch(setIncomeTax(data.DurationSelect.incomeTax));
+      dispatch(setPayrollTax(data.DurationSelect.payrollTax));
+      dispatch(setCurrency("USD"));
+      dispatch(setCutMonth(data.DurationSelect.cutMonth));
       if (data.CustomerSection)
-        setCustomerInputs(data.CustomerSection.customerInputs);
-      if (data.SalesSection) setChannelInputs(data.SalesSection.channelInputs);
-      if (data.CostSection) setCostInputs(data.CostSection.costInputs);
+        dispatch(
+          setCustomerInputs(
+            data.CustomerSection.customerInputs.map((input) => ({
+              ...input,
+              customerGrowthFrequency: "Annually",
+            }))
+          )
+        );
+      if (data.SalesSection)
+        dispatch(setChannelInputs(data.SalesSection.channelInputs));
+      if (data.CostSection)
+        dispatch(
+          setCostInputs(
+            data.CostSection.costInputs.map((input) => ({
+              ...input,
+              costType: "General Administrative Cost",
+              growthFrequency: "Annually",
+            }))
+          )
+        );
       if (data.PersonnelSection)
-        setPersonnelInputs(data.PersonnelSection.personnelInputs);
+        dispatch(
+          setPersonnelInputs(
+            data.PersonnelSection.personnelInputs.map((input) => ({
+              ...input,
+              growthSalaryFrequency: "Annually",
+            }))
+          )
+        );
       if (data.InvestmentSection)
-        setInvestmentInputs(data.InvestmentSection.investmentInputs);
-      if (data.LoanSection) setLoanInputs(data.LoanSection.loanInputs);
+        dispatch(setInvestmentInputs(data.InvestmentSection.investmentInputs));
+      if (data.LoanSection)
+        dispatch(setLoanInputs(data.LoanSection.loanInputs));
+      if (data.FundraisingSection) {
+        dispatch(
+          setFundraisingInputs(
+            data.FundraisingSection.fundraisingInputs.map((input) => ({
+              ...input,
+              fundraisingType: "Common Stock",
+            }))
+          )
+        );
+      }
+      setTimeout(() => {
+        setSpinning(false);
+        setIsLoading(false);
+      }, 10000);
     } catch (error) {
       console.log("Error parsing JSON:", error);
     }
   }, [chatbotResponse]);
 
   //CustomerState
-  const [customerInputs, setCustomerInputs] = useState([
-    {
-      customersPerMonth: 300,
-      growthPerMonth: 10,
-      channelName: "Online",
-      beginMonth: 1,
-      endMonth: 36,
-    },
-    {
-      customersPerMonth: 400,
-      growthPerMonth: 10,
-      channelName: "Offline",
-      beginMonth: 1,
-      endMonth: 36,
-    },
-  ]);
+  const months = [
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
+  ];
 
-  const [customerGrowthData, setCustomerGrowthData] = useState([]);
+  const { customerInputs } = useSelector((state) => state.customer);
+
+  const [customerGrowthChart, setCustomerGrowthChart] = useState({
+    options: {
+      chart: {
+        fontFamily: "Raleway Variable, sans-serif",
+        zoom: {
+          enabled: false, // Disable zooming
+        },
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          },
+        },
+        id: "customer-growth-chart",
+        type: "area",
+        height: 350,
+        stacked: false,
+
+        animations: {
+          enabled: false,
+        },
+      },
+
+      xaxis: {
+        axisTicks: {
+          show: false, // Hide x-axis ticks
+        },
+        labels: {
+          show: true,
+          rotate: 0,
+          style: {
+            fontFamily: "Raleway Variable, sans-serif",
+          },
+        },
+        categories: Array.from({ length: numberOfMonths }, (_, i) => {
+          const monthIndex = (startMonth + i - 1) % 12;
+          const year = startYear + Math.floor((startMonth + i - 1) / 12);
+          return `${months[monthIndex]}/${year}`;
+        }),
+        title: {
+          text: "Month",
+          style: {
+            fontSize: "12px",
+            fontFamily: "Raleway Variable, sans-serif",
+          },
+        },
+      },
+      yaxis: {
+        axisBorder: {
+          show: true, // Show y-axis line
+        },
+
+        labels: {
+          style: {
+            fontFamily: "Raleway Variable, sans-serif",
+          },
+          show: true,
+          formatter: function (val) {
+            return formatNumber(Math.floor(val));
+          },
+        },
+        title: {
+          text: "Customers",
+          style: {
+            fontFamily: "Raleway Variable, sans-serif",
+            fontSize: "12px",
+          },
+        },
+      },
+
+      legend: {
+        position: "bottom",
+        horizontalAlign: "right",
+        fontFamily: "Raleway Variable, sans-serif",
+      },
+
+      grid: {
+        show: false,
+      },
+
+      colors: [
+        "#00A2FF",
+        "#14F584",
+        "#FFB303",
+        "#DBFE01",
+        "#FF474C",
+        "#D84FE4",
+      ],
+      dataLabels: { enabled: false },
+      plotOptions: {
+        bar: {
+          borderRadius: 2,
+          // columnWidth: '50%',
+        },
+      },
+    },
+    series: [],
+  });
 
   //RevenueState
-  const [channelInputs, setChannelInputs] = useState([
-    {
-      productName: "Coffee", // New field for product name
-      price: 4,
-      multiples: 1,
-      deductionPercentage: 5,
-      cogsPercentage: 30,
-      selectedChannel: "Offline",
-      channelAllocation: 0.4,
+  const { channelInputs } = useSelector((state) => state.sales);
+  const [revenue, setRevenue] = useState({
+    options: {
+      chart: {
+        fontFamily: "Raleway Variable, sans-serif",
+        id: "revenue-chart",
+        type: "bar",
+        height: 350,
+        stacked: true,
+        zoom: {
+          enabled: false, // Disable zooming
+        },
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          },
+        },
+        animations: {
+          enabled: false,
+        },
+      },
+      grid: {
+        show: false,
+      },
+      colors: [
+        "#00A2FF",
+        "#14F584",
+        "#FFB303",
+        "#DBFE01",
+        "#FF474C",
+        "#D84FE4",
+      ],
+      legend: {
+        position: "bottom",
+        horizontalAlign: "right",
+        fontFamily: "Raleway Variable, sans-serif",
+      },
+
+      xaxis: {
+        axisTicks: {
+          show: false, // Hide x-axis ticks
+        },
+        labels: {
+          show: true,
+          rotate: 0,
+          style: {
+            fontFamily: "Raleway Variable, sans-serif",
+          },
+        },
+        categories: Array.from({ length: numberOfMonths }, (_, i) => {
+          const monthIndex = (startMonth + i - 1) % 12;
+          const year = startYear + Math.floor((startMonth + i - 1) / 12);
+          return `${months[monthIndex]}/${year}`;
+        }),
+        title: {
+          text: "Month",
+          style: {
+            fontSize: "12px",
+            fontFamily: "Raleway Variable, sans-serif",
+          },
+        },
+      },
+      yaxis: {
+        axisBorder: {
+          show: true, // Show y-axis line
+        },
+
+        labels: {
+          show: true,
+          style: {
+            fontFamily: "Raleway Variable, sans-serif",
+          },
+          formatter: function (val) {
+            return formatNumber(Math.floor(val));
+          },
+        },
+        title: {
+          text: "Amount ($)",
+          style: {
+            fontSize: "12px",
+            fontFamily: "Raleway Variable, sans-serif",
+          },
+        },
+      },
+
+      dataLabels: { enabled: false },
     },
-    {
-      productName: "Cake", // New field for product name
-      price: 8,
-      multiples: 1,
-      deductionPercentage: 4,
-      cogsPercentage: 35,
-      selectedChannel: "Offline",
-      channelAllocation: 0.3,
-    },
-    {
-      productName: "Coffee Bag", // New field for product name
-      price: 6,
-      multiples: 1,
-      deductionPercentage: 6,
-      cogsPercentage: 25,
-      selectedChannel: "Online",
-      channelAllocation: 0.6,
-    },
-  ]);
-  const [channelNames, setChannelNames] = useState([]);
-
-  const [revenueData, setRevenueData] = useState([]);
-  const [netRevenueData, setNetRevenueData] = useState([]);
-  const [grossProfitData, setGrossProfitData] = useState([]);
-  const [revenueDeductionData, setrevenueDeductionData] = useState([]);
-  const [cogsData, setCogsData] = useState([]);
-
-  let revenueTableData = [];
-  const calculateChannelRevenue = () => {
-    let revenueByChannelAndProduct = {};
-
-    // New arrays for revenueDeduction and COGS
-    let DeductionByChannelAndProduct = {};
-    let cogsByChannelAndProduct = {};
-    let netRevenueByChannelAndProduct = {};
-    let grossProfitByChannelAndProduct = {};
-
-    channelInputs.forEach((channel) => {
-      if (channel.selectedChannel && channel.productName) {
-        const channelProductKey = `${channel.selectedChannel} - ${channel.productName}`;
-        const revenueArray = Array(numberOfMonths).fill(0);
-
-        // Initialize revenueDeduction and COGS arrays
-        const revenueDeductionArray = Array(numberOfMonths).fill(0);
-        const cogsArray = Array(numberOfMonths).fill(0);
-        const netRevenueArray = Array(numberOfMonths).fill(0);
-        const grossProfitArray = Array(numberOfMonths).fill(0);
-
-        customerGrowthData.forEach((growthData) => {
-          growthData.forEach((data) => {
-            if (data.channelName === channel.selectedChannel) {
-              const customerInput = customerInputs.find(
-                (input) => input.channelName === channel.selectedChannel
-              );
-
-              if (customerInput) {
-                const begin = customerInput.beginMonth;
-                const end = customerInput.endMonth;
-
-                if (data.month >= begin && data.month <= end) {
-                  let revenue =
-                    data.customers *
-                    parseFloat(channel.price) *
-                    parseFloat(channel.multiples) *
-                    parseFloat(channel.channelAllocation);
-                  revenueArray[data.month - 1] = revenue;
-
-                  // Calculate revenueDeduction and COGS
-                  revenueDeductionArray[data.month - 1] =
-                    (revenue * parseFloat(channel.deductionPercentage)) / 100;
-                  cogsArray[data.month - 1] =
-                    (revenue * parseFloat(channel.cogsPercentage)) / 100;
-                }
-              }
-            }
-          });
-        });
-
-        revenueByChannelAndProduct[channelProductKey] = revenueArray;
-        DeductionByChannelAndProduct[channelProductKey] = revenueDeductionArray;
-        cogsByChannelAndProduct[channelProductKey] = cogsArray;
-
-        netRevenueArray.forEach((_, i) => {
-          netRevenueArray[i] = revenueArray[i] - revenueDeductionArray[i];
-        });
-        netRevenueByChannelAndProduct[channelProductKey] = netRevenueArray;
-
-        grossProfitArray.forEach((_, i) => {
-          grossProfitArray[i] =
-            netRevenueByChannelAndProduct[channelProductKey][i] -
-            cogsByChannelAndProduct[channelProductKey][i];
-        });
-        grossProfitByChannelAndProduct[channelProductKey] = grossProfitArray;
-      }
-    });
-
-    return {
-      revenueByChannelAndProduct,
-      DeductionByChannelAndProduct,
-      cogsByChannelAndProduct,
-      netRevenueByChannelAndProduct,
-      grossProfitByChannelAndProduct,
-    };
-  };
+    series: [],
+  });
 
   useEffect(() => {
     // Update channelNames based on current customerInputs
     const updatedChannelNames = customerInputs
-      .map((input) => input.channelName)
-      .filter((name, index, self) => name && self.indexOf(name) === index);
-    setChannelNames(updatedChannelNames);
+      .map((input) => ({
+        id: input.id,
+        channelName: input.channelName,
+      }))
+      .filter(
+        (item, index, self) =>
+          item.channelName &&
+          self.findIndex((i) => i.channelName === item.channelName) === index
+      );
+    dispatch(setChannelNames(updatedChannelNames));
   }, [customerInputs]);
 
   //CostState
-  const [costInputs, setCostInputs] = useState([
-    {
-      costName: "Website",
-      costValue: 1000,
-      growthPercentage: 0,
-      beginMonth: 1,
-      endMonth: 6,
-      costType: "Sales, Marketing Cost",
-    },
-    {
-      costName: "Marketing",
-      costValue: 500,
-      growthPercentage: 0,
-      beginMonth: 1,
-      endMonth: 36,
-      costType: "Sales, Marketing Cost",
-    },
-    {
-      costName: "Rent",
-      costValue: 1000,
-      growthPercentage: 2,
-      beginMonth: 1,
-      endMonth: 36,
-      costType: "General Administrative Cost",
-    },
-  ]);
-
-  const [costData, setCostData] = useState([]);
-
-  const calculateCostData = () => {
-    let allCosts = [];
-    costInputs.forEach((costInput) => {
-      let monthlyCosts = [];
-      let currentCost = parseFloat(costInput.costValue);
-      for (let month = 1; month <= numberOfMonths; month++) {
-        if (month >= costInput.beginMonth && month <= costInput.endMonth) {
-          monthlyCosts.push({ month: month, cost: currentCost });
-          currentCost *= 1 + parseFloat(costInput.growthPercentage) / 100;
-        } else {
-          monthlyCosts.push({ month: month, cost: 0 });
-        }
-      }
-      allCosts.push({
-        costName: costInput.costName,
-        monthlyCosts,
-        costType: costInput.costType,
-      });
-    });
-    return allCosts;
-  };
-
-  const transformCostDataForTable = () => {
-    const transformedCustomerTableData = {};
-    const calculatedCostData = calculateCostData();
-
-    calculatedCostData.forEach((costItem) => {
-      const rowKey = `${costItem.costType} - ${costItem.costName}`;
-      costItem.monthlyCosts.forEach((monthData) => {
-        if (!transformedCustomerTableData[rowKey]) {
-          transformedCustomerTableData[rowKey] = {
-            key: rowKey,
-            costName: rowKey,
-          };
-        }
-        transformedCustomerTableData[rowKey][`month${monthData.month}`] =
-          parseFloat(monthData.cost)?.toFixed(2);
-      });
-    });
-
-    return Object.values(transformedCustomerTableData);
-  };
+  const { costInputs } = useSelector((state) => state.cost);
 
   //PersonnelState
-  const [personnelInputs, setPersonnelInputs] = useState([
-    {
-      jobTitle: "Cashier",
-      salaryPerMonth: 800,
-      numberOfHires: 2,
-      jobBeginMonth: 1,
-      jobEndMonth: 36,
-    },
-    {
-      jobTitle: "Manager",
-      salaryPerMonth: 2000,
-      numberOfHires: 1,
-      jobBeginMonth: 1,
-      jobEndMonth: 36,
-    },
-  ]);
-  const [personnelCostData, setPersonnelCostData] = useState([]);
-  const transformPersonnelCostDataForTable = () => {
-    const transformedCustomerTableData = personnelCostData.map((item) => {
-      const rowData = { key: item.jobTitle, jobTitle: item.jobTitle };
-      item.monthlyCosts.forEach((monthData) => {
-        rowData[`month${monthData.month}`] = monthData.cost?.toFixed(2); // Adjust formatting as needed
-      });
-      return rowData;
-    });
-    return transformedCustomerTableData;
-  };
+
+  const { personnelInputs } = useSelector((state) => state.personnel);
 
   //InvestmentState
-  const [investmentInputs, setInvestmentInputs] = useState([
-    {
-      purchaseName: "Coffee machine",
-      assetCost: 8000,
-      quantity: 1,
-      purchaseMonth: 2,
-      residualValue: 10,
-      usefulLifetime: 36,
-    },
-    {
-      purchaseName: "Table",
-      assetCost: 200,
-      quantity: 10,
-      purchaseMonth: 1,
-      residualValue: 10,
-      usefulLifetime: 36,
-    },
-  ]);
-  //InvestmentTableData
-  const calculateInvestmentData = () => {
-    return investmentInputs.map((investment) => {
-      const quantity = parseInt(investment.quantity, 10) || 1; // Ensuring there is a default value of 1
+  const { investmentInputs } = useSelector((state) => state.investment);
 
-      const assetCost = parseFloat(investment.assetCost) * quantity;
-
-      const residualValue = parseFloat(investment.residualValue) * quantity;
-      const usefulLifetime = parseFloat(investment.usefulLifetime);
-      const purchaseMonth = parseInt(investment.purchaseMonth, 10);
-
-      const depreciationPerMonth = (assetCost - residualValue) / usefulLifetime;
-      const depreciationArray = new Array(numberOfMonths).fill(0);
-
-      // Calculate depreciation and accumulated depreciation
-      for (let i = 0; i < numberOfMonths; i++) {
-        if (i >= purchaseMonth - 1 && i < purchaseMonth - 1 + usefulLifetime) {
-          depreciationArray[i] = depreciationPerMonth;
-        }
-      }
-
-      const accumulatedDepreciation = depreciationArray.reduce(
-        (acc, val, index) => {
-          acc[index] = (acc[index - 1] || 0) + val;
-          return acc;
-        },
-        []
-      );
-
-      // Calculate asset value and book value
-      const assetValue = new Array(numberOfMonths).fill(0);
-      const bookValue = new Array(numberOfMonths).fill(0);
-      for (let i = 0; i < numberOfMonths; i++) {
-        if (i >= purchaseMonth - 1 && i < purchaseMonth - 1 + usefulLifetime) {
-          assetValue[i] = assetCost;
-
-          bookValue[i] = assetValue[i] - accumulatedDepreciation[i];
-        }
-      }
-
-      return {
-        assetValue,
-        depreciationArray,
-        accumulatedDepreciation,
-        bookValue,
-      };
-    });
-  };
-  const transformInvestmentDataForTable = () => {
-    const investmentTableData = [];
-
-    calculateInvestmentData().forEach((investment, investmentIndex) => {
-      const purchaseName =
-        investmentInputs[investmentIndex].purchaseName ||
-        `Investment ${investmentIndex + 1}`;
-      const assetCostRow = {
-        key: `${purchaseName} - Asset Cost`,
-        type: `${purchaseName}`,
-      };
-      const depreciationRow = {
-        key: `${purchaseName} - Depreciation`,
-        type: "Depreciation",
-      };
-      const accumulatedDepreciationRow = {
-        key: `${purchaseName} - Accumulated Depreciation`,
-        type: "Accumulated Depreciation",
-      };
-      const bookValueRow = {
-        key: `${purchaseName} - Book Value`,
-        type: "Book Value",
-      };
-
-      const purchaseMonth = parseInt(
-        investmentInputs[investmentIndex].purchaseMonth,
-        10
-      );
-      const usefulLife = parseInt(
-        investmentInputs[investmentIndex].usefulLifetime,
-        10
-      );
-      const endMonth = purchaseMonth + usefulLife - 1;
-      const assetCost =
-        parseFloat(investmentInputs[investmentIndex].assetCost) *
-        parseInt(investmentInputs[investmentIndex].quantity, 10);
-
-      for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
-        if (monthIndex >= purchaseMonth - 1 && monthIndex < endMonth) {
-          assetCostRow[`month${monthIndex + 1}`] = assetCost?.toFixed(2); // Using Asset Cost
-          depreciationRow[`month${monthIndex + 1}`] =
-            investment.depreciationArray[monthIndex]?.toFixed(2);
-          accumulatedDepreciationRow[`month${monthIndex + 1}`] =
-            investment.accumulatedDepreciation[monthIndex]?.toFixed(2);
-          bookValueRow[`month${monthIndex + 1}`] = (
-            assetCost - investment.accumulatedDepreciation[monthIndex]
-          )?.toFixed(2);
-        } else {
-          assetCostRow[`month${monthIndex + 1}`] = "0.00";
-          depreciationRow[`month${monthIndex + 1}`] = "0.00";
-          accumulatedDepreciationRow[`month${monthIndex + 1}`] = "0.00";
-          bookValueRow[`month${monthIndex + 1}`] = "0.00";
-        }
-      }
-
-      investmentTableData.push(
-        assetCostRow,
-        depreciationRow,
-        accumulatedDepreciationRow,
-        bookValueRow
-      );
-    });
-
-    return investmentTableData;
-  };
   //LoanState
-  const [loanInputs, setLoanInputs] = useState([
-    {
-      loanName: "Banking loan",
-      loanAmount: "150000",
-      interestRate: "6",
-      loanBeginMonth: "1",
-      loanEndMonth: "12",
-    },
-  ]);
-  const calculateLoanData = () => {
-    return loanInputs.map((loan) => {
-      const monthlyRate = parseFloat(loan.interestRate) / 100 / 12;
-      const loanAmount = parseFloat(loan.loanAmount);
-      const loanDuration =
-        parseInt(loan.loanEndMonth, 10) - parseInt(loan.loanBeginMonth, 10) + 1;
 
-      // Calculate monthly payment
-      const monthlyPayment =
-        (loanAmount * monthlyRate) /
-        (1 - Math.pow(1 + monthlyRate, -loanDuration));
+  const { loanInputs } = useSelector((state) => state.loan);
 
-      let remainingBalance = loanAmount;
-      const loanDataPerMonth = [];
+  // Fundraising State
 
-      for (let month = 1; month <= loanDuration; month++) {
-        const interestForMonth = remainingBalance * monthlyRate;
-        const principalForMonth = monthlyPayment - interestForMonth;
-        remainingBalance -= principalForMonth;
-
-        loanDataPerMonth.push({
-          month: month + parseInt(loan.loanBeginMonth, 10) - 1,
-          payment: monthlyPayment,
-          principal: principalForMonth,
-          interest: interestForMonth,
-          balance: remainingBalance,
-          loanAmount: loanAmount,
-        });
-      }
-
-      return {
-        loanName: loan.loanName,
-        loanDataPerMonth,
-      };
-    });
-  };
-  const transformLoanDataForTable = () => {
-    const loanTableData = [];
-
-    calculateLoanData().forEach((loan, loanIndex) => {
-      const loanName =
-        loanInputs[loanIndex].loanName || `Loan ${loanIndex + 1}`;
-
-      const loanAmountRow = {
-        key: `${loanName} - Loan Amount`,
-        type: `${loanName} - Loan Amount`,
-      };
-      const paymentRow = {
-        key: `${loanName} - Payment`,
-        type: `${loanName} - Payment`,
-      };
-      const principalRow = {
-        key: `${loanName} - Principal`,
-        type: `${loanName} - Principal`,
-      };
-      const interestRow = {
-        key: `${loanName} - Interest`,
-        type: `${loanName} - Interest`,
-      };
-      const balanceRow = {
-        key: `${loanName} - Remaining Balance`,
-        type: `${loanName} - Remaining Balance`,
-      };
-
-      // Initialize all rows with default values
-      for (let monthIndex = 1; monthIndex <= numberOfMonths; monthIndex++) {
-        const monthKey = `Month ${monthIndex}`;
-        loanAmountRow[monthKey] = "0.00";
-        paymentRow[monthKey] = "0.00";
-        principalRow[monthKey] = "0.00";
-        interestRow[monthKey] = "0.00";
-        balanceRow[monthKey] = "0.00";
-      }
-
-      loan.loanDataPerMonth.forEach((monthData) => {
-        const monthKey = `Month ${monthData.month}`;
-        loanAmountRow[monthKey] = monthData.loanAmount?.toFixed(2);
-        paymentRow[monthKey] = monthData.payment?.toFixed(2);
-        principalRow[monthKey] = monthData.principal?.toFixed(2);
-        interestRow[monthKey] = monthData.interest?.toFixed(2);
-        balanceRow[monthKey] = monthData.balance?.toFixed(2);
-      });
-
-      loanTableData.push(
-        loanAmountRow,
-        paymentRow,
-        principalRow,
-        interestRow,
-        balanceRow
-      );
-    });
-
-    return loanTableData;
-  };
-
+  const { fundraisingInputs } = useSelector((state) => state.fundraising);
   // Lưu vào DB
+  const { id } = useParams();
+  const { user } = useAuth();
 
-  // const { user } = useAuth();
-  // const loadData = async (userId) => {
-  //   setIsLoading(true);
-  //   const { data, error } = await supabase
-  //     .from("finance")
-  //     .select("inputData")
-  //     .eq("user_id", userId);
-  //   if (error) {
-  //     toast.error(error.message);
-  //     console.error("Error fetching data", error);
-  //     return null;
-  //   }
-  //   setIsLoading(false);
-  //   return data.length > 0 ? JSON.parse(data[0]?.inputData) : null;
-  // };
+  const loadData = async () => {
+    const { data, error } = await supabase
+      .from("finance")
+      .select("*")
+      .eq("id", id);
 
-  // useEffect(() => {
-  //   // Assuming `user` is your user object
-  //   const userId = user?.id;
-  //   if (userId) {
-  //     loadData(userId).then((inputData) => {
-  //       if (inputData) {
-  //         // Set your state here
-  //         setFinancialProjectName(inputData.financialProjectName);
-  //         setSelectedDuration(inputData.selectedDuration);
-  //         setCustomerInputs(inputData.customerInputs);
-  //         setChannelInputs(inputData.channelInputs);
-  //         setCostInputs(inputData.costInputs);
-  //         setPersonnelInputs(inputData.personnelInputs);
-  //         setInvestmentInputs(inputData.investmentInputs);
-  //         setLoanInputs(inputData.loanInputs);
-  //       }
-  //     });
-  //   }
-  // }, [user?.id]);
-
-  // const saveOrUpdateFinanceData = async (userId, inputData) => {
-  //   setIsLoading(true);
-
-  //   try {
-  //     const { data: existingData, error: selectError } = await supabase
-  //       .from("finance")
-  //       .select("*")
-  //       .eq("user_id", userId);
-
-  //     if (selectError) throw selectError;
-
-  //     if (existingData.length > 0) {
-  //       const financeRecord = existingData[0];
-
-  //       // Kiểm tra nếu tác giả của dữ liệu tài chính trùng với userId
-  //       if (financeRecord.user_id === userId) {
-  //         // Cập nhật bản ghi hiện có
-
-  //         const { error: updateError } = await supabase
-  //           .from("finance")
-  //           .update({ name: financeName, inputData })
-  //           .eq("id", financeRecord?.id)
-  //           .select();
-
-  //         if (updateError) {
-  //           toast.error(updateError.message);
-  //         } else {
-  //           toast.success("Updated successfully.");
-  //         }
-  //       } else {
-  //         toast.error("Bạn không có quyền cập nhật bản ghi này.");
-  //       }
-  //     } else {
-  //       // Thêm bản ghi mới
-  //       const { error: insertError } = await supabase.from("finance").insert([
-  //         {
-  //           user_id: userId,
-  //           name: financeName,
-  //           user_email: user.email,
-  //           inputData,
-  //         },
-  //       ]);
-  //       if (insertError) {
-  //         toast.error(insertError.message);
-  //       } else {
-  //         toast.success("Inserted successfully.");
-  //       }
-  //     }
-  //   } catch (error) {
-  //     toast.error(error.message);
-  //     console.error("Error in saveOrUpdateFinanceData", error);
-  //     return null;
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  // const handleSubmit = async () => {
-  //   const financeData = {
-  //     financeName,
-  //     selectedDuration,
-  //     customerInputs,
-  //     channelInputs,
-  //     costInputs,
-  //     personnelInputs,
-  //     investmentInputs,
-  //     loanInputs,
-  //   };
-
-  //   await saveOrUpdateFinanceData(user?.id, financeData);
-
-  //   // Handle post-save actions
-  // };
-
-  // Download Excel
-  const downloadExcel = () => {
-    const workBook = XLSX.utils.book_new();
-
-    const convertDataToWorksheet = (data) => {
-      return XLSX.utils.json_to_sheet(data);
-    };
-
-    const addSheetToWorkbook = (sheet, sheetName) => {
-      XLSX.utils.book_append_sheet(workBook, sheet, sheetName);
-    };
-
-    // Example data conversion and sheet addition
-    addSheetToWorkbook(
-      convertDataToWorksheet(transformCostDataForTable()),
-      "Costs"
-    );
-    addSheetToWorkbook(
-      convertDataToWorksheet(transformPersonnelCostDataForTable()),
-      "Personnel Costs"
-    );
-    addSheetToWorkbook(
-      convertDataToWorksheet(transformInvestmentDataForTable()),
-      "Investments"
-    );
-    addSheetToWorkbook(
-      convertDataToWorksheet(transformLoanDataForTable()),
-      "Loans"
-    );
-    //addSheetToWorkbook(convertDataToWorksheet(transposedData), 'Profit and Loss');
-
-    // Write the workbook and trigger download
-    const wbout = XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
-
-    function s2ab(s) {
-      const buf = new ArrayBuffer(s.length);
-      const view = new Uint8Array(buf);
-      for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
-      return buf;
+    if (error) {
+      message.error(error.message);
+      console.error("Error fetching data", error);
+      return null;
     }
 
-    saveAs(
-      new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
-      "financial-data.xlsx"
-    );
+    return data.length > 0 ? data : null;
   };
 
+  useEffect(() => {
+    setTemIsLoading(true);
+    // Assuming `user` is your user object
+
+    loadData().then((dataFetched) => {
+      if (JSON.parse(dataFetched[0]?.inputData)) {
+        const inputData = JSON.parse(dataFetched[0]?.inputData);
+        // Set your state here
+        dispatch(
+          setFinancialProjectName(
+            inputData.financialProjectName || financialProjectName
+          )
+        );
+        dispatch(setSelectedDuration(inputData.selectedDuration || "3 years"));
+
+        dispatch(setStartingCashBalance(inputData.startingCashBalance || 0));
+        dispatch(setStatus(inputData.status || "active"));
+        dispatch(setIndustry(inputData.industry || "Technology"));
+        dispatch(setIncomeTax(inputData.incomeTax || 0));
+        dispatch(setPayrollTax(inputData.payrollTax || 0));
+        dispatch(setCurrency(inputData.currency || "USD"));
+        dispatch(setCutMonth(inputData.cutMonth || 4));
+        dispatch(setDescription(inputData.description || ""));
+        dispatch(setLocation(inputData.location || ""));
+        dispatch(
+          setStartMonth(inputData.startMonth || new Date().getMonth() + 1)
+        );
+        dispatch(setStartYear(inputData.startYear || new Date().getFullYear()));
+
+        dispatch(
+          setCustomerInputs(
+            inputData.customerInputs || [
+              {
+                id: 1,
+                customersPerMonth: 300,
+                growthPerMonth: 1,
+                customerGrowthFrequency: "Monthly",
+                channelName: "Online",
+                beginMonth: 1,
+                endMonth: 36,
+                beginCustomer: 0,
+                churnRate: 0,
+                acquisitionCost: 0,
+                localGrowthRate: 1,
+                eventName: "",
+                eventBeginMonth: 1,
+                eventEndMonth: 36,
+                additionalInfo: "",
+                applyAdditionalInfo: false,
+              },
+              {
+                id: 2,
+                customersPerMonth: 400,
+                growthPerMonth: 2,
+                customerGrowthFrequency: "Monthly",
+                channelName: "Offline",
+                beginMonth: 1,
+                endMonth: 36,
+                beginCustomer: 0,
+                churnRate: 0,
+                acquisitionCost: 0,
+                localGrowthRate: 1,
+                eventName: "",
+                eventBeginMonth: 1,
+                eventEndMonth: 36,
+                additionalInfo: "",
+                applyAdditionalInfo: false,
+              },
+            ]
+          )
+        );
+        dispatch(
+          setChannelInputs(
+            inputData.channelInputs || [
+              {
+                id: 1,
+                productName: "Coffee",
+                price: 4,
+                multiples: 1,
+                deductionPercentage: 5,
+                cogsPercentage: 30,
+                selectedChannel: { id: 1, channelName: "Online" },
+                channelAllocation: 40,
+                daysGetPaid: 0,
+              },
+              {
+                id: 2,
+                productName: "Cake",
+                price: 8,
+                multiples: 1,
+                deductionPercentage: 4,
+                cogsPercentage: 35,
+                selectedChannel: { id: 2, channelName: "Offline" },
+                channelAllocation: 30,
+                daysGetPaid: 0,
+              },
+              {
+                id: 3,
+                productName: "Coffee Bag",
+                price: 6,
+                multiples: 1,
+                deductionPercentage: 6,
+                cogsPercentage: 25,
+                selectedChannel: { id: 2, channelName: "Offline" },
+                channelAllocation: 60,
+                daysGetPaid: 0,
+              },
+            ]
+          )
+        );
+        dispatch(
+          setCostInputs(
+            inputData.costInputs || [
+              {
+                id: 1,
+                costName: "Website",
+                costValue: 1000,
+                growthPercentage: 5,
+                beginMonth: 1,
+                endMonth: 36,
+                growthFrequency: "Monthly",
+                costType: "Based on Revenue",
+                costGroup: "Professional Fees",
+                salePercentage: 5,
+                relatedRevenue: "Offline - Cake",
+                applyAdditionalInfo: false,
+              },
+              {
+                id: 2,
+                costName: "Marketing",
+                costValue: 500,
+                growthPercentage: 10,
+                beginMonth: 1,
+                endMonth: 36,
+                growthFrequency: "Annually",
+                costType: "Sales, Marketing Cost",
+                costGroup: "Professional Fees",
+                salePercentage: 0,
+                relatedRevenue: "",
+                applyAdditionalInfo: false,
+              },
+              {
+                id: 3,
+                costName: "Rent",
+                costValue: 1000,
+                growthPercentage: 4,
+                beginMonth: 1,
+                endMonth: 36,
+                growthFrequency: "Annually",
+                costType: "General Administrative Cost",
+                costGroup: "Rent",
+                salePercentage: 0,
+                relatedRevenue: "",
+                applyAdditionalInfo: false,
+              },
+            ]
+          )
+        );
+        dispatch(
+          setPersonnelInputs(
+            inputData.personnelInputs || [
+              {
+                id: 1,
+                jobTitle: "Cashier",
+                department: "Sales", // Updated to lowercase
+                salaryPerMonth: 800,
+                increasePerYear: 10,
+                growthSalaryFrequency: "Annually",
+                numberOfHires: 2,
+                jobBeginMonth: 1,
+                jobEndMonth: 36,
+              },
+              {
+                id: 2,
+                jobTitle: "Manager",
+                department: "Management", // Updated to lowercase
+                salaryPerMonth: 2000,
+                increasePerYear: 10,
+                growthSalaryFrequency: "Annually",
+                numberOfHires: 1,
+                jobBeginMonth: 1,
+                jobEndMonth: 36,
+              },
+            ]
+          )
+        );
+        dispatch(
+          setInvestmentInputs(
+            inputData.investmentInputs || [
+              {
+                id: 1,
+                purchaseName: "Coffee machine",
+                assetCost: 8000,
+                quantity: 1,
+                purchaseMonth: 2,
+                residualValue: 0,
+                usefulLifetime: 36,
+              },
+
+              {
+                id: 2,
+                purchaseName: "Table",
+                assetCost: 200,
+                quantity: 10,
+                purchaseMonth: 1,
+                residualValue: 0,
+                usefulLifetime: 36,
+              },
+            ]
+          )
+        );
+        dispatch(
+          setLoanInputs(
+            inputData.loanInputs || [
+              {
+                id: 1,
+                loanName: "Banking loan",
+                loanAmount: "30000",
+                interestRate: "6",
+                loanBeginMonth: "1",
+                loanEndMonth: "36",
+              },
+              {
+                id: 2,
+                loanName: "Startup loan",
+                loanAmount: "20000",
+                interestRate: "3",
+                loanBeginMonth: "1",
+                loanEndMonth: "36",
+              },
+            ]
+          )
+        );
+        dispatch(
+          setFundraisingInputs(
+            inputData.fundraisingInputs || [
+              {
+                id: 1,
+                name: "",
+                fundraisingAmount: 0,
+                fundraisingType: "Common Stock",
+                fundraisingBeginMonth: 1,
+                equityOffered: 0,
+              },
+            ]
+          )
+        );
+        dispatch(
+          setInputData(
+            inputData.inputData || {
+              selectedDuration,
+              startingCashBalance,
+              status,
+              industry,
+              incomeTax,
+              payrollTax,
+              currency,
+              startMonth,
+              startYear,
+              financialProjectName,
+              cutMonth,
+              customerInputs,
+              channelInputs,
+              costInputs,
+              personnelInputs,
+              investmentInputs,
+              loanInputs,
+              fundraisingInputs,
+              yearlyAverageCustomers,
+              yearlySales,
+              description,
+              location,
+            }
+          )
+        );
+      }
+
+      setTemIsLoading(false);
+    });
+  }, [id]);
+
+  useEffect(() => {
+    const calculatedData = calculateCustomerGrowth(
+      customerInputs,
+      numberOfMonths
+    );
+
+    dispatch(setCustomerGrowthData(calculatedData));
+
+    const averages = calculateYearlyAverage(calculatedData, numberOfMonths);
+    dispatch(setYearlyAverageCustomers(averages));
+
+    const { revenueByChannelAndProduct } = dispatch(
+      calculateChannelRevenue(
+        numberOfMonths,
+        calculatedData,
+        customerInputs,
+        channelInputs
+      )
+    );
+
+    const yearlySale = calculateYearlySales(revenueByChannelAndProduct);
+    dispatch(setYearlySales(yearlySale));
+
+    const seriesData = calculatedData.map((channelData) => {
+      return {
+        name: channelData[0]?.channelName || "Unknown Channel",
+        dataBegin: channelData.map((data) => parseInt(data.begin, 10)),
+        dataAdd: channelData.map((data) => parseInt(data.add, 10)),
+        dataChurn: channelData.map((data) => parseInt(data.churn, 10)),
+        dataEnd: channelData.map((data) => parseInt(data.end, 10)),
+        data: channelData.map((data) => parseInt(data.customers, 10)),
+      };
+    });
+
+    const totalCustomersPerMonth = seriesData.reduce((acc, channel) => {
+      channel.data.forEach((customers, index) => {
+        if (!acc[index]) {
+          acc[index] = 0;
+        }
+        acc[index] += customers;
+      });
+      return acc;
+    }, []);
+
+    setCustomerGrowthChart((prevState) => ({
+      ...prevState,
+
+      series: [
+        ...seriesData,
+        {
+          name: "Total",
+          data: totalCustomersPerMonth,
+        },
+      ],
+    }));
+
+    const seriesSaleData = Object.entries(revenueByChannelAndProduct).map(
+      ([key, data]) => {
+        return { name: key, data };
+      }
+    );
+
+    const totalSalesData = seriesSaleData.reduce((acc, channel) => {
+      channel.data.forEach((amount, index) => {
+        if (!acc[index]) acc[index] = 0;
+        acc[index] += amount;
+      });
+      return acc;
+    }, Array(numberOfMonths).fill(0));
+
+    setRevenue((prevState) => ({
+      ...prevState,
+      series: [...seriesSaleData, { name: "Total", data: totalSalesData }],
+    }));
+  }, [numberOfMonths, customerInputs, channelInputs]);
+
+  const saveOrUpdateFinanceData = async (inputData) => {
+    try {
+      setIsLoading(true);
+      const { data: existingData, error: selectError } = await supabase
+        .from("finance")
+        .select("*")
+        .eq("id", id);
+
+      if (selectError) throw selectError;
+
+      if (existingData.length > 0) {
+        const financeRecord = existingData[0];
+
+        // Kiểm tra nếu tác giả của dữ liệu tài chính trùng với userId
+        if (
+          financeRecord.user_id === user.id ||
+          financeRecord.collabs?.includes(user.email)
+        ) {
+          // Cập nhật bản ghi hiện có
+
+          const { error: updateError } = await supabase
+            .from("finance")
+            .update({ name: inputData.financialProjectName, inputData })
+            .eq("id", financeRecord?.id)
+            .select();
+
+          if (updateError) {
+            message.error(updateError.message);
+          } else {
+            message.success("Updated successfully.");
+          }
+        } else {
+          message.error("You do not have permission to update this record.");
+        }
+      } else {
+        // Thêm bản ghi mới
+        const { error: insertError } = await supabase.from("finance").insert([
+          {
+            user_id: user.id,
+            name: inputData.financialProjectName,
+            user_email: user.email,
+            inputData,
+          },
+        ]);
+        if (insertError) {
+          message.error(insertError.message);
+        } else {
+          message.success("Inserted successfully.");
+        }
+      }
+    } catch (error) {
+      message.error(error.message);
+      console.error("Error in saveOrUpdateFinanceData", error);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmit = async () => {
+    const financeData = {
+      selectedDuration,
+      startingCashBalance,
+      status,
+      industry,
+      incomeTax,
+      payrollTax,
+      currency,
+      startMonth,
+      startYear,
+      financialProjectName,
+      cutMonth,
+      customerInputs,
+      channelInputs,
+      costInputs,
+      personnelInputs,
+      investmentInputs,
+      loanInputs,
+      fundraisingInputs,
+      yearlyAverageCustomers,
+      yearlySales,
+      description,
+      location,
+    };
+
+    dispatch(setInputData(financeData));
+
+    await saveOrUpdateFinanceData(financeData);
+
+    // Handle post-save actions
+  };
+
+  const [activeTab, setActiveTab] = useState("overview");
+
+  const handleTabChange = (tabName) => {
+    setActiveTab(tabName);
+  };
+
+  const [isInputFormOpen, setIsInputFormOpen] = useState(false);
+
+  const [activeTabA, setActiveTabA] = useState("table&chart");
+
+  const handleTabChangeA = (tabName) => {
+    setActiveTabA(tabName);
+  };
+
+  const tabs = [
+    { name: "Overview", key: "overview" },
+    { name: "Customer", key: "customer" },
+    { name: "Sales", key: "sales" },
+    { name: "Costs", key: "cost" },
+    { name: "Personnel", key: "personnel" },
+    { name: "CapEx", key: "investment" },
+    { name: "Loans", key: "loan" },
+    { name: "Funding", key: "fundraising" },
+    { name: "Profit & Loss", key: "profitAndLoss" },
+    { name: "Cash Flow", key: "cashFlow" },
+    { name: "Balance Sheet", key: "balanceSheet" },
+  ];
+
+  const params = useParams();
+  const paramsID = params.id;
+
   return (
-    <div>
-      <AlertMsg />
-      {isLoading ? (
-        <ProgressBar isLoading={isLoading} />
+    <div className="min-h-screen bg-white my-14 sm:px-32 px-2">
+      {spinning ? (
+        <ProgressBar spinning={spinning} isLoading={isLoading} />
       ) : (
-        <>
-          {/* Gemini */}
+        <div>
+          {temIsLoading && <LoadingButtonClick isLoading={temIsLoading} />}
           <div className="w-full h-full flex flex-col lg:flex-row">
-            <Gemini
+            <BusinessModelBot
               setIsLoading={setIsLoading}
               setChatbotResponse={setChatbotResponse}
               currentUser={currentUser}
               setCurrentUser={setCurrentUser}
+              spinning={spinning}
+              setSpinning={setSpinning}
             />
           </div>
 
-          {/* DurationSection */}
-          <div className="w-full h-full flex flex-col lg:flex-row border-t-2">
-            <div className="w-full lg:w-1/3 p-4 border-r-2">
-              <DurationSelect
-                selectedDuration={selectedDuration}
-                setSelectedDuration={setSelectedDuration}
-                startingCashBalance={startingCashBalance}
-                setStartingCashBalance={setStartingCashBalance}
-                status={status}
-                setStatus={setStatus}
-                industry={industry}
-                setIndustry={setIndustry}
-                incomeTax={incomeTax}
-                setIncomeTax={setIncomeTax}
-                payrollTax={payrollTax}
-                setPayrollTax={setPayrollTax}
-                currency={currency}
-                setCurrency={setCurrency}
-                startMonth={startMonth}
-                setStartMonth={setStartMonth}
-                startYear={startYear}
-                setStartYear={setStartYear}
-                financialProjectName={financialProjectName}
-                setFinancialProjectName={setFinancialProjectName}
-              />
-            </div>
+          <FlowiseChat page="FM" projectid={paramsID} />
 
-            <div className="w-full lg:w-2/3 p-4">
-              <MetricsFM />
-            </div>
+          <div className="my-4 ">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <span>Dashboard</span>
+              </CardTitle>
+            </CardHeader>
+            <Tabs
+              value={activeTab}
+              onValueChange={handleTabChange}
+              className="w-full"
+            >
+              <div className="flex items-center px-4 py-2 bg-gray-50">
+                <Button variant="ghost" size="icon" className="mr-2">
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <ScrollArea className="w-full whitespace-nowrap">
+                  <TabsList className="w-full justify-between bg-transparent text-gray-700">
+                    {tabs.map((tab) => (
+                      <TabsTrigger
+                        key={tab.key}
+                        value={tab.key}
+                        className="px-4 py-2 data-[state=active]:bg-white data-[state=active]:text-black rounded-lg"
+                      >
+                        {tab.name}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
+                <Button variant="ghost" size="icon" className="ml-2">
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+
+              <>
+                {activeTab === "overview" && (
+                  <div className="w-full h-full flex flex-col lg:flex-row p-4">
+                    <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
+                      <MetricsFM
+                        customerGrowthChart={customerGrowthChart}
+                        revenue={revenue}
+                        numberOfMonths={numberOfMonths}
+                      />
+                    </div>
+
+                    <div className="relative w-full xl:w-1/4 xl:!block !hidden">
+                      <div className="!py-4 border-white !sticky !top-28">
+                        <DurationSelect
+                          handleSubmit={handleSubmit}
+                          isLoading={isLoading}
+                        />
+                      </div>
+                    </div>
+                    <div className="xl:!hidden !block">
+                      <FloatButton
+                        tooltip={<div>Input values</div>}
+                        style={{
+                          position: "fixed",
+                          bottom: "20px",
+                          right: "80px",
+                          width: "48px",
+                          height: "48px",
+                        }}
+                        className="!shadow-md !bg-[#f3f4f6]"
+                        onClick={() => {
+                          setIsInputFormOpen(true);
+                        }}
+                      >
+                        <Button
+                          type="primary"
+                          shape="circle"
+                          icon={<FileOutlined />}
+                        />
+                      </FloatButton>
+                    </div>
+
+                    {isInputFormOpen && (
+                      <Modal
+                        // title="Customer channel"
+                        open={isInputFormOpen}
+                        onOk={() => {
+                          handleSubmit();
+                          setIsInputFormOpen(false);
+                        }}
+                        onCancel={() => {
+                          setIsInputFormOpen(false);
+                        }}
+                        footer={null}
+                        centered={true}
+                        zIndex={42424243}
+                      >
+                        <DurationSelect
+                          handleSubmit={handleSubmit}
+                          isInputFormOpen="Ok"
+                        />
+                      </Modal>
+                    )}
+                  </div>
+                )}
+                {activeTab === "customer" && (
+                  <CustomerSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    customerGrowthChart={customerGrowthChart}
+                    setCustomerGrowthChart={setCustomerGrowthChart}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {activeTab === "sales" && (
+                  <SalesSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    revenue={revenue}
+                    setRevenue={setRevenue}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {activeTab === "cost" && (
+                  <CostSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {activeTab === "personnel" && (
+                  <PersonnelSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {activeTab === "investment" && (
+                  <InvestmentSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {activeTab === "loan" && (
+                  <LoanSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {activeTab === "fundraising" && (
+                  <FundraisingSection
+                    numberOfMonths={numberOfMonths}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+
+                {activeTab === "profitAndLoss" && (
+                  <ProfitAndLossSection numberOfMonths={numberOfMonths} />
+                )}
+                {activeTab === "cashFlow" && (
+                  <CashFlowSection numberOfMonths={numberOfMonths} />
+                )}
+                {activeTab === "balanceSheet" && (
+                  <BalanceSheetSection numberOfMonths={numberOfMonths} />
+                )}
+              </>
+            </Tabs>
           </div>
-
-          {/* CustomerSection */}
-          <CustomerSection
-            customerInputs={customerInputs}
-            setCustomerInputs={setCustomerInputs}
-            numberOfMonths={numberOfMonths}
-            customerGrowthData={customerGrowthData}
-            setCustomerGrowthData={setCustomerGrowthData}
-            channelNames={channelNames}
-          />
-
-          {/* RevenueSetion */}
-          <SalesSection
-            channelInputs={channelInputs}
-            channelNames={channelNames}
-            setChannelInputs={setChannelInputs}
-            revenueData={revenueData}
-            revenueDeductionData={revenueDeductionData}
-            cogsData={cogsData}
-            customerInputs={customerInputs}
-            numberOfMonths={numberOfMonths}
-            netRevenueData={netRevenueData}
-            grossProfitData={grossProfitData}
-            calculateChannelRevenue={calculateChannelRevenue}
-            setRevenueData={setRevenueData}
-            setrevenueDeductionData={setrevenueDeductionData}
-            setCogsData={setCogsData}
-            setNetRevenueData={setNetRevenueData}
-            setGrossProfitData={setGrossProfitData}
-            customerGrowthData={customerGrowthData}
-            revenueTableData={revenueTableData}
-          />
-
-          {/* CostSection */}
-          <CostSection
-            costInputs={costInputs}
-            setCostInputs={setCostInputs}
-            numberOfMonths={numberOfMonths}
-            calculateCostData={calculateCostData}
-            transformCostDataForTable={transformCostDataForTable}
-            costData={costData}
-            setCostData={setCostData}
-          />
-
-          {/* PersonnelSection */}
-          <PersonnelSection
-            personnelInputs={personnelInputs}
-            setPersonnelInputs={setPersonnelInputs}
-            numberOfMonths={numberOfMonths}
-            personnelCostData={personnelCostData}
-            setPersonnelCostData={setPersonnelCostData}
-            transformPersonnelCostDataForTable={
-              transformPersonnelCostDataForTable
-            }
-          />
-
-          {/* InvestmentSection */}
-          <InvestmentSection
-            investmentInputs={investmentInputs}
-            setInvestmentInputs={setInvestmentInputs}
-            numberOfMonths={numberOfMonths}
-            calculateInvestmentData={calculateInvestmentData}
-            transformInvestmentDataForTable={transformInvestmentDataForTable}
-          />
-
-          {/* LoanSection */}
-          <LoanSection
-            loanInputs={loanInputs}
-            setLoanInputs={setLoanInputs}
-            numberOfMonths={numberOfMonths}
-            calculateLoanData={calculateLoanData}
-            transformLoanDataForTable={transformLoanDataForTable}
-          />
-
-          {/* ProfitAndLossSection */}
-          <ProfitAndLossSection
-            revenueData={revenueTableData}
-            costData={costData}
-            personnelCostData={personnelCostData}
-            investmentData={calculateInvestmentData()}
-            loanData={calculateLoanData()}
-            numberOfMonths={numberOfMonths}
-            incomeTaxRate={incomeTax}
-          />
-        </>
+        </div>
       )}
-
-      <button onClick={downloadExcel} className="download-excel-button">
-        Download Excel
-      </button>
     </div>
   );
 };

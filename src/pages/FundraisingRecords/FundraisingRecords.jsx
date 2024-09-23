@@ -4,14 +4,15 @@ import apiService from "../../app/apiService";
 import StatBadge from "./components/StatBadge";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
-import { toast } from "react-toastify";
-import FinanceStatBadge from "./components/FinanceStatBadge";
+
+// import FinanceStatBadge from "./components/FinanceStatBadge";
 import LoadingButtonClick from "../../components/LoadingButtonClick";
 import StatBadgeByDay from "./components/StatBadgeByDay";
+import { message } from "antd";
 
 const FundraisingRecords = () => {
   const [ggData, setGgData] = useState([]);
-  const [financeGoogleData, setFinanceGoogleData] = useState([]);
+  // const [financeGoogleData, setFinanceGoogleData] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Loading state
   const { user } = useAuth();
 
@@ -27,7 +28,7 @@ const FundraisingRecords = () => {
         .eq("user_id", user.id);
 
       if (error) {
-        toast.error(error.message);
+        message.error(error.message);
         console.error("Error fetching projects from Supabase:", error.message);
         // setIsLoading(false); // Set loading state to false
         return;
@@ -63,7 +64,7 @@ const FundraisingRecords = () => {
   //       .eq("user_id", user.id);
 
   //     if (error) {
-  //       toast.error(error.message);
+  //       message.error(error.message);
   //       console.error("Error fetching finances from Supabase:", error.message);
   //       setIsLoading(false); // Set loading state to false
   //       return;

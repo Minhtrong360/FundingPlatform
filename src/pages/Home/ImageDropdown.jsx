@@ -3,59 +3,33 @@ import { useNavigate } from "react-router-dom";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useAuth } from "../../context/AuthContext";
-import { toast } from "react-toastify";
+
 import { supabase } from "../../supabase";
+import { ShopOutlined, UserOutlined } from "@ant-design/icons";
+import { BellOutlined } from "@ant-design/icons";
+import { UserSwitchOutlined } from "@ant-design/icons";
+import { DashboardOutlined } from "@ant-design/icons";
+import { DollarCircleOutlined } from "@ant-design/icons";
+import { ProfileOutlined } from "@ant-design/icons";
+import { LogoutOutlined } from "@ant-design/icons";
 
-const ImageDropdown = () => {
+const ImageDropdown = ({ isContentChanged }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, signOut } = useAuth();
-  const [userData, setUserData] = useState({
-    full_name: "",
-    email: "",
-    plan: "",
-    subscribe: "",
-    company: "",
-    company_website: "",
-    detail: "",
-    roll: "Founder",
-    avatar: null,
-    notification_count: 0,
-  });
-
-  useEffect(() => {
-    // Tạo một async function để lấy thông tin người dùng từ Supabase
-    async function fetchUserData() {
-      try {
-        if (!navigator.onLine) {
-          // Không có kết nối Internet
-          toast.error("No internet access.");
-          return;
-        }
-
-        // Thực hiện truy vấn để lấy thông tin người dùng theo id (điều này cần được thay đổi dựa trên cấu trúc dữ liệu của bạn trong Supabase)
-        const { data, error } = await supabase
-          .from("users")
-          .select("*")
-          .eq("id", user.id) // Thay "id" bằng trường id thực tế trong cơ sở dữ liệu của bạn
-          .single(); // Sử dụng .single() để lấy một bản ghi duy nhất
-
-        if (error) {
-          throw error;
-        }
-
-        // Cập nhật state userData với thông tin người dùng đã lấy được
-        if (data) {
-          setUserData(data);
-        }
-      } catch (error) {
-        toast.error(error.message);
-        console.error("Error fetching user data:", error);
-      }
-    }
-
-    // Gọi hàm fetchUserData khi component được mount
-    fetchUserData();
-  }, [user.id]); // Sử dụng user.id làm phần tử phụ thuộc để useEffect được gọi lại khi user.id thay đổi
+  const { user, signOut, currentUser } = useAuth();
+  const userData = currentUser
+    ? currentUser[0]
+    : {
+        full_name: "",
+        email: "",
+        plan: "",
+        subscribe: "",
+        company: "",
+        company_website: "",
+        detail: "",
+        roll: "Founder",
+        avatar: null,
+        notification_count: 0,
+      };
 
   const navigate = useNavigate();
 
@@ -63,8 +37,25 @@ const ImageDropdown = () => {
     setIsOpen(!isOpen);
   };
 
+  const handleNavigation = (path) => {
+    if (isContentChanged) {
+      const confirmLeave = window.confirm(
+        "You have unsaved changes. Are you sure you want to leave this page?"
+      );
+      if (!confirmLeave) return;
+    }
+    navigate(path);
+    setIsOpen(false);
+  };
+
   const handleLogout = (e) => {
-    handleClickOutside(e); //menu close before signout so that login won't pop up.
+    if (isContentChanged) {
+      const confirmLeave = window.confirm(
+        "You have unsaved changes. Are you sure you want to log out?"
+      );
+      if (!confirmLeave) return;
+    }
+    handleClickOutside(e); // Close the dropdown before signing out
     signOut();
     navigate("/");
   };
@@ -74,26 +65,25 @@ const ImageDropdown = () => {
       setIsOpen(false);
     }
   };
+
   const handleClickUserInfo = (e) => {
-    navigate("/user-info");
-    handleClickOutside(e);
-    setIsOpen(false);
+    handleNavigation("/user-info");
   };
+
   const handleClickDashBoard = (e) => {
-    navigate("/dashboard");
-    handleClickOutside(e);
-    setIsOpen(false);
+    handleNavigation("/dashboard");
   };
+
   const handleClickProject = (e) => {
-    navigate("/founder");
-    handleClickOutside(e);
-    setIsOpen(false);
+    handleNavigation("/profile");
+  };
+
+  const handleClickFleaMarket = (e) => {
+    handleNavigation("/Flea-Market");
   };
 
   const handleClickFinancial = (e) => {
-    navigate("/financials");
-    handleClickOutside(e);
-    setIsOpen(false);
+    handleNavigation("/financials");
   };
 
   // Attach or detach event listener based on isOpen state
@@ -114,28 +104,26 @@ const ImageDropdown = () => {
     const { error } = await supabase
       .from("users")
       .update({ notification_count: 0 })
-      .eq("id", user.id); // Thay "id" bằng trường id thực tế trong cơ sở dữ liệu của bạn
+      .eq("id", user.id);
 
     if (error) {
       throw error;
     }
 
-    navigate("/notifications");
-    handleClickOutside(e);
-    setIsOpen(false);
+    handleNavigation("/notifications");
   };
 
   return (
-    <div className="hs-dropdown relative inline-flex z-30">
+    <div className="hs-dropdown rounded-md relative inline-flex z-30">
       <button
         id="hs-dropdown-custom-trigger"
         type="button"
-        className="hs-dropdown-toggle py-1 ps-1 pe-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-full border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
+        className="hs-dropdown-toggle inline-flex items-center gap-x-2 text-sm   bg-white text-gray-800 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
         onClick={toggleDropdown}
       >
         {userData.avatar ? (
           <img
-            className="w-8 h-auto rounded-full"
+            className="w-8 h-8 rounded-full"
             src={userData.avatar}
             alt={userData.email}
           />
@@ -143,10 +131,10 @@ const ImageDropdown = () => {
           <AccountCircleIcon fontSize="large" />
         )}
 
-        <span className="text-gray-600 font-medium truncate sm:max-w-[7.5rem] max-w-[4rem] darkTextGray">
+        {/* <span className="text-gray-600 text-sm truncate sm:max-w-[7.5rem] max-w-[4rem] darkTextGray">
           {userData.email ? userData.email : ""}
-        </span>
-        <svg
+        </span> */}
+        {/* <svg
           className={`hs-dropdown-open:${isOpen ? "rotate-180" : ""} w-4 h-4`}
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -159,74 +147,88 @@ const ImageDropdown = () => {
           strokeLinejoin="round"
         >
           <path d="m6 9 6 6 6-6" />
-        </svg>
+        </svg> */}
       </button>
 
       {isOpen && (
         <div
           style={{ minWidth: "100%" }}
-          className="hs-dropdown-menu transition-[opacity,margin] duration-300 opacity-100  bg-white shadow-md rounded-lg p-2 mt-2 absolute left-0 top-full"
+          className="hs-dropdown-menu transition-[opacity,margin] duration-300 opacity-100  bg-white shadow-md rounded-lg p-2 mt-2 absolute top-full -left-[10.5rem]"
         >
           {userData.admin && (
             <button
               style={{ minWidth: "100%" }}
               className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
-              onClick={() => navigate("/admin")}
+              onClick={() => handleNavigation("/admin")}
             >
-              Admin
+              <UserSwitchOutlined />
+              Admin Dashboard
             </button>
           )}
 
           <button
             style={{ minWidth: "100%" }}
             className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
-            onClick={(e) => handleClickUserInfo(e)}
+            onClick={handleClickUserInfo}
           >
-            User Info
+            <UserOutlined />
+            User Settings
           </button>
           <button
             style={{ minWidth: "100%" }}
-            n
             className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
-            onClick={(e) => handleClickDashBoard(e)}
+            onClick={handleClickDashBoard}
           >
-            Dashboard
+            <DashboardOutlined />
+            User Dashboard
           </button>
 
           <button
             style={{ minWidth: "100%" }}
             className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
-            onClick={(e) => handleClickFinancial(e)}
+            onClick={handleClickFinancial}
           >
-            Financials
+            <DollarCircleOutlined />
+            Financial Model
           </button>
           <button
             style={{ minWidth: "100%" }}
             className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
-            onClick={(e) => handleClickProject(e)}
+            onClick={handleClickProject}
           >
-            Projects
+            <ProfileOutlined />
+            Project List
           </button>
+          {/* <button
+            style={{ minWidth: "100%" }}
+            className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
+            onClick={handleClickFleaMarket}
+          >
+            <ShopOutlined />
+            Angel's Share
+          </button> */}
 
           <button
             style={{ minWidth: "100%" }}
             className="hover:cursor-pointer flex items-center justify-between gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
-            onClick={(e) => handleClickNotifications(e)}
+            onClick={handleClickNotifications}
           >
-            <span className="flex items-center gap-x-3.5">Notifications</span>
+            <span className="flex items-center gap-x-3.5">
+              <BellOutlined /> Notifications
+            </span>
             <span className="bg-red-600 text-white h-7 w-7 rounded-full text-sm flex items-center justify-center">
-              {userData.notification_count ? userData.notification_count : 0}{" "}
-              {/* Display the notification count here */}
+              {userData.notification_count ? userData.notification_count : 0}
             </span>
           </button>
 
           <hr />
           <button
             style={{ minWidth: "100%" }}
-            onClick={(e) => handleLogout(e)}
+            onClick={handleLogout}
             className="hover:cursor-pointer flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 darkTextGray darkHoverBgBlue darkHoverTextWhite darkFocusBgBlue"
           >
-            Log out
+            <LogoutOutlined />
+            Log Out
           </button>
         </div>
       )}

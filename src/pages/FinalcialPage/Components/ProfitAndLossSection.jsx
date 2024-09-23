@@ -1,269 +1,1417 @@
-import React from "react";
-import { Table, Tooltip } from "antd";
-import Chart from "react-apexcharts";
+import React, { useEffect, useState } from "react";
+import {
+  Button,
+  Checkbox,
+  FloatButton,
+  Modal,
+  Table,
+  Tabs,
+  Tooltip,
+} from "antd";
 
-const ProfitAndLossSection = ({
-  revenueData,
-  costData,
-  personnelCostData,
-  investmentData,
-  loanData,
-  numberOfMonths,
-  incomeTaxRate,
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "../../../components/ui/select";
 
-}) => {
-  const calculateProfitAndLoss = () => {
-    let totalRevenue = new Array(numberOfMonths).fill(0);
-    let totalDeductions = new Array(numberOfMonths).fill(0);
-    let totalCOGS = new Array(numberOfMonths).fill(0);
-    let totalCosts = new Array(numberOfMonths).fill(0);
-    let totalPersonnelCosts = new Array(numberOfMonths).fill(0);
-    let totalInvestmentDepreciation = new Array(numberOfMonths).fill(0);
-    let totalLoanPayments = new Array(numberOfMonths).fill(0);
+import { useDispatch, useSelector } from "react-redux";
 
-    revenueData.forEach((entry) => {
-      if (!entry.channelName.includes("Revenue")) {
-        Object.keys(entry).forEach((key) => {
-          if (key.startsWith("month")) {
-            const monthIndex = parseInt(key.replace("month", "")) - 1;
-            totalRevenue[monthIndex] += parseFloat(entry[key] || 0);
-          }
-        });
-      }
-    });
+import {
+  calculateCostData,
+  formatNumber,
+  parseNumber,
+  setCostData,
+  setCostTableData,
+  transformCostDataForTable,
+} from "../../../features/CostSlice";
+import {
+  calculateChannelRevenue,
+  setCogsData,
+  setRevenueData,
+  setRevenueDeductionData,
+  setRevenueTableData,
+  transformRevenueDataForTable,
+} from "../../../features/SaleSlice";
+import {
+  calculatePersonnelCostData,
+  setPersonnelCostData,
+} from "../../../features/PersonnelSlice";
+import {
+  calculateInvestmentData,
+  setInvestmentData,
+  setInvestmentTableData,
+  transformInvestmentDataForTable,
+} from "../../../features/InvestmentSlice";
+import {
+  calculateLoanData,
+  setLoanData,
+  setLoanTableData,
+  transformLoanDataForTable,
+} from "../../../features/LoanSlice";
+import {
+  setFundraisingTableData,
+  transformFundraisingDataForTable,
+} from "../../../features/FundraisingSlice";
+import { calculateProfitAndLoss } from "../../../features/ProfitAndLossSlice";
+import CustomChart from "./CustomChart";
+import SelectField from "../../../components/SelectField";
+import { setCutMonth } from "../../../features/DurationSlice";
+import GroqJS from "./GroqJson";
+import { DownloadOutlined, FileOutlined } from "@ant-design/icons";
 
-    revenueData.forEach((entry) => {
-      if (entry.channelName.includes("- revenueDeduction")) {
-        Object.keys(entry).forEach((key) => {
-          if (key.startsWith("month")) {
-            const monthIndex = parseInt(key.replace("month", "")) - 1;
-            totalDeductions[monthIndex] += parseFloat(entry[key] || 0);
-          }
-        });
-      } else if (entry.channelName.includes("- COGS")) {
-        Object.keys(entry).forEach((key) => {
-          if (key.startsWith("month")) {
-            const monthIndex = parseInt(key.replace("month", "")) - 1;
-            totalCOGS[monthIndex] += parseFloat(entry[key] || 0);
-          }
-        });
-      }
-    });
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
+import {
+  CardContent,
+  CardHeader,
+  Card as CardShadcn,
+  CardTitle,
+} from "../../../components/ui/card";
+import { Download } from "lucide-react";
+import { Button as ButtonV0 } from "../../../components/ui/button";
+import {
+  Search,
+  MessageSquare,
+  PhoneCall,
+  Mail,
+  Globe,
+  CalendarIcon,
+  Users,
+  Clock,
+  ThumbsUp,
+  Settings,
+  UserPlus,
+  UserMinus,
+} from "lucide-react";
+// Thêm các import cần thiết cho metrics
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../../components/ui/popover";
 
-    costData.forEach((cost) => {
-      cost.monthlyCosts.forEach((monthData) => {
-        totalCosts[monthData.month - 1] += monthData.cost;
-      });
-    });
+const ProfitAndLossSection = ({ numberOfMonths }) => {
+  const dispatch = useDispatch();
+  const { cutMonth } = useSelector((state) => state.durationSelect);
 
-    personnelCostData.forEach((personnel) => {
-      personnel.monthlyCosts.forEach((monthData) => {
-        totalPersonnelCosts[monthData.month - 1] += monthData.cost;
-      });
-    });
+  const { customerGrowthData, customerInputs } = useSelector(
+    (state) => state.customer
+  );
 
-    investmentData.forEach((investment) => {
-      investment.depreciationArray.forEach((value, index) => {
-        totalInvestmentDepreciation[index] += value;
-      });
-    });
+  const { channelInputs, revenueData, revenueDeductionData, cogsData } =
+    useSelector((state) => state.sales);
 
-    loanData.forEach((loan) => {
-      loan.loanDataPerMonth.forEach((monthData) => {
-        totalLoanPayments[monthData.month - 1] += monthData.payment;
-      });
-    });
+  useEffect(() => {
+    const {
+      revenueByChannelAndProduct,
+      DeductionByChannelAndProduct,
+      cogsByChannelAndProduct,
+      netRevenueByChannelAndProduct,
+      grossProfitByChannelAndProduct,
+      cashInflowByChannelAndProduct,
+      receivablesByChannelAndProduct,
+    } = dispatch(
+      calculateChannelRevenue(
+        numberOfMonths,
+        customerGrowthData,
+        customerInputs,
+        channelInputs
+      )
+    );
+    const calculateRevenueTableData = transformRevenueDataForTable(
+      {
+        revenueByChannelAndProduct,
+        DeductionByChannelAndProduct,
+        cogsByChannelAndProduct,
+        netRevenueByChannelAndProduct,
+        grossProfitByChannelAndProduct,
+        cashInflowByChannelAndProduct,
+        receivablesByChannelAndProduct,
+      },
+      channelInputs,
+      "all"
+    );
+    dispatch(setRevenueTableData(calculateRevenueTableData));
 
-    // Feb29
-    let netRevenue = totalRevenue.map(
-      (revenue, index) => revenue - totalDeductions[index]
-    ); // Net Revenue calculation
+    dispatch(setRevenueData(revenueByChannelAndProduct));
+    dispatch(setRevenueDeductionData(DeductionByChannelAndProduct));
+    dispatch(setCogsData(cogsByChannelAndProduct));
+  }, [customerGrowthData, channelInputs, numberOfMonths]);
 
-    let grossProfit = netRevenue.map(
-      (revenue, index) => revenue - totalCOGS[index]
-    ); // Gross Profit calculation
+  const { incomeTax: incomeTaxRate, startingCashBalance } = useSelector(
+    (state) => state.durationSelect
+  );
 
-    let ebitda = grossProfit.map(
-      (profit, index) =>
-        profit - (totalCosts[index] + totalPersonnelCosts[index])
-    ); // Adjust EBITDA calculation to use grossProfit
+  const { costData, costInputs } = useSelector((state) => state.cost);
 
-    let totalInterestPayments = new Array(numberOfMonths).fill(0);
-    loanData.forEach((loan) => {
-      loan.loanDataPerMonth.forEach((monthData) => {
-        totalInterestPayments[monthData.month - 1] += monthData.interest;
-      });
-    });
-
-    // Adjust earningsBeforeTax calculation to use ebitda
-    let earningsBeforeTax = ebitda.map(
-      (profit, index) =>
-        profit -
-        (totalInvestmentDepreciation[index] + totalInterestPayments[index])
+  useEffect(() => {
+    const calculatedData = calculateCostData(
+      costInputs,
+      numberOfMonths,
+      revenueData
+    );
+    dispatch(setCostData(calculatedData));
+    const costTableData = transformCostDataForTable(
+      costInputs,
+      numberOfMonths,
+      revenueData
     );
 
-    let incomeTax = earningsBeforeTax.map((earnings) =>
-      earnings > 0 ? earnings * (incomeTaxRate / 100) : 0
+    dispatch(setCostTableData(costTableData));
+  }, [costInputs, numberOfMonths]);
+
+  const { personnelCostData, personnelInputs } = useSelector(
+    (state) => state.personnel
+  );
+
+  useEffect(() => {
+    const calculatedData = calculatePersonnelCostData(
+      personnelInputs,
+      numberOfMonths
+    );
+    dispatch(setPersonnelCostData(calculatedData));
+  }, [personnelInputs, numberOfMonths]);
+
+  const { investmentData, investmentTableData, investmentInputs } = useSelector(
+    (state) => state.investment
+  );
+  useEffect(() => {
+    const calculatedData = calculateInvestmentData(
+      investmentInputs,
+      numberOfMonths
+    );
+    dispatch(setInvestmentData(calculatedData));
+  }, [investmentInputs, numberOfMonths]);
+
+  useEffect(() => {
+    const tableData = transformInvestmentDataForTable(
+      investmentInputs,
+      investmentInputs[0]?.id,
+      investmentData,
+      numberOfMonths
+    );
+    dispatch(setInvestmentTableData(tableData));
+  }, [investmentData, investmentInputs, numberOfMonths]);
+
+  const { loanInputs, loanData, loanTableData } = useSelector(
+    (state) => state.loan
+  );
+
+  useEffect(() => {
+    const calculatedData = calculateLoanData(loanInputs, numberOfMonths);
+    dispatch(setLoanData(calculatedData));
+  }, [loanInputs, numberOfMonths]);
+
+  useEffect(() => {
+    const tableData = transformLoanDataForTable(
+      loanInputs,
+      loanInputs[0]?.id,
+      numberOfMonths
+    );
+    dispatch(setLoanTableData(tableData));
+  }, [loanInputs, numberOfMonths]);
+
+  const { fundraisingInputs, fundraisingTableData } = useSelector(
+    (state) => state.fundraising
+  );
+
+  useEffect(() => {
+    const tableData = transformFundraisingDataForTable(
+      fundraisingInputs,
+      numberOfMonths
     );
 
-    let netIncome = earningsBeforeTax.map(
-      (earnings, index) => earnings - incomeTax[index]
-    );
-
-    return {
-      totalRevenue,
-      totalDeductions,
-      netRevenue,
-      totalCOGS,
-      grossProfit, // Include Gross Profit in the returned object
-      totalCosts,
-      totalPersonnelCosts,
-      totalInvestmentDepreciation,
-      totalInterestPayments,
-      ebitda,
-      earningsBeforeTax,
-      incomeTax,
-      netIncome,
-    };
-  };
+    dispatch(setFundraisingTableData(tableData));
+  }, [fundraisingInputs, numberOfMonths]);
 
   const {
     totalRevenue,
     totalDeductions,
     netRevenue,
     totalCOGS,
-    grossProfit, // Destructure Gross Profit
+    grossProfit,
     totalCosts,
     totalPersonnelCosts,
+    detailedPersonnelCosts, // Added detailed personnel costs
     totalInvestmentDepreciation,
     totalInterestPayments,
     ebitda,
     earningsBeforeTax,
     incomeTax,
     netIncome,
-  } = calculateProfitAndLoss();
+  } = calculateProfitAndLoss(
+    numberOfMonths,
+    revenueData,
+    revenueDeductionData,
+    cogsData,
+    costData,
+    personnelCostData,
+    investmentData,
+    loanData,
+    incomeTaxRate,
+    startingCashBalance
+  );
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+  const startingMonth = startMonth; // Tháng bắt đầu từ 1
+  const startingYear = startYear; // Năm bắt đầu từ 24
 
-  const transposedData = [
+  const realDate = Array.from({ length: numberOfMonths }, (_, i) => {
+    const monthIndex = (startingMonth + i - 1) % 12;
+    const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+    return `${monthIndex + 1}-${year}`;
+  });
+
+  const profitAndLossData = [
+    { key: "Revenue" },
     { key: "Total Revenue", values: totalRevenue },
-    { key: "Total Deductions", values: totalDeductions },
+    { key: "Deductions", values: totalDeductions },
     { key: "Net Revenue", values: netRevenue },
+    { key: "Cost of Revenue" },
     { key: "Total COGS", values: totalCOGS },
     { key: "Gross Profit", values: grossProfit },
-    { key: "Total Operating Expenses", values: totalCosts },
-    { key: "Total Personnel Costs", values: totalPersonnelCosts },
-    { key: "EBITDA", values: ebitda }, // Add EBITDA row
+    { key: "Operating Expenses" },
+    // { key: "Operating Costs", values: totalCosts },
     {
-      key: "Total Investment Depreciation",
-      values: totalInvestmentDepreciation,
+      key: "Operating Costs",
+      values: totalCosts,
     },
-    { key: "Total Interest Payments", values: totalInterestPayments },
-    { key: "Earnings Before Tax", values: earningsBeforeTax },
+    {
+      key: "Personnel",
+      values: totalPersonnelCosts,
+      children: Object.keys(detailedPersonnelCosts).map((jobTitle) => ({
+        key: jobTitle,
+        values: detailedPersonnelCosts[jobTitle],
+      })),
+    },
+    { key: "EBITDA", values: ebitda },
+    { key: "Additional Expenses" },
+    { key: "Depreciation", values: totalInvestmentDepreciation },
+    { key: "Interest", values: totalInterestPayments },
+    { key: "EBT", values: earningsBeforeTax },
     { key: "Income Tax", values: incomeTax },
     { key: "Net Income", values: netIncome },
   ].map((item, index) => ({
     metric: item.key,
-    ...item.values.reduce(
-      (acc, value, i) => ({ ...acc, [`Month ${i + 1}`]: value?.toFixed(2) }),
+    ...item.values?.reduce(
+      (acc, value, i) => ({
+        ...acc,
+        [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+      }),
       {}
     ),
+    children: item.children?.map((child) => ({
+      metric: child.key,
+      ...child.values.reduce(
+        (acc, value, i) => ({
+          ...acc,
+          [realDate[i]]: formatNumber(value?.toFixed(2)),
+        }),
+        {}
+      ),
+    })),
   }));
 
-  // Adjust columns for the transposed table
-  const columns = [
-    {
-      title: "Metric",
-      dataIndex: "metric",
-      key: "metric",
-      fixed: "left",
-    },
-    ...Array.from({ length: numberOfMonths }, (_, i) => ({
-      title: `Month_${i + 1}`,
-      dataIndex: `Month ${i + 1}`,
-      key: `Month ${i + 1}`,
-    })),
-  ];
+  const { costTableData } = useSelector((state) => state.cost);
+  const { revenueTableData } = useSelector((state) => state.sales);
 
-  const chartSeries = [
-    {
-      name: "Total Revenue",
-      data: totalRevenue.map((value) => parseFloat(value?.toFixed(2))),
-    },
-    {
-      name: "Total Costs",
-      data: totalCosts.map((value) => parseFloat(value?.toFixed(2))),
-    },
-    {
-      name: "Total Personnel Costs",
-      data: totalPersonnelCosts.map((value) => parseFloat(value?.toFixed(2))),
-    },
-    {
-      name: "Total Investment Depreciation",
-      data: totalInvestmentDepreciation.map((value) =>
-        parseFloat(value?.toFixed(2))
-      ),
-    },
-    {
-      name: "Total Interest Payments",
-      data: totalInterestPayments.map((value) => parseFloat(value?.toFixed(2))),
-    },
-    {
-      name: "Net Income",
-      data: netIncome.map((value) => parseFloat(value.toFixed(2))),
-    },
-  ];
-
-  const chartOptions = {
-    chart: { id: "profit-and-loss-chart", type: "line", height: 350 },
-    xaxis: {
-      categories: Array.from({ length: numberOfMonths }, (_, i) => `${i + 1}`),
-      title: {
-        text: "Month",
-        style: {
-          fontFamily: "Inter, sans-serif", // Sử dụng font chữ Inter
-          fontWeight: "600", // Cỡ chữ semibold
-        },
-      },
-      labels: {
-        rotate: -45,
-        rotateAlways: false,
-        hideOverlappingLabels: true,
-        trim: true,
-        minHeight: 100, // Adjust as needed to ensure labels do not overlap or take up too much space
-        style: {
-          cssClass: "apexcharts-xaxis-label",
-        },
-      },
-    },
-    yaxis: { title: { text: "Amount ($)" } },
-    stroke: { curve: "smooth" },
-    legend: { position: "top" },
-    tooltip: {
-      enabled: true,
-      y: {
-        formatter: (val) => `$${val?.toFixed(2)}`,
-      },
-    },
+  const truncateText = (text, maxLength) => {
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return text.substring(0, maxLength) + "...";
   };
 
-  // Transposed table data preparation remains unchanged
+  const transposedData = [
+    { key: "Revenue" },
+    // { key: "Total Revenue", values: totalRevenue },
+    {
+      key: "Total Revenue",
+      values: totalRevenue,
+      children: revenueTableData
+        .filter(
+          (item) =>
+            item.key.includes("Revenue - ") &&
+            !item.key.includes("Net Revenue -")
+        )
+        .map((item) => ({
+          key: item.key,
+          metric: item.key,
+          ...Object.keys(item).reduce((acc, key) => {
+            if (key.startsWith("month")) {
+              const monthIndex = key.replace("month", "").trim();
+              acc[`Month ${monthIndex}`] = item[key];
+            }
+            return acc;
+          }, {}),
+        })),
+    },
+    { key: "Deductions", values: totalDeductions },
+    { key: "Net Revenue", values: netRevenue },
+    { key: "" },
+    { key: "Cost of Revenue" },
+    { key: "Total COGS", values: totalCOGS },
+    { key: "Gross Profit", values: grossProfit },
+    { key: "" },
+    { key: "Operating Expenses" },
 
-  // Table columns definition remains unchanged
+    // { key: "Operating Costs", values: totalCosts },
+    {
+      key: "Operating Costs",
+      values: totalCosts,
+      children: costTableData.map((item) => ({
+        key: item.key,
+        metric: item.costName,
+        ...Object.keys(item).reduce((acc, key) => {
+          if (key.startsWith("month")) {
+            const monthIndex = key.replace("month", "").trim();
+            acc[`Month ${monthIndex}`] = item[key];
+          }
+          return acc;
+        }, {}),
+      })),
+    },
+    {
+      key: "Personnel",
+      values: totalPersonnelCosts,
+      children: Object.keys(detailedPersonnelCosts).map((jobTitle) => ({
+        key: jobTitle,
+        values: detailedPersonnelCosts[jobTitle],
+        metric: jobTitle,
+        ...detailedPersonnelCosts[jobTitle].reduce(
+          (acc, value, i) => ({
+            ...acc,
+            [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+          }),
+          {}
+        ),
+      })),
+    },
+    { key: "EBITDA", values: ebitda },
+    { key: "" },
+    { key: "Additional Expenses" },
+    { key: "Depreciation", values: totalInvestmentDepreciation },
+    { key: "Interest", values: totalInterestPayments },
+    { key: "EBT", values: earningsBeforeTax },
+    { key: "" },
+    { key: "Income Tax", values: incomeTax },
+    { key: "Net Income", values: netIncome },
+  ].map((item, index) => ({
+    metric: item.key,
+    ...item.values?.reduce(
+      (acc, value, i) => ({
+        ...acc,
+        [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+      }),
+      {}
+    ),
+    children: item.children?.map((child) => ({
+      metric: child.metric,
+      ...child.values?.reduce(
+        (acc, value, i) => ({
+          ...acc,
+          [`Month ${i + 1}`]: formatNumber(value?.toFixed(2)),
+        }),
+        {}
+      ),
+      ...Object.keys(child).reduce((acc, key) => {
+        if (key.startsWith("Month")) {
+          acc[key] = child[key];
+        }
+        return acc;
+      }, {}),
+    })),
+  }));
+
+  ////////
+  const months = [
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
+  ];
+
+  const columns = [
+    {
+      fixed: "left",
+      title: <div>Metric</div>,
+      dataIndex: "metric",
+      key: "metric",
+      render: (text, record) => {
+        const isTotalRevenueChild = record.metric.startsWith("Revenue - ");
+        const maxLength = isTotalRevenueChild ? 15 : 50; // Set the max length for truncation
+        const displayText = truncateText(text, maxLength);
+
+        return {
+          children: (
+            <div className={"md:whitespace-nowrap "}>
+              <Tooltip title={text}>
+                <div
+                  style={{
+                    fontWeight:
+                      record.metric === "Total Revenue" ||
+                      record.metric === "Total COGS" ||
+                      record.metric === "Net Revenue" ||
+                      record.metric === "Gross Profit" ||
+                      record.metric === "EBITDA" ||
+                      record.metric === "Operating Costs" ||
+                      record.metric === "Net Income" ||
+                      record.metric === "Revenue" ||
+                      record.metric === "Cost of Revenue" ||
+                      record.metric === "Operating Expenses" ||
+                      record.metric === "Additional Expenses"
+                        ? "bold"
+                        : "normal",
+                  }}
+                >
+                  {displayText}
+                </div>
+              </Tooltip>
+            </div>
+          ),
+        };
+      },
+    },
+
+    ...Array.from({ length: numberOfMonths }, (_, i) => {
+      const monthIndex = (startingMonth + i - 1) % 12;
+      const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+      return {
+        title: `${months[monthIndex]}/${year}`,
+        dataIndex: `Month ${i + 1}`,
+        key: `Month ${i + 1}`,
+        align: "right",
+        onCell: (record) => {
+          if (
+            record.metric === "Revenue" ||
+            record.metric === "Cost of Revenue" ||
+            record.metric === "Operating Expenses" ||
+            record.metric === "Additional expenses"
+          ) {
+            return {
+              style: {
+                // borderRight: "1px solid #f0f0f0",
+              },
+            };
+          } else if (
+            // record.metric === "Total Revenue" ||
+            // record.metric === "Total COGS" ||
+            record.metric === "Net Revenue" ||
+            record.metric === "Gross Profit" ||
+            record.metric === "EBITDA" ||
+            // record.metric === "Operating Costs" ||
+            record.metric === "Net Income"
+          ) {
+            return {
+              style: {
+                borderTop: "2px solid #000000",
+
+                fontWeight: "bold", // Add bold styling for Total Revenue
+              },
+            };
+          } else if (
+            record.metric === "Total Revenue" ||
+            record.metric === "Total COGS" ||
+            record.metric === "Net Revenue" ||
+            record.metric === "Gross Profit" ||
+            record.metric === "EBITDA" ||
+            record.metric === "Operating Costs" ||
+            record.metric === "Net Income"
+          ) {
+            return {
+              style: {
+                fontWeight: "bold", // Add bold styling for Total Revenue
+              },
+            };
+          } else {
+            return {
+              style: {
+                // borderRight: "1px solid #f0f0f0",
+              },
+            };
+          }
+        },
+      };
+    }),
+  ];
+
+  let totalAssetValue = [];
+
+  // Kiểm tra nếu investmentData không có giá trị hoặc investmentData[0]?.assetValue không tồn tại
+  if (!investmentData || !investmentData[0]?.assetValue) {
+    // Tạo một mảng mới với các phần tử có giá trị là 0
+    // Ví dụ: Tạo một mảng gồm 12 phần tử có giá trị 0
+    for (let i = 0; i < numberOfMonths; i++) {
+      totalAssetValue.push(0);
+    }
+  } else {
+    // Nếu investmentData có giá trị và investmentData[0]?.assetValue tồn tại
+    // Thực hiện tính tổng của từng phần tử tại index trong mảng assetValue của mỗi phần tử trong investmentData
+    totalAssetValue = investmentData[0]?.assetValue?.map((_, index) =>
+      investmentData.reduce(
+        (acc, data) => acc + (data?.assetValue ? data.assetValue[index] : 0),
+        0
+      )
+    );
+  }
+
+  const cfInvestmentsArray = [];
+  if (investmentTableData.length > 0) {
+    const cfInvestments = investmentTableData.find(
+      (item) => item.key === "CF Investments"
+    );
+
+    Object.keys(cfInvestments).forEach((key) => {
+      if (key.startsWith("month")) {
+        cfInvestmentsArray.push(parseNumber(cfInvestments[key]));
+      }
+    });
+  } else {
+    // Trường hợp investmentTableData.length = 0, tạo mảng với giá trị 0
+    // Giả sử bạn muốn tạo một mảng gồm 12 phần tử có giá trị 0
+    for (let i = 0; i < numberOfMonths; i++) {
+      cfInvestmentsArray.push(0);
+    }
+  }
+
+  const cfLoanArray = [];
+
+  if (loanTableData.length > 0) {
+    const cfLoans = loanTableData.find((item) => item.key === "CF Loans");
+
+    Object.keys(cfLoans).forEach((key) => {
+      if (key.startsWith("Month ")) {
+        cfLoanArray.push(parseNumber(cfLoans[key]));
+      }
+    });
+  } else {
+    // Trường hợp investmentTableData.length = 0, tạo mảng với giá trị 0
+    // Giả sử bạn muốn tạo một mảng gồm 12 phần tử có giá trị 0
+    for (let i = 0; i < numberOfMonths; i++) {
+      cfLoanArray.push(0);
+    }
+  }
+
+  const commonStockArr = [];
+  const preferredStockArr = [];
+  const capitalArr = [];
+  const accumulatedCommonStockArr = [];
+  const accumulatedPreferredStockArr = [];
+  const accumulatedCapitalArr = [];
+
+  fundraisingTableData.forEach((data) => {
+    if (data.key === "Increased in Common Stock") {
+      Object.keys(data).forEach((key) => {
+        if (key.startsWith("month")) {
+          commonStockArr.push(parseNumber(data[key]));
+        }
+      });
+    } else if (data.key === "Increased in Preferred Stock") {
+      Object.keys(data).forEach((key) => {
+        if (key.startsWith("month")) {
+          preferredStockArr.push(parseNumber(data[key]));
+        }
+      });
+    } else if (data.key === "Increased in Paid in Capital") {
+      Object.keys(data).forEach((key) => {
+        if (key.startsWith("month")) {
+          capitalArr.push(parseNumber(data[key]));
+        }
+      });
+    } else if (data.key === "Accumulated Common Stock") {
+      Object.keys(data).forEach((key) => {
+        if (key.startsWith("month")) {
+          accumulatedCommonStockArr.push(parseNumber(data[key]));
+        }
+      });
+    } else if (data.key === "Accumulated Preferred Stock") {
+      Object.keys(data).forEach((key) => {
+        if (key.startsWith("month")) {
+          accumulatedPreferredStockArr.push(parseNumber(data[key]));
+        }
+      });
+    } else if (data.key === "Accumulated Paid in Capital") {
+      Object.keys(data).forEach((key) => {
+        if (key.startsWith("month")) {
+          accumulatedCapitalArr.push(parseNumber(data[key]));
+        }
+      });
+    }
+  });
+
+  const bsTotalDepreciation = [];
+  const bsTotalNetFixedAssets = [];
+
+  if (investmentTableData.length === 0) {
+    // Trường hợp không có dữ liệu trong investmentTableData, tạo mảng mới với các phần tử có giá trị là 0
+    // Giả sử bạn muốn tạo một mảng gồm 12 phần tử có giá trị 0
+    for (let i = 0; i < numberOfMonths; i++) {
+      bsTotalDepreciation.push(0);
+      bsTotalNetFixedAssets.push(0);
+    }
+  } else {
+    // Nếu có dữ liệu trong investmentTableData, thực hiện vòng lặp để xử lý dữ liệu
+    investmentTableData.forEach((data) => {
+      if (data.key === "BS Total Accumulated Depreciation") {
+        Object.keys(data).forEach((key) => {
+          if (key.startsWith("month")) {
+            bsTotalDepreciation.push(parseNumber(data[key]));
+          }
+        });
+      } else if (data.key === "BS Total Net Fixed Assets") {
+        Object.keys(data).forEach((key) => {
+          if (key.startsWith("month")) {
+            bsTotalNetFixedAssets.push(parseNumber(data[key]));
+          }
+        });
+      }
+    });
+  }
+
+  // calculate the total liabilities = remaining balance + account payable
+
+  //calculate the total shareholders equity = paid in capital + common stock + preferred stock + retain earnings
+
+  const bsTotalRemainingBalance = [];
+
+  if (loanTableData.length === 0) {
+    // Trường hợp không có dữ liệu trong loanTableData, tạo mảng mới với các phần tử có giá trị là 0
+    // Giả sử bạn muốn tạo một mảng gồm 12 phần tử có giá trị 0
+    for (let i = 0; i < numberOfMonths; i++) {
+      bsTotalRemainingBalance.push(0);
+    }
+  } else {
+    // Nếu có dữ liệu trong loanTableData, thực hiện vòng lặp để xử lý dữ liệu
+    loanTableData.forEach((data) => {
+      if (data.key === "Total Remaining Balance") {
+        Object.keys(data).forEach((key) => {
+          if (key.startsWith("Month ")) {
+            bsTotalRemainingBalance.push(parseNumber(data[key]));
+          }
+        });
+      }
+    });
+  }
+
+  const [selectedChart, setSelectedChart] = useState("total-revenue-chart"); // State để lưu trữ biểu đồ được chọn
+
+  // Các useEffect và mã khác ở đây không thay đổi
+
+  // Hàm xử lý sự kiện khi giá trị của dropdown thay đổi
+  const handleChartSelect = (value) => {
+    setSelectedChart(value);
+  };
+
+  const handleCutMonthChange = (e) => {
+    dispatch(setCutMonth(Number(e.target.value)));
+  };
+
+  const divideMonthsIntoYears = () => {
+    const years = [];
+    const startingMonthIndex = startMonth - 1;
+    const startingYear = startYear;
+
+    if (cutMonth > 0) {
+      const firstYearMonths = Array.from({ length: cutMonth }, (_, i) => i + 1);
+      const firstYearTextMonths = firstYearMonths.map((month) => {
+        const monthIndex = (startingMonthIndex + month - 1) % 12;
+        const year =
+          startingYear + Math.floor((startingMonthIndex + month - 1) / 12);
+        return `${months[monthIndex]}/${year}`;
+      });
+      years.push({
+        year: "First Year",
+        months: firstYearMonths,
+        textMonth: firstYearTextMonths,
+      });
+    }
+
+    const remainingMonthsAfterFirstYear = numberOfMonths - cutMonth;
+    const fullYearsCount = Math.floor(remainingMonthsAfterFirstYear / 12);
+    const remainingMonthsInLastYear = remainingMonthsAfterFirstYear % 12;
+
+    for (let i = 0; i < fullYearsCount; i++) {
+      const yearMonths = Array.from(
+        { length: 12 },
+        (_, idx) => idx + 1 + cutMonth + i * 12
+      );
+      const yearTextMonths = yearMonths.map((month) => {
+        const monthIndex = (startingMonthIndex + month - 1) % 12;
+        const year =
+          startingYear + Math.floor((startingMonthIndex + month - 1) / 12);
+        return `${months[monthIndex]}/${year}`;
+      });
+      years.push({
+        year: `Year ${i + 2}`,
+        months: yearMonths,
+        textMonth: yearTextMonths,
+      });
+    }
+
+    if (remainingMonthsInLastYear > 0) {
+      const lastYearMonths = Array.from(
+        { length: remainingMonthsInLastYear },
+        (_, idx) => idx + 1 + cutMonth + fullYearsCount * 12
+      );
+      const lastYearTextMonths = lastYearMonths.map((month) => {
+        const monthIndex = (startingMonthIndex + month - 1) % 12;
+        const year =
+          startingYear + Math.floor((startingMonthIndex + month - 1) / 12);
+        return `${months[monthIndex]}/${year}`;
+      });
+      years.push({
+        year: `Last Year`,
+        months: lastYearMonths,
+        textMonth: lastYearTextMonths,
+      });
+    }
+
+    return years;
+  };
+
+  const years = divideMonthsIntoYears();
+
+  // Function to generate table columns dynamically based on months in a year
+
+  const generateTableColumns = (year) => {
+    const columns = [
+      {
+        title: "Metric",
+        dataIndex: "metric",
+        key: "metric",
+        fixed: "left",
+      },
+      ...year.textMonth.map((textMonth, index) => ({
+        title: textMonth,
+        dataIndex: `Month ${year.months[index]}`,
+        key: `Month ${year.months[index]}`,
+      })),
+      {
+        title: "Year Total",
+        dataIndex: "yearTotal",
+        key: "yearTotal",
+        render: (text) => formatNumber(text?.toFixed(2)), // Optional: formatting the number if needed
+      },
+    ];
+
+    return columns;
+  };
+
+  function parseNumberInternal(value) {
+    if (value === undefined || value === null) return 0;
+    return Number(value.toString().replace(/,/g, ""));
+  }
+
+  const getDataSourceForYear = (months) => {
+    const monthKeys = months.map((month) => `Month ${month}`);
+
+    return transposedData.map((data) => {
+      const filteredData = monthKeys.reduce((acc, monthKey) => {
+        acc[monthKey] = data[monthKey]; // keep original formatted value
+        return acc;
+      }, {});
+
+      // Calculate Year Total for each row, ensuring values are defined before parsing with the parseNumberInternal function
+      const yearTotal = monthKeys.reduce((sum, key) => {
+        const value = data[key];
+        return sum + (value ? parseNumberInternal(value) : 0);
+      }, 0);
+
+      return {
+        metric: data.metric,
+        ...filteredData,
+        yearTotal, // Adding Year Total to each row
+      };
+    });
+  };
+
+  const [activeTab, setActiveTab] = useState(0); // State to track active tab
+  const { TabPane } = Tabs; // Destructure TabPane from Tabs
+  const [isInputFormOpen, setIsInputFormOpen] = useState(false);
+
+  const downloadExcel = () => {
+    const workBook = XLSX.utils.book_new();
+
+    // Create worksheet data in the desired format
+    const worksheetData = [
+      [
+        "Metric",
+        ...Array.from({ length: numberOfMonths }, (_, i) => {
+          const monthIndex = (startingMonth + i - 1) % 12;
+          const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+          return `${months[monthIndex]}/${year}`;
+        }),
+      ],
+    ];
+
+    // Add rows for each channel
+    transposedData.forEach((record) => {
+      const row = [record.metric];
+      for (let i = 1; i <= numberOfMonths; i++) {
+        row.push(record[`Month ${i}`] || "");
+      }
+      worksheetData.push(row);
+    });
+
+    // Convert data to worksheet
+    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(workBook, worksheet, "Profit And Loss Data");
+
+    // Write workbook and trigger download
+    const wbout = XLSX.write(workBook, { bookType: "xlsx", type: "binary" });
+
+    function s2ab(s) {
+      const buf = new ArrayBuffer(s.length);
+      const view = new Uint8Array(buf);
+      for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+      return buf;
+    }
+
+    saveAs(
+      new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
+      "profitAndLoss_data.xlsx"
+    );
+  };
+
+  const [showAdvancedInputs, setShowAdvancedInputs] = useState(false);
+
+  const [visibleMetrics, setVisibleMetrics] = useState({
+    existingCustomers: true,
+    numberOfChannels: true,
+    previousMonthUsers: true,
+    addedUsers: true,
+    churnedUsers: true,
+    totalUsers: true,
+    customerSatisfaction: true,
+  });
+
+  const toggleMetric = (metric) => {
+    setVisibleMetrics((prev) => ({ ...prev, [metric]: !prev[metric] }));
+  };
+
+  const metrics = [
+    {
+      key: "existingCustomers",
+      title: "Existing Customers",
+      value: "1,234",
+      change: "+10%",
+      icon: Users,
+    },
+    {
+      key: "numberOfChannels",
+      title: "Number of Channels",
+      value: "5",
+      change: "+1",
+      icon: MessageSquare,
+    },
+    {
+      key: "previousMonthUsers",
+      title: "Previous month users",
+      value: "10,987",
+      change: "-",
+      icon: Users,
+    },
+    {
+      key: "addedUsers",
+      title: "Added Users",
+      value: "1,345",
+      change: "+22%",
+      icon: UserPlus,
+    },
+    {
+      key: "churnedUsers",
+      title: "No. of User Churned",
+      value: "201",
+      change: "-5%",
+      icon: UserMinus,
+    },
+    {
+      key: "totalUsers",
+      title: "No. of Users",
+      value: "12,131",
+      change: "+11%",
+      icon: Users,
+    },
+    {
+      key: "customerSatisfaction",
+      title: "Customer Satisfaction",
+      value: "92%",
+      change: "+3%",
+      icon: ThumbsUp,
+    },
+  ];
+
+  const [chartStartMonth, setChartStartMonth] = useState(1);
+  const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
 
   return (
-    <div>
-      <h2 className="text-2xl font-semibold mb-4">Profit and Loss Statement</h2>
-      <Table
-        className="overflow-auto mb-4"
-        dataSource={transposedData}
-        columns={columns}
-        pagination={false}
-      />
-      <Chart
-        options={chartOptions}
-        series={chartSeries}
-        type="line"
-        height={350}
-      />
+    <div className="w-full h-full flex flex-col lg:flex-row p-4">
+      <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
+        <section className="mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-[1.25rem]">
+            <h2 className="text-lg font-semibold">
+              I. Metrics (Under Constructions)
+            </h2>
+            <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col">
+              {/* Bộ chọn khoảng thời gian */}
+
+              <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
+                <div className="min-w-[10vw] w-full flex flex-row sm:!mr-0 !mr-1">
+                  <label
+                    htmlFor="startMonthSelect"
+                    className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
+                  >
+                    From:
+                  </label>
+                  <Select
+                    value={chartStartMonth}
+                    onValueChange={(value) => {
+                      setChartStartMonth(
+                        Math.max(1, Math.min(value, chartEndMonth))
+                      );
+                    }}
+                  >
+                    <SelectTrigger className="w-full sm:!justify-between !justify-center">
+                      <SelectValue placeholder="Select month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from({ length: numberOfMonths }, (_, i) => {
+                        const monthIndex = (startingMonth + i - 1) % 12;
+                        const year =
+                          startingYear +
+                          Math.floor((startingMonth + i - 1) / 12);
+                        return (
+                          <SelectItem key={i + 1} value={i + 1}>
+                            {`${months[monthIndex]}/${year}`}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="min-w-[10vw] w-full flex flex-row sm:!ml-0 !ml-1">
+                  <label
+                    htmlFor="endMonthSelect"
+                    className="sm:!flex !hidden text-sm justify-center items-center !my-2 !mx-4"
+                  >
+                    To:
+                  </label>
+                  <Select
+                    value={chartEndMonth}
+                    onValueChange={(value) => {
+                      setChartEndMonth(
+                        Math.max(
+                          chartStartMonth,
+                          Math.min(value, numberOfMonths)
+                        )
+                      );
+                    }}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from({ length: numberOfMonths }, (_, i) => {
+                        const monthIndex = (startingMonth + i - 1) % 12;
+                        const year =
+                          startingYear +
+                          Math.floor((startingMonth + i - 1) / 12);
+                        return (
+                          <SelectItem key={i + 1} value={i + 1}>
+                            {`${months[monthIndex]}/${year}`}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              {/* Popover để chọn metrics hiển thị */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <ButtonV0 variant="outline" className="w-full md:w-auto">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Options
+                  </ButtonV0>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="bg-white right-0 left-auto"
+                  align="end"
+                >
+                  <div className="grid gap-4">
+                    <h4 className="font-medium leading-none">
+                      Visible Metrics
+                    </h4>
+                    {metrics.map((metric) => (
+                      <div
+                        key={metric.key}
+                        className="flex items-center space-x-2"
+                      >
+                        <Checkbox
+                          id={metric.key}
+                          checked={visibleMetrics[metric.key]}
+                          onChange={() => toggleMetric(metric.key)}
+                        />
+                        <label
+                          htmlFor={metric.key}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          {metric.title}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+
+          {/* Hiển thị các metrics */}
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {metrics.map(
+              (metric) =>
+                visibleMetrics[metric.key] && (
+                  <CardShadcn key={metric.key}>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">
+                        {metric.title}
+                      </CardTitle>
+                      <metric.icon className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">{metric.value}</div>
+                      <p className="text-xs text-muted-foreground">
+                        {metric.change} from last period
+                      </p>
+                    </CardContent>
+                  </CardShadcn>
+                )
+            )}
+          </div>
+        </section>
+
+        <div>
+          <h3 className="text-lg font-semibold mb-4">II. Relevant Chart</h3>
+
+          <div className=" gap-4 mb-3">
+            <Select
+              onValueChange={(value) => handleChartSelect(value)}
+              value={selectedChart}
+              className="border-solid border-[1px] border-gray-300"
+            >
+              <SelectTrigger className="bg-white border-solid border-[1px] border-gray-300 w-full lg:w-[20%]">
+                <SelectValue />
+              </SelectTrigger>
+
+              <SelectContent position="popper" className="bg-white">
+                <SelectItem
+                  className="hover:cursor-pointer"
+                  value="total-revenue-chart"
+                >
+                  Total Revenue
+                </SelectItem>
+                <SelectItem
+                  className="hover:cursor-pointer"
+                  value="total-costs-chart"
+                >
+                  Total Costs
+                </SelectItem>
+                <SelectItem
+                  className="hover:cursor-pointer"
+                  value="net-income-chart"
+                >
+                  Net Income
+                </SelectItem>
+                <SelectItem
+                  className="hover:cursor-pointer"
+                  value="gross-profit-chart"
+                >
+                  Gross Profit
+                </SelectItem>
+                <SelectItem
+                  className="hover:cursor-pointer"
+                  value="ebitda-chart"
+                >
+                  EBITDA
+                </SelectItem>
+                <SelectItem
+                  className="hover:cursor-pointer"
+                  value="earnings-before-tax-chart"
+                >
+                  Earnings Before Tax
+                </SelectItem>
+                <SelectItem
+                  className="hover:cursor-pointer"
+                  value="income-tax-chart"
+                >
+                  Income Tax
+                </SelectItem>
+                <SelectItem
+                  className="hover:cursor-pointer"
+                  value="total-investment-depreciation-chart"
+                >
+                  Total Investment Depreciation
+                </SelectItem>
+                <SelectItem
+                  className="hover:cursor-pointer"
+                  value="total-interest-payments-chart"
+                >
+                  Total Interest Payments
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Các biểu đồ */}
+
+          {/* Sử dụng selectedChart để render biểu đồ tương ứng */}
+          {selectedChart === "total-revenue-chart" && (
+            <CustomChart
+              chartStartMonth={chartStartMonth}
+              chartEndMonth={chartEndMonth}
+              numberOfMonths={numberOfMonths}
+              id="total-revenue-chart"
+              yaxisTitle="Total Revenue ($)"
+              seriesTitle="Total Revenue"
+              RenderData={totalRevenue}
+              title="Total Revenue Over Time"
+            />
+          )}
+          {selectedChart === "total-costs-chart" && (
+            <CustomChart
+              chartStartMonth={chartStartMonth}
+              chartEndMonth={chartEndMonth}
+              numberOfMonths={numberOfMonths}
+              id="total-costs-chart"
+              yaxisTitle="Total Costs ($)"
+              seriesTitle="Total Costs"
+              RenderData={totalCosts}
+              title="Total Costs Over Time"
+            />
+          )}
+          {selectedChart === "net-income-chart" && (
+            <CustomChart
+              chartStartMonth={chartStartMonth}
+              chartEndMonth={chartEndMonth}
+              numberOfMonths={numberOfMonths}
+              id="net-income-chart"
+              yaxisTitle="Net Income ($)"
+              seriesTitle="Net Income"
+              RenderData={netIncome}
+              title="Net Income Over Time"
+            />
+          )}
+          {selectedChart === "gross-profit-chart" && (
+            <CustomChart
+              chartStartMonth={chartStartMonth}
+              chartEndMonth={chartEndMonth}
+              numberOfMonths={numberOfMonths}
+              id="gross-profit-chart"
+              yaxisTitle="Gross Profit ($)"
+              seriesTitle="Gross Profit"
+              RenderData={grossProfit}
+              title="Gross Profit Over Time"
+            />
+          )}
+          {selectedChart === "ebitda-chart" && (
+            <CustomChart
+              chartStartMonth={chartStartMonth}
+              chartEndMonth={chartEndMonth}
+              numberOfMonths={numberOfMonths}
+              id="ebitda-chart"
+              yaxisTitle="EBITDA ($)"
+              seriesTitle="EBITDA"
+              RenderData={ebitda}
+              title="EBITDA Over Time"
+            />
+          )}
+          {selectedChart === "earnings-before-tax-chart" && (
+            <CustomChart
+              chartStartMonth={chartStartMonth}
+              chartEndMonth={chartEndMonth}
+              numberOfMonths={numberOfMonths}
+              id="earnings-before-tax-chart"
+              yaxisTitle="Earnings Before Tax ($)"
+              seriesTitle="Earnings Before Tax"
+              RenderData={earningsBeforeTax}
+              title="Earnings Before Tax Over Time"
+            />
+          )}
+          {selectedChart === "income-tax-chart" && (
+            <CustomChart
+              chartStartMonth={chartStartMonth}
+              chartEndMonth={chartEndMonth}
+              numberOfMonths={numberOfMonths}
+              id="income-tax-chart"
+              yaxisTitle="Income Tax ($)"
+              seriesTitle="Income Tax"
+              RenderData={incomeTax}
+              title="Income Tax Over Time"
+            />
+          )}
+          {selectedChart === "total-investment-depreciation-chart" && (
+            <CustomChart
+              chartStartMonth={chartStartMonth}
+              chartEndMonth={chartEndMonth}
+              numberOfMonths={numberOfMonths}
+              id="total-investment-depreciation-chart"
+              yaxisTitle="Total Investment Depreciation ($)"
+              seriesTitle="Total Investment Depreciation"
+              RenderData={totalInvestmentDepreciation}
+              title="Total Investment Depreciation Over Time"
+            />
+          )}
+          {selectedChart === "total-interest-payments-chart" && (
+            <CustomChart
+              chartStartMonth={chartStartMonth}
+              chartEndMonth={chartEndMonth}
+              numberOfMonths={numberOfMonths}
+              id="total-interest-payments-chart"
+              yaxisTitle="TotalInterest Payments ($)"
+              seriesTitle="Total Interest Payments"
+              RenderData={totalInterestPayments}
+              title="Total Interest Payments Over Time"
+            />
+          )}
+
+          <div className="flex justify-between items-center my-4 mt-20">
+            <h3 className="text-lg font-semibold">
+              III. Profit and Loss Statement
+            </h3>
+            <ButtonV0 variant="outline" onClick={downloadExcel}>
+              <Download className="mr-2 h-4 w-4" />
+              Download Excel
+            </ButtonV0>
+          </div>
+
+          <Table
+            className="overflow-auto my-8 rounded-md bg-white"
+            size="small"
+            dataSource={transposedData}
+            columns={columns}
+            pagination={false}
+          />
+
+          <div className="grid grid-cols-2 gap-4 mb-3">
+            <Checkbox
+              className="col-span-2"
+              checked={showAdvancedInputs}
+              onChange={(e) => setShowAdvancedInputs(e.target.checked)}
+            >
+              Advanced
+            </Checkbox>
+          </div>
+          {showAdvancedInputs && (
+            <>
+              <h3 className="text-lg font-semibold my-5 mt-20">
+                IV. Profit and Loss By Years
+              </h3>
+              <div className="w-full lg:w-[20%] md:w-[50%] my-5">
+                <SelectField
+                  label="Select Cut Month:"
+                  id="Select Cut Month:"
+                  name="Select Cut Month:"
+                  value={cutMonth}
+                  onChange={handleCutMonthChange}
+                  options={Array.from({ length: 12 }, (_, index) => ({
+                    label: `${index + 1}`,
+                    value: `${index + 1}`,
+                  })).map((option) => option.label)} // Chỉ trả về mảng các label
+                />
+              </div>
+
+              <Tabs
+                activeKey={activeTab.toString()}
+                onChange={(key) => setActiveTab(parseInt(key))}
+              >
+                {/* Mapping over years to create TabPanes */}
+                {years.map((year, index) => (
+                  <TabPane tab={year.year} key={index.toString()}>
+                    {/* Display table for the selected year */}
+                    <Table
+                      className="bg-white overflow-auto my-8 rounded-md shadow-xl"
+                      size="small"
+                      dataSource={getDataSourceForYear(year.months)}
+                      columns={generateTableColumns(year)}
+                      pagination={false}
+                    />
+                  </TabPane>
+                ))}
+              </Tabs>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div className="w-full xl:w-1/4 sm:!p-4 !p-0 xl:!block !hidden">
+        <section className="mb-8 NOsticky NOtop-8 ">
+          <GroqJS
+            datasrc={profitAndLossData}
+            inputUrl="urlBS"
+            numberOfMonths={numberOfMonths}
+          />
+        </section>
+      </div>
+      <div className="xl:!hidden !block">
+        <FloatButton
+          tooltip={<div>Input values</div>}
+          style={{
+            position: "fixed",
+            bottom: "30px",
+            right: "30px",
+          }}
+          onClick={() => {
+            setIsInputFormOpen(true);
+          }}
+        >
+          <Button type="primary" shape="circle" icon={<FileOutlined />} />
+        </FloatButton>
+      </div>
+
+      {isInputFormOpen && (
+        <Modal
+          // title="Customer channel"
+          open={isInputFormOpen}
+          onCancel={() => {
+            setIsInputFormOpen(false);
+          }}
+          cancelText="Close"
+          cancelButtonProps={{
+            style: {
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          okButtonProps={{
+            style: {
+              display: "none",
+              background: "#2563EB",
+              borderColor: "#2563EB",
+              color: "#fff",
+              borderRadius: "0.375rem",
+              cursor: "pointer", // Hiệu ứng con trỏ khi di chuột qua
+            },
+          }}
+          centered={true}
+          zIndex={42424243}
+        >
+          <GroqJS datasrc={profitAndLossData} inputUrl="urlPNL" />
+        </Modal>
+      )}
     </div>
   );
 };

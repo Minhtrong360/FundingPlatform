@@ -5,15 +5,12 @@ export default function CheckboxField({ label, id, ...rest }) {
         <input
           id={id}
           type="checkbox"
-          className="hover:cursor-pointer shrink-0 mt-1.5 border-gray-200 rounded text-blue-600 pointer-events-none focus:ring-blue-500 dark-bg-gray-800 dark-border-gray-700 dark-checked-bg-blue-600 dark-checked-border-blue-500 dark-focus-ring-offset-gray-800"
+          className="hover:cursor-pointer shrink-0 mt-1.5 border-gray-300 rounded text-blue-600 pointer-events-none focus:ring-blue-500 "
           {...rest}
         />
       </div>
       <div className="ms-3">
-        <label
-          htmlFor={id}
-          className="text-sm text-gray-600 dark-text-gray-400"
-        >
+        <label htmlFor={id} className="text-sm text-gray-600 darkTextGray400">
           {label}
         </label>
       </div>

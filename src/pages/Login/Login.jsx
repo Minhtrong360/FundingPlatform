@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import AlertMsg from "../../components/AlertMsg";
-import { toast } from "react-toastify";
+//
 
 import SpinnerBtn from "../../components/SpinnerBtn";
-import { GoogleOutlined } from "@ant-design/icons";
+import {
+  EyeInvisibleOutlined,
+  EyeOutlined,
+  GoogleOutlined,
+} from "@ant-design/icons";
+import { message } from "antd";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -23,7 +27,7 @@ const Login = () => {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       setLoading(true);
@@ -31,14 +35,15 @@ const Login = () => {
       const { error } = await login(email, password);
 
       if (error) {
-        toast.error(error.message);
+        message.error(error.message);
       } else {
         const redirectTo = location?.state?.from?.pathname || "/";
         navigate(redirectTo);
+        window.location.reload(); // Tải lại trang sau khi navigate
       }
     } catch (error) {
       console.log("HandleSignIn error:", error.message);
-      toast.error(error.message);
+      message.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -50,11 +55,12 @@ const Login = () => {
     await loginWithGG();
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div className="darkBgBlue bg-gray-100 flex h-screen items-center py-16">
-      <AlertMsg />
       <main className="w-full max-w-md mx-auto p-6">
-        <div className="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm darkBgBlue darkBorderGray">
+        <div className="mt-7 bg-white border border-gray-300 rounded-xl shadow-sm darkBgBlue darkBorderGray">
           <div className="p-4 sm:p-7">
             <div className="text-center">
               <h1 className="block text-2xl font-semibold text-gray-800 darkTextWhite">
@@ -75,19 +81,15 @@ const Login = () => {
               <button
                 onClick={(e) => signInWitGG(e)}
                 type="button"
-                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
+                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none darkBgBlue darkBorderGray darkTextWhite darkHoverBgBlue darkFocusOutlineNone darkFocusRing-1 darkFocus"
               >
-                {loading ? (
-                  <SpinnerBtn />
-                ) : (
-                  <>
-                    <GoogleOutlined />
-                    Sign up with Google
-                  </>
-                )}
+                <>
+                  <GoogleOutlined />
+                  Sign up with Google
+                </>
               </button>
 
-              <div className="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-1 before:border-t before:border-gray-200 before:mr-6 after:flex-1 after:border-t after:border-gray-200 after:ml-6 darkBeforeBorderGray darkAfterBorderGray">
+              <div className="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-1 before:border-t before:border-gray-300 before:mr-6 after:flex-1 after:border-t after:border-gray-300 after:ml-6 darkBeforeBorderGray darkAfterBorderGray">
                 Or
               </div>
 
@@ -104,7 +106,7 @@ const Login = () => {
                       type="email"
                       id="email"
                       name="email"
-                      className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm darkBgBlue darkBorderGray darkTextGray"
+                      className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm darkBgBlue darkBorderGray darkTextGray"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -127,15 +129,28 @@ const Login = () => {
                         Forgot password?
                       </button>
                     </div>
-                    <input
-                      type="password"
-                      id="password"
-                      name="password"
-                      className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm darkBgBlue darkBorderGray darkTextGray"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        id="password"
+                        name="password"
+                        className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm darkBgBlue darkBorderGray darkTextGray"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                      />
+                      <button
+                        type="button"
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 focus:outline-none"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <EyeInvisibleOutlined />
+                        ) : (
+                          <EyeOutlined />
+                        )}
+                      </button>
+                    </div>
                   </div>
 
                   <div className="flex items-center">
@@ -143,7 +158,7 @@ const Login = () => {
                       id="remember-me"
                       name="remember-me"
                       type="checkbox"
-                      className="shrink-0 border-gray-200 rounded text-blue-600 focus:ring-blue-500 darkBgBlue darkBorderGray"
+                      className="shrink-0 border-gray-300 rounded text-blue-600 focus:ring-blue-500 darkBgBlue darkBorderGray"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
                     />
@@ -157,7 +172,7 @@ const Login = () => {
 
                   <button
                     type="submit"
-                    className="w-full py-3 px-4 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 darkFocusOutlineNone darkFocusRing-1 darkFocus"
+                    className="w-full py-3 px-4 text-sm font-semibold rounded-md bg-blue-600 text-white hover:bg-blue-700 darkFocusOutlineNone darkFocusRing-1 darkFocus"
                     disabled={loading} // Vô hiệu hóa nút khi đang loading
                   >
                     {loading ? <SpinnerBtn /> : "Sign in"}{" "}

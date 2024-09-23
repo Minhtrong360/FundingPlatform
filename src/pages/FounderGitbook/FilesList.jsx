@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
-
-import AddLinkFile from "./AddLinkFile";
 import { useParams } from "react-router-dom";
-
 import InvitedUserFile from "../../components/InvitedUserFile";
 import apiService from "../../app/apiService";
-import { toast } from "react-toastify";
-import LoadingButtonClick from "../../components/LoadingButtonClick";
-import { Tooltip } from "antd";
+import { message, Modal, Table, Tooltip, Button } from "antd";
 
 function FilesList() {
   const { id } = useParams();
@@ -18,36 +13,82 @@ function FilesList() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentProject, setCurrentProject] = useState();
   const [currentUser, setCurrentUser] = useState(null);
-  const [isPrivateDisabled, setIsPrivateDisabled] = useState(false); // New state for disabling private option
+  const [isPrivateDisabled, setIsPrivateDisabled] = useState(false);
+  const [deleteFileId, setDeleteFileId] = useState(null);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
-  // Tạo một hàm để tính giá trị canClick cho từng dòng trong bảng
-  const calculateCanClick = (link) => {
-    // Nếu link.status = true thì canClick=true
-    if (link.status) {
-      return true;
+  const showDeleteModal = (file) => {
+    setDeleteFileId(file);
+    setIsDeleteModalVisible(true);
+  };
+
+  const handleDeleteModalOk = async () => {
+    try {
+      if (!navigator.onLine) {
+        message.error("No internet access.");
+        return;
+      }
+
+      const { data: fileData, error: fileError } = await supabase
+        .from("files")
+        .select("user_id, link")
+        .eq("id", deleteFileId?.id)
+        .single();
+
+      if (fileError) {
+        console.log("Error fetching file data:", fileError);
+      } else {
+        if (fileData.user_id === user.id) {
+          // Extract the file path from the URL
+          const filePath = fileData.link.split(
+            "/storage/v1/object/public/beekrowd_storage"
+          )[1];
+
+          // Delete the file from storage
+          const { error: storageError } = await supabase.storage
+            .from("beekrowd_storage")
+            .remove([filePath]);
+          console.log("filePath", filePath);
+          if (storageError) {
+            console.log("Error deleting file from storage:", storageError);
+          } else {
+            // Delete the file record from the database
+            const { error } = await supabase
+              .from("files")
+              .delete()
+              .eq("id", deleteFileId?.id);
+
+            if (error) {
+              console.log("Error deleting file record:", error);
+            } else {
+              const updatedLinks = projectLinks.filter(
+                (link) => link.id !== deleteFileId?.id
+              );
+              setProjectLinks(updatedLinks);
+              message.success("Deleted file successfully.");
+            }
+          }
+        } else {
+          message.error("User does not have permission to delete this file.");
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting file:", error);
+      message.error(error.message);
     }
 
-    // Nếu link.invited_user chứa user.id thì canClick = true
-    if (link?.invited_user && link?.invited_user?.includes(user.email)) {
-      return true;
-    }
+    setIsDeleteModalVisible(false);
+  };
 
-    if (link.user_id && link.user_id === user.id) {
-      return true;
-    }
-
-    // Còn lại canClick = false
-    return false;
+  const handleDeleteModalCancel = () => {
+    setIsDeleteModalVisible(false);
   };
 
   useEffect(() => {
-    // Import Supabase client và thiết lập nó
-
     const fetchFiles = async () => {
       try {
         if (!navigator.onLine) {
-          // Không có kết nối Internet
-          toast.error("No internet access.");
+          message.error("No internet access.");
           return;
         }
         let { data: files, error } = await supabase
@@ -67,139 +108,76 @@ function FilesList() {
     };
 
     fetchFiles();
-  }, []);
+  }, [id]);
 
   useEffect(() => {
-    // Lấy dự án từ Supabase
     supabase
       .from("projects")
       .select("*")
       .eq("id", id)
       .single()
       .then(({ data, error }) => {
-        setIsLoading(false); // Đánh dấu rằng dữ liệu đã được tải xong
+        setIsLoading(false);
         if (error) {
           console.log(error);
-          // Xử lý lỗi khi không thể lấy dự án
         } else {
           setCurrentProject(data);
         }
       });
-  }, []);
+  }, [id]);
 
   const handleAddLinks = async (newLink) => {
     newLink.owner_email = user.email;
     try {
       if (!navigator.onLine) {
-        // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
-      // Tạo một dự án mới và lưu vào Supabase
-      if (currentProject.user_id === user.id) {
-        const { error } = await supabase.from("files").insert([
-          {
-            name: newLink.name,
-            link: newLink.link,
-            user_id: user.id,
-            owner_email: user.email,
-            status: newLink.status,
-            project_id: id,
-          },
-        ]);
+
+      if (
+        currentProject.user_id === user.id ||
+        currentProject.collabs?.includes(user.email)
+      ) {
+        const { data: newFile, error } = await supabase
+          .from("files")
+          .insert([
+            {
+              name: newLink.name,
+              link: newLink.link,
+              user_id: user.id,
+              owner_email: user.email,
+              status: newLink.status,
+              project_id: id,
+            },
+          ])
+          .select();
 
         if (error) {
-          console.log("Error creating files:", error);
-          // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
+          console.log("Error creating file:", error);
         } else {
-          // Check if the link with the same name already exists
           const linkWithSameNameExists = projectLinks.some(
             (existingLink) => existingLink.name === newLink.name
           );
 
           if (linkWithSameNameExists) {
-            alert("A link with the same name already exists.");
+            message.error("A link with the same name already exists.");
             return;
           }
 
-          // Create a new link object and add it to the projectLinks array
-
-          setProjectLinks([...projectLinks, newLink]);
+          setProjectLinks([...projectLinks, newFile[0]]);
         }
       } else {
-        alert("You are not the owner of project");
+        message.error("You are not the owner of the project.");
         return;
       }
     } catch (error) {
-      console.log("Error creating files:", error);
-      toast.error(error.message);
-      // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
-    }
-  };
-
-  const handleDelete = async (fileId) => {
-    const isConfirmed = window.confirm(
-      "Are you sure you want to delete this link?"
-    );
-    if (!isConfirmed) {
-      return; // Don't proceed with deletion if the user doesn't confirm
-    }
-
-    try {
-      if (!navigator.onLine) {
-        // Không có kết nối Internet
-        toast.error("No internet access.");
-        return;
-      }
-      // Trước khi xóa, hãy truy vấn để kiểm tra user_id
-      const { data: fileData, error: fileError } = await supabase
-        .from("files")
-        .select("user_id")
-        .eq("id", fileId)
-        .single();
-
-      if (fileError) {
-        console.log("Error fetching file data:", fileError);
-        // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
-      } else {
-        // Kiểm tra user_id từ dữ liệu file với user.id đăng nhập
-        if (fileData.user_id === user.id) {
-          // Xóa dự án ra khỏi Supabase bằng cách sử dụng phương thức `delete`
-          const { error } = await supabase
-            .from("files")
-            .delete()
-            .eq("id", fileId);
-
-          if (error) {
-            console.log("Error deleting project:", error);
-            // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
-          } else {
-            // Xóa dự án thành công, cập nhật lại danh sách dự án
-            // Tạo một mảng mới của các liên kết không có fileId cụ thể
-            const updatedLinks = projectLinks.filter(
-              (link) => link.id !== fileId
-            );
-
-            // Đặt trạng thái với mảng liên kết đã cập nhật
-            setProjectLinks(updatedLinks);
-          }
-        } else {
-          toast.error("User does not have permission to delete this file.");
-          console.log("User does not have permission to delete this file.");
-          // Xử lý trường hợp người dùng không có quyền xóa (ví dụ: hiển thị thông báo lỗi cho người dùng)
-        }
-      }
-    } catch (error) {
-      console.error("Error deleting project:", error);
-      toast.error(error.message);
-      // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
+      console.log("Error creating file:", error);
+      message.error(error.message);
     }
   };
 
   const handleLinkClick = (link) => {
-    // Sử dụng hàm calculateCanClick để kiểm tra điều kiện
     if (calculateCanClick(link)) {
-      // Nếu canClick là true, mở tab mới với đường dẫn từ link.link
       window.open(link.link, "_blank");
     }
   };
@@ -207,8 +185,7 @@ function FilesList() {
   const handleSendRequest = async (link) => {
     try {
       if (!navigator.onLine) {
-        // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       setIsLoading(true);
@@ -223,26 +200,21 @@ function FilesList() {
       }
     } catch (error) {
       console.log("error", error);
-      toast.error(error.message);
+      message.error(error.message);
     }
     setIsLoading(false);
   };
 
   useEffect(() => {
-    // Import Supabase client và thiết lập nó
-
     const fetchCurrentUser = async () => {
       try {
         if (!navigator.onLine) {
-          // Không có kết nối Internet
-          toast.error("No internet access.");
+          message.error("No internet access.");
           return;
         }
         let { data: users, error } = await supabase
           .from("users")
           .select("*")
-
-          // Filters
           .eq("id", user.id);
 
         if (error) {
@@ -257,208 +229,207 @@ function FilesList() {
     };
 
     fetchCurrentUser();
-  }, []);
+  }, [user.id]);
 
   useEffect(() => {
-    // Check if the user doesn't meet the conditions to create a private project
     if (
-      (currentUser?.plan === "Free" ||
-        currentUser?.plan === null ||
-        currentUser?.plan === undefined) &&
-      currentUser?.subscription_status !== "active"
+      !currentUser?.plan ||
+      currentUser?.plan === "Free" ||
+      currentUser?.plan === null ||
+      currentUser?.plan === undefined ||
+      currentUser?.subscription_status === "canceled" ||
+      currentUser?.subscription_status === "cancelled"
     ) {
       setIsPrivateDisabled(true);
     } else {
       setIsPrivateDisabled(false);
     }
-  }, []);
+  }, [currentUser?.plan, currentUser?.subscription_status]);
 
+  const calculateCanClick = (link) => {
+    if (link.status) {
+      return true;
+    }
+
+    if (link?.invited_user && link?.invited_user?.includes(user.email)) {
+      return true;
+    }
+
+    if (link.user_id && link.user_id === user.id) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const truncate = (text, maxLength) => {
+    if (text?.length <= maxLength) return text;
+    return `${text?.substring(0, maxLength)}...`;
+  };
+
+  const columns = [
+    {
+      title: "No.",
+      dataIndex: "no",
+      key: "no",
+      width: 80, // Set fixed width
+      render: (_, __, index) => <span>#{index + 1}</span>,
+    },
+    {
+      title: "File name",
+      dataIndex: "name",
+      key: "name",
+      width: 200, // Set fixed width
+      ellipsis: true, // Truncate text if too long
+      render: (text) => (
+        <Tooltip title={text} color="geekblue" zIndex={20000}>
+          {text}
+        </Tooltip>
+      ),
+    },
+    {
+      title: "File link",
+      dataIndex: "link",
+      key: "link",
+      width: 250, // Set fixed width
+      ellipsis: true,
+      render: (text, record) => (
+        <span
+          onClick={() => calculateCanClick(record) && handleLinkClick(record)}
+          style={{
+            cursor: calculateCanClick(record) ? "pointer" : "not-allowed",
+            color: calculateCanClick(record) ? "blue" : "black",
+            maxWidth: "10rem",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {calculateCanClick(record) ? truncate(text, 20) : "***********"}
+        </span>
+      ),
+    },
+    {
+      title: "Owner",
+      dataIndex: "owner_email",
+      key: "owner_email",
+      width: 200, // Set fixed width
+      ellipsis: true,
+      render: (text) => (
+        <Tooltip title={text} color="geekblue" zIndex={20000}>
+          {text}
+        </Tooltip>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      width: 100, // Set fixed width
+      render: (text) => (text ? "Public" : "Private"),
+    },
+    {
+      title: "Action",
+      key: "action",
+      width: 100, // Set fixed width
+      render: (_, record) => (
+        <Button
+          style={{ fontSize: "12px" }}
+          danger
+          onClick={() => showDeleteModal(record)}
+        >
+          Delete
+        </Button>
+      ),
+    },
+    {
+      title: "Invite",
+      key: "invite",
+      width: 150, // Set fixed width
+      render: (_, record) =>
+        record.status ? (
+          ""
+        ) : record?.user_id === user.id ? (
+          <InvitedUserFile fileId={record.id} />
+        ) : record?.invited_user?.includes(user?.email) ? (
+          ""
+        ) : (
+          <Button
+            type="primary"
+            style={{ backgroundColor: "#2563EB", fontSize: "12px" }}
+            onClick={() => handleSendRequest(record)}
+          >
+            Send Request
+          </Button>
+        ),
+    },
+  ];
+  // console.log("deleteFileId", deleteFileId);
   return (
-    <main className="w-full ml-2">
-      <LoadingButtonClick isLoading={isLoading} />
-      <section className="container px-4 mx-auto">
-        <div className="flex justify-start my-5 items-start">
-          <AddLinkFile
-            isLoading={isLoading}
-            currentProject={currentProject}
-            handleAddLinks={handleAddLinks}
-            isPrivateDisabled={isPrivateDisabled}
+    <main className="w-full max-w-full overflow-hidden">
+      <section className="mx-auto">
+        {/* <div className="flex justify-end my-5 items-end">
+					<AddLinkFile
+						isLoading={isLoading}
+						currentProject={currentProject}
+						handleAddLinks={handleAddLinks}
+						isPrivateDisabled={isPrivateDisabled}
+					/>
+				</div> */}
+        <div
+          className="overflow-hidden overflow-x-auto w-full mx-auto max-w-full scrollbar-hide my-8 rounded-md bg-white"
+          style={{
+            maxWidth: "80vw", // Ensure the container fits within the viewport width
+            overflowX: "auto", // Enable horizontal scrolling if needed
+          }}
+        >
+          <Table
+            columns={columns}
+            dataSource={projectLinks.map((link, index) => ({
+              ...link,
+              key: link.id,
+              no: index + 1,
+            }))}
+            loading={isLoading}
+            rowKey="id"
+            scroll={{ x: "max-content" }} // Allow the table to scroll based on content size
+            size="small"
+            style={{
+              width: "100%", // Ensure the table takes full width of the container
+              tableLayout: "auto", // Let the table adjust column sizes automatically
+            }}
           />
         </div>
-        <div className="flex flex-col">
-          <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div className="inline-block min-w-full py-1 align-middle md:px-6 lg:px-8">
-              <div className="overflow-hidden border border-gray-200 darkBorderGray md:rounded-lg">
-                <table className="min-w-full divide-y divide-gray-200 darkDivideGray">
-                  <thead className="bg-gray-50 darkBgBlue">
-                    <tr>
-                      <th
-                        scope="col"
-                        className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
-                      >
-                        <div className="flex items-center gap-x-3">
-                          <input
-                            type="checkbox"
-                            className="text-blue-500 border-gray-300 rounded darkBg darkRingOffsetGray darkBorderGray"
-                          />
-                          <button className="flex items-center gap-x-2">
-                            <span>NO.</span>
-                          </button>
-                        </div>
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
-                      >
-                        File name
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
-                      >
-                        File link
-                      </th>
-
-                      {/* <th
-                        scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
-                      >
-                        Status
-                      </th> */}
-                      <th
-                        scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
-                      >
-                        Owner
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
-                      >
-                        Status
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
-                      >
-                        Action
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-500 darkTextGray"
-                      >
-                        Invite
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200 darkDivideGray darkBg">
-                    {projectLinks?.map((link, index) => (
-                      <tr key={index}>
-                        <td className="px-4 py-4 text-sm font-medium text-gray-700 darkTextGray whitespace-nowrap">
-                          <div className="inline-flex items-center gap-x-3">
-                            <input
-                              type="checkbox"
-                              className="text-blue-500 border-gray-300 rounded darkBg darkRingOffsetGray darkBorderGray"
-                            />
-                            <span>#{index + 1}</span>
-                          </div>
-                        </td>
-                        <td
-                          className={`hover:cursor-pointer px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap`}
-                          style={{
-                            maxWidth: "150px", // Set the maximum width here
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          <Tooltip
-                            title={link.name}
-                            color="geekblue"
-                            zIndex={20000}
-                          >
-                            {link.name}
-                          </Tooltip>
-                        </td>
-                        <td
-                          className={`${
-                            calculateCanClick(link)
-                              ? "hover:cursor-pointer hover:bg-blue-700100"
-                              : ""
-                          } px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap`}
-                          onClick={() =>
-                            calculateCanClick(link) && handleLinkClick(link)
-                          }
-                          style={{
-                            cursor: calculateCanClick(link)
-                              ? "pointer"
-                              : "not-allowed",
-                            color: calculateCanClick(link) ? "blue" : "black",
-                            maxWidth: "10rem", // Set the maximum width here
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {calculateCanClick(link) ? link.link : "***********"}
-                        </td>
-                        <td
-                          className="px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap"
-                          style={{
-                            maxWidth: "10rem", // Set the maximum width here
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          <Tooltip
-                            title={link.owner_email}
-                            color="geekblue"
-                            zIndex={20000}
-                          >
-                            {link.owner_email}
-                          </Tooltip>
-                        </td>
-                        <td className="px-4 py-4 text-sm text-black-500 darkTextGray whitespace-nowrap">
-                          {link.status ? "Public" : "Private"}
-                        </td>
-                        {/* <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">{project.status}</td> */}
-
-                        <td className="px-4 py-4 text-sm whitespace-nowrap">
-                          <div className="flex items-center gap-x-6">
-                            <button
-                              className={`w-[5em] text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm  py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
-                              onClick={() => handleDelete(link.id)}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </td>
-                        <td className="px-4 py-4 text-sm whitespace-nowrap">
-                          {link.status ? (
-                            ""
-                          ) : link?.user_id === user.id ? (
-                            <InvitedUserFile fileId={link.id} />
-                          ) : link?.invited_user?.includes(user?.email) ? (
-                            ""
-                          ) : (
-                            <button
-                              className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
-                              onClick={() => handleSendRequest(link)}
-                            >
-                              Send Request
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
       </section>
+      <Modal
+        title="Confirm Delete"
+        open={isDeleteModalVisible}
+        onOk={handleDeleteModalOk}
+        onCancel={handleDeleteModalCancel}
+        okText="Delete"
+        cancelText="Cancel"
+        cancelButtonProps={{
+          style: {
+            borderRadius: "0.375rem",
+            cursor: "pointer",
+          },
+        }}
+        okButtonProps={{
+          style: {
+            background: "#f5222d",
+            borderColor: "#f5222d",
+            color: "#fff",
+            borderRadius: "0.375rem",
+            cursor: "pointer",
+          },
+        }}
+        centered={true}
+      >
+        Are you sure you want to delete this file
+        <span className="text-[#f5222d] font-semibold">
+          {deleteFileId?.name} ?
+        </span>
+      </Modal>
     </main>
   );
 }

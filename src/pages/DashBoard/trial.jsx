@@ -7,14 +7,20 @@ const InputField = ({ value, onChange }) => (
     type="text"
     value={value}
     onChange={onChange}
-    className="flex-1 block h-10 px-4 text-sm text-gray-700 bg-white border border-gray-200 rounded-md darkBg darkTextGray darkBorderGray focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 darkFocusBorder focus:outline-none focus:ring"
+    className="flex-1 block h-10 px-4 text-sm text-gray-700 bg-white border border-gray-300 rounded-md darkBg darkTextGray darkBorderGray focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 darkFocusBorder focus:outline-none focus:ring"
   />
 );
 
 const BarChart = ({ xCategories, seriesData, series }) => (
   <ReactApexChart
     options={{
-      chart: { id: "bar-chart", toolbar: { show: true } },
+      chart: { id: "bar-chart",  toolbar: {
+        show: true,
+      
+        tools: {
+          download: true,
+        }
+      },},
       xaxis: { categories: xCategories },
     }}
     series={series.map((seriesPair, index) => ({
@@ -104,7 +110,7 @@ const Trial = () => {
           <select
             value={chartType}
             onChange={handleChartTypeChange}
-            className="flex-1 block h-10 px-4 text-sm text-gray-700 bg-white border border-gray-200 rounded-md darkBg darkTextGray darkBorderGray focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 darkFocusBorder focus:outline-none focus:ring"
+            className="flex-1 block h-10 px-4 text-sm text-gray-700 bg-white border border-gray-300 rounded-md darkBg darkTextGray darkBorderGray focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 darkFocusBorder focus:outline-none focus:ring"
           >
             <option value="bar">Bar Chart</option>
             <option value="pie">Pie Chart</option>
@@ -128,7 +134,7 @@ const Trial = () => {
       {/* <div className={`flex justify-center`}> */}
       <button
         type="button"
-        className={`flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus`}
+        className={`flex justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-3 py-2 text-center darkBgBlue darkHoverBgBlue darkFocus`}
         onClick={handleBack}
       >
         Back to project
@@ -180,7 +186,7 @@ const BarChartForm = () => {
             type="number"
             value={numPairs}
             onChange={handleNumPairsChange}
-            className="flex-1 block h-10 px-4 text-sm text-gray-700 bg-white border border-gray-200 rounded-md darkBg darkTextGray darkBorderGray focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 darkFocusBorder focus:outline-none focus:ring"
+            className="flex-1 block h-10 px-4 text-sm text-gray-700 bg-white border border-gray-300 rounded-md darkBg darkTextGray darkBorderGray focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 darkFocusBorder focus:outline-none focus:ring"
           />
         </label>
       </FormColumn>
@@ -307,7 +313,7 @@ const LineChartForm = () => {
             type="number"
             value={numPairs}
             onChange={handleNumPairsChange}
-            className="flex-1 block h-10 px-4 text-sm text-gray-700 bg-white border border-gray-200 rounded-md darkBg darkTextGray darkBorderGray focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 darkFocusBorder focus:outline-none focus:ring"
+            className="flex-1 block h-10 px-4 text-sm text-gray-700 bg-white border border-gray-300 rounded-md darkBg darkTextGray darkBorderGray focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 darkFocusBorder focus:outline-none focus:ring"
           />
         </label>
       </FormColumn>
@@ -377,7 +383,7 @@ const AreaChartForm = () => {
               type="number"
               value={numPairs}
               onChange={handleNumPairsChange}
-              className="flex-1 block h-10 px-4 text-sm text-gray-700 bg-white border border-gray-200 rounded-md darkBg darkTextGray darkBorderGray focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 darkFocusBorder focus:outline-none focus:ring"
+              className="flex-1 block h-10 px-4 text-sm text-gray-700 bg-white border border-gray-300 rounded-md darkBg darkTextGray darkBorderGray focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 darkFocusBorder focus:outline-none focus:ring"
             />
           </label>
         </FormColumn>

@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { supabase } from "../supabase";
-import { toast } from "react-toastify";
+
 import ReactModal from "react-modal";
 import apiService from "../app/apiService";
+import { Button, message } from "antd";
 
 const Modal = ({ isOpen, onClose, fileId }) => {
-  const [email, setEmail] = useState("email@gmail.com");
+  const [email, setEmail] = useState("elonmusk@gmail.com");
 
   const handleInvite = async () => {
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
       // Truy vấn để tìm file có id = fileId trong bảng "files"
@@ -31,7 +32,7 @@ const Modal = ({ isOpen, onClose, fileId }) => {
         // Thêm email người dùng mới vào danh sách "invited_user"
 
         if (currentInvitedUsers.includes(email)) {
-          toast.warning(`User with email ${email} is already invited.`);
+          message.warning(`User with email ${email} is already invited.`);
           return; // Ngắt nếu đã tồn tại
         }
 
@@ -53,22 +54,22 @@ const Modal = ({ isOpen, onClose, fileId }) => {
 
         if (updateError) {
           console.log("Error updating file data:", updateError);
-          toast.error(updateError);
+          message.error(updateError);
           // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
         } else {
-          toast.success("Invited successfully!");
+          message.success("Invited successfully!");
           console.log(`Successfully invited user with email: ${email}`);
           onClose();
           // Xử lý khi mời thành công (ví dụ: hiển thị thông báo cho người dùng)
         }
       } else {
         console.log("File with ID not found.");
-        toast.error("File with ID not found.");
+        message.error("File with ID not found.");
         // Xử lý trường hợp không tìm thấy file với ID cụ thể
       }
     } catch (error) {
       console.log("Error inviting user:", error);
-      toast.error(error.message);
+      message.error(error.message);
       // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }
   };
@@ -79,7 +80,7 @@ const Modal = ({ isOpen, onClose, fileId }) => {
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-      <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
+      <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
         <p className="mt-2 text-xl text-gray-500 ">
           Invite a user to see this file!
         </p>
@@ -89,7 +90,7 @@ const Modal = ({ isOpen, onClose, fileId }) => {
               type="email"
               required
               name="email"
-              placeholder="email@gmail.com"
+              placeholder="elonmusk@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="block w-full px-4 py-3 text-sm text-gray-700 border rounded-md"
@@ -100,14 +101,14 @@ const Modal = ({ isOpen, onClose, fileId }) => {
             <button
               type="button"
               onClick={onClose}
-              className="w-full px-4 py-1 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+              className="w-full px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={handleInvite}
-              className="w-full px-4 py-1 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
+              className="w-full px-3 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
             >
               Invite
             </button>
@@ -123,12 +124,14 @@ export default function InvitedUser({ fileId }) {
 
   return (
     <div className="App">
-      <button
-        className={`text-white bg-blue-600 hover:bg-blue-700800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+      <Button
+        type="primary"
+        style={{ backgroundColor: "#2563EB", fontSize: "12px" }}
         onClick={() => setIsModalOpen(true)}
       >
         Invite
-      </button>
+      </Button>
+
       <ReactModal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}

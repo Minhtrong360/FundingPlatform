@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { supabase } from "../supabase";
-import { toast } from "react-toastify";
-
-import apiService from "../app/apiService";
 
 import ReactModal from "react-modal";
+import { message } from "antd";
 
 const Modal = ({
   isOpen,
@@ -13,13 +11,13 @@ const Modal = ({
   updatedProjects,
   setUpdatedProjects,
 }) => {
-  const [email, setEmail] = useState("email@gmail.com");
+  const [email, setEmail] = useState("elonmusk@gmail.com");
 
   const handleAssign = async () => {
     try {
       // Kiểm tra kết nối internet
       if (!navigator.onLine) {
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
 
@@ -31,12 +29,12 @@ const Modal = ({
 
       if (userError) {
         console.log("Error fetching user data:", userError);
-        toast.error(userError.message);
+        message.error(userError.message);
         return;
       }
 
       if (!userData.length > 0) {
-        toast.error(`User with email ${email} not found.`);
+        message.error(`User with email ${email} not found.`);
         return;
       }
 
@@ -49,13 +47,13 @@ const Modal = ({
 
       if (projectError) {
         console.log("Error fetching project data:", projectError);
-        toast.error(projectError.message);
+        message.error(projectError.message);
         return;
       }
 
       if (!projectData.length > 0) {
         console.log("Project not found.");
-        toast.error("Project not found.");
+        message.error("Project not found.");
         return;
       }
 
@@ -66,12 +64,12 @@ const Modal = ({
 
       if (updateError) {
         console.log("Error updating project data:", updateError);
-        toast.error(updateError.message);
+        message.error(updateError.message);
         return;
       }
 
       console.log(`Successfully invited user with email: ${email}`);
-      toast.success("Assign project successfully");
+      message.success("Assign project successfully");
       const updatedProjectsCopy = updatedProjects?.filter(
         (project) => project.id !== projectId
       );
@@ -79,7 +77,7 @@ const Modal = ({
       onClose();
     } catch (error) {
       console.log("Error inviting user:", error);
-      toast.error(error.message);
+      message.error(error.message);
     }
   };
 
@@ -89,15 +87,17 @@ const Modal = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-      <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
-        <p className="mt-2 text-xl text-gray-500 ">Assign this project to:</p>
+      <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
+        <p className="mt-2 text-lg text-gray-800 ">
+          Assign the admin role of this project to:
+        </p>
         <form className="mt-4">
           <label className="block mt-3">
             <input
               type="email"
               required
               name="email"
-              placeholder="email@gmail.com"
+              placeholder="elonmusk@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="block w-full px-4 py-3 text-sm text-gray-700 border rounded-md"
@@ -108,14 +108,14 @@ const Modal = ({
             <button
               type="button"
               onClick={onClose}
-              className="w-full px-4 py-1 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+              className="w-full px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={handleAssign}
-              className="w-full px-4 py-1 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
+              className="w-full px-3 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
             >
               Assign
             </button>
@@ -136,8 +136,9 @@ export default function ProjectGiven({
   return (
     <div className="App">
       <button
-        className={`text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
+        // className={`text-black  focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-md text-sm px-3 py-2  darkBgBlue darkHoverBgBlue darkFocus `}
         onClick={() => setIsModalOpen(true)}
+        style={{ fontSize: "12px" }}
       >
         Assign
       </button>

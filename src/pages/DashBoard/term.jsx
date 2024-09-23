@@ -14,7 +14,7 @@ const termsContent = [
   {
     title: "3. Payment and Subscription Management",
     content:
-      "a. BeeKrowd uses the services of a third party, Stripe, to manage payment processing and subscription services. By using BeeKrowd's platform, you agree to comply with Stripe's terms and conditions, as applicable.\n\nb. Users can subscribe to different BeeKrowd packages, including Free, Premium, and Platinum, each offering varying features and benefits. Subscription fees are billed monthly through Stripe.",
+      "a. BeeKrowd uses the services of a third party, Lemon Squeezy, to manage payment processing and subscription services. By using BeeKrowd's platform, you agree to comply with Lemon Squeezy's terms and conditions, as applicable.\n\nb. Users can subscribe to different BeeKrowd packages, including Free, Premium, and Platinum, each offering varying features and benefits. Subscription fees are billed monthly through Lemon Squeezy.",
   },
   // Continuing from the previous sections...
 
@@ -52,12 +52,12 @@ const termsContent = [
 
 const TermSection = ({ title, content }) => {
   return (
-    <div className="border-2 border-gray-100 rounded-lg darkBorderGray">
+    <div className="border-2 border-gray-100 rounded-md darkBorderGray">
       <div className="flex items-center justify-between w-full p-8">
         <h1 className="font-semibold text-gray-700 darkTextWhite">{title}</h1>
         <span className="text-gray-400 bg-gray-200 rounded-full"></span>
       </div>
-      <hr className="border-gray-200 darkBorderGray" />
+      <hr className="border-gray-300 darkBorderGray" />
       <p className="p-8 text-sm text-gray-500 darkTextGray">{content}</p>
     </div>
   );

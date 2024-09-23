@@ -1,15 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Modal from "react-modal";
 import Spinner from "./Spinner";
 
 function LoadingButtonClick({ isLoading }) {
-  // useEffect(() => {
-  //   if (isLoading) {
-  //     document.body.style.overflow = "hidden";
-  //   } else {
-  //     document.body.style.overflow = "unset";
-  //   }
-  // }, [isLoading]);
   return (
     <>
       <Modal
@@ -23,7 +16,7 @@ function LoadingButtonClick({ isLoading }) {
             left: 0,
             right: 0,
             bottom: 0,
-            zIndex: 9999,
+            zIndex: 42424244,
           },
           content: {
             border: "none",
@@ -32,7 +25,7 @@ function LoadingButtonClick({ isLoading }) {
           },
         }}
       >
-        <Spinner isLoading={isLoading} />
+        <Spinner />
       </Modal>
     </>
   );

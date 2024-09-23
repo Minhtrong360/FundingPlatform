@@ -1,20 +1,20 @@
 import { useState } from "react";
 import { supabase } from "../supabase";
-import { toast } from "react-toastify";
 
 import apiService from "../app/apiService";
 import { useAuth } from "../context/AuthContext";
 import ReactModal from "react-modal";
+import { message } from "antd";
 
 const Modal = ({ isOpen, onClose, projectId }) => {
-  const [email, setEmail] = useState("email@gmail.com");
+  const [email, setEmail] = useState("elonmusk@gmail.com");
   const [invited_type, setInvited_type] = useState("View only"); // Thay đổi giá trị state để phản ánh "View only" thay vì "public" và "Collaborate" thay vì "private"
   const { user } = useAuth();
 
   const handleInvite = async () => {
     try {
       if (!navigator.onLine) {
-        toast.error("No internet access.");
+        message.error("No internet access.");
         return;
       }
 
@@ -26,13 +26,13 @@ const Modal = ({ isOpen, onClose, projectId }) => {
 
       if (fileError) {
         console.log("Error fetching project data:", fileError);
-        toast.error(fileError);
+        message.error(fileError);
         return;
       }
 
       if (!projectData) {
         console.log("File with ID not found.");
-        toast.error("File with ID not found.");
+        message.error("File with ID not found.");
         return;
       }
 
@@ -40,12 +40,12 @@ const Modal = ({ isOpen, onClose, projectId }) => {
       const currentCollabs = projectData.collabs || [];
 
       if (invited_type === "View only" && currentInvitedUsers.includes(email)) {
-        toast.warning(`User with email ${email} is already invited.`);
+        message.warning(`User with email ${email} is already invited.`);
         return;
       }
 
       if (invited_type === "Collaborate" && currentCollabs.includes(email)) {
-        toast.warning(
+        message.warning(
           `User with email ${email} is already invited as collaborator.`
         );
         return;
@@ -77,15 +77,15 @@ const Modal = ({ isOpen, onClose, projectId }) => {
 
       if (updateError) {
         console.log("Error updating file data:", updateError);
-        toast.error(updateError);
+        message.error(updateError);
       } else {
         console.log(`Successfully invited user with email: ${email}`);
-        toast.success("Invited user successfully");
+        message.success("Invited user successfully");
         onClose();
       }
     } catch (error) {
       console.log("Error inviting user:", error);
-      toast.error(error.message);
+      message.error(error.message);
     }
   };
 
@@ -95,7 +95,7 @@ const Modal = ({ isOpen, onClose, projectId }) => {
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-      <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
+      <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
         <p className="mt-2 text-xl text-gray-500 ">
           Invite a user to see this project!
         </p>
@@ -105,7 +105,7 @@ const Modal = ({ isOpen, onClose, projectId }) => {
               type="email"
               required
               name="email"
-              placeholder="email@gmail.com"
+              placeholder="elonmusk@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="block w-full px-4 py-3 text-sm text-gray-700 border rounded-md"
@@ -145,14 +145,14 @@ const Modal = ({ isOpen, onClose, projectId }) => {
             <button
               type="button"
               onClick={onClose}
-              className="w-full px-4 py-1 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+              className="w-full px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={handleInvite}
-              className="w-full px-4 py-1 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
+              className="w-full px-3 py-2 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
             >
               Invite
             </button>
@@ -168,12 +168,9 @@ export default function InvitedUserProject({ projectId }) {
 
   return (
     <div className="App">
-      <button
-        className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkHoverBgBlue darkFocus `}
-        onClick={() => setIsModalOpen(true)}
-      >
+      <div onClick={() => setIsModalOpen(true)} style={{ fontSize: "12px" }}>
         Invite
-      </button>
+      </div>
       <ReactModal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}

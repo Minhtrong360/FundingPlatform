@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 
 import SideBar from "../../components/SideBar";
-import UserInfoSettings from "./UserProfile";
+import NewUserPage from "./NewUserPage";
+import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
 
 const UserPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -11,15 +12,9 @@ const UserPage = () => {
 
   return (
     <div className=" bg-white darkBg antialiased !p-0">
-      <div id="exampleWrapper">
-        <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <HomeHeader />
 
-        <div className="p-4 ml-24" onClick={() => setIsSidebarOpen(false)}>
-          <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg darkBorderGray">
-            <UserInfoSettings />
-          </div>
-        </div>
-      </div>
+      <NewUserPage />
     </div>
   );
 };

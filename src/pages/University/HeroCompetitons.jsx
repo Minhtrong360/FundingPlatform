@@ -1,0 +1,215 @@
+import { useAuth } from "../../context/AuthContext";
+import { useEffect, useState } from "react";
+import { supabase } from "../../supabase";
+import UniCard from "./UniCard";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+
+import { useNavigate } from "react-router-dom";
+
+const HeroCompetitions = ({
+  onSelectCode,
+
+  selectedCode,
+  setSelectedCodeFull,
+
+  setSelectedRound,
+  filterProjectsByRound,
+  setProjectList,
+}) => {
+  const { user } = useAuth();
+
+  const [codeData, setCodeData] = useState([]);
+  const [projectCounts, setProjectCounts] = useState({});
+
+  useEffect(() => {
+    const fetchCodeData = async () => {
+      try {
+        const { data: codes, error } = await supabase
+          .from("code")
+          .select("*")
+          .eq("publish", true)
+          .eq("for", "UNI");
+
+        if (error) {
+          throw error;
+        }
+
+        const projectCounts = await fetchProjectCounts(codes);
+
+        setCodeData(
+          codes.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        );
+        setProjectCounts(projectCounts);
+        setSelectedCodeFull(codes[0]);
+        onSelectCode(codes[0]?.id);
+        filterProjectsByCode(codes[0]?.id);
+      } catch (error) {
+        console.error("Error fetching code data:", error);
+      }
+    };
+
+    fetchCodeData();
+  }, []);
+  const filterProjectsByCode = async (codeId) => {
+    if (codeId) {
+      try {
+        const { data: projects, error: projectsError } = await supabase
+          .from("projects")
+          .select("*")
+          .contains("universityCode", [codeId]);
+
+        if (projectsError) {
+          throw projectsError;
+        }
+
+        const projectIds = projects.map((project) => project.id);
+
+        const { data: companies, error: companiesError } = await supabase
+          .from("company")
+          .select("*")
+          .in("project_id", projectIds);
+
+        if (companiesError) {
+          throw companiesError;
+        }
+
+        const combinedProjects = projects.map((project) => {
+          const parsedApplyInfo = project.applyInfo.map((info) =>
+            JSON.parse(info)
+          );
+          const companyInfo = companies.find(
+            (company) => company.project_id === project.id
+          );
+
+          return {
+            ...project,
+            applyInfo: parsedApplyInfo,
+            company: companyInfo,
+          };
+        });
+
+        setProjectList(combinedProjects);
+      } catch (error) {
+        console.error("Error fetching projects and companies for code:", error);
+      }
+    }
+  };
+
+  const fetchProjectCounts = async (codes) => {
+    const counts = {};
+
+    for (const code of codes) {
+      const { count, error } = await supabase
+        .from("projects")
+        .select("id", { count: "exact" })
+        .contains("universityCode", [code.id]);
+
+      if (error) {
+        console.error("Error fetching project count:", error);
+        counts[code.id] = 0;
+      } else {
+        counts[code.id] = count;
+      }
+    }
+
+    return counts;
+  };
+
+  const [currentCodePage, setCurrentCodePage] = useState(0);
+  const itemsPerPage = 2;
+
+  const handleNext = () => {
+    if ((currentCodePage + 1) * itemsPerPage < codeData.length) {
+      setCurrentCodePage(currentCodePage + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentCodePage > 0) {
+      setCurrentCodePage(currentCodePage - 1);
+    }
+  };
+
+  const startIndex = currentCodePage * itemsPerPage;
+  const selectedCodes = codeData.slice(startIndex, startIndex + itemsPerPage);
+
+  useEffect(() => {
+    // Parse rounds if they are stringified JSON
+    const parsedRounds =
+      selectedCode?.rounds?.map((round) =>
+        typeof round === "string" ? JSON.parse(round) : round
+      ) || [];
+
+    setSelectedRound(parsedRounds[0] || null);
+    filterProjectsByRound(parsedRounds[0] || null);
+  }, [selectedCode]);
+
+  const navigate = useNavigate();
+  const handleClick = () => {
+    if (!user) {
+      navigate("/login");
+    } else {
+      navigate(`/profile/${"3ec3f142-f33c-4977-befd-30d4ce2b764d"}`);
+    }
+  };
+
+  const handleClickProfile = () => {
+    navigate(`/profile`);
+  };
+
+  return (
+    <section className="bg-white">
+      <div className="sm:px-6 px-3 mx-auto text-center">
+        {codeData.length > 0 && (
+          <>
+            <section className="container px-4 mx-auto mt-14 max-w-3xl">
+              <div className="flex flex-col mb-5">
+                <h3 className="font-bold text-xl text-left">Code listing</h3>
+                <div className="mt-5 grid sm:grid-cols-2 gap-14 transition-all duration-600 ease-out transform translate-x-0 justify-items-center">
+                  {selectedCodes.map((code) => (
+                    <div
+                      key={code.id}
+                      className="group flex flex-col items-center justify-center  max-w-96"
+                    >
+                      <UniCard
+                        data={code}
+                        setSelectedCodeFull={setSelectedCodeFull}
+                        onSelectCode={onSelectCode}
+                        filterProjectsByCode={filterProjectsByCode}
+                        projectCounts={projectCounts}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="flex justify-between mt-5">
+                  <LeftOutlined
+                    onClick={handlePrevious}
+                    disabled={currentCodePage === 0}
+                    className={` ${
+                      currentCodePage === 0
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
+                  />
+                  <RightOutlined
+                    onClick={handleNext}
+                    disabled={
+                      (currentCodePage + 1) * itemsPerPage >= codeData.length
+                    }
+                    className={` ${
+                      (currentCodePage + 1) * itemsPerPage >= codeData.length
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
+                  />
+                </div>
+              </div>
+            </section>
+          </>
+        )}
+      </div>
+    </section>
+  );
+};
+
+export default HeroCompetitions;

@@ -1,3 +1,4 @@
+import { Tooltip } from "antd";
 import React from "react";
 
 // Hàm format số với định dạng 100,000
@@ -8,7 +9,14 @@ const formatNumber = (value) => {
   return stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
-export default function InputField({ label, id, ...rest }) {
+export default function InputField({
+  label,
+  id,
+  title,
+  changePassword,
+  setIsChangePasswordModalOpen,
+  ...rest
+}) {
   // Kiểm tra nếu 'name' là 'targetAmount', 'typeOffering' hoặc 'minTicketSize'
   if (
     rest.name === "targetAmount" ||
@@ -25,15 +33,34 @@ export default function InputField({ label, id, ...rest }) {
 
   return (
     <div>
-      <label
-        htmlFor={id}
-        className="block mb-2 text-sm text-gray-700 font-medium darkTextWhite"
-      >
-        {label}
-      </label>
+      <Tooltip title={title}>
+        {changePassword ? (
+          <div className="flex items-center justify-between">
+            <div>
+              <label htmlFor={id} className="block mb-2 text-sm darkTextWhite">
+                {label}
+              </label>
+            </div>
+            <div>
+              <label
+                className="block mb-2 text-xs darkTextWhite italic text-blue-600 hover:cursor-pointer"
+                onClick={() => setIsChangePasswordModalOpen(true)}
+              >
+                * Change password
+              </label>
+            </div>
+          </div>
+        ) : (
+          <label htmlFor={id} className="block mb-2 text-sm darkTextWhite">
+            {label.split("*")[0]}
+            <span className="font-extrabold">{label.includes("*") && "*"}</span>
+          </label>
+        )}
+      </Tooltip>
+
       <input
         id={id}
-        className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark-bg-slate-900 dark-border-gray-700 dark-text-gray-400 dark-focus-ring-gray-600"
+        className="py-3 px-4 block w-full border-gray-300 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  darkTextGray400 "
         {...rest}
       />
     </div>

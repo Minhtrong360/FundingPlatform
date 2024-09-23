@@ -1,15 +1,16 @@
+import { useAuth } from "../context/AuthContext";
 import AnnouncePage from "../components/AnnouncePage";
 
-function PermissionRequired({ children, message, isPrivateDisabled }) {
-  if (isPrivateDisabled) {
+function PermissionRequired({ children, message }) {
+  const { subscribed } = useAuth();
+
+  if (!subscribed) {
     return (
-      <>
-        <AnnouncePage
-          title="Subscription Required"
-          announce="Financial model helps you build your business plan and you need to subscribe."
-          describe="This is our special feature that helps startups or new businesses build their business plans. We provide tools with AI to build your BS, IS, FS... Please upgrade your plan to experience this exciting feature"
-        />
-      </>
+      <AnnouncePage
+        title="Upgrade to FunFlow Premium"
+        announce="Access Financial Model with AI"
+        describe="Upgrade to the FunFlow Premium plan to unlock the Financial Model with AI feature and enhance your financial analysis capabilities."
+      />
     );
   }
 

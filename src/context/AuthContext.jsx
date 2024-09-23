@@ -1,9 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../supabase";
 import SpinnerBtn from "../components/SpinnerBtn";
-import { toast } from "react-toastify";
-import AlertMsg from "../components/AlertMsg";
 import ReactGA from "react-ga4";
+import { message } from "antd";
 
 const GA_MEASUREMENT_ID = process.env.REACT_APP_GA_MEASUREMENT_ID; // Thay thế với Measurement ID của bạn
 
@@ -13,24 +12,20 @@ const AuthContext = createContext({});
 
 export const useAuth = () => useContext(AuthContext);
 
-const login = async (email, password, setLoading) => {
+const login = async (email, password) => {
   try {
     if (!navigator.onLine) {
       // Không có kết nối Internet
-      toast.error("No internet access.");
+      message.error("No internet access.");
       return;
     }
-    setLoading(true);
     const { user, session, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    setLoading(false);
-
     return { user, session, error };
   } catch (error) {
-    setLoading(false);
     console.log("Login error:", error.message);
     throw error;
   }
@@ -38,23 +33,19 @@ const login = async (email, password, setLoading) => {
 
 const signOut = () => supabase.auth.signOut();
 
-const loginWithGG = async (setLoading) => {
+const loginWithGG = async () => {
   try {
     if (!navigator.onLine) {
       // Không có kết nối Internet
-      toast.error("No internet access.");
+      message.error("No internet access.");
       return;
     }
-    setLoading(true);
     const { user, session, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
+      provider: ["google"],
     });
-
-    setLoading(false);
 
     return { user, session, error };
   } catch (error) {
-    setLoading(false);
     console.log("Google login error:", error.message);
     throw error;
   }
@@ -70,8 +61,7 @@ export function compareArrays(array1, array2) {
 // Hàm hiển thị kết quả so sánh
 export function displayCommonElements(array1, array2) {
   const commonElements = compareArrays(array1, array2);
-  console.log("array1", array1);
-  console.log("array2", array2);
+
   if (commonElements.length > 0) {
     console.log("Có sự trùng khớp giữa hai mảng:");
     console.log("Các phần tử trùng khớp:", commonElements);
@@ -86,7 +76,11 @@ export function displayCommonElements(array1, array2) {
 const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(false);
   const [user, setUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
+
+  const [subscribed, setSubscribed] = useState(false);
+  const [admin, setAdmin] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -97,6 +91,16 @@ const AuthProvider = ({ children }) => {
       setAuth(currentUser ? true : false);
       ReactGA.set({ user_pseudo_id: currentUser?.id ? currentUser?.id : "" });
       ReactGA.set({ client_id: currentUser?.id ? currentUser?.id : "" });
+
+      let { data: userSupabase } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", currentUser?.id);
+
+      if (userSupabase) {
+        setCurrentUser(userSupabase);
+      }
+
       setLoading(false);
     };
     getUser();
@@ -110,6 +114,9 @@ const AuthProvider = ({ children }) => {
       } else if (event === "SIGNED_OUT") {
         setAuth(false);
         setUser(null);
+        setAdmin(false);
+        setSubscribed(false);
+        setCurrentUser(null);
       }
     });
     return () => {
@@ -117,18 +124,39 @@ const AuthProvider = ({ children }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (currentUser) {
+      if (
+        currentUser[0]?.plan === "FundFlow Premium" &&
+        (currentUser[0]?.subscription_status?.toLowerCase() === "active" ||
+          currentUser[0]?.subscription_status?.toLowerCase() === "on_trial")
+      ) {
+        setSubscribed(true);
+      } else {
+        setSubscribed(false);
+      }
+      if (currentUser[0].admin == true) {
+        setAdmin(true);
+      } else {
+        setAdmin(false);
+      }
+    }
+  }, [currentUser]);
+
   return (
     <AuthContext.Provider
       value={{
         auth,
         user,
+        subscribed,
+        currentUser,
+        admin,
         login: (email, password) => login(email, password, setLoading),
         signOut,
         loginWithGG: () => loginWithGG(setLoading),
         displayCommonElements,
       }}
     >
-      <AlertMsg />
       {loading ? <SpinnerBtn /> : children}
     </AuthContext.Provider>
   );

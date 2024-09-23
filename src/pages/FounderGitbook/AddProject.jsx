@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { supabase } from "../../supabase";
-import PricingSection from "../Home/Pricing";
 import ReactModal from "react-modal";
-import { toast } from "react-toastify";
-import AlertMsg from "../../components/AlertMsg";
-import { Tooltip } from "antd";
+import { Tooltip, message } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import { Radio } from "antd";
+import PricingWithLemon from "../Home/Components/PricingWithLemon";
+import { Button } from "../../components/ui/button";
+import { PlusIcon, SearchIcon } from "lucide-react";
 
 const Modal = ({
   isOpen,
@@ -14,19 +16,81 @@ const Modal = ({
   setIsPricingOpen,
   updatedProjects,
   setUpdatedProjects,
+  selectedProject,
+  setSelectedProject,
 }) => {
-  const [projectName, setProjectName] = useState("SpaceX");
-  const [privateProject, setPrivateProject] = useState(false); // Use a flag to indicate private project
-  const [isPrivateDisabled, setIsPrivateDisabled] = useState(false); // New state for disabling private option
+  const [projectName, setProjectName] = useState("");
+  const [projectStatus, setProjectStatus] = useState("public"); // Default to public
+  const [isPrivateDisabled, setIsPrivateDisabled] = useState(false); // Disable private option by default
   const { user } = useAuth();
+  const [isEditing, setIsEditing] = useState(false); // State to check if editing
 
   useEffect(() => {
-    // Check if the user doesn't meet the conditions to create a private project
+    if (selectedProject) {
+      setIsEditing(true); // If a project is selected, it's in edit mode
+      setProjectName(selectedProject.name);
+      setProjectStatus(selectedProject.status);
+    }
+  }, [selectedProject]);
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+
+    try {
+      // Check if it's a private project and the user doesn't meet the conditions
+      if (projectStatus === "private" && isPrivateDisabled) {
+        setIsPricingOpen(true);
+        message.warning(
+          "You need to upgrade your plan to save this project as private"
+        );
+        return;
+      }
+
+      const { error } = await supabase
+        .from("projects")
+        .update({
+          name: projectName,
+          status: projectStatus, // Update status
+        })
+        .eq("id", selectedProject.id);
+
+      if (error) {
+        message.error(error.message);
+        console.error("Error saving project:", error);
+      } else {
+        message.success("Saved successfully.");
+        onClose();
+
+        const updatedProjectIndex = updatedProjects.findIndex(
+          (project) => project.id === selectedProject.id
+        );
+        if (updatedProjectIndex !== -1) {
+          const updatedProjectsCopy = [...updatedProjects];
+          updatedProjectsCopy[updatedProjectIndex] = {
+            ...updatedProjectsCopy[updatedProjectIndex],
+            name: projectName,
+            status: projectStatus,
+          };
+          setUpdatedProjects(updatedProjectsCopy);
+        }
+      }
+    } catch (error) {
+      message.error(error.message);
+      console.error("Error saving project:", error);
+    }
+  };
+
+  const handleCancel = () => {
+    setSelectedProject(null); // Reset selected project
+    onClose(); // Close modal
+  };
+
+  useEffect(() => {
     if (
-      currentUser.plan === "Free" ||
-      currentUser.plan === null ||
-      currentUser.plan === undefined ||
-      currentUser.subscription_status !== "active"
+      currentUser?.plan === "Free" ||
+      currentUser?.plan === null ||
+      currentUser?.plan === undefined ||
+      currentUser?.plan === ""
     ) {
       setIsPrivateDisabled(true);
     } else {
@@ -34,43 +98,40 @@ const Modal = ({
     }
   }, [currentUser]);
 
-  const handleCreate = async () => {
+  const handleCreate = async (e) => {
+    e.preventDefault();
     try {
-      // Check if it's a private project and the user doesn't meet the conditions
-      if (privateProject && isPrivateDisabled) {
+      if (projectStatus === "private" && isPrivateDisabled) {
         setIsPricingOpen(true);
-        toast.warning(
+        message.warning(
           "You need to upgrade your plan to create a private project"
         );
         return;
       }
-      // Tạo một dự án mới và lưu vào Supabase
+
       const { data, error } = await supabase
         .from("projects")
         .insert([
           {
             name: projectName,
             user_id: user.id,
-            status: !privateProject, // Invert the status for public/private
-            user_email: user.email, // Thêm giá trị is_public
+            status: projectStatus, // Set status
+            user_email: user.email,
           },
         ])
         .select();
 
       if (error) {
-        toast.error(error.message);
+        message.error(error.message);
         console.error("Error creating project:", error);
-        // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
       } else {
-        // Tạo dự án thành công, đóng modal sau khi tạo
-
         onClose();
         setUpdatedProjects([data[0], ...updatedProjects]);
+        message.success("Project created successfully.");
       }
     } catch (error) {
-      toast.error(error.message);
+      message.error(error.message);
       console.error("Error creating project:", error);
-      // Xử lý lỗi (ví dụ: hiển thị thông báo lỗi cho người dùng)
     }
   };
 
@@ -80,99 +141,90 @@ const Modal = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-      <AlertMsg />
-      <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg">
-        <h3 className="text-lg font-medium leading-6 text-gray-800 capitalize">
+      <div className="relative p-4 bg-white w-full max-w-md m-auto flex-col flex rounded-md">
+        <h4 className="text-md font-medium leading-6 text-gray-800 capitalize">
           Project Name
-        </h3>
-        <p className="mt-2 text-sm text-gray-500 ">Create a new project</p>
-        <form className="mt-4">
-          <label className="block mt-3">
+        </h4>
+        <form className="mt-2" onSubmit={isEditing ? handleSave : handleCreate}>
+          <label className="block mt-2">
             <input
               type="text"
               name="projectName"
-              placeholder="SpaceX"
+              placeholder=""
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
-              className="block w-full px-4 py-3 text-sm text-gray-700 border rounded-md"
+              className="block w-full px-4 py-3 text-sm text-gray-800 border-gray-300 rounded-md"
+              required
             />
           </label>
 
           <div className="mt-4">
-            <label className="block text-sm text-gray-700">Project Type:</label>
-            <div className="mt-2">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="projectType"
-                  value="public"
-                  checked={!privateProject} // Check if it's not a private project
-                  onChange={() => setPrivateProject(false)} // Disable private when switching to public
-                  className="form-radio text-blue-600 h-5 w-5"
-                />
-                <span className="ml-2 text-gray-700">Public</span>
-              </label>
-
-              {isPrivateDisabled ? (
+            <div className="mt-4">
+              <Radio.Group
+                onChange={(e) => setProjectStatus(e.target.value)}
+                value={projectStatus}
+              >
                 <Tooltip
-                  title={`You need to upgrade your plan to create a private project`}
-                  color="gray"
+                  title="This project will be visible to everyone."
                   zIndex={20000}
                 >
-                  <label className="inline-flex items-center ml-6">
-                    <input
-                      type="radio"
-                      name="projectType"
-                      value="private"
-                      checked={privateProject}
-                      onChange={() => setPrivateProject(true)}
-                      disabled={isPrivateDisabled}
-                      className={`form-radio h-5 w-5 ${
-                        isPrivateDisabled
-                          ? "border-gray-300"
-                          : "border-gray-600"
-                      }`}
-                    />
-                    <span className="ml-2 text-gray-300">Private</span>
-                  </label>
+                  <Radio value="public">Public</Radio>
                 </Tooltip>
-              ) : (
-                <>
-                  <label className="inline-flex items-center ml-6">
-                    <input
-                      type="radio"
-                      name="projectType"
-                      value="private"
-                      checked={privateProject}
-                      onChange={() => setPrivateProject(true)}
-                      disabled={isPrivateDisabled}
-                      className={`form-radio h-5 w-5 ${
-                        isPrivateDisabled
-                          ? "border-gray-300"
-                          : "border-gray-600"
-                      }`}
-                    />
-                    <span className="ml-2 text-gray-700">Private</span>
-                  </label>
-                </>
-              )}
+                {!isPrivateDisabled ? (
+                  <Tooltip
+                    title={`This project will be visible to everyone but they can't access the project.`}
+                    color="gray"
+                    zIndex={20000}
+                  >
+                    <Radio value="private">Private</Radio>
+                  </Tooltip>
+                ) : (
+                  <Tooltip
+                    title={`You need to upgrade your plan to create a private project.`}
+                    color="gray"
+                    zIndex={20000}
+                  >
+                    <Radio disabled value="private">
+                      Private
+                    </Radio>
+                  </Tooltip>
+                )}
+                {!isPrivateDisabled ? (
+                  <Tooltip
+                    title={`This project will be invisible to everyone.`}
+                    color="gray"
+                    zIndex={20000}
+                  >
+                    <Radio value="stealth">Stealth</Radio>
+                  </Tooltip>
+                ) : (
+                  <Tooltip
+                    title={`You need to upgrade your plan to create a stealth project.`}
+                    color="gray"
+                    zIndex={20000}
+                  >
+                    <Radio disabled value="stealth">
+                      Stealth
+                    </Radio>
+                  </Tooltip>
+                )}
+              </Radio.Group>
             </div>
           </div>
 
-          <div className="mt-4 flex items-center gap-10">
+          <div className="mt-4 flex items-end justify-end gap-2">
             <button
               type="button"
-              onClick={onClose}
-              className="w-full px-4 py-1 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+              onClick={handleCancel}
+              className="w-20 text-black bg-white hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-md text-xs px-3 py-2 text-center border border-gray-300"
             >
               Cancel
             </button>
             <button
-              type="button"
-              onClick={handleCreate}
-              className="w-full px-4 py-1 mt-3 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 hover:bg-blue-700"
+              type="submit"
+              className={`w-20 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-2 text-center darkBgBlue darkFocus`}
             >
-              Create
+              {isEditing ? "Save" : "Create"}
             </button>
           </div>
         </form>
@@ -181,72 +233,57 @@ const Modal = ({
   );
 };
 
-export default function AddProject({ updatedProjects, setUpdatedProjects }) {
-  const { user } = useAuth();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isPricingOpen, setIsPricingOpen] = useState(false); // State để kiểm soát modal Pricing
-  const [currentUser, setCurrentUser] = useState(null);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
-  useEffect(() => {
-    // Import Supabase client và thiết lập nó
-
-    const fetchCurrentUser = async () => {
-      try {
-        if (!navigator.onLine) {
-          // Không có kết nối Internet
-          toast.error("No internet access.");
-          return;
-        }
-        let { data: users, error } = await supabase
-          .from("users")
-          .select("*")
-
-          // Filters
-          .eq("id", user.id);
-
-        if (error) {
-          console.log("error", error);
-          throw error;
-        }
-
-        setCurrentUser(users[0]);
-      } catch (error) {
-        console.error("Error fetching projects:", error);
-      }
-    };
-
-    if (user) {
-      fetchCurrentUser();
-    }
-  }, [user]);
+export default function AddProject({
+  updatedProjects,
+  setUpdatedProjects,
+  isModalOpen,
+  setIsModalOpen,
+  selectedProject,
+  setSelectedProject,
+  myProjects,
+}) {
+  const { currentUser: userFromDB } = useAuth();
+  let currentUser = userFromDB[0];
 
   useEffect(() => {
     if (currentUser && updatedProjects) {
-      const hasProjectWithCurrentUser = updatedProjects.some(
-        (project) => project.user_id === currentUser.id
+      const userProjects = updatedProjects.filter(
+        (project) => project.user_id === currentUser?.id
       );
-      const isFreeUser =
-        currentUser.plan === "Free" ||
-        currentUser.plan === null ||
-        currentUser.plan === undefined;
-      const isSubscriptionInactive =
-        currentUser.subscription_status !== "active";
 
+      const planLimits = {
+        1: { maxProjects: 1, allowedStatus: ["public"] },
+        2: { maxProjects: 5, allowedStatus: ["public", "private", "stealth"] },
+        3: { maxProjects: 10, allowedStatus: ["public", "private", "stealth"] },
+      };
+      let userPlanType = 1;
       if (
-        hasProjectWithCurrentUser &&
-        updatedProjects.length > 1 &&
-        isFreeUser &&
-        isSubscriptionInactive
+        currentUser?.plan === "FundFlow Growth" &&
+        (currentUser?.subscription_status?.toLowerCase() === "active" ||
+          currentUser?.subscription_status?.toLowerCase() === "on_trial")
       ) {
-        setIsButtonDisabled(true);
-      } else {
-        setIsButtonDisabled(false);
+        userPlanType = 2;
+      } else if (
+        currentUser?.plan === "FundFlow Premium" &&
+        (currentUser?.subscription_status?.toLowerCase() === "active" ||
+          currentUser?.subscription_status?.toLowerCase() === "on_trial")
+      ) {
+        userPlanType = 3;
       }
+
+      const isButtonDisabled =
+        userProjects.length >= planLimits[userPlanType].maxProjects;
+
+      setIsButtonDisabled(isButtonDisabled);
+      setAllowedStatus(planLimits[userPlanType].allowedStatus);
     }
   }, [currentUser, updatedProjects]);
 
-  const handleClick = () => {
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [allowedStatus, setAllowedStatus] = useState(["public"]);
+  const [isPricingOpen, setIsPricingOpen] = useState(false); // State for pricing modal
+
+  const handleClickAddNew = () => {
     if (!isButtonDisabled) {
       setIsModalOpen(true);
     } else {
@@ -266,21 +303,15 @@ export default function AddProject({ updatedProjects, setUpdatedProjects }) {
           color="gray"
           zIndex={20000}
         >
-          <button
-            className={`text-white opacity-50 bg-gray-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkFocus`}
-            onClick={handleClick}
-          >
-            Add new
-          </button>
+          <Button className="!text-white" onClick={handleClickAddNew}>
+            <PlusIcon className="mr-2 h-4 w-4" /> Add new
+          </Button>
         </Tooltip>
       ) : (
         <>
-          <button
-            className={`text-white bg-blue-600 "hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center darkBgBlue darkFocus`}
-            onClick={handleClick}
-          >
-            Add new
-          </button>
+          <Button className="!text-white" onClick={handleClickAddNew}>
+            <PlusIcon className="mr-2 h-4 w-4" /> Add new
+          </Button>
         </>
       )}
       <ReactModal
@@ -289,8 +320,9 @@ export default function AddProject({ updatedProjects, setUpdatedProjects }) {
         ariaHideApp={false}
         style={{
           overlay: {
-            backgroundColor: "gray", // Màu nền overlay
-            position: "fixed", // Để nền overlay cố định
+            backdropFilter: "blur(0.5px)", // Add backdrop filter for blur effect
+            backgroundColor: "rgba(0, 0, 0, 0.3)", // Adjust background color with transparency
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
             top: 0,
             left: 0,
             right: 0,
@@ -300,7 +332,6 @@ export default function AddProject({ updatedProjects, setUpdatedProjects }) {
           content: {
             border: "none", // Để ẩn border của nội dung Modal
             background: "none", // Để ẩn background của nội dung Modal
-            // margin: "auto", // Để căn giữa
           },
         }}
       >
@@ -311,6 +342,9 @@ export default function AddProject({ updatedProjects, setUpdatedProjects }) {
           setIsPricingOpen={setIsPricingOpen}
           updatedProjects={updatedProjects}
           setUpdatedProjects={setUpdatedProjects}
+          selectedProject={selectedProject}
+          setSelectedProject={setSelectedProject}
+          allowedStatus={allowedStatus} // Pass allowedStatus to Modal
         />
       </ReactModal>
 
@@ -331,16 +365,15 @@ export default function AddProject({ updatedProjects, setUpdatedProjects }) {
           content: {
             border: "none", // Để ẩn border của nội dung Modal
             background: "none", // Để ẩn background của nội dung Modal
-            // margin: "auto", // Để căn giữa
           },
         }}
       >
         <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
-          <div className="relative p-8 bg-white w-full  m-auto flex-col flex rounded-lg">
-            <PricingSection />
+          <div className="relative p-5 bg-white w-full  m-auto flex-col flex rounded-md">
+            <PricingWithLemon />
             <div className="mt-4 flex items-center gap-10">
               <button
-                className="max-w-md px-4 py-1 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
+                className="max-w-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-300 transform border rounded-md hover:bg-gray-100"
                 onClick={closeModalPricing}
               >
                 Close

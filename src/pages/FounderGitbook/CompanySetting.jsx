@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Company from "./Company"; // Import your Company component
-import HeroSection from "./HeroSection"; // Import your HeroSection component
+
 import AnnouncePage from "../../components/AnnouncePage";
 
-import { toast } from "react-toastify";
 import { supabase } from "../../supabase";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import Card from "../Home/Components/Card";
+
 import LoadingButtonClick from "../../components/LoadingButtonClick";
-import AlertMsg from "../../components/AlertMsg";
-import CompanyTest from "./CompanyTest";
-import { data } from "jquery";
+
+// import CompanyTest from "./CompanyTest";
+
 import axios from "axios";
+import { message } from "antd";
+import { parseNumber } from "../../features/CostSlice";
+import ProfileInfo from "./ProfileInfo";
 
 function CompanySetting() {
   const navigate = useNavigate();
@@ -23,22 +25,28 @@ function CompanySetting() {
   const [isLoading, setIsLoading] = useState(true);
 
   const [formData, setFormData] = useState({
-    companyName: "",
+    name: "",
     country: "",
     industry: [],
-    targetAmount: 0,
-    typeOffering: "Investment", // Mặc định là "land"
-    minTicketSize: 0,
-    noTicket: "",
+    target_amount: 0,
+    offer_type: "Investment", // Mặc định là "land"
+    ticket_size: 0,
+    no_ticket: "",
     offer: "",
     project_url: "",
     website: "",
-
     card_url: "",
-    companyDescription: "",
+    description: "",
     rememberMe: false,
     user_email: "",
-    revenueStatus: "Pre-revenue",
+    revenueStatus: "$0 - $10k",
+    calendly: "",
+    teamSize: "",
+    operationTime: "2024",
+    amountRaised: 0,
+    round: "Pre-seed",
+    keyWords: "",
+    showAdditionalFields: "Yes",
   });
 
   useEffect(() => {
@@ -60,16 +68,16 @@ function CompanySetting() {
 
               setFormData({
                 ...formData, // Giữ lại các giá trị hiện tại của formData
-                companyName: companyData.name,
+                name: companyData.name,
                 country: companyData.country,
                 industry:
                   companyData.industry.length > 0
                     ? companyData.industry
                     : formData.industry,
-                targetAmount: companyData.target_amount,
-                typeOffering: companyData.offer_type,
-                minTicketSize: companyData.ticket_size,
-                noTicket: companyData.no_ticket,
+                target_amount: companyData.target_amount,
+                offer_type: companyData.offer_type,
+                ticket_size: companyData.ticket_size,
+                no_ticket: companyData.no_ticket,
                 offer: companyData.offer,
                 project_url: companyData.project_url
                   ? companyData.project_url
@@ -78,9 +86,16 @@ function CompanySetting() {
                   ? companyData.card_url
                   : formData.card_url,
                 website: companyData.website,
-                companyDescription: companyData.description,
+                description: companyData.description,
                 user_email: companyData.user_email,
                 revenueStatus: companyData.revenueStatus,
+                calendly: companyData.calendly,
+                teamSize: companyData.teamSize,
+                operationTime: companyData.operationTime,
+                amountRaised: parseNumber(companyData.amountRaised),
+                round: companyData.round,
+                keyWords: companyData.keyWords,
+                showAdditionalFields: companyData.showAdditionalFields,
               });
 
               setIsLoading(false);
@@ -105,39 +120,51 @@ function CompanySetting() {
 
   useEffect(() => {
     const calculateNoTicket = () => {
-      const targetAmount =
-        formData.targetAmount && typeof formData.targetAmount === "string"
-          ? parseInt(formData.targetAmount.replace(/,/g, ""), 10)
-          : formData.targetAmount;
-      const minTicketSize =
-        formData.minTicketSize && typeof formData.minTicketSize === "string"
-          ? parseInt(formData.minTicketSize.replace(/,/g, ""), 10)
-          : formData.minTicketSize;
+      const target_amount =
+        formData.target_amount && typeof formData.target_amount === "string"
+          ? parseInt(formData.target_amount.replace(/,/g, ""), 10)
+          : formData.target_amount;
+      const ticket_size =
+        formData.ticket_size && typeof formData.ticket_size === "string"
+          ? parseInt(formData.ticket_size.replace(/,/g, ""), 10)
+          : formData.ticket_size;
 
-      if (
-        !isNaN(targetAmount) &&
-        !isNaN(minTicketSize) &&
-        minTicketSize !== 0
-      ) {
-        const noTicket = Math.ceil(targetAmount / minTicketSize);
-        return noTicket;
+      if (!isNaN(target_amount) && !isNaN(ticket_size) && ticket_size !== 0) {
+        const no_ticket = Math.ceil(target_amount / ticket_size);
+        return no_ticket;
       }
       return 0;
     };
     setFormData({
       ...formData,
-      noTicket: calculateNoTicket(),
+      no_ticket: calculateNoTicket(),
     });
-  }, [formData.targetAmount, formData.minTicketSize]);
+  }, [formData.target_amount, formData.ticket_size]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData?.name) {
+      message.warning("Please input your company's name.");
+      return;
+    }
+    if (!formData?.card_url) {
+      message.warning("Please input your company's profile image.");
+      return;
+    }
+    if (!formData?.project_url) {
+      message.warning("Please input your company's logo.");
+      return;
+    }
+    if (formData?.description?.length < 50) {
+      message.warning("Please describe your company at least 50 characters.");
+      return;
+    }
     setIsLoading(true);
 
     try {
       if (!navigator.onLine) {
         // Không có kết nối Internet
-        toast.error("No internet access.");
+        message.error("No internet access.");
         setIsLoading(false);
         return;
       }
@@ -147,7 +174,7 @@ function CompanySetting() {
         formData.industry.length === 0
       ) {
         // Không có kết nối Internet
-        toast.error("Please choose industry before submitting.");
+        message.error("Please choose industry before submitting.");
         setIsLoading(false);
         return;
       }
@@ -170,21 +197,19 @@ function CompanySetting() {
           projectUrl.startsWith("http://") ||
           projectUrl.startsWith("https://")
         ) {
-          const uploadedProjectUrl = await uploadImageFromURLToSupabase(
-            projectUrl
-          );
+          const uploadedProjectUrl =
+            await uploadImageFromURLToSupabase(projectUrl);
           if (uploadedProjectUrl) {
             projectUrl = uploadedProjectUrl;
           }
         }
       }
-      console.log("projectUrl", projectUrl);
       // Upload ảnh card_url nếu có
       let cardUrl = formData.card_url;
       if (cardUrl && cardUrl.startsWith("data:image")) {
         const file = dataURItoFile(cardUrl, "card_image.jpg");
         const uploadedCardUrl = await uploadImageToSupabase(file);
-        console.log("uploadedCardUrl", uploadedCardUrl);
+
         if (uploadedCardUrl) {
           cardUrl = uploadedCardUrl;
         }
@@ -200,7 +225,6 @@ function CompanySetting() {
           }
         }
       }
-      console.log("cardUrl", cardUrl);
       // Kiểm tra xem công ty đã tồn tại trong Supabase chưa bằng cách truy vấn theo project_id
       const { data: existingCompany, error: existingCompanyError } =
         await supabase.from("company").select("*").eq("project_id", params.id);
@@ -220,33 +244,40 @@ function CompanySetting() {
             .upsert([
               {
                 id: existingCompanyId, // Sử dụng id của công ty đã tồn tại để thực hiện cập nhật
-                name: formData.companyName,
+                name: formData.name,
                 country: formData.country,
                 industry: formData.industry,
                 target_amount:
-                  formData.targetAmount &&
-                  typeof formData.targetAmount === "string"
-                    ? parseInt(formData.targetAmount.replace(/,/g, ""), 10)
-                    : formData.targetAmount,
-                offer_type: formData.typeOffering,
+                  formData.target_amount &&
+                  typeof formData.target_amount === "string"
+                    ? parseInt(formData.target_amount.replace(/,/g, ""), 10)
+                    : formData.target_amount,
+                offer_type: formData.offer_type,
                 ticket_size:
-                  formData.minTicketSize &&
-                  typeof formData.minTicketSize === "string"
-                    ? parseInt(formData.minTicketSize.replace(/,/g, ""), 10)
-                    : formData.minTicketSize,
+                  formData.ticket_size &&
+                  typeof formData.ticket_size === "string"
+                    ? parseInt(formData.ticket_size.replace(/,/g, ""), 10)
+                    : formData.ticket_size,
                 no_ticket:
-                  formData.noTicket && typeof formData.noTicket === "string"
-                    ? parseInt(formData.noTicket.replace(/,/g, ""), 10)
-                    : formData.noTicket,
+                  formData.no_ticket && typeof formData.no_ticket === "string"
+                    ? parseInt(formData.no_ticket.replace(/,/g, ""), 10)
+                    : formData.no_ticket,
                 offer: formData.offer,
                 project_url: projectUrl,
                 card_url: cardUrl,
                 website: formData.website,
-                description: formData.companyDescription,
+                description: formData.description,
                 user_id: user.id,
                 user_email: user.email,
                 project_id: params.id,
                 revenueStatus: formData.revenueStatus,
+                calendly: formData.calendly,
+                teamSize: formData.teamSize,
+                operationTime: formData.operationTime,
+                amountRaised: parseNumber(formData.amountRaised),
+                round: formData.round,
+                keyWords: formData.keyWords,
+                showAdditionalFields: formData.showAdditionalFields,
               },
             ])
             .select();
@@ -256,7 +287,7 @@ function CompanySetting() {
             throw error;
           } else {
             setIsLoading(false);
-            navigate(`/founder/${params.id}`);
+            navigate(`/profile/${params.id}`);
           }
         } else {
           // Nếu công ty chưa tồn tại, thêm mới thông tin công ty
@@ -265,33 +296,40 @@ function CompanySetting() {
             .from("company")
             .upsert([
               {
-                name: formData.companyName,
+                name: formData.name,
                 country: formData.country,
                 industry: formData.industry,
                 target_amount:
-                  formData.targetAmount &&
-                  typeof formData.targetAmount === "string"
-                    ? parseInt(formData.targetAmount.replace(/,/g, ""), 10)
-                    : formData.targetAmount,
-                offer_type: formData.typeOffering,
+                  formData.target_amount &&
+                  typeof formData.target_amount === "string"
+                    ? parseInt(formData.target_amount.replace(/,/g, ""), 10)
+                    : formData.target_amount,
+                offer_type: formData.offer_type,
                 ticket_size:
-                  formData.minTicketSize &&
-                  typeof formData.minTicketSize === "string"
-                    ? parseInt(formData.minTicketSize.replace(/,/g, ""), 10)
-                    : formData.minTicketSize,
+                  formData.ticket_size &&
+                  typeof formData.ticket_size === "string"
+                    ? parseInt(formData.ticket_size.replace(/,/g, ""), 10)
+                    : formData.ticket_size,
                 no_ticket:
-                  formData.noTicket && typeof formData.noTicket === "string"
-                    ? parseInt(formData.noTicket.replace(/,/g, ""), 10)
-                    : formData.noTicket,
+                  formData.no_ticket && typeof formData.no_ticket === "string"
+                    ? parseInt(formData.no_ticket.replace(/,/g, ""), 10)
+                    : formData.no_ticket,
                 offer: formData.offer,
                 project_url: projectUrl,
                 card_url: cardUrl,
                 website: formData.website,
-                description: formData.companyDescription,
+                description: formData.description,
                 user_id: user.id,
                 user_email: user.email,
                 project_id: params.id,
                 revenueStatus: formData.revenueStatus,
+                calendly: formData.calendly,
+                teamSize: formData.teamSize,
+                operationTime: formData.operationTime,
+                amountRaised: parseNumber(formData.amountRaised),
+                round: formData.round,
+                keyWords: formData.keyWords,
+                showAdditionalFields: formData.showAdditionalFields,
               },
             ])
             .select();
@@ -301,18 +339,24 @@ function CompanySetting() {
           } else {
             createNotifications({ createdCompany: data[0] });
             setIsLoading(false);
-            navigate(`/founder/${params.id}`);
+            navigate(`/profile/${params.id}`);
           }
         }
       }
     } catch (error) {
-      toast.error(error.message);
+      message.error(error.message);
       console.error("Error updating company data:", error);
     }
     setIsLoading(false);
   };
 
-  const typeOfferingOptions = ["Lending", "Investment", "M&A", "Convertible"];
+  const typeOfferingOptions = [
+    "Lending",
+    "Investment",
+    "M&A",
+    "Convertible",
+    "Non-Profit",
+  ];
 
   useEffect(() => {
     // Lấy dự án từ Supabase
@@ -325,12 +369,12 @@ function CompanySetting() {
         setIsLoading(false); // Đánh dấu rằng dữ liệu đã được tải xong
         if (error) {
           console.log("error", error);
-          toast.error(error.message);
+          message.error(error.message);
           // Xử lý lỗi khi không thể lấy dự án
         } else {
           // Kiểm tra quyền truy cập của người dùng
           if (
-            data.status === false &&
+            data.status === "private" &&
             data.user_id !== user?.id &&
             !data.collabs?.includes(user.email)
           ) {
@@ -543,10 +587,10 @@ function CompanySetting() {
         }
       } else {
         // If there are no users matching the criteria, display a message
-        // toast.warning("No users matching the criteria for notifications.");
+        // message.warning("No users matching the criteria for notifications.");
       }
     } catch (error) {
-      toast.error(error.message);
+      message.error(error.message);
       console.log("Error updating company data:", error);
     }
   }
@@ -564,58 +608,14 @@ function CompanySetting() {
   const canClick = false;
 
   return (
-    <div className="grid sm:grid-cols-1 lg:grid-cols-3 gap-6">
-      {" "}
-      {/* Sử dụng lg:grid-cols-3 để chia thành 3 cột, trong đó Company component chiếm 1/3 và các div còn lại chiếm 2/3 */}
-      <LoadingButtonClick isLoading={isLoading} />
-      <div className="flex-1 lg:col-span-1">
-        {" "}
-        {/* Sử dụng lg:col-span-1 để Company component chiếm 1/3 */}
-        <Company
-          isLoading={isLoading}
-          handleSubmit={handleSubmit}
-          formData={formData}
-          handleInputChange={handleInputChange}
-          typeOfferingOptions={typeOfferingOptions}
-          handleIndustryChange={handleIndustryChange}
-        />
-        <AlertMsg />
-      </div>
-      <div className="flex-1 lg:col-span-2">
-        {" "}
-        {/* Sử dụng lg:col-span-2 để các div còn lại chiếm 2/3 */}
-        <div className="flex flex-col">
-          <HeroSection
-            formData={formData}
-            title={formData.companyName}
-            description={formData.companyDescription}
-            button1Text={formData.targetAmount}
-            button2Text={formData.minTicketSize}
-            button3Text={formData.noTicket}
-            button4Text={formData.offer}
-            button5Text={formData.typeOffering}
-            imageUrl={formData.project_url}
-            setFormData={setFormData}
-            canClick={canClick}
-          />
-
-          <hr className="mt-16 border-dashed border-gray-400" />
-
-          <div className="mt-11 px-4 sm:px-6 lg:px-8">
-            <Card
-              title={formData.companyName}
-              description={formData.companyDescription}
-              imageUrl={formData.card_url}
-              buttonText="Read more"
-              project_id={id}
-              canClick={canClick}
-              formData={formData}
-              setFormData={setFormData}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+    <Company
+      isLoading={isLoading}
+      handleSubmit={handleSubmit}
+      formData={formData}
+      handleInputChange={handleInputChange}
+      typeOfferingOptions={typeOfferingOptions}
+      handleIndustryChange={handleIndustryChange}
+    />
   );
 }
 

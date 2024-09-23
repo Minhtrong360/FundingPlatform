@@ -6,7 +6,9 @@ import ProjectList from "./ProjectList";
 import { supabase } from "../../supabase";
 import { useAuth } from "../../context/AuthContext";
 import SideBar from "../../components/SideBar";
-import { toast } from "react-toastify";
+
+import { message } from "antd";
+import HomeHeader from "../../components/Section/Common/Header/HomeHeader";
 
 const FounderGitbook = () => {
   const { user } = useAuth();
@@ -15,6 +17,7 @@ const FounderGitbook = () => {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // Import Supabase client và thiết lập nó
@@ -23,10 +26,10 @@ const FounderGitbook = () => {
       try {
         if (!navigator.onLine) {
           // Không có kết nối Internet
-          toast.error("No internet access.");
+          message.error("No internet access.");
           return;
         }
-
+        setIsLoading(true);
         // Lấy các dự án có user_id = user.id
         let { data: projects1, error: error1 } = await supabase
           .from("projects")
@@ -68,27 +71,24 @@ const FounderGitbook = () => {
         ).map((id) => combinedProjects.find((project) => project.id === id));
 
         setProjects(uniqueProjects);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching projects:", error);
-        toast.error(error.message);
+        message.error(error.message);
+        setIsLoading(false);
       }
     };
 
     if (user) {
       fetchProjects();
     }
-  }, [user]);
+  }, []);
 
   return (
     <div className=" bg-white darkBg antialiased !p-0">
-      <div id="exampleWrapper">
-        <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-
-        <div className="p-4 ml-24" onClick={() => setIsSidebarOpen(false)}>
-          <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg darkBorderGray">
-            <ProjectList projects={projects} />
-          </div>
-        </div>
+      <HomeHeader />
+      <div className="mt-24 sm:p-4 p-0 border-gray-300 border-dashed rounded-md darkBorderGray">
+        <ProjectList projects={projects} isLoading={isLoading} />
       </div>
     </div>
   );

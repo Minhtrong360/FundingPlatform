@@ -188,7 +188,7 @@ export const transformLoanDataForTable = (
     };
 
     for (let monthIndex = 1; monthIndex <= numberOfMonths; monthIndex++) {
-      const monthKey = `Month ${monthIndex}`;
+      const monthKey = `month${monthIndex}`;
       loanAmountRow[monthKey] = "0";
       paymentRow[monthKey] = "0";
       principalRow[monthKey] = "0";
@@ -197,7 +197,7 @@ export const transformLoanDataForTable = (
     }
 
     loanData.loanDataPerMonth?.forEach((monthData) => {
-      const monthKey = `Month ${monthData.month}`;
+      const monthKey = `month${monthData.month}`;
       loanAmountRow[monthKey] = formatNumber(monthData.loanAmount?.toFixed(2));
       paymentRow[monthKey] = formatNumber(monthData.payment?.toFixed(2));
       principalRow[monthKey] = formatNumber(monthData.principal?.toFixed(2));
@@ -230,7 +230,7 @@ export const transformLoanDataForTable = (
     type: `CF Loans`,
   };
   for (let monthIndex = 0; monthIndex < numberOfMonths; monthIndex++) {
-    cfLoansRow[`Month ${monthIndex + 1}`] = formatNumber(
+    cfLoansRow[`month${monthIndex + 1}`] = formatNumber(
       cfLoansSum[monthIndex]?.toFixed(2)
     );
   }
@@ -242,7 +242,7 @@ export const transformLoanDataForTable = (
   };
 
   for (let monthIndex = 1; monthIndex <= numberOfMonths; monthIndex++) {
-    const monthKey = `Month ${monthIndex}`;
+    const monthKey = `month${monthIndex}`;
     const totalBalanceForMonth = tempLoanInputs?.reduce((total, input) => {
       const loanData = calculateLoanData(tempLoanInputs, numberOfMonths)?.find(
         (loan) => loan.loanName === input.loanName

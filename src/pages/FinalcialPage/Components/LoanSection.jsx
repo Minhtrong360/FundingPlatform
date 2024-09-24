@@ -13,21 +13,14 @@ import {
 } from "../../../features/LoanSlice";
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
-import {
-  DownloadOutlined,
-  FileOutlined,
-  FullscreenOutlined,
-} from "@ant-design/icons";
-import { PlusOutlined } from "@ant-design/icons";
-import { DeleteOutlined } from "@ant-design/icons";
-import { CheckCircleOutlined } from "@ant-design/icons";
+import { FileOutlined } from "@ant-design/icons";
+
 import { useAuth } from "../../../context/AuthContext";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import { setInputData } from "../../../features/DurationSlice";
-import { Badge } from "../../../components/ui/badge";
 import {
   CardContent,
   CardHeader,
@@ -362,8 +355,8 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
       return {
         title: `${months[monthIndex]}/${year}`,
-        dataIndex: `Month ${i + 1}`,
-        key: `Month ${i + 1}`,
+        dataIndex: `month${i + 1}`,
+        key: `month${i + 1}`,
         align: "right",
       };
     }),
@@ -678,7 +671,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     ).forEach((record) => {
       const row = [record.type];
       for (let i = 1; i <= numberOfMonths; i++) {
-        row.push(record[`Month ${i}`] || "");
+        row.push(record[`month${i}`] || "");
       }
       worksheetData.push(row);
     });
@@ -836,6 +829,8 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       icon: ThumbsUp,
     },
   ];
+
+  console.log("filteredTableData", filteredTableData);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row p-4">

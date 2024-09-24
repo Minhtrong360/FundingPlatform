@@ -763,6 +763,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
       icon: ThumbsUp,
     },
   ];
+  console.log("personnelCostTableData", personnelCostTableData);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row p-4">

@@ -151,14 +151,12 @@ const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
 
   const transformedData = transformData(PNL);
   const PNLChanged = RemoveChildren(transformedData);
-  console.log("transformedData", PNLChanged);
 
   const jsonData = {
     CashFlowStatement: CF,
     BalanceSheetStatement: BS,
     IncomeStatement: PNLChanged,
   };
-  console.log("jsonData", jsonData);
 
   const convertToCSV = (json) => {
     const opts = { delimiter: "|" };
@@ -177,7 +175,6 @@ const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
   const createCSVBlob = (data) => {
     const csv = convertToCSV(data);
     const transposedData = transposeData(csv);
-    // console.log("csv", csv);
     return new Blob([transposedData], { type: "text/csv;charset=utf-8;" });
   };
 
@@ -213,6 +210,33 @@ const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
       downloadCSV(jsonData[type], type);
     };
 
+    const cleanData = (data) => {
+      return data.map((item) => {
+        const cleanedItem = { ...item };
+
+        Object.keys(cleanedItem).forEach((key) => {
+          if (key === "month") {
+            // Convert month format from "9-2024" to "2024-09-01"
+            const [month, year] = cleanedItem[key].split("-");
+            const formattedMonth = `${year}-${month.padStart(2, "0")}-01`; // Converts "9-2024" to "2024-09-01"
+            cleanedItem[key] = new Date(formattedMonth).toISOString(); // Converts to ISO timestamp format
+          } else if (key !== "project_id") {
+            // Replace empty strings with null and convert numeric fields
+            if (cleanedItem[key] === "") {
+              cleanedItem[key] = null;
+            } else {
+              const parsedValue = parseFloat(cleanedItem[key]);
+              if (!isNaN(parsedValue)) {
+                cleanedItem[key] = parsedValue;
+              }
+            }
+          }
+        });
+
+        return cleanedItem;
+      });
+    };
+
     const CsvUploader = () => {
       const saveToSupabase = async () => {
         try {
@@ -236,6 +260,7 @@ const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
             });
           };
 
+          // Parse the CSVs
           const cashFlowJson = (await parseCSVToJson(cashFlowData)).map(
             transformKeysAndCleanValues
           );
@@ -246,14 +271,38 @@ const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
             await parseCSVToJson(incomeStatementData)
           ).map(transformKeysAndCleanValues);
 
+          // Check if there is a project_id
+          const projectId = balanceSheetJson[0]?.project_id; // assuming project_id exists and is the same across the data
+
+          if (projectId) {
+            // Remove existing data related to project_id
+            await supabase
+              .from("balancesheet")
+              .delete()
+              .eq("project_id", projectId);
+            await supabase
+              .from("profitandloss")
+              .delete()
+              .eq("project_id", projectId);
+            await supabase
+              .from("cashflow")
+              .delete()
+              .eq("project_id", projectId);
+          }
+
+          // Clean and insert new data
           if (balanceSheetJson) {
-            await supabase.from("balancesheet").insert(balanceSheetJson);
+            await supabase
+              .from("balancesheet")
+              .insert(cleanData(balanceSheetJson));
           }
           if (incomeStatementJson) {
-            await supabase.from("profitandloss").insert(incomeStatementJson);
+            await supabase
+              .from("profitandloss")
+              .insert(cleanData(incomeStatementJson));
           }
           if (cashFlowJson) {
-            await supabase.from("cashflow").insert(cashFlowJson);
+            await supabase.from("cashflow").insert(cleanData(cashFlowJson));
           }
 
           message.success("Submit successfully!");
@@ -342,9 +391,6 @@ const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
 
     let formData = new FormData();
     Object.keys(csvBlobs).forEach((filename) => {
-      console.log(`Appending file: ${filename}`);
-      console.log(csvBlobs[filename]);
-      console.log(new File([csvBlobs[filename]], filename));
       formData.append("files", new File([csvBlobs[filename]], filename));
     });
     // formData.append("files", file);
@@ -374,7 +420,6 @@ const FileUploadComponent = ({ BS, CF, PNL, Source, paramsID }) => {
       setLoading(false);
     }
   };
-  console.log("response", response);
 
   return (
     <div className="md:ml-2">
@@ -391,7 +436,6 @@ const ClearButton = ({ paramsID }) => {
   const deleteProjectData = async () => {
     setLoading(true);
     setMessageText(""); // Reset message
-    console.log("paramsID clear:", paramsID);
     // Access the actual ID from the paramsID object
     const projectIDString = paramsID;
     try {
@@ -1274,8 +1318,6 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
   const CF = filterMetrics(positionDataWithNetIncome);
 
   const PNL = filterMetrics(transposedData);
-
-  console.log("params", paramsID);
 
   return (
     currentUser[0]?.admin && (

@@ -292,7 +292,6 @@ export function generateCustomerTableData(
               );
             } else if (customerInput?.customerGrowthFrequency == "Monthly") {
               currentCustomers *= 1 + growthRate / 100;
-              console.log("Monthly", currentCustomers);
             } else {
               let frequency = 12; // Default to Annually
               if (customerInput?.customerGrowthFrequency == "Quarterly")
@@ -304,7 +303,6 @@ export function generateCustomerTableData(
 
               if ((i - customerInput?.beginMonth) % frequency === 0) {
                 currentCustomers *= 1 + growthRate / 100;
-                console.log(frequency, "=", currentCustomers);
               }
             }
             startRow[`month${i}`] = 0;
@@ -336,12 +334,6 @@ export function generateCustomerTableData(
           endRow[`month${i}`] = "0";
         }
       }
-      console.log("channelRow", channelRow);
-      console.log("startRow", startRow);
-      console.log("beginRow", beginRow);
-      console.log("channelAddRow", channelAddRow);
-      console.log("churnRow", churnRow);
-      console.log("endRow", endRow);
 
       return [channelRow, startRow, beginRow, channelAddRow, churnRow, endRow];
     });

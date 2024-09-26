@@ -196,25 +196,6 @@ const CustomerInputsForm = React.memo(
           </h2>
         </Tooltip>
 
-        <Select
-          value={renderCustomerForm}
-          onValueChange={(e) => {
-            handleRenderFormChange(e);
-          }}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Offline" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            {debouncedInputs.map((input) => (
-              <SelectItem key={input?.id} value={input?.id}>
-                {input?.channelName}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
         {debouncedInputs
           .filter((input) => input?.id == renderCustomerForm)
           .map((input) => (
@@ -482,6 +463,8 @@ const CustomerSection = React.memo(
   ({ numberOfMonths, customerGrowthChart, setCustomerGrowthChart }) => {
     const [isChartModalVisible, setIsChartModalVisible] = useState(false); // New state for chart modal visibility
     const [selectedChart, setSelectedChart] = useState(null); // New state for selected chart
+    const [chartStartMonth, setChartStartMonth] = useState(1);
+    const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
 
     const handleChartClick = (chart, event) => {
       const toolbar = document.querySelector(".apexcharts-toolbar");
@@ -680,12 +663,14 @@ const CustomerSection = React.memo(
         key: "channelName",
         width: 500,
       },
-      ...Array.from({ length: numberOfMonths }, (_, i) => {
-        const monthIndex = (startingMonth + i - 1) % 12;
-        const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
+      ...Array.from({ length: chartEndMonth - chartStartMonth + 1 }, (_, i) => {
+        const monthIndex = (chartStartMonth - 1 + startingMonth + i - 1) % 12;
+        const year =
+          startingYear +
+          Math.floor((chartStartMonth - 1 + startingMonth + i - 1) / 12);
         return {
           title: `${months[monthIndex]}/${year}`,
-          dataIndex: `month${i + 1}`,
+          dataIndex: `month${chartStartMonth + i}`,
           key: `month${i + 1}`,
           align: "right",
           render: (text, record) => {
@@ -855,9 +840,6 @@ const CustomerSection = React.memo(
         setIsLoading(false);
       }
     };
-
-    const [chartStartMonth, setChartStartMonth] = useState(1);
-    const [chartEndMonth, setChartEndMonth] = useState(numberOfMonths);
 
     useEffect(() => {
       const startIdx = chartStartMonth - 1;
@@ -1211,24 +1193,23 @@ const CustomerSection = React.memo(
       setIsDeleteModalOpen(false);
     };
 
-    const [activeTab, setActiveTab] = useState("table&chart");
-
-    const handleTabChange = (tabName) => {
-      setActiveTab(tabName);
-    };
-
     const downloadExcel = () => {
       const workBook = XLSX.utils.book_new();
 
       const worksheetData = [
         [
           "Channel Name",
-          ...Array.from({ length: numberOfMonths }, (_, i) => {
-            const monthIndex = (startingMonth + i - 1) % 12;
-            const year =
-              startingYear + Math.floor((startingMonth + i - 1) / 12);
-            return `${months[monthIndex]}/${year}`;
-          }),
+          ...Array.from(
+            { length: chartEndMonth - chartStartMonth + 1 },
+            (_, i) => {
+              const monthIndex =
+                (chartStartMonth - 1 + startingMonth + i - 1) % 12;
+              const year =
+                startingYear +
+                Math.floor((chartStartMonth - 1 + startingMonth + i - 1) / 12);
+              return `${months[monthIndex]}/${year}`;
+            }
+          ),
         ],
       ];
 
@@ -1271,8 +1252,6 @@ const CustomerSection = React.memo(
 
     const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 
-    const [searchTerm, setSearchTerm] = useState("");
-    const [date, setDate] = useState(new Date());
     const [visibleMetrics, setVisibleMetrics] = useState({
       existingCustomers: true,
       numberOfChannels: true,
@@ -1286,58 +1265,157 @@ const CustomerSection = React.memo(
     const toggleMetric = (metric) => {
       setVisibleMetrics((prev) => ({ ...prev, [metric]: !prev[metric] }));
     };
-
-    const metrics = [
+    const [metrics, setMetrics] = useState([
       {
         key: "existingCustomers",
         title: "Existing Customers",
-        value: "1,234",
-        change: "+10%",
+        value: "",
+        change: "",
         icon: Users,
       },
       {
         key: "numberOfChannels",
         title: "Number of Channels",
-        value: "5",
-        change: "+1",
+        value: "",
+        change: "",
         icon: MessageSquare,
       },
       {
         key: "previousMonthUsers",
-        title: "Previous month users",
-        value: "10,987",
-        change: "-",
+        title: "Previous Month Users",
+        value: "",
+        change: "",
         icon: Users,
       },
       {
         key: "addedUsers",
         title: "Added Users",
-        value: "1,345",
-        change: "+22%",
+        value: "",
+        change: "",
         icon: UserPlus,
       },
       {
         key: "churnedUsers",
-        title: "No. of User Churned",
-        value: "201",
-        change: "-5%",
+        title: "Churned Users",
+        value: "",
+        change: "",
         icon: UserMinus,
       },
       {
         key: "totalUsers",
-        title: "No. of Users",
-        value: "12,131",
-        change: "+11%",
+        title: "Total Users",
+        value: "",
+        change: "",
         icon: Users,
       },
       {
         key: "customerSatisfaction",
         title: "Customer Satisfaction",
-        value: "92%",
-        change: "+3%",
-        icon: ThumbsUp,
+        value: "",
+        change: "",
+        icon: Users,
       },
-    ];
+    ]);
+
+    // Function to simplify data extraction
+    const extractData = (data, keyPrefix, startMonth, endMonth) => {
+      return Object.keys(data)
+        .filter((key) => key.startsWith(keyPrefix))
+        .slice(startMonth - 1, endMonth)
+        .reduce((sum, monthKey) => sum + parseNumber(data[monthKey]), 0);
+    };
+
+    // Function to calculate metric changes
+    const calculateChange = (startValue, endValue) => {
+      if (startValue === 0) return 0;
+      return ((endValue - startValue) / startValue) * 100;
+    };
+
+    // Simplified useEffect for calculating metrics and filtering data
+    useEffect(() => {
+      const selectedData = tempCustomerInputs.find(
+        (input) => input.id === renderCustomerForm
+      );
+
+      if (selectedData && filteredTableData.length > 0) {
+        const filtered = filteredTableData.filter((data) =>
+          data.channelName.includes(selectedData.channelName)
+        );
+
+        const existingCustomersData = filtered.find((row) =>
+          row.key.includes("-start")
+        );
+        const addedUsersData = filtered.find((row) => row.key.includes("-add"));
+        const churnedUsersData = filtered.find((row) =>
+          row.key.includes("-churn")
+        );
+        const totalUsersData = filtered.find((row) => row.key.includes("-end"));
+
+        const existingCustomers = parseNumber(
+          existingCustomersData[`month${chartEndMonth}`] || 0
+        );
+        const addedUsers = extractData(
+          addedUsersData,
+          "month",
+          chartStartMonth,
+          chartEndMonth
+        );
+        const churnedUsers = extractData(
+          churnedUsersData,
+          "month",
+          chartStartMonth,
+          chartEndMonth
+        );
+        const totalUsers = parseNumber(
+          totalUsersData[`month${chartEndMonth}`] || 0
+        );
+
+        const addedUsersChange = calculateChange(
+          parseNumber(addedUsersData[`month${chartStartMonth}`]),
+          parseNumber(addedUsersData[`month${chartEndMonth}`])
+        );
+        const churnedUsersChange = calculateChange(
+          parseNumber(churnedUsersData[`month${chartStartMonth}`]),
+          parseNumber(churnedUsersData[`month${chartEndMonth}`])
+        );
+        const totalUsersChange = calculateChange(
+          parseNumber(totalUsersData[`month${chartStartMonth}`]),
+          parseNumber(totalUsersData[`month${chartEndMonth}`])
+        );
+
+        setMetrics((prevMetrics) => [
+          {
+            ...prevMetrics[0],
+            value: formatNumber(existingCustomers),
+            change: `+0%`,
+          },
+          { ...prevMetrics[1], value: tempCustomerInputs.length, change: "" },
+          { ...prevMetrics[2], value: "", change: "" },
+          {
+            ...prevMetrics[3],
+            value: formatNumber(addedUsers),
+            change: `${addedUsersChange.toFixed(2)}%`,
+          },
+          {
+            ...prevMetrics[4],
+            value: formatNumber(churnedUsers),
+            change: `${churnedUsersChange.toFixed(2)}%`,
+          },
+          {
+            ...prevMetrics[5],
+            value: formatNumber(totalUsers),
+            change: `${totalUsersChange.toFixed(2)}%`,
+          },
+          { ...prevMetrics[6], value: "", change: "" },
+        ]);
+      }
+    }, [
+      chartStartMonth,
+      chartEndMonth,
+      renderCustomerForm,
+      tempCustomerInputs,
+      customerTableData,
+    ]);
 
     return (
       <div className="w-full h-full flex flex-col lg:flex-row p-4">
@@ -1422,6 +1500,27 @@ const CustomerSection = React.memo(
                     </Select>
                   </div>
                 </div>
+
+                <Select
+                  value={renderCustomerForm}
+                  onValueChange={(e) => {
+                    handleRenderFormChange(e);
+                  }}
+                  className="w-full md:w-auto"
+                >
+                  <SelectTrigger className="w-full md:w-auto">
+                    <SelectValue placeholder="Offline" />
+                  </SelectTrigger>
+                  <SelectContent className="w-full md:w-auto">
+                    <SelectItem value="all">All</SelectItem>
+                    {tempCustomerInputs.map((input) => (
+                      <SelectItem key={input?.id} value={input?.id}>
+                        {input?.channelName}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
                 {/* Popover để chọn metrics hiển thị */}
                 <Popover>
                   <PopoverTrigger asChild>
@@ -1488,13 +1587,11 @@ const CustomerSection = React.memo(
 
           <h3 className="text-lg font-semibold mb-4">II. Customer Chart</h3>
 
-          <div className="sm:ml-4 ml-0 mt-12">
-            <h4 className="text-base font-semibold mb-4">
-              1. All channels chart
-            </h4>
-            {customerGrowthChart?.charts
-              ?.filter((chart) => chart?.options?.chart?.id === "allChannels")
-              .map((chart, index) => (
+          {renderCustomerForm === "all" &&
+            customerGrowthChart?.charts.map((chart, index) => (
+              <div key={index} className="my-4">
+                <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}</h5>
+
                 <CardShadcn
                   key={index}
                   className="flex flex-col transition duration-500 !rounded-md relative"
@@ -1524,71 +1621,6 @@ const CustomerSection = React.memo(
                       </svg>
                       <span className="sr-only">Fullscreen</span>
                     </Button>
-                    {/* <div className="flex justify-between items-center">
-                      <div className="min-w-[10vw] mb-2">
-                        <label htmlFor="startMonthSelect" className="text-sm">
-                          Start Month:
-                        </label>
-                        <Select
-                          value={chartStartMonth}
-                          onValueChange={(value) => {
-                            setChartStartMonth(
-                              Math.max(1, Math.min(value, chartEndMonth))
-                            );
-                          }}
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select month" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Array.from({ length: numberOfMonths }, (_, i) => {
-                              const monthIndex = (startingMonth + i - 1) % 12;
-                              const year =
-                                startingYear +
-                                Math.floor((startingMonth + i - 1) / 12);
-                              return (
-                                <SelectItem key={i + 1} value={i + 1}>
-                                  {`${months[monthIndex]}/${year}`}
-                                </SelectItem>
-                              );
-                            })}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="min-w-[10vw] mb-2">
-                        <label htmlFor="endMonthSelect" className="text-sm">
-                          End Month:
-                        </label>
-                        <Select
-                          value={chartEndMonth}
-                          onValueChange={(value) => {
-                            setChartEndMonth(
-                              Math.max(
-                                chartStartMonth,
-                                Math.min(value, numberOfMonths)
-                              )
-                            );
-                          }}
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select month" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Array.from({ length: numberOfMonths }, (_, i) => {
-                              const monthIndex = (startingMonth + i - 1) % 12;
-                              const year =
-                                startingYear +
-                                Math.floor((startingMonth + i - 1) / 12);
-                              return (
-                                <SelectItem key={i + 1} value={i + 1}>
-                                  {`${months[monthIndex]}/${year}`}
-                                </SelectItem>
-                              );
-                            })}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div> */}
                   </CardHeader>
                   <CardContent>
                     <Chart
@@ -1618,163 +1650,21 @@ const CustomerSection = React.memo(
                     />
                   </CardContent>
                 </CardShadcn>
-              ))}
-          </div>
-          <div className="sm:ml-4 ml-0 mt-12">
-            <h4 className="text-base font-semibold mb-4">
-              2. Component charts
-            </h4>
-            <div className="grid md:grid-cols-2 gap-6">
-              {customerGrowthChart?.charts
-                ?.filter((chart) => chart?.options?.chart?.id !== "allChannels")
-                .map((chart, index) => (
-                  <div className="ml-2">
-                    <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}</h5>
-                    <CardShadcn
-                      key={index}
-                      className="flex flex-col transition duration-500 !rounded-md relative"
-                    >
-                      <CardHeader>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute top-2 right-2 z-50"
-                          onClick={(event) => handleChartClick(chart, event)}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="w-4 h-4"
-                          >
-                            <path d="M15 3h6v6" />
-                            <path d="M10 14 21 3" />
-                            <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
-                          </svg>
-                          <span className="sr-only">Fullscreen</span>
-                        </Button>
+              </div>
+            ))}
 
-                        {/* <div className="flex justify-between items-center">
-                          <div className="min-w-[10vw] mb-2">
-                            <label
-                              htmlFor="startMonthSelect"
-                              className="text-sm"
-                            >
-                              Start Month:
-                            </label>
-                            <Select
-                              value={chartStartMonth}
-                              onValueChange={(value) => {
-                                setChartStartMonth(
-                                  Math.max(1, Math.min(value, chartEndMonth))
-                                );
-                              }}
-                            >
-                              <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Select month" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {Array.from(
-                                  { length: numberOfMonths },
-                                  (_, i) => {
-                                    const monthIndex =
-                                      (startingMonth + i - 1) % 12;
-                                    const year =
-                                      startingYear +
-                                      Math.floor((startingMonth + i - 1) / 12);
-                                    return (
-                                      <SelectItem key={i + 1} value={i + 1}>
-                                        {`${months[monthIndex]}/${year}`}
-                                      </SelectItem>
-                                    );
-                                  }
-                                )}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div className="min-w-[10vw] mb-2">
-                            <label htmlFor="endMonthSelect" className="text-sm">
-                              End Month:
-                            </label>
-                            <Select
-                              value={chartEndMonth}
-                              onValueChange={(value) => {
-                                setChartEndMonth(
-                                  Math.max(
-                                    chartStartMonth,
-                                    Math.min(value, numberOfMonths)
-                                  )
-                                );
-                              }}
-                            >
-                              <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Select month" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {Array.from(
-                                  { length: numberOfMonths },
-                                  (_, i) => {
-                                    const monthIndex =
-                                      (startingMonth + i - 1) % 12;
-                                    const year =
-                                      startingYear +
-                                      Math.floor((startingMonth + i - 1) / 12);
-                                    return (
-                                      <SelectItem key={i + 1} value={i + 1}>
-                                        {`${months[monthIndex]}/${year}`}
-                                      </SelectItem>
-                                    );
-                                  }
-                                )}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div> */}
-                      </CardHeader>
-                      <CardContent>
-                        <Chart
-                          options={{
-                            ...chart.options,
-                            fill: {
-                              type: "gradient",
-                              gradient: {
-                                shade: "light",
-                                shadeIntensity: 0.5,
-                                opacityFrom: 0.75,
-                                opacityTo: 0.65,
-                                stops: [0, 90, 100],
-                              },
-                            },
-                            xaxis: {
-                              ...chart.options.xaxis,
-                            },
-                            stroke: {
-                              width: 1,
-                              curve: "straight",
-                            },
-                          }}
-                          series={chart.series}
-                          type="area"
-                          height={350}
-                        />
-                      </CardContent>
-                    </CardShadcn>
-                  </div>
-                ))}
-            </div>
-          </div>
-
-          <div className="sm:ml-4 ml-0 mt-12">
-            <h4 className="text-base font-semibold mb-4">3. Advanced charts</h4>
-            <div className="grid md:grid-cols-2 gap-6">
-              {customerGrowthChart?.chartsNoFilter?.map((chart, index) => (
-                <div className="ml-2">
+          <div className="grid md:grid-cols-2 gap-6">
+            {customerGrowthChart?.charts
+              ?.filter(
+                (chart) =>
+                  chart?.options?.chart?.id !== "allChannels" &&
+                  chart?.options?.title?.text?.toLowerCase() ===
+                    tempCustomerInputs
+                      .find((input) => input.id === renderCustomerForm)
+                      ?.channelName?.toLowerCase()
+              )
+              .map((chart, index) => (
+                <div key={index}>
                   <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}</h5>
                   <CardShadcn
                     key={index}
@@ -1805,79 +1695,6 @@ const CustomerSection = React.memo(
                         </svg>
                         <span className="sr-only">Fullscreen</span>
                       </Button>
-                      {/* <div className="flex justify-between items-center">
-                        <div className="min-w-[10vw] mb-2">
-                          <label htmlFor="startMonthSelect" className="text-sm">
-                            Start Month:
-                          </label>
-                          <Select
-                            value={chartStartMonth}
-                            onValueChange={(value) => {
-                              setChartStartMonth(
-                                Math.max(1, Math.min(value, chartEndMonth))
-                              );
-                            }}
-                          >
-                            <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Select month" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {Array.from(
-                                { length: numberOfMonths },
-                                (_, i) => {
-                                  const monthIndex =
-                                    (startingMonth + i - 1) % 12;
-                                  const year =
-                                    startingYear +
-                                    Math.floor((startingMonth + i - 1) / 12);
-                                  return (
-                                    <SelectItem key={i + 1} value={i + 1}>
-                                      {`${months[monthIndex]}/${year}`}
-                                    </SelectItem>
-                                  );
-                                }
-                              )}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="min-w-[10vw] mb-2">
-                          <label htmlFor="endMonthSelect" className="text-sm">
-                            End Month:
-                          </label>
-                          <Select
-                            value={chartEndMonth}
-                            onValueChange={(value) => {
-                              setChartEndMonth(
-                                Math.max(
-                                  chartStartMonth,
-                                  Math.min(value, numberOfMonths)
-                                )
-                              );
-                            }}
-                          >
-                            <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Select month" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {Array.from(
-                                { length: numberOfMonths },
-                                (_, i) => {
-                                  const monthIndex =
-                                    (startingMonth + i - 1) % 12;
-                                  const year =
-                                    startingYear +
-                                    Math.floor((startingMonth + i - 1) / 12);
-                                  return (
-                                    <SelectItem key={i + 1} value={i + 1}>
-                                      {`${months[monthIndex]}/${year}`}
-                                    </SelectItem>
-                                  );
-                                }
-                              )}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div> */}
                     </CardHeader>
                     <CardContent>
                       <Chart
@@ -1909,7 +1726,73 @@ const CustomerSection = React.memo(
                   </CardShadcn>
                 </div>
               ))}
-            </div>
+          </div>
+
+          <h4 className="text-base font-semibold my-8">Advanced charts</h4>
+          <div className="grid md:grid-cols-2 gap-6">
+            {customerGrowthChart?.chartsNoFilter?.map((chart, index) => (
+              <div key={index}>
+                <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}</h5>
+                <CardShadcn
+                  key={index}
+                  className="flex flex-col transition duration-500 !rounded-md relative"
+                >
+                  <CardHeader>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute top-2 right-2 z-50"
+                      onClick={(event) => handleChartClick(chart, event)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="w-4 h-4"
+                      >
+                        <path d="M15 3h6v6" />
+                        <path d="M10 14 21 3" />
+                        <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                      </svg>
+                      <span className="sr-only">Fullscreen</span>
+                    </Button>
+                  </CardHeader>
+                  <CardContent>
+                    <Chart
+                      options={{
+                        ...chart.options,
+                        fill: {
+                          type: "gradient",
+                          gradient: {
+                            shade: "light",
+                            shadeIntensity: 0.5,
+                            opacityFrom: 0.75,
+                            opacityTo: 0.65,
+                            stops: [0, 90, 100],
+                          },
+                        },
+                        xaxis: {
+                          ...chart.options.xaxis,
+                        },
+                        stroke: {
+                          width: 1,
+                          curve: "straight",
+                        },
+                      }}
+                      series={chart.series}
+                      type="area"
+                      height={350}
+                    />
+                  </CardContent>
+                </CardShadcn>
+              </div>
+            ))}
           </div>
           <Modal
             open={isChartModalVisible}
@@ -1936,24 +1819,6 @@ const CustomerSection = React.memo(
               III. Customer Table
             </h3>
             <div className="flex justify-between items-center mb-4">
-              <Select
-                value={renderCustomerForm}
-                onValueChange={(e) => {
-                  handleRenderFormChange(e);
-                }}
-              >
-                <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder="Offline" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  {tempCustomerInputs.map((input) => (
-                    <SelectItem key={input?.id} value={input?.id}>
-                      {input?.channelName}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
               <ButtonV0 variant="outline" onClick={downloadExcel}>
                 <Download className="mr-2 h-4 w-4" />
                 Download Excel

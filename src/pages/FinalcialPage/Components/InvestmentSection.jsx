@@ -809,6 +809,25 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     customerSatisfaction: true,
   });
 
+  // Create visibility state for each chart, using purchaseName or unique chart IDs
+  const [visibleCharts, setVisibleCharts] = useState(() =>
+    tempInvestmentData.reduce(
+      (acc, investment) => ({
+        ...acc,
+        [investment.purchaseName]: true, // Initialize all charts as visible
+      }),
+      { allInvestments: true } // Include the 'allInvestments' chart
+    )
+  );
+
+  // Function to toggle individual charts
+  const toggleChart = (chartKey) => {
+    setVisibleCharts((prev) => ({
+      ...prev,
+      [chartKey]: !prev[chartKey],
+    }));
+  };
+
   const toggleMetric = (metric) => {
     setVisibleMetrics((prev) => ({ ...prev, [metric]: !prev[metric] }));
   };
@@ -960,6 +979,11 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                 <PopoverContent
                   className="bg-white right-0 left-auto"
                   align="end"
+                  style={{
+                    maxHeight: "300px", // Max height of the Popover
+                    overflowY: "auto", // Allow vertical scrolling within Popover
+                    paddingRight: "1rem", // Space for scroll bar
+                  }}
                 >
                   <div className="grid gap-4">
                     <h4 className="font-medium leading-none">
@@ -983,6 +1007,42 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                         </label>
                       </div>
                     ))}
+
+                    {/* <h4 className="font-medium leading-none">Visible Charts</h4> */}
+                    {/* Toggle all investments chart */}
+                    {/* <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="allInvestments"
+                        checked={visibleCharts.allInvestments}
+                        onChange={() => toggleChart("allInvestments")}
+                      />
+                      <label
+                        htmlFor="allInvestments"
+                        className="text-sm font-medium leading-none"
+                      >
+                        All Investments Chart
+                      </label>
+                    </div> */}
+
+                    {/* Toggle individual component charts */}
+                    {/* {tempInvestmentData.map((investment) => (
+                      <div
+                        key={investment.purchaseName}
+                        className="flex items-center space-x-2"
+                      >
+                        <Checkbox
+                          id={investment.purchaseName}
+                          checked={visibleCharts[investment.purchaseName]}
+                          onChange={() => toggleChart(investment.purchaseName)}
+                        />
+                        <label
+                          htmlFor={investment.purchaseName}
+                          className="text-sm font-medium leading-none"
+                        >
+                          {investment.purchaseName}
+                        </label>
+                      </div>
+                    ))} */}
                   </div>
                 </PopoverContent>
               </Popover>
@@ -1014,67 +1074,19 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         </section>
         <h3 className="text-lg font-semibold mb-8">II. Investment Chart</h3>
         <div className="sm:ml-4 ml-0 mt-12">
+          {/* All Investments Chart */}
           <h4 className="text-base font-semibold mb-4">
             1. All investments chart
           </h4>
-          {investmentChart?.charts
-            ?.filter((chart) => chart.options.chart.id === "allInvestments")
-            .map((series, index) => (
-              <CardShadcn
-                key={index}
-                className="flex flex-col transition duration-500  !rounded-md relative"
-              >
-                <CardHeader>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute top-2 right-2 z-50"
-                    onClick={(event) => handleChartClick(series, event)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="w-4 h-4"
-                    >
-                      <path d="M15 3h6v6" />
-                      <path d="M10 14 21 3" />
-                      <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
-                    </svg>
-                    <span className="sr-only">Fullscreen</span>
-                  </Button>
-                </CardHeader>
-                <CardContent>
-                  <Chart
-                    options={{
-                      ...series.options,
-                      xaxis: {
-                        ...series.options.xaxis,
-                      },
-                      stroke: {
-                        width: 1,
-                        curve: "straight",
-                      },
-                    }}
-                    series={series.series}
-                    type="area"
-                    height={350}
-                  />
-                </CardContent>
-              </CardShadcn>
-            ))}
-        </div>
-        <div className="sm:ml-4 ml-0 mt-12">
-          <h4 className="text-base font-semibold mb-4">2. Component charts</h4>
-          <div className="grid md:grid-cols-2 gap-6">
-            {investmentChart?.charts
-              ?.filter((chart) => chart.options.chart.id !== "allInvestments")
+          {!visibleCharts.allInvestments ? (
+            <div className="flex justify-center items-center h-[350px]">
+              <p className="animate-blink text-center text-lg font-semibold text-gray-500">
+                Temporarily Disabled
+              </p>
+            </div>
+          ) : (
+            investmentChart?.charts
+              ?.filter((chart) => chart.options.chart.id === "allInvestments")
               .map((series, index) => (
                 <CardShadcn
                   key={index}
@@ -1108,23 +1120,74 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                   </CardHeader>
                   <CardContent>
                     <Chart
-                      options={{
-                        ...series.options,
-                        xaxis: {
-                          ...series.options.xaxis,
-                        },
-                        stroke: {
-                          width: 1,
-                          curve: "straight",
-                        },
-                      }}
+                      options={series.options}
                       series={series.series}
                       type="area"
                       height={350}
                     />
                   </CardContent>
                 </CardShadcn>
-              ))}
+              ))
+          )}
+        </div>
+        <div className="sm:ml-4 ml-0 mt-12">
+          {/* Component Charts */}
+          <h4 className="text-base font-semibold mb-4">2. Component charts</h4>
+          <div className="grid md:grid-cols-2 gap-6">
+            {investmentChart?.charts
+              ?.filter((chart) => chart.options.chart.id !== "allInvestments")
+              .map((series, index) =>
+                !visibleCharts[series.options.chart.id] ? (
+                  <div
+                    className="flex justify-center items-center h-[350px]"
+                    key={index}
+                  >
+                    <p className="animate-blink text-center text-lg font-semibold text-gray-500">
+                      Temporarily Disabled
+                    </p>
+                  </div>
+                ) : (
+                  <CardShadcn
+                    key={index}
+                    className="flex flex-col transition duration-500  !rounded-md relative"
+                  >
+                    <CardHeader>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-2 right-2 z-50"
+                        onClick={(event) => handleChartClick(series, event)}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="w-4 h-4"
+                        >
+                          <path d="M15 3h6v6" />
+                          <path d="M10 14 21 3" />
+                          <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                        </svg>
+                        <span className="sr-only">Fullscreen</span>
+                      </Button>
+                    </CardHeader>
+                    <CardContent>
+                      <Chart
+                        options={series.options}
+                        series={series.series}
+                        type="area"
+                        height={350}
+                      />
+                    </CardContent>
+                  </CardShadcn>
+                )
+              )}
           </div>
         </div>
         <Modal

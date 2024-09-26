@@ -1339,7 +1339,6 @@ const CustomerSection = React.memo(
       },
     ];
 
-    console.log("filteredTableData", filteredTableData);
     return (
       <div className="w-full h-full flex flex-col lg:flex-row p-4">
         <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">

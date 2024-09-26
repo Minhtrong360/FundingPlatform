@@ -774,6 +774,25 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     customerSatisfaction: true,
   });
 
+  const [visibleCharts, setVisibleCharts] = useState({
+    allLoanChart: true,
+    componentCharts: {}, // Để lưu trạng thái của các component chart
+  });
+
+  // Cập nhật visibleCharts với tất cả các chart thành phần ban đầu được hiển thị
+  useEffect(() => {
+    const initialVisibleComponentCharts = {};
+    loanChart?.charts
+      ?.filter((chart) => chart.options.chart.id !== "allLoans")
+      .forEach((chart) => {
+        initialVisibleComponentCharts[chart.options.chart.id] = true;
+      });
+    setVisibleCharts((prev) => ({
+      ...prev,
+      componentCharts: initialVisibleComponentCharts,
+    }));
+  }, [loanChart]);
+
   const toggleMetric = (metric) => {
     setVisibleMetrics((prev) => ({ ...prev, [metric]: !prev[metric] }));
   };
@@ -925,6 +944,11 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                 <PopoverContent
                   className="bg-white right-0 left-auto"
                   align="end"
+                  style={{
+                    maxHeight: "300px", // Giới hạn chiều cao tối đa của PopoverContent
+                    overflowY: "auto", // Cho phép cuộn theo chiều dọc khi vượt quá chiều cao
+                    paddingRight: "1rem", // Tạo khoảng trống cho thanh cuộn
+                  }}
                 >
                   <div className="grid gap-4">
                     <h4 className="font-medium leading-none">
@@ -948,6 +972,66 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                         </label>
                       </div>
                     ))}
+
+                    {/* Thêm phần Visible Charts */}
+                    {/* <h4 className="font-medium leading-none mt-4">
+                      Visible Charts
+                    </h4>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="allLoanChart"
+                        checked={visibleCharts.allLoanChart}
+                        onChange={() =>
+                          setVisibleCharts((prev) => ({
+                            ...prev,
+                            allLoanChart: !prev.allLoanChart,
+                          }))
+                        }
+                      />
+                      <label
+                        htmlFor="allLoanChart"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        All Remaining Loans
+                      </label>
+                    </div> */}
+
+                    {/* Hiển thị danh sách các component charts */}
+                    {/* {loanChart?.charts
+                      ?.filter((chart) => chart.options.chart.id !== "allLoans")
+                      .map((chart, index) => (
+                        <div
+                          key={chart.options.chart.id}
+                          className="flex items-center space-x-2"
+                        >
+                          <Checkbox
+                            id={chart.options.chart.id}
+                            checked={
+                              visibleCharts.componentCharts[
+                                chart.options.chart.id
+                              ]
+                            }
+                            onChange={() =>
+                              setVisibleCharts((prev) => ({
+                                ...prev,
+                                componentCharts: {
+                                  ...prev.componentCharts,
+                                  [chart.options.chart.id]:
+                                    !prev.componentCharts[
+                                      chart.options.chart.id
+                                    ],
+                                },
+                              }))
+                            }
+                          />
+                          <label
+                            htmlFor={chart.options.chart.id}
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            {`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}
+                          </label>
+                        </div>
+                      ))} */}
                   </div>
                 </PopoverContent>
               </Popover>
@@ -980,120 +1064,131 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         <h3 className="text-lg font-semibold mb-8">II. Loan Chart</h3>
         <div className="sm:ml-4 ml-0 mt-12">
           <h4 className="text-base font-semibold mb-4">1. All loan chart</h4>
-          {loanChart?.charts
-            ?.filter((chart) => chart.options.chart.id === "allLoans")
-            .map((series, index) => (
-              <CardShadcn
-                key={index}
-                className="flex flex-col transition duration-500 !rounded-md relative"
-              >
-                <CardHeader>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute top-2 right-2 z-50"
-                    onClick={(event) => handleChartClick(series, event)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="w-4 h-4"
+          {/* All loan chart */}
+          {!visibleCharts.allLoanChart ? (
+            <div className="flex justify-center items-center h-[350px]">
+              <p className="animate-blink text-center text-lg font-semibold text-gray-500">
+                Temporarily Disabled
+              </p>
+            </div>
+          ) : (
+            loanChart?.charts
+              ?.filter((chart) => chart.options.chart.id === "allLoans")
+              .map((series, index) => (
+                <CardShadcn
+                  key={index}
+                  className="flex flex-col transition duration-500 !rounded-md relative"
+                >
+                  <CardHeader>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute top-2 right-2 z-50"
+                      onClick={(event) => handleChartClick(series, event)}
                     >
-                      <path d="M15 3h6v6" />
-                      <path d="M10 14 21 3" />
-                      <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
-                    </svg>
-                    <span className="sr-only">Fullscreen</span>
-                  </Button>
-                </CardHeader>
-                <CardContent>
-                  <Chart
-                    options={{
-                      ...series.options,
-
-                      xaxis: {
-                        ...series.options.xaxis,
-                      },
-                      stroke: {
-                        width: 1,
-                        curve: "straight",
-                      },
-                    }}
-                    series={series.series}
-                    type="area"
-                    height={350}
-                  />
-                </CardContent>
-              </CardShadcn>
-            ))}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="w-4 h-4"
+                      >
+                        <path d="M15 3h6v6" />
+                        <path d="M10 14 21 3" />
+                        <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                      </svg>
+                      <span className="sr-only">Fullscreen</span>
+                    </Button>
+                  </CardHeader>
+                  <CardContent>
+                    <Chart
+                      options={{
+                        ...series.options,
+                        xaxis: { ...series.options.xaxis },
+                        stroke: { width: 1, curve: "straight" },
+                      }}
+                      series={series.series}
+                      type="area"
+                      height={350}
+                    />
+                  </CardContent>
+                </CardShadcn>
+              ))
+          )}
         </div>
         <div className="sm:ml-4 ml-0 mt-12">
           <h4 className="text-base font-semibold mb-4">2. Component charts</h4>
+          {/* Component charts */}
           <div className="grid md:grid-cols-2 gap-6">
             {loanChart?.charts
               ?.filter((chart) => chart.options.chart.id !== "allLoans")
-              .map((series, index) => (
-                <div className="ml-2">
-                  <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${series.options.title.text}`}</h5>
-
-                  <CardShadcn
-                    key={index}
-                    className="flex flex-col transition duration-500 !rounded-md relative"
+              .map((series, index) =>
+                !visibleCharts.componentCharts[series.options.chart.id] ? (
+                  <div
+                    key={series.options.chart.id}
+                    className="flex justify-center items-center h-[350px] bg-gray-100 rounded-md"
                   >
-                    <CardHeader>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute top-2 right-2 z-50"
-                        onClick={(event) => handleChartClick(series, event)}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="w-4 h-4"
-                        >
-                          <path d="M15 3h6v6" />
-                          <path d="M10 14 21 3" />
-                          <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
-                        </svg>
-                        <span className="sr-only">Fullscreen</span>
-                      </Button>
-                    </CardHeader>
-                    <CardContent>
-                      <Chart
-                        options={{
-                          ...series.options,
+                    <p className="animate-blink text-center text-lg font-semibold text-gray-500">
+                      Temporarily Disabled
+                    </p>
+                  </div>
+                ) : (
+                  <div className="ml-2">
+                    <h5 className="font-semibold text-sm mb-2">
+                      {`${String.fromCharCode(65 + index)}. ${series.options.title.text}`}
+                    </h5>
 
-                          xaxis: {
-                            ...series.options.xaxis,
-                          },
-                          stroke: {
-                            width: 1,
-                            curve: "straight",
-                          },
-                        }}
-                        series={series.series}
-                        type="area"
-                        height={350}
-                      />
-                    </CardContent>
-                  </CardShadcn>
-                </div>
-              ))}
+                    <CardShadcn
+                      key={series.options.chart.id}
+                      className="flex flex-col transition duration-500 !rounded-md relative"
+                    >
+                      <CardHeader>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="absolute top-2 right-2 z-50"
+                          onClick={(event) => handleChartClick(series, event)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="w-4 h-4"
+                          >
+                            <path d="M15 3h6v6" />
+                            <path d="M10 14 21 3" />
+                            <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                          </svg>
+                          <span className="sr-only">Fullscreen</span>
+                        </Button>
+                      </CardHeader>
+                      <CardContent>
+                        <Chart
+                          options={{
+                            ...series.options,
+                            xaxis: { ...series.options.xaxis },
+                            stroke: { width: 1, curve: "straight" },
+                          }}
+                          series={series.series}
+                          type="area"
+                          height={350}
+                        />
+                      </CardContent>
+                    </CardShadcn>
+                  </div>
+                )
+              )}
           </div>
         </div>
         <Modal

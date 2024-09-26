@@ -12,7 +12,7 @@ import {
 } from "../../../components/ui/select";
 import { Input as FundraisingInput } from "../../../components/ui/input";
 import { useCallback, useEffect, useState } from "react";
-import { Card, Checkbox, FloatButton, Modal, Table, message } from "antd";
+import { Checkbox, FloatButton, Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,14 +24,13 @@ import {
 import { supabase } from "../../../supabase";
 import { useParams } from "react-router-dom";
 
-import { CheckCircleOutlined, FileOutlined } from "@ant-design/icons";
+import { FileOutlined } from "@ant-design/icons";
 import { useAuth } from "../../../context/AuthContext";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import { setInputData } from "../../../features/DurationSlice";
-import { Badge } from "../../../components/ui/badge";
 import {
   CardContent,
   CardHeader,
@@ -42,14 +41,8 @@ import { Check, Download, Plus, Trash2 } from "lucide-react";
 import { Button, Button as ButtonV0 } from "../../../components/ui/button";
 import { debounce } from "lodash";
 import {
-  Search,
   MessageSquare,
-  PhoneCall,
-  Mail,
-  Globe,
-  CalendarIcon,
   Users,
-  Clock,
   ThumbsUp,
   Settings,
   UserPlus,
@@ -99,6 +92,12 @@ const FundraisingInputForm = ({
     // Call debounced state update
     debouncedHandleInputChange(id, field, value);
   };
+
+  useEffect(() => {
+    if (!selectedFundraisingId) {
+      setSelectedFundraisingId("all");
+    }
+  }, [selectedFundraisingId]);
 
   return (
     <section
@@ -629,12 +628,6 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     setIsChartModalVisible(true);
   };
 
-  const [activeTab, setActiveTab] = useState("table&chart");
-
-  const handleTabChange = (tabName) => {
-    setActiveTab(tabName);
-  };
-
   const downloadExcel = () => {
     const workBook = XLSX.utils.book_new();
 
@@ -737,6 +730,10 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     churnedUsers: true,
     totalUsers: true,
     customerSatisfaction: true,
+  });
+
+  const [visibleCharts, setVisibleCharts] = useState({
+    fundraisingChart: true,
   });
 
   const toggleMetric = (metric) => {
@@ -888,6 +885,11 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                 <PopoverContent
                   className="bg-white right-0 left-auto"
                   align="end"
+                  style={{
+                    maxHeight: "300px", // Giới hạn chiều cao tối đa
+                    overflowY: "auto", // Cho phép cuộn theo chiều dọc
+                    paddingRight: "1rem", // Khoảng trống cho thanh cuộn
+                  }}
                 >
                   <div className="grid gap-4">
                     <h4 className="font-medium leading-none">
@@ -911,6 +913,28 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                         </label>
                       </div>
                     ))}
+
+                    {/* <h4 className="font-medium leading-none mt-4">
+                      Visible Charts
+                    </h4>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="fundraisingChart"
+                        checked={visibleCharts.fundraisingChart}
+                        onChange={() =>
+                          setVisibleCharts((prev) => ({
+                            ...prev,
+                            fundraisingChart: !prev.fundraisingChart,
+                          }))
+                        }
+                      />
+                      <label
+                        htmlFor="fundraisingChart"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Fundraising Chart
+                      </label>
+                    </div> */}
                   </div>
                 </PopoverContent>
               </Popover>
@@ -941,50 +965,58 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           </div>
         </section>
         <h3 className="text-lg font-semibold mb-8">II. Fundraising Chart</h3>
-        <div className="grid md:grid-cols-2 gap-6">
-          <CardShadcn className="flex flex-col transition duration-500  !rounded-md relative">
-            <CardHeader>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-2 right-2 z-50"
-                onClick={(event) => handleChartClick(fundraisingChart, event)}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="w-4 h-4"
+        {/* Fundraising Chart */}
+        {!visibleCharts.fundraisingChart ? (
+          <div className="flex justify-center items-center h-[350px]">
+            <p className="animate-blink text-center text-lg font-semibold text-gray-500">
+              Temporarily Disabled
+            </p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 gap-6">
+            <CardShadcn className="flex flex-col transition duration-500 !rounded-md relative">
+              <CardHeader>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute top-2 right-2 z-50"
+                  onClick={(event) => handleChartClick(fundraisingChart, event)}
                 >
-                  <path d="M15 3h6v6" />
-                  <path d="M10 14 21 3" />
-                  <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
-                </svg>
-                <span className="sr-only">Fullscreen</span>
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <Chart
-                options={{
-                  ...fundraisingChart.options,
-                  xaxis: {
-                    ...fundraisingChart.options.xaxis,
-                    // tickAmount: 6, // Set the number of ticks on the x-axis to 12
-                  },
-                }}
-                series={fundraisingChart.series}
-                type="bar"
-                height={350}
-              />
-            </CardContent>
-          </CardShadcn>
-        </div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-4 h-4"
+                  >
+                    <path d="M15 3h6v6" />
+                    <path d="M10 14 21 3" />
+                    <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                  </svg>
+                  <span className="sr-only">Fullscreen</span>
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <Chart
+                  options={{
+                    ...fundraisingChart.options,
+                    xaxis: {
+                      ...fundraisingChart.options.xaxis,
+                    },
+                  }}
+                  series={fundraisingChart.series}
+                  type="bar"
+                  height={350}
+                />
+              </CardContent>
+            </CardShadcn>
+          </div>
+        )}
         <Modal
           centered
           open={isChartModalVisible}

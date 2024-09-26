@@ -163,6 +163,7 @@ export const calculateCustomerGrowth = (customerInputs, numberOfMonths) => {
         });
       }
     }
+
     return monthlyCustomers;
   });
 };
@@ -215,6 +216,7 @@ export function transformCustomerData(
       }
     });
   });
+
   return transformedCustomerTableData;
 }
 
@@ -272,7 +274,7 @@ export function generateCustomerTableData(
         if (i >= customerInput?.beginMonth && i <= customerInput?.endMonth) {
           let growthRate = parseFloat(customerInput?.growthPerMonth);
 
-          if (i === customerInput?.beginMonth) {
+          if (i == customerInput?.beginMonth) {
             currentCustomers = parseFloat(customerInput?.customersPerMonth);
             startRow[`month${i}`] = formatNumber(
               parseFloat(customerInput?.beginCustomer).toFixed(0)
@@ -288,19 +290,21 @@ export function generateCustomerTableData(
               currentCustomers = parseFloat(
                 customerInput?.gptResponseArray[i - 1]
               );
-            } else if (customerInput?.customerGrowthFrequency === "Monthly") {
+            } else if (customerInput?.customerGrowthFrequency == "Monthly") {
               currentCustomers *= 1 + growthRate / 100;
+              console.log("Monthly", currentCustomers);
             } else {
               let frequency = 12; // Default to Annually
-              if (customerInput?.customerGrowthFrequency === "Quarterly")
+              if (customerInput?.customerGrowthFrequency == "Quarterly")
                 frequency = 3;
               else if (
-                customerInput?.customerGrowthFrequency === "Semi-Annually"
+                customerInput?.customerGrowthFrequency == "Semi-Annually"
               )
                 frequency = 6;
 
               if ((i - customerInput?.beginMonth) % frequency === 0) {
                 currentCustomers *= 1 + growthRate / 100;
+                console.log(frequency, "=", currentCustomers);
               }
             }
             startRow[`month${i}`] = 0;
@@ -332,6 +336,12 @@ export function generateCustomerTableData(
           endRow[`month${i}`] = "0";
         }
       }
+      console.log("channelRow", channelRow);
+      console.log("startRow", startRow);
+      console.log("beginRow", beginRow);
+      console.log("channelAddRow", channelAddRow);
+      console.log("churnRow", churnRow);
+      console.log("endRow", endRow);
 
       return [channelRow, startRow, beginRow, channelAddRow, churnRow, endRow];
     });

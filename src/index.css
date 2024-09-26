@@ -467,3 +467,13 @@ code {
   background-color: white !important;
   border-right: none !important;
 }
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.animate-blink {
+  animation: blink 2s linear infinite;
+}

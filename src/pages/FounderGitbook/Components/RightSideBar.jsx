@@ -100,6 +100,27 @@ export default function RightSideBar({ company, currentProject }) {
     setSearchTerm("");
   };
 
+  const [blogData, setBlogData] = useState([]); // Lưu dữ liệu hiện tại (sau khi filter hoặc gốc)
+
+  useEffect(() => {
+    fetchBlogData();
+  }, []);
+
+  const fetchBlogData = async () => {
+    const { data, error } = await supabase
+      .from("blogsV2")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching blogs:", error);
+    } else if (data) {
+      setBlogData(data); // Hiển thị dữ liệu ban đầu
+    } else {
+      setBlogData([]);
+    }
+  };
+  console.log("blogData", blogData);
   return (
     <div className="space-y-4" style={{ position: "sticky", top: "10px" }}>
       <div className="relative">
@@ -167,30 +188,41 @@ export default function RightSideBar({ company, currentProject }) {
         <CardContent className="p-4">
           <h4 className="font-semibold mb-2">Recent Posts:</h4>
           <ul className="space-y-4">
-            {[
-              {
-                title: "7 businesses for easy money",
-                date: "May 18, 2024",
-                image: "/images/v2/card-v2-1.png",
-              },
-              {
-                title: "My 3 tips for business ideas",
-                date: "June 18, 2024",
-                image: "/images/v2/card-v2-2.png",
-              },
-              {
-                title: "12 Halloween costume ideas",
-                date: "August 18, 2024",
-                image: "/images/v2/card-v2-3.png",
-              },
-            ].map((post, index) => (
-              <li>
-                <a className="block group">
-                  <h4 className="text-black text-base group-hover:underline font-bold">
+            {blogData?.slice(0, 3)?.map((post, index) => (
+              <li
+                key={index}
+                className="flex flex-row"
+                onClick={() => navigate("/blog")}
+              >
+                <img
+                  src={post.cover}
+                  alt={post.title}
+                  width={100}
+                  height={50}
+                  className="mr-2 rounded-md"
+                />
+
+                <div className="block group hover:cursor-pointer">
+                  <h4
+                    className="post-title !text-sm"
+                    style={{
+                      display: "-webkit-box",
+                      WebkitBoxOrient: "vertical",
+                      WebkitLineClamp: 2,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
                     {post.title}
                   </h4>
-                  <div className="text-sm text-gray-500">{post.date}</div>
-                </a>
+                  <div className="text-sm text-gray-500">
+                    {new Date(post.created_at).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                    })}
+                  </div>
+                </div>
               </li>
             ))}
           </ul>

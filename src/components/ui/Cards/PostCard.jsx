@@ -14,7 +14,6 @@ const PostCard = ({ blogs, handleCategoryClick }) => {
             <img src={blog.cover} alt={blog.title} />
           </div>
           <div className="post-text">
-            {/* Add truncate styling and click event */}
             <div
               className="post-title "
               style={{

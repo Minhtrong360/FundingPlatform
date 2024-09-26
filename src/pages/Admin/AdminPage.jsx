@@ -1455,7 +1455,7 @@ function AdminPage() {
         <Button
           onClick={() => handleDelete(record.project_id)}
           style={{ fontSize: "12px" }}
-          className="hover:cursor-pointer bg-red-500 text-white"
+          className="hover:cursor-pointer hover:!text-black bg-red-500 text-white"
         >
           Delete
         </Button>
@@ -1793,7 +1793,7 @@ function AdminPage() {
         <Button
           onClick={() => handleFinancialDelete(record.id)}
           style={{ fontSize: "12px" }}
-          className="hover:cursor-pointer bg-red-500 text-white"
+          className="hover:cursor-pointer hover:!text-black bg-red-500 text-white"
         >
           Delete
         </Button>
@@ -2225,7 +2225,7 @@ function AdminPage() {
         >
           <Button
             style={{ fontSize: "12px" }}
-            className="hover:cursor-pointer bg-blue-600 text-white"
+            className="hover:cursor-pointer hover:!text-black bg-blue-600 text-white"
           >
             Action
           </Button>

@@ -75,13 +75,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "../../../components/ui/popover";
+import { ItemIndicator } from "@radix-ui/react-select";
 
 const CustomerInputsForm = React.memo(
   ({
     tempCustomerInputs,
     setTempCustomerInputs,
     renderCustomerForm,
-    handleRenderFormChange,
     handleCustomerInputChange,
     formatNumber,
     parseNumber,
@@ -516,11 +516,14 @@ const CustomerSection = React.memo(
         adjustmentFactor: 1,
         eventName: "",
         additionalInfo: "",
-        applyCustom: false, // Add this field
+        applyCustom: false,
       };
 
-      setTempCustomerInputs([...tempCustomerInputs, newCustomer]);
-      setRenderCustomerForm(newId.toString());
+      setTempCustomerInputs((prevInputs) => {
+        const updatedInputs = [...prevInputs, newCustomer];
+        setRenderCustomerForm(newId.toString()); // Cập nhật renderCustomerForm ngay sau khi inputs được cập nhật
+        return updatedInputs;
+      });
     };
 
     const removeCustomerInput = (id) => {
@@ -1282,7 +1285,7 @@ const CustomerSection = React.memo(
       },
       {
         key: "previousMonthUsers",
-        title: "Previous Month Users",
+        title: "First Month Users",
         value: "",
         change: "",
         icon: Users,
@@ -1308,13 +1311,6 @@ const CustomerSection = React.memo(
         change: "",
         icon: Users,
       },
-      {
-        key: "customerSatisfaction",
-        title: "Customer Satisfaction",
-        value: "",
-        change: "",
-        icon: Users,
-      },
     ]);
 
     // Function to simplify data extraction
@@ -1333,81 +1329,216 @@ const CustomerSection = React.memo(
 
     // Simplified useEffect for calculating metrics and filtering data
     useEffect(() => {
-      const selectedData = tempCustomerInputs.find(
-        (input) => input.id === renderCustomerForm
-      );
-
-      if (selectedData && filteredTableData.length > 0) {
-        const filtered = filteredTableData.filter((data) =>
-          data.channelName.includes(selectedData.channelName)
+      if (renderCustomerForm === "all") {
+        // Handle "all" case: sum values across all channels
+        const filtered = customerTableData?.filter(
+          (data) =>
+            data.key.includes("-start") ||
+            data.key.includes("-add") ||
+            data.key.includes("-begin") ||
+            data.key.includes("-churn") ||
+            data.key.includes("-end")
         );
 
-        const existingCustomersData = filtered.find((row) =>
-          row.key.includes("-start")
-        );
-        const addedUsersData = filtered.find((row) => row.key.includes("-add"));
-        const churnedUsersData = filtered.find((row) =>
-          row.key.includes("-churn")
-        );
-        const totalUsersData = filtered.find((row) => row.key.includes("-end"));
+        let existingCustomersTotal = 0;
+        let addedUsersTotal = 0;
+        let beginUsersTotal = 0; // Initialize beginUsersTotal
+        let churnedUsersTotal = 0;
+        let totalUsersTotal = 0;
 
-        const existingCustomers = parseNumber(
-          existingCustomersData[`month${chartEndMonth}`] || 0
-        );
-        const addedUsers = extractData(
-          addedUsersData,
-          "month",
-          chartStartMonth,
-          chartEndMonth
-        );
-        const churnedUsers = extractData(
-          churnedUsersData,
-          "month",
-          chartStartMonth,
-          chartEndMonth
-        );
-        const totalUsers = parseNumber(
-          totalUsersData[`month${chartEndMonth}`] || 0
-        );
+        // Loop through filtered data to calculate totals
+        filtered.forEach((row) => {
+          const value = parseNumber(row[`month${chartEndMonth}`] || 0);
+          if (row.key.includes("-start")) {
+            existingCustomersTotal += extractData(
+              row,
+              "month",
+              chartStartMonth,
+              chartEndMonth
+            );
+          } else if (row.key.includes("-add")) {
+            addedUsersTotal += extractData(
+              row,
+              "month",
+              chartStartMonth,
+              chartEndMonth
+            );
+          } else if (row.key.includes("-begin")) {
+            beginUsersTotal += parseNumber(row[`month${chartStartMonth}`] || 0); // Calculate beginUsersTotal
+          } else if (row.key.includes("-churn")) {
+            churnedUsersTotal += extractData(
+              row,
+              "month",
+              chartStartMonth,
+              chartEndMonth
+            );
+          } else if (row.key.includes("-end")) {
+            totalUsersTotal += value;
+          }
+        });
 
         const addedUsersChange = calculateChange(
-          parseNumber(addedUsersData[`month${chartStartMonth}`]),
-          parseNumber(addedUsersData[`month${chartEndMonth}`])
+          filtered
+            .filter((row) => row.key.includes("-add"))
+            .reduce(
+              (acc, curr) => acc + parseNumber(curr[`month${chartStartMonth}`]),
+              0
+            ),
+          filtered
+            .filter((row) => row.key.includes("-add"))
+            .reduce(
+              (acc, curr) => acc + parseNumber(curr[`month${chartEndMonth}`]),
+              0
+            )
         );
+
         const churnedUsersChange = calculateChange(
-          parseNumber(churnedUsersData[`month${chartStartMonth}`]),
-          parseNumber(churnedUsersData[`month${chartEndMonth}`])
+          filtered
+            .filter((row) => row.key.includes("-churn"))
+            .reduce(
+              (acc, curr) => acc + parseNumber(curr[`month${chartStartMonth}`]),
+              0
+            ),
+          filtered
+            .filter((row) => row.key.includes("-churn"))
+            .reduce(
+              (acc, curr) => acc + parseNumber(curr[`month${chartEndMonth}`]),
+              0
+            )
         );
+
         const totalUsersChange = calculateChange(
-          parseNumber(totalUsersData[`month${chartStartMonth}`]),
-          parseNumber(totalUsersData[`month${chartEndMonth}`])
+          filtered
+            .filter((row) => row.key.includes("-end"))
+            .reduce(
+              (acc, curr) => acc + parseNumber(curr[`month${chartStartMonth}`]),
+              0
+            ),
+          filtered
+            .filter((row) => row.key.includes("-end"))
+            .reduce(
+              (acc, curr) => acc + parseNumber(curr[`month${chartEndMonth}`]),
+              0
+            )
         );
 
         setMetrics((prevMetrics) => [
           {
             ...prevMetrics[0],
-            value: formatNumber(existingCustomers),
+            value: formatNumber(existingCustomersTotal),
             change: `+0%`,
           },
           { ...prevMetrics[1], value: tempCustomerInputs.length, change: "" },
-          { ...prevMetrics[2], value: "", change: "" },
+          { ...prevMetrics[2], value: beginUsersTotal, change: "" }, // Update beginUsersTotal
           {
             ...prevMetrics[3],
-            value: formatNumber(addedUsers),
+            value: formatNumber(addedUsersTotal),
             change: `${addedUsersChange.toFixed(2)}%`,
           },
           {
             ...prevMetrics[4],
-            value: formatNumber(churnedUsers),
+            value: formatNumber(churnedUsersTotal),
             change: `${churnedUsersChange.toFixed(2)}%`,
           },
           {
             ...prevMetrics[5],
-            value: formatNumber(totalUsers),
+            value: formatNumber(totalUsersTotal),
             change: `${totalUsersChange.toFixed(2)}%`,
           },
           { ...prevMetrics[6], value: "", change: "" },
         ]);
+      } else {
+        // Handle specific channel case (based on ID)
+        const selectedData = tempCustomerInputs.find(
+          (input) => input.id === renderCustomerForm
+        );
+
+        const filtered = customerTableData?.filter((data) =>
+          data?.channelName?.includes(selectedData?.channelName)
+        );
+
+        if (filtered.length > 0 && customerTableData.length > 0) {
+          const existingCustomersData = filtered.find((row) =>
+            row.key.includes("-start")
+          );
+          const addedUsersData = filtered.find((row) =>
+            row.key.includes("-add")
+          );
+          const beginUsersData = filtered.find((row) =>
+            row.key.includes("-begin")
+          );
+
+          const churnedUsersData = filtered.find((row) =>
+            row.key.includes("-churn")
+          );
+          const totalUsersData = filtered.find((row) =>
+            row.key.includes("-end")
+          );
+
+          const existingCustomers = extractData(
+            existingCustomersData,
+            "month",
+            chartStartMonth,
+            chartEndMonth
+          );
+
+          const addedUsers = extractData(
+            addedUsersData,
+            "month",
+            chartStartMonth,
+            chartEndMonth
+          );
+          const beginUsers = beginUsersData[`month${chartStartMonth}`];
+
+          const churnedUsers = extractData(
+            churnedUsersData,
+            "month",
+            chartStartMonth,
+            chartEndMonth
+          );
+          const totalUsers = parseNumber(
+            totalUsersData[`month${chartEndMonth}`] || 0
+          );
+
+          const addedUsersChange = calculateChange(
+            parseNumber(addedUsersData[`month${chartStartMonth}`]),
+            parseNumber(addedUsersData[`month${chartEndMonth}`])
+          );
+          const churnedUsersChange = calculateChange(
+            parseNumber(churnedUsersData[`month${chartStartMonth}`]),
+            parseNumber(churnedUsersData[`month${chartEndMonth}`])
+          );
+          const totalUsersChange = calculateChange(
+            parseNumber(totalUsersData[`month${chartStartMonth}`]),
+            parseNumber(totalUsersData[`month${chartEndMonth}`])
+          );
+
+          setMetrics((prevMetrics) => [
+            {
+              ...prevMetrics[0],
+              value: formatNumber(existingCustomers),
+              change: `+0%`,
+            },
+            { ...prevMetrics[1], value: tempCustomerInputs.length, change: "" },
+            { ...prevMetrics[2], value: beginUsers, change: "" },
+            {
+              ...prevMetrics[3],
+              value: formatNumber(addedUsers),
+              change: `${addedUsersChange.toFixed(2)}%`,
+            },
+            {
+              ...prevMetrics[4],
+              value: formatNumber(churnedUsers),
+              change: `${churnedUsersChange.toFixed(2)}%`,
+            },
+            {
+              ...prevMetrics[5],
+              value: formatNumber(totalUsers),
+              change: `${totalUsersChange.toFixed(2)}%`,
+            },
+            { ...prevMetrics[6], value: "", change: "" },
+          ]);
+        }
       }
     }, [
       chartStartMonth,
@@ -1417,6 +1548,8 @@ const CustomerSection = React.memo(
       customerTableData,
     ]);
 
+    const renderValue =
+      tempCustomerInputs.find((item) => item.id == renderCustomerForm) || "all";
     return (
       <div className="w-full h-full flex flex-col lg:flex-row p-4">
         <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
@@ -1502,14 +1635,17 @@ const CustomerSection = React.memo(
                 </div>
 
                 <Select
-                  value={renderCustomerForm}
+                  value={renderValue.id}
                   onValueChange={(e) => {
                     handleRenderFormChange(e);
                   }}
                   className="w-full md:w-auto"
                 >
                   <SelectTrigger className="w-full md:w-auto">
-                    <SelectValue placeholder="Offline" />
+                    <SelectValue placeholder="Offline">
+                      {" "}
+                      {renderValue?.channelName}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent className="w-full md:w-auto">
                     <SelectItem value="all">All</SelectItem>
@@ -1537,9 +1673,9 @@ const CustomerSection = React.memo(
                       <h4 className="font-medium leading-none">
                         Visible Metrics
                       </h4>
-                      {metrics.map((metric) => (
+                      {metrics.map((metric, index) => (
                         <div
-                          key={metric.key}
+                          key={index}
                           className="flex items-center space-x-2"
                         >
                           <Checkbox

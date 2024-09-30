@@ -424,7 +424,6 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
         style={{
           display: "flex",
           justifyContent: "end",
-          marginTop: "1rem",
         }}
       >
         <Button

@@ -95,42 +95,25 @@ const LoanInputForm = ({
 
   return (
     <section aria-labelledby="loan-heading" className="mb-8 NOsticky NOtop-8">
-      <h2
+      {/* <h2
         className="text-lg font-semibold mb-8 flex items-center"
         id="loan-heading"
       >
         Loan
-      </h2>
+      </h2> */}
 
-      <div>
+      {/* <div>
         <label
           htmlFor="selectedChannel"
           className="block my-4 text-base  darkTextWhite"
         ></label>
-        <Select
-          value={renderLoanForm}
-          onValueChange={(e) => {
-            handleRenderFormChange(e);
-          }}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Offline" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            {tempLoanInputs.map((input) => (
-              <SelectItem key={input?.id} value={input?.id}>
-                {input.loanName}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+        
+      </div> */}
 
       {debouncedInputs
         .filter((input) => input?.id == renderLoanForm)
         .map((input) => (
-          <div key={input?.id} className="bg-white rounded-md p-6 border my-4">
+          <div key={input?.id} className="bg-white rounded-md p-6 border mb-4">
             <div className="grid grid-cols-2 gap-4 mb-3">
               <span className="flex items-center text-sm">Loan Name:</span>
               <Input
@@ -848,16 +831,40 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     },
   ];
 
-  console.log("filteredTableData", filteredTableData);
+  const renderValue =
+    tempLoanInputs.find((item) => item.id == renderLoanForm) || "all";
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row p-4">
       <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
         <section className="mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-[1.25rem]">
-            <h2 className="text-lg font-semibold">
+            {/* <h2 className="text-lg font-semibold">
               I. Metrics (Under Constructions)
-            </h2>
+            </h2> */}
+
+            <Select
+              value={renderValue.id ? renderValue.id : "all"}
+              onValueChange={(e) => {
+                handleRenderFormChange(e);
+              }}
+              className="w-full md:w-auto"
+            >
+              <SelectTrigger className="w-full md:w-auto">
+                <SelectValue placeholder="Offline">
+                  {renderValue.loanName ? renderValue.loanName : "All"}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent className="w-full md:w-auto">
+                <SelectItem value="all">All</SelectItem>
+                {tempLoanInputs.map((input) => (
+                  <SelectItem key={input?.id} value={input?.id}>
+                    {input.loanName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
             <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col">
               {/* Bộ chọn khoảng thời gian */}
 
@@ -1060,9 +1067,9 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
             )}
           </div>
         </section>
-        <h3 className="text-lg font-semibold mb-8">II. Loan Chart</h3>
+        {/* <h3 className="text-lg font-semibold mb-8">II. Loan Chart</h3> */}
         <div className="mt-12">
-          <h4 className="text-base font-semibold mb-4">1. All loan chart</h4>
+          {/* <h4 className="text-base font-semibold mb-4">1. All loan chart</h4> */}
           {/* All loan chart */}
           {!visibleCharts.allLoanChart ? (
             <div className="flex justify-center items-center h-[350px]">
@@ -1071,9 +1078,11 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               </p>
             </div>
           ) : (
-            loanChart?.charts
-              ?.filter((chart) => chart.options.chart.id === "allLoans")
-              .map((series, index) => (
+            renderLoanForm === "all" &&
+            loanChart?.charts?.map((series, index) => (
+              <div key={index} className="my-4">
+                <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${series.options.title.text}`}</h5>
+
                 <CardShadcn
                   key={index}
                   className="flex flex-col transition duration-500 !rounded-md relative"
@@ -1117,15 +1126,23 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                     />
                   </CardContent>
                 </CardShadcn>
-              ))
+              </div>
+            ))
           )}
         </div>
         <div className="mt-12">
-          <h4 className="text-base font-semibold mb-4">2. Component charts</h4>
+          {/* <h4 className="text-base font-semibold mb-4">2. Component charts</h4> */}
           {/* Component charts */}
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="">
             {loanChart?.charts
-              ?.filter((chart) => chart.options.chart.id !== "allLoans")
+              ?.filter(
+                (chart) =>
+                  chart.options.chart.id !== "allLoans" &&
+                  chart?.options?.title?.text?.toLowerCase() ===
+                    tempLoanInputs
+                      .find((input) => input.id === renderLoanForm)
+                      ?.loanName?.toLowerCase()
+              )
               .map((series, index) =>
                 !visibleCharts.componentCharts[series.options.chart.id] ? (
                   <div
@@ -1211,27 +1228,11 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           )}
         </Modal>
         <span>
-          <h3 className="text-lg font-semibold mt-20 my-4">III. Loan Table</h3>
+          <h3 className="text-lg font-semibold mt-20 my-8">
+            {/* III. Loan Table */}
+          </h3>
 
           <div className="flex justify-between items-center">
-            <Select
-              value={renderLoanForm}
-              onValueChange={(e) => {
-                handleRenderFormChange(e);
-              }}
-            >
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Offline" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                {tempLoanInputs.map((input) => (
-                  <SelectItem key={input?.id} value={input?.id}>
-                    {input.loanName}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
             <ButtonV0 variant="outline" onClick={downloadExcel}>
               <Download className="mr-2 h-4 w-4" />
               Download Excel

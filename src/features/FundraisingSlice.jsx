@@ -5,7 +5,7 @@ const initialState = {
   fundraisingInputs: [
     {
       id: 1,
-      name: "",
+      name: "Owner",
       fundraisingAmount: 0,
       fundraisingType: "Common Stock",
       fundraisingBeginMonth: 1,

@@ -107,36 +107,17 @@ const InvestmentInputForm = ({
       aria-labelledby="investment-heading"
       className="mb-8 NOsticky NOtop-8"
     >
-      <h2
+      {/* <h2
         className="text-lg font-semibold mb-8 flex items-center"
         id="investment-heading"
       >
         Investment
-      </h2>
-
-      <Select
-        value={renderInvestmentForm}
-        onValueChange={(e) => {
-          handleRenderFormChange(e);
-        }}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Offline" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All</SelectItem>
-          {tempInvestmentInputs.map((input) => (
-            <SelectItem key={input?.id} value={input?.id}>
-              {input.purchaseName}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      </h2> */}
 
       {debouncedInputs
         .filter((input) => input?.id == renderInvestmentForm)
         .map((input) => (
-          <div key={input?.id} className="bg-white rounded-md p-6 border my-4">
+          <div key={input?.id} className="bg-white rounded-md p-6 border mb-4">
             <div className="grid grid-cols-2 gap-4 mb-3">
               <span className="flex items-center text-sm">
                 Name of Purchase
@@ -883,16 +864,39 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     },
   ];
 
-  console.log("filteredTableData", filteredTableData);
-
+  const renderValue =
+    tempInvestmentInputs.find((item) => item.id == renderInvestmentForm) ||
+    "all";
+  console.log("investmentChart", investmentChart);
   return (
     <div className="w-full h-full flex flex-col lg:flex-row p-4">
       <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
         <section className="mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-[1.25rem]">
-            <h2 className="text-lg font-semibold">
+            {/* <h2 className="text-lg font-semibold">
               I. Metrics (Under Constructions)
-            </h2>
+            </h2> */}
+            <Select
+              value={renderValue.id ? renderValue.id : "all"}
+              onValueChange={(e) => {
+                handleRenderFormChange(e);
+              }}
+              className="w-full md:w-auto"
+            >
+              <SelectTrigger className="w-full md:w-auto">
+                <SelectValue placeholder="Offline">
+                  {renderValue.purchaseName ? renderValue.purchaseName : "All"}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent className="w-full md:w-auto">
+                <SelectItem value="all">All</SelectItem>
+                {tempInvestmentInputs.map((input) => (
+                  <SelectItem key={input?.id} value={input?.id}>
+                    {input.purchaseName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col">
               {/* Bộ chọn khoảng thời gian */}
 
@@ -1071,32 +1075,96 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
             )}
           </div>
         </section>
-        <h3 className="text-lg font-semibold mb-8">II. Investment Chart</h3>
-        <div className="mt-12">
-          {/* All Investments Chart */}
-          <h4 className="text-base font-semibold mb-4">
-            1. All investments chart
-          </h4>
-          {!visibleCharts.allInvestments ? (
-            <div className="flex justify-center items-center h-[350px]">
-              <p className="animate-blink text-center text-lg font-semibold text-gray-500">
-                Temporarily Disabled
-              </p>
+        {/* <h3 className="text-lg font-semibold mb-8">II. Investment Chart</h3> */}
+        {renderInvestmentForm === "all" &&
+          investmentChart?.charts?.map((chart, index) => (
+            <div key={index} className="my-4">
+              <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}</h5>
+
+              <CardShadcn
+                key={index}
+                className="flex flex-col transition duration-500 !rounded-md relative"
+              >
+                <CardHeader>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 z-50"
+                    onClick={(event) => handleChartClick(chart, event)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-4 h-4"
+                    >
+                      <path d="M15 3h6v6" />
+                      <path d="M10 14 21 3" />
+                      <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                    </svg>
+                    <span className="sr-only">Fullscreen</span>
+                  </Button>
+                </CardHeader>
+                <CardContent>
+                  <Chart
+                    options={{
+                      ...chart.options,
+                      fill: {
+                        type: "gradient",
+                        gradient: {
+                          shade: "light",
+                          shadeIntensity: 0.5,
+                          opacityFrom: 0.75,
+                          opacityTo: 0.65,
+                          stops: [0, 90, 100],
+                        },
+                      },
+                      xaxis: {
+                        ...chart.options.xaxis,
+                      },
+                      stroke: {
+                        width: 1,
+                        curve: "straight",
+                      },
+                    }}
+                    series={chart.series}
+                    type="area"
+                    height={350}
+                  />
+                </CardContent>
+              </CardShadcn>
             </div>
-          ) : (
-            investmentChart?.charts
-              ?.filter((chart) => chart.options.chart.id === "allInvestments")
-              .map((series, index) => (
+          ))}
+
+        <div className="">
+          {investmentChart?.charts
+            ?.filter(
+              (chart) =>
+                chart?.options?.chart?.id !== "allChannels" &&
+                chart?.options?.title?.text?.toLowerCase() ===
+                  tempInvestmentInputs
+                    .find((input) => input.id === renderInvestmentForm)
+                    ?.purchaseName?.toLowerCase()
+            )
+            ?.map((chart, index) => (
+              <div key={index}>
+                <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}</h5>
                 <CardShadcn
                   key={index}
-                  className="flex flex-col transition duration-500  !rounded-md relative"
+                  className="flex flex-col transition duration-500 !rounded-md relative"
                 >
                   <CardHeader>
                     <Button
                       variant="ghost"
                       size="icon"
                       className="absolute top-2 right-2 z-50"
-                      onClick={(event) => handleChartClick(series, event)}
+                      onClick={(event) => handleChartClick(chart, event)}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -1119,76 +1187,36 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                   </CardHeader>
                   <CardContent>
                     <Chart
-                      options={series.options}
-                      series={series.series}
+                      options={{
+                        ...chart.options,
+                        fill: {
+                          type: "gradient",
+                          gradient: {
+                            shade: "light",
+                            shadeIntensity: 0.5,
+                            opacityFrom: 0.75,
+                            opacityTo: 0.65,
+                            stops: [0, 90, 100],
+                          },
+                        },
+                        xaxis: {
+                          ...chart.options.xaxis,
+                        },
+                        stroke: {
+                          width: 1,
+                          curve: "straight",
+                        },
+                      }}
+                      series={chart.series}
                       type="area"
                       height={350}
                     />
                   </CardContent>
                 </CardShadcn>
-              ))
-          )}
+              </div>
+            ))}
         </div>
-        <div className="mt-12">
-          {/* Component Charts */}
-          <h4 className="text-base font-semibold mb-4">2. Component charts</h4>
-          <div className="grid md:grid-cols-2 gap-6">
-            {investmentChart?.charts
-              ?.filter((chart) => chart.options.chart.id !== "allInvestments")
-              .map((series, index) =>
-                !visibleCharts[series.options.chart.id] ? (
-                  <div
-                    className="flex justify-center items-center h-[350px]"
-                    key={index}
-                  >
-                    <p className="animate-blink text-center text-lg font-semibold text-gray-500">
-                      Temporarily Disabled
-                    </p>
-                  </div>
-                ) : (
-                  <CardShadcn
-                    key={index}
-                    className="flex flex-col transition duration-500  !rounded-md relative"
-                  >
-                    <CardHeader>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute top-2 right-2 z-50"
-                        onClick={(event) => handleChartClick(series, event)}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="w-4 h-4"
-                        >
-                          <path d="M15 3h6v6" />
-                          <path d="M10 14 21 3" />
-                          <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
-                        </svg>
-                        <span className="sr-only">Fullscreen</span>
-                      </Button>
-                    </CardHeader>
-                    <CardContent>
-                      <Chart
-                        options={series.options}
-                        series={series.series}
-                        type="area"
-                        height={350}
-                      />
-                    </CardContent>
-                  </CardShadcn>
-                )
-              )}
-          </div>
-        </div>
+
         <Modal
           centered
           open={isChartModalVisible}
@@ -1210,29 +1238,11 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           )}
         </Modal>
         <span>
-          <h3 className="text-lg font-semibold mt-20 my-4">
-            III. Investment Table
+          <h3 className="text-lg font-semibold mt-20 my-8">
+            {/* III. Investment Table */}
           </h3>
 
           <div className="flex justify-between items-center">
-            <Select
-              value={renderInvestmentForm}
-              onValueChange={(e) => {
-                handleRenderFormChange(e);
-              }}
-            >
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Offline" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                {tempInvestmentInputs.map((input) => (
-                  <SelectItem key={input?.id} value={input?.id}>
-                    {input.purchaseName}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
             <Button variant="outline" onClick={downloadExcel}>
               <Download className="mr-2 h-4 w-4" />
               Download Excel

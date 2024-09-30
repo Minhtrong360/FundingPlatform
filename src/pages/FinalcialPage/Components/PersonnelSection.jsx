@@ -106,36 +106,17 @@ const PersonnelInputForm = ({
       aria-labelledby="personnel-heading"
       className="mb-8 NOsticky NOtop-8"
     >
-      <h2
+      {/* <h2
         className="text-lg font-semibold mb-8 flex items-center"
         id="personnel-heading"
       >
         Personnel
-      </h2>
-
-      <Select
-        value={renderPersonnelForm}
-        onValueChange={(e) => {
-          setRenderPersonnelForm(e);
-        }}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Offline" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All</SelectItem>
-          {debouncedInputs.map((input) => (
-            <SelectItem key={input?.id} value={input?.id}>
-              {input?.jobTitle}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      </h2> */}
 
       {debouncedInputs
         .filter((input) => input?.id == renderPersonnelForm)
         .map((input) => (
-          <div key={input?.id} className="bg-white rounded-md p-6 border my-4">
+          <div key={input?.id} className="bg-white rounded-md p-6 border mb-4">
             <div className="grid grid-cols-2 gap-4 mb-3">
               <span className=" flex items-center text-sm">Job Title</span>
               <Input
@@ -260,7 +241,6 @@ const PersonnelInputForm = ({
         style={{
           display: "flex",
           justifyContent: "space-between",
-          marginTop: "1rem",
         }}
       >
         <Button
@@ -764,14 +744,40 @@ const PersonnelSection = ({ numberOfMonths }) => {
     },
   ];
 
+  const renderValue =
+    tempPersonnelInputs.find((item) => item.id == renderPersonnelForm) || "all";
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row p-4">
       <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
         <section className="mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-[1.25rem]">
-            <h2 className="text-lg font-semibold">
+            {/* <h2 className="text-lg font-semibold">
               I. Metrics (Under Constructions)
-            </h2>
+            </h2> */}
+
+            <Select
+              value={renderValue.id ? renderValue.id : "all"}
+              onValueChange={(e) => {
+                setRenderPersonnelForm(e);
+              }}
+              className="w-full md:w-auto"
+            >
+              <SelectTrigger className="w-full md:w-auto">
+                <SelectValue placeholder="Offline">
+                  {renderValue.jobTitle ? renderValue.jobTitle : "All"}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent className="w-full md:w-auto">
+                <SelectItem value="all">All</SelectItem>
+                {tempPersonnelInputs.map((input) => (
+                  <SelectItem key={input?.id} value={input?.id}>
+                    {input?.jobTitle}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
             <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col">
               {/* Bộ chọn khoảng thời gian */}
 
@@ -909,7 +915,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
             )}
           </div>
         </section>
-        <h3 className="text-lg font-semibold mb-8">II. Personnel Cost Chart</h3>
+        {/* <h3 className="text-lg font-semibold mb-8">II. Personnel Cost Chart</h3> */}
         <div className="grid md:grid-cols-2 gap-6">
           <CardShadcn className="flex flex-col transition duration-500 !rounded-md relative">
             <CardHeader>
@@ -977,8 +983,8 @@ const PersonnelSection = ({ numberOfMonths }) => {
             )}
           </Modal>
         </div>
-        <div className="flex justify-between items-center my-4 mt-20">
-          <h3 className="text-lg font-semibold">III. Personnel Cost Table</h3>
+        <div className="flex justify-between items-center my-8 mt-20">
+          {/* <h3 className="text-lg font-semibold">III. Personnel Cost Table</h3> */}
           <ButtonV0 variant="outline" onClick={downloadExcel}>
             <Download className="mr-2 h-4 w-4" />
             Download Excel

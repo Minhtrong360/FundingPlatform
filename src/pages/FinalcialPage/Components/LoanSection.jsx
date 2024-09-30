@@ -213,7 +213,6 @@ const LoanInputForm = ({
         style={{
           display: "flex",
           justifyContent: "space-between",
-          marginTop: "1rem",
         }}
       >
         <Button
@@ -1062,7 +1061,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           </div>
         </section>
         <h3 className="text-lg font-semibold mb-8">II. Loan Chart</h3>
-        <div className="sm:ml-4 ml-0 mt-12">
+        <div className="mt-12">
           <h4 className="text-base font-semibold mb-4">1. All loan chart</h4>
           {/* All loan chart */}
           {!visibleCharts.allLoanChart ? (
@@ -1121,7 +1120,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               ))
           )}
         </div>
-        <div className="sm:ml-4 ml-0 mt-12">
+        <div className="mt-12">
           <h4 className="text-base font-semibold mb-4">2. Component charts</h4>
           {/* Component charts */}
           <div className="grid md:grid-cols-2 gap-6">

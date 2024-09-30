@@ -187,21 +187,21 @@ const CustomerInputsForm = React.memo(
         aria-labelledby="customers-heading"
         className="mb-8 NOsticky NOtop-8"
       >
-        <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Examples:  Online, Offline, Social Media, Email Marketing, Referrals, Direct Sales, Subscription...">
+        {/* <Tooltip title="Customer channels for startups can vary depending on the nature of the business, target audience, and industry. Examples:  Online, Offline, Social Media, Email Marketing, Referrals, Direct Sales, Subscription...">
           <h2
             className="text-lg font-semibold mb-8 flex items-center"
             id="customers-heading"
           >
             Customer channel
           </h2>
-        </Tooltip>
+        </Tooltip> */}
 
         {debouncedInputs
           .filter((input) => input?.id == renderCustomerForm)
           .map((input) => (
             <div
               key={input?.id}
-              className="bg-white rounded-md p-6 border my-4"
+              className="bg-white rounded-md p-6 border mb-4"
             >
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <span className="flex items-center text-sm">Channel Name:</span>
@@ -420,7 +420,6 @@ const CustomerInputsForm = React.memo(
           style={{
             display: "flex",
             justifyContent: "space-between",
-            marginTop: "1rem",
           }}
         >
           <Button
@@ -1550,15 +1549,41 @@ const CustomerSection = React.memo(
 
     const renderValue =
       tempCustomerInputs.find((item) => item.id == renderCustomerForm) || "all";
+
+    console.log("renderValue", renderValue);
     return (
       <div className="w-full h-full flex flex-col lg:flex-row p-4">
         <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
           {/* Phần Metrics được thêm vào đây */}
+          {/* <h2 className="text-lg font-semibold">
+            I. Metrics (Under Constructions)
+          </h2> */}
+
           <section className="mb-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-[1.25rem]">
-              <h2 className="text-lg font-semibold">
-                I. Metrics (Under Constructions)
-              </h2>
+              <Select
+                value={renderValue.id ? renderValue.id : "all"}
+                onValueChange={(e) => {
+                  handleRenderFormChange(e);
+                }}
+                className="w-full md:w-auto"
+              >
+                <SelectTrigger className="w-full md:w-auto">
+                  <SelectValue placeholder="Offline">
+                    {renderValue?.channelName
+                      ? renderValue?.channelName
+                      : "All"}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="w-full md:w-auto">
+                  <SelectItem value="all">All</SelectItem>
+                  {tempCustomerInputs.map((input) => (
+                    <SelectItem key={input?.id} value={input?.id}>
+                      {input?.channelName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col">
                 {/* Bộ chọn khoảng thời gian */}
 
@@ -1634,29 +1659,6 @@ const CustomerSection = React.memo(
                   </div>
                 </div>
 
-                <Select
-                  value={renderValue.id}
-                  onValueChange={(e) => {
-                    handleRenderFormChange(e);
-                  }}
-                  className="w-full md:w-auto"
-                >
-                  <SelectTrigger className="w-full md:w-auto">
-                    <SelectValue placeholder="Offline">
-                      {" "}
-                      {renderValue?.channelName}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent className="w-full md:w-auto">
-                    <SelectItem value="all">All</SelectItem>
-                    {tempCustomerInputs.map((input) => (
-                      <SelectItem key={input?.id} value={input?.id}>
-                        {input?.channelName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
                 {/* Popover để chọn metrics hiển thị */}
                 <Popover>
                   <PopoverTrigger asChild>
@@ -1712,7 +1714,9 @@ const CustomerSection = React.memo(
                       <CardContent>
                         <div className="text-2xl font-bold">{metric.value}</div>
                         <p className="text-xs text-muted-foreground">
-                          {metric.change} from last period
+                          {metric.change
+                            ? `${metric.change} from last period`
+                            : ""}
                         </p>
                       </CardContent>
                     </CardShadcn>
@@ -1721,7 +1725,7 @@ const CustomerSection = React.memo(
             </div>
           </section>
 
-          <h3 className="text-lg font-semibold mb-4">II. Customer Chart</h3>
+          {/* <h3 className="text-lg font-semibold mb-4">II. Customer Chart</h3> */}
 
           {renderCustomerForm === "all" &&
             customerGrowthChart?.charts.map((chart, index) => (
@@ -1789,7 +1793,7 @@ const CustomerSection = React.memo(
               </div>
             ))}
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="">
             {customerGrowthChart?.charts
               ?.filter(
                 (chart) =>
@@ -1951,8 +1955,8 @@ const CustomerSection = React.memo(
             )}
           </Modal>
           <span>
-            <h3 className="text-lg font-semibold mt-20 my-4">
-              III. Customer Table
+            <h3 className="text-lg font-semibold mt-20 my-8">
+              {/* III. Customer Table */}
             </h3>
             <div className="flex justify-between items-center mb-4">
               <ButtonV0 variant="outline" onClick={downloadExcel}>

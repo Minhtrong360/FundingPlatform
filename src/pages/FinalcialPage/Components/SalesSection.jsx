@@ -52,7 +52,6 @@ import {
   Globe,
   CalendarIcon,
   Users,
-  Clock,
   ThumbsUp,
   Settings,
   UserPlus,
@@ -64,6 +63,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "../../../components/ui/popover";
+import {
+  DollarSign,
+  MinusCircle,
+  PieChart,
+  TrendingUp,
+  Package,
+} from "lucide-react";
 
 const ChannelInputForm = React.memo(
   ({
@@ -72,14 +78,12 @@ const ChannelInputForm = React.memo(
     handleRenderFormChange,
     handleChannelInputChange,
     formatNumber,
-    parseNumber,
     channelNames,
     daysOptions,
     addNewChannelInput,
     handleSave,
     isLoading,
     setIsDeleteModalOpen,
-    duplicateChannelInput,
   }) => {
     const [debouncedInputs, setDebouncedInputs] = useState(tempChannelInputs);
     // Thêm useEffect để đồng bộ hóa debouncedInputs khi tempFundraisingInputs thay đổi
@@ -116,41 +120,17 @@ const ChannelInputForm = React.memo(
         aria-labelledby="sales-heading"
         className="mb-8 NOsticky NOtop-8"
       >
-        <h2
+        {/* <h2
           className="flex items-center mb-8 text-lg font-semibold"
           id="sales-heading"
         >
           Sales Section
-        </h2>
-
-        <Select
-          value={renderChannelForm}
-          onValueChange={(e) => {
-            handleRenderFormChange(e);
-          }}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Offline" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            {tempChannelInputs.map((input) => {
-              const channelName = channelNames.find(
-                (channel) => channel.id === input.selectedChannel.id
-              )?.channelName;
-              return (
-                <SelectItem key={input.id} value={input.id}>
-                  {`${input.productName} - ${channelName}`}
-                </SelectItem>
-              );
-            })}
-          </SelectContent>
-        </Select>
+        </h2> */}
 
         {debouncedInputs
           .filter((input) => input?.id == renderChannelForm)
           .map((input, index) => (
-            <div key={input.id} className="p-6 my-4 bg-white border rounded-md">
+            <div key={input.id} className="p-6 mb-4 bg-white border rounded-md">
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <span className="flex items-center text-sm">Product Name:</span>
                 <Input
@@ -307,7 +287,6 @@ const ChannelInputForm = React.memo(
           style={{
             display: "flex",
             justifyContent: "space-between",
-            marginTop: "1rem",
           }}
         >
           <Button
@@ -523,8 +502,11 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
       multiples: 1,
       deductionPercentage: 0,
       cogsPercentage: 30,
-      selectedChannel: { id: null }, // Reset selected channel
-      channelAllocation: 0.8,
+      selectedChannel: {
+        id: channelNames[0]?.id,
+        channelName: channelNames[0]?.channelName,
+      }, // Reset selected channel
+      channelAllocation: 80,
       daysGetPaid: 0, // Default to 0 day
     };
     setTempChannelInputs([...tempChannelInputs, newChannel]);
@@ -541,7 +523,10 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
       const duplicatedChannel = {
         ...inputToDuplicate,
         id: newId,
-        selectedChannel: { id: null },
+        selectedChannel: {
+          id: channelNames[0]?.id,
+          channelName: channelNames[0]?.channelName,
+        }, // Reset selected channel
       };
       setTempChannelInputs([...tempChannelInputs, duplicatedChannel]);
       setRenderChannelForm(newId.toString());
@@ -694,7 +679,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
                   },
                 },
               },
-              title: { ...prevState.options.title, text: "Revenues" },
+              title: { ...prevState.options.title, text: "All Revenues" },
             },
             series: [
               ...salesChartsData.map((channel) => ({
@@ -775,12 +760,6 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
     setIsChartModalVisible(true);
   };
 
-  const [activeTab, setActiveTab] = useState("table&chart");
-
-  const handleTabChange = (tabName) => {
-    setActiveTab(tabName);
-  };
-
   const downloadExcel = () => {
     const workBook = XLSX.utils.book_new();
 
@@ -842,9 +821,10 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
             record.key !== "Total Receivables" &&
             record.channelName !== "Cash Inflow" &&
             record.channelName !== "Receivables" &&
-            record.key !== " "
+            record.key !== ` ` &&
+            record.key
         )
-      : revenueTableData;
+      : revenueTableData.filter((record) => record.key !== ` `);
 
   const handleRenderFormChange = (e) => {
     setIsLoading(true);
@@ -852,81 +832,317 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
   };
 
   const [visibleMetrics, setVisibleMetrics] = useState({
-    existingCustomers: true,
-    numberOfChannels: true,
-    previousMonthUsers: true,
-    addedUsers: true,
-    churnedUsers: true,
-    totalUsers: true,
-    customerSatisfaction: true,
+    revenue: true,
+    deductions: true,
+    netRevenue: true,
+    cogs: true,
+    grossProfit: true,
   });
 
   const toggleMetric = (metric) => {
     setVisibleMetrics((prev) => ({ ...prev, [metric]: !prev[metric] }));
   };
 
-  const metrics = [
+  const [metrics, setMetrics] = useState([
     {
-      key: "existingCustomers",
-      title: "Existing Customers",
-      value: "1,234",
-      change: "+10%",
-      icon: Users,
+      key: "revenue",
+      title: "Revenue",
+      value: "",
+      change: "",
+      icon: DollarSign,
     },
     {
-      key: "numberOfChannels",
-      title: "Number of Channels",
-      value: "5",
-      change: "+1",
-      icon: MessageSquare,
+      key: "deductions",
+      title: "Deductions",
+      value: "",
+      change: "",
+      icon: MinusCircle,
     },
     {
-      key: "previousMonthUsers",
-      title: "Previous month users",
-      value: "10,987",
-      change: "-",
-      icon: Users,
+      key: "netRevenue",
+      title: "Net Revenue",
+      value: "",
+      change: "",
+      icon: TrendingUp,
     },
+    { key: "cogs", title: "COGS", value: "", change: "", icon: Package },
     {
-      key: "addedUsers",
-      title: "Added Users",
-      value: "1,345",
-      change: "+22%",
-      icon: UserPlus,
+      key: "grossProfit",
+      title: "Gross Profit",
+      value: "",
+      change: "",
+      icon: PieChart,
     },
-    {
-      key: "churnedUsers",
-      title: "No. of User Churned",
-      value: "201",
-      change: "-5%",
-      icon: UserMinus,
-    },
-    {
-      key: "totalUsers",
-      title: "No. of Users",
-      value: "12,131",
-      change: "+11%",
-      icon: Users,
-    },
-    {
-      key: "customerSatisfaction",
-      title: "Customer Satisfaction",
-      value: "92%",
-      change: "+3%",
-      icon: ThumbsUp,
-    },
-  ];
+  ]);
 
-  console.log("filteredTableData", filteredTableData);
+  // Function to calculate change between two months
+  const calculateChange = (startValue, endValue) => {
+    if (startValue === 0) return 0;
+    return ((endValue - startValue) / startValue) * 100;
+  };
+
+  // Extract and sum data for a particular key over a range of months
+  const extractData = (data, keyPrefix, startMonth, endMonth) => {
+    return Object.keys(data)
+      .filter((key) => key.startsWith(keyPrefix))
+      .slice(startMonth - 1, endMonth)
+      .reduce(
+        (sum, monthKey) => sum + parseNumber(data[monthKey].replace(",", "")),
+        0
+      );
+  };
+
+  useEffect(() => {
+    if (revenueTableData.length > 0) {
+      if (renderChannelForm === "all") {
+        // Handle "all" case: sum values across all channels
+
+        const filterByKeyPrefix = (prefix) => {
+          return revenueTableData
+            .filter((row) => row.key.startsWith(prefix))
+            .reduce(
+              (sum, data) =>
+                sum +
+                extractData(data, "month", chartStartMonth, chartEndMonth),
+              0
+            );
+        };
+
+        // Summing up data for each metric across all channels
+        const totalRevenue = filterByKeyPrefix("Revenue");
+        const totalDeductions = filterByKeyPrefix("Deductions");
+        const totalNetRevenue = filterByKeyPrefix("Net Revenue");
+        const totalCOGS = filterByKeyPrefix("COGS");
+        const totalGrossProfit = filterByKeyPrefix("Gross Profit");
+
+        // Calculate changes
+        const calculateMetricChange = (prefix) => {
+          return calculateChange(
+            parseNumber(
+              revenueTableData.find((row) => row.key.startsWith(prefix))?.[
+                `month${chartStartMonth}`
+              ] || 0
+            ),
+            revenueTableData
+              .filter((row) => row.key.startsWith(prefix))
+              .reduce(
+                (sum, data) =>
+                  sum +
+                  parseNumber(data[`month${chartEndMonth}`]) -
+                  parseNumber(data[`month${chartStartMonth}`]),
+                0
+              )
+          );
+        };
+
+        const revenueChange = calculateMetricChange("Revenue");
+        const deductionsChange = calculateMetricChange("Deductions");
+        const netRevenueChange = calculateMetricChange("Net Revenue");
+        const cogsChange = calculateMetricChange("COGS");
+        const grossProfitChange = calculateMetricChange("Gross Profit");
+        // Set metrics state
+        setMetrics([
+          {
+            key: "revenue",
+            title: "Revenue",
+            value: formatNumber(totalRevenue.toFixed(2)),
+            change: formatNumber(revenueChange.toFixed(2)),
+            icon: DollarSign,
+          },
+          {
+            key: "deductions",
+            title: "Deductions",
+            value: formatNumber(totalDeductions.toFixed(2)),
+            change: formatNumber(deductionsChange.toFixed(2)),
+            icon: MinusCircle,
+          },
+          {
+            key: "netRevenue",
+            title: "Net Revenue",
+            value: formatNumber(totalNetRevenue.toFixed(2)),
+            change: formatNumber(netRevenueChange.toFixed(2)),
+            icon: TrendingUp,
+          },
+          {
+            key: "cogs",
+            title: "COGS",
+            value: formatNumber(totalCOGS.toFixed(2)),
+            change: formatNumber(cogsChange.toFixed(2)),
+            icon: Package,
+          },
+          {
+            key: "grossProfit",
+            title: "Gross Profit",
+            value: formatNumber(totalGrossProfit.toFixed(2)),
+            change: formatNumber(grossProfitChange.toFixed(2)),
+            icon: PieChart,
+          },
+        ]);
+      } else {
+        // Handle specific channel case as you originally did
+        const revenueData = revenueTableData?.find((row) =>
+          row.key.includes("Revenue")
+        );
+        const deductionsData = revenueTableData?.find((row) =>
+          row.key.includes("Deductions")
+        );
+        const netRevenueData = revenueTableData?.find((row) =>
+          row.key.includes("Net Revenue")
+        );
+        const cogsData = revenueTableData?.find((row) =>
+          row.key.includes("COGS")
+        );
+        const grossProfitData = revenueTableData?.find((row) =>
+          row.key.includes("Gross Profit")
+        );
+
+        // Calculate metrics values
+        const totalRevenue = extractData(
+          revenueData,
+          "month",
+          chartStartMonth,
+          chartEndMonth
+        );
+        const totalDeductions = extractData(
+          deductionsData,
+          "month",
+          chartStartMonth,
+          chartEndMonth
+        );
+        const totalNetRevenue = extractData(
+          netRevenueData,
+          "month",
+          chartStartMonth,
+          chartEndMonth
+        );
+        const totalCOGS = extractData(
+          cogsData,
+          "month",
+          chartStartMonth,
+          chartEndMonth
+        );
+        const totalGrossProfit = extractData(
+          grossProfitData,
+          "month",
+          chartStartMonth,
+          chartEndMonth
+        );
+
+        // Calculate changes
+        const revenueChange = calculateChange(
+          parseNumber(revenueData[`month${chartStartMonth}`]),
+          parseNumber(revenueData[`month${chartEndMonth}`])
+        );
+        const deductionsChange = calculateChange(
+          parseNumber(deductionsData[`month${chartStartMonth}`]),
+          parseNumber(deductionsData[`month${chartEndMonth}`])
+        );
+        const netRevenueChange = calculateChange(
+          parseNumber(netRevenueData[`month${chartStartMonth}`]),
+          parseNumber(netRevenueData[`month${chartEndMonth}`])
+        );
+        const cogsChange = calculateChange(
+          parseNumber(cogsData[`month${chartStartMonth}`]),
+          parseNumber(cogsData[`month${chartEndMonth}`])
+        );
+        const grossProfitChange = calculateChange(
+          parseNumber(grossProfitData[`month${chartStartMonth}`]),
+          parseNumber(grossProfitData[`month${chartEndMonth}`])
+        );
+
+        // Set metrics state
+        setMetrics([
+          {
+            key: "revenue",
+            title: "Revenue",
+            value: formatNumber(totalRevenue.toFixed(2)),
+            change: formatNumber(revenueChange.toFixed(2)),
+            icon: DollarSign,
+          },
+          {
+            key: "deductions",
+            title: "Deductions",
+            value: formatNumber(totalDeductions.toFixed(2)),
+            change: formatNumber(deductionsChange.toFixed(2)),
+            icon: MinusCircle,
+          },
+          {
+            key: "netRevenue",
+            title: "Net Revenue",
+            value: formatNumber(totalNetRevenue.toFixed(2)),
+            change: formatNumber(netRevenueChange.toFixed(2)),
+            icon: TrendingUp,
+          },
+          {
+            key: "cogs",
+            title: "COGS",
+            value: formatNumber(totalCOGS.toFixed(2)),
+            change: formatNumber(cogsChange.toFixed(2)),
+            icon: Package,
+          },
+          {
+            key: "grossProfit",
+            title: "Gross Profit",
+            value: formatNumber(totalGrossProfit.toFixed(2)),
+            change: formatNumber(grossProfitChange.toFixed(2)),
+            icon: PieChart,
+          },
+        ]);
+      }
+    }
+  }, [
+    chartStartMonth,
+    chartEndMonth,
+    renderChannelForm,
+    revenueTableData,
+    tempChannelInputs,
+  ]);
+
+  const renderValue =
+    tempChannelInputs.find((item) => item.id == renderChannelForm) || "all";
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row p-4">
       <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
         <section className="mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-[1.25rem]">
-            <h2 className="text-lg font-semibold">
+            {/* <h2 className="text-lg font-semibold">
               I. Metrics (Under Constructions)
-            </h2>
+            </h2> */}
+            <Select
+              value={renderValue.id ? renderValue.id : "all"}
+              onValueChange={(e) => {
+                handleRenderFormChange(e);
+              }}
+              className="w-full md:w-auto"
+            >
+              <SelectTrigger className="w-full md:w-auto">
+                <SelectValue placeholder="Offline">
+                  {renderValue?.productName
+                    ? `${renderValue?.productName} - ${
+                        channelNames?.find(
+                          (channel) =>
+                            channel?.id === renderValue?.selectedChannel?.id
+                        )?.channelName
+                      }`
+                    : "All"}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                {tempChannelInputs.map((input) => {
+                  const channelName = channelNames.find(
+                    (channel) => channel.id === input.selectedChannel.id
+                  )?.channelName;
+                  return (
+                    <SelectItem key={input.id} value={input.id}>
+                      {`${input.productName} - ${channelName}`}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+
             <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col">
               {/* Bộ chọn khoảng thời gian */}
 
@@ -1065,116 +1281,128 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
           </div>
         </section>
 
-        <h3 className="text-lg font-semibold mb-4">II. Revenue Chart</h3>
-        <div className="sm:ml-4 ml-0 mt-12">
-          <h4 className="text-base font-semibold mb-4">1. All revenue chart</h4>
-          {revenue.charts
-            ?.filter((chart) => chart.options.chart.id === "allChannels")
-            .map((chart, index) => (
-              <CardShadcn
-                key={index}
-                className="flex flex-col transition duration-500  !rounded-md relative"
-              >
-                <CardHeader>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute top-2 right-2 z-50"
-                    onClick={(event) => handleChartClick(chart, event)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="w-4 h-4"
+        {/* <h3 className="text-lg font-semibold mb-4">II. Revenue Chart</h3> */}
+        <div className="mt-12">
+          {/* <h4 className="text-base font-semibold mb-4">1. All revenue chart</h4> */}
+          {renderChannelForm === "all" &&
+            revenue.charts.map((chart, index) => (
+              <div key={index} className="my-4">
+                <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(65 + index)}. ${chart.options.title.text}`}</h5>
+
+                <CardShadcn
+                  key={index}
+                  className="flex flex-col transition duration-500  !rounded-md relative"
+                >
+                  <CardHeader>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute top-2 right-2 z-50"
+                      onClick={(event) => handleChartClick(chart, event)}
                     >
-                      <path d="M15 3h6v6" />
-                      <path d="M10 14 21 3" />
-                      <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
-                    </svg>
-                    <span className="sr-only">Fullscreen</span>
-                  </Button>
-                </CardHeader>
-                <CardContent>
-                  <Chart
-                    options={{
-                      chart: { animations: { enabled: false } },
-                      ...chart.options,
-                      xaxis: { ...chart.options.xaxis },
-                      stroke: { width: 1, curve: "straight" },
-                    }}
-                    series={chart.series}
-                    type="area"
-                    height={350}
-                  />
-                </CardContent>
-              </CardShadcn>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="w-4 h-4"
+                      >
+                        <path d="M15 3h6v6" />
+                        <path d="M10 14 21 3" />
+                        <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                      </svg>
+                      <span className="sr-only">Fullscreen</span>
+                    </Button>
+                  </CardHeader>
+                  <CardContent>
+                    <Chart
+                      options={{
+                        chart: { animations: { enabled: false } },
+                        ...chart.options,
+                        xaxis: { ...chart.options.xaxis },
+                        stroke: { width: 1, curve: "straight" },
+                      }}
+                      series={chart.series}
+                      type="area"
+                      height={350}
+                    />
+                  </CardContent>
+                </CardShadcn>
+              </div>
             ))}
         </div>
-        <div className="sm:ml-4 ml-0 mt-12">
-          <h4 className="text-base font-semibold mb-4">2. Component charts</h4>
-          <div className="grid md:grid-cols-2 gap-6">
-            {revenue.charts
-              ?.filter((chart) => chart.options.chart.id !== "allChannels")
-              .map((chart, index) => (
-                <div className="ml-2" key={index}>
-                  <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(
-                    65 + index
-                  )}. ${chart.options.title.text}`}</h5>
+        <div className="mt-12">
+          {/* <h4 className="text-base font-semibold mb-4">2. Component charts</h4> */}
 
-                  <CardShadcn
-                    key={index}
-                    className="flex flex-col transition duration-500  !rounded-md relative"
-                  >
-                    <CardHeader>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute top-2 right-2 z-50"
-                        onClick={(event) => handleChartClick(chart, event)}
+          {revenue.charts
+            ?.filter(
+              (chart) =>
+                chart.options.chart.id !== "allChannels" &&
+                chart?.options?.title?.text ===
+                  `${
+                    channelNames?.find(
+                      (channel) =>
+                        channel?.id === renderValue?.selectedChannel?.id
+                    )?.channelName
+                  } - ${renderValue?.productName}`
+            )
+            .map((chart, index) => (
+              <div key={index}>
+                <h5 className="font-semibold text-sm mb-2">{`${String.fromCharCode(
+                  65 + index
+                )}. ${chart.options.title.text}`}</h5>
+
+                <CardShadcn
+                  key={index}
+                  className="flex flex-col transition duration-500  !rounded-md relative"
+                >
+                  <CardHeader>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute top-2 right-2 z-50"
+                      onClick={(event) => handleChartClick(chart, event)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="w-4 h-4"
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="w-4 h-4"
-                        >
-                          <path d="M15 3h6v6" />
-                          <path d="M10 14 21 3" />
-                          <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
-                        </svg>
-                        <span className="sr-only">Fullscreen</span>
-                      </Button>
-                    </CardHeader>
-                    <CardContent>
-                      <Chart
-                        options={{
-                          chart: { animations: { enabled: false } },
-                          ...chart.options,
-                          xaxis: { ...chart.options.xaxis },
-                          stroke: { width: 1, curve: "straight" },
-                        }}
-                        series={chart.series}
-                        type="area"
-                        height={350}
-                      />
-                    </CardContent>
-                  </CardShadcn>
-                </div>
-              ))}
-          </div>
+                        <path d="M15 3h6v6" />
+                        <path d="M10 14 21 3" />
+                        <path d="M18 13v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" />
+                      </svg>
+                      <span className="sr-only">Fullscreen</span>
+                    </Button>
+                  </CardHeader>
+                  <CardContent>
+                    <Chart
+                      options={{
+                        chart: { animations: { enabled: false } },
+                        ...chart.options,
+                        xaxis: { ...chart.options.xaxis },
+                        stroke: { width: 1, curve: "straight" },
+                      }}
+                      series={chart.series}
+                      type="area"
+                      height={350}
+                    />
+                  </CardContent>
+                </CardShadcn>
+              </div>
+            ))}
         </div>
         <Modal
           centered
@@ -1197,12 +1425,12 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
           )}
         </Modal>
         <span>
-          <h3 className="text-lg font-semibold mt-20 my-4">
-            III. Revenue Table
+          <h3 className="text-lg font-semibold mt-20 my-8">
+            {/* III. Revenue Table */}
           </h3>
 
           <div className="flex justify-between items-center mb-4">
-            <Select
+            {/* <Select
               value={renderChannelForm}
               onValueChange={(e) => {
                 handleRenderFormChange(e);
@@ -1224,7 +1452,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
                   );
                 })}
               </SelectContent>
-            </Select>
+            </Select> */}
             <ButtonV0 variant="outline" onClick={downloadExcel}>
               <Download className="mr-2 h-4 w-4" />
               Download Excel

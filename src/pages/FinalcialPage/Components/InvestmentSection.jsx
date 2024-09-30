@@ -221,7 +221,6 @@ const InvestmentInputForm = ({
         style={{
           display: "flex",
           justifyContent: "space-between",
-          marginTop: "1rem",
         }}
       >
         <Button
@@ -1073,7 +1072,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           </div>
         </section>
         <h3 className="text-lg font-semibold mb-8">II. Investment Chart</h3>
-        <div className="sm:ml-4 ml-0 mt-12">
+        <div className="mt-12">
           {/* All Investments Chart */}
           <h4 className="text-base font-semibold mb-4">
             1. All investments chart
@@ -1130,7 +1129,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               ))
           )}
         </div>
-        <div className="sm:ml-4 ml-0 mt-12">
+        <div className="mt-12">
           {/* Component Charts */}
           <h4 className="text-base font-semibold mb-4">2. Component charts</h4>
           <div className="grid md:grid-cols-2 gap-6">

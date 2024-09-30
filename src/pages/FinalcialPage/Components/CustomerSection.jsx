@@ -1565,16 +1565,16 @@ const CustomerSection = React.memo(
                 onValueChange={(e) => {
                   handleRenderFormChange(e);
                 }}
-                className="w-full md:w-auto"
+                className="w-full md:w-auto min-w-[10rem]"
               >
-                <SelectTrigger className="w-full md:w-auto">
+                <SelectTrigger className="w-full md:w-auto min-w-[10rem]">
                   <SelectValue placeholder="Offline">
                     {renderValue?.channelName
                       ? renderValue?.channelName
                       : "All"}
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="w-full md:w-auto">
+                <SelectContent className="w-full md:w-auto min-w-[10rem]">
                   <SelectItem value="all">All</SelectItem>
                   {tempCustomerInputs.map((input) => (
                     <SelectItem key={input?.id} value={input?.id}>

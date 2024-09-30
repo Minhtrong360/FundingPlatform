@@ -848,14 +848,14 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
               onValueChange={(e) => {
                 handleRenderFormChange(e);
               }}
-              className="w-full md:w-auto"
+              className="w-full md:w-auto min-w-[10rem]"
             >
-              <SelectTrigger className="w-full md:w-auto">
+              <SelectTrigger className="w-full md:w-auto min-w-[10rem]">
                 <SelectValue placeholder="Offline">
                   {renderValue.loanName ? renderValue.loanName : "All"}
                 </SelectValue>
               </SelectTrigger>
-              <SelectContent className="w-full md:w-auto">
+              <SelectContent className="w-full md:w-auto min-w-[10rem]">
                 <SelectItem value="all">All</SelectItem>
                 {tempLoanInputs.map((input) => (
                   <SelectItem key={input?.id} value={input?.id}>

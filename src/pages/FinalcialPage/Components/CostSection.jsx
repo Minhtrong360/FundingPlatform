@@ -1070,60 +1070,69 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
     setVisibleMetrics((prev) => ({ ...prev, [metric]: !prev[metric] }));
   };
 
-  const metrics = [
+  const [metrics, setMetrics] = useState([
     {
       key: "existingCustomers",
       title: "Existing Customers",
-      value: "1,234",
-      change: "+10%",
+      value: "",
+      change: "",
       icon: Users,
     },
     {
       key: "numberOfChannels",
       title: "Number of Channels",
-      value: "5",
-      change: "+2",
+      value: "",
+      change: "",
       icon: MessageSquare,
     },
     {
       key: "previousMonthUsers",
-      title: "Previous month users",
-      value: "10,987",
-      change: "-",
+      title: "First Month Users",
+      value: "",
+      change: "",
       icon: Users,
     },
     {
       key: "addedUsers",
       title: "Added Users",
-      value: "1,345",
-      change: "+22%",
+      value: "",
+      change: "",
       icon: UserPlus,
     },
     {
       key: "churnedUsers",
-      title: "No. of User Churned",
-      value: "201",
-      change: "-5%",
+      title: "Churned Users",
+      value: "",
+      change: "",
       icon: UserMinus,
     },
     {
       key: "totalUsers",
-      title: "No. of Users",
-      value: "12,131",
-      change: "+11%",
+      title: "Total Users",
+      value: "",
+      change: "",
       icon: Users,
     },
-    {
-      key: "customerSatisfaction",
-      title: "Customer Satisfaction",
-      value: "92%",
-      change: "+3%",
-      icon: ThumbsUp,
-    },
-  ];
+  ]);
+
+  // Function to simplify data extraction
+  const extractData = (data, keyPrefix, startMonth, endMonth) => {
+    return Object.keys(data)
+      .filter((key) => key.startsWith(keyPrefix))
+      .slice(startMonth - 1, endMonth)
+      .reduce((sum, monthKey) => sum + parseNumber(data[monthKey]), 0);
+  };
+
+  // Function to calculate metric changes
+  const calculateChange = (startValue, endValue) => {
+    if (startValue === 0) return 0;
+    return ((endValue - startValue) / startValue) * 100;
+  };
 
   const renderValue =
     tempCostInput.find((item) => item.id == renderCostForm) || "all";
+
+  console.log("costTableData", costTableData);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row p-4">
@@ -1139,14 +1148,14 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
               onValueChange={(e) => {
                 setRenderCostForm(e);
               }}
-              className="w-full md:w-auto"
+              className="w-full md:w-auto min-w-[10rem]"
             >
-              <SelectTrigger className="w-full md:w-auto">
+              <SelectTrigger className="w-full md:w-auto min-w-[10rem]">
                 <SelectValue placeholder="Offline">
                   {renderValue.costName ? renderValue.costName : "All"}
                 </SelectValue>
               </SelectTrigger>
-              <SelectContent className="w-full md:w-auto">
+              <SelectContent className="w-full md:w-auto min-w-[10rem]">
                 <SelectItem value="all">All</SelectItem>
                 {tempCostInput.map((input) => (
                   <SelectItem key={input?.id} value={input?.id}>

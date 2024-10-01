@@ -734,7 +734,7 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
     const cfLoans = loanTableData.find((item) => item.key === "CF Loans");
 
     Object.keys(cfLoans).forEach((key) => {
-      if (key.startsWith("Month ")) {
+      if (key.startsWith("month")) {
         cfLoanArray.push(parseNumber(cfLoans[key]));
       }
     });
@@ -1010,7 +1010,7 @@ const GroqJS = ({ datasrc, inputUrl, numberOfMonths }) => {
     loanTableData.forEach((data) => {
       if (data.key === "Total Remaining Balance") {
         Object.keys(data).forEach((key) => {
-          if (key.startsWith("Month ")) {
+          if (key.startsWith("month")) {
             bsTotalRemainingBalance.push(parseNumber(data[key]));
           }
         });

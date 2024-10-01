@@ -231,7 +231,7 @@ function CashFlowSection({ numberOfMonths }) {
     const cfLoans = loanTableData.find((item) => item.key === "CF Loans");
 
     Object.keys(cfLoans).forEach((key) => {
-      if (key.startsWith("Month ")) {
+      if (key.startsWith("month")) {
         cfLoanArray.push(parseNumber(cfLoans[key]));
       }
     });

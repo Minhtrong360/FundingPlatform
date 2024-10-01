@@ -299,7 +299,7 @@ function BalanceSheetSection({ numberOfMonths }) {
     const cfLoans = loanTableData.find((item) => item.key === "CF Loans");
 
     Object.keys(cfLoans).forEach((key) => {
-      if (key.startsWith("Month ")) {
+      if (key.startsWith("month")) {
         cfLoanArray.push(parseNumber(cfLoans[key]));
       }
     });
@@ -429,14 +429,14 @@ function BalanceSheetSection({ numberOfMonths }) {
     loanTableData.forEach((data) => {
       if (data.key === "Total Remaining Balance") {
         Object.keys(data).forEach((key) => {
-          if (key.startsWith("Month ")) {
+          if (key.startsWith("month")) {
             bsTotalRemainingBalance.push(parseNumber(data[key]));
           }
         });
       }
     });
   }
-
+  console.log("loanTableData", loanTableData);
   const totalLiabilities = bsTotalRemainingBalance.map(
     (remainingBalance, index) => remainingBalance + 0 // Placeholder value
   );

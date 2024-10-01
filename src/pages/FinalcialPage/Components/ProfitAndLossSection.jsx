@@ -592,7 +592,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     const cfLoans = loanTableData.find((item) => item.key === "CF Loans");
 
     Object.keys(cfLoans).forEach((key) => {
-      if (key.startsWith("Month ")) {
+      if (key.startsWith("month")) {
         cfLoanArray.push(parseNumber(cfLoans[key]));
       }
     });
@@ -697,7 +697,7 @@ const ProfitAndLossSection = ({ numberOfMonths }) => {
     loanTableData.forEach((data) => {
       if (data.key === "Total Remaining Balance") {
         Object.keys(data).forEach((key) => {
-          if (key.startsWith("Month ")) {
+          if (key.startsWith("month")) {
             bsTotalRemainingBalance.push(parseNumber(data[key]));
           }
         });

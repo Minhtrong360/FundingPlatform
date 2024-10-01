@@ -665,11 +665,9 @@ const CustomerSection = React.memo(
         key: "channelName",
         width: 500,
       },
-      ...Array.from({ length: chartEndMonth - chartStartMonth + 1 }, (_, i) => {
-        const monthIndex = (chartStartMonth - 1 + startingMonth + i - 1) % 12;
-        const year =
-          startingYear +
-          Math.floor((chartStartMonth - 1 + startingMonth + i - 1) / 12);
+      ...Array.from({ length: numberOfMonths }, (_, i) => {
+        const monthIndex = (startingMonth + i - 1) % 12;
+        const year = startingYear + Math.floor((startingMonth + i - 1) / 12);
         return {
           title: `${months[monthIndex]}/${year}`,
           dataIndex: `month${chartStartMonth + i}`,
@@ -1473,7 +1471,7 @@ const CustomerSection = React.memo(
           const totalUsersData = filtered.find((row) =>
             row.key.includes("-end")
           );
-
+          console.log("addedUsersData", addedUsersData);
           const existingCustomers = extractData(
             existingCustomersData,
             "month",
@@ -1583,7 +1581,7 @@ const CustomerSection = React.memo(
                   ))}
                 </SelectContent>
               </Select>
-              <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col">
+              <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col md:!mt-0 !mt-2">
                 {/* Bộ chọn khoảng thời gian */}
 
                 <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
@@ -1714,7 +1712,11 @@ const CustomerSection = React.memo(
                         <div className="text-2xl font-bold">{metric.value}</div>
                         <p className="text-xs text-muted-foreground">
                           {metric.change
-                            ? `${metric.change} from last period`
+                            ? `${
+                                metric.change
+                                  ? `${metric.change} from last period`
+                                  : ""
+                              }`
                             : ""}
                         </p>
                       </CardContent>

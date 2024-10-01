@@ -1143,7 +1143,7 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
               </SelectContent>
             </Select>
 
-            <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col">
+            <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col md:!mt-0 !mt-2">
               {/* Bộ chọn khoảng thời gian */}
 
               <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
@@ -1272,7 +1272,9 @@ const SalesSection = ({ numberOfMonths, revenue, setRevenue }) => {
                     <CardContent>
                       <div className="text-2xl font-bold">{metric.value}</div>
                       <p className="text-xs text-muted-foreground">
-                        {metric.change} from last period
+                        {metric.change
+                          ? `${metric.change} from last period`
+                          : ""}
                       </p>
                     </CardContent>
                   </CardShadcn>

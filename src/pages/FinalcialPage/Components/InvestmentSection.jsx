@@ -34,7 +34,16 @@ import {
   CardContent,
   CardTitle,
 } from "../../../components/ui/card";
-import { Check, Download, Plus, Trash2 } from "lucide-react";
+import {
+  Archive,
+  Check,
+  DollarSign,
+  Download,
+  Layers,
+  PieChart,
+  Plus,
+  Trash2,
+} from "lucide-react";
 
 import {
   Select,
@@ -779,16 +788,6 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     setRenderInvestmentForm(e);
   };
 
-  const [visibleMetrics, setVisibleMetrics] = useState({
-    existingCustomers: true,
-    numberOfChannels: true,
-    previousMonthUsers: true,
-    addedUsers: true,
-    churnedUsers: true,
-    totalUsers: true,
-    customerSatisfaction: true,
-  });
-
   // Create visibility state for each chart, using purchaseName or unique chart IDs
   const [visibleCharts, setVisibleCharts] = useState(() =>
     tempInvestmentData.reduce(
@@ -808,66 +807,190 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     }));
   };
 
+  const [visibleMetrics, setVisibleMetrics] = useState({
+    totalItems: true,
+    totalInvestment: true,
+    totalDepreciation: true,
+    netFixedAssets: true,
+    totalAccumulatedDepreciation: true,
+  });
+
   const toggleMetric = (metric) => {
     setVisibleMetrics((prev) => ({ ...prev, [metric]: !prev[metric] }));
   };
 
-  const metrics = [
+  const [metrics, setMetrics] = useState([
     {
-      key: "existingCustomers",
-      title: "Existing Customers",
-      value: "1,234",
-      change: "+10%",
+      key: "totalItems",
+      title: "Investment Items",
+      value: "",
+      change: "",
       icon: Users,
     },
     {
-      key: "numberOfChannels",
-      title: "Number of Channels",
-      value: "5",
-      change: "+1",
-      icon: MessageSquare,
+      key: "totalInvestment",
+      title: "Total Investment",
+      value: "",
+      change: "",
+      icon: DollarSign,
     },
     {
-      key: "previousMonthUsers",
-      title: "Previous month users",
-      value: "10,987",
-      change: "-",
-      icon: Users,
+      key: "totalDepreciation",
+      title: "Total Depreciation",
+      value: "",
+      change: "",
+      icon: Archive,
     },
     {
-      key: "addedUsers",
-      title: "Added Users",
-      value: "1,345",
-      change: "+22%",
-      icon: UserPlus,
+      key: "netFixedAssets",
+      title: "Net Fixed Assets",
+      value: "",
+      change: "",
+      icon: Layers,
     },
-    {
-      key: "churnedUsers",
-      title: "No. of User Churned",
-      value: "201",
-      change: "-5%",
-      icon: UserMinus,
-    },
-    {
-      key: "totalUsers",
-      title: "No. of Users",
-      value: "12,131",
-      change: "+11%",
-      icon: Users,
-    },
-    {
-      key: "customerSatisfaction",
-      title: "Customer Satisfaction",
-      value: "92%",
-      change: "+3%",
-      icon: ThumbsUp,
-    },
-  ];
+  ]);
+
+  // Function to simplify data extraction
+  const extractData = (data, keyPrefix, startMonth, endMonth) => {
+    return Object.keys(data)
+      .filter((key) => key.startsWith(keyPrefix))
+      .slice(startMonth - 1, endMonth)
+      .reduce((sum, monthKey) => sum + parseNumber(data[monthKey]), 0);
+  };
+
+  // Function to calculate metric changes
+  const calculateChange = (startValue, endValue) => {
+    if (startValue === 0) return 0;
+    return ((endValue - startValue) / startValue) * 100;
+  };
+
+  // Simplified useEffect for calculating metrics and filtering data
+  useEffect(() => {
+    if (renderInvestmentForm === "all") {
+      // New logic to calculate metrics for all investments
+      let totalItems = 0;
+
+      let totalInvestment = 0;
+      let totalDepreciation = 0;
+      let netFixedAssets = 0;
+
+      // Sum up totalItems based on assetCost * quantity for each input
+      totalItems = tempInvestmentInputs.reduce(
+        (sum, item) => sum + item.quantity,
+        0
+      );
+      // Sum up totalInvestment based on assetCost * quantity for each input
+      totalInvestment = tempInvestmentInputs.reduce(
+        (sum, item) => sum + item.assetCost * item.quantity,
+        0
+      );
+
+      // Loop through tempInvestmentInputs and extract depreciation and book value for the specified months
+      tempInvestmentInputs.forEach((input) => {
+        const filtered = filteredTableData?.filter((data) =>
+          data?.key?.includes(input?.purchaseName)
+        );
+
+        // Get the accumulated depreciation for the specified month
+        const accumulatedDepreciationRow = filtered.find((row) =>
+          row.key.includes("Accumulated Depre. -")
+        );
+
+        if (accumulatedDepreciationRow) {
+          totalDepreciation += parseNumber(
+            accumulatedDepreciationRow[`month${chartEndMonth}`]
+          );
+        }
+
+        // Get the book value for the specified month
+        const bookValueRow = filtered.find((row) =>
+          row.key.includes("Book Value -")
+        );
+
+        if (bookValueRow) {
+          netFixedAssets += parseNumber(bookValueRow[`month${chartEndMonth}`]);
+        }
+      });
+
+      setMetrics((prevMetrics) => [
+        {
+          ...prevMetrics[0],
+          value: formatNumber(totalItems),
+          change: 0,
+        },
+        {
+          ...prevMetrics[1],
+          value: formatNumber(totalInvestment),
+          change: "",
+        },
+        {
+          ...prevMetrics[2],
+          value: formatNumber(totalDepreciation.toFixed(2)),
+          change: "",
+        },
+        {
+          ...prevMetrics[3],
+          value: formatNumber(netFixedAssets),
+          change: "",
+        },
+      ]);
+    } else {
+      // Case when a specific investment is selected
+      const selectedData = tempInvestmentInputs.find(
+        (input) => input.id === renderInvestmentForm
+      );
+      const filtered = filteredTableData?.filter((data) =>
+        data?.key?.includes(selectedData?.purchaseName)
+      );
+
+      let totalItems = 0;
+      let totalInvestment = 0;
+      let totalDepreciation = 0;
+      let netFixedAssets = 0;
+
+      totalItems = selectedData.quantity;
+      totalInvestment = selectedData.assetCost * selectedData.quantity;
+      totalDepreciation = filtered.find((row) =>
+        row.key.includes("Accumulated Depre. -")
+      )[`month${chartEndMonth}`];
+      netFixedAssets = filtered.find((row) => row.key.includes("Book Value -"))[
+        `month${chartEndMonth}`
+      ];
+
+      setMetrics((prevMetrics) => [
+        {
+          ...prevMetrics[0],
+          value: formatNumber(totalItems),
+          change: 0,
+        },
+        {
+          ...prevMetrics[1],
+          value: formatNumber(totalInvestment),
+          change: 0,
+        },
+        {
+          ...prevMetrics[2],
+          value: totalDepreciation,
+          change: "",
+        },
+        {
+          ...prevMetrics[3],
+          value: formatNumber(netFixedAssets),
+          change: "",
+        },
+      ]);
+    }
+  }, [
+    chartStartMonth,
+    chartEndMonth,
+    renderInvestmentForm,
+    tempInvestmentInputs,
+  ]);
 
   const renderValue =
     tempInvestmentInputs.find((item) => item.id == renderInvestmentForm) ||
     "all";
-  console.log("investmentChart", investmentChart);
+
   return (
     <div className="w-full h-full flex flex-col lg:flex-row p-4">
       <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
@@ -897,7 +1020,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                 ))}
               </SelectContent>
             </Select>
-            <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col">
+            <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col md:!mt-0 !mt-2">
               {/* Bộ chọn khoảng thời gian */}
 
               <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
@@ -1067,7 +1190,9 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                     <CardContent>
                       <div className="text-2xl font-bold">{metric.value}</div>
                       <p className="text-xs text-muted-foreground">
-                        {metric.change} from last period
+                        {metric.change
+                          ? `${metric.change} from last period`
+                          : ""}
                       </p>
                     </CardContent>
                   </CardShadcn>

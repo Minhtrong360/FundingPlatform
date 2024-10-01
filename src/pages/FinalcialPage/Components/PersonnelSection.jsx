@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Input } from "../../../components/ui/input";
-import { Card, Checkbox, FloatButton, Modal, Table, message } from "antd";
+import { Checkbox, FloatButton, Modal, Table, message } from "antd";
 import Chart from "react-apexcharts";
 import { formatNumber, parseNumber } from "../../../features/CostSlice";
 import {
@@ -19,14 +19,8 @@ import {
   SelectItem,
 } from "../../../components/ui/select";
 import { useParams } from "react-router-dom";
-import {
-  DownloadOutlined,
-  FileOutlined,
-  FullscreenOutlined,
-} from "@ant-design/icons";
-import { PlusOutlined } from "@ant-design/icons";
-import { DeleteOutlined } from "@ant-design/icons";
-import { CheckCircleOutlined } from "@ant-design/icons";
+import { FileOutlined } from "@ant-design/icons";
+
 import { useAuth } from "../../../context/AuthContext";
 import SpinnerBtn from "../../../components/SpinnerBtn";
 
@@ -34,30 +28,16 @@ import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import { setInputData } from "../../../features/DurationSlice";
 
-import { Badge } from "../../../components/ui/badge";
 import {
   Card as CardShadcn,
   CardHeader,
   CardContent,
   CardTitle,
 } from "../../../components/ui/card";
-import { Check, Download, Plus, Trash2 } from "lucide-react";
+import { Check, DollarSign, Download, Plus, Trash2 } from "lucide-react";
 import { Button, Button as ButtonV0 } from "../../../components/ui/button";
 import { debounce } from "lodash";
-import {
-  Search,
-  MessageSquare,
-  PhoneCall,
-  Mail,
-  Globe,
-  CalendarIcon,
-  Users,
-  Clock,
-  ThumbsUp,
-  Settings,
-  UserPlus,
-  UserMinus,
-} from "lucide-react";
+import { CalendarIcon, Users, Settings } from "lucide-react";
 // Thêm các import cần thiết cho metrics
 import {
   Popover,
@@ -580,12 +560,6 @@ const PersonnelSection = ({ numberOfMonths }) => {
     setIsChartModalVisible(true);
   };
 
-  const [activeTab, setActiveTab] = useState("table&chart");
-
-  const handleTabChange = (tabName) => {
-    setActiveTab(tabName);
-  };
-
   const downloadExcel = () => {
     const workBook = XLSX.utils.book_new();
 
@@ -679,74 +653,163 @@ const PersonnelSection = ({ numberOfMonths }) => {
   };
 
   const [visibleMetrics, setVisibleMetrics] = useState({
-    existingCustomers: true,
-    numberOfChannels: true,
-    previousMonthUsers: true,
-    addedUsers: true,
-    churnedUsers: true,
-    totalUsers: true,
-    customerSatisfaction: true,
+    numberOfPersonnel: true,
+    totalSalaries: true,
+    averageSalary: true,
   });
 
   const toggleMetric = (metric) => {
     setVisibleMetrics((prev) => ({ ...prev, [metric]: !prev[metric] }));
   };
 
-  const metrics = [
+  const [metrics, setMetrics] = useState([
     {
-      key: "existingCustomers",
-      title: "Existing Customers",
-      value: "1,234",
-      change: "+10%",
+      key: "numberOfPersonnel",
+      title: "Number of Personnel",
+      value: "",
+      change: "",
       icon: Users,
     },
     {
-      key: "numberOfChannels",
-      title: "Number of Channels",
-      value: "5",
-      change: "+1",
-      icon: MessageSquare,
+      key: "totalSalaries",
+      title: "Total Salaries",
+      value: "",
+      change: "",
+      icon: DollarSign,
     },
     {
-      key: "previousMonthUsers",
-      title: "Previous month users",
-      value: "10,987",
-      change: "-",
-      icon: Users,
+      key: "averageSalary",
+      title: "Average Salary Per Month",
+      value: "",
+      change: "",
+      icon: CalendarIcon,
     },
-    {
-      key: "addedUsers",
-      title: "Added Users",
-      value: "1,345",
-      change: "+22%",
-      icon: UserPlus,
-    },
-    {
-      key: "churnedUsers",
-      title: "No. of User Churned",
-      value: "201",
-      change: "-5%",
-      icon: UserMinus,
-    },
-    {
-      key: "totalUsers",
-      title: "No. of Users",
-      value: "12,131",
-      change: "+11%",
-      icon: Users,
-    },
-    {
-      key: "customerSatisfaction",
-      title: "Customer Satisfaction",
-      value: "92%",
-      change: "+3%",
-      icon: ThumbsUp,
-    },
-  ];
+    // Add other metrics as necessary
+  ]);
+
+  // Function to simplify data extraction
+  const extractData = (data, keyPrefix, startMonth, endMonth) => {
+    return Object.keys(data)
+      .filter((key) => key.startsWith(keyPrefix))
+      .slice(startMonth - 1, endMonth)
+      .reduce((sum, monthKey) => sum + parseNumber(data[monthKey]), 0);
+  };
+
+  // Function to calculate metric changes
+  const calculateChange = (startValue, endValue) => {
+    if (startValue === 0) return 0;
+    return ((endValue - startValue) / startValue) * 100;
+  };
+
+  // Updated useEffect for calculating metrics
+  useEffect(() => {
+    const filteredPersonnelData = personnelCostTableData?.filter(
+      (row) => !row.isDepartment && row.key !== "Total"
+    );
+
+    const numberOfPersonnel = filteredPersonnelData.length;
+    if (renderPersonnelForm === "all") {
+      // Calculate total cost across all months (sum up 'Total' row values)
+      const totalCostRow = personnelCostTableData?.find(
+        (row) => row.key === "Total"
+      );
+
+      let totalCost = 0;
+
+      totalCost += extractData(
+        totalCostRow,
+        "month",
+        chartStartMonth,
+        chartEndMonth
+      );
+
+      const totalCostChange = calculateChange(
+        personnelCostTableData
+          .filter((row) => row.key.includes("Total"))
+          .reduce(
+            (acc, curr) => acc + parseNumber(curr[`month${chartStartMonth}`]),
+            0
+          ),
+        personnelCostTableData
+          .filter((row) => row.key.includes("Total"))
+          .reduce(
+            (acc, curr) => acc + parseNumber(curr[`month${chartEndMonth}`]),
+            0
+          )
+      );
+
+      const average = totalCost / (chartEndMonth - chartStartMonth + 1);
+
+      // Update metrics for "all"
+      setMetrics((prevMetrics) => [
+        {
+          ...prevMetrics[0],
+          value: numberOfPersonnel,
+          change: "",
+        },
+        {
+          ...prevMetrics[1],
+          value: formatNumber(totalCost),
+          change: formatNumber(totalCostChange?.toFixed(2)),
+        },
+        {
+          ...prevMetrics[2],
+          value: formatNumber(average.toFixed(2)),
+          change: "",
+        },
+      ]);
+    } else {
+      // Handle specific channel case (based on ID)
+      const selectedData = tempPersonnelInputs.find(
+        (input) => input.id === renderPersonnelForm
+      );
+
+      const filtered = filteredPersonnelData?.filter((data) =>
+        data?.jobTitle?.includes(selectedData?.jobTitle)
+      );
+      if (filtered && filteredPersonnelData.length > 0) {
+        const costData = extractData(
+          filtered[0],
+          "month",
+          chartStartMonth,
+          chartEndMonth
+        );
+        const average = costData / (chartEndMonth - chartStartMonth + 1);
+        const costDataChange = calculateChange(
+          parseNumber(filtered[0][`month${chartStartMonth}`]),
+          parseNumber(filtered[0][`month${chartEndMonth}`])
+        );
+
+        // Update metrics for "all"
+        setMetrics((prevMetrics) => [
+          {
+            ...prevMetrics[0],
+            value: numberOfPersonnel,
+            change: "",
+          },
+          {
+            ...prevMetrics[1],
+            value: formatNumber(costData.toFixed(2)),
+            change: formatNumber(costDataChange?.toFixed(2)),
+          },
+          {
+            ...prevMetrics[2],
+            value: formatNumber(average.toFixed(2)),
+            change: "",
+          },
+        ]);
+      }
+    }
+  }, [
+    chartStartMonth,
+    chartEndMonth,
+    renderPersonnelForm,
+    tempPersonnelInputs,
+  ]);
 
   const renderValue =
     tempPersonnelInputs.find((item) => item.id == renderPersonnelForm) || "all";
-
+  console.log("personnelCostTableData", personnelCostTableData);
   return (
     <div className="w-full h-full flex flex-col lg:flex-row p-4">
       <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
@@ -778,7 +841,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
               </SelectContent>
             </Select>
 
-            <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col">
+            <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col md:!mt-0 !mt-2">
               {/* Bộ chọn khoảng thời gian */}
 
               <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
@@ -907,7 +970,9 @@ const PersonnelSection = ({ numberOfMonths }) => {
                     <CardContent>
                       <div className="text-2xl font-bold">{metric.value}</div>
                       <p className="text-xs text-muted-foreground">
-                        {metric.change} from last period
+                        {metric.change
+                          ? `${metric.change} from last period`
+                          : ""}
                       </p>
                     </CardContent>
                   </CardShadcn>

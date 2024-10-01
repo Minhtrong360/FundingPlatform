@@ -37,7 +37,7 @@ import {
   CardContent,
   CardTitle,
 } from "../../../components/ui/card";
-import { Check, Download, Plus, Trash2 } from "lucide-react";
+import { Check, Download, Plus, Trash2, TrendingUp } from "lucide-react";
 import { Button, Button as ButtonV0 } from "../../../components/ui/button";
 import { debounce } from "lodash";
 import { FileOutlined } from "@ant-design/icons";
@@ -1057,13 +1057,8 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
   const [isInputFormOpen, setIsInputFormOpen] = useState(false);
 
   const [visibleMetrics, setVisibleMetrics] = useState({
-    existingCustomers: true,
-    numberOfChannels: true,
-    previousMonthUsers: true,
-    addedUsers: true,
-    churnedUsers: true,
-    totalUsers: true,
-    customerSatisfaction: true,
+    numberOfCost: true,
+    cost: true,
   });
 
   const toggleMetric = (metric) => {
@@ -1072,46 +1067,18 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
 
   const [metrics, setMetrics] = useState([
     {
-      key: "existingCustomers",
-      title: "Existing Customers",
-      value: "",
-      change: "",
-      icon: Users,
-    },
-    {
-      key: "numberOfChannels",
-      title: "Number of Channels",
+      key: "numberOfCost",
+      title: "Number of Costs",
       value: "",
       change: "",
       icon: MessageSquare,
     },
     {
-      key: "previousMonthUsers",
-      title: "First Month Users",
+      key: "cost",
+      title: "Cost",
       value: "",
       change: "",
-      icon: Users,
-    },
-    {
-      key: "addedUsers",
-      title: "Added Users",
-      value: "",
-      change: "",
-      icon: UserPlus,
-    },
-    {
-      key: "churnedUsers",
-      title: "Churned Users",
-      value: "",
-      change: "",
-      icon: UserMinus,
-    },
-    {
-      key: "totalUsers",
-      title: "Total Users",
-      value: "",
-      change: "",
-      icon: Users,
+      icon: TrendingUp,
     },
   ]);
 
@@ -1129,10 +1096,95 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
     return ((endValue - startValue) / startValue) * 100;
   };
 
+  // Simplified useEffect for calculating metrics and filtering data
+  useEffect(() => {
+    const filteredCostData = costTableData?.filter(
+      (row) => !row.isHeader && row.key !== "Total"
+    );
+
+    const numberOfCosts = filteredCostData.length;
+
+    if (renderCostForm === "all") {
+      // Calculate total cost across all months (sum up 'Total' row values)
+      const totalCostRow = costTableData?.find((row) => row.key === "Total");
+
+      let totalCost = 0;
+
+      totalCost += extractData(
+        totalCostRow,
+        "month",
+        chartStartMonth,
+        chartEndMonth
+      );
+
+      const totalCostChange = calculateChange(
+        costTableData
+          .filter((row) => row.key.includes("Total"))
+          .reduce(
+            (acc, curr) => acc + parseNumber(curr[`month${chartStartMonth}`]),
+            0
+          ),
+        costTableData
+          .filter((row) => row.key.includes("Total"))
+          .reduce(
+            (acc, curr) => acc + parseNumber(curr[`month${chartEndMonth}`]),
+            0
+          )
+      );
+      // Update metrics for "all"
+      setMetrics((prevMetrics) => [
+        {
+          ...prevMetrics[0],
+          value: numberOfCosts,
+          change: "",
+        },
+        {
+          ...prevMetrics[1],
+          value: formatNumber(totalCost),
+          change: formatNumber(totalCostChange?.toFixed(2)),
+        },
+      ]);
+    } else {
+      // Handle specific channel case (based on ID)
+      const selectedData = tempCostInput.find(
+        (input) => input.id === renderCostForm
+      );
+      const filtered = filteredCostData?.filter((data) =>
+        data?.costName?.includes(selectedData?.costName)
+      );
+
+      if (filtered && filteredCostData.length > 0) {
+        const costData = extractData(
+          filtered[0],
+          "month",
+          chartStartMonth,
+          chartEndMonth
+        );
+
+        const costDataChange = calculateChange(
+          parseNumber(filtered[0][`month${chartStartMonth}`]),
+          parseNumber(filtered[0][`month${chartEndMonth}`])
+        );
+
+        // Update metrics for "all"
+        setMetrics((prevMetrics) => [
+          {
+            ...prevMetrics[0],
+            value: numberOfCosts,
+            change: "",
+          },
+          {
+            ...prevMetrics[1],
+            value: formatNumber(costData.toFixed(2)),
+            change: formatNumber(costDataChange?.toFixed(2)),
+          },
+        ]);
+      }
+    }
+  }, [costTableData, chartStartMonth, chartEndMonth, renderCostForm]);
+
   const renderValue =
     tempCostInput.find((item) => item.id == renderCostForm) || "all";
-
-  console.log("costTableData", costTableData);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row p-4">
@@ -1165,7 +1217,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
               </SelectContent>
             </Select>
 
-            <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col">
+            <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col md:!mt-0 !mt-2">
               {/* Bộ chọn khoảng thời gian */}
 
               <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
@@ -1294,7 +1346,9 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
                     <CardContent>
                       <div className="text-2xl font-bold">{metric.value}</div>
                       <p className="text-xs text-muted-foreground">
-                        {metric.change} from last period
+                        {metric.change
+                          ? `${metric.change} from last period`
+                          : ""}
                       </p>
                     </CardContent>
                   </CardShadcn>

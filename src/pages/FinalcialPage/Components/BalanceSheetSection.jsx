@@ -1255,7 +1255,9 @@ function BalanceSheetSection({ numberOfMonths }) {
                     <CardContent>
                       <div className="text-2xl font-bold">{metric.value}</div>
                       <p className="text-xs text-muted-foreground">
-                        {metric.change} from last period
+                        {metric.change
+                          ? `${metric.change} from last period`
+                          : ""}
                       </p>
                     </CardContent>
                   </CardShadcn>

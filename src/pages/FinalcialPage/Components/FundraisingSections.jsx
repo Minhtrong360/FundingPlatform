@@ -37,7 +37,14 @@ import {
   Card as CardShadcn,
   CardTitle,
 } from "../../../components/ui/card";
-import { Check, Download, Plus, Trash2 } from "lucide-react";
+import {
+  Check,
+  DollarSign,
+  Download,
+  Layers,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import { Button, Button as ButtonV0 } from "../../../components/ui/button";
 import { debounce } from "lodash";
 import {
@@ -57,8 +64,8 @@ import {
 
 const FundraisingInputForm = ({
   tempFundraisingInputs,
-  selectedFundraisingId,
-  setSelectedFundraisingId,
+  renderFundraisingForm,
+  setRenderFundraisingForm,
   handleFundraisingInputChange,
   addNewFundraisingInput,
   confirmDelete,
@@ -94,10 +101,10 @@ const FundraisingInputForm = ({
   };
 
   useEffect(() => {
-    if (!selectedFundraisingId) {
-      setSelectedFundraisingId("all");
+    if (!renderFundraisingForm) {
+      setRenderFundraisingForm("all");
     }
-  }, [selectedFundraisingId]);
+  }, [renderFundraisingForm]);
 
   return (
     <section
@@ -112,7 +119,7 @@ const FundraisingInputForm = ({
       </h2> */}
 
       {debouncedInputs
-        .filter((input) => input?.id == selectedFundraisingId)
+        .filter((input) => input?.id == renderFundraisingForm)
         .map((input) => (
           <div key={input?.id} className="bg-white rounded-md p-6 border mb-4">
             <div className="grid grid-cols-2 gap-4 mb-3">
@@ -297,7 +304,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
 
   const [tempFundraisingInputs, setTempFundraisingInputs] =
     useState(fundraisingInputs);
-  const [selectedFundraisingId, setSelectedFundraisingId] = useState(
+  const [renderFundraisingForm, setRenderFundraisingForm] = useState(
     fundraisingInputs[0]?.id
   );
 
@@ -313,7 +320,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       equityOffered: 0,
     };
     setTempFundraisingInputs([...tempFundraisingInputs, newFundraising]);
-    setSelectedFundraisingId(newId.toString());
+    setRenderFundraisingForm(newId.toString());
   };
   const removeFundraisingInput = (id) => {
     const indexToRemove = tempFundraisingInputs.findIndex(
@@ -330,7 +337,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           : newInputs[indexToRemove - 1]?.id;
 
       setTempFundraisingInputs(newInputs);
-      setSelectedFundraisingId(prevInputId);
+      setRenderFundraisingForm(prevInputId);
     }
   };
 
@@ -596,7 +603,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const confirmDelete = () => {
-    removeFundraisingInput(selectedFundraisingId);
+    removeFundraisingInput(renderFundraisingForm);
     setIsDeleteModalOpen(false);
   };
 
@@ -703,13 +710,8 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
   };
 
   const [visibleMetrics, setVisibleMetrics] = useState({
-    existingCustomers: true,
-    numberOfChannels: true,
-    previousMonthUsers: true,
-    addedUsers: true,
-    churnedUsers: true,
-    totalUsers: true,
-    customerSatisfaction: true,
+    fundingItems: true,
+    totalFunding: true,
   });
 
   const [visibleCharts, setVisibleCharts] = useState({
@@ -720,61 +722,110 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     setVisibleMetrics((prev) => ({ ...prev, [metric]: !prev[metric] }));
   };
 
-  const metrics = [
+  const tableData = transformFundraisingDataForTable(
+    tempFundraisingInputs,
+    numberOfMonths
+  );
+
+  const [metrics, setMetrics] = useState([
     {
-      key: "existingCustomers",
-      title: "Existing Customers",
-      value: "1,234",
-      change: "+10%",
-      icon: Users,
+      key: "fundingItems",
+      title: "Total Source",
+      value: "",
+      change: "",
+      icon: Layers,
     },
     {
-      key: "numberOfChannels",
-      title: "Number of Channels",
-      value: "5",
-      change: "+1",
-      icon: MessageSquare,
+      key: "totalFunding",
+      title: "Total Funding",
+      value: "",
+      change: "",
+      icon: DollarSign,
     },
-    {
-      key: "previousMonthUsers",
-      title: "Previous month users",
-      value: "10,987",
-      change: "-",
-      icon: Users,
-    },
-    {
-      key: "addedUsers",
-      title: "Added Users",
-      value: "1,345",
-      change: "+22%",
-      icon: UserPlus,
-    },
-    {
-      key: "churnedUsers",
-      title: "No. of User Churned",
-      value: "201",
-      change: "-5%",
-      icon: UserMinus,
-    },
-    {
-      key: "totalUsers",
-      title: "No. of Users",
-      value: "12,131",
-      change: "+11%",
-      icon: Users,
-    },
-    {
-      key: "customerSatisfaction",
-      title: "Customer Satisfaction",
-      value: "92%",
-      change: "+3%",
-      icon: ThumbsUp,
-    },
-  ];
+  ]);
+
+  // Function to simplify data extraction
+  const extractData = (data, keyPrefix, startMonth, endMonth) => {
+    return Object.keys(data)
+      .filter((key) => key.startsWith(keyPrefix))
+      .slice(startMonth - 1, endMonth)
+      .reduce((sum, monthKey) => sum + parseNumber(data[monthKey]), 0);
+  };
+
+  // Function to calculate metric changes
+  const calculateChange = (startValue, endValue) => {
+    if (startValue === 0) return 0;
+    return ((endValue - startValue) / startValue) * 100;
+  };
+
+  // Simplified useEffect for calculating metrics and filtering data
+
+  useEffect(() => {
+    let fundingItems = tempFundraisingInputs.length;
+
+    if (renderFundraisingForm === "all") {
+      // New logic to calculate metrics for all loans
+
+      let totalFunding = 0;
+
+      // Sum up totalItems based on assetCost * quantity for each input
+
+      const totalFundingRow = tableData.find((row) =>
+        row.key.includes("Total funding")
+      );
+
+      if (totalFundingRow) {
+        totalFunding += extractData(
+          totalFundingRow,
+          "month",
+          chartStartMonth,
+          chartEndMonth
+        );
+      }
+
+      setMetrics((prevMetrics) => [
+        { ...prevMetrics[0], value: fundingItems },
+        { ...prevMetrics[1], value: formatNumber(totalFunding?.toFixed(2)) },
+      ]);
+    } else {
+      // Case when a specific loan is selected
+      const selectedFun = tempFundraisingInputs.find(
+        (input) => input.id === renderFundraisingForm
+      );
+      if (selectedFun) {
+        let totalFunding = 0;
+        const filtered = tableData?.filter((data) =>
+          data?.name?.includes(selectedFun.name)
+        );
+        console.log("filtered", filtered);
+        if (filtered) {
+          totalFunding += extractData(
+            filtered[0],
+            "month",
+            chartStartMonth,
+            chartEndMonth
+          );
+        }
+
+        setMetrics((prevMetrics) => [
+          { ...prevMetrics[0], value: fundingItems },
+          { ...prevMetrics[1], value: formatNumber(totalFunding?.toFixed(2)) },
+        ]);
+      }
+    }
+  }, [
+    chartStartMonth,
+    chartEndMonth,
+    renderFundraisingForm,
+    tempFundraisingInputs,
+  ]);
 
   const renderValue =
-    tempFundraisingInputs.find((item) => item.id == selectedFundraisingId) ||
+    tempFundraisingInputs.find((item) => item.id == renderFundraisingForm) ||
     "all";
+
+  console.log("fundraisingInputs", fundraisingInputs);
+  console.log("tableData", tableData);
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row p-4">
@@ -787,7 +838,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
             <Select
               value={renderValue.id ? renderValue.id : "all"}
               onValueChange={(e) => {
-                setSelectedFundraisingId(e);
+                setRenderFundraisingForm(e);
               }}
               className="w-full md:w-auto min-w-[10rem]"
             >
@@ -1055,10 +1106,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         <Table
           className="custom-table bg-white overflow-auto my-8 rounded-md"
           size="small"
-          dataSource={transformFundraisingDataForTable(
-            tempFundraisingInputs,
-            numberOfMonths
-          )}
+          dataSource={tableData}
           columns={fundraisingColumns}
           bordered={false} // Tắt border mặc định của antd
           pagination={false}
@@ -1072,8 +1120,8 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         <div className="!py-4 xl:!block !hidden border-white !sticky !top-28">
           <FundraisingInputForm
             tempFundraisingInputs={tempFundraisingInputs}
-            selectedFundraisingId={selectedFundraisingId}
-            setSelectedFundraisingId={setSelectedFundraisingId}
+            renderFundraisingForm={renderFundraisingForm}
+            setRenderFundraisingForm={setRenderFundraisingForm}
             handleFundraisingInputChange={handleFundraisingInputChange}
             addNewFundraisingInput={addNewFundraisingInput}
             confirmDelete={confirmDelete}
@@ -1113,7 +1161,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
           }}
           onCancel={() => {
             setTempFundraisingInputs(fundraisingInputs);
-            setSelectedFundraisingId(fundraisingInputs[0]?.id);
+            setRenderFundraisingForm(fundraisingInputs[0]?.id);
             setIsInputFormOpen(false);
           }}
           okText={isLoading ? <SpinnerBtn /> : "Save Change"}
@@ -1140,8 +1188,8 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
         >
           <FundraisingInputForm
             tempFundraisingInputs={tempFundraisingInputs}
-            selectedFundraisingId={selectedFundraisingId}
-            setSelectedFundraisingId={setSelectedFundraisingId}
+            renderFundraisingForm={renderFundraisingForm}
+            setRenderFundraisingForm={setRenderFundraisingForm}
             handleFundraisingInputChange={handleFundraisingInputChange}
             addNewFundraisingInput={addNewFundraisingInput}
             confirmDelete={confirmDelete}

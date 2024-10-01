@@ -27,7 +27,15 @@ import {
   Card as CardShadcn,
   CardTitle,
 } from "../../../components/ui/card";
-import { Check, Download, Plus, Trash2 } from "lucide-react";
+import {
+  Archive,
+  Check,
+  DollarSign,
+  Download,
+  Layers,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import { Button, Button as ButtonV0 } from "../../../components/ui/button";
 import {
   Select,
@@ -746,16 +754,6 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     setRenderLoanForm(e);
   };
 
-  const [visibleMetrics, setVisibleMetrics] = useState({
-    existingCustomers: true,
-    numberOfChannels: true,
-    previousMonthUsers: true,
-    addedUsers: true,
-    churnedUsers: true,
-    totalUsers: true,
-    customerSatisfaction: true,
-  });
-
   const [visibleCharts, setVisibleCharts] = useState({
     allLoanChart: true,
     componentCharts: {}, // Để lưu trạng thái của các component chart
@@ -775,61 +773,229 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     }));
   }, [loanChart]);
 
+  // Metrics visibility state
+  const [visibleMetrics, setVisibleMetrics] = useState({
+    totalLoans: true,
+    totalPayment: true,
+    totalPrincipalPaid: true,
+    totalInterestPaid: true,
+    remainingBalance: true,
+  });
+
   const toggleMetric = (metric) => {
     setVisibleMetrics((prev) => ({ ...prev, [metric]: !prev[metric] }));
   };
+  const [metrics, setMetrics] = useState([
+    {
+      key: "totalLoans",
+      title: "Total Loans",
+      value: "",
+      change: "",
+      icon: DollarSign,
+    },
+    {
+      key: "totalPayment",
+      title: "Total Payment",
+      value: "",
+      change: "",
+      icon: DollarSign,
+    },
+    {
+      key: "totalPrincipalPaid",
+      title: "Total Principal Paid",
+      value: "",
+      change: "",
+      icon: Archive,
+    },
+    {
+      key: "totalInterestPaid",
+      title: "Total Interest Paid",
+      value: "",
+      change: "",
+      icon: DollarSign,
+    },
+    {
+      key: "remainingBalance",
+      title: "Remaining Balance",
+      value: "",
+      change: "",
+      icon: Layers,
+    },
+  ]);
 
-  const metrics = [
-    {
-      key: "existingCustomers",
-      title: "Existing Customers",
-      value: "1,234",
-      change: "+10%",
-      icon: Users,
-    },
-    {
-      key: "numberOfChannels",
-      title: "Number of Channels",
-      value: "5",
-      change: "+1",
-      icon: MessageSquare,
-    },
-    {
-      key: "previousMonthUsers",
-      title: "Previous month users",
-      value: "10,987",
-      change: "-",
-      icon: Users,
-    },
-    {
-      key: "addedUsers",
-      title: "Added Users",
-      value: "1,345",
-      change: "+22%",
-      icon: UserPlus,
-    },
-    {
-      key: "churnedUsers",
-      title: "No. of User Churned",
-      value: "201",
-      change: "-5%",
-      icon: UserMinus,
-    },
-    {
-      key: "totalUsers",
-      title: "No. of Users",
-      value: "12,131",
-      change: "+11%",
-      icon: Users,
-    },
-    {
-      key: "customerSatisfaction",
-      title: "Customer Satisfaction",
-      value: "92%",
-      change: "+3%",
-      icon: ThumbsUp,
-    },
-  ];
+  // Function to simplify data extraction
+  const extractData = (data, keyPrefix, startMonth, endMonth) => {
+    return Object.keys(data)
+      .filter((key) => key.startsWith(keyPrefix))
+      .slice(startMonth - 1, endMonth)
+      .reduce((sum, monthKey) => sum + parseNumber(data[monthKey]), 0);
+  };
+
+  // Function to calculate metric changes
+  const calculateChange = (startValue, endValue) => {
+    if (startValue === 0) return 0;
+    return ((endValue - startValue) / startValue) * 100;
+  };
+
+  // Simplified useEffect for calculating metrics and filtering data
+
+  useEffect(() => {
+    console.log("tempLoanInputs", tempLoanInputs);
+    console.log("filteredTableData", filteredTableData);
+
+    if (renderLoanForm === "all") {
+      // New logic to calculate metrics for all loans
+      let totalLoans = 0;
+      let totalPayment = 0;
+      let totalPrincipalPaid = 0;
+      let totalInterestPaid = 0;
+      let remainingBalance = 0;
+
+      // Sum up totalLoans based on loanAmount for each loan input
+      tempLoanInputs.forEach((loan) => {
+        totalLoans += Number(loan.loanAmount);
+        const filtered = filteredTableData?.filter((data) =>
+          data?.key?.includes(loan.loanName)
+        );
+
+        const paymentRow = filtered.find((row) =>
+          row.key.includes("Payment -")
+        );
+        if (paymentRow) {
+          totalPayment += extractData(
+            paymentRow,
+            "month",
+            chartStartMonth,
+            chartEndMonth
+          );
+        }
+
+        const principalRow = filtered.find((row) =>
+          row.key.includes("Principal -")
+        );
+        if (principalRow) {
+          totalPrincipalPaid += extractData(
+            principalRow,
+            "month",
+            chartStartMonth,
+            chartEndMonth
+          );
+        }
+
+        const interestRow = filtered.find((row) =>
+          row.key.includes("Interest -")
+        );
+        if (interestRow) {
+          totalInterestPaid += extractData(
+            interestRow,
+            "month",
+            chartStartMonth,
+            chartEndMonth
+          );
+        }
+
+        const remainingBalanceRow = filtered.find((row) =>
+          row.key.includes("Remaining Balance -")
+        );
+        if (remainingBalanceRow) {
+          remainingBalance += parseNumber(
+            remainingBalanceRow[`month${chartEndMonth}`]
+          );
+        }
+      });
+
+      setMetrics((prevMetrics) => [
+        { ...prevMetrics[0], value: formatNumber(totalLoans) },
+        { ...prevMetrics[1], value: formatNumber(totalPayment?.toFixed(2)) },
+        {
+          ...prevMetrics[2],
+          value: formatNumber(totalPrincipalPaid.toFixed(2)),
+        },
+        {
+          ...prevMetrics[3],
+          value: formatNumber(totalInterestPaid.toFixed(2)),
+        },
+        { ...prevMetrics[4], value: formatNumber(remainingBalance.toFixed(2)) },
+      ]);
+    } else {
+      // Case when a specific loan is selected
+      const selectedLoan = tempLoanInputs.find(
+        (input) => input.id === renderLoanForm
+      );
+      if (selectedLoan) {
+        const filtered = filteredTableData?.filter((data) =>
+          data?.key?.includes(selectedLoan.loanName)
+        );
+
+        let totalPayment = 0;
+        let totalPrincipalPaid = 0;
+        let totalInterestPaid = 0;
+        let remainingBalance = 0;
+
+        const paymentRow = filtered.find((row) =>
+          row.key.includes("Payment -")
+        );
+        if (paymentRow) {
+          totalPayment = extractData(
+            paymentRow,
+            "month",
+            chartStartMonth,
+            chartEndMonth
+          );
+        }
+
+        const principalRow = filtered.find((row) =>
+          row.key.includes("Principal -")
+        );
+        if (principalRow) {
+          totalPrincipalPaid = extractData(
+            principalRow,
+            "month",
+            chartStartMonth,
+            chartEndMonth
+          );
+        }
+
+        const interestRow = filtered.find((row) =>
+          row.key.includes("Interest -")
+        );
+        if (interestRow) {
+          totalInterestPaid = extractData(
+            interestRow,
+            "month",
+            chartStartMonth,
+            chartEndMonth
+          );
+        }
+
+        const remainingBalanceRow = filtered.find((row) =>
+          row.key.includes("Remaining Balance -")
+        );
+        if (remainingBalanceRow) {
+          remainingBalance = parseNumber(
+            remainingBalanceRow[`month${chartEndMonth}`]
+          );
+        }
+
+        setMetrics((prevMetrics) => [
+          { ...prevMetrics[0], value: formatNumber(selectedLoan.loanAmount) },
+          { ...prevMetrics[1], value: formatNumber(totalPayment?.toFixed(2)) },
+          {
+            ...prevMetrics[2],
+            value: formatNumber(totalPrincipalPaid.toFixed(2)),
+          },
+          {
+            ...prevMetrics[3],
+            value: formatNumber(totalInterestPaid.toFixed(2)),
+          },
+          {
+            ...prevMetrics[4],
+            value: formatNumber(remainingBalance.toFixed(2)),
+          },
+        ]);
+      }
+    }
+  }, [chartStartMonth, chartEndMonth, renderLoanForm, tempLoanInputs]);
 
   const renderValue =
     tempLoanInputs.find((item) => item.id == renderLoanForm) || "all";

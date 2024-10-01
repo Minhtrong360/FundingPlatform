@@ -850,27 +850,13 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     },
   ]);
 
-  // Function to simplify data extraction
-  const extractData = (data, keyPrefix, startMonth, endMonth) => {
-    return Object.keys(data)
-      .filter((key) => key.startsWith(keyPrefix))
-      .slice(startMonth - 1, endMonth)
-      .reduce((sum, monthKey) => sum + parseNumber(data[monthKey]), 0);
-  };
-
-  // Function to calculate metric changes
-  const calculateChange = (startValue, endValue) => {
-    if (startValue === 0) return 0;
-    return ((endValue - startValue) / startValue) * 100;
-  };
-
   // Simplified useEffect for calculating metrics and filtering data
   useEffect(() => {
     if (renderInvestmentForm === "all") {
       // New logic to calculate metrics for all investments
       let totalItems = 0;
-
       let totalInvestment = 0;
+
       let totalDepreciation = 0;
       let netFixedAssets = 0;
 
@@ -942,7 +928,8 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       const filtered = filteredTableData?.filter((data) =>
         data?.key?.includes(selectedData?.purchaseName)
       );
-
+      console.log("tempInvestmentInputs", tempInvestmentInputs);
+      console.log("filteredTableData", filteredTableData);
       let totalItems = 0;
       let totalInvestment = 0;
       let totalDepreciation = 0;

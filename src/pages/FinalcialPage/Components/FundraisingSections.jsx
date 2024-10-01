@@ -73,6 +73,7 @@ const FundraisingInputForm = ({
   isDeleteModalOpen,
   handleSave,
   isLoading,
+  numberOfMonths,
 }) => {
   const [debouncedInputs, setDebouncedInputs] = useState(tempFundraisingInputs);
 
@@ -105,6 +106,28 @@ const FundraisingInputForm = ({
       setRenderFundraisingForm("all");
     }
   }, [renderFundraisingForm]);
+
+  const months = [
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
+  ];
+
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+
+  const startingMonth = startMonth;
+  const startingYear = startYear;
 
   return (
     <section
@@ -211,23 +234,31 @@ const FundraisingInputForm = ({
               </FundraisingSelect>
             </div>
             <div className="grid grid-cols-2 gap-4 mb-3">
-              <span className=" flex items-center text-sm">
+              <span className="flex items-center text-sm">
                 Month Fundraising Begins:
               </span>
-              <FundraisingInput
-                className="col-start-2 border-gray-300"
-                type="number"
-                min="1"
-                max="12"
+              <Select
                 value={input.fundraisingBeginMonth}
-                onChange={(e) =>
-                  handleInputChange(
-                    input?.id,
-                    "fundraisingBeginMonth",
-                    parseInt(e.target.value, 10)
-                  )
+                onValueChange={(value) =>
+                  handleInputChange(input?.id, "fundraisingBeginMonth", value)
                 }
-              />
+              >
+                <SelectTrigger className="col-start-2 border-gray-300 w-full">
+                  <SelectValue placeholder="Select month" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: numberOfMonths }, (_, i) => {
+                    const monthIndex = (startingMonth + i - 1) % 12;
+                    const year =
+                      startingYear + Math.floor((startingMonth + i - 1) / 12);
+                    return (
+                      <SelectItem key={i + 1} value={i + 1}>
+                        {`${months[monthIndex]}/${year}`}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         ))}
@@ -1129,6 +1160,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
             isDeleteModalOpen={isDeleteModalOpen}
             handleSave={handleSave}
             isLoading={isLoading}
+            numberOfMonths={numberOfMonths}
           />
         </div>
       </div>

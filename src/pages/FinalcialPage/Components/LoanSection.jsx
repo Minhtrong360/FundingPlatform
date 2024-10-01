@@ -45,20 +45,7 @@ import {
   SelectValue,
 } from "../../../components/ui/select";
 import { debounce } from "lodash";
-import {
-  Search,
-  MessageSquare,
-  PhoneCall,
-  Mail,
-  Globe,
-  CalendarIcon,
-  Users,
-  Clock,
-  ThumbsUp,
-  Settings,
-  UserPlus,
-  UserMinus,
-} from "lucide-react";
+import { Settings } from "lucide-react";
 // Thêm các import cần thiết cho metrics
 import {
   Popover,
@@ -69,14 +56,12 @@ import {
 const LoanInputForm = ({
   tempLoanInputs,
   renderLoanForm,
-  handleRenderFormChange,
   handleLoanInputChange,
   addNewLoanInput,
-  confirmDelete,
   setIsDeleteModalOpen,
-  isDeleteModalOpen,
   handleSave,
   isLoading,
+  numberOfMonths,
 }) => {
   const [debouncedInputs, setDebouncedInputs] = useState(tempLoanInputs);
   useEffect(() => {
@@ -100,6 +85,28 @@ const LoanInputForm = ({
     // Call debounced state update
     debouncedHandleInputChange(id, field, value);
   };
+
+  const months = [
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
+  ];
+
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+
+  const startingMonth = startMonth;
+  const startingYear = startYear;
 
   return (
     <section aria-labelledby="loan-heading" className="mb-8 NOsticky NOtop-8">
@@ -172,31 +179,68 @@ const LoanInputForm = ({
               <span className="flex items-center text-sm">
                 Month Loan Begins:
               </span>
-              <Input
-                required
-                type="number"
-                className="border p-2 rounded-2xl border-gray-300"
-                value={input.loanBeginMonth}
-                onChange={(e) =>
-                  handleInputChange(input?.id, "loanBeginMonth", e.target.value)
+              <Select
+                value={String(input.loanBeginMonth)} // Convert the value to string to handle both types
+                onValueChange={
+                  (value) =>
+                    handleInputChange(
+                      input?.id,
+                      "loanBeginMonth",
+                      Number(value)
+                    ) // Ensure the value is stored as a number
                 }
-              />
+              >
+                <SelectTrigger className="col-start-2 border-gray-300 w-full">
+                  <SelectValue placeholder="Select month" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: numberOfMonths }, (_, i) => {
+                    const monthIndex = (startingMonth + i - 1) % 12;
+                    const year =
+                      startingYear + Math.floor((startingMonth + i - 1) / 12);
+                    return (
+                      <SelectItem key={i + 1} value={String(i + 1)}>
+                        {" "}
+                        {/* Store as string */}
+                        {`${months[monthIndex]}/${year}`}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-3">
               <span className="flex items-center text-sm">
                 Month Loan Ends:
               </span>
-              <Input
-                required
-                type="number"
-                className="border p-2 rounded-2xl border-gray-300"
-                value={input.loanEndMonth}
-                onChange={(e) =>
-                  handleInputChange(input?.id, "loanEndMonth", e.target.value)
+              <Select
+                value={String(input.loanEndMonth)} // Convert the value to string to handle both types
+                onValueChange={
+                  (value) =>
+                    handleInputChange(input?.id, "loanEndMonth", Number(value)) // Ensure the value is stored as a number
                 }
-              />
+              >
+                <SelectTrigger className="col-start-2 border-gray-300 w-full">
+                  <SelectValue placeholder="Select month" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: numberOfMonths }, (_, i) => {
+                    const monthIndex = (startingMonth + i - 1) % 12;
+                    const year =
+                      startingYear + Math.floor((startingMonth + i - 1) / 12);
+                    return (
+                      <SelectItem key={i + 1} value={String(i + 1)}>
+                        {" "}
+                        {/* Store as string */}
+                        {`${months[monthIndex]}/${year}`}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
             </div>
+
             <div className="flex justify-center items-center"></div>
           </div>
         ))}
@@ -255,8 +299,8 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
       loanName: "New loan",
       loanAmount: "0",
       interestRate: "0",
-      loanBeginMonth: "0",
-      loanEndMonth: "0",
+      loanBeginMonth: 1,
+      loanEndMonth: 36,
     };
     setTempLoanInputs([...tempLoanInputs, newLoan]);
     setRenderLoanForm(newId.toString());
@@ -1434,6 +1478,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
             isDeleteModalOpen={isDeleteModalOpen}
             handleSave={handleSave}
             isLoading={isLoading}
+            numberOfMonths={numberOfMonths}
           />
         </div>
       </div>

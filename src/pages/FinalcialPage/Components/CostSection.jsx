@@ -65,6 +65,7 @@ const CostInputForm = ({
   isLoading,
   setIsDeleteModalOpen,
   handleCostTypeChange,
+  numberOfMonths,
 }) => {
   const [isModalCustomOpen, setIsModalCustomOpen] = useState(false);
   const [temporaryData, setTemporaryData] = useState([]);
@@ -154,7 +155,29 @@ const CostInputForm = ({
     // Call debounced state update
     debouncedHandleInputChange(id, field, value);
   };
-  console.log("debouncedInputs", debouncedInputs);
+
+  const months = [
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
+  ];
+
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+
+  const startingMonth = startMonth;
+  const startingYear = startYear;
+
   return (
     <section aria-labelledby="costs-heading" className="mb-8 NOsticky NOtop-8">
       {/* <h2
@@ -278,35 +301,58 @@ const CostInputForm = ({
                   <span className="flex items-center text-sm">
                     Begin Month:
                   </span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    type="number"
+                  <Select
                     value={input.beginMonth}
-                    onChange={(e) => {
-                      handleInputChange(
-                        input?.id,
-                        "beginMonth",
-                        parseInt(e.target.value, 10)
-                      );
-                      setTemporaryBeginMonth(e.target.value);
+                    onValueChange={(value) => {
+                      handleInputChange(input?.id, "beginMonth", value);
+                      setTemporaryBeginMonth(value);
                     }}
-                  />
+                  >
+                    <SelectTrigger className="col-start-2 border-gray-300 w-full">
+                      <SelectValue placeholder="Select month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from({ length: numberOfMonths }, (_, i) => {
+                        const monthIndex = (startingMonth + i - 1) % 12;
+                        const year =
+                          startingYear +
+                          Math.floor((startingMonth + i - 1) / 12);
+                        return (
+                          <SelectItem key={i + 1} value={i + 1}>
+                            {`${months[monthIndex]}/${year}`}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
                 </div>
+
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">End Month:</span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    type="number"
+                  <Select
                     value={input.endMonth}
-                    onChange={(e) => {
-                      handleInputChange(
-                        input?.id,
-                        "endMonth",
-                        parseInt(e.target.value, 10)
-                      );
-                      setTemporaryEndMonth(e.target.value);
+                    onValueChange={(value) => {
+                      handleInputChange(input?.id, "endMonth", value);
+                      setTemporaryEndMonth(value);
                     }}
-                  />
+                  >
+                    <SelectTrigger className="col-start-2 border-gray-300 w-full">
+                      <SelectValue placeholder="Select month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from({ length: numberOfMonths }, (_, i) => {
+                        const monthIndex = (startingMonth + i - 1) % 12;
+                        const year =
+                          startingYear +
+                          Math.floor((startingMonth + i - 1) / 12);
+                        return (
+                          <SelectItem key={i + 1} value={i + 1}>
+                            {`${months[monthIndex]}/${year}`}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
                 </div>
               </>
             ) : (
@@ -390,37 +436,58 @@ const CostInputForm = ({
                   <span className="flex items-center text-sm">
                     Begin Month:
                   </span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    type="number"
+                  <Select
                     value={input.beginMonth}
-                    onChange={(e) => {
-                      handleInputChange(
-                        input?.id,
-                        "beginMonth",
-                        parseInt(e.target.value, 10)
-                      );
-                      setTemporaryBeginMonth(e.target.value);
+                    onValueChange={(value) => {
+                      handleInputChange(input?.id, "beginMonth", value);
+                      setTemporaryBeginMonth(value);
                     }}
-                  />
+                  >
+                    <SelectTrigger className="col-start-2 border-gray-300 w-full">
+                      <SelectValue placeholder="Select month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from({ length: numberOfMonths }, (_, i) => {
+                        const monthIndex = (startingMonth + i - 1) % 12;
+                        const year =
+                          startingYear +
+                          Math.floor((startingMonth + i - 1) / 12);
+                        return (
+                          <SelectItem key={i + 1} value={i + 1}>
+                            {`${months[monthIndex]}/${year}`}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
                 </div>
+
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <span className="flex items-center text-sm">End Month:</span>
-                  <Input
-                    className="col-start-2 border-gray-300"
-                    type="number"
-                    min="1"
-                    max="12"
+                  <Select
                     value={input.endMonth}
-                    onChange={(e) => {
-                      handleInputChange(
-                        input?.id,
-                        "endMonth",
-                        parseInt(e.target.value, 10)
-                      );
-                      setTemporaryEndMonth(e.target.value);
+                    onValueChange={(value) => {
+                      handleInputChange(input?.id, "endMonth", value);
+                      setTemporaryEndMonth(value);
                     }}
-                  />
+                  >
+                    <SelectTrigger className="col-start-2 border-gray-300 w-full">
+                      <SelectValue placeholder="Select month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from({ length: numberOfMonths }, (_, i) => {
+                        const monthIndex = (startingMonth + i - 1) % 12;
+                        const year =
+                          startingYear +
+                          Math.floor((startingMonth + i - 1) / 12);
+                        return (
+                          <SelectItem key={i + 1} value={i + 1}>
+                            {`${months[monthIndex]}/${year}`}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="flex items-center gap-2 mb-3">
                   <Checkbox
@@ -1482,6 +1549,7 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
             handleCostTypeChange={handleCostTypeChange}
             showAdvancedInputs={showAdvancedInputs}
             setShowAdvancedInputs={setShowAdvancedInputs}
+            numberOfMonths={numberOfMonths}
           />
         </div>
       </div>

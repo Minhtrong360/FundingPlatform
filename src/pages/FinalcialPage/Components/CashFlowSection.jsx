@@ -929,14 +929,12 @@ function CashFlowSection({ numberOfMonths }) {
   return (
     <div className="w-full h-full flex flex-col lg:flex-row p-4">
       <div className="w-full xl:w-3/4 sm:!p-4 !p-0 ">
-        <section className="mb-8">
+        {/* <section className="mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-[1.25rem]">
             <h2 className="text-lg font-semibold">
               I. Metrics (Under Constructions)
             </h2>
             <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col">
-              {/* Bộ chọn khoảng thời gian */}
-
               <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
                 <div className="min-w-[10vw] w-full flex flex-row sm:!mr-0 !mr-1">
                   <label
@@ -1008,7 +1006,7 @@ function CashFlowSection({ numberOfMonths }) {
                   </Select>
                 </div>
               </div>
-              {/* Popover để chọn metrics hiển thị */}
+
               <Popover>
                 <PopoverTrigger asChild>
                   <ButtonV0 variant="outline" className="w-full md:w-auto">
@@ -1048,7 +1046,6 @@ function CashFlowSection({ numberOfMonths }) {
             </div>
           </div>
 
-          {/* Hiển thị các metrics */}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {metrics.map(
               (metric) =>
@@ -1072,10 +1069,10 @@ function CashFlowSection({ numberOfMonths }) {
                 )
             )}
           </div>
-        </section>
+        </section> */}
 
         <div className="">
-          <h3 className="text-lg font-semibold mb-4">II. Relevant Chart</h3>
+          {/* <h3 className="text-lg font-semibold mb-4">II. Relevant Chart</h3>
 
           <div className=" gap-4 mb-3">
             <Select
@@ -1165,10 +1162,10 @@ function CashFlowSection({ numberOfMonths }) {
               RenderData={cashEndBalances}
               title="Cash End Balances Over Time"
             />
-          )}
+          )} */}
 
-          <div className="flex justify-between items-center my-4 mt-20">
-            <h3 className="text-lg font-semibold">III. Cash Flow</h3>
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">{/* III. Cash Flow */}</h3>
             <ButtonV0 variant="outline" onClick={downloadExcel}>
               <Download className="mr-2 h-4 w-4" />
               Download Excel
@@ -1194,7 +1191,7 @@ function CashFlowSection({ numberOfMonths }) {
           {showAdvancedInputs && (
             <>
               <h3 className="text-lg font-semibold my-5 mt-20">
-                IV. Cash Flow By Years
+                Cash Flow By Years
               </h3>
 
               <div className="w-full lg:w-[20%] md:w-[50%] my-5">

@@ -56,6 +56,7 @@ const PersonnelInputForm = ({
   handleSave,
   isLoading,
   setIsDeleteModalOpen,
+  numberOfMonths,
 }) => {
   const [debouncedInputs, setDebouncedInputs] = useState(tempPersonnelInputs);
   // Thêm useEffect để đồng bộ hóa debouncedInputs khi tempFundraisingInputs thay đổi
@@ -80,6 +81,28 @@ const PersonnelInputForm = ({
     // Call debounced state update
     debouncedHandleInputChange(id, field, value);
   };
+
+  const months = [
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
+  ];
+
+  const { startMonth, startYear } = useSelector(
+    (state) => state.durationSelect
+  );
+
+  const startingMonth = startMonth;
+  const startingYear = startYear;
 
   return (
     <section
@@ -190,30 +213,57 @@ const PersonnelInputForm = ({
               />
             </div>
             <div className="grid grid-cols-2 gap-4 mb-3">
-              <span className=" flex items-center text-sm">
-                Job begin month
-              </span>
-              <Input
-                className="col-start-2 border-gray-300"
-                placeholder="Enter Job Begin Month"
+              <span className="flex items-center text-sm">Job begin month</span>
+              <Select
                 value={input.jobBeginMonth}
-                onChange={(e) =>
-                  handleInputChange(input.id, "jobBeginMonth", e.target.value)
-                }
-              />
+                onValueChange={(value) => {
+                  handleInputChange(input.id, "jobBeginMonth", value);
+                }}
+              >
+                <SelectTrigger className="col-start-2 border-gray-300 w-full">
+                  <SelectValue placeholder="Select month" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: numberOfMonths }, (_, i) => {
+                    const monthIndex = (startingMonth + i - 1) % 12;
+                    const year =
+                      startingYear + Math.floor((startingMonth + i - 1) / 12);
+                    return (
+                      <SelectItem key={i + 1} value={i + 1}>
+                        {`${months[monthIndex]}/${year}`}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
             </div>
+
             <div className="grid grid-cols-2 gap-4 mb-3">
-              <span className=" flex items-center text-sm">
+              <span className="flex items-center text-sm">
                 Job ending month
               </span>
-              <Input
-                className="col-start-2 border-gray-300"
-                placeholder="Enter Job Ending Month"
+              <Select
                 value={input.jobEndMonth}
-                onChange={(e) =>
-                  handleInputChange(input.id, "jobEndMonth", e.target.value)
-                }
-              />
+                onValueChange={(value) => {
+                  handleInputChange(input.id, "jobEndMonth", value);
+                }}
+              >
+                <SelectTrigger className="col-start-2 border-gray-300 w-full">
+                  <SelectValue placeholder="Select month" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: numberOfMonths }, (_, i) => {
+                    const monthIndex = (startingMonth + i - 1) % 12;
+                    const year =
+                      startingYear + Math.floor((startingMonth + i - 1) / 12);
+                    return (
+                      <SelectItem key={i + 1} value={i + 1}>
+                        {`${months[monthIndex]}/${year}`}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         ))}
@@ -1083,6 +1133,7 @@ const PersonnelSection = ({ numberOfMonths }) => {
             handleSave={handleSave}
             isLoading={isLoading}
             setIsDeleteModalOpen={setIsDeleteModalOpen}
+            numberOfMonths={numberOfMonths}
           />
         </div>
       </div>

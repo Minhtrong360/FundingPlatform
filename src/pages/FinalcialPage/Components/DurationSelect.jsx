@@ -190,13 +190,13 @@ const DurationSelect = ({ handleSubmit, isInputFormOpen, isLoading }) => {
       aria-labelledby="duration-heading"
       className="mb-8 NOsticky NOtop-8"
     >
-      <h2
+      {/* <h2
         className="text-lg font-semibold mb-8 flex items-center"
         id="duration-heading"
       >
         General Setup
-      </h2>
-      <div className="bg-white rounded-md p-6 border my-4">
+      </h2> */}
+      <div className="bg-white rounded-md p-6 border mb-4">
         <div className="grid grid-cols-2 gap-4 mb-3">
           <Tooltip title="Enter the name of your business">
             <span className=" flex items-center text-sm">Business name:</span>

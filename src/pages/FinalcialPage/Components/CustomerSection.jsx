@@ -1447,7 +1447,7 @@ const CustomerSection = React.memo(
       } else {
         // Handle specific channel case (based on ID)
         const selectedData = tempCustomerInputs.find(
-          (input) => input.id === renderCustomerForm
+          (input) => input.id == renderCustomerForm
         );
 
         const filtered = customerTableData?.filter((data) =>
@@ -1801,7 +1801,7 @@ const CustomerSection = React.memo(
                   chart?.options?.chart?.id !== "allChannels" &&
                   chart?.options?.title?.text?.toLowerCase() ===
                     tempCustomerInputs
-                      .find((input) => input.id === renderCustomerForm)
+                      .find((input) => input.id == renderCustomerForm)
                       ?.channelName?.toLowerCase()
               )
               .map((chart, index) => (

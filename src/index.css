@@ -84,7 +84,7 @@ code {
 
 /* Default styling for the table */
 .ant-table table {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 /* Apply noWrap only when screen width is md or larger */

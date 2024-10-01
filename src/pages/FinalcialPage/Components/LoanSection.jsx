@@ -920,7 +920,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     } else {
       // Case when a specific loan is selected
       const selectedLoan = tempLoanInputs.find(
-        (input) => input.id === renderLoanForm
+        (input) => input.id == renderLoanForm
       );
       if (selectedLoan) {
         const filtered = filteredTableData?.filter((data) =>
@@ -1308,7 +1308,7 @@ const LoanSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                   chart.options.chart.id !== "allLoans" &&
                   chart?.options?.title?.text?.toLowerCase() ===
                     tempLoanInputs
-                      .find((input) => input.id === renderLoanForm)
+                      .find((input) => input.id == renderLoanForm)
                       ?.loanName?.toLowerCase()
               )
               .map((series, index) =>

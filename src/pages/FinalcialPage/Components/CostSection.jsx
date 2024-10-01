@@ -41,20 +41,7 @@ import { Check, Download, Plus, Trash2, TrendingUp } from "lucide-react";
 import { Button, Button as ButtonV0 } from "../../../components/ui/button";
 import { debounce } from "lodash";
 import { FileOutlined } from "@ant-design/icons";
-import {
-  Search,
-  MessageSquare,
-  PhoneCall,
-  Mail,
-  Globe,
-  CalendarIcon,
-  Users,
-  Clock,
-  ThumbsUp,
-  Settings,
-  UserPlus,
-  UserMinus,
-} from "lucide-react";
+import { MessageSquare, Settings } from "lucide-react";
 // Thêm các import cần thiết cho metrics
 import {
   Popover,
@@ -167,7 +154,7 @@ const CostInputForm = ({
     // Call debounced state update
     debouncedHandleInputChange(id, field, value);
   };
-
+  console.log("debouncedInputs", debouncedInputs);
   return (
     <section aria-labelledby="costs-heading" className="mb-8 NOsticky NOtop-8">
       {/* <h2
@@ -592,7 +579,8 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
     const newId = maxId !== -Infinity ? maxId + 1 : 1;
     const newCustomer = {
       id: newId,
-      costName: "",
+      costName: "New cost",
+      costGroup: "Administrator",
       costValue: 1000,
       growthPercentage: 0,
       beginMonth: 1,
@@ -605,6 +593,8 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
     setTempCostInput([...tempCostInput, newCustomer]);
     setRenderCostForm(newId.toString());
   };
+
+  console.log("tempCostInput", tempCostInput);
 
   const removeCostInput = (id) => {
     const indexToRemove = tempCostInput.findIndex((input) => input?.id == id);
@@ -642,7 +632,6 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
         ? {
             ...input,
             costType: value,
-            relatedRevenue: "",
             applyAdditionalInfo:
               value === "Based on Revenue" ? false : input.applyAdditionalInfo,
           }
@@ -1109,7 +1098,6 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
       const totalCostRow = costTableData?.find((row) => row.key === "Total");
 
       let totalCost = 0;
-
       totalCost += extractData(
         totalCostRow,
         "month",
@@ -1146,14 +1134,15 @@ const CostSection = ({ numberOfMonths, isSaved, setIsSaved, handleSubmit }) => {
       ]);
     } else {
       // Handle specific channel case (based on ID)
-      const selectedData = tempCostInput.find(
-        (input) => input.id === renderCostForm
+      const selectedData = tempCostInput?.find(
+        (input) => input.id == renderCostForm
       );
+
       const filtered = filteredCostData?.filter((data) =>
         data?.costName?.includes(selectedData?.costName)
       );
-
-      if (filtered && filteredCostData.length > 0) {
+      console.log("filtered", filtered);
+      if (filtered.length > 0 && filteredCostData.length > 0) {
         const costData = extractData(
           filtered[0],
           "month",

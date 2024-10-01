@@ -790,7 +790,7 @@ const FundraisingSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     } else {
       // Case when a specific loan is selected
       const selectedFun = tempFundraisingInputs.find(
-        (input) => input.id === renderFundraisingForm
+        (input) => input.id == renderFundraisingForm
       );
       if (selectedFun) {
         let totalFunding = 0;

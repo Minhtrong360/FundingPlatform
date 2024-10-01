@@ -923,49 +923,49 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
     } else {
       // Case when a specific investment is selected
       const selectedData = tempInvestmentInputs.find(
-        (input) => input.id === renderInvestmentForm
+        (input) => input.id == renderInvestmentForm
       );
       const filtered = filteredTableData?.filter((data) =>
         data?.key?.includes(selectedData?.purchaseName)
       );
-      console.log("tempInvestmentInputs", tempInvestmentInputs);
-      console.log("filteredTableData", filteredTableData);
-      let totalItems = 0;
-      let totalInvestment = 0;
-      let totalDepreciation = 0;
-      let netFixedAssets = 0;
+      if (filtered.length > 0) {
+        let totalItems = 0;
+        let totalInvestment = 0;
+        let totalDepreciation = 0;
+        let netFixedAssets = 0;
 
-      totalItems = selectedData.quantity;
-      totalInvestment = selectedData.assetCost * selectedData.quantity;
-      totalDepreciation = filtered.find((row) =>
-        row.key.includes("Accumulated Depre. -")
-      )[`month${chartEndMonth}`];
-      netFixedAssets = filtered.find((row) => row.key.includes("Book Value -"))[
-        `month${chartEndMonth}`
-      ];
+        totalItems = selectedData.quantity;
+        totalInvestment = selectedData.assetCost * selectedData.quantity;
+        totalDepreciation = filtered.find((row) =>
+          row.key.includes("Accumulated Depre. -")
+        )[`month${chartEndMonth}`];
+        netFixedAssets = filtered.find((row) =>
+          row.key.includes("Book Value -")
+        )[`month${chartEndMonth}`];
 
-      setMetrics((prevMetrics) => [
-        {
-          ...prevMetrics[0],
-          value: formatNumber(totalItems),
-          change: 0,
-        },
-        {
-          ...prevMetrics[1],
-          value: formatNumber(totalInvestment),
-          change: 0,
-        },
-        {
-          ...prevMetrics[2],
-          value: totalDepreciation,
-          change: "",
-        },
-        {
-          ...prevMetrics[3],
-          value: formatNumber(netFixedAssets),
-          change: "",
-        },
-      ]);
+        setMetrics((prevMetrics) => [
+          {
+            ...prevMetrics[0],
+            value: formatNumber(totalItems),
+            change: 0,
+          },
+          {
+            ...prevMetrics[1],
+            value: formatNumber(totalInvestment),
+            change: 0,
+          },
+          {
+            ...prevMetrics[2],
+            value: totalDepreciation,
+            change: "",
+          },
+          {
+            ...prevMetrics[3],
+            value: formatNumber(netFixedAssets),
+            change: "",
+          },
+        ]);
+      }
     }
   }, [
     chartStartMonth,
@@ -1261,7 +1261,7 @@ const InvestmentSection = ({ numberOfMonths, isSaved, setIsSaved }) => {
                 chart?.options?.chart?.id !== "allChannels" &&
                 chart?.options?.title?.text?.toLowerCase() ===
                   tempInvestmentInputs
-                    .find((input) => input.id === renderInvestmentForm)
+                    .find((input) => input.id == renderInvestmentForm)
                     ?.purchaseName?.toLowerCase()
             )
             ?.map((chart, index) => (

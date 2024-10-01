@@ -761,13 +761,13 @@ const PersonnelSection = ({ numberOfMonths }) => {
     } else {
       // Handle specific channel case (based on ID)
       const selectedData = tempPersonnelInputs.find(
-        (input) => input.id === renderPersonnelForm
+        (input) => input.id == renderPersonnelForm
       );
 
       const filtered = filteredPersonnelData?.filter((data) =>
         data?.jobTitle?.includes(selectedData?.jobTitle)
       );
-      if (filtered && filteredPersonnelData.length > 0) {
+      if (filtered.length > 0 && filteredPersonnelData.length > 0) {
         const costData = extractData(
           filtered[0],
           "month",

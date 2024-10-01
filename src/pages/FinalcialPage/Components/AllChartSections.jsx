@@ -624,14 +624,12 @@ const AllChartSections = ({
   }, [numberOfMonths]);
   return (
     <>
-      <section className="mb-8">
+      {/* <section className="mb-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-[1.25rem]">
           <h2 className="text-lg font-semibold">
             I. Metrics (Under Constructions)
           </h2>
           <div className="flex items-center sm:space-x-4 space-x-0 sm:space-y-0 space-y-4 justify-start w-full md:w-auto sm:flex-row flex-col">
-            {/* Bộ chọn khoảng thời gian */}
-
             <div className="flex items-center space-x-4 justify-start w-full md:w-auto">
               <div className="min-w-[10vw] w-full flex flex-row sm:!mr-0 !mr-1">
                 <label
@@ -698,7 +696,6 @@ const AllChartSections = ({
                 </Select>
               </div>
             </div>
-            {/* Popover để chọn metrics hiển thị */}
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full md:w-auto">
@@ -736,7 +733,6 @@ const AllChartSections = ({
           </div>
         </div>
 
-        {/* Hiển thị các metrics */}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {metrics.map(
             (metric) =>
@@ -764,7 +760,7 @@ const AllChartSections = ({
         id="duration-heading"
       >
         II. Overview
-      </h2>
+      </h2> */}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <ReusableChart
@@ -852,9 +848,7 @@ const AllChartSections = ({
         />
       </div>
 
-      {/* Các biểu đồ */}
-
-      <div>
+      {/* <div>
         <h3 className="text-lg font-semibold mb-4 mt-8">III. Relevant Chart</h3>
         <div className=" gap-4 mb-3">
           <Select
@@ -965,7 +959,6 @@ const AllChartSections = ({
           </Select>
         </div>
 
-        {/* Sử dụng selectedChart để render biểu đồ tương ứng */}
         {selectedChart === "total-revenue-chart" && (
           <CustomChart
             chartStartMonth={chartStartMonth}
@@ -1162,7 +1155,7 @@ const AllChartSections = ({
             title="Total Shareholders Equity Over Time"
           />
         )}
-      </div>
+      </div> */}
     </>
   );
 };
